@@ -7,6 +7,8 @@ import moment from 'moment';
 import {
   isIncentivizedTestnetTheme,
   generateWallet,
+  generateHash,
+  generatePolicyIdHash,
 } from '../../_support/utils';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import type { Locale } from '../../../../source/common/types/locales.types';
@@ -71,9 +73,41 @@ const recoveryDialogOptions = {
   'Step 4 - Verification failure': 4,
 };
 
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+};
+
 const selectedWallet = generateWallet(
   'Wallet 1',
   '1000000000',
+  assets,
   0,
   STAKE_POOLS[0]
 );

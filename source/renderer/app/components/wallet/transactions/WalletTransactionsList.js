@@ -205,18 +205,20 @@ export default class WalletTransactionsList extends Component<Props> {
     ]);
     const { assets } = tx;
     const { inputs, outputs } = assets;
-    let availableTransactions = [];
+    const availableTransactions = [];
     if (inputs && inputs.length) {
-      availableTransactions.push(inputs);
+      availableTransactions.push(...inputs);
     }
     if (outputs && outputs.length) {
-      availableTransactions.push(outputs);
+      availableTransactions.push(...outputs);
     }
     const transactionAssets =
       availableTransactions && allAssets
         ? availableTransactions.map((txData) => {
             const assetData = allAssets.find(
-              (item) => item.policyId === txData.policyId
+              (item) =>
+                item.policyId === txData.policyId &&
+                item.assetName === txData.assetName
             );
             return {
               ...txData,

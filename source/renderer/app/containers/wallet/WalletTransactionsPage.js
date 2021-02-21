@@ -13,7 +13,7 @@ type Props = InjectedProps;
 export default class WalletTransactionsPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
-    const { app, wallets, addresses, profile } = stores;
+    const { app, wallets, addresses, profile, assets } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -41,6 +41,8 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { filterTransactions, requestCSVFile } = transactionActions;
 
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
+
+    const { all: allAssets } = assets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -80,6 +82,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         isRenderingAsVirtualList
         hasAssetsEnabled={hasAssetsEnabled}
         isInternalAddress={isInternalAddress}
+        allAssets={allAssets}
       />
     );
   }

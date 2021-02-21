@@ -6,20 +6,57 @@ import { linkTo } from '@storybook/addon-links';
 import { number } from '@storybook/addon-knobs';
 
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import { generateWallet } from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
 // Screens
 import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
 
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+};
+
 const generalWallet = generateWallet(
   'Wallet 1',
   '1000000000',
+  assets,
   0,
   STAKE_POOLS[0]
 );
 const hardwareWallet = generateWallet(
   'Wallet 1',
   '10000000',
+  assets,
   0,
   STAKE_POOLS[0],
   false,
