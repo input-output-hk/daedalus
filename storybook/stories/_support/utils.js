@@ -159,10 +159,7 @@ export const generateTransaction = (
   noIncomeAddresses: boolean = false,
   noWithdrawals: boolean = true,
   fee: BigNumber = new BigNumber(faker.finance.amount()),
-  assets?: {
-    inputs: ?WalletAssetItems,
-    outputs: ?WalletAssetItems,
-  },
+  assets?: WalletAssetItems,
   metadata?: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
@@ -171,7 +168,7 @@ export const generateTransaction = (
     type,
     amount,
     fee,
-    assets,
+    assets: assets || [],
     deposit,
     date,
     state,

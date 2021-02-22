@@ -2618,8 +2618,8 @@ const _createTransactionFromServerData = action(
       amount,
       fee,
       deposit,
-      inserted_at, // eslint-disable-line camelcase
-      pending_since, // eslint-disable-line camelcase
+      inserted_at: insertedAt,
+      pending_since: pendingSince,
       depth,
       direction,
       inputs,
@@ -2630,37 +2630,19 @@ const _createTransactionFromServerData = action(
     } = data;
     const state = _conditionToTxState(status);
     const stateInfo =
-      state === TransactionStates.PENDING ? pending_since : inserted_at; // eslint-disable-line
+      state === TransactionStates.PENDING ? pendingSince : insertedAt;
     const date = get(stateInfo, 'time');
     const slotNumber = get(stateInfo, ['block', 'slot_number'], null);
     const epochNumber = get(stateInfo, ['block', 'epoch_number'], null);
     const confirmations = get(depth, 'quantity', 0);
 
     // Mapping asset items from server data
-    const inputAssets = flatten(
-      inputs
-        .filter((input) => !!input.assets)
-        .map(({ assets, address }) =>
-          assets.map((asset) => ({ ...asset, address }))
-        )
-    );
     const outputAssets = flatten(
-      outputs
-        .filter((output) => !!output.assets)
-        .map(({ assets, address }) =>
-          assets.map((asset) => ({ ...asset, address }))
-        )
+      outputs.map(({ assets, address }) =>
+        assets ? assets.map((asset) => ({ ...asset, address })) : []
+      )
     );
-    const transactionInputAssets = map(
-      inputAssets,
-      ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
-        policyId,
-        assetName,
-        quantity,
-        address,
-      })
-    );
-    const transactionOutputAssets = map(
+    const transactionAssets = map(
       outputAssets,
       ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
         policyId,
@@ -2669,11 +2651,6 @@ const _createTransactionFromServerData = action(
         address,
       })
     );
-    const transactionAssets = {
-      inputs: transactionInputAssets,
-      outputs: transactionOutputAssets,
-    };
-
     return new WalletTransaction({
       id,
       confirmations,
