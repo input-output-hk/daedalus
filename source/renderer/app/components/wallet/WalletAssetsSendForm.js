@@ -1122,8 +1122,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         const receiverField = form.$(receiverId);
         const receiverValue = receiverField.value;
         const isReceiverValid = receiverField.isValid;
-        if (isValid && isReceiverValid) {
-          this.calculateTransactionFee(receiverValue, amountValue);
+        const adaAssetField = form.$('receiver1_adaAsset');
+        const adaAssetFieldValue = adaAssetField.value;
+        const isAdaAssetValid = adaAssetField.isValid;
+        const { sendFormFields } = this.state;
+        const receiver = sendFormFields[receiverId];
+        const selectedTokens = receiver.selectedNativeTokens;
+        const selectedTokenId = selectedTokens.length ? selectedTokens.length - 1 : 0;
+        const selectedToken = selectedTokens[selectedTokenId];
+        const selectedTokenValue = selectedToken.quantity;
+        const isAmountLessThenMax = Number(field.value) <= selectedTokenValue;
+        if (isValid && isAmountLessThenMax && isReceiverValid && isAdaAssetValid) {
+          this.calculateTransactionFee(receiverValue, adaAssetFieldValue);
         } else {
           this.resetTransactionFee();
         }
