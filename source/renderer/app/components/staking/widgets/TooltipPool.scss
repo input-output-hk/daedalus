@@ -1,6 +1,8 @@
 @import '../stakingConfig';
 @import '../../../themes/mixins/link';
 
+$tooltip-width: 280px;
+
 .component {
   @extend %regularText;
   background: var(--theme-staking-stake-pool-tooltip-background-color);
@@ -8,7 +10,7 @@
   padding: 10px;
   text-align: initial;
   user-select: text;
-  width: 280px;
+  width: $tooltip-width;
   z-index: 1000;
 
   :global {
@@ -163,7 +165,7 @@
     transition: opacity 0.25s, height 0.25s;
     transition-delay: 0s;
     user-select: none;
-    width: 278px;
+    width: $tooltip-width;
 
     .hoverContentBackground {
       background: var(--theme-staking-stake-pool-tooltip-id-background-color);
