@@ -41,6 +41,7 @@ import Asset from '../../domains/Asset';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -205,6 +206,7 @@ type State = {
   showReceiverField: Array<boolean>,
   isResetButtonDisabled: boolean,
   filteredAssets: any,
+  minimumAda: BigNumber,
 };
 
 @observer
@@ -225,6 +227,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     showReceiverField: [],
     isResetButtonDisabled: true,
     filteredAssets: [],
+    minimumAda: new BigNumber(0),
   };
 
   // We need to track the fee calculation state in order to disable
@@ -565,7 +568,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }));
     try {
       this._isCalculatingTransactionFee = true;
-      const fee = await this.props.calculateTransactionFee(address, amount);
+      const { fee, minimumAda } = await this.props.calculateTransactionFee(
+        address,
+        amount
+      );
       if (
         this._isMounted &&
         this.isLatestTransactionFeeRequest(
@@ -578,6 +584,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           isTransactionFeeCalculated: true,
           transactionFee: fee,
           transactionFeeError: null,
+          minimumAda,
         });
       }
     } catch (error) {
@@ -611,14 +618,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
-  showReceiverField = (index: number) => {
-    const { showReceiverField } = this.state;
-    showReceiverField[index] = true;
-    this.setState({
-      showReceiverField,
-    });
-  };
-
   hideReceiverField = (index?: number) => {
     if (index) {
       if (index > 1) {
@@ -642,11 +641,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const receiverField = this.form.$(`receiver${index}`);
     return receiverField.value.length > 0;
   };
-
-  get isReceiverValid() {
-    const receiverField = this.form.$('receiver1');
-    return receiverField.isValid;
-  }
 
   hasAssetValue = (asset: any) => {
     return asset && asset.value;
@@ -698,6 +692,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       transactionFeeError,
       sendFormFields,
       filteredAssets,
+      minimumAda,
     } = this.state;
 
     const {
@@ -744,7 +739,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ? assetsSeparatorBasicHeight * (asset.length + 1) - 40 * asset.length
         : assetsSeparatorBasicHeight;
 
-    const tokenDecimalPlaces = 2;
+    const tokenDecimalPlaces = 0;
 
     const sortedAssets = filteredAssets.map((item) =>
       orderBy(item, 'metadata.acronym', 'asc')
@@ -758,6 +753,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         : null,
       'primary',
     ]);
+
+    let minimumAdaValue = TRANSACTION_MIN_ADA_VALUE;
+
+    if (minimumAda) {
+      if (transactionFee) {
+        minimumAdaValue = minimumAda.plus(transactionFee).toFormat();
+      } else {
+        minimumAdaValue = minimumAda.toFormat();
+      }
+    }
 
     return (showReceiverField && index > 0 && showReceiverField[index]) ||
       index === 0 ? (
@@ -824,7 +829,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 {walletAmount && (
                   <div className={styles.amountTokenTotal}>
                     {intl.formatMessage(messages.ofLabel)}&nbsp;
-                    {formattedWalletAmount(walletAmount)}
+                    {walletAmount.toFormat()}
                   </div>
                 )}
                 <div className={styles.adaAssetLabel}>
@@ -853,14 +858,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 <div className={styles.minAdaRequired}>
                   <span>
                     {intl.formatMessage(messages.minAdaRequired, {
-                      adaValue: 1,
+                      adaValue: minimumAdaValue,
                     })}
                   </span>
                   <PopOver
                     content={intl.formatMessage(
                       messages.minAdaRequiredTooltip,
                       {
-                        adaValue: 1,
+                        adaValue: minimumAdaValue,
                       }
                     )}
                     contentClassName={styles.minAdaTooltipContent}
