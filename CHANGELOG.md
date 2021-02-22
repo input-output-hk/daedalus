@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 3.3.1
 
 ### Features
 
