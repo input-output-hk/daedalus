@@ -25,7 +25,6 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
-  formattedWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
