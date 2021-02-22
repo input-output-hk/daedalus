@@ -297,16 +297,24 @@ export default class StakingStore extends Store {
   };
 
   @action _quitStakePool = async (request: QuitStakePoolRequest) => {
-    const { walletId, passphrase } = request;
+    const { walletId, passphrase, isHardwareWallet } = request;
 
     // Set quit transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
-      const quitTransaction = await this.quitStakePoolRequest.execute({
-        walletId,
-        passphrase,
-      });
+      let quitTransaction;
+      if (isHardwareWallet) {
+        quitTransaction = await this.stores.hardwareWallets._sendMoney({
+          isDelegationTransaction: true,
+        });
+      } else {
+        quitTransaction = await this.quitStakePoolRequest.execute({
+          walletId,
+          passphrase,
+        });
+      }
+
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,
@@ -458,7 +466,7 @@ export default class StakingStore extends Store {
         wallet.pendingDelegations && wallet.pendingDelegations.length > 0;
       let lastDelegatedStakePoolId = wallet.delegatedStakePoolId;
       if (hasPendingDelegations) {
-        lastDelegatedStakePoolId = wallet.lastDelegationStakePoolId;
+        lastDelegatedStakePoolId = wallet.lastDelegatedStakePoolId;
       }
       if (lastDelegatedStakePoolId) {
         const delegatingStakePoolExistInList = find(
