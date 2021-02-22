@@ -940,11 +940,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     />
                     <NumericInput
                       {...assetFieldProps[assetIndex]}
-                      placeholder={selectedNativeTokens &&
+                      placeholder={
+                        selectedNativeTokens &&
                         selectedNativeTokens[assetIndex] &&
-                        selectedNativeTokens[assetIndex].metadata ? '0' : `0${
-                          this.getCurrentNumberFormat().decimalSeparator
-                        }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`
+                        selectedNativeTokens[assetIndex].metadata
+                          ? `0${
+                              this.getCurrentNumberFormat().decimalSeparator
+                            }${'0'.repeat(
+                              this.props.currencyMaxFractionalDigits
+                            )}`
+                          : '0'
                       }
                       className={classNames([
                         styles.assetItem,
