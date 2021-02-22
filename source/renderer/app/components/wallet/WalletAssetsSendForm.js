@@ -565,7 +565,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }));
     try {
       this._isCalculatingTransactionFee = true;
-      const fee = await this.props.calculateTransactionFee(address, amount);
+      const { fee } = await this.props.calculateTransactionFee(address, amount);
       if (
         this._isMounted &&
         this.isLatestTransactionFeeRequest(

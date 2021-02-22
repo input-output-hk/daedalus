@@ -26,7 +26,6 @@ import CancelTransactionConfirmationDialog from './CancelTransactionConfirmation
 import { ellipsis } from '../../../utils/strings';
 import type { WalletTransactionAsset } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import AssetToken from '../../widgets/AssetToken';
 
 /* eslint-disable consistent-return */
 
@@ -645,6 +644,8 @@ export default class Transaction extends Component<Props, State> {
                             />
                             {transactionAssets.map((asset, assetIndex) => (
                               <Fragment
+                                // @TOKEN TODO: Remove this once the dummy data doesn't have repeated data
+                                // eslint-disable-next-line
                                 key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
                               >
                                 {(data.type === TransactionTypes.INCOME &&
