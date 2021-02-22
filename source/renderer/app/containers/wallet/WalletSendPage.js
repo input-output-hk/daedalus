@@ -91,7 +91,7 @@ export default class WalletSendPage extends Component<Props> {
 
     const assets = activeWallet.assets.total.map((walletAsset) => {
       const assetData = allAssets.find(
-        (item) => item.policyId === walletAsset.policyId
+        (item) => item.assetName === walletAsset.assetName
       );
       let fingerprint;
       if (!assetData || !assetData.fingerprint) {

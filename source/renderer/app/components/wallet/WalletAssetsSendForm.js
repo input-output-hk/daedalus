@@ -204,7 +204,7 @@ type State = {
   selectedAssetIds: Array<string>,
   showReceiverField: Array<boolean>,
   isResetButtonDisabled: boolean,
-  filteredAssets: Array<WalletSummaryAsset>,
+  filteredAssets: any,
 };
 
 @observer
@@ -253,20 +253,55 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   filterAssets = (
     allAssets: Array<WalletSummaryAsset>,
     firstTimeFiltering?: boolean,
-    assetToRemove?: WalletSummaryAsset
-  ) => {
-    const newFilteredAssets = assetToRemove
-      ? allAssets.filter((asset) => asset.policyId !== assetToRemove.policyId)
-      : [];
+    assetsToRemove?: any
+  ): Array<WalletSummaryAsset> => {
     const { filteredAssets } = this.state;
     const { assets } = this.props;
-    const currentFilteredAssets = firstTimeFiltering ? assets : filteredAssets;
-    if (currentFilteredAssets) {
-      currentFilteredAssets.push(...newFilteredAssets);
+    const currentFilteredAssets: any = firstTimeFiltering
+      ? [assets]
+      : filteredAssets;
+    let newFilteredAssets = [];
+    if (
+      !firstTimeFiltering &&
+      currentFilteredAssets &&
+      currentFilteredAssets.length
+    ) {
+      currentFilteredAssets[currentFilteredAssets.length] = assets;
     }
+    if (assetsToRemove && assetsToRemove.length) {
+      // eslint-disable-next-line array-callback-return
+      assetsToRemove.map((item) => {
+        newFilteredAssets.push(
+          ...currentFilteredAssets[currentFilteredAssets.length - 1].filter(
+            (asset) => asset.assetName !== item.assetName
+          )
+        );
+      });
+    }
+    if (firstTimeFiltering) {
+      newFilteredAssets = currentFilteredAssets;
+    } else {
+      currentFilteredAssets[
+        currentFilteredAssets.length - 1
+      ] = newFilteredAssets;
+      if (
+        currentFilteredAssets[currentFilteredAssets.length - 2] &&
+        currentFilteredAssets[currentFilteredAssets.length - 2].length
+      ) {
+        // const { selectedAssetIds } = this.state;
+        // const prevSelectToken = this.getNativeTokenById(selectedAssetIds[currentFilteredAssets.length - 2]);
+        // currentFilteredAssets[currentFilteredAssets.length - 2] = currentFilteredAssets[currentFilteredAssets.length - 2].filter((asset) => asset.assetName !== prevSelectToken.assetName);
+      }
+      newFilteredAssets = currentFilteredAssets;
+    }
+    const selectedAssets =
+      newFilteredAssets && newFilteredAssets.length
+        ? newFilteredAssets
+        : currentFilteredAssets;
     this.setState({
-      filteredAssets: currentFilteredAssets,
+      filteredAssets: selectedAssets,
     });
+    return selectedAssets;
   };
 
   handleOnSubmit = () => {
@@ -688,13 +723,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       (assetField) => new BigNumber(assetField.value || 0)
     );
 
-    // const showReceiverLabelNumber = Object.keys(sendFormFields).length > 1;
-
-    const receiverLabel = /* showReceiverLabelNumber
-      ? `${intl.formatMessage(messages.receiverLabel)} #${index + 1}`
-      : */ intl.formatMessage(
-      messages.receiverLabel
-    );
+    const receiverLabel = intl.formatMessage(messages.receiverLabel);
 
     receiverField.set('label', receiverLabel);
 
@@ -717,11 +746,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const tokenDecimalPlaces = 2;
 
-    const sortedAssets = orderBy(filteredAssets, 'metadata.acronym', 'asc');
+    const sortedAssets = filteredAssets.map((item) =>
+      orderBy(item, 'metadata.acronym', 'asc')
+    );
 
     const addAssetButtonClasses = classNames([
       styles.addAssetButton,
-      !sortedAssets.length ? styles.disabled : null,
+      !filteredAssets.length ||
+      filteredAssets[filteredAssets.length - 1].length === 1
+        ? styles.disabled
+        : null,
       'primary',
     ]);
 
@@ -918,7 +952,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           : null
                       }
                       value={amount[assetIndex]}
-                      error={asset.error}
+                      error={asset.error || transactionFeeError}
                       skin={AmountInputSkin}
                       onKeyPress={this.handleSubmitOnEnter}
                       allowSigns={false}
@@ -957,7 +991,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           className={styles.walletsDropdown}
                           {...walletsDropdownFieldProps[index]}
                           numberOfStakePools={4}
-                          assets={sortedAssets}
+                          assets={sortedAssets[assetIndex]}
                           onChange={(id) => {
                             this.onSelectAsset(index, id);
                             this.updateSelectedNativeTokens(
@@ -983,15 +1017,22 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={isHardwareWallet}
-                onClick={() =>
+                onClick={() => {
+                  const { assets } = this.props;
+                  const id = selectedNativeTokens.length;
+                  const newFilteredAssets = this.filterAssets(
+                    assets,
+                    id === 0,
+                    id > 0 ? selectedNativeTokens : null
+                  );
                   this.addNewAssetRow(
                     index + 1,
                     `asset${asset.length + 1}`,
                     receiverId,
                     `walletsDropdown${walletsDropdown.length + 1}`,
-                    sortedAssets[0]
-                  )
-                }
+                    newFilteredAssets[id][0]
+                  );
+                }}
                 skin={ButtonSkin}
               />
             </div>
@@ -1128,15 +1169,30 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         const { sendFormFields } = this.state;
         const receiver = sendFormFields[receiverId];
         const selectedTokens = receiver.selectedNativeTokens;
-        const selectedTokenId = selectedTokens.length ? selectedTokens.length - 1 : 0;
+        const selectedTokenId = selectedTokens.length
+          ? selectedTokens.length - 1
+          : 0;
         const selectedToken = selectedTokens[selectedTokenId];
         const selectedTokenValue = selectedToken.quantity;
         const isAmountLessThenMax = Number(field.value) <= selectedTokenValue;
-        if (isValid && isAmountLessThenMax && isReceiverValid && isAdaAssetValid) {
+        if (
+          isValid &&
+          isAmountLessThenMax &&
+          isReceiverValid &&
+          isAdaAssetValid
+        ) {
           this.calculateTransactionFee(receiverValue, adaAssetFieldValue);
-        } else {
-          this.resetTransactionFee();
-        }
+        } else if (!isAmountLessThenMax) {
+            const transactionFeeError = this.context.intl.formatMessage(messages.invalidAmount);
+            this._isCalculatingTransactionFee = false;
+            this.setState({
+              isTransactionFeeCalculated: false,
+              transactionFee: new BigNumber(0),
+              transactionFeeError,
+            });
+          } else {
+            this.resetTransactionFee();
+          }
         return [
           isValid,
           this.context.intl.formatMessage(messages.invalidAmount),
@@ -1154,19 +1210,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     });
     this.form.$(newWalletsDropdown).set('type', 'select');
   };
-
-  /* addNewReceiverRow = (
-    index: number,
-    receiverId: string,
-    assetId: string,
-    dropdownId: string
-  ) => {
-    this.addNewReceiverField(receiverId);
-    this.addNewAssetField(receiverId, assetId);
-    this.addNewWalletsDropdownField(receiverId, dropdownId);
-    this.showReceiverField(index - 1);
-    this.setFormFields(false, index, receiverId, assetId, dropdownId);
-  }; */
 
   addNewAssetRow = (
     index: number,
@@ -1187,21 +1230,19 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     );
     const splitedAssetId = assetId.split('asset');
     const assetIndex = splitedAssetId ? parseInt(splitedAssetId[1], 10) : 0;
-    this.onSelectAsset(assetIndex - 1, selectedNativeToken.policyId);
+    this.onSelectAsset(assetIndex - 1, selectedNativeToken.assetName);
   };
 
-  onSelectAsset = (index: number, policyId: string) => {
+  onSelectAsset = (index: number, assetName: string) => {
     const { selectedAssetIds } = this.state;
     if (!selectedAssetIds.length) {
-      selectedAssetIds[0] = policyId;
+      selectedAssetIds[0] = assetName;
     } else {
-      selectedAssetIds[index] = policyId;
+      selectedAssetIds[index] = assetName;
     }
     this.setState({
       selectedAssetIds,
     });
-    const { assets } = this.props;
-    this.filterAssets(assets);
   };
 
   updateSelectedNativeTokens = (
@@ -1227,7 +1268,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   getNativeTokenById = (selectedAssetId: string): ?WalletSummaryAsset => {
     const { assets } = this.props;
-    return assets.find((asset) => asset.policyId === selectedAssetId);
+    return assets.find((asset) => asset.assetName === selectedAssetId);
   };
 
   render() {
@@ -1271,11 +1312,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ? this.getNativeTokenById(selectedAssetIds[0])
         : null;
 
-    /* const newReceiverButtonClasses = classNames([
-      styles.addNewReceiverButton,
-      'flat',
-    ]); */
-
     const calculatingFeesSpinnerButtonClasses = classNames([
       styles.calculatingFeesSpinnerButton,
       styles.spinning,
@@ -1300,21 +1336,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   </Fragment>
                 )
               )}
-              {/* Object.keys(sendFormFields).length > 0 && (
-                <Button
-                  className={newReceiverButtonClasses}
-                  label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
-                  onClick={() =>
-                    this.addNewReceiverRow(
-                      Object.keys(sendFormFields).length + 1,
-                      `receiver${Object.keys(sendFormFields).length + 1}`,
-                      'asset1',
-                      'walletsDropdown1'
-                    )
-                  }
-                  skin={ButtonSkin}
-                />
-              ) */}
               <div className={styles.estimatedFeeInput}>
                 <ReadOnlyInput
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
