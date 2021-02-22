@@ -25,7 +25,6 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
-  formattedWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
@@ -41,6 +40,7 @@ import Asset from '../../domains/Asset';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -205,6 +205,8 @@ type State = {
   showReceiverField: Array<boolean>,
   isResetButtonDisabled: boolean,
   filteredAssets: any,
+  minimumAda: BigNumber,
+  isReceiverAddressValid: boolean,
 };
 
 @observer
@@ -225,6 +227,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     showReceiverField: [],
     isResetButtonDisabled: true,
     filteredAssets: [],
+    minimumAda: new BigNumber(0),
+    isReceiverAddressValid: false,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -431,12 +435,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               const { value } = field;
               if (value === '') {
                 this.resetTransactionFee();
+                this.setReceiverValidity(false);
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
               const isValidAddress = await this.props.addressValidator(value);
+              this.setReceiverValidity(isValidAddress);
               return [
                 isValidAddress,
                 this.context.intl.formatMessage(
@@ -547,6 +553,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
   }
 
+  setReceiverValidity(isValid: boolean) {
+    if (this._isMounted) {
+      this.setState({
+        isReceiverAddressValid: isValid,
+      });
+    }
+  }
+
   isLatestTransactionFeeRequest = (
     currentFeeCalculationRequestQue: number,
     prevFeeCalculationRequestQue: number
@@ -565,7 +579,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }));
     try {
       this._isCalculatingTransactionFee = true;
-      const { fee } = await this.props.calculateTransactionFee(address, amount);
+      const { fee, minimumAda } = await this.props.calculateTransactionFee(
+        address,
+        amount
+      );
       if (
         this._isMounted &&
         this.isLatestTransactionFeeRequest(
@@ -578,6 +595,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           isTransactionFeeCalculated: true,
           transactionFee: fee,
           transactionFeeError: null,
+          minimumAda,
         });
       }
     } catch (error) {
@@ -611,14 +629,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
-  showReceiverField = (index: number) => {
-    const { showReceiverField } = this.state;
-    showReceiverField[index] = true;
-    this.setState({
-      showReceiverField,
-    });
-  };
-
   hideReceiverField = (index?: number) => {
     if (index) {
       if (index > 1) {
@@ -642,11 +652,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const receiverField = this.form.$(`receiver${index}`);
     return receiverField.value.length > 0;
   };
-
-  get isReceiverValid() {
-    const receiverField = this.form.$('receiver1');
-    return receiverField.isValid;
-  }
 
   hasAssetValue = (asset: any) => {
     return asset && asset.value;
@@ -698,6 +703,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       transactionFeeError,
       sendFormFields,
       filteredAssets,
+      minimumAda,
+      isReceiverAddressValid,
     } = this.state;
 
     const {
@@ -744,7 +751,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ? assetsSeparatorBasicHeight * (asset.length + 1) - 40 * asset.length
         : assetsSeparatorBasicHeight;
 
-    const tokenDecimalPlaces = 2;
+    const tokenDecimalPlaces = 0;
 
     const sortedAssets = filteredAssets.map((item) =>
       orderBy(item, 'metadata.acronym', 'asc')
@@ -758,6 +765,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         : null,
       'primary',
     ]);
+
+    let minimumAdaValue = TRANSACTION_MIN_ADA_VALUE;
+
+    if (minimumAda) {
+      if (transactionFee) {
+        minimumAdaValue = minimumAda.plus(transactionFee).toFormat();
+      } else {
+        minimumAdaValue = minimumAda.toFormat();
+      }
+    }
 
     return (showReceiverField && index > 0 && showReceiverField[index]) ||
       index === 0 ? (
@@ -781,10 +798,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             {...receiverField.bind()}
             error={receiverField.error}
             onChange={(value) => {
-              receiverField.onChange(value || '');
-              this.setState({
-                isResetButtonDisabled: false,
-              });
+              if (this._isMounted) {
+                receiverField.onChange(value || '');
+                this.setState({
+                  isResetButtonDisabled: false,
+                });
+              }
             }}
             skin={InputSkin}
             onKeyPress={this.handleSubmitOnEnter}
@@ -809,7 +828,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             </div>
           )}
         </div>
-        {this.hasReceiverValue(index + 1) && (
+        {this.hasReceiverValue(index + 1) && isReceiverAddressValid && (
           <>
             <div
               className={styles.fieldsLine}
@@ -824,7 +843,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 {walletAmount && (
                   <div className={styles.amountTokenTotal}>
                     {intl.formatMessage(messages.ofLabel)}&nbsp;
-                    {formattedWalletAmount(walletAmount)}
+                    {walletAmount.toFormat()}
                   </div>
                 )}
                 <div className={styles.adaAssetLabel}>
@@ -850,28 +869,30 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                 />
-                <div className={styles.minAdaRequired}>
-                  <span>
-                    {intl.formatMessage(messages.minAdaRequired, {
-                      adaValue: 1,
-                    })}
-                  </span>
-                  <PopOver
-                    content={intl.formatMessage(
-                      messages.minAdaRequiredTooltip,
-                      {
-                        adaValue: 1,
-                      }
-                    )}
-                    contentClassName={styles.minAdaTooltipContent}
-                    key="tooltip"
-                  >
-                    <SVGInline
-                      svg={infoIconInline}
-                      className={styles.infoIcon}
-                    />
-                  </PopOver>
-                </div>
+                {minimumAdaValue && (
+                  <div className={styles.minAdaRequired}>
+                    <span>
+                      {intl.formatMessage(messages.minAdaRequired, {
+                        adaValue: minimumAdaValue,
+                      })}
+                    </span>
+                    <PopOver
+                      content={intl.formatMessage(
+                        messages.minAdaRequiredTooltip,
+                        {
+                          adaValue: minimumAdaValue,
+                        }
+                      )}
+                      contentClassName={styles.minAdaTooltipContent}
+                      key="tooltip"
+                    >
+                      <SVGInline
+                        svg={infoIconInline}
+                        className={styles.infoIcon}
+                      />
+                    </PopOver>
+                  </div>
+                )}
               </Fragment>
               <Fragment>
                 {asset.map((singleAsset: any, assetIndex: number) => (
@@ -1101,36 +1122,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         });
       }
     }
-  };
-
-  addNewReceiverField = (receiverId: string) => {
-    this.form.add({ name: receiverId, value: '', key: receiverId });
-    this.form
-      .$(receiverId)
-      .set('label', this.context.intl.formatMessage(messages.receiverLabel));
-    this.form
-      .$(receiverId)
-      .set(
-        'placeholder',
-        this.context.intl.formatMessage(messages.receiverHint)
-      );
-    this.form.$(receiverId).set('validators', [
-      async ({ field }) => {
-        const { value } = field;
-        if (value === '') {
-          this.resetTransactionFee();
-          return [
-            false,
-            this.context.intl.formatMessage(messages.fieldIsRequired),
-          ];
-        }
-        const isValidAddress = await this.props.addressValidator(value);
-        return [
-          isValidAddress,
-          this.context.intl.formatMessage(apiErrorMessages.invalidAddress),
-        ];
-      },
-    ]);
   };
 
   addNewAssetField = (receiverId: string, assetId: string) => {
