@@ -125,8 +125,8 @@ const messages = defineMessages({
   },
   assetLabel: {
     id: 'wallet.transaction.assetLabel',
-    defaultMessage: '!!!Asset',
-    description: 'Asset',
+    defaultMessage: '!!!Token',
+    description: 'Token label',
   },
   transactionFee: {
     id: 'wallet.transaction.transactionFee',
@@ -643,38 +643,51 @@ export default class Transaction extends Component<Props, State> {
                               }}
                             />
                             {transactionAssets.map((asset, assetIndex) => (
-                              <div
-                                // eslint-disable-next-line react/no-array-index-key
+                              <Fragment
                                 key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                                className={styles.assetsContainer}
                               >
-                                <h3>
-                                  {intl.formatMessage(messages.assetLabel)}
-                                  &nbsp;#{assetIndex + 1}
-                                  <br />- {asset.address}
-                                  <br />-{' '}
-                                  {isInternalAddress(asset.address)
-                                    ? 'Internal'
-                                    : 'External'}
-                                </h3>
-                                {asset.quantity && (
-                                  <div className={styles.amountFeesWrapper}>
-                                    <div className={styles.amount}>
-                                      {new BigNumber(asset.quantity).toFormat(
-                                        asset.metadata && asset.metadata.unit
-                                          ? asset.metadata.unit.decimals
-                                          : DECIMAL_PLACES_IN_ADA
-                                      )}
-                                      &nbsp;{' '}
-                                      {asset.metadata && asset.metadata.acronym
-                                        ? asset.metadata.acronym
-                                        : intl.formatMessage(
-                                            globalMessages.currency
+                                {(data.type === TransactionTypes.INCOME &&
+                                  isInternalAddress(asset.address)) ||
+                                  (data.type === TransactionTypes.EXPEND &&
+                                    !isInternalAddress(asset.address) && (
+                                      <div
+                                        // eslint-disable-next-line react/no-array-index-key
+                                        className={styles.assetsContainer}
+                                      >
+                                        <h3>
+                                          {intl.formatMessage(
+                                            messages.assetLabel
                                           )}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                                          &nbsp;#{assetIndex + 1}
+                                          <span>{asset.address}</span>
+                                          <span>{asset.assetName}</span>
+                                        </h3>
+                                        {asset.quantity && (
+                                          <div
+                                            className={styles.amountFeesWrapper}
+                                          >
+                                            <div className={styles.amount}>
+                                              {new BigNumber(
+                                                asset.quantity
+                                              ).toFormat(
+                                                asset.metadata &&
+                                                  asset.metadata.unit
+                                                  ? asset.metadata.unit.decimals
+                                                  : DECIMAL_PLACES_IN_ADA
+                                              )}
+                                              &nbsp;{' '}
+                                              {asset.metadata &&
+                                              asset.metadata.acronym
+                                                ? asset.metadata.acronym
+                                                : intl.formatMessage(
+                                                    globalMessages.currency
+                                                  )}
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                              </Fragment>
                             ))}
                           </div>
                         </div>
@@ -698,7 +711,7 @@ export default class Transaction extends Component<Props, State> {
                   )
                 )}
 
-                {!hasMultipleAssets && data.deposit && !data.deposit.isZero() && (
+                {data.deposit && !data.deposit.isZero() && (
                   <>
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
                     <div className={styles.depositRow}>

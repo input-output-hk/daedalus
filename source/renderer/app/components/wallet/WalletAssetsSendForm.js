@@ -1183,16 +1183,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ) {
           this.calculateTransactionFee(receiverValue, adaAssetFieldValue);
         } else if (!isAmountLessThenMax) {
-            const transactionFeeError = this.context.intl.formatMessage(messages.invalidAmount);
-            this._isCalculatingTransactionFee = false;
-            this.setState({
-              isTransactionFeeCalculated: false,
-              transactionFee: new BigNumber(0),
-              transactionFeeError,
-            });
-          } else {
-            this.resetTransactionFee();
-          }
+          const transactionFeeError = this.context.intl.formatMessage(
+            messages.invalidAmount
+          );
+          this._isCalculatingTransactionFee = false;
+          this.setState({
+            isTransactionFeeCalculated: false,
+            transactionFee: new BigNumber(0),
+            transactionFeeError,
+          });
+        } else {
+          this.resetTransactionFee();
+        }
         return [
           isValid,
           this.context.intl.formatMessage(messages.invalidAmount),
