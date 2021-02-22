@@ -199,8 +199,7 @@ export default class AssetToken extends Component<Props, State> {
                 {item(
                   'description',
                   intl.formatMessage(messages.descriptionItem),
-                  description,
-                  true
+                  description
                 )}
               </dd>
             </F>
