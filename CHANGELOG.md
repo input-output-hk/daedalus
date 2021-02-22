@@ -28,6 +28,7 @@ Changelog
 
 ### Chores
 
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `2.2.0` ([PR 2381](https://github.com/input-output-hk/daedalus/pull/2381))
 - Updated `cardano-launcher` to version `0.20210215.0` ([PR 2363](https://github.com/input-output-hk/daedalus/pull/2363))
 - Updated `cardano-wallet` to version `2021-02-15` ([PR 2363](https://github.com/input-output-hk/daedalus/pull/2363))
 - Updated `cardano-wallet` to version `2021-02-12` ([PR 2358](https://github.com/input-output-hk/daedalus/pull/2358))
