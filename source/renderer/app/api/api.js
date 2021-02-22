@@ -144,6 +144,7 @@ import type {
   TransactionFee,
   TransactionWithdrawals,
   GetTransactionFeeRequest,
+  GetTransactionFeeResponse,
   CreateTransactionRequest,
   DeleteTransactionRequest,
   GetTransactionRequest,
@@ -882,7 +883,7 @@ export default class AdaApi {
 
   calculateTransactionFee = async (
     request: GetTransactionFeeRequest
-  ): Promise<BigNumber> => {
+  ): Promise<GetTransactionFeeResponse> => {
     logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
     });
@@ -923,11 +924,10 @@ export default class AdaApi {
           data: { ...data, withdrawal },
         });
       }
-
       const formattedTxAmount = new BigNumber(amount).dividedBy(
         LOVELACES_PER_ADA
       );
-      const fee = _createTransactionFeeFromServerData(response);
+      const { fee, minimumAda } = _createTransactionFeeFromServerData(response);
       const amountWithFee = formattedTxAmount.plus(fee);
       const isRewardsRedemptionRequest = Array.isArray(withdrawal);
       if (!isRewardsRedemptionRequest && amountWithFee.gt(walletBalance)) {
@@ -938,7 +938,7 @@ export default class AdaApi {
       logger.debug('AdaApi::calculateTransactionFee success', {
         transactionFee: response,
       });
-      return fee;
+      return { fee, minimumAda };
     } catch (error) {
       // 1. Amount exceeds availableBalance due to pending transactions:
       // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
@@ -1912,7 +1912,7 @@ export default class AdaApi {
       isLegacy: false,
     };
     try {
-      const fee = await this.calculateTransactionFee(payload);
+      const { fee } = await this.calculateTransactionFee(payload);
       logger.debug('AdaApi::getRedeemItnRewardsFee success', { fee });
       return fee;
     } catch (error) {
@@ -2724,8 +2724,16 @@ const _createAssetFromServerData = action(
 const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
   (data: TransactionFee) => {
-    const amount = get(data, ['estimated_max', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+    const feeAmount = get(data, ['estimated_max', 'quantity'], 0);
+    const minimumAdaAmount = get(data, 'minimum_coins.[0].quantity', 0);
+    const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
+    const minimumAda = new BigNumber(minimumAdaAmount).dividedBy(
+      LOVELACES_PER_ADA
+    );
+    return {
+      fee,
+      minimumAda,
+    };
   }
 );
 

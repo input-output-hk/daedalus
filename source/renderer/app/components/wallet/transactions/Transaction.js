@@ -26,6 +26,7 @@ import CancelTransactionConfirmationDialog from './CancelTransactionConfirmation
 import { ellipsis } from '../../../utils/strings';
 import type { WalletTransactionAsset } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import AssetToken from '../../widgets/AssetToken';
 
 /* eslint-disable consistent-return */
 

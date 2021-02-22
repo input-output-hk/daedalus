@@ -121,6 +121,11 @@ export type GetTransactionFeeRequest = {
   withdrawal?: 'self' | Array<string>,
 };
 
+export type GetTransactionFeeResponse = {
+  fee: BigNumber,
+  minimumAda: BigNumber,
+};
+
 export type CreateTransactionRequest = {
   walletId: string,
   address: string,
@@ -171,10 +176,8 @@ export type TransactionPaymentData = {
 export type TransactionFee = {
   estimated_min: TransactionFeeAmount,
   estimated_max: TransactionFeeAmount,
-  deposit: {
-    quantity: number,
-    unit: WalletUnits.LOVELACE,
-  },
+  deposit: TransactionFeeAmount,
+  minimum_coins: Array<TransactionFeeAmount>,
 };
 
 export type CoinSelectionAmount = {

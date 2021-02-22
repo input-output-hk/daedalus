@@ -30,6 +30,7 @@ export default class WalletSendPage extends Component<Props> {
   }) => {
     const { walletId, address, amount, isHardwareWallet } = params;
     let fee;
+    let minimumAda;
     if (isHardwareWallet) {
       const coinsSelection = await this.props.stores.hardwareWallets.selectCoins(
         {
@@ -40,13 +41,16 @@ export default class WalletSendPage extends Component<Props> {
       );
       fee = coinsSelection.fee;
     } else {
-      fee = await this.props.stores.transactions.calculateTransactionFee({
+      ({
+        fee,
+        minimumAda,
+      } = await this.props.stores.transactions.calculateTransactionFee({
         walletId,
         address,
         amount,
-      });
+      }));
     }
-    return fee;
+    return { fee, minimumAda };
   };
 
   openDialog = (
