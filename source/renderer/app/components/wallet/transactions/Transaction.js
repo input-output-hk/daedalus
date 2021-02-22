@@ -2,7 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import { includes } from 'lodash';
+import { includes, get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -26,6 +26,7 @@ import CancelTransactionConfirmationDialog from './CancelTransactionConfirmation
 import { ellipsis } from '../../../utils/strings';
 import type { WalletTransactionAsset } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import AssetToken from '../../widgets/AssetToken';
 
 /* eslint-disable consistent-return */
 
@@ -148,6 +149,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Multiple tokens',
     description: 'Multiple tokens.',
   },
+  tokensSent: {
+    id: 'wallet.transaction.tokensSent',
+    defaultMessage: '!!!Tokens sent',
+    description: 'Tokens sent.',
+  },
+  tokensReceived: {
+    id: 'wallet.transaction.tokensReceived',
+    defaultMessage: '!!!Tokens received',
+    description: 'Tokens received.',
+  },
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
     defaultMessage:
@@ -245,7 +256,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  transactionAssets: Array<WalletTransactionAsset>,
+  assetsDetails: Array<WalletTransactionAsset>,
   hasAssetsEnabled?: boolean,
   isInternalAddress: Function,
 };
@@ -389,6 +400,68 @@ export default class Transaction extends Component<Props, State> {
     );
   };
 
+  get hasMultipleAssets() {
+    const { hasAssetsEnabled, assetsDetails } = this.props;
+    return hasAssetsEnabled && assetsDetails && assetsDetails.length > 0;
+  }
+
+  includesUnresolvedAddresses = (addresses: Array<?string>) =>
+    includes(addresses, null);
+
+  addressesList = (addresses: Array<?string>): any => {
+    const { intl } = this.context;
+    const { onOpenExternalLink, getUrlByType, data } = this.props;
+    const type = this.hasMultipleAssets ? data.type : null;
+    if (addresses && addresses.length > 0) {
+      const hasUnresolvedAddresses = this.includesUnresolvedAddresses(
+        addresses
+      );
+      return type !== TransactionTypes.EXPEND && hasUnresolvedAddresses ? (
+        <div className={styles.explorerLinkRow}>
+          <Link
+            className={styles.explorerLink}
+            onClick={() => onOpenExternalLink(getUrlByType('tx', data.id))}
+            label={intl.formatMessage(
+              messages.unresolvedInputAddressesLinkLabel
+            )}
+            skin={LinkSkin}
+          />
+          <span>
+            {intl.formatMessage(
+              messages.unresolvedInputAddressesAdditionalLabel
+            )}
+          </span>
+        </div>
+      ) : (
+        addresses.map((address, addressIndex) => (
+          <div
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${data.id}-from-${address || ''}-${addressIndex}`}
+            className={styles.addressRow}
+          >
+            <Link
+              onClick={() =>
+                onOpenExternalLink(getUrlByType('address', address))
+              }
+              label={
+                <WholeSelectionText
+                  className={styles.address}
+                  text={
+                    this.hasMultipleAssets && address
+                      ? ellipsis(address, 30, 30)
+                      : address
+                  }
+                />
+              }
+              skin={LinkSkin}
+            />
+          </div>
+        ))
+      );
+    }
+    return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
+  };
+
   render() {
     const {
       data,
@@ -401,15 +474,12 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
-      transactionAssets,
-      hasAssetsEnabled,
+      assetsDetails,
       isInternalAddress,
     } = this.props;
+
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
-
-    const hasMultipleAssets =
-      hasAssetsEnabled && transactionAssets && transactionAssets.length > 0;
 
     const componentStyles = classNames([
       styles.component,
@@ -432,20 +502,10 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    const assetsSeparatorStyles = classNames([
-      styles.assetsSeparator,
-      isExpanded ? styles.expanded : null,
-    ]);
-
-    const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight =
-      transactionAssets && transactionAssets.length
-        ? assetsSeparatorBasicHeight * transactionAssets.length - 18
-        : assetsSeparatorBasicHeight;
-    const transactionsType = hasMultipleAssets
+    const transactionsType = this.hasMultipleAssets
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.currency);
-    const typeOfTransaction = hasMultipleAssets
+    const typeOfTransaction = this.hasMultipleAssets
       ? intl.formatMessage(headerStateTranslations[state])
       : intl.formatMessage(globalMessages.currency);
 
@@ -462,59 +522,15 @@ export default class Transaction extends Component<Props, State> {
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
-    const includesUnresolvedAddresses = (addresses) =>
-      includes(addresses, null);
-
-    const fromAddresses = (addresses, transactionId, type?) => {
-      if (addresses.length > 0) {
-        const hasUnresolvedAddresses = includesUnresolvedAddresses(addresses);
-        return type !== TransactionTypes.EXPEND && hasUnresolvedAddresses ? (
-          <div className={styles.explorerLinkRow}>
-            <Link
-              className={styles.explorerLink}
-              onClick={() =>
-                onOpenExternalLink(getUrlByType('tx', transactionId))
-              }
-              label={intl.formatMessage(
-                messages.unresolvedInputAddressesLinkLabel
-              )}
-              skin={LinkSkin}
-            />
-            <span>
-              {intl.formatMessage(
-                messages.unresolvedInputAddressesAdditionalLabel
-              )}
-            </span>
-          </div>
-        ) : (
-          addresses.map((address, addressIndex) => (
-            <div
-              // eslint-disable-next-line react/no-array-index-key
-              key={`${data.id}-from-${address || ''}-${addressIndex}`}
-              className={styles.addressRow}
-            >
-              <Link
-                onClick={() =>
-                  onOpenExternalLink(getUrlByType('address', address))
-                }
-                label={
-                  <WholeSelectionText
-                    className={styles.address}
-                    text={
-                      hasMultipleAssets && address
-                        ? ellipsis(address, 30, 30)
-                        : address
-                    }
-                  />
-                }
-                skin={LinkSkin}
-              />
-            </div>
-          ))
-        );
-      }
-      return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
-    };
+    const assetsSeparatorStyles = classNames([
+      styles.assetsSeparator,
+      isExpanded ? styles.expanded : null,
+    ]);
+    const assetsSeparatorBasicHeight = 27;
+    const assetsSeparatorCalculatedHeight =
+      assetsDetails && assetsDetails.length
+        ? assetsSeparatorBasicHeight * assetsDetails.length - 18
+        : assetsSeparatorBasicHeight;
 
     return (
       <Fragment>
@@ -570,12 +586,7 @@ export default class Transaction extends Component<Props, State> {
             >
               <div>
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-                {fromAddresses(
-                  data.addresses.from,
-                  data.id,
-                  hasMultipleAssets ? data.type : null
-                )}
-
+                {this.addressesList(get(data, 'addresses.from', []))}
                 {data.addresses.withdrawals.length ? (
                   <>
                     <h2>{intl.formatMessage(messages.fromRewards)}</h2>
@@ -602,117 +613,8 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 ) : null}
 
-                {!hasMultipleAssets && (
-                  <h2>{intl.formatMessage(messages.toAddresses)}</h2>
-                )}
-                {data.addresses.to.map((address, addressIndex) =>
-                  hasMultipleAssets ? (
-                    <div
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`${data.id}-to-${address}-${addressIndex}`}
-                      className={styles.receiverRow}
-                    >
-                      <div className={styles.receiverRowItem}>
-                        <h2>
-                          {intl.formatMessage(messages.receiverLabel)}
-                          {data.addresses.to.length > 1 && (
-                            <div>&nbsp;#{addressIndex + 1}</div>
-                          )}
-                        </h2>
-                        <div className={styles.receiverRowItemAddresses}>
-                          <Link
-                            className={styles.address}
-                            onClick={() =>
-                              onOpenExternalLink(
-                                getUrlByType('address', address)
-                              )
-                            }
-                            label={
-                              <WholeSelectionText
-                                className={styles.address}
-                                text={ellipsis(address, 30, 30)}
-                              />
-                            }
-                            skin={LinkSkin}
-                          />
-                          <div className={styles.assetsWrapper}>
-                            <div
-                              className={assetsSeparatorStyles}
-                              style={{
-                                height: `${assetsSeparatorCalculatedHeight}px`,
-                              }}
-                            />
-                            {transactionAssets.map((asset, assetIndex) => (
-                              <Fragment
-                                // @TOKEN TODO: Remove this once the dummy data doesn't have repeated data
-                                // eslint-disable-next-line
-                                key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                              >
-                                {(data.type === TransactionTypes.INCOME &&
-                                  isInternalAddress(asset.address)) ||
-                                  (data.type === TransactionTypes.EXPEND &&
-                                    !isInternalAddress(asset.address) && (
-                                      <div
-                                        // eslint-disable-next-line react/no-array-index-key
-                                        className={styles.assetsContainer}
-                                      >
-                                        <h3>
-                                          {intl.formatMessage(
-                                            messages.assetLabel
-                                          )}
-                                          &nbsp;#{assetIndex + 1}
-                                          <span>{asset.address}</span>
-                                          <span>{asset.assetName}</span>
-                                        </h3>
-                                        {asset.quantity && (
-                                          <div
-                                            className={styles.amountFeesWrapper}
-                                          >
-                                            <div className={styles.amount}>
-                                              {new BigNumber(
-                                                asset.quantity
-                                              ).toFormat(
-                                                asset.metadata &&
-                                                  asset.metadata.unit
-                                                  ? asset.metadata.unit.decimals
-                                                  : DECIMAL_PLACES_IN_ADA
-                                              )}
-                                              &nbsp;{' '}
-                                              {asset.metadata &&
-                                              asset.metadata.acronym
-                                                ? asset.metadata.acronym
-                                                : intl.formatMessage(
-                                                    globalMessages.currency
-                                                  )}
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-                                    ))}
-                              </Fragment>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`${data.id}-to-${address}-${addressIndex}`}
-                      className={styles.addressRow}
-                    >
-                      <Link
-                        className={styles.address}
-                        onClick={() =>
-                          onOpenExternalLink(getUrlByType('address', address))
-                        }
-                        label={address}
-                        skin={LinkSkin}
-                      />
-                    </div>
-                  )
-                )}
-
+                <h2>{intl.formatMessage(messages.toAddresses)}</h2>
+                {this.addressesList(get(data, 'addresses.to', []))}
                 {data.deposit && !data.deposit.isZero() && (
                   <>
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
@@ -725,7 +627,7 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 )}
 
-                {hasMultipleAssets && data.fee && (
+                {this.hasMultipleAssets && data.fee && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
                     <div className={styles.transactionIdRow}>
@@ -738,6 +640,60 @@ export default class Transaction extends Component<Props, State> {
                     </div>
                   </>
                 )}
+
+                <h2>
+                  {data.type === TransactionTypes.EXPEND
+                    ? intl.formatMessage(messages.tokensSent)
+                    : intl.formatMessage(messages.tokensReceived)}
+                </h2>
+                {assetsDetails
+                  // .filter(
+                  //   (asset) =>
+                  //     (data.type === TransactionTypes.INCOME &&
+                  //       isInternalAddress(asset.address)) ||
+                  //     (data.type === TransactionTypes.EXPEND &&
+                  //       !isInternalAddress(asset.address))
+                  // )
+                  .map((asset, assetIndex) => (
+                    <div
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
+                      className={styles.assetsContainer}
+                    >
+                      <div
+                        className={assetsSeparatorStyles}
+                        style={{
+                          height: `${assetsSeparatorCalculatedHeight}px`,
+                        }}
+                      />
+                      <h3>
+                        <span>
+                          {intl.formatMessage(messages.assetLabel)}
+                          &nbsp;#{assetIndex + 1}
+                        </span>
+                        <AssetToken
+                          asset={asset}
+                          componentClassName={styles.assetToken}
+                          hideTooltip
+                        />
+                      </h3>
+                      {asset.quantity && (
+                        <div className={styles.amountFeesWrapper}>
+                          <div className={styles.amount}>
+                            {new BigNumber(asset.quantity).toFormat(
+                              asset.metadata && asset.metadata.unit
+                                ? asset.metadata.unit.decimals
+                                : DECIMAL_PLACES_IN_ADA
+                            )}
+                            &nbsp;{' '}
+                            {asset.metadata && asset.metadata.acronym
+                              ? asset.metadata.acronym
+                              : intl.formatMessage(globalMessages.currency)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>

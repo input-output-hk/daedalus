@@ -204,7 +204,7 @@ export default class WalletTransactionsList extends Component<Props> {
       isLastInGroup ? styles.lastInGroup : null,
     ]);
     const { assets: txAssets = [] } = tx;
-    const transactionAssets =
+    const assetsDetails =
       txAssets && allAssets
         ? txAssets.map((txData) => {
             const assetData = allAssets.find(
@@ -243,7 +243,7 @@ export default class WalletTransactionsList extends Component<Props> {
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentTimeFormat={currentTimeFormat}
-          transactionAssets={transactionAssets}
+          assetsDetails={assetsDetails}
           hasAssetsEnabled={hasAssetsEnabled}
           isInternalAddress={isInternalAddress}
         />

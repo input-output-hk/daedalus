@@ -336,20 +336,20 @@
   line-height: 1.38;
 }
 
-.assetsWrapper {
+.assetsContainer {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  padding: 3px 0 3px 20px;
+  position: relative;
   width: 100%;
 
   .assetsSeparator {
-    border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
     border-bottom-left-radius: 2px;
+    border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
     border-left: 1px solid var(--theme-transactions-list-item-details-color);
     display: none;
     height: 35px;
-    margin-left: 5px;
-    margin-top: 5px;
+    left: 0;
     opacity: 0.3;
     position: absolute;
     width: 6px;
@@ -359,24 +359,21 @@
     }
   }
 
-  .assetsContainer {
-    display: flex;
-    justify-content: space-between;
-    padding: 3px 0 3px 20px;
-    width: 100%;
-
+  h3 {
+    display: inline-flex;
+    font-family: var(--font-light);
     > span {
       margin-right: 12px;
     }
-
-    &:last-child {
-      padding: 3px 0 0 20px;
-    }
   }
 
-  .assetToken {
-    margin-top: -2px;
+  &:last-child {
+    padding: 3px 0 0 20px;
   }
+}
+
+.assetToken {
+  margin-top: -2px;
 }
 
 .amountFeesWrapper {

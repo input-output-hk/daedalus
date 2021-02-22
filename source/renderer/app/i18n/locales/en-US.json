@@ -1091,6 +1091,8 @@
   "wallet.transaction.metadataDisclaimer": "Transaction metadata is not moderated and may contain inappropriate content.",
   "wallet.transaction.metadataLabel": "Transaction metadata",
   "wallet.transaction.multipleTokens": "Multiple tokens",
+  "wallet.transaction.tokensSent": "Tokens sent",
+  "wallet.transaction.tokensReceived": "Tokens received",
   "wallet.transaction.noInputAddressesLabel": "No addresses",
   "wallet.transaction.pending.cancelPendingTxnNote": "This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.",
   "wallet.transaction.pending.cancelPendingTxnSupportArticle": "Why should I cancel this transaction?",
