@@ -25,6 +25,7 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
+  formattedWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
@@ -39,7 +40,6 @@ import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import Asset from '../../domains/Asset';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 
 export const messages = defineMessages({
@@ -488,10 +488,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         },
         receiver1_asset1: {
           label: this.context.intl.formatMessage(messages.assetLabel),
-          placeholder: `0${
-            this.getCurrentNumberFormat().decimalSeparator
-          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-          value: null,
+          value: '',
           validators: [
             async ({ field, form }) => {
               if (field.value === null) {
@@ -726,8 +723,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const estimatedField = this.form.$('estimatedFee');
 
-    const amount = assetFieldProps.map(
-      (assetField) => new BigNumber(assetField.value || 0)
+    const amount = assetFieldProps.map((assetField) =>
+      assetField && assetField.value ? new BigNumber(assetField.value) : ''
     );
 
     const receiverLabel = intl.formatMessage(messages.receiverLabel);
@@ -757,15 +754,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       orderBy(item, 'metadata.acronym', 'asc')
     );
 
-    const addAssetButtonClasses = classNames([
-      styles.addAssetButton,
-      !filteredAssets.length ||
-      filteredAssets[filteredAssets.length - 1].length === 1
-        ? styles.disabled
-        : null,
-      'primary',
-    ]);
-
     let minimumAdaValue = TRANSACTION_MIN_ADA_VALUE;
 
     if (minimumAda) {
@@ -775,6 +763,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         minimumAdaValue = minimumAda.toFormat();
       }
     }
+
+    const addAssetButtonClasses = classNames([
+      styles.addAssetButton,
+      minimumAdaValue <= 0 ? styles.addAssetButtonFlat : null,
+      !filteredAssets.length ||
+      filteredAssets[filteredAssets.length - 1].length === 1
+        ? styles.disabled
+        : null,
+      'primary',
+    ]);
 
     return (showReceiverField && index > 0 && showReceiverField[index]) ||
       index === 0 ? (
@@ -843,7 +841,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 {walletAmount && (
                   <div className={styles.amountTokenTotal}>
                     {intl.formatMessage(messages.ofLabel)}&nbsp;
-                    {walletAmount.toFormat()}
+                    {formattedWalletAmount(walletAmount)}
                   </div>
                 )}
                 <div className={styles.adaAssetLabel}>
@@ -869,7 +867,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                 />
-                {minimumAdaValue && (
+                {minimumAdaValue > 0 && (
                   <div className={styles.minAdaRequired}>
                     <span>
                       {intl.formatMessage(messages.minAdaRequired, {
@@ -914,7 +912,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                               selectedNativeTokens[assetIndex].metadata.unit
                               ? selectedNativeTokens[assetIndex].metadata.unit
                                   .decimals
-                              : DECIMAL_PLACES_IN_ADA
+                              : null
                           )}
                           &nbsp;
                           {selectedNativeTokens[assetIndex].metadata &&
@@ -942,6 +940,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     />
                     <NumericInput
                       {...assetFieldProps[assetIndex]}
+                      placeholder={selectedNativeTokens &&
+                        selectedNativeTokens[assetIndex] &&
+                        selectedNativeTokens[assetIndex].metadata ? '0' : `0${
+                          this.getCurrentNumberFormat().decimalSeparator
+                        }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`
+                      }
                       className={classNames([
                         styles.assetItem,
                         this.state.showAssetRemoveBtn &&
