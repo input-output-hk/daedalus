@@ -1,5 +1,6 @@
 // @flow
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { map } from 'lodash';
 import {
   derivationPathToString,
   CERTIFICATE_TYPE,
@@ -24,6 +25,7 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
     // Change output
     return {
       amount: output.amount.quantity.toString(),
+      tokenBundle: _getAssets(output.assets),
       addressParameters: {
         addressType: 0, // BASE address
         path: derivationPathToString(output.derivationPath),
@@ -34,6 +36,7 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
   return {
     address: output.address,
     amount: output.amount.quantity.toString(),
+    tokenBundle: _getAssets(output.assets),
   };
 };
 
@@ -49,4 +52,19 @@ export const prepareCertificate = (cert: CoinSelectionCertificate) => {
     type: CERTIFICATE_TYPE[cert.certificateType],
     path: derivationPathToString(cert.rewardAccountPath),
   };
+};
+
+// Helper Methods
+
+const _getAssets = (assets) => {
+  const constructedAssets = map(assets, (asset) => {
+    return {
+      policyId: asset.policyId,
+      tokens: {
+        assetNameBytes: asset.assetName,
+        amount: asset.quantity.toString(),
+      },
+    };
+  });
+  return constructedAssets;
 };
