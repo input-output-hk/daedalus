@@ -206,6 +206,7 @@ type State = {
   isResetButtonDisabled: boolean,
   filteredAssets: any,
   minimumAda: BigNumber,
+  isReceiverAddressValid: boolean;
 };
 
 @observer
@@ -227,6 +228,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     filteredAssets: [],
     minimumAda: new BigNumber(0),
+    isReceiverAddressValid: false,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -433,12 +435,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               const { value } = field;
               if (value === '') {
                 this.resetTransactionFee();
+                this.setReceiverValidity(false);
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
               const isValidAddress = await this.props.addressValidator(value);
+              this.setReceiverValidity(isValidAddress);
               return [
                 isValidAddress,
                 this.context.intl.formatMessage(
@@ -545,6 +549,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
         transactionFeeError: null,
+      });
+    }
+  }
+
+  setReceiverValidity(isValid: boolean) {
+    if (this._isMounted) {
+      this.setState({
+        isReceiverAddressValid: isValid,
       });
     }
   }
@@ -692,6 +704,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       sendFormFields,
       filteredAssets,
       minimumAda,
+      isReceiverAddressValid,
     } = this.state;
 
     const {
@@ -785,10 +798,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             {...receiverField.bind()}
             error={receiverField.error}
             onChange={(value) => {
-              receiverField.onChange(value || '');
-              this.setState({
-                isResetButtonDisabled: false,
-              });
+              if (this._isMounted) {
+                receiverField.onChange(value || '');
+                this.setState({
+                  isResetButtonDisabled: false,
+                });
+              }
             }}
             skin={InputSkin}
             onKeyPress={this.handleSubmitOnEnter}
@@ -813,7 +828,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             </div>
           )}
         </div>
-        {this.hasReceiverValue(index + 1) && (
+        {this.hasReceiverValue(index + 1) && isReceiverAddressValid && (
           <>
             <div
               className={styles.fieldsLine}
@@ -1107,36 +1122,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         });
       }
     }
-  };
-
-  addNewReceiverField = (receiverId: string) => {
-    this.form.add({ name: receiverId, value: '', key: receiverId });
-    this.form
-      .$(receiverId)
-      .set('label', this.context.intl.formatMessage(messages.receiverLabel));
-    this.form
-      .$(receiverId)
-      .set(
-        'placeholder',
-        this.context.intl.formatMessage(messages.receiverHint)
-      );
-    this.form.$(receiverId).set('validators', [
-      async ({ field }) => {
-        const { value } = field;
-        if (value === '') {
-          this.resetTransactionFee();
-          return [
-            false,
-            this.context.intl.formatMessage(messages.fieldIsRequired),
-          ];
-        }
-        const isValidAddress = await this.props.addressValidator(value);
-        return [
-          isValidAddress,
-          this.context.intl.formatMessage(apiErrorMessages.invalidAddress),
-        ];
-      },
-    ]);
   };
 
   addNewAssetField = (receiverId: string, assetId: string) => {
