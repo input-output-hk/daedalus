@@ -3,6 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
+import BigNumber from 'bignumber.js';
 // Assets and helpers
 import {
   generateAsset,
@@ -108,13 +109,13 @@ const assets = {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
   ],
   total: [
@@ -122,13 +123,13 @@ const assets = {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
   ],
 };
