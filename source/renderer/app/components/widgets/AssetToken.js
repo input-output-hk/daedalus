@@ -259,6 +259,7 @@ export default class AssetToken extends Component<Props, State> {
           isShowingOnHover={false}
           isVisible={isTooltipVisible}
           appendTo="parent"
+          maxWidth={376}
           allowHTML
         >
           {children}
