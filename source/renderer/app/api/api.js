@@ -2687,11 +2687,35 @@ const _createAssetFromServerData = action(
       fingerprint,
       metadata,
     } = data;
+
+    // TODO: remove once testing is done
+    const DUMMY_TOKEN_METADATA = {
+      policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
+      assetName: '736164636f696e',
+      fingerprint: 'asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0egc',
+      metadata: {
+        name: 'Tether',
+        description:
+          'USDT is a stablecoin (stable-value cryptocurrency) that mirrors the price of the U.S. dollar, issued by a Hong Kong-based company Tether. The token’s peg to the USD is achieved via maintaining a sum of dollars in reserves that is equal to the number of USDT in circulation. The stated purpose of USDT is to combine the unrestricted nature of cryptocurrencies — which can be sent between users without a trusted third-party intermediary — with the stable value of the US dollar.',
+        acronym: 'USDT',
+        unit: {
+          decimals: 2,
+          name: 'Cent',
+        },
+        url: 'https://tether.to/',
+      },
+    };
+    const hasDummyTokenMetadata =
+      policyId === DUMMY_TOKEN_METADATA.policyId &&
+      assetName === DUMMY_TOKEN_METADATA.assetName;
+
     return new Asset({
       policyId,
       assetName,
       fingerprint,
-      metadata,
+      metadata: hasDummyTokenMetadata
+        ? DUMMY_TOKEN_METADATA.metadata
+        : metadata,
     });
   }
 );
