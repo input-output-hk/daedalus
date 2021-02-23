@@ -661,7 +661,7 @@ export default class Transaction extends Component<Props, State> {
                   <div
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                    className={styles.assetsContainer}
+                    className={styles.assetContainer}
                   >
                     {assetIndex === 0 && (
                       <div
