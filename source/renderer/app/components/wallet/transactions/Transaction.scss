@@ -209,8 +209,6 @@
   span {
     font-family: var(--font-light);
     font-size: 15px;
-    user-select: text;
-    word-break: break-all;
 
     &.address,
     &.transactionId {
@@ -218,6 +216,8 @@
       letter-spacing: 0.5px;
       line-height: 1.4;
       margin-bottom: 3px;
+      user-select: text;
+      word-break: break-all;
     }
 
     &.explorerLink {
@@ -349,9 +349,10 @@
     border-left: 1px solid var(--theme-transactions-list-item-details-color);
     display: none;
     height: 35px;
-    left: 0;
+    left: 3px;
     opacity: 0.3;
     position: absolute;
+    top: 0;
     width: 6px;
 
     &.expanded {
@@ -364,6 +365,7 @@
     font-family: var(--font-light);
     > span {
       margin-right: 12px;
+      white-space: nowrap;
     }
   }
 

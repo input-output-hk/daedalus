@@ -57,7 +57,7 @@ export default class WalletSummaryPage extends Component<Props> {
       const { id } = active;
       this.props.actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.PAGE,
-        params: { id, asset, page: 'send' },
+        params: { id, fingerprint: asset.fingerprint, page: 'send' },
       });
     }
   };
@@ -74,7 +74,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const { intl } = this.context;
     const { stores } = this.props;
     const { app, wallets, addresses, transactions, profile, assets } = stores;
-    const { getAssetDetails } = assets;
+    const { all: allAssets, getAssetDetails } = assets;
     const { isInternalAddress } = addresses;
     const {
       openExternalLink,
@@ -155,6 +155,8 @@ export default class WalletSummaryPage extends Component<Props> {
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
           isInternalAddress={isInternalAddress}
+          hasAssetsEnabled={hasAssetsEnabled}
+          allAssets={allAssets}
         />
       );
     } else if (!hasAny) {

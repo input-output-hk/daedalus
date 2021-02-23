@@ -10,6 +10,7 @@ import {
 } from '../../config/numbersConfig';
 import WalletAssetsSendForm from '../../components/wallet/WalletAssetsSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
+import Asset from '../../domains/Asset';
 
 type Props = InjectedProps;
 
@@ -67,6 +68,10 @@ export default class WalletSendPage extends Component<Props> {
     }
   };
 
+  getTokenByFingerprintId = (fingerprint: string, allAssets: Array<Asset>) => {
+    return allAssets.find((asset) => asset.fingerprint === fingerprint);
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -78,11 +83,23 @@ export default class WalletSendPage extends Component<Props> {
       hardwareWallets,
       assets: assetsStore,
     } = this.props.stores;
+    const { location } = this.props;
+    const { pathname } = location;
+    const splittedPath = pathname.split('/send/');
+    let tokenFingerprint = '';
+    if (splittedPath && splittedPath.length) {
+      tokenFingerprint = splittedPath[splittedPath.length - 1];
+    }
     const { isValidAddress } = wallets;
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const { all: allAssets } = assetsStore;
+
+    const selectedToken = this.getTokenByFingerprintId(
+      tokenFingerprint,
+      allAssets
+    );
 
     // Guard against potential null values
     const activeWallet = wallets.active;
@@ -150,6 +167,7 @@ export default class WalletSendPage extends Component<Props> {
         hwDeviceStatus={hwDeviceStatus}
         isHardwareWallet={isHardwareWallet}
         hasAssets={hasAssetsEnabled && hasAssets}
+        selectedToken={selectedToken}
       />
     );
   }

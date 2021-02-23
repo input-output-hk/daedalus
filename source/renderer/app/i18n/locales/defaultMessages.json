@@ -11277,13 +11277,13 @@
         "description": "Number of tokens title on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 20
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 16
         }
       },
       {
@@ -11291,13 +11291,13 @@
         "description": "Send button on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
         "id": "wallet.summary.assets.tokenSendButton",
         "start": {
           "column": 19,
-          "line": 23
+          "line": 21
         }
       },
       {
@@ -11305,13 +11305,13 @@
         "description": "Unknown label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
         "id": "wallet.summary.assets.unknownLabel",
         "start": {
           "column": 16,
-          "line": 28
+          "line": 26
         }
       }
     ],
@@ -11400,17 +11400,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Want to find out more about native tokens?",
-        "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
+        "defaultMessage": "!!!Tokens",
+        "description": "Number of tokens title on Wallet summary assets page",
         "end": {
           "column": 3,
           "line": 16
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "id": "wallet.summary.assets.tokensTitle",
+        "start": {
+          "column": 15,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Want to find out more about native tokens?",
+        "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textTop",
         "start": {
           "column": 20,
-          "line": 12
+          "line": 17
         }
       },
       {
@@ -11418,13 +11432,13 @@
         "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textBottom",
         "start": {
           "column": 23,
-          "line": 17
+          "line": 22
         }
       },
       {
@@ -11432,13 +11446,13 @@
         "description": "\"Learn more\" label or button in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkLabel",
         "start": {
           "column": 22,
-          "line": 22
+          "line": 27
         }
       },
       {
@@ -11446,13 +11460,13 @@
         "description": "\"Learn more\" link URL in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 28
+          "line": 33
         }
       }
     ],

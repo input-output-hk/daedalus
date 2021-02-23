@@ -10,9 +10,7 @@ import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
 import AssetToken from '../../widgets/AssetToken';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -37,8 +35,7 @@ type Props = {
   assets: Array<WalletSummaryAsset>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
-  onExternalLinkClick: Function,
-  isLoadingAssets?: boolean,
+  isLoadingAssets: boolean,
 };
 
 @observer
@@ -53,7 +50,6 @@ export default class WalletSummaryAssets extends Component<Props> {
       assets,
       onOpenAssetSend,
       onCopyAssetItem,
-      onExternalLinkClick,
       isLoadingAssets,
     } = this.props;
     const { intl } = this.context;
@@ -74,7 +70,7 @@ export default class WalletSummaryAssets extends Component<Props> {
           <div className={styles.syncingWrapper}>
             <LoadingSpinner big />
           </div>
-        ) : numberOfAssets ? (
+        ) : (
           <div className={styles.component}>
             {assets.map((asset: WalletSummaryAsset, index: number) => (
               <BorderedBox
@@ -96,7 +92,7 @@ export default class WalletSummaryAssets extends Component<Props> {
                         : new BigNumber(asset.quantity).toFormat(
                             asset.metadata && asset.metadata.unit
                               ? asset.metadata.unit.decimals
-                              : DECIMAL_PLACES_IN_ADA
+                              : null
                           )}
                       {asset.metadata && (
                         <span>&nbsp;{asset.metadata.acronym}</span>
@@ -124,8 +120,6 @@ export default class WalletSummaryAssets extends Component<Props> {
               </BorderedBox>
             ))}
           </div>
-        ) : (
-          <WalletSummaryNoTokens onExternalLinkClick={onExternalLinkClick} />
         )}
       </Fragment>
     );
