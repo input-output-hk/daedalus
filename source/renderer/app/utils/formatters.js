@@ -45,10 +45,6 @@ export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata
 ) => {
-  if (typeof amount === 'number') {
-    console.log('HERE!', amount, metadata);
-    // amount = new BigNumber(amount);
-  }
   const { acronym, unit } = metadata || {};
   const { decimals } = unit || {};
   let formattedAmount = amount.toFormat(decimals);
