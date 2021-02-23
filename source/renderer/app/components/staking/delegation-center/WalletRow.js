@@ -131,6 +131,10 @@ export default class WalletRow extends Component<Props, WalletRowState> {
   }
 
   componentDidUpdate() {
+    this.handleFirstTilePopOverStyle();
+  }
+
+  handleFirstTilePopOverStyle = () => {
     const {
       wallet: { id },
     } = this.props;
@@ -160,7 +164,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     firstTilePopOverStyle.setAttribute('id', `wallet-row-${id}-style`);
     firstTilePopOverStyle.innerHTML = `.wallet-row-${id} .tippy-arrow { transform: translate(-${horizontalDelta}px, 0); }`;
     document.getElementsByTagName('head')[0].appendChild(firstTilePopOverStyle);
-  }
+  };
 
   render() {
     const { intl } = this.context;
