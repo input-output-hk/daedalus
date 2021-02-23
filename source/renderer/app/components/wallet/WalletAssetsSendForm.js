@@ -867,30 +867,28 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                 />
-                {minimumAdaValue > 0 && (
-                  <div className={styles.minAdaRequired}>
+                <div className={styles.minAdaRequired}>
                     <span>
                       {intl.formatMessage(messages.minAdaRequired, {
                         adaValue: minimumAdaValue,
                       })}
                     </span>
-                    <PopOver
-                      content={intl.formatMessage(
-                        messages.minAdaRequiredTooltip,
-                        {
-                          adaValue: minimumAdaValue,
-                        }
-                      )}
-                      contentClassName={styles.minAdaTooltipContent}
-                      key="tooltip"
-                    >
-                      <SVGInline
-                        svg={infoIconInline}
-                        className={styles.infoIcon}
-                      />
-                    </PopOver>
-                  </div>
-                )}
+                  <PopOver
+                    content={intl.formatMessage(
+                      messages.minAdaRequiredTooltip,
+                      {
+                        adaValue: minimumAdaValue,
+                      }
+                    )}
+                    contentClassName={styles.minAdaTooltipContent}
+                    key="tooltip"
+                  >
+                    <SVGInline
+                      svg={infoIconInline}
+                      className={styles.infoIcon}
+                    />
+                  </PopOver>
+                </div>
               </Fragment>
               <Fragment>
                 {asset.map((singleAsset: any, assetIndex: number) => (
