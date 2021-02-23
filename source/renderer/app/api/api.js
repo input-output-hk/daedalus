@@ -2645,7 +2645,7 @@ const _createTransactionFromServerData = action(
       ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
         policyId,
         assetName,
-        quantity,
+        quantity: new BigNumber(quantity),
         address,
       })
     );
