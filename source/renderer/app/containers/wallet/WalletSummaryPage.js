@@ -122,7 +122,9 @@ export default class WalletSummaryPage extends Component<Props> {
     let { hasAssets } = wallet;
     const walletAssets = wallet.assets.total.map((assetTotal) => {
       const assetData = allAssets.find(
-        (item) => item.policyId === assetTotal.policyId
+        (item) =>
+          item.policyId === assetTotal.policyId &&
+          item.assetName === assetTotal.assetName
       );
       let fingerprint;
       if (!assetData || !assetData.fingerprint) {
