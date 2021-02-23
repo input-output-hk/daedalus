@@ -7,6 +7,7 @@ import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryAssets from './WalletSummaryAssets';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
+import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 
 type Props = {
   wallet: Wallet,
@@ -21,7 +22,6 @@ type Props = {
   currencyRate: ?number,
   currencyLastFetched: ?Date,
   onCurrencySettingClick: Function,
-  hasAssetsEnabled?: boolean,
   assets: Array<WalletSummaryAsset>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
@@ -45,7 +45,6 @@ export default class WalletSummary extends Component<Props> {
       currencyRate,
       currencySelected,
       onCurrencySettingClick,
-      hasAssetsEnabled,
       assets,
       onOpenAssetSend,
       onCopyAssetItem,
@@ -58,6 +57,8 @@ export default class WalletSummary extends Component<Props> {
       currencyIsAvailable &&
       !!currencySelected &&
       (!!currencyRate || currencyIsFetchingRate);
+
+    const hasAssets = assets.length;
 
     return (
       <>
@@ -82,14 +83,19 @@ export default class WalletSummary extends Component<Props> {
             )
           }
         />
-        {hasAssetsEnabled && (
+        {hasAssets ? (
           <WalletSummaryAssets
             wallet={wallet}
             assets={assets}
             onOpenAssetSend={onOpenAssetSend}
-            onExternalLinkClick={onExternalLinkClick}
             isLoading={isLoading}
             onCopyAssetItem={onCopyAssetItem}
+          />
+        ) : (
+          <WalletSummaryNoTokens
+            numberOfAssets={assets.length}
+            isLoading={isLoading}
+            onExternalLinkClick={onExternalLinkClick}
           />
         )}
       </>

@@ -1,5 +1,14 @@
 @import '../../../themes/mixins/animations';
 
+.numberOfAssets {
+  color: var(--theme-transactions-list-group-date-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  margin-bottom: -10px;
+  opacity: 0.5;
+  padding: 0 20px 0 40px;
+}
+
 .component {
   padding: 20px;
 
