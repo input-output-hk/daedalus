@@ -529,7 +529,7 @@ export default class Transaction extends Component<Props, State> {
     const assetsSeparatorBasicHeight = 27;
     const assetsSeparatorCalculatedHeight =
       assetsDetails && assetsDetails.length
-        ? assetsSeparatorBasicHeight * assetsDetails.length - 18
+        ? assetsSeparatorBasicHeight * assetsDetails.length - 15
         : assetsSeparatorBasicHeight;
 
     return (
@@ -660,12 +660,14 @@ export default class Transaction extends Component<Props, State> {
                       key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
                       className={styles.assetsContainer}
                     >
-                      <div
-                        className={assetsSeparatorStyles}
-                        style={{
-                          height: `${assetsSeparatorCalculatedHeight}px`,
-                        }}
-                      />
+                      {assetIndex === 0 && (
+                        <div
+                          className={assetsSeparatorStyles}
+                          style={{
+                            height: `${assetsSeparatorCalculatedHeight}px`,
+                          }}
+                        />
+                      )}
                       <h3>
                         <span>
                           {intl.formatMessage(messages.assetLabel)}
@@ -674,7 +676,6 @@ export default class Transaction extends Component<Props, State> {
                         <AssetToken
                           asset={asset}
                           componentClassName={styles.assetToken}
-                          hideTooltip
                         />
                       </h3>
                       {asset.quantity && (
@@ -683,12 +684,9 @@ export default class Transaction extends Component<Props, State> {
                             {new BigNumber(asset.quantity).toFormat(
                               asset.metadata && asset.metadata.unit
                                 ? asset.metadata.unit.decimals
-                                : DECIMAL_PLACES_IN_ADA
+                                : null
                             )}
-                            &nbsp;{' '}
-                            {asset.metadata && asset.metadata.acronym
-                              ? asset.metadata.acronym
-                              : intl.formatMessage(globalMessages.currency)}
+                            &nbsp; {asset.metadata && asset.metadata.acronym}
                           </div>
                         </div>
                       )}
