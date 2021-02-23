@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import { number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
@@ -21,13 +22,13 @@ const assets = {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
   ],
   total: [
@@ -35,13 +36,13 @@ const assets = {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
   ],
 };

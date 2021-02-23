@@ -28,13 +28,13 @@ const assets = {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
   ],
   total: [
@@ -42,13 +42,13 @@ const assets = {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
       assetName: '',
-      quantity: 200,
+      quantity: new BigNumber(200),
     },
   ],
 };
