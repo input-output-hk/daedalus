@@ -624,19 +624,8 @@ export default class Transaction extends Component<Props, State> {
 
                 <h2>{intl.formatMessage(messages.toAddresses)}</h2>
                 {this.addressesList(get(data, 'addresses.to', []))}
-                {data.deposit && !data.deposit.isZero() && (
-                  <>
-                    <h2>{intl.formatMessage(messages.deposit)}</h2>
-                    <div className={styles.depositRow}>
-                      <div className={styles.amount}>
-                        {formattedWalletAmount(data.deposit, false)}
-                        <span className={styles.currency}>ADA</span>
-                      </div>
-                    </div>
-                  </>
-                )}
 
-                {this.hasMultipleAssets && data.fee && (
+                {data.type === TransactionTypes.EXPEND && !data.fee.isZero() && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
                     <div className={styles.transactionIdRow}>
@@ -645,6 +634,18 @@ export default class Transaction extends Component<Props, State> {
                         <span>
                           {intl.formatMessage(globalMessages.unitAda)}
                         </span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {!data.deposit.isZero() && (
+                  <>
+                    <h2>{intl.formatMessage(messages.deposit)}</h2>
+                    <div className={styles.depositRow}>
+                      <div className={styles.amount}>
+                        {formattedWalletAmount(data.deposit, false)}
+                        <span className={styles.currency}>ADA</span>
                       </div>
                     </div>
                   </>
