@@ -650,7 +650,7 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 )}
 
-                {assetsList.length && (
+                {!!assetsList.length && (
                   <h2>
                     {data.type === TransactionTypes.EXPEND
                       ? intl.formatMessage(messages.tokensSent)

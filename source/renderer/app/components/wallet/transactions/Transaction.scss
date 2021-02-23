@@ -164,7 +164,8 @@
   h2 {
     font-family: var(--font-medium);
     font-size: 16px;
-    margin-bottom: 8px;
+    line-height: 1.38;
+    margin-bottom: 4px;
   }
 
   h3 {
@@ -362,7 +363,6 @@
 
   h3 {
     display: inline-flex;
-    font-family: var(--font-light);
     > span {
       margin-right: 12px;
       white-space: nowrap;
