@@ -207,6 +207,7 @@ type State = {
   filteredAssets: any,
   minimumAda: BigNumber,
   isReceiverAddressValid: boolean,
+  selectedToken: Asset,
 };
 
 @observer
@@ -245,9 +246,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
-    const { assets } = this.props;
+    const { assets, selectedToken } = this.props;
     this.setFormFields(false, 1, 'receiver1');
     this.filterAssets(assets, true);
+    if (selectedToken) {
+      // @todo
+    }
   }
 
   componentWillUnmount() {

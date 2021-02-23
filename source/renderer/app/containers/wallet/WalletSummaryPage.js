@@ -57,7 +57,7 @@ export default class WalletSummaryPage extends Component<Props> {
       const { id } = active;
       this.props.actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.PAGE,
-        params: { id, asset, page: 'send' },
+        params: { id, fingerprint: asset.fingerprint, page: 'send' },
       });
     }
   };
