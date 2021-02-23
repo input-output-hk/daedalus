@@ -4,7 +4,6 @@ import type { Element } from 'react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { omit } from 'lodash';
-import { BigNumber } from 'bignumber.js';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
 import AssetToken from '../AssetToken';
