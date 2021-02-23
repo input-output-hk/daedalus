@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 
 import Asset from '../../domains/Asset';
 
@@ -36,7 +37,7 @@ export type AssetItem = {
 export type WalletAssetItem = {
   policyId: string,
   assetName: string,
-  quantity: number,
+  quantity: BigNumber,
   address?: ?string,
 };
 

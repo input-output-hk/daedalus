@@ -2550,14 +2550,14 @@ const _createWalletFromServerData = action(
         return {
           policyId: item.policy_id,
           assetName: item.asset_name,
-          quantity: item.quantity,
+          quantity: new BigNumber(item.quantity),
         };
       }),
       total: assets.total.map((item) => {
         return {
           policyId: item.policy_id,
           assetName: item.asset_name,
-          quantity: item.quantity,
+          quantity: new BigNumber(item.quantity),
         };
       }),
     };

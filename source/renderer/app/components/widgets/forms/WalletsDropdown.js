@@ -160,8 +160,8 @@ export default class WalletsDropdown extends Component<Props> {
         ? assets.map((asset: WalletSummaryAsset) => {
             const { metadata, quantity, assetName } = asset;
             const formattedAmount = formattedTokenWalletAmount(
-              new BigNumber(quantity),
-              metadata && metadata.acronym ? metadata.acronym : null
+              quantity,
+              metadata
             );
             return {
               detail: formattedAmount,
