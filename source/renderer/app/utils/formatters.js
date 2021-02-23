@@ -8,6 +8,7 @@ import {
 import { momentLocales } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
+import type { AssetMetadata } from '../api/assets/types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
@@ -42,18 +43,17 @@ export const formattedWalletCurrencyAmount = (
 
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
-  currency: ?string
+  metadata?: ?AssetMetadata
 ) => {
-  let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
-  const { decimalSeparator } = BigNumber.config().FORMAT;
-  if (decimalSeparator !== '.') {
-    // Only BigNumber.toFormat() method is applying correct separators.
-    // Since this method is not used for condensed format (long = false)
-    // the correct number format has to be applied manually.
-    formattedAmount = formattedAmount.split('.').join(decimalSeparator);
+  if (typeof amount === 'number') {
+    console.log('HERE!', amount);
+    amount = new BigNumber(amount);
   }
-  if (currency) {
-    formattedAmount += ` ${currency}`;
+  const { acronym, unit } = metadata || {};
+  const { decimals } = unit || {};
+  let formattedAmount = amount.toFormat(decimals);
+  if (acronym) {
+    formattedAmount += ` ${acronym}`;
   }
   return formattedAmount;
 };

@@ -4,13 +4,13 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import classNames from 'classnames';
-import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
 import AssetToken from '../../widgets/AssetToken';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { formattedTokenWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -72,12 +72,10 @@ export default class WalletSummaryAssets extends Component<Props> {
           </div>
         ) : (
           <div className={styles.component}>
-            {assets.map((asset: WalletSummaryAsset, index: number) => (
+            {assets.map((asset: WalletSummaryAsset) => (
               <BorderedBox
                 className={styles.assetsContainer}
-                // @TOKEN TODO: Remove once we have the correct data being returned
-                // eslint-disable-next-line react/no-array-index-key
-                key={asset.policyId + asset.fingerprint + index}
+                key={asset.policyId + asset.assetName + asset.fingerprint}
               >
                 {asset.fingerprint && (
                   <div className={styles.assetsLeftContainer}>
@@ -89,10 +87,9 @@ export default class WalletSummaryAssets extends Component<Props> {
                     <div className={styles.assetAmount}>
                       {isRestoreActive
                         ? '-'
-                        : new BigNumber(asset.quantity).toFormat(
-                            asset.metadata && asset.metadata.unit
-                              ? asset.metadata.unit.decimals
-                              : null
+                        : formattedTokenWalletAmount(
+                            asset.quantity,
+                            asset.metadata
                           )}
                       {asset.metadata && (
                         <span>&nbsp;{asset.metadata.acronym}</span>
@@ -106,8 +103,7 @@ export default class WalletSummaryAssets extends Component<Props> {
                       className={classNames([
                         'primary',
                         styles.assetSendButton,
-                        new BigNumber(asset.quantity).isZero() ||
-                        isHardwareWallet
+                        asset.quantity.isZero() || isHardwareWallet
                           ? styles.disabled
                           : null,
                       ])}

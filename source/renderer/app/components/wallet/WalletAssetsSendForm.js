@@ -26,6 +26,7 @@ import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
   formattedWalletAmount,
+  formattedTokenWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
@@ -917,155 +918,142 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 </div>
               </Fragment>
               <Fragment>
-                {asset.map((singleAsset: any, assetIndex: number) => (
-                  <div // eslint-disable-next-line react/no-array-index-key
-                    key={`${receiverId}_asset${assetIndex}`}
-                    onMouseEnter={() => this.showAssetRemoveButton(assetIndex)}
-                    onMouseLeave={() => this.hideAssetRemoveButton(assetIndex)}
-                    className={styles.fieldContainer}
-                  >
-                    {selectedNativeTokens &&
-                      selectedNativeTokens[assetIndex] &&
-                      selectedNativeTokens[assetIndex].quantity && (
+                {asset.map((singleAsset: any, assetIndex: number) => {
+                  const token = selectedNativeTokens[assetIndex] || {};
+                  const { quantity, metadata } = token;
+                  return (
+                    <div // eslint-disable-next-line react/no-array-index-key
+                      key={`${receiverId}_asset${assetIndex}`}
+                      onMouseEnter={() =>
+                        this.showAssetRemoveButton(assetIndex)
+                      }
+                      onMouseLeave={() =>
+                        this.hideAssetRemoveButton(assetIndex)
+                      }
+                      className={styles.fieldContainer}
+                    >
+                      {quantity && quantity.isPositive() && (
                         <div className={styles.amountTokenTotal}>
                           {intl.formatMessage(messages.ofLabel)}&nbsp;
-                          {new BigNumber(
-                            selectedNativeTokens[assetIndex].quantity
-                          ).toFormat(
-                            selectedNativeTokens[assetIndex].metadata &&
-                              selectedNativeTokens[assetIndex].metadata.unit
-                              ? selectedNativeTokens[assetIndex].metadata.unit
-                                  .decimals
-                              : null
-                          )}
-                          &nbsp;
-                          {selectedNativeTokens[assetIndex].metadata &&
-                          selectedNativeTokens[assetIndex].metadata.acronym
-                            ? selectedNativeTokens[assetIndex].metadata.acronym
-                            : null}
+                          {formattedTokenWalletAmount(quantity, metadata)}
                         </div>
                       )}
-                    <Button
-                      className={classNames([
-                        styles.removeAssetButton,
-                        'flat',
-                        this.state.showAssetRemoveBtn &&
-                        this.state.showAssetRemoveBtn[assetIndex]
-                          ? styles.active
-                          : null,
-                      ])}
-                      label={intl.formatMessage(
-                        messages.removeReceiverButtonLabel
-                      )}
-                      onClick={() =>
-                        this.removeAssetRow(index + 1, receiverId, assetIndex)
-                      }
-                      skin={ButtonSkin}
-                    />
-                    <NumericInput
-                      {...assetFieldProps[assetIndex]}
-                      placeholder={
-                        selectedNativeTokens &&
-                        selectedNativeTokens[assetIndex] &&
-                        selectedNativeTokens[assetIndex].metadata
-                          ? `0${
-                              this.getCurrentNumberFormat().decimalSeparator
-                            }${'0'.repeat(
-                              this.props.currencyMaxFractionalDigits
-                            )}`
-                          : '0'
-                      }
-                      className={classNames([
-                        styles.assetItem,
-                        this.state.showAssetRemoveBtn &&
-                        this.state.showAssetRemoveBtn[assetIndex]
-                          ? styles.hasButton
-                          : null,
-                      ])}
-                      label={`${intl.formatMessage(messages.assetLabel)} #${
-                        assetIndex + 1
-                      }`}
-                      bigNumberFormat={this.getCurrentNumberFormat()}
-                      decimalPlaces={tokenDecimalPlaces}
-                      numberLocaleOptions={{
-                        minimumFractionDigits: tokenDecimalPlaces,
-                      }}
-                      onChange={(value) => {
-                        this._isCalculatingTransactionFee = true;
-                        this.setState({
-                          isResetButtonDisabled: false,
-                        });
-                        asset[assetIndex].onChange(value);
-                        estimatedField.onChange(fees);
-                      }}
-                      currency={
-                        selectedNativeTokens &&
-                        selectedNativeTokens[assetIndex] &&
-                        selectedNativeTokens[assetIndex].metadata
-                          ? selectedNativeTokens[assetIndex].metadata.acronym
-                          : null
-                      }
-                      value={amount[assetIndex]}
-                      error={asset.error || transactionFeeError}
-                      skin={AmountInputSkin}
-                      onKeyPress={this.handleSubmitOnEnter}
-                      allowSigns={false}
-                    />
-                    <div className={styles.rightContent}>
-                      {this.hasAssetValue(assetFieldProps[assetIndex]) && (
-                        <div className={styles.clearAssetContainer}>
-                          <PopOver
-                            content="Clear"
-                            placement={
-                              isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                            }
-                          >
-                            <button
-                              onClick={() => this.clearAssetValue(singleAsset)}
-                              className={styles.clearAssetButton}
-                            >
-                              <SVGInline
-                                svg={closeIcon}
-                                className={styles.clearReceiverIcon}
-                              />
-                            </button>
-                          </PopOver>
-                          <div className={styles.separator} />
-                        </div>
-                      )}
-                      <div
+                      <Button
                         className={classNames([
-                          styles.walletsDropdownWrapper,
-                          this.hasAssetValue(assetFieldProps[assetIndex])
-                            ? styles.hasValue
+                          styles.removeAssetButton,
+                          'flat',
+                          this.state.showAssetRemoveBtn &&
+                          this.state.showAssetRemoveBtn[assetIndex]
+                            ? styles.active
                             : null,
                         ])}
-                      >
-                        <WalletsDropdown
-                          className={styles.walletsDropdown}
-                          {...walletsDropdownFieldProps[index]}
-                          numberOfStakePools={4}
-                          assets={sortedAssets[assetIndex]}
-                          onChange={(id) => {
-                            this.onSelectAsset(index, id);
-                            this.updateSelectedNativeTokens(
-                              id,
-                              assetIndex,
-                              receiverId
-                            );
-                          }}
-                          syncingLabel={intl.formatMessage(
-                            messages.syncingWallet
-                          )}
-                          hasAssetsEnabled
-                          value={selectedAssetIds[assetIndex]}
-                          getStakePoolById={() => {}}
-                          errorPosition="bottom"
-                        />
+                        label={intl.formatMessage(
+                          messages.removeReceiverButtonLabel
+                        )}
+                        onClick={() =>
+                          this.removeAssetRow(index + 1, receiverId, assetIndex)
+                        }
+                        skin={ButtonSkin}
+                      />
+                      <NumericInput
+                        {...assetFieldProps[assetIndex]}
+                        placeholder={
+                          metadata
+                            ? `0${
+                                this.getCurrentNumberFormat().decimalSeparator
+                              }${'0'.repeat(
+                                this.props.currencyMaxFractionalDigits
+                              )}`
+                            : '0'
+                        }
+                        className={classNames([
+                          styles.assetItem,
+                          this.state.showAssetRemoveBtn &&
+                          this.state.showAssetRemoveBtn[assetIndex]
+                            ? styles.hasButton
+                            : null,
+                        ])}
+                        label={`${intl.formatMessage(messages.assetLabel)} #${
+                          assetIndex + 1
+                        }`}
+                        bigNumberFormat={this.getCurrentNumberFormat()}
+                        decimalPlaces={tokenDecimalPlaces}
+                        numberLocaleOptions={{
+                          minimumFractionDigits: tokenDecimalPlaces,
+                        }}
+                        onChange={(value) => {
+                          this._isCalculatingTransactionFee = true;
+                          this.setState({
+                            isResetButtonDisabled: false,
+                          });
+                          asset[assetIndex].onChange(value);
+                          estimatedField.onChange(fees);
+                        }}
+                        currency={metadata ? metadata.acronym : null}
+                        value={amount[assetIndex]}
+                        error={asset.error || transactionFeeError}
+                        skin={AmountInputSkin}
+                        onKeyPress={this.handleSubmitOnEnter}
+                        allowSigns={false}
+                      />
+                      <div className={styles.rightContent}>
+                        {this.hasAssetValue(assetFieldProps[assetIndex]) && (
+                          <div className={styles.clearAssetContainer}>
+                            <PopOver
+                              content="Clear"
+                              placement={
+                                isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                              }
+                            >
+                              <button
+                                onClick={() =>
+                                  this.clearAssetValue(singleAsset)
+                                }
+                                className={styles.clearAssetButton}
+                              >
+                                <SVGInline
+                                  svg={closeIcon}
+                                  className={styles.clearReceiverIcon}
+                                />
+                              </button>
+                            </PopOver>
+                            <div className={styles.separator} />
+                          </div>
+                        )}
+                        <div
+                          className={classNames([
+                            styles.walletsDropdownWrapper,
+                            this.hasAssetValue(assetFieldProps[assetIndex])
+                              ? styles.hasValue
+                              : null,
+                          ])}
+                        >
+                          <WalletsDropdown
+                            className={styles.walletsDropdown}
+                            {...walletsDropdownFieldProps[index]}
+                            numberOfStakePools={4}
+                            assets={sortedAssets[assetIndex]}
+                            onChange={(id) => {
+                              this.onSelectAsset(index, id);
+                              this.updateSelectedNativeTokens(
+                                id,
+                                assetIndex,
+                                receiverId
+                              );
+                            }}
+                            syncingLabel={intl.formatMessage(
+                              messages.syncingWallet
+                            )}
+                            hasAssetsEnabled
+                            value={selectedAssetIds[assetIndex]}
+                            getStakePoolById={() => {}}
+                            errorPosition="bottom"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </Fragment>
               <Button
                 className={addAssetButtonClasses}

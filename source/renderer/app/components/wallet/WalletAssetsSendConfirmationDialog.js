@@ -7,7 +7,6 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { BigNumber } from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -22,8 +21,8 @@ import LoadingSpinner from '../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { WalletTransactionAsset } from '../../api/assets/types';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import AssetToken from '../widgets/AssetToken';
+import { formattedTokenWalletAmount } from '../../utils/formatters';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -394,16 +393,12 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                                 componentClassName={styles.assetToken}
                               />
                             </h3>
-                            {asset && asset.quantity && (
+                            {asset && asset.quantity.isPositive() && (
                               <div className={styles.amountFeesWrapper}>
                                 <div className={styles.amount}>
-                                  {new BigNumber(asset.quantity).toFormat(
-                                    asset.metadata && asset.metadata.unit
-                                      ? asset.metadata.unit.decimals
-                                      : null
-                                  )}
-                                  {asset.metadata && (
-                                    <span>&nbsp;{asset.metadata.acronym}</span>
+                                  {formattedTokenWalletAmount(
+                                    asset.quantity,
+                                    asset.metadata
                                   )}
                                 </div>
                               </div>
