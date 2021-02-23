@@ -867,11 +867,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   allowSigns={false}
                 />
                 <div className={styles.minAdaRequired}>
-                    <span>
-                      {intl.formatMessage(messages.minAdaRequired, {
-                        adaValue: minimumAdaValue,
-                      })}
-                    </span>
+                  <span>
+                    {intl.formatMessage(messages.minAdaRequired, {
+                      adaValue: minimumAdaValue,
+                    })}
+                  </span>
                   <PopOver
                     content={intl.formatMessage(
                       messages.minAdaRequiredTooltip,

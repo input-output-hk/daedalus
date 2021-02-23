@@ -73,17 +73,8 @@ export default class WalletSummaryPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { stores } = this.props;
-    const {
-      app,
-      wallets,
-      addresses,
-      transactions,
-      profile,
-      assets,
-      networkStatus,
-    } = stores;
-    const { all } = assets;
-    const { isSynced } = networkStatus;
+    const { app, wallets, addresses, transactions, profile, assets } = stores;
+    const { getAssetDetails } = assets;
     const { isInternalAddress } = addresses;
     const {
       openExternalLink,
@@ -109,48 +100,25 @@ export default class WalletSummaryPage extends Component<Props> {
     } = wallets;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const isLoading =
-      !isSynced || recentTransactionsRequest.isExecutingFirstTime;
+
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    const allAssets = all;
-    // @TOKEN TODO: Fix data not available sometimes
-    let { hasAssets } = wallet;
-    const walletAssets = wallet.assets.total.map((assetTotal) => {
-      const assetData = allAssets.find(
-        (item) =>
-          item.policyId === assetTotal.policyId &&
-          item.assetName === assetTotal.assetName
-      );
-      let fingerprint;
-      if (!assetData || !assetData.fingerprint) {
-        hasAssets = !!assetData;
-        fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
-          0,
-          44
-        );
-      } else {
-        fingerprint = assetData.fingerprint;
-      }
-
-      return {
-        policyId: assetTotal.policyId,
-        assetName: assetTotal.assetName,
-        fingerprint,
-        quantity: assetTotal.quantity,
-        metadata: assetData
-          ? assetData.metadata
-          : {
-              name: '',
-              acronym: '',
-              description: '',
-            },
-      };
-    });
+    // $FlowFixMe
+    const walletAssets: Array<WalletSummaryAsset> = wallet.assets.total
+      .map((rawAsset) => {
+        const { policyId, assetName } = rawAsset;
+        const assetDetails = getAssetDetails(policyId, assetName);
+        return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
+      })
+      .filter((asset) => asset != null);
+    const totalRawAssets = wallet.assets.total.length;
+    const totalAssets = walletAssets.length;
+    const hasRawAssets = wallet.assets.total.length > 0;
+    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -201,7 +169,8 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          hasAssetsEnabled={hasAssetsEnabled && hasAssets}
+          isLoadingAssets={isLoadingAssets}
+          hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
           currencyIsActive={currencyIsActive}
           currencyIsAvailable={currencyIsAvailable}
           currencyIsFetchingRate={currencyIsFetchingRate}
@@ -211,7 +180,6 @@ export default class WalletSummaryPage extends Component<Props> {
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={walletAssets}
           onOpenAssetSend={this.handleOpenAssetSend}
-          isLoading={isLoading}
           onCopyAssetItem={this.handleOnCopyAssetItem}
           onExternalLinkClick={app.openExternalLink}
         />

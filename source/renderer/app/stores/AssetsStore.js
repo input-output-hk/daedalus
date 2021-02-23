@@ -9,7 +9,7 @@ import type { GetAssetsResponse } from '../api/assets/types';
 type WalletId = string;
 
 export default class AssetsStore extends Store {
-  ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 second | unit: milliseconds
+  ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,

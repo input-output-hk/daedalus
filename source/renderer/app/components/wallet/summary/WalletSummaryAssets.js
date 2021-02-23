@@ -38,7 +38,7 @@ type Props = {
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
   onExternalLinkClick: Function,
-  isLoading?: boolean,
+  isLoadingAssets?: boolean,
 };
 
 @observer
@@ -54,7 +54,7 @@ export default class WalletSummaryAssets extends Component<Props> {
       onOpenAssetSend,
       onCopyAssetItem,
       onExternalLinkClick,
-      isLoading,
+      isLoadingAssets,
     } = this.props;
     const { intl } = this.context;
 
@@ -64,13 +64,13 @@ export default class WalletSummaryAssets extends Component<Props> {
 
     return (
       <Fragment>
-        {!isLoading && (
+        {!isLoadingAssets && (
           <div className={styles.numberOfAssets}>
             {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
           </div>
         )}
         {/* eslint-disable-next-line no-nested-ternary */}
-        {isLoading ? (
+        {isLoadingAssets ? (
           <div className={styles.syncingWrapper}>
             <LoadingSpinner big />
           </div>
