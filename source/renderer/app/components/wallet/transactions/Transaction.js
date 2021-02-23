@@ -522,24 +522,21 @@ export default class Transaction extends Component<Props, State> {
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
+    const assetsList = assetsDetails.filter(
+      (asset) =>
+        (data.type === TransactionTypes.INCOME &&
+          isInternalAddress(asset.address)) ||
+        (data.type === TransactionTypes.EXPEND &&
+          !isInternalAddress(asset.address))
+    );
     const assetsSeparatorStyles = classNames([
       styles.assetsSeparator,
       isExpanded ? styles.expanded : null,
     ]);
     const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight =
-      assetsDetails && assetsDetails.length
-        ? assetsSeparatorBasicHeight * assetsDetails.length - 15
-        : assetsSeparatorBasicHeight;
-
-    const assetsList = assetsDetails;
-    // .filter(
-    //   (asset) =>
-    //     (data.type === TransactionTypes.INCOME &&
-    //       isInternalAddress(asset.address)) ||
-    //     (data.type === TransactionTypes.EXPEND &&
-    //       !isInternalAddress(asset.address))
-    // )
+    const assetsSeparatorCalculatedHeight = assetsList.length
+      ? assetsSeparatorBasicHeight * assetsList.length - 15
+      : assetsSeparatorBasicHeight;
 
     return (
       <Fragment>
