@@ -392,7 +392,6 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                               <AssetToken
                                 asset={asset}
                                 componentClassName={styles.assetToken}
-                                hideTooltip
                               />
                             </h3>
                             {asset && asset.quantity && (
