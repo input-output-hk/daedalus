@@ -401,7 +401,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                                   {new BigNumber(asset.quantity).toFormat(
                                     asset.metadata && asset.metadata.unit
                                       ? asset.metadata.unit.decimals
-                                      : DECIMAL_PLACES_IN_ADA
+                                      : null
                                   )}
                                   {asset.metadata && (
                                     <span>&nbsp;{asset.metadata.acronym}</span>
