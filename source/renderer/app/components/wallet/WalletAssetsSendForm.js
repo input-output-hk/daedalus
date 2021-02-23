@@ -766,7 +766,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const addAssetButtonClasses = classNames([
       styles.addAssetButton,
-      minimumAdaValue <= 0 ? styles.addAssetButtonFlat : null,
       !filteredAssets.length ||
       filteredAssets[filteredAssets.length - 1].length === 1
         ? styles.disabled
