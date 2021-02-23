@@ -247,10 +247,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     const { assets, selectedToken } = this.props;
-    this.setFormFields(false, 1, 'receiver1');
-    this.filterAssets(assets, true);
-    if (selectedToken) {
-      // @todo
+    this.setFormFields(false, 1, 'receiver1', null, null, selectedToken, !!selectedToken);
+    if (!selectedToken) {
+      this.filterAssets(assets, true);
     }
   }
 
@@ -276,7 +275,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ) {
       currentFilteredAssets[currentFilteredAssets.length] = assets;
     }
-    if (assetsToRemove && assetsToRemove.length) {
+    if (assetsToRemove && assetsToRemove.length && newFilteredAssets && newFilteredAssets.length) {
       // eslint-disable-next-line array-callback-return
       assetsToRemove.map((item) => {
         newFilteredAssets.push(
@@ -362,7 +361,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     receiverId: string,
     assetId?: string,
     dropdownId?: string,
-    selectedNativeToken?: Asset
+    selectedNativeToken?: Asset,
+    fromSelectedToken?: boolean,
   ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
@@ -406,6 +406,22 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       if (selectedNativeToken) {
         currentSelectedNativeTokens.push(selectedNativeToken);
       }
+      if (fromSelectedToken) {
+        /* const { assets } = this.props;
+        const newFilteredAssets = this.filterAssets(
+          assets,
+          true
+        );
+        this.addNewAssetRow(
+          1,
+          'asset1',
+          receiverId,
+          'walletsDropdown1',
+          newFilteredAssets[0][0]
+        ); */
+      }
+
+
       this.setState((prevState) => ({
         sendFormFields: {
           ...prevState.sendFormFields,
