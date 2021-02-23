@@ -187,6 +187,8 @@ export default class WalletSummaryPage extends Component<Props> {
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
           isInternalAddress={isInternalAddress}
+          hasAssetsEnabled={hasAssetsEnabled}
+          allAssets={allAssets}
         />
       );
     } else if (!hasAny) {
@@ -201,7 +203,7 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          hasAssetsEnabled={hasAssetsEnabled && hasAssets}
+          hasAssetsEnabled={hasAssetsEnabled}
           currencyIsActive={currencyIsActive}
           currencyIsAvailable={currencyIsAvailable}
           currencyIsFetchingRate={currencyIsFetchingRate}
