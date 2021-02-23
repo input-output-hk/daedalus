@@ -650,18 +650,18 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 )}
 
-                {assetsList.length ? (
+                {!!assetsList.length && (
                   <h2>
                     {data.type === TransactionTypes.EXPEND
                       ? intl.formatMessage(messages.tokensSent)
                       : intl.formatMessage(messages.tokensReceived)}
                   </h2>
-                ) : null}
+                )}
                 {assetsList.map((asset, assetIndex) => (
                   <div
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                    className={styles.assetsContainer}
+                    className={styles.assetContainer}
                   >
                     {assetIndex === 0 && (
                       <div
