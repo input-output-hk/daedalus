@@ -532,6 +532,15 @@ export default class Transaction extends Component<Props, State> {
         ? assetsSeparatorBasicHeight * assetsDetails.length - 15
         : assetsSeparatorBasicHeight;
 
+    const assetsList = assetsDetails;
+    // .filter(
+    //   (asset) =>
+    //     (data.type === TransactionTypes.INCOME &&
+    //       isInternalAddress(asset.address)) ||
+    //     (data.type === TransactionTypes.EXPEND &&
+    //       !isInternalAddress(asset.address))
+    // )
+
     return (
       <Fragment>
         <div
@@ -641,57 +650,51 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 )}
 
-                <h2>
-                  {data.type === TransactionTypes.EXPEND
-                    ? intl.formatMessage(messages.tokensSent)
-                    : intl.formatMessage(messages.tokensReceived)}
-                </h2>
-                {assetsDetails
-                  // .filter(
-                  //   (asset) =>
-                  //     (data.type === TransactionTypes.INCOME &&
-                  //       isInternalAddress(asset.address)) ||
-                  //     (data.type === TransactionTypes.EXPEND &&
-                  //       !isInternalAddress(asset.address))
-                  // )
-                  .map((asset, assetIndex) => (
-                    <div
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                      className={styles.assetsContainer}
-                    >
-                      {assetIndex === 0 && (
-                        <div
-                          className={assetsSeparatorStyles}
-                          style={{
-                            height: `${assetsSeparatorCalculatedHeight}px`,
-                          }}
-                        />
-                      )}
-                      <h3>
-                        <span>
-                          {intl.formatMessage(messages.assetLabel)}
-                          &nbsp;#{assetIndex + 1}
-                        </span>
-                        <AssetToken
-                          asset={asset}
-                          componentClassName={styles.assetToken}
-                        />
-                      </h3>
-                      {asset.quantity && (
-                        <div className={styles.amountFeesWrapper}>
-                          <div className={styles.amount}>
-                            {new BigNumber(asset.quantity).toFormat(
-                              asset.metadata && asset.metadata.unit
-                                ? asset.metadata.unit.decimals
-                                : null
-                            )}
-                            &nbsp; {asset.metadata && asset.metadata.acronym}
-                          </div>
+                {assetsList.length && (
+                  <h2>
+                    {data.type === TransactionTypes.EXPEND
+                      ? intl.formatMessage(messages.tokensSent)
+                      : intl.formatMessage(messages.tokensReceived)}
+                  </h2>
+                )}
+                {assetsList.map((asset, assetIndex) => (
+                  <div
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
+                    className={styles.assetsContainer}
+                  >
+                    {assetIndex === 0 && (
+                      <div
+                        className={assetsSeparatorStyles}
+                        style={{
+                          height: `${assetsSeparatorCalculatedHeight}px`,
+                        }}
+                      />
+                    )}
+                    <h3>
+                      <span>
+                        {intl.formatMessage(messages.assetLabel)}
+                        &nbsp;#{assetIndex + 1}
+                      </span>
+                      <AssetToken
+                        asset={asset}
+                        componentClassName={styles.assetToken}
+                      />
+                    </h3>
+                    {asset.quantity && (
+                      <div className={styles.amountFeesWrapper}>
+                        <div className={styles.amount}>
+                          {new BigNumber(asset.quantity).toFormat(
+                            asset.metadata && asset.metadata.unit
+                              ? asset.metadata.unit.decimals
+                              : null
+                          )}
+                          &nbsp; {asset.metadata && asset.metadata.acronym}
                         </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>
