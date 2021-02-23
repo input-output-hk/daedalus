@@ -262,7 +262,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           id > 0 ? selectedNativeTokens : null
         );
         this.addNewAssetRow(
-          0 + 1,
+          1,
           `asset${asset.length + 1}`,
           'receiver1',
           `walletsDropdown${walletsDropdown.length + 1}`,
