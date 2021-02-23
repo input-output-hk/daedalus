@@ -247,17 +247,27 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     const { assets, selectedToken } = this.props;
-    this.setFormFields(
-      false,
-      1,
-      'receiver1',
-      null,
-      null,
-      selectedToken,
-      !!selectedToken
-    );
-    if (!selectedToken) {
-      this.filterAssets(assets, true);
+    this.setFormFields(false, 1, 'receiver1');
+    this.filterAssets(assets, true);
+    if (selectedToken) {
+      setTimeout(() => {
+        const { sendFormFields } = this.state;
+        const { receiver1 } = sendFormFields;
+        const { selectedNativeTokens, asset, walletsDropdown } = receiver1;
+        const id = selectedNativeTokens.length;
+        const newFilteredAssets = this.filterAssets(
+          assets,
+          id === 0,
+          id > 0 ? selectedNativeTokens : null
+        );
+        this.addNewAssetRow(
+          0 + 1,
+          `asset${asset.length + 1}`,
+          'receiver1',
+          `walletsDropdown${walletsDropdown.length + 1}`,
+          newFilteredAssets[id][0]
+        );
+      }, 2000);
     }
   }
 
@@ -375,7 +385,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     assetId?: string,
     dropdownId?: string,
     selectedNativeToken?: Asset,
-    fromSelectedToken?: boolean
   ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
@@ -418,20 +427,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       }
       if (selectedNativeToken) {
         currentSelectedNativeTokens.push(selectedNativeToken);
-      }
-      if (fromSelectedToken) {
-        /* const { assets } = this.props;
-        const newFilteredAssets = this.filterAssets(
-          assets,
-          true
-        );
-        this.addNewAssetRow(
-          1,
-          'asset1',
-          receiverId,
-          'walletsDropdown1',
-          newFilteredAssets[0][0]
-        ); */
       }
 
       this.setState((prevState) => ({
