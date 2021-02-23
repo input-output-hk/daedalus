@@ -9,6 +9,11 @@ import styles from './WalletSummaryNoTokens.scss';
 import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({
+  tokensTitle: {
+    id: 'wallet.summary.assets.tokensTitle',
+    defaultMessage: '!!!Tokens',
+    description: 'Number of tokens title on Wallet summary assets page',
+  },
   learnMoreTextTop: {
     id: 'wallet.summary.noTokens.learnMore.textTop',
     defaultMessage: '!!!Want to find out more about native tokens?',
@@ -35,7 +40,9 @@ const messages = defineMessages({
 });
 
 type Props = {
+  isLoading: ?boolean,
   onExternalLinkClick: Function,
+  numberOfAssets: number,
 };
 
 @observer
@@ -45,7 +52,7 @@ export default class WalletSummaryNoTokens extends Component<Props> {
   };
 
   render() {
-    const { onExternalLinkClick } = this.props;
+    const { isLoading, onExternalLinkClick, numberOfAssets } = this.props;
     const { intl } = this.context;
 
     const buttonClassNames = classnames([
@@ -54,32 +61,39 @@ export default class WalletSummaryNoTokens extends Component<Props> {
     ]);
 
     return (
-      <div className={styles.component}>
-        <BorderedBox>
-          <div className={styles.noTokensContainer}>
-            <div className={styles.noTokensLeftContainer}>
-              <p>{intl.formatMessage(messages.learnMoreTextTop)}</p>
-              <p>{intl.formatMessage(messages.learnMoreTextBottom)}</p>
-            </div>
-            <div className={styles.noTokensRightContainer}>
-              <ButtonLink
-                className={buttonClassNames}
-                label={intl.formatMessage(messages.learnMoreLinkLabel)}
-                skin={ButtonSkin}
-                onClick={() =>
-                  onExternalLinkClick(
-                    intl.formatMessage(messages.learnMoreLinkUrl)
-                  )
-                }
-                linkProps={{
-                  hasIconBefore: false,
-                  hasIconAfter: true,
-                }}
-              />
-            </div>
+      <>
+        {!isLoading && (
+          <div className={styles.numberOfAssets}>
+            {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
           </div>
-        </BorderedBox>
-      </div>
+        )}
+        <div className={styles.component}>
+          <BorderedBox>
+            <div className={styles.noTokensContainer}>
+              <div className={styles.noTokensLeftContainer}>
+                <p>{intl.formatMessage(messages.learnMoreTextTop)}</p>
+                <p>{intl.formatMessage(messages.learnMoreTextBottom)}</p>
+              </div>
+              <div className={styles.noTokensRightContainer}>
+                <ButtonLink
+                  className={buttonClassNames}
+                  label={intl.formatMessage(messages.learnMoreLinkLabel)}
+                  skin={ButtonSkin}
+                  onClick={() =>
+                    onExternalLinkClick(
+                      intl.formatMessage(messages.learnMoreLinkUrl)
+                    )
+                  }
+                  linkProps={{
+                    hasIconBefore: false,
+                    hasIconAfter: true,
+                  }}
+                />
+              </div>
+            </div>
+          </BorderedBox>
+        </div>
+      </>
     );
   }
 }
