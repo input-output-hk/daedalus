@@ -1249,13 +1249,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       );
     this.form.$(newAsset).set('validators', [
       async ({ field, form }) => {
-        if (field.value === null) {
-          this.resetTransactionFee();
-          return [
-            false,
-            this.context.intl.formatMessage(messages.fieldIsRequired),
-          ];
-        }
         const amountValue = field.value.toString();
         const isValid = await this.props.validateAmount(
           formattedAmountToNaturalUnits(amountValue)
@@ -1263,6 +1256,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         const receiverField = form.$(receiverId);
         const receiverValue = receiverField.value;
         const isReceiverValid = receiverField.isValid;
+        const adaAssetField = form.$('receiver1_adaAsset');
+        const adaAssetFieldValue = adaAssetField.value;
+        const isAdaAssetFieldValueValid = adaAssetField.isValid;
         const { sendFormFields } = this.state;
         const { receiver1 } = sendFormFields;
         let selectedNativeTokens;
@@ -1281,7 +1277,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           const selectedTokenValue = selectedToken.quantity;
           isAmountLessThenMax = Number(field.value) <= selectedTokenValue;
         }
-        if (isValid && isAmountLessThenMax && isReceiverValid) {
+        if (isValid && isAmountLessThenMax && isReceiverValid && isAdaAssetFieldValueValid) {
           this._isCalculatingAssetsFee = false;
           let assets = [];
           if (selectedNativeTokens && selectedNativeTokens.length) {
@@ -1293,7 +1289,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               };
             });
           }
-          this.calculateTransactionFee(receiverValue, field.value, assets);
+          this.calculateTransactionFee(receiverValue, adaAssetFieldValue, assets);
         } else if (!isAmountLessThenMax) {
           const error = this.context.intl.formatMessage(messages.invalidAmount);
           if (!assetsError) {
