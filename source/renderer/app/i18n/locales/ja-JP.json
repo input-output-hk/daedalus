@@ -197,7 +197,7 @@
   "noDiskSpace.error.overlayContent": "<b>Daedalusを動作させるには、ハードディスクに{diskSpaceRequired}以上の空き容量が必要です。ご使用のコンピューターには空き容量が{diskSpaceMissing}不足しています。Daedalusのご利用を続けるためには、ファイルをいくつか削除して空き容量を増やしてください。</b><br /><br />オペレーティングシステムとインストール済みプログラムを正常かつ安定した状態で動作させるには、ハードディスクに少なくとも15%（ご使用のコンピューターの場合は{diskSpaceRecommended}）の空き容量が必要です。ハードディスクにこれ以上の空き容量を確保してください。",
   "noDiskSpace.error.overlayTitle": "ハードディスクの空き容量が不足しているためDaedalusを作動できません",
   "notification.copyAddress": "アドレス：<strong>{address}</strong>をクリップボードにコピーしました",
-  "notification.copyAssetItem": "!!!{assetItem}: <strong>{value}</strong> copied to clipboard",
+  "notification.copyAssetItem": "{assetItem}： <strong>{value}</strong> をクリップボードにコピーしました",
   "notification.copyPublicKey": "公開鍵： <strong>{publicKey}</strong> をクリップボードにコピーしました",
   "notification.copyStateDirectoryPath": "Daedalusステータスディレクトリーをクリップボードにコピーしました",
   "notification.downloadAddressPDFSuccess": "アドレス：<strong></strong>{walletAddress}<strong></strong> PDFをダウンロードしました",
