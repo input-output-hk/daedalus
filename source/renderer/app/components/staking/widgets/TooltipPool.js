@@ -1,5 +1,6 @@
 // @flow
-import React, { Component } from 'react';
+import React, { createRef, Component } from 'react';
+import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
 import {
   defineMessages,
@@ -177,6 +178,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   idCopyFeedbackTimeout: TimeoutID;
+  rootRef: ElementRef<*> = createRef();
 
   state = {
     componentStyle: {},
@@ -213,7 +215,7 @@ export default class TooltipPool extends Component<Props, State> {
     return !IS_RANKING_DATA_AVAILABLE;
   }
 
-  renderDescriptionFields = () => {
+  renderDescriptionFields = (popOverDefaultVars) => {
     const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
     const { currentTheme, stakePool, numberOfRankedStakePools } = this.props;
@@ -283,7 +285,8 @@ export default class TooltipPool extends Component<Props, State> {
             {isIncentivizedTestnet && (
               <PopOver
                 key="experimentalTooltip"
-                appendTo={document.body}
+                appendTo={this.rootRef.current || document.body}
+                themeVariables={popOverDefaultVars}
                 content={
                   <div className={styles.tooltipWithHTMLContent}>
                     {intl.formatMessage(messages.experimentalTooltipLabel)}
@@ -389,8 +392,9 @@ export default class TooltipPool extends Component<Props, State> {
                 </div>
                 <PopOver
                   offset={[0, 10]}
-                  appendTo={document.body}
                   key={field.key}
+                  appendTo={this.rootRef.current || document.body}
+                  themeVariables={popOverDefaultVars}
                   content={
                     <div className={styles.tooltipWithHTMLContent}>
                       <FormattedHTMLMessage
@@ -425,6 +429,7 @@ export default class TooltipPool extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      currentTheme,
       stakePool,
       onClose,
       onOpenExternalLink,
@@ -434,6 +439,15 @@ export default class TooltipPool extends Component<Props, State> {
     const { componentStyle, idCopyFeedback } = this.state;
 
     const { id, name, description, ticker, homepage, retiring } = stakePool;
+    const themeVars = require(`../../../themes/daedalus/${currentTheme}.js`)
+      .default;
+    const popOverDefaultVars = {
+      ...themeVars.rpPopOver,
+      '--rp-pop-over-border-color': 'transparent',
+      '--rp-pop-over-border-radius': '4px',
+      '--rp-pop-over-border-style': 'none',
+      '--rp-pop-over-padding': '6px 12px',
+    };
 
     const retirementFromNow = retiring
       ? moment(retiring).locale(intl.locale).fromNow(true)
@@ -455,7 +469,11 @@ export default class TooltipPool extends Component<Props, State> {
         };
 
     return (
-      <div className={styles.component} style={componentStyle}>
+      <div
+        className={styles.component}
+        style={componentStyle}
+        ref={this.rootRef}
+      >
         <div className={colorBandClassnames} style={colorBandStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
@@ -479,7 +497,8 @@ export default class TooltipPool extends Component<Props, State> {
           )}
           <PopOver
             key="id"
-            appendTo={document.body}
+            appendTo={this.rootRef.current || document.body}
+            themeVariables={popOverDefaultVars}
             content={
               <div className={styles.tooltipWithHTMLContent}>
                 {intl.formatMessage(messages.copyIdTooltipLabel)}
@@ -508,7 +527,7 @@ export default class TooltipPool extends Component<Props, State> {
             label={homepage}
             skin={LinkSkin}
           />
-          {this.renderDescriptionFields()}
+          {this.renderDescriptionFields(popOverDefaultVars)}
         </div>
         {onSelect && showWithSelectButton && (
           <Button
