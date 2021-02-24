@@ -119,8 +119,8 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   amount: string,
   sender: string,
-  receivers?: Array<string>,
-  assets?: Array<WalletSummaryAsset>,
+  receiver: string,
+  assets: Array<WalletSummaryAsset>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -197,17 +197,19 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     this.form.submit({
       onSuccess: (form) => {
         const {
-          receivers,
+          receiver,
           amount,
           amountToNaturalUnits,
           isHardwareWallet,
+          assets,
         } = this.props;
         const { passphrase } = form.values();
         const transactionData = {
-          receivers,
+          receiver,
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
+          assets,
         };
         this.props.onSubmit(transactionData);
       },
@@ -274,7 +276,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
       onCancel,
       sender,
       assets,
-      receivers,
+      receiver,
       transactionFee,
       isSubmitting,
       isFlight,
@@ -347,25 +349,15 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
           </div>
           {assets && (
             <div className={styles.addressToLabelWrapper}>
-              {assets.map((address, addressIndex) => (
-                <div
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`${address.policyId}-${addressIndex}`}
-                  className={styles.receiverRow}
-                >
+              {assets.map((token, tokenIndex) => (
+                <div key={token.fingerprint} className={styles.receiverRow}>
                   <div className={styles.receiverRowItem}>
                     <h2>
                       {intl.formatMessage(messages.receiverLabel)}
-                      {assets.length > 1 && (
-                        <div>&nbsp;#{addressIndex + 1}</div>
-                      )}
+                      {assets.length > 1 && <div>&nbsp;#{tokenIndex + 1}</div>}
                     </h2>
                     <div className={styles.receiverRowItemAddresses}>
-                      {receivers && (
-                        <div className={styles.addressTo}>
-                          {receivers[addressIndex]}
-                        </div>
-                      )}
+                      {receiver}
                       <div className={styles.assetsWrapper}>
                         <div
                           className={styles.assetsSeparator}
@@ -379,8 +371,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                         />
                         {assets.map((asset, assetIndex) => (
                           <div
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={`${asset.policyId}-${assetIndex}`}
+                            key={token.fingerprint}
                             className={styles.assetsContainer}
                           >
                             <h3>
