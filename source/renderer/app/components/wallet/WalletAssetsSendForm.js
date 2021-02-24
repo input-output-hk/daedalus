@@ -192,6 +192,7 @@ type Props = {
   assets: Array<WalletSummaryAsset>,
   isClearTooltipOpeningDownward?: boolean,
   hasAssets: boolean,
+  selectedToken?: Asset,
 };
 
 type State = {
@@ -199,6 +200,7 @@ type State = {
   transactionFee: BigNumber,
   feeCalculationRequestQue: number,
   transactionFeeError: ?string | ?Node,
+  assetsError: ?Array<?string | ?Node>,
   showReceiverRemoveBtn: boolean,
   showAssetRemoveBtn: Array<boolean>,
   sendFormFields: Object,
@@ -208,7 +210,6 @@ type State = {
   filteredAssets: any,
   minimumAda: BigNumber,
   isReceiverAddressValid: boolean,
-  selectedToken: Asset,
 };
 
 @observer
@@ -222,6 +223,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     transactionFee: new BigNumber(0),
     feeCalculationRequestQue: 0,
     transactionFeeError: null,
+    assetsError: null,
     showReceiverRemoveBtn: false,
     showAssetRemoveBtn: [],
     sendFormFields: {},
@@ -239,6 +241,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   // disable the "Submit" button as soon as the value changes and then wait for
   // the validation to end in order to see if the button should be enabled or not.
   _isCalculatingTransactionFee = false;
+  _isCalculatingAssetsFee = false;
 
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -448,7 +451,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
-    this._isCalculatingTransactionFee || !this.state.isTransactionFeeCalculated;
+    this._isCalculatingTransactionFee ||
+    this._isCalculatingAssetsFee ||
+    !this.state.isTransactionFeeCalculated;
 
   // FORM VALIDATION
   form = new ReactToolboxMobxForm(
@@ -570,10 +575,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   resetTransactionFee() {
     if (this._isMounted) {
       this._isCalculatingTransactionFee = false;
+      this._isCalculatingAssetsFee = false;
       this.setState({
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
         transactionFeeError: null,
+        assetsError: null,
       });
     }
   }
@@ -600,6 +607,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       isTransactionFeeCalculated: false,
       transactionFee: new BigNumber(0),
       transactionFeeError: null,
+      assetsError: null,
       feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
     }));
     try {
@@ -726,6 +734,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       isTransactionFeeCalculated,
       transactionFee,
       transactionFeeError,
+      assetsError,
       sendFormFields,
       filteredAssets,
       minimumAda,
@@ -981,7 +990,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           minimumFractionDigits: tokenDecimalPlaces,
                         }}
                         onChange={(value) => {
-                          this._isCalculatingTransactionFee = true;
+                          this._isCalculatingAssetsFee = true;
                           this.setState({
                             isResetButtonDisabled: false,
                           });
@@ -990,7 +999,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         }}
                         currency={metadata ? metadata.acronym : null}
                         value={amount[assetIndex]}
-                        error={asset.error || transactionFeeError}
+                        error={
+                          asset.error ||
+                          (assetsError && assetsError[assetIndex]
+                            ? assetsError[assetIndex]
+                            : null)
+                        }
                         skin={AmountInputSkin}
                         onKeyPress={this.handleSubmitOnEnter}
                         allowSigns={false}
@@ -1190,6 +1204,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         const adaAssetFieldValue = adaAssetField.value;
         const isAdaAssetValid = adaAssetField.isValid;
         const { sendFormFields } = this.state;
+        let { assetsError } = this.state;
         const receiver = sendFormFields[receiverId];
         const selectedTokens = receiver.selectedNativeTokens;
         const selectedTokenId = selectedTokens.length
@@ -1209,14 +1224,17 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ) {
           this.calculateTransactionFee(receiverValue, adaAssetFieldValue);
         } else if (!isAmountLessThenMax) {
-          const transactionFeeError = this.context.intl.formatMessage(
-            messages.invalidAmount
-          );
+          const error = this.context.intl.formatMessage(messages.invalidAmount);
+          if (!assetsError) {
+            assetsError = [];
+          }
+          assetsError[selectedTokenId] = error;
           this._isCalculatingTransactionFee = false;
+          this._isCalculatingAssetsFee = false;
           this.setState({
             isTransactionFeeCalculated: false,
             transactionFee: new BigNumber(0),
-            transactionFeeError,
+            assetsError,
           });
         } else {
           this.resetTransactionFee();

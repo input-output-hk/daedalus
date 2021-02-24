@@ -83,12 +83,13 @@ export default class WalletSendPage extends Component<Props> {
       hardwareWallets,
       assets: assetsStore,
     } = this.props.stores;
-    const { location } = this.props;
-    const { pathname } = location;
-    const splittedPath = pathname.split('/send/');
+    // $FlowFixMe
+    const locationPath = this.props.location;
+    const { pathname } = locationPath;
+    const splicedPath = pathname.split('/send/');
     let tokenFingerprint = '';
-    if (splittedPath && splittedPath.length) {
-      tokenFingerprint = splittedPath[splittedPath.length - 1];
+    if (splicedPath && splicedPath.length) {
+      tokenFingerprint = splicedPath[splicedPath.length - 1];
     }
     const { isValidAddress } = wallets;
     const { validateAmount } = transactions;
