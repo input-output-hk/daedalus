@@ -339,12 +339,24 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return selectedAssets;
   };
 
-  get selectedAssets() {
-    const { selectedAssetFingerprints } = this.state || [];
+  getTransactionAsset = (fingerprint: string, index: number) => {
     const { assets } = this.props;
-    return map(selectedAssetFingerprints, (fingerprint) =>
-      assets.find((asset) => asset.fingerprint === fingerprint)
-    );
+    const { sendFormFields } = this.state;
+    const asset = assets.find((item) => item.fingerprint === fingerprint);
+    const assetsFields = get(sendFormFields, 'receiver1.asset');
+    const qty = get(assetsFields, `[${index}]`, 0);
+    const quantity = new BigNumber(qty.value);
+    return {
+      ...asset,
+      quantity,
+    };
+  };
+
+  get transactionAssets() {
+    const { selectedAssetFingerprints } = this.state;
+    return map(selectedAssetFingerprints, (fingerprint, index) => ({
+      ...this.getTransactionAsset(fingerprint, index),
+    }));
   }
 
   handleOnSubmit = () => {
@@ -833,7 +845,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     let minimumAdaValue = TRANSACTION_MIN_ADA_VALUE;
 
     if (minimumAda && !minimumAda.isZero()) {
-        minimumAdaValue = minimumAda.toFormat();
+      minimumAdaValue = minimumAda.toFormat();
     }
 
     if (transactionFee && !transactionFee.isZero()) {
@@ -1493,7 +1505,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
-            assets={this.selectedAssets}
+            assets={this.transactionAssets}
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
             multipleReceivers={[
