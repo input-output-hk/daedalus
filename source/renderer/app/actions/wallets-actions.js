@@ -56,6 +56,7 @@ export default class WalletsActions {
     amount: string,
     passphrase: string,
     assets?: Array<WalletSummaryAsset>,
+    assetsAmounts?: Array<string>,
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: WalletExportTypeChoices,
