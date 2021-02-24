@@ -816,11 +816,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     let minimumAdaValue = TRANSACTION_MIN_ADA_VALUE;
 
     if (minimumAda && !minimumAda.isZero()) {
-      if (transactionFee) {
-        minimumAdaValue = minimumAda.plus(transactionFee).toFormat();
-      } else {
         minimumAdaValue = minimumAda.toFormat();
-      }
+    }
+
+    if (transactionFee && !transactionFee.isZero()) {
+      minimumAdaValue = transactionFee.toFormat();
     }
 
     const addAssetButtonClasses = classNames([
