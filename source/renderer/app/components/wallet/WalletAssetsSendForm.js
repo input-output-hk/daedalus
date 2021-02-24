@@ -39,7 +39,7 @@ import closeIcon from '../../assets/images/close-cross.inline.svg';
 import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import Asset from '../../domains/Asset';
-import type { WalletSummaryAsset } from '../../api/assets/types';
+import type { AssetItems, WalletSummaryAsset } from '../../api/assets/types';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 
@@ -178,7 +178,8 @@ type Props = {
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   calculateTransactionFee: (
     address: string,
-    amount: number
+    amount: number,
+    assets: AssetItems,
   ) => Promise<BigNumber>,
   currentNumberFormat: string,
   walletAmount: BigNumber,
@@ -338,24 +339,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return selectedAssets;
   };
 
-  getTransactionAsset = (fingerprint: string, index: number) => {
-    const { assets } = this.props;
+  get transactionAssetsAmounts() {
     const { sendFormFields } = this.state;
-    const asset = assets.find((item) => item.fingerprint === fingerprint);
     const assetsFields = get(sendFormFields, 'receiver1.asset');
-    const qty = get(assetsFields, `[${index}]`, 0);
-    const quantity = new BigNumber(qty.value);
-    return {
-      ...asset,
-      quantity,
-    };
-  };
+    return map(assetsFields, (assetField) => assetField.value);
+  }
 
   get transactionAssets() {
-    const { selectedAssetFingerprints } = this.state;
-    return map(selectedAssetFingerprints, (fingerprint, index) => ({
-      ...this.getTransactionAsset(fingerprint, index),
-    }));
+    const { selectedAssetFingerprints } = this.state || [];
+    const { assets } = this.props;
+    return map(selectedAssetFingerprints, (fingerprint) =>
+      assets.find((asset) => asset.fingerprint === fingerprint)
+    );
   }
 
   handleOnSubmit = () => {
@@ -570,8 +565,24 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               const receiverField = form.$('receiver1');
               const receiverValue = receiverField.value;
               const isReceiverValid = receiverField.isValid;
+              const { sendFormFields } = this.state;
+              const { receiver1 } = sendFormFields;
+              let selectedNativeTokens;
+              if (receiver1) {
+                selectedNativeTokens = receiver1.selectedNativeTokens;
+              }
               if (isValid && isReceiverValid) {
-                this.calculateTransactionFee(receiverValue, amountValue);
+                let assets = [];
+                if (selectedNativeTokens.length) {
+                  assets = selectedNativeTokens.map(item => {
+                    return {
+                      policy_id: item.policyId,
+                      asset_name: item.assetName,
+                      quantity: item.quantity.toNumber(),
+                    };
+                  });
+                }
+                this.calculateTransactionFee(receiverValue, amountValue, assets);
               } else {
                 this.resetTransactionFee();
               }
@@ -630,7 +641,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     prevFeeCalculationRequestQue: number
   ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
 
-  calculateTransactionFee = async (address: string, amountValue: string) => {
+  calculateTransactionFee = async (address: string, amountValue: string, assets?: AssetItems) => {
     const amount = formattedAmountToLovelace(amountValue);
     const {
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
@@ -646,7 +657,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       this._isCalculatingTransactionFee = true;
       const { fee, minimumAda } = await this.props.calculateTransactionFee(
         address,
-        amount
+        amount,
+        assets
       );
       if (
         this._isMounted &&
@@ -1238,10 +1250,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         const receiverField = form.$(receiverId);
         const receiverValue = receiverField.value;
         const isReceiverValid = receiverField.isValid;
-        const adaAssetField = form.$('receiver1_adaAsset');
-        const adaAssetFieldValue = adaAssetField.value;
-        const isAdaAssetValid = adaAssetField.isValid;
         const { sendFormFields } = this.state;
+        const { receiver1 } = sendFormFields;
+        let selectedNativeTokens;
+        if (receiver1) {
+          selectedNativeTokens = receiver1.selectedNativeTokens;
+        }
         let { assetsError } = this.state;
         const receiver = sendFormFields[receiverId];
         const selectedTokens = receiver.selectedNativeTokens;
@@ -1257,11 +1271,20 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         if (
           isValid &&
           isAmountLessThenMax &&
-          isReceiverValid &&
-          isAdaAssetValid
+          isReceiverValid
         ) {
           this._isCalculatingAssetsFee = false;
-          this.calculateTransactionFee(receiverValue, adaAssetFieldValue);
+          let assets = [];
+          if (selectedNativeTokens.length) {
+            assets = selectedNativeTokens.map(item => {
+              return {
+                policy_id: item.policyId,
+                asset_name: item.assetName,
+                quantity: item.quantity.toNumber(),
+              };
+            });
+          }
+          this.calculateTransactionFee(receiverValue, field.value, assets);
         } else if (!isAmountLessThenMax) {
           const error = this.context.intl.formatMessage(messages.invalidAmount);
           if (!assetsError) {
@@ -1477,6 +1500,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
             assets={this.transactionAssets}
+            assetsAmounts={this.transactionAssetsAmounts}
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
             multipleReceivers={[

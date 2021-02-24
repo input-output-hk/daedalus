@@ -11,6 +11,7 @@ import {
 import WalletAssetsSendForm from '../../components/wallet/WalletAssetsSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
+import type { AssetItems } from '../../api/assets/types';
 
 type Props = InjectedProps;
 
@@ -28,8 +29,9 @@ export default class WalletSendPage extends Component<Props> {
     address: string,
     amount: number,
     isHardwareWallet: boolean,
+    selectedAssets?: AssetItems
   }) => {
-    const { walletId, address, amount, isHardwareWallet } = params;
+    const { walletId, address, amount, isHardwareWallet, selectedAssets } = params;
     let fee;
     let minimumAda;
     if (isHardwareWallet) {
@@ -49,6 +51,7 @@ export default class WalletSendPage extends Component<Props> {
         walletId,
         address,
         amount,
+        assets: selectedAssets,
       }));
     }
     return { fee, minimumAda };
@@ -148,12 +151,13 @@ export default class WalletSendPage extends Component<Props> {
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
         currentNumberFormat={profile.currentNumberFormat}
         validateAmount={validateAmount}
-        calculateTransactionFee={(address: string, amount: number) =>
+        calculateTransactionFee={(address: string, amount: number, selectedAssets?: AssetItems) =>
           this.calculateTransactionFee({
             walletId: activeWallet.id,
             address,
             amount,
             isHardwareWallet,
+            selectedAssets,
           })
         }
         walletAmount={activeWallet.amount}
