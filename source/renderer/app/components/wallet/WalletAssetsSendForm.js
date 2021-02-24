@@ -1281,7 +1281,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ) {
           this._isCalculatingAssetsFee = false;
           let assets = [];
-          if (selectedNativeTokens.length) {
+          if (selectedNativeTokens && selectedNativeTokens.length) {
             assets = selectedNativeTokens.map(item => {
               return {
                 policy_id: item.policyId,
