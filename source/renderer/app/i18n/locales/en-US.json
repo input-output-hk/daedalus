@@ -902,7 +902,6 @@
   "wallet.select.import.dialog.walletExists": "Wallet already exists",
   "wallet.select.import.dialog.walletImported": "Wallet imported",
   "wallet.select.import.dialog.walletName": "Enter wallet name",
-  "wallet.send.confirmationDialog.addressFromLabel": "From address",
   "wallet.send.confirmationDialog.addressToLabel": "To",
   "wallet.send.confirmationDialog.amountLabel": "Amount",
   "wallet.send.confirmationDialog.assetLabel": "Token",

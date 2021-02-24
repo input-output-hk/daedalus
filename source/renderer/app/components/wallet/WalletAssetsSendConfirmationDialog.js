@@ -36,11 +36,6 @@ export const messages = defineMessages({
     description:
       'Label for the "Spending password" input in the wallet send confirmation dialog.',
   },
-  addressFromLabel: {
-    id: 'wallet.send.confirmationDialog.addressFromLabel',
-    defaultMessage: '!!!From address',
-    description: 'Label for the "From" in the wallet send confirmation dialog.',
-  },
   addressToLabel: {
     id: 'wallet.send.confirmationDialog.addressToLabel',
     defaultMessage: '!!!To',
@@ -341,12 +336,6 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.passphraseFields}>
-          <div className={styles.addressToLabelWrapper}>
-            <div className={styles.addressToLabel}>
-              {intl.formatMessage(messages.addressFromLabel)}
-            </div>
-            <div className={styles.addressFrom}>{sender}</div>
-          </div>
           {assets && (
             <div className={styles.addressToLabelWrapper}>
               <div className={styles.receiverRow}>
