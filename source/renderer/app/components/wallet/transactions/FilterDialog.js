@@ -41,12 +41,12 @@ const messages = defineMessages({
   },
   incoming: {
     id: 'wallet.transaction.filter.incoming',
-    defaultMessage: '!!!Ada received',
+    defaultMessage: '!!!Received',
     description: 'Incoming filter type.',
   },
   outgoing: {
     id: 'wallet.transaction.filter.outgoing',
-    defaultMessage: '!!!Ada sent',
+    defaultMessage: '!!!Sent',
     description: 'Outgoing filter type.',
   },
   dateRange: {
