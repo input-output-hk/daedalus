@@ -1103,8 +1103,8 @@
   "wallet.transaction.state.failedHeading": "失敗しました",
   "wallet.transaction.state.pending": "トランザクション処理中",
   "wallet.transaction.state.pendingHeading": "保留中",
-  "wallet.transaction.tokensReceived": "!!!Tokens received",
-  "wallet.transaction.tokensSent": "!!!Tokens sent",
+  "wallet.transaction.tokensReceived": "トークン入金",
+  "wallet.transaction.tokensSent": "トークン送金",
   "wallet.transaction.transactionAmount": "トランザクション額",
   "wallet.transaction.transactionFee": "取引料金",
   "wallet.transaction.transactionId": "トランザクションID",
@@ -1147,10 +1147,9 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName}の額",
   "wallet.transferFunds.dialog2.title": "資金を移す",
   "wallet.transferFunds.dialog2.total.label": "合計",
-  "widgets.assetToken.item.acronym": "!!!Acronym",
-  "widgets.assetToken.item.assetName": "!!!Asset Name",
-  "widgets.assetToken.item.description": "!!!Description",
-  "widgets.assetToken.item.fingerprint": "!!!Fingerprint",
-  "widgets.assetToken.item.name": "!!!Name",
-  "widgets.assetToken.item.policyId": "!!!Policy Id"
+  "widgets.assetToken.item.acronym": "頭字語",
+  "widgets.assetToken.item.assetName": "アセット名",
+  "widgets.assetToken.item.description": "説明",
+  "widgets.assetToken.item.name": "名称",
+  "widgets.assetToken.item.policyId": "ポリシーID"
 }
