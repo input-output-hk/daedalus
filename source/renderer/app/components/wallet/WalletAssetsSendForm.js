@@ -294,12 +294,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ) {
       currentFilteredAssets[currentFilteredAssets.length] = assets;
     }
-    if (
-      assetsToRemove &&
-      assetsToRemove.length &&
-      newFilteredAssets &&
-      newFilteredAssets.length
-    ) {
+    if (assetsToRemove && assetsToRemove.length) {
       // eslint-disable-next-line array-callback-return
       assetsToRemove.map((item) => {
         newFilteredAssets.push(
@@ -319,9 +314,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         currentFilteredAssets[currentFilteredAssets.length - 2] &&
         currentFilteredAssets[currentFilteredAssets.length - 2].length
       ) {
-        // const { selectedAssetIds } = this.state;
-        // const prevSelectToken = this.getNativeTokenById(selectedAssetIds[currentFilteredAssets.length - 2]);
-        // currentFilteredAssets[currentFilteredAssets.length - 2] = currentFilteredAssets[currentFilteredAssets.length - 2].filter((asset) => asset.assetName !== prevSelectToken.assetName);
+        const newAssets = newFilteredAssets.map((item) => {
+          return currentFilteredAssets[currentFilteredAssets.length - 2].filter(
+            (asset) => asset.assetName !== item.assetName
+          );
+        });
+        currentFilteredAssets[currentFilteredAssets.length - 2] = Object.values(
+          ...newAssets
+        );
       }
       newFilteredAssets = currentFilteredAssets;
     }
@@ -385,7 +385,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     receiverId: string,
     assetId?: string,
     dropdownId?: string,
-    selectedNativeToken?: Asset,
+    selectedNativeToken?: Asset
   ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
@@ -840,7 +840,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
               >
                 <button
-                  // onClick={() => this.clearReceiverAddress(index + 1)}
                   onClick={() => this.handleOnReset('receiver1')}
                   className={styles.clearReceiverButton}
                 >
@@ -1100,13 +1099,23 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   };
 
   removeAssetRow = (index: number, receiverId: string, assetIndex: number) => {
-    const { sendFormFields } = this.state;
+    const { sendFormFields, filteredAssets } = this.state;
     const receiver = sendFormFields[receiverId];
     const assets = receiver.asset;
     if (assets[assetIndex]) {
       this.clearAssetValue(assets[assetIndex]);
       this.removeFormField(assetIndex + 1, receiverId);
       this.updateAssetsStateFormFields(index, receiverId, assetIndex);
+      if (filteredAssets && filteredAssets[assetIndex]) {
+        const currentFilterAssetValue = filteredAssets[assetIndex];
+        const newFilteredAssets = filteredAssets.filter(
+          (item, id) => id !== assetIndex
+        );
+        newFilteredAssets.map((item) => item.push(...currentFilterAssetValue));
+        this.setState({
+          filteredAssets: newFilteredAssets,
+        });
+      }
     }
   };
 
@@ -1138,6 +1147,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       const receiversAssets = receiverFields.asset;
       if (receiversAssets) {
         sendFormFields[receiverId].asset.splice(assetIndex, 1);
+        sendFormFields[receiverId].walletsDropdown.splice(assetIndex, 1);
+        sendFormFields[receiverId].selectedNativeTokens.splice(assetIndex, 1);
         this.setState({
           sendFormFields,
         });
@@ -1185,8 +1196,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           ? selectedTokens.length - 1
           : 0;
         const selectedToken = selectedTokens[selectedTokenId];
-        const selectedTokenValue = selectedToken.quantity;
-        const isAmountLessThenMax = Number(field.value) <= selectedTokenValue;
+        let isAmountLessThenMax = true;
+        if (selectedToken) {
+          const selectedTokenValue = selectedToken.quantity;
+          isAmountLessThenMax = Number(field.value) <= selectedTokenValue;
+        }
         if (
           isValid &&
           isAmountLessThenMax &&
