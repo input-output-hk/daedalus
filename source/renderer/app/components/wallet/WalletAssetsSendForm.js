@@ -179,7 +179,7 @@ type Props = {
   calculateTransactionFee: (
     address: string,
     amount: number,
-    assets?: AssetItems,
+    assets?: AssetItems
   ) => Promise<BigNumber>,
   currentNumberFormat: string,
   walletAmount: BigNumber,
@@ -574,7 +574,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               if (isValid && isReceiverValid) {
                 let assets = [];
                 if (selectedNativeTokens && selectedNativeTokens.length) {
-                  assets = selectedNativeTokens.map(item => {
+                  assets = selectedNativeTokens.map((item) => {
                     return {
                       policy_id: item.policyId,
                       asset_name: item.assetName,
@@ -582,7 +582,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     };
                   });
                 }
-                this.calculateTransactionFee(receiverValue, amountValue, assets);
+                this.calculateTransactionFee(
+                  receiverValue,
+                  amountValue,
+                  assets
+                );
               } else {
                 this.resetTransactionFee();
               }
@@ -641,7 +645,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     prevFeeCalculationRequestQue: number
   ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
 
-  calculateTransactionFee = async (address: string, amountValue: string, assets?: AssetItems) => {
+  calculateTransactionFee = async (
+    address: string,
+    amountValue: string,
+    assets?: AssetItems
+  ) => {
     const amount = formattedAmountToLovelace(amountValue);
     const {
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
@@ -1012,9 +1020,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           metadata && metadata.unit
                             ? `0${
                                 this.getCurrentNumberFormat().decimalSeparator
-                              }${'0'.repeat(
-                                metadata.unit.decimals
-                              )}`
+                              }${'0'.repeat(metadata.unit.decimals)}`
                             : '0'
                         }
                         className={classNames([
@@ -1027,10 +1033,19 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         label={`${intl.formatMessage(messages.assetLabel)} #${
                           assetIndex + 1
                         }`}
-                        bigNumberFormat={metadata && metadata.unit ? this.getCurrentNumberFormat() : null}
-                        decimalPlaces={metadata && metadata.unit ? metadata.unit.decimals : 0}
+                        bigNumberFormat={
+                          metadata && metadata.unit
+                            ? this.getCurrentNumberFormat()
+                            : null
+                        }
+                        decimalPlaces={
+                          metadata && metadata.unit ? metadata.unit.decimals : 0
+                        }
                         numberLocaleOptions={{
-                          minimumFractionDigits: metadata && metadata.unit ? metadata.unit.decimals : 0,
+                          minimumFractionDigits:
+                            metadata && metadata.unit
+                              ? metadata.unit.decimals
+                              : 0,
                         }}
                         onChange={(value) => {
                           this._isCalculatingAssetsFee = true;
@@ -1266,15 +1281,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           const selectedTokenValue = selectedToken.quantity;
           isAmountLessThenMax = Number(field.value) <= selectedTokenValue;
         }
-        if (
-          isValid &&
-          isAmountLessThenMax &&
-          isReceiverValid
-        ) {
+        if (isValid && isAmountLessThenMax && isReceiverValid) {
           this._isCalculatingAssetsFee = false;
           let assets = [];
           if (selectedNativeTokens && selectedNativeTokens.length) {
-            assets = selectedNativeTokens.map(item => {
+            assets = selectedNativeTokens.map((item) => {
               return {
                 policy_id: item.policyId,
                 asset_name: item.assetName,
