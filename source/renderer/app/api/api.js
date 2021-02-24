@@ -762,6 +762,7 @@ export default class AdaApi {
       assets,
       withdrawal = TransactionWithdrawal,
     } = request;
+    console.log('request', request);
 
     try {
       const data = {
@@ -777,6 +778,7 @@ export default class AdaApi {
         ],
         passphrase,
       };
+      console.log('data', data);
 
       let response: Transaction;
       if (isLegacy) {

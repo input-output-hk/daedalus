@@ -763,7 +763,7 @@ export default class WalletsStore extends Store {
     amount,
     passphrase,
     assets,
-    assetsAmounts,
+    assetsAmounts: assetsAmountsStr,
   }: {
     receiver: string,
     amount: string,
@@ -771,6 +771,21 @@ export default class WalletsStore extends Store {
     assets?: Array<WalletSummaryAsset>,
     assetsAmounts?: Array<string>,
   }) => {
+    const assetsAmounts = assetsAmountsStr
+      ? assetsAmountsStr.map((assetAmount) => parseInt(assetAmount, 10))
+      : null;
+    const formattedAssets =
+      assets && assets.length
+        ? assets.map(
+            // eslint-disable-next-line
+            ({ policyId: policy_id, assetName: asset_name }, index) => ({
+              policy_id,
+              asset_name,
+              quantity: get(assetsAmounts, index, 0),
+            })
+          )
+        : null;
+
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     await this.sendMoneyRequest.execute({
@@ -779,6 +794,7 @@ export default class WalletsStore extends Store {
       passphrase,
       walletId: wallet.id,
       isLegacy: wallet.isLegacy,
+      assets: formattedAssets,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();

@@ -205,9 +205,12 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
           assetsAmounts: assetsAmountsStr,
         } = this.props;
         const { passphrase } = form.values();
-        const assetsAmounts = assetsAmountsStr && assetsAmountsStr.length ? assetsAmountsStr.map((assetAmount) =>
-          amountToNaturalUnits(assetAmount)
-        ) : null;
+        const assetsAmounts =
+          assetsAmountsStr && assetsAmountsStr.length
+            ? assetsAmountsStr.map((assetAmount) =>
+                amountToNaturalUnits(assetAmount)
+              )
+            : null;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
@@ -273,7 +276,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
 
   getAssetFormattedAmount = (asset: WalletSummaryAsset, index: number) => {
     const { assetsAmounts } = this.props;
-    const strAmount = get(assetsAmounts, `[${index}]`, 0);
+    const strAmount = get(assetsAmounts, index, 0);
     const assetAmount = new BigNumber(strAmount);
     const { metadata } = asset;
     return formattedTokenWalletAmount(assetAmount, metadata);
@@ -373,7 +376,16 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                         }}
                       />
                       <div className={styles.assetsContainer}>
-                        {formattedWalletAmount(amount)}
+                        <h3>
+                          <span>
+                            {intl.formatMessage(globalMessages.unitAda)}
+                          </span>
+                        </h3>
+                        <div className={styles.amountFeesWrapper}>
+                          <div className={styles.amount}>
+                            {formattedWalletAmount(new BigNumber(amount))}
+                          </div>
+                        </div>
                       </div>
                       {assets.map((asset, assetIndex) => {
                         const assetAmount = this.getAssetFormattedAmount(
