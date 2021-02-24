@@ -420,7 +420,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           },
         },
         filteredAssets: [],
-        selectedAssetIds: [],
       });
       const { assets } = this.props;
       this.filterAssets(assets, true);
