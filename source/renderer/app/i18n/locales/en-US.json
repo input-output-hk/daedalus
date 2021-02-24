@@ -1147,9 +1147,9 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName} amount",
   "wallet.transferFunds.dialog2.title": "Transfer funds",
   "wallet.transferFunds.dialog2.total.label": "Total",
-  "widgets.assetToken.item.acronym": "Acronym",
   "widgets.assetToken.item.assetName": "Asset name",
   "widgets.assetToken.item.description": "Description",
   "widgets.assetToken.item.name": "Name",
-  "widgets.assetToken.item.policyId": "Policy Id"
+  "widgets.assetToken.item.policyId": "Policy Id",
+  "widgets.assetToken.item.ticker": "Ticker"
 }

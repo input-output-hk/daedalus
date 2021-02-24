@@ -15685,16 +15685,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Acronym",
-        "description": "\"acronym\" item.",
+        "defaultMessage": "!!!Ticker",
+        "description": "\"ticker\" item.",
         "end": {
           "column": 3,
           "line": 39
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.acronym",
+        "id": "widgets.assetToken.item.ticker",
         "start": {
-          "column": 15,
+          "column": 14,
           "line": 35
         }
       },
