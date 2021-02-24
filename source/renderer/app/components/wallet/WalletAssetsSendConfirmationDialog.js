@@ -5,6 +5,8 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { get } from 'lodash';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
@@ -22,7 +24,10 @@ import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import AssetToken from '../widgets/AssetToken';
-import { formattedTokenWalletAmount } from '../../utils/formatters';
+import {
+  formattedWalletAmount,
+  formattedTokenWalletAmount,
+} from '../../utils/formatters';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -113,9 +118,9 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   amount: string,
-  sender: string,
   receiver: string,
   assets: Array<WalletSummaryAsset>,
+  assetsAmounts: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -197,14 +202,19 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
           amountToNaturalUnits,
           isHardwareWallet,
           assets,
+          assetsAmounts: assetsAmountsStr,
         } = this.props;
         const { passphrase } = form.values();
+        const assetsAmounts = assetsAmountsStr.map((assetAmount) =>
+          amountToNaturalUnits(assetAmount)
+        );
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
           assets,
+          assetsAmounts,
         };
         this.props.onSubmit(transactionData);
       },
@@ -261,6 +271,14 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     }
   };
 
+  getAssetFormattedAmount = (asset: WalletSummaryAsset, index: number) => {
+    const { assetsAmounts } = this.props;
+    const strAmount = get(assetsAmounts, `[${index}]`, 0);
+    const assetAmount = new BigNumber(strAmount);
+    const { metadata } = asset;
+    return formattedTokenWalletAmount(assetAmount, metadata);
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -269,7 +287,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
-      sender,
+      amount,
       assets,
       receiver,
       transactionFee,
@@ -354,33 +372,39 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                           }px`,
                         }}
                       />
-                      {assets.map((asset, assetIndex) => (
-                        <div
-                          key={asset.fingerprint}
-                          className={styles.assetsContainer}
-                        >
-                          <h3>
-                            <span>
-                              {intl.formatMessage(messages.assetLabel)}
-                              &nbsp;#{assetIndex + 1}
-                            </span>
-                            <AssetToken
-                              asset={asset}
-                              componentClassName={styles.assetToken}
-                            />
-                          </h3>
-                          {asset && asset.quantity.isPositive() && (
-                            <div className={styles.amountFeesWrapper}>
-                              <div className={styles.amount}>
-                                {formattedTokenWalletAmount(
-                                  asset.quantity,
-                                  asset.metadata
-                                )}
+                      <div className={styles.assetsContainer}>
+                        {formattedWalletAmount(amount)}
+                      </div>
+                      {assets.map((asset, assetIndex) => {
+                        const assetAmount = this.getAssetFormattedAmount(
+                          asset,
+                          assetIndex
+                        );
+                        return (
+                          <div
+                            key={asset.fingerprint}
+                            className={styles.assetsContainer}
+                          >
+                            <h3>
+                              <span>
+                                {intl.formatMessage(messages.assetLabel)}
+                                &nbsp;#{assetIndex + 1}
+                              </span>
+                              <AssetToken
+                                asset={asset}
+                                componentClassName={styles.assetToken}
+                              />
+                            </h3>
+                            {assetAmount && (
+                              <div className={styles.amountFeesWrapper}>
+                                <div className={styles.amount}>
+                                  {assetAmount}
+                                </div>
                               </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

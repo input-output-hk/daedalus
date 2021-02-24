@@ -338,24 +338,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return selectedAssets;
   };
 
-  getTransactionAsset = (fingerprint: string, index: number) => {
-    const { assets } = this.props;
+  get transactionAssetsAmounts() {
     const { sendFormFields } = this.state;
-    const asset = assets.find((item) => item.fingerprint === fingerprint);
     const assetsFields = get(sendFormFields, 'receiver1.asset');
-    const qty = get(assetsFields, `[${index}]`, 0);
-    const quantity = new BigNumber(qty.value);
-    return {
-      ...asset,
-      quantity,
-    };
-  };
+    return map(assetsFields, (assetField) => assetField.value);
+  }
 
   get transactionAssets() {
-    const { selectedAssetFingerprints } = this.state;
-    return map(selectedAssetFingerprints, (fingerprint, index) => ({
-      ...this.getTransactionAsset(fingerprint, index),
-    }));
+    const { selectedAssetFingerprints } = this.state || [];
+    const { assets } = this.props;
+    return map(selectedAssetFingerprints, (fingerprint) =>
+      assets.find((asset) => asset.fingerprint === fingerprint)
+    );
   }
 
   handleOnSubmit = () => {
@@ -1477,6 +1471,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
             assets={this.transactionAssets}
+            assetsAmounts={this.transactionAssetsAmounts}
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
             multipleReceivers={[
