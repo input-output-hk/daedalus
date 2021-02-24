@@ -6,13 +6,14 @@ import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
 import WalletAssetsSendConfirmationDialog from '../../../components/wallet/WalletAssetsSendConfirmationDialog';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type Props = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
   amount: string,
   receiver: string,
-  multipleReceivers?: Array<string>,
+  assets?: Array<WalletSummaryAsset>,
   totalAmount: ?string,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -48,8 +49,8 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const {
       actions,
       amount,
+      assets,
       receiver,
-      multipleReceivers,
       totalAmount,
       onExternalLinkClick,
       transactionFee,
@@ -81,11 +82,12 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
     return (
       <>
-        {multipleReceivers && multipleReceivers.length ? (
+        {assets && assets.length ? (
           <WalletAssetsSendConfirmationDialog
             amount={amount}
             sender={activeWallet.id}
-            receivers={multipleReceivers}
+            receivers={[receiver]}
+            assets={assets}
             transactionFee={transactionFee}
             amountToNaturalUnits={amountToNaturalUnits}
             onSubmit={this.handleWalletSendFormSubmit}

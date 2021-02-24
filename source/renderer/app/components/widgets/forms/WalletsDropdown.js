@@ -157,7 +157,7 @@ export default class WalletsDropdown extends Component<Props> {
     const assetsData =
       assets && assets.length
         ? assets.map((asset: WalletSummaryAsset) => {
-            const { metadata, quantity, assetName } = asset;
+            const { metadata, quantity, fingerprint } = asset;
             const formattedAmount = formattedTokenWalletAmount(
               quantity,
               metadata
@@ -165,7 +165,7 @@ export default class WalletsDropdown extends Component<Props> {
             return {
               detail: formattedAmount,
               label: <AssetToken asset={asset} hideTooltip small />,
-              value: assetName,
+              value: fingerprint,
             };
           })
         : null;
