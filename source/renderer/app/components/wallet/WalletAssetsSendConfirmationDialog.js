@@ -349,58 +349,53 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
           </div>
           {assets && (
             <div className={styles.addressToLabelWrapper}>
-              {assets.map((token, tokenIndex) => (
-                <div key={token.fingerprint} className={styles.receiverRow}>
-                  <div className={styles.receiverRowItem}>
-                    <h2>
-                      {intl.formatMessage(messages.receiverLabel)}
-                      {assets.length > 1 && <div>&nbsp;#{tokenIndex + 1}</div>}
-                    </h2>
-                    <div className={styles.receiverRowItemAddresses}>
-                      {receiver}
-                      <div className={styles.assetsWrapper}>
+              <div className={styles.receiverRow}>
+                <div className={styles.receiverRowItem}>
+                  <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
+                  <div className={styles.receiverRowItemAddresses}>
+                    {receiver}
+                    <div className={styles.assetsWrapper}>
+                      <div
+                        className={styles.assetsSeparator}
+                        style={{
+                          height: `${assetsSeparatorCalculatedHeight}px`,
+                          top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                          marginTop: `-${
+                            assetsSeparatorCalculatedHeight + 5
+                          }px`,
+                        }}
+                      />
+                      {assets.map((asset, assetIndex) => (
                         <div
-                          className={styles.assetsSeparator}
-                          style={{
-                            height: `${assetsSeparatorCalculatedHeight}px`,
-                            top: `${assetsSeparatorCalculatedHeight + 5}px`,
-                            marginTop: `-${
-                              assetsSeparatorCalculatedHeight + 5
-                            }px`,
-                          }}
-                        />
-                        {assets.map((asset, assetIndex) => (
-                          <div
-                            key={token.fingerprint}
-                            className={styles.assetsContainer}
-                          >
-                            <h3>
-                              <span>
-                                {intl.formatMessage(messages.assetLabel)}
-                                &nbsp;#{assetIndex + 1}
-                              </span>
-                              <AssetToken
-                                asset={asset}
-                                componentClassName={styles.assetToken}
-                              />
-                            </h3>
-                            {asset && asset.quantity.isPositive() && (
-                              <div className={styles.amountFeesWrapper}>
-                                <div className={styles.amount}>
-                                  {formattedTokenWalletAmount(
-                                    asset.quantity,
-                                    asset.metadata
-                                  )}
-                                </div>
+                          key={asset.fingerprint}
+                          className={styles.assetsContainer}
+                        >
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetIndex + 1}
+                            </span>
+                            <AssetToken
+                              asset={asset}
+                              componentClassName={styles.assetToken}
+                            />
+                          </h3>
+                          {asset && asset.quantity.isPositive() && (
+                            <div className={styles.amountFeesWrapper}>
+                              <div className={styles.amount}>
+                                {formattedTokenWalletAmount(
+                                  asset.quantity,
+                                  asset.metadata
+                                )}
                               </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           )}
 
