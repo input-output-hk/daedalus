@@ -77,6 +77,7 @@ type TransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
+  assets?: Array<{ quantity: number; unit: string; }>,
 };
 
 export default class TransactionsStore extends Store {
