@@ -114,7 +114,18 @@ export default class WalletSummaryPage extends Component<Props> {
         const assetDetails = getAssetDetails(policyId, assetName);
         return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
       })
-      .filter((asset) => asset != null);
+      .filter((asset) => asset != null)
+      .sort(
+        (asset1, asset2) => {
+          if (asset1.fingerprint < asset2.fingerprint) {
+            return -1;
+          }
+          if (asset1.fingerprint > asset2.fingerprint) {
+            return 1;
+          }
+          return 0;
+        }
+      );
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = walletAssets.length;
     const hasRawAssets = wallet.assets.total.length > 0;
