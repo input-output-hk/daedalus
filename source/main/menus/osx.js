@@ -34,6 +34,15 @@ export const osxMenu = (
       },
       { type: 'separator' },
       {
+        label: translation('daedalus.redeemItnRewards'),
+        accelerator: 'Command+T',
+        click() {
+          actions.openItnRewardsRedemptionDialog();
+        },
+        enabled: !isUpdateAvailable && isNavigationEnabled,
+      },
+      { type: 'separator' },
+      {
         label: translation('daedalus.settings'),
         accelerator: 'Command+,',
         click() {

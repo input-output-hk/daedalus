@@ -19,7 +19,7 @@ export const buildAppMenus = async (
     isNavigationEnabled: boolean,
   }
 ) => {
-  const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isUpdateAvailable, isNavigationEnabled } = data;
 
@@ -32,6 +32,10 @@ export const buildAppMenus = async (
 
   const openDaedalusDiagnosticsDialog = () => {
     if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
+  };
+
+  const openItnRewardsRedemptionDialog = () => {
+    if (mainWindow) showUiPartChannel.send(ITN_REWARDS_REDEMPTION, mainWindow);
   };
 
   const openSettingsPage = () => {
@@ -92,6 +96,7 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
+    openItnRewardsRedemptionDialog,
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
