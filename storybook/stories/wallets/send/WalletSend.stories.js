@@ -209,6 +209,7 @@ storiesOf('Wallets|Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
+      isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
     />
@@ -229,6 +230,7 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
       isHardwareWallet={boolean('isHardwareWallet', true)}
+      isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
     />
@@ -249,6 +251,7 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
       isHardwareWallet={boolean('isHardwareWallet', true)}
+      isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
     />
@@ -269,6 +272,7 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
       isHardwareWallet={boolean('isHardwareWallet', true)}
+      isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
     />
@@ -287,6 +291,7 @@ storiesOf('Wallets|Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
+      isLoadingAssets={boolean('isLoadingAssets', false)}
       assets={sendFormAssetData}
       walletAmount={new BigNumber(123)}
       onExternalLinkClick={action('onExternalLinkClick')}
