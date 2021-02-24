@@ -901,7 +901,6 @@
   "wallet.select.import.dialog.walletExists": "既存のウォレット",
   "wallet.select.import.dialog.walletImported": "ウォレットをインポート済み",
   "wallet.select.import.dialog.walletName": "ウォレット名を入力してください",
-  "wallet.send.confirmationDialog.addressFromLabel": "差出人住所",
   "wallet.send.confirmationDialog.addressToLabel": "送金先",
   "wallet.send.confirmationDialog.amountLabel": "金額",
   "wallet.send.confirmationDialog.assetLabel": "トークン",
