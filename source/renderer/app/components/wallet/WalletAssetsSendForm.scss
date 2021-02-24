@@ -152,6 +152,7 @@
     line-height: 1.36;
     position: absolute;
     right: 18px;
+    top: 2px;
   }
 
   input {
@@ -347,6 +348,7 @@
   left: 95px;
   letter-spacing: 0.5px;
   line-height: 1.2;
+  position: absolute;
   text-transform: uppercase;
   top: 2px;
   width: 61.5px;
@@ -368,7 +370,12 @@
   justify-content: center;
 
   button {
-    margin: 0 10px;
+    margin: 0;
+    width: 280px;
+
+    & + button {
+      margin-left: 20px;
+    }
   }
 }
 
