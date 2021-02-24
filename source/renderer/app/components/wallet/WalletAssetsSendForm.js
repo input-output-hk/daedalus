@@ -359,6 +359,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const receiverField = this.form.$(index ? `receiver${index}` : 'receiver1');
     if (receiverField) {
       receiverField.clear();
+      this.setReceiverValidity(true);
     }
   };
 
@@ -418,7 +419,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             selectedNativeTokens: [],
           },
         },
+        filteredAssets: [],
+        selectedAssetIds: [],
       });
+      const { assets } = this.props;
+      this.filterAssets(assets, true);
     } else {
       const { sendFormFields } = this.state;
       const currentReceiverFields = sendFormFields[receiverId];
@@ -501,10 +506,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           value: '',
           validators: [
             async ({ field, form }) => {
+              const { isReceiverAddressValid } = this.state;
               if (field.value === null) {
                 this.resetTransactionFee();
                 return [
                   false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              if (isReceiverAddressValid && field.value === '') {
+                this.resetTransactionFee();
+                return [
+                  true,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
