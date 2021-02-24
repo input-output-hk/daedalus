@@ -17,11 +17,6 @@ import {
 } from '../../config/timingConfig';
 
 const messages = defineMessages({
-  fingerprintItem: {
-    id: 'widgets.assetToken.item.fingerprint',
-    defaultMessage: '!!!Fingerprint',
-    description: '"fingerprint" item.',
-  },
   policyIdItem: {
     id: 'widgets.assetToken.item.policyId',
     defaultMessage: '!!!Policy Id',
@@ -29,7 +24,7 @@ const messages = defineMessages({
   },
   assetNameItem: {
     id: 'widgets.assetToken.item.assetName',
-    defaultMessage: '!!!Asset Name',
+    defaultMessage: '!!!Asset name',
     description: '"assetName" item.',
   },
   nameItem: {

@@ -9483,7 +9483,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Your wallet addresses",
+        "defaultMessage": "!!!Available wallet addresses",
         "description": "Instructions Title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -9764,7 +9764,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Your wallet addresses",
+        "defaultMessage": "!!!Available wallet addresses",
         "description": "Instructions Title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -9778,7 +9778,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Share any of these wallet addresses to receive payments. To protect your privacy, always use a new address when requesting funds. New addresses will be automatically generated after you receive funds to the addresses listed here.",
+        "defaultMessage": "!!!Share any of these wallet addresses <b>to receive payments in ada or a native Cardano token</b>.",
         "description": "Instructions Description on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -9792,17 +9792,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Privacy warning: Please note that all of your receiving addresses include your stake key. When you share a receiving address, the recipient can search the blockchain using your stake key to locate all addresses associated with your wallet, and also discover your wallet balance and transaction history.",
+        "description": "Privacy warning on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveSequential.js",
+        "id": "wallet.receive.page.instructions.privacyWarning",
+        "start": {
+          "column": 18,
+          "line": 26
+        }
+      },
+      {
         "defaultMessage": "!!!Receiving addresses",
         "description": "Addresses Title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveSequential.js",
         "id": "wallet.receive.page.addresses.addressesTitle",
         "start": {
           "column": 18,
-          "line": 26
+          "line": 32
         }
       },
       {
@@ -9810,13 +9824,13 @@
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveSequential.js",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
-          "line": 31
+          "line": 37
         }
       }
     ],
@@ -11611,7 +11625,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Ada received",
+        "defaultMessage": "!!!Received",
         "description": "Incoming filter type.",
         "end": {
           "column": 3,
@@ -11625,7 +11639,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Ada sent",
+        "defaultMessage": "!!!Sent",
         "description": "Outgoing filter type.",
         "end": {
           "column": 3,
@@ -14353,31 +14367,17 @@
         }
       },
       {
-        "defaultMessage": "!!!From address",
-        "description": "Label for the \"From\" in the wallet send confirmation dialog.",
+        "defaultMessage": "!!!To",
+        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.addressFromLabel",
-        "start": {
-          "column": 20,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!To",
-        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 39
         }
       },
       {
@@ -14385,13 +14385,13 @@
         "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 49
+          "line": 44
         }
       },
       {
@@ -14399,13 +14399,13 @@
         "description": "Token",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.assetLabel",
         "start": {
           "column": 14,
-          "line": 55
+          "line": 50
         }
       },
       {
@@ -14413,13 +14413,13 @@
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 60
+          "line": 55
         }
       },
       {
@@ -14427,13 +14427,13 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 65
+          "line": 60
         }
       },
       {
@@ -14441,13 +14441,13 @@
         "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.receiver.label",
         "start": {
           "column": 17,
-          "line": 71
+          "line": 66
         }
       },
       {
@@ -14455,13 +14455,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 77
+          "line": 72
         }
       },
       {
@@ -14469,13 +14469,13 @@
         "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateWarning",
         "start": {
           "column": 26,
-          "line": 83
+          "line": 78
         }
       },
       {
@@ -14483,13 +14483,13 @@
         "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
         "start": {
           "column": 32,
-          "line": 90
+          "line": 85
         }
       },
       {
@@ -14497,13 +14497,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
-          "line": 97
+          "line": 92
         }
       },
       {
@@ -14511,13 +14511,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
-          "line": 103
+          "line": 98
         }
       },
       {
@@ -14525,13 +14525,13 @@
         "description": "Label for password error in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 109
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passwordError",
         "start": {
           "column": 24,
-          "line": 109
+          "line": 104
         }
       }
     ],
@@ -15643,45 +15643,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Fingerprint",
-        "description": "\"fingerprint\" item.",
+        "defaultMessage": "!!!Policy Id",
+        "description": "\"policyId\" item.",
         "end": {
           "column": 3,
           "line": 24
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.fingerprint",
+        "id": "widgets.assetToken.item.policyId",
         "start": {
-          "column": 19,
+          "column": 16,
           "line": 20
         }
       },
       {
-        "defaultMessage": "!!!Policy Id",
-        "description": "\"policyId\" item.",
+        "defaultMessage": "!!!Asset name",
+        "description": "\"assetName\" item.",
         "end": {
           "column": 3,
           "line": 29
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.policyId",
-        "start": {
-          "column": 16,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Asset Name",
-        "description": "\"assetName\" item.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.assetName",
         "start": {
           "column": 17,
-          "line": 30
+          "line": 25
         }
       },
       {
@@ -15689,13 +15675,13 @@
         "description": "\"name\" item.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 34
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.name",
         "start": {
           "column": 12,
-          "line": 35
+          "line": 30
         }
       },
       {
@@ -15703,13 +15689,13 @@
         "description": "\"acronym\" item.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 39
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.acronym",
         "start": {
           "column": 15,
-          "line": 40
+          "line": 35
         }
       },
       {
@@ -15717,13 +15703,13 @@
         "description": "\"description\" item.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 44
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.description",
         "start": {
           "column": 19,
-          "line": 45
+          "line": 40
         }
       }
     ],
