@@ -1249,7 +1249,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       );
     this.form.$(newAsset).set('validators', [
       async ({ field, form }) => {
-        const amountValue = field.value.toString();
+        const amountValue = field.value ? field.value.toString() : '';
         const isValid = await this.props.validateAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
