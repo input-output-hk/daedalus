@@ -5,7 +5,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { get } from 'lodash';
+import { get, filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -201,16 +201,9 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
           amount,
           amountToNaturalUnits,
           isHardwareWallet,
-          assets,
-          assetsAmounts: assetsAmountsStr,
         } = this.props;
         const { passphrase } = form.values();
-        const assetsAmounts =
-          assetsAmountsStr && assetsAmountsStr.length
-            ? assetsAmountsStr.map((assetAmount) =>
-                amountToNaturalUnits(assetAmount)
-              )
-            : null;
+        const { assets, assetsAmounts } = this.filteredAssets;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
@@ -274,13 +267,42 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     }
   };
 
-  getAssetFormattedAmount = (asset: WalletSummaryAsset, index: number) => {
+  getAssetAmount = (index: number) => {
     const { assetsAmounts } = this.props;
-    const strAmount = get(assetsAmounts, index, 0);
+    const asset = get(assetsAmounts, index, 0);
+    return asset;
+  };
+
+  getAssetFormattedAmount = (asset: WalletSummaryAsset, index: number) => {
+    const strAmount = this.getAssetAmount(index);
     const assetAmount = new BigNumber(strAmount);
     const { metadata } = asset;
     return formattedTokenWalletAmount(assetAmount, metadata);
   };
+
+  get filteredAssets() {
+    const {
+      assets: allAssets,
+      assetsAmounts: allAssetsAmounts,
+      amountToNaturalUnits,
+    } = this.props;
+    const assets = allAssets
+      ? filter(
+          allAssets,
+          (asset, index) => !!parseInt(this.getAssetAmount(index), 10)
+        )
+      : null;
+    const assetsAmounts = allAssetsAmounts
+      ? filter(
+          allAssetsAmounts,
+          (assetAmount) => !!parseInt(assetAmount, 10)
+        ).map((assetAmount) => amountToNaturalUnits(assetAmount))
+      : null;
+    return {
+      assets,
+      assetsAmounts,
+    };
+  }
 
   render() {
     const { form } = this;
@@ -291,7 +313,6 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     const {
       onCancel,
       amount,
-      assets,
       receiver,
       transactionFee,
       isSubmitting,
@@ -301,6 +322,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
       hwDeviceStatus,
       isHardwareWallet,
     } = this.props;
+    const { assets } = this.filteredAssets;
 
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.sendButtonLabel)
@@ -330,7 +352,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     const assetsSeparatorBasicHeight = 27;
     const assetsSeparatorCalculatedHeight =
       assets && assets.length
-        ? assetsSeparatorBasicHeight * assets.length - 18
+        ? assetsSeparatorBasicHeight * (assets.length + 1) - 18
         : assetsSeparatorBasicHeight;
 
     let errorElement = null;
