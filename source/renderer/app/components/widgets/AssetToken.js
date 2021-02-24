@@ -32,10 +32,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Name',
     description: '"name" item.',
   },
-  acronymItem: {
-    id: 'widgets.assetToken.item.acronym',
-    defaultMessage: '!!!Acronym',
-    description: '"acronym" item.',
+  tickerItem: {
+    id: 'widgets.assetToken.item.ticker',
+    defaultMessage: '!!!Ticker',
+    description: '"ticker" item.',
   },
   descriptionItem: {
     id: 'widgets.assetToken.item.description',
@@ -169,11 +169,11 @@ export default class AssetToken extends Component<Props, State> {
         <dl>
           {acronym && (
             <F>
-              <dt>{intl.formatMessage(messages.acronymItem)}</dt>
+              <dt>{intl.formatMessage(messages.tickerItem)}</dt>
               <dd>
                 {item(
                   'acronym',
-                  intl.formatMessage(messages.acronymItem),
+                  intl.formatMessage(messages.tickerItem),
                   acronym
                 )}
               </dd>
