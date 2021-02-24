@@ -793,7 +793,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     let minimumAdaValue = TRANSACTION_MIN_ADA_VALUE;
 
-    if (minimumAda) {
+    if (minimumAda && !minimumAda.isZero()) {
       if (transactionFee) {
         minimumAdaValue = minimumAda.plus(transactionFee).toFormat();
       } else {
@@ -1053,6 +1053,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                                 assetIndex,
                                 receiverId
                               );
+                              const focusedField = this.form.$(`${receiverId}_asset${assetIndex + 1}`);
+                              if (focusedField) {
+                                focusedField.clear();
+                              }
                             }}
                             syncingLabel={intl.formatMessage(
                               messages.syncingWallet
@@ -1222,6 +1226,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           isReceiverValid &&
           isAdaAssetValid
         ) {
+          this._isCalculatingAssetsFee = false;
           this.calculateTransactionFee(receiverValue, adaAssetFieldValue);
         } else if (!isAmountLessThenMax) {
           const error = this.context.intl.formatMessage(messages.invalidAmount);
