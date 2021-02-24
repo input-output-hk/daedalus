@@ -46,11 +46,10 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding: 7px 0;
+  padding: 9px 3px;
   user-select: text;
   .fingerprint {
     cursor: pointer;
-    margin-bottom: 10px;
     position: relative;
     .copyIcon {
       position: absolute;
@@ -73,7 +72,6 @@
     font-size: 12px;
     font-weight: 500;
     line-height: 1.33;
-    margin-bottom: 10px;
     text-align: right;
     white-space: nowrap;
     width: 67px;
@@ -84,7 +82,7 @@
     font-family: var(--font-light);
     font-size: 12px;
     line-height: 1.33;
-    margin: 0 0 10px 10px;
+    margin: 10px 0 0 10px;
     width: calc(100% - 87px);
     em {
       &:not(.singleline) {

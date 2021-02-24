@@ -52,6 +52,8 @@ export default class WalletSummary extends Component<Props> {
       onExternalLinkClick,
     } = this.props;
 
+    const { isRestoring } = wallet;
+
     const hasCurrency =
       currencyIsActive &&
       currencyIsAvailable &&
@@ -83,20 +85,24 @@ export default class WalletSummary extends Component<Props> {
             )
           }
         />
-        {hasAssets ? (
-          <WalletSummaryAssets
-            wallet={wallet}
-            assets={assets}
-            onOpenAssetSend={onOpenAssetSend}
-            isLoadingAssets={isLoadingAssets}
-            onCopyAssetItem={onCopyAssetItem}
-          />
-        ) : (
-          <WalletSummaryNoTokens
-            numberOfAssets={assets.length}
-            isLoadingAssets={isLoadingAssets}
-            onExternalLinkClick={onExternalLinkClick}
-          />
+        {!isRestoring && (
+          <>
+            {hasAssets ? (
+              <WalletSummaryAssets
+                wallet={wallet}
+                assets={assets}
+                onOpenAssetSend={onOpenAssetSend}
+                isLoadingAssets={isLoadingAssets}
+                onCopyAssetItem={onCopyAssetItem}
+              />
+            ) : (
+              <WalletSummaryNoTokens
+                numberOfAssets={assets.length}
+                isLoadingAssets={isLoadingAssets}
+                onExternalLinkClick={onExternalLinkClick}
+              />
+            )}
+          </>
         )}
       </>
     );
