@@ -830,8 +830,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ? assetsSeparatorBasicHeight * (asset.length + 1) - 40 * asset.length
         : assetsSeparatorBasicHeight;
 
-    const tokenDecimalPlaces = 0;
-
     const sortedAssets = filteredAssets.map((item) =>
       orderBy(item, 'metadata.acronym', 'asc')
     );
@@ -1011,11 +1009,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       <NumericInput
                         {...assetFieldProps[assetIndex]}
                         placeholder={
-                          metadata
+                          metadata && metadata.unit
                             ? `0${
                                 this.getCurrentNumberFormat().decimalSeparator
                               }${'0'.repeat(
-                                this.props.currencyMaxFractionalDigits
+                                metadata.unit.decimals
                               )}`
                             : '0'
                         }
@@ -1029,10 +1027,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         label={`${intl.formatMessage(messages.assetLabel)} #${
                           assetIndex + 1
                         }`}
-                        bigNumberFormat={this.getCurrentNumberFormat()}
-                        decimalPlaces={tokenDecimalPlaces}
+                        bigNumberFormat={metadata && metadata.unit ? this.getCurrentNumberFormat() : null}
+                        decimalPlaces={metadata && metadata.unit ? metadata.unit.decimals : 0}
                         numberLocaleOptions={{
-                          minimumFractionDigits: tokenDecimalPlaces,
+                          minimumFractionDigits: metadata && metadata.unit ? metadata.unit.decimals : 0,
                         }}
                         onChange={(value) => {
                           this._isCalculatingAssetsFee = true;
