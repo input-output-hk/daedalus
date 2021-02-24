@@ -25,6 +25,7 @@ import {
   generateFilterOptions,
   isTransactionInFilterRange,
 } from '../utils/transaction';
+import type { AssetItems } from '../api/assets/types';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
@@ -77,7 +78,7 @@ type TransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
-  assets?: Array<{ quantity: number; unit: string; }>,
+  assets?: AssetItems,
 };
 
 export default class TransactionsStore extends Store {

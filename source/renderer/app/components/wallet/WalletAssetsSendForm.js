@@ -179,7 +179,7 @@ type Props = {
   calculateTransactionFee: (
     address: string,
     amount: number,
-    assets: AssetItems,
+    assets?: AssetItems,
   ) => Promise<BigNumber>,
   currentNumberFormat: string,
   walletAmount: BigNumber,
@@ -573,7 +573,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               }
               if (isValid && isReceiverValid) {
                 let assets = [];
-                if (selectedNativeTokens.length) {
+                if (selectedNativeTokens && selectedNativeTokens.length) {
                   assets = selectedNativeTokens.map(item => {
                     return {
                       policy_id: item.policyId,

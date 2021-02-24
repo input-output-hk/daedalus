@@ -120,7 +120,7 @@ type Props = {
   amount: string,
   receiver: string,
   assets: Array<WalletSummaryAsset>,
-  assetsAmounts: Array<string>,
+  assetsAmounts?: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -205,9 +205,9 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
           assetsAmounts: assetsAmountsStr,
         } = this.props;
         const { passphrase } = form.values();
-        const assetsAmounts = assetsAmountsStr.map((assetAmount) =>
+        const assetsAmounts = assetsAmountsStr && assetsAmountsStr.length ? assetsAmountsStr.map((assetAmount) =>
           amountToNaturalUnits(assetAmount)
-        );
+        ) : null;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
