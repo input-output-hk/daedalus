@@ -215,7 +215,7 @@ export default class TooltipPool extends Component<Props, State> {
     return !IS_RANKING_DATA_AVAILABLE;
   }
 
-  renderDescriptionFields = (popOverDefaultVars) => {
+  renderDescriptionFields = (popOverDefaultVars: any) => {
     const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
     const { currentTheme, stakePool, numberOfRankedStakePools } = this.props;
