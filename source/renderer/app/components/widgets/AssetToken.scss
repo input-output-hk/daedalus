@@ -1,7 +1,7 @@
 .component {
-  width: 100%;
   display: inline-flex;
   min-width: 0;
+  width: 100%;
   > span {
     min-width: 0;
   }
@@ -13,9 +13,9 @@
 }
 .content {
   display: flex;
-  position: relative;
-  min-width: 0;
   height: 22px;
+  min-width: 0;
+  position: relative;
 }
 .fingerprint {
   background: var(--theme-widgets-asset-token-fingerprint-background-color);
@@ -64,8 +64,8 @@
     }
   }
   dl {
-    width: 100%;
     line-height: 1;
+    width: 100%;
   }
   dt {
     display: inline-block;

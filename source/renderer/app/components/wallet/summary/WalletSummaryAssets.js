@@ -91,9 +91,6 @@ export default class WalletSummaryAssets extends Component<Props> {
                             asset.quantity,
                             asset.metadata
                           )}
-                      {asset.metadata && (
-                        <span>&nbsp;{asset.metadata.acronym}</span>
-                      )}
                     </div>
                   </div>
                 )}
