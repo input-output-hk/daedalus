@@ -397,7 +397,6 @@
         .WalletsDropdownOption_selected
         .WalletsDropdownOption_topRow {
         justify-content: flex-end;
-        // width: 70px !important;
       }
 
       .SimpleSelect_selectInput.SelectOverrides_selectInput
@@ -413,13 +412,13 @@
       }
 
       .SimpleOptions_option {
-        padding: 9px 15px;
+        padding: 6px 15px;
       }
 
       .OptionsOverrides_options {
         left: auto !important;
-        right: 52px !important;
-        // width: 289px !important;
+        right: 41px !important;
+        min-width: 289px;
       }
 
       .SimpleBubble_root:not(.SimpleBubble_openUpward) .SimpleBubble_bubble {
