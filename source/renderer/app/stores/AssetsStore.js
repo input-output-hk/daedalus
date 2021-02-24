@@ -11,6 +11,8 @@ type WalletId = string;
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
+  @observable activeTokenFingerprint: ?string = null;
+
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
   } = {};
@@ -19,6 +21,9 @@ export default class AssetsStore extends Store {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
     const { wallets: walletsActions } = this.actions;
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
+    walletsActions.setActiveTokenFingerprint.listen(
+      this._setActiveTokenFingerprint
+    );
   }
 
   // ==================== PUBLIC ==================
@@ -55,6 +60,12 @@ export default class AssetsStore extends Store {
         this._retrieveAssetsRequest(walletId).execute({ walletId });
       }
     }
+  };
+
+  @action _setActiveTokenFingerprint = (params: {
+    tokenFingerprint: string,
+  }) => {
+    this.activeTokenFingerprint = params.tokenFingerprint;
   };
 
   @action _createWalletAssetsRequest = (

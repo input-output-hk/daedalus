@@ -190,10 +190,11 @@ type Props = {
   isRestoreActive: boolean,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
+  isLoadingAssets: boolean,
   assets: Array<WalletSummaryAsset>,
   isClearTooltipOpeningDownward?: boolean,
   hasAssets: boolean,
-  selectedToken?: Asset,
+  selectedToken?: ?Asset,
 };
 
 type State = {
@@ -842,15 +843,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       orderBy(item, 'metadata.acronym', 'asc')
     );
 
-    let minimumAdaValue = TRANSACTION_MIN_ADA_VALUE;
-
-    if (minimumAda && !minimumAda.isZero()) {
-      minimumAdaValue = minimumAda.toFormat();
-    }
-
-    if (transactionFee && !transactionFee.isZero()) {
-      minimumAdaValue = transactionFee.toFormat();
-    }
+    const minimumAdaValue = minimumAda.isZero()
+      ? TRANSACTION_MIN_ADA_VALUE
+      : minimumAda.toFormat();
 
     const addAssetButtonClasses = classNames([
       styles.addAssetButton,
@@ -1277,7 +1272,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           const selectedTokenValue = selectedToken.quantity;
           isAmountLessThenMax = Number(field.value) <= selectedTokenValue;
         }
-        if (isValid && isAmountLessThenMax && isReceiverValid && isAdaAssetFieldValueValid) {
+        if (
+          isValid &&
+          isAmountLessThenMax &&
+          isReceiverValid &&
+          isAdaAssetFieldValueValid
+        ) {
           this._isCalculatingAssetsFee = false;
           let assets = [];
           if (selectedNativeTokens && selectedNativeTokens.length) {
@@ -1289,7 +1289,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               };
             });
           }
-          this.calculateTransactionFee(receiverValue, adaAssetFieldValue, assets);
+          this.calculateTransactionFee(
+            receiverValue,
+            adaAssetFieldValue,
+            assets
+          );
         } else if (!isAmountLessThenMax) {
           const error = this.context.intl.formatMessage(messages.invalidAmount);
           if (!assetsError) {

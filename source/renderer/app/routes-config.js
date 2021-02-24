@@ -22,7 +22,7 @@ export const ROUTES = {
   WALLETS: {
     ROOT: '/wallets',
     ADD: '/wallets/add',
-    PAGE: '/wallets/:id/:page/:fingerprint',
+    PAGE: '/wallets/:id/:page',
     SUMMARY: '/wallets/:id/summary',
     TRANSACTIONS: '/wallets/:id/transactions',
     SEND: '/wallets/:id/send',
