@@ -379,7 +379,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.passphraseFields}>
-          {assets && (
+          {assets && assets.length && (
             <div className={styles.addressToLabelWrapper}>
               <div className={styles.receiverRow}>
                 <div className={styles.receiverRowItem}>
