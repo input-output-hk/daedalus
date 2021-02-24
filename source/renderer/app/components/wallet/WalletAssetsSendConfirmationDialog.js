@@ -353,7 +353,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                 <div className={styles.receiverRowItem}>
                   <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
                   <div className={styles.receiverRowItemAddresses}>
-                    {receiver}
+                    <p className={styles.addressTo}>{receiver}</p>
                     <div className={styles.assetsWrapper}>
                       <div
                         className={styles.assetsSeparator}
