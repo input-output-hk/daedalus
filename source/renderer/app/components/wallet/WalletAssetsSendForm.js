@@ -10,7 +10,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
-import { get, orderBy } from 'lodash';
+import { get, orderBy, map } from 'lodash';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -204,7 +204,7 @@ type State = {
   showReceiverRemoveBtn: boolean,
   showAssetRemoveBtn: Array<boolean>,
   sendFormFields: Object,
-  selectedAssetIds: Array<string>,
+  selectedAssetFingerprints: Array<string>,
   showReceiverField: Array<boolean>,
   isResetButtonDisabled: boolean,
   filteredAssets: any,
@@ -227,7 +227,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     showReceiverRemoveBtn: false,
     showAssetRemoveBtn: [],
     sendFormFields: {},
-    selectedAssetIds: [],
+    selectedAssetFingerprints: [],
     showReceiverField: [],
     isResetButtonDisabled: true,
     filteredAssets: [],
@@ -302,7 +302,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       assetsToRemove.map((item) => {
         newFilteredAssets.push(
           ...currentFilteredAssets[currentFilteredAssets.length - 1].filter(
-            (asset) => asset.assetName !== item.assetName
+            (asset) => asset.fingerprint !== item.fingerprint
           )
         );
       });
@@ -319,7 +319,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       ) {
         const newAssets = newFilteredAssets.map((item) => {
           return currentFilteredAssets[currentFilteredAssets.length - 2].filter(
-            (asset) => asset.assetName !== item.assetName
+            (asset) => asset.fingerprint !== item.fingerprint
           );
         });
         currentFilteredAssets[currentFilteredAssets.length - 2] = Object.values(
@@ -337,6 +337,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     });
     return selectedAssets;
   };
+
+  get selectedAssets() {
+    const { selectedAssetFingerprints } = this.state || [];
+    const { assets } = this.props;
+    return map(selectedAssetFingerprints, (fingerprint) =>
+      assets.find((asset) => asset.fingerprint === fingerprint)
+    );
+  }
 
   handleOnSubmit = () => {
     if (this.isDisabled()) {
@@ -744,7 +752,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const {
       showReceiverField,
       showReceiverRemoveBtn,
-      selectedAssetIds,
+      selectedAssetFingerprints,
       isTransactionFeeCalculated,
       transactionFee,
       transactionFeeError,
@@ -1078,7 +1086,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                               messages.syncingWallet
                             )}
                             hasAssetsEnabled
-                            value={selectedAssetIds[assetIndex]}
+                            value={selectedAssetFingerprints[assetIndex]}
                             getStakePoolById={() => {}}
                             errorPosition="bottom"
                           />
@@ -1296,18 +1304,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     );
     const splitedAssetId = assetId.split('asset');
     const assetIndex = splitedAssetId ? parseInt(splitedAssetId[1], 10) : 0;
-    this.onSelectAsset(assetIndex - 1, selectedNativeToken.assetName);
+    this.onSelectAsset(assetIndex - 1, selectedNativeToken.fingerprint);
   };
 
-  onSelectAsset = (index: number, assetName: string) => {
-    const { selectedAssetIds } = this.state;
-    if (!selectedAssetIds.length) {
-      selectedAssetIds[0] = assetName;
+  onSelectAsset = (index: number, fingerprint: string) => {
+    const { selectedAssetFingerprints } = this.state;
+    if (!selectedAssetFingerprints.length) {
+      selectedAssetFingerprints[0] = fingerprint;
     } else {
-      selectedAssetIds[index] = assetName;
+      selectedAssetFingerprints[index] = fingerprint;
     }
     this.setState({
-      selectedAssetIds,
+      selectedAssetFingerprints,
     });
   };
 
@@ -1332,9 +1340,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }));
   };
 
-  getNativeTokenById = (selectedAssetId: string): ?WalletSummaryAsset => {
+  getNativeTokenById = (
+    selectedAssetFingerprint: string
+  ): ?WalletSummaryAsset => {
     const { assets } = this.props;
-    return assets.find((asset) => asset.assetName === selectedAssetId);
+    return assets.find(
+      (asset) => asset.fingerprint === selectedAssetFingerprint
+    );
   };
 
   render() {
@@ -1355,7 +1367,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       isTransactionFeeCalculated,
       transactionFee,
       transactionFeeError,
-      selectedAssetIds,
+      selectedAssetFingerprints,
       isResetButtonDisabled,
       sendFormFields,
     } = this.state;
@@ -1374,8 +1386,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
 
     const selectedNativeTokenItem =
-      selectedAssetIds && selectedAssetIds.length && assets && assets.length
-        ? this.getNativeTokenById(selectedAssetIds[0])
+      selectedAssetFingerprints &&
+      selectedAssetFingerprints.length &&
+      assets &&
+      assets.length
+        ? this.getNativeTokenById(selectedAssetFingerprints[0])
         : null;
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -1450,6 +1465,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
+            assets={this.selectedAssets}
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
             multipleReceivers={[

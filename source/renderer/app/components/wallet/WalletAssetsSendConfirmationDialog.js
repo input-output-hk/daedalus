@@ -20,7 +20,7 @@ import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-import type { WalletTransactionAsset } from '../../api/assets/types';
+import type { WalletSummaryAsset } from '../../api/assets/types';
 import AssetToken from '../widgets/AssetToken';
 import { formattedTokenWalletAmount } from '../../utils/formatters';
 
@@ -120,7 +120,7 @@ type Props = {
   amount: string,
   sender: string,
   receivers?: Array<string>,
-  assets?: Array<WalletTransactionAsset>,
+  assets?: Array<WalletSummaryAsset>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,

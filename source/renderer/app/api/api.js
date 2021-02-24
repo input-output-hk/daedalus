@@ -2695,15 +2695,10 @@ const _createAssetFromServerData = action(
         assetName: '736164636f696e',
         fingerprint: 'asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0egc',
         metadata: {
-          name: 'Tether',
+          name: "Tim's token",
           description:
-            'USDT is a stablecoin (stable-value cryptocurrency) that mirrors the price of the U.S. dollar, issued by a Hong Kong-based company Tether. The token’s peg to the USD is achieved via maintaining a sum of dollars in reserves that is equal to the number of USDT in circulation. The stated purpose of USDT is to combine the unrestricted nature of cryptocurrencies — which can be sent between users without a trusted third-party intermediary — with the stable value of the US dollar.',
-          acronym: 'USDT',
-          unit: {
-            decimals: 2,
-            name: 'Cent',
-          },
-          url: 'https://tether.to/',
+            'This is a test token to show you how it will look in Daedalus',
+          acronym: 'TIM',
         },
       },
       '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf389790866861707079636f696e': {
@@ -2711,15 +2706,14 @@ const _createAssetFromServerData = action(
         assetName: '6861707079636f696e',
         fingerprint: 'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8',
         metadata: {
-          name: 'USD Coin',
+          name: "Darko's token",
           description:
-            'USD Coin (USDC) represents a major breakthrough in how we use money. Digital dollars work like other digital content — they move at the speed of the internet, can be exchanged in the same way we share content, and are cheaper and more secure than existing payment systems.',
-          acronym: 'USDC',
+            'This is a test token to show you how it will look in Daedalus',
+          acronym: 'DARK',
           unit: {
-            decimals: 4,
-            name: 'Cent',
+            decimals: 2,
+            name: 'Ark',
           },
-          url: 'https://www.circle.com/en/usdc',
         },
       },
     };

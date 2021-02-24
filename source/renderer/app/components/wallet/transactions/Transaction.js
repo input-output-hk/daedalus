@@ -399,9 +399,31 @@ export default class Transaction extends Component<Props, State> {
     );
   };
 
-  get hasMultipleAssets() {
-    const { hasAssetsEnabled, assetsDetails } = this.props;
-    return hasAssetsEnabled && assetsDetails && assetsDetails.length > 0;
+  get assetsList(): Array<WalletTransactionAsset> {
+    const {
+      assetsDetails,
+      data,
+      hasAssetsEnabled,
+      isInternalAddress,
+    } = this.props;
+
+    if (!hasAssetsEnabled) {
+      return [];
+    }
+
+    const assetsList = assetsDetails.filter(
+      (asset) =>
+        (data.type === TransactionTypes.INCOME &&
+          isInternalAddress(asset.address)) ||
+        (data.type === TransactionTypes.EXPEND &&
+          !isInternalAddress(asset.address))
+    );
+
+    return assetsList;
+  }
+
+  get hasAssets(): boolean {
+    return this.assetsList.length > 0;
   }
 
   includesUnresolvedAddresses = (addresses: Array<?string>) =>
@@ -410,7 +432,7 @@ export default class Transaction extends Component<Props, State> {
   addressesList = (addresses: Array<?string>): any => {
     const { intl } = this.context;
     const { onOpenExternalLink, getUrlByType, data } = this.props;
-    const type = this.hasMultipleAssets ? data.type : null;
+    const type = this.hasAssets ? data.type : null;
     if (addresses && addresses.length > 0) {
       const hasUnresolvedAddresses = this.includesUnresolvedAddresses(
         addresses
@@ -446,7 +468,7 @@ export default class Transaction extends Component<Props, State> {
                 <WholeSelectionText
                   className={styles.address}
                   text={
-                    this.hasMultipleAssets && address
+                    this.hasAssets && address
                       ? ellipsis(address, 30, 30)
                       : address
                   }
@@ -473,8 +495,6 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
-      assetsDetails,
-      isInternalAddress,
     } = this.props;
 
     const { intl } = this.context;
@@ -501,10 +521,10 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    const transactionsType = this.hasMultipleAssets
+    const transactionsType = this.hasAssets
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.currency);
-    const typeOfTransaction = this.hasMultipleAssets
+    const typeOfTransaction = this.hasAssets
       ? intl.formatMessage(headerStateTranslations[state])
       : intl.formatMessage(globalMessages.currency);
 
@@ -521,20 +541,13 @@ export default class Transaction extends Component<Props, State> {
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
-    const assetsList = assetsDetails.filter(
-      (asset) =>
-        (data.type === TransactionTypes.INCOME &&
-          isInternalAddress(asset.address)) ||
-        (data.type === TransactionTypes.EXPEND &&
-          !isInternalAddress(asset.address))
-    );
     const assetsSeparatorStyles = classNames([
       styles.assetsSeparator,
       isExpanded ? styles.expanded : null,
     ]);
     const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight = assetsList.length
-      ? assetsSeparatorBasicHeight * assetsList.length - 15
+    const assetsSeparatorCalculatedHeight = this.assetsList.length
+      ? assetsSeparatorBasicHeight * this.assetsList.length - 15
       : assetsSeparatorBasicHeight;
 
     return (
@@ -647,14 +660,14 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 )}
 
-                {!!assetsList.length && (
+                {this.hasAssets && (
                   <h2>
                     {data.type === TransactionTypes.EXPEND
                       ? intl.formatMessage(messages.tokensSent)
                       : intl.formatMessage(messages.tokensReceived)}
                   </h2>
                 )}
-                {assetsList.map((asset, assetIndex) => (
+                {this.assetsList.map((asset, assetIndex) => (
                   <div
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
