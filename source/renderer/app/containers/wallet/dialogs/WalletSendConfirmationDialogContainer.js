@@ -86,7 +86,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
           <WalletAssetsSendConfirmationDialog
             amount={amount}
             sender={activeWallet.id}
-            receivers={[receiver]}
+            receiver={receiver}
             assets={assets}
             transactionFee={transactionFee}
             amountToNaturalUnits={amountToNaturalUnits}

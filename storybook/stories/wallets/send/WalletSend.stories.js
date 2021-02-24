@@ -298,12 +298,7 @@ storiesOf('Wallets|Send', module)
       <WalletAssetsSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
         sender={generateWallet('Wallet name', '45119903750165', assets).id}
-        receivers={[
-          generateHash(),
-          generateHash(),
-          generateHash(),
-          generateHash(),
-        ]}
+        receivers={generateHash()}
         assets={confirmationAssets}
         transactionFee={new BigNumber(1).toFormat(DECIMAL_PLACES_IN_ADA)}
         amountToNaturalUnits={formattedAmountToNaturalUnits}
