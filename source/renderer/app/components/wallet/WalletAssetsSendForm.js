@@ -725,6 +725,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       currencyMaxFractionalDigits,
       walletAmount,
       isHardwareWallet,
+      assets,
     } = this.props;
 
     const {
@@ -1053,7 +1054,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                                 assetIndex,
                                 receiverId
                               );
-                              const focusedField = this.form.$(`${receiverId}_asset${assetIndex + 1}`);
+                              const focusedField = this.form.$(
+                                `${receiverId}_asset${assetIndex + 1}`
+                              );
                               if (focusedField) {
                                 focusedField.clear();
                               }
@@ -1075,9 +1078,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               <Button
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
-                disabled={isHardwareWallet}
+                disabled={isHardwareWallet || !assets.length}
                 onClick={() => {
-                  const { assets } = this.props;
                   const id = selectedNativeTokens.length;
                   const newFilteredAssets = this.filterAssets(
                     assets,
