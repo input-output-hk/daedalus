@@ -63,7 +63,7 @@ export default class AssetsStore extends Store {
   };
 
   @action _setActiveTokenFingerprint = (params: {
-    tokenFingerprint: string,
+    tokenFingerprint: ?string,
   }) => {
     this.activeTokenFingerprint = params.tokenFingerprint;
   };

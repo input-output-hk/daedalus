@@ -91,7 +91,7 @@ export default class WalletsActions {
 
   /* ----------  Transfer Funds  ---------- */
   setActiveTokenFingerprint: Action<{
-    tokenFingerprint: string,
+    tokenFingerprint: ?string,
   }> = new Action();
   transferFundsNextStep: Action<any> = new Action();
   transferFundsPrevStep: Action<any> = new Action();

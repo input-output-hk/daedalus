@@ -16,7 +16,6 @@ import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
 import styles from './WalletTransactions.scss';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
-import Asset from '../../../domains/Asset';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -46,8 +45,8 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   totalAvailable: number,
   transactions: Array<WalletTransaction>,
-  hasAssetsEnabled?: boolean,
-  allAssets?: Array<Asset>,
+  hasAssetsEnabled: boolean,
+  getAssetDetails: Function,
   isInternalAddress: Function,
 };
 
@@ -109,7 +108,7 @@ export default class WalletTransactions extends Component<Props, State> {
       defaultFilterOptions,
       populatedFilterOptions,
       hasAssetsEnabled,
-      allAssets,
+      getAssetDetails,
       isInternalAddress,
     } = this.props;
 
@@ -152,7 +151,7 @@ export default class WalletTransactions extends Component<Props, State> {
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
           hasAssetsEnabled={hasAssetsEnabled}
-          allAssets={allAssets}
+          getAssetDetails={getAssetDetails}
           isRenderingAsVirtualList
           isInternalAddress={isInternalAddress}
         />

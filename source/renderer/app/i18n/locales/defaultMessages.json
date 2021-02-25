@@ -12358,13 +12358,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactions.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 22
+          "line": 21
         }
       }
     ],
@@ -14343,13 +14343,13 @@
         "description": "Title for the \"Confirm transaction\" dialog.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.title",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 33
         }
       },
       {
@@ -14357,13 +14357,13 @@
         "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 33
+          "line": 38
         }
       },
       {
@@ -14371,13 +14371,13 @@
         "description": "Label for the \"To\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
-          "line": 39
+          "line": 44
         }
       },
       {
@@ -14385,13 +14385,13 @@
         "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 44
+          "line": 49
         }
       },
       {
@@ -14399,13 +14399,13 @@
         "description": "Token",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.assetLabel",
         "start": {
           "column": 14,
-          "line": 50
+          "line": 55
         }
       },
       {
@@ -14413,13 +14413,13 @@
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 55
+          "line": 60
         }
       },
       {
@@ -14427,13 +14427,13 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 60
+          "line": 65
         }
       },
       {
@@ -14441,13 +14441,13 @@
         "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.receiver.label",
         "start": {
           "column": 17,
-          "line": 66
+          "line": 71
         }
       },
       {
@@ -14455,13 +14455,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 72
+          "line": 77
         }
       },
       {
@@ -14469,13 +14469,13 @@
         "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateWarning",
         "start": {
           "column": 26,
-          "line": 78
+          "line": 83
         }
       },
       {
@@ -14483,13 +14483,13 @@
         "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
         "start": {
           "column": 32,
-          "line": 85
+          "line": 90
         }
       },
       {
@@ -14497,13 +14497,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
-          "line": 92
+          "line": 97
         }
       },
       {
@@ -14511,13 +14511,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
-          "line": 98
+          "line": 103
         }
       },
       {
@@ -14525,13 +14525,13 @@
         "description": "Label for password error in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 114
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passwordError",
         "start": {
           "column": 24,
-          "line": 104
+          "line": 109
         }
       }
     ],

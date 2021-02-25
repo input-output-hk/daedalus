@@ -25,6 +25,7 @@ import type { TransactionFilterOptionsType } from '../../../../source/renderer/a
 // Screens
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
 import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
+import Asset from '../../../../source/renderer/app/domains/Asset';
 
 type Props = {
   defaultFilterOptions: TransactionFilterOptionsType,
@@ -36,8 +37,8 @@ type Props = {
   totalAvailable: number,
 };
 
-const allAssets = [
-  generateAsset(
+const assetDetails = {
+  '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c': generateAsset(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
@@ -53,7 +54,7 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
@@ -69,7 +70,7 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAsset(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
@@ -85,7 +86,7 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b': generateAsset(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
     'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
@@ -101,7 +102,7 @@ const allAssets = [
       logo: '',
     }
   ),
-];
+};
 
 const assets = {
   available: [
@@ -133,6 +134,9 @@ const assets = {
     },
   ],
 };
+
+const getAssetDetails = (policyId: string, assetName: string): ?Asset =>
+  assetDetails[policyId + assetName];
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Transactions', module)
@@ -197,6 +201,8 @@ storiesOf('Wallets|Transactions', module)
         populatedFilterOptions={populatedFilterOptions}
         totalAvailable={totalAvailable}
         transactions={transactions}
+        hasAssetsEnabled={false}
+        getAssetDetails={getAssetDetails}
       />
     );
   })
@@ -237,7 +243,7 @@ storiesOf('Wallets|Transactions', module)
         totalAvailable={totalAvailable}
         transactions={transactions}
         hasAssetsEnabled={hasAssetsEnabled}
-        allAssets={allAssets}
+        getAssetDetails={getAssetDetails}
       />
     );
   });

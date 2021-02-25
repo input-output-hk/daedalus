@@ -256,8 +256,9 @@ type Props = {
   walletId: string,
   isDeletingTransaction: boolean,
   assetsDetails: Array<WalletTransactionAsset>,
-  hasAssetsEnabled?: boolean,
+  hasAssetsEnabled: boolean,
   isInternalAddress: Function,
+  isLoadingAssets: boolean,
 };
 
 type State = {
