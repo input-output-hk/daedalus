@@ -134,6 +134,7 @@ type Props = {
   onInitiateTransaction: Function,
   walletName: string,
   onExternalLinkClick: Function,
+  onCopyAssetItem: Function,
 };
 
 type State = {
@@ -321,6 +322,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
+      onCopyAssetItem,
     } = this.props;
     const { assets } = this.filteredAssets;
 
@@ -379,37 +381,35 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.passphraseFields}>
-          {assets && assets.length && (
-            <div className={styles.addressToLabelWrapper}>
-              <div className={styles.receiverRow}>
-                <div className={styles.receiverRowItem}>
-                  <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
-                  <div className={styles.receiverRowItemAddresses}>
-                    <p className={styles.addressTo}>{receiver}</p>
-                    <div className={styles.assetsWrapper}>
-                      <div
-                        className={styles.assetsSeparator}
-                        style={{
-                          height: `${assetsSeparatorCalculatedHeight}px`,
-                          top: `${assetsSeparatorCalculatedHeight + 5}px`,
-                          marginTop: `-${
-                            assetsSeparatorCalculatedHeight + 5
-                          }px`,
-                        }}
-                      />
-                      <div className={styles.assetsContainer}>
-                        <h3>
-                          <span>
-                            {intl.formatMessage(globalMessages.unitAda)}
-                          </span>
-                        </h3>
-                        <div className={styles.amountFeesWrapper}>
-                          <div className={styles.amount}>
-                            {formattedWalletAmount(new BigNumber(amount))}
-                          </div>
+          <div className={styles.addressToLabelWrapper}>
+            <div className={styles.receiverRow}>
+              <div className={styles.receiverRowItem}>
+                <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
+                <div className={styles.receiverRowItemAddresses}>
+                  <p className={styles.addressTo}>{receiver}</p>
+                  <div className={styles.assetsWrapper}>
+                    <div
+                      className={styles.assetsSeparator}
+                      style={{
+                        height: `${assetsSeparatorCalculatedHeight}px`,
+                        top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                        marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`,
+                      }}
+                    />
+                    <div className={styles.assetsContainer}>
+                      <h3>
+                        <span>
+                          {intl.formatMessage(globalMessages.unitAda)}
+                        </span>
+                      </h3>
+                      <div className={styles.amountFeesWrapper}>
+                        <div className={styles.amount}>
+                          {formattedWalletAmount(new BigNumber(amount))}
                         </div>
                       </div>
-                      {assets.map((asset, assetIndex) => {
+                    </div>
+                    {assets &&
+                      assets.map((asset, assetIndex) => {
                         const assetAmount = this.getAssetFormattedAmount(
                           asset,
                           assetIndex
@@ -426,6 +426,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                               </span>
                               <AssetToken
                                 asset={asset}
+                                onCopyAssetItem={onCopyAssetItem}
                                 componentClassName={styles.assetToken}
                               />
                             </h3>
@@ -439,12 +440,11 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                           </div>
                         );
                       })}
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          )}
+          </div>
 
           <div className={styles.feesWrapper}>
             <div className={styles.feesLabel}>

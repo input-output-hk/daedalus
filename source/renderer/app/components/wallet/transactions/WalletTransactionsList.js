@@ -69,6 +69,7 @@ type Props = {
   hasAssetsEnabled: boolean,
   getAssetDetails: Function,
   isInternalAddress: Function,
+  onCopyAssetItem: Function,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -196,6 +197,7 @@ export default class WalletTransactionsList extends Component<Props> {
       hasAssetsEnabled,
       getAssetDetails,
       isInternalAddress,
+      onCopyAssetItem,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -250,6 +252,7 @@ export default class WalletTransactionsList extends Component<Props> {
           hasAssetsEnabled={hasAssetsEnabled}
           isInternalAddress={isInternalAddress}
           isLoadingAssets={isLoadingAssets}
+          onCopyAssetItem={onCopyAssetItem}
         />
       </div>
     );

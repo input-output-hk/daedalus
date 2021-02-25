@@ -327,6 +327,7 @@ storiesOf('Wallets|Send', module)
         isHardwareWallet={false}
         onInitiateTransaction={() => null}
         walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
+        onCopyAssetItem={() => {}}
       />
     </div>
   ));

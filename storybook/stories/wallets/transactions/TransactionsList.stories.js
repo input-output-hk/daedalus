@@ -203,6 +203,7 @@ storiesOf('Wallets|Transactions', module)
         transactions={transactions}
         hasAssetsEnabled={false}
         getAssetDetails={getAssetDetails}
+        onCopyAssetItem={() => {}}
       />
     );
   })
@@ -244,6 +245,7 @@ storiesOf('Wallets|Transactions', module)
         transactions={transactions}
         hasAssetsEnabled={hasAssetsEnabled}
         getAssetDetails={getAssetDetails}
+        onCopyAssetItem={() => {}}
       />
     );
   });

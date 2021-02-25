@@ -2,21 +2,25 @@
   display: inline-flex;
   min-width: 0;
   width: 100%;
+
   > span {
     min-width: 0;
   }
+
   :global {
     [data-tippy-root] {
       pointer-events: all !important;
     }
   }
 }
+
 .content {
   display: flex;
   height: 22px;
   min-width: 0;
   position: relative;
 }
+
 .fingerprint {
   background: var(--theme-widgets-asset-token-fingerprint-background-color);
   border-radius: 3px;
@@ -29,6 +33,7 @@
   padding: 4px;
   white-space: nowrap;
 }
+
 .metadataName {
   color: var(--theme-widgets-asset-token-text-color);
   font-family: var(--font-light);
@@ -39,33 +44,40 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .metadata {
   display: none;
 }
+
 .tooltipContent {
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding: 9px 3px;
+  padding: 9px 6px 9px 16px;
   user-select: text;
+
   .fingerprint {
     cursor: pointer;
     position: relative;
+
     .copyIcon {
       position: absolute;
-      right: -18px;
+      right: -38px;
       top: 5px;
     }
+
     &:hover {
       .copyIcon {
         opacity: 1;
       }
     }
   }
+
   dl {
     line-height: 1;
     width: 100%;
   }
+
   dt {
     display: inline-block;
     font-family: var(--font-medium);
@@ -76,14 +88,17 @@
     white-space: nowrap;
     width: 67px;
   }
+
   dd {
     cursor: pointer;
     display: inline-flex;
     font-family: var(--font-light);
     font-size: 12px;
     line-height: 1.33;
+    position: relative;
     margin: 10px 0 0 10px;
     width: calc(100% - 87px);
+
     em {
       &:not(.singleline) {
         max-height: 47px;
@@ -91,42 +106,53 @@
         overflow-x: hidden;
         overflow-y: auto;
       }
+
       &.singleline {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
     }
+
     .copyIcon {
-      margin: 3px 0 0 10px;
+      position: absolute;
+      right: -18px;
+      top: 2px;
     }
+
     &:hover {
       .copyIcon {
         opacity: 1;
       }
     }
   }
+
   .assetItem {
     cursor: pointer;
     display: inline-flex;
     width: 100%;
   }
+
   .copyIcon {
     height: 10px;
     line-height: 0;
     opacity: 0;
     transition: opacity 0s;
+
     svg {
       height: 10px;
       width: 8px;
     }
+
     g {
       fill: var(--theme-widgets-asset-token-text-color);
     }
+
     svg > path {
       stroke: var(--theme-widgets-asset-token-text-color);
     }
   }
+
   .copiedIcon {
     opacity: 1;
   }
