@@ -1061,7 +1061,15 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                             : null)
                         }
                         skin={AmountInputSkin}
-                        onKeyPress={this.handleSubmitOnEnter}
+                        onKeyPress={(evt: SyntheticKeyboardEvent<EventTarget>) => {
+                          const { charCode } = evt;
+                          if (charCode === 190 || charCode === 110 || charCode === 46) {
+                            evt.persist();
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                          }
+                          return this.handleSubmitOnEnter;
+                        }}
                         allowSigns={false}
                       />
                       <div className={styles.rightContent}>
