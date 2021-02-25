@@ -12,7 +12,7 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
-import { getSmashServerIdFromUrl } from '../../../utils/staking';
+import { getSmashServerIdFromUrl, getUrlParts } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import styles from './StakePoolsSettings.scss';
 import {
@@ -108,17 +108,30 @@ const messages = defineMessages({
     description:
       'smashUrlInputPlaceholder for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
-  smashUrlInputInvalidUrl: {
-    id: 'settings.stakePools.smashUrl.input.invalidUrl',
-    defaultMessage: '!!!Invalid URL',
-    description:
-      'smashUrlInputInvalidUrl for the "Smash Custom Server" selection on the Stake Pools settings page.',
-  },
   changesSaved: {
     id: 'inline.editing.input.changesSaved',
     defaultMessage: '!!!Your changes have been saved',
     description:
       'Message "Your changes have been saved" for inline editing (eg. on Profile Settings page).',
+  },
+  invalidUrl: {
+    id: 'settings.stakePools.smashUrl.input.invalidUrl',
+    defaultMessage: '!!!Invalid URL',
+    description:
+      'invalidUrl for the "Smash Custom Server" selection on the Stake Pools settings page.',
+  },
+  invalidUrlPrefix: {
+    id: 'settings.stakePools.smashUrl.input.invalidUrlPrefix',
+    defaultMessage: '!!!The URL should start with "https://"',
+    description:
+      'invalidUrlPrefix for the "Smash Custom Server" selection on the Stake Pools settings page.',
+  },
+  invalidUrlParameter: {
+    id: 'settings.stakePools.smashUrl.input.invalidUrlParameter',
+    defaultMessage:
+      '!!!Only "https://" protocol and hostname (e.g. domain.com) are allowed',
+    description:
+      'invalidUrlParameter for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
 });
 
@@ -191,6 +204,16 @@ export default class StakePoolsSettings extends Component<Props, State> {
   };
 
   handleIsValid = (url: string) => url === '' || SMASH_URL_VALIDATOR.test(url);
+
+  handleErrorMessage = (value: string) => {
+    const { intl } = this.context;
+    let errorMessage = messages.invalidUrl;
+    const { pathname, search } = getUrlParts(value);
+    if (!/^https:\/\//i.test(value)) errorMessage = messages.invalidUrlPrefix;
+    else if (search || (pathname && pathname.slice(1)))
+      errorMessage = messages.invalidUrlParameter;
+    return intl.formatMessage(errorMessage);
+  };
 
   smashSelectMessages = {
     iohk: <FormattedHTMLMessage {...messages.smashSelectIOHKServer} />,
@@ -283,9 +306,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
             placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
             onSubmit={this.handleSubmit}
             isValid={this.handleIsValid}
-            valueErrorMessage={intl.formatMessage(
-              messages.smashUrlInputInvalidUrl
-            )}
+            valueErrorMessage={this.handleErrorMessage}
             errorMessage={errorMessage}
             readOnly={isLoading}
             isLoading={isLoading}

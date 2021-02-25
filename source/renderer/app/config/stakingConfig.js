@@ -50,7 +50,7 @@ export const SMASH_SERVER_STATUSES: {
 };
 
 export const SMASH_URL_VALIDATOR = new RegExp(
-  '^(direct|https?://[a-zA-Z0-9-_~.]+(:[0-9]+)?/?)$'
+  '^(direct|https://[a-zA-Z0-9-_~.]+(:[0-9]+)?/?)$'
 );
 
 export const RANKING_SLIDER_RATIO = 60;
@@ -103,6 +103,8 @@ export const REDEEM_ITN_REWARDS_STEPS: {
   CONFIRMATION: 'confirmation',
   RESULT: 'result',
 };
+
+export const DELEGATION_DEPOSIT = 2; // 2 ADA | unit: lovelace
 
 export const DELEGATION_ACTIONS: {
   [key: string]: DelegationAction,

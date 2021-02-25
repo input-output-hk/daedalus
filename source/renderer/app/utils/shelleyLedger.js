@@ -2,6 +2,7 @@
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
+import { map } from 'lodash';
 import {
   derivationPathToLedgerPath,
   CERTIFICATE_TYPE,
@@ -112,7 +113,12 @@ export const ShelleyTxOutput = (
   addressStyle: AddressStyle
 ) => {
   const { address, amount, derivationPath } = output;
-  const coins = amount.quantity;
+  const adaCoinQuantity = amount.quantity;
+
+  // @TODO - check if this is correct multiassets constructor and fallback to ADA asset for now
+  // const multiassets = output.assets;
+  // const coins = !multiassets ? adaCoinQuantity : [adaCoinQuantity, _getAssetsMap(adaCoinQuantity, multiassets)];
+  const coins = adaCoinQuantity;
 
   function encodeCBOR(encoder: any) {
     const addressBuff =
@@ -322,6 +328,7 @@ export const prepareLedgerOutput = (
       spendingPath: derivationPathToLedgerPath(output.derivationPath),
       amountStr: output.amount.quantity.toString(),
       stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
+      tokenBundle: output.assets ? _getAssets(output.assets) : null,
     };
   }
 
@@ -332,6 +339,7 @@ export const prepareLedgerOutput = (
   return {
     amountStr: output.amount.quantity.toString(),
     addressHex: utils.buf_to_hex(decodedAddress),
+    tokenBundle: output.assets ? _getAssets(output.assets) : null,
   };
 };
 
@@ -375,3 +383,28 @@ export const prepareBody = (
   );
   return encode(signedTransactionStructure).toString('hex');
 };
+
+// Helper Methods
+
+const _getAssets = (assets) => {
+  const constructedAssets = map(assets, (asset) => {
+    return {
+      policyIdHex: asset.policyId,
+      tokens: {
+        assetNameHex: asset.assetName,
+        amountStr: asset.quantity.toString(),
+      },
+    };
+  });
+  return constructedAssets;
+};
+
+// @TODO - check if this is correct multiassets constructor
+// const _getAssetsMap = (adaCoinQuantity, multiassets) => {
+//   const assetsMap = new Map();
+//   assetsMap.set(0, adaCoinQuantity);
+//   map(multiassets, (asset) => {
+//     assetsMap.set(asset.policyId, { [asset.assetName]: asset.quantity })
+//   })
+//   return assetsMap;
+// }

@@ -3,101 +3,109 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
-import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import classnames from 'classnames';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import Dialog from '../../widgets/Dialog';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
+import styles from './UndelegateWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
-import styles from './UndelegateConfirmationDialog.scss';
 
 const messages = defineMessages({
-  dialogTitle: {
-    id: 'staking.delegationCenter.undelegate.dialog.title',
+  title: {
+    id: 'wallet.settings.undelegate.dialog.title',
     defaultMessage: '!!!Undelegate',
-    description: 'Title for the "Undelegate" dialog.',
+    description: 'Title for the "Undelegate wallet" dialog.',
   },
   confirmButtonLabel: {
-    id: 'staking.delegationCenter.undelegate.dialog.confirmButtonLabel',
+    id: 'wallet.settings.undelegate.dialog.confirmButtonLabel',
     defaultMessage: '!!!Undelegate',
     description:
-      'Label for the "Undelegate" button in the "Undelegate" dialog.',
+      'Label for the "Undelegate" button in the undelegate wallet dialog.',
   },
   descriptionWithTicker: {
-    id: 'staking.delegationCenter.undelegate.dialog.descriptionWithTicker',
+    id: 'wallet.settings.undelegate.dialog.descriptionWithTicker',
     defaultMessage:
       '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
-    description: 'Description for the "Undelegate" dialog.',
+    description:
+      'Description of current delegation of wallet in the "Undelegate wallet" dialog.',
   },
   descriptionWithUnknownTicker: {
-    id:
-      'staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker',
+    id: 'wallet.settings.undelegate.dialog.descriptionWithUnknownTicker',
     defaultMessage:
       '!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>',
-    description: 'Description for the "Undelegate" dialog.',
+    description:
+      'Description of current delegation of wallet in the "Undelegate wallet" dialog.',
   },
-  confirmUnsupportCheck: {
-    id: 'staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck',
+  unknownStakePoolLabel: {
+    id: 'wallet.settings.undelegate.dialog.unknownStakePoolLabel',
+    defaultMessage: '!!!unknown',
+    description: 'unknown stake pool label in the "Undelegate wallet" dialog.',
+  },
+  confirmUnsupportNotice: {
+    id: 'wallet.settings.undelegate.dialog.confirmUnsupportNotice',
     defaultMessage:
       '!!!I understand that I am not supporting the Cardano network when my stake is undelegated.',
     description:
-      'Label for the unsupport confirmation check in the "Undelegate" dialog.',
+      'Notice to confirm if the user understands unsupporting Cardano network after undelegation',
   },
-  confirmIneligibleCheck: {
-    id: 'staking.delegationCenter.undelegate.dialog.confirmIneligibleCheck',
+  confirmIneligibleNotice: {
+    id: 'wallet.settings.undelegate.dialog.confirmIneligibleNotice',
     defaultMessage:
       '!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.',
     description:
-      'Label for the ineligible confirmation check in the "Undelegate" dialog.',
+      'Notice to confirm if the user understands non-earning rewards after undelegation',
   },
   feesLabel: {
-    id: 'staking.delegationCenter.undelegate.dialog.feesLabel',
+    id: 'wallet.settings.undelegate.dialog.feesLabel',
     defaultMessage: '!!!Fees',
-    description: 'Fees label in the "Undelegate" dialog.',
+    description: 'Fees label in the "Undelegate wallet" dialog.',
+  },
+  depositLabel: {
+    id: 'wallet.settings.undelegate.dialog.depositLabel',
+    defaultMessage: '!!!Deposits reclaimed',
+    description: 'Deposits reclaimed label in the "Undelegate wallet" dialog.',
   },
   spendingPasswordLabel: {
-    id: 'staking.delegationCenter.undelegate.dialog.spendingPasswordLabel',
+    id: 'wallet.settings.undelegate.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
-    description: 'Spending password label in the "Undelegate" dialog.',
+    description: 'Spending password label in the "Undelegate wallet" dialog.',
   },
   spendingPasswordPlaceholder: {
-    id:
-      'staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder',
+    id: 'wallet.settings.undelegate.dialog.spendingPasswordPlaceholder',
     defaultMessage: '!!!Type your spending password here',
-    description: 'Spending password placeholder in the "Undelegate" dialog.',
+    description:
+      'Spending password placeholder in the "Undelegate wallet" dialog.',
   },
   passwordErrorMessage: {
-    id: 'staking.delegationCenter.undelegate.dialog.passwordError',
+    id: 'wallet.settings.undelegate.dialog.passwordError',
     defaultMessage: '!!!Incorrect spending password.',
-    description: 'Label for password error in the "Undelegate" dialog.',
-  },
-  unknownStakePoolLabel: {
-    id: 'staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel',
-    defaultMessage: '!!!unknown',
-    description: 'unknown stake pool label in the "Undelegate" dialog.',
+    description: 'Label for password error in the "Undelegate wallet" dialog.',
   },
   calculatingFees: {
-    id: 'staking.delegationCenter.undelegate.dialog.calculatingFees',
+    id: 'wallet.settings.undelegate.dialog.calculatingFees',
     defaultMessage: '!!!Calculating fees',
-    description: '"Calculating fees" message in the "Undelegate" dialog.',
+    description:
+      '"Calculating fees" message in the "Undelegate wallet" dialog.',
   },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  walletName: string,
+  selectedWallet: ?Wallet,
   stakePoolName: ?string,
   stakePoolTicker: ?string,
   onConfirm: Function,
@@ -105,11 +113,12 @@ type Props = {
   onExternalLinkClick: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
-  fees: ?BigNumber,
+  fees: ?DelegationCalculateFeeResponse,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer
-export default class UndelegateConfirmationDialog extends Component<Props> {
+export default class UndelegateWalletConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -117,10 +126,10 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
   form = new ReactToolboxMobxForm(
     {
       fields: {
-        isConfirmUnsupportChecked: {
+        confirmUnsupportChecked: {
           type: 'checkbox',
           label: this.context.intl.formatMessage(
-            messages.confirmUnsupportCheck
+            messages.confirmUnsupportNotice
           ),
           value: false,
           validators: [
@@ -135,10 +144,10 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
             },
           ],
         },
-        isConfirmIneligibleChecked: {
+        confirmIneligibleChecked: {
           type: 'checkbox',
           label: this.context.intl.formatMessage(
-            messages.confirmIneligibleCheck
+            messages.confirmIneligibleNotice
           ),
           value: false,
           validators: [
@@ -164,6 +173,11 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
+              const isHardwareWallet = get(
+                this.props.selectedWallet,
+                'isHardwareWallet'
+              );
+              if (isHardwareWallet) return [true];
               if (field.value === '') {
                 return [
                   false,
@@ -185,16 +199,23 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
     }
   );
 
-  isConfirmDisabled = () => {
+  confirmationDisabled = () => {
     const { form } = this;
-    const { fees, isSubmitting } = this.props;
+    const { fees, isSubmitting, hwDeviceStatus, selectedWallet } = this.props;
     const { isValid: unsupportCheckboxIsValid } = form.$(
-      'isConfirmUnsupportChecked'
+      'confirmUnsupportChecked'
     );
     const { isValid: ineligibleCheckboxIsValid } = form.$(
-      'isConfirmIneligibleChecked'
+      'confirmIneligibleChecked'
     );
     const { isValid: passphraseIsValid } = form.$('passphrase');
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
+
+    if (isHardwareWallet) {
+      return (
+        hwDeviceStatus !== HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED
+      );
+    }
 
     return (
       isSubmitting ||
@@ -206,15 +227,16 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
   };
 
   handleSubmit = () => {
-    if (this.isConfirmDisabled()) {
+    if (this.confirmationDisabled()) {
       return false;
     }
 
     return this.form.submit({
       onSuccess: (form) => {
-        const { onConfirm } = this.props;
+        const { selectedWallet, onConfirm } = this.props;
+        const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
         const { passphrase } = form.values();
-        onConfirm(passphrase);
+        onConfirm(passphrase, isHardwareWallet);
       },
       onError: () => null,
     });
@@ -246,18 +268,22 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const unsupportCheckboxField = form.$('isConfirmUnsupportChecked');
-    const ineligibleCheckboxField = form.$('isConfirmIneligibleChecked');
+    const unsupportCheckboxField = form.$('confirmUnsupportChecked');
+    const ineligibleCheckboxField = form.$('confirmIneligibleChecked');
     const passphraseField = form.$('passphrase');
     const {
-      walletName,
+      selectedWallet,
       stakePoolName,
       stakePoolTicker,
       onCancel,
       isSubmitting,
       fees,
+      hwDeviceStatus,
+      onExternalLinkClick,
     } = this.props;
-    const isConfirmDisabled = this.isConfirmDisabled();
+    const walletName = get(selectedWallet, 'name');
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
+    const confirmationDisabled = this.confirmationDisabled();
     const buttonClasses = classnames([
       'attention',
       isSubmitting ? styles.isSubmitting : null,
@@ -271,7 +297,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
         className: buttonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel),
         onClick: this.handleSubmit,
-        disabled: isConfirmDisabled,
+        disabled: confirmationDisabled,
         primary: true,
       },
     ];
@@ -279,12 +305,14 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
     return (
       <Dialog
-        title={intl.formatMessage(messages.dialogTitle)}
+        title={intl.formatMessage(messages.title)}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => null}
         className={styles.dialog}
-        closeButton={<DialogCloseButton />}
+        closeButton={
+          <DialogCloseButton onClose={!isSubmitting ? onCancel : () => null} />
+        }
       >
         <div className={styles.description}>
           {stakePoolTicker ? (
@@ -307,40 +335,68 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
         <Checkbox
           {...unsupportCheckboxField.bind()}
           error={unsupportCheckboxField.error}
-          skin={CheckboxSkin}
         />
         <Checkbox
           {...ineligibleCheckboxField.bind()}
           error={ineligibleCheckboxField.error}
-          skin={CheckboxSkin}
         />
         <div className={styles.divider} />
-        <div className={styles.feesWrapper}>
-          <label className="SimpleFormField_label">
-            {intl.formatMessage(messages.feesLabel)}
-          </label>
-          <p className={styles.feesAmount}>
-            {!fees ? (
-              <span className={styles.calculatingFeesLabel}>
-                {intl.formatMessage(messages.calculatingFees)}
-              </span>
-            ) : (
-              <>
-                <span>{formattedWalletAmount(fees, false)}</span>
-                <span className={styles.feesAmountLabel}>
-                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+        <div className={styles.feesRow}>
+          <div className={styles.feesWrapper}>
+            <p className={styles.feesLabel}>
+              {intl.formatMessage(messages.feesLabel)}
+            </p>
+            <p className={styles.feesAmount}>
+              {!fees || !fees.fee ? (
+                <span className={styles.calculatingFeesLabel}>
+                  {intl.formatMessage(messages.calculatingFees)}
                 </span>
-              </>
-            )}
-          </p>
+              ) : (
+                <>
+                  <span>{formattedWalletAmount(fees.fee, false)}</span>
+                  <span className={styles.feesAmountLabel}>
+                    {` `}
+                    {intl.formatMessage(globalMessages.unitAda)}
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+          {fees && !fees.depositsReclaimed.isZero() && (
+            <>
+              <div className={styles.depositWrapper}>
+                <p className={styles.depositLabel}>
+                  {intl.formatMessage(messages.depositLabel)}
+                </p>
+                <p className={styles.depositAmount}>
+                  <span>
+                    {formattedWalletAmount(fees.depositsReclaimed, false)}
+                  </span>
+                  <span className={styles.depositAmountLabel}>
+                    {` `}
+                    {intl.formatMessage(globalMessages.unitAda)}
+                  </span>
+                </p>
+              </div>
+            </>
+          )}
         </div>
-        <Input
-          type="password"
-          {...passphraseField.bind()}
-          error={passphraseField.error}
-          skin={InputSkin}
-          onKeyPress={this.handleSubmitOnEnter}
-        />
+        {isHardwareWallet ? (
+          <div className={styles.hardwareWalletStatusWrapper}>
+            <HardwareWalletStatus
+              hwDeviceStatus={hwDeviceStatus}
+              walletName={walletName}
+              onExternalLinkClick={onExternalLinkClick}
+            />
+          </div>
+        ) : (
+          <Input
+            type="password"
+            {...passphraseField.bind()}
+            error={passphraseField.error}
+            onKeyPress={this.handleSubmitOnEnter}
+          />
+        )}
         {errorElement && <p className={styles.error}>{errorElement}</p>}
       </Dialog>
     );

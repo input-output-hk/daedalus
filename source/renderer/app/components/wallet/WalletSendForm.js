@@ -282,6 +282,7 @@ export default class WalletSendForm extends Component<Props, State> {
       feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
     }));
     try {
+      this._isCalculatingTransactionFee = true;
       const fee = await this.props.calculateTransactionFee(address, amount);
       if (
         this._isMounted &&
@@ -379,7 +380,6 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
-                    this._isCalculatingTransactionFee = true;
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
@@ -397,7 +397,6 @@ export default class WalletSendForm extends Component<Props, State> {
                   decimalPlaces={currencyMaxFractionalDigits}
                   error={transactionFeeError || amountField.error}
                   onChange={(value) => {
-                    this._isCalculatingTransactionFee = true;
                     amountField.onChange(value);
                   }}
                   // AmountInputSkin props
