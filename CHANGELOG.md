@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added native token support [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+
 ### Chores
 
 - Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
@@ -11,7 +15,6 @@ Changelog
 
 ### Features
 
-- Implemented UI for native tokens feature [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
 - Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
 
 ### Fixes
