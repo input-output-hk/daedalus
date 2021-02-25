@@ -5,6 +5,17 @@
   color: var(--theme-transactions-list-item-details-color);
   cursor: pointer;
   position: relative;
+
+  :global {
+    .SimpleLink_root.SimpleLink_underlined {
+      border-bottom: none;
+
+      &:hover {
+        border-bottom: 1px solid var(--rp-link-color);
+        margin-bottom: 2px;
+      }
+    }
+  }
 }
 
 // ========= TOGGLER =========
@@ -410,16 +421,5 @@
 
   .fees {
     opacity: 0.5;
-  }
-}
-
-:global {
-  .SimpleLink_root.SimpleLink_underlined {
-    border-bottom: none;
-
-    &:hover {
-      border-bottom: 1px solid var(--rp-link-color);
-      margin-bottom: 2px;
-    }
   }
 }

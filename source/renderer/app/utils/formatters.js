@@ -14,7 +14,7 @@ export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
   long: boolean = true
-) => {
+): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
     : shortNumber(amount);
@@ -36,7 +36,7 @@ export const formattedWalletCurrencyAmount = (
   currencyRate: number,
   decimalDigits?: ?number,
   currencySymbol?: ?string
-) =>
+): string =>
   `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
     currencySymbol || ''
   }`;
@@ -44,7 +44,7 @@ export const formattedWalletCurrencyAmount = (
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata
-) => {
+): string => {
   const { acronym, unit } = metadata || {};
   const { decimals } = unit || {};
   let formattedAmount = amount.toFormat(decimals);

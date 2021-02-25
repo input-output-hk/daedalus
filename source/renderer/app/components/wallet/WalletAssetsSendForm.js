@@ -222,20 +222,20 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   };
 
   state = {
+    isResetButtonDisabled: true,
+    isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
+    minimumAda: new BigNumber(0),
     transactionFee: new BigNumber(0),
-    feeCalculationRequestQue: 0,
     transactionFeeError: null,
+    feeCalculationRequestQue: 0,
+    selectedAssetFingerprints: [],
+    filteredAssets: [],
     assetsError: null,
     showReceiverRemoveBtn: false,
     showAssetRemoveBtn: [],
     sendFormFields: {},
-    selectedAssetFingerprints: [],
     showReceiverField: [],
-    isResetButtonDisabled: true,
-    filteredAssets: [],
-    minimumAda: new BigNumber(0),
-    isReceiverAddressValid: false,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -1340,9 +1340,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ];
       },
     ]);
-    this.form
-      .$(newAsset)
-      .focus();
+    this.form.$(newAsset).focus();
   };
 
   addNewWalletsDropdownField = (receiverId: string, dropdownId: string) => {
