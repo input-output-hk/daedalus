@@ -178,11 +178,9 @@ export type LedgerSignTransactionRequest = {
   ttl?: string,
   networkId: number,
   protocolMagic: number,
-  // $FlowFixMe
-  certificates: Array<?Certificate>, // TODO - add once certificates defined
-  // $FlowFixMe
-  withdrawals: Array<?Withdrawal>, // TODO - add once withdrawals defined
-  metadataHashHex: ?string, // TODO - add once metadata defined
+  certificates: Array<?Certificate>,
+  withdrawals: Array<?Withdrawal>,
+  metadataHashHex: ?string,
   reset?: boolean,
   devicePath: ?string,
   validityIntervalStartStr?: string,
@@ -196,6 +194,7 @@ export type TrezorSignTransactionRequest = {
   networkId: number,
   protocolMagic: number,
   certificates: Array<?Certificate>,
+  withdrawals: Array<?Withdrawal>,
   reset?: boolean,
   devicePath: string,
   validityIntervalStartStr?: string,
