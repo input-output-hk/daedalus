@@ -305,29 +305,33 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                       {formattedWalletAmount(transactionFee.fee, false)}
                     </span>
                     <span className={styles.feesAmountLabel}>
-                      &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                      {` `}
+                      {intl.formatMessage(globalMessages.unitAda)}
                     </span>
                   </>
                 )}
               </p>
             </div>
-            {transactionFee && !transactionFee.deposit.isZero() && (
-              <>
-                <div className={styles.depositWrapper}>
-                  <p className={styles.depositLabel}>
-                    {intl.formatMessage(messages.depositLabel)}
-                  </p>
-                  <p className={styles.depositAmount}>
-                    <span>
-                      {formattedWalletAmount(transactionFee.deposit, false)}
-                    </span>
-                    <span className={styles.depositAmountLabel}>
-                      &nbsp;{intl.formatMessage(globalMessages.unitAda)}
-                    </span>
-                  </p>
-                </div>
-              </>
-            )}
+            {transactionFee &&
+              transactionFee.deposits.isZero &&
+              !transactionFee.deposits.isZero() && (
+                <>
+                  <div className={styles.depositWrapper}>
+                    <p className={styles.depositLabel}>
+                      {intl.formatMessage(messages.depositLabel)}
+                    </p>
+                    <p className={styles.depositAmount}>
+                      <span>
+                        {formattedWalletAmount(transactionFee.deposits, false)}
+                      </span>
+                      <span className={styles.depositAmountLabel}>
+                        {` `}
+                        {intl.formatMessage(globalMessages.unitAda)}
+                      </span>
+                    </p>
+                  </div>
+                </>
+              )}
           </div>
 
           {isHardwareWallet ? (

@@ -184,10 +184,17 @@ export type CoinSelectionInput = {
   derivationPath: Array<string>,
 };
 
+export type Asset = {
+  policyId: string,
+  assetName: string,
+  quantity: number,
+};
+
 export type CoinSelectionOutput = {
   address: string,
   amount: CoinSelectionAmount,
   derivationPath: Array<string>,
+  assets?: Array<Asset>,
 };
 
 export type CertificateType =
@@ -223,7 +230,8 @@ export type CoinSelectionsResponse = {
   inputs: Array<CoinSelectionInput>,
   outputs: Array<CoinSelectionOutput>,
   certificates: CoinSelectionCertificates,
-  feeWithDeposits: BigNumber,
+  deposits: BigNumber,
+  depositsReclaimed: BigNumber,
   fee: BigNumber,
 };
 

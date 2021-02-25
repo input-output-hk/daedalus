@@ -25,6 +25,8 @@ storiesOf('News|Overlays', module)
     let isUpdateDownloaded = true;
     let isAutomaticUpdateFailed = false;
     let isLinux = false;
+    const isFlight = false;
+    const isTestnet = false;
     let isWaitingToQuitDaedalus = false;
     let installationProgress = 0;
 
@@ -81,6 +83,8 @@ storiesOf('News|Overlays', module)
         onExternalLinkClick={action('onExternalLinkClick')}
         isWaitingToQuitDaedalus={isWaitingToQuitDaedalus}
         isLinux={isLinux}
+        isFlight={isFlight}
+        isTestnet={isTestnet}
         installationProgress={installationProgress}
       />
     );

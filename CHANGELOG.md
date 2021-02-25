@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## 3.3.1
+
+### Features
+
+- Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
+
+### Fixes
+
+- Fixed calendar style issue on Filter dialog on transaction list screen ([PR 2387](https://github.com/input-output-hk/daedalus/pull/2387))
+- Fixed issue on wallet send form with certain amounts ([PR 2379](https://github.com/input-output-hk/daedalus/pull/2379))
+
+### Chores
+
+- Enabled selecting whole addresses and ids when selecting them to copy on transactions and summary screens ([PR 2370](https://github.com/input-output-hk/daedalus/pull/2370))
+- Added missing whitespace between amount and ADA in Japanese ([PR 2380](https://github.com/input-output-hk/daedalus/pull/2380))
+- Updated link "Follow instructions and manually update" on testnet and flight ([PR 2372](https://github.com/input-output-hk/daedalus/pull/2372))
+- Fixed broken staking stories in Storybook ([PR 2371](https://github.com/input-output-hk/daedalus/pull/2371))
+
 ## 3.3.0
 
 ### Fixes
@@ -9,6 +27,7 @@ Changelog
 
 ### Chores
 
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `2.2.0` ([PR 2381](https://github.com/input-output-hk/daedalus/pull/2381))
 - Updated `cardano-launcher` to version `0.20210215.0` ([PR 2363](https://github.com/input-output-hk/daedalus/pull/2363))
 - Updated `cardano-wallet` to version `2021-02-15` ([PR 2363](https://github.com/input-output-hk/daedalus/pull/2363))
 - Updated `cardano-wallet` to version `2021-02-12` ([PR 2358](https://github.com/input-output-hk/daedalus/pull/2358))

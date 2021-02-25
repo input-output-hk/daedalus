@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -172,7 +172,7 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
-    "@cardano-foundation/ledgerjs-hw-app-cardano": "2.1.0",
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "2.2.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "aes-js": "3.1.2",
     "bignumber.js": "9.0.1",
@@ -246,7 +246,7 @@
     "shasum": "1.0.2",
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
-    "trezor-connect": "8.1.16-extended",
+    "trezor-connect": "8.1.22-extended",
     "unorm": "1.6.0",
     "validator": "13.1.17"
   },

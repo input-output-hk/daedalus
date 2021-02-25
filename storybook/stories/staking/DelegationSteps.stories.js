@@ -123,7 +123,11 @@ export class StakingDelegationSteps extends Component<Props, State> {
       />,
       <DelegationStepsConfirmationDialog
         key="DelegationStepsConfirmationDialog"
-        transactionFee={new BigNumber(0.172081)}
+        transactionFee={{
+          fee: new BigNumber(0.172081),
+          deposits: new BigNumber(2),
+          depositsReclaimed: new BigNumber(0),
+        }}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         selectedPool={STAKE_POOLS[0]}
         isSubmitting={false}
