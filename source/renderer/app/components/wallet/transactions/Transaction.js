@@ -256,8 +256,9 @@ type Props = {
   walletId: string,
   isDeletingTransaction: boolean,
   assetsDetails: Array<WalletTransactionAsset>,
-  hasAssetsEnabled?: boolean,
+  hasAssetsEnabled: boolean,
   isInternalAddress: Function,
+  isLoadingAssets: boolean,
 };
 
 type State = {
@@ -495,6 +496,7 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
+      isLoadingAssets,
     } = this.props;
 
     const { intl } = this.context;
@@ -661,48 +663,52 @@ export default class Transaction extends Component<Props, State> {
                 )}
 
                 {this.hasAssets && (
-                  <h2>
-                    {data.type === TransactionTypes.EXPEND
-                      ? intl.formatMessage(messages.tokensSent)
-                      : intl.formatMessage(messages.tokensReceived)}
-                  </h2>
+                  <>
+                    <h2>
+                      {data.type === TransactionTypes.EXPEND
+                        ? intl.formatMessage(messages.tokensSent)
+                        : intl.formatMessage(messages.tokensReceived)}
+                    </h2>
+                    {!isLoadingAssets
+                      ? this.assetsList.map((asset, assetIndex) => (
+                          <div
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
+                            className={styles.assetContainer}
+                          >
+                            {assetIndex === 0 && (
+                              <div
+                                className={assetsSeparatorStyles}
+                                style={{
+                                  height: `${assetsSeparatorCalculatedHeight}px`,
+                                }}
+                              />
+                            )}
+                            <h3>
+                              <span>
+                                {intl.formatMessage(messages.assetLabel)}
+                                &nbsp;#{assetIndex + 1}
+                              </span>
+                              <AssetToken
+                                asset={asset}
+                                componentClassName={styles.assetToken}
+                              />
+                            </h3>
+                            {asset.quantity && (
+                              <div className={styles.amountFeesWrapper}>
+                                <div className={styles.amount}>
+                                  {formattedTokenWalletAmount(
+                                    asset.quantity,
+                                    asset.metadata
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      : null}
+                  </>
                 )}
-                {this.assetsList.map((asset, assetIndex) => (
-                  <div
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                    className={styles.assetContainer}
-                  >
-                    {assetIndex === 0 && (
-                      <div
-                        className={assetsSeparatorStyles}
-                        style={{
-                          height: `${assetsSeparatorCalculatedHeight}px`,
-                        }}
-                      />
-                    )}
-                    <h3>
-                      <span>
-                        {intl.formatMessage(messages.assetLabel)}
-                        &nbsp;#{assetIndex + 1}
-                      </span>
-                      <AssetToken
-                        asset={asset}
-                        componentClassName={styles.assetToken}
-                      />
-                    </h3>
-                    {asset.quantity && (
-                      <div className={styles.amountFeesWrapper}>
-                        <div className={styles.amount}>
-                          {formattedTokenWalletAmount(
-                            asset.quantity,
-                            asset.metadata
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>

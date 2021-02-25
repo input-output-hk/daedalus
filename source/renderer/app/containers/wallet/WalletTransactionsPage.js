@@ -42,7 +42,7 @@ export default class WalletTransactionsPage extends Component<Props> {
 
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
-    const { all: allAssets } = assets;
+    const { getAssetDetails } = assets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -79,10 +79,9 @@ export default class WalletTransactionsPage extends Component<Props> {
         currentDateFormat={currentDateFormat}
         onFilter={filterTransactions.trigger}
         onRequestCSVFile={requestCSVFile.trigger}
-        isRenderingAsVirtualList
         hasAssetsEnabled={hasAssetsEnabled}
         isInternalAddress={isInternalAddress}
-        allAssets={allAssets}
+        getAssetDetails={getAssetDetails}
       />
     );
   }

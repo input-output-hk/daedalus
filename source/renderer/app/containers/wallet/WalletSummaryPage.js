@@ -49,7 +49,7 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = async (asset: WalletSummaryAsset) => {
+  handleOpenAssetSend = (asset: WalletSummaryAsset) => {
     const { stores } = this.props;
     const { wallets } = stores;
     const { active } = wallets;
@@ -78,7 +78,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const { intl } = this.context;
     const { stores } = this.props;
     const { app, wallets, addresses, transactions, profile, assets } = stores;
-    const { all: allAssets, getAssetDetails } = assets;
+    const { getAssetDetails } = assets;
     const { isInternalAddress } = addresses;
     const {
       openExternalLink,
@@ -171,7 +171,7 @@ export default class WalletSummaryPage extends Component<Props> {
           currentDateFormat={currentDateFormat}
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
-          allAssets={allAssets}
+          getAssetDetails={getAssetDetails}
         />
       );
     } else if (!hasAny) {

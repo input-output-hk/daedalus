@@ -194,7 +194,8 @@ type Props = {
   assets: Array<WalletSummaryAsset>,
   isClearTooltipOpeningDownward?: boolean,
   hasAssets: boolean,
-  selectedToken?: ?Asset,
+  selectedToken: ?Asset,
+  unsetActiveTokenFingerprint: Function,
 };
 
 type State = {
@@ -279,6 +280,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    this.props.unsetActiveTokenFingerprint();
   }
 
   filterAssets = (

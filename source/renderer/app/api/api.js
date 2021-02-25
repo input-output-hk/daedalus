@@ -697,22 +697,8 @@ export default class AdaApi {
         },
         isLegacy: true,
         assets: {
-          available: [
-            {
-              id: '',
-              policy_id: '',
-              asset_name: '',
-              quantity: 0,
-            },
-          ],
-          total: [
-            {
-              id: '',
-              policy_id: '',
-              asset_name: '',
-              quantity: 0,
-            },
-          ],
+          available: [],
+          total: [],
         },
       };
       const wallet: AdaWallet = {

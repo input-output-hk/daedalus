@@ -84,6 +84,13 @@ export default class WalletSendPage extends Component<Props> {
     return allAssets.find((asset) => asset.fingerprint === fingerprint);
   };
 
+  handleUnsetActiveTokenFingerprint = () => {
+    const { wallets: walletActions } = this.props.actions;
+    walletActions.setActiveTokenFingerprint.trigger({
+      tokenFingerprint: null,
+    });
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -168,6 +175,7 @@ export default class WalletSendPage extends Component<Props> {
         }
         isRestoreActive={wallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
+        unsetActiveTokenFingerprint={this.handleUnsetActiveTokenFingerprint}
         hwDeviceStatus={hwDeviceStatus}
         isHardwareWallet={isHardwareWallet}
         isLoadingAssets={isLoadingAssets}
