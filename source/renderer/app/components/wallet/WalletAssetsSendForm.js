@@ -696,26 +696,30 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       ) {
         const errorHasLink = !!get(error, ['values', 'linkLabel']);
         let transactionFeeError;
+        let localizableError = error;
+        let values;
+
+        if (error.id === 'api.errors.utxoTooSmall') {
+          const minimumAda = get(error, 'values.minimumAda');
+          if (minimumAda && !Number.isNaN(Number(minimumAda))) {
+            localizableError = messages.minAdaRequiredTooltip;
+            values = { minimumAda };
+            this.setState({ minimumAda: new BigNumber(minimumAda) });
+          }
+        }
+
         if (errorHasLink) {
           transactionFeeError = (
             <FormattedHTMLMessageWithLink
-              message={error}
+              message={localizableError}
               onExternalLinkClick={this.props.onExternalLinkClick}
             />
           );
-        } else if (error.id === 'api.errors.utxoTooSmall') {
-          const minimumAda = get(
-            error,
-            'values.minimumAda',
-            TRANSACTION_MIN_ADA_VALUE
-          );
-          transactionFeeError = this.context.intl.formatMessage(
-            messages.minAdaRequiredTooltip,
-            { minimumAda }
-          );
-          this.setState({ minimumAda: new BigNumber(minimumAda) });
         } else {
-          transactionFeeError = this.context.intl.formatMessage(error);
+          transactionFeeError = this.context.intl.formatMessage(
+            localizableError,
+            values
+          );
         }
 
         this._isCalculatingTransactionFee = false;
