@@ -12,6 +12,7 @@ import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletRow.scss';
+import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
@@ -119,6 +120,52 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     ...initialWalletRowState,
   };
 
+  stakePoolFirstTileRef: { current: null | HTMLDivElement };
+  stakePoolAdaSymbolRef: { current: null | HTMLDivElement };
+
+  constructor(props: Props) {
+    super(props);
+
+    this.stakePoolFirstTileRef = React.createRef();
+    this.stakePoolAdaSymbolRef = React.createRef();
+  }
+
+  componentDidUpdate() {
+    this.handleFirstTilePopOverStyle();
+  }
+
+  handleFirstTilePopOverStyle = () => {
+    const {
+      wallet: { id },
+    } = this.props;
+    const existingStyle = document.getElementById(`wallet-row-${id}-style`);
+    const { current: firstTileDom } = this.stakePoolFirstTileRef;
+    const { current: adaSymbolDom } = this.stakePoolAdaSymbolRef;
+
+    if (!firstTileDom || !adaSymbolDom) {
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+      return;
+    }
+
+    if (existingStyle) {
+      return;
+    }
+
+    const firstTileDomRect = firstTileDom.getBoundingClientRect();
+    const adaSymbolDomRect = adaSymbolDom.getBoundingClientRect();
+    const horizontalDelta =
+      firstTileDomRect.width / 2 -
+      adaSymbolDomRect.width / 2 -
+      (adaSymbolDomRect.left - firstTileDomRect.left);
+
+    const firstTilePopOverStyle = document.createElement('style');
+    firstTilePopOverStyle.setAttribute('id', `wallet-row-${id}-style`);
+    firstTilePopOverStyle.innerHTML = `.wallet-row-${id} .tippy-arrow { transform: translate(-${horizontalDelta}px, 0); }`;
+    document.getElementsByTagName('head')[0].appendChild(firstTilePopOverStyle);
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -129,6 +176,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         syncState,
         delegatedStakePoolId,
         isHardwareWallet,
+        id,
       },
       delegatedStakePool,
       numberOfRankedStakePools,
@@ -243,28 +291,35 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         <div className={rightContainerStyles}>
           {!isRestoring ? (
             <Fragment>
-              <div className={styles.stakePoolTile}>
-                {delegatedStakePoolId ? (
-                  <PopOver
-                    content={
-                      <div className={styles.tooltipLabelWrapper}>
-                        <span>
-                          {intl.formatMessage(
-                            messages.TooltipPoolTickerEarningRewards
-                          )}
-                        </span>
-                      </div>
-                    }
+              {delegatedStakePoolId ? (
+                <PopOver
+                  themeOverrides={popOverThemeOverrides}
+                  className={`wallet-row-${id}`}
+                  content={
+                    <div className={styles.tooltipLabelWrapper}>
+                      <span>
+                        {intl.formatMessage(
+                          messages.TooltipPoolTickerEarningRewards
+                        )}
+                      </span>
+                    </div>
+                  }
+                >
+                  <div
+                    className={styles.stakePoolTile}
+                    ref={this.stakePoolFirstTileRef}
                   >
                     <div
                       className={!delegatedStakePool ? styles.unknown : null}
                     >
                       {delegatedStakePool ? (
                         <div className={styles.stakePoolName}>
-                          <SVGInline
-                            svg={adaIcon}
+                          <div
                             className={styles.activeAdaSymbol}
-                          />
+                            ref={this.stakePoolAdaSymbolRef}
+                          >
+                            <SVGInline svg={adaIcon} />
+                          </div>
                           <div className={styles.stakePoolTicker}>
                             {delegatedStakePool.ticker}
                           </div>
@@ -275,13 +330,15 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         </div>
                       )}
                     </div>
-                  </PopOver>
-                ) : (
+                  </div>
+                </PopOver>
+              ) : (
+                <div className={styles.stakePoolTile}>
                   <div className={styles.nonDelegatedText}>
                     {notDelegatedText}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
               <SVGInline svg={arrow} className={styles.arrow} />
               <div className={styles.stakePoolTile}>
                 {nextPendingDelegationStakePoolId ? (

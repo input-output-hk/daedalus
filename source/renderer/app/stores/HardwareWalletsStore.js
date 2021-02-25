@@ -162,6 +162,7 @@ export default class HardwareWalletsStore extends Store {
   @observable isListeningForDevice: boolean = false;
   @observable isConnectInitiated: boolean = false;
   @observable isExportKeyAborted: boolean = false;
+  @observable activeDelegationWalletId: ?string = null;
 
   @observable debugData: Object = {};
   getDebugDataPollingInterval: ?IntervalID = null;
@@ -449,7 +450,16 @@ export default class HardwareWalletsStore extends Store {
       // Check if active wallet exist - this means that hw exist but we need to check if relevant device connected to it
       let recognizedPairedHardwareWallet;
       let relatedConnectionData;
-      const activeWalletId = get(this.stores.wallets, ['active', 'id']);
+
+      let activeWalletId;
+      if (this.activeDelegationWalletId && this.isTransactionInitiated) {
+        // Active wallet can be different that wallet we want to delegate
+        activeWalletId = this.activeDelegationWalletId;
+      } else {
+        // For regular tx we are using active wallet
+        activeWalletId = get(this.stores.wallets, ['active', 'id']);
+      }
+
       if (activeWalletId) {
         // Check if device connected to wallet
         logger.debug('[HW-DEBUG] HWStore - active wallet exists');
@@ -1191,6 +1201,7 @@ export default class HardwareWalletsStore extends Store {
 
     const { isMainnet } = this.environment;
     const ttl = this._getTtl();
+    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
@@ -1198,6 +1209,7 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: formattedAmountToLovelace(fee.toString()).toString(),
         ttl: ttl.toString(),
+        validityIntervalStartStr: absoluteSlotNumber.toString(),
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
@@ -1332,6 +1344,7 @@ export default class HardwareWalletsStore extends Store {
     const certificatesData = await Promise.all(_certificatesData);
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
+    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
     const withdrawals = [];
     const metadataHashHex = null;
 
@@ -1343,6 +1356,7 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
+        validityIntervalStartStr: absoluteSlotNumber.toString(),
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
@@ -1393,11 +1407,12 @@ export default class HardwareWalletsStore extends Store {
   };
 
   initiateTransaction = async (params: { walletId: ?string }) => {
+    const { walletId } = params;
     runInAction('HardwareWalletsStore:: Initiate Transaction', () => {
       this.isTransactionInitiated = true;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
+      this.activeDelegationWalletId = walletId;
     });
-    const { walletId } = params;
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,
       walletId
@@ -1462,7 +1477,6 @@ export default class HardwareWalletsStore extends Store {
         throw e;
       }
     }
-
     runInAction(
       'HardwareWalletsStore:: Set active device path for Transaction send',
       () => {
@@ -1473,7 +1487,6 @@ export default class HardwareWalletsStore extends Store {
     // Add more cases / edge cases if needed
     if (deviceType === DeviceTypes.TREZOR && walletId) {
       logger.debug('[HW-DEBUG] Sign Trezor: ', { id });
-
       const transportDevice = await this.establishHardwareWalletConnection();
       if (transportDevice) {
         runInAction(
@@ -1523,6 +1536,7 @@ export default class HardwareWalletsStore extends Store {
       this.txBody = null;
       this.activeDevicePath = null;
       this.unfinishedWalletTxSigning = null;
+      this.activeDelegationWalletId = null;
     });
   };
 
@@ -1787,6 +1801,12 @@ export default class HardwareWalletsStore extends Store {
     const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
     const ttl = absoluteSlotNumber + TIME_TO_LIVE;
     return ttl;
+  };
+
+  _getAbsoluteSlotNumber = (): number => {
+    const { networkTip } = this.stores.networkStatus;
+    const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
+    return absoluteSlotNumber;
   };
 
   _setHardwareWalletLocalData = async ({

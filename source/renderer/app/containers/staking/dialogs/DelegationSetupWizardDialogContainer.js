@@ -261,11 +261,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         poolId,
         delegationAction: DELEGATION_ACTIONS.JOIN,
       });
-      const { feeWithDeposits, fee } = coinsSelection;
-      stakePoolJoinFee = {
-        fee,
-        deposit: feeWithDeposits.minus(fee),
-      };
+      const { deposits, depositsReclaimed, fee } = coinsSelection;
+      stakePoolJoinFee = { deposits, depositsReclaimed, fee };
       // Initiate Transaction (Delegation)
       hardwareWallets.initiateTransaction({ walletId: selectedWalletId });
     } else {

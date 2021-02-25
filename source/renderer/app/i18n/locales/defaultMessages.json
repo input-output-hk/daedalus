@@ -489,16 +489,44 @@
       },
       {
         "defaultMessage": "!!!https://daedaluswallet.io/en/download/",
-        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Mainnet",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 102
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
-        "id": "appUpdate.overlay.manualUpdate.button.url",
+        "id": "appUpdate.overlay.manualUpdate.button.url.mainnet",
         "start": {
-          "column": 25,
+          "column": 35,
           "line": 97
+        }
+      },
+      {
+        "defaultMessage": "!!!https://daedaluswallet.io/en/flight/",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Flight",
+        "end": {
+          "column": 3,
+          "line": 107
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.button.url.flight",
+        "start": {
+          "column": 34,
+          "line": 103
+        }
+      },
+      {
+        "defaultMessage": "!!!https://developers.cardano.org/en/testnets/cardano/get-started/wallet/",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Testnet",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.button.url.testnet",
+        "start": {
+          "column": 35,
+          "line": 108
         }
       }
     ],
@@ -2374,31 +2402,59 @@
         }
       },
       {
-        "defaultMessage": "!!!Invalid URL",
-        "description": "smashUrlInputInvalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "defaultMessage": "!!!Your changes have been saved",
+        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
         "end": {
           "column": 3,
           "line": 116
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smashUrl.input.invalidUrl",
+        "id": "inline.editing.input.changesSaved",
         "start": {
-          "column": 27,
+          "column": 16,
           "line": 111
         }
       },
       {
-        "defaultMessage": "!!!Your changes have been saved",
-        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
+        "defaultMessage": "!!!Invalid URL",
+        "description": "invalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
           "line": 122
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "inline.editing.input.changesSaved",
+        "id": "settings.stakePools.smashUrl.input.invalidUrl",
         "start": {
-          "column": 16,
+          "column": 14,
           "line": 117
+        }
+      },
+      {
+        "defaultMessage": "!!!The URL should start with \"https://\"",
+        "description": "invalidUrlPrefix for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 128
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.invalidUrlPrefix",
+        "start": {
+          "column": 20,
+          "line": 123
+        }
+      },
+      {
+        "defaultMessage": "!!!Only \"https://\" protocol and hostname (e.g. domain.com) are allowed",
+        "description": "invalidUrlParameter for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 135
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.invalidUrlParameter",
+        "start": {
+          "column": 23,
+          "line": 129
         }
       }
     ],
@@ -3503,237 +3559,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Undelegate",
-        "description": "Title for the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.title",
-        "start": {
-          "column": 15,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Undelegate",
-        "description": "Label for the \"Undelegate\" button in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.confirmButtonLabel",
-        "start": {
-          "column": 22,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
-        "description": "Description for the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.descriptionWithTicker",
-        "start": {
-          "column": 25,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
-        "description": "Description for the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker",
-        "start": {
-          "column": 32,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that I am not supporting the Cardano network when my stake is undelegated.",
-        "description": "Label for the unsupport confirmation check in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck",
-        "start": {
-          "column": 25,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.",
-        "description": "Label for the ineligible confirmation check in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.confirmIneligibleCheck",
-        "start": {
-          "column": 26,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Fees",
-        "description": "Fees label in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.feesLabel",
-        "start": {
-          "column": 13,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Spending password label in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordLabel",
-        "start": {
-          "column": 25,
-          "line": 69
-        }
-      },
-      {
-        "defaultMessage": "!!!Type your spending password here",
-        "description": "Spending password placeholder in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 79
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.spendingPasswordPlaceholder",
-        "start": {
-          "column": 31,
-          "line": 74
-        }
-      },
-      {
-        "defaultMessage": "!!!Incorrect spending password.",
-        "description": "Label for password error in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 84
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.passwordError",
-        "start": {
-          "column": 24,
-          "line": 80
-        }
-      },
-      {
-        "defaultMessage": "!!!unknown",
-        "description": "unknown stake pool label in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 89
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.unknownStakePoolLabel",
-        "start": {
-          "column": 25,
-          "line": 85
-        }
-      },
-      {
-        "defaultMessage": "!!!Calculating fees",
-        "description": "\"Calculating fees\" message in the \"Undelegate\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 94
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.js",
-        "id": "staking.delegationCenter.undelegate.dialog.calculatingFees",
-        "start": {
-          "column": 19,
-          "line": 90
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Wallet undelegated",
-        "description": "Title for the \"Undelegate Result\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
-        "id": "staking.delegationCenter.undelegate.result.dialog.title",
-        "start": {
-          "column": 15,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.",
-        "description": "Description 1 for the \"Undelegate Result\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
-        "id": "staking.delegationCenter.undelegate.result.dialog.description1",
-        "start": {
-          "column": 16,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
-        "description": "Description 2 for the \"Undelegate Result\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
-        "id": "staking.delegationCenter.undelegate.result.dialog.description2",
-        "start": {
-          "column": 16,
-          "line": 26
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!{amount} ADA",
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -3741,13 +3577,13 @@
         "description": "Undelegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -3755,13 +3591,13 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -3769,13 +3605,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEpoch",
         "start": {
           "column": 26,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -3783,13 +3619,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards",
         "start": {
           "column": 35,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -3797,13 +3633,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -3811,13 +3647,13 @@
         "description": "Redelegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.redelegate",
         "start": {
           "column": 14,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -3825,13 +3661,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -3839,13 +3675,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 71
+          "line": 72
         }
       }
     ],
@@ -10134,6 +9970,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Delegate",
+        "description": "Label for the delegate button on wallet settings",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "source/renderer/app/components/wallet/settings/DelegateWalletButton.js",
+        "id": "wallet.settings.delegateWalletButtonLabel",
+        "start": {
+          "column": 9,
+          "line": 8
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/DelegateWalletButton.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Delete wallet",
         "description": "Label for the delete button on wallet settings",
         "end": {
@@ -10318,6 +10173,259 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/SetWalletPassword.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Undelegate",
+        "description": "Label for the undelegate button on wallet settings",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletButton.js",
+        "id": "wallet.settings.undelegateWalletButtonLabel",
+        "start": {
+          "column": 9,
+          "line": 8
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletButton.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Undelegate",
+        "description": "Title for the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Undelegate",
+        "description": "Label for the \"Undelegate\" button in the undelegate wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
+        "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.descriptionWithTicker",
+        "start": {
+          "column": 25,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
+        "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.descriptionWithUnknownTicker",
+        "start": {
+          "column": 32,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!unknown",
+        "description": "unknown stake pool label in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.unknownStakePoolLabel",
+        "start": {
+          "column": 25,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I am not supporting the Cardano network when my stake is undelegated.",
+        "description": "Notice to confirm if the user understands unsupporting Cardano network after undelegation",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.confirmUnsupportNotice",
+        "start": {
+          "column": 26,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.",
+        "description": "Notice to confirm if the user understands non-earning rewards after undelegation",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.confirmIneligibleNotice",
+        "start": {
+          "column": 27,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 71
+        }
+      },
+      {
+        "defaultMessage": "!!!Deposits reclaimed",
+        "description": "Deposits reclaimed label in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 80
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.depositLabel",
+        "start": {
+          "column": 16,
+          "line": 76
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Spending password label in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 81
+        }
+      },
+      {
+        "defaultMessage": "!!!Type your spending password here",
+        "description": "Spending password placeholder in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 91
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 86
+        }
+      },
+      {
+        "defaultMessage": "!!!Incorrect spending password.",
+        "description": "Label for password error in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.passwordError",
+        "start": {
+          "column": 24,
+          "line": 92
+        }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 102
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.calculatingFees",
+        "start": {
+          "column": 19,
+          "line": 97
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet undelegated",
+        "description": "Title for the \"Undelegate Result\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.js",
+        "id": "wallet.settings.undelegate.result.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake from your wallet <strong>{walletName}</strong> is no longer delegated and you will soon stop earning rewards for this wallet.",
+        "description": "Description 1 for the \"Undelegate Result\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.js",
+        "id": "wallet.settings.undelegate.result.dialog.description1",
+        "start": {
+          "column": 16,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
+        "description": "Description 2 for the \"Undelegate Result\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.js",
+        "id": "wallet.settings.undelegate.result.dialog.description2",
+        "start": {
+          "column": 16,
+          "line": 26
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.json"
   },
   {
     "descriptors": [
@@ -10935,13 +11043,97 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 24
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Undelegating your wallet",
+        "description": "Undelegate wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.undelegateWallet.header",
+        "start": {
+          "column": 26,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!If you are planning to stop using this wallet and remove all funds, you should first undelegate it to recover your 2 ada deposit. You will continue getting delegation rewards during the three Cardano epochs after undelegating your wallet.",
+        "description": "Undelegate wallet warning explaining the consequences.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.undelegateWallet.warning",
+        "start": {
+          "column": 27,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet is synchronizing with the blockchain, so this wallet's delegation status is currently unknown, and undelegation is not possible.",
+        "description": "Undelegate wallet disabled warning explaining why it is disabled.",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.undelegateWallet.disabledWarning",
+        "start": {
+          "column": 35,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Delegate your wallet",
+        "description": "Delegate wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.delegateWallet.header",
+        "start": {
+          "column": 24,
+          "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet is not delegated. Please, delegate the stake from this wallet to earn rewards and support the Cardano network's security.",
+        "description": "Delegate wallet warning.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.delegateWallet.warning",
+        "start": {
+          "column": 25,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet is synchronizing with the blockchain, so this wallet's delegation status is currently unknown, and delegation is not possible.",
+        "description": "Delegate wallet disabled warning explaining why it is disabled.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.delegateWallet.disabledWarning",
+        "start": {
+          "column": 33,
+          "line": 67
         }
       },
       {
@@ -10949,13 +11141,13 @@
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 30
+          "line": 74
         }
       },
       {
@@ -10963,13 +11155,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
           "column": 24,
-          "line": 35
+          "line": 79
         }
       },
       {
@@ -10977,13 +11169,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
           "column": 24,
-          "line": 41
+          "line": 85
         }
       },
       {
@@ -10991,13 +11183,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 47
+          "line": 91
         }
       },
       {
@@ -11005,13 +11197,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 52
+          "line": 96
         }
       },
       {
@@ -11019,13 +11211,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 57
+          "line": 101
         }
       },
       {
@@ -11033,13 +11225,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 62
+          "line": 106
         }
       }
     ],
@@ -11474,13 +11666,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -11488,13 +11680,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -11502,13 +11694,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -11516,13 +11708,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -11530,13 +11722,13 @@
         "description": "Transaction metadata label",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataLabel",
         "start": {
           "column": 17,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -11544,13 +11736,13 @@
         "description": "Transaction metadata disclaimer",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataDisclaimer",
         "start": {
           "column": 22,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -11558,13 +11750,13 @@
         "description": "Transaction metadata confirmation toggle",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataConfirmationLabel",
         "start": {
           "column": 29,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -11572,13 +11764,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -11586,13 +11778,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -11600,13 +11792,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -11614,13 +11806,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -11628,13 +11820,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -11642,13 +11834,13 @@
         "description": "From rewards",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.rewards.from",
         "start": {
           "column": 15,
-          "line": 91
+          "line": 92
         }
       },
       {
@@ -11656,13 +11848,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 96
+          "line": 97
         }
       },
       {
@@ -11670,13 +11862,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 101
+          "line": 102
         }
       },
       {
@@ -11684,13 +11876,13 @@
         "description": "Transaction fee",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionFee",
         "start": {
           "column": 18,
-          "line": 106
+          "line": 107
         }
       },
       {
@@ -11698,13 +11890,13 @@
         "description": "Deposit",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 116
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.deposit",
         "start": {
           "column": 11,
-          "line": 111
+          "line": 112
         }
       },
       {
@@ -11712,13 +11904,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 116
+          "line": 117
         }
       },
       {
@@ -11726,13 +11918,13 @@
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 127
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnNote",
         "start": {
           "column": 24,
-          "line": 121
+          "line": 122
         }
       },
       {
@@ -11740,13 +11932,13 @@
         "description": "Link to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 132
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnSupportArticle",
         "start": {
           "column": 34,
-          "line": 127
+          "line": 128
         }
       },
       {
@@ -11754,13 +11946,13 @@
         "description": "Url to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 137
+          "line": 138
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleUrl",
         "start": {
           "column": 21,
-          "line": 132
+          "line": 133
         }
       },
       {
@@ -11768,13 +11960,13 @@
         "description": "Input Addresses label.",
         "end": {
           "column": 3,
-          "line": 142
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.noInputAddressesLabel",
         "start": {
           "column": 25,
-          "line": 138
+          "line": 139
         }
       },
       {
@@ -11782,13 +11974,13 @@
         "description": "Unresolved Input Addresses link label.",
         "end": {
           "column": 3,
-          "line": 147
+          "line": 148
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkLabel",
         "start": {
           "column": 37,
-          "line": 143
+          "line": 144
         }
       },
       {
@@ -11796,13 +11988,13 @@
         "description": "Unresolved Input Addresses additional label.",
         "end": {
           "column": 3,
-          "line": 152
+          "line": 153
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel",
         "start": {
           "column": 43,
-          "line": 148
+          "line": 149
         }
       },
       {
@@ -11810,13 +12002,13 @@
         "description": "Note to cancel a transaction that has been failed",
         "end": {
           "column": 3,
-          "line": 158
+          "line": 159
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.failed.cancelFailedTxnNote",
         "start": {
           "column": 23,
-          "line": 153
+          "line": 154
         }
       },
       {
@@ -11824,13 +12016,13 @@
         "description": "Link to support article for removing a failed transaction",
         "end": {
           "column": 3,
-          "line": 163
+          "line": 164
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.failed.cancelFailedTxnSupportArticle",
         "start": {
           "column": 33,
-          "line": 159
+          "line": 160
         }
       },
       {
@@ -11838,13 +12030,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 171
+          "line": 172
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 167
+          "line": 168
         }
       },
       {
@@ -11852,13 +12044,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 176
+          "line": 177
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 172
+          "line": 173
         }
       },
       {
@@ -11866,13 +12058,13 @@
         "description": "Transaction state \"failed\"",
         "end": {
           "column": 3,
-          "line": 181
+          "line": 182
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 177
+          "line": 178
         }
       }
     ],
