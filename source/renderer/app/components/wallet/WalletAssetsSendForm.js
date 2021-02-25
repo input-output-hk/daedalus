@@ -106,14 +106,14 @@ export const messages = defineMessages({
   },
   minAdaRequired: {
     id: 'wallet.send.form.minAdaRequired',
-    defaultMessage: '!!!a minimum of {adaValue} ADA required',
+    defaultMessage: '!!!a minimum of {minimumAda} ADA required',
     description:
       'Label for the min ADA required value in the wallet send form.',
   },
   minAdaRequiredTooltip: {
     id: 'wallet.send.form.minAdaRequiredTooltip',
     defaultMessage:
-      '!!!A minimum of {adaValue} ADA needs to be sent to this receiver since you are sending other assets.',
+      '!!!A minimum of {minimumAda} ADA needs to be sent to this receiver since you are sending other assets.',
     description:
       'Tooltip for the min ADA required value in the wallet send form.',
   },
@@ -695,14 +695,29 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         )
       ) {
         const errorHasLink = !!get(error, ['values', 'linkLabel']);
-        const transactionFeeError = errorHasLink ? (
-          <FormattedHTMLMessageWithLink
-            message={error}
-            onExternalLinkClick={this.props.onExternalLinkClick}
-          />
-        ) : (
-          this.context.intl.formatMessage(error)
-        );
+        let transactionFeeError;
+        if (errorHasLink) {
+          transactionFeeError = (
+            <FormattedHTMLMessageWithLink
+              message={error}
+              onExternalLinkClick={this.props.onExternalLinkClick}
+            />
+          );
+        } else if (error.id === 'api.errors.utxoTooSmall') {
+          const minimumAda = get(
+            error,
+            'values.minimumAda',
+            TRANSACTION_MIN_ADA_VALUE
+          );
+          transactionFeeError = this.context.intl.formatMessage(
+            messages.minAdaRequiredTooltip,
+            { minimumAda }
+          );
+          this.setState({ minimumAda: new BigNumber(minimumAda) });
+        } else {
+          transactionFeeError = this.context.intl.formatMessage(error);
+        }
+
         this._isCalculatingTransactionFee = false;
         this.setState({
           isTransactionFeeCalculated: false,
@@ -953,14 +968,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 <div className={styles.minAdaRequired}>
                   <span>
                     {intl.formatMessage(messages.minAdaRequired, {
-                      adaValue: minimumAdaValue,
+                      minimumAda: minimumAdaValue,
                     })}
                   </span>
                   <PopOver
                     content={intl.formatMessage(
                       messages.minAdaRequiredTooltip,
                       {
-                        adaValue: minimumAdaValue,
+                        minimumAda: minimumAdaValue,
                       }
                     )}
                     contentClassName={styles.minAdaTooltipContent}

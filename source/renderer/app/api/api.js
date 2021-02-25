@@ -946,6 +946,14 @@ export default class AdaApi {
         .set('invalidAddress')
         .where('code', 'bad_request')
         .inc('message', 'Unable to decode Address')
+        .where('code', 'utxo_too_small')
+        .set('utxoTooSmall', true, {
+          minimumAda: get(
+            /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
+            2,
+            0
+          ),
+        })
         .result();
     }
   };
