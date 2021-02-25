@@ -1332,6 +1332,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ];
       },
     ]);
+    this.form
+      .$(newAsset)
+      .focus();
   };
 
   addNewWalletsDropdownField = (receiverId: string, dropdownId: string) => {
