@@ -101,10 +101,8 @@
 
     em {
       &:not(.singleline) {
-        max-height: 47px;
         overflow-wrap: break-word;
-        overflow-x: hidden;
-        overflow-y: auto;
+        word-break: break-all;
       }
 
       &.singleline {
