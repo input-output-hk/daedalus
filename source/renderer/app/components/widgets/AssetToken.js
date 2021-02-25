@@ -172,8 +172,10 @@ export default class AssetToken extends Component<Props, State> {
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
         <div className={styles.assetItem}>
-          <em className={singleline ? styles.singleline : null}>{value}</em>
-          <SVGInline svg={icon} className={iconClassnames} />
+          <em className={singleline ? styles.singleline : null}>
+            {value}
+            <SVGInline svg={icon} className={iconClassnames} />
+          </em>
         </div>
       </CopyToClipboard>
     );
