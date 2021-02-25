@@ -1501,25 +1501,27 @@ export default class HardwareWalletsStore extends Store {
       cancelDeviceAction: boolean,
     }
   ) => {
-    logger.debug('[HW-DEBUG] RESET TX');
-    runInAction('HardwareWalletsStore:: Reset initiated transaction', () => {
-      this.isTransactionInitiated = false;
-    });
-    this.stopCardanoAdaAppFetchPoller();
-    const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
-    if (cancelDeviceAction) {
-      resetTrezorActionChannel.request();
+    if (isHardwareWalletSupportEnabled) {
+      logger.debug('[HW-DEBUG] RESET TX');
+      runInAction('HardwareWalletsStore:: Reset initiated transaction', () => {
+        this.isTransactionInitiated = false;
+      });
+      this.stopCardanoAdaAppFetchPoller();
+      const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
+      if (cancelDeviceAction) {
+        resetTrezorActionChannel.request();
+      }
+      this.sendMoneyRequest.reset();
+      this.selectCoinsRequest.reset();
+      logger.debug('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
+      runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.READY;
+        this.txBody = null;
+        this.activeDevicePath = null;
+        this.unfinishedWalletTxSigning = null;
+        this.activeDelegationWalletId = null;
+      });
     }
-    this.sendMoneyRequest.reset();
-    this.selectCoinsRequest.reset();
-    logger.debug('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
-    runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
-      this.hwDeviceStatus = HwDeviceStatuses.READY;
-      this.txBody = null;
-      this.activeDevicePath = null;
-      this.unfinishedWalletTxSigning = null;
-      this.activeDelegationWalletId = null;
-    });
   };
 
   @action _changeHardwareWalletConnectionStatus = async (
