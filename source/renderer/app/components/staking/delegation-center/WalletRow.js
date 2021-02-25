@@ -240,7 +240,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     ]);
 
     const actionButtonStyles = classnames([
-      styles.actionButton,
+      styles.action,
       highlightedPoolId ? styles.active : null,
     ]);
 

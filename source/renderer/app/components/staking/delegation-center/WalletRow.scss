@@ -129,14 +129,11 @@
         padding: 0;
 
         > div {
+          align-items: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
           padding: 7px 0 0 0;
-
-          > span {
-            align-items: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-          }
         }
 
         .stakePoolTicker {
@@ -308,9 +305,7 @@
       justify-content: center;
       line-height: 1.25;
       margin-left: -1px;
-      margin-top: -21px;
       opacity: 0;
-      padding: 0 !important;
       position: absolute;
       text-transform: uppercase;
       transition: opacity 0.2s ease-in;
@@ -322,10 +317,6 @@
 
       &:active {
         background-color: var(--theme-button-primary-background-color-active);
-      }
-
-      &.active {
-        opacity: 1;
       }
     }
 
