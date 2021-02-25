@@ -17,6 +17,11 @@ import {
 } from '../../config/timingConfig';
 
 const messages = defineMessages({
+  fingerprintItem: {
+    id: 'widgets.assetToken.item.fingerprint',
+    defaultMessage: '!!!Fingerprint',
+    description: '"fingerprint" item.',
+  },
   policyIdItem: {
     id: 'widgets.assetToken.item.policyId',
     defaultMessage: '!!!Policy Id',
@@ -183,7 +188,11 @@ export default class AssetToken extends Component<Props, State> {
     return (
       <div className={styles.tooltipContent}>
         <div className={styles.fingerprint}>
-          {item('fingerprint', 'fingerprint', fingerprint)}
+          {item(
+            'fingerprint',
+            intl.formatMessage(messages.fingerprintItem),
+            fingerprint
+          )}
         </div>
         <dl>
           {acronym && (

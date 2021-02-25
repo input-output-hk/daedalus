@@ -15643,17 +15643,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Policy Id",
-        "description": "\"policyId\" item.",
+        "defaultMessage": "!!!Fingerprint",
+        "description": "\"fingerprint\" item.",
         "end": {
           "column": 3,
           "line": 24
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
+        "id": "widgets.assetToken.item.fingerprint",
+        "start": {
+          "column": 19,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Policy Id",
+        "description": "\"policyId\" item.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.policyId",
         "start": {
           "column": 16,
-          "line": 20
+          "line": 25
         }
       },
       {
@@ -15661,13 +15675,13 @@
         "description": "\"assetName\" item.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 34
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.assetName",
         "start": {
           "column": 17,
-          "line": 25
+          "line": 30
         }
       },
       {
@@ -15675,13 +15689,13 @@
         "description": "\"name\" item.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 39
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.name",
         "start": {
           "column": 12,
-          "line": 30
+          "line": 35
         }
       },
       {
@@ -15689,13 +15703,13 @@
         "description": "\"ticker\" item.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 44
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.ticker",
         "start": {
           "column": 14,
-          "line": 35
+          "line": 40
         }
       },
       {
@@ -15703,13 +15717,13 @@
         "description": "\"description\" item.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 49
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.description",
         "start": {
           "column": 19,
-          "line": 40
+          "line": 45
         }
       }
     ],

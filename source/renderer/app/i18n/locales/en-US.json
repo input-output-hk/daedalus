@@ -1149,6 +1149,7 @@
   "wallet.transferFunds.dialog2.total.label": "Total",
   "widgets.assetToken.item.assetName": "Asset name",
   "widgets.assetToken.item.description": "Description",
+  "widgets.assetToken.item.fingerprint": "Fingerprint",
   "widgets.assetToken.item.name": "Name",
   "widgets.assetToken.item.policyId": "Policy Id",
   "widgets.assetToken.item.ticker": "Ticker"
