@@ -40,7 +40,7 @@ import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import Asset from '../../domains/Asset';
 import type { AssetItems, WalletSummaryAsset } from '../../api/assets/types';
-import infoIconInline from '../../assets/images/info-icon.inline.svg';
+import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 
 export const messages = defineMessages({
@@ -967,7 +967,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     key="tooltip"
                   >
                     <SVGInline
-                      svg={infoIconInline}
+                      svg={questionMarkIcon}
                       className={styles.infoIcon}
                     />
                   </PopOver>
@@ -994,23 +994,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           {formattedTokenWalletAmount(quantity, metadata)}
                         </div>
                       )}
-                      <Button
-                        className={classNames([
-                          styles.removeAssetButton,
-                          'flat',
-                          this.state.showAssetRemoveBtn &&
-                          this.state.showAssetRemoveBtn[assetIndex]
-                            ? styles.active
-                            : null,
-                        ])}
-                        label={intl.formatMessage(
-                          messages.removeReceiverButtonLabel
-                        )}
-                        onClick={() =>
-                          this.removeAssetRow(index + 1, receiverId, assetIndex)
-                        }
-                        skin={ButtonSkin}
-                      />
                       <NumericInput
                         {...assetFieldProps[assetIndex]}
                         placeholder={
@@ -1027,9 +1010,34 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                             ? styles.hasButton
                             : null,
                         ])}
-                        label={`${intl.formatMessage(messages.assetLabel)} #${
-                          assetIndex + 1
-                        }`}
+                        label={
+                          <>
+                            {`${intl.formatMessage(messages.assetLabel)} #${
+                              assetIndex + 1
+                            }`}
+                            <Button
+                              className={classNames([
+                                styles.removeAssetButton,
+                                'flat',
+                                this.state.showAssetRemoveBtn &&
+                                this.state.showAssetRemoveBtn[assetIndex]
+                                  ? styles.active
+                                  : null,
+                              ])}
+                              label={intl.formatMessage(
+                                messages.removeReceiverButtonLabel
+                              )}
+                              onClick={() =>
+                                this.removeAssetRow(
+                                  index + 1,
+                                  receiverId,
+                                  assetIndex
+                                )
+                              }
+                              skin={ButtonSkin}
+                            />
+                          </>
+                        }
                         bigNumberFormat={
                           metadata && metadata.unit
                             ? this.getCurrentNumberFormat()

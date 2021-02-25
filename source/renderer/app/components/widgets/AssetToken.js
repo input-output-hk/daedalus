@@ -75,21 +75,38 @@ export default class AssetToken extends Component<Props, State> {
     itemCopied: null,
   };
 
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   handleShowTooltip = () => {
     clearTimeout(this.displayDelayTimeout);
     this.displayDelayTimeout = setTimeout(() => {
-      this.setState({
-        isTooltipVisible: true,
-      });
+      if (this._isMounted) {
+        this.setState({
+          isTooltipVisible: true,
+        });
+      }
     }, ASSET_TOKEN_DISPLAY_DELAY);
   };
 
   handleHideTooltip = () => {
     clearTimeout(this.displayDelayTimeout);
     this.displayDelayTimeout = setTimeout(() => {
-      this.setState({
-        isTooltipVisible: false,
-      });
+      if (this._isMounted) {
+        this.setState({
+          isTooltipVisible: false,
+        });
+      }
     }, ASSET_TOKEN_DISPLAY_DELAY);
   };
 
@@ -103,7 +120,9 @@ export default class AssetToken extends Component<Props, State> {
       itemCopied,
     });
     this.copyNotificationTimeout = setTimeout(() => {
-      this.setState({ itemCopied: null });
+      if (this._isMounted) {
+        this.setState({ itemCopied: null });
+      }
     }, ASSET_TOKEN_ID_COPY_FEEDBACK);
   };
 

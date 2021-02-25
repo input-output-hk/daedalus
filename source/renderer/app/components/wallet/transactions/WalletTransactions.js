@@ -48,6 +48,7 @@ type Props = {
   hasAssetsEnabled: boolean,
   getAssetDetails: Function,
   isInternalAddress: Function,
+  onCopyAssetItem: Function,
 };
 
 type State = {
@@ -110,6 +111,7 @@ export default class WalletTransactions extends Component<Props, State> {
       hasAssetsEnabled,
       getAssetDetails,
       isInternalAddress,
+      onCopyAssetItem,
     } = this.props;
 
     // Guard against potential null values
@@ -154,6 +156,7 @@ export default class WalletTransactions extends Component<Props, State> {
           getAssetDetails={getAssetDetails}
           isRenderingAsVirtualList
           isInternalAddress={isInternalAddress}
+          onCopyAssetItem={onCopyAssetItem}
         />
       );
     }

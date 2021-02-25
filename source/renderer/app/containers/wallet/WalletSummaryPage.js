@@ -172,6 +172,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
           getAssetDetails={getAssetDetails}
+          onCopyAssetItem={this.handleOnCopyAssetItem}
         />
       );
     } else if (!hasAny) {

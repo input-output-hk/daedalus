@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { ellipsis } from '../../../utils/strings';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
@@ -44,6 +45,14 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
     hardwareWallets.initiateTransaction({ walletId: activeWallet.id });
+  };
+
+  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+    const value = ellipsis(fullValue, 15, 15);
+    this.props.actions.wallets.copyAssetItem.trigger({
+      assetItem,
+      value,
+    });
   };
 
   render() {
@@ -108,6 +117,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
             walletName={activeWallet.name}
+            onCopyAssetItem={this.handleOnCopyAssetItem}
           />
         ) : (
           <WalletSendConfirmationDialog

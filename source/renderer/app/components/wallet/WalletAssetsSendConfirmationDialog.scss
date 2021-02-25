@@ -67,7 +67,10 @@
   .receiverRow {
     display: flex;
     flex-direction: column;
-    margin-top: 15px;
+
+    & + .receiverRow {
+      margin-top: 15px;
+    }
 
     .receiverRowItem {
       align-items: flex-start;
