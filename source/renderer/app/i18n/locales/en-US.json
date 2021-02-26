@@ -919,6 +919,7 @@
   "wallet.send.form.asset.adaLabel": "Ada",
   "wallet.send.form.asset.label": "Token",
   "wallet.send.form.button.addAssetButtonLabel": "+ Add a token",
+  "wallet.send.form.button.clearLabel": "Clear",
   "wallet.send.form.button.removeReceiver": "Remove",
   "wallet.send.form.calculatingFeesLabel": "Calculating fees",
   "wallet.send.form.description.hint": "You can type a message here, if you want.",

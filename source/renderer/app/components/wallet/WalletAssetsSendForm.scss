@@ -169,7 +169,7 @@
   }
 }
 
-.adaAssetLabel {
+.adaAmountLabel {
   color: var(--theme-input-placeholder-color);
   font-family: var(--font-regular);
   font-size: 16px;
@@ -380,7 +380,7 @@
   }
 }
 
-.walletsDropdownWrapper {
+.assetsDropdownWrapper {
   display: flex;
   position: relative;
   width: auto;
@@ -389,7 +389,7 @@
     width: 100%;
   }
 
-  .walletsDropdown {
+  .assetsDropdown {
     input {
       border: none;
       height: 48px;

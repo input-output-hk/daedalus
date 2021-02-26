@@ -311,6 +311,7 @@ storiesOf('Wallets|Send', module)
   .add('Wallet Send Confirmation Dialog With Assets', () => (
     <div>
       <WalletAssetsSendConfirmationDialog
+        currencyUnit="Ada"
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
         sender={generateWallet('Wallet name', '45119903750165', assets).id}
         receiver={generateHash()}

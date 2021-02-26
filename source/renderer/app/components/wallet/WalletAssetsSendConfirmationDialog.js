@@ -135,6 +135,7 @@ type Props = {
   walletName: string,
   onExternalLinkClick: Function,
   onCopyAssetItem: Function,
+  currencyUnit: string,
 };
 
 type State = {
@@ -323,6 +324,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
       hwDeviceStatus,
       isHardwareWallet,
       onCopyAssetItem,
+      currencyUnit,
     } = this.props;
     const { assets } = this.filteredAssets;
 
@@ -398,9 +400,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                     />
                     <div className={styles.assetsContainer}>
                       <h3>
-                        <span>
-                          {intl.formatMessage(globalMessages.unitAda)}
-                        </span>
+                        <span>{currencyUnit}</span>
                       </h3>
                       <div className={styles.amountFeesWrapper}>
                         <div className={styles.amount}>
@@ -453,7 +453,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
             <div className={styles.fees}>
               {transactionFee}
               <span className={styles.currencySymbol}>
-                &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                &nbsp;{currencyUnit}
               </span>
             </div>
           </div>

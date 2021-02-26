@@ -14558,13 +14558,13 @@
         "description": "Label for the \"Title\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.title.label",
         "start": {
           "column": 14,
-          "line": 47
+          "line": 45
         }
       },
       {
@@ -14572,13 +14572,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.title.hint",
         "start": {
           "column": 13,
-          "line": 52
+          "line": 50
         }
       },
       {
@@ -14586,13 +14586,13 @@
         "description": "Label for the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.receiver.label",
         "start": {
           "column": 17,
-          "line": 58
+          "line": 56
         }
       },
       {
@@ -14600,13 +14600,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.receiver.placeholder",
         "start": {
           "column": 16,
-          "line": 63
+          "line": 61
         }
       },
       {
@@ -14614,13 +14614,13 @@
         "description": "Label for the \"Token\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.asset.label",
         "start": {
           "column": 14,
-          "line": 69
+          "line": 67
         }
       },
       {
@@ -14628,13 +14628,13 @@
         "description": "Label for the \"Ada\" input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.asset.adaLabel",
         "start": {
           "column": 17,
-          "line": 74
+          "line": 72
         }
       },
       {
@@ -14642,13 +14642,27 @@
         "description": "Label for the \"Remove\" button in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.button.removeReceiver",
         "start": {
           "column": 29,
-          "line": 79
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!Clear",
+        "description": "Label for the \"Clear\" button in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 86
+        },
+        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
+        "id": "wallet.send.form.button.clearLabel",
+        "start": {
+          "column": 14,
+          "line": 82
         }
       },
       {
@@ -14656,13 +14670,13 @@
         "description": "Label for the \"+ Add a token\" button in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.button.addAssetButtonLabel",
         "start": {
           "column": 23,
-          "line": 84
+          "line": 87
         }
       },
       {
@@ -14670,13 +14684,13 @@
         "description": "Label for the \"Estimated fees\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 98
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.estimatedFee.label",
         "start": {
           "column": 21,
-          "line": 90
+          "line": 93
         }
       },
       {
@@ -14684,13 +14698,13 @@
         "description": "Label for the \"of\" max ADA value in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.of.label",
         "start": {
           "column": 11,
-          "line": 96
+          "line": 99
         }
       },
       {
@@ -14698,13 +14712,13 @@
         "description": "Label for the min ADA required value in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 109
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.minAdaRequired",
         "start": {
           "column": 18,
-          "line": 101
+          "line": 104
         }
       },
       {
@@ -14712,13 +14726,13 @@
         "description": "Tooltip for the min ADA required value in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 116
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.minAdaRequiredTooltip",
         "start": {
           "column": 25,
-          "line": 107
+          "line": 110
         }
       },
       {
@@ -14726,13 +14740,13 @@
         "description": "Label for the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 119
+          "line": 122
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
-          "line": 114
+          "line": 117
         }
       },
       {
@@ -14740,13 +14754,13 @@
         "description": "Hint in the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 124
+          "line": 127
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
-          "line": 120
+          "line": 123
         }
       },
       {
@@ -14754,13 +14768,13 @@
         "description": "Label for the reset button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 132
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.reset",
         "start": {
           "column": 20,
-          "line": 125
+          "line": 128
         }
       },
       {
@@ -14768,13 +14782,13 @@
         "description": "Label for the send button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.send",
         "start": {
           "column": 19,
-          "line": 130
+          "line": 133
         }
       },
       {
@@ -14782,13 +14796,13 @@
         "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 142
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 135
+          "line": 138
         }
       },
       {
@@ -14796,13 +14810,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 145
+          "line": 148
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 140
+          "line": 143
         }
       },
       {
@@ -14810,13 +14824,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 152
+          "line": 155
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 146
+          "line": 149
         }
       },
       {
@@ -14824,13 +14838,13 @@
         "description": "Label for the \"Calculating fees\" message for amount input field.",
         "end": {
           "column": 3,
-          "line": 158
+          "line": 161
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.calculatingFeesLabel",
         "start": {
           "column": 24,
-          "line": 153
+          "line": 156
         }
       },
       {
@@ -14838,13 +14852,13 @@
         "description": "Syncing wallet label on the send tokens form.",
         "end": {
           "column": 3,
-          "line": 163
+          "line": 166
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
         "id": "wallet.send.form.syncingWallet",
         "start": {
           "column": 17,
-          "line": 159
+          "line": 162
         }
       }
     ],
