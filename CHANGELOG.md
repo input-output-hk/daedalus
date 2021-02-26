@@ -3,6 +3,12 @@ Changelog
 
 ## vNext
 
+### Chores
+
+- Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
+
+## 3.3.1
+
 ### Features
 
 - Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
