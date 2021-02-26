@@ -200,9 +200,10 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       return fallbackStakePoolId;
     }
 
-    if (
-      get(foundDelegation, 'status') === WalletDelegationStatuses.NOT_DELEGATING
-    ) {
+    const isDelegating =
+      get(foundDelegation, 'status') === WalletDelegationStatuses.DELEGATING;
+
+    if (!isDelegating) {
       return null;
     }
 
