@@ -1069,6 +1069,7 @@
   "wallet.transaction.failed.cancelFailedTxnNote": "トランザクションはCardanoネットワークに送信されましたが、期限切れのため失敗しました。Cardanoネットワークのトランザクションには「time to live（有効期限）」属性があり、ネットワークがトランザクションを処理する前にこれを経過しました。このトランザクションに使用されたファンド（UTXO）をリリースして別のトランザクションで使用可能にするために、このトランザクションを削除してください。",
   "wallet.transaction.failed.cancelFailedTxnSupportArticle": "このトランザクションをキャンセルする理由",
   "wallet.transaction.failed.removeTransactionButton": "失敗したトランザクションを削除する",
+  "wallet.transaction.fetchingTokenData": "トークンデータをフェッチしています",
   "wallet.transaction.filter.allTransactions": "すべてのトランザクション",
   "wallet.transaction.filter.amountRange": "ADA額",
   "wallet.transaction.filter.apply": "適用する",

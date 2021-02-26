@@ -1069,6 +1069,7 @@
   "wallet.transaction.failed.cancelFailedTxnNote": "This transaction was submitted to the Cardano network, but it failed as it had expired. Transactions on the Cardano network have a ‘time to live’ attribute, which had passed before the network processed the transaction. You need to remove it to release the funds (UTXOs) used by this transaction for use in another transaction.",
   "wallet.transaction.failed.cancelFailedTxnSupportArticle": "Why should I cancel failed transactions?",
   "wallet.transaction.failed.removeTransactionButton": "Remove failed transaction",
+  "wallet.transaction.fetchingTokenData": "Fetching token data",
   "wallet.transaction.filter.allTransactions": "All Transactions",
   "wallet.transaction.filter.amountRange": "Amount of ada",
   "wallet.transaction.filter.apply": "Apply",

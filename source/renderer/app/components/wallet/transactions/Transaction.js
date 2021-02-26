@@ -22,7 +22,6 @@ import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
-import { ellipsis } from '../../../utils/strings';
 import type { WalletTransactionAsset } from '../../../api/assets/types';
 import AssetToken from '../../widgets/AssetToken';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
@@ -157,6 +156,11 @@ const messages = defineMessages({
     id: 'wallet.transaction.tokensReceived',
     defaultMessage: '!!!Tokens received',
     description: 'Tokens received.',
+  },
+  fetchingTokenData: {
+    id: 'wallet.transaction.fetchingTokenData',
+    defaultMessage: '!!!Fetching token data',
+    description: '"Fetching token data..." message.',
   },
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
@@ -401,15 +405,15 @@ export default class Transaction extends Component<Props, State> {
     );
   };
 
-  get assetsList(): Array<WalletTransactionAsset> {
-    const {
-      assetsDetails,
-      data,
-      hasAssetsEnabled,
-      isInternalAddress,
-    } = this.props;
+  get hasAssets(): boolean {
+    const { data, hasAssetsEnabled } = this.props;
+    return hasAssetsEnabled && data.assets.length > 0;
+  }
 
-    if (!hasAssetsEnabled) {
+  get assetsList(): Array<WalletTransactionAsset> {
+    const { assetsDetails, data, isInternalAddress } = this.props;
+
+    if (!this.hasAssets) {
       return [];
     }
 
@@ -422,10 +426,6 @@ export default class Transaction extends Component<Props, State> {
     );
 
     return assetsList;
-  }
-
-  get hasAssets(): boolean {
-    return this.assetsList.length > 0;
   }
 
   includesUnresolvedAddresses = (addresses: Array<?string>) =>
@@ -467,14 +467,7 @@ export default class Transaction extends Component<Props, State> {
                 onOpenExternalLink(getUrlByType('address', address))
               }
               label={
-                <WholeSelectionText
-                  className={styles.address}
-                  text={
-                    this.hasAssets && address
-                      ? ellipsis(address, 30, 30)
-                      : address
-                  }
-                />
+                <WholeSelectionText className={styles.address} text={address} />
               }
               skin={LinkSkin}
             />
@@ -671,45 +664,59 @@ export default class Transaction extends Component<Props, State> {
                         ? intl.formatMessage(messages.tokensSent)
                         : intl.formatMessage(messages.tokensReceived)}
                     </h2>
-                    {!isLoadingAssets
-                      ? this.assetsList.map((asset, assetIndex) => (
-                          <div
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                            className={styles.assetContainer}
-                          >
-                            {assetIndex === 0 && (
-                              <div
-                                className={assetsSeparatorStyles}
-                                style={{
-                                  height: `${assetsSeparatorCalculatedHeight}px`,
-                                }}
-                              />
-                            )}
-                            <h3>
-                              <span>
-                                {intl.formatMessage(messages.assetLabel)}
-                                &nbsp;#{assetIndex + 1}
-                              </span>
-                              <AssetToken
-                                asset={asset}
-                                onCopyAssetItem={onCopyAssetItem}
-                                componentClassName={styles.assetToken}
-                              />
-                            </h3>
-                            {asset.quantity && (
-                              <div className={styles.amountFeesWrapper}>
-                                <div className={styles.amount}>
-                                  {formattedTokenWalletAmount(
-                                    asset.quantity,
-                                    asset.metadata
-                                  )}
-                                </div>
+                    {isLoadingAssets ? (
+                      <div className={styles.assetContainer}>
+                        <div
+                          className={assetsSeparatorStyles}
+                          style={{
+                            height: '12px',
+                          }}
+                        />
+                        <h3>
+                          <span className={styles.fetchingTokenData}>
+                            {intl.formatMessage(messages.fetchingTokenData)}
+                          </span>
+                        </h3>
+                      </div>
+                    ) : (
+                      this.assetsList.map((asset, assetIndex) => (
+                        <div
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
+                          className={styles.assetContainer}
+                        >
+                          {assetIndex === 0 && (
+                            <div
+                              className={assetsSeparatorStyles}
+                              style={{
+                                height: `${assetsSeparatorCalculatedHeight}px`,
+                              }}
+                            />
+                          )}
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetIndex + 1}
+                            </span>
+                            <AssetToken
+                              asset={asset}
+                              onCopyAssetItem={onCopyAssetItem}
+                              componentClassName={styles.assetToken}
+                            />
+                          </h3>
+                          {asset.quantity && (
+                            <div className={styles.amountFeesWrapper}>
+                              <div className={styles.amount}>
+                                {formattedTokenWalletAmount(
+                                  asset.quantity,
+                                  asset.metadata
+                                )}
                               </div>
-                            )}
-                          </div>
-                        ))
-                      : null}
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </>
                 )}
 
