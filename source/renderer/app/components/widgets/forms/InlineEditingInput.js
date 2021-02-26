@@ -117,12 +117,19 @@ export default class InlineEditingInput extends Component<Props, State> {
         this.setInputBlur();
         const { inputField } = form.values();
         const { onSubmit, errorMessage } = this.props;
-        if (!!inputField && (inputField !== this.props.value || errorMessage)) {
+        if (!inputField) {
+          return;
+        }
+        if (inputField !== this.props.value || errorMessage) {
           this.setState({
             hasChanged: true,
             successfullyUpdated: false,
           });
           await onSubmit(inputField);
+          this.setState({
+            hasChanged: false,
+          });
+        } else {
           this.setState({
             hasChanged: false,
           });
