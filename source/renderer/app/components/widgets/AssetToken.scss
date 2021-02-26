@@ -62,9 +62,9 @@
     position: relative;
 
     .copyIcon {
+      margin-left: 9px;
       position: absolute;
       top: 6px;
-      margin-left: 9px;
     }
 
     &:hover {
@@ -93,7 +93,6 @@
   }
 
   dd {
-    cursor: pointer;
     display: inline-flex;
     font-family: var(--font-light);
     font-size: 12px;
@@ -114,7 +113,13 @@
       margin-top: -8px;
     }
 
+    .blankValue {
+      opacity: 0.4;
+    }
+
     em {
+      cursor: pointer;
+
       &:not(.singleline) {
         overflow-wrap: break-word;
         word-break: break-all;

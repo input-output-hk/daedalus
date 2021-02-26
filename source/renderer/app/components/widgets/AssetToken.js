@@ -47,6 +47,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Description',
     description: '"description" item.',
   },
+  blank: {
+    id: 'widgets.assetToken.item.blank',
+    defaultMessage: '!!!Blank',
+    description: '"Blank" item value.',
+  },
 });
 
 type Props = {
@@ -237,18 +242,20 @@ export default class AssetToken extends Component<Props, State> {
               policyId
             )}
           </dd>
-          {assetName && (
-            <F>
-              <dt>{intl.formatMessage(messages.assetNameItem)}</dt>
-              <dd>
-                {item(
-                  'assetName',
-                  intl.formatMessage(messages.assetNameItem),
-                  assetName
-                )}
-              </dd>
-            </F>
-          )}
+          <dt>{intl.formatMessage(messages.assetNameItem)}</dt>
+          <dd>
+            {assetName ? (
+              item(
+                'assetName',
+                intl.formatMessage(messages.assetNameItem),
+                assetName
+              )
+            ) : (
+              <span className={styles.blankValue}>
+                {intl.formatMessage(messages.blank)}
+              </span>
+            )}
+          </dd>
         </dl>
       </div>
     );
