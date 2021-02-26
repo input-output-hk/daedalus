@@ -1371,10 +1371,8 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       });
 
-      let unsignedTxWithdrawals = null;
-      if (withdrawals.length > 0) {
-        unsignedTxWithdrawals = ShelleyTxWithdrawal(withdrawals);
-      }
+      const unsignedTxWithdrawals =
+        withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
 
       // Prepare unsigned transaction structure for serialzation
       const unsignedTx = prepareTxAux({

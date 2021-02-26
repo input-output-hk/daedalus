@@ -3,9 +3,12 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Enabled rewards withdrawals on hardware wallets ([PR 2408](https://github.com/input-output-hk/daedalus/pull/2408))
+
 ### Chores
 
-- Withdrawals applied to the Hardware Wallets transactions ([PR 2408](https://github.com/input-output-hk/daedalus/pull/2408))
 - Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
 
 ## 3.3.1
