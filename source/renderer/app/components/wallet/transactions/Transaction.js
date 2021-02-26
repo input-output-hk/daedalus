@@ -406,14 +406,18 @@ export default class Transaction extends Component<Props, State> {
   };
 
   get hasAssets(): boolean {
-    const { data, hasAssetsEnabled } = this.props;
-    return hasAssetsEnabled && data.assets.length > 0;
+    return !!this.assetsList.length;
   }
 
   get assetsList(): Array<WalletTransactionAsset> {
-    const { assetsDetails, data, isInternalAddress } = this.props;
+    const {
+      assetsDetails,
+      data,
+      isInternalAddress,
+      hasAssetsEnabled,
+    } = this.props;
 
-    if (!this.hasAssets) {
+    if (!hasAssetsEnabled) {
       return [];
     }
 
