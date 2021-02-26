@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import {
   generateHash,
@@ -19,7 +19,7 @@ import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet
 // Screens
 import WalletAssetsSendForm from '../../../../source/renderer/app/components/wallet/WalletAssetsSendForm';
 import WalletAssetsSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog';
-import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
+import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletSendConfirmationDialog';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
 const allAssets = [
@@ -162,6 +162,10 @@ const confirmationAssets = assets.total.map((assetTotal) => {
   };
 });
 
+const confirmationAssetsAmounts = confirmationAssets.map(
+  (asset) => `${asset.quantity}`
+);
+
 const sendFormAssetData = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
@@ -203,7 +207,7 @@ storiesOf('Wallets|Send', module)
       calculateTransactionFee={promise(true)}
       walletAmount={new BigNumber(123)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -225,7 +229,7 @@ storiesOf('Wallets|Send', module)
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -248,7 +252,7 @@ storiesOf('Wallets|Send', module)
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -271,7 +275,7 @@ storiesOf('Wallets|Send', module)
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -292,8 +296,11 @@ storiesOf('Wallets|Send', module)
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
-      calculateTransactionFee={promise(true)}
-      addressValidator={action('addressValidator')}
+      calculateTransactionFee={promise({
+        fee: new BigNumber(number('fee', 1)),
+        minimumAda: new BigNumber(number('minimumAda', 1)),
+      })}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -312,11 +319,13 @@ storiesOf('Wallets|Send', module)
     <div>
       <WalletAssetsSendConfirmationDialog
         currencyUnit="Ada"
-        amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
+        amount="20.000000"
+        totalAmount="21.000000"
         sender={generateWallet('Wallet name', '45119903750165', assets).id}
         receiver={generateHash()}
         assets={confirmationAssets}
-        transactionFee={new BigNumber(1).toFormat(DECIMAL_PLACES_IN_ADA)}
+        assetsAmounts={confirmationAssetsAmounts}
+        transactionFee="1.000000"
         amountToNaturalUnits={formattedAmountToNaturalUnits}
         onSubmit={() => null}
         isSubmitting={false}
@@ -329,6 +338,29 @@ storiesOf('Wallets|Send', module)
         onInitiateTransaction={() => null}
         walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
         onCopyAssetItem={() => {}}
+      />
+    </div>
+  ))
+  .add('Wallet Send Confirmation Dialog With No Assets', () => (
+    <div>
+      <WalletSendConfirmationDialog
+        amount="20.000000"
+        totalAmount="21.000000"
+        currencyUnit="ADA"
+        sender={generateWallet('Wallet name', '45119903750165', assets).id}
+        receiver={generateHash()}
+        transactionFee="1.000000"
+        amountToNaturalUnits={formattedAmountToNaturalUnits}
+        onSubmit={() => null}
+        isSubmitting={false}
+        error={null}
+        isFlight={false}
+        onCancel={() => null}
+        onExternalLinkClick={() => null}
+        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+        isHardwareWallet={false}
+        onInitiateTransaction={() => null}
+        walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
       />
     </div>
   ));
