@@ -126,8 +126,6 @@ storiesOf('Wallets|Transactions', module)
       },
       'incoming'
     );
-
-    const amount = new BigNumber(number('amount', 10, {}, 'Transaction'));
     const assets = [
       {
         ...transactionAssets[0],
@@ -145,10 +143,10 @@ storiesOf('Wallets|Transactions', module)
         index === 0
           ? hasMetadata && {
               name: text('md - name', 'MakerDAO', 'First Asset'),
-              acronym: text('md - acronym', 'MakerDAO', 'First Asset'),
+              acronym: text('md - acronym', 'DAO', 'First Asset'),
               description: text(
                 'md - description',
-                'Test descriptio',
+                'Test description',
                 'First Asset'
               ),
               unit: {
@@ -158,6 +156,8 @@ storiesOf('Wallets|Transactions', module)
             }
           : assetsMetadata[index],
     }));
+
+    const amount = new BigNumber(number('amount', 10, {}, 'Transaction'));
 
     const transaction = new WalletTransaction({
       id: generateHash(),
@@ -191,8 +191,8 @@ storiesOf('Wallets|Transactions', module)
       <Transaction
         data={transaction}
         state={TransactionStates.OK}
-        isExpanded={boolean('isExpanded', true)}
-        isRestoreActive={boolean('isRestoreActive', false)}
+        isExpanded={boolean('isExpanded', true, 'Transaction')}
+        isRestoreActive={boolean('isRestoreActive', false, 'Transaction')}
         isLastInList={boolean('isLastInList', false)}
         isShowingMetadata={boolean('isShowingMetadata', false)}
         isDeletingTransaction={boolean('isDeletingTransaction', false)}
