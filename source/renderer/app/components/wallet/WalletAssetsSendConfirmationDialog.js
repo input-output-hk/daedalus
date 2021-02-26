@@ -27,6 +27,7 @@ import AssetToken from '../widgets/AssetToken';
 import {
   formattedWalletAmount,
   formattedTokenWalletAmount,
+  getMultiplierFromDecimalPlaces,
 } from '../../utils/formatters';
 
 export const messages = defineMessages({
@@ -276,8 +277,10 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
 
   getAssetFormattedAmount = (asset: WalletSummaryAsset, index: number) => {
     const strAmount = this.getAssetAmount(index);
-    const assetAmount = new BigNumber(strAmount);
     const { metadata } = asset;
+    const decimals = get(metadata, 'unit.decimals');
+    const assetMultiplier = getMultiplierFromDecimalPlaces(decimals);
+    const assetAmount = new BigNumber(strAmount).multipliedBy(assetMultiplier);
     return formattedTokenWalletAmount(assetAmount, metadata);
   };
 

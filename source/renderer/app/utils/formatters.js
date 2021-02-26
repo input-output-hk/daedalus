@@ -47,7 +47,7 @@ export const formattedTokenWalletAmount = (
 ): string => {
   const { acronym, unit } = metadata || {};
   const { decimals } = unit || {};
-  const divider = parseInt('1'.padEnd(decimals + 1, '0'), 10);
+  const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
   let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
   if (acronym) {
     formattedAmount += ` ${acronym}`;
@@ -229,3 +229,6 @@ export const formattedSize = (size: string): string => {
 
   return formattedResult;
 };
+
+export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
+  '1'.padEnd(decimalPlaces + 1, '0');
