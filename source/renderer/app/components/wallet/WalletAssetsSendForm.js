@@ -1081,6 +1081,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   removeAssetRow = (name: string, assetIndex: number) => {
     const { sendFormFields } = this.state;
+    let { selectedAssetFingerprints } = this.state;
     const { receiver } = sendFormFields;
     const assets = receiver.formAssets;
     let fingerprint = '';
@@ -1096,8 +1097,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
     if (fingerprint) {
       sendFormFields.receiver.formAssets = sendFormFields.receiver.formAssets.filter((item) => item.fingerprint === fingerprint);
+      selectedAssetFingerprints = selectedAssetFingerprints.filter((item) => item === fingerprint);
       this.setState({
         sendFormFields,
+        selectedAssetFingerprints
       });
     }
   };
