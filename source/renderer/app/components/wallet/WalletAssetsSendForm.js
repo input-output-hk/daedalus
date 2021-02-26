@@ -314,7 +314,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   };
 
   handleOnReset = () => {
+    // Cancel all debounced field validations
+    this.form.each((field) => {
+      field.debouncedValidation.cancel();
+    });
     this.form.reset();
+    this.form.showErrors(false);
     this.disableResetButton();
     map(this.state.formFields.receiver.assetFields, (asset) => {
       this.clearAssetFieldValue(asset);
@@ -472,7 +477,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 const assets = this.selectedAssets.map(
                   ({ policyId, assetName }, index) => {
                     const quantity = new BigNumber(
-                      this.selectedAssetsAmounts[index]
+                      this.selectedAssetsAmounts[index] || 0
                     );
                     return {
                       policy_id: policyId,
@@ -718,7 +723,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           this._isCalculatingTransactionFee = true;
           const assets = this.selectedAssets.map(
             ({ policyId, assetName }, index) => {
-              const quantity = new BigNumber(this.selectedAssetsAmounts[index]);
+              const quantity = new BigNumber(
+                this.selectedAssetsAmounts[index] || 0
+              );
               return {
                 policy_id: policyId,
                 asset_name: assetName,
