@@ -2682,7 +2682,7 @@ const _createAssetFromServerData = action(
       metadata,
     } = data;
 
-    // TODO: remove once testing is done
+    // @TOKEN TODO: remove once testing is done
     const DUMMY_TOKEN_METADATA = {
       '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086736164636f696e': {
         policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
@@ -2714,14 +2714,18 @@ const _createAssetFromServerData = action(
     const hasDummyTokenMetadata = has(DUMMY_TOKEN_METADATA, [
       policyId + assetName,
     ]);
+    window.useDummyTokenMetadata =
+      window.useDummyTokenMetadata === undefined
+        ? environment.isDev
+        : window.useDummyTokenMetadata;
+    console.log('window.useDummyTokenMetadata', window.useDummyTokenMetadata);
 
     return new Asset({
       policyId,
       assetName,
       fingerprint,
       metadata:
-        (environment.isDev || window.useDummyTokenMetadata) &&
-        hasDummyTokenMetadata
+        window.useDummyTokenMetadata && hasDummyTokenMetadata
           ? DUMMY_TOKEN_METADATA[policyId + assetName].metadata
           : metadata,
     });
