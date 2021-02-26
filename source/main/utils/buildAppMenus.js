@@ -15,13 +15,12 @@ export const buildAppMenus = async (
   cardanoNode: ?CardanoNode,
   locale: string,
   data: {
-    isUpdateAvailable: boolean,
     isNavigationEnabled: boolean,
   }
 ) => {
   const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
-  const { isUpdateAvailable, isNavigationEnabled } = data;
+  const { isNavigationEnabled } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
@@ -112,7 +111,6 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isUpdateAvailable,
         isNavigationEnabled
       )
     );
@@ -125,7 +123,6 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isUpdateAvailable,
         isNavigationEnabled
       )
     );
