@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import {
   generateHash,
@@ -203,7 +203,7 @@ storiesOf('Wallets|Send', module)
       calculateTransactionFee={promise(true)}
       walletAmount={new BigNumber(123)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -225,7 +225,7 @@ storiesOf('Wallets|Send', module)
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -248,7 +248,7 @@ storiesOf('Wallets|Send', module)
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -271,7 +271,7 @@ storiesOf('Wallets|Send', module)
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
-      addressValidator={action('addressValidator')}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
@@ -292,8 +292,11 @@ storiesOf('Wallets|Send', module)
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
-      calculateTransactionFee={promise(true)}
-      addressValidator={action('addressValidator')}
+      calculateTransactionFee={promise({
+        fee: new BigNumber(number('fee', 1)),
+        minimumAda: new BigNumber(number('minimumAda', 1)),
+      })}
+      addressValidator={() => true}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
