@@ -19,6 +19,7 @@ import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet
 // Screens
 import WalletAssetsSendForm from '../../../../source/renderer/app/components/wallet/WalletAssetsSendForm';
 import WalletAssetsSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog';
+import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletSendConfirmationDialog';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
@@ -161,6 +162,10 @@ const confirmationAssets = assets.total.map((assetTotal) => {
         },
   };
 });
+
+const confirmationAssetsAmounts = confirmationAssets.map(
+  (asset) => `${asset.quantity}`
+);
 
 const sendFormAssetData = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
@@ -314,11 +319,13 @@ storiesOf('Wallets|Send', module)
   .add('Wallet Send Confirmation Dialog With Assets', () => (
     <div>
       <WalletAssetsSendConfirmationDialog
-        amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
+        amount="20.000000"
+        totalAmount="21.000000"
         sender={generateWallet('Wallet name', '45119903750165', assets).id}
         receiver={generateHash()}
         assets={confirmationAssets}
-        transactionFee={new BigNumber(1).toFormat(DECIMAL_PLACES_IN_ADA)}
+        assetsAmounts={confirmationAssetsAmounts}
+        transactionFee="1.000000"
         amountToNaturalUnits={formattedAmountToNaturalUnits}
         onSubmit={() => null}
         isSubmitting={false}
@@ -331,6 +338,29 @@ storiesOf('Wallets|Send', module)
         onInitiateTransaction={() => null}
         walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
         onCopyAssetItem={() => {}}
+      />
+    </div>
+  ))
+  .add('Wallet Send Confirmation Dialog With No Assets', () => (
+    <div>
+      <WalletSendConfirmationDialog
+        amount="20.000000"
+        totalAmount="21.000000"
+        currencyUnit="ADA"
+        sender={generateWallet('Wallet name', '45119903750165', assets).id}
+        receiver={generateHash()}
+        transactionFee="1.000000"
+        amountToNaturalUnits={formattedAmountToNaturalUnits}
+        onSubmit={() => null}
+        isSubmitting={false}
+        error={null}
+        isFlight={false}
+        onCancel={() => null}
+        onExternalLinkClick={() => null}
+        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+        isHardwareWallet={false}
+        onInitiateTransaction={() => null}
+        walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
       />
     </div>
   ));
