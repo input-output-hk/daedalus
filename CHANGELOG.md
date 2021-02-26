@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Moved ITN redemption to Daedalus application menu ([PR 2401](https://github.com/input-output-hk/daedalus/pull/2401))
 - Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
 
 ## 3.3.1
@@ -20,8 +21,6 @@ Changelog
 
 ### Chores
 
-- Moved ITN redemption to Daedalus application menu ([PR 2401](https://github.com/input-output-hk/daedalus/pull/2401))
-- Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
 - Enabled selecting whole addresses and ids when selecting them to copy on transactions and summary screens ([PR 2370](https://github.com/input-output-hk/daedalus/pull/2370))
 - Added missing whitespace between amount and ADA in Japanese ([PR 2380](https://github.com/input-output-hk/daedalus/pull/2380))
 - Updated link "Follow instructions and manually update" on testnet and flight ([PR 2372](https://github.com/input-output-hk/daedalus/pull/2372))
