@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Updated delegated stake pool status on delegation center screen ([PR 2404](https://github.com/input-output-hk/daedalus/pull/2404))
 - Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
 
 ## 3.3.1
