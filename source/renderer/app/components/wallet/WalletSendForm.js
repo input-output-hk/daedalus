@@ -787,12 +787,18 @@ export default class WalletSendForm extends Component<Props, State> {
                     return (
                       <div
                         key={`receiver_asset_${fingerprint}`}
-                        onMouseEnter={() =>
+                        onMouseOver={() =>
                           this.showRemoveAssetButton(fingerprint)
                         }
                         onMouseLeave={() =>
                           this.hideRemoveAssetButton(fingerprint)
                         }
+                        onMouseEnter={() =>
+                          this.showRemoveAssetButton(fingerprint)
+                        }
+                        onFocus={() => {
+                          // jsx-a11y/mouse-events-have-key-events
+                        }}
                         className={styles.fieldContainer}
                       >
                         {quantity.isPositive() && (
@@ -821,19 +827,21 @@ export default class WalletSendForm extends Component<Props, State> {
                               {`${intl.formatMessage(messages.assetLabel)} #${
                                 index + 1
                               }`}
-                              <Button
-                                className={classNames([
-                                  styles.removeAssetButton,
-                                  'flat',
-                                  this.state.showRemoveAssetButton[fingerprint]
-                                    ? styles.active
-                                    : null,
-                                ])}
-                                label={intl.formatMessage(
-                                  messages.removeReceiverButtonLabel
-                                )}
-                                onClick={() => this.removeAssetRow(fingerprint)}
-                              />
+                              {this.state.showRemoveAssetButton[
+                                fingerprint
+                              ] && (
+                                <span
+                                  className={classNames([
+                                    styles.removeAssetButton,
+                                    'flat',
+                                  ])}
+                                  onClick={() =>
+                                    this.removeAssetRow(fingerprint)
+                                  }
+                                >
+                                  {intl.formatMessage(messages.removeLabel)}
+                                </span>
+                              )}
                             </>
                           }
                           bigNumberFormat={

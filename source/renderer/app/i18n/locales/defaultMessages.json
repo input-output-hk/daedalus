@@ -9930,9 +9930,9 @@
           "line": 41
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
-        "id": "wallet.send.form.button.removeReceiver",
+        "id": "wallet.send.form.button.removeLabel",
         "start": {
-          "column": 29,
+          "column": 15,
           "line": 37
         }
       },

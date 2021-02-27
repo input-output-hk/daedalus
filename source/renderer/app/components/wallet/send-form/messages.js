@@ -34,8 +34,8 @@ export default defineMessages({
     defaultMessage: '!!!Ada',
     description: 'Label for the "Ada" input in the wallet send form.',
   },
-  removeReceiverButtonLabel: {
-    id: 'wallet.send.form.button.removeReceiver',
+  removeLabel: {
+    id: 'wallet.send.form.button.removeLabel',
     defaultMessage: '!!!Remove',
     description: 'Label for the "Remove" button in the wallet send form.',
   },

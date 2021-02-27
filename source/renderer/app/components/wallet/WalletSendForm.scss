@@ -320,44 +320,22 @@
   text-transform: uppercase;
 }
 
-.removeReceiverButton {
-  display: none;
-  font-family: var(--font-semibold);
-  font-size: 10px;
-  font-weight: 500;
-  height: 20px;
-  left: 95px;
-  letter-spacing: 0.5px;
-  line-height: 1.2;
-  position: absolute !important;
-  text-transform: uppercase;
-  top: 2px;
-  width: 61.5px;
-  z-index: 1;
-
-  &.active {
-    display: block;
-  }
-}
-
 .removeAssetButton {
-  display: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
   font-family: var(--font-semibold);
   font-size: 10px;
   font-weight: 500;
   height: 20px;
   letter-spacing: 0.5px;
-  line-height: 1.2;
+  line-height: 20px;
   margin: 1px 0 0 10px;
   padding: 0 8px;
   text-transform: uppercase;
   vertical-align: top;
   width: auto;
-  z-index: 1;
-
-  &.active {
-    display: inline-block;
-  }
 }
 
 .addNewReceiverButton {
