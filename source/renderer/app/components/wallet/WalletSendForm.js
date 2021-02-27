@@ -429,7 +429,7 @@ export default class WalletSendForm extends Component<Props, State> {
         this._isCalculatingTransactionFee = false;
         this.setState({
           isTransactionFeeCalculated: true,
-          minimumAda,
+          minimumAda: minimumAda || new BigNumber(0),
           transactionFee: fee,
           transactionFeeError: null,
         });
