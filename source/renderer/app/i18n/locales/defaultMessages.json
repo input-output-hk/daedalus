@@ -9839,6 +9839,319 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Title",
+        "description": "Label for the \"Title\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.title.label",
+        "start": {
+          "column": 14,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!E.g: Money for Frank",
+        "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.title.hint",
+        "start": {
+          "column": 13,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiver",
+        "description": "Label for the \"Receiver\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.receiver.label",
+        "start": {
+          "column": 17,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Paste an address",
+        "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.receiver.placeholder",
+        "start": {
+          "column": 16,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Label for the \"Token\" number input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.asset.label",
+        "start": {
+          "column": 14,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Ada",
+        "description": "Label for the \"Ada\" input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.asset.adaLabel",
+        "start": {
+          "column": 17,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Remove",
+        "description": "Label for the \"Remove\" button in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.button.removeReceiver",
+        "start": {
+          "column": 29,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Clear",
+        "description": "Label for the \"Clear\" button in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.button.clearLabel",
+        "start": {
+          "column": 14,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!+ Add a token",
+        "description": "Label for the \"+ Add a token\" button in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.button.addAssetButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Estimated fees",
+        "description": "Label for the \"Estimated fees\" number input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.estimatedFee.label",
+        "start": {
+          "column": 21,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!of",
+        "description": "Label for the \"of\" max ADA value in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.of.label",
+        "start": {
+          "column": 11,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!a minimum of {minimumAda} ADA required",
+        "description": "Label for the min ADA required value in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.minAdaRequired",
+        "start": {
+          "column": 18,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!A minimum of {minimumAda} ADA needs to be sent to this receiver since you are sending other assets.",
+        "description": "Tooltip for the min ADA required value in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.minAdaRequiredTooltip",
+        "start": {
+          "column": 25,
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!Description",
+        "description": "Label for the \"description\" text area in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.description.label",
+        "start": {
+          "column": 20,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!You can add a message if you want",
+        "description": "Hint in the \"description\" text area in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.description.hint",
+        "start": {
+          "column": 19,
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Reset",
+        "description": "Label for the reset button on the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.reset",
+        "start": {
+          "column": 20,
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!Send",
+        "description": "Label for the send button on the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 97
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.send",
+        "start": {
+          "column": 19,
+          "line": 93
+        }
+      },
+      {
+        "defaultMessage": "!!!Please enter a valid amount.",
+        "description": "Error message shown when invalid amount was entered.",
+        "end": {
+          "column": 3,
+          "line": 102
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.errors.invalidAmount",
+        "start": {
+          "column": 17,
+          "line": 98
+        }
+      },
+      {
+        "defaultMessage": "!!!Please enter a title with at least 3 characters.",
+        "description": "Error message shown when invalid transaction title was entered.",
+        "end": {
+          "column": 3,
+          "line": 108
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.errors.invalidTitle",
+        "start": {
+          "column": 16,
+          "line": 103
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
+        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 115
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.syncingTransactionsMessage",
+        "start": {
+          "column": 30,
+          "line": 109
+        }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "Label for the \"Calculating fees\" message for amount input field.",
+        "end": {
+          "column": 3,
+          "line": 121
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.calculatingFeesLabel",
+        "start": {
+          "column": 24,
+          "line": 116
+        }
+      },
+      {
+        "defaultMessage": "!!!syncing",
+        "description": "Syncing wallet label on the send tokens form.",
+        "end": {
+          "column": 3,
+          "line": 126
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.syncingWallet",
+        "start": {
+          "column": 17,
+          "line": 122
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/send-form/messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Set a password for {walletName} wallet",
         "description": "Title for the \"Change wallet password\" dialog when there is no password set.",
         "end": {
@@ -14357,13 +14670,13 @@
         "description": "Title for the \"Confirm transaction\" dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.title",
         "start": {
           "column": 15,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -14371,13 +14684,13 @@
         "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -14385,13 +14698,13 @@
         "description": "Label for the \"To\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -14399,13 +14712,13 @@
         "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -14413,13 +14726,13 @@
         "description": "Token",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.assetLabel",
         "start": {
           "column": 14,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -14427,13 +14740,13 @@
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -14441,13 +14754,13 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -14455,13 +14768,13 @@
         "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.receiver.label",
         "start": {
           "column": 17,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -14469,13 +14782,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -14483,13 +14796,13 @@
         "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateWarning",
         "start": {
           "column": 26,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -14497,13 +14810,13 @@
         "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
         "start": {
           "column": 32,
-          "line": 90
+          "line": 91
         }
       },
       {
@@ -14511,13 +14824,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
-          "line": 97
+          "line": 98
         }
       },
       {
@@ -14525,13 +14838,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
-          "line": 103
+          "line": 104
         }
       },
       {
@@ -14539,330 +14852,17 @@
         "description": "Label for password error in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 115
         },
         "file": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passwordError",
         "start": {
           "column": 24,
-          "line": 109
+          "line": 110
         }
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Title",
-        "description": "Label for the \"Title\" text input in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.title.label",
-        "start": {
-          "column": 14,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!E.g: Money for Frank",
-        "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.title.hint",
-        "start": {
-          "column": 13,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Receiver",
-        "description": "Label for the \"Receiver\" text input in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 60
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.receiver.label",
-        "start": {
-          "column": 17,
-          "line": 56
-        }
-      },
-      {
-        "defaultMessage": "!!!Paste an address",
-        "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.receiver.placeholder",
-        "start": {
-          "column": 16,
-          "line": 61
-        }
-      },
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Label for the \"Token\" number input in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.asset.label",
-        "start": {
-          "column": 14,
-          "line": 67
-        }
-      },
-      {
-        "defaultMessage": "!!!Ada",
-        "description": "Label for the \"Ada\" input in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 76
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.asset.adaLabel",
-        "start": {
-          "column": 17,
-          "line": 72
-        }
-      },
-      {
-        "defaultMessage": "!!!Remove",
-        "description": "Label for the \"Remove\" button in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 81
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.button.removeReceiver",
-        "start": {
-          "column": 29,
-          "line": 77
-        }
-      },
-      {
-        "defaultMessage": "!!!Clear",
-        "description": "Label for the \"Clear\" button in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 86
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.button.clearLabel",
-        "start": {
-          "column": 14,
-          "line": 82
-        }
-      },
-      {
-        "defaultMessage": "!!!+ Add a token",
-        "description": "Label for the \"+ Add a token\" button in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 92
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.button.addAssetButtonLabel",
-        "start": {
-          "column": 23,
-          "line": 87
-        }
-      },
-      {
-        "defaultMessage": "!!!Estimated fees",
-        "description": "Label for the \"Estimated fees\" number input in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 98
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.estimatedFee.label",
-        "start": {
-          "column": 21,
-          "line": 93
-        }
-      },
-      {
-        "defaultMessage": "!!!of",
-        "description": "Label for the \"of\" max ADA value in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 103
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.of.label",
-        "start": {
-          "column": 11,
-          "line": 99
-        }
-      },
-      {
-        "defaultMessage": "!!!a minimum of {minimumAda} ADA required",
-        "description": "Label for the min ADA required value in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 109
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.minAdaRequired",
-        "start": {
-          "column": 18,
-          "line": 104
-        }
-      },
-      {
-        "defaultMessage": "!!!A minimum of {minimumAda} ADA needs to be sent to this receiver since you are sending other assets.",
-        "description": "Tooltip for the min ADA required value in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 116
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.minAdaRequiredTooltip",
-        "start": {
-          "column": 25,
-          "line": 110
-        }
-      },
-      {
-        "defaultMessage": "!!!Description",
-        "description": "Label for the \"description\" text area in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 122
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.description.label",
-        "start": {
-          "column": 20,
-          "line": 117
-        }
-      },
-      {
-        "defaultMessage": "!!!You can add a message if you want",
-        "description": "Hint in the \"description\" text area in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 127
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.description.hint",
-        "start": {
-          "column": 19,
-          "line": 123
-        }
-      },
-      {
-        "defaultMessage": "!!!Reset",
-        "description": "Label for the reset button on the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 132
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.reset",
-        "start": {
-          "column": 20,
-          "line": 128
-        }
-      },
-      {
-        "defaultMessage": "!!!Send",
-        "description": "Label for the send button on the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 137
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.send",
-        "start": {
-          "column": 19,
-          "line": 133
-        }
-      },
-      {
-        "defaultMessage": "!!!Please enter a valid amount.",
-        "description": "Error message shown when invalid amount was entered.",
-        "end": {
-          "column": 3,
-          "line": 142
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.errors.invalidAmount",
-        "start": {
-          "column": 17,
-          "line": 138
-        }
-      },
-      {
-        "defaultMessage": "!!!Please enter a title with at least 3 characters.",
-        "description": "Error message shown when invalid transaction title was entered.",
-        "end": {
-          "column": 3,
-          "line": 148
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.errors.invalidTitle",
-        "start": {
-          "column": 16,
-          "line": 143
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
-        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 155
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.syncingTransactionsMessage",
-        "start": {
-          "column": 30,
-          "line": 149
-        }
-      },
-      {
-        "defaultMessage": "!!!Calculating fees",
-        "description": "Label for the \"Calculating fees\" message for amount input field.",
-        "end": {
-          "column": 3,
-          "line": 161
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.calculatingFeesLabel",
-        "start": {
-          "column": 24,
-          "line": 156
-        }
-      },
-      {
-        "defaultMessage": "!!!syncing",
-        "description": "Syncing wallet label on the send tokens form.",
-        "end": {
-          "column": 3,
-          "line": 166
-        },
-        "file": "source/renderer/app/components/wallet/WalletAssetsSendForm.js",
-        "id": "wallet.send.form.syncingWallet",
-        "start": {
-          "column": 17,
-          "line": 162
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/WalletAssetsSendForm.json"
   },
   {
     "descriptors": [

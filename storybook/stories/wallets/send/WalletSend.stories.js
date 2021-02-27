@@ -216,8 +216,8 @@ storiesOf('Wallets|Send', module)
       isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
-      selectedToken={null}
-      unsetActiveTokenFingerprint={() => {}}
+      selectedAsset={null}
+      unsetActiveAssetFingerprint={() => {}}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
@@ -239,8 +239,8 @@ storiesOf('Wallets|Send', module)
       isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
-      selectedToken={null}
-      unsetActiveTokenFingerprint={() => {}}
+      selectedAsset={null}
+      unsetActiveAssetFingerprint={() => {}}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
@@ -262,8 +262,8 @@ storiesOf('Wallets|Send', module)
       isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
-      selectedToken={null}
-      unsetActiveTokenFingerprint={() => {}}
+      selectedAsset={null}
+      unsetActiveAssetFingerprint={() => {}}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
@@ -285,8 +285,8 @@ storiesOf('Wallets|Send', module)
       isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
-      selectedToken={null}
-      unsetActiveTokenFingerprint={() => {}}
+      selectedAsset={null}
+      unsetActiveAssetFingerprint={() => {}}
     />
   ))
   .add('Send - With Assets', () => (
@@ -311,8 +311,8 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', true)}
-      selectedToken={null}
-      unsetActiveTokenFingerprint={() => {}}
+      selectedAsset={null}
+      unsetActiveAssetFingerprint={() => {}}
     />
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => (

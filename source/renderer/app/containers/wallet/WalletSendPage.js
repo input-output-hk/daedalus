@@ -84,10 +84,10 @@ export default class WalletSendPage extends Component<Props> {
     return allAssets.find((asset) => asset.fingerprint === fingerprint);
   };
 
-  handleUnsetActiveTokenFingerprint = () => {
+  handleUnsetActiveAssetFingerprint = () => {
     const { wallets: walletActions } = this.props.actions;
-    walletActions.setActiveTokenFingerprint.trigger({
-      tokenFingerprint: null,
+    walletActions.setActiveAssetFingerprint.trigger({
+      fingerprint: null,
     });
   };
 
@@ -108,12 +108,12 @@ export default class WalletSendPage extends Component<Props> {
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const {
       all: allAssets,
-      activeTokenFingerprint,
+      activeAssetFingerprint,
       getAssetDetails,
     } = assetsStore;
 
-    const selectedToken = activeTokenFingerprint
-      ? this.getTokenByFingerprintId(activeTokenFingerprint, allAssets)
+    const selectedAsset = activeAssetFingerprint
+      ? this.getTokenByFingerprintId(activeAssetFingerprint, allAssets)
       : null;
 
     // Guard against potential null values
@@ -175,12 +175,12 @@ export default class WalletSendPage extends Component<Props> {
         }
         isRestoreActive={wallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
-        unsetActiveTokenFingerprint={this.handleUnsetActiveTokenFingerprint}
+        unsetActiveAssetFingerprint={this.handleUnsetActiveAssetFingerprint}
         hwDeviceStatus={hwDeviceStatus}
         isHardwareWallet={isHardwareWallet}
         isLoadingAssets={isLoadingAssets}
         hasAssets={hasAssetsEnabled && hasRawAssets}
-        selectedToken={selectedToken}
+        selectedAsset={selectedAsset}
       />
     );
   }

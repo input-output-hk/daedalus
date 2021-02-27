@@ -90,8 +90,8 @@ export default class WalletsActions {
   toggleCurrencyIsActive: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
-  setActiveTokenFingerprint: Action<{
-    tokenFingerprint: ?string,
+  setActiveAssetFingerprint: Action<{
+    fingerprint: ?string,
   }> = new Action();
   transferFundsNextStep: Action<any> = new Action();
   transferFundsPrevStep: Action<any> = new Action();

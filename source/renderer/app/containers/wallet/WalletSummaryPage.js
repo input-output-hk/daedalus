@@ -49,15 +49,15 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = (asset: WalletSummaryAsset) => {
+  handleOpenAssetSend = ({ fingerprint }: WalletSummaryAsset) => {
     const { stores } = this.props;
     const { wallets } = stores;
     const { active } = wallets;
     if (active) {
       const { id } = active;
       const { wallets: walletActions, router } = this.props.actions;
-      walletActions.setActiveTokenFingerprint.trigger({
-        tokenFingerprint: asset.fingerprint,
+      walletActions.setActiveAssetFingerprint.trigger({
+        fingerprint,
       });
       router.goToRoute.trigger({
         route: ROUTES.WALLETS.PAGE,

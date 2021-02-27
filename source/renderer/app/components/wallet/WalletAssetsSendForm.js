@@ -2,24 +2,30 @@
 import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
+import { intlShape } from 'react-intl';
+import { filter, findIndex, get, omit, orderBy, map, without } from 'lodash';
+import BigNumber from 'bignumber.js';
+import classNames from 'classnames';
+import SVGInline from 'react-svg-inline';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
-import { defineMessages, intlShape } from 'react-intl';
-import vjf from 'mobx-react-form/lib/validators/VJF';
-import BigNumber from 'bignumber.js';
-import { filter, findIndex, get, omit, orderBy, map, without } from 'lodash';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import SVGInline from 'react-svg-inline';
-import classNames from 'classnames';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import styles from './WalletAssetsSendForm.scss';
+import WalletsDropdown from '../widgets/forms/WalletsDropdown';
+import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
+import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
+import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
+import closeIcon from '../../assets/images/close-cross.inline.svg';
 import globalMessages from '../../i18n/global-messages';
-import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
+import messages from './send-form/messages';
+/* eslint-disable consistent-return */
+import { messages as apiErrorMessages } from '../../api/errors';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../utils/form';
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
@@ -27,144 +33,14 @@ import {
   formattedTokenWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-import { NUMBER_FORMATS } from '../../../../common/types/number.types';
-/* eslint-disable consistent-return */
-import { messages as apiErrorMessages } from '../../api/errors';
-import type { HwDeviceStatus } from '../../domains/Wallet';
-import WalletAssetsSendConfirmationDialog from './WalletAssetsSendConfirmationDialog';
-import closeIcon from '../../assets/images/close-cross.inline.svg';
-import WalletsDropdown from '../widgets/forms/WalletsDropdown';
-import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
-import Asset from '../../domains/Asset';
-import type { AssetItems, WalletSummaryAsset } from '../../api/assets/types';
-import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
-
-export const messages = defineMessages({
-  titleLabel: {
-    id: 'wallet.send.form.title.label',
-    defaultMessage: '!!!Title',
-    description: 'Label for the "Title" text input in the wallet send form.',
-  },
-  titleHint: {
-    id: 'wallet.send.form.title.hint',
-    defaultMessage: '!!!E.g: Money for Frank',
-    description:
-      'Hint inside the "Receiver" text input in the wallet send form.',
-  },
-  receiverLabel: {
-    id: 'wallet.send.form.receiver.label',
-    defaultMessage: '!!!Receiver',
-    description: 'Label for the "Receiver" text input in the wallet send form.',
-  },
-  receiverHint: {
-    id: 'wallet.send.form.receiver.placeholder',
-    defaultMessage: '!!!Paste an address',
-    description:
-      'Hint inside the "Receiver" text input in the wallet send form.',
-  },
-  assetLabel: {
-    id: 'wallet.send.form.asset.label',
-    defaultMessage: '!!!Token',
-    description: 'Label for the "Token" number input in the wallet send form.',
-  },
-  assetAdaLabel: {
-    id: 'wallet.send.form.asset.adaLabel',
-    defaultMessage: '!!!Ada',
-    description: 'Label for the "Ada" input in the wallet send form.',
-  },
-  removeReceiverButtonLabel: {
-    id: 'wallet.send.form.button.removeReceiver',
-    defaultMessage: '!!!Remove',
-    description: 'Label for the "Remove" button in the wallet send form.',
-  },
-  clearLabel: {
-    id: 'wallet.send.form.button.clearLabel',
-    defaultMessage: '!!!Clear',
-    description: 'Label for the "Clear" button in the wallet send form.',
-  },
-  addAssetButtonLabel: {
-    id: 'wallet.send.form.button.addAssetButtonLabel',
-    defaultMessage: '!!!+ Add a token',
-    description:
-      'Label for the "+ Add a token" button in the wallet send form.',
-  },
-  estimatedFeeLabel: {
-    id: 'wallet.send.form.estimatedFee.label',
-    defaultMessage: '!!!Estimated fees',
-    description:
-      'Label for the "Estimated fees" number input in the wallet send form.',
-  },
-  ofLabel: {
-    id: 'wallet.send.form.of.label',
-    defaultMessage: '!!!of',
-    description: 'Label for the "of" max ADA value in the wallet send form.',
-  },
-  minAdaRequired: {
-    id: 'wallet.send.form.minAdaRequired',
-    defaultMessage: '!!!a minimum of {minimumAda} ADA required',
-    description:
-      'Label for the min ADA required value in the wallet send form.',
-  },
-  minAdaRequiredTooltip: {
-    id: 'wallet.send.form.minAdaRequiredTooltip',
-    defaultMessage:
-      '!!!A minimum of {minimumAda} ADA needs to be sent to this receiver since you are sending other assets.',
-    description:
-      'Tooltip for the min ADA required value in the wallet send form.',
-  },
-  descriptionLabel: {
-    id: 'wallet.send.form.description.label',
-    defaultMessage: '!!!Description',
-    description:
-      'Label for the "description" text area in the wallet send form.',
-  },
-  descriptionHint: {
-    id: 'wallet.send.form.description.hint',
-    defaultMessage: '!!!You can add a message if you want',
-    description: 'Hint in the "description" text area in the wallet send form.',
-  },
-  resetButtonLabel: {
-    id: 'wallet.send.form.reset',
-    defaultMessage: '!!!Reset',
-    description: 'Label for the reset button on the wallet send form.',
-  },
-  sendButtonLabel: {
-    id: 'wallet.send.form.send',
-    defaultMessage: '!!!Send',
-    description: 'Label for the send button on the wallet send form.',
-  },
-  invalidAmount: {
-    id: 'wallet.send.form.errors.invalidAmount',
-    defaultMessage: '!!!Please enter a valid amount.',
-    description: 'Error message shown when invalid amount was entered.',
-  },
-  invalidTitle: {
-    id: 'wallet.send.form.errors.invalidTitle',
-    defaultMessage: '!!!Please enter a title with at least 3 characters.',
-    description:
-      'Error message shown when invalid transaction title was entered.',
-  },
-  syncingTransactionsMessage: {
-    id: 'wallet.send.form.syncingTransactionsMessage',
-    defaultMessage:
-      '!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.',
-    description:
-      'Syncing transactions message shown during async wallet restore in the wallet send form.',
-  },
-  calculatingFeesLabel: {
-    id: 'wallet.send.form.calculatingFeesLabel',
-    defaultMessage: '!!!Calculating fees',
-    description:
-      'Label for the "Calculating fees" message for amount input field.',
-  },
-  syncingWallet: {
-    id: 'wallet.send.form.syncingWallet',
-    defaultMessage: '!!!syncing',
-    description: 'Syncing wallet label on the send tokens form.',
-  },
-});
+import { NUMBER_FORMATS } from '../../../../common/types/number.types';
+import WalletAssetsSendConfirmationDialog from './WalletAssetsSendConfirmationDialog';
+import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
+import styles from './WalletAssetsSendForm.scss';
+import Asset from '../../domains/Asset';
+import type { HwDeviceStatus } from '../../domains/Wallet';
+import type { AssetItems, WalletSummaryAsset } from '../../api/assets/types';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -176,7 +52,7 @@ type Props = {
   calculateTransactionFee: (
     address: string,
     amount: number,
-    assets?: AssetItems
+    assets: AssetItems
   ) => Promise<BigNumber>,
   currentNumberFormat: string,
   walletAmount: BigNumber,
@@ -191,8 +67,8 @@ type Props = {
   assets: Array<WalletSummaryAsset>,
   isClearTooltipOpeningDownward?: boolean,
   hasAssets: boolean,
-  selectedToken: ?Asset,
-  unsetActiveTokenFingerprint: Function,
+  selectedAsset: ?Asset,
+  unsetActiveAssetFingerprint: Function,
 };
 
 type State = {
@@ -248,11 +124,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     this.updateFormFields(true);
-    const { selectedToken } = this.props;
-    if (selectedToken) {
+    const { selectedAsset } = this.props;
+    if (selectedAsset) {
       setTimeout(() => {
         if (this._isMounted) {
-          this.addAssetRow(selectedToken.fingerprint);
+          this.addAssetRow(selectedAsset.fingerprint);
         }
       });
     }
@@ -260,7 +136,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
-    this.props.unsetActiveTokenFingerprint();
+    this.props.unsetActiveAssetFingerprint();
   }
 
   getCurrentNumberFormat() {
