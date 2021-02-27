@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed InlineEditingInput common component so that wallet name input field works well ([PR 2409](https://github.com/input-output-hk/daedalus/pull/2409))
+
 ### Chores
 
 - Removed unnecessary "socketFile" declaration in launcher-config ([PR 2400](https://github.com/input-output-hk/daedalus/pull/2400))
