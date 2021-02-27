@@ -17,8 +17,8 @@ import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileCo
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 
 // Screens
-import WalletAssetsSendForm from '../../../../source/renderer/app/components/wallet/WalletAssetsSendForm';
-import WalletAssetsSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog';
+import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
+import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletSendConfirmationDialog';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
@@ -198,7 +198,7 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
 storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send - No Assets', () => (
-    <WalletAssetsSendForm
+    <WalletSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -221,7 +221,7 @@ storiesOf('Wallets|Send', module)
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
-    <WalletAssetsSendForm
+    <WalletSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -244,7 +244,7 @@ storiesOf('Wallets|Send', module)
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
-    <WalletAssetsSendForm
+    <WalletSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -267,7 +267,7 @@ storiesOf('Wallets|Send', module)
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
-    <WalletAssetsSendForm
+    <WalletSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -290,7 +290,7 @@ storiesOf('Wallets|Send', module)
     />
   ))
   .add('Send - With Assets', () => (
-    <WalletAssetsSendForm
+    <WalletSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -317,7 +317,7 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => (
     <div>
-      <WalletAssetsSendConfirmationDialog
+      <WalletSendAssetsConfirmationDialog
         currencyUnit="Ada"
         amount="20.000000"
         totalAmount="21.000000"

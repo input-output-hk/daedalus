@@ -6,7 +6,7 @@ import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
-import WalletAssetsSendConfirmationDialog from '../../../components/wallet/WalletAssetsSendConfirmationDialog';
+import WalletSendAssetsConfirmationDialog from '../../../components/wallet/WalletSendAssetsConfirmationDialog';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type Props = {
@@ -94,7 +94,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     return (
       <>
         {assets.length ? (
-          <WalletAssetsSendConfirmationDialog
+          <WalletSendAssetsConfirmationDialog
             amount={amount}
             sender={activeWallet.id}
             receiver={receiver}

@@ -35,9 +35,9 @@ import {
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
-import WalletAssetsSendConfirmationDialog from './WalletAssetsSendConfirmationDialog';
+import WalletSendAssetsConfirmationDialog from './WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
-import styles from './WalletAssetsSendForm.scss';
+import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetItems, WalletSummaryAsset } from '../../api/assets/types';
@@ -84,7 +84,7 @@ type State = {
 };
 
 @observer
-export default class WalletAssetsSendForm extends Component<Props, State> {
+export default class WalletSendForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -177,7 +177,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       return false;
     }
     this.props.onOpenDialogAction({
-      dialog: WalletAssetsSendConfirmationDialog,
+      dialog: WalletSendAssetsConfirmationDialog,
     });
   };
 
@@ -990,7 +990,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           </div>
         ) : (
           <BorderedBox>
-            <div className={styles.walletAssetsSendForm}>
+            <div className={styles.walletSendForm}>
               {formFields.receiver && this.renderReceiverRow()}
               <div className={styles.estimatedFeeInput}>
                 <ReadOnlyInput
@@ -1036,7 +1036,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           </BorderedBox>
         )}
 
-        {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
+        {isDialogOpen(WalletSendAssetsConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
             currencyUnit={currencyUnit}
             receiver={receiver}

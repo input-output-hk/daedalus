@@ -23,7 +23,7 @@
     }
   }
 
-  .walletAssetsSendForm {
+  .walletSendForm {
     .fieldsLine {
       border-bottom: var(--theme-bordered-box-border);
       border-left: var(--theme-bordered-box-border);
@@ -468,8 +468,8 @@
 }
 
 :global {
-  .WalletAssetsSendForm_calculatingFeesContainer
-    .WalletAssetsSendForm_calculatingFeesSpinnerButton.WalletAssetsSendForm_spinning {
+  .WalletSendForm_calculatingFeesContainer
+    .WalletSendForm_calculatingFeesSpinnerButton.WalletSendForm_spinning {
     cursor: default !important;
 
     &:after {

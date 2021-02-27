@@ -8,7 +8,7 @@ import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
 } from '../../config/numbersConfig';
-import WalletAssetsSendForm from '../../components/wallet/WalletAssetsSendForm';
+import WalletSendForm from '../../components/wallet/WalletSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type {
@@ -147,7 +147,7 @@ export default class WalletSendPage extends Component<Props> {
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
     return (
-      <WalletAssetsSendForm
+      <WalletSendForm
         currencyUnit={intl.formatMessage(globalMessages.unitAda)}
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}

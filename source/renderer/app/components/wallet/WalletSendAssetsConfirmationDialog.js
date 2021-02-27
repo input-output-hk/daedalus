@@ -14,7 +14,7 @@ import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
-import styles from './WalletAssetsSendConfirmationDialog.scss';
+import styles from './WalletSendAssetsConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import { formattedTokenWalletAmount } from '../../utils/formatters';
@@ -143,7 +143,7 @@ type State = {
 };
 
 @observer
-export default class WalletAssetsSendConfirmationDialog extends Component<
+export default class WalletSendAssetsConfirmationDialog extends Component<
   Props,
   State
 > {
