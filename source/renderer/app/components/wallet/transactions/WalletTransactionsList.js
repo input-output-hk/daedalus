@@ -15,26 +15,27 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
+import type { WalletTransactionAsset } from '../../../api/assets/types';
 
 const messages = defineMessages({
   today: {
-    id: 'wallet.summary.page.todayLabel',
+    id: 'wallet.summary.transactionsList.todayLabel',
     defaultMessage: '!!!Today',
     description: 'Label for the "Today" label on the wallet summary page.',
   },
   yesterday: {
-    id: 'wallet.summary.page.yesterdayLabel',
+    id: 'wallet.summary.transactionsList.yesterdayLabel',
     defaultMessage: '!!!Yesterday',
     description: 'Label for the "Yesterday" label on the wallet summary page.',
   },
   showMoreTransactionsButtonLabel: {
-    id: 'wallet.summary.page.showMoreTransactionsButtonLabel',
+    id: 'wallet.summary.transactionsList.showMoreTransactionsButtonLabel',
     defaultMessage: '!!!Show more transactions',
     description:
       'Label for the "Show more transactions" button on the wallet summary page.',
   },
   syncingTransactionsMessage: {
-    id: 'wallet.summary.page.syncingTransactionsMessage',
+    id: 'wallet.summary.transactionsList.syncingTransactionsMessage',
     defaultMessage:
       '!!!Your transaction history for this wallet is being synced with the blockchain.',
     description: 'Syncing transactions message on async wallet restore.',
@@ -65,6 +66,10 @@ type Props = {
   isDeletingTransaction: boolean,
   currentDateFormat: string,
   currentTimeFormat: string,
+  hasAssetsEnabled: boolean,
+  getAssetDetails: Function,
+  isInternalAddress: Function,
+  onCopyAssetItem: Function,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -189,6 +194,10 @@ export default class WalletTransactionsList extends Component<Props> {
       walletId,
       isDeletingTransaction,
       currentTimeFormat,
+      hasAssetsEnabled,
+      getAssetDetails,
+      isInternalAddress,
+      onCopyAssetItem,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -196,6 +205,31 @@ export default class WalletTransactionsList extends Component<Props> {
       isFirstInGroup ? styles.firstInGroup : null,
       isLastInGroup ? styles.lastInGroup : null,
     ]);
+
+    // $FlowFixMe
+    const txAssets: Array<WalletTransactionAsset> = tx.assets
+      .map((rawAsset) => {
+        const { policyId, assetName } = rawAsset;
+        const assetDetails = getAssetDetails(policyId, assetName);
+        return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
+      })
+      .filter((asset) => asset != null)
+      .sort((asset1, asset2) => {
+        if (asset1 && asset2) {
+          if (asset1.fingerprint < asset2.fingerprint) {
+            return -1;
+          }
+          if (asset1.fingerprint > asset2.fingerprint) {
+            return 1;
+          }
+        }
+        return 0;
+      });
+    const totalRawAssets = tx.assets.length;
+    const totalAssets = txAssets.length;
+    const hasRawAssets = tx.assets.length > 0;
+    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
@@ -214,6 +248,11 @@ export default class WalletTransactionsList extends Component<Props> {
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentTimeFormat={currentTimeFormat}
+          assetsDetails={txAssets}
+          hasAssetsEnabled={hasAssetsEnabled}
+          isInternalAddress={isInternalAddress}
+          isLoadingAssets={isLoadingAssets}
+          onCopyAssetItem={onCopyAssetItem}
         />
       </div>
     );

@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last, size, concat } from 'lodash';
+import { split, get, has, map, last, size, concat, flatten } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -144,6 +144,7 @@ import type {
   TransactionFee,
   TransactionWithdrawals,
   GetTransactionFeeRequest,
+  GetTransactionFeeResponse,
   CreateTransactionRequest,
   DeleteTransactionRequest,
   GetTransactionRequest,
@@ -228,8 +229,15 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 import { formattedAmountToLovelace } from '../utils/formatters';
+import type {
+  GetAssetsRequest,
+  GetAssetsResponse,
+  ApiAsset,
+} from './assets/types';
+import Asset from '../domains/Asset';
+import { getAssets } from './assets/requests/getAssets';
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, environment } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -585,6 +593,24 @@ export default class AdaApi {
     // }
   };
 
+  getAssets = async (request: GetAssetsRequest): Promise<GetAssetsResponse> => {
+    logger.debug('AdaApi::getAssets called', { parameters: request });
+    const { walletId } = request;
+    try {
+      const response = await getAssets(this.config, { walletId });
+      logger.debug('AdaApi::getAssets success', {
+        assets: response,
+      });
+      const assets = response.map((asset) => _createAssetFromServerData(asset));
+      return new Promise((resolve) =>
+        resolve({ assets, total: response.length })
+      );
+    } catch (error) {
+      logger.error('AdaApi::getAssets error', { error });
+      throw new ApiError(error);
+    }
+  };
+
   getWithdrawals = async (
     request: GetWithdrawalsRequest
   ): Promise<GetWithdrawalsResponse> => {
@@ -670,6 +696,10 @@ export default class AdaApi {
           },
         },
         isLegacy: true,
+        assets: {
+          available: [],
+          total: [],
+        },
       };
       const wallet: AdaWallet = {
         ...legacyWallet,
@@ -715,6 +745,7 @@ export default class AdaApi {
       amount,
       passphrase,
       isLegacy,
+      assets,
       withdrawal = TransactionWithdrawal,
     } = request;
 
@@ -727,6 +758,7 @@ export default class AdaApi {
               quantity: amount,
               unit: WalletUnits.LOVELACE,
             },
+            assets,
           },
         ],
         passphrase,
@@ -835,7 +867,7 @@ export default class AdaApi {
 
   calculateTransactionFee = async (
     request: GetTransactionFeeRequest
-  ): Promise<BigNumber> => {
+  ): Promise<GetTransactionFeeResponse> => {
     logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
     });
@@ -843,6 +875,7 @@ export default class AdaApi {
       walletId,
       address,
       amount,
+      assets,
       walletBalance,
       availableBalance,
       isLegacy,
@@ -858,6 +891,7 @@ export default class AdaApi {
               quantity: amount,
               unit: WalletUnits.LOVELACE,
             },
+            assets,
           },
         ],
       };
@@ -874,11 +908,10 @@ export default class AdaApi {
           data: { ...data, withdrawal },
         });
       }
-
       const formattedTxAmount = new BigNumber(amount).dividedBy(
         LOVELACES_PER_ADA
       );
-      const fee = _createTransactionFeeFromServerData(response);
+      const { fee, minimumAda } = _createTransactionFeeFromServerData(response);
       const amountWithFee = formattedTxAmount.plus(fee);
       const isRewardsRedemptionRequest = Array.isArray(withdrawal);
       if (!isRewardsRedemptionRequest && amountWithFee.gt(walletBalance)) {
@@ -889,7 +922,7 @@ export default class AdaApi {
       logger.debug('AdaApi::calculateTransactionFee success', {
         transactionFee: response,
       });
-      return fee;
+      return { fee, minimumAda };
     } catch (error) {
       // 1. Amount exceeds availableBalance due to pending transactions:
       // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
@@ -913,6 +946,14 @@ export default class AdaApi {
         .set('invalidAddress')
         .where('code', 'bad_request')
         .inc('message', 'Unable to decode Address')
+        .where('code', 'utxo_too_small')
+        .set('utxoTooSmall', true, {
+          minimumAda: get(
+            /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
+            2,
+            0
+          ),
+        })
         .result();
     }
   };
@@ -1885,7 +1926,7 @@ export default class AdaApi {
       isLegacy: false,
     };
     try {
-      const fee = await this.calculateTransactionFee(payload);
+      const { fee } = await this.calculateTransactionFee(payload);
       logger.debug('AdaApi::getRedeemItnRewardsFee success', { fee });
       return fee;
     } catch (error) {
@@ -2477,6 +2518,7 @@ const _createWalletFromServerData = action(
       address_pool_gap: addressPoolGap,
       balance,
       name,
+      assets,
       passphrase,
       delegation,
       state: syncState,
@@ -2518,6 +2560,24 @@ const _createWalletFromServerData = action(
     const lastDelegatedStakePoolId = isLegacy ? null : lastTarget;
     const lastDelegationStakePoolStatus = isLegacy ? null : lastStatus;
 
+    // Mapping asset items from server data
+    const walletAssets = {
+      available: assets.available.map((item) => {
+        return {
+          policyId: item.policy_id,
+          assetName: item.asset_name,
+          quantity: new BigNumber(item.quantity),
+        };
+      }),
+      total: assets.total.map((item) => {
+        return {
+          policyId: item.policy_id,
+          assetName: item.asset_name,
+          quantity: new BigNumber(item.quantity),
+        };
+      }),
+    };
+
     return new Wallet({
       id,
       addressPoolGap,
@@ -2525,6 +2585,7 @@ const _createWalletFromServerData = action(
       amount: walletTotalAmount,
       availableAmount: walletAvailableAmount,
       reward: walletRewardAmount,
+      assets: walletAssets,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       hasPassword: isHardwareWallet || passphraseLastUpdatedAt !== null, // For HW set that wallet has password
@@ -2571,8 +2632,8 @@ const _createTransactionFromServerData = action(
       amount,
       fee,
       deposit,
-      inserted_at, // eslint-disable-line camelcase
-      pending_since, // eslint-disable-line camelcase
+      inserted_at: insertedAt,
+      pending_since: pendingSince,
       depth,
       direction,
       inputs,
@@ -2583,11 +2644,27 @@ const _createTransactionFromServerData = action(
     } = data;
     const state = _conditionToTxState(status);
     const stateInfo =
-      state === TransactionStates.PENDING ? pending_since : inserted_at; // eslint-disable-line
+      state === TransactionStates.PENDING ? pendingSince : insertedAt;
     const date = get(stateInfo, 'time');
     const slotNumber = get(stateInfo, ['block', 'slot_number'], null);
     const epochNumber = get(stateInfo, ['block', 'epoch_number'], null);
     const confirmations = get(depth, 'quantity', 0);
+
+    // Mapping asset items from server data
+    const outputAssets = flatten(
+      outputs.map(({ assets, address }) =>
+        assets ? assets.map((asset) => ({ ...asset, address })) : []
+      )
+    );
+    const transactionAssets = map(
+      outputAssets,
+      ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
+        policyId,
+        assetName,
+        quantity: new BigNumber(quantity),
+        address,
+      })
+    );
     return new WalletTransaction({
       id,
       confirmations,
@@ -2603,6 +2680,7 @@ const _createTransactionFromServerData = action(
       ).dividedBy(LOVELACES_PER_ADA),
       fee: new BigNumber(fee.quantity).dividedBy(LOVELACES_PER_ADA),
       deposit: new BigNumber(deposit.quantity).dividedBy(LOVELACES_PER_ADA),
+      assets: transactionAssets,
       date: utcStringToDate(date),
       description: '',
       addresses: {
@@ -2616,11 +2694,77 @@ const _createTransactionFromServerData = action(
   }
 );
 
+const _createAssetFromServerData = action(
+  'AdaApi::_createAssetFromServerData',
+  (data: ApiAsset) => {
+    const {
+      policy_id: policyId,
+      asset_name: assetName,
+      fingerprint,
+      metadata,
+    } = data;
+
+    // @TOKEN TODO: remove once testing is done
+    const DUMMY_TOKEN_METADATA = {
+      '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086736164636f696e': {
+        policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
+        assetName: '736164636f696e',
+        fingerprint: 'asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0egc',
+        metadata: {
+          name: "Tim's token",
+          description:
+            'This is a test token to show you how it will look in Daedalus',
+          acronym: 'TIM',
+        },
+      },
+      '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf389790866861707079636f696e': {
+        policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
+        assetName: '6861707079636f696e',
+        fingerprint: 'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8',
+        metadata: {
+          name: "Darko's token",
+          description:
+            'This is a test token to show you how it will look in Daedalus',
+          acronym: 'DARK',
+          unit: {
+            decimals: 2,
+            name: 'Ark',
+          },
+        },
+      },
+    };
+    const hasDummyTokenMetadata = has(DUMMY_TOKEN_METADATA, [
+      policyId + assetName,
+    ]);
+    window.useDummyTokenMetadata =
+      window.useDummyTokenMetadata === undefined
+        ? environment.isDev
+        : window.useDummyTokenMetadata;
+    return new Asset({
+      policyId,
+      assetName,
+      fingerprint,
+      metadata:
+        window.useDummyTokenMetadata && hasDummyTokenMetadata
+          ? DUMMY_TOKEN_METADATA[policyId + assetName].metadata
+          : metadata,
+    });
+  }
+);
+
 const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
   (data: TransactionFee) => {
-    const amount = get(data, ['estimated_max', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+    const feeAmount = get(data, ['estimated_max', 'quantity'], 0);
+    const minimumAdaAmount = get(data, 'minimum_coins.[0].quantity', 0);
+    const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
+    const minimumAda = new BigNumber(minimumAdaAmount).dividedBy(
+      LOVELACES_PER_ADA
+    );
+    return {
+      fee,
+      minimumAda,
+    };
   }
 );
 

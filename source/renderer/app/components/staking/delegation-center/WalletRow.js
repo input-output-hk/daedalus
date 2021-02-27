@@ -421,7 +421,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         maxWidth={280}
                         appendTo={'parent'}
                         isShowingOnHover={false}
-                        isVisible={highlightedPoolId}
+                        visible={highlightedPoolId}
                         themeVariables={popOverThemeVariables}
                         allowHTML
                         content={

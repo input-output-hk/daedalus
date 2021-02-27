@@ -1,7 +1,11 @@
 Changelog
 =========
 
-## vNext
+## 4.0.0-RC1
+
+### Features
+
+- Added native token support [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
 
 ### Features
 
