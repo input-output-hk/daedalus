@@ -97,6 +97,45 @@
     margin-top: 15px;
   }
 
+  .adaAmountFeesWrapper {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    margin-top: 15px;
+
+    .adaAmountWrapper,
+    .feesWrapper {
+      margin-top: 0;
+      width: 50%;
+    }
+
+    .adaAmountWrapper {
+      margin-right: 10px;
+    }
+
+    .feesWrapper {
+      margin-left: 10px;
+    }
+
+    .adaAmountLabel,
+    .feesLabel {
+      line-height: 1.38;
+    }
+
+    .adaAmount,
+    .fees {
+      color: var(--theme-send-confirmation-dialog-send-values-color);
+      line-height: 1.38;
+      margin-top: 6px;
+      user-select: text;
+      word-break: break-word;
+    }
+
+    .fees {
+      opacity: 0.5;
+    }
+  }
+
   .assetsWrapper {
     display: flex;
     flex-direction: column;

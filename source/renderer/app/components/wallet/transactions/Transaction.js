@@ -232,12 +232,12 @@ const headerStateTranslations = defineMessages({
     description: 'Transaction state "confirmed"',
   },
   [TransactionStates.PENDING]: {
-    id: 'wallet.transaction.state.failedHeading',
+    id: 'wallet.transaction.state.pendingHeading',
     defaultMessage: '!!!Pending',
     description: 'Transaction state "pending"',
   },
   [TransactionStates.FAILED]: {
-    id: 'wallet.transaction.state.pendingHeading',
+    id: 'wallet.transaction.state.failedHeading',
     defaultMessage: '!!!Failed',
     description: 'Transaction state "failed"',
   },

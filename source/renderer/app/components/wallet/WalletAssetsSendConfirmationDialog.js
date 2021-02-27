@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -25,6 +25,8 @@ import { HwDeviceStatuses } from '../../domains/Wallet';
 import AssetToken from '../widgets/AssetToken';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { WalletSummaryAsset } from '../../api/assets/types';
+
+const SHOW_TOTAL_AMOUNT = false;
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -115,6 +117,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   amount: string,
+  totalAmount: ?string,
   receiver: string,
   assets: Array<WalletSummaryAsset>,
   assetsAmounts: Array<string>,
@@ -292,6 +295,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
       assets,
       amount,
       receiver,
+      totalAmount,
       transactionFee,
       isSubmitting,
       isFlight,
@@ -417,17 +421,59 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
             </div>
           </div>
 
-          <div className={styles.feesWrapper}>
-            <div className={styles.feesLabel}>
-              {intl.formatMessage(messages.feesLabel)}
+          {SHOW_TOTAL_AMOUNT ? (
+            <>
+              <div className={styles.adaAmountFeesWrapper}>
+                <div className={styles.adaAmountWrapper}>
+                  <div className={styles.adaAmountLabel}>
+                    {intl.formatMessage(messages.amountLabel)}
+                  </div>
+                  <div className={styles.adaAmount}>
+                    {amount}
+                    <span className={styles.currencySymbol}>
+                      &nbsp;{currencyUnit}
+                    </span>
+                  </div>
+                </div>
+
+                <div className={styles.feesWrapper}>
+                  <div className={styles.feesLabel}>
+                    {intl.formatMessage(messages.feesLabel)}
+                  </div>
+                  <div className={styles.fees}>
+                    +{transactionFee}
+                    <span className={styles.currencySymbol}>
+                      &nbsp;{currencyUnit}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.totalAmountWrapper}>
+                <div className={styles.totalAmountLabel}>
+                  {intl.formatMessage(messages.totalLabel)}
+                </div>
+                <div className={styles.totalAmount}>
+                  {totalAmount}
+                  <span className={styles.currencySymbol}>
+                    &nbsp;{currencyUnit}
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className={styles.feesWrapper}>
+              <div className={styles.feesLabel}>
+                {intl.formatMessage(messages.feesLabel)}
+              </div>
+              <div className={styles.fees}>
+                +{transactionFee}
+                <span className={styles.currencySymbol}>
+                  &nbsp;{currencyUnit}
+                </span>
+              </div>
             </div>
-            <div className={styles.fees}>
-              {transactionFee}
-              <span className={styles.currencySymbol}>
-                &nbsp;{currencyUnit}
-              </span>
-            </div>
-          </div>
+          )}
 
           {isFlight && (
             <div className={styles.flightCandidateWarning}>
