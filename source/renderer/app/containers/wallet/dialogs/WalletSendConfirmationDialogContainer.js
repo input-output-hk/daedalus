@@ -14,8 +14,8 @@ type Props = {
   actions: any | ActionsMap,
   amount: string,
   receiver: string,
-  assets?: Array<WalletSummaryAsset>,
-  assetsAmounts?: Array<string>,
+  assets: Array<WalletSummaryAsset>,
+  assetsAmounts: Array<string>,
   totalAmount: ?string,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -93,7 +93,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
     return (
       <>
-        {assets && assets.length ? (
+        {assets.length ? (
           <WalletAssetsSendConfirmationDialog
             amount={amount}
             sender={activeWallet.id}

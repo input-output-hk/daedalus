@@ -46,43 +46,37 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   currencyUnit: string,
-  currencyMaxIntegerDigits?: number,
+  currencyMaxIntegerDigits: number,
   currencyMaxFractionalDigits: number,
-  validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
+  currentNumberFormat: string,
   calculateTransactionFee: (
     address: string,
     amount: number,
     assets: AssetItems
   ) => Promise<BigNumber>,
-  currentNumberFormat: string,
   walletAmount: BigNumber,
+  validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   addressValidator: Function,
-  openDialogAction: Function,
-  isDialogOpen: Function,
-  onExternalLinkClick?: Function,
-  isRestoreActive: boolean,
-  hwDeviceStatus: HwDeviceStatus,
-  isHardwareWallet: boolean,
-  isLoadingAssets: boolean,
   assets: Array<WalletSummaryAsset>,
-  isClearTooltipOpeningDownward?: boolean,
   hasAssets: boolean,
   selectedAsset: ?Asset,
-  unsetActiveAssetFingerprint: Function,
+  isLoadingAssets: boolean,
+  isDialogOpen: Function,
+  isRestoreActive: boolean,
+  isHardwareWallet: boolean,
+  hwDeviceStatus: HwDeviceStatus,
+  onOpenDialogAction: Function,
+  onUnsetActiveAssetFingerprint: Function,
+  onExternalLinkClick: Function,
 };
 
 type State = {
   formFields: Object,
   minimumAda: BigNumber,
-  transactionFee: BigNumber,
   feeCalculationRequestQue: number,
+  transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
-  assetErrors: {
-    [key: string]: ?string | ?Node,
-  },
-  showRemoveAssetButton: {
-    [key: string]: boolean,
-  },
+  showRemoveAssetButton: { [key: string]: boolean },
   selectedAssetFingerprints: Array<string>,
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
@@ -97,16 +91,15 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   state = {
     formFields: {},
+    minimumAda: new BigNumber(0),
+    feeCalculationRequestQue: 0,
+    transactionFee: new BigNumber(0),
+    transactionFeeError: null,
+    showRemoveAssetButton: {},
+    selectedAssetFingerprints: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
-    minimumAda: new BigNumber(0),
-    transactionFee: new BigNumber(0),
-    transactionFeeError: null,
-    feeCalculationRequestQue: 0,
-    assetErrors: {},
-    showRemoveAssetButton: {},
-    selectedAssetFingerprints: [],
   };
 
   // We need to track the fee calculation state in order to disable
@@ -136,14 +129,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
-    this.props.unsetActiveAssetFingerprint();
+    this.props.onUnsetActiveAssetFingerprint();
   }
 
   getCurrentNumberFormat() {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
-  get selectedAssets() {
+  get selectedAssets(): Array<WalletSummaryAsset> {
     const { selectedAssetFingerprints } = this.state;
     const { assets: allAssets } = this.props;
     return map(selectedAssetFingerprints, (fingerprint) =>
@@ -151,16 +144,15 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     );
   }
 
-  get selectedAssetsAmounts() {
+  get selectedAssetsAmounts(): Array<string> {
     const { selectedAssetFingerprints, formFields } = this.state;
     const assetFields = get(formFields, 'receiver.assetFields');
-    return map(
-      selectedAssetFingerprints,
-      (fingerprint) => assetFields[fingerprint].value
+    return map(selectedAssetFingerprints, (fingerprint) =>
+      formattedAmountToNaturalUnits(assetFields[fingerprint].value)
     );
   }
 
-  get availableAssets() {
+  get availableAssets(): Array<WalletSummaryAsset> {
     const { assets: allAssets } = this.props;
     const { selectedAssetFingerprints } = this.state;
     return filter(
@@ -169,7 +161,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     );
   }
 
-  get hasAvailableAssets() {
+  get hasAvailableAssets(): boolean {
     return this.availableAssets.length > 0;
   }
 
@@ -184,7 +176,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     if (this.isDisabled()) {
       return false;
     }
-    this.props.openDialogAction({
+    this.props.onOpenDialogAction({
       dialog: WalletAssetsSendConfirmationDialog,
     });
   };
@@ -196,17 +188,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     });
     this.form.reset();
     this.form.showErrors(false);
-    this.disableResetButton();
-    map(this.state.formFields.receiver.assetFields, (asset) => {
-      this.clearAssetFieldValue(asset);
-    });
+
     this.clearReceiverFieldValue();
     this.clearAdaAmountFieldValue();
     this.updateFormFields(true);
-  };
 
-  disableResetButton = () => {
     this.setState({
+      minimumAda: new BigNumber(0),
+      showRemoveAssetButton: {},
       isResetButtonDisabled: true,
     });
   };
@@ -215,7 +204,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const receiverField = this.form.$('receiver');
     if (receiverField) {
       receiverField.clear();
-      this.setReceiverValidity(true);
+      this.setReceiverValidity(false);
     }
   };
 
@@ -226,11 +215,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
   };
 
-  clearAssetFieldValue = (asset: any) => {
-    const assetField = asset || this.form.$('assetField');
+  clearAssetFieldValue = (assetField: any) => {
     if (assetField) {
       assetField.clear();
     }
+    setTimeout(() => {
+      this.calculateTransactionFee();
+    });
   };
 
   updateFormFields = (resetFormFields: boolean, fingerprint?: ?string) => {
@@ -239,8 +230,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const adaAmountField = formFields.get('adaAmount');
     if (resetFormFields) {
       this.setState({
-        minimumAda: new BigNumber(0),
-        showRemoveAssetButton: {},
         selectedAssetFingerprints: [],
         formFields: {
           receiver: {
@@ -256,12 +245,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       const assetField = fingerprint
         ? formFields.get(`asset_${fingerprint}`)
         : null;
-      const assetsDropdownField = fingerprint
-        ? formFields.get(`assetsDropdown_${fingerprint}`)
-        : null;
       if (assetField) {
         assetFields[fingerprint] = assetField;
       }
+      const assetsDropdownField = fingerprint
+        ? formFields.get(`assetsDropdown_${fingerprint}`)
+        : null;
       if (assetsDropdownField) {
         assetsDropdown[fingerprint] = assetsDropdownField;
       }
@@ -288,7 +277,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   };
 
   isDisabled = () =>
-    this._isCalculatingTransactionFee || !this.state.isTransactionFeeCalculated;
+    this._isCalculatingTransactionFee ||
+    !this.state.isTransactionFeeCalculated ||
+    !this.form.isValid;
 
   form = new ReactToolboxMobxForm(
     {
@@ -298,9 +289,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           placeholder: this.context.intl.formatMessage(messages.receiverHint),
           value: '',
           validators: [
-            async ({ field }) => {
+            async ({ field, form }) => {
               const { value } = field;
-              if (value === '') {
+              if (value === null || value === '') {
                 this.resetTransactionFee();
                 this.setReceiverValidity(false);
                 return [
@@ -308,10 +299,17 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
-              const isValidAddress = await this.props.addressValidator(value);
-              this.setReceiverValidity(isValidAddress);
+              const isValid = await this.props.addressValidator(value);
+              this.setReceiverValidity(isValid);
+              const adaAmountField = form.$('adaAmount');
+              const isAdaAmountValid = adaAmountField.isValid;
+              if (isValid && isAdaAmountValid) {
+                this.calculateTransactionFee();
+              } else {
+                this.resetTransactionFee();
+              }
               return [
-                isValidAddress,
+                isValid,
                 this.context.intl.formatMessage(
                   apiErrorMessages.invalidAddress
                 ),
@@ -326,47 +324,21 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
           value: '',
           validators: [
-            async ({ field, form }) => {
-              const { isReceiverAddressValid } = this.state;
-              if (field.value === null) {
+            async ({ field }) => {
+              const { value } = field;
+              if (value === null || value === '') {
                 this.resetTransactionFee();
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
-              if (isReceiverAddressValid && field.value === '') {
-                this.resetTransactionFee();
-                return [
-                  true,
-                  this.context.intl.formatMessage(messages.fieldIsRequired),
-                ];
-              }
-              const amountValue = field.value.toString();
+              const amountValue = value.toString();
               const isValid = await this.props.validateAmount(
                 formattedAmountToNaturalUnits(amountValue)
               );
-              const receiverField = form.$('receiver');
-              const receiverValue = receiverField.value;
-              const isReceiverValid = receiverField.isValid;
-              if (isValid && isReceiverValid) {
-                const assets = this.selectedAssets.map(
-                  ({ policyId, assetName }, index) => {
-                    const quantity = new BigNumber(
-                      this.selectedAssetsAmounts[index] || 0
-                    );
-                    return {
-                      policy_id: policyId,
-                      asset_name: assetName,
-                      quantity: quantity.toNumber(),
-                    };
-                  }
-                );
-                this.calculateTransactionFee(
-                  receiverValue,
-                  amountValue,
-                  assets
-                );
+              if (isValid) {
+                this.calculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -409,27 +381,44 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     prevFeeCalculationRequestQue: number
   ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
 
-  calculateTransactionFee = async (
-    address: string,
-    amountValue: string,
-    assets: AssetItems
-  ) => {
-    const amount = formattedAmountToLovelace(amountValue);
+  calculateTransactionFee = async () => {
+    const { form } = this;
+    const hasEmptyAssetFields = this.selectedAssetsAmounts.includes('0');
+    if (!form.isValid || hasEmptyAssetFields) {
+      form.showErrors(true);
+      return false;
+    }
+
+    const receiverField = form.$('receiver');
+    const receiver = receiverField.value;
+    const adaAmountField = form.$('adaAmount');
+    const adaAmount = formattedAmountToLovelace(adaAmountField.value);
+    const assets = filter(
+      this.selectedAssets.map(({ policyId, assetName }, index) => {
+        const quantity = new BigNumber(this.selectedAssetsAmounts[index]);
+        return {
+          policy_id: policyId,
+          asset_name: assetName,
+          quantity: quantity.toNumber(),
+        };
+      }),
+      'quantity'
+    );
+
     const {
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
     } = this.state;
     this.setState((prevState) => ({
+      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
       isTransactionFeeCalculated: false,
       transactionFee: new BigNumber(0),
       transactionFeeError: null,
-      assetErrors: {},
-      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
     }));
     try {
       this._isCalculatingTransactionFee = true;
       const { fee, minimumAda } = await this.props.calculateTransactionFee(
-        address,
-        amount,
+        receiver,
+        adaAmount,
         assets
       );
       if (
@@ -442,9 +431,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         this._isCalculatingTransactionFee = false;
         this.setState({
           isTransactionFeeCalculated: true,
+          minimumAda,
           transactionFee: fee,
           transactionFeeError: null,
-          minimumAda,
         });
       }
     } catch (error) {
@@ -500,7 +489,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
         transactionFeeError: null,
-        assetErrors: {},
       });
     }
   }
@@ -529,6 +517,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.setState({
       selectedAssetFingerprints,
     });
+    this.resetTransactionFee();
   };
 
   removeAssetRow = (fingerprint: string) => {
@@ -551,6 +540,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       },
     });
     this.removeAssetFields(fingerprint);
+    setTimeout(() => {
+      this.calculateTransactionFee();
+    });
   };
 
   addAssetFields = (fingerprint: string) => {
@@ -568,62 +560,32 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         )}`
       );
     this.form.$(newAsset).set('validators', [
-      async ({ field, form }) => {
-        const amountValue = field.value ? field.value.toString() : '';
-        const isValid = await this.props.validateAmount(
+      async ({ field }) => {
+        const { value } = field;
+        if (value === null || value === '') {
+          this.resetTransactionFee();
+          return [
+            false,
+            this.context.intl.formatMessage(messages.fieldIsRequired),
+          ];
+        }
+        const amountValue = value.toString();
+        const isValidAmount = await this.props.validateAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
-        const receiverField = form.$('receiver');
-        const receiverValue = receiverField.value;
-        const isReceiverValid = receiverField.isValid;
-        const adaAmountField = form.$('adaAmount');
-        const adaAmountFieldValue = adaAmountField.value;
-        const isAdaAmountValid = adaAmountField.isValid;
-
         const asset = this.getAssetByFingerprint(fingerprint);
         if (!asset) {
           return false;
         }
-        const assetValue = new BigNumber(field.value);
-        const assetMaxValue = new BigNumber(asset.quantity);
-        const isAmountLessThanMax = assetValue.isLessThanOrEqualTo(
-          assetMaxValue
+        const assetValue = new BigNumber(
+          formattedAmountToNaturalUnits(field.value)
         );
-
-        if (
-          isValid &&
-          isAmountLessThanMax &&
-          isReceiverValid &&
-          isAdaAmountValid
-        ) {
-          this._isCalculatingTransactionFee = true;
-          const assets = this.selectedAssets.map(
-            ({ policyId, assetName }, index) => {
-              const quantity = new BigNumber(
-                this.selectedAssetsAmounts[index] || 0
-              );
-              return {
-                policy_id: policyId,
-                asset_name: assetName,
-                quantity: quantity.toNumber(),
-              };
-            }
-          );
-          this.calculateTransactionFee(
-            receiverValue,
-            adaAmountFieldValue,
-            assets
-          );
-        } else if (!isAmountLessThanMax) {
-          const { assetErrors } = this.state;
-          const error = this.context.intl.formatMessage(messages.invalidAmount);
-          assetErrors[asset.fingerprint] = error;
-          this._isCalculatingTransactionFee = false;
-          this.setState({
-            isTransactionFeeCalculated: false,
-            transactionFee: new BigNumber(0),
-            assetErrors,
-          });
+        const isValidRange =
+          assetValue.isGreaterThan(0) &&
+          assetValue.isLessThanOrEqualTo(asset.quantity);
+        const isValid = isValidAmount && isValidRange;
+        if (isValid) {
+          this.calculateTransactionFee();
         } else {
           this.resetTransactionFee();
         }
@@ -678,35 +640,22 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const {
       formFields,
       minimumAda,
-      transactionFee,
       transactionFeeError,
-      assetErrors,
       selectedAssetFingerprints,
       isReceiverAddressValid,
-      isTransactionFeeCalculated,
     } = this.state;
     const {
       currencyMaxFractionalDigits,
       walletAmount,
       isHardwareWallet,
-      isClearTooltipOpeningDownward,
     } = this.props;
 
     const {
       receiver: receiverField,
-      adaAmount,
+      adaAmount: adaAmountField,
       assetFields,
       assetsDropdown,
     } = formFields.receiver;
-
-    const receiverLabel = intl.formatMessage(messages.receiverLabel);
-    const adaAmountFieldProps = adaAmount.bind();
-
-    let fees = null;
-    if (isTransactionFeeCalculated && transactionFee) {
-      fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-    }
-    const estimatedFeeField = this.form.$('estimatedFee');
 
     const assetsSeparatorBasicHeight = 140;
     const assetsSeparatorCalculatedHeight = selectedAssetFingerprints.length
@@ -729,16 +678,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         <div className={styles.receiverInput}>
           <Input
             className="receiver"
-            label={receiverLabel}
+            label={intl.formatMessage(messages.receiverLabel)}
             {...receiverField.bind()}
             error={receiverField.error}
             onChange={(value) => {
-              if (this._isMounted) {
-                receiverField.onChange(value || '');
-                this.setState({
-                  isResetButtonDisabled: false,
-                });
-              }
+              receiverField.onChange(value || '');
+              this.setState({
+                isResetButtonDisabled: false,
+              });
             }}
             onKeyPress={this.handleSubmitOnEnter}
           />
@@ -746,7 +693,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             <div className={styles.clearReceiverContainer}>
               <PopOver
                 content={intl.formatMessage(messages.clearLabel)}
-                placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
+                placement="top"
               >
                 <button
                   onClick={() => this.handleOnReset()}
@@ -783,9 +730,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   {intl.formatMessage(globalMessages.unitAda)}
                 </div>
                 <NumericInput
-                  {...adaAmountFieldProps}
+                  {...adaAmountField.bind()}
                   className="adaAmount"
-                  value={adaAmount.value}
+                  value={adaAmountField.value}
                   label={`${intl.formatMessage(messages.assetAdaLabel)}`}
                   bigNumberFormat={this.getCurrentNumberFormat()}
                   decimalPlaces={currencyMaxFractionalDigits}
@@ -793,12 +740,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
                   onChange={(value) => {
-                    this._isCalculatingTransactionFee = true;
-                    adaAmount.onChange(value);
-                    estimatedFeeField.onChange(fees);
+                    adaAmountField.onChange(value);
                   }}
                   currency={globalMessages.unitAda}
-                  error={adaAmount.error || transactionFeeError}
+                  error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                 />
@@ -840,16 +785,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       'fingerprint',
                       'asc'
                     );
-
                     const assetField = assetFields[fingerprint];
-                    const assetFieldProps = assetField.bind();
-                    const assetAmount = assetField.value
-                      ? new BigNumber(assetField.value)
-                      : '';
-
                     const assetsDropdownField = assetsDropdown[fingerprint];
-                    const assetsDropdownFieldProps = assetsDropdownField.bind();
-
                     return (
                       <div
                         key={`receiver_asset_${fingerprint}`}
@@ -868,7 +805,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           </div>
                         )}
                         <NumericInput
-                          {...assetFieldProps}
+                          {...assetField.bind()}
                           placeholder={
                             decimals
                               ? `0${
@@ -910,46 +847,39 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                             minimumFractionDigits: decimals,
                           }}
                           onChange={(value) => {
-                            this._isCalculatingTransactionFee = true;
-                            this.setState({
-                              isResetButtonDisabled: false,
-                            });
                             assetField.onChange(value);
-                            estimatedFeeField.onChange(fees);
                           }}
                           currency={acronym}
-                          value={assetAmount}
-                          error={assetErrors[fingerprint]}
+                          value={assetField.value}
+                          error={assetField.error}
                           skin={AmountInputSkin}
                           onKeyPress={(
                             evt: SyntheticKeyboardEvent<EventTarget>
                           ) => {
-                            const { charCode } = evt;
-                            if (
-                              charCode === 190 ||
-                              charCode === 110 ||
-                              charCode === 46
-                            ) {
-                              evt.persist();
-                              evt.preventDefault();
-                              evt.stopPropagation();
+                            if (decimals === 0) {
+                              const { charCode } = evt;
+                              if (
+                                charCode === 190 ||
+                                charCode === 110 ||
+                                charCode === 46
+                              ) {
+                                evt.persist();
+                                evt.preventDefault();
+                                evt.stopPropagation();
+                              }
                             }
                             return this.handleSubmitOnEnter;
                           }}
                           allowSigns={false}
                         />
                         <div className={styles.rightContent}>
-                          {this.hasAssetValue(assetFieldProps) && (
+                          {this.hasAssetValue(assetField) && (
                             <div className={styles.clearAssetContainer}>
                               <PopOver
                                 content={intl.formatMessage(
                                   messages.clearLabel
                                 )}
-                                placement={
-                                  isClearTooltipOpeningDownward
-                                    ? 'bottom'
-                                    : 'top'
-                                }
+                                placement="top"
                               >
                                 <button
                                   onClick={() =>
@@ -969,7 +899,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           <div className={styles.assetsDropdownWrapper}>
                             <WalletsDropdown
                               className={styles.assetsDropdown}
-                              {...assetsDropdownFieldProps}
+                              {...assetsDropdownField.bind()}
                               assets={sortedAssets}
                               onChange={(newFingerprint) => {
                                 if (newFingerprint !== fingerprint) {
@@ -1030,12 +960,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     } = this.props;
 
     const receiverField = form.$('receiver');
-    const receiverFieldProps = receiverField.bind();
-    const receiver = receiverFieldProps.value;
+    const receiver = receiverField.value;
 
     const adaAmountField = form.$('adaAmount');
-    const adaAmountFieldProps = adaAmountField.bind();
-    const adaAmount = new BigNumber(adaAmountFieldProps.value || 0);
+    const adaAmount = new BigNumber(adaAmountField.value || 0);
 
     let fees = null;
     let total = null;

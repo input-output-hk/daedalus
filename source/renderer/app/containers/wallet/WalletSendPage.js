@@ -80,7 +80,7 @@ export default class WalletSendPage extends Component<Props> {
     }
   };
 
-  getTokenByFingerprintId = (fingerprint: string, allAssets: Array<Asset>) => {
+  getAssetByFingerprint = (fingerprint: string, allAssets: Array<Asset>) => {
     return allAssets.find((asset) => asset.fingerprint === fingerprint);
   };
 
@@ -113,7 +113,7 @@ export default class WalletSendPage extends Component<Props> {
     } = assetsStore;
 
     const selectedAsset = activeAssetFingerprint
-      ? this.getTokenByFingerprintId(activeAssetFingerprint, allAssets)
+      ? this.getAssetByFingerprint(activeAssetFingerprint, allAssets)
       : null;
 
     // Guard against potential null values
@@ -152,11 +152,10 @@ export default class WalletSendPage extends Component<Props> {
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
         currentNumberFormat={profile.currentNumberFormat}
-        validateAmount={validateAmount}
         calculateTransactionFee={(
           address: string,
           amount: number,
-          selectedAssets?: AssetItems
+          selectedAssets: AssetItems
         ) =>
           this.calculateTransactionFee({
             walletId: wallet.id,
@@ -167,20 +166,21 @@ export default class WalletSendPage extends Component<Props> {
           })
         }
         walletAmount={wallet.amount}
-        assets={walletAssets}
+        validateAmount={validateAmount}
         addressValidator={isValidAddress}
-        isDialogOpen={uiDialogs.isOpen}
-        openDialogAction={(params) =>
-          this.openDialog(params.dialog, isHardwareWallet, wallet.id)
-        }
-        isRestoreActive={wallet.isRestoring}
-        onExternalLinkClick={app.openExternalLink}
-        unsetActiveAssetFingerprint={this.handleUnsetActiveAssetFingerprint}
-        hwDeviceStatus={hwDeviceStatus}
-        isHardwareWallet={isHardwareWallet}
-        isLoadingAssets={isLoadingAssets}
+        assets={walletAssets}
         hasAssets={hasAssetsEnabled && hasRawAssets}
         selectedAsset={selectedAsset}
+        isLoadingAssets={isLoadingAssets}
+        isDialogOpen={uiDialogs.isOpen}
+        isRestoreActive={wallet.isRestoring}
+        isHardwareWallet={isHardwareWallet}
+        hwDeviceStatus={hwDeviceStatus}
+        onOpenDialogAction={(params) =>
+          this.openDialog(params.dialog, isHardwareWallet, wallet.id)
+        }
+        onUnsetActiveAssetFingerprint={this.handleUnsetActiveAssetFingerprint}
+        onExternalLinkClick={app.openExternalLink}
       />
     );
   }

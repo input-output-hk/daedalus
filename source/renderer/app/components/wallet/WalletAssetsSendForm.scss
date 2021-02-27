@@ -469,11 +469,15 @@
 
 :global {
   .WalletAssetsSendForm_calculatingFeesContainer
-    .WalletAssetsSendForm_calculatingFeesSpinnerButton.WalletAssetsSendForm_spinning:after {
-    background-size: 12px !important;
-    height: 12px !important;
-    left: calc(50% - 6px) !important;
-    top: calc(50% - 6px) !important;
-    width: 12px !important;
+    .WalletAssetsSendForm_calculatingFeesSpinnerButton.WalletAssetsSendForm_spinning {
+    cursor: default !important;
+
+    &:after {
+      background-size: 12px !important;
+      height: 12px !important;
+      left: calc(50% - 6px) !important;
+      top: calc(50% - 6px) !important;
+      width: 12px !important;
+    }
   }
 }

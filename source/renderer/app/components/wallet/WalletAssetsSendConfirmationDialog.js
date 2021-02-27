@@ -5,7 +5,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { get, filter } from 'lodash';
+import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -17,18 +17,14 @@ import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletAssetsSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
+import { formattedTokenWalletAmount } from '../../utils/formatters';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../domains/Wallet';
+import AssetToken from '../widgets/AssetToken';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { WalletSummaryAsset } from '../../api/assets/types';
-import AssetToken from '../widgets/AssetToken';
-import {
-  formattedWalletAmount,
-  formattedTokenWalletAmount,
-  getMultiplierFromDecimalPlaces,
-} from '../../utils/formatters';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -121,7 +117,7 @@ type Props = {
   amount: string,
   receiver: string,
   assets: Array<WalletSummaryAsset>,
-  assetsAmounts?: Array<string>,
+  assetsAmounts: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -202,11 +198,12 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
         const {
           receiver,
           amount,
+          assets,
+          assetsAmounts,
           amountToNaturalUnits,
           isHardwareWallet,
         } = this.props;
         const { passphrase } = form.values();
-        const { assets, assetsAmounts } = this.filteredAssets;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
@@ -276,38 +273,13 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     return asset;
   };
 
-  getAssetFormattedAmount = (asset: WalletSummaryAsset, index: number) => {
-    const strAmount = this.getAssetAmount(index);
-    const { metadata } = asset;
-    const decimals = get(metadata, 'unit.decimals');
-    const assetMultiplier = getMultiplierFromDecimalPlaces(decimals);
-    const assetAmount = new BigNumber(strAmount).multipliedBy(assetMultiplier);
-    return formattedTokenWalletAmount(assetAmount, metadata);
+  getFormattedAssetAmount = (
+    { metadata }: WalletSummaryAsset,
+    index: number
+  ) => {
+    const assetAmount = this.getAssetAmount(index);
+    return formattedTokenWalletAmount(new BigNumber(assetAmount), metadata);
   };
-
-  get filteredAssets() {
-    const {
-      assets: allAssets,
-      assetsAmounts: allAssetsAmounts,
-      amountToNaturalUnits,
-    } = this.props;
-    const assets = allAssets
-      ? filter(
-          allAssets,
-          (asset, index) => !!parseInt(this.getAssetAmount(index), 10)
-        )
-      : null;
-    const assetsAmounts = allAssetsAmounts
-      ? filter(
-          allAssetsAmounts,
-          (assetAmount) => !!parseInt(assetAmount, 10)
-        ).map((assetAmount) => amountToNaturalUnits(assetAmount))
-      : null;
-    return {
-      assets,
-      assetsAmounts,
-    };
-  }
 
   render() {
     const { form } = this;
@@ -317,6 +289,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
+      assets,
       amount,
       receiver,
       transactionFee,
@@ -329,7 +302,6 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
       onCopyAssetItem,
       currencyUnit,
     } = this.props;
-    const { assets } = this.filteredAssets;
 
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.sendButtonLabel)
@@ -357,10 +329,9 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     ];
 
     const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight =
-      assets && assets.length
-        ? assetsSeparatorBasicHeight * (assets.length + 1) - 18
-        : assetsSeparatorBasicHeight;
+    const assetsSeparatorCalculatedHeight = assets.length
+      ? assetsSeparatorBasicHeight * (assets.length + 1) - 18
+      : assetsSeparatorBasicHeight;
 
     let errorElement = null;
     if (error) {
@@ -407,42 +378,39 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                       </h3>
                       <div className={styles.amountFeesWrapper}>
                         <div className={styles.amount}>
-                          {formattedWalletAmount(new BigNumber(amount))}
+                          {amount} {currencyUnit}
                         </div>
                       </div>
                     </div>
-                    {assets &&
-                      assets.map((asset, assetIndex) => {
-                        const assetAmount = this.getAssetFormattedAmount(
-                          asset,
-                          assetIndex
-                        );
-                        return (
-                          <div
-                            key={asset.fingerprint}
-                            className={styles.assetsContainer}
-                          >
-                            <h3>
-                              <span>
-                                {intl.formatMessage(messages.assetLabel)}
-                                &nbsp;#{assetIndex + 1}
-                              </span>
-                              <AssetToken
-                                asset={asset}
-                                onCopyAssetItem={onCopyAssetItem}
-                                componentClassName={styles.assetToken}
-                              />
-                            </h3>
-                            {assetAmount && (
-                              <div className={styles.amountFeesWrapper}>
-                                <div className={styles.amount}>
-                                  {assetAmount}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                    {assets.map((asset, assetIndex) => {
+                      const assetAmount = this.getFormattedAssetAmount(
+                        asset,
+                        assetIndex
+                      );
+                      return (
+                        <div
+                          key={asset.fingerprint}
+                          className={styles.assetsContainer}
+                        >
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetIndex + 1}
+                            </span>
+                            <AssetToken
+                              asset={asset}
+                              onCopyAssetItem={onCopyAssetItem}
+                              componentClassName={styles.assetToken}
+                            />
+                          </h3>
+                          {assetAmount && (
+                            <div className={styles.amountFeesWrapper}>
+                              <div className={styles.amount}>{assetAmount}</div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
