@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Removed unnecessary "socketFile" declaration in launcher-config ([PR 2400](https://github.com/input-output-hk/daedalus/pull/2400))
 - Updated delegated stake pool status on delegation center screen ([PR 2404](https://github.com/input-output-hk/daedalus/pull/2404))
 - Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
 
