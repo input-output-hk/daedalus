@@ -5,8 +5,8 @@ import { ellipsis } from '../../../utils/strings';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
-import WalletSendAssetsConfirmationDialog from '../../../components/wallet/WalletSendAssetsConfirmationDialog';
+import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
+import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type Props = {

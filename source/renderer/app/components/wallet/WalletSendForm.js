@@ -35,7 +35,7 @@ import {
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
-import WalletSendAssetsConfirmationDialog from './WalletSendAssetsConfirmationDialog';
+import WalletSendAssetsConfirmationDialog from './send-form/WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
@@ -219,9 +219,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (assetField) {
       assetField.clear();
     }
-    setTimeout(() => {
-      this.calculateTransactionFee();
-    });
+    this.resetTransactionFee();
   };
 
   updateFormFields = (resetFormFields: boolean, fingerprint?: ?string) => {
@@ -616,7 +614,6 @@ export default class WalletSendForm extends Component<Props, State> {
   onChangeAsset = (oldFingerprint: string, newFingerprint: string) => {
     this.addAssetFields(newFingerprint);
     this.updateFormFields(false, newFingerprint);
-
     let { selectedAssetFingerprints } = this.state;
     const index = findIndex(selectedAssetFingerprints, oldFingerprint);
     if (index > -1) {
@@ -631,8 +628,8 @@ export default class WalletSendForm extends Component<Props, State> {
     this.setState({
       selectedAssetFingerprints,
     });
-
     this.removeAssetRow(oldFingerprint);
+    this.state.formFields.receiver.assetFields[newFingerprint].focus();
   };
 
   renderReceiverRow = (): Node => {

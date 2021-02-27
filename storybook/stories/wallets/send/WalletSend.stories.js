@@ -18,8 +18,8 @@ import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
-import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletSendAssetsConfirmationDialog';
-import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletSendConfirmationDialog';
+import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog';
+import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
 const allAssets = [
