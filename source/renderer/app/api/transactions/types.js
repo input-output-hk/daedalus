@@ -219,6 +219,14 @@ export type CoinSelectionCertificate = {
 
 export type CoinSelectionCertificates = Array<CoinSelectionCertificate>;
 
+export type CoinSelectionWithdrawal = {
+  stakeAddress: string,
+  derivationPath: Array<string>,
+  amount: CoinSelectionAmount,
+};
+
+export type CoinSelectionWithdrawals = Array<CoinSelectionWithdrawal>;
+
 export type CoinSelectionsDelegationRequestType = {
   walletId: string,
   poolId: string,
@@ -241,6 +249,7 @@ export type CoinSelectionsResponse = {
   certificates: CoinSelectionCertificates,
   deposits: BigNumber,
   depositsReclaimed: BigNumber,
+  withdrawals: Array<CoinSelectionWithdrawal>,
   fee: BigNumber,
 };
 

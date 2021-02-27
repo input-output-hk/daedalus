@@ -32,16 +32,19 @@ import {
   prepareTxAux,
   prepareBody,
   prepareLedgerCertificate,
+  prepareLedgerWithdrawal,
   CachedDeriveXpubFactory,
   ShelleyTxWitnessShelley,
   ShelleyTxInputFromUtxo,
   ShelleyTxOutput,
   ShelleyTxCert,
+  ShelleyTxWithdrawal,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
   prepareTrezorOutput,
-  prepareCertificate,
+  prepareTrezorCertificate,
+  prepareTrezorWithdrawal,
 } from '../utils/shelleyTrezor';
 import {
   DeviceModels,
@@ -1125,7 +1128,7 @@ export default class HardwareWalletsStore extends Store {
       throw new Error(`Missing Coins Selection for wallet: ${walletId}`);
     }
 
-    const { inputs, outputs, fee, certificates } = coinSelection;
+    const { inputs, outputs, fee, certificates, withdrawals } = coinSelection;
 
     const inputsData = map(inputs, (input) => {
       return prepareTrezorInput(input);
@@ -1135,8 +1138,12 @@ export default class HardwareWalletsStore extends Store {
       return prepareTrezorOutput(output);
     });
 
+    const withdrawalsData = map(withdrawals, (withdrawal) => {
+      return prepareTrezorWithdrawal(withdrawal);
+    });
+
     const certificatesData = map(certificates, (certificate) =>
-      prepareCertificate(certificate)
+      prepareTrezorCertificate(certificate)
     );
 
     const recognizedDevice = find(
@@ -1200,6 +1207,7 @@ export default class HardwareWalletsStore extends Store {
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
         certificates: certificatesData,
+        withdrawals: withdrawalsData,
         devicePath: recognizedDevicePath,
       });
 
@@ -1283,7 +1291,13 @@ export default class HardwareWalletsStore extends Store {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
     const { coinSelection } = this.txSignRequest;
-    const { inputs, outputs, certificates, fee: flatFee } = coinSelection;
+    const {
+      inputs,
+      outputs,
+      certificates,
+      fee: flatFee,
+      withdrawals,
+    } = coinSelection;
     logger.debug('[HW-DEBUG] HWStore - sign transaction Ledger: ', {
       walletId,
     });
@@ -1309,6 +1323,7 @@ export default class HardwareWalletsStore extends Store {
       outputsData.push(ledgerOutput);
     }
 
+    // Construct certificates
     const unsignedTxCerts = [];
     const _certificatesData = map(certificates, async (certificate) => {
       const accountAddress = await this._getRewardAccountAddress(
@@ -1323,12 +1338,17 @@ export default class HardwareWalletsStore extends Store {
       unsignedTxCerts.push(shelleyTxCert);
       return prepareLedgerCertificate(certificate);
     });
-
     const certificatesData = await Promise.all(_certificatesData);
+
+    // Construct Withdrawals
+    const _withdrawalsData = map(withdrawals, async (withdrawal) =>
+      prepareLedgerWithdrawal(withdrawal)
+    );
+    const withdrawalsData = await Promise.all(_withdrawalsData);
+
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
-    const withdrawals = [];
     const metadataHashHex = null;
     const { isMainnet } = this.environment;
 
@@ -1346,10 +1366,13 @@ export default class HardwareWalletsStore extends Store {
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
         certificates: certificatesData,
-        withdrawals,
+        withdrawals: withdrawalsData,
         metadataHashHex,
         devicePath,
       });
+
+      const unsignedTxWithdrawals =
+        withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
 
       // Prepare unsigned transaction structure for serialzation
       const unsignedTx = prepareTxAux({
@@ -1358,7 +1381,7 @@ export default class HardwareWalletsStore extends Store {
         fee,
         ttl,
         certificates: unsignedTxCerts,
-        withdrawals,
+        withdrawals: unsignedTxWithdrawals,
       });
 
       const signedWitnesses = await this._signWitnesses(
