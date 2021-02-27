@@ -946,6 +946,7 @@ export default class AdaApi {
               },
             },
           ],
+          withdrawal: TransactionWithdrawal,
         };
       } else {
         throw new Error('Missing parameters!');
@@ -1000,6 +1001,12 @@ export default class AdaApi {
         });
       }
 
+      const withdrawalsData = map(response.withdrawals, (withdrawal) => ({
+        stakeAddress: withdrawal.stake_address,
+        derivationPath: withdrawal.derivation_path,
+        amount: withdrawal.amount,
+      }));
+
       const depositsArray = map(
         response.deposits,
         (deposit) => deposit.quantity
@@ -1012,6 +1019,19 @@ export default class AdaApi {
         delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
           ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
           : new BigNumber(0);
+
+      const withdrawalsArray = map(
+        response.withdrawals,
+        (withdrawal) => withdrawal.amount.quantity
+      );
+      const withdrawals = withdrawalsArray.length
+        ? BigNumber.sum.apply(null, withdrawalsArray)
+        : new BigNumber(0);
+
+      if (withdrawals) {
+        totalOutputs = totalOutputs.minus(withdrawals);
+      }
+
       const fee =
         delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
           ? totalInputs.minus(totalOutputs).plus(depositsReclaimed)
@@ -1021,10 +1041,12 @@ export default class AdaApi {
         inputs: inputsData,
         outputs: outputsData,
         certificates: certificatesData,
+        withdrawals: withdrawals.gt(0) ? withdrawalsData : [],
         fee: fee.dividedBy(LOVELACES_PER_ADA),
         deposits: deposits.dividedBy(LOVELACES_PER_ADA),
         depositsReclaimed: depositsReclaimed.dividedBy(LOVELACES_PER_ADA),
       };
+
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
     } catch (error) {

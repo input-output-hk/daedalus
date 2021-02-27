@@ -15,6 +15,7 @@ import type {
   CoinSelectionInput,
   CoinSelectionOutput,
   CoinSelectionCertificate,
+  CoinSelectionWithdrawal,
 } from '../api/transactions/types';
 import type {
   BIP32Path,
@@ -62,7 +63,12 @@ export type ShelleyTxAuxType = {
   fee: ShelleyFeeType,
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
-  withdrawals: any, // @TODO - implement once delegation enabled
+  withdrawals: ?ShelleyTxWithdrawalsType,
+  encodeCBOR: Function,
+};
+
+export type ShelleyTxWithdrawalsType = {
+  withdrawals: Array<CoinSelectionWithdrawal>,
   encodeCBOR: Function,
 };
 
@@ -151,7 +157,7 @@ export const ShelleyTxCert = (cert: {
     hash = Buffer.from(poolHash, 'hex');
   }
 
-  function encodeCBOR(encoder) {
+  function encodeCBOR(encoder: any) {
     const accountAddressHash = utils
       .bech32_decodeAddress(accountAddress)
       .slice(1);
@@ -172,6 +178,24 @@ export const ShelleyTxCert = (cert: {
   };
 };
 
+export const ShelleyTxWithdrawal = (
+  withdrawals: Array<CoinSelectionWithdrawal>
+) => {
+  function encodeCBOR(encoder: any) {
+    const withdrawalMap = new Map();
+    map(withdrawals, (withdrawal) => {
+      const rewardAccount = utils.bech32_decodeAddress(withdrawal.stakeAddress);
+      const coin = withdrawal.amount.quantity;
+      withdrawalMap.set(rewardAccount, coin);
+    });
+    return encoder.pushAny(withdrawalMap);
+  }
+  return {
+    withdrawals,
+    encodeCBOR,
+  };
+};
+
 export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
@@ -179,6 +203,15 @@ export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
     poolKeyHashHex: cert.pool
       ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
       : null,
+  };
+};
+
+export const prepareLedgerWithdrawal = (
+  withdrawal: CoinSelectionWithdrawal
+) => {
+  return {
+    path: derivationPathToLedgerPath(withdrawal.derivationPath),
+    amountStr: withdrawal.amount.quantity.toString(),
   };
 };
 
@@ -208,7 +241,7 @@ export const ShelleyTxAux = (
   fee: ShelleyFeeType,
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
-  withdrawals: any // @TODO - implement once delegation enabled
+  withdrawals: ?ShelleyTxWithdrawalsType
 ) => {
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
@@ -226,6 +259,7 @@ export const ShelleyTxAux = (
     txMap.set(3, ttl);
     if (certs && certs.length) txMap.set(4, certs);
     if (withdrawals) txMap.set(5, withdrawals);
+    // if (withdrawals) withdrawals;
     return encoder.pushAny(txMap);
   }
 
@@ -356,12 +390,12 @@ export const prepareTxAux = ({
   fee: number,
   ttl: number,
   certificates: Array<?Certificate>,
-  withdrawals: Array<any>,
+  withdrawals: ?ShelleyTxWithdrawalsType,
 }) => {
   const txFee = ShelleyFee(fee);
   const txTtl = ShelleyTtl(ttl);
   const txCerts = certificates;
-  const txWithdrawals = withdrawals[0]; // @TODO - implement once withdrawals enabled
+  const txWithdrawals = withdrawals;
   return ShelleyTxAux(
     txInputs,
     txOutputs,
