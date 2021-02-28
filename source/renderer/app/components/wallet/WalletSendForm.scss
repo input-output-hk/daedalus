@@ -22,16 +22,291 @@
       text-align: center;
     }
   }
+
+  .walletSendForm {
+    .fieldsLine {
+      border-bottom: var(--theme-bordered-box-border);
+      border-left: var(--theme-bordered-box-border);
+      border-radius: 0 0 0 3px;
+      height: 125px;
+      left: 10px;
+      margin-top: -125px;
+      position: relative;
+      top: 115px;
+      width: 6px;
+    }
+
+    .fieldsContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .fieldContainer {
+      position: relative;
+    }
+  }
+
+  :global {
+    .AmountInputSkin_total {
+      text-transform: initial !important;
+    }
+  }
 }
 
-.amountInput,
-.receiverInput {
+.estimatedFeeInput {
+  input {
+    background-color: var(--rp-input-bg-color-disabled) !important;
+    border-color: var(--rp-input-bg-color-disabled) !important;
+    font-family: var(--font-regular);
+    pointer-events: none;
+
+    &::-webkit-input-placeholder {
+      font-family: var(--font-regular);
+    }
+  }
+}
+
+.assetInput,
+.receiverInput,
+.estimatedFeeInput,
+.depositInput {
   margin-bottom: 20px;
   position: relative;
 
   :global {
     .SimpleFormField_error a {
       color: var(--rp-formfield-error-text-color, rgba(222, 50, 38, 0.5));
+    }
+
+    .SimpleInput_disabled {
+      font-family: var(--font-regular);
+    }
+  }
+}
+
+.receiverInput {
+  input {
+    display: flex;
+    overflow: hidden;
+    padding-right: 60px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .clearReceiverContainer {
+    bottom: 0;
+    display: flex;
+    height: 48px;
+    line-height: 48px;
+    padding-left: 20px;
+    position: absolute;
+    right: 10px;
+
+    .clearReceiverButton {
+      background-color: var(
+        --theme-staking-stake-pools-search-clear-button-background-color
+      );
+      border-radius: 3px;
+      cursor: pointer;
+      height: 28px;
+      width: 28px;
+
+      &:hover {
+        background-color: var(
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
+        );
+      }
+
+      .clearReceiverIcon {
+        > svg {
+          position: relative;
+          top: 0.5px;
+          width: 10px;
+
+          > g > g {
+            fill: var(--theme-staking-stake-pools-search-clear-button-color);
+          }
+        }
+      }
+    }
+  }
+}
+
+.estimatedFeeInput,
+.depositInput {
+  :global {
+    .AmountInputSkin_total {
+      font-family: var(--font-regular);
+      left: 95px;
+    }
+  }
+}
+
+.assetInput {
+  margin-left: 25px;
+
+  .amountTokenTotal {
+    color: var(--theme-input-right-floating-text-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.36;
+    position: absolute;
+    right: 18px;
+    top: 2px;
+  }
+
+  input {
+    overflow: hidden;
+    padding-right: 140px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :global {
+    .AmountInputSkin_total {
+      display: none;
+    }
+  }
+}
+
+.adaAmountLabel {
+  color: var(--theme-input-placeholder-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.36;
+  position: absolute;
+  right: 20px;
+  top: 46px;
+  z-index: 1;
+}
+
+.minAdaRequired {
+  color: var(--theme-input-placeholder-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.36;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.addAssetButton {
+  font-family: var(--font-semibold);
+  font-size: 10px;
+  font-weight: 500;
+  height: 20px;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin-top: 0;
+  padding: 0 8px;
+  text-transform: uppercase;
+  width: auto;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.rightContent {
+  bottom: 0;
+  display: inline-flex;
+  height: 48px;
+  position: absolute;
+  right: 0;
+}
+
+.clearAssetContainer {
+  bottom: 0.5px;
+  display: flex;
+  float: right;
+  height: 48px;
+  justify-content: flex-end;
+  line-height: 48px;
+  padding-left: 20px;
+  position: relative;
+  right: 10px;
+  width: 50px;
+
+  .clearAssetButton {
+    background-color: var(
+      --theme-staking-stake-pools-search-clear-button-background-color
+    );
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+
+    &:hover {
+      background-color: var(
+        --theme-staking-stake-pools-search-clear-button-hover-background-color
+      );
+    }
+
+    .clearReceiverIcon {
+      > svg {
+        position: relative;
+        top: 0.5px;
+        width: 10px;
+
+        > g > g {
+          fill: var(--theme-staking-stake-pools-search-clear-button-color);
+        }
+      }
+    }
+  }
+}
+
+.separator {
+  background: var(--rp-input-border-color);
+  height: 20px;
+  left: 15px;
+  position: relative;
+  top: 15px;
+  width: 1px;
+}
+
+.calculatingFeesContainer {
+  display: flex;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 20px;
+  position: absolute;
+  right: 11px;
+  top: 46.5px;
+
+  .calculatingFeesSpinnerButton {
+    background-color: var(
+      --theme-staking-stake-pools-search-clear-button-background-color
+    );
+    border-radius: 3px;
+    bottom: 5px;
+    cursor: pointer;
+    height: 28px;
+    position: relative;
+    width: 28px;
+
+    &:hover {
+      background-color: var(
+        --theme-staking-stake-pools-search-clear-button-hover-background-color
+      );
+    }
+
+    .calculatingFeesSpinnerIcon {
+      svg {
+        height: 10px;
+        position: relative;
+        top: 0.5px;
+        width: 10px;
+
+        path {
+          stroke: var(--theme-staking-stake-pools-search-clear-button-color);
+        }
+      }
+    }
+
+    &.spinning {
+      @include loading-spinner('../../assets/images/spinner-dark-fees.svg');
     }
   }
 }
@@ -45,7 +320,142 @@
   text-transform: uppercase;
 }
 
-.nextButton {
-  display: block !important;
-  margin: 30px auto 0;
+.removeAssetButton {
+  border-radius: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  font-family: var(--font-semibold);
+  font-size: 10px;
+  font-weight: 500;
+  height: 20px;
+  letter-spacing: 0.5px;
+  line-height: 20px;
+  margin: 1px 0 0 10px;
+  padding: 0 8px;
+  text-transform: uppercase;
+  vertical-align: top;
+  width: auto;
+}
+
+.addNewReceiverButton {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.buttonsContainer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  button {
+    margin: 0;
+    width: 280px;
+
+    & + button {
+      margin-left: 20px;
+    }
+  }
+}
+
+.assetsDropdownWrapper {
+  display: flex;
+  position: relative;
+  width: auto;
+
+  > div {
+    width: 100%;
+  }
+
+  .assetsDropdown {
+    input {
+      border: none;
+      height: 48px;
+    }
+
+    :global {
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_component {
+        max-width: 100%;
+      }
+
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_selected
+        .WalletsDropdownOption_topRow {
+        justify-content: flex-end;
+      }
+
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_label {
+        .AssetToken_content {
+          margin-right: 24.5px;
+        }
+      }
+
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_detail {
+        display: none !important;
+      }
+
+      .SimpleOptions_option {
+        padding: 6px 15px;
+      }
+
+      .OptionsOverrides_options {
+        left: auto !important;
+        min-width: 289px;
+        right: 41px !important;
+      }
+
+      .SimpleBubble_root:not(.SimpleBubble_openUpward) .SimpleBubble_bubble {
+        border-radius: 2px;
+      }
+
+      .SelectOverrides_selectInput .SimpleInput_customValueBlock {
+        background: transparent;
+      }
+    }
+  }
+}
+
+.infoIcon {
+  opacity: 0.3;
+  position: relative;
+  top: 0;
+
+  &:hover {
+    opacity: 0.5;
+  }
+
+  > svg {
+    height: 10px;
+    width: 10px;
+  }
+
+  path {
+    fill: var(--theme-input-label-color);
+  }
+}
+
+.assetItem {
+  margin-bottom: 20px;
+}
+
+.minAdaTooltipContent {
+  margin-left: 4px;
+}
+
+:global {
+  .WalletSendForm_calculatingFeesContainer
+    .WalletSendForm_calculatingFeesSpinnerButton.WalletSendForm_spinning {
+    cursor: default !important;
+
+    &:after {
+      background-size: 12px !important;
+      height: 12px !important;
+      left: calc(50% - 6px) !important;
+      top: calc(50% - 6px) !important;
+      width: 12px !important;
+    }
+  }
 }

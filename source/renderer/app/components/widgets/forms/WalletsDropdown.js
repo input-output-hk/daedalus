@@ -6,10 +6,15 @@ import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { omit } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
+import AssetToken from '../AssetToken';
 
-import { formattedWalletAmount } from '../../../utils/formatters';
+import {
+  formattedTokenWalletAmount,
+  formattedWalletAmount,
+} from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type SelectProps = {
   allowBlank?: boolean,
@@ -38,9 +43,11 @@ type SelectProps = {
 type Props = {
   ...$Shape<SelectProps>,
   numberOfStakePools: number,
-  wallets: Array<$Shape<Wallet>>,
+  wallets?: Array<$Shape<Wallet>>,
+  assets?: Array<$Shape<WalletSummaryAsset>>,
   getStakePoolById: Function,
   syncingLabel?: string,
+  hasAssetsEnabled?: string,
 };
 
 type WalletOption = {
@@ -52,6 +59,7 @@ type WalletOption = {
   syncing?: boolean,
   syncingLabel?: string,
   isHardwareWallet: boolean,
+  hasAssetsEnabled?: boolean,
 };
 
 export default class WalletsDropdown extends Component<Props> {
@@ -102,43 +110,65 @@ export default class WalletsDropdown extends Component<Props> {
   render() {
     const {
       wallets,
+      assets,
       numberOfStakePools,
       getStakePoolById,
       error,
       errorPosition,
+      hasAssetsEnabled,
       ...props
     } = this.props;
-    const walletsData = wallets.map(
-      ({
-        name: label,
-        id: value,
-        amount,
-        delegatedStakePoolId,
-        lastDelegatedStakePoolId,
-        pendingDelegations,
-        isRestoring,
-        isHardwareWallet,
-      }: Wallet) => {
-        const hasPendingDelegations =
-          pendingDelegations && pendingDelegations.length > 0;
-        let currentStakePoolId = delegatedStakePoolId;
-        if (hasPendingDelegations) {
-          currentStakePoolId = lastDelegatedStakePoolId;
-        }
-        const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const detail = !isRestoring ? formattedWalletAmount(amount) : null;
-        return {
-          detail,
-          syncing: isRestoring,
-          label,
-          value,
-          numberOfStakePools,
-          delegatedStakePool,
-          isHardwareWallet,
-          syncingLabel: this.props.syncingLabel,
-        };
-      }
-    );
+    const walletsData =
+      wallets && wallets.length
+        ? wallets.map(
+            ({
+              name: label,
+              id: value,
+              amount,
+              delegatedStakePoolId,
+              lastDelegatedStakePoolId,
+              pendingDelegations,
+              isRestoring,
+              isHardwareWallet,
+            }: Wallet) => {
+              const hasPendingDelegations =
+                pendingDelegations && pendingDelegations.length > 0;
+              let currentStakePoolId = delegatedStakePoolId;
+              if (hasPendingDelegations) {
+                currentStakePoolId = lastDelegatedStakePoolId;
+              }
+              const delegatedStakePool = getStakePoolById(currentStakePoolId);
+              const detail = !isRestoring
+                ? formattedWalletAmount(amount)
+                : null;
+              return {
+                detail,
+                syncing: isRestoring,
+                label,
+                value,
+                numberOfStakePools,
+                delegatedStakePool,
+                isHardwareWallet,
+                syncingLabel: this.props.syncingLabel,
+              };
+            }
+          )
+        : null;
+    const assetsData =
+      assets && assets.length
+        ? assets.map((asset: WalletSummaryAsset) => {
+            const { metadata, quantity, fingerprint } = asset;
+            const formattedAmount = formattedTokenWalletAmount(
+              quantity,
+              metadata
+            );
+            return {
+              detail: formattedAmount,
+              label: <AssetToken asset={asset} hideTooltip small />,
+              value: fingerprint,
+            };
+          })
+        : null;
     let topError;
     let bottomError;
     if (errorPosition === 'bottom') bottomError = error;
@@ -146,7 +176,11 @@ export default class WalletsDropdown extends Component<Props> {
     const selectOptions = omit({ ...props, topError }, 'options');
     return (
       <>
-        <Select options={walletsData} {...selectOptions} optionHeight={50} />
+        <Select
+          options={hasAssetsEnabled && assetsData ? assetsData : walletsData}
+          {...selectOptions}
+          optionHeight={50}
+        />
         {bottomError && <div className={styles.error}>{bottomError}</div>}
       </>
     );

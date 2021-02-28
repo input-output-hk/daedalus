@@ -22,4 +22,6 @@ export const NEWS_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: millisec
 export const NEWS_POLL_INTERVAL_ON_ERROR = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 export const NEWS_POLL_INTERVAL_ON_INCIDENT = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
 export const STAKE_POOL_ID_COPY_FEEDBACK = 3000; // 1.5 second | unit: milliseconds
+export const ASSET_TOKEN_ID_COPY_FEEDBACK = 3 * 1000; // 3 seconds | unit: milliseconds
+export const ASSET_TOKEN_DISPLAY_DELAY = 250; // .25 second | unit: milliseconds
 export const DECENTRALIZATION_LEVEL_POLLING_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds

@@ -10,6 +10,7 @@ import type {
   CoinSelectionInput,
   CoinSelectionOutput,
   CoinSelectionCertificate,
+  CoinSelectionWithdrawal,
 } from '../api/transactions/types';
 
 export const prepareTrezorInput = (input: CoinSelectionInput) => {
@@ -40,7 +41,7 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
   };
 };
 
-export const prepareCertificate = (cert: CoinSelectionCertificate) => {
+export const prepareTrezorCertificate = (cert: CoinSelectionCertificate) => {
   if (cert.pool) {
     return {
       type: CERTIFICATE_TYPE[cert.certificateType],
@@ -51,6 +52,15 @@ export const prepareCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
     path: derivationPathToString(cert.rewardAccountPath),
+  };
+};
+
+export const prepareTrezorWithdrawal = (
+  withdrawal: CoinSelectionWithdrawal
+) => {
+  return {
+    path: derivationPathToString(withdrawal.derivationPath),
+    amount: withdrawal.amount.quantity.toString(),
   };
 };
 
