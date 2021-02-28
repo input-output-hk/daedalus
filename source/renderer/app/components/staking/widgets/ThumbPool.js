@@ -40,7 +40,7 @@ export function ThumbPool(props: {
     styles.content,
     isDisabled ? styles.disabled : null,
     isHighlighted ? styles.isHighlighted : null,
-    props.highlightOnHover ? styles.isOnHover : null,
+    props.highlightOnHover ? styles.shouldHighlightOnHover : null,
   ]);
 
   const content = isSelected ? (

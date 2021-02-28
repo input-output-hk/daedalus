@@ -161,13 +161,13 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     document.getElementsByTagName('head')[0].appendChild(firstTilePopOverStyle);
   };
 
-  handleShowTooltip = () => {
+  handlePopOverOpen = () => {
     this.setState({
       highlightedPoolId: true,
     });
   };
 
-  handleHideTooltip = () => {
+  handlePopOverClose = () => {
     this.setState({
       highlightedPoolId: false,
     });
@@ -400,16 +400,8 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         openOnHover
                         color={stakePoolRankingColor}
                         currentTheme={currentTheme}
-                        onClose={() =>
-                          this.setState({
-                            highlightedPoolId: false,
-                          })
-                        }
-                        onOpen={() =>
-                          this.setState({
-                            highlightedPoolId: true,
-                          })
-                        }
+                        onClose={this.handlePopOverClose}
+                        onOpen={this.handlePopOverOpen}
                         onOpenExternalLink={onOpenExternalLink}
                         openWithDelay={false}
                         stakePool={futurePendingDelegatedStakePool}

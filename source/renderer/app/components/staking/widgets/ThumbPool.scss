@@ -12,7 +12,7 @@
       box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
     }
 
-    &.isOnHover:hover {
+    &.shouldHighlightOnHover:hover {
       @extend .isHighlighted;
     }
 
