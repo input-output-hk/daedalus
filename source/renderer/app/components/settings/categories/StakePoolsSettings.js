@@ -22,7 +22,7 @@ import {
 } from '../../../config/stakingConfig';
 import type { SmashServerType } from '../../../types/stakingTypes';
 import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
-
+import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
@@ -142,6 +142,8 @@ type Props = {
   onResetSmashServerError: Function,
   isLoading: boolean,
   onOpenExternalLink: Function,
+  isSyncing?: boolean,
+  syncPercentage?: number,
 };
 
 type State = {
@@ -223,13 +225,20 @@ export default class StakePoolsSettings extends Component<Props, State> {
   };
 
   render() {
-    const { smashServerUrlError, isLoading, onOpenExternalLink } = this.props;
+    const {
+      smashServerUrlError,
+      isLoading,
+      onOpenExternalLink,
+      isSyncing,
+      syncPercentage,
+    } = this.props;
     const { intl } = this.context;
     const { editingSmashServerUrl, successfullyUpdated } = this.state;
     const smashServerType = getSmashServerIdFromUrl(editingSmashServerUrl);
 
-    const selectedLabel =
-      this.smashSelectMessages[smashServerType] || smashServerType;
+    const selectedValue = !isSyncing
+      ? this.smashSelectMessages[smashServerType] || smashServerType
+      : '-';
 
     const smashSelectOptions = map(SMASH_SERVER_TYPES, (value) => ({
       label: this.smashSelectMessages[value] || value,
@@ -261,7 +270,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
           />
         </div>
 
-        {!isLoading ? (
+        {!isLoading && !isSyncing ? (
           <Select
             label={
               <div>
@@ -283,22 +292,16 @@ export default class StakePoolsSettings extends Component<Props, State> {
             )}
           />
         ) : (
-          <Input
-            label={intl.formatMessage(messages.smashSelectLabel)}
-            value={selectedLabel}
-            className={styles.disabledInput}
-            selectionRenderer={(label) => (
-              <div className={styles.selectionRenderer}>
-                {label}
-                <SVGInline svg={spinningIcon} className={styles.icon} />
-              </div>
-            )}
-            selectedOption={selectedLabel}
-            disabled
-          />
+          <div className={styles.disabledSelect}>
+            <div className={styles.label}>
+              {intl.formatMessage(messages.smashSelectLabel)}
+            </div>
+            <div className={styles.input}>{selectedValue}</div>
+            <SVGInline svg={spinningIcon} className={styles.icon} />
+          </div>
         )}
 
-        {smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
+        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
           <InlineEditingInput
             className={styles.smashServerUrl}
             label={intl.formatMessage(messages.smashURLInputLabel)}
@@ -313,7 +316,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
             successfullyUpdated={false}
           />
         )}
-        {smashServerType === SMASH_SERVER_TYPES.IOHK && (
+        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.IOHK && (
           <div className={styles.optionDescription}>
             <p>{intl.formatMessage(messages.descriptionIOHKContent1)}</p>
             <p>
@@ -338,9 +341,20 @@ export default class StakePoolsSettings extends Component<Props, State> {
           </div>
         )}
 
-        {smashServerType === SMASH_SERVER_TYPES.DIRECT && (
+        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.DIRECT && (
           <div className={styles.optionDescription}>
             <FormattedHTMLMessage {...messages.descriptionNone} />
+          </div>
+        )}
+
+        {isSyncing && (
+          <div className={styles.optionDescription}>
+            <FormattedHTMLMessage
+              {...globalMessages.featureUnavailableWhileSyncing}
+              values={{
+                syncPercentage,
+              }}
+            />
           </div>
         )}
       </div>

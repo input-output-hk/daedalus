@@ -20,6 +20,7 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
       smashServerUrlError,
       smashServerLoading,
     } = stores.staking;
+    const { isSynced, syncPercentage } = stores.networkStatus;
     const { openExternalLink } = stores.app;
     const { resetSmashServerError } = actions.staking;
     // If `smashServerUrl` is null, waits for it to be set
@@ -32,6 +33,8 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
         onResetSmashServerError={resetSmashServerError.trigger}
         isLoading={smashServerLoading}
         onOpenExternalLink={openExternalLink}
+        isSyncing={!isSynced}
+        syncPercentage={syncPercentage}
       />
     );
   }
