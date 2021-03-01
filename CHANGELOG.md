@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the syncing state for the Stake Pools settings screen ([PR 2418](https://github.com/input-output-hk/daedalus/pull/2418))
 - Added native token support [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
 
 ### Features
