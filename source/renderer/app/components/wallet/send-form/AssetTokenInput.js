@@ -43,6 +43,8 @@ type Props = {
   onChangeAsset: Function,
 };
 
+const INPUT_FIELD_PADDING_DELTA = 10;
+
 @observer
 export default class AssetTokenInput extends Component<Props> {
   static contextTypes = {
@@ -68,7 +70,11 @@ export default class AssetTokenInput extends Component<Props> {
     }
 
     const rightContentDomRect = rightContentDom.getBoundingClientRect();
-    return { paddingRight: `${rightContentDomRect.width + 10}px` };
+    return {
+      paddingRight: `${
+        rightContentDomRect.width + INPUT_FIELD_PADDING_DELTA
+      }px`,
+    };
   };
 
   render() {
