@@ -11,6 +11,7 @@ import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
+import AssetsStore from './AssetsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import VotingStore from './VotingStore';
@@ -25,6 +26,7 @@ export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
   appUpdate: AppUpdateStore,
+  assets: AssetsStore,
   hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
@@ -47,6 +49,7 @@ export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
   appUpdate: AppUpdateStore,
+  assets: AssetsStore,
   hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
@@ -89,6 +92,7 @@ export default action((api, actions, router): StoresMap => {
   stores = observable({
     addresses: createStoreInstanceOf(AddressesStore),
     app: createStoreInstanceOf(AppStore),
+    assets: createStoreInstanceOf(AssetsStore),
     appUpdate: createStoreInstanceOf(AppUpdateStore),
     hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),

@@ -47,7 +47,7 @@ type Props = {
   onBlur?: Function,
   onSubmit: Function,
   isValid: Function,
-  valueErrorMessage?: string,
+  valueErrorMessage?: string | Function,
   errorMessage?: ?string,
   disabled?: boolean,
   readOnly?: boolean,
@@ -86,10 +86,15 @@ export default class InlineEditingInput extends Component<Props, State> {
         inputField: {
           value: this.props.value,
           validators: [
-            ({ field }) => [
-              this.props.isValid(field.value) && this.state.isActive,
-              this.props.valueErrorMessage || null,
-            ],
+            ({ field }) => {
+              const { value } = field;
+              const { valueErrorMessage } = this.props;
+              const errorMessage =
+                typeof valueErrorMessage === 'function'
+                  ? valueErrorMessage(value)
+                  : valueErrorMessage;
+              return [this.props.isValid(value), errorMessage || null];
+            },
           ],
         },
       },
@@ -109,12 +114,20 @@ export default class InlineEditingInput extends Component<Props, State> {
         this.setInputBlur();
         const { inputField } = form.values();
         const { onSubmit, errorMessage } = this.props;
-        if (!!inputField && (inputField !== this.props.value || errorMessage)) {
+        if (!inputField) {
+          return;
+        }
+        if (inputField !== this.props.value || errorMessage) {
           this.setState({
             hasChanged: true,
             successfullyUpdated: false,
           });
           await onSubmit(inputField);
+          this.setState({
+            hasChanged: false,
+            successfullyUpdated: true,
+          });
+        } else {
           this.setState({
             hasChanged: false,
           });

@@ -7,7 +7,12 @@ import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { environment } from '../environment';
-import { STAKE_POOL_REGISTRY_URL } from '../config';
+import {
+  STAKE_POOL_REGISTRY_URL,
+  FALLBACK_TOKEN_METADATA_SERVER_URL,
+  MOCK_TOKEN_METADATA_SERVER_URL,
+  MOCK_TOKEN_METADATA_SERVER_PORT,
+} from '../config';
 import {
   MAINNET,
   STAGING,
@@ -38,6 +43,7 @@ export type WalletOpts = {
   walletLogFile: WriteStream,
   cliBin: string,
   isStaging: boolean,
+  metadataUrl?: string,
 };
 
 export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -56,6 +62,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     walletLogFile,
     cliBin,
     isStaging,
+    metadataUrl,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -95,6 +102,8 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     await fs.copy('tls', tlsPath);
   }
 
+  let tokenMetadataServer;
+
   // This switch statement handles any node specific
   // configuration, prior to spawning the child process
   logger.info('Node implementation', { nodeImplementation });
@@ -128,7 +137,21 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         launcherConfig.networkName = TESTNET;
         logger.info('Launching Wallet with --testnet flag');
       }
-      merge(launcherConfig, { nodeConfig, tlsConfiguration });
+      if (MOCK_TOKEN_METADATA_SERVER_PORT) {
+        tokenMetadataServer = `${MOCK_TOKEN_METADATA_SERVER_URL}:${MOCK_TOKEN_METADATA_SERVER_PORT}`;
+      } else if (metadataUrl) {
+        tokenMetadataServer = metadataUrl;
+      } else {
+        tokenMetadataServer = FALLBACK_TOKEN_METADATA_SERVER_URL;
+      }
+      logger.info('Launching Wallet with --token-metadata-server flag', {
+        tokenMetadataServer,
+      });
+      merge(launcherConfig, {
+        nodeConfig,
+        tlsConfiguration,
+        tokenMetadataServer,
+      });
       break;
     case CardanoNodeImplementationOptions.JORMUNGANDR:
       if (cluster === ITN_SELFNODE) {

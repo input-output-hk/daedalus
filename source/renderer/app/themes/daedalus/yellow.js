@@ -699,6 +699,9 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 1)',
     '--theme-settings-theme-select-title-color': '#2d2d2d',
     '--theme-settings-theme-select-border-color': '#e1dac6',
+    '--theme-settings-undelegate-wallet-divider-border-color': '#e1dac6',
+    '--theme-settings-undelegate-wallet-deposit-amount-color': '#009900',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#fdcd68',
@@ -1088,6 +1091,13 @@ export const YELLOW_THEME_OUTPUT = {
   rpPopOver: {
     '--rp-pop-over-bg-color': 'rgba(45,45,45,0.9)',
     '--rp-pop-over-text-color': 'white',
+  },
+  widgets: {
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(45,45,45,0.1)',
+    '--theme-widgets-asset-token-text-color': '#2d2d2d',
+    '--theme-widgets-asset-token-background-color': '#ffffff',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
   },
 };
 

@@ -395,7 +395,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-feed-icon-color': '#ffffff',
     '--theme-news-feed-icon-color-connecting-screen': '#ffffff',
     '--theme-news-feed-icon-color-syncing-screen': '#5e6066',
-    '--theme-news-feed-icon-green-dot-background-color': '#2DC06C',
+    '--theme-news-feed-icon-green-dot-background-color': '#2dc06c',
     '--theme-news-feed-icon-red-dot-background-color': '#ea4c5b',
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
@@ -711,6 +711,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-settings-menu-item-left-border-color-active': '#2cbb69',
     '--theme-settings-theme-select-title-color': '#5e6066',
     '--theme-settings-theme-select-border-color': '#d2d3d3',
+    '--theme-settings-undelegate-wallet-divider-border-color': '#dfe4e8',
+    '--theme-settings-undelegate-wallet-deposit-amount-color': '#2dc06c',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#4a5058',
@@ -1106,6 +1109,13 @@ export const CARDANO_THEME_OUTPUT = {
   rpPopOver: {
     '--rp-pop-over-bg-color': 'rgba(32, 34, 37, 0.9)',
     '--rp-pop-over-text-color': '#ffffff',
+  },
+  widgets: {
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(94,96,102,0.1)',
+    '--theme-widgets-asset-token-text-color': '#5e6066',
+    '--theme-widgets-asset-token-background-color': 'rgba(255, 255, 255, 0.97)',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
   },
 };
 

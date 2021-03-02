@@ -6,6 +6,8 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
+import type { WalletSummaryAsset } from '../api/assets/types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -16,6 +18,7 @@ export type WalletImportFromFileParams = {
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
+  refreshWalletsDataSuccess: Action<any> = new Action();
   /* ----------  Create Wallet  ---------- */
   createWallet: Action<{
     name: string,
@@ -44,11 +47,7 @@ export default class WalletsActions {
   restoreWallet: Action<any> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string, isLegacy: boolean }> = new Action();
-  undelegateWallet: Action<{
-    walletId: string,
-    stakePoolId: string,
-    passphrase: string,
-  }> = new Action();
+  undelegateWallet: Action<QuitStakePoolRequest> = new Action();
   setUndelegateWalletSubmissionSuccess: Action<{
     result: boolean,
   }> = new Action();
@@ -56,6 +55,8 @@ export default class WalletsActions {
     receiver: string,
     amount: string,
     passphrase: string,
+    assets?: Array<WalletSummaryAsset>,
+    assetsAmounts?: Array<string>,
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: WalletExportTypeChoices,
@@ -78,6 +79,7 @@ export default class WalletsActions {
   saveQRCodeImageSuccess: Action<{ walletAddress: string }> = new Action();
   copyPublicKey: Action<{ publicKey: string }> = new Action();
   copyAddress: Action<{ address: string }> = new Action();
+  copyAssetItem: Action<{ assetItem: string, value: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   closeRewardsCsvGeneration: Action<any> = new Action();
@@ -88,6 +90,9 @@ export default class WalletsActions {
   toggleCurrencyIsActive: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
+  setActiveAssetFingerprint: Action<{
+    fingerprint: ?string,
+  }> = new Action();
   transferFundsNextStep: Action<any> = new Action();
   transferFundsPrevStep: Action<any> = new Action();
   transferFundsSetSourceWalletId: Action<{
