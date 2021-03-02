@@ -233,9 +233,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
     } = this.props;
     const { intl } = this.context;
     const { editingSmashServerUrl, successfullyUpdated } = this.state;
-    const smashServerType = editingSmashServerUrl
-      ? getSmashServerIdFromUrl(editingSmashServerUrl)
-      : null;
+    const smashServerType = getSmashServerIdFromUrl(
+      editingSmashServerUrl || ''
+    );
 
     const selectedValue =
       !isSyncing && smashServerType
@@ -303,25 +303,21 @@ export default class StakePoolsSettings extends Component<Props, State> {
           </div>
         )}
 
-        {editingSmashServerUrl &&
-          !isSyncing &&
-          smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
-            <InlineEditingInput
-              className={styles.smashServerUrl}
-              label={intl.formatMessage(messages.smashURLInputLabel)}
-              value={editingSmashServerUrl}
-              placeholder={intl.formatMessage(
-                messages.smashUrlInputPlaceholder
-              )}
-              onSubmit={this.handleSubmit}
-              isValid={this.handleIsValid}
-              valueErrorMessage={this.handleErrorMessage}
-              errorMessage={errorMessage}
-              readOnly={isLoading}
-              isLoading={isLoading}
-              successfullyUpdated={false}
-            />
-          )}
+        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
+          <InlineEditingInput
+            className={styles.smashServerUrl}
+            label={intl.formatMessage(messages.smashURLInputLabel)}
+            value={editingSmashServerUrl || ''}
+            placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
+            onSubmit={this.handleSubmit}
+            isValid={this.handleIsValid}
+            valueErrorMessage={this.handleErrorMessage}
+            errorMessage={errorMessage}
+            readOnly={isLoading}
+            isLoading={isLoading}
+            successfullyUpdated={false}
+          />
+        )}
         {!isSyncing && smashServerType === SMASH_SERVER_TYPES.IOHK && (
           <div className={styles.optionDescription}>
             <p>{intl.formatMessage(messages.descriptionIOHKContent1)}</p>
