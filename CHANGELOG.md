@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Updating Tile view of stake pools with rank by rewards ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
+
 ### Fixes
 
 - Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
