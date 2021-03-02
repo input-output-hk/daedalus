@@ -292,7 +292,6 @@
   "settings.stakePools.smash.descriptionIOHKLinkUrl": "https://iohk.io/en/blog/posts/2020/11/17/in-pools-we-trust/",
   "settings.stakePools.smash.descriptionLinkLabel": "Stakepool Metadata Aggregation Server (SMASH)",
   "settings.stakePools.smash.descriptionLinkUrl": "https://docs.cardano.org/en/latest/getting-started/stake-pool-operators/SMASH-metadata-management.html",
-  "settings.stakePools.smash.descriptionLoading": "Daedalus is synchronizing with the Cardano blockchain, and the process is currently <b>{syncPercentage}%</b> complete. This feature will become available once Daedalus is fully synchronized.",
   "settings.stakePools.smash.descriptionNone": "<b>This option is not recommended!</b> Without the off-chain metadata server your Daedalus client will fetch this data by contacting every stake pool individually, which is a very slow and resource-consuming process. The list of stake pools received is not curated, so Daedalus will receive legitimate pools, duplicates, and fake pools. An added risk to this process is that your antivirus or antimalware software could recognize the thousands of network requests as malicious behavior by the Daedalus client.",
   "settings.stakePools.smash.select.IOHKServer": "IOHK <em>(recommended)</em>",
   "settings.stakePools.smash.select.customServer": "Custom server",
