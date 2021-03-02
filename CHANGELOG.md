@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Feature
+
+- Enabled the "Loading Stake Pools" state anytime the pools are loading ([PR 2424](https://github.com/input-output-hk/daedalus/pull/2424))
+
 ### Fixes
 
 - Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))

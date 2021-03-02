@@ -120,6 +120,8 @@ export default class StakingStore extends Store {
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
+
+    this._startStakePoolsFetchTracker();
   }
 
   // REQUESTS
