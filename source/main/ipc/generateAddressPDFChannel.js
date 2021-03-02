@@ -115,14 +115,10 @@ export const handleAddressPDFRequests = () => {
           doc.moveDown();
 
           // Address
-          doc
-            .font(fontBufferMono)
-            .fontSize(19)
-            .text(address, {
-              lineBreak: false,
-              width: width - 60,
-              characterSpacing: 1.5,
-            });
+          doc.font(fontBufferMono).fontSize(5).text(address, {
+            align: 'center',
+            characterSpacing: 1,
+          });
 
           if (note) {
             doc.moveDown();
