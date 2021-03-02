@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
+
 ## 4.0.0-FC1
 
 ### Features
@@ -17,7 +23,6 @@ Changelog
 
 ### Chores
 
-- Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
 - Moved ITN redemption to Daedalus application menu ([PR 2401](https://github.com/input-output-hk/daedalus/pull/2401))
 - Removed unnecessary "socketFile" declaration in launcher-config ([PR 2400](https://github.com/input-output-hk/daedalus/pull/2400))
 - Updated delegated stake pool status on delegation center screen ([PR 2404](https://github.com/input-output-hk/daedalus/pull/2404))
