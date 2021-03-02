@@ -282,13 +282,13 @@ export default class TransactionsStore extends Store {
       );
     }
 
+    const { amount, availableAmount, reward, isLegacy } = wallet;
     this.calculateTransactionFeeRequest.reset();
-
     return this.calculateTransactionFeeRequest.execute({
       ...transactionFeeRequest,
-      walletBalance: wallet.amount,
-      availableBalance: wallet.availableAmount,
-      isLegacy: wallet.isLegacy,
+      walletBalance: amount,
+      availableBalance: availableAmount.plus(reward),
+      isLegacy,
     });
   };
 
