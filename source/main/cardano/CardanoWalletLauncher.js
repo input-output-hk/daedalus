@@ -9,7 +9,7 @@ import type { NodeConfig } from '../config';
 import { environment } from '../environment';
 import {
   STAKE_POOL_REGISTRY_URL,
-  TOKEN_METADATA_SERVER_URL,
+  FALLBACK_TOKEN_METADATA_SERVER_URL,
   MOCK_TOKEN_METADATA_SERVER_URL,
   MOCK_TOKEN_METADATA_SERVER_PORT,
 } from '../config';
@@ -43,6 +43,7 @@ export type WalletOpts = {
   walletLogFile: WriteStream,
   cliBin: string,
   isStaging: boolean,
+  metadataUrl?: string,
 };
 
 export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -61,6 +62,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     walletLogFile,
     cliBin,
     isStaging,
+    metadataUrl,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -136,17 +138,20 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         logger.info('Launching Wallet with --testnet flag');
       }
       if (MOCK_TOKEN_METADATA_SERVER_PORT) {
-        tokenMetadataServer = `${MOCK_TOKEN_METADATA_SERVER_URL}:${MOCK_TOKEN_METADATA_SERVER_PORT}/`;
-      } else if (cluster !== MAINNET) {
-        tokenMetadataServer = TOKEN_METADATA_SERVER_URL;
+        tokenMetadataServer = `${MOCK_TOKEN_METADATA_SERVER_URL}:${MOCK_TOKEN_METADATA_SERVER_PORT}`;
+      } else if (metadataUrl) {
+        tokenMetadataServer = metadataUrl;
+      } else {
+        tokenMetadataServer = FALLBACK_TOKEN_METADATA_SERVER_URL;
       }
-      if (tokenMetadataServer) {
-        logger.info('Launching Wallet with --token-metadata-server flag', {
-          tokenMetadataServer,
-        });
-        merge(launcherConfig, { tokenMetadataServer });
-      }
-      merge(launcherConfig, { nodeConfig, tlsConfiguration });
+      logger.info('Launching Wallet with --token-metadata-server flag', {
+        tokenMetadataServer,
+      });
+      merge(launcherConfig, {
+        nodeConfig,
+        tlsConfiguration,
+        tokenMetadataServer,
+      });
       break;
     case CardanoNodeImplementationOptions.JORMUNGANDR:
       if (cluster === ITN_SELFNODE) {

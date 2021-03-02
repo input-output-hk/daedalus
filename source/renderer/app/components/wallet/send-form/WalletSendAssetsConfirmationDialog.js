@@ -1,26 +1,32 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { get } from 'lodash';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import Dialog from '../widgets/Dialog';
-import DialogCloseButton from '../widgets/DialogCloseButton';
-import globalMessages from '../../i18n/global-messages';
-import LocalizableError from '../../i18n/LocalizableError';
-import styles from './WalletSendConfirmationDialog.scss';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { submitOnEnter } from '../../utils/form';
-import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
-import LoadingSpinner from '../widgets/LoadingSpinner';
-import { HwDeviceStatuses } from '../../domains/Wallet';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import Dialog from '../../widgets/Dialog';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
+import styles from './WalletSendAssetsConfirmationDialog.scss';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
+import { formattedTokenWalletAmount } from '../../../utils/formatters';
+import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { HwDeviceStatuses } from '../../../domains/Wallet';
+import AssetToken from '../../widgets/AssetToken';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
 
-import type { HwDeviceStatus } from '../../domains/Wallet';
+const SHOW_TOTAL_AMOUNT = false;
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -45,9 +51,14 @@ export const messages = defineMessages({
     description:
       'Label for the "Amount" in the wallet send confirmation dialog.',
   },
+  assetLabel: {
+    id: 'wallet.send.confirmationDialog.assetLabel',
+    defaultMessage: '!!!Token',
+    description: 'Token',
+  },
   feesLabel: {
     id: 'wallet.send.confirmationDialog.feesLabel',
-    defaultMessage: '!!!Fees',
+    defaultMessage: '!!!Transaction fee',
     description: 'Label for the "Fees" in the wallet send confirmation dialog.',
   },
   totalLabel: {
@@ -55,6 +66,12 @@ export const messages = defineMessages({
     defaultMessage: '!!!Total',
     description:
       'Label for the "Total" in the wallet send confirmation dialog.',
+  },
+  receiverLabel: {
+    id: 'wallet.send.confirmationDialog.receiver.label',
+    defaultMessage: '!!!Receiver',
+    description:
+      'Label for the "Receiver" in the wallet send confirmation dialog.',
   },
   passphraseFieldPlaceholder: {
     id: 'wallet.send.confirmationDialog.passphraseFieldPlaceholder',
@@ -100,8 +117,10 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   amount: string,
-  receiver: string,
   totalAmount: ?string,
+  receiver: string,
+  assets: Array<WalletSummaryAsset>,
+  assetsAmounts: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -110,12 +129,13 @@ type Props = {
   isSubmitting: boolean,
   isFlight: boolean,
   error: ?LocalizableError,
-  currencyUnit: string,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
   walletName: string,
   onExternalLinkClick: Function,
+  onCopyAssetItem: Function,
+  currencyUnit: string,
 };
 
 type State = {
@@ -123,7 +143,7 @@ type State = {
 };
 
 @observer
-export default class WalletSendConfirmationDialog extends Component<
+export default class WalletSendAssetsConfirmationDialog extends Component<
   Props,
   State
 > {
@@ -181,6 +201,8 @@ export default class WalletSendConfirmationDialog extends Component<
         const {
           receiver,
           amount,
+          assets,
+          assetsAmounts,
           amountToNaturalUnits,
           isHardwareWallet,
         } = this.props;
@@ -190,6 +212,8 @@ export default class WalletSendConfirmationDialog extends Component<
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
+          assets,
+          assetsAmounts,
         };
         this.props.onSubmit(transactionData);
       },
@@ -246,6 +270,20 @@ export default class WalletSendConfirmationDialog extends Component<
     }
   };
 
+  getAssetAmount = (index: number) => {
+    const { assetsAmounts } = this.props;
+    const asset = get(assetsAmounts, index, 0);
+    return asset;
+  };
+
+  getFormattedAssetAmount = (
+    { metadata }: WalletSummaryAsset,
+    index: number
+  ) => {
+    const assetAmount = this.getAssetAmount(index);
+    return formattedTokenWalletAmount(new BigNumber(assetAmount), metadata);
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -254,6 +292,7 @@ export default class WalletSendConfirmationDialog extends Component<
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
+      assets,
       amount,
       receiver,
       totalAmount,
@@ -261,10 +300,11 @@ export default class WalletSendConfirmationDialog extends Component<
       isSubmitting,
       isFlight,
       error,
-      currencyUnit,
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
+      onCopyAssetItem,
+      currencyUnit,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -292,6 +332,11 @@ export default class WalletSendConfirmationDialog extends Component<
       },
     ];
 
+    const assetsSeparatorBasicHeight = 27;
+    const assetsSeparatorCalculatedHeight = assets.length
+      ? assetsSeparatorBasicHeight * (assets.length + 1) - 18
+      : assetsSeparatorBasicHeight;
+
     let errorElement = null;
     if (error) {
       const errorHasLink = !!error.values.linkLabel;
@@ -317,25 +362,106 @@ export default class WalletSendConfirmationDialog extends Component<
       >
         <div className={styles.passphraseFields}>
           <div className={styles.addressToLabelWrapper}>
-            <div className={styles.addressToLabel}>
-              {intl.formatMessage(messages.addressToLabel)}
+            <div className={styles.receiverRow}>
+              <div className={styles.receiverRowItem}>
+                <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
+                <div className={styles.receiverRowItemAddresses}>
+                  <p className={styles.addressTo}>{receiver}</p>
+                  <div className={styles.assetsWrapper}>
+                    <div
+                      className={styles.assetsSeparator}
+                      style={{
+                        height: `${assetsSeparatorCalculatedHeight}px`,
+                        top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                        marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`,
+                      }}
+                    />
+                    <div className={styles.assetsContainer}>
+                      <h3>
+                        <span>{currencyUnit}</span>
+                      </h3>
+                      <div className={styles.amountFeesWrapper}>
+                        <div className={styles.amount}>
+                          {amount} {currencyUnit}
+                        </div>
+                      </div>
+                    </div>
+                    {assets.map((asset, assetIndex) => {
+                      const assetAmount = this.getFormattedAssetAmount(
+                        asset,
+                        assetIndex
+                      );
+                      return (
+                        <div
+                          key={asset.fingerprint}
+                          className={styles.assetsContainer}
+                        >
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetIndex + 1}
+                            </span>
+                            <AssetToken
+                              asset={asset}
+                              onCopyAssetItem={onCopyAssetItem}
+                              componentClassName={styles.assetToken}
+                            />
+                          </h3>
+                          {assetAmount && (
+                            <div className={styles.amountFeesWrapper}>
+                              <div className={styles.amount}>{assetAmount}</div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className={styles.addressTo}>{receiver}</div>
           </div>
 
-          <div className={styles.amountFeesWrapper}>
-            <div className={styles.amountWrapper}>
-              <div className={styles.amountLabel}>
-                {intl.formatMessage(messages.amountLabel)}
-              </div>
-              <div className={styles.amount}>
-                {amount}
-                <span className={styles.currencySymbol}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
+          {SHOW_TOTAL_AMOUNT ? (
+            <>
+              <div className={styles.adaAmountFeesWrapper}>
+                <div className={styles.adaAmountWrapper}>
+                  <div className={styles.adaAmountLabel}>
+                    {intl.formatMessage(messages.amountLabel)}
+                  </div>
+                  <div className={styles.adaAmount}>
+                    {amount}
+                    <span className={styles.currencySymbol}>
+                      &nbsp;{currencyUnit}
+                    </span>
+                  </div>
+                </div>
 
+                <div className={styles.feesWrapper}>
+                  <div className={styles.feesLabel}>
+                    {intl.formatMessage(messages.feesLabel)}
+                  </div>
+                  <div className={styles.fees}>
+                    +{transactionFee}
+                    <span className={styles.currencySymbol}>
+                      &nbsp;{currencyUnit}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.totalAmountWrapper}>
+                <div className={styles.totalAmountLabel}>
+                  {intl.formatMessage(messages.totalLabel)}
+                </div>
+                <div className={styles.totalAmount}>
+                  {totalAmount}
+                  <span className={styles.currencySymbol}>
+                    &nbsp;{currencyUnit}
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
             <div className={styles.feesWrapper}>
               <div className={styles.feesLabel}>
                 {intl.formatMessage(messages.feesLabel)}
@@ -347,19 +473,7 @@ export default class WalletSendConfirmationDialog extends Component<
                 </span>
               </div>
             </div>
-          </div>
-
-          <div className={styles.totalAmountWrapper}>
-            <div className={styles.totalAmountLabel}>
-              {intl.formatMessage(messages.totalLabel)}
-            </div>
-            <div className={styles.totalAmount}>
-              {totalAmount}
-              <span className={styles.currencySymbol}>
-                &nbsp;{currencyUnit}
-              </span>
-            </div>
-          </div>
+          )}
 
           {isFlight && (
             <div className={styles.flightCandidateWarning}>
