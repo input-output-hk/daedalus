@@ -190,7 +190,7 @@ export default class AssetToken extends Component<Props, State> {
     const { intl } = this.context;
     const { asset } = this.props;
     const { fingerprint, policyId, assetName, metadata } = asset;
-    const { name, acronym, description } = metadata || {};
+    const { name, ticker, description } = metadata || {};
     const item = this.assetItemRenderer;
     return (
       <div className={styles.tooltipContent}>
@@ -202,14 +202,14 @@ export default class AssetToken extends Component<Props, State> {
           )}
         </div>
         <dl>
-          {acronym && (
+          {ticker && (
             <F>
               <dt>{intl.formatMessage(messages.tickerItem)}</dt>
               <dd>
                 {item(
-                  'acronym',
+                  'ticker',
                   intl.formatMessage(messages.tickerItem),
-                  acronym
+                  ticker
                 )}
               </dd>
             </F>

@@ -18,7 +18,7 @@ export type ApiAsset = {
 
 export type AssetMetadata = {
   name: string,
-  acronym: string,
+  ticker: string,
   description: string,
   unit?: {
     decimals: number,

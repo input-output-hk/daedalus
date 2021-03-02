@@ -810,7 +810,7 @@ export default class WalletSendForm extends Component<Props, State> {
                       return false;
                     }
                     const { quantity, metadata } = asset;
-                    const acronym = get(metadata, 'acronym', null);
+                    const ticker = get(metadata, 'ticker', null);
                     const decimals = get(metadata, 'unit.decimals', 0);
                     const sortedAssets = orderBy(
                       [asset, ...this.availableAssets],
@@ -892,7 +892,7 @@ export default class WalletSendForm extends Component<Props, State> {
                           onChange={(value) => {
                             assetField.onChange(value);
                           }}
-                          currency={acronym}
+                          currency={ticker}
                           value={assetField.value}
                           error={assetField.error}
                           skin={AmountInputSkin}
