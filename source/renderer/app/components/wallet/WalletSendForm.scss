@@ -41,9 +41,6 @@
       flex-direction: column;
       width: 100%;
     }
-    .fieldContainer {
-      position: relative;
-    }
   }
 
   :global {
@@ -208,64 +205,6 @@
   }
 }
 
-.rightContent {
-  bottom: 0;
-  display: inline-flex;
-  height: 48px;
-  position: absolute;
-  right: 0;
-}
-
-.clearAssetContainer {
-  bottom: 0.5px;
-  display: flex;
-  float: right;
-  height: 48px;
-  justify-content: flex-end;
-  line-height: 48px;
-  padding-left: 20px;
-  position: relative;
-  right: 10px;
-  width: 50px;
-
-  .clearAssetButton {
-    background-color: var(
-      --theme-staking-stake-pools-search-clear-button-background-color
-    );
-    border-radius: 3px;
-    cursor: pointer;
-    height: 28px;
-    width: 28px;
-
-    &:hover {
-      background-color: var(
-        --theme-staking-stake-pools-search-clear-button-hover-background-color
-      );
-    }
-
-    .clearReceiverIcon {
-      > svg {
-        position: relative;
-        top: 0.5px;
-        width: 10px;
-
-        > g > g {
-          fill: var(--theme-staking-stake-pools-search-clear-button-color);
-        }
-      }
-    }
-  }
-}
-
-.separator {
-  background: var(--rp-input-border-color);
-  height: 20px;
-  left: 15px;
-  position: relative;
-  top: 15px;
-  width: 1px;
-}
-
 .calculatingFeesContainer {
   display: flex;
   height: 48px;
@@ -320,24 +259,6 @@
   text-transform: uppercase;
 }
 
-.removeAssetButton {
-  border-radius: 5px;
-  box-sizing: border-box;
-  cursor: pointer;
-  display: inline-block;
-  font-family: var(--font-semibold);
-  font-size: 10px;
-  font-weight: 500;
-  height: 20px;
-  letter-spacing: 0.5px;
-  line-height: 20px;
-  margin: 1px 0 0 10px;
-  padding: 0 8px;
-  text-transform: uppercase;
-  vertical-align: top;
-  width: auto;
-}
-
 .addNewReceiverButton {
   margin-bottom: 20px;
   width: 100%;
@@ -354,66 +275,6 @@
 
     & + button {
       margin-left: 20px;
-    }
-  }
-}
-
-.assetsDropdownWrapper {
-  display: flex;
-  position: relative;
-  width: auto;
-
-  > div {
-    width: 100%;
-  }
-
-  .assetsDropdown {
-    input {
-      border: none;
-      height: 48px;
-    }
-
-    :global {
-      .SimpleSelect_selectInput.SelectOverrides_selectInput
-        .WalletsDropdownOption_component {
-        max-width: 100%;
-      }
-
-      .SimpleSelect_selectInput.SelectOverrides_selectInput
-        .WalletsDropdownOption_selected
-        .WalletsDropdownOption_topRow {
-        justify-content: flex-end;
-      }
-
-      .SimpleSelect_selectInput.SelectOverrides_selectInput
-        .WalletsDropdownOption_label {
-        .AssetToken_content {
-          margin-right: 24.5px;
-        }
-      }
-
-      .SimpleSelect_selectInput.SelectOverrides_selectInput
-        .WalletsDropdownOption_detail {
-        display: none !important;
-      }
-
-      .SimpleOptions_option {
-        padding: 6px 15px;
-      }
-
-      .OptionsOverrides_options {
-        left: auto !important;
-        min-width: 289px;
-        right: 41px !important;
-      }
-
-      .SimpleBubble_root:not(.SimpleBubble_openUpward) .SimpleBubble_bubble {
-        border-radius: 2px;
-      }
-
-      .SelectOverrides_selectInput .SimpleInput_customValueBlock {
-        background: transparent;
-      }
     }
   }
 }
@@ -435,10 +296,6 @@
   path {
     fill: var(--theme-input-label-color);
   }
-}
-
-.assetItem {
-  margin-bottom: 20px;
 }
 
 .minAdaTooltipContent {

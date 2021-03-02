@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
-import { filter, get, indexOf, omit, orderBy, map, without } from 'lodash';
+import { filter, get, indexOf, omit, map, without } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -13,10 +13,8 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
@@ -31,11 +29,11 @@ import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
   formattedWalletAmount,
-  formattedTokenWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
+import AssetTokenInput from './send-form/AssetTokenInput';
 import WalletSendAssetsConfirmationDialog from './send-form/WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import styles from './WalletSendForm.scss';
@@ -680,8 +678,6 @@ export default class WalletSendForm extends Component<Props, State> {
     const {
       receiver: receiverField,
       adaAmount: adaAmountField,
-      assetFields,
-      assetsDropdown,
     } = formFields.receiver;
 
     const assetsSeparatorBasicHeight = 140;
@@ -804,167 +800,27 @@ export default class WalletSendForm extends Component<Props, State> {
               </Fragment>
               <Fragment>
                 {selectedAssetFingerprints.map(
-                  (fingerprint: string, index: number) => {
-                    const asset = this.getAssetByFingerprint(fingerprint);
-                    if (!asset) {
-                      return false;
-                    }
-                    const { quantity, metadata } = asset;
-                    const acronym = get(metadata, 'acronym', null);
-                    const decimals = get(metadata, 'unit.decimals', 0);
-                    const sortedAssets = orderBy(
-                      [asset, ...this.availableAssets],
-                      'fingerprint',
-                      'asc'
-                    );
-                    const assetField = assetFields[fingerprint];
-                    const assetsDropdownField = assetsDropdown[fingerprint];
-                    return (
-                      <div
-                        key={`receiver_asset_${fingerprint}`}
-                        onMouseOver={() =>
-                          this.showRemoveAssetButton(fingerprint)
-                        }
-                        onMouseLeave={() =>
-                          this.hideRemoveAssetButton(fingerprint)
-                        }
-                        onMouseEnter={() =>
-                          this.showRemoveAssetButton(fingerprint)
-                        }
-                        onFocus={() => {
-                          // jsx-a11y/mouse-events-have-key-events
-                        }}
-                        className={styles.fieldContainer}
-                      >
-                        {quantity.isPositive() && (
-                          <div className={styles.amountTokenTotal}>
-                            {intl.formatMessage(messages.ofLabel)}&nbsp;
-                            {formattedTokenWalletAmount(quantity, metadata)}
-                          </div>
-                        )}
-                        <NumericInput
-                          {...assetField.bind()}
-                          ref={(field) => {
-                            this.addFocusableField(field);
-                          }}
-                          placeholder={
-                            decimals
-                              ? `0${
-                                  this.getCurrentNumberFormat().decimalSeparator
-                                }${'0'.repeat(decimals)}`
-                              : '0'
-                          }
-                          className={classNames([
-                            styles.assetItem,
-                            this.state.showRemoveAssetButton[fingerprint]
-                              ? styles.hasButton
-                              : null,
-                          ])}
-                          label={
-                            <>
-                              {`${intl.formatMessage(messages.assetLabel)} #${
-                                index + 1
-                              }`}
-                              {this.state.showRemoveAssetButton[
-                                fingerprint
-                              ] && (
-                                <span
-                                  className={classNames([
-                                    styles.removeAssetButton,
-                                    'flat',
-                                  ])}
-                                  onClick={() =>
-                                    this.removeAssetRow(fingerprint)
-                                  }
-                                >
-                                  {intl.formatMessage(messages.removeLabel)}
-                                </span>
-                              )}
-                            </>
-                          }
-                          bigNumberFormat={
-                            decimals ? this.getCurrentNumberFormat() : null
-                          }
-                          decimalPlaces={decimals}
-                          numberLocaleOptions={{
-                            minimumFractionDigits: decimals,
-                          }}
-                          onChange={(value) => {
-                            assetField.onChange(value);
-                          }}
-                          currency={acronym}
-                          value={assetField.value}
-                          error={assetField.error}
-                          skin={AmountInputSkin}
-                          onKeyPress={(
-                            evt: SyntheticKeyboardEvent<EventTarget>
-                          ) => {
-                            if (decimals === 0) {
-                              const { charCode } = evt;
-                              if (
-                                charCode === 190 ||
-                                charCode === 110 ||
-                                charCode === 46
-                              ) {
-                                evt.persist();
-                                evt.preventDefault();
-                                evt.stopPropagation();
-                              }
-                            }
-                            return this.handleSubmitOnEnter;
-                          }}
-                          allowSigns={false}
-                        />
-                        <div className={styles.rightContent}>
-                          {this.hasAssetValue(assetField) && (
-                            <div className={styles.clearAssetContainer}>
-                              <PopOver
-                                content={intl.formatMessage(
-                                  messages.clearLabel
-                                )}
-                                placement="top"
-                              >
-                                <button
-                                  onClick={() =>
-                                    this.clearAssetFieldValue(assetField)
-                                  }
-                                  className={styles.clearAssetButton}
-                                >
-                                  <SVGInline
-                                    svg={closeIcon}
-                                    className={styles.clearReceiverIcon}
-                                  />
-                                </button>
-                              </PopOver>
-                              <div className={styles.separator} />
-                            </div>
-                          )}
-                          <div className={styles.assetsDropdownWrapper}>
-                            <WalletsDropdown
-                              className={styles.assetsDropdown}
-                              {...assetsDropdownField.bind()}
-                              assets={sortedAssets}
-                              onChange={(newFingerprint) => {
-                                if (newFingerprint !== fingerprint) {
-                                  this.onChangeAsset(
-                                    fingerprint,
-                                    newFingerprint
-                                  );
-                                }
-                              }}
-                              syncingLabel={intl.formatMessage(
-                                messages.syncingWallet
-                              )}
-                              hasAssetsEnabled
-                              value={fingerprint}
-                              getStakePoolById={() => {}}
-                              errorPosition="bottom"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
+                  (fingerprint: string, index: number) => (
+                    <AssetTokenInput
+                      key={fingerprint}
+                      fingerprint={fingerprint}
+                      index={index}
+                      getAssetByFingerprint={this.getAssetByFingerprint}
+                      availableAssets={this.availableAssets}
+                      receiverFormField={formFields.receiver}
+                      addFocusableField={this.addFocusableField}
+                      removeAssetButtonVisible={
+                        this.state.showRemoveAssetButton
+                      }
+                      showRemoveAssetButton={this.showRemoveAssetButton}
+                      hideRemoveAssetButton={this.hideRemoveAssetButton}
+                      currentNumberFormat={this.getCurrentNumberFormat()}
+                      removeAssetRow={this.removeAssetRow}
+                      handleSubmitOnEnter={this.handleSubmitOnEnter}
+                      clearAssetFieldValue={this.clearAssetFieldValue}
+                      onChangeAsset={this.onChangeAsset}
+                    />
+                  )
                 )}
               </Fragment>
               <Button
