@@ -252,12 +252,13 @@ let
           genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
           topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
         };
-        socketFile = if os != "windows" then "${dataDir}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${network}";
       };
     } // (lib.optionalAttrs (network == "selfnode") {
       selfnodeBin = mkBinPath "shelley-test-cluster";
     }) // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
       smashUrl = envCfg.smashUrl;
+    }) // (lib.optionalAttrs (__hasAttr "metadataUrl" envCfg) {
+      metadataUrl = envCfg.metadataUrl;
     });
 
     installerConfig = {

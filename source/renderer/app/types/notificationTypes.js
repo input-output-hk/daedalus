@@ -4,6 +4,7 @@ import Action from '../actions/lib/Action';
 export type NotificationId =
   | 'copyPublicKey'
   | 'copyAddress'
+  | 'copyAssetItem'
   | 'copyStateDirectoryPath'
   | 'downloadAddressPDFSuccess'
   | 'downloadLogsProgress'

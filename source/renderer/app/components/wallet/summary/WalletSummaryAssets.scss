@@ -1,0 +1,111 @@
+@import '../../../themes/mixins/animations';
+
+%smallText {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  height: 19px;
+  letter-spacing: 0.5px;
+  line-height: 1.36;
+}
+
+.syncingWrapper {
+  margin-bottom: 20px;
+
+  :global {
+    .LoadingSpinner_component {
+      margin-top: 10px;
+    }
+  }
+}
+
+.component {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 10px;
+  width: 100%;
+
+  .assetsContainer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 14px 20px 14px;
+    width: calc(50% - 20px);
+
+    .assetsLeftContainer {
+      width: calc(100% - 77px);
+    }
+
+    .assetRightContainer {
+      .assetSendButton {
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: bold;
+        height: 21px;
+        line-height: 1.36;
+        padding: 3px 18px;
+        text-transform: uppercase;
+        width: 67px;
+
+        &:hover {
+          background-color: var(
+            --theme-report-issue-button-background-color-hover
+          );
+        }
+
+        &:active {
+          background-color: var(
+            --theme-report-issue-button-background-color-active
+          );
+        }
+
+        &.disabled {
+          opacity: 0.3;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+}
+
+.numberOfAssets {
+  color: var(--theme-transactions-list-group-date-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  margin-bottom: -10px;
+  opacity: 0.5;
+  padding: 0 20px 0 40px;
+}
+
+.assetAmount {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-light);
+  font-size: 16px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  line-height: 1.38;
+  margin-top: 4px;
+  user-select: text;
+  word-break: break-all;
+
+  & > .decimal {
+    font-family: var(--font-medium);
+    font-size: 18px;
+  }
+
+  & > .currencySymbolBig {
+    display: inline-block;
+    margin-left: 10px;
+    & > svg {
+      height: 27.5px;
+      width: 25px;
+      & > g > g {
+        stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
+      }
+    }
+  }
+}

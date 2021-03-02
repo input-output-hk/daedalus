@@ -75,6 +75,7 @@ export type LauncherConfig = {
   isFlight: boolean,
   isStaging: boolean,
   smashUrl?: string,
+  metadataUrl?: string,
   updateRunnerBin: string,
   selfnodeBin: string,
 };
@@ -177,9 +178,9 @@ export const STAKE_POOL_REGISTRY_URL = {
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
 
-// Used for all non mainnet networks
-export const TOKEN_METADATA_SERVER_URL =
-  'https://metadata.cardano-testnet.iohkdev.io/';
+// Used if token metadata server URL is not defined in launcher config
+export const FALLBACK_TOKEN_METADATA_SERVER_URL =
+  'https://metadata.cardano-testnet.iohkdev.io';
 
 // Used by mock-token-metadata-server
 export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';

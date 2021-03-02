@@ -102,6 +102,9 @@ export default class AppStore extends Store {
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
         break;
+      case DIALOGS.ITN_REWARDS_REDEMPTION:
+        this.actions.staking.onRedeemStart.trigger();
+        break;
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
         break;
