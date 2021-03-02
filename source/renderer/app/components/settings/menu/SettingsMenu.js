@@ -41,7 +41,6 @@ const messages = defineMessages({
 
 type Props = {
   isFlight: boolean,
-  currentRoute: string,
   isActiveItem: Function,
   onItemClick: Function,
 };

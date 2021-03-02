@@ -23,8 +23,6 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
     const { isSynced, syncPercentage } = stores.networkStatus;
     const { openExternalLink } = stores.app;
     const { resetSmashServerError } = actions.staking;
-    // If `smashServerUrl` is null, waits for it to be set
-    if (!smashServerUrl) return false;
     return (
       <StakePoolsSettings
         smashServerUrl={smashServerUrl}

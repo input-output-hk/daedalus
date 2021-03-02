@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
-import { Input } from 'react-polymorph/lib/components/Input';
 import { Link } from 'react-polymorph/lib/components/Link';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
@@ -136,7 +135,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  smashServerUrl: string,
+  smashServerUrl: ?string,
   smashServerUrlError?: ?LocalizableError,
   onSelectSmashServerUrl: Function,
   onResetSmashServerError: Function,
@@ -147,7 +146,7 @@ type Props = {
 };
 
 type State = {
-  editingSmashServerUrl: string,
+  editingSmashServerUrl: ?string,
   successfullyUpdated: boolean,
   wasLoading: boolean,
 };
@@ -234,11 +233,14 @@ export default class StakePoolsSettings extends Component<Props, State> {
     } = this.props;
     const { intl } = this.context;
     const { editingSmashServerUrl, successfullyUpdated } = this.state;
-    const smashServerType = getSmashServerIdFromUrl(editingSmashServerUrl);
+    const smashServerType = editingSmashServerUrl
+      ? getSmashServerIdFromUrl(editingSmashServerUrl)
+      : null;
 
-    const selectedValue = !isSyncing
-      ? this.smashSelectMessages[smashServerType] || smashServerType
-      : '-';
+    const selectedValue =
+      !isSyncing && smashServerType
+        ? this.smashSelectMessages[smashServerType] || smashServerType
+        : '-';
 
     const smashSelectOptions = map(SMASH_SERVER_TYPES, (value) => ({
       label: this.smashSelectMessages[value] || value,
@@ -301,21 +303,25 @@ export default class StakePoolsSettings extends Component<Props, State> {
           </div>
         )}
 
-        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
-          <InlineEditingInput
-            className={styles.smashServerUrl}
-            label={intl.formatMessage(messages.smashURLInputLabel)}
-            value={editingSmashServerUrl}
-            placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
-            onSubmit={this.handleSubmit}
-            isValid={this.handleIsValid}
-            valueErrorMessage={this.handleErrorMessage}
-            errorMessage={errorMessage}
-            readOnly={isLoading}
-            isLoading={isLoading}
-            successfullyUpdated={false}
-          />
-        )}
+        {editingSmashServerUrl &&
+          !isSyncing &&
+          smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
+            <InlineEditingInput
+              className={styles.smashServerUrl}
+              label={intl.formatMessage(messages.smashURLInputLabel)}
+              value={editingSmashServerUrl}
+              placeholder={intl.formatMessage(
+                messages.smashUrlInputPlaceholder
+              )}
+              onSubmit={this.handleSubmit}
+              isValid={this.handleIsValid}
+              valueErrorMessage={this.handleErrorMessage}
+              errorMessage={errorMessage}
+              readOnly={isLoading}
+              isLoading={isLoading}
+              successfullyUpdated={false}
+            />
+          )}
         {!isSyncing && smashServerType === SMASH_SERVER_TYPES.IOHK && (
           <div className={styles.optionDescription}>
             <p>{intl.formatMessage(messages.descriptionIOHKContent1)}</p>
