@@ -69,3 +69,17 @@
   display: block !important;
   margin: 30px auto 20px;
 }
+
+.preloadingBlockWrapper {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-height: 44px;
+
+  :global {
+    .LoadingSpinner_component {
+      margin: 0;
+    }
+  }
+}

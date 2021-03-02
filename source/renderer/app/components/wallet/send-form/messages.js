@@ -29,7 +29,7 @@ export default defineMessages({
     defaultMessage: '!!!Token',
     description: 'Label for the "Token" number input in the wallet send form.',
   },
-  assetAdaLabel: {
+  adaAmountLabel: {
     id: 'wallet.send.form.asset.adaLabel',
     defaultMessage: '!!!Ada',
     description: 'Label for the "Ada" input in the wallet send form.',

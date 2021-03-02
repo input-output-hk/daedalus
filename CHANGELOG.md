@@ -1,7 +1,13 @@
 Changelog
 =========
 
-## 4.0.0-RC1
+## vNext
+
+### Fixes
+
+- Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
+
+## 4.0.0-FC1
 
 ### Features
 

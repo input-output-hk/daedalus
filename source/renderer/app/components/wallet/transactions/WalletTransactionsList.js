@@ -72,10 +72,14 @@ type Props = {
   onCopyAssetItem: Function,
 };
 
+type State = {
+  isPreloading: boolean,
+};
+
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 @observer
-export default class WalletTransactionsList extends Component<Props> {
+export default class WalletTransactionsList extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -86,6 +90,26 @@ export default class WalletTransactionsList extends Component<Props> {
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
   };
+
+  state = {
+    isPreloading: true,
+  };
+
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+    setTimeout(() => {
+      if (this._isMounted) this.setState({ isPreloading: false });
+    }, 0);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   expandedTransactionIds: Map<string, WalletTransaction> = new Map();
   transactionsShowingMetadata: Map<string, WalletTransaction> = new Map();
@@ -269,6 +293,8 @@ export default class WalletTransactionsList extends Component<Props> {
   };
 
   render() {
+    const { intl } = this.context;
+    const { isPreloading } = this.state;
     const {
       hasMoreToLoad,
       isLoadingTransactions,
@@ -278,8 +304,6 @@ export default class WalletTransactionsList extends Component<Props> {
       transactions,
       walletId,
     } = this.props;
-
-    const { intl } = this.context;
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
     const loadingSpinner =
@@ -334,6 +358,13 @@ export default class WalletTransactionsList extends Component<Props> {
         skin={ButtonSkin}
       />
     );
+
+    if (isPreloading)
+      return (
+        <div className={styles.preloadingBlockWrapper}>
+          <LoadingSpinner big />
+        </div>
+      );
 
     return (
       <div className={styles.component}>

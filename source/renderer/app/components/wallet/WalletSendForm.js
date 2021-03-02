@@ -1,9 +1,10 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
+import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
-import { filter, findIndex, get, omit, orderBy, map, without } from 'lodash';
+import { filter, get, indexOf, omit, orderBy, map, without } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -71,12 +72,23 @@ type Props = {
 };
 
 type State = {
-  formFields: Object,
+  formFields: {
+    receiver: {
+      receiver: Field,
+      adaAmount: Field,
+      assetFields: {
+        [fingerprint: string]: Field,
+      },
+      assetsDropdown: {
+        [fingerprint: string]: Field,
+      },
+    },
+  },
   minimumAda: BigNumber,
   feeCalculationRequestQue: number,
   transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
-  showRemoveAssetButton: { [key: string]: boolean },
+  showRemoveAssetButton: { [fingerprint: string]: boolean },
   selectedAssetFingerprints: Array<string>,
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
@@ -170,6 +182,25 @@ export default class WalletSendForm extends Component<Props, State> {
     return allAssets.find((asset) => asset.fingerprint === fingerprint);
   };
 
+  focusableFields: {
+    [fingerprint: string]: Field,
+  } = {};
+
+  addFocusableField = (field: ?Field) => {
+    if (field) {
+      const { name: fieldName } = field.props;
+      this.focusableFields[fieldName] = field;
+    }
+  };
+
+  focusField = (field: Field) => {
+    const { name: fieldName } = field;
+    const focusableField = this.focusableFields[fieldName];
+    if (focusableField) {
+      focusableField.focus();
+    }
+  };
+
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   handleOnSubmit = () => {
@@ -205,6 +236,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (receiverField) {
       receiverField.clear();
       this.setReceiverValidity(false);
+      this.focusField(receiverField);
     }
   };
 
@@ -215,14 +247,15 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  clearAssetFieldValue = (assetField: any) => {
+  clearAssetFieldValue = (assetField: Field) => {
     if (assetField) {
       assetField.clear();
+      this.focusField(assetField);
     }
     this.resetTransactionFee();
   };
 
-  updateFormFields = (resetFormFields: boolean, fingerprint?: ?string) => {
+  updateFormFields = (resetFormFields: boolean, fingerprint?: string) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get('receiver');
     const adaAmountField = formFields.get('adaAmount');
@@ -238,17 +271,15 @@ export default class WalletSendForm extends Component<Props, State> {
           },
         },
       });
-    } else {
+    } else if (fingerprint) {
       const { assetFields, assetsDropdown } = this.state.formFields.receiver;
-      const assetField = fingerprint
-        ? formFields.get(`asset_${fingerprint}`)
-        : null;
+      const assetField = formFields.get(`asset_${fingerprint}`);
       if (assetField) {
         assetFields[fingerprint] = assetField;
       }
-      const assetsDropdownField = fingerprint
-        ? formFields.get(`assetsDropdown_${fingerprint}`)
-        : null;
+      const assetsDropdownField = formFields.get(
+        `assetsDropdown_${fingerprint}`
+      );
       if (assetsDropdownField) {
         assetsDropdown[fingerprint] = assetsDropdownField;
       }
@@ -270,7 +301,7 @@ export default class WalletSendForm extends Component<Props, State> {
     return receiverField.value.length > 0;
   };
 
-  hasAssetValue = (asset: any) => {
+  hasAssetValue = (asset: Field) => {
     return get(asset, 'value', false);
   };
 
@@ -316,7 +347,7 @@ export default class WalletSendForm extends Component<Props, State> {
           ],
         },
         adaAmount: {
-          label: `${this.context.intl.formatMessage(messages.assetAdaLabel)}`,
+          label: this.context.intl.formatMessage(messages.adaAmountLabel),
           placeholder: `0${
             this.getCurrentNumberFormat().decimalSeparator
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
@@ -615,7 +646,7 @@ export default class WalletSendForm extends Component<Props, State> {
     this.addAssetFields(newFingerprint);
     this.updateFormFields(false, newFingerprint);
     let { selectedAssetFingerprints } = this.state;
-    const index = findIndex(selectedAssetFingerprints, oldFingerprint);
+    const index = indexOf(selectedAssetFingerprints, oldFingerprint);
     if (index > -1) {
       selectedAssetFingerprints = selectedAssetFingerprints.splice(
         index,
@@ -629,7 +660,6 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
     });
     this.removeAssetRow(oldFingerprint);
-    this.state.formFields.receiver.assetFields[newFingerprint].focus();
   };
 
   renderReceiverRow = (): Node => {
@@ -674,9 +704,11 @@ export default class WalletSendForm extends Component<Props, State> {
       <div className={styles.fieldsContainer}>
         <div className={styles.receiverInput}>
           <Input
-            className="receiver"
-            label={intl.formatMessage(messages.receiverLabel)}
             {...receiverField.bind()}
+            ref={(field) => {
+              this.addFocusableField(field);
+            }}
+            className="receiver"
             error={receiverField.error}
             onChange={(value) => {
               receiverField.onChange(value || '');
@@ -728,9 +760,11 @@ export default class WalletSendForm extends Component<Props, State> {
                 </div>
                 <NumericInput
                   {...adaAmountField.bind()}
+                  ref={(field) => {
+                    this.addFocusableField(field);
+                  }}
                   className="adaAmount"
                   value={adaAmountField.value}
-                  label={`${intl.formatMessage(messages.assetAdaLabel)}`}
                   bigNumberFormat={this.getCurrentNumberFormat()}
                   decimalPlaces={currencyMaxFractionalDigits}
                   numberLocaleOptions={{
@@ -743,6 +777,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
+                  autoFocus
                 />
                 <div className={styles.minAdaRequired}>
                   <span>
@@ -809,6 +844,9 @@ export default class WalletSendForm extends Component<Props, State> {
                         )}
                         <NumericInput
                           {...assetField.bind()}
+                          ref={(field) => {
+                            this.addFocusableField(field);
+                          }}
                           placeholder={
                             decimals
                               ? `0${
