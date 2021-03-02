@@ -1,16 +1,21 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { ellipsis } from '../../../utils/strings';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
+import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
+import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type Props = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
   amount: string,
   receiver: string,
+  assets: Array<WalletSummaryAsset>,
+  assetsAmounts: Array<string>,
   totalAmount: ?string,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -42,10 +47,20 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     hardwareWallets.initiateTransaction({ walletId: activeWallet.id });
   };
 
+  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+    const value = ellipsis(fullValue, 15, 15);
+    this.props.actions.wallets.copyAssetItem.trigger({
+      assetItem,
+      value,
+    });
+  };
+
   render() {
     const {
       actions,
       amount,
+      assets,
+      assetsAmounts,
       receiver,
       totalAmount,
       onExternalLinkClick,
@@ -77,28 +92,59 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       : sendMoneyRequest.error;
 
     return (
-      <WalletSendConfirmationDialog
-        amount={amount}
-        receiver={receiver}
-        totalAmount={totalAmount}
-        transactionFee={transactionFee}
-        amountToNaturalUnits={amountToNaturalUnits}
-        onSubmit={this.handleWalletSendFormSubmit}
-        isSubmitting={isSubmitting}
-        isFlight={isFlight}
-        onCancel={() => {
-          actions.dialogs.closeActiveDialog.trigger();
-          sendMoneyRequest.reset();
-          resetHardwareWalletTransaction({ cancelDeviceAction: true });
-        }}
-        error={error}
-        currencyUnit={currencyUnit}
-        onExternalLinkClick={onExternalLinkClick}
-        hwDeviceStatus={hwDeviceStatus}
-        isHardwareWallet={isHardwareWallet}
-        onInitiateTransaction={this.handleInitiateTransaction}
-        walletName={activeWallet.name}
-      />
+      <>
+        {assets.length ? (
+          <WalletSendAssetsConfirmationDialog
+            amount={amount}
+            sender={activeWallet.id}
+            receiver={receiver}
+            totalAmount={totalAmount}
+            assets={assets}
+            assetsAmounts={assetsAmounts}
+            transactionFee={transactionFee}
+            amountToNaturalUnits={amountToNaturalUnits}
+            onSubmit={this.handleWalletSendFormSubmit}
+            isSubmitting={isSubmitting}
+            isFlight={isFlight}
+            onCancel={() => {
+              actions.dialogs.closeActiveDialog.trigger();
+              sendMoneyRequest.reset();
+              resetHardwareWalletTransaction({ cancelDeviceAction: true });
+            }}
+            error={error}
+            currencyUnit={currencyUnit}
+            onExternalLinkClick={onExternalLinkClick}
+            hwDeviceStatus={hwDeviceStatus}
+            isHardwareWallet={isHardwareWallet}
+            onInitiateTransaction={this.handleInitiateTransaction}
+            walletName={activeWallet.name}
+            onCopyAssetItem={this.handleOnCopyAssetItem}
+          />
+        ) : (
+          <WalletSendConfirmationDialog
+            amount={amount}
+            receiver={receiver}
+            totalAmount={totalAmount}
+            transactionFee={transactionFee}
+            amountToNaturalUnits={amountToNaturalUnits}
+            onSubmit={this.handleWalletSendFormSubmit}
+            isSubmitting={isSubmitting}
+            isFlight={isFlight}
+            onCancel={() => {
+              actions.dialogs.closeActiveDialog.trigger();
+              sendMoneyRequest.reset();
+              resetHardwareWalletTransaction({ cancelDeviceAction: true });
+            }}
+            error={error}
+            currencyUnit={currencyUnit}
+            onExternalLinkClick={onExternalLinkClick}
+            hwDeviceStatus={hwDeviceStatus}
+            isHardwareWallet={isHardwareWallet}
+            onInitiateTransaction={this.handleInitiateTransaction}
+            walletName={activeWallet.name}
+          />
+        )}
+      </>
     );
   }
 }

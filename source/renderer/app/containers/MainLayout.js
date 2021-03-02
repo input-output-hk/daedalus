@@ -24,8 +24,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const { actions } = this.props;
     if (category === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
       actions.dialogs.open.trigger({ dialog: InstructionsDialog });
-    } else if (category === ROUTES.REDEEM_ITN_REWARDS) {
-      actions.staking.onRedeemStart.trigger();
     } else if (category === ROUTES.NETWORK_INFO) {
       actions.networkStatus.toggleSplash.trigger();
     } else {

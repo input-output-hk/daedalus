@@ -138,10 +138,6 @@ export default class AppUpdateStore extends Store {
     return this.isAutomaticUpdateFailed;
   }
 
-  @computed get isUpdateAvailable(): boolean {
-    return this.availableUpdate !== null;
-  }
-
   getUpdateInfo(update: News): SoftwareUpdateInfo {
     const softwareUpdate = get(update, 'softwareUpdate', {});
     const { version, hash, url } = softwareUpdate[platform] || {};

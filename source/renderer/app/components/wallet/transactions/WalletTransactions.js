@@ -45,6 +45,10 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   totalAvailable: number,
   transactions: Array<WalletTransaction>,
+  hasAssetsEnabled: boolean,
+  getAssetDetails: Function,
+  isInternalAddress: Function,
+  onCopyAssetItem: Function,
 };
 
 type State = {
@@ -104,6 +108,10 @@ export default class WalletTransactions extends Component<Props, State> {
       onRequestCSVFile,
       defaultFilterOptions,
       populatedFilterOptions,
+      hasAssetsEnabled,
+      getAssetDetails,
+      isInternalAddress,
+      onCopyAssetItem,
     } = this.props;
 
     // Guard against potential null values
@@ -144,7 +152,11 @@ export default class WalletTransactions extends Component<Props, State> {
           currentLocale={currentLocale}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
+          hasAssetsEnabled={hasAssetsEnabled}
+          getAssetDetails={getAssetDetails}
           isRenderingAsVirtualList
+          isInternalAddress={isInternalAddress}
+          onCopyAssetItem={onCopyAssetItem}
         />
       );
     }

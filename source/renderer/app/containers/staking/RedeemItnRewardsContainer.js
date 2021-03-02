@@ -38,13 +38,13 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
 
     if (!redeemStep) return null;
 
-    if (!allWallets.length)
-      return <NoWalletsContainer onClose={closeRedeemDialog.trigger} />;
-
     if (!isSynced && redeemStep === REDEEM_ITN_REWARDS_STEPS.CONFIGURATION)
       return (
         <RedemptionUnavailableContainer onClose={closeRedeemDialog.trigger} />
       );
+
+    if (!allWallets.length)
+      return <NoWalletsContainer onClose={closeRedeemDialog.trigger} />;
 
     const CurrentContainer = this.containers[redeemStep];
 

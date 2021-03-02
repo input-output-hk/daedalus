@@ -8,12 +8,13 @@ import {
 import { momentLocales } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
+import type { AssetMetadata } from '../api/assets/types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
   long: boolean = true
-) => {
+): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
     : shortNumber(amount);
@@ -35,10 +36,24 @@ export const formattedWalletCurrencyAmount = (
   currencyRate: number,
   decimalDigits?: ?number,
   currencySymbol?: ?string
-) =>
+): string =>
   `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
     currencySymbol || ''
   }`;
+
+export const formattedTokenWalletAmount = (
+  amount: BigNumber,
+  metadata?: ?AssetMetadata
+): string => {
+  const { acronym, unit } = metadata || {};
+  const { decimals } = unit || {};
+  const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
+  let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
+  if (acronym) {
+    formattedAmount += ` ${acronym}`;
+  }
+  return formattedAmount;
+};
 
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03
@@ -214,3 +229,6 @@ export const formattedSize = (size: string): string => {
 
   return formattedResult;
 };
+
+export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
+  '1'.padEnd(decimalPlaces + 1, '0');
