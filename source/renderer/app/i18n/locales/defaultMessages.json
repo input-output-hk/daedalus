@@ -9918,7 +9918,7 @@
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.asset.adaLabel",
         "start": {
-          "column": 17,
+          "column": 18,
           "line": 32
         }
       },
