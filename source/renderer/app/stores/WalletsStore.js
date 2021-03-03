@@ -142,7 +142,7 @@ export default class WalletsStore extends Store {
   /* ----------  Active Wallet  ---------- */
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
-  @observable publicKeys: {
+  @observable walletsPublicKeys: {
     [key: string]: string,
   } = {};
 
@@ -333,7 +333,7 @@ export default class WalletsStore extends Store {
         extended,
       }).promise;
       runInAction('update wallet public key', () => {
-        this.publicKeys[walletId] = walletPublicKey;
+        this.walletsPublicKeys[walletId] = walletPublicKey;
       });
     } catch (error) {
       throw error;

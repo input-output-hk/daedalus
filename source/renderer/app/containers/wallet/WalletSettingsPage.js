@@ -49,7 +49,7 @@ export default class WalletSettingsPage extends Component<Props> {
       wallets,
       profile,
     } = this.props.stores;
-    const { active: activeWallet, publicKeys } = wallets;
+    const { active: activeWallet, walletsPublicKeys } = wallets;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -115,7 +115,7 @@ export default class WalletSettingsPage extends Component<Props> {
           }
           isRestoring={activeWallet.isRestoring}
           isSyncing={activeWallet.isSyncing}
-          walletPublicKey={publicKeys[activeWallet.id]}
+          walletPublicKey={walletsPublicKeys[activeWallet.id]}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}
           isSubmitting={updateWalletRequest.isExecuting}

@@ -215,7 +215,7 @@ export default class WalletSettings extends Component<Props, State> {
             onShowQRCode={() =>
               openDialogAction({ dialog: WalletPublicKeyQRCodeDialog })
             }
-            onClickReveal={() =>
+            onOpenWalletKeyDialog={() =>
               openDialogAction({ dialog: WalletPublicKeyDialog })
             }
           />
