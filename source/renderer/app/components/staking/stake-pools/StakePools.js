@@ -341,7 +341,7 @@ export default class StakePools extends Component<Props, State> {
                 />
               </Fragment>
             )}
-            {isGridView && (
+            {(isGridView || isGridRewardsView) && (
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
@@ -367,6 +367,7 @@ export default class StakePools extends Component<Props, State> {
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}
+                  isGridRewardsView
                 />
               </Fragment>
             )}
