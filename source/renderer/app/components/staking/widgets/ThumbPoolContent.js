@@ -23,7 +23,11 @@ type Props = {
 @observer
 export default class ThumbPoolContent extends Component<Props> {
   render() {
-    const { stakePool, numberOfRankedStakePools, isGridRewardsView } = this.props;
+    const {
+      stakePool,
+      numberOfRankedStakePools,
+      isGridRewardsView,
+    } = this.props;
     const {
       ranking,
       nonMyopicMemberRewards,
@@ -53,8 +57,8 @@ export default class ThumbPoolContent extends Component<Props> {
             <SVGInline svg={adaIcon} className={styles.adaIcon} />
           </div>
         )}
-        {!isGridRewardsView && (
-          IS_RANKING_DATA_AVAILABLE ? (
+        {!isGridRewardsView &&
+          (IS_RANKING_DATA_AVAILABLE ? (
             <div className={styles.ranking} style={{ color }}>
               {nonMyopicMemberRewards ? (
                 ranking
@@ -69,8 +73,7 @@ export default class ThumbPoolContent extends Component<Props> {
             <div className={styles.noDataDash}>
               <SVGInline svg={noDataDashBigImage} />
             </div>
-          )
-        )}
+          ))}
         {IS_SATURATION_DATA_AVAILABLE && (
           <div className={saturationClassnames}>
             <span
