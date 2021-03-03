@@ -7,6 +7,10 @@ Changelog
 
 - Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
 
+### Fixes
+
+- Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
+
 ## 4.0.0-FC1
 
 ### Features
