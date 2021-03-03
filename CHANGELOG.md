@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Feature
+
+- Updated the "View wallet's public key" feature ([PR 2429](https://github.com/input-output-hk/daedalus/pull/2429))
+
 ### Fixes
 
 - Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
