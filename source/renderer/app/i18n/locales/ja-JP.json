@@ -493,6 +493,7 @@
   "staking.stakePools.rankingSelectWallet": "ウォレットを選択する",
   "staking.stakePools.rankingSelectWalletEnd": "を使用して委任する量を設定します。",
   "staking.stakePools.rankingSelectWalletStart": "または、",
+  "staking.stakePools.search.clearTooltip": "!!!Clear",
   "staking.stakePools.search.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.search.gridIconTooltip": "グリッドビュー",
   "staking.stakePools.search.gridRewardsIconTooltip": "グリッドリワードビュー",

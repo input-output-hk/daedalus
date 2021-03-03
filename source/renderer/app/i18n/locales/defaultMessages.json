@@ -5901,7 +5901,7 @@
       },
       {
         "defaultMessage": "!!!Staking pools you are delegating to",
-        "description": "\"delegatingListTitlee\" for the Stake Pools search.",
+        "description": "\"delegatingListTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
           "line": 26
@@ -5925,6 +5925,62 @@
         "start": {
           "column": 13,
           "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Grid View",
+        "description": "\"gridIconTooltip\" for the Stake Pools search.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "id": "staking.stakePools.search.gridIconTooltip",
+        "start": {
+          "column": 19,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Grid Rewards View",
+        "description": "\"gridRewardsIconTooltip\" for the Stake Pools search.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "id": "staking.stakePools.search.gridRewardsIconTooltip",
+        "start": {
+          "column": 26,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!List View",
+        "description": "\"listIconTooltip\" for the Stake Pools search.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "id": "staking.stakePools.search.listIconTooltip",
+        "start": {
+          "column": 19,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Clear",
+        "description": "\"clearTooltip\" for the Stake Pools search.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "id": "staking.stakePools.search.clearTooltip",
+        "start": {
+          "column": 16,
+          "line": 47
         }
       }
     ],

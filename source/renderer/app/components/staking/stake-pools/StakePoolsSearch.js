@@ -48,7 +48,7 @@ const messages = defineMessages({
     id: 'staking.stakePools.search.clearTooltip',
     defaultMessage: '!!!Clear',
     description: '"clearTooltip" for the Stake Pools search.',
-  }
+  },
 });
 
 type Props = {
@@ -162,11 +162,9 @@ export class StakePoolsSearch extends Component<Props> {
           {isBigSearchComponent && (
             <div className={styles.viewButtons}>
               <span className={styles.separator}>|</span>
-              <PopOver
-                content={intl.formatMessage(messages.gridIconTooltip)}
-              >
+              <PopOver content={intl.formatMessage(messages.gridIconTooltip)}>
                 <button className={gridButtonClasses} onClick={onGridView}>
-                  <SVGInline svg={gridIcon}/>
+                  <SVGInline svg={gridIcon} />
                 </button>
               </PopOver>
               <PopOver
@@ -176,14 +174,12 @@ export class StakePoolsSearch extends Component<Props> {
                   className={gridRewardsButtonClasses}
                   onClick={onGridRewardsView}
                 >
-                  <SVGInline svg={gridRewardsIcon}/>
+                  <SVGInline svg={gridRewardsIcon} />
                 </button>
               </PopOver>
-              <PopOver
-                content={intl.formatMessage(messages.listIconTooltip)}
-              >
+              <PopOver content={intl.formatMessage(messages.listIconTooltip)}>
                 <button className={listButtonClasses} onClick={onListView}>
-                  <SVGInline svg={listIcon}/>
+                  <SVGInline svg={listIcon} />
                 </button>
               </PopOver>
             </div>
