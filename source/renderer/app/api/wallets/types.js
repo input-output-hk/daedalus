@@ -198,13 +198,6 @@ export type RestoreLegacyWalletRequest = {
   spendingPassword: string,
 };
 
-export type GetWalletPublicKeyRequest = {
-  walletId: string,
-  index: string,
-  passphrase: string,
-  extended: boolean,
-};
-
 export type RestoreExportedByronWalletRequest = ExportedByronWallet;
 
 export type UpdateWalletRequest = {
@@ -244,6 +237,13 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 export type GetWalletRequest = {
   walletId: string,
   isLegacy: boolean,
+};
+
+export type GetWalletPublicKeyRequest = {
+  walletId: string,
+  index: string,
+  passphrase: string,
+  extended: boolean,
 };
 
 export type TransferFundsCalculateFeeRequest = {
