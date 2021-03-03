@@ -11,7 +11,11 @@ import VotingRegistrationStepsConfirm from '../../../source/renderer/app/compone
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/VotingInfo';
-
+import {
+  LANGUAGE_OPTIONS,
+  DATE_ENGLISH_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../source/renderer/app/config/profileConfig';
 import {
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
@@ -110,6 +114,10 @@ storiesOf('Voting|Voting Info', module)
 
   .add('Voting Info', () => (
     <VotingInfo
+      currentLocale={LANGUAGE_OPTIONS[0].value}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
+      isRegistrationEnded={boolean('isRegistrationEnded', false)}
       onRegisterToVoteClick={action('onRegisterToVoteClick')}
       onExternalLinkClick={action('onExternalLinkClick')}
     />

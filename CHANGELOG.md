@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- TBD
+- Implemented "Voting registration is over" screen ([PR 2428](https://github.com/input-output-hk/daedalus/pull/2428))
 
 ## 3.3.1
 
