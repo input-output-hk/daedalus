@@ -204,7 +204,6 @@ const onAppReady = async () => {
   });
 
   buildAppMenus(mainWindow, cardanoNode, locale, {
-    isUpdateAvailable: false,
     isNavigationEnabled: false,
   });
 
@@ -212,7 +211,6 @@ const onAppReady = async () => {
     () =>
       new Promise((resolve) => {
         buildAppMenus(mainWindow, cardanoNode, locale, {
-          isUpdateAvailable: false,
           isNavigationEnabled: true,
         });
         resolve();
@@ -224,7 +222,6 @@ const onAppReady = async () => {
       new Promise((resolve) => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
-          isUpdateAvailable: data.isUpdateAvailable,
           isNavigationEnabled: data.isNavigationEnabled,
         });
         mainWindow.updateTitle(locale);

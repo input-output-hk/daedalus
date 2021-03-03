@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "3.3.2",
+  "version": "4.0.0-FC1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -230,7 +230,7 @@
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
     "react-markdown": "4.3.1",
-    "react-polymorph": "0.9.7-rc.17",
+    "react-polymorph": "0.9.8-rc.11",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
     "react-svg-inline": "2.1.1",

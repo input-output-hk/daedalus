@@ -1097,6 +1097,13 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--rp-pop-over-bg-color': 'rgba(63,64,79,0.9)',
     '--rp-pop-over-text-color': 'white',
   },
+  widgets: {
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(255,255,255,0.1)',
+    '--theme-widgets-asset-token-text-color': '#ffffff',
+    '--theme-widgets-asset-token-background-color': 'rgba(42, 43, 60, 0.98)',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
+  },
 };
 
 const SHELLEY_TESTNET_THEME_PARAMS: CreateThemeParams = {
