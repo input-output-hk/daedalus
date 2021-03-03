@@ -8246,13 +8246,41 @@
         "description": "Headline for voting registration steps",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 28
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.heading",
         "start": {
           "column": 11,
-          "line": 16
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Fund3 Voting Registration Ended",
+        "description": "Headline for ended voting registration",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.headingForEndedRegistration",
+        "start": {
+          "column": 31,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund3 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund3, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
+        "description": "Description for ended voting registration",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.descriptionForEndedRegistration",
+        "start": {
+          "column": 35,
+          "line": 34
         }
       },
       {
@@ -8260,13 +8288,13 @@
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 45
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.stepTitle1",
         "start": {
           "column": 14,
-          "line": 21
+          "line": 40
         }
       },
       {
@@ -8274,41 +8302,97 @@
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 51
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.stepTitle2",
         "start": {
           "column": 14,
-          "line": 27
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Please read the",
+        "description": "Learn more link previous label",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.learnMorePreviousLabel",
+        "start": {
+          "column": 26,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!for more information.",
+        "description": "Learn more link next label",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.learnMoreNextLabel",
+        "start": {
+          "column": 22,
+          "line": 57
         }
       },
       {
         "defaultMessage": "!!!Learn more",
-        "description": "learnMoreLinkLabel for voting registration steps",
+        "description": "Learn more link label for registration steps",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 66
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.learnMoreLinkLabel",
         "start": {
           "column": 22,
-          "line": 33
+          "line": 62
+        }
+      },
+      {
+        "defaultMessage": "!!!Fund3 FAQs",
+        "description": "Learn more link label for ended registration",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.learnMoreLinkLabelForEndedRegistration",
+        "start": {
+          "column": 42,
+          "line": 67
         }
       },
       {
         "defaultMessage": "!!!https://cardano.ideascale.com/a/index",
-        "description": "learnMoreLinkUrl for voting registration steps",
+        "description": "Learn more link url for registration steps",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 76
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.learnMoreLinkUrl",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900004448046",
+        "description": "Learn more link url for ended registration",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.learnMoreLinkUrlForEndedRegistration",
+        "start": {
+          "column": 40,
+          "line": 77
         }
       },
       {
@@ -8316,13 +8400,13 @@
         "description": "bottomContentTitle for voting registration steps",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 87
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.bottomContentTitle",
         "start": {
           "column": 22,
-          "line": 43
+          "line": 83
         }
       },
       {
@@ -8330,13 +8414,27 @@
         "description": "bottomContentDescription for voting registration steps",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 93
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.bottomContentDescription",
         "start": {
           "column": 28,
-          "line": 48
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund3 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
+        "description": "bottomContentDescription for ended registration",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.bottomContentDescriptionForEndedRegistration",
+        "start": {
+          "column": 48,
+          "line": 94
         }
       },
       {
@@ -8344,13 +8442,13 @@
         "description": "checkboxLabel for voting registration steps",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 104
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 54
+          "line": 100
         }
       },
       {
@@ -8358,13 +8456,13 @@
         "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 109
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.buttonLabel",
         "start": {
           "column": 15,
-          "line": 59
+          "line": 105
         }
       },
       {
@@ -8372,13 +8470,13 @@
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 115
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.androidAppButtonUrl",
         "start": {
           "column": 23,
-          "line": 64
+          "line": 110
         }
       },
       {
@@ -8386,13 +8484,13 @@
         "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 121
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.appleAppButtonUrl",
         "start": {
           "column": 21,
-          "line": 70
+          "line": 116
         }
       }
     ],
