@@ -223,33 +223,153 @@ export default class StakePoolsSettings extends Component<Props, State> {
     none: null,
   };
 
-  render() {
-    const {
-      smashServerUrlError,
-      isLoading,
-      onOpenExternalLink,
-      isSyncing,
-      syncPercentage,
-    } = this.props;
+  renderSmashTypeDropdown = () => {
+    const { isSyncing } = this.props;
     const { intl } = this.context;
     const { editingSmashServerUrl, successfullyUpdated } = this.state;
     const smashServerType = getSmashServerIdFromUrl(
       editingSmashServerUrl || ''
     );
-
+    const smashSelectOptions = map(SMASH_SERVER_TYPES, (value) => ({
+      label: this.smashSelectMessages[value] || value,
+      value,
+    }));
     const selectedValue =
       !isSyncing && smashServerType
         ? this.smashSelectMessages[smashServerType] || smashServerType
         : '-';
 
-    const smashSelectOptions = map(SMASH_SERVER_TYPES, (value) => ({
-      label: this.smashSelectMessages[value] || value,
-      value,
-    }));
+    if (isSyncing) {
+      return null;
+    }
+    if (isSyncing) {
+      return (
+        <div className={styles.disabledSelect}>
+          <div className={styles.label}>
+            {intl.formatMessage(messages.smashSelectLabel)}
+          </div>
+          <div className={styles.input}>{selectedValue}</div>
+          <SVGInline svg={spinningIcon} className={styles.icon} />
+        </div>
+      );
+    }
+    return (
+      <Select
+        label={
+          <div>
+            {intl.formatMessage(messages.smashSelectLabel)}
+            {successfullyUpdated && (
+              <span className={styles.savingResultLabel}>
+                {intl.formatMessage(messages.changesSaved)}
+              </span>
+            )}
+          </div>
+        }
+        value={smashServerType}
+        options={smashSelectOptions}
+        onChange={this.handleOnSelectSmashServerType}
+        className={styles.select}
+        optionHeight={50}
+        selectionRenderer={({ label }) => (
+          <div className={styles.selectionRenderer}>{label}</div>
+        )}
+      />
+    );
+  };
 
+  renderSmashCustomServerInput = () => {
+    const { smashServerUrlError, isLoading, isSyncing } = this.props;
+    const { intl } = this.context;
+    const { editingSmashServerUrl } = this.state;
+    const smashServerType = getSmashServerIdFromUrl(
+      editingSmashServerUrl || ''
+    );
     const errorMessage = smashServerUrlError
       ? intl.formatMessage(smashServerUrlError)
       : null;
+
+    if (isSyncing || smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
+      return null;
+    }
+    return (
+      <InlineEditingInput
+        className={styles.smashServerUrl}
+        label={intl.formatMessage(messages.smashURLInputLabel)}
+        value={editingSmashServerUrl || ''}
+        placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
+        onSubmit={this.handleSubmit}
+        isValid={this.handleIsValid}
+        valueErrorMessage={this.handleErrorMessage}
+        errorMessage={errorMessage}
+        readOnly={isLoading}
+        isLoading={isLoading}
+        successfullyUpdated={false}
+      />
+    );
+  };
+
+  renderBottomContent = () => {
+    const { onOpenExternalLink, isSyncing, syncPercentage } = this.props;
+    const { intl } = this.context;
+    const { editingSmashServerUrl } = this.state;
+    const smashServerType = getSmashServerIdFromUrl(
+      editingSmashServerUrl || ''
+    );
+
+    if (isSyncing) {
+      return (
+        <div className={styles.optionDescription}>
+          <FormattedHTMLMessage
+            {...globalMessages.featureUnavailableWhileSyncing}
+            values={{
+              syncPercentage,
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (smashServerType === SMASH_SERVER_TYPES.IOHK) {
+      return (
+        <div className={styles.optionDescription}>
+          <p>{intl.formatMessage(messages.descriptionIOHKContent1)}</p>
+          <p>
+            <FormattedMessage
+              {...messages.descriptionIOHKContent2}
+              values={{
+                link: (
+                  <Link
+                    onClick={() =>
+                      onOpenExternalLink(
+                        intl.formatMessage(messages.descriptionIOHKLinkUrl)
+                      )
+                    }
+                    label={intl.formatMessage(
+                      messages.descriptionIOHKLinkLabel
+                    )}
+                  />
+                ),
+              }}
+            />
+          </p>
+        </div>
+      );
+    }
+
+    if (smashServerType === SMASH_SERVER_TYPES.DIRECT) {
+      return (
+        <div className={styles.optionDescription}>
+          <FormattedHTMLMessage {...messages.descriptionNone} />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  render() {
+    const { onOpenExternalLink } = this.props;
+    const { intl } = this.context;
 
     return (
       <div className={styles.component}>
@@ -272,93 +392,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
           />
         </div>
 
-        {!isLoading && !isSyncing ? (
-          <Select
-            label={
-              <div>
-                {intl.formatMessage(messages.smashSelectLabel)}
-                {successfullyUpdated && (
-                  <span className={styles.savingResultLabel}>
-                    {intl.formatMessage(messages.changesSaved)}
-                  </span>
-                )}
-              </div>
-            }
-            value={smashServerType}
-            options={smashSelectOptions}
-            onChange={this.handleOnSelectSmashServerType}
-            className={styles.select}
-            optionHeight={50}
-            selectionRenderer={({ label }) => (
-              <div className={styles.selectionRenderer}>{label}</div>
-            )}
-          />
-        ) : (
-          <div className={styles.disabledSelect}>
-            <div className={styles.label}>
-              {intl.formatMessage(messages.smashSelectLabel)}
-            </div>
-            <div className={styles.input}>{selectedValue}</div>
-            <SVGInline svg={spinningIcon} className={styles.icon} />
-          </div>
-        )}
-
-        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
-          <InlineEditingInput
-            className={styles.smashServerUrl}
-            label={intl.formatMessage(messages.smashURLInputLabel)}
-            value={editingSmashServerUrl || ''}
-            placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
-            onSubmit={this.handleSubmit}
-            isValid={this.handleIsValid}
-            valueErrorMessage={this.handleErrorMessage}
-            errorMessage={errorMessage}
-            readOnly={isLoading}
-            isLoading={isLoading}
-            successfullyUpdated={false}
-          />
-        )}
-        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.IOHK && (
-          <div className={styles.optionDescription}>
-            <p>{intl.formatMessage(messages.descriptionIOHKContent1)}</p>
-            <p>
-              <FormattedMessage
-                {...messages.descriptionIOHKContent2}
-                values={{
-                  link: (
-                    <Link
-                      onClick={() =>
-                        onOpenExternalLink(
-                          intl.formatMessage(messages.descriptionIOHKLinkUrl)
-                        )
-                      }
-                      label={intl.formatMessage(
-                        messages.descriptionIOHKLinkLabel
-                      )}
-                    />
-                  ),
-                }}
-              />
-            </p>
-          </div>
-        )}
-
-        {!isSyncing && smashServerType === SMASH_SERVER_TYPES.DIRECT && (
-          <div className={styles.optionDescription}>
-            <FormattedHTMLMessage {...messages.descriptionNone} />
-          </div>
-        )}
-
-        {isSyncing && (
-          <div className={styles.optionDescription}>
-            <FormattedHTMLMessage
-              {...globalMessages.featureUnavailableWhileSyncing}
-              values={{
-                syncPercentage,
-              }}
-            />
-          </div>
-        )}
+        {this.renderSmashTypeDropdown()}
+        {this.renderSmashCustomServerInput()}
+        {this.renderBottomContent()}
       </div>
     );
   }
