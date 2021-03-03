@@ -17,6 +17,7 @@ import type { Locale } from '../../../../source/common/types/locales.types';
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
@@ -240,6 +241,13 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           )}
           error={null}
           currentLocale={'en-US'}
+        />
+      }
+      walletPublicKeyDialogContainer={
+        <WalletPublicKeyDialog
+          onRevealPublicKey={action('onRevealPublicKey')}
+          onCancel={action('onCancel')}
+          error={null}
         />
       }
       walletPublicKeyQRCodeDialogContainer={

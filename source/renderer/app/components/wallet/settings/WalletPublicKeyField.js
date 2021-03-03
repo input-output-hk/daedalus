@@ -37,6 +37,7 @@ type Props = {
   locale: Locale,
   onCopyWalletPublicKey: Function,
   onShowQRCode: Function,
+  onClickReveal: Function,
   getWalletPublicKey: Function,
 };
 
@@ -69,7 +70,7 @@ export default class WalletPublicKeyField extends Component<Props, State> {
   };
 
   render() {
-    const { walletPublicKey, onShowQRCode, locale } = this.props;
+    const { walletPublicKey, onShowQRCode, locale, onClickReveal } = this.props;
     const { walletPublicKeyHidden } = this.state;
     const { intl } = this.context;
     const label = intl.formatMessage(messages.walletPublicKey);
@@ -121,7 +122,7 @@ export default class WalletPublicKeyField extends Component<Props, State> {
           <Button
             className={buttonStyles}
             label={toggleButtonLabel}
-            onClick={this.toggleWalletPublicKeyVisibility}
+            onClick={onClickReveal}
           />
         </div>
       </div>
