@@ -8,6 +8,13 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import SVGInline from 'react-svg-inline';
 import BorderedBox from '../widgets/BorderedBox';
+import {
+  VOTING_REGISTRATION_END_DATE,
+  VOTING_REGISTRATION_CAST_START_DATE,
+  VOTING_REGISTRATION_CAST_END_DATE,
+  VOTING_REGISTRATION_NEW_START_DATE,
+} from '../../config/votingConfig';
+import { formattedUTCDateTime } from '../../utils/formatters';
 import styles from './VotingInfo.scss';
 import downloadAppStoreIcon from '../../assets/images/voting/download-app-store-icon-ic.inline.svg';
 import downloadPlayStoreIcon from '../../assets/images/voting/download-play-store-icon-ic.inline.svg';
@@ -17,6 +24,17 @@ const messages = defineMessages({
     id: 'voting.info.heading',
     defaultMessage: '!!!Register to vote on Fund3',
     description: 'Headline for voting registration steps',
+  },
+  headingForEndedRegistration: {
+    id: 'voting.info.headingForEndedRegistration',
+    defaultMessage: '!!!Fund3 Voting Registration Ended',
+    description: 'Headline for ended voting registration',
+  },
+  descriptionForEndedRegistration: {
+    id: 'voting.info.descriptionForEndedRegistration',
+    defaultMessage:
+      '!!!<p>Voting registration for Project Catalyst Fund3 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund3, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>',
+    description: 'Description for ended voting registration',
   },
   stepTitle1: {
     id: 'voting.info.stepTitle1',
@@ -30,10 +48,25 @@ const messages = defineMessages({
       '!!!$70.000 worth of ada rewards will be distributed between ada holders who register their vote.',
     description: 'Info step title 2 for voting registration steps',
   },
+  learnMorePreviousLabel: {
+    id: 'voting.info.learnMorePreviousLabel',
+    defaultMessage: '!!!Please read the',
+    description: 'Learn more link previous label',
+  },
+  learnMoreNextLabel: {
+    id: 'voting.info.learnMoreNextLabel',
+    defaultMessage: '!!!for more information.',
+    description: 'Learn more link next label',
+  },
   learnMoreLinkLabel: {
     id: 'voting.info.learnMoreLinkLabel',
     defaultMessage: '!!!Learn more',
-    description: 'learnMoreLinkLabel for voting registration steps',
+    description: 'Learn more link label for registration steps',
+  },
+  learnMoreLinkLabelForEndedRegistration: {
+    id: 'voting.info.learnMoreLinkLabelForEndedRegistration',
+    defaultMessage: '!!!Fund3 FAQs',
+    description: 'Learn more link label for ended registration',
   },
   learnMoreLinkUrl: {
     id: 'voting.info.learnMoreLinkUrl',
@@ -50,6 +83,12 @@ const messages = defineMessages({
     defaultMessage:
       '!!!To register to vote for Catalyst Fund3 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
     description: 'bottomContentDescription for voting registration steps',
+  },
+  bottomContentDescriptionForEndedRegistration: {
+    id: 'voting.info.bottomContentDescriptionForEndedRegistration',
+    defaultMessage:
+      '!!!To cast your vote on Project Catalyst Fund3 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
+    description: 'bottomContentDescription for ended registration',
   },
   checkboxLabel: {
     id: 'voting.info.checkboxLabel',
@@ -76,6 +115,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  isRegistrationEnded: boolean,
   onRegisterToVoteClick: Function,
   onExternalLinkClick: Function,
 };
@@ -102,53 +142,104 @@ export default class VotingInfo extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onRegisterToVoteClick, onExternalLinkClick } = this.props;
+    const {
+      isRegistrationEnded,
+      onRegisterToVoteClick,
+      onExternalLinkClick,
+    } = this.props;
     const { isAppInstalled } = this.state;
-    const heading = intl.formatMessage(messages.heading);
+    const headingMessage = isRegistrationEnded
+      ? messages.headingForEndedRegistration
+      : messages.heading;
+    const heading = intl.formatMessage(headingMessage);
     const learnMoreLinkLabel = intl.formatMessage(messages.learnMoreLinkLabel);
+    const learnMoreLinkLabelForEndedRegistration = intl.formatMessage(
+      messages.learnMoreLinkLabelForEndedRegistration
+    );
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
     const stepTitle1 = intl.formatMessage(messages.stepTitle1);
     const stepTitle2 = intl.formatMessage(messages.stepTitle2);
     const bottomContentTitle = intl.formatMessage(messages.bottomContentTitle);
+    const bottomContentDescription = isRegistrationEnded
+      ? messages.bottomContentDescriptionForEndedRegistration
+      : messages.bottomContentDescription;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const appleAppButtonUrl = intl.formatMessage(messages.appleAppButtonUrl);
     const androidAppButtonUrl = intl.formatMessage(
       messages.androidAppButtonUrl
     );
     const checkboxLabel = intl.formatMessage(messages.checkboxLabel);
+    const snapshotDate = formattedUTCDateTime(VOTING_REGISTRATION_END_DATE);
+    const castStartDate = formattedUTCDateTime(
+      VOTING_REGISTRATION_CAST_START_DATE
+    );
+    const castEndDate = formattedUTCDateTime(VOTING_REGISTRATION_CAST_END_DATE);
+    const newRegistrationStartDate = formattedUTCDateTime(
+      VOTING_REGISTRATION_NEW_START_DATE
+    );
 
     return (
       <div className={styles.component}>
         <BorderedBox>
           <div className={styles.heading}>{heading}</div>
-          <div className={styles.stepsContainer}>
-            <div className={styles.step}>
-              <span className={styles.number}>1</span>
-              <p>{stepTitle1}</p>
+          {isRegistrationEnded ? (
+            <div className={styles.descriptionForEndedRegistration}>
+              <FormattedHTMLMessage
+                {...messages.descriptionForEndedRegistration}
+                values={{
+                  snapshotDate,
+                  castStartDate,
+                  castEndDate,
+                  newRegistrationStartDate,
+                }}
+              />
+              <div className={styles.learnMoreContainer}>
+                <span className={styles.learnMorePreviousLabel}>
+                  {intl.formatMessage(messages.learnMorePreviousLabel)}
+                </span>
+                <Link
+                  label={learnMoreLinkLabelForEndedRegistration}
+                  onClick={() => onExternalLinkClick(learnMoreLinkUrl)}
+                  className={styles.learnMoreLink}
+                />
+                <span className={styles.learnMoreNextLabel}>
+                  {intl.formatMessage(messages.learnMoreNextLabel)}
+                </span>
+              </div>
             </div>
-            <div className={styles.step}>
-              <span className={styles.number}>2</span>
-              <p>{stepTitle2}</p>
-            </div>
-          </div>
-          <Link
-            label={learnMoreLinkLabel}
-            onClick={() => onExternalLinkClick(learnMoreLinkUrl)}
-            className={styles.learnMoreLink}
-          />
+          ) : (
+            <>
+              <div className={styles.stepsContainer}>
+                <div className={styles.step}>
+                  <span className={styles.number}>1</span>
+                  <p>{stepTitle1}</p>
+                </div>
+                <div className={styles.step}>
+                  <span className={styles.number}>2</span>
+                  <p>{stepTitle2}</p>
+                </div>
+              </div>
+              <Link
+                label={learnMoreLinkLabel}
+                onClick={() => onExternalLinkClick(learnMoreLinkUrl)}
+              />
+            </>
+          )}
           <hr className={styles.separator} />
           <div className={styles.bottomContent}>
             <div className={styles.leftContent}>
               <p>
                 <b>{bottomContentTitle}</b>
               </p>
-              <FormattedHTMLMessage {...messages.bottomContentDescription} />
-              <Checkbox
-                label={checkboxLabel}
-                onChange={this.handleIsAppInstalled}
-                className={styles.checkbox}
-                checked={isAppInstalled}
-              />
+              <FormattedHTMLMessage {...bottomContentDescription} />
+              {!isRegistrationEnded && (
+                <Checkbox
+                  label={checkboxLabel}
+                  onChange={this.handleIsAppInstalled}
+                  className={styles.checkbox}
+                  checked={isAppInstalled}
+                />
+              )}
             </div>
             <div className={styles.rightContent}>
               <div className={styles.appStore}>
@@ -189,11 +280,13 @@ export default class VotingInfo extends Component<Props, State> {
               </div>
             </div>
           </div>
-          <Button
-            onClick={onRegisterToVoteClick}
-            label={buttonLabel}
-            disabled={!isAppInstalled}
-          />
+          {!isRegistrationEnded && (
+            <Button
+              onClick={onRegisterToVoteClick}
+              label={buttonLabel}
+              disabled={!isAppInstalled}
+            />
+          )}
         </BorderedBox>
       </div>
     );

@@ -110,6 +110,7 @@ storiesOf('Voting|Voting Info', module)
 
   .add('Voting Info', () => (
     <VotingInfo
+      isRegistrationEnded={boolean('isRegistrationEnded', false)}
       onRegisterToVoteClick={action('onRegisterToVoteClick')}
       onExternalLinkClick={action('onExternalLinkClick')}
     />

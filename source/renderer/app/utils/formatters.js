@@ -214,3 +214,6 @@ export const formattedSize = (size: string): string => {
 
   return formattedResult;
 };
+
+export const formattedUTCDateTime = (dateTime: Date) =>
+  moment.utc(dateTime).format('MMM D, YYYY, HH:mm UTC');

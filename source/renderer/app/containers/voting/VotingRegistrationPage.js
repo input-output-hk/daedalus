@@ -25,9 +25,10 @@ export default class VotingRegistrationPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { app, networkStatus, uiDialogs, wallets } = stores;
+    const { app, networkStatus, uiDialogs, wallets, voting } = stores;
     const { openExternalLink } = app;
     const { isSynced, syncPercentage } = networkStatus;
+    const { isRegistrationEnded } = voting;
 
     const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
       VotingRegistrationDialog
@@ -58,6 +59,7 @@ export default class VotingRegistrationPage extends Component<Props> {
       <Layout>
         <VerticalFlexContainer>
           <VotingInfo
+            isRegistrationEnded={isRegistrationEnded}
             onRegisterToVoteClick={() =>
               actions.dialogs.open.trigger({
                 dialog: VotingRegistrationDialog,

@@ -17,6 +17,53 @@
   text-transform: uppercase;
 }
 
+.descriptionForEndedRegistration {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  p {
+    @extend %regularText;
+    color: var(--theme-voting-font-color-regular);
+    font-family: var(--font-light);
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  b {
+    font-family: var(--font-medium);
+  }
+
+  .learnMoreContainer {
+    align-items: center;
+    display: flex;
+
+    .learnMorePreviousLabel,
+    .learnMoreNextLabel {
+      @extend %regularText;
+      color: var(--theme-voting-font-color-regular);
+      font-family: var(--font-light);
+    }
+
+    .learnMorePreviousLabel {
+      margin-right: 5px;
+    }
+
+    .learnMoreNextLabel {
+      margin-left: 5px;
+    }
+
+    .learnMoreLink {
+      border-bottom: 0;
+
+      &::after {
+        height: 0;
+        width: 0;
+      }
+    }
+  }
+}
+
 .stepsContainer {
   display: flex;
   justify-content: space-around;
