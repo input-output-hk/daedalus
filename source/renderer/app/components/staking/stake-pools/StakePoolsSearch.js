@@ -22,13 +22,33 @@ const messages = defineMessages({
   delegatingListTitle: {
     id: 'staking.stakePools.search.delegatingListTitle',
     defaultMessage: '!!!Staking pools you are delegating to',
-    description: '"delegatingListTitlee" for the Stake Pools search.',
+    description: '"delegatingListTitle" for the Stake Pools search.',
   },
   listTitle: {
     id: 'staking.stakePools.search.listTitle',
     defaultMessage: '!!!Stake pools ({pools})',
     description: '"listTitle" for the Stake Pools search.',
   },
+  gridIconTooltip: {
+    id: 'staking.stakePools.search.gridIconTooltip',
+    defaultMessage: '!!!Grid View',
+    description: '"gridIconTooltip" for the Stake Pools search.',
+  },
+  gridRewardsIconTooltip: {
+    id: 'staking.stakePools.search.gridRewardsIconTooltip',
+    defaultMessage: '!!!Grid Rewards View',
+    description: '"gridRewardsIconTooltip" for the Stake Pools search.',
+  },
+  listIconTooltip: {
+    id: 'staking.stakePools.search.listIconTooltip',
+    defaultMessage: '!!!List View',
+    description: '"listIconTooltip" for the Stake Pools search.',
+  },
+  clearTooltip: {
+    id: 'staking.stakePools.search.clearTooltip',
+    defaultMessage: '!!!Clear',
+    description: '"clearTooltip" for the Stake Pools search.',
+  }
 });
 
 type Props = {
@@ -123,7 +143,7 @@ export class StakePoolsSearch extends Component<Props> {
             <div className={clearSearchClasses}>
               {this.hasSearchClearButton && (
                 <PopOver
-                  content="Clear"
+                  content={intl.formatMessage(messages.clearTooltip)}
                   placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
                 >
                   <button
@@ -142,18 +162,30 @@ export class StakePoolsSearch extends Component<Props> {
           {isBigSearchComponent && (
             <div className={styles.viewButtons}>
               <span className={styles.separator}>|</span>
-              <button className={gridButtonClasses} onClick={onGridView}>
-                <SVGInline svg={gridIcon} />
-              </button>
-              <button
-                className={gridRewardsButtonClasses}
-                onClick={onGridRewardsView}
+              <PopOver
+                content={intl.formatMessage(messages.gridIconTooltip)}
               >
-                <SVGInline svg={gridRewardsIcon} />
-              </button>
-              <button className={listButtonClasses} onClick={onListView}>
-                <SVGInline svg={listIcon} />
-              </button>
+                <button className={gridButtonClasses} onClick={onGridView}>
+                  <SVGInline svg={gridIcon}/>
+                </button>
+              </PopOver>
+              <PopOver
+                content={intl.formatMessage(messages.gridRewardsIconTooltip)}
+              >
+                <button
+                  className={gridRewardsButtonClasses}
+                  onClick={onGridRewardsView}
+                >
+                  <SVGInline svg={gridRewardsIcon}/>
+                </button>
+              </PopOver>
+              <PopOver
+                content={intl.formatMessage(messages.listIconTooltip)}
+              >
+                <button className={listButtonClasses} onClick={onListView}>
+                  <SVGInline svg={listIcon}/>
+                </button>
+              </PopOver>
             </div>
           )}
         </div>
