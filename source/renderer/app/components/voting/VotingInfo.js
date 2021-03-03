@@ -72,7 +72,13 @@ const messages = defineMessages({
   learnMoreLinkUrl: {
     id: 'voting.info.learnMoreLinkUrl',
     defaultMessage: '!!!https://cardano.ideascale.com/a/index',
-    description: 'learnMoreLinkUrl for voting registration steps',
+    description: 'Learn more link url for registration steps',
+  },
+  learnMoreLinkUrlForEndedRegistration: {
+    id: 'voting.info.learnMoreLinkUrlForEndedRegistration',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900004448046',
+    description: 'Learn more link url for ended registration',
   },
   bottomContentTitle: {
     id: 'voting.info.bottomContentTitle',
@@ -159,11 +165,14 @@ export default class VotingInfo extends Component<Props, State> {
       ? messages.headingForEndedRegistration
       : messages.heading;
     const heading = intl.formatMessage(headingMessage);
-    const learnMoreLinkLabel = intl.formatMessage(messages.learnMoreLinkLabel);
-    const learnMoreLinkLabelForEndedRegistration = intl.formatMessage(
-      messages.learnMoreLinkLabelForEndedRegistration
-    );
-    const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
+    const learnMoreLinkLabelMessage = isRegistrationEnded
+      ? messages.learnMoreLinkLabelForEndedRegistration
+      : messages.learnMoreLinkLabel;
+    const learnMoreLinkLabel = intl.formatMessage(learnMoreLinkLabelMessage);
+    const learnMoreLinkUrlMessage = isRegistrationEnded
+      ? messages.learnMoreLinkUrlForEndedRegistration
+      : messages.learnMoreLinkUrl;
+    const learnMoreLinkUrl = intl.formatMessage(learnMoreLinkUrlMessage);
     const stepTitle1 = intl.formatMessage(messages.stepTitle1);
     const stepTitle2 = intl.formatMessage(messages.stepTitle2);
     const bottomContentTitle = intl.formatMessage(messages.bottomContentTitle);
@@ -223,7 +232,7 @@ export default class VotingInfo extends Component<Props, State> {
                   {intl.formatMessage(messages.learnMorePreviousLabel)}
                 </span>
                 <Link
-                  label={learnMoreLinkLabelForEndedRegistration}
+                  label={learnMoreLinkLabel}
                   onClick={() => onExternalLinkClick(learnMoreLinkUrl)}
                   className={styles.learnMoreLink}
                 />

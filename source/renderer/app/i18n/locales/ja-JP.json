@@ -612,6 +612,7 @@
   "voting.info.learnMoreLinkLabel": "もっと知る",
   "voting.info.learnMoreLinkLabelForEndedRegistration": "Fund3についてよくある質問",
   "voting.info.learnMoreLinkUrl": "https://cardano.ideascale.com/a/index",
+  "voting.info.learnMoreLinkUrlForEndedRegistration": "https://iohk.zendesk.com/hc/ja/articles/900004448046",
   "voting.info.learnMoreNextLabel": "をご覧ください。",
   "voting.info.learnMorePreviousLabel": "詳細は",
   "voting.info.noWallets.createWalletButtonLabel": "ウォレットを作成する",

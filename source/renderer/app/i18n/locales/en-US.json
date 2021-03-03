@@ -612,6 +612,7 @@
   "voting.info.learnMoreLinkLabel": "Learn more",
   "voting.info.learnMoreLinkLabelForEndedRegistration": "Fund3 FAQs",
   "voting.info.learnMoreLinkUrl": "https://cardano.ideascale.com/a/index",
+  "voting.info.learnMoreLinkUrlForEndedRegistration": "https://iohk.zendesk.com/hc/en-us/articles/900004448046",
   "voting.info.learnMoreNextLabel": "for more information.",
   "voting.info.learnMorePreviousLabel": "Please read the",
   "voting.info.noWallets.createWalletButtonLabel": "Create wallet",
