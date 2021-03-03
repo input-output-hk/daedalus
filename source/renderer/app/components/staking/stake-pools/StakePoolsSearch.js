@@ -10,6 +10,7 @@ import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
+import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
 import listIcon from '../../../assets/images/list-ic.inline.svg';
 
 const messages = defineMessages({
@@ -36,9 +37,11 @@ type Props = {
   isClearTooltipOpeningDownward?: boolean,
   isListView?: boolean,
   isGridView?: boolean,
+  isGridRewardsView?: boolean,
   onSearch: Function,
   onClearSearch: Function,
   onGridView?: Function,
+  onGridRewardsView?: Function,
   onListView?: Function,
   search: string,
 };
@@ -64,11 +67,13 @@ export class StakePoolsSearch extends Component<Props> {
       onSearch,
       onClearSearch,
       onGridView,
+      onGridRewardsView,
       onListView,
       placeholder,
       search,
       isListView,
       isGridView,
+      isGridRewardsView,
       isClearTooltipOpeningDownward,
     } = this.props;
 
@@ -77,12 +82,17 @@ export class StakePoolsSearch extends Component<Props> {
       isGridView ? styles.selected : null,
     ]);
 
+    const gridRewardsButtonClasses = classnames([
+      styles.gridRewardsView,
+      isGridRewardsView ? styles.selected : null,
+    ]);
+
     const listButtonClasses = classnames([
       styles.listView,
       isListView ? styles.selected : null,
     ]);
 
-    const isBigSearchComponent = isListView || isGridView;
+    const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
 
     const clearSearchClasses = classnames([
       styles.inputExtras,
@@ -134,6 +144,9 @@ export class StakePoolsSearch extends Component<Props> {
               <span className={styles.separator}>|</span>
               <button className={gridButtonClasses} onClick={onGridView}>
                 <SVGInline svg={gridIcon} />
+              </button>
+              <button className={gridRewardsButtonClasses} onClick={onGridRewardsView}>
+                <SVGInline svg={gridRewardsIcon}/>
               </button>
               <button className={listButtonClasses} onClick={onListView}>
                 <SVGInline svg={listIcon} />
