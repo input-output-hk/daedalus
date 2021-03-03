@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -288,12 +289,17 @@ export default class StakePoolsSettings extends Component<Props, State> {
       ? intl.formatMessage(smashServerUrlError)
       : null;
 
-    if (isSyncing || smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
+    const smashServerUrlStyles = classnames([
+      styles.smashServerUrl,
+      isSyncing ? styles.syncing : null,
+    ]);
+
+    if (smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
       return null;
     }
     return (
       <InlineEditingInput
-        className={styles.smashServerUrl}
+        className={smashServerUrlStyles}
         label={intl.formatMessage(messages.smashURLInputLabel)}
         value={editingSmashServerUrl || ''}
         placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}

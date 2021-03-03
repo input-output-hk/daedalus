@@ -43,6 +43,9 @@
       border-color: var(--rp-input-border-color-errored);
     }
   }
+  &.syncing {
+    display: none;
+  }
 }
 .smashServerUrlError {
   @include error-message;
