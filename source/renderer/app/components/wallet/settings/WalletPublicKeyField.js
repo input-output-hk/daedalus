@@ -43,7 +43,6 @@ type Props = {
 type State = {
   walletPublicKeyHidden: boolean,
   dialogWasOpen: boolean,
-  prevWalletPublicKey: ?string,
 };
 
 @observer
@@ -52,32 +51,23 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  /* eslint-disable react/no-unused-state */
-  // Disabling eslint due to a [known issue](https://github.com/yannickcr/eslint-plugin-react/issues/2061)
-  // `prevWalletPublicKey` is actually used in the `getDerivedStateFromProps` method
-  static getDerivedStateFromProps(
-    { walletPublicKey }: Props,
-    {
-      prevWalletPublicKey,
-      walletPublicKeyHidden: walletPublicKeyHiddenPrev,
-      dialogWasOpen,
-    }: State
-  ) {
-    let walletPublicKeyHidden = walletPublicKeyHiddenPrev;
-    // When we first receive the `walletPublicKey` we set the state to `visible`
-    if (!prevWalletPublicKey && walletPublicKey && dialogWasOpen) {
-      walletPublicKeyHidden = false;
-    }
-    return {
-      prevWalletPublicKey: walletPublicKey,
-      walletPublicKeyHidden,
-    };
-  }
-
   state = {
     walletPublicKeyHidden: true,
-    prevWalletPublicKey: null,
     dialogWasOpen: false,
+  };
+
+  componentDidUpdate({ walletPublicKey: walletPublicKeyPrev }: Props) {
+    const { walletPublicKey: walletPublicKeyNext } = this.props;
+    const { dialogWasOpen } = this.state;
+    if (dialogWasOpen && !walletPublicKeyPrev && walletPublicKeyNext) {
+      this.revealOnReceivingTheWalletKey();
+    }
+  }
+
+  revealOnReceivingTheWalletKey = () => {
+    this.setState({
+      walletPublicKeyHidden: false,
+    });
   };
 
   toggleWalletPublicKeyVisibility = () => {

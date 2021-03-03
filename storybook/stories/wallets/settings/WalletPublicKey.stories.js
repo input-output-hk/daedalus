@@ -2,6 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -11,10 +12,13 @@ import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wa
 
 storiesOf('Wallets|Settings', module)
   .addDecorator(WalletsWrapper)
+  .addDecorator(withKnobs)
+
   .add('Public Key - Spending Password', () => (
     <WalletPublicKeyDialog
       onRevealPublicKey={action('onRevealPublicKey')}
-      onCancel={action('onCancel')}
+      onClose={action('onCancel')}
+      hasReceivedWalletPublicKey={boolean('hasReceivedWalletPublicKey')}
       error={null}
     />
   ));

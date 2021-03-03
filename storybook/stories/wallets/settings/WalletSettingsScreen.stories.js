@@ -246,8 +246,9 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       walletPublicKeyDialogContainer={
         <WalletPublicKeyDialog
           onRevealPublicKey={action('onRevealPublicKey')}
-          onCancel={action('onCancel')}
+          onClose={action('onCancel')}
           error={null}
+          hasReceivedWalletPublicKey
         />
       }
       walletPublicKeyQRCodeDialogContainer={

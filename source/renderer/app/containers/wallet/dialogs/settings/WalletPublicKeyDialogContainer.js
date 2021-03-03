@@ -28,7 +28,7 @@ export default class WalletPublicKeyDialogContainer extends Component<Props> {
       <WalletPublicKeyDialog
         onRevealPublicKey={getPublicKey.trigger}
         onClose={this.handleClose}
-        walletPublicKey={publicKeys[active.id]}
+        hasReceivedWalletPublicKey={!!publicKeys[active.id]}
         error={walletPublicKeyRequest.error}
       />
     );

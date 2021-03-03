@@ -37,7 +37,7 @@ type Props = {
   onRevealPublicKey: Function,
   onClose: Function,
   error: ?LocalizableError,
-  walletPublicKey: ?string,
+  hasReceivedWalletPublicKey: boolean,
 };
 
 @observer
@@ -47,8 +47,8 @@ export default class WalletPublicKeyDialog extends Component<Props> {
   };
 
   componentDidUpdate() {
-    const { walletPublicKey, onClose } = this.props;
-    if (walletPublicKey) {
+    const { hasReceivedWalletPublicKey, onClose } = this.props;
+    if (hasReceivedWalletPublicKey) {
       onClose();
     }
   }
@@ -91,7 +91,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
-        const { onRevealPublicKey, onClose } = this.props;
+        const { onRevealPublicKey } = this.props;
         onRevealPublicKey({ spendingPassword });
       },
     });
