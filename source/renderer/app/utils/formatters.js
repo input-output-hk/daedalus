@@ -5,7 +5,7 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
-import { momentLocales } from '../../../common/types/locales.types';
+import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
 
@@ -215,5 +215,27 @@ export const formattedSize = (size: string): string => {
   return formattedResult;
 };
 
-export const formattedUTCDateTime = (dateTime: Date) =>
-  moment.utc(dateTime).format('MMM D, YYYY, HH:mm UTC');
+export const formattedDateTime = (
+  dateTime: Date,
+  {
+    currentLocale,
+    currentDateFormat,
+    currentTimeFormat,
+  }: {
+    currentLocale: Locale,
+    currentDateFormat: string,
+    currentTimeFormat: string,
+  }
+) => {
+  moment.locale(momentLocales[currentLocale]);
+
+  const dateTimeMoment = moment(dateTime);
+  const dateFormatted = dateTimeMoment.format(currentDateFormat);
+  const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+
+  if (currentLocale === LOCALES.english) {
+    return `${dateFormatted}, ${timeFormatted}`;
+  }
+
+  return `${dateFormatted}${timeFormatted}`;
+};

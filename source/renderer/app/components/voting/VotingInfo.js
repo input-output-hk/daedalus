@@ -14,7 +14,8 @@ import {
   VOTING_REGISTRATION_CAST_END_DATE,
   VOTING_REGISTRATION_NEW_START_DATE,
 } from '../../config/votingConfig';
-import { formattedUTCDateTime } from '../../utils/formatters';
+import { formattedDateTime } from '../../utils/formatters';
+import type { Locale } from '../../../../common/types/locales.types';
 import styles from './VotingInfo.scss';
 import downloadAppStoreIcon from '../../assets/images/voting/download-app-store-icon-ic.inline.svg';
 import downloadPlayStoreIcon from '../../assets/images/voting/download-play-store-icon-ic.inline.svg';
@@ -115,6 +116,9 @@ const messages = defineMessages({
 });
 
 type Props = {
+  currentLocale: Locale,
+  currentDateFormat: string,
+  currentTimeFormat: string,
   isRegistrationEnded: boolean,
   onRegisterToVoteClick: Function,
   onExternalLinkClick: Function,
@@ -143,6 +147,9 @@ export default class VotingInfo extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
       isRegistrationEnded,
       onRegisterToVoteClick,
       onExternalLinkClick,
@@ -169,13 +176,31 @@ export default class VotingInfo extends Component<Props, State> {
       messages.androidAppButtonUrl
     );
     const checkboxLabel = intl.formatMessage(messages.checkboxLabel);
-    const snapshotDate = formattedUTCDateTime(VOTING_REGISTRATION_END_DATE);
-    const castStartDate = formattedUTCDateTime(
-      VOTING_REGISTRATION_CAST_START_DATE
+    const snapshotDate = formattedDateTime(VOTING_REGISTRATION_END_DATE, {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    });
+    const castStartDate = formattedDateTime(
+      VOTING_REGISTRATION_CAST_START_DATE,
+      {
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+      }
     );
-    const castEndDate = formattedUTCDateTime(VOTING_REGISTRATION_CAST_END_DATE);
-    const newRegistrationStartDate = formattedUTCDateTime(
-      VOTING_REGISTRATION_NEW_START_DATE
+    const castEndDate = formattedDateTime(VOTING_REGISTRATION_CAST_END_DATE, {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    });
+    const newRegistrationStartDate = formattedDateTime(
+      VOTING_REGISTRATION_NEW_START_DATE,
+      {
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+      }
     );
 
     return (

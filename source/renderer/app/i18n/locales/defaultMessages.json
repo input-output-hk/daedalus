@@ -8190,13 +8190,13 @@
         "description": "Headline for voting registration steps",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.heading",
         "start": {
           "column": 11,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -8204,13 +8204,13 @@
         "description": "Headline for ended voting registration",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.headingForEndedRegistration",
         "start": {
           "column": 31,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -8218,13 +8218,13 @@
         "description": "Description for ended voting registration",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.descriptionForEndedRegistration",
         "start": {
           "column": 35,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -8232,13 +8232,13 @@
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.stepTitle1",
         "start": {
           "column": 14,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -8246,13 +8246,13 @@
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.stepTitle2",
         "start": {
           "column": 14,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -8260,13 +8260,13 @@
         "description": "Learn more link previous label",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.learnMorePreviousLabel",
         "start": {
           "column": 26,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -8274,13 +8274,13 @@
         "description": "Learn more link next label",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.learnMoreNextLabel",
         "start": {
           "column": 22,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -8288,13 +8288,13 @@
         "description": "Learn more link label for registration steps",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.learnMoreLinkLabel",
         "start": {
           "column": 22,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -8302,13 +8302,13 @@
         "description": "Learn more link label for ended registration",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.learnMoreLinkLabelForEndedRegistration",
         "start": {
           "column": 42,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -8316,13 +8316,13 @@
         "description": "learnMoreLinkUrl for voting registration steps",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.learnMoreLinkUrl",
         "start": {
           "column": 20,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -8330,13 +8330,13 @@
         "description": "bottomContentTitle for voting registration steps",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.bottomContentTitle",
         "start": {
           "column": 22,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -8344,13 +8344,13 @@
         "description": "bottomContentDescription for voting registration steps",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.bottomContentDescription",
         "start": {
           "column": 28,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -8358,13 +8358,13 @@
         "description": "bottomContentDescription for ended registration",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.bottomContentDescriptionForEndedRegistration",
         "start": {
           "column": 48,
-          "line": 87
+          "line": 88
         }
       },
       {
@@ -8372,13 +8372,13 @@
         "description": "checkboxLabel for voting registration steps",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 98
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 93
+          "line": 94
         }
       },
       {
@@ -8386,13 +8386,13 @@
         "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 103
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.buttonLabel",
         "start": {
           "column": 15,
-          "line": 98
+          "line": 99
         }
       },
       {
@@ -8400,13 +8400,13 @@
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.androidAppButtonUrl",
         "start": {
           "column": 23,
-          "line": 103
+          "line": 104
         }
       },
       {
@@ -8414,13 +8414,13 @@
         "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 115
         },
         "file": "source/renderer/app/components/voting/VotingInfo.js",
         "id": "voting.info.appleAppButtonUrl",
         "start": {
           "column": 21,
-          "line": 109
+          "line": 110
         }
       }
     ],
