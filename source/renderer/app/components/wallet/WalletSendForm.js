@@ -33,7 +33,7 @@ import {
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
-import AssetTokenInput from './send-form/AssetTokenInput';
+import AssetInput from './send-form/AssetInput';
 import WalletSendAssetsConfirmationDialog from './send-form/WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import styles from './WalletSendForm.scss';
@@ -801,7 +801,7 @@ export default class WalletSendForm extends Component<Props, State> {
               <Fragment>
                 {selectedAssetFingerprints.map(
                   (fingerprint: string, index: number) => (
-                    <AssetTokenInput
+                    <AssetInput
                       key={fingerprint}
                       fingerprint={fingerprint}
                       index={index}

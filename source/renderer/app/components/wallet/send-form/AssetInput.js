@@ -14,7 +14,7 @@ import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { NumberFormat } from '../../../../../common/types/number.types';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
-import styles from './AssetTokenInput.scss';
+import styles from './AssetInput.scss';
 import messages from './messages';
 
 type Props = {
@@ -46,7 +46,7 @@ type Props = {
 const INPUT_FIELD_PADDING_DELTA = 10;
 
 @observer
-export default class AssetTokenInput extends Component<Props> {
+export default class AssetInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
