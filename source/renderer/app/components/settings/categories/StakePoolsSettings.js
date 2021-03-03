@@ -141,8 +141,8 @@ type Props = {
   onResetSmashServerError: Function,
   isLoading: boolean,
   onOpenExternalLink: Function,
-  isSyncing?: boolean,
-  syncPercentage?: number,
+  isSyncing: boolean,
+  syncPercentage: number,
 };
 
 type State = {
