@@ -145,8 +145,11 @@ export class StakePoolsSearch extends Component<Props> {
               <button className={gridButtonClasses} onClick={onGridView}>
                 <SVGInline svg={gridIcon} />
               </button>
-              <button className={gridRewardsButtonClasses} onClick={onGridRewardsView}>
-                <SVGInline svg={gridRewardsIcon}/>
+              <button
+                className={gridRewardsButtonClasses}
+                onClick={onGridRewardsView}
+              >
+                <SVGInline svg={gridRewardsIcon} />
               </button>
               <button className={listButtonClasses} onClick={onListView}>
                 <SVGInline svg={listIcon} />

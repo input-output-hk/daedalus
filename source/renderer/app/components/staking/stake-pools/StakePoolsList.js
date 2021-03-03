@@ -110,15 +110,19 @@ export class StakePoolsList extends Component<Props, State> {
     }
   };
 
-  sortStakePoolsByRewards = (stakePools: Array<StakePool>): Array<StakePool> => {
-    return stakePools.slice().sort((stakePoolA: StakePool, stakePoolB: StakePool) => {
-      const rewardCompareResult = bigNumberComparator(
-        stakePoolA.potentialRewards,
-        stakePoolB.potentialRewards,
-        false,
-      );
-      return rewardCompareResult;
-    });
+  sortStakePoolsByRewards = (
+    stakePools: Array<StakePool>
+  ): Array<StakePool> => {
+    return stakePools
+      .slice()
+      .sort((stakePoolA: StakePool, stakePoolB: StakePool) => {
+        const rewardCompareResult = bigNumberComparator(
+          stakePoolA.potentialRewards,
+          stakePoolB.potentialRewards,
+          false
+        );
+        return rewardCompareResult;
+      });
   };
 
   render() {
@@ -138,7 +142,9 @@ export class StakePoolsList extends Component<Props, State> {
     } = this.props;
     const { isPreloading } = this.state;
     const componentClasses = classNames([styles.component, listName]);
-    const sortedStakePools = isGridRewardsView ?  this.sortStakePoolsByRewards(stakePoolsList) : stakePoolsList;
+    const sortedStakePools = isGridRewardsView
+      ? this.sortStakePoolsByRewards(stakePoolsList)
+      : stakePoolsList;
     if (sortedStakePools.length > PRELOADER_THRESHOLD && isPreloading)
       return (
         <div className={styles.preloadingBlockWrapper}>
@@ -169,6 +175,7 @@ export class StakePoolsList extends Component<Props, State> {
               containerClassName={containerClassName}
               numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={disabledStakePoolId}
+              isGridRewardsView={isGridRewardsView}
             />
           );
         })}

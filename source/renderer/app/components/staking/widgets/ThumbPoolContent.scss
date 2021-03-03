@@ -37,6 +37,25 @@
     }
   }
 
+  .rewards {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.57;
+    padding: 3px 0;
+    position: relative;
+    text-align: center;
+
+    .adaIcon {
+      svg {
+        height: 11px;
+        margin-left: 3px;
+        opacity: 0.5;
+        width: 10px;
+      }
+    }
+  }
+
   .noDataDash {
     align-items: center;
     display: flex;

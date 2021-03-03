@@ -12,22 +12,25 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 
 type Props = {
   stakePool: StakePool,
   numberOfRankedStakePools: number,
+  isGridRewardsView?: boolean,
 };
 
 @observer
 export default class ThumbPoolContent extends Component<Props> {
   render() {
-    const { stakePool, numberOfRankedStakePools } = this.props;
+    const { stakePool, numberOfRankedStakePools, isGridRewardsView } = this.props;
     const {
       ranking,
       nonMyopicMemberRewards,
       ticker,
       retiring,
       saturation,
+      potentialRewards,
     } = stakePool;
     const color = getColorFromRange(ranking, numberOfRankedStakePools);
 
@@ -44,21 +47,29 @@ export default class ThumbPoolContent extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
-        {IS_RANKING_DATA_AVAILABLE ? (
-          <div className={styles.ranking} style={{ color }}>
-            {nonMyopicMemberRewards ? (
-              ranking
-            ) : (
-              <>
-                {numberOfRankedStakePools + 1}
-                <sup>*</sup>
-              </>
-            )}
+        {isGridRewardsView && (
+          <div className={styles.rewards}>
+            {potentialRewards.precision(5).toString()}
+            <SVGInline svg={adaIcon} className={styles.adaIcon} />
           </div>
-        ) : (
-          <div className={styles.noDataDash}>
-            <SVGInline svg={noDataDashBigImage} />
-          </div>
+        )}
+        {!isGridRewardsView && (
+          IS_RANKING_DATA_AVAILABLE ? (
+            <div className={styles.ranking} style={{ color }}>
+              {nonMyopicMemberRewards ? (
+                ranking
+              ) : (
+                <>
+                  {numberOfRankedStakePools + 1}
+                  <sup>*</sup>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className={styles.noDataDash}>
+              <SVGInline svg={noDataDashBigImage} />
+            </div>
+          )
         )}
         {IS_SATURATION_DATA_AVAILABLE && (
           <div className={saturationClassnames}>
