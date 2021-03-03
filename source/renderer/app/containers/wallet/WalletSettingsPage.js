@@ -36,11 +36,6 @@ export default class WalletSettingsPage extends Component<Props> {
     wallets.copyPublicKey.trigger({ publicKey });
   };
 
-  handleGetWalletPublicKey = () => {
-    const { wallets } = this.props.stores;
-    wallets._getWalletPublicKey();
-  };
-
   handleDelegateClick = () => {
     const { goToRoute } = this.props.actions.router;
     goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
@@ -54,10 +49,7 @@ export default class WalletSettingsPage extends Component<Props> {
       wallets,
       profile,
     } = this.props.stores;
-    const {
-      active: activeWallet,
-      activePublicKey: activeWalletPublicKey,
-    } = wallets;
+    const { active: activeWallet, publicKeys } = wallets;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -123,7 +115,7 @@ export default class WalletSettingsPage extends Component<Props> {
           }
           isRestoring={activeWallet.isRestoring}
           isSyncing={activeWallet.isSyncing}
-          walletPublicKey={activeWalletPublicKey}
+          walletPublicKey={publicKeys[activeWallet.id]}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}
           isSubmitting={updateWalletRequest.isExecuting}
@@ -145,7 +137,6 @@ export default class WalletSettingsPage extends Component<Props> {
             actions.dialogs.updateDataForActiveDialog.trigger
           }
           onDelegateClick={this.handleDelegateClick}
-          getWalletPublicKey={this.handleGetWalletPublicKey}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={

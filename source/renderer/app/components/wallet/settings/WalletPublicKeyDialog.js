@@ -35,8 +35,9 @@ const messages = defineMessages({
 
 type Props = {
   onRevealPublicKey: Function,
-  onCancel: Function,
+  onClose: Function,
   error: ?LocalizableError,
+  walletPublicKey: ?string,
 };
 
 @observer
@@ -44,6 +45,13 @@ export default class WalletPublicKeyDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  componentDidUpdate() {
+    const { walletPublicKey, onClose } = this.props;
+    if (walletPublicKey) {
+      onClose();
+    }
+  }
 
   form = new ReactToolboxMobxForm(
     {
@@ -83,7 +91,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
-        const { onRevealPublicKey } = this.props;
+        const { onRevealPublicKey, onClose } = this.props;
         onRevealPublicKey({ spendingPassword });
       },
     });
@@ -93,7 +101,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onCancel, error } = this.props;
+    const { onClose, error } = this.props;
     const { form } = this;
     const spendingPasswordField = form.$('spendingPassword');
     const actions = [
@@ -108,8 +116,8 @@ export default class WalletPublicKeyDialog extends Component<Props> {
         title={intl.formatMessage(messages.title)}
         actions={actions}
         closeOnOverlayClick
-        onClose={onCancel}
-        closeButton={<DialogCloseButton onClose={onCancel} />}
+        onClose={onClose}
+        closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <div className={styles.description}>
           {intl.formatMessage(messages.description)}

@@ -142,7 +142,9 @@ export default class WalletsStore extends Store {
   /* ----------  Active Wallet  ---------- */
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
-  @observable activePublicKey: ?string = null;
+  @observable publicKeys: {
+    [key: string]: string,
+  } = {};
 
   /* ------------  Currencies  ----------- */
   @observable currencyIsFetchingList: boolean = false;
@@ -266,6 +268,7 @@ export default class WalletsStore extends Store {
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
+    walletsActions.getPublicKey.listen(this._getPublicKey);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
@@ -308,24 +311,29 @@ export default class WalletsStore extends Store {
     this.setupCurrency();
   }
 
-  @action _getWalletPublicKey = async () => {
+  @action _getPublicKey = async ({
+    spendingPassword: passphrase,
+  }: {
+    spendingPassword: string,
+  }) => {
     if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
       return;
     }
 
-    // @TODO Once the api is ready, role and index values should be configured properly
+    // @TODO Once the api is ready, index value should be configured properly
     const walletId = this.active.id;
-    const role = '';
-    const index = '';
+    const index = '1852H';
+    const extended = true;
 
     try {
       const walletPublicKey = await this.walletPublicKeyRequest.execute({
         walletId,
-        role,
         index,
+        passphrase,
+        extended,
       }).promise;
       runInAction('update wallet public key', () => {
-        this.activePublicKey = walletPublicKey;
+        this.publicKeys[walletId] = walletPublicKey;
       });
     } catch (error) {
       throw error;
@@ -1221,7 +1229,6 @@ export default class WalletsStore extends Store {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
-    this.activePublicKey = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 

@@ -186,6 +186,13 @@ export type GetWalletUtxosRequest = {
   isLegacy: boolean,
 };
 
+export type GetWalletPublicKeyRequest = {
+  walletId: string,
+  index: string,
+  passphrase: string,
+  extended: boolean,
+};
+
 export type RestoreWalletRequest = {
   recoveryPhrase: Array<string>,
   walletName: string,
@@ -237,12 +244,6 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 export type GetWalletRequest = {
   walletId: string,
   isLegacy: boolean,
-};
-
-export type GetWalletPublicKeyRequest = {
-  walletId: string,
-  role: string,
-  index: string,
 };
 
 export type TransferFundsCalculateFeeRequest = {

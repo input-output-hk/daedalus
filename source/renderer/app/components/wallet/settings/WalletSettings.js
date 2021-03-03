@@ -122,7 +122,6 @@ type Props = {
   creationDate: Date,
   spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
-  getWalletPublicKey: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
   onFieldValueChange: Function,
@@ -195,7 +194,6 @@ export default class WalletSettings extends Component<Props, State> {
     const {
       walletPublicKey,
       locale,
-      getWalletPublicKey,
       onCopyWalletPublicKey,
       openDialogAction,
       isDialogOpen,
@@ -220,7 +218,6 @@ export default class WalletSettings extends Component<Props, State> {
             onClickReveal={() =>
               openDialogAction({ dialog: WalletPublicKeyDialog })
             }
-            getWalletPublicKey={getWalletPublicKey}
           />
         </BorderedBox>
         {isDialogOpen(WalletPublicKeyDialog)

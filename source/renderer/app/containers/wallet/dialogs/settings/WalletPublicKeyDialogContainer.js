@@ -11,16 +11,25 @@ type Props = InjectedProps;
 export default class WalletPublicKeyDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
+  handleClose = () => {
+    const { actions, stores } = this.props;
+    actions.dialogs.closeActiveDialog.trigger();
+    stores.wallets.walletPublicKeyRequest.reset();
+  };
+
   render() {
-    const { actions } = this.props;
-    const { revealPublicKey } = actions.wallets;
+    const { actions, stores } = this.props;
+    const { getPublicKey } = actions.wallets;
+    const { walletPublicKeyRequest, publicKeys, active } = stores.wallets;
+    if (!active) {
+      return null;
+    }
     return (
       <WalletPublicKeyDialog
-        onRevealPublicKey={revealPublicKey.trigger}
-        onCancel={() => {
-          actions.dialogs.closeActiveDialog.trigger();
-        }}
-        error={null}
+        onRevealPublicKey={getPublicKey.trigger}
+        onClose={this.handleClose}
+        walletPublicKey={publicKeys[active.id]}
+        error={walletPublicKeyRequest.error}
       />
     );
   }

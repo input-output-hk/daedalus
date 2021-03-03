@@ -17,15 +17,15 @@ export default class WalletPublicKeyQRCodeDialogContainer extends Component<Prop
     const { actions, stores } = this.props;
     const { wallets: walletsAction } = actions;
     const { wallets: walletsStore } = stores;
-    const { activePublicKey } = walletsStore;
+    const { publicKeys, active } = walletsStore;
 
-    if (!activePublicKey)
+    if (!active || !publicKeys[active.id])
       throw new Error(
         'Active wallet public key required for WalletPublicKeyQRCodeDialogContainer.'
       );
 
     const publicKey = ellipsis(
-      activePublicKey,
+      publicKeys[active.id],
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
@@ -36,17 +36,14 @@ export default class WalletPublicKeyQRCodeDialogContainer extends Component<Prop
   render() {
     const { actions, stores } = this.props;
     const { wallets } = stores;
-    const {
-      active: activeWallet,
-      activePublicKey: activeWalletPublicKey,
-    } = wallets;
+    const { active: activeWallet, publicKeys } = wallets;
 
     if (!activeWallet)
       throw new Error(
         'Active wallet required for WalletPublicKeyQRCodeDialogContainer.'
       );
 
-    if (!activeWalletPublicKey)
+    if (!publicKeys[activeWallet.id])
       throw new Error(
         'Active wallet public key required for WalletPublicKeyQRCodeDialogContainer.'
       );
@@ -54,7 +51,7 @@ export default class WalletPublicKeyQRCodeDialogContainer extends Component<Prop
     return (
       <WalletPublicKeyQRCodeDialog
         walletName={activeWallet.name}
-        walletPublicKey={activeWalletPublicKey}
+        walletPublicKey={publicKeys[activeWallet.id]}
         onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
         onClose={() => {
           actions.dialogs.closeActiveDialog.trigger();

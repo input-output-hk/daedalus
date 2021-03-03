@@ -15,5 +15,6 @@ storiesOf('Wallets|Settings', module)
     <WalletPublicKeyDialog
       onRevealPublicKey={action('onRevealPublicKey')}
       onCancel={action('onCancel')}
+      error={null}
     />
   ));

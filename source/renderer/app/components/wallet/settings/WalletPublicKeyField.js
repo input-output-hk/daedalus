@@ -38,11 +38,12 @@ type Props = {
   onCopyWalletPublicKey: Function,
   onShowQRCode: Function,
   onClickReveal: Function,
-  getWalletPublicKey: Function,
 };
 
 type State = {
   walletPublicKeyHidden: boolean,
+  dialogWasOpen: boolean,
+  prevWalletPublicKey: ?string,
 };
 
 @observer
@@ -51,17 +52,46 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  /* eslint-disable react/no-unused-state */
+  // Disabling eslint due to a [known issue](https://github.com/yannickcr/eslint-plugin-react/issues/2061)
+  // `prevWalletPublicKey` is actually used in the `getDerivedStateFromProps` method
+  static getDerivedStateFromProps(
+    { walletPublicKey }: Props,
+    {
+      prevWalletPublicKey,
+      walletPublicKeyHidden: walletPublicKeyHiddenPrev,
+      dialogWasOpen,
+    }: State
+  ) {
+    let walletPublicKeyHidden = walletPublicKeyHiddenPrev;
+    // When we first receive the `walletPublicKey` we set the state to `visible`
+    if (!prevWalletPublicKey && walletPublicKey && dialogWasOpen) {
+      walletPublicKeyHidden = false;
+    }
+    return {
+      prevWalletPublicKey: walletPublicKey,
+      walletPublicKeyHidden,
+    };
+  }
+
   state = {
     walletPublicKeyHidden: true,
+    prevWalletPublicKey: null,
+    dialogWasOpen: false,
   };
 
   toggleWalletPublicKeyVisibility = () => {
-    if (this.state.walletPublicKeyHidden) {
-      this.props.getWalletPublicKey();
+    const { walletPublicKey, onClickReveal } = this.props;
+    if (!walletPublicKey) {
+      onClickReveal();
+      this.setState({
+        dialogWasOpen: true,
+      });
+    } else {
+      this.setState((prevState) => ({
+        walletPublicKeyHidden: !prevState.walletPublicKeyHidden,
+      }));
     }
-    this.setState((prevState) => ({
-      walletPublicKeyHidden: !prevState.walletPublicKeyHidden,
-    }));
   };
 
   handleCopyWalletPublicKey = () => {
@@ -70,13 +100,15 @@ export default class WalletPublicKeyField extends Component<Props, State> {
   };
 
   render() {
-    const { walletPublicKey, onShowQRCode, locale, onClickReveal } = this.props;
+    const { walletPublicKey, onShowQRCode, locale } = this.props;
     const { walletPublicKeyHidden } = this.state;
     const { intl } = this.context;
     const label = intl.formatMessage(messages.walletPublicKey);
     const fieldStyles = classnames([
       styles.field,
-      walletPublicKeyHidden ? styles.valueHidden : styles.valueShown,
+      walletPublicKeyHidden || !walletPublicKey
+        ? styles.valueHidden
+        : styles.valueShown,
       locale === LOCALES.japanese ? styles.withBigToggleButton : null,
     ]);
     const hiddenValuePlaceholder = intl.formatMessage(
@@ -122,7 +154,7 @@ export default class WalletPublicKeyField extends Component<Props, State> {
           <Button
             className={buttonStyles}
             label={toggleButtonLabel}
-            onClick={onClickReveal}
+            onClick={this.toggleWalletPublicKeyVisibility}
           />
         </div>
       </div>

@@ -339,11 +339,12 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const { walletId, role, index } = request;
+      const { walletId, index, passphrase, extended } = request;
       const walletPublicKey: string = await getWalletPublicKey(this.config, {
         walletId,
-        role,
         index,
+        passphrase,
+        extended,
       });
       logger.debug('AdaApi::getWalletPublicKey success', { walletPublicKey });
       return walletPublicKey;
