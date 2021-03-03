@@ -52,7 +52,7 @@ export function PoolPopOver(props: {
         <PopOver
           interactive
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
-          duration={[0, 100]} // show=instant, hide=100ms
+          duration={0}
           appendTo={document.body}
           trigger={props.openOnHover ? 'mouseenter' : 'click'}
           placement="auto"
