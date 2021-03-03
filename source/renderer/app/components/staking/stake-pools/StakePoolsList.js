@@ -66,7 +66,7 @@ const StakePoolTiles = observer((props: StakePoolsListProps) => {
  * The StakePoolsList either renders a loading spinner when there are
  * more than PRELOADER_THRESHOLD stake pools to be loaded (to increase
  * initial rendering performance) or StakePoolTiles (if there are only
- * a few stake pools OR if the simulated "preloading" is done
+ * a few stake pools OR if the simulated "preloading" is done)
  */
 export const StakePoolsList = observer((props: StakePoolsListProps) => {
   const [isLoading, setIsLoading] = useState(true);

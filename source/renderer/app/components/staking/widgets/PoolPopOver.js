@@ -31,8 +31,10 @@ export function PoolPopOver(props: {
   containerClassName: string,
   numberOfRankedStakePools: number,
 }) {
+  // Track hover state manually to optimize performance by lazy init pop overs
   const [isHovered, setIsHovered] = useState(false);
-  const triggerTarget = useRef(null);
+  // The ref passed to Tippy.js as trigger target
+  const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
 
   const close = () => {
@@ -44,11 +46,11 @@ export function PoolPopOver(props: {
       <div
         className={styles.triggerTarget}
         onMouseEnter={() => setIsHovered(true)}
-        ref={triggerTarget}
+        ref={popOverTargetRef}
       >
         {props.children}
       </div>
-      {isHovered ? (
+      {isHovered ? ( // Init the pop over only when the target is hovered
         <PopOver
           interactive
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
@@ -70,7 +72,8 @@ export function PoolPopOver(props: {
             '--rp-pop-over-border-style': 'solid',
             '--rp-pop-over-padding': 0,
           }}
-          reference={triggerTarget}
+          // Passing in the trigger element allows lazy initialization
+          reference={popOverTargetRef}
           content={
             <TooltipPool
               color={props.color}
