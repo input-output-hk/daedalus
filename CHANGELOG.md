@@ -1,11 +1,13 @@
 Changelog
 =========
 
-## 4.0.1-FC2
+## vNext
 
 ### Feature
 
 - Enabled the "Loading Stake Pools" state anytime the pools are loading ([PR 2424](https://github.com/input-output-hk/daedalus/pull/2424))
+
+## 4.0.1-FC2
 
 ### Fixes
 
