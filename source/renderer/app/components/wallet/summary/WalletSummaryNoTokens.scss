@@ -19,10 +19,9 @@
 
     .noTokensLeftContainer {
       p {
-        color: #5e6066;
-        font-family: var(--font-regular);
+        color: var(--theme-bordered-box-text-color);
+        font-family: var(--font-light);
         font-size: 16px;
-        font-weight: 300;
         line-height: 1.38;
       }
     }
