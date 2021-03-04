@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 4.0.1-FC2
 
 ### Chores
 
@@ -31,6 +31,12 @@ Changelog
 - Removed unnecessary "socketFile" declaration in launcher-config ([PR 2400](https://github.com/input-output-hk/daedalus/pull/2400))
 - Updated delegated stake pool status on delegation center screen ([PR 2404](https://github.com/input-output-hk/daedalus/pull/2404))
 - Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
+
+## 3.3.2
+
+### Features
+
+- Implemented "Voting registration is over" screen ([PR 2428](https://github.com/input-output-hk/daedalus/pull/2428))
 
 ## 3.3.1
 
