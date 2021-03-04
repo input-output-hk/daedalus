@@ -93,5 +93,6 @@ export const StakePoolsStory = (props: Props) => (
     onSmashSettingsClick={action('onSmashSettingsClick')}
     smashServerUrl="https://smash.cardano-mainnet.iohk.io"
     maxDelegationFunds={maxDelegationFunds}
+    isMainnet={false}
   />
 );

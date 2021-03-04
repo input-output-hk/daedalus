@@ -56,6 +56,8 @@ export default class StakePoolsListPage extends Component<Props> {
     } = this.props.stores;
     const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
+    const { environment } = wallets;
+    const { isMainnet } = environment;
     const {
       stakePoolsRequest,
       stakePools,
@@ -94,6 +96,7 @@ export default class StakePoolsListPage extends Component<Props> {
           smashServerUrl={smashServerUrl}
           onSmashSettingsClick={this.handleSmashSettingsClick}
           maxDelegationFunds={maxDelegationFunds}
+          isMainnet={isMainnet}
         />
         {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
