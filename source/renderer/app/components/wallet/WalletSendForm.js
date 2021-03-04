@@ -433,6 +433,7 @@ export default class WalletSendForm extends Component<Props, State> {
     );
 
     const {
+      selectedAssetFingerprints,
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
     } = this.state;
     this.setState((prevState) => ({
@@ -479,7 +480,9 @@ export default class WalletSendForm extends Component<Props, State> {
         if (error.id === 'api.errors.utxoTooSmall') {
           const minimumAda = get(error, 'values.minimumAda');
           if (minimumAda && !Number.isNaN(Number(minimumAda))) {
-            localizableError = messages.minAdaRequiredTooltip;
+            localizableError = selectedAssetFingerprints.length
+              ? messages.minAdaRequiredWithAssetTooltip
+              : messages.minAdaRequiredWithNoAssetTooltip;
             values = { minimumAda };
             this.setState({ minimumAda: new BigNumber(minimumAda) });
           }
@@ -697,6 +700,9 @@ export default class WalletSendForm extends Component<Props, State> {
       !this.hasAvailableAssets ? styles.disabled : null,
       'primary',
     ]);
+    const minAdaRequiredTooltip = selectedAssetFingerprints.length
+      ? messages.minAdaRequiredWithAssetTooltip
+      : messages.minAdaRequiredWithNoAssetTooltip;
 
     return (
       <div className={styles.fieldsContainer}>
@@ -784,12 +790,9 @@ export default class WalletSendForm extends Component<Props, State> {
                     })}
                   </span>
                   <PopOver
-                    content={intl.formatMessage(
-                      messages.minAdaRequiredTooltip,
-                      {
-                        minimumAda: minimumAdaValue,
-                      }
-                    )}
+                    content={intl.formatMessage(minAdaRequiredTooltip, {
+                      minimumAda: minimumAdaValue,
+                    })}
                     contentClassName={styles.minAdaTooltipContent}
                     key="tooltip"
                   >
