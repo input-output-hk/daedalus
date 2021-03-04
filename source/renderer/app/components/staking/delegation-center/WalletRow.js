@@ -420,10 +420,10 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         placement="auto"
                         maxWidth={280}
                         appendTo={'parent'}
-                        isShowingOnHover={false}
                         visible={highlightedPoolId}
                         themeVariables={popOverThemeVariables}
                         allowHTML
+                        interactive
                         content={
                           <TooltipPool
                             stakePool={futurePendingDelegatedStakePool}

@@ -288,11 +288,11 @@ export default class AssetToken extends Component<Props, State> {
           }}
           contentClassName={styles.popOver}
           content={tooltipContent}
-          isShowingOnHover={false}
           visible={isTooltipVisible}
           appendTo="parent"
           maxWidth={376}
           allowHTML
+          interactive
         >
           {children}
         </PopOver>
