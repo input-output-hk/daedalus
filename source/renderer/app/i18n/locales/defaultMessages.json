@@ -2210,13 +2210,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.description",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 28
         }
       },
       {
@@ -2224,13 +2224,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 38
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionLinkLabel",
         "start": {
           "column": 24,
-          "line": 35
+          "line": 34
         }
       },
       {
@@ -2238,13 +2238,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionLinkUrl",
         "start": {
           "column": 22,
-          "line": 40
+          "line": 39
         }
       },
       {
@@ -2252,13 +2252,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKContent1",
         "start": {
           "column": 27,
-          "line": 46
+          "line": 45
         }
       },
       {
@@ -2266,13 +2266,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKContent2",
         "start": {
           "column": 27,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -2280,13 +2280,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKLinkLabel",
         "start": {
           "column": 28,
-          "line": 58
+          "line": 57
         }
       },
       {
@@ -2294,13 +2294,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 67
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKLinkUrl",
         "start": {
           "column": 26,
-          "line": 63
+          "line": 62
         }
       },
       {
@@ -2308,13 +2308,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 73
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionNone",
         "start": {
           "column": 19,
-          "line": 69
+          "line": 68
         }
       },
       {
@@ -2322,13 +2322,13 @@
         "description": "smashSelectLabel for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 79
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.label",
         "start": {
           "column": 20,
-          "line": 75
+          "line": 74
         }
       },
       {
@@ -2336,13 +2336,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 85
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.IOHKServer",
         "start": {
           "column": 25,
-          "line": 81
+          "line": 80
         }
       },
       {
@@ -2350,13 +2350,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 91
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.direct",
         "start": {
           "column": 21,
-          "line": 87
+          "line": 86
         }
       },
       {
@@ -2364,13 +2364,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 97
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.customServer",
         "start": {
           "column": 27,
-          "line": 93
+          "line": 92
         }
       },
       {
@@ -2378,13 +2378,13 @@
         "description": "smashURLInputLabel for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 103
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.label",
         "start": {
           "column": 22,
-          "line": 99
+          "line": 98
         }
       },
       {
@@ -2392,13 +2392,13 @@
         "description": "smashUrlInputPlaceholder for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 109
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.placeholder",
         "start": {
           "column": 28,
-          "line": 105
+          "line": 104
         }
       },
       {
@@ -2406,13 +2406,13 @@
         "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 115
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "inline.editing.input.changesSaved",
         "start": {
           "column": 16,
-          "line": 111
+          "line": 110
         }
       },
       {
@@ -2420,13 +2420,13 @@
         "description": "invalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 121
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrl",
         "start": {
           "column": 14,
-          "line": 117
+          "line": 116
         }
       },
       {
@@ -2434,13 +2434,13 @@
         "description": "invalidUrlPrefix for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 127
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrlPrefix",
         "start": {
           "column": 20,
-          "line": 123
+          "line": 122
         }
       },
       {
@@ -2448,13 +2448,13 @@
         "description": "invalidUrlParameter for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 134
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrlParameter",
         "start": {
           "column": 23,
-          "line": 129
+          "line": 128
         }
       }
     ],
@@ -10161,17 +10161,31 @@
         }
       },
       {
-        "defaultMessage": "!!!A minimum of {minimumAda} ADA needs to be sent to this receiver since you are sending other assets.",
+        "defaultMessage": "!!!This transaction requires a minimum of {minimumAda} ADA to be sent.",
         "description": "Tooltip for the min ADA required value in the wallet send form.",
         "end": {
           "column": 3,
           "line": 76
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
-        "id": "wallet.send.form.minAdaRequiredTooltip",
+        "id": "wallet.send.form.minAdaRequiredWithAssetTooltip",
         "start": {
-          "column": 25,
+          "column": 34,
           "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!A minimum of {minimumAda} ADA needs to be sent with every transaction.",
+        "description": "Tooltip for the min ADA required value in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.minAdaRequiredWithNoAssetTooltip",
+        "start": {
+          "column": 36,
+          "line": 77
         }
       },
       {
@@ -10179,13 +10193,13 @@
         "description": "Label for the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
-          "line": 77
+          "line": 84
         }
       },
       {
@@ -10193,13 +10207,13 @@
         "description": "Hint in the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 94
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
-          "line": 83
+          "line": 90
         }
       },
       {
@@ -10207,13 +10221,13 @@
         "description": "Label for the reset button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.reset",
         "start": {
           "column": 20,
-          "line": 88
+          "line": 95
         }
       },
       {
@@ -10221,13 +10235,13 @@
         "description": "Label for the send button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 104
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.send",
         "start": {
           "column": 19,
-          "line": 93
+          "line": 100
         }
       },
       {
@@ -10235,13 +10249,13 @@
         "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 109
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 98
+          "line": 105
         }
       },
       {
@@ -10249,13 +10263,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 115
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 103
+          "line": 110
         }
       },
       {
@@ -10263,13 +10277,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 122
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 109
+          "line": 116
         }
       },
       {
@@ -10277,13 +10291,13 @@
         "description": "Label for the \"Calculating fees\" message for amount input field.",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 128
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.calculatingFeesLabel",
         "start": {
           "column": 24,
-          "line": 116
+          "line": 123
         }
       },
       {
@@ -10291,13 +10305,13 @@
         "description": "Syncing wallet label on the send tokens form.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 133
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.syncingWallet",
         "start": {
           "column": 17,
-          "line": 122
+          "line": 129
         }
       }
     ],
