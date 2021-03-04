@@ -7,6 +7,10 @@ Changelog
 
 - Implemented the syncing state for the Stake Pools settings screen ([PR 2418](https://github.com/input-output-hk/daedalus/pull/2418))
 
+### Chores
+
+- Removed line break characters on the address from exported PDF ([PR 2402](https://github.com/input-output-hk/daedalus/pull/2402))
+
 ## 4.0.1-FC2
 
 ### Fixes
