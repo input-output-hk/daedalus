@@ -284,6 +284,7 @@ export default class StakePools extends Component<Props, State> {
               onListView={this.handleListView}
               isListView={isListView}
               isGridView={isGridView}
+              isMainnet={isMainnet}
               isGridRewardsView={isGridRewardsView && !isMainnet}
               smashServer={smashServer}
               isClearTooltipOpeningDownward
@@ -307,6 +308,7 @@ export default class StakePools extends Component<Props, State> {
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}
+                  isGridRewardsView={isGridRewardsView}
                   showWithSelectButton
                 />
               </Fragment>

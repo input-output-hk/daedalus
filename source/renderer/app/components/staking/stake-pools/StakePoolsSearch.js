@@ -64,6 +64,7 @@ type Props = {
   onGridRewardsView?: Function,
   onListView?: Function,
   search: string,
+  isMainnet?: boolean,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -95,6 +96,7 @@ export class StakePoolsSearch extends Component<Props> {
       isGridView,
       isGridRewardsView,
       isClearTooltipOpeningDownward,
+      isMainnet,
     } = this.props;
 
     const gridButtonClasses = classnames([
@@ -116,6 +118,7 @@ export class StakePoolsSearch extends Component<Props> {
 
     const clearSearchClasses = classnames([
       styles.inputExtras,
+      !isMainnet ? styles.withGridRewardsView : null,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
     ]);
 
@@ -167,16 +170,17 @@ export class StakePoolsSearch extends Component<Props> {
                   <SVGInline svg={gridIcon} />
                 </button>
               </PopOver>
-              <PopOver
-                content={intl.formatMessage(messages.gridRewardsIconTooltip)}
-              >
-                <button
-                  className={gridRewardsButtonClasses}
-                  onClick={onGridRewardsView}
+              {!isMainnet && (<PopOver
+                  content={intl.formatMessage(messages.gridRewardsIconTooltip)}
                 >
-                  <SVGInline svg={gridRewardsIcon} />
-                </button>
-              </PopOver>
+                  <button
+                    className={gridRewardsButtonClasses}
+                    onClick={onGridRewardsView}
+                  >
+                    <SVGInline svg={gridRewardsIcon}/>
+                  </button>
+                </PopOver>
+              )}
               <PopOver content={intl.formatMessage(messages.listIconTooltip)}>
                 <button className={listButtonClasses} onClick={onListView}>
                   <SVGInline svg={listIcon} />

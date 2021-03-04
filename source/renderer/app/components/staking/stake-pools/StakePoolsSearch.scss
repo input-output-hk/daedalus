@@ -41,8 +41,12 @@
   position: absolute;
   right: 20px;
 
-  &.inputExtrasSearch {
+  &.withGridRewardsView {
     right: 145px;
+  }
+
+  &.inputExtrasSearch {
+    right: 110px;
   }
 }
 
