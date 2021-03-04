@@ -1,11 +1,13 @@
 Changelog
 =========
 
-## 4.0.1-FC2
+## vNext
 
 ### Chores
 
 - Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
+
+## 4.0.1-FC2
 
 ### Fixes
 
