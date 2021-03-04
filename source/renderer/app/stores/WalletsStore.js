@@ -323,7 +323,7 @@ export default class WalletsStore extends Store {
     // @TODO Once the api is ready, index value should be configured properly
     const walletId = this.active.id;
     const index = '1852H';
-    const extended = true;
+    const extended = false;
 
     try {
       const walletPublicKey = await this.walletPublicKeyRequest.execute({
