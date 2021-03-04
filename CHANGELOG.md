@@ -1,11 +1,13 @@
 Changelog
 =========
 
-## 4.0.1-FC2
+## vNext
 
 ### Feature
 
 - Updated the "View wallet's public key" feature ([PR 2429](https://github.com/input-output-hk/daedalus/pull/2429))
+
+## 4.0.1-FC2
 
 ### Fixes
 
