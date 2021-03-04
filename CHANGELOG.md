@@ -1,15 +1,17 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updated `cardano-wallet` to revision `1b42a42b` ([PR 2427](https://github.com/input-output-hk/daedalus/pull/2427))
+
 ## 4.0.1-FC2
 
 ### Fixes
 
 - Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
-
-### Chores
-
-- Updated `cardano-wallet` to revision `1b42a42b` ([PR 2427](https://github.com/input-output-hk/daedalus/pull/2427))
 
 ## 4.0.0-FC1
 
