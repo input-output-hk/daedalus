@@ -3,9 +3,14 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented the syncing state for the Stake Pools settings screen ([PR 2418](https://github.com/input-output-hk/daedalus/pull/2418))
+
 ### Chores
 
 - Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
+- Removed line break characters on the address from exported PDF ([PR 2402](https://github.com/input-output-hk/daedalus/pull/2402))
 
 ## 4.0.1-FC2
 
