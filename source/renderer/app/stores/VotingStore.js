@@ -13,6 +13,8 @@ import {
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   VOTING_FUND_NUMBER,
+  VOTING_REGISTRATION_END_DATE,
+  VOTING_REGISTRATION_END_CHECK_INTERVAL,
 } from '../config/votingConfig';
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
@@ -29,8 +31,10 @@ export default class VotingStore extends Store {
   @observable votingRegistrationKey: ?VotingRegistrationKeyType = null;
   @observable qrCode: ?string = null;
   @observable isConfirmationDialogOpen: boolean = false;
+  @observable isRegistrationEnded: boolean = false;
 
   transactionPollingInterval: ?IntervalID = null;
+  registrationEndCheckInterval: ?IntervalID = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -45,6 +49,7 @@ export default class VotingStore extends Store {
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
+    this._initializeRegistrationEndCheckInterval();
   }
 
   // REQUESTS
@@ -100,6 +105,8 @@ export default class VotingStore extends Store {
     this.signMetadataRequest.reset();
     if (this.transactionPollingInterval)
       clearInterval(this.transactionPollingInterval);
+    if (this.registrationEndCheckInterval)
+      clearInterval(this.registrationEndCheckInterval);
   };
 
   @action _startTransactionPolling = () => {
@@ -108,6 +115,14 @@ export default class VotingStore extends Store {
     this.transactionPollingInterval = setInterval(() => {
       this._checkVotingRegistrationTransaction();
     }, VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL);
+  };
+
+  @action _initializeRegistrationEndCheckInterval = () => {
+    if (this.registrationEndCheckInterval)
+      clearInterval(this.registrationEndCheckInterval);
+    this.registrationEndCheckInterval = setInterval(() => {
+      this._checkVotingRegistrationEnd();
+    }, VOTING_REGISTRATION_END_CHECK_INTERVAL);
   };
 
   @action _setVotingRegistrationKey = (value: VotingRegistrationKeyType) => {
@@ -300,6 +315,10 @@ export default class VotingStore extends Store {
       if (this.transactionPollingInterval)
         clearInterval(this.transactionPollingInterval);
     }
+  };
+
+  @action _checkVotingRegistrationEnd = () => {
+    this.isRegistrationEnded = new Date() >= VOTING_REGISTRATION_END_DATE;
   };
 
   _generateVotingRegistrationKey = async () => {
