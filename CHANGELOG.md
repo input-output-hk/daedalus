@@ -1,15 +1,17 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Removed line break characters on the address from exported PDF ([PR 2402](https://github.com/input-output-hk/daedalus/pull/2402))
+
 ## 4.0.1-FC2
 
 ### Fixes
 
 - Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
-
-### Chores
-
-- Removed line break characters on the address from exported PDF ([PR 2402](https://github.com/input-output-hk/daedalus/pull/2402))
 
 ## 4.0.0-FC1
 
