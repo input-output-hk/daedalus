@@ -52,6 +52,14 @@
         margin-left: 3px;
         opacity: 0.5;
         width: 10px;
+
+        & > g {
+          & > g {
+            stroke: var(
+                --theme-staking-wallet-row-ticker-ada-icon-fill-color
+            );
+          }
+        }
       }
     }
   }
