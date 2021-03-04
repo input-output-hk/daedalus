@@ -22,15 +22,11 @@ type Props = {
   index: number,
   getAssetByFingerprint: Function,
   availableAssets: Array<WalletSummaryAsset>,
-  receiverFormField: {
-    receiver: Field,
-    adaAmount: Field,
-    assetFields: {
-      [fingerprint: string]: Field,
-    },
-    assetsDropdown: {
-      [fingerprint: string]: Field,
-    },
+  assetFields: {
+    [fingerprint: string]: Field,
+  },
+  assetsDropdown: {
+    [fingerprint: string]: Field,
   },
   addFocusableField: Function,
   removeAssetButtonVisible: { [fingerprint: string]: boolean },
@@ -84,7 +80,8 @@ export default class AssetInput extends Component<Props> {
       index,
       getAssetByFingerprint,
       availableAssets,
-      receiverFormField,
+      assetFields,
+      assetsDropdown,
       addFocusableField,
       removeAssetButtonVisible,
       showRemoveAssetButton,
@@ -95,7 +92,6 @@ export default class AssetInput extends Component<Props> {
       clearAssetFieldValue,
       onChangeAsset,
     } = this.props;
-    const { assetFields, assetsDropdown } = receiverFormField;
     const asset = getAssetByFingerprint(fingerprint);
     if (!asset) {
       return false;

@@ -678,6 +678,8 @@ export default class WalletSendForm extends Component<Props, State> {
     const {
       receiver: receiverField,
       adaAmount: adaAmountField,
+      assetFields,
+      assetsDropdown,
     } = formFields.receiver;
 
     const assetsSeparatorBasicHeight = 140;
@@ -807,7 +809,8 @@ export default class WalletSendForm extends Component<Props, State> {
                       index={index}
                       getAssetByFingerprint={this.getAssetByFingerprint}
                       availableAssets={this.availableAssets}
-                      receiverFormField={formFields.receiver}
+                      assetFields={assetFields}
+                      assetsDropdown={assetsDropdown}
                       addFocusableField={this.addFocusableField}
                       removeAssetButtonVisible={
                         this.state.showRemoveAssetButton
