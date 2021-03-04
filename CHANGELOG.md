@@ -1,11 +1,13 @@
 Changelog
 =========
 
-## 4.0.1-FC2
+## vNext
 
 ### Features
 
 - Updating Tile view of stake pools with rank by rewards ([PR 2426](https://github.com/input-output-hk/daedalus/pull/2426))
+
+## 4.0.1-FC2
 
 ### Fixes
 
