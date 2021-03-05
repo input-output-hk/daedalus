@@ -20,19 +20,15 @@ export default class WalletPublicKeyDialogContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { getAccountPublicKey } = actions.wallets;
-    const {
-      walletPublicKeyRequest,
-      walletsPublicKeys,
-      active,
-    } = stores.wallets;
-    if (!active) {
+    const { walletPublicKeyRequest, activePublicKey } = stores.wallets;
+    if (!activePublicKey) {
       return null;
     }
     return (
       <WalletPublicKeyDialog
         onRevealPublicKey={getAccountPublicKey.trigger}
         onClose={this.handleClose}
-        hasReceivedWalletPublicKey={!!walletsPublicKeys[active.id]}
+        hasReceivedWalletPublicKey={!!activePublicKey}
         error={walletPublicKeyRequest.error}
       />
     );
