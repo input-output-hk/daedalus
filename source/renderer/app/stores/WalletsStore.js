@@ -272,7 +272,6 @@ export default class WalletsStore extends Store {
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
-    walletsActions.getWalletPublicKey.listen(this._getWalletPublicKey);
     walletsActions.getAccountPublicKey.listen(this._getAccountPublicKey);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
@@ -353,14 +352,14 @@ export default class WalletsStore extends Store {
     const extended = true;
 
     try {
-      const walletPublicKey = await this.getAccountPublicKey.execute({
+      const accountPublicKey = await this.getAccountPublicKey.execute({
         walletId,
         index,
         passphrase,
         extended,
       }).promise;
-      runInAction('update wallet public key', () => {
-        this.walletsPublicKeys[walletId] = walletPublicKey;
+      runInAction('update account public key', () => {
+        this.activePublicKey = accountPublicKey;
       });
     } catch (error) {
       throw error;
