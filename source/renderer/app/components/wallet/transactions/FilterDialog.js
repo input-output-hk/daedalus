@@ -494,6 +494,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
         popperOptions={{
           modifiers: [
             {
+              // This keeps the popover always 20px away from the screen edge
               name: 'preventOverflow',
               options: {
                 padding: 20,
