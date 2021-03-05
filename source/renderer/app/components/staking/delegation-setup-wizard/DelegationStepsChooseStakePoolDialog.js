@@ -389,7 +389,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onClearSearch={this.handleClearSearch}
               scrollableElementClassName="Dialog_content"
               disabledStakePoolId={activeStakePoolId}
-              isMainnet={false}
             />
           </div>
 

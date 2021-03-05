@@ -7,7 +7,6 @@ import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ThumbPool } from '../widgets/ThumbPool';
-import { bigNumberComparator } from '../../../utils/sortComparators';
 
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
@@ -110,21 +109,6 @@ export class StakePoolsList extends Component<Props, State> {
     }
   };
 
-  sortStakePoolsByRewards = (
-    stakePools: Array<StakePool>
-  ): Array<StakePool> => {
-    return stakePools
-      .slice()
-      .sort((stakePoolA: StakePool, stakePoolB: StakePool) => {
-        const rewardCompareResult = bigNumberComparator(
-          stakePoolA.potentialRewards,
-          stakePoolB.potentialRewards,
-          false
-        );
-        return rewardCompareResult;
-      });
-  };
-
   render() {
     const {
       currentTheme,
@@ -142,10 +126,8 @@ export class StakePoolsList extends Component<Props, State> {
     } = this.props;
     const { isPreloading } = this.state;
     const componentClasses = classNames([styles.component, listName]);
-    const sortedStakePools = isGridRewardsView
-      ? this.sortStakePoolsByRewards(stakePoolsList)
-      : stakePoolsList;
-    if (sortedStakePools.length > PRELOADER_THRESHOLD && isPreloading)
+
+    if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
       return (
         <div className={styles.preloadingBlockWrapper}>
           <LoadingSpinner big />
@@ -154,7 +136,7 @@ export class StakePoolsList extends Component<Props, State> {
 
     return (
       <div className={componentClasses}>
-        {sortedStakePools.map((stakePool) => {
+        {stakePoolsList.map((stakePool) => {
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
 

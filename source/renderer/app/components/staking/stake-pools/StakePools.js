@@ -90,7 +90,6 @@ type Props = {
   onSmashSettingsClick: Function,
   smashServerUrl: ?string,
   maxDelegationFunds: number,
-  isMainnet: boolean,
 };
 
 type State = {
@@ -181,7 +180,6 @@ export default class StakePools extends Component<Props, State> {
       smashServerUrl,
       onSmashSettingsClick,
       maxDelegationFunds,
-      isMainnet,
     } = this.props;
     const {
       search,
@@ -284,8 +282,7 @@ export default class StakePools extends Component<Props, State> {
               onListView={this.handleListView}
               isListView={isListView}
               isGridView={isGridView}
-              isMainnet={isMainnet}
-              isGridRewardsView={isGridRewardsView && !isMainnet}
+              isGridRewardsView={isGridRewardsView}
               smashServer={smashServer}
               isClearTooltipOpeningDownward
             />
@@ -345,7 +342,7 @@ export default class StakePools extends Component<Props, State> {
                 />
               </Fragment>
             )}
-            {(isGridView || (isGridRewardsView && !isMainnet)) && (
+            {(isGridView || isGridRewardsView) && (
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>

@@ -12,6 +12,7 @@ import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
 import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
 import listIcon from '../../../assets/images/list-ic.inline.svg';
+import { IS_GRID_REWARDS_VIEW_AVAILABLE } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -64,7 +65,6 @@ type Props = {
   onGridRewardsView?: Function,
   onListView?: Function,
   search: string,
-  isMainnet: boolean,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -96,7 +96,6 @@ export class StakePoolsSearch extends Component<Props> {
       isGridView,
       isGridRewardsView,
       isClearTooltipOpeningDownward,
-      isMainnet,
     } = this.props;
 
     const gridButtonClasses = classnames([
@@ -118,7 +117,7 @@ export class StakePoolsSearch extends Component<Props> {
 
     const clearSearchClasses = classnames([
       styles.inputExtras,
-      !isMainnet ? styles.withGridRewardsView : null,
+      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
     ]);
 
@@ -170,7 +169,7 @@ export class StakePoolsSearch extends Component<Props> {
                   <SVGInline svg={gridIcon} />
                 </button>
               </PopOver>
-              {!isMainnet && (
+              {IS_GRID_REWARDS_VIEW_AVAILABLE && (
                 <PopOver
                   content={intl.formatMessage(messages.gridRewardsIconTooltip)}
                 >
