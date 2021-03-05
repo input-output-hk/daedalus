@@ -3,14 +3,21 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented the syncing state for the Stake Pools settings screen ([PR 2418](https://github.com/input-output-hk/daedalus/pull/2418))
+
 ### Chores
 
 - Updated `cardano-wallet` to revision `1b42a42b` ([PR 2427](https://github.com/input-output-hk/daedalus/pull/2427))
+- Increased "Report connecting issues" timeout ([PR 2440](https://github.com/input-output-hk/daedalus/pull/2440))
+- Removed line break characters on the address from exported PDF ([PR 2402](https://github.com/input-output-hk/daedalus/pull/2402))
 
 ## 4.0.1-FC2
 
 ### Fixes
 
+- Fixed text overlapping issue on native token input field ([PR 2422](https://github.com/input-output-hk/daedalus/pull/2422))
 - Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
 
 ## 4.0.0-FC1
