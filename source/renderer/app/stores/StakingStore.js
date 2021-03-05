@@ -120,6 +120,8 @@ export default class StakingStore extends Store {
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
+
+    this._startStakePoolsFetchTracker();
   }
 
   // REQUESTS
@@ -239,6 +241,8 @@ export default class StakingStore extends Store {
       this.numberOfStakePoolsFetched > 0
     ) {
       this.cyclesWithoutIncreasingStakePools++;
+    } else {
+      this.cyclesWithoutIncreasingStakePools = 0;
     }
     if (
       this.cyclesWithoutIncreasingStakePools >= STAKE_POOLS_FETCH_TRACKER_CYCLES
