@@ -64,7 +64,7 @@ type Props = {
   onGridRewardsView?: Function,
   onListView?: Function,
   search: string,
-  isMainnet?: boolean,
+  isMainnet: boolean,
 };
 
 export class StakePoolsSearch extends Component<Props> {

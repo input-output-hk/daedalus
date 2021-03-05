@@ -90,7 +90,7 @@ type Props = {
   onSmashSettingsClick: Function,
   smashServerUrl: ?string,
   maxDelegationFunds: number,
-  isMainnet?: boolean,
+  isMainnet: boolean,
 };
 
 type State = {

@@ -36,6 +36,7 @@ export const StakePoolsTableStory = (props: Props) => (
         isListView
         isGridView={false}
         isClearTooltipOpeningDownward
+        isMainnet={false}
       />
       <h2
         style={{
