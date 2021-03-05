@@ -157,6 +157,7 @@ export class ThumbPool extends Component<Props, State> {
             containerClassName={containerClassName}
             numberOfRankedStakePools={numberOfRankedStakePools}
             isListView={false}
+            isGridRewardsView={isGridRewardsView}
           />
         )}
       </div>

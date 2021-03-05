@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
@@ -13,6 +14,7 @@ import {
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 type Props = {
   stakePool: StakePool,
@@ -22,6 +24,21 @@ type Props = {
 
 @observer
 export default class ThumbPoolContent extends Component<Props> {
+  formattedRewards = (potentialRewards: BigNumber) => {
+    const potentialRewardsAsString = formattedWalletAmount(potentialRewards);
+    let targetLength = 4;
+    if (potentialRewardsAsString.includes('.')) {
+      targetLength++;
+    }
+    if (potentialRewardsAsString.includes(',')) {
+      targetLength++;
+    }
+    if (potentialRewardsAsString.includes(' ')) {
+      targetLength++;
+    }
+    return potentialRewardsAsString.substring(0, targetLength);
+  };
+
   render() {
     const {
       stakePool,
@@ -54,7 +71,7 @@ export default class ThumbPoolContent extends Component<Props> {
         {isGridRewardsView &&
           (IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
             <div className={styles.rewards}>
-              {potentialRewards.precision(5).toString()}
+              {this.formattedRewards(potentialRewards)}
               <SVGInline svg={adaIcon} className={styles.adaIcon} />
             </div>
           ) : (
