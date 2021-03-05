@@ -2210,13 +2210,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.description",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -2224,13 +2224,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionLinkLabel",
         "start": {
           "column": 24,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -2238,13 +2238,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionLinkUrl",
         "start": {
           "column": 22,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -2252,13 +2252,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKContent1",
         "start": {
           "column": 27,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -2266,13 +2266,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKContent2",
         "start": {
           "column": 27,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -2280,13 +2280,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKLinkLabel",
         "start": {
           "column": 28,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -2294,13 +2294,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionIOHKLinkUrl",
         "start": {
           "column": 26,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -2308,13 +2308,13 @@
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.descriptionNone",
         "start": {
           "column": 19,
-          "line": 68
+          "line": 69
         }
       },
       {
@@ -2322,13 +2322,13 @@
         "description": "smashSelectLabel for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 80
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.label",
         "start": {
           "column": 20,
-          "line": 74
+          "line": 75
         }
       },
       {
@@ -2336,13 +2336,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.IOHKServer",
         "start": {
           "column": 25,
-          "line": 80
+          "line": 81
         }
       },
       {
@@ -2350,13 +2350,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.direct",
         "start": {
           "column": 21,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -2364,13 +2364,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 98
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.customServer",
         "start": {
           "column": 27,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -2378,13 +2378,13 @@
         "description": "smashURLInputLabel for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.label",
         "start": {
           "column": 22,
-          "line": 98
+          "line": 99
         }
       },
       {
@@ -2392,13 +2392,13 @@
         "description": "smashUrlInputPlaceholder for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 110
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.placeholder",
         "start": {
           "column": 28,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -2406,13 +2406,13 @@
         "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 116
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "inline.editing.input.changesSaved",
         "start": {
           "column": 16,
-          "line": 110
+          "line": 111
         }
       },
       {
@@ -2420,13 +2420,13 @@
         "description": "invalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 122
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrl",
         "start": {
           "column": 14,
-          "line": 116
+          "line": 117
         }
       },
       {
@@ -2434,13 +2434,13 @@
         "description": "invalidUrlPrefix for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 128
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrlPrefix",
         "start": {
           "column": 20,
-          "line": 122
+          "line": 123
         }
       },
       {
@@ -2448,13 +2448,13 @@
         "description": "invalidUrlParameter for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 135
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrlParameter",
         "start": {
           "column": 23,
-          "line": 128
+          "line": 129
         }
       }
     ],

@@ -98,7 +98,7 @@ export default class AssetInput extends Component<Props> {
     }
 
     const { quantity, metadata } = asset;
-    const acronym = get(metadata, 'acronym', null);
+    const ticker = get(metadata, 'ticker', null);
     const decimals = get(metadata, 'unit.decimals', 0);
     const sortedAssets = orderBy(
       [asset, ...availableAssets],
@@ -159,7 +159,7 @@ export default class AssetInput extends Component<Props> {
           onChange={(value) => {
             assetField.onChange(value);
           }}
-          currency={acronym}
+          currency={ticker}
           value={assetField.value}
           error={assetField.error}
           skin={AmountInputSkin}
