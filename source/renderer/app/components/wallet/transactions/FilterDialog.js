@@ -1,11 +1,12 @@
 // @flow
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
-import type { ElementRef } from 'react';
+import type { Element } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
@@ -24,7 +25,6 @@ import TinySelect from '../../widgets/forms/TinySelect';
 import TinyInput from '../../widgets/forms/TinyInput';
 import TinyDatePicker from '../../widgets/forms/TinyDatePicker';
 import TinyButton from '../../widgets/forms/TinyButton';
-import Dialog from '../../widgets/Dialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './FilterDialog.scss';
 
@@ -96,59 +96,7 @@ const messages = defineMessages({
   },
 });
 
-const FILTER_PANEL_OFFSET = 103;
-const FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT = 545;
-const FILTER_DIALOG_OFFSET_WITH_NOTIFICATION = 60;
-
-const applyDialogStyles = () => {
-  const dialogElement = window.document.querySelector('.ReactModal__Content');
-  const dialogOverlayElement = dialogElement.parentElement;
-  const sidebarLayoutContentWrapper = window.document.querySelector(
-    '.SidebarLayout_contentWrapper'
-  );
-  const filterButtonElement = window.document.querySelector(
-    '.FilterButton_component'
-  );
-  const notificationElement = window.document.querySelector(
-    '.ActiveRestoreNotification'
-  );
-  const windowHeight = window.document.body.clientHeight;
-  const filterDialogHeight = dialogElement.clientHeight;
-  let filterDialogOffsetTop =
-    sidebarLayoutContentWrapper.offsetTop + FILTER_PANEL_OFFSET;
-  dialogOverlayElement.style.backgroundColor = 'transparent';
-  dialogElement.style.backgroundColor =
-    'var(--theme-transactions-filter-modal-bg-color)';
-  dialogElement.style.borderRadius = '4px';
-  dialogElement.style.minWidth = 'auto';
-  dialogElement.style.position = 'absolute';
-
-  if (windowHeight - filterDialogOffsetTop < filterDialogHeight) {
-    dialogElement.style.right = `${filterButtonElement.clientWidth + 20}px`;
-    dialogElement.style.top = `${Math.max(
-      sidebarLayoutContentWrapper.offsetTop + 75 - filterDialogHeight / 2,
-      40
-    )}px`;
-  } else {
-    if (notificationElement) {
-      filterDialogOffsetTop += FILTER_DIALOG_OFFSET_WITH_NOTIFICATION;
-    }
-    dialogElement.style.right = '20px';
-    dialogElement.style.top = `${filterDialogOffsetTop}px`;
-  }
-  if (
-    dialogElement.offsetTop + FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT >=
-    windowHeight
-  ) {
-    dialogElement.children[0].classList.add(['small-height-for-date-picker']);
-  } else {
-    dialogElement.children[0].classList.remove([
-      'small-height-for-date-picker',
-    ]);
-  }
-};
-
-type Props = {
+export type FilterDialogProps = {
   locale: string,
   dateFormat: string,
   numberFormat: string,
@@ -156,10 +104,11 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
   onClose: Function,
+  triggerElement?: Element<*>,
 };
 
 @observer
-export default class FilterDialog extends Component<Props> {
+export default class FilterDialog extends Component<FilterDialogProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -167,7 +116,7 @@ export default class FilterDialog extends Component<Props> {
   dateRangeOptions: Array<{ label: string, value: string }>;
   form: ReactToolboxMobxForm;
 
-  constructor(props: Props, context: Object) {
+  constructor(props: FilterDialogProps, context: Object) {
     super(props);
 
     const {
@@ -243,20 +192,6 @@ export default class FilterDialog extends Component<Props> {
       },
     });
   }
-
-  componentDidMount() {
-    window.addEventListener('resize', applyDialogStyles);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', applyDialogStyles);
-  }
-
-  handleSelfRef = (ref: ?ElementRef<'div'>) => {
-    if (ref) {
-      applyDialogStyles();
-    }
-  };
 
   setFilterType = (
     field: 'incomingChecked' | 'outgoingChecked',
@@ -535,47 +470,74 @@ export default class FilterDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { defaultFilterOptions, onClose } = this.props;
+    const { defaultFilterOptions, onClose, triggerElement } = this.props;
 
     return (
-      <Dialog
-        closeOnOverlayClick
-        className={styles.component}
-        onClose={onClose}
-      >
-        <div ref={this.handleSelfRef}>
-          <div className={styles.title}>
-            <h4 className={styles.titleText}>
-              {intl.formatMessage(globalMessages.filter)}
-            </h4>
-            <div>
-              <button
-                className={styles.titleLink}
-                onClick={this.generateDefaultFilterOptions}
-                disabled={this.isFormValuesEqualTo(defaultFilterOptions)}
-              >
-                {intl.formatMessage(messages.allTransactions)}
-              </button>
-              <button
-                className={styles.titleLink}
-                onClick={this.resetForm}
-                disabled={this.isFormValuesEqualTo(
-                  emptyTransactionFilterOptions
-                )}
-              >
-                {intl.formatMessage(messages.resetFilter)}
-              </button>
+      <PopOver
+        arrow={false}
+        interactive
+        trigger="click"
+        appendTo={document.body}
+        onHide={onClose}
+        duration={0}
+        offset={[0, 10]}
+        maxWidth={640}
+        placement="bottom"
+        themeVariables={{
+          '--rp-pop-over-bg-color':
+            'var(--theme-transactions-filter-modal-bg-color)',
+          '--rp-pop-over-box-shadow': '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
+          '--rp-pop-over-border-radius': '4px',
+          '--rp-pop-over-border-style': 'solid',
+          '--rp-pop-over-padding': 0,
+        }}
+        popperOptions={{
+          modifiers: [
+            {
+              name: 'preventOverflow',
+              options: {
+                padding: 20,
+              },
+            },
+          ],
+        }}
+        content={
+          <div className={styles.component}>
+            <div className={styles.title}>
+              <h4 className={styles.titleText}>
+                {intl.formatMessage(globalMessages.filter)}
+              </h4>
+              <div>
+                <button
+                  className={styles.titleLink}
+                  onClick={this.generateDefaultFilterOptions}
+                  disabled={this.isFormValuesEqualTo(defaultFilterOptions)}
+                >
+                  {intl.formatMessage(messages.allTransactions)}
+                </button>
+                <button
+                  className={styles.titleLink}
+                  onClick={this.resetForm}
+                  disabled={this.isFormValuesEqualTo(
+                    emptyTransactionFilterOptions
+                  )}
+                >
+                  {intl.formatMessage(messages.resetFilter)}
+                </button>
+              </div>
+            </div>
+            <div className={styles.content}>
+              {this.renderTypeField()}
+              {this.renderDateRangeField()}
+              {this.renderDateRangeFromToField()}
+              {this.renderAmountRangeField()}
+              {this.renderActionButton()}
             </div>
           </div>
-          <div className={styles.content}>
-            {this.renderTypeField()}
-            {this.renderDateRangeField()}
-            {this.renderDateRangeFromToField()}
-            {this.renderAmountRangeField()}
-            {this.renderActionButton()}
-          </div>
-        </div>
-      </Dialog>
+        }
+      >
+        {triggerElement}
+      </PopOver>
     );
   }
 }

@@ -173,19 +173,16 @@ export default class WalletTransactions extends Component<Props, State> {
             onFilterDialogOpen={this.onFilterDialogOpen}
             isScrolling={isScrolling}
             isFilterDisabled={isFilterDisabled}
-          >
-            {isFilterDialogOpen && (
-              <FilterDialog
-                locale={currentLocale}
-                dateFormat={currentDateFormat}
-                defaultFilterOptions={defaultFilterOptions}
-                populatedFilterOptions={populatedFilterOptions}
-                onFilter={this.onFilter}
-                onClose={this.onFilterDialogClose}
-                numberFormat={currentNumberFormat}
-              />
-            )}
-          </WalletTransactionsHeader>
+            filterDialogProps={{
+              defaultFilterOptions,
+              populatedFilterOptions,
+              locale: currentLocale,
+              dateFormat: currentDateFormat,
+              onFilter: this.onFilter,
+              onClose: this.onFilterDialogClose,
+              numberFormat: currentNumberFormat,
+            }}
+          />
           <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
         </div>
       </WalletTransactionsListScrollContext.Provider>

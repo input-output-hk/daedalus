@@ -6,6 +6,8 @@ import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import FilterButton from './FilterButton';
+import FilterDialog from './FilterDialog';
+import type { FilterDialogProps } from './FilterDialog';
 import styles from './WalletTransactionsHeader.scss';
 import TinyButton from '../../widgets/forms/TinyButton';
 import downloadIcon from '../../../assets/images/download-icon.inline.svg';
@@ -24,9 +26,9 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  children: Node,
   isFilterDisabled: boolean,
   isScrolling: boolean,
+  filterDialogProps: FilterDialogProps,
   numberOfFilterDimensionsApplied: number,
   numberOfTransactions: number,
   onFilterDialogOpen: Function,
@@ -42,9 +44,9 @@ export default class WalletTransactionsHeader extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      children,
       isFilterDisabled,
       isScrolling,
+      filterDialogProps,
       numberOfFilterDimensionsApplied,
       numberOfTransactions,
       onFilterDialogOpen,
@@ -88,14 +90,20 @@ export default class WalletTransactionsHeader extends Component<Props> {
               disabled={isCsvButtonDisabled}
               loading={false}
             />
-            <FilterButton
-              disabled={isFilterDisabled}
-              numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-              onClick={onFilterDialogOpen}
+            <FilterDialog
+              {...filterDialogProps}
+              triggerElement={
+                <FilterButton
+                  disabled={isFilterDisabled}
+                  numberOfFilterDimensionsApplied={
+                    numberOfFilterDimensionsApplied
+                  }
+                  onClick={onFilterDialogOpen}
+                />
+              }
             />
           </div>
         )}
-        {children}
       </div>
     );
   }
