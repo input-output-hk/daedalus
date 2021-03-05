@@ -67,10 +67,17 @@ export default defineMessages({
     description:
       'Label for the min ADA required value in the wallet send form.',
   },
-  minAdaRequiredTooltip: {
-    id: 'wallet.send.form.minAdaRequiredTooltip',
+  minAdaRequiredWithAssetTooltip: {
+    id: 'wallet.send.form.minAdaRequiredWithAssetTooltip',
     defaultMessage:
-      '!!!A minimum of {minimumAda} ADA needs to be sent to this receiver since you are sending other assets.',
+      '!!!This transaction requires a minimum of {minimumAda} ADA to be sent.',
+    description:
+      'Tooltip for the min ADA required value in the wallet send form.',
+  },
+  minAdaRequiredWithNoAssetTooltip: {
+    id: 'wallet.send.form.minAdaRequiredWithNoAssetTooltip',
+    defaultMessage:
+      '!!!A minimum of {minimumAda} ADA needs to be sent with every transaction.',
     description:
       'Tooltip for the min ADA required value in the wallet send form.',
   },
