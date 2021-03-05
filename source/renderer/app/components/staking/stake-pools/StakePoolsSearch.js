@@ -117,7 +117,7 @@ export class StakePoolsSearch extends Component<Props> {
 
     const clearSearchClasses = classnames([
       styles.inputExtras,
-      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
+      isGridRewardsView ? styles.withGridRewardsView : null,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
     ]);
 
