@@ -349,7 +349,7 @@ export default class WalletsStore extends Store {
     const extended = true;
 
     try {
-      const accountPublicKey = await this.getAccountPublicKey.execute({
+      const accountPublicKey = await this.accountPublicKeyRequest.execute({
         walletId,
         index,
         passphrase,
