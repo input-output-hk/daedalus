@@ -16,6 +16,7 @@ Changelog
 
 ### Fixes
 
+- Fixed text overlapping issue on native token input field ([PR 2422](https://github.com/input-output-hk/daedalus/pull/2422))
 - Fixed transaction fee calculation error messages handling ([PR 2421](https://github.com/input-output-hk/daedalus/pull/2421))
 
 ## 4.0.0-FC1
