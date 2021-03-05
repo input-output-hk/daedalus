@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { findKey } from 'lodash';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import SettingsWrapper from '../utils/SettingsWrapper';
@@ -68,9 +68,16 @@ storiesOf('Settings|General', module)
     <StakePoolsSettings
       onSelectSmashServerUrl={action('onSelectSmashServerUrl')}
       onResetSmashServerError={action('onResetSmashServerError')}
-      isLoading={false}
       smashServerUrl="https://smash.cardano-mainnet.iohk.io"
       onOpenExternalLink={action('onOpenExternalLink')}
+      isSyncing={boolean('isSyncing', false)}
+      syncPercentage={number('syncPercentage', 70, {
+        range: true,
+        min: 0,
+        max: 100,
+        step: 1,
+      })}
+      isLoading={boolean('isLoading', false)}
     />
   ))
   .add('Themes', () => (
