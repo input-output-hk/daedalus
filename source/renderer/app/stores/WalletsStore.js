@@ -82,6 +82,9 @@ export default class WalletsStore extends Store {
   @observable walletPublicKeyRequest: Request<string> = new Request(
     this.api.ada.getWalletPublicKey
   );
+  @observable accountPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getAccountPublicKey
+  );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
   );
@@ -142,6 +145,7 @@ export default class WalletsStore extends Store {
   /* ----------  Active Wallet  ---------- */
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
+  @observable activePublicKey: ?string = null;
   @observable walletsPublicKeys: {
     [key: string]: string,
   } = {};
@@ -268,7 +272,8 @@ export default class WalletsStore extends Store {
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
-    walletsActions.getPublicKey.listen(this._getPublicKey);
+    walletsActions.getWalletPublicKey.listen(this._getWalletPublicKey);
+    walletsActions.getAccountPublicKey.listen(this._getAccountPublicKey);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
@@ -311,7 +316,30 @@ export default class WalletsStore extends Store {
     this.setupCurrency();
   }
 
-  @action _getPublicKey = async ({
+  @action _getWalletPublicKey = async () => {
+    if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+      return;
+    }
+
+    const walletId = this.active.id;
+    const role = '';
+    const index = '';
+
+    try {
+      const walletPublicKey = await this.walletPublicKeyRequest.execute({
+        walletId,
+        role,
+        index,
+      }).promise;
+      runInAction('update wallet public key', () => {
+        this.activePublicKey = walletPublicKey;
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  @action _getAccountPublicKey = async ({
     spendingPassword: passphrase,
   }: {
     spendingPassword: string,
@@ -320,13 +348,12 @@ export default class WalletsStore extends Store {
       return;
     }
 
-    // @TODO Once the api is ready, index value should be configured properly
     const walletId = this.active.id;
     const index = '0H';
     const extended = true;
 
     try {
-      const walletPublicKey = await this.walletPublicKeyRequest.execute({
+      const walletPublicKey = await this.getAccountPublicKey.execute({
         walletId,
         index,
         passphrase,
@@ -1229,6 +1256,7 @@ export default class WalletsStore extends Store {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
+    this.activePublicKey = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 

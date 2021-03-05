@@ -241,6 +241,12 @@ export type GetWalletRequest = {
 
 export type GetWalletPublicKeyRequest = {
   walletId: string,
+  role: string,
+  index: string,
+};
+
+export type GetAccountPublicKeyRequest = {
+  walletId: string,
   index: string,
   passphrase: string,
   extended: boolean,

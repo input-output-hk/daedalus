@@ -5,14 +5,10 @@ import type { GetWalletPublicKeyRequest } from '../types';
 
 export const getWalletPublicKey = (
   config: RequestConfig,
-  { walletId, index, passphrase, extended }: GetWalletPublicKeyRequest
+  { walletId, role, index }: GetWalletPublicKeyRequest
 ): Promise<string> =>
-  request(
-    {
-      method: 'POST',
-      path: `/v2/wallets/${walletId}/keys/${index}`,
-      ...config,
-    },
-    {},
-    { passphrase, extended }
-  );
+  request({
+    method: 'GET',
+    path: `/v2/wallets/${walletId}/keys/${role}/${index}`,
+    ...config,
+  });

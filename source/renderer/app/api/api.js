@@ -190,6 +190,7 @@ import type {
   GetCurrencyListResponse,
   GetCurrencyRateRequest,
   GetCurrencyRateResponse,
+  GetAccountPublicKeyRequest,
 } from './wallets/types';
 import type { WalletProps } from '../domains/Wallet';
 
@@ -236,6 +237,7 @@ import type {
 } from './assets/types';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
+import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 
 const { isIncentivizedTestnet, environment } = global;
 
@@ -339,17 +341,38 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const { walletId, index, passphrase, extended } = request;
+      const { walletId, role, index } = request;
       const walletPublicKey: string = await getWalletPublicKey(this.config, {
         walletId,
+        role,
         index,
-        passphrase,
-        extended,
       });
       logger.debug('AdaApi::getWalletPublicKey success', { walletPublicKey });
       return walletPublicKey;
     } catch (error) {
       logger.error('AdaApi::getWalletPublicKey error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getAccountPublicKey = async (
+    request: GetAccountPublicKeyRequest
+  ): Promise<string> => {
+    logger.debug('AdaApi::getAccountPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const { walletId, index, passphrase, extended } = request;
+      const walletPublicKey: string = await getAccountPublicKey(this.config, {
+        walletId,
+        index,
+        passphrase,
+        extended,
+      });
+      logger.debug('AdaApi::getAccountPublicKey success', { walletPublicKey });
+      return walletPublicKey;
+    } catch (error) {
+      logger.error('AdaApi::getAccountPublicKey error', { error });
       throw new ApiError(error);
     }
   };
