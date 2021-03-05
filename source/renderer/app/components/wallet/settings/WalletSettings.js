@@ -199,9 +199,11 @@ export default class WalletSettings extends Component<Props, State> {
       isDialogOpen,
       walletPublicKeyDialogContainer,
       walletPublicKeyQRCodeDialogContainer,
+      isHardwareWallet,
+      isLegacy,
     } = this.props;
 
-    if (!IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+    if (!IS_WALLET_PUBLIC_KEY_SHARING_ENABLED || isHardwareWallet || isLegacy) {
       return null;
     }
 
