@@ -363,14 +363,14 @@ export default class AdaApi {
     });
     try {
       const { walletId, index, passphrase, extended } = request;
-      const walletPublicKey: string = await getAccountPublicKey(this.config, {
+      const accountPublicKey: string = await getAccountPublicKey(this.config, {
         walletId,
         index,
         passphrase,
         extended,
       });
-      logger.debug('AdaApi::getAccountPublicKey success', { walletPublicKey });
-      return walletPublicKey;
+      logger.debug('AdaApi::getAccountPublicKey success', { accountPublicKey });
+      return accountPublicKey;
     } catch (error) {
       logger.error('AdaApi::getAccountPublicKey error', { error });
       throw new ApiError(error);

@@ -146,9 +146,6 @@ export default class WalletsStore extends Store {
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
   @observable activePublicKey: ?string = null;
-  @observable walletsPublicKeys: {
-    [key: string]: string,
-  } = {};
 
   /* ------------  Currencies  ----------- */
   @observable currencyIsFetchingList: boolean = false;
