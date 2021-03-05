@@ -10,6 +10,7 @@ Changelog
 ### Chores
 
 - Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
+- Increased "Report connecting issues" timeout ([PR 2440](https://github.com/input-output-hk/daedalus/pull/2440))
 - Removed line break characters on the address from exported PDF ([PR 2402](https://github.com/input-output-hk/daedalus/pull/2402))
 
 ## 4.0.1-FC2
