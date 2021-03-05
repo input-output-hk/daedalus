@@ -1,5 +1,3 @@
 @mixin overlay-backrop {
-  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
-  opacity: 0.96;
 }
