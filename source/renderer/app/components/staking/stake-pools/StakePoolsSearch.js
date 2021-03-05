@@ -170,14 +170,15 @@ export class StakePoolsSearch extends Component<Props> {
                   <SVGInline svg={gridIcon} />
                 </button>
               </PopOver>
-              {!isMainnet && (<PopOver
+              {!isMainnet && (
+                <PopOver
                   content={intl.formatMessage(messages.gridRewardsIconTooltip)}
                 >
                   <button
                     className={gridRewardsButtonClasses}
                     onClick={onGridRewardsView}
                   >
-                    <SVGInline svg={gridRewardsIcon}/>
+                    <SVGInline svg={gridRewardsIcon} />
                   </button>
                 </PopOver>
               )}
