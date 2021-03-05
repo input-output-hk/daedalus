@@ -52,11 +52,16 @@ export default class ThumbPoolContent extends Component<Props> {
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
         {isGridRewardsView && (
-          <div className={styles.rewards}>
-            {potentialRewards.precision(5).toString()}
-            <SVGInline svg={adaIcon} className={styles.adaIcon} />
-          </div>
-        )}
+          IS_RANKING_DATA_AVAILABLE ? (
+            <div className={styles.rewards}>
+              {potentialRewards.precision(5).toString()}
+              <SVGInline svg={adaIcon} className={styles.adaIcon}/>
+            </div>
+          ) : (
+            <div className={styles.noDataDash}>
+              <SVGInline svg={noDataDashBigImage}/>
+            </div>
+          ))}
         {!isGridRewardsView &&
           (IS_RANKING_DATA_AVAILABLE ? (
             <div className={styles.ranking} style={{ color }}>
