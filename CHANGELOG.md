@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Updated the "View wallet's public key" feature ([PR 2429](https://github.com/input-output-hk/daedalus/pull/2429))
+- Enabled the "Loading Stake Pools" state anytime the pools are loading ([PR 2424](https://github.com/input-output-hk/daedalus/pull/2424))
 - Implemented the syncing state for the Stake Pools settings screen ([PR 2418](https://github.com/input-output-hk/daedalus/pull/2418))
 
 ### Chores
