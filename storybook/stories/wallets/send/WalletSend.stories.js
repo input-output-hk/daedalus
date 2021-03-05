@@ -29,7 +29,7 @@ const allAssets = [
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
     {
       name: 'MakerDAO',
-      acronym: 'DAI',
+      ticker: 'DAI',
       description: 'Test description',
       unit: {
         name: 'DAI',
@@ -50,7 +50,7 @@ const allAssets = [
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
     {
       name: 'Tether',
-      acronym: 'USDT',
+      ticker: 'USDT',
       description: 'Test description',
       unit: {
         name: 'USDT',
@@ -66,7 +66,7 @@ const allAssets = [
     'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
     {
       name: 'USD Coin',
-      acronym: 'USDC',
+      ticker: 'USDC',
       description: 'Test description',
       unit: {
         name: 'USDC',
@@ -156,7 +156,7 @@ const confirmationAssets = assets.total.map((assetTotal) => {
       ? assetData.metadata
       : {
           name: '',
-          acronym: '',
+          ticker: '',
           description: '',
         },
   };
@@ -189,7 +189,7 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
       ? assetData.metadata
       : {
           name: '',
-          acronym: '',
+          ticker: '',
           description: '',
         },
   };
