@@ -69,9 +69,8 @@ export default class WalletSettingsPage extends Component<Props> {
       );
       if (hardwareWalletConnectionData) {
         const { extendedPublicKey } = hardwareWalletConnectionData;
-        activeWalletPublicKey = extendedPublicKey
-          ? extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex
-          : '';
+        const { publicKeyHex } = extendedPublicKey;
+        activeWalletPublicKey = publicKeyHex || '';
       }
     }
 
