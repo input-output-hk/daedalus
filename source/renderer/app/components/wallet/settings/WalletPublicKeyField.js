@@ -65,8 +65,12 @@ export default class WalletPublicKeyField extends Component<Props, State> {
   }
 
   revealOnReceivingTheWalletKey = () => {
+    const { onShowQRCode } = this.props;
     this.setState({
       walletPublicKeyHidden: false,
+    });
+    setTimeout(() => {
+      onShowQRCode();
     });
   };
 
