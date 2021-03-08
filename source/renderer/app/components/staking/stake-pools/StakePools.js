@@ -284,7 +284,6 @@ export default class StakePools extends Component<Props, State> {
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
               smashServer={smashServer}
-              isClearTooltipOpeningDownward
             />
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>

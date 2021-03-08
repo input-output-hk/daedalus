@@ -55,7 +55,6 @@ const messages = defineMessages({
 type Props = {
   label?: string,
   placeholder?: string,
-  isClearTooltipOpeningDownward?: boolean,
   isListView?: boolean,
   isGridView?: boolean,
   isGridRewardsView?: boolean,
@@ -81,12 +80,18 @@ export class StakePoolsSearch extends Component<Props> {
     return this.props.search.length > 0;
   }
 
+  handleClearSearch = () => {
+    this.props.onClearSearch();
+    if (this.searchInput) {
+      this.searchInput.focus();
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {
       label,
       onSearch,
-      onClearSearch,
       onGridView,
       onGridRewardsView,
       onListView,
@@ -95,7 +100,6 @@ export class StakePoolsSearch extends Component<Props> {
       isListView,
       isGridView,
       isGridRewardsView,
-      isClearTooltipOpeningDownward,
     } = this.props;
 
     const gridButtonClasses = classnames([
@@ -115,10 +119,16 @@ export class StakePoolsSearch extends Component<Props> {
 
     const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
 
+    const searchInputClases = classnames([
+      styles.searchInput,
+      isBigSearchComponent ? styles.inputExtrasSearch : null,
+      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
+    ]);
+
     const clearSearchClasses = classnames([
       styles.inputExtras,
-      isGridRewardsView ? styles.withGridRewardsView : null,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
+      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
     ]);
 
     return (
@@ -128,7 +138,7 @@ export class StakePoolsSearch extends Component<Props> {
           <Input
             autoFocus
             label={label || null}
-            className={styles.searchInput}
+            className={searchInputClases}
             onChange={onSearch}
             ref={(input) => {
               this.searchInput = input;
@@ -143,22 +153,17 @@ export class StakePoolsSearch extends Component<Props> {
           />
           {this.hasSearchClearButton && (
             <div className={clearSearchClasses}>
-              {this.hasSearchClearButton && (
-                <PopOver
-                  content={intl.formatMessage(messages.clearTooltip)}
-                  placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
+              <PopOver content={intl.formatMessage(messages.clearTooltip)}>
+                <button
+                  onClick={this.handleClearSearch}
+                  className={styles.clearSearchButton}
                 >
-                  <button
-                    onClick={onClearSearch}
-                    className={styles.clearSearchButton}
-                  >
-                    <SVGInline
-                      svg={closeIcon}
-                      className={styles.clearSearchIcon}
-                    />
-                  </button>
-                </PopOver>
-              )}
+                  <SVGInline
+                    svg={closeIcon}
+                    className={styles.clearSearchIcon}
+                  />
+                </button>
+              </PopOver>
             </div>
           )}
           {isBigSearchComponent && (
