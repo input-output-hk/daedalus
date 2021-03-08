@@ -79,9 +79,6 @@ export default class WalletsStore extends Store {
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
   );
-  @observable walletPublicKeyRequest: Request<string> = new Request(
-    this.api.ada.getWalletPublicKey
-  );
   @observable accountPublicKeyRequest: Request<string> = new Request(
     this.api.ada.getAccountPublicKey
   );
@@ -311,29 +308,6 @@ export default class WalletsStore extends Store {
 
     this.setupCurrency();
   }
-
-  @action _getWalletPublicKey = async () => {
-    if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
-      return;
-    }
-
-    const walletId = this.active.id;
-    const role = '';
-    const index = '';
-
-    try {
-      const walletPublicKey = await this.walletPublicKeyRequest.execute({
-        walletId,
-        role,
-        index,
-      }).promise;
-      runInAction('update wallet public key', () => {
-        this.activePublicKey = walletPublicKey;
-      });
-    } catch (error) {
-      throw error;
-    }
-  };
 
   @action _getAccountPublicKey = async ({
     spendingPassword: passphrase,
@@ -1241,6 +1215,22 @@ export default class WalletsStore extends Store {
         this.stores.addresses.lastGeneratedAddress = null;
         if (this.active) {
           this.activeValue = formattedWalletAmount(this.active.amount);
+          if (this.active && this.active.isHardwareWallet) {
+            const {
+              hardwareWalletsConnectionData,
+            } = this.stores.hardwareWallets;
+            const hardwareWalletConnectionData = get(
+              hardwareWalletsConnectionData,
+              this.active.id
+            );
+            if (hardwareWalletConnectionData) {
+              const { extendedPublicKey } = hardwareWalletConnectionData;
+              const { publicKeyHex } = extendedPublicKey;
+              this.activePublicKey = publicKeyHex || null;
+            }
+          } else {
+            this.activePublicKey = null;
+          }
         }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated

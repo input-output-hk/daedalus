@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { get } from 'lodash';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
@@ -49,30 +48,17 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       profile,
-      hardwareWallets,
     } = this.props.stores;
-    const { active: activeWallet } = wallets;
-
-    let { activePublicKey: activeWalletPublicKey } = wallets;
+    const {
+      active: activeWallet,
+      activePublicKey: activeWalletPublicKey,
+    } = wallets;
 
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     const { isLegacy, isHardwareWallet } = activeWallet;
-
-    if (isHardwareWallet) {
-      const { hardwareWalletsConnectionData } = hardwareWallets;
-      const hardwareWalletConnectionData = get(
-        hardwareWalletsConnectionData,
-        activeWallet.id
-      );
-      if (hardwareWalletConnectionData) {
-        const { extendedPublicKey } = hardwareWalletConnectionData;
-        const { publicKeyHex } = extendedPublicKey;
-        activeWalletPublicKey = publicKeyHex || '';
-      }
-    }
 
     const { actions } = this.props;
     const {

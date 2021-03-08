@@ -8,7 +8,6 @@ import styles from './WalletPublicKeyDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
-import { isValidSpendingPassword } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -67,12 +66,15 @@ export default class WalletPublicKeyDialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
-              return [
-                isValidSpendingPassword(field.value),
-                this.context.intl.formatMessage(
-                  globalMessages.invalidSpendingPassword
-                ),
-              ];
+              if (field.value === '') {
+                return [
+                  false,
+                  this.context.intl.formatMessage(
+                    globalMessages.fieldIsRequired
+                  ),
+                ];
+              }
+              return [true];
             },
           ],
         },
@@ -109,6 +111,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
         label: intl.formatMessage(messages.buttonLabel),
         onClick: this.submit,
         primary: true,
+        disabled: !this.form.isValid,
       },
     ];
     return (
@@ -127,6 +130,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
           {...spendingPasswordField.bind()}
           error={spendingPasswordField.error}
           onKeyPress={this.handleSubmitOnEnter}
+          autoFocus
         />
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
       </Dialog>

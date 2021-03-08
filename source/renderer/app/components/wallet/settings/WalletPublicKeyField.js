@@ -42,7 +42,6 @@ type Props = {
 
 type State = {
   walletPublicKeyHidden: boolean,
-  walletKeyDialogWasOpen: boolean,
 };
 
 @observer
@@ -53,24 +52,18 @@ export default class WalletPublicKeyField extends Component<Props, State> {
 
   state = {
     walletPublicKeyHidden: true,
-    walletKeyDialogWasOpen: false,
   };
 
   componentDidUpdate({ walletPublicKey: walletPublicKeyPrev }: Props) {
     const { walletPublicKey: walletPublicKeyNext } = this.props;
-    const { walletKeyDialogWasOpen } = this.state;
-    if (walletKeyDialogWasOpen && !walletPublicKeyPrev && walletPublicKeyNext) {
+    if (!walletPublicKeyPrev && walletPublicKeyNext) {
       this.revealOnReceivingTheWalletKey();
     }
   }
 
   revealOnReceivingTheWalletKey = () => {
-    const { onShowQRCode } = this.props;
     this.setState({
       walletPublicKeyHidden: false,
-    });
-    setTimeout(() => {
-      onShowQRCode();
     });
   };
 
@@ -78,9 +71,6 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     const { walletPublicKey, onOpenWalletKeyDialog } = this.props;
     if (!walletPublicKey) {
       onOpenWalletKeyDialog();
-      this.setState({
-        walletKeyDialogWasOpen: true,
-      });
     } else {
       this.setState((prevState) => ({
         walletPublicKeyHidden: !prevState.walletPublicKeyHidden,
