@@ -12,7 +12,7 @@ import styles from './FilterButton.scss';
 type Props = {
   disabled: boolean,
   numberOfFilterDimensionsApplied: number,
-  onClick: Function,
+  onClick?: Function,
 };
 
 @observer

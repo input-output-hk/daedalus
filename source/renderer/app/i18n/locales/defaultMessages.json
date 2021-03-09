@@ -13274,13 +13274,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactions.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 21
+          "line": 20
         }
       }
     ],
@@ -13293,13 +13293,13 @@
         "description": "Label for the \"Transactions\" header.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsHeader.js",
         "id": "wallet.transactions.header.transactions",
         "start": {
           "column": 16,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -13307,13 +13307,13 @@
         "description": "Label for the \"Export CSV\" button.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsHeader.js",
         "id": "wallet.transactions.header.exportCSV.button.label",
         "start": {
           "column": 24,
-          "line": 19
+          "line": 20
         }
       }
     ],
