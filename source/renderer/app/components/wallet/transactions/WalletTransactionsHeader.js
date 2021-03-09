@@ -1,6 +1,5 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
@@ -31,7 +30,6 @@ type Props = {
   filterDialogProps: FilterDialogProps,
   numberOfFilterDimensionsApplied: number,
   numberOfTransactions: number,
-  onFilterDialogOpen: Function,
   onRequestCSVFile: Function,
 };
 
@@ -49,7 +47,6 @@ export default class WalletTransactionsHeader extends Component<Props> {
       filterDialogProps,
       numberOfFilterDimensionsApplied,
       numberOfTransactions,
-      onFilterDialogOpen,
       onRequestCSVFile,
     } = this.props;
     const hasAny = true;
@@ -98,7 +95,6 @@ export default class WalletTransactionsHeader extends Component<Props> {
                   numberOfFilterDimensionsApplied={
                     numberOfFilterDimensionsApplied
                   }
-                  onClick={onFilterDialogOpen}
                 />
               }
             />

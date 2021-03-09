@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
-import React, { Component } from 'react';
-import type { Element } from 'react';
+import React, { Component, createRef } from 'react';
+import type { Element, ElementRef } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import { isEqual, pick } from 'lodash';
@@ -103,7 +103,6 @@ export type FilterDialogProps = {
   defaultFilterOptions: TransactionFilterOptionsType,
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
-  onClose: Function,
   triggerElement?: Element<*>,
 };
 
@@ -115,6 +114,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
 
   dateRangeOptions: Array<{ label: string, value: string }>;
   form: ReactToolboxMobxForm;
+  popoverTippyInstance: ElementRef<*> = createRef();
 
   constructor(props: FilterDialogProps, context: Object) {
     super(props);
@@ -252,7 +252,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
     };
   };
 
-  handleSubmit = () =>
+  handleSubmit = () => {
     this.form.submit({
       onSuccess: () => {
         const { onFilter } = this.props;
@@ -263,6 +263,10 @@ export default class FilterDialog extends Component<FilterDialogProps> {
       },
       onError: () => null,
     });
+    if (this.popoverTippyInstance.current) {
+      this.popoverTippyInstance.current.hide();
+    }
+  };
 
   isValidFromDate = (date: Object) => {
     return date.isSameOrBefore(moment().endOf('day'));
@@ -470,7 +474,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
 
   render() {
     const { intl } = this.context;
-    const { defaultFilterOptions, onClose, triggerElement } = this.props;
+    const { defaultFilterOptions, triggerElement } = this.props;
 
     return (
       <PopOver
@@ -478,7 +482,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
         interactive
         trigger="click"
         appendTo={document.body}
-        onHide={onClose}
+        onShow={(instance) => (this.popoverTippyInstance.current = instance)}
         duration={0}
         offset={[0, 10]}
         maxWidth={640}
