@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import WalletPublicKeyDialog from '../../../../components/wallet/settings/WalletPublicKeyDialog';
-import WalletPublicKeyQRCodeDialog from '../../../../components/wallet/settings/WalletPublicKeyQRCodeDialog';
 
 type Props = InjectedProps;
 
@@ -14,12 +13,8 @@ export default class WalletPublicKeyDialogContainer extends Component<Props> {
 
   handleClose = () => {
     const { actions, stores } = this.props;
-    const { accountPublicKeyRequest, activePublicKey } = stores.wallets;
-    if (activePublicKey) {
-      actions.dialogs.open.trigger({ dialog: WalletPublicKeyQRCodeDialog });
-    } else {
-      actions.dialogs.closeActiveDialog.trigger();
-    }
+    const { accountPublicKeyRequest } = stores.wallets;
+    actions.dialogs.closeActiveDialog.trigger();
     accountPublicKeyRequest.reset();
   };
 
