@@ -374,7 +374,7 @@ export default class HardwareWalletsStore extends Store {
         payments: {
           address,
           amount,
-          assets
+          assets,
         },
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {

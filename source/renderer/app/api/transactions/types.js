@@ -269,3 +269,5 @@ export type GetWithdrawalsRequest = {
 export type GetWithdrawalsResponse = {
   withdrawals: BigNumber,
 };
+
+export type CoinSelectionAssetsType = Array<Asset>;

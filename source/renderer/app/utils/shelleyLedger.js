@@ -16,6 +16,7 @@ import type {
   CoinSelectionOutput,
   CoinSelectionCertificate,
   CoinSelectionWithdrawal,
+  CoinSelectionAssetsType,
 } from '../api/transactions/types';
 import type {
   BIP32Path,
@@ -33,7 +34,7 @@ export type ShelleyTxInputType = {
 
 export type ShelleyTxOutputType = {
   address: string,
-  coins: number,
+  coins: number | [number, Map<Buffer, Map<Buffer, number>>],
   isChange: boolean,
   spendingPath: ?BIP32Path,
   stakingPath: ?BIP32Path,
@@ -114,26 +115,29 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-export const groupTokensByPolicyId = (assets) => groupBy(assets, 'policyId');
+export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) =>
+  groupBy(assets, 'policyId');
 
-export const ShelleyTxOutputAssets = (assets) => {
+export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
   const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
   const tokenObject = groupTokensByPolicyId(assets);
 
   Object.entries(tokenObject).forEach(([policyId, tokens]) => {
     const assetMap = new Map<Buffer, number>();
-    tokens.forEach(({assetName, quantity}) => {
-      assetMap.set(Buffer.from(assetName, 'hex'), quantity);
-    })
+    map(tokens, (token) => {
+      assetMap.set(Buffer.from(token.assetName, 'hex'), token.quantity);
+    });
     policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
-  })
+  });
   return policyIdMap;
 };
 
-export const prepareTokenBundle = (assets) => {
+export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
-  return Object.entries(tokenObject).map(([policyId, tokens]) => {
-    const tokensList = tokens.map(({assetName, quantity}) => ({
+  const tokenObjectEntries = Object.entries(tokenObject);
+
+  const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
+    const tokensList = tokens.map(({ assetName, quantity }) => ({
       assetNameHex: assetName,
       amountStr: quantity.toString(),
     }));
@@ -142,15 +146,20 @@ export const prepareTokenBundle = (assets) => {
       tokens: tokensList,
     };
   });
+
+  return tokenBundle;
 };
 
 export const ShelleyTxOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
 ) => {
-  const { address, amount, derivationPath } = output;
+  const { address, amount, derivationPath, assets } = output;
   const adaCoinQuantity = amount.quantity;
-  const coins = output.assets.length > 0 ? [adaCoinQuantity, ShelleyTxOutputAssets(output.assets)] : adaCoinQuantity;
+  const coins =
+    assets && assets.length > 0
+      ? [adaCoinQuantity, ShelleyTxOutputAssets(assets)]
+      : adaCoinQuantity;
 
   function encodeCBOR(encoder: any) {
     const addressBuff =
@@ -381,8 +390,12 @@ export const prepareLedgerOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
 ) => {
-  const tokenBundle = prepareTokenBundle(output.assets);
   const isChange = output.derivationPath !== null;
+
+  let tokenBundle = [];
+  if (output.assets) {
+    tokenBundle = prepareTokenBundle(output.assets);
+  }
 
   if (isChange) {
     return {

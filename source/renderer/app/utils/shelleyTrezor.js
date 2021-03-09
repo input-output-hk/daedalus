@@ -70,10 +70,12 @@ const _getTokenBundle = (assets) => {
   const constructedAssets = map(assets, (asset) => {
     return {
       policyId: asset.policyId,
-      tokenAmounts: [{
-        assetNameBytes: asset.assetName,
-        amount: asset.quantity.toString(),
-      }],
+      tokenAmounts: [
+        {
+          assetNameBytes: asset.assetName,
+          amount: asset.quantity.toString(),
+        },
+      ],
     };
   });
   return constructedAssets;
