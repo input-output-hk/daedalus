@@ -1,3 +1,5 @@
+@import '../../themes/mixins/overlay-backdrop';
+
 .overlay {
   background-color: var(--theme-about-window-background-color);
   bottom: 0;
@@ -8,6 +10,7 @@
   right: 0;
   top: 0;
   z-index: 9999;
+  @include overlay-backrop;
 
   &::-webkit-scrollbar-button {
     height: 21px;
