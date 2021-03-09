@@ -110,7 +110,7 @@ $ vi ./utils/cardano/native-tokens/registry.json        # ..or any other editor,
 Use the following command to check if the mock server is working correctly:
 
 ```
-$ curl -i -H "Content-type: application/json" --data '{"subjects":["789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1"],"properties":["name","description","acronym","unit","logo"]}'
+$ curl -i -H "Content-type: application/json" --data '{"subjects":["789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1"],"properties":["name","description","ticker","unit","logo"]}'
 http://localhost:65432/metadata/query
 ```
 ... and expect a "200 OK" response.

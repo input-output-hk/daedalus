@@ -45,12 +45,12 @@ export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata
 ): string => {
-  const { acronym, unit } = metadata || {};
+  const { ticker, unit } = metadata || {};
   const { decimals } = unit || {};
   const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
   let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
-  if (acronym) {
-    formattedAmount += ` ${acronym}`;
+  if (ticker) {
+    formattedAmount += ` ${ticker}`;
   }
   return formattedAmount;
 };
