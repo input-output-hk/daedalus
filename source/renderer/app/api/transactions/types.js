@@ -237,6 +237,7 @@ export type CoinSelectionsPaymentRequestType = {
   walletId: string,
   address: string,
   amount: number,
+  assets?: AssetItems,
 };
 
 export type CoinSelectionsRequest =

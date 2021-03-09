@@ -67,16 +67,14 @@ export const prepareTrezorWithdrawal = (
 // Helper Methods
 
 const _getTokenBundle = (assets) => {
-  console.debug('>>> GET assets: ', assets);
   const constructedAssets = map(assets, (asset) => {
     return {
       policyId: asset.policy_id,
-      tokenAmounts: [{ // @TODO - add multiple amounts and check name BYTES
+      tokenAmounts: [{
         assetNameBytes: asset.asset_name,
         amount: asset.quantity.toString(),
       }],
     };
   });
-  console.debug('>>> GET assets constructed: ', constructedAssets);
   return constructedAssets;
 };

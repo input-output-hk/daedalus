@@ -114,48 +114,28 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-// @TODO - check if this is correct multiassets constructor
-// const _getAssetsMap = (adaCoinQuantity, multiassets) => {
-//   const assetsMap = new Map();
-//   assetsMap.set(0, adaCoinQuantity);
-//   map(multiassets, (asset) => {
-//     assetsMap.set(asset.policyId, { [asset.assetName]: asset.quantity })
-//   })
-//   return assetsMap;
-// }
-
 export const groupTokensByPolicyId = (assets) => {
-  console.debug('>>> GROUP: ', assets);
   return _(assets)
     .groupBy(({ policy_id }) => policy_id)
     .value()
-}
+};
 
 export const ShelleyTxOutputAssets = (assets) => {
-  const policyIdMap = new Map<Buffer, Map<Buffer, number>>()
-
-  // const constructedAssets = _getAssets(assets);
+  const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
   const tokenObject = groupTokensByPolicyId(assets);
-  console.debug('>>> GROUP - done: ', tokenObject);
 
   Object.entries(tokenObject).forEach(([policy_id, tokens]) => {
-    console.debug('>>> MAPA: ', { policy_id, tokens })
-    const assetMap = new Map<Buffer, number>()
+    const assetMap = new Map<Buffer, number>();
     tokens.forEach(({asset_name, quantity}) => {
-      console.debug('>>> MAPA 2: ', { asset_name, quantity })
-      assetMap.set(Buffer.from(asset_name, 'hex'), quantity)
+      assetMap.set(Buffer.from(asset_name, 'hex'), quantity);
     })
-    policyIdMap.set(Buffer.from(policy_id, 'hex'), assetMap)
+    policyIdMap.set(Buffer.from(policy_id, 'hex'), assetMap);
   })
-  return policyIdMap
-}
+  return policyIdMap;
+};
 
 export const prepareTokenBundle = (assets) => {
-  console.debug('>>>> prepareTokenBundle: ', {assets});
-  const tokenObject = groupTokensByPolicyId(assets)
-
-  console.debug('>>>> prepareTokenBundle - DONE: ', tokenObject);
-
+  const tokenObject = groupTokensByPolicyId(assets);
   return Object.entries(tokenObject).map(([policy_id, tokens]) => {
     const tokensList = tokens.map(({asset_name, quantity}) => ({
       assetNameHex: asset_name,
@@ -164,9 +144,9 @@ export const prepareTokenBundle = (assets) => {
     return {
       policyIdHex: policy_id,
       tokens: tokensList,
-    }
-  })
-}
+    };
+  });
+};
 
 export const ShelleyTxOutput = (
   output: CoinSelectionOutput,
@@ -174,25 +154,7 @@ export const ShelleyTxOutput = (
 ) => {
   const { address, amount, derivationPath } = output;
   const adaCoinQuantity = amount.quantity;
-
-  // @TODO - check if this is correct multiassets constructor and fallback to ADA asset for now
-  // const multiassets = output.assets;
-  // const coins = !multiassets ? adaCoinQuantity : [adaCoinQuantity, _getAssetsMap(adaCoinQuantity, multiassets)];
-
-  const assets = [
-    {
-      policy_id: "6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7",
-      asset_name: '',
-      quantity: 3,
-    }
-  ]
-  console.debug('>>> START - ShelleyTxOutput: ', { assets: output.assets, LEN: output.assets.length });
-
-  // const coins = assets.length > 0 ? [adaCoinQuantity, ShelleyTxOutputAssets(assets)] : adaCoinQuantity;
   const coins = output.assets.length > 0 ? [adaCoinQuantity, ShelleyTxOutputAssets(output.assets)] : adaCoinQuantity;
-
-
-  console.debug('>>> COINS FINAL: ', coins);
 
   function encodeCBOR(encoder: any) {
     const addressBuff =
@@ -201,6 +163,7 @@ export const ShelleyTxOutput = (
         : utils.base58_decode(address);
     return encoder.pushAny([addressBuff, coins]);
   }
+
   const isChange = derivationPath !== null;
   return {
     address,
@@ -357,6 +320,8 @@ export const ShelleySignedTransactionStructured = (
 
   return {
     getId,
+    witnesses,
+    txAux,
     encodeCBOR,
   };
 };
@@ -420,18 +385,15 @@ export const prepareLedgerOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
 ) => {
-  console.debug('>>> PREPARE OUTPUT: ', output);
   const tokenBundle = prepareTokenBundle(output.assets);
-  console.debug('>>> tokenBundle GROUP BY: ', tokenBundle);
-
   const isChange = output.derivationPath !== null;
+
   if (isChange) {
     return {
       addressTypeNibble: 0,
       spendingPath: derivationPathToLedgerPath(output.derivationPath),
       amountStr: output.amount.quantity.toString(),
       stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
-      // tokenBundle: output.assets ? _getAssets(output.assets) : null,
       tokenBundle,
     };
   }
@@ -443,7 +405,6 @@ export const prepareLedgerOutput = (
   return {
     amountStr: output.amount.quantity.toString(),
     addressHex: utils.buf_to_hex(decodedAddress),
-    // tokenBundle: output.assets ? _getAssets(output.assets) : null,
     tokenBundle,
   };
 };
@@ -488,30 +449,3 @@ export const prepareBody = (
   );
   return encode(signedTransactionStructure).toString('hex');
 };
-
-// Helper Methods
-
-const _getAssets = (assets) => {
-  console.debug('>>> GET ASSETS - Ledger: ', assets);
-  const constructedAssets = map(assets, (asset) => {
-    return {
-      policyIdHex: asset.policy_id,
-      tokens: [{ // @TODO
-        assetNameHex: asset.asset_name,
-        amountStr: asset.quantity.toString(),
-      }],
-    };
-  });
-  console.debug('>>> GET ASSETS constructed - Ledger: ', constructedAssets);
-  return constructedAssets;
-};
-
-// @TODO - check if this is correct multiassets constructor
-// const _getAssetsMap = (adaCoinQuantity, multiassets) => {
-//   const assetsMap = new Map();
-//   assetsMap.set(0, adaCoinQuantity);
-//   map(multiassets, (asset) => {
-//     assetsMap.set(asset.policyId, { [asset.assetName]: asset.quantity })
-//   })
-//   return assetsMap;
-// }
