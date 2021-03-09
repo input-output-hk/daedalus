@@ -29,8 +29,14 @@ export function ThumbPool(props: {
   containerClassName: string,
   numberOfRankedStakePools: number,
   disabledStakePoolId: ?string,
+  isGridRewardsView?: boolean,
 }) {
-  const { isSelected, numberOfRankedStakePools, stakePool } = props;
+  const {
+    isGridRewardsView,
+    isSelected,
+    numberOfRankedStakePools,
+    stakePool,
+  } = props;
   const { ranking, id } = stakePool;
   const color = getColorFromRange(ranking, numberOfRankedStakePools);
   const isDisabled = props.disabledStakePoolId === id;
@@ -51,6 +57,7 @@ export function ThumbPool(props: {
   ) : (
     <ThumbPoolContent
       stakePool={stakePool}
+      isGridRewardsView={isGridRewardsView}
       numberOfRankedStakePools={numberOfRankedStakePools}
     />
   );
@@ -70,6 +77,7 @@ export function ThumbPool(props: {
         containerClassName={props.containerClassName}
         numberOfRankedStakePools={numberOfRankedStakePools}
         showWithSelectButton={props.showWithSelectButton}
+        isGridRewardsView={isGridRewardsView}
       >
         <div
           className={contentClassnames}

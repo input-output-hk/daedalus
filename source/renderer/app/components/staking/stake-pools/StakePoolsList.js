@@ -23,6 +23,7 @@ type StakePoolsListProps = {
   numberOfRankedStakePools: number,
   selectedPoolId?: ?string,
   disabledStakePoolId?: ?string,
+  isGridRewardsView?: boolean,
 };
 
 /**
@@ -55,6 +56,7 @@ const StakePoolTiles = observer((props: StakePoolsListProps) => {
             containerClassName={props.containerClassName}
             numberOfRankedStakePools={props.numberOfRankedStakePools}
             disabledStakePoolId={props.disabledStakePoolId}
+            isGridRewardsView={props.isGridRewardsView}
           />
         );
       })}
