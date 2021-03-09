@@ -62,7 +62,7 @@ export const hardenedPathToString = (hardendedPath: Array<string>) => {
   return derivationPathToString(path).replace('m/', '');
 };
 
-export const bech32EncodePublicKey = (data: Buffer) => {
+export const bech32EncodePublicKey = (data: Buffer): string => {
   const data5bit = bech32.toWords(data);
   return bech32.encode(
     KEY_PREFIXES.PUBLIC_KEY_WITH_CHAIN_CODE,
@@ -71,7 +71,7 @@ export const bech32EncodePublicKey = (data: Buffer) => {
   );
 };
 
-export const bech32DecodePublicKey = (data: string) => {
+export const bech32DecodePublicKey = (data: string): Buffer => {
   const { words } = bech32.decode(data, 1000);
   return Buffer.from(bech32.fromWords(words));
 };
