@@ -373,7 +373,11 @@ export default class AdaApi {
       return accountPublicKey;
     } catch (error) {
       logger.error('AdaApi::getAccountPublicKey error', { error });
-      throw new ApiError(error);
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
@@ -1209,7 +1213,6 @@ export default class AdaApi {
       return _createAddressFromServerData(address);
     } catch (error) {
       logger.error('AdaApi::createAddress error', { error });
-
       throw new ApiError(error)
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
