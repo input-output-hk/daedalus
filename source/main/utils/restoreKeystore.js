@@ -19,7 +19,41 @@ export const decodeKeystore = async (
 ): Promise<EncryptedSecretKeys> => {
   return cbor
     .decodeAll(bytes)
-    .then((obj) => obj[0][2].map(toEncryptedSecretKey));
+    .then((obj) => {
+      /**
+       * The original 'UserSecret' from cardano-sl looks like this:
+       *
+       * ```hs
+       * data UserSecret = UserSecret
+       *     { _usVss       :: Maybe VssKeyPair
+       *     , _usPrimKey   :: Maybe SecretKey
+       *     , _usKeys      :: [EncryptedSecretKey]
+       *     , _usWalletSet :: Maybe WalletUserSecret
+       *     , _usPath      :: FilePath
+       *     , _usLock      :: Maybe FileLock
+       *     }
+       *
+       * data WalletUserSecret = WalletUserSecret
+       *     { _wusRootKey    :: EncryptedSecretKey
+       *     , _wusWalletName :: Text
+       *     , _wusAccounts   :: [(Word32, Text)]
+       *     , _wusAddrs      :: [(Word32, Word32)]
+       *     }
+       * ```
+       *
+       * We are interested in:
+       * - usKeys:
+       *    which is where keys have been stored since ~2018
+       *
+       * - usWalletSet
+       *    which seems to have been used in earlier version; at least the
+       *    wallet from the time did allow to restore so-called 'wallets'
+       *    from keys coming from that 'WalletUserSecret'
+       */
+      const usKeys = obj[0][2].map(toEncryptedSecretKey);
+      const usWalletSet = obj[0][3].map(x => toEncryptedSecretKey(x[0]));
+      return usKeys.concat(usWalletSet);
+    });
 };
 
 const toEncryptedSecretKey = ([encryptedPayload, passphraseHash]: [
