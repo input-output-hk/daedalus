@@ -1105,7 +1105,25 @@ export default class AdaApi {
       return extendedResponse;
     } catch (error) {
       logger.error('AdaApi::selectCoins error', { error });
-      throw new ApiError(error);
+      // ApiError with logging showcase
+      throw new ApiError(error, {
+        logError: true,
+        msg: 'AdaApi::calculateTransactionFee error',
+      })
+        .set('notEnoughFundsForTransaction', true)
+        .where('code', 'not_enough_money')
+        .set('invalidAddress')
+        .where('code', 'bad_request')
+        .inc('message', 'Unable to decode Address')
+        .set('utxoTooSmall', true, {
+          minimumAda: get(
+            /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
+            2,
+            0
+          ),
+        })
+        .where('code', 'utxo_too_small')
+        .result();
     }
   };
 
