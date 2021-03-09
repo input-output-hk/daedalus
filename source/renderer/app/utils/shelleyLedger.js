@@ -2,7 +2,7 @@
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
-import { map } from 'lodash';
+import { map, groupBy } from 'lodash';
 import {
   derivationPathToLedgerPath,
   CERTIFICATE_TYPE,
@@ -114,35 +114,31 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-export const groupTokensByPolicyId = (assets) => {
-  return _(assets)
-    .groupBy(({ policy_id }) => policy_id)
-    .value()
-};
+export const groupTokensByPolicyId = (assets) => groupBy(assets, 'policyId');
 
 export const ShelleyTxOutputAssets = (assets) => {
   const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
   const tokenObject = groupTokensByPolicyId(assets);
 
-  Object.entries(tokenObject).forEach(([policy_id, tokens]) => {
+  Object.entries(tokenObject).forEach(([policyId, tokens]) => {
     const assetMap = new Map<Buffer, number>();
-    tokens.forEach(({asset_name, quantity}) => {
-      assetMap.set(Buffer.from(asset_name, 'hex'), quantity);
+    tokens.forEach(({assetName, quantity}) => {
+      assetMap.set(Buffer.from(assetName, 'hex'), quantity);
     })
-    policyIdMap.set(Buffer.from(policy_id, 'hex'), assetMap);
+    policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
   })
   return policyIdMap;
 };
 
 export const prepareTokenBundle = (assets) => {
   const tokenObject = groupTokensByPolicyId(assets);
-  return Object.entries(tokenObject).map(([policy_id, tokens]) => {
-    const tokensList = tokens.map(({asset_name, quantity}) => ({
-      assetNameHex: asset_name,
+  return Object.entries(tokenObject).map(([policyId, tokens]) => {
+    const tokensList = tokens.map(({assetName, quantity}) => ({
+      assetNameHex: assetName,
       amountStr: quantity.toString(),
     }));
     return {
-      policyIdHex: policy_id,
+      policyIdHex: policyId,
       tokens: tokensList,
     };
   });

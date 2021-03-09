@@ -69,9 +69,9 @@ export const prepareTrezorWithdrawal = (
 const _getTokenBundle = (assets) => {
   const constructedAssets = map(assets, (asset) => {
     return {
-      policyId: asset.policy_id,
+      policyId: asset.policyId,
       tokenAmounts: [{
-        assetNameBytes: asset.asset_name,
+        assetNameBytes: asset.assetName,
         amount: asset.quantity.toString(),
       }],
     };
