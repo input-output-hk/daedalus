@@ -967,6 +967,7 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, payments, delegation } = request;
+    console.debug('>>> MAKE CS REQUEST: ', request);
     try {
       let data;
       if (delegation) {
@@ -985,17 +986,23 @@ export default class AdaApi {
                 quantity: payments.amount,
                 unit: WalletUnits.LOVELACE,
               },
+              assets: payments.assets,
             },
           ],
           withdrawal: TransactionWithdrawal,
         };
       } else {
+        console.debug('>>> ERR 1');
         throw new Error('Missing parameters!');
       }
+      console.debug('>>> MAKE CS DATA: ', data);
       const response = await selectCoins(this.config, {
         walletId,
         data,
       });
+
+      console.debug('>>> RES: ', response);
+      console.debug('>>> Coin Selection API res: ', JSON.stringify(response));
 
       // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
       const outputs = concat(response.outputs, response.change);
@@ -1016,6 +1023,7 @@ export default class AdaApi {
           id: input.id,
           index: input.index,
           derivationPath: input.derivation_path,
+          assets: input.assets,
         };
         inputsData.push(inputData);
       });
@@ -1027,6 +1035,7 @@ export default class AdaApi {
           address: output.address,
           amount: output.amount,
           derivationPath: output.derivation_path || null,
+          assets: output.assets,
         };
         outputsData.push(outputData);
       });
@@ -1078,6 +1087,8 @@ export default class AdaApi {
           ? totalInputs.minus(totalOutputs).plus(depositsReclaimed)
           : totalInputs.minus(totalOutputs).minus(deposits);
 
+      console.debug('>>> FULL RES CS: ', response);
+
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
@@ -1091,6 +1102,7 @@ export default class AdaApi {
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
     } catch (error) {
+      console.debug('>>> ERR 2: ', error);
       logger.error('AdaApi::selectCoins error', { error });
       throw new ApiError(error);
     }

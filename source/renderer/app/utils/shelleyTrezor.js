@@ -26,7 +26,7 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
     // Change output
     return {
       amount: output.amount.quantity.toString(),
-      tokenBundle: _getAssets(output.assets),
+      tokenBundle: _getTokenBundle(output.assets),
       addressParameters: {
         addressType: 0, // BASE address
         path: derivationPathToString(output.derivationPath),
@@ -37,7 +37,7 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
   return {
     address: output.address,
     amount: output.amount.quantity.toString(),
-    tokenBundle: _getAssets(output.assets),
+    tokenBundle: _getTokenBundle(output.assets),
   };
 };
 
@@ -66,15 +66,17 @@ export const prepareTrezorWithdrawal = (
 
 // Helper Methods
 
-const _getAssets = (assets) => {
+const _getTokenBundle = (assets) => {
+  console.debug('>>> GET assets: ', assets);
   const constructedAssets = map(assets, (asset) => {
     return {
-      policyId: asset.policyId,
-      tokens: {
-        assetNameBytes: asset.assetName,
+      policyId: asset.policy_id,
+      tokenAmounts: [{ // @TODO - add multiple amounts and check name BYTES
+        assetNameBytes: asset.asset_name,
         amount: asset.quantity.toString(),
-      },
+      }],
     };
   });
+  console.debug('>>> GET assets constructed: ', constructedAssets);
   return constructedAssets;
 };

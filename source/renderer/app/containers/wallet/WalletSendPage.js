@@ -34,6 +34,7 @@ export default class WalletSendPage extends Component<Props> {
     isHardwareWallet: boolean,
     selectedAssets?: AssetItems,
   }) => {
+    console.debug('>>> CALCULATE FEES: ', {params});
     const {
       walletId,
       address,
@@ -49,6 +50,7 @@ export default class WalletSendPage extends Component<Props> {
           walletId,
           address,
           amount,
+          assets: selectedAssets,
         }
       );
       fee = coinsSelection.fee;

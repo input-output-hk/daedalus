@@ -363,7 +363,8 @@ export default class HardwareWalletsStore extends Store {
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
   selectCoins = async (params: CoinSelectionsPaymentRequestType) => {
-    const { walletId, address, amount } = params;
+    console.debug('>>>> SELECT C: ', params);
+    const { walletId, address, amount, assets } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
@@ -374,6 +375,7 @@ export default class HardwareWalletsStore extends Store {
         payments: {
           address,
           amount,
+          assets
         },
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
@@ -1193,6 +1195,24 @@ export default class HardwareWalletsStore extends Store {
     const ttl = this._getTtl();
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
 
+    console.debug('>>> DATA For Trezor: ', {
+      coinSelection,
+      inputs: inputsData,
+      outputs: outputsData,
+      fee: formattedAmountToLovelace(fee.toString()).toString(),
+      ttl: ttl.toString(),
+      validityIntervalStartStr: absoluteSlotNumber.toString(),
+      networkId: isMainnet
+        ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+        : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+      protocolMagic: isMainnet
+        ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic
+        : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
+      certificates: certificatesData,
+      withdrawals: withdrawalsData,
+      devicePath: recognizedDevicePath,
+    })
+
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
@@ -1319,9 +1339,16 @@ export default class HardwareWalletsStore extends Store {
       });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
+      console.debug('>>> HW output: ', output);
       const ledgerOutput = prepareLedgerOutput(output, addressStyle);
       outputsData.push(ledgerOutput);
     }
+
+
+    console.debug('>>> ORDER: ', {
+      unsignedTxOutputs,
+      outputsData,
+    })
 
     // Construct certificates
     const unsignedTxCerts = [];
@@ -1351,6 +1378,29 @@ export default class HardwareWalletsStore extends Store {
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
     const metadataHashHex = null;
     const { isMainnet } = this.environment;
+
+
+     console.debug('>>> DATA For Ledger: ', {
+      coinSelection,
+      inputs: inputsData,
+      outputs: outputsData,
+      fee: fee.toString(),
+      ttl: ttl.toString(),
+      validityIntervalStartStr: absoluteSlotNumber.toString(),
+      networkId: isMainnet
+        ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+        : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+      protocolMagic: isMainnet
+        ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+        : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+      certificates: certificatesData,
+      withdrawals: withdrawalsData,
+      metadataHashHex,
+      devicePath,
+      unsignedTxInputs,
+      unsignedTxOutputs,
+    })
+
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
@@ -1394,6 +1444,8 @@ export default class HardwareWalletsStore extends Store {
 
       // Prepare serialized transaction with unsigned data and signed witnesses
       const txBody = await prepareBody(unsignedTx, txWitnesses);
+
+      console.debug('>>> TX BODY / unsigned TX: ', { unsignedTx, txBody})
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;

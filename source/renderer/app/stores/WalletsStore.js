@@ -771,6 +771,15 @@ export default class WalletsStore extends Store {
     assets?: Array<WalletSummaryAsset>,
     assetsAmounts?: Array<string>,
   }) => {
+
+    console.debug('>>> REQ: ', {
+      receiver,
+      amount,
+      passphrase,
+      assets,
+      assetsAmountsStr
+    })
+
     const assetsAmounts = assetsAmountsStr
       ? assetsAmountsStr.map((assetAmount) => parseInt(assetAmount, 10))
       : null;
@@ -785,6 +794,13 @@ export default class WalletsStore extends Store {
             })
           )
         : null;
+
+    console.debug('>>> DATA TO SEND: ', {
+      address: receiver,
+      amount: parseInt(amount, 10),
+      passphrase,
+      assets: formattedAssets,
+    })
 
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
