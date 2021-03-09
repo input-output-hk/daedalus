@@ -7,7 +7,8 @@ import type {
 
 import type { SmashServerStatuses } from '../api/staking/types';
 
-const { smashUrl } = global;
+const { smashUrl, environment, isFlight } = global;
+const { isMainnet } = environment;
 
 export const SMASH_SERVERS_LIST: {
   [key: SmashServerType]: {
@@ -113,8 +114,8 @@ export const DELEGATION_ACTIONS: {
   QUIT: 'quit',
 };
 
+export const IS_GRID_REWARDS_VIEW_AVAILABLE = isFlight || !isMainnet;
 export const IS_RANKING_DATA_AVAILABLE = true;
-
 export const IS_SATURATION_DATA_AVAILABLE = true;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds

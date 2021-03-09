@@ -2726,7 +2726,7 @@ const _createAssetFromServerData = action(
           name: "Tim's token",
           description:
             'This is a test token to show you how it will look in Daedalus',
-          acronym: 'TIM',
+          ticker: 'TIM',
         },
       },
       '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf389790866861707079636f696e': {
@@ -2737,7 +2737,7 @@ const _createAssetFromServerData = action(
           name: "Darko's token",
           description:
             'This is a test token to show you how it will look in Daedalus',
-          acronym: 'DARK',
+          ticker: 'DARK',
           unit: {
             decimals: 2,
             name: 'Ark',
