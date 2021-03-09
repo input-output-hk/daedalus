@@ -114,17 +114,47 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
+export const groupTokensByPolicyId = (assets) => {
+  return _(assets)
+    .groupBy(({ policy_id }) => policy_id)
+    .value()
+};
+
+export const ShelleyTxOutputAssets = (assets) => {
+  const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
+  const tokenObject = groupTokensByPolicyId(assets);
+
+  Object.entries(tokenObject).forEach(([policy_id, tokens]) => {
+    const assetMap = new Map<Buffer, number>();
+    tokens.forEach(({asset_name, quantity}) => {
+      assetMap.set(Buffer.from(asset_name, 'hex'), quantity);
+    })
+    policyIdMap.set(Buffer.from(policy_id, 'hex'), assetMap);
+  })
+  return policyIdMap;
+};
+
+export const prepareTokenBundle = (assets) => {
+  const tokenObject = groupTokensByPolicyId(assets);
+  return Object.entries(tokenObject).map(([policy_id, tokens]) => {
+    const tokensList = tokens.map(({asset_name, quantity}) => ({
+      assetNameHex: asset_name,
+      amountStr: quantity.toString(),
+    }));
+    return {
+      policyIdHex: policy_id,
+      tokens: tokensList,
+    };
+  });
+};
+
 export const ShelleyTxOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
 ) => {
   const { address, amount, derivationPath } = output;
   const adaCoinQuantity = amount.quantity;
-
-  // @TODO - check if this is correct multiassets constructor and fallback to ADA asset for now
-  // const multiassets = output.assets;
-  // const coins = !multiassets ? adaCoinQuantity : [adaCoinQuantity, _getAssetsMap(adaCoinQuantity, multiassets)];
-  const coins = adaCoinQuantity;
+  const coins = output.assets.length > 0 ? [adaCoinQuantity, ShelleyTxOutputAssets(output.assets)] : adaCoinQuantity;
 
   function encodeCBOR(encoder: any) {
     const addressBuff =
@@ -133,6 +163,7 @@ export const ShelleyTxOutput = (
         : utils.base58_decode(address);
     return encoder.pushAny([addressBuff, coins]);
   }
+
   const isChange = derivationPath !== null;
   return {
     address,
@@ -259,7 +290,6 @@ export const ShelleyTxAux = (
     txMap.set(3, ttl);
     if (certs && certs.length) txMap.set(4, certs);
     if (withdrawals) txMap.set(5, withdrawals);
-    // if (withdrawals) withdrawals;
     return encoder.pushAny(txMap);
   }
 
@@ -355,14 +385,16 @@ export const prepareLedgerOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
 ) => {
+  const tokenBundle = prepareTokenBundle(output.assets);
   const isChange = output.derivationPath !== null;
+
   if (isChange) {
     return {
       addressTypeNibble: 0,
       spendingPath: derivationPathToLedgerPath(output.derivationPath),
       amountStr: output.amount.quantity.toString(),
       stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
-      tokenBundle: output.assets ? _getAssets(output.assets) : null,
+      tokenBundle,
     };
   }
 
@@ -373,7 +405,7 @@ export const prepareLedgerOutput = (
   return {
     amountStr: output.amount.quantity.toString(),
     addressHex: utils.buf_to_hex(decodedAddress),
-    tokenBundle: output.assets ? _getAssets(output.assets) : null,
+    tokenBundle,
   };
 };
 
@@ -417,28 +449,3 @@ export const prepareBody = (
   );
   return encode(signedTransactionStructure).toString('hex');
 };
-
-// Helper Methods
-
-const _getAssets = (assets) => {
-  const constructedAssets = map(assets, (asset) => {
-    return {
-      policyIdHex: asset.policyId,
-      tokens: {
-        assetNameHex: asset.assetName,
-        amountStr: asset.quantity.toString(),
-      },
-    };
-  });
-  return constructedAssets;
-};
-
-// @TODO - check if this is correct multiassets constructor
-// const _getAssetsMap = (adaCoinQuantity, multiassets) => {
-//   const assetsMap = new Map();
-//   assetsMap.set(0, adaCoinQuantity);
-//   map(multiassets, (asset) => {
-//     assetsMap.set(asset.policyId, { [asset.assetName]: asset.quantity })
-//   })
-//   return assetsMap;
-// }

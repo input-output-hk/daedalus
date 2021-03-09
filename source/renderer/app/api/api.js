@@ -985,6 +985,7 @@ export default class AdaApi {
                 quantity: payments.amount,
                 unit: WalletUnits.LOVELACE,
               },
+              assets: payments.assets,
             },
           ],
           withdrawal: TransactionWithdrawal,
@@ -1016,6 +1017,7 @@ export default class AdaApi {
           id: input.id,
           index: input.index,
           derivationPath: input.derivation_path,
+          assets: input.assets,
         };
         inputsData.push(inputData);
       });
@@ -1027,6 +1029,7 @@ export default class AdaApi {
           address: output.address,
           amount: output.amount,
           derivationPath: output.derivation_path || null,
+          assets: output.assets,
         };
         outputsData.push(outputData);
       });
