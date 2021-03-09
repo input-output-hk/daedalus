@@ -18,6 +18,7 @@ import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
+import { bech32EncodePublicKey } from '../utils/hardwareWalletUtils';
 import {
   WalletPaperWalletOpenPdfError,
   WalletRewardsOpenCsvError,
@@ -1225,8 +1226,10 @@ export default class WalletsStore extends Store {
             );
             if (hardwareWalletConnectionData) {
               const { extendedPublicKey } = hardwareWalletConnectionData;
-              const { publicKeyHex } = extendedPublicKey;
-              this.activePublicKey = publicKeyHex || null;
+              const extendedPublicKeyHex = `${extendedPublicKey.publicKeyHex}${extendedPublicKey.chainCodeHex}`;
+              const xpub = Buffer.from(extendedPublicKeyHex, 'hex');
+              const activePublicKey = bech32EncodePublicKey(xpub);
+              this.activePublicKey = activePublicKey || null;
             }
           } else {
             this.activePublicKey = null;

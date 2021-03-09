@@ -1,5 +1,6 @@
 // @flow
 import { map, join, takeRight } from 'lodash';
+import { bech32 } from 'bech32';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 
@@ -15,6 +16,15 @@ export const PATH_ROLE_IDENTITY = {
   role1: 'utxo_internal', // change
   role2: 'mutable_account', // stake
   role3: 'multisig_script', // script
+};
+
+// See src/cardano.h in https://github.com/vacuumlabs/ledger-app-cardano-shelley
+export const MAX_HUMAN_ADDRESS_LENGTH = 150;
+
+// https://github.com/cardano-foundation/CIPs/blob/master/CIP-0005/CIP-0005.md
+export const KEY_PREFIXES = {
+  // ...add more keys if needed
+  PUBLIC_KEY_WITH_CHAIN_CODE: 'acct_xvk', // Ed25519 public key with chain code
 };
 
 // Helpers
@@ -50,4 +60,18 @@ export const getParamsFromPath = (derivationPath: Array<string>) => {
 export const hardenedPathToString = (hardendedPath: Array<string>) => {
   const path = map(hardendedPath, (chunk) => `${chunk - HARDENED}H`);
   return derivationPathToString(path).replace('m/', '');
+};
+
+export const bech32EncodePublicKey = (data: Buffer) => {
+  const data5bit = bech32.toWords(data);
+  return bech32.encode(
+    KEY_PREFIXES.PUBLIC_KEY_WITH_CHAIN_CODE,
+    data5bit,
+    MAX_HUMAN_ADDRESS_LENGTH
+  );
+};
+
+export const bech32DecodePublicKey = (data: string) => {
+  const { words } = bech32.decode(data, 1000);
+  return Buffer.from(bech32.fromWords(words));
 };

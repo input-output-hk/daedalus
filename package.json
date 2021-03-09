@@ -175,6 +175,7 @@
     "@cardano-foundation/ledgerjs-hw-app-cardano": "2.2.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "aes-js": "3.1.2",
+    "bech32": "2.0.0",
     "bignumber.js": "9.0.1",
     "bip39": "2.3.0",
     "blake2b": "2.1.3",
