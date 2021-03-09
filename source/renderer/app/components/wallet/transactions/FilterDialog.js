@@ -482,7 +482,9 @@ export default class FilterDialog extends Component<FilterDialogProps> {
         interactive
         trigger="click"
         appendTo={document.body}
-        onShow={(instance) => (this.popoverTippyInstance.current = instance)}
+        onShow={(instance) => {
+          this.popoverTippyInstance.current = instance;
+        }}
         duration={0}
         offset={[0, 10]}
         maxWidth={640}
