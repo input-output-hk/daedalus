@@ -5,8 +5,10 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
+import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -15,6 +17,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendAssetsConfirmationDialog.scss';
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
@@ -110,6 +113,17 @@ export const messages = defineMessages({
     defaultMessage: '!!!Incorrect spending password.',
     description:
       'Label for password error in the wallet send confirmation dialog.',
+  },
+  unformattedAmountLabel: {
+    id: 'wallet.send.confirmationDialog.unformattedAmountLabel',
+    defaultMessage: '!!!unformatted amount',
+    description: 'Label for "unformated amount"',
+  },
+  unformattedAmountMessage: {
+    id: 'wallet.send.confirmationDialog.unformattedAmountMessage',
+    defaultMessage:
+      '!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.',
+    description: 'Message for "unformated amount"',
   },
 });
 
@@ -334,7 +348,9 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
     const assetsSeparatorBasicHeight = 27;
     const assetsSeparatorCalculatedHeight = assets.length
-      ? assetsSeparatorBasicHeight * (assets.length + 1) - 18
+      ? assetsSeparatorBasicHeight *
+          (assets.length + (isHardwareWallet ? assets.length : 1)) -
+        18
       : assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -392,27 +408,48 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                         assetIndex
                       );
                       return (
-                        <div
-                          key={asset.fingerprint}
-                          className={styles.assetsContainer}
-                        >
-                          <h3>
-                            <span>
-                              {intl.formatMessage(messages.assetLabel)}
-                              &nbsp;#{assetIndex + 1}
-                            </span>
-                            <AssetToken
-                              asset={asset}
-                              onCopyAssetItem={onCopyAssetItem}
-                              componentClassName={styles.assetToken}
-                            />
-                          </h3>
-                          {assetAmount && (
+                        <Fragment key={asset.fingerprint}>
+                          <div className={styles.assetsContainer}>
+                            <h3>
+                              <span>
+                                {intl.formatMessage(messages.assetLabel)}
+                                &nbsp;#{assetIndex + 1}
+                              </span>
+                              <AssetToken
+                                asset={asset}
+                                onCopyAssetItem={onCopyAssetItem}
+                                componentClassName={styles.assetToken}
+                              />
+                            </h3>
                             <div className={styles.amountFeesWrapper}>
                               <div className={styles.amount}>{assetAmount}</div>
                             </div>
+                          </div>
+                          {isHardwareWallet && (
+                            <div className={styles.assetsContainer}>
+                              <div className={styles.unformattedAmountLine} />
+                              <div className={styles.unformattedAmountLabel}>
+                                {intl.formatMessage(
+                                  messages.unformattedAmountLabel
+                                )}
+                                <PopOver
+                                  content={intl.formatMessage(
+                                    messages.unformattedAmountMessage
+                                  )}
+                                  key="tooltip"
+                                >
+                                  <div className={styles.questionMark}>
+                                    <SVGInline svg={questionMarkIcon} />
+                                  </div>
+                                </PopOver>
+                                {':'}
+                              </div>
+                              <div className={styles.unformattedAmount}>
+                                {this.getAssetAmount(assetIndex)}
+                              </div>
+                            </div>
                           )}
-                        </div>
+                        </Fragment>
                       );
                     })}
                   </div>

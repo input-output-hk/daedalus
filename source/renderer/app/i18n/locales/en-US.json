@@ -927,6 +927,8 @@
   "wallet.send.confirmationDialog.submit": "Send",
   "wallet.send.confirmationDialog.title": "Confirm transaction",
   "wallet.send.confirmationDialog.totalLabel": "Total",
+  "wallet.send.confirmationDialog.unformattedAmountLabel": "unformatted amount",
+  "wallet.send.confirmationDialog.unformattedAmountMessage": "The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.",
   "wallet.send.form.asset.adaLabel": "Ada",
   "wallet.send.form.asset.label": "Token",
   "wallet.send.form.button.addAssetButtonLabel": "+ Add a token",
