@@ -10534,7 +10534,7 @@
         "description": "Message for \"unformated amount\"",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 128
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
@@ -10548,13 +10548,13 @@
         "description": "Message for \"unformated amount\"",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 135
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
         "start": {
           "column": 46,
-          "line": 128
+          "line": 129
         }
       }
     ],
