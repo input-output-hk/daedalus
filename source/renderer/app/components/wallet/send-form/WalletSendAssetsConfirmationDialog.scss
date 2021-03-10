@@ -365,3 +365,11 @@
     }
   }
 }
+
+:global {
+  .UnformattedAmountTooltip {
+    p + p {
+      margin-top: 6px;
+    }
+  }
+}

@@ -123,14 +123,14 @@ export const messages = defineMessages({
     id:
       'wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets',
     defaultMessage:
-      '!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.',
+      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
     description: 'Message for "unformated amount"',
   },
   unformattedAmountMessageForHardwareWallets: {
     id:
       'wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets',
     defaultMessage:
-      '!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.',
+      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
     description: 'Message for "unformated amount"',
   },
 });
@@ -449,11 +449,18 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                                 messages.unformattedAmountLabel
                               )}
                               <PopOver
-                                content={intl.formatMessage(
-                                  isHardwareWallet
-                                    ? messages.unformattedAmountMessageForHardwareWallets
-                                    : messages.unformattedAmountMessageForSoftwareWallets
-                                )}
+                                content={
+                                  <div className="UnformattedAmountTooltip">
+                                    <FormattedHTMLMessage
+                                      {...messages[
+                                        isHardwareWallet
+                                          ? 'unformattedAmountMessageForHardwareWallets'
+                                          : 'unformattedAmountMessageForSoftwareWallets'
+                                      ]}
+                                      tagName="div"
+                                    />
+                                  </div>
+                                }
                                 key="tooltip"
                               >
                                 <div className={styles.questionMark}>

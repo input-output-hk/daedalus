@@ -10530,7 +10530,7 @@
         }
       },
       {
-        "defaultMessage": "!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.",
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
         "description": "Message for \"unformated amount\"",
         "end": {
           "column": 3,
@@ -10544,7 +10544,7 @@
         }
       },
       {
-        "defaultMessage": "!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.",
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
         "description": "Message for \"unformated amount\"",
         "end": {
           "column": 3,
