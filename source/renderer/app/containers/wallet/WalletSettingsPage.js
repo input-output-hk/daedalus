@@ -7,6 +7,7 @@ import { isValidWalletName } from '../../utils/validations';
 import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
+import WalletPublicKeyDialogContainer from './dialogs/settings/WalletPublicKeyDialogContainer';
 import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
 import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
@@ -33,11 +34,6 @@ export default class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
     wallets.copyPublicKey.trigger({ publicKey });
-  };
-
-  handleGetWalletPublicKey = () => {
-    const { wallets } = this.props.stores;
-    wallets._getWalletPublicKey();
   };
 
   handleDelegateClick = () => {
@@ -144,12 +140,12 @@ export default class WalletSettingsPage extends Component<Props> {
             actions.dialogs.updateDataForActiveDialog.trigger
           }
           onDelegateClick={this.handleDelegateClick}
-          getWalletPublicKey={this.handleGetWalletPublicKey}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
           }
+          walletPublicKeyDialogContainer={<WalletPublicKeyDialogContainer />}
           walletPublicKeyQRCodeDialogContainer={
             <WalletPublicKeyQRCodeDialogContainer />
           }
