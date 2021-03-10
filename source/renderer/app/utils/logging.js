@@ -42,7 +42,7 @@ const logToLevel = (level: LoggingLevel) => (
 
 export const logger: Logger = {
   debug: logToLevel('debug'),
-  info: logToLevel('info'),
+  info: () => {},
   error: logToLevel('error'),
   warn: logToLevel('warn'),
 };

@@ -2103,6 +2103,7 @@ export default class AdaApi {
       parameters: { stake },
     });
     try {
+      console.log('FETCHING');
       const response: AdaApiStakePools = await getStakePools(
         this.config,
         stake
@@ -2120,6 +2121,7 @@ export default class AdaApi {
         stakePoolsWithMetadata: stakePools.length,
         unfilteredStakePools: response,
       });
+      console.log('API RESULT', stakePools.length);
       return stakePools;
     } catch (error) {
       logger.error('AdaApi::getStakePools error', { error });
