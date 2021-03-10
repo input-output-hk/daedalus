@@ -161,6 +161,8 @@ type Props = {
 };
 
 type State = {
+  assets: Array<WalletSummaryAsset>,
+  assetsAmounts: Array<string>,
   areTermsAccepted: boolean,
 };
 
@@ -174,8 +176,19 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   state = {
+    assets: [],
+    assetsAmounts: [],
     areTermsAccepted: false,
   };
+
+  componentDidMount() {
+    // We need to keep initial list of assets and their amounts as a state
+    // value to avoid losing them after the transaction is confirmed
+    // (this affects only hardware wallets for which we close the dialog
+    // after transaction has been confirmed)
+    const { assets, assetsAmounts } = this.props;
+    this.setState({ assets, assetsAmounts });
+  }
 
   form = new ReactToolboxMobxForm(
     {
@@ -220,11 +233,10 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
+        const { assets, assetsAmounts } = this.state;
         const {
           receiver,
           amount,
-          assets,
-          assetsAmounts,
           amountToNaturalUnits,
           isHardwareWallet,
         } = this.props;
@@ -293,7 +305,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   getAssetAmount = (index: number) => {
-    const { assetsAmounts } = this.props;
+    const { assetsAmounts } = this.state;
     const asset = get(assetsAmounts, index, 0);
     return asset;
   };
@@ -309,12 +321,11 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { areTermsAccepted } = this.state;
+    const { assets, areTermsAccepted } = this.state;
     const passphraseField = form.$('passphrase');
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
-      assets,
       amount,
       receiver,
       totalAmount,
