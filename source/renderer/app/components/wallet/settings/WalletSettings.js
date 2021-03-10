@@ -14,6 +14,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import WalletPublicKeyField from './WalletPublicKeyField';
+import WalletPublicKeyDialog from './WalletPublicKeyDialog';
 import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import UndelegateWalletButton from './UndelegateWalletButton';
 import DelegateWalletButton from './DelegateWalletButton';
@@ -121,7 +122,6 @@ type Props = {
   creationDate: Date,
   spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
-  getWalletPublicKey: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
   onFieldValueChange: Function,
@@ -136,6 +136,7 @@ type Props = {
   isIncentivizedTestnet: boolean,
   isLegacy: boolean,
   changeSpendingPasswordDialog: Node,
+  walletPublicKeyDialogContainer: Node,
   walletPublicKeyQRCodeDialogContainer: Node,
   undelegateWalletDialogContainer: Node,
   deleteWalletDialogContainer: Node,
@@ -193,14 +194,15 @@ export default class WalletSettings extends Component<Props, State> {
     const {
       walletPublicKey,
       locale,
-      getWalletPublicKey,
       onCopyWalletPublicKey,
       openDialogAction,
       isDialogOpen,
+      walletPublicKeyDialogContainer,
       walletPublicKeyQRCodeDialogContainer,
+      isLegacy,
     } = this.props;
 
-    if (!IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+    if (!IS_WALLET_PUBLIC_KEY_SHARING_ENABLED || isLegacy) {
       return null;
     }
 
@@ -214,9 +216,14 @@ export default class WalletSettings extends Component<Props, State> {
             onShowQRCode={() =>
               openDialogAction({ dialog: WalletPublicKeyQRCodeDialog })
             }
-            getWalletPublicKey={getWalletPublicKey}
+            onOpenWalletKeyDialog={() =>
+              openDialogAction({ dialog: WalletPublicKeyDialog })
+            }
           />
         </BorderedBox>
+        {isDialogOpen(WalletPublicKeyDialog)
+          ? walletPublicKeyDialogContainer
+          : false}
         {isDialogOpen(WalletPublicKeyQRCodeDialog)
           ? walletPublicKeyQRCodeDialogContainer
           : false}

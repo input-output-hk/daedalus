@@ -190,6 +190,7 @@ import type {
   GetCurrencyListResponse,
   GetCurrencyRateRequest,
   GetCurrencyRateResponse,
+  GetAccountPublicKeyRequest,
 } from './wallets/types';
 import type { WalletProps } from '../domains/Wallet';
 
@@ -236,6 +237,7 @@ import type {
 } from './assets/types';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
+import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 
 const { isIncentivizedTestnet, environment } = global;
 
@@ -350,6 +352,32 @@ export default class AdaApi {
     } catch (error) {
       logger.error('AdaApi::getWalletPublicKey error', { error });
       throw new ApiError(error);
+    }
+  };
+
+  getAccountPublicKey = async (
+    request: GetAccountPublicKeyRequest
+  ): Promise<string> => {
+    logger.debug('AdaApi::getAccountPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const { walletId, index, passphrase, extended } = request;
+      const accountPublicKey: string = await getAccountPublicKey(this.config, {
+        walletId,
+        index,
+        passphrase,
+        extended,
+      });
+      logger.debug('AdaApi::getAccountPublicKey success', { accountPublicKey });
+      return accountPublicKey;
+    } catch (error) {
+      logger.error('AdaApi::getAccountPublicKey error', { error });
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
@@ -1216,7 +1244,6 @@ export default class AdaApi {
       return _createAddressFromServerData(address);
     } catch (error) {
       logger.error('AdaApi::createAddress error', { error });
-
       throw new ApiError(error)
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
