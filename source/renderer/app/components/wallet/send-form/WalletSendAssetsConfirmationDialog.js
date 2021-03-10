@@ -119,8 +119,16 @@ export const messages = defineMessages({
     defaultMessage: '!!!unformatted amount',
     description: 'Label for "unformated amount"',
   },
-  unformattedAmountMessage: {
-    id: 'wallet.send.confirmationDialog.unformattedAmountMessage',
+  unformattedAmountMessageForSoftwareWallets: {
+    id:
+      'wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets',
+    defaultMessage:
+      '!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.',
+    description: 'Message for "unformated amount"',
+  },
+  unformattedAmountMessageForHardwareWallets: {
+    id:
+      'wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets',
     defaultMessage:
       '!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.',
     description: 'Message for "unformated amount"',
@@ -348,9 +356,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
     const assetsSeparatorBasicHeight = 27;
     const assetsSeparatorCalculatedHeight = assets.length
-      ? assetsSeparatorBasicHeight *
-          (assets.length + (isHardwareWallet ? assets.length : 1)) -
-        18
+      ? assetsSeparatorBasicHeight * (assets.length * 2) - 18
       : assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -425,30 +431,30 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                               <div className={styles.amount}>{assetAmount}</div>
                             </div>
                           </div>
-                          {isHardwareWallet && (
-                            <div className={styles.assetsContainer}>
-                              <div className={styles.unformattedAmountLine} />
-                              <div className={styles.unformattedAmountLabel}>
-                                {intl.formatMessage(
-                                  messages.unformattedAmountLabel
+                          <div className={styles.assetsContainer}>
+                            <div className={styles.unformattedAmountLine} />
+                            <div className={styles.unformattedAmountLabel}>
+                              {intl.formatMessage(
+                                messages.unformattedAmountLabel
+                              )}
+                              <PopOver
+                                content={intl.formatMessage(
+                                  isHardwareWallet
+                                    ? messages.unformattedAmountMessageForHardwareWallets
+                                    : messages.unformattedAmountMessageForSoftwareWallets
                                 )}
-                                <PopOver
-                                  content={intl.formatMessage(
-                                    messages.unformattedAmountMessage
-                                  )}
-                                  key="tooltip"
-                                >
-                                  <div className={styles.questionMark}>
-                                    <SVGInline svg={questionMarkIcon} />
-                                  </div>
-                                </PopOver>
-                                {':'}
-                              </div>
-                              <div className={styles.unformattedAmount}>
-                                {this.getAssetAmount(assetIndex)}
-                              </div>
+                                key="tooltip"
+                              >
+                                <div className={styles.questionMark}>
+                                  <SVGInline svg={questionMarkIcon} />
+                                </div>
+                              </PopOver>
+                              {':'}
                             </div>
-                          )}
+                            <div className={styles.unformattedAmount}>
+                              {this.getAssetAmount(assetIndex)}
+                            </div>
+                          </div>
                         </Fragment>
                       );
                     })}

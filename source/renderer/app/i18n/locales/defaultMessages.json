@@ -10537,10 +10537,24 @@
           "line": 127
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.unformattedAmountMessage",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
         "start": {
-          "column": 28,
+          "column": 46,
           "line": 122
+        }
+      },
+      {
+        "defaultMessage": "!!!The native token unformatted amount (amount without decimal places) will be displayed on the hardware wallet device during transaction confirmation.",
+        "description": "Message for \"unformated amount\"",
+        "end": {
+          "column": 3,
+          "line": 133
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
+        "start": {
+          "column": 46,
+          "line": 128
         }
       }
     ],
