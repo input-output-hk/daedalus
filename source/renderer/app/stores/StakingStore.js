@@ -530,6 +530,9 @@ export default class StakingStore extends Store {
         stakeInBigNumber.times(LOVELACES_PER_ADA),
         10
       );
+      if (isSmash) {
+        this.stakePoolsRequest.reset();
+      }
       await this.stakePoolsRequest.execute(stakeInLovelace).promise;
       this._resetPolling(isSmash ? 'smash' : 'regular');
     } catch (error) {
