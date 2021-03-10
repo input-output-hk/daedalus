@@ -174,18 +174,6 @@ export default class HardwareWalletsStore extends Store {
     hardwareWalletsActions.refreshHardwareWalletsLocalData.listen(
       this._refreshHardwareWalletsLocalData
     );
-    hardwareWalletsActions.setHardwareWalletLocalData.listen(
-      this._setHardwareWalletLocalData
-    );
-    hardwareWalletsActions.unsetHardwareWalletLocalData.listen(
-      this._unsetHardwareWalletLocalData
-    );
-    hardwareWalletsActions.setHardwareWalletDevice.listen(
-      this._setHardwareWalletDevice
-    );
-    hardwareWalletsActions.unsetHardwareWalletDevice.listen(
-      this._unsetHardwareWalletDevice
-    );
     getHardwareWalletConnectionChannel.onReceive(
       this._changeHardwareWalletConnectionStatus
     );

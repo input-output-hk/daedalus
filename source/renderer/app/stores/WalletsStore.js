@@ -588,7 +588,7 @@ export default class WalletsStore extends Store {
         walletName,
         accountPublicKey,
       });
-      await this.actions.hardwareWallets.setHardwareWalletLocalData.trigger({
+      await this.stores.hardwareWallets._setHardwareWalletLocalData({
         walletId: wallet.id,
         data: {
           device,
@@ -597,7 +597,7 @@ export default class WalletsStore extends Store {
         },
       });
 
-      await this.actions.hardwareWallets.setHardwareWalletDevice.trigger({
+      await this.stores.hardwareWallets._setHardwareWalletDevice({
         deviceId,
         data: {
           deviceType,
@@ -675,7 +675,7 @@ export default class WalletsStore extends Store {
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
       walletId: params.walletId,
     });
-    this.actions.hardwareWallets.unsetHardwareWalletLocalData.trigger({
+    await this.stores.hardwareWallets._unsetHardwareWalletLocalData({
       walletId: params.walletId,
     });
     this._resumePolling();
