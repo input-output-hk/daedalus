@@ -1,7 +1,7 @@
 // @flow
 import { omit, pick } from 'lodash';
 import { observable, action } from 'mobx';
-import { IS_WALLET_ASSETS_FORMATTING_ENABLED } from '../config/walletsConfig';
+import { IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED } from '../config/walletsConfig';
 import type { AssetMetadata } from '../api/assets/types';
 
 export type AssetProps = {
@@ -18,7 +18,7 @@ export default class Asset {
   @observable metadata: ?AssetMetadata;
 
   constructor(data: AssetProps) {
-    const metadata = !IS_WALLET_ASSETS_FORMATTING_ENABLED
+    const metadata = !IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED
       ? omit(data.metadata, 'unit')
       : data.metadata;
     Object.assign(this, data, { metadata });
