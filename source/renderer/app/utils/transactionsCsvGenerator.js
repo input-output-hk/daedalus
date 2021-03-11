@@ -6,9 +6,13 @@ import { intlShape, defineMessages } from 'react-intl';
 import { includes } from 'lodash';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
-import { WalletTransaction } from '../domains/WalletTransaction';
+import {
+  WalletTransaction,
+  TransactionTypes,
+} from '../domains/WalletTransaction';
 import { downloadCsv } from './csvGenerator';
 import { formattedWalletAmount } from './formatters';
+import globalMessages from '../i18n/global-messages';
 
 const messages = defineMessages({
   columnID: {
@@ -25,6 +29,16 @@ const messages = defineMessages({
     id: 'wallet.transactions.csv.column.amount',
     defaultMessage: '!!!Amount',
     description: 'Transactions CSV column - Amount',
+  },
+  columnAsset: {
+    id: 'wallet.transactions.csv.column.asset',
+    defaultMessage: '!!!Asset',
+    description: 'Transactions CSV column - Amount currency',
+  },
+  columnFee: {
+    id: 'wallet.transactions.csv.column.fee',
+    defaultMessage: '!!!Fee (ADA)',
+    description: 'Transactions CSV column - Fee',
   },
   columnDateTime: {
     id: 'wallet.transactions.csv.column.dateTime',
@@ -120,6 +134,8 @@ const transactionsCsvGenerator = async ({
     intl.formatMessage(messages.columnID),
     intl.formatMessage(messages.columnType),
     intl.formatMessage(messages.columnAmount),
+    intl.formatMessage(messages.columnAsset),
+    intl.formatMessage(messages.columnFee),
     intl.formatMessage(messages.columnDateTime),
     intl.formatMessage(messages.columnStatus),
     intl.formatMessage(messages.columnAddressesFrom),
@@ -130,18 +146,17 @@ const transactionsCsvGenerator = async ({
   const fileContent = [columns];
 
   transactions.forEach(
-    ({ id, type, amount, date, addresses, state }: WalletTransaction) => {
+    ({ id, type, amount, fee, date, addresses, state }: WalletTransaction) => {
       const valueType =
         type === 'expend'
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
-      const amountNumber = formattedWalletAmount(
-        new BigNumber(Math.abs(amount)),
-        false
-      );
-      const valueAmount = intl.formatMessage(messages.valueAmount, {
-        amount: amountNumber,
-      });
+      const valueAmount = formattedWalletAmount(amount, false);
+      const valueAsset = intl.formatMessage(globalMessages.unitAda);
+      const hasFee = type === TransactionTypes.EXPEND && !fee.isZero();
+      const valueTransactionFee = hasFee
+        ? formattedWalletAmount(fee, false)
+        : null;
       const valueDateTime = `${moment(date)
         .utc()
         .format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
@@ -158,6 +173,8 @@ const transactionsCsvGenerator = async ({
         id,
         valueType,
         valueAmount,
+        valueAsset,
+        valueTransactionFee,
         `${valueDateTime}`,
         valueStatus,
         valueAddressesFrom,
