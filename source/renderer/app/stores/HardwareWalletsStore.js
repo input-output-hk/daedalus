@@ -351,7 +351,7 @@ export default class HardwareWalletsStore extends Store {
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
   selectCoins = async (params: CoinSelectionsPaymentRequestType) => {
-    const { walletId, address, amount } = params;
+    const { walletId, address, amount, assets } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
@@ -362,6 +362,7 @@ export default class HardwareWalletsStore extends Store {
         payments: {
           address,
           amount,
+          assets,
         },
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {

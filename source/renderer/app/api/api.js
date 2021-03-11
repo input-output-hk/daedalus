@@ -1013,6 +1013,7 @@ export default class AdaApi {
                 quantity: payments.amount,
                 unit: WalletUnits.LOVELACE,
               },
+              assets: payments.assets,
             },
           ],
           withdrawal: TransactionWithdrawal,
@@ -1037,6 +1038,11 @@ export default class AdaApi {
 
       map(response.inputs, (input) => {
         const inputAmount = new BigNumber(input.amount.quantity);
+        const inputAssets = map(input.assets, (asset) => ({
+          policyId: asset.policy_id,
+          assetName: asset.asset_name,
+          quantity: asset.quantity,
+        }));
         totalInputs = totalInputs.plus(inputAmount);
         const inputData = {
           address: input.address,
@@ -1044,17 +1050,24 @@ export default class AdaApi {
           id: input.id,
           index: input.index,
           derivationPath: input.derivation_path,
+          assets: inputAssets,
         };
         inputsData.push(inputData);
       });
 
       map(outputs, (output) => {
         const outputAmount = new BigNumber(output.amount.quantity);
+        const outputAssets = map(output.assets, (asset) => ({
+          policyId: asset.policy_id,
+          assetName: asset.asset_name,
+          quantity: asset.quantity,
+        }));
         totalOutputs = totalOutputs.plus(outputAmount);
         const outputData = {
           address: output.address,
           amount: output.amount,
           derivationPath: output.derivation_path || null,
+          assets: outputAssets,
         };
         outputsData.push(outputData);
       });
@@ -1120,7 +1133,25 @@ export default class AdaApi {
       return extendedResponse;
     } catch (error) {
       logger.error('AdaApi::selectCoins error', { error });
-      throw new ApiError(error);
+      // ApiError with logging showcase
+      throw new ApiError(error, {
+        logError: true,
+        msg: 'AdaApi::calculateTransactionFee error',
+      })
+        .set('notEnoughFundsForTransaction', true)
+        .where('code', 'not_enough_money')
+        .set('invalidAddress')
+        .where('code', 'bad_request')
+        .inc('message', 'Unable to decode Address')
+        .set('utxoTooSmall', true, {
+          minimumAda: get(
+            /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
+            2,
+            0
+          ),
+        })
+        .where('code', 'utxo_too_small')
+        .result();
     }
   };
 

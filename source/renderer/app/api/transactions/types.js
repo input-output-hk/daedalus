@@ -237,6 +237,7 @@ export type CoinSelectionsPaymentRequestType = {
   walletId: string,
   address: string,
   amount: number,
+  assets?: AssetItems,
 };
 
 export type CoinSelectionsRequest =
@@ -268,3 +269,5 @@ export type GetWithdrawalsRequest = {
 export type GetWithdrawalsResponse = {
   withdrawals: BigNumber,
 };
+
+export type CoinSelectionAssetsType = Array<Asset>;
