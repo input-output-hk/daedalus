@@ -661,6 +661,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
     });
     this.removeAssetRow(oldFingerprint);
+    this.resetTransactionFee();
   };
 
   renderReceiverRow = (): Node => {
