@@ -40,6 +40,8 @@ export const IS_AUTOMATIC_WALLET_MIGRATION_ENABLED = false;
 // Wallet assets feature toggle enable/disable
 export const WALLET_ASSETS_ENABLED = true;
 
+export const IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED = true;
+
 // Byron wallet migration has been temporarily disabled due to missing Api support after Mary HF
 export const IS_BYRON_WALLET_MIGRATION_ENABLED = false;
 

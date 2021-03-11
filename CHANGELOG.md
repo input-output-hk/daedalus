@@ -14,6 +14,7 @@ Changelog
 
 ### Chores
 
+- Added configuration variable for native tokens formatted amounts display ([PR 2449](https://github.com/input-output-hk/daedalus/pull/2449))
 - Updated `iohk-nix` to revision `60fe72cf` ([PR 2441](https://github.com/input-output-hk/daedalus/pull/2441))
 - Updated `cardano-wallet` to version `2021-03-04` ([PR 2427](https://github.com/input-output-hk/daedalus/pull/2427))
 - Increased "Report connecting issues" timeout ([PR 2440](https://github.com/input-output-hk/daedalus/pull/2440))
