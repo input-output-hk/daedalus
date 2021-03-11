@@ -13,7 +13,7 @@
   "api.errors.WalletAlreadyImportedError": "Wallet you are trying to import already exists.",
   "api.errors.WalletAlreadyRestoredError": "Wallet you are trying to restore already exists.",
   "api.errors.WalletFileImportError": "Wallet could not be imported, please make sure you are providing a correct file.",
-  "api.errors.inputsDepleted": "Your wallet contains only reward funds.<br />Please send at least one ADA to your wallet so that you can spend the funds.",
+  "api.errors.inputsDepleted": "Your wallet contains only reward funds.<br />Please send at least 1 ADA to your wallet so that you can spend the funds.",
   "api.errors.invalidAddress": "Please enter a valid address.",
   "api.errors.invalidSmashServer": "This URL is not a valid SMASH server",
   "api.errors.nothingToMigrate": "Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.",
