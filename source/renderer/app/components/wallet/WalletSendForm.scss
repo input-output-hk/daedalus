@@ -25,12 +25,13 @@
 
   .walletSendForm {
     .fieldsLine {
-      border-bottom: var(--theme-bordered-box-border);
-      border-left: var(--theme-bordered-box-border);
-      border-radius: 0 0 0 3px;
+      border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
+      border-bottom-left-radius: 2px;
+      border-left: 1px solid var(--theme-transactions-list-item-details-color);
       height: 125px;
       left: 10px;
       margin-top: -125px;
+      opacity: 0.3;
       position: relative;
       top: 115px;
       width: 6px;

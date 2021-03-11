@@ -148,7 +148,12 @@
   .assetItem {
     cursor: pointer;
     display: inline-flex;
+    flex-direction: column;
     width: 100%;
+
+    .assetASCIIName {
+      opacity: 0.5;
+    }
   }
 
   .copyIcon {

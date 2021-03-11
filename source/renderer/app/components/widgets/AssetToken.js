@@ -7,7 +7,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './AssetToken.scss';
-import { ellipsis } from '../../utils/strings';
+import { ellipsis, hexToString } from '../../utils/strings';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
@@ -181,6 +181,11 @@ export default class AssetToken extends Component<Props, State> {
             {value}
             <SVGInline svg={icon} className={iconClassnames} />
           </em>
+          {assetId === 'assetName' && (
+            <div className={styles.assetASCIIName}>
+              (ASCII: {hexToString(value)})
+            </div>
+          )}
         </div>
       </CopyToClipboard>
     );
