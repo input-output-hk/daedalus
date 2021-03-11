@@ -117,6 +117,7 @@ export type GetTransactionFeeRequest = {
   assets?: AssetItems,
   walletBalance: BigNumber,
   availableBalance: BigNumber,
+  rewardsBalance: BigNumber,
   isLegacy: boolean,
   withdrawal?: 'self' | Array<string>,
 };
