@@ -202,6 +202,8 @@ export default class StakingStore extends Store {
         // Retrieves the API update
         this.smashServerLoading = true;
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        // Resets the Stake Pools list request
+        this.stakePoolsRequest.reset();
         // Refreshes the Stake Pools list
         this.getStakePoolsData();
         // Starts the SPs fetch tracker
@@ -535,9 +537,6 @@ export default class StakingStore extends Store {
         stakeInBigNumber.times(LOVELACES_PER_ADA),
         10
       );
-      if (isSmash) {
-        this.stakePoolsRequest.reset();
-      }
       await this.stakePoolsRequest.execute(stakeInLovelace).promise;
       this._resetPolling(isSmash ? 'smash' : 'regular');
     } catch (error) {
