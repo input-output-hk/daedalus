@@ -2,7 +2,7 @@
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
-import { map, groupBy } from 'lodash';
+import { map, groupBy, sortBy } from 'lodash';
 import {
   derivationPathToLedgerPath,
   CERTIFICATE_TYPE,
@@ -115,11 +115,21 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) =>
-  groupBy(assets, 'policyId');
+export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
+  const sortedAssets = sortBy(
+    assets,
+    (asset) => {
+      return asset.assetName.length;
+    },
+    ['asc'],
+    ['assetName', 'desc']
+  );
+  return groupBy(sortedAssets, 'policyId');
+};
 
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
   const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
+
   const tokenObject = groupTokensByPolicyId(assets);
 
   Object.entries(tokenObject).forEach(([policyId, tokens]) => {
