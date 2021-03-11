@@ -13,7 +13,7 @@
   "api.errors.WalletAlreadyImportedError": "インポートしようとしているウォレットは既に存在します。",
   "api.errors.WalletAlreadyRestoredError": "復元しようとしているウォレットは既に存在します。",
   "api.errors.WalletFileImportError": "ウォレットをインポートできませんでした。有効なファイルを指定していることを確認してください。",
-  "api.errors.inputsDepleted": "報酬残高のみを含むウォレットからの送信はできません。",
+  "api.errors.inputsDepleted": "このウォレットには報酬として得られた資金しか入っていません。<br />資金を使用するには1ADA以上をウォレットに入金してください。",
   "api.errors.invalidAddress": "有効なアドレスを入力してください。",
   "api.errors.invalidSmashServer": "このURLは有効なSMASHサーバーではありません",
   "api.errors.nothingToMigrate": "このウォレットに保有されている未使用トランザクションアウトプット（UTXO）の一部に、移行するために十分なADAが入っていないため、このウォレットから資金を移すことはできません。",

@@ -161,8 +161,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cannot send from a wallet that contains only rewards balances.",
-        "description": "\"Cannot send from a wallet that contains only rewards balances.\" error message",
+        "defaultMessage": "!!!Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds.",
+        "description": "\"Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds.\" error message",
         "end": {
           "column": 3,
           "line": 67

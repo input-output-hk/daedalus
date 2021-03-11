@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
-import { intlShape } from 'react-intl';
+import { intlShape, FormattedHTMLMessage } from 'react-intl';
 import { filter, get, indexOf, omit, map, without } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
@@ -496,9 +496,8 @@ export default class WalletSendForm extends Component<Props, State> {
             />
           );
         } else {
-          transactionFeeError = this.context.intl.formatMessage(
-            localizableError,
-            values
+          transactionFeeError = (
+            <FormattedHTMLMessage {...localizableError} values={values} />
           );
         }
 
