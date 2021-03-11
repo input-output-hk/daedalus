@@ -18,6 +18,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendAssetsConfirmationDialog.scss';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
+import { IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED } from '../../../config/walletsConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
@@ -367,7 +368,11 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
     const assetsSeparatorBasicHeight = 27;
     const assetsSeparatorCalculatedHeight = assets.length
-      ? assetsSeparatorBasicHeight * (assets.length * 2) - 18
+      ? assetsSeparatorBasicHeight *
+          (IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED
+            ? assets.length * 2
+            : assets.length + 1) -
+        18
       : assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -442,37 +447,39 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                               <div className={styles.amount}>{assetAmount}</div>
                             </div>
                           </div>
-                          <div className={styles.assetsContainer}>
-                            <div className={styles.unformattedAmountLine} />
-                            <div className={styles.unformattedAmountLabel}>
-                              {intl.formatMessage(
-                                messages.unformattedAmountLabel
-                              )}
-                              <PopOver
-                                content={
-                                  <div className="UnformattedAmountTooltip">
-                                    <FormattedHTMLMessage
-                                      {...messages[
-                                        isHardwareWallet
-                                          ? 'unformattedAmountMessageForHardwareWallets'
-                                          : 'unformattedAmountMessageForSoftwareWallets'
-                                      ]}
-                                      tagName="div"
-                                    />
+                          {IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED && (
+                            <div className={styles.assetsContainer}>
+                              <div className={styles.unformattedAmountLine} />
+                              <div className={styles.unformattedAmountLabel}>
+                                {intl.formatMessage(
+                                  messages.unformattedAmountLabel
+                                )}
+                                <PopOver
+                                  content={
+                                    <div className="UnformattedAmountTooltip">
+                                      <FormattedHTMLMessage
+                                        {...messages[
+                                          isHardwareWallet
+                                            ? 'unformattedAmountMessageForHardwareWallets'
+                                            : 'unformattedAmountMessageForSoftwareWallets'
+                                        ]}
+                                        tagName="div"
+                                      />
+                                    </div>
+                                  }
+                                  key="tooltip"
+                                >
+                                  <div className={styles.questionMark}>
+                                    <SVGInline svg={questionMarkIcon} />
                                   </div>
-                                }
-                                key="tooltip"
-                              >
-                                <div className={styles.questionMark}>
-                                  <SVGInline svg={questionMarkIcon} />
-                                </div>
-                              </PopOver>
-                              {':'}
+                                </PopOver>
+                                {':'}
+                              </div>
+                              <div className={styles.unformattedAmount}>
+                                {this.getAssetAmount(assetIndex)}
+                              </div>
                             </div>
-                            <div className={styles.unformattedAmount}>
-                              {this.getAssetAmount(assetIndex)}
-                            </div>
-                          </div>
+                          )}
                         </Fragment>
                       );
                     })}
