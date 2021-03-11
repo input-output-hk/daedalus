@@ -661,6 +661,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
     });
     this.removeAssetRow(oldFingerprint);
+    this.resetTransactionFee();
   };
 
   renderReceiverRow = (): Node => {
@@ -672,11 +673,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
       isReceiverAddressValid,
     } = this.state;
-    const {
-      currencyMaxFractionalDigits,
-      walletAmount,
-      isHardwareWallet,
-    } = this.props;
+    const { currencyMaxFractionalDigits, walletAmount } = this.props;
 
     const {
       receiver: receiverField,
@@ -832,7 +829,7 @@ export default class WalletSendForm extends Component<Props, State> {
               <Button
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
-                disabled={isHardwareWallet || !this.hasAvailableAssets}
+                disabled={!this.hasAvailableAssets}
                 onClick={() => {
                   this.addAssetRow(this.availableAssets[0].fingerprint);
                 }}

@@ -5,6 +5,8 @@ Changelog
 
 ### Features
 
+- Enabled sending of native tokens for hardware wallets ([PR 2446](https://github.com/input-output-hk/daedalus/pull/2446))
+- Enabled the "View wallet's public key" feature ([PR 2429](https://github.com/input-output-hk/daedalus/pull/2429))
 - Added visual backdrop blur effect to some overlays and dialogs ([PR 2431](https://github.com/input-output-hk/daedalus/pull/2431))
 - Updated Tile view of stake pools with rank by rewards ([PR 2426](https://github.com/input-output-hk/daedalus/pull/2426))
 - Enabled the "Loading Stake Pools" state anytime the pools are loading ([PR 2424](https://github.com/input-output-hk/daedalus/pull/2424))
