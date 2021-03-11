@@ -906,6 +906,7 @@ export default class AdaApi {
       assets,
       walletBalance,
       availableBalance,
+      rewardsBalance,
       isLegacy,
       withdrawal = TransactionWithdrawal,
     } = request;
@@ -952,17 +953,26 @@ export default class AdaApi {
       });
       return { fee, minimumAda };
     } catch (error) {
-      // 1. Amount exceeds availableBalance due to pending transactions:
-      // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-      // - total walletBalance > error.diagnostic.details.availableBalance
-      // = show "Cannot calculate fees while there are pending transactions."
-      // 2. Amount exceeds walletBalance:
-      // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-      // - total walletBalance === error.diagnostic.details.availableBalance
-      // = show "Not enough Ada. Try sending a smaller amount."
-      const notEnoughMoneyError = walletBalance.gt(availableBalance)
-        ? 'canNotCalculateTransactionFees'
-        : 'notEnoughFundsForTransaction';
+      let notEnoughMoneyError;
+      if (walletBalance.gt(availableBalance)) {
+        // 1. Amount exceeds availableBalance due to pending transactions:
+        // - walletBalance > availableBalance
+        // = show "Cannot calculate fees while there are pending transactions."
+        notEnoughMoneyError = 'canNotCalculateTransactionFees';
+      } else if (
+        !walletBalance.isZero() &&
+        walletBalance.isEqualTo(rewardsBalance)
+      ) {
+        // 2. Wallet contains only rewards:
+        // - walletBalance === rewardsBalance
+        // = show "Cannot send from a wallet that contains only rewards balances."
+        notEnoughMoneyError = 'inputsDepleted';
+      } else {
+        // 3. Amount exceeds walletBalance:
+        // - walletBalance === availableBalance
+        // = show "Not enough Ada. Try sending a smaller amount."
+        notEnoughMoneyError = 'notEnoughFundsForTransaction';
+      }
 
       // ApiError with logging showcase
       throw new ApiError(error, {
@@ -971,9 +981,6 @@ export default class AdaApi {
       })
         .set(notEnoughMoneyError, true)
         .where('code', 'not_enough_money')
-        .set('invalidAddress')
-        .where('code', 'bad_request')
-        .inc('message', 'Unable to decode Address')
         .set('utxoTooSmall', true, {
           minimumAda: get(
             /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
@@ -982,19 +989,32 @@ export default class AdaApi {
           ),
         })
         .where('code', 'utxo_too_small')
+        .set('invalidAddress')
+        .where('code', 'bad_request')
+        .inc('message', 'Unable to decode Address')
         .result();
     }
   };
 
   selectCoins = async (request: {
     walletId: string,
+    walletBalance: BigNumber,
+    availableBalance: BigNumber,
+    rewardsBalance: BigNumber,
     payments?: CoinSelectionsPaymentRequestType,
     delegation?: CoinSelectionsDelegationRequestType,
   }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
     });
-    const { walletId, payments, delegation } = request;
+    const {
+      walletId,
+      payments,
+      delegation,
+      walletBalance,
+      availableBalance,
+      rewardsBalance,
+    } = request;
     try {
       let data;
       if (delegation) {
@@ -1133,16 +1153,35 @@ export default class AdaApi {
       return extendedResponse;
     } catch (error) {
       logger.error('AdaApi::selectCoins error', { error });
+
+      let notEnoughMoneyError;
+      if (walletBalance.gt(availableBalance)) {
+        // 1. Amount exceeds availableBalance due to pending transactions:
+        // - walletBalance > availableBalance
+        // = show "Cannot calculate fees while there are pending transactions."
+        notEnoughMoneyError = 'canNotCalculateTransactionFees';
+      } else if (
+        !walletBalance.isZero() &&
+        walletBalance.isEqualTo(rewardsBalance)
+      ) {
+        // 2. Wallet contains only rewards:
+        // - walletBalance === rewardsBalance
+        // = show "Cannot send from a wallet that contains only rewards balances."
+        notEnoughMoneyError = 'inputsDepleted';
+      } else {
+        // 3. Amount exceeds walletBalance:
+        // - walletBalance === availableBalance
+        // = show "Not enough Ada. Try sending a smaller amount."
+        notEnoughMoneyError = 'notEnoughFundsForTransaction';
+      }
+
       // ApiError with logging showcase
       throw new ApiError(error, {
         logError: true,
         msg: 'AdaApi::calculateTransactionFee error',
       })
-        .set('notEnoughFundsForTransaction', true)
+        .set(notEnoughMoneyError, true)
         .where('code', 'not_enough_money')
-        .set('invalidAddress')
-        .where('code', 'bad_request')
-        .inc('message', 'Unable to decode Address')
         .set('utxoTooSmall', true, {
           minimumAda: get(
             /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
@@ -1151,6 +1190,9 @@ export default class AdaApi {
           ),
         })
         .where('code', 'utxo_too_small')
+        .set('invalidAddress')
+        .where('code', 'bad_request')
+        .inc('message', 'Unable to decode Address')
         .result();
     }
   };
@@ -1369,7 +1411,6 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreWallet error', { error });
-
       throw new ApiError(error)
         .set('forbiddenMnemonic')
         .where('message', 'JSONValidationFailed')
@@ -1961,7 +2002,8 @@ export default class AdaApi {
     const {
       id: walletId,
       amount: walletBalance,
-      availableAmount: availableBalance,
+      availableAmount,
+      reward: rewardsBalance,
     } = wallet;
     const minRewardsReceiverBalance = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
@@ -1978,7 +2020,8 @@ export default class AdaApi {
       address,
       walletId,
       walletBalance,
-      availableBalance,
+      availableBalance: availableAmount.plus(rewardsBalance),
+      rewardsBalance,
       amount,
       withdrawal,
       isLegacy: false,

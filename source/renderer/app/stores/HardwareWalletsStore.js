@@ -355,10 +355,13 @@ export default class HardwareWalletsStore extends Store {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
-
+    const { amount: totalAmount, availableAmount, reward } = wallet;
     try {
       const coinSelection = await this.selectCoinsRequest.execute({
         walletId,
+        walletBalance: totalAmount,
+        availableBalance: availableAmount.plus(reward),
+        rewardsBalance: reward,
         payments: {
           address,
           amount,
@@ -389,9 +392,13 @@ export default class HardwareWalletsStore extends Store {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
+    const { amount: totalAmount, availableAmount, reward } = wallet;
     try {
       const coinSelection = await this.selectCoinsRequest.execute({
         walletId,
+        walletBalance: totalAmount,
+        availableBalance: availableAmount.plus(reward),
+        rewardsBalance: reward,
         delegation: {
           poolId,
           delegationAction,
