@@ -347,7 +347,9 @@ export default class TransactionsStore extends Store {
       stores: { profile },
       allFiltered,
       actions,
+      stores,
     } = this;
+    const { isInternalAddress } = stores.addresses;
     const { active } = this.stores.wallets;
     const { desktopDirectoryPath } = profile;
     const locale = profile.currentLocale;
@@ -361,6 +363,7 @@ export default class TransactionsStore extends Store {
       transactions,
       walletName,
       getAssetDetails,
+      isInternalAddress,
     });
     if (success) actions.transactions.requestCSVFileSuccess.trigger();
   };

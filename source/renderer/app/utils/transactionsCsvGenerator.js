@@ -9,12 +9,13 @@ import {
   WalletTransaction,
   TransactionTypes,
 } from '../domains/WalletTransaction';
-import Asset from '../domains/Asset';
 import { downloadCsv } from './csvGenerator';
 import {
   formattedWalletAmount,
   formattedTokenWalletAmount,
 } from './formatters';
+import { WALLET_ASSETS_ENABLED } from '../config/walletsConfig';
+import { filterAssets } from './assets';
 
 const messages = defineMessages({
   columnID: {
@@ -105,6 +106,7 @@ type Params = {
   transactions: Array<WalletTransaction>,
   walletName: string,
   getAssetDetails: Function,
+  isInternalAddress: Function,
 };
 
 const transactionsCsvGenerator = async ({
@@ -113,6 +115,7 @@ const transactionsCsvGenerator = async ({
   transactions,
   walletName,
   getAssetDetails,
+  isInternalAddress,
 }: Params): Promise<boolean> => {
   const prefix = `${intl.formatMessage(messages.filenamePrefix)}-${walletName}`;
   const fileName = generateFileNameWithTimestamp({
@@ -139,13 +142,16 @@ const transactionsCsvGenerator = async ({
     intl.formatMessage(messages.columnType),
     intl.formatMessage(messages.columnAmount),
     intl.formatMessage(messages.columnFee),
-    intl.formatMessage(messages.columnTokens),
     intl.formatMessage(messages.columnDateTime),
     intl.formatMessage(messages.columnStatus),
     intl.formatMessage(messages.columnAddressesFrom),
     intl.formatMessage(messages.columnAddressesTo),
     intl.formatMessage(messages.columnWithdrawals),
   ];
+
+  if (WALLET_ASSETS_ENABLED) {
+    columns.splice(4, 0, intl.formatMessage(messages.columnTokens));
+  }
 
   const fileContent = [columns];
 
@@ -168,8 +174,8 @@ const transactionsCsvGenerator = async ({
       const hasFee = type === TransactionTypes.EXPEND && !fee.isZero();
       const valueTransactionFee = hasFee
         ? formattedWalletAmount(fee, false)
-        : null;
-      const valueTokens = assets
+        : '';
+      const valueTokens = filterAssets(assets, type, isInternalAddress)
         .map(({ policyId, assetName, quantity }) => {
           const { fingerprint, metadata } = getAssetDetails(
             policyId,
@@ -199,13 +205,15 @@ const transactionsCsvGenerator = async ({
         valueType,
         valueAmount,
         valueTransactionFee,
-        valueTokens,
         `${valueDateTime}`,
         valueStatus,
         valueAddressesFrom,
         valueAddressesTo,
         valueWithdrawals,
       ];
+      if (WALLET_ASSETS_ENABLED) {
+        txValues.splice(4, 0, valueTokens);
+      }
       fileContent.push(txValues);
     }
   );
