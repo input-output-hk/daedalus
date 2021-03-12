@@ -462,11 +462,6 @@ export default class StakingStore extends Store {
   }
 
   @computed get stakePools(): Array<StakePool> {
-    console.log(
-      'STORE RESULT',
-      this.stakePoolsRequest.result ? this.stakePoolsRequest.result.length : '-'
-    );
-
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
