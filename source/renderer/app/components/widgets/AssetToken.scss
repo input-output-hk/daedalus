@@ -101,7 +101,6 @@
     max-height: 48px;
     overflow-y: auto;
     padding-right: 20px;
-    position: relative;
     width: calc(100% - 77px);
 
     &::-webkit-scrollbar-button {
@@ -121,20 +120,14 @@
 
     .value {
       cursor: pointer;
-
-      &:not(.singleline) {
-        overflow-wrap: break-word;
-        word-break: break-all;
-      }
-
-      &.singleline {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
+      font-size: 12px;
+      line-height: 16px;
+      overflow: visible;
+      word-break: break-all;
     }
 
     .copyIcon {
+      display: inline-block;
       margin-left: 5px;
     }
 
