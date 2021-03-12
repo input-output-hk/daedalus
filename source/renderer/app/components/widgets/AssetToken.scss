@@ -99,7 +99,7 @@
     line-height: 16px;
     margin: 10px -20px 0 10px;
     max-height: 48px;
-    overflow-x: auto;
+    overflow-y: auto;
     padding-right: 20px;
     position: relative;
     width: calc(100% - 77px);
@@ -119,7 +119,7 @@
       opacity: 0.4;
     }
 
-    em {
+    .value {
       cursor: pointer;
 
       &:not(.singleline) {

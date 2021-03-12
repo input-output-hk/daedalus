@@ -159,12 +159,7 @@ export default class AssetToken extends Component<Props, State> {
     );
   }
 
-  assetItemRenderer = (
-    assetId: string,
-    assetItem: string,
-    value: string,
-    singleline?: boolean
-  ) => {
+  assetItemRenderer = (assetId: string, assetItem: string, value: string) => {
     const { itemCopied } = this.state;
     const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
     const iconClassnames = classnames([
@@ -177,10 +172,10 @@ export default class AssetToken extends Component<Props, State> {
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
         <div className={styles.assetItem}>
-          <em className={singleline ? styles.singleline : null}>
+          <div className={styles.value}>
             {value}
             <SVGInline svg={icon} className={iconClassnames} />
-          </em>
+          </div>
           {assetId === 'assetName' && (
             <div className={styles.assetASCIIName}>
               (ASCII: {hexToString(value)})
