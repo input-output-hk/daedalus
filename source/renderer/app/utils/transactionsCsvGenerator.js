@@ -78,11 +78,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Received',
     description: 'Transactions CSV value - Type Received',
   },
-  valueAmount: {
-    id: 'wallet.transactions.csv.value.amount',
-    defaultMessage: '!!!{amount} ADA',
-    description: 'Transactions CSV value - Amount',
-  },
   valueStatusConfirmed: {
     id: 'wallet.transactions.csv.value.statusConfirmed',
     defaultMessage: '!!!Confirmed',
