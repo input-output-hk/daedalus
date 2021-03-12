@@ -1,7 +1,6 @@
 // @flow
 import path from 'path';
 import moment from 'moment';
-import BigNumber from 'bignumber.js';
 import { intlShape, defineMessages } from 'react-intl';
 import { includes } from 'lodash';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
@@ -10,9 +9,12 @@ import {
   WalletTransaction,
   TransactionTypes,
 } from '../domains/WalletTransaction';
+import Asset from '../domains/Asset';
 import { downloadCsv } from './csvGenerator';
-import { formattedWalletAmount } from './formatters';
-import globalMessages from '../i18n/global-messages';
+import {
+  formattedWalletAmount,
+  formattedTokenWalletAmount,
+} from './formatters';
 
 const messages = defineMessages({
   columnID: {
@@ -27,18 +29,18 @@ const messages = defineMessages({
   },
   columnAmount: {
     id: 'wallet.transactions.csv.column.amount',
-    defaultMessage: '!!!Amount',
+    defaultMessage: '!!!Amount (ADA)',
     description: 'Transactions CSV column - Amount',
-  },
-  columnAsset: {
-    id: 'wallet.transactions.csv.column.asset',
-    defaultMessage: '!!!Asset',
-    description: 'Transactions CSV column - Amount currency',
   },
   columnFee: {
     id: 'wallet.transactions.csv.column.fee',
     defaultMessage: '!!!Fee (ADA)',
     description: 'Transactions CSV column - Fee',
+  },
+  columnTokens: {
+    id: 'wallet.transactions.csv.column.tokens',
+    defaultMessage: '!!!Tokens',
+    description: 'Transactions CSV column - Tokens',
   },
   columnDateTime: {
     id: 'wallet.transactions.csv.column.dateTime',
@@ -102,6 +104,7 @@ type Params = {
   intl: intlShape,
   transactions: Array<WalletTransaction>,
   walletName: string,
+  getAssetDetails: Function,
 };
 
 const transactionsCsvGenerator = async ({
@@ -109,6 +112,7 @@ const transactionsCsvGenerator = async ({
   intl,
   transactions,
   walletName,
+  getAssetDetails,
 }: Params): Promise<boolean> => {
   const prefix = `${intl.formatMessage(messages.filenamePrefix)}-${walletName}`;
   const fileName = generateFileNameWithTimestamp({
@@ -134,8 +138,8 @@ const transactionsCsvGenerator = async ({
     intl.formatMessage(messages.columnID),
     intl.formatMessage(messages.columnType),
     intl.formatMessage(messages.columnAmount),
-    intl.formatMessage(messages.columnAsset),
     intl.formatMessage(messages.columnFee),
+    intl.formatMessage(messages.columnTokens),
     intl.formatMessage(messages.columnDateTime),
     intl.formatMessage(messages.columnStatus),
     intl.formatMessage(messages.columnAddressesFrom),
@@ -146,17 +150,38 @@ const transactionsCsvGenerator = async ({
   const fileContent = [columns];
 
   transactions.forEach(
-    ({ id, type, amount, fee, date, addresses, state }: WalletTransaction) => {
+    ({
+      id,
+      type,
+      amount,
+      fee,
+      date,
+      addresses,
+      state,
+      assets,
+    }: WalletTransaction) => {
       const valueType =
         type === 'expend'
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
       const valueAmount = formattedWalletAmount(amount, false);
-      const valueAsset = intl.formatMessage(globalMessages.unitAda);
       const hasFee = type === TransactionTypes.EXPEND && !fee.isZero();
       const valueTransactionFee = hasFee
         ? formattedWalletAmount(fee, false)
         : null;
+      const valueTokens = assets
+        .map(({ policyId, assetName, quantity }) => {
+          const { fingerprint, metadata } = getAssetDetails(
+            policyId,
+            assetName
+          );
+          const formattedAmount = formattedTokenWalletAmount(
+            quantity,
+            metadata
+          );
+          return `${formattedAmount} (${fingerprint})`;
+        })
+        .join(', ');
       const valueDateTime = `${moment(date)
         .utc()
         .format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
@@ -173,8 +198,8 @@ const transactionsCsvGenerator = async ({
         id,
         valueType,
         valueAmount,
-        valueAsset,
         valueTransactionFee,
+        valueTokens,
         `${valueDateTime}`,
         valueStatus,
         valueAddressesFrom,
