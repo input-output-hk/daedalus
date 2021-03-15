@@ -9,7 +9,7 @@ Changelog
 
 ### Chores
 
-- Restored global link style on voting registration over screen ([PR 2453](https://github.com/input-output-hk/daedalus/pull/2453))
+- Restored global link style on voting registration over screen ([PR 2453](https://github.com/input-output-hk/daedalus/pull/2453), [PR 2456](https://github.com/input-output-hk/daedalus/pull/2456))
 
 ## 4.0.2-FC3
 
