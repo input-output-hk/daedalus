@@ -18,6 +18,7 @@ Changelog
 
 ### Chores
 
+- Restored global link style on voting registration over screen ([PR 2453](https://github.com/input-output-hk/daedalus/pull/2453))
 - Improved error message shown when trying to make a transaction from a wallet that contains only reward ([PR 2450](https://github.com/input-output-hk/daedalus/pull/2450))
 - Added configuration variable for native tokens formatted amounts display ([PR 2449](https://github.com/input-output-hk/daedalus/pull/2449))
 - Updated `iohk-nix` to revision `60fe72cf` ([PR 2441](https://github.com/input-output-hk/daedalus/pull/2441))
