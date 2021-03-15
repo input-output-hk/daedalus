@@ -227,7 +227,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       ? onPostponeUpdate
       : () => {};
     const actionsStyles = classnames([
-      isLinux && isWaitingToQuitDaedalus ? styles.progressBar : styles.actions,
+      !isLinux || !isWaitingToQuitDaedalus ? styles.actions : null,
     ]);
     return (
       <div className={actionsStyles}>
