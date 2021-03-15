@@ -202,6 +202,8 @@ export default class StakingStore extends Store {
         // Retrieves the API update
         this.smashServerLoading = true;
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        // Resets the Stake Pools list request
+        this.stakePoolsRequest.reset();
         // Refreshes the Stake Pools list
         this.getStakePoolsData();
         // Starts the SPs fetch tracker
