@@ -3,6 +3,12 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
+
+## 4.0.2-FC3
+
 ### Features
 
 - Enabled sending of native tokens for hardware wallets ([PR 2446](https://github.com/input-output-hk/daedalus/pull/2446))
@@ -11,10 +17,6 @@ Changelog
 - Updated Tile view of stake pools with rank by rewards ([PR 2426](https://github.com/input-output-hk/daedalus/pull/2426))
 - Enabled the "Loading Stake Pools" state anytime the pools are loading ([PR 2424](https://github.com/input-output-hk/daedalus/pull/2424))
 - Implemented the syncing state for the Stake Pools settings screen ([PR 2418](https://github.com/input-output-hk/daedalus/pull/2418))
-
-### Fixes
-
-- Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
 
 ### Chores
 
