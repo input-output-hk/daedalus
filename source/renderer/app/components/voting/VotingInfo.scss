@@ -54,14 +54,8 @@
     }
 
     .learnMoreLink {
-      border-bottom: 0;
       font-family: var(--font-regular);
       font-size: 16px;
-
-      &::after {
-        height: 0;
-        width: 0;
-      }
     }
   }
 }
