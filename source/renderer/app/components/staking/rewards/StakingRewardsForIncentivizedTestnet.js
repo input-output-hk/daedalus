@@ -21,6 +21,7 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
@@ -142,7 +143,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
-      return [rewardWallet, isRestoring ? '-' : `${rewardAmount} ADA`, date];
+      return [rewardWallet, isRestoring ? '-' : rewardAmount, date];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
@@ -208,7 +209,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       },
       {
         name: REWARD_FIELDS.REWARD,
-        title: intl.formatMessage(messages.tableHeaderReward),
+        title: `${intl.formatMessage(
+          messages.tableHeaderReward
+        )} (${intl.formatMessage(globalMessages.unitAda)})`,
       },
     ];
     const exportCsvButtonLabel = isExporting ? (
@@ -225,7 +228,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     );
     const exportCsvButtonClasses = (ctx) =>
       classNames([
-        'primary',
+        'flat',
         styles.actionButton,
         ctx.scrollTop > 10 ? styles.actionButtonFaded : null,
       ]);
@@ -310,7 +313,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                         <tr key={key}>
                           <td>{rewardWallet}</td>
                           <td>
-                            {isRestoring ? '-' : `${rewardAmount} ADA`}
+                            {isRestoring ? '-' : rewardAmount}
                             {isRestoring && (
                               <div className={styles.syncingProgress}>
                                 <PopOver
