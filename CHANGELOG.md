@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented Cardano is a fully decentralized screen ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
+- Implemented Cardano is a fully decentralized screen ([PR 2457](https://github.com/input-output-hk/daedalus/pull/2457))
 
 ### Fixes
 
