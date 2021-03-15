@@ -190,7 +190,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     );
     const lastDelegatedStakePoolId = get(
       selectedWallet,
-      'lastDelegationStakePoolId',
+      'lastDelegatedStakePoolId',
       null
     );
     const delegatedStakePoolId = get(
@@ -326,7 +326,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         backButton={<DialogBackButton onBack={onBack} />}
       >
         <BackToTopButton
-          scrollableElementClassName="Dialog_content"
+          scrollableElementClassName="Dialog_contentWrapper"
           buttonTopPosition={100}
           scrollTopToActivate={100}
         />

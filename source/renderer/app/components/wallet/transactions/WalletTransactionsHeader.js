@@ -1,11 +1,12 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import FilterButton from './FilterButton';
+import FilterDialog from './FilterDialog';
+import type { FilterDialogProps } from './FilterDialog';
 import styles from './WalletTransactionsHeader.scss';
 import TinyButton from '../../widgets/forms/TinyButton';
 import downloadIcon from '../../../assets/images/download-icon.inline.svg';
@@ -24,12 +25,11 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  children: Node,
   isFilterDisabled: boolean,
   isScrolling: boolean,
+  filterDialogProps: FilterDialogProps,
   numberOfFilterDimensionsApplied: number,
   numberOfTransactions: number,
-  onFilterDialogOpen: Function,
   onRequestCSVFile: Function,
 };
 
@@ -42,12 +42,11 @@ export default class WalletTransactionsHeader extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      children,
       isFilterDisabled,
       isScrolling,
+      filterDialogProps,
       numberOfFilterDimensionsApplied,
       numberOfTransactions,
-      onFilterDialogOpen,
       onRequestCSVFile,
     } = this.props;
     const hasAny = true;
@@ -88,14 +87,19 @@ export default class WalletTransactionsHeader extends Component<Props> {
               disabled={isCsvButtonDisabled}
               loading={false}
             />
-            <FilterButton
-              disabled={isFilterDisabled}
-              numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-              onClick={onFilterDialogOpen}
+            <FilterDialog
+              {...filterDialogProps}
+              triggerElement={
+                <FilterButton
+                  disabled={isFilterDisabled}
+                  numberOfFilterDimensionsApplied={
+                    numberOfFilterDimensionsApplied
+                  }
+                />
+              }
             />
           </div>
         )}
-        {children}
       </div>
     );
   }

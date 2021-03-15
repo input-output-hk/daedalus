@@ -20,7 +20,7 @@ export const HW_SHELLEY_CONFIG = {
     TESTNET: {
       name: 'testnet',
       networkId: 0,
-      protocolMagic: 42,
+      protocolMagic: 1097911063,
       trezorProtocolMagic: 1097911063,
       eraStartSlot: 4492800,
       ttl: 3600,
@@ -48,21 +48,11 @@ export const HW_BYRON_CONFIG = {
   ],
 };
 
-export const MINIMAL_LEDGER_APP_VERSION = {
-  major: 2,
-  minor: 0,
-  patch: 3,
-};
-
-export const RECOMMENDED_LEDGER_APP_VERSION = {
-  major: 2,
-  minor: 0,
-  patch: 4,
-};
-
-export const MINIMAL_CARDANO_APP_VERSION = '2.0.3';
+// JS Library supports Cardano APP version down to 2.0.4
+// https://github.com/vacuumlabs/ledgerjs-cardano-shelley/blob/develop/CHANGELOG.md#220---february-8th-2020
+export const MINIMAL_CARDANO_APP_VERSION = '2.2.0';
 export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
-export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
+export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.6';
 
 export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;

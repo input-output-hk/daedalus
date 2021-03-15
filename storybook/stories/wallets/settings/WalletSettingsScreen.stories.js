@@ -2,13 +2,23 @@
 import React from 'react';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { isIncentivizedTestnetTheme } from '../../_support/utils';
+import {
+  isIncentivizedTestnetTheme,
+  generateWallet,
+  generateHash,
+  generatePolicyIdHash,
+} from '../../_support/utils';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import type { Locale } from '../../../../source/common/types/locales.types';
 
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
+import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
+import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
@@ -24,7 +34,9 @@ import {
 
 const basicSettingsId = 'Basic Settings';
 const changePasswordId = 'Change Password';
+const undelegateWalletId = 'Undelegate Wallet';
 const deleteWalletId = 'Delete Wallet';
+const walletPublicKeyId = 'Wallet Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
@@ -61,6 +73,45 @@ const recoveryDialogOptions = {
   'Step 3 - Verification successful': 3,
   'Step 4 - Verification failure': 4,
 };
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
+
+const selectedWallet = generateWallet(
+  'Wallet 1',
+  '1000000000',
+  assets,
+  0,
+  STAKE_POOLS[0]
+);
 
 const getWalletDates = (type: string, status: string) => {
   let date = new Date();
@@ -104,6 +155,16 @@ export default (props: { currentTheme: string, locale: Locale }) => {
     recoveryPhraseId
   );
 
+  const delegationStakePoolStatus = select(
+    'Delegation status',
+    {
+      Delegating: 'delegating',
+      'Not delegating': 'not_delegating',
+    },
+    'delegating',
+    undelegateWalletId
+  );
+
   return (
     <WalletSettings
       isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
@@ -138,12 +199,18 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       isSubmitting={false}
       lastUpdatedField={null}
       nameValidator={() => true}
-      onCancelEditing={() => {}}
+      onCancel={() => {}}
       onFieldValueChange={() => {}}
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
+      walletId="walletid"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
+      delegationStakePoolStatus={delegationStakePoolStatus}
+      lastDelegationStakePoolStatus={delegationStakePoolStatus}
+      isRestoring={false}
+      isSyncing={false}
+      walletPublicKey={walletPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(
         'isSpendingPasswordSet',
@@ -174,6 +241,52 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           )}
           error={null}
           currentLocale={'en-US'}
+        />
+      }
+      walletPublicKeyDialogContainer={
+        <WalletPublicKeyDialog
+          onRevealPublicKey={action('onRevealPublicKey')}
+          onClose={action('onCancel')}
+          error={null}
+          hasReceivedWalletPublicKey
+        />
+      }
+      walletPublicKeyQRCodeDialogContainer={
+        <WalletPublicKeyQRCodeDialog
+          walletName={text(
+            'WalletPublicKeyQRCodeDialog: Wallet Name',
+            'Wallet',
+            walletPublicKeyId
+          )}
+          walletPublicKey={walletPublicKeyId}
+          onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
+          onClose={action('Wallet Public Key QR Code - onClose')}
+        />
+      }
+      undelegateWalletDialogContainer={
+        <UndelegateWalletConfirmationDialog
+          selectedWallet={selectedWallet}
+          stakePoolName={text(
+            'UndelegateWalletConfirmationDialog: Stake Pool Name',
+            'Stake Pool Name'
+          )}
+          stakePoolTicker={text(
+            'UndelegateWalletConfirmationDialog: Stake Pool Ticker',
+            'Stake Pool Ticker'
+          )}
+          onConfirm={action('Undelegate Wallet - onConfirm')}
+          onCancel={action('Undelegate Wallet - onCancel')}
+          onExternalLinkClick={action(
+            'Undelegate Wallet - onExternalLinkClick'
+          )}
+          isSubmitting={boolean(
+            'Undelegate Wallet - submitting',
+            false,
+            undelegateWalletId
+          )}
+          error={null}
+          fees={new BigNumber(10)}
+          hwDeviceStatus="ready"
         />
       }
       deleteWalletDialogContainer={
@@ -211,6 +324,10 @@ export default (props: { currentTheme: string, locale: Locale }) => {
         />
       }
       onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
+      onCopyWalletPublicKey={() => null}
+      updateDataForActiveDialogAction={() => null}
+      onDelegateClick={() => null}
+      getWalletPublicKey={() => null}
       creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
       recoveryPhraseVerificationStatus={

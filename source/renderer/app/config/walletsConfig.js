@@ -30,3 +30,21 @@ export const RECOVERY_PHRASE_WORD_COUNT_OPTIONS = {
   [WALLET_RESTORE_TYPES.YOROI_REGULAR]: YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   [WALLET_RESTORE_TYPES.YOROI_LEGACY]: YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 };
+
+export const WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH = 15;
+export const IS_WALLET_PUBLIC_KEY_SHARING_ENABLED = true;
+
+// Automatic wallet migration from pre Daedalus 1.0.0 versions has been disabled
+export const IS_AUTOMATIC_WALLET_MIGRATION_ENABLED = false;
+
+// Wallet assets feature toggle enable/disable
+export const WALLET_ASSETS_ENABLED = true;
+
+export const IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED = false;
+
+// Byron wallet migration has been temporarily disabled due to missing Api support after Mary HF
+export const IS_BYRON_WALLET_MIGRATION_ENABLED = false;
+
+export const IS_WALLET_UNDELEGATION_ENABLED = false;
+
+export const TRANSACTION_MIN_ADA_VALUE = 1;

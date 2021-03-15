@@ -138,10 +138,6 @@ export default class AppUpdateStore extends Store {
     return this.isAutomaticUpdateFailed;
   }
 
-  @computed get isUpdateAvailable(): boolean {
-    return this.availableUpdate !== null;
-  }
-
   getUpdateInfo(update: News): SoftwareUpdateInfo {
     const softwareUpdate = get(update, 'softwareUpdate', {});
     const { version, hash, url } = softwareUpdate[platform] || {};
@@ -156,7 +152,7 @@ export default class AppUpdateStore extends Store {
   // =================== PRIVATE ==================
 
   _checkNewAppUpdate = async (update: News) => {
-    const { version } = this.getUpdateInfo(update);
+    const { version, url } = this.getUpdateInfo(update);
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
 
     /*
@@ -198,6 +194,11 @@ export default class AppUpdateStore extends Store {
     const downloadLocalData = await this._getUpdateDownloadLocalData();
     const { info, data } = downloadLocalData;
     if (info && data) {
+      // The download is outdated
+      if (info.fileUrl !== url) {
+        await this._removeLocalDataInfo();
+        return this._requestUpdateDownload(update);
+      }
       // The user reopened Daedalus without installing the update
       if (data.state === DOWNLOAD_STATES.FINISHED && data.progress === 100) {
         // Does the file still exist?

@@ -109,9 +109,9 @@ export type StakingBlockchainPointer = {|
 
 export type LedgerSignTransactionInputsType = Array<LedgerSignTransactionInputType>;
 
-export type LedgerSignTransactionOutputsType = Array<
-  LedgerOutputTypeAddress | LedgerOutputTypeChange
->;
+export type LedgerSignTransactionOutputsType =
+  | []
+  | Array<LedgerOutputTypeAddress | LedgerOutputTypeChange>;
 
 export type TrezorSignTransactionInputType = {
   path: string,
@@ -175,28 +175,29 @@ export type LedgerSignTransactionRequest = {
   inputs: LedgerSignTransactionInputsType,
   outputs: LedgerSignTransactionOutputsType,
   fee: string,
-  ttl: string,
+  ttl?: string,
   networkId: number,
   protocolMagic: number,
-  // $FlowFixMe
-  certificates: Array<?Certificate>, // TODO - add once certificates defined
-  // $FlowFixMe
-  withdrawals: Array<?Withdrawal>, // TODO - add once withdrawals defined
-  metadataHashHex: ?string, // TODO - add once metadata defined
+  certificates: Array<?Certificate>,
+  withdrawals: Array<?Withdrawal>,
+  metadataHashHex: ?string,
   reset?: boolean,
   devicePath: ?string,
+  validityIntervalStartStr?: string,
 };
 
 export type TrezorSignTransactionRequest = {
   inputs: TrezorSignTransactionInputsType,
   outputs: TrezorSignTransactionOutputsType,
-  fee: string,
+  fee?: string,
   ttl: string,
   networkId: number,
   protocolMagic: number,
   certificates: Array<?Certificate>,
+  withdrawals: Array<?Withdrawal>,
   reset?: boolean,
   devicePath: string,
+  validityIntervalStartStr?: string,
 };
 
 export type LedgerSignTransactionResponse = {

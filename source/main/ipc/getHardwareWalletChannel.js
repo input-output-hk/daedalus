@@ -547,6 +547,7 @@ export const handleHardwareWalletRequests = async (
     }
   });
 
+  // @TODO - validityIntervalStartStr is not working with Cardano App 2.1.0
   signTransactionLedgerChannel.onRequest(async (params) => {
     const {
       inputs,
@@ -559,6 +560,7 @@ export const handleHardwareWalletRequests = async (
       withdrawals,
       metadataHashHex,
       devicePath,
+      // validityIntervalStartStr,
     } = params;
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
     deviceConnection = devicePath
@@ -569,6 +571,7 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Device not connected!');
       }
+
       const signedTransaction = await deviceConnection.signTransaction(
         networkId,
         protocolMagic,
@@ -579,6 +582,7 @@ export const handleHardwareWalletRequests = async (
         certificates,
         withdrawals,
         metadataHashHex
+        // validityIntervalStartStr
       );
       return Promise.resolve(signedTransaction);
     } catch (e) {
@@ -596,6 +600,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       certificates,
       devicePath,
+      validityIntervalStartStr,
+      withdrawals,
     } = params;
 
     if (!TrezorConnect) {
@@ -611,6 +617,8 @@ export const handleHardwareWalletRequests = async (
         protocolMagic,
         networkId,
         certificates,
+        withdrawals,
+        validityIntervalStartStr,
       };
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
         device: { path: devicePath },

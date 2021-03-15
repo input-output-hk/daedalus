@@ -9,32 +9,45 @@
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 20px;
-  &::-webkit-scrollbar-button {
-    display: block;
-    height: 7px;
-  }
+
   @media (max-width: 1000px) {
     min-height: 600px;
   }
 }
+
 .container {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
+
 .instructionsTitle {
   font-size: 18px;
   font-weight: 600;
   line-height: 1.33;
   margin-bottom: 11px;
 }
-.instructionsDescription {
-  border-bottom: 1px solid var(--theme-dialog-border-color);
+
+.instructionsDescription,
+.privacyWarning {
   font-size: 16px;
   line-height: 1.38;
+
+  b {
+    font-family: var(--font-semibold);
+  }
+}
+
+.instructionsDescription {
+  margin-bottom: 10px;
+}
+
+.privacyWarning {
+  border-bottom: 1px solid var(--theme-dialog-border-color);
   margin-bottom: 20px;
   padding-bottom: 20px;
 }
+
 .addresses {
   color: var(--theme-bordered-box-text-color);
   display: flex;

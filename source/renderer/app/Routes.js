@@ -8,6 +8,8 @@ import Root from './containers/Root';
 import InitialSettingsPage from './containers/profile/InitialSettingsPage';
 import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
+import WalletsSettingsPage from './containers/settings/categories/WalletsSettingsPage';
+import StakePoolsSettingsPage from './containers/settings/categories/StakePoolsSettingsPage';
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
@@ -30,6 +32,7 @@ import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
+import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -89,6 +92,14 @@ export const Routes = withRouter(() => (
               component={GeneralSettingsPage}
             />
             <Route
+              path={ROUTES.SETTINGS.WALLETS}
+              component={WalletsSettingsPage}
+            />
+            <Route
+              path={ROUTES.SETTINGS.STAKE_POOLS}
+              component={StakePoolsSettingsPage}
+            />
+            <Route
               path={ROUTES.SETTINGS.TERMS_OF_USE}
               component={TermsOfUseSettingsPage}
             />
@@ -139,6 +150,10 @@ export const Routes = withRouter(() => (
             component={RedeemItnRewardsContainer}
           />
         </Route>
+        <Route
+          path={ROUTES.VOTING.REGISTRATION}
+          component={VotingRegistrationPage}
+        />
       </Switch>
     </Root>
   </Route>

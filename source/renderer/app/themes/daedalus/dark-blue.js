@@ -399,7 +399,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-icon-color': '#e9f4fe',
     '--theme-news-feed-icon-color-connecting-screen': '#e9f4fe',
     '--theme-news-feed-icon-color-syncing-screen': '#e9f4fe',
-    '--theme-news-feed-icon-green-dot-background-color': '#2DC06C',
+    '--theme-news-feed-icon-green-dot-background-color': '#2dc06c',
     '--theme-news-feed-icon-red-dot-background-color': '#ea4c5b',
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
@@ -509,6 +509,11 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
     '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5eb',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#3c4852',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#536370',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': '#fff',
@@ -536,6 +541,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
+    '--rp-autocomplete-required-words-color': 'rgba(233, 244, 254, 0.5)',
+    '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
     '--rp-bubble-bg-color': '#263345',
@@ -708,6 +715,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-settings-menu-item-left-border-color-active': '#536370',
     '--theme-settings-theme-select-title-color': '#cecfd1',
     '--theme-settings-theme-select-border-color': 'rgba(102, 122, 138, 0.3)',
+    '--theme-settings-undelegate-wallet-divider-border-color': '#334152',
+    '--theme-settings-undelegate-wallet-deposit-amount-color': '#2dc06c',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#314259',
@@ -867,7 +877,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#e9f4fe',
     '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-staking-export-button-color': '#fafbfc',
-    '--theme-staking-wallet-row-action-delegate-text-color': '#2ab467',
     '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
     '--theme-staking-wallet-row-ticker-background-color':
       'rgba(233, 244, 254, 0.07)',
@@ -928,6 +937,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '#263345',
     '--theme-transactions-list-group-date-color': '#7a8691',
     '--theme-transactions-list-item-details-color': '#e9f4fe',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-state-ok-background-color': '#274c2d',
     '--theme-transactions-state-pending-background-color':
       'rgba(233, 244, 254, 0.3)',
@@ -981,6 +991,26 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': 'rgba(94, 96, 102, 0.9)',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
+  },
+  voting: {
+    '--theme-voting-font-color-accent': '#cecfd1',
+    '--theme-voting-font-color-light': 'rgba(233, 244, 254, 0.7)',
+    '--theme-voting-font-color-regular': '#cecfd1',
+    '--theme-voting-info-background-color': 'rgba(233, 244, 254, 0.1)',
+    '--theme-voting-info-font-color': '#e9f4fe',
+    '--theme-voting-registration-steps-activation-steps-indicator-color':
+      '#e9f4fe',
+    '--theme-voting-registration-steps-choose-wallet-error-message-color':
+      '#ea4c5b',
+    '--theme-voting-registration-steps-choose-wallet-error-message-light-color':
+      'rgba(234, 76, 91, 0.7)',
+    '--theme-voting-registration-steps-deposit-fees-amount-color': '#ea4c5b',
+    '--theme-voting-registration-steps-deposit-fees-label-color': '#e9f4fe',
+    '--theme-voting-registration-steps-description-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-voting-registration-steps-description-highlighted-color':
+      '#e9f4fe',
+    '--theme-voting-separator-color': 'rgba(233, 244, 254, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color': 'rgba(83, 99, 112, .3)',
@@ -1084,6 +1114,13 @@ export const DARK_BLUE_THEME_OUTPUT = {
   rpPopOver: {
     '--rp-pop-over-bg-color': 'rgba(75, 90, 104, 0.9)',
     '--rp-pop-over-text-color': '#fafbfc',
+  },
+  widgets: {
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(102,122,138,0.1)',
+    '--theme-widgets-asset-token-text-color': '#e9f4fe',
+    '--theme-widgets-asset-token-background-color': 'rgba(83, 99, 112, 0.98)',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
   },
 };
 

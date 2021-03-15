@@ -2,8 +2,14 @@
 @import '../../../themes/mixins/link';
 
 .delegationStepsIntroDialogWrapper {
+  :global {
+    .Dialog_title {
+      margin-bottom: 20px;
+    }
+  }
   .content {
     color: var(--theme-delegation-steps-intro-content-text-color);
+    margin-top: 0;
 
     .link {
       font-size: 16px;

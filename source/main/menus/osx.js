@@ -18,7 +18,7 @@ export const osxMenu = (
   actions: MenuActions,
   translations: {},
   locale: string,
-  isUpdateAvailable: boolean,
+  isNavigationEnabled: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -29,7 +29,16 @@ export const osxMenu = (
         click() {
           actions.openAboutDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
+      },
+      { type: 'separator' },
+      {
+        label: translation('daedalus.redeemItnRewards'),
+        accelerator: 'Command+T',
+        click() {
+          actions.openItnRewardsRedemptionDialog();
+        },
+        enabled: isNavigationEnabled,
       },
       { type: 'separator' },
       {
@@ -38,7 +47,7 @@ export const osxMenu = (
         click() {
           actions.openSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
@@ -46,7 +55,7 @@ export const osxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
       { type: 'separator' },
       {
@@ -181,7 +190,6 @@ export const osxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
-        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -190,7 +198,7 @@ export const osxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
     ]),
   },

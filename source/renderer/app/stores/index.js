@@ -3,16 +3,18 @@ import { observable, action } from 'mobx';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
-import HardwareWalletsStore from './HardwareWalletsStore';
 import AppUpdateStore from './AppUpdateStore';
+import HardwareWalletsStore from './HardwareWalletsStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
+import AssetsStore from './AssetsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
+import VotingStore from './VotingStore';
 import WalletsStore from './WalletsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletBackupStore from './WalletBackupStore';
@@ -23,8 +25,9 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
-  hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
+  assets: AssetsStore,
+  hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -33,6 +36,7 @@ export const storeClasses = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
@@ -44,9 +48,9 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
-
-  hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
+  assets: AssetsStore,
+  hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -56,6 +60,7 @@ export type StoresMap = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
@@ -85,19 +90,21 @@ export default action((api, actions, router): StoresMap => {
 
   // Create fresh instances of all stores
   stores = observable({
-    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
     addresses: createStoreInstanceOf(AddressesStore),
     app: createStoreInstanceOf(AppStore),
+    assets: createStoreInstanceOf(AssetsStore),
+    appUpdate: createStoreInstanceOf(AppUpdateStore),
     hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
     newsFeed: createStoreInstanceOf(NewsFeedStore),
-    appUpdate: createStoreInstanceOf(AppUpdateStore),
     profile: createStoreInstanceOf(ProfileStore),
     router,
     sidebar: createStoreInstanceOf(SidebarStore),
     staking: createStoreInstanceOf(StakingStore),
     transactions: createStoreInstanceOf(TransactionsStore),
     uiDialogs: createStoreInstanceOf(UiDialogsStore),
+    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
+    voting: createStoreInstanceOf(VotingStore),
     wallets: createStoreInstanceOf(WalletsStore),
     walletsLocal: createStoreInstanceOf(WalletsLocalStore),
     walletBackup: createStoreInstanceOf(WalletBackupStore),

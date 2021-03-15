@@ -14,7 +14,6 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import BigNumber from 'bignumber.js';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -31,6 +30,7 @@ import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({
@@ -65,6 +65,12 @@ const messages = defineMessages({
     description:
       'Fees label on the delegation setup "confirmation" step dialog.',
   },
+  depositLabel: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.depositLabel',
+    defaultMessage: '!!!Deposit',
+    description:
+      'Deposit label on the delegation setup "confirmation" step dialog.',
+  },
   spendingPasswordPlaceholder: {
     id:
       'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
@@ -92,7 +98,12 @@ const messages = defineMessages({
   calculatingFees: {
     id: 'staking.delegationSetup.confirmation.step.dialog.calculatingFees',
     defaultMessage: '!!!Calculating fees',
-    description: '"Calculating fees" message in the "Undelegate" dialog.',
+    description: '"Calculating fees" message in the "confirmation" dialog.',
+  },
+  calculatingDeposit: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.calculatingDeposit',
+    defaultMessage: '!!!Calculating deposit',
+    description: '"Calculating deposit" message in the "confirmation" dialog.',
   },
 });
 
@@ -102,7 +113,7 @@ type Props = {
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
-  transactionFee: ?BigNumber,
+  transactionFee: ?DelegationCalculateFeeResponse,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
   stepsList: Array<string>,
@@ -247,7 +258,9 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         onClose={!isSubmitting ? onClose : () => {}}
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
+        backButton={
+          <DialogBackButton onBack={!isSubmitting ? onBack : () => {}} />
+        }
       >
         <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
@@ -276,24 +289,49 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
             <p className={styles.stakePoolId}>{selectedPoolId}</p>
           </div>
 
-          <div className={styles.feesWrapper}>
-            <p className={styles.feesLabel}>
-              {intl.formatMessage(messages.feesLabel)}
-            </p>
-            <p className={styles.feesAmount}>
-              {!transactionFee ? (
-                <span className={styles.calculatingFeesLabel}>
-                  {intl.formatMessage(messages.calculatingFees)}
-                </span>
-              ) : (
-                <>
-                  <span>{formattedWalletAmount(transactionFee, false)}</span>
-                  <span className={styles.feesAmountLabel}>
-                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+          <div className={styles.feesRow}>
+            <div className={styles.feesWrapper}>
+              <p className={styles.feesLabel}>
+                {intl.formatMessage(messages.feesLabel)}
+              </p>
+              <p className={styles.feesAmount}>
+                {!transactionFee ? (
+                  <span className={styles.calculatingFeesLabel}>
+                    {intl.formatMessage(messages.calculatingFees)}
                   </span>
+                ) : (
+                  <>
+                    <span>
+                      {formattedWalletAmount(transactionFee.fee, false)}
+                    </span>
+                    <span className={styles.feesAmountLabel}>
+                      {` `}
+                      {intl.formatMessage(globalMessages.unitAda)}
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+            {transactionFee &&
+              transactionFee.deposits.isZero &&
+              !transactionFee.deposits.isZero() && (
+                <>
+                  <div className={styles.depositWrapper}>
+                    <p className={styles.depositLabel}>
+                      {intl.formatMessage(messages.depositLabel)}
+                    </p>
+                    <p className={styles.depositAmount}>
+                      <span>
+                        {formattedWalletAmount(transactionFee.deposits, false)}
+                      </span>
+                      <span className={styles.depositAmountLabel}>
+                        {` `}
+                        {intl.formatMessage(globalMessages.unitAda)}
+                      </span>
+                    </p>
+                  </div>
                 </>
               )}
-            </p>
           </div>
 
           {isHardwareWallet ? (

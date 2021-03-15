@@ -3,19 +3,30 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classNames from 'classnames';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
+import {
+  IS_WALLET_PUBLIC_KEY_SHARING_ENABLED,
+  IS_WALLET_UNDELEGATION_ENABLED,
+} from '../../../config/walletsConfig';
+import { WalletDelegationStatuses } from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
+import WalletPublicKeyField from './WalletPublicKeyField';
+import WalletPublicKeyDialog from './WalletPublicKeyDialog';
+import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
+import UndelegateWalletButton from './UndelegateWalletButton';
+import DelegateWalletButton from './DelegateWalletButton';
 import DeleteWalletButton from './DeleteWalletButton';
+import UndelegateWalletConfirmationDialog from './UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import { momentLocales } from '../../../../../common/types/locales.types';
+
 import type { Locale } from '../../../../../common/types/locales.types';
 
 export const messages = defineMessages({
@@ -24,6 +35,42 @@ export const messages = defineMessages({
     defaultMessage: '!!!Transaction assurance security level',
     description:
       'Label for the "Transaction assurance security level" dropdown.',
+  },
+  undelegateWalletHeader: {
+    id: 'wallet.settings.undelegateWallet.header',
+    defaultMessage: '!!!Undelegating your wallet',
+    description: 'Undelegate wallet header on the wallet settings page.',
+  },
+  undelegateWalletWarning: {
+    id: 'wallet.settings.undelegateWallet.warning',
+    defaultMessage:
+      '!!!If you are planning to stop using this wallet and remove all funds, you should first undelegate it to recover your 2 ada deposit. You will continue getting delegation rewards during the three Cardano epochs after undelegating your wallet.',
+    description: 'Undelegate wallet warning explaining the consequences.',
+  },
+  undelegateWalletDisabledWarning: {
+    id: 'wallet.settings.undelegateWallet.disabledWarning',
+    defaultMessage:
+      "!!!This wallet is synchronizing with the blockchain, so this wallet's delegation status is currently unknown, and undelegation is not possible.",
+    description:
+      'Undelegate wallet disabled warning explaining why it is disabled.',
+  },
+  delegateWalletHeader: {
+    id: 'wallet.settings.delegateWallet.header',
+    defaultMessage: '!!!Delegate your wallet',
+    description: 'Delegate wallet header on the wallet settings page.',
+  },
+  delegateWalletWarning: {
+    id: 'wallet.settings.delegateWallet.warning',
+    defaultMessage:
+      "!!!This wallet is not delegated. Please, delegate the stake from this wallet to earn rewards and support the Cardano network's security.",
+    description: 'Delegate wallet warning.',
+  },
+  delegateWalletDisabledWarning: {
+    id: 'wallet.settings.delegateWallet.disabledWarning',
+    defaultMessage:
+      "!!!This wallet is synchronizing with the blockchain, so this wallet's delegation status is currently unknown, and delegation is not possible.",
+    description:
+      'Delegate wallet disabled warning explaining why it is disabled.',
   },
   deleteWalletHeader: {
     id: 'wallet.settings.deleteWallet.header',
@@ -65,7 +112,13 @@ export const messages = defineMessages({
 });
 
 type Props = {
+  walletId: string,
   walletName: string,
+  delegationStakePoolStatus: ?string,
+  lastDelegationStakePoolStatus: ?string,
+  isRestoring: boolean,
+  isSyncing: boolean,
+  walletPublicKey: ?string,
   creationDate: Date,
   spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
@@ -74,16 +127,18 @@ type Props = {
   onFieldValueChange: Function,
   onStartEditing: Function,
   onStopEditing: Function,
-  onCancelEditing: Function,
+  onCancel: Function,
   onVerifyRecoveryPhrase: Function,
+  onCopyWalletPublicKey: Function,
+  updateDataForActiveDialogAction: Function,
+  onDelegateClick: Function,
   nameValidator: Function,
-  activeField: ?string,
-  isSubmitting: boolean,
   isIncentivizedTestnet: boolean,
-  isInvalid: boolean,
   isLegacy: boolean,
-  lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
+  walletPublicKeyDialogContainer: Node,
+  walletPublicKeyQRCodeDialogContainer: Node,
+  undelegateWalletDialogContainer: Node,
   deleteWalletDialogContainer: Node,
   shouldDisplayRecoveryPhrase: boolean,
   recoveryPhraseVerificationDate: ?Date,
@@ -124,7 +179,7 @@ export default class WalletSettings extends Component<Props, State> {
 
   componentWillUnmount() {
     // This call is used to prevent display of old successfully-updated messages
-    this.props.onCancelEditing();
+    this.props.onCancel();
   }
 
   onBlockForm = () => {
@@ -135,6 +190,162 @@ export default class WalletSettings extends Component<Props, State> {
     this.setState({ isFormBlocked: false });
   };
 
+  renderWalletPublicKeyBox = () => {
+    const {
+      walletPublicKey,
+      locale,
+      onCopyWalletPublicKey,
+      openDialogAction,
+      isDialogOpen,
+      walletPublicKeyDialogContainer,
+      walletPublicKeyQRCodeDialogContainer,
+      isLegacy,
+    } = this.props;
+
+    if (!IS_WALLET_PUBLIC_KEY_SHARING_ENABLED || isLegacy) {
+      return null;
+    }
+
+    return (
+      <>
+        <BorderedBox className={styles.walletPublicKeyBox}>
+          <WalletPublicKeyField
+            walletPublicKey={walletPublicKey || ''}
+            locale={locale}
+            onCopyWalletPublicKey={onCopyWalletPublicKey}
+            onShowQRCode={() =>
+              openDialogAction({ dialog: WalletPublicKeyQRCodeDialog })
+            }
+            onOpenWalletKeyDialog={() =>
+              openDialogAction({ dialog: WalletPublicKeyDialog })
+            }
+          />
+        </BorderedBox>
+        {isDialogOpen(WalletPublicKeyDialog)
+          ? walletPublicKeyDialogContainer
+          : false}
+        {isDialogOpen(WalletPublicKeyQRCodeDialog)
+          ? walletPublicKeyQRCodeDialogContainer
+          : false}
+      </>
+    );
+  };
+
+  onUndelegateWalletClick = async () => {
+    const {
+      walletId,
+      openDialogAction,
+      updateDataForActiveDialogAction,
+    } = this.props;
+    this.onBlockForm();
+    openDialogAction({
+      dialog: UndelegateWalletConfirmationDialog,
+    });
+    updateDataForActiveDialogAction({
+      data: { walletId },
+    });
+  };
+
+  renderUndelegateWalletBox = () => {
+    const { intl } = this.context;
+    const {
+      delegationStakePoolStatus,
+      lastDelegationStakePoolStatus,
+      isRestoring,
+      isSyncing,
+      isLegacy,
+      isDialogOpen,
+      onDelegateClick,
+      undelegateWalletDialogContainer,
+    } = this.props;
+    const isDelegating = lastDelegationStakePoolStatus
+      ? lastDelegationStakePoolStatus === WalletDelegationStatuses.DELEGATING
+      : delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
+
+    /// @TODO: Once undelegation for rewarded wallet works fine with api, remove reward checking and config
+    if (!IS_WALLET_UNDELEGATION_ENABLED || isLegacy) {
+      return null;
+    }
+
+    let headerMessage = null;
+    let warningMessage = null;
+
+    if (isDelegating) {
+      headerMessage = intl.formatMessage(messages.undelegateWalletHeader);
+      warningMessage =
+        isRestoring || isSyncing
+          ? intl.formatMessage(messages.undelegateWalletDisabledWarning)
+          : intl.formatMessage(messages.undelegateWalletWarning);
+    } else {
+      headerMessage = intl.formatMessage(messages.delegateWalletHeader);
+      warningMessage =
+        isRestoring || isSyncing
+          ? intl.formatMessage(messages.delegateWalletDisabledWarning)
+          : intl.formatMessage(messages.delegateWalletWarning);
+    }
+
+    return (
+      <>
+        <BorderedBox className={styles.undelegateWalletBox}>
+          <span>{headerMessage}</span>
+          <div className={styles.contentBox}>
+            <div>
+              <p>{warningMessage}</p>
+            </div>
+            {isDelegating ? (
+              <UndelegateWalletButton
+                disabled={isRestoring || isSyncing}
+                onUndelegate={this.onUndelegateWalletClick}
+              />
+            ) : (
+              <DelegateWalletButton
+                disabled={isRestoring || isSyncing}
+                onDelegate={onDelegateClick}
+              />
+            )}
+          </div>
+        </BorderedBox>
+        {isDialogOpen(UndelegateWalletConfirmationDialog)
+          ? undelegateWalletDialogContainer
+          : false}
+      </>
+    );
+  };
+
+  renderDeleteWalletBox = () => {
+    const { intl } = this.context;
+    const {
+      openDialogAction,
+      isDialogOpen,
+      deleteWalletDialogContainer,
+    } = this.props;
+
+    return (
+      <>
+        <BorderedBox className={styles.deleteWalletBox}>
+          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
+          <div className={styles.contentBox}>
+            <div>
+              <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
+              <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
+            </div>
+            <DeleteWalletButton
+              onClick={() => {
+                this.onBlockForm();
+                openDialogAction({
+                  dialog: DeleteWalletConfirmationDialog,
+                });
+              }}
+            />
+          </div>
+        </BorderedBox>
+        {isDialogOpen(DeleteWalletConfirmationDialog)
+          ? deleteWalletDialogContainer
+          : false}
+      </>
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -142,22 +353,17 @@ export default class WalletSettings extends Component<Props, State> {
       creationDate,
       spendingPasswordUpdateDate,
       error,
-      openDialogAction,
       isDialogOpen,
+      openDialogAction,
       onFieldValueChange,
       onStartEditing,
       onStopEditing,
-      onCancelEditing,
+      onCancel,
       onVerifyRecoveryPhrase,
       nameValidator,
-      activeField,
-      isSubmitting,
       isIncentivizedTestnet,
-      isInvalid,
       isLegacy,
-      lastUpdatedField,
       changeSpendingPasswordDialog,
-      deleteWalletDialogContainer,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
@@ -173,32 +379,10 @@ export default class WalletSettings extends Component<Props, State> {
     moment.locale(momentLocales[locale]);
 
     if (isLegacy && isIncentivizedTestnet) {
-      const deleteWalletBoxStyles = classNames([
-        styles.deleteWalletBox,
-        styles.legacyWallet,
-      ]);
       return (
         <div className={styles.component}>
-          <BorderedBox className={deleteWalletBoxStyles}>
-            <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
-            <div className={styles.contentBox}>
-              <div>
-                <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
-                <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
-              </div>
-              <DeleteWalletButton
-                onClick={() =>
-                  openDialogAction({
-                    dialog: DeleteWalletConfirmationDialog,
-                  })
-                }
-              />
-            </div>
-          </BorderedBox>
-
-          {isDialogOpen(DeleteWalletConfirmationDialog)
-            ? deleteWalletDialogContainer
-            : false}
+          {this.renderWalletPublicKeyBox()}
+          {this.renderDeleteWalletBox()}
         </div>
       );
     }
@@ -216,22 +400,18 @@ export default class WalletSettings extends Component<Props, State> {
         <BorderedBox>
           <InlineEditingInput
             className="walletName"
-            inputFieldLabel={intl.formatMessage(messages.name)}
-            inputFieldValue={walletName}
+            label={intl.formatMessage(messages.name)}
+            value={walletName}
             maxLength={40}
-            isActive={!isFormBlocked && activeField === 'name'}
-            onStartEditing={() => onStartEditing('name')}
-            onStopEditing={onStopEditing}
-            onCancelEditing={onCancelEditing}
+            onFocus={() => onStartEditing('name')}
+            onBlur={onStopEditing}
+            onCancel={onCancel}
             onSubmit={(value) => onFieldValueChange('name', value)}
             isValid={nameValidator}
-            validationErrorMessage={intl.formatMessage(
+            valueErrorMessage={intl.formatMessage(
               globalMessages.invalidWalletName
             )}
-            successfullyUpdated={
-              !isSubmitting && !isInvalid && lastUpdatedField === 'name'
-            }
-            inputBlocked={isFormBlocked}
+            readOnly={isFormBlocked}
           />
 
           {!isHardwareWallet && (
@@ -239,6 +419,7 @@ export default class WalletSettings extends Component<Props, State> {
               label={intl.formatMessage(messages.passwordLabel)}
               value={passwordMessage}
               isSet={isSpendingPasswordSet}
+              withButton
               onClick={() => {
                 this.onBlockForm();
                 openDialogAction({
@@ -268,31 +449,13 @@ export default class WalletSettings extends Component<Props, State> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>
 
-        <BorderedBox className={styles.deleteWalletBox}>
-          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
-          <div className={styles.contentBox}>
-            <div>
-              <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
-              <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
-            </div>
-            <DeleteWalletButton
-              onClick={() => {
-                this.onBlockForm();
-                openDialogAction({
-                  dialog: DeleteWalletConfirmationDialog,
-                });
-              }}
-            />
-          </div>
-        </BorderedBox>
-
         {isDialogOpen(ChangeSpendingPasswordDialog)
           ? changeSpendingPasswordDialog
           : false}
 
-        {isDialogOpen(DeleteWalletConfirmationDialog)
-          ? deleteWalletDialogContainer
-          : false}
+        {this.renderWalletPublicKeyBox()}
+        {this.renderUndelegateWalletBox()}
+        {this.renderDeleteWalletBox()}
       </div>
     );
   }

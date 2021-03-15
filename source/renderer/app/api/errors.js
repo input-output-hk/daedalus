@@ -61,9 +61,9 @@ export const messages = defineMessages({
   inputsDepleted: {
     id: 'api.errors.inputsDepleted',
     defaultMessage:
-      '!!!Cannot send from a wallet that contains only rewards balances.',
+      '!!!Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds.',
     description:
-      '"Cannot send from a wallet that contains only rewards balances." error message',
+      '"Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds." error message',
   },
   transactionIsTooBig: {
     id: 'api.errors.TooBigTransactionError',
@@ -105,5 +105,10 @@ export const messages = defineMessages({
       '!!!Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.',
     description:
       '"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated." error message',
+  },
+  invalidSmashServer: {
+    id: 'api.errors.invalidSmashServer',
+    defaultMessage: '!!!This URL is not a valid SMASH server',
+    description: '"This URL is not a valid SMASH server" error message',
   },
 });

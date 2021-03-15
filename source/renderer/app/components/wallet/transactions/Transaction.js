@@ -2,25 +2,29 @@
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import { includes } from 'lodash';
+import { includes, get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
+import { TransactionMetadataView } from './metadata/TransactionMetadataView';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
-import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import {
   TransactionStates,
   TransactionTypes,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
+import WholeSelectionText from '../../widgets/WholeSelectionText';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
+import type { WalletTransactionAsset } from '../../../api/assets/types';
+import AssetToken from '../../widgets/AssetToken';
+import { formattedTokenWalletAmount } from '../../../utils/formatters';
 
 /* eslint-disable consistent-return */
 
@@ -32,7 +36,7 @@ const messages = defineMessages({
   },
   type: {
     id: 'wallet.transaction.type',
-    defaultMessage: '!!!{currency} transaction',
+    defaultMessage: '!!!{typeOfTransaction} transaction',
     description: 'Transaction type shown for {currency} transactions.',
   },
   exchange: {
@@ -46,6 +50,33 @@ const messages = defineMessages({
     defaultMessage: '!!!Transaction ID',
     description: 'Transaction ID.',
   },
+  transactionMetadata: {
+    id: 'wallet.transaction.transactionMetadata',
+    defaultMessage: '!!!Transaction Metadata',
+    description: 'Transaction Metadata.',
+  },
+  transactionMetadataDescription: {
+    id: 'wallet.transaction.transactionMetadataDescription',
+    defaultMessage:
+      'Transaction metadata is not moderated and may contain inappropriate content. Show unmoderated content.',
+    description: '',
+  },
+  metadataLabel: {
+    id: 'wallet.transaction.metadataLabel',
+    defaultMessage: '!!!Transaction metadata',
+    description: 'Transaction metadata label',
+  },
+  metadataDisclaimer: {
+    id: 'wallet.transaction.metadataDisclaimer',
+    defaultMessage:
+      '!!!Transaction metadata is not moderated and may contain inappropriate content.',
+    description: 'Transaction metadata disclaimer',
+  },
+  metadataConfirmationLabel: {
+    id: 'wallet.transaction.metadataConfirmationLabel',
+    defaultMessage: '!!!Show unmoderated content',
+    description: 'Transaction metadata confirmation toggle',
+  },
   conversionRate: {
     id: 'wallet.transaction.conversion.rate',
     defaultMessage: '!!!Conversion rate',
@@ -53,13 +84,13 @@ const messages = defineMessages({
   },
   sent: {
     id: 'wallet.transaction.sent',
-    defaultMessage: '!!!{currency} sent',
-    description: 'Label "{currency} sent" for the transaction.',
+    defaultMessage: '!!!{transactionsType} sent',
+    description: 'Label "{transactionsType} sent" for the transaction.',
   },
   received: {
     id: 'wallet.transaction.received',
-    defaultMessage: '!!!{currency} received',
-    description: 'Label "{currency} received" for the transaction.',
+    defaultMessage: '!!!{transactionsType} received',
+    description: 'Label "{transactionsType} received" for the transaction.',
   },
   fromAddress: {
     id: 'wallet.transaction.address.from',
@@ -86,10 +117,50 @@ const messages = defineMessages({
     defaultMessage: '!!!To addresses',
     description: 'To addresses',
   },
+  receiverLabel: {
+    id: 'wallet.transaction.receiverLabel',
+    defaultMessage: '!!!Receiver',
+    description: 'Receiver',
+  },
+  assetLabel: {
+    id: 'wallet.transaction.assetLabel',
+    defaultMessage: '!!!Token',
+    description: 'Token label',
+  },
+  transactionFee: {
+    id: 'wallet.transaction.transactionFee',
+    defaultMessage: '!!!Transaction fee',
+    description: 'Transaction fee',
+  },
+  deposit: {
+    id: 'wallet.transaction.deposit',
+    defaultMessage: '!!!Deposit',
+    description: 'Deposit',
+  },
   transactionAmount: {
     id: 'wallet.transaction.transactionAmount',
     defaultMessage: '!!!Transaction amount',
     description: 'Transaction amount.',
+  },
+  multipleTokens: {
+    id: 'wallet.transaction.multipleTokens',
+    defaultMessage: '!!!Multiple tokens',
+    description: 'Multiple tokens.',
+  },
+  tokensSent: {
+    id: 'wallet.transaction.tokensSent',
+    defaultMessage: '!!!Tokens sent',
+    description: 'Tokens sent.',
+  },
+  tokensReceived: {
+    id: 'wallet.transaction.tokensReceived',
+    defaultMessage: '!!!Tokens received',
+    description: 'Tokens received.',
+  },
+  fetchingTokenData: {
+    id: 'wallet.transaction.fetchingTokenData',
+    defaultMessage: '!!!Fetching token data',
+    description: '"Fetching token data..." message.',
   },
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
@@ -154,6 +225,24 @@ const stateTranslations = defineMessages({
   },
 });
 
+const headerStateTranslations = defineMessages({
+  [TransactionStates.OK]: {
+    id: 'wallet.transaction.state.confirmedHeading',
+    defaultMessage: '!!!Confirmed',
+    description: 'Transaction state "confirmed"',
+  },
+  [TransactionStates.PENDING]: {
+    id: 'wallet.transaction.state.pendingHeading',
+    defaultMessage: '!!!Pending',
+    description: 'Transaction state "pending"',
+  },
+  [TransactionStates.FAILED]: {
+    id: 'wallet.transaction.state.failedHeading',
+    defaultMessage: '!!!Failed',
+    description: 'Transaction state "failed"',
+  },
+});
+
 type Props = {
   data: WalletTransaction,
   deletePendingTransaction: Function,
@@ -161,17 +250,25 @@ type Props = {
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
+  isShowingMetadata: boolean,
   formattedWalletAmount: Function,
   onDetailsToggled: ?Function,
   onOpenExternalLink: Function,
+  onShowMetadata: () => void,
   getUrlByType: Function,
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
+  assetsDetails: Array<WalletTransactionAsset>,
+  hasAssetsEnabled: boolean,
+  isInternalAddress: Function,
+  isLoadingAssets: boolean,
+  onCopyAssetItem: Function,
 };
 
 type State = {
   showConfirmationDialog: boolean,
+  showUnmoderatedMetadata: boolean,
 };
 
 export default class Transaction extends Component<Props, State> {
@@ -181,7 +278,19 @@ export default class Transaction extends Component<Props, State> {
 
   state = {
     showConfirmationDialog: false,
+    showUnmoderatedMetadata: false,
   };
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    // Tell parent components that meta data was toggled
+    if (
+      !prevState.showUnmoderatedMetadata &&
+      this.state.showUnmoderatedMetadata &&
+      this.props.onShowMetadata
+    ) {
+      this.props.onShowMetadata();
+    }
+  }
 
   toggleDetails() {
     const { onDetailsToggled } = this.props;
@@ -296,10 +405,88 @@ export default class Transaction extends Component<Props, State> {
     );
   };
 
+  get hasAssets(): boolean {
+    return !!this.assetsList.length;
+  }
+
+  get assetsList(): Array<WalletTransactionAsset> {
+    const {
+      assetsDetails,
+      data,
+      isInternalAddress,
+      hasAssetsEnabled,
+    } = this.props;
+
+    if (!hasAssetsEnabled) {
+      return [];
+    }
+
+    const assetsList = assetsDetails.filter(
+      (asset) =>
+        (data.type === TransactionTypes.INCOME &&
+          isInternalAddress(asset.address)) ||
+        (data.type === TransactionTypes.EXPEND &&
+          !isInternalAddress(asset.address))
+    );
+
+    return assetsList;
+  }
+
+  includesUnresolvedAddresses = (addresses: Array<?string>) =>
+    includes(addresses, null);
+
+  addressesList = (addresses: Array<?string>): any => {
+    const { intl } = this.context;
+    const { onOpenExternalLink, getUrlByType, data } = this.props;
+    const type = this.hasAssets ? data.type : null;
+    if (addresses && addresses.length > 0) {
+      const hasUnresolvedAddresses = this.includesUnresolvedAddresses(
+        addresses
+      );
+      return type !== TransactionTypes.EXPEND && hasUnresolvedAddresses ? (
+        <div className={styles.explorerLinkRow}>
+          <Link
+            className={styles.explorerLink}
+            onClick={() => onOpenExternalLink(getUrlByType('tx', data.id))}
+            label={intl.formatMessage(
+              messages.unresolvedInputAddressesLinkLabel
+            )}
+            skin={LinkSkin}
+          />
+          <span>
+            {intl.formatMessage(
+              messages.unresolvedInputAddressesAdditionalLabel
+            )}
+          </span>
+        </div>
+      ) : (
+        addresses.map((address, addressIndex) => (
+          <div
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${data.id}-from-${address || ''}-${addressIndex}`}
+            className={styles.addressRow}
+          >
+            <Link
+              onClick={() =>
+                onOpenExternalLink(getUrlByType('address', address))
+              }
+              label={
+                <WholeSelectionText className={styles.address} text={address} />
+              }
+              skin={LinkSkin}
+            />
+          </div>
+        ))
+      );
+    }
+    return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
+  };
+
   render() {
     const {
       data,
       isLastInList,
+      isShowingMetadata,
       state,
       formattedWalletAmount,
       onOpenExternalLink,
@@ -307,7 +494,10 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
+      isLoadingAssets,
+      onCopyAssetItem,
     } = this.props;
+
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
 
@@ -324,7 +514,6 @@ export default class Transaction extends Component<Props, State> {
 
     const detailsStyles = classNames([
       styles.details,
-      styles.clickable,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
     ]);
 
@@ -333,8 +522,12 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    const currency = intl.formatMessage(globalMessages.currency);
-    const symbol = adaSymbol;
+    const transactionsType = this.hasAssets
+      ? intl.formatMessage(messages.multipleTokens)
+      : intl.formatMessage(globalMessages.currency);
+    const typeOfTransaction = this.hasAssets
+      ? intl.formatMessage(headerStateTranslations[state])
+      : intl.formatMessage(globalMessages.currency);
 
     const getIconType = (txState) => {
       switch (txState) {
@@ -349,50 +542,14 @@ export default class Transaction extends Component<Props, State> {
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
-    const includesUnresolvedAddresses = (addresses) =>
-      includes(addresses, null);
-
-    const fromAddresses = (addresses, transactionId) => {
-      if (addresses.length > 0) {
-        return includesUnresolvedAddresses(addresses) ? (
-          <div className={styles.explorerLinkRow}>
-            <Link
-              className={styles.explorerLink}
-              onClick={() =>
-                onOpenExternalLink(getUrlByType('tx', transactionId))
-              }
-              label={intl.formatMessage(
-                messages.unresolvedInputAddressesLinkLabel
-              )}
-              skin={LinkSkin}
-            />
-            <span>
-              {intl.formatMessage(
-                messages.unresolvedInputAddressesAdditionalLabel
-              )}
-            </span>
-          </div>
-        ) : (
-          addresses.map((address, addressIndex) => (
-            <div
-              // eslint-disable-next-line react/no-array-index-key
-              key={`${data.id}-from-${address || ''}-${addressIndex}`}
-              className={styles.addressRow}
-            >
-              <Link
-                className={styles.address}
-                onClick={() =>
-                  onOpenExternalLink(getUrlByType('address', address))
-                }
-                label={address}
-                skin={LinkSkin}
-              />
-            </div>
-          ))
-        );
-      }
-      return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
-    };
+    const assetsSeparatorStyles = classNames([
+      styles.assetsSeparator,
+      isExpanded ? styles.expanded : null,
+    ]);
+    const assetsSeparatorBasicHeight = 27;
+    const assetsSeparatorCalculatedHeight = this.assetsList.length
+      ? assetsSeparatorBasicHeight * this.assetsList.length - 15
+      : assetsSeparatorBasicHeight;
 
     return (
       <Fragment>
@@ -412,21 +569,25 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.header}>
                 <div className={styles.title}>
                   {data.type === TransactionTypes.EXPEND
-                    ? intl.formatMessage(messages.sent, { currency })
-                    : intl.formatMessage(messages.received, { currency })}
+                    ? intl.formatMessage(messages.sent, { transactionsType })
+                    : intl.formatMessage(messages.received, {
+                        transactionsType,
+                      })}
                 </div>
-                <div className={styles.amount}>
-                  {
-                    // hide currency (we are showing symbol instead)
-                    formattedWalletAmount(data.amount, false)
-                  }
-                  <SVGInline svg={symbol} className={styles.currencySymbol} />
-                </div>
+                {data.amount && (
+                  <div className={styles.amount}>
+                    {
+                      // hide currency (we are showing symbol instead)
+                      formattedWalletAmount(data.amount, false)
+                    }
+                    <span>{intl.formatMessage(globalMessages.currency)}</span>
+                  </div>
+                )}
               </div>
 
               <div className={styles.details}>
                 <div className={styles.type}>
-                  {intl.formatMessage(messages.type, { currency })},{' '}
+                  {intl.formatMessage(messages.type, { typeOfTransaction })},{' '}
                   {moment(data.date).format(currentTimeFormat)}
                 </div>
                 {this.renderTxnStateTag()}
@@ -444,8 +605,7 @@ export default class Transaction extends Component<Props, State> {
             >
               <div>
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-                {fromAddresses(data.addresses.from, data.id)}
-
+                {this.addressesList(get(data, 'addresses.from', []))}
                 {data.addresses.withdrawals.length ? (
                   <>
                     <h2>{intl.formatMessage(messages.fromRewards)}</h2>
@@ -456,11 +616,15 @@ export default class Transaction extends Component<Props, State> {
                         className={styles.addressRow}
                       >
                         <Link
-                          className={styles.address}
                           onClick={() =>
                             onOpenExternalLink(getUrlByType('address', address))
                           }
-                          label={address}
+                          label={
+                            <WholeSelectionText
+                              className={styles.address}
+                              text={address}
+                            />
+                          }
                           skin={LinkSkin}
                         />
                       </div>
@@ -469,35 +633,142 @@ export default class Transaction extends Component<Props, State> {
                 ) : null}
 
                 <h2>{intl.formatMessage(messages.toAddresses)}</h2>
-                {data.addresses.to.map((address, addressIndex) => (
-                  <div
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${data.id}-to-${address}-${addressIndex}`}
-                    className={styles.addressRow}
-                  >
-                    <Link
-                      className={styles.address}
-                      onClick={() =>
-                        onOpenExternalLink(getUrlByType('address', address))
-                      }
-                      label={address}
-                      skin={LinkSkin}
-                    />
-                  </div>
-                ))}
+                {this.addressesList(get(data, 'addresses.to', []))}
+
+                {data.type === TransactionTypes.EXPEND && !data.fee.isZero() && (
+                  <>
+                    <h2>{intl.formatMessage(messages.transactionFee)}</h2>
+                    <div className={styles.transactionIdRow}>
+                      <div className={styles.transactionFeeValue}>
+                        {formattedWalletAmount(data.fee, false)}&nbsp;
+                        <span>
+                          {intl.formatMessage(globalMessages.unitAda)}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {!data.deposit.isZero() && (
+                  <>
+                    <h2>{intl.formatMessage(messages.deposit)}</h2>
+                    <div className={styles.depositRow}>
+                      <div className={styles.amount}>
+                        {formattedWalletAmount(data.deposit, false)}
+                        <span className={styles.currency}>ADA</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {this.hasAssets && (
+                  <>
+                    <h2>
+                      {data.type === TransactionTypes.EXPEND
+                        ? intl.formatMessage(messages.tokensSent)
+                        : intl.formatMessage(messages.tokensReceived)}
+                    </h2>
+                    {isLoadingAssets ? (
+                      <div className={styles.assetContainer}>
+                        <div
+                          className={assetsSeparatorStyles}
+                          style={{
+                            height: '12px',
+                          }}
+                        />
+                        <h3>
+                          <span className={styles.fetchingTokenData}>
+                            {intl.formatMessage(messages.fetchingTokenData)}
+                          </span>
+                        </h3>
+                      </div>
+                    ) : (
+                      this.assetsList.map((asset, assetIndex) => (
+                        <div
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
+                          className={styles.assetContainer}
+                        >
+                          {assetIndex === 0 && (
+                            <div
+                              className={assetsSeparatorStyles}
+                              style={{
+                                height: `${assetsSeparatorCalculatedHeight}px`,
+                              }}
+                            />
+                          )}
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetIndex + 1}
+                            </span>
+                            <AssetToken
+                              asset={asset}
+                              onCopyAssetItem={onCopyAssetItem}
+                              componentClassName={styles.assetToken}
+                            />
+                          </h3>
+                          {asset.quantity && (
+                            <div className={styles.amountFeesWrapper}>
+                              <div className={styles.amount}>
+                                {formattedTokenWalletAmount(
+                                  asset.quantity,
+                                  asset.metadata
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </>
+                )}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>
                   <Link
-                    className={styles.transactionId}
                     onClick={() =>
                       onOpenExternalLink(getUrlByType('tx', data.id))
                     }
-                    label={data.id}
+                    label={
+                      <WholeSelectionText
+                        className={styles.transactionId}
+                        text={data.id}
+                      />
+                    }
                     skin={LinkSkin}
                   />
                 </div>
                 {this.renderCancelPendingTxnContent()}
+
+                {data.metadata != null && (
+                  <div className={styles.metadata}>
+                    <h2>{intl.formatMessage(messages.metadataLabel)}</h2>
+                    {data.metadata &&
+                    (this.state.showUnmoderatedMetadata ||
+                      isShowingMetadata) ? (
+                      <TransactionMetadataView data={data.metadata} />
+                    ) : (
+                      <>
+                        <p className={styles.metadataDisclaimer}>
+                          {intl.formatMessage(messages.metadataDisclaimer)}
+                        </p>
+                        <Link
+                          isUnderlined={false}
+                          hasIconAfter={false}
+                          underlineOnHover
+                          label={intl.formatMessage(
+                            messages.metadataConfirmationLabel
+                          )}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({ showUnmoderatedMetadata: true });
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <SVGInline svg={arrow} className={arrowStyles} />

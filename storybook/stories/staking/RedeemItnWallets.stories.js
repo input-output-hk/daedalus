@@ -15,14 +15,49 @@ import RedemptionUnavailableDialog from '../../../source/renderer/app/components
 // Helpers
 import { isValidMnemonic } from '../../../source/common/config/crypto/decrypt';
 import validWords from '../../../source/common/config/crypto/valid-words.en';
-import { generateWallet } from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
 
 const WALLETS = [
-  generateWallet('First Wallet', '1000000000'),
-  generateWallet('Second Wallet', '500000000'),
-  generateWallet('Third Wallet', '100000000'),
-  generateWallet('Fourth Wallet', '50000000'),
-  generateWallet('Fifth Wallet', '7000000'),
+  generateWallet('First Wallet', '1000000000', assets),
+  generateWallet('Second Wallet', '500000000', assets),
+  generateWallet('Third Wallet', '100000000', assets),
+  generateWallet('Fourth Wallet', '50000000', assets),
+  generateWallet('Fifth Wallet', '7000000', assets),
 ];
 
 export const Step1ConfigurationDialogStory = () => {

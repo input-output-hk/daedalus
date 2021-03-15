@@ -30,9 +30,14 @@ export const ROUTES = {
     SETTINGS: '/wallets/:id/settings',
     UTXO: '/wallets/:id/utxo',
   },
+  VOTING: {
+    REGISTRATION: '/voting/registration',
+  },
   SETTINGS: {
     ROOT: '/settings',
+    WALLETS: '/settings/wallets',
     GENERAL: '/settings/general',
+    STAKE_POOLS: '/settings/stake-pools',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
     DISPLAY: '/settings/display',

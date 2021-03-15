@@ -1,19 +1,19 @@
 // @flow
-import React from 'react';
-import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
+import React from 'react';
+import type { CoinSelectionsResponse } from '../api/transactions/types';
 import {
-  WalletTransaction,
   TransactionTypes,
+  WalletTransaction,
 } from '../domains/WalletTransaction';
-import { formattedWalletAmount } from './formatters';
-import { DateRangeTypes } from '../stores/TransactionsStore';
-import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import type {
   ByronEncodeSignedTransactionRequest,
   ByronSignedTransactionWitnesses,
 } from '../stores/HardwareWalletsStore';
-import type { CoinSelectionsResponse } from '../api/transactions/types';
+import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
+import { DateRangeTypes } from '../stores/TransactionsStore';
+import { formattedWalletAmount } from './formatters';
 
 const cbor = require('cbor');
 const bs58 = require('bs58');
@@ -85,10 +85,10 @@ export const isTransactionAmountInFilterRange = (
       ? new BigNumber(0)
       : new BigNumber(toAmount);
   const compareFrom = fromAmount
-    ? amount.absoluteValue().greaterThanOrEqualTo(min)
+    ? amount.absoluteValue().isGreaterThanOrEqualTo(min)
     : true;
   const compareTo = toAmount
-    ? amount.absoluteValue().lessThanOrEqualTo(max)
+    ? amount.absoluteValue().isLessThanOrEqualTo(max)
     : true;
 
   return compareFrom && compareTo;
@@ -268,7 +268,7 @@ export const validateFilterForm = (values: {
   if (
     fromAmount &&
     toAmount &&
-    new BigNumber(fromAmount).greaterThan(new BigNumber(toAmount))
+    new BigNumber(fromAmount).isGreaterThan(new BigNumber(toAmount))
   ) {
     invalidFields.toAmount = true;
   }

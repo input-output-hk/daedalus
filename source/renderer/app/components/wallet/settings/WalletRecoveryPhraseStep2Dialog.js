@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { join } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
@@ -9,6 +8,10 @@ import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteS
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import {
+  errorOrIncompleteMarker,
+  validateMnemonics,
+} from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
@@ -38,11 +41,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Verify',
     description: 'Label for the recoveryPhraseStep2Button on wallet settings.',
   },
-  recoveryPhraseInputHint: {
-    id: 'wallet.settings.recoveryPhraseInputHint',
-    defaultMessage: '!!!Enter recovery phrase',
+  recoveryPhraseInputPlaceholder: {
+    id: 'wallet.settings.recoveryPhraseInputPlaceholder',
+    defaultMessage: '!!!Enter word #{wordNumber}',
     description:
-      'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
+      'Placeholder "Enter word #{wordNumber}" for the recovery phrase input on the verification dialog.',
   },
   recoveryPhraseNoResults: {
     id: 'wallet.settings.recoveryPhraseInputNoResults',
@@ -86,37 +89,17 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
       fields: {
         recoveryPhrase: {
           value: [],
-          validators: ({ field }) => {
-            const { intl } = this.context;
-            const enteredWords = field.value;
-            const enteredWordCount = enteredWords.length;
-            const value = join(enteredWords, ' ');
-            const { expectedWordCount } = this.props;
-
-            const isPhraseComplete = Array.isArray(expectedWordCount)
-              ? expectedWordCount.includes(enteredWordCount)
-              : enteredWordCount === expectedWordCount;
-
-            // Check if recovery phrase contains the expected words
-            if (!isPhraseComplete) {
-              const expected = Array.isArray(expectedWordCount)
-                ? ''
-                : expectedWordCount;
-
-              return [
-                false,
-                intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected,
-                }),
-              ];
-            }
-            return [
-              isValidMnemonic(value, enteredWords.length),
-              this.context.intl.formatMessage(
-                messages.recoveryPhraseStep2InvalidMnemonics
-              ),
-            ];
-          },
+          validators: ({ field }) =>
+            validateMnemonics({
+              requiredWords: this.props.expectedWordCount,
+              providedWords: field.value,
+              validator: (enteredWords) => [
+                isValidMnemonic(enteredWords.join(' '), enteredWords.length),
+                this.context.intl.formatMessage(
+                  messages.recoveryPhraseStep2InvalidMnemonics
+                ),
+              ],
+            }),
         },
       },
     },
@@ -172,14 +155,33 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         <div className={styles.subtitle}>
           <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
-
         <Autocomplete
           {...recoveryPhraseField.bind()}
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
-          placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
+          placeholder={intl.formatMessage(
+            messages.recoveryPhraseInputPlaceholder,
+            {
+              wordNumber: enteredWordCount + 1,
+            }
+          )}
           options={suggestedMnemonics}
+          requiredSelections={
+            Array.isArray(expectedWordCount)
+              ? expectedWordCount
+              : [expectedWordCount]
+          }
+          requiredSelectionsInfo={(required, actual) =>
+            Array.isArray(expectedWordCount)
+              ? intl.formatMessage(globalMessages.unknownMnemonicWordCount, {
+                  actual,
+                })
+              : intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+                  actual,
+                  required,
+                })
+          }
           maxSelections={maxSelections}
-          error={recoveryPhraseField.error}
+          error={errorOrIncompleteMarker(recoveryPhraseField.error)}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(
             messages.recoveryPhraseNoResults

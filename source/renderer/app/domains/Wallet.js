@@ -10,6 +10,7 @@ import type {
   WalletPendingDelegations,
   Discovery,
 } from '../api/wallets/types';
+import type { WalletAssets } from '../api/assets/types';
 
 export const WalletDiscovery: {
   RANDOM: Discovery,
@@ -99,12 +100,15 @@ export type WalletProps = {
   amount: BigNumber,
   availableAmount: BigNumber,
   reward: BigNumber,
+  assets: WalletAssets,
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
   delegatedStakePoolId?: ?string,
   delegationStakePoolStatus?: ?string,
-  lastDelegationStakePoolId?: ?string,
+  lastDelegatedStakePoolId?: ?string,
+  lastDelegationStakePoolStatus?: ?string,
   pendingDelegations?: WalletPendingDelegations,
   discovery: Discovery,
   hasPassword: boolean,
@@ -118,12 +122,14 @@ export default class Wallet {
   @observable amount: BigNumber;
   @observable availableAmount: BigNumber;
   @observable reward: BigNumber;
+  @observable assets: WalletAssets;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
   @observable delegatedStakePoolId: ?string;
   @observable delegationStakePoolStatus: ?string;
-  @observable lastDelegationStakePoolId: ?string;
+  @observable lastDelegatedStakePoolId: ?string;
+  @observable lastDelegationStakePoolStatus: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
   @observable discovery: Discovery;
   @observable hasPassword: boolean;
@@ -144,12 +150,14 @@ export default class Wallet {
         'amount',
         'availableAmount',
         'reward',
+        'assets',
         'passwordUpdateDate',
         'syncState',
         'isLegacy',
         'delegatedStakePoolId',
         'delegationStakePoolStatus',
-        'lastDelegationStakePoolId',
+        'lastDelegatedStakePoolId',
+        'lastDelegationStakePoolStatus',
         'pendingDelegations',
         'discovery',
         'hasPassword',
@@ -163,11 +171,19 @@ export default class Wallet {
     return this.amount.gt(0);
   }
 
+  @computed get hasAssets(): boolean {
+    return get(this, 'assets.total', []).length > 0;
+  }
+
   @computed get isRestoring(): boolean {
     return (
       get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING &&
       this.restorationProgress < 100
     );
+  }
+
+  @computed get isSyncing(): boolean {
+    return get(this, 'syncState.status') === WalletSyncStateStatuses.SYNCING;
   }
 
   @computed get isNotResponding(): boolean {

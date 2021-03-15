@@ -26,6 +26,7 @@ type Props = {
   containerClassName: string,
   numberOfRankedStakePools: number,
   disabledStakePoolId: ?string,
+  isGridRewardsView?: boolean,
 };
 
 type State = {
@@ -100,6 +101,7 @@ export class ThumbPool extends Component<Props, State> {
       containerClassName,
       numberOfRankedStakePools,
       disabledStakePoolId,
+      isGridRewardsView,
     } = this.props;
     const { top, left } = this.state;
 
@@ -124,6 +126,7 @@ export class ThumbPool extends Component<Props, State> {
       ) : (
         <ThumbPoolContent
           stakePool={stakePool}
+          isGridRewardsView={isGridRewardsView}
           numberOfRankedStakePools={numberOfRankedStakePools}
         />
       );
@@ -142,6 +145,7 @@ export class ThumbPool extends Component<Props, State> {
           <TooltipPool
             stakePool={stakePool}
             isVisible
+            hasArrow
             onClick={onClose}
             currentTheme={currentTheme}
             onOpenExternalLink={onOpenExternalLink}
@@ -153,6 +157,7 @@ export class ThumbPool extends Component<Props, State> {
             containerClassName={containerClassName}
             numberOfRankedStakePools={numberOfRankedStakePools}
             isListView={false}
+            isGridRewardsView={isGridRewardsView}
           />
         )}
       </div>

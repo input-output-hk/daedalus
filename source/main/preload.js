@@ -11,6 +11,7 @@ import {
   legacyStateDir,
   nodeImplementation,
   isFlight,
+  smashUrl,
 } from './config';
 import {
   SHELLEY_LOCAL,
@@ -58,7 +59,9 @@ process.once('loaded', () => {
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
     legacyStateDir,
+    smashUrl,
   });
+
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
     // $FlowFixMe

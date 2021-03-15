@@ -1,0 +1,97 @@
+[
+  {
+    "id": "bitcoin",
+    "symbol": "btc",
+    "name": "Bitcoin"
+  },
+  {
+    "id": "ethereum",
+    "symbol": "eth",
+    "name": "Ethereum"
+  },
+  {
+    "id": "litecoin",
+    "symbol": "ltc",
+    "name": "Litecoin"
+  },
+  {
+    "id": "bitcoin-cash",
+    "symbol": "bch",
+    "name": "Bitcoin Cash"
+  },
+  {
+    "id": "binancecoin",
+    "symbol": "bnb",
+    "name": "Binance Coin"
+  },
+  {
+    "id": "eos",
+    "symbol": "eos",
+    "name": "EOS"
+  },
+  {
+    "id": "ripple",
+    "symbol": "xrp",
+    "name": "XRP"
+  },
+  {
+    "id": "stellar",
+    "symbol": "xlm",
+    "name": "Stellar"
+  },
+  {
+    "id": "chainlink",
+    "symbol": "link",
+    "name": "Chainlink"
+  },
+  {
+    "id": "polkadot",
+    "symbol": "dot",
+    "name": "Polkadot"
+  },
+  {
+    "id": "yearn-finance",
+    "symbol": "yfi",
+    "name": "yearn.finance"
+  },
+  {
+    "id": "uniswap-state-dollar",
+    "symbol": "usd",
+    "name": "unified Stable Dollar"
+  },
+  {
+    "id": "block-duelers",
+    "symbol": "bdt",
+    "name": "Block Duelers"
+  },
+  {
+    "id": "bitcoin-hd",
+    "symbol": "bhd",
+    "name": "Bitcoin HD"
+  },
+  {
+    "id": "good-boy-points",
+    "symbol": "gbp",
+    "name": "Good Boy Points"
+  },
+  {
+    "id": "lkr-coin",
+    "symbol": "lkr",
+    "name": "LKR Coin"
+  },
+  {
+    "id": "trias",
+    "symbol": "try",
+    "name": "Trias"
+  },
+  {
+    "id": "xrpalike-gene",
+    "symbol": "xag",
+    "name": "Xrpalike Gene"
+  },
+  {
+    "id": "bitcoinus",
+    "symbol": "bits",
+    "name": "Bitcoinus"
+  }
+]

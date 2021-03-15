@@ -97,7 +97,7 @@ yarn2nix.mkYarnPackage {
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
       # but that causes the derivation to depend on the original inputs at the nix layer, and double the size of the linux installs
       # nuke-refs will just replace all storepaths with an invalid one
-      for x in {main,renderer}/index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
+      for x in {main,renderer}/{0.,}index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
         nuke-refs $x
       done
     '';
@@ -121,7 +121,7 @@ yarn2nix.mkYarnPackage {
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
 
     mkdir -pv $out/resources/app/node_modules
-    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node} $out/resources/app/node_modules
+    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic} $out/resources/app/node_modules
 
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
@@ -164,7 +164,7 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
-    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node} $out/share/daedalus/node_modules/
+    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic} $out/share/daedalus/node_modules/
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build

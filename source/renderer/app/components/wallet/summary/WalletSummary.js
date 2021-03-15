@@ -1,28 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
-import SVGInline from 'react-svg-inline';
-import classnames from 'classnames';
-import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
-import BorderedBox from '../../widgets/BorderedBox';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-
-const messages = defineMessages({
-  transactionsLabel: {
-    id: 'wallet.summary.page.transactionsLabel',
-    defaultMessage: '!!!Number of transactions',
-    description: '"Number of transactions" label on Wallet summary page',
-  },
-  pendingTransactionsLabel: {
-    id: 'wallet.summary.page.pendingTransactionsLabel',
-    defaultMessage: '!!!Number of pending transactions',
-    description:
-      '"Number of pending transactions" label on Wallet summary page',
-  },
-});
+import type { Currency } from '../../../types/currencyTypes';
+import WalletSummaryHeader from './WalletSummaryHeader';
+import WalletSummaryAssets from './WalletSummaryAssets';
+import WalletSummaryCurrency from './WalletSummaryCurrency';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
+import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 
 type Props = {
   wallet: Wallet,
@@ -30,14 +15,22 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
+  currencyIsFetchingRate: boolean,
+  currencyIsAvailable: boolean,
+  currencyIsActive: boolean,
+  currencySelected: ?Currency,
+  currencyRate: ?number,
+  currencyLastFetched: ?Date,
+  onCurrencySettingClick: Function,
+  assets: Array<WalletSummaryAsset>,
+  onOpenAssetSend: Function,
+  onCopyAssetItem: Function,
+  isLoadingAssets: boolean,
+  onExternalLinkClick: Function,
 };
 
 @observer
 export default class WalletSummary extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   render() {
     const {
       wallet,
@@ -45,45 +38,73 @@ export default class WalletSummary extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
+      currencyIsActive,
+      currencyIsAvailable,
+      currencyIsFetchingRate,
+      currencyLastFetched,
+      currencyRate,
+      currencySelected,
+      onCurrencySettingClick,
+      assets,
+      onOpenAssetSend,
+      onCopyAssetItem,
+      isLoadingAssets,
+      onExternalLinkClick,
     } = this.props;
-    const { intl } = this.context;
-    const isLoadingAllTransactions =
-      numberOfRecentTransactions && !numberOfTransactions;
-    const numberOfTransactionsStyles = classnames([
-      styles.numberOfTransactions,
-      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
-    ]);
 
-    const isRestoreActive = wallet.isRestoring;
+    const { isRestoring } = wallet;
+
+    const hasCurrency =
+      currencyIsActive &&
+      currencyIsAvailable &&
+      !!currencySelected &&
+      (!!currencyRate || currencyIsFetchingRate);
+
+    const hasAssets = assets.length;
 
     return (
-      <div className={styles.component}>
-        <BorderedBox>
-          <div className={styles.walletName}>{wallet.name}</div>
-          <div className={styles.walletAmount}>
-            {isRestoreActive
-              ? '-'
-              : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            <SVGInline
-              svg={adaSymbolBig}
-              className={styles.currencySymbolBig}
-            />
-          </div>
-
-          {!isLoadingTransactions ? (
-            <div className={styles.transactionsCountWrapper}>
-              <div className={styles.numberOfPendingTransactions}>
-                {intl.formatMessage(messages.pendingTransactionsLabel)}:&nbsp;
-                {numberOfPendingTransactions}
-              </div>
-              <div className={numberOfTransactionsStyles}>
-                {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
-                {numberOfTransactions || numberOfRecentTransactions}
-              </div>
-            </div>
-          ) : null}
-        </BorderedBox>
-      </div>
+      <>
+        <WalletSummaryHeader
+          wallet={wallet}
+          numberOfRecentTransactions={numberOfRecentTransactions}
+          numberOfTransactions={numberOfTransactions}
+          numberOfPendingTransactions={numberOfPendingTransactions}
+          isLoadingTransactions={isLoadingTransactions}
+          currency={
+            hasCurrency && (
+              <WalletSummaryCurrency
+                wallet={wallet}
+                currencyIsFetchingRate={currencyIsFetchingRate}
+                currencyIsAvailable={currencyIsAvailable}
+                currencyIsActive={currencyIsActive}
+                currencySelected={currencySelected}
+                currencyRate={currencyRate}
+                currencyLastFetched={currencyLastFetched}
+                onCurrencySettingClick={onCurrencySettingClick}
+              />
+            )
+          }
+        />
+        {!isRestoring && (
+          <>
+            {hasAssets ? (
+              <WalletSummaryAssets
+                wallet={wallet}
+                assets={assets}
+                onOpenAssetSend={onOpenAssetSend}
+                isLoadingAssets={isLoadingAssets}
+                onCopyAssetItem={onCopyAssetItem}
+              />
+            ) : (
+              <WalletSummaryNoTokens
+                numberOfAssets={assets.length}
+                isLoadingAssets={isLoadingAssets}
+                onExternalLinkClick={onExternalLinkClick}
+              />
+            )}
+          </>
+        )}
+      </>
     );
   }
 }

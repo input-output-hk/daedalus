@@ -1,9 +1,22 @@
 @import '../../../themes/mixins/link';
+@import '../../../themes/mixins/error-message';
+@import '../../../themes/mixins/animations';
 
 .component {
   color: var(--theme-transactions-list-item-details-color);
   cursor: pointer;
   position: relative;
+
+  :global {
+    .SimpleLink_root.SimpleLink_underlined {
+      border-bottom: none;
+
+      &:hover {
+        border-bottom: 1px solid var(--rp-link-color);
+        margin-bottom: 2px;
+      }
+    }
+  }
 }
 
 // ========= TOGGLER =========
@@ -18,25 +31,30 @@
 .arrow {
   bottom: 10px;
   display: none;
-  margin-left: -70px;
+  margin-left: -79px;
   margin-top: -17px;
   opacity: 0.1;
   position: sticky;
   text-align: center;
   width: 74px;
   z-index: 1;
+
   > svg {
     height: 8px;
     width: 25px;
+
     path {
       stroke: var(--theme-transactions-arrow-stroke-color);
     }
   }
+
   .component:hover & {
     opacity: 0.2;
   }
+
   .content:hover & {
     opacity: 0.1;
+
     &:hover {
       opacity: 0.2;
     }
@@ -73,9 +91,13 @@
 .amount {
   font-family: var(--font-medium);
   font-size: 16px;
-  letter-spacing: 1px;
   margin-left: auto;
   user-select: text;
+
+  span {
+    padding-left: 5px;
+    text-transform: uppercase;
+  }
 }
 
 .pendingLabel,
@@ -123,8 +145,8 @@
 
 .content {
   border-bottom: 1px solid var(--theme-dialog-border-color);
-  margin-left: 74px;
-  margin-right: 10px;
+  margin-left: 84px;
+  margin-right: 20px;
 }
 
 .contentExpanded {
@@ -154,12 +176,18 @@
   h2 {
     font-family: var(--font-medium);
     font-size: 16px;
-    margin-bottom: 8px;
+    line-height: 1.38;
+    margin-bottom: 4px;
+  }
+
+  h3 {
+    font-family: var(--font-light);
+    font-size: 16px;
   }
 
   .addressRow,
   .explorerLinkRow {
-    padding-bottom: 6px;
+    padding-bottom: 5px;
   }
 
   .addressRow,
@@ -179,17 +207,30 @@
     }
   }
 
+  .transactionFeeRow,
+  .depositRow {
+    .amount {
+      color: var(--theme-transactions-list-item-highlight-color);
+
+      .currency {
+        font-family: var(--font-light);
+        margin-left: 5px;
+      }
+    }
+  }
+
   span {
     font-family: var(--font-light);
     font-size: 15px;
-    user-select: text;
-    word-break: break-all;
 
     &.address,
     &.transactionId {
       font-family: var(--font-mono);
       letter-spacing: 0.5px;
       line-height: 1.4;
+      margin-bottom: 3px;
+      user-select: text;
+      word-break: break-all;
     }
 
     &.explorerLink {
@@ -221,7 +262,37 @@
 
 .detailsExpanded {
   max-height: 100%;
-  padding: 10px 10px 0;
+  padding: 10px 0 0;
+
+  > div {
+    width: 100%;
+  }
+}
+
+.receiverRow {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+
+  .receiverRowItem {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    h2 {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .receiverRowItemAddresses {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
 }
 
 .conversion {
@@ -236,11 +307,126 @@
   display: inline-block;
   margin-bottom: -1px;
   margin-left: 4px;
+
   & > svg {
     height: 12px;
     width: 12px;
+
     & > g > g {
       stroke: var(--theme-icon-transactions-ada-symbol-color);
     }
+  }
+}
+
+.metadataDisclaimer {
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.metadata {
+  margin-top: 20px;
+
+  pre {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+}
+
+.transactionFeeValue {
+  @include error-message;
+  font-family: var(--font-medium);
+
+  span {
+    font-family: var(--font-light);
+  }
+}
+
+.transactionMetadata {
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.38;
+}
+
+.assetContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0 3px 20px;
+  position: relative;
+  width: 100%;
+
+  .assetsSeparator {
+    border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
+    border-bottom-left-radius: 2px;
+    border-left: 1px solid var(--theme-transactions-list-item-details-color);
+    display: none;
+    height: 35px;
+    left: 3px;
+    opacity: 0.3;
+    position: absolute;
+    top: 0;
+    width: 6px;
+
+    &.expanded {
+      display: block;
+    }
+  }
+
+  h3 {
+    display: inline-flex;
+
+    > span {
+      margin-right: 12px;
+      white-space: nowrap;
+
+      &.fetchingTokenData {
+        @include animated-ellipsis($duration: 1500, $width: 16px);
+        --webkit-backface-visibility: hidden;
+      }
+    }
+  }
+
+  &:last-child {
+    padding: 3px 0 0 20px;
+  }
+}
+
+.assetToken {
+  margin-top: -2px;
+}
+
+.amountFeesWrapper {
+  background-color: var(--theme-staking-stake-pool-grey-bg-color);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  height: 21px;
+  justify-content: flex-end;
+  max-width: 250px;
+  padding: 3px 9px;
+
+  .amountLabel,
+  .feesLabel {
+    line-height: 1.38;
+  }
+
+  .amount {
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.36;
+    margin-left: initial;
+  }
+
+  .fees {
+    color: var(--theme-send-confirmation-dialog-send-values-color);
+    line-height: 1.38;
+    margin-top: 6px;
+    user-select: text;
+    word-break: break-word;
+  }
+
+  .fees {
+    opacity: 0.5;
   }
 }

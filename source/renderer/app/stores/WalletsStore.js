@@ -18,6 +18,7 @@ import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
+import { bech32EncodePublicKey } from '../utils/hardwareWalletUtils';
 import {
   WalletPaperWalletOpenPdfError,
   WalletRewardsOpenCsvError,
@@ -29,12 +30,15 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
+import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
+import { CURRENCY_REQUEST_RATE_INTERVAL } from '../config/currencyConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
+import type { Currency } from '../types/currencyTypes.js';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -43,6 +47,7 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
 import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
@@ -58,6 +63,7 @@ import {
   ITN_MAGIC,
   MAINNET_MAGIC,
 } from '../../../common/types/cardano-node.types';
+import type { WalletSummaryAsset } from '../api/assets/types';
 
 /* eslint-disable consistent-return */
 
@@ -69,11 +75,13 @@ export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable undelegateWalletSubmissionSuccess: ?boolean = null;
+
   // REQUESTS
-  @observable active: ?Wallet = null;
-  @observable activeValue: ?BigNumber = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
+  );
+  @observable accountPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getAccountPublicKey
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -131,6 +139,22 @@ export default class WalletsStore extends Store {
   @observable createHardwareWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createHardwareWallet
   );
+
+  /* ----------  Active Wallet  ---------- */
+  @observable active: ?Wallet = null;
+  @observable activeValue: ?BigNumber = null;
+  @observable activePublicKey: ?string = null;
+
+  /* ------------  Currencies  ----------- */
+  @observable currencyIsFetchingList: boolean = false;
+  @observable currencyIsFetchingRate: boolean = false;
+  @observable currencyIsAvailable: boolean = false;
+  @observable currencyIsActive: boolean = false;
+
+  @observable currencyList: Array<Currency> = [];
+  @observable currencySelected: ?Currency = null;
+  @observable currencyRate: ?number = null;
+  @observable currencyLastFetched: ?Date = null;
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -196,6 +220,7 @@ export default class WalletsStore extends Store {
     spendingPassword: '',
   };
   _pollingBlocked = false;
+  _getCurrencyRateInterval: ?IntervalID = null;
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
@@ -209,6 +234,7 @@ export default class WalletsStore extends Store {
       app,
       networkStatus,
     } = this.actions;
+
     // Create Wallet Actions ---
     walletsActions.createWallet.listen(this._create);
     walletsActions.createWalletBegin.listen(this._createWalletBegin);
@@ -241,6 +267,7 @@ export default class WalletsStore extends Store {
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
+    walletsActions.getAccountPublicKey.listen(this._getAccountPublicKey);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
@@ -277,7 +304,124 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsCalculateFee.listen(
       this._transferFundsCalculateFee
     );
+    walletsActions.setCurrencySelected.listen(this._setCurrencySelected);
+    walletsActions.toggleCurrencyIsActive.listen(this._toggleCurrencyIsActive);
+
+    this.setupCurrency();
   }
+
+  @action _getAccountPublicKey = async ({
+    spendingPassword: passphrase,
+  }: {
+    spendingPassword: string,
+  }) => {
+    if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+      return;
+    }
+
+    const walletId = this.active.id;
+    const index = '0H';
+    const extended = true;
+
+    try {
+      const accountPublicKey = await this.accountPublicKeyRequest.execute({
+        walletId,
+        index,
+        passphrase,
+        extended,
+      }).promise;
+      runInAction('update account public key', () => {
+        this.activePublicKey = accountPublicKey;
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  @action setupCurrency = async () => {
+    // CURRENCY_REQUEST_RATE_INTERVAL
+
+    // Check if the user has enabled currencies
+    // Otherwise applies the default config
+    const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
+
+    // Check if the user has already selected a currency
+    // Otherwise applies the default currency
+    const currencySelected = await this.api.localStorage.getCurrencySelected();
+
+    runInAction(() => {
+      this.currencyIsActive = currencyIsActive;
+      this.currencySelected = currencySelected;
+    });
+
+    clearInterval(this._getCurrencyRateInterval);
+    this._getCurrencyRateInterval = setInterval(
+      this.getCurrencyRate,
+      CURRENCY_REQUEST_RATE_INTERVAL
+    );
+
+    // Fetch the currency list and rate
+    this.getCurrencyList();
+    this.getCurrencyRate();
+  };
+
+  @action getCurrencyList = async () => {
+    this.currencyIsFetchingList = true;
+    const currencyList = await this.api.ada.getCurrencyList();
+    runInAction(() => {
+      this.currencyList = currencyList;
+      this.currencyIsFetchingList = false;
+    });
+  };
+
+  @action getCurrencyRate = async () => {
+    const { currencySelected } = this;
+    if (currencySelected && currencySelected.symbol) {
+      try {
+        this.currencyIsFetchingRate = true;
+        const currencyRate = await this.api.ada.getCurrencyRate(
+          currencySelected
+        );
+        runInAction(() => {
+          this.currencyIsFetchingRate = false;
+          this.currencyLastFetched = new Date();
+          if (currencyRate) {
+            this.currencyRate = currencyRate;
+            this.currencyIsAvailable = true;
+          } else {
+            throw new Error('Error fetching the Currency rate');
+          }
+        });
+      } catch (error) {
+        runInAction(() => {
+          this.currencyRate = null;
+          this.currencyIsAvailable = false;
+        });
+        clearInterval(this._getCurrencyRateInterval);
+      }
+    }
+  };
+
+  @action _setCurrencySelected = async ({
+    currencySymbol,
+  }: {
+    currencySymbol: string,
+  }) => {
+    const { currencyList } = this;
+    const currencySelected = currencyList.find(
+      ({ symbol }) => currencySymbol === symbol
+    );
+    if (currencySelected) {
+      this.currencySelected = currencySelected;
+      this.getCurrencyRate();
+      await this.api.localStorage.setCurrencySelected(currencySelected);
+    }
+  };
+
+  @action _toggleCurrencyIsActive = () => {
+    this.currencyIsActive = !this.currencyIsActive;
+    this.api.localStorage.setCurrencyIsActive(this.currencyIsActive);
+  };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
     Object.assign(this._newWalletDetails, params);
@@ -444,7 +588,7 @@ export default class WalletsStore extends Store {
         walletName,
         accountPublicKey,
       });
-      await this.actions.hardwareWallets.setHardwareWalletLocalData.trigger({
+      await this.stores.hardwareWallets._setHardwareWalletLocalData({
         walletId: wallet.id,
         data: {
           device,
@@ -453,7 +597,7 @@ export default class WalletsStore extends Store {
         },
       });
 
-      await this.actions.hardwareWallets.setHardwareWalletDevice.trigger({
+      await this.stores.hardwareWallets._setHardwareWalletDevice({
         deviceId,
         data: {
           deviceType,
@@ -531,7 +675,7 @@ export default class WalletsStore extends Store {
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
       walletId: params.walletId,
     });
-    this.actions.hardwareWallets.unsetHardwareWalletLocalData.trigger({
+    await this.stores.hardwareWallets._unsetHardwareWalletLocalData({
       walletId: params.walletId,
     });
     this._resumePolling();
@@ -539,11 +683,7 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
-  _undelegateWallet = async (params: {
-    walletId: string,
-    stakePoolId: string,
-    passphrase: string,
-  }) => {
+  _undelegateWallet = async (params: QuitStakePoolRequest) => {
     const { quitStakePoolRequest } = this.stores.staking;
     const { quitStakePool } = this.actions.staking;
     const walletToUndelegate = this.getWalletById(params.walletId);
@@ -628,11 +768,30 @@ export default class WalletsStore extends Store {
     receiver,
     amount,
     passphrase,
+    assets,
+    assetsAmounts: assetsAmountsStr,
   }: {
     receiver: string,
     amount: string,
     passphrase: string,
+    assets?: Array<WalletSummaryAsset>,
+    assetsAmounts?: Array<string>,
   }) => {
+    const assetsAmounts = assetsAmountsStr
+      ? assetsAmountsStr.map((assetAmount) => parseInt(assetAmount, 10))
+      : null;
+    const formattedAssets =
+      assets && assets.length
+        ? assets.map(
+            // eslint-disable-next-line
+            ({ policyId: policy_id, assetName: asset_name }, index) => ({
+              policy_id,
+              asset_name,
+              quantity: get(assetsAmounts, index, 0),
+            })
+          )
+        : null;
+
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     await this.sendMoneyRequest.execute({
@@ -641,6 +800,7 @@ export default class WalletsStore extends Store {
       passphrase,
       walletId: wallet.id,
       isLegacy: wallet.isLegacy,
+      assets: formattedAssets,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
@@ -1006,6 +1166,7 @@ export default class WalletsStore extends Store {
         );
         this.stores.transactions._refreshTransactionData();
       });
+      this.actions.wallets.refreshWalletsDataSuccess.trigger();
     }
   };
 
@@ -1055,6 +1216,24 @@ export default class WalletsStore extends Store {
         this.stores.addresses.lastGeneratedAddress = null;
         if (this.active) {
           this.activeValue = formattedWalletAmount(this.active.amount);
+          if (this.active && this.active.isHardwareWallet) {
+            const {
+              hardwareWalletsConnectionData,
+            } = this.stores.hardwareWallets;
+            const hardwareWalletConnectionData = get(
+              hardwareWalletsConnectionData,
+              this.active.id
+            );
+            if (hardwareWalletConnectionData) {
+              const { extendedPublicKey } = hardwareWalletConnectionData;
+              const extendedPublicKeyHex = `${extendedPublicKey.publicKeyHex}${extendedPublicKey.chainCodeHex}`;
+              const xpub = Buffer.from(extendedPublicKeyHex, 'hex');
+              const activePublicKey = bech32EncodePublicKey(xpub);
+              this.activePublicKey = activePublicKey || null;
+            }
+          } else {
+            this.activePublicKey = null;
+          }
         }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated
@@ -1066,6 +1245,7 @@ export default class WalletsStore extends Store {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
+    this.activePublicKey = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 

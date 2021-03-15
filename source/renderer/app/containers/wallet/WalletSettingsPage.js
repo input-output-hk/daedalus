@@ -4,14 +4,20 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
+import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
+import WalletPublicKeyDialogContainer from './dialogs/settings/WalletPublicKeyDialogContainer';
+import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
+import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+import { ROUTES } from '../../routes-config';
+import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
 
@@ -19,6 +25,21 @@ type Props = InjectedProps;
 @observer
 export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
+
+  handleCopyWalletPublicKey = (walletPublicKey: string) => {
+    const { wallets } = this.props.actions;
+    const publicKey = ellipsis(
+      walletPublicKey,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
+    );
+    wallets.copyPublicKey.trigger({ publicKey });
+  };
+
+  handleDelegateClick = () => {
+    const { goToRoute } = this.props.actions.router;
+    goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
+  };
 
   render() {
     const {
@@ -28,7 +49,10 @@ export default class WalletSettingsPage extends Component<Props> {
       wallets,
       profile,
     } = this.props.stores;
-    const activeWallet = wallets.active;
+    const {
+      active: activeWallet,
+      activePublicKey: activeWalletPublicKey,
+    } = wallets;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -88,6 +112,13 @@ export default class WalletSettingsPage extends Component<Props> {
           isLegacy={isLegacy}
           walletId={activeWallet.id}
           walletName={activeWallet.name}
+          delegationStakePoolStatus={activeWallet.delegationStakePoolStatus}
+          lastDelegationStakePoolStatus={
+            activeWallet.lastDelegationStakePoolStatus
+          }
+          isRestoring={activeWallet.isRestoring}
+          isSyncing={activeWallet.isSyncing}
+          walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}
           isSubmitting={updateWalletRequest.isExecuting}
@@ -102,12 +133,26 @@ export default class WalletSettingsPage extends Component<Props> {
           }
           onStartEditing={(field) => startEditingWalletField.trigger({ field })}
           onStopEditing={stopEditingWalletField.trigger}
-          onCancelEditing={cancelEditingWalletField.trigger}
+          onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
+          onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          updateDataForActiveDialogAction={
+            actions.dialogs.updateDataForActiveDialog.trigger
+          }
+          onDelegateClick={this.handleDelegateClick}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
+          }
+          walletPublicKeyDialogContainer={<WalletPublicKeyDialogContainer />}
+          walletPublicKeyQRCodeDialogContainer={
+            <WalletPublicKeyQRCodeDialogContainer />
+          }
+          undelegateWalletDialogContainer={
+            <UndelegateWalletDialogContainer
+              onExternalLinkClick={app.openExternalLink}
+            />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}

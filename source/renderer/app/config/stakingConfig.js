@@ -1,8 +1,58 @@
 // @flow
 import type {
   RedeemItnRewardsStep,
+  SmashServerType,
   DelegationAction,
 } from '../types/stakingTypes';
+
+import type { SmashServerStatuses } from '../api/staking/types';
+
+const { smashUrl, environment, isFlight } = global;
+const { isMainnet } = environment;
+
+export const SMASH_SERVERS_LIST: {
+  [key: SmashServerType]: {
+    name: string,
+    url: string,
+  },
+} = {
+  iohk: {
+    name: 'IOHK',
+    url: smashUrl,
+  },
+  // Metadata is fetched directly in URLs registered on chain,
+  direct: {
+    name: 'direct',
+    url: 'direct',
+  },
+};
+
+export const SMASH_SERVER_TYPES: {
+  [key: string]: SmashServerType,
+} = {
+  IOHK: 'iohk',
+  CUSTOM: 'custom',
+  DIRECT: 'direct',
+};
+
+export const SMASH_SERVER_INVALID_TYPES: {
+  [key: string]: SmashServerType,
+} = {
+  NONE: 'none',
+};
+
+export const SMASH_SERVER_STATUSES: {
+  [key: string]: SmashServerStatuses,
+} = {
+  AVAILABLE: 'available',
+  UNAVAILABLE: 'unavailable',
+  UNREACHABLE: 'unreachable',
+  NO_SMASH_CONFIGURED: 'no_smash_configured',
+};
+
+export const SMASH_URL_VALIDATOR = new RegExp(
+  '^(direct|https://[a-zA-Z0-9-_~.]+(:[0-9]+)?/?)$'
+);
 
 export const RANKING_SLIDER_RATIO = 60;
 export const MIN_DELEGATION_FUNDS = 10;
@@ -36,10 +86,12 @@ export const RECENT_STAKE_POOLS_COUNT = 6;
 
 // Timers
 
-export const STAKE_POOL_TRANSACTION_CHECK_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
-export const STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds;
-export const STAKE_POOLS_INTERVAL = 1 * 60 * 1000; // 1 minute | unit: milliseconds;
-export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
+export const STAKE_POOL_TRANSACTION_CHECK_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
+export const STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds
+export const STAKE_POOLS_INTERVAL = 1 * 60 * 1000; // 1 minute | unit: milliseconds
+export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
+export const STAKE_POOLS_FETCH_TRACKER_INTERVAL = 30 * 1000; // 30 seconds | unit: milliseconds
+export const STAKE_POOLS_FETCH_TRACKER_CYCLES = 6;
 
 // Redeem ITN Rewards
 
@@ -62,8 +114,8 @@ export const DELEGATION_ACTIONS: {
   QUIT: 'quit',
 };
 
+export const IS_GRID_REWARDS_VIEW_AVAILABLE = !isFlight || !isMainnet;
 export const IS_RANKING_DATA_AVAILABLE = true;
-
 export const IS_SATURATION_DATA_AVAILABLE = true;
 
-export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
+export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds

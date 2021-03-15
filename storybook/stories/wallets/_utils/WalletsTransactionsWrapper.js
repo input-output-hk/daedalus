@@ -8,6 +8,7 @@ import moment from 'moment';
 import {
   generateTransaction,
   generateMultipleTransactions,
+  generateHash,
 } from '../../_support/utils';
 import {
   generateFilterOptions,
@@ -20,6 +21,7 @@ import {
 
 import { emptyTransactionFilterOptions } from '../../../../source/renderer/app/stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
+import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
   getStory: Function,
@@ -30,6 +32,33 @@ type Props = {
 type State = {
   filterOptions: TransactionFilterOptionsType,
 };
+
+const assets = [
+  {
+    id: generateHash(),
+    policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    assetName: '',
+    quantity: new BigNumber(100),
+  },
+  {
+    id: generateHash(),
+    policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    assetName: '',
+    quantity: new BigNumber(200),
+  },
+  {
+    id: generateHash(),
+    policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+    assetName: '',
+    quantity: new BigNumber(300),
+  },
+  {
+    id: generateHash(),
+    policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+    assetName: '',
+    quantity: new BigNumber(400),
+  },
+];
 
 export default class WalletsTransactionsWrapper extends Component<
   Props,
@@ -73,17 +102,20 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.OK
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.PENDING
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(2019, 10, 8, 20),
+          new BigNumber(1),
           new BigNumber(1),
           TransactionStates.PENDING,
           true
@@ -92,6 +124,7 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(13),
+          new BigNumber(1),
           TransactionStates.FAILED
         ),
       ],
@@ -101,12 +134,14 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.OK,
           true
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
+          new BigNumber(1),
           new BigNumber(1),
           TransactionStates.OK,
           true
@@ -117,6 +152,7 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           true
@@ -124,6 +160,7 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
+          new BigNumber(1),
           new BigNumber(1),
           TransactionStates.OK,
           false,
@@ -135,6 +172,7 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
@@ -144,10 +182,207 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           false
+        ),
+      ],
+    };
+  }
+
+  get transactionsWithAssetsOptions() {
+    return {
+      groupedByDays: [
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.EXPEND,
+          moment().subtract(1, 'days').toDate(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.EXPEND,
+          moment().subtract(2, 'days').toDate(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          moment().subtract(1, 'days').toDate(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+      ],
+      confirmedAndPendingTransactions: [
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.EXPEND,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.PENDING,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(2019, 10, 8, 20),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.PENDING,
+          true,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.EXPEND,
+          new Date(),
+          new BigNumber(13),
+          new BigNumber(1),
+          TransactionStates.FAILED,
+          false,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+      ],
+      renderingManyTransactions: generateMultipleTransactions(500),
+      unresolvedIncomeAddresses: [
+        generateTransaction(
+          TransactionTypes.EXPEND,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          true,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          true,
+          false,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+      ],
+      withoutIncomeAddresses: [
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          true,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          true,
+          true,
+          new BigNumber(0.012345),
+          assets
+        ),
+      ],
+      withWithdrawalAddresses: [
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          false,
+          new BigNumber(0.012345),
+          assets
+        ),
+        generateTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(200),
+          new BigNumber(1),
+          TransactionStates.OK,
+          false,
+          false,
+          false,
+          new BigNumber(0.012345),
+          assets
         ),
       ],
     };
@@ -161,7 +396,10 @@ export default class WalletsTransactionsWrapper extends Component<
   get transactions() {
     const { transactionsOption } = this.props;
     const { filterOptions = emptyTransactionFilterOptions } = this.state || {};
-    const transactionsList = this.transactionsOptions[transactionsOption];
+    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
+    const transactionsList = hasAssetsEnabled
+      ? this.transactionsWithAssetsOptions[transactionsOption]
+      : this.transactionsOptions[transactionsOption];
     return transactionsList.filter((transaction) =>
       isTransactionInFilterRange(filterOptions, transaction)
     );

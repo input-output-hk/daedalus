@@ -1,6 +1,7 @@
 // @flow
 import hash from 'hash.js';
 import faker from 'faker';
+import JSONBigInt from 'json-bigint';
 import moment from 'moment';
 import { random, get } from 'lodash';
 import BigNumber from 'bignumber.js';
@@ -23,12 +24,72 @@ import type {
   TransactionType,
   TransactionState,
 } from '../../../source/renderer/app/api/transactions/types';
+import Asset from '../../../source/renderer/app/domains/Asset';
+import type {
+  AssetMetadata,
+  WalletAssetItems,
+  WalletAssets,
+} from '../../../source/renderer/app/api/assets/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
+import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
+
+export const EXAMPLE_METADATA = JSONBigInt.parse(`{
+      "0": {
+        "string": "some string"
+      },
+      "1": {
+        "int": 99999999999999999999999
+      },
+      "2": {
+        "bytes": "2512a00e9653fe49a44a5886202e24d77eeb998f"
+      },
+      "3": {
+        "list": [
+          { "int": 14 },
+          { "int": 42 },
+          { "string": "1337" },
+          { "list": [
+            { "string": "nested list" }
+          ]}
+        ]
+      },
+      "4": {
+        "map": [
+          {
+            "k": { "int": "5" },
+            "v": { "bytes": "2512a00e9653fe49a44a5886202e24d77eeb998f" }
+          },
+          {
+            "k": { "map": [
+              {
+                "k": { "int": 14 },
+                "v": { "int": 42 }
+              }
+            ]},
+            "v": { "string": "nested" }
+          },
+          {
+            "k": { "string": "key" },
+            "v": { "list": [
+            { "string": "nested list" }
+          ] }
+          }
+        ]
+      }
+    }`);
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
   return hash
     .sha512()
+    .update(now + random(0.1, 0.9))
+    .digest('hex');
+};
+
+export const generatePolicyIdHash = () => {
+  const now = new Date().valueOf().toString();
+  return hash
+    .sha224()
     .update(now + random(0.1, 0.9))
     .digest('hex');
 };
@@ -46,10 +107,12 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
+  assets: WalletAssets,
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY
+  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
+  isHardwareWallet?: boolean = false
 ) =>
   new Wallet({
     id: generateHash(),
@@ -57,12 +120,14 @@ export const generateWallet = (
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
+    assets,
     createdAt: new Date(),
     name,
     hasPassword: hasPassword || false,
     passwordUpdateDate: new Date(),
     syncState: { status, ...statusProgress(status) },
     isLegacy: false,
+    isHardwareWallet,
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
@@ -71,26 +136,43 @@ export const generateWallet = (
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
+export const generateAsset = (
+  policyId: string,
+  assetName: string = '',
+  fingerprint: string = '',
+  metadata?: AssetMetadata
+) =>
+  new Asset({
+    policyId,
+    assetName,
+    fingerprint,
+    metadata,
+  });
+
 export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
   amount: BigNumber = new BigNumber(faker.finance.amount()),
+  deposit: BigNumber = new BigNumber(faker.finance.amount()),
   state: TransactionState = TransactionStates.OK,
   hasUnresolvedIncomeAddresses: boolean = false,
   noIncomeAddresses: boolean = false,
-  noWithdrawals: boolean = true
+  noWithdrawals: boolean = true,
+  fee: BigNumber = new BigNumber(faker.finance.amount()),
+  assets?: WalletAssetItems,
+  metadata?: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
     title: '',
     type,
     amount,
+    fee,
+    assets: assets || [],
+    deposit,
     date,
     state,
-    depth: {
-      quantity: 0,
-      unit: 'block',
-    },
+    confirmations: 0,
     epochNumber: 0,
     slotNumber: 0,
     description: '',
@@ -113,6 +195,7 @@ export const generateTransaction = (
             faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
           ],
     },
+    metadata,
   });
 
 export const generateRandomTransaction = (index: number) =>

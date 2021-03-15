@@ -2,17 +2,17 @@
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
-  TrasactionAddresses,
+  TransactionAddresses,
   TransactionType,
-  TransactionDepth,
   TransactionState,
   TransactionWithdrawalType,
 } from '../api/transactions/types';
+import type { WalletAssetItems } from '../api/assets/types';
+import type { TransactionMetadata } from '../types/TransactionMetadata';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
   OK: 'in_ledger',
-  IN_LEDGER: 'in_ledger',
   FAILED: 'expired',
 };
 
@@ -30,30 +30,38 @@ export class WalletTransaction {
   @observable type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
+  @observable fee: BigNumber;
+  @observable deposit: BigNumber;
+  @observable assets: WalletAssetItems;
   @observable date: ?Date;
   @observable description: string = '';
-  @observable addresses: TrasactionAddresses = {
+  @observable addresses: TransactionAddresses = {
     from: [],
     to: [],
     withdrawals: [],
   };
   @observable state: TransactionState;
-  @observable depth: TransactionDepth;
+  @observable confirmations: number;
   @observable slotNumber: ?number;
   @observable epochNumber: ?number;
+  @observable metadata: ?TransactionMetadata;
 
   constructor(data: {
     id: string,
     type: TransactionType,
     title: string,
     amount: BigNumber,
+    fee: BigNumber,
+    deposit: BigNumber,
     date: ?Date,
+    assets: WalletAssetItems,
     description: string,
-    addresses: TrasactionAddresses,
+    addresses: TransactionAddresses,
     state: TransactionState,
-    depth: TransactionDepth,
+    confirmations: number,
     slotNumber: ?number,
     epochNumber: ?number,
+    metadata: ?TransactionMetadata,
   }) {
     Object.assign(this, data);
   }

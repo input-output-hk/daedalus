@@ -2,11 +2,5 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: overlay;
   position: relative;
-
-  &::-webkit-scrollbar-button {
-    display: block;
-    height: 7px;
-  }
 }

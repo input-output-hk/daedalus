@@ -94,10 +94,23 @@ const messages = defineMessages({
     defaultMessage: '!!!Follow instructions and manually update',
     description: '"manualUpdateButtonLabel" for the App Update Overlay',
   },
-  manualUpdateButtonUrl: {
-    id: 'appUpdate.overlay.manualUpdate.button.url',
+  manualUpdateButtonUrlForMainnet: {
+    id: 'appUpdate.overlay.manualUpdate.button.url.mainnet',
     defaultMessage: '!!!https://daedaluswallet.io/en/download/',
-    description: '"manualUpdateButtonUrl" for the App Update Overlay',
+    description:
+      '"manualUpdateButtonUrl" for the App Update Overlay on Mainnet',
+  },
+  manualUpdateButtonUrlForFlight: {
+    id: 'appUpdate.overlay.manualUpdate.button.url.flight',
+    defaultMessage: '!!!https://daedaluswallet.io/en/flight/',
+    description: '"manualUpdateButtonUrl" for the App Update Overlay on Flight',
+  },
+  manualUpdateButtonUrlForTestnet: {
+    id: 'appUpdate.overlay.manualUpdate.button.url.testnet',
+    defaultMessage:
+      '!!!https://developers.cardano.org/en/testnets/cardano/get-started/wallet/',
+    description:
+      '"manualUpdateButtonUrl" for the App Update Overlay on Testnet',
   },
 });
 
@@ -118,6 +131,8 @@ type Props = {
   onPostponeUpdate: Function,
   installationProgress: number,
   isLinux: boolean,
+  isFlight: boolean,
+  isTestnet: boolean,
 };
 
 type State = {
@@ -158,24 +173,19 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       downloadProgress,
     } = this.props;
     return (
-      <div className={styles.downloadProgress}>
-        <div className={styles.downloadProgressContent}>
-          <p className={styles.downloadProgressLabel}>
-            {intl.formatMessage(messages.downloadProgressLabel)}
-          </p>
-          <p className={styles.downloadProgressData}>
-            <b>
-              {intl.formatMessage(messages.downloadTimeLeft, {
-                downloadTimeLeft,
-              })}
-            </b>{' '}
-            {intl.formatMessage(messages.downloadProgressData, {
-              totalDownloaded,
-              totalDownloadSize,
-            })}
-          </p>
-        </div>
-        <ProgressBarLarge progress={downloadProgress} />
+      <div className={styles.progressBar}>
+        <ProgressBarLarge
+          leftLabel={intl.formatMessage(messages.downloadProgressLabel)}
+          rightLabel1={intl.formatMessage(messages.downloadTimeLeft, {
+            downloadTimeLeft,
+          })}
+          rightLabel2={intl.formatMessage(messages.downloadProgressData, {
+            totalDownloaded,
+            totalDownloadSize,
+          })}
+          progress={downloadProgress}
+          isDarkMode
+        />
       </div>
     );
   };
@@ -234,14 +244,13 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           />
         )}
         {isLinux && isWaitingToQuitDaedalus ? (
-          <>
-            <div className={styles.downloadProgressContent}>
-              <p className={styles.downloadProgressLabel}>
-                {intl.formatMessage(messages.installingUpdateLabel)}
-              </p>
-            </div>
-            <ProgressBarLarge progress={installationProgress} />
-          </>
+          <div className={styles.progressBar}>
+            <ProgressBarLarge
+              progress={installationProgress}
+              labelLeft={intl.formatMessage(messages.installingUpdateLabel)}
+              isDarkMode
+            />
+          </div>
         ) : (
           <>
             <Button
@@ -267,10 +276,32 @@ export default class AppUpdateOverlay extends Component<Props, State> {
 
   manualUpdateAction = () => {
     const { intl } = this.context;
-    const { onExternalLinkClick, onPostponeUpdate, isLinux } = this.props;
+    const {
+      onExternalLinkClick,
+      onPostponeUpdate,
+      isLinux,
+      isFlight,
+      isTestnet,
+    } = this.props;
     const errorMessage = isLinux
       ? messages.manualUpdateDescriptionErrorLinux
       : messages.manualUpdateDescriptionError;
+    let manualUpdateButtonUrl = intl.formatMessage(
+      messages.manualUpdateButtonUrlForMainnet
+    );
+
+    if (isTestnet) {
+      manualUpdateButtonUrl = intl.formatMessage(
+        messages.manualUpdateButtonUrlForTestnet
+      );
+    }
+
+    if (isFlight) {
+      manualUpdateButtonUrl = intl.formatMessage(
+        messages.manualUpdateButtonUrlForFlight
+      );
+    }
+
     return (
       <div className={styles.actions}>
         <div className={styles.manualUpdateDescription}>
@@ -279,11 +310,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
         </div>
         <Button
           className={styles.button}
-          onClick={() =>
-            onExternalLinkClick(
-              intl.formatMessage(messages.manualUpdateButtonUrl)
-            )
-          }
+          onClick={() => onExternalLinkClick(manualUpdateButtonUrl)}
           skin={ButtonSkin}
           label={
             <span>

@@ -57,17 +57,16 @@
 
 .table {
   width: calc(50% - 15px);
+
+  &:nth-child(2) {
+    margin-bottom: 30px;
+  }
+
   @media (max-width: 1000px) {
     width: 100%;
 
     &:first-child .layoutRow {
       max-width: inherit;
-    }
-  }
-
-  @media (max-height: 800px) {
-    &:nth-child(2) {
-      margin-bottom: 70px;
     }
   }
 
