@@ -35,27 +35,15 @@
   }
 
   .learnMoreContainer {
-    align-items: center;
-    display: flex;
-
-    .learnMorePreviousLabel,
-    .learnMoreNextLabel {
-      @extend %regularText;
-      color: var(--theme-voting-font-color-regular);
-      font-family: var(--font-light);
-    }
-
-    .learnMorePreviousLabel {
-      margin-right: 5px;
-    }
-
-    .learnMoreNextLabel {
-      margin-left: 5px;
-    }
+    @extend %regularText;
+    color: var(--theme-voting-font-color-regular);
+    font-family: var(--font-light);
+    margin-bottom: 0;
 
     .learnMoreLink {
       font-family: var(--font-regular);
       font-size: 16px;
+      margin: 0 5px;
     }
   }
 }
