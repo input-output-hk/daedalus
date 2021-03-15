@@ -6,6 +6,7 @@ Changelog
 ### Fixes
 
 - Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
+- Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
 
 ### Chores
 
