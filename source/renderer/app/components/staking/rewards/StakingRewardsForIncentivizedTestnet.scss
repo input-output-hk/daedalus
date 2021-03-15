@@ -19,7 +19,6 @@
 
     & > .actionButton {
       border-radius: 2px;
-      box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color);
       display: flex;
       height: auto;
       padding: 7px 12px;
@@ -27,11 +26,6 @@
       right: 20px;
       top: 144px;
       width: auto;
-
-      &:focus {
-        box-shadow: 0 1.5px 5px 0
-          var(--theme-staking-export-button-shadow-color) !important;
-      }
 
       &.actionButtonFaded {
         opacity: 0.5;
