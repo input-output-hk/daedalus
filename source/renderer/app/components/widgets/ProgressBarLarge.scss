@@ -26,9 +26,9 @@
   width: 100%;
 
   &.loading {
-    animation: animatedStripesBackground 2s linear infinite;
+    animation: animatedStripesBackground 6s linear infinite;
     background: repeating-linear-gradient(
-      -63deg,
+      -62deg,
       var(--theme-staking-progress-stripe-dark-1-background-color),
       var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
       var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
@@ -47,13 +47,13 @@
   transition: width 0.24s;
 
   &:not(.isComplete) {
-    animation: animatedStripesBackground 2s linear infinite;
+    animation: animatedStripesBackground 6s linear infinite;
   }
 }
 
 .progressDarkMode {
   background: repeating-linear-gradient(
-    -63deg,
+    -62deg,
     var(--theme-progress-bar-large-progress-dark-stripe1),
     var(--theme-progress-bar-large-progress-dark-stripe1) 10px,
     var(--theme-progress-bar-large-progress-dark-stripe2) 10px,
@@ -63,7 +63,7 @@
 
 .progressLightMode {
   background: repeating-linear-gradient(
-    -63deg,
+    -62deg,
     var(--theme-staking-progress-stripe-dark-1-background-color),
     var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
     var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
@@ -85,6 +85,6 @@
     background-position-x: 0;
   }
   100% {
-    background-position-x: 67px;
+    background-position-x: 182px;
   }
 }
