@@ -179,18 +179,6 @@ export default class HardwareWalletsStore extends Store {
     hardwareWalletsActions.refreshHardwareWalletsLocalData.listen(
       this._refreshHardwareWalletsLocalData
     );
-    hardwareWalletsActions.setHardwareWalletLocalData.listen(
-      this._setHardwareWalletLocalData
-    );
-    hardwareWalletsActions.unsetHardwareWalletLocalData.listen(
-      this._unsetHardwareWalletLocalData
-    );
-    hardwareWalletsActions.setHardwareWalletDevice.listen(
-      this._setHardwareWalletDevice
-    );
-    hardwareWalletsActions.unsetHardwareWalletDevice.listen(
-      this._unsetHardwareWalletDevice
-    );
     getHardwareWalletConnectionChannel.onReceive(
       this._changeHardwareWalletConnectionStatus
     );
@@ -380,17 +368,21 @@ export default class HardwareWalletsStore extends Store {
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
   selectCoins = async (params: CoinSelectionsPaymentRequestType) => {
-    const { walletId, address, amount } = params;
+    const { walletId, address, amount, assets } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
-
+    const { amount: totalAmount, availableAmount, reward } = wallet;
     try {
       const coinSelection = await this.selectCoinsRequest.execute({
         walletId,
+        walletBalance: totalAmount,
+        availableBalance: availableAmount.plus(reward),
+        rewardsBalance: reward,
         payments: {
           address,
           amount,
+          assets,
         },
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
@@ -417,9 +409,13 @@ export default class HardwareWalletsStore extends Store {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
+    const { amount: totalAmount, availableAmount, reward } = wallet;
     try {
       const coinSelection = await this.selectCoinsRequest.execute({
         walletId,
+        walletBalance: totalAmount,
+        availableBalance: availableAmount.plus(reward),
+        rewardsBalance: reward,
         delegation: {
           poolId,
           delegationAction,

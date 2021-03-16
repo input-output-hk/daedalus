@@ -120,6 +120,8 @@ export default class StakingStore extends Store {
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
+
+    this._startStakePoolsFetchTracker();
   }
 
   // REQUESTS
@@ -200,6 +202,8 @@ export default class StakingStore extends Store {
         // Retrieves the API update
         this.smashServerLoading = true;
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        // Resets the Stake Pools list request
+        this.stakePoolsRequest.reset();
         // Refreshes the Stake Pools list
         this.getStakePoolsData();
         // Starts the SPs fetch tracker
@@ -239,6 +243,8 @@ export default class StakingStore extends Store {
       this.numberOfStakePoolsFetched > 0
     ) {
       this.cyclesWithoutIncreasingStakePools++;
+    } else {
+      this.cyclesWithoutIncreasingStakePools = 0;
     }
     if (
       this.cyclesWithoutIncreasingStakePools >= STAKE_POOLS_FETCH_TRACKER_CYCLES

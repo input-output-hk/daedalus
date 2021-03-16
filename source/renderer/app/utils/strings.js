@@ -15,3 +15,6 @@ export const ellipsis = (
       : '';
   return `${initStr}\u2026${endStr}`;
 };
+
+export const hexToString = (valueInHex: string): string =>
+  Buffer.from(valueInHex, 'hex').toString();

@@ -227,19 +227,15 @@ export default class VotingInfo extends Component<Props, State> {
                   newRegistrationStartDate,
                 }}
               />
-              <div className={styles.learnMoreContainer}>
-                <span className={styles.learnMorePreviousLabel}>
-                  {intl.formatMessage(messages.learnMorePreviousLabel)}
-                </span>
+              <p className={styles.learnMoreContainer}>
+                {intl.formatMessage(messages.learnMorePreviousLabel)}
                 <Link
                   label={learnMoreLinkLabel}
                   onClick={() => onExternalLinkClick(learnMoreLinkUrl)}
                   className={styles.learnMoreLink}
                 />
-                <span className={styles.learnMoreNextLabel}>
-                  {intl.formatMessage(messages.learnMoreNextLabel)}
-                </span>
-              </div>
+                {intl.formatMessage(messages.learnMoreNextLabel)}
+              </p>
             </div>
           ) : (
             <>
