@@ -254,7 +254,7 @@ let
         };
       };
     } // (lib.optionalAttrs (network == "selfnode") {
-      selfnodeBin = mkBinPath "shelley-test-cluster";
+      selfnodeBin = mkBinPath "local-cluster";
     }) // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
       smashUrl = envCfg.smashUrl;
     }) // (lib.optionalAttrs (__hasAttr "metadataUrl" envCfg) {

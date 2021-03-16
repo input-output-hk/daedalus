@@ -16,7 +16,7 @@ protocolParams:
     major: 0
   minUTxOValue: 1000000
   decentralisationParam: 0.25 # means 75% decentralised
-  maxTxSize: 4096
+  maxTxSize: 16384
   minFeeA: 100
   maxBlockBodySize: 239857
   minFeeB: 100000
@@ -47,12 +47,12 @@ maxLovelaceSupply: 1000000000000000000
 protocolMagicId: 764824073
 networkMagic: 764824073
 networkId: Mainnet
-epochLength: 200
+epochLength: 50
 staking:
 slotsPerKESPeriod: 86400
 slotLength: 0.2
 maxKESEvolutions: 90
-securityParam: 10
+securityParam: 5
 systemStart: "2020-06-19T16:07:37.740128433Z"
 initialFunds: {}
 # For the Byron;Shelley test setup, funds have to be migrated from byron

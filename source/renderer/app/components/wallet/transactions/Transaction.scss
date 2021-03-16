@@ -207,18 +207,6 @@
     }
   }
 
-  .transactionFeeRow,
-  .depositRow {
-    .amount {
-      color: var(--theme-transactions-list-item-highlight-color);
-
-      .currency {
-        font-family: var(--font-light);
-        margin-left: 5px;
-      }
-    }
-  }
-
   span {
     font-family: var(--font-light);
     font-size: 15px;
@@ -333,8 +321,10 @@
   }
 }
 
-.transactionFeeValue {
-  @include error-message;
+.transactionFeeValue,
+.depositValue {
+  // @include error-message;
+  color: var(--theme-transactions-list-item-highlight-color);
   font-family: var(--font-medium);
 
   span {
