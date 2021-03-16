@@ -40,12 +40,12 @@
 
 .progress {
   align-items: center;
+  background-size: 23px 24px !important;
   border-radius: 5px;
   display: flex;
   height: 100%;
   justify-content: flex-end;
   transition: width 0.24s;
-  background-size: 23px 24px !important;
 
   &:not(.isComplete) {
     animation: animatedStripesBackground 2s linear infinite;
