@@ -343,8 +343,7 @@ export class CardanoNode {
 
       if (environment.isSelfnode) {
         const CARDANO_WALLET_PORT = 8088;
-        const SHELLEY_TEST_DATA =
-          '/Users/nikola/sites/daedalus/utils/cardano/selfnode'; // ../utils/cardano/selfnode
+        const SHELLEY_TEST_DATA = '../../utils/cardano/selfnode';
         const isSelfnodeRunning = await tcpPortUsed.check(CARDANO_WALLET_PORT);
         if (isSelfnodeRunning) {
           _log.info('Cardano-node is already running...');
