@@ -37,7 +37,7 @@ type Props = {
   locale: Locale,
   onCopyWalletPublicKey: Function,
   onShowQRCode: Function,
-  getWalletPublicKey: Function,
+  onOpenWalletKeyDialog: Function,
 };
 
 type State = {
@@ -54,13 +54,28 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     walletPublicKeyHidden: true,
   };
 
-  toggleWalletPublicKeyVisibility = () => {
-    if (this.state.walletPublicKeyHidden) {
-      this.props.getWalletPublicKey();
+  componentDidUpdate({ walletPublicKey: walletPublicKeyPrev }: Props) {
+    const { walletPublicKey: walletPublicKeyNext } = this.props;
+    if (!walletPublicKeyPrev && walletPublicKeyNext) {
+      this.revealOnReceivingTheWalletKey();
     }
-    this.setState((prevState) => ({
-      walletPublicKeyHidden: !prevState.walletPublicKeyHidden,
-    }));
+  }
+
+  revealOnReceivingTheWalletKey = () => {
+    this.setState({
+      walletPublicKeyHidden: false,
+    });
+  };
+
+  toggleWalletPublicKeyVisibility = () => {
+    const { walletPublicKey, onOpenWalletKeyDialog } = this.props;
+    if (!walletPublicKey) {
+      onOpenWalletKeyDialog();
+    } else {
+      this.setState((prevState) => ({
+        walletPublicKeyHidden: !prevState.walletPublicKeyHidden,
+      }));
+    }
   };
 
   handleCopyWalletPublicKey = () => {
@@ -75,7 +90,9 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     const label = intl.formatMessage(messages.walletPublicKey);
     const fieldStyles = classnames([
       styles.field,
-      walletPublicKeyHidden ? styles.valueHidden : styles.valueShown,
+      walletPublicKeyHidden || !walletPublicKey
+        ? styles.valueHidden
+        : styles.valueShown,
       locale === LOCALES.japanese ? styles.withBigToggleButton : null,
     ]);
     const hiddenValuePlaceholder = intl.formatMessage(

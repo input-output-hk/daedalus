@@ -44,7 +44,7 @@ const assetDetails = {
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
     {
       name: 'MakerDAO',
-      acronym: 'DAI',
+      ticker: 'DAI',
       description: 'Test description',
       unit: {
         name: 'DAI',
@@ -60,7 +60,7 @@ const assetDetails = {
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     {
       name: 'TrueUSD',
-      acronym: 'TUSD',
+      ticker: 'TUSD',
       description: 'Test description',
       unit: {
         name: 'TUSD',
@@ -76,7 +76,7 @@ const assetDetails = {
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
     {
       name: 'Tether',
-      acronym: 'USDT',
+      ticker: 'USDT',
       description: 'Test description',
       unit: {
         name: 'USDT',
@@ -92,7 +92,7 @@ const assetDetails = {
     'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
     {
       name: 'USD Coin',
-      acronym: 'USDC',
+      ticker: 'USDC',
       description: 'Test description',
       unit: {
         name: 'USDC',

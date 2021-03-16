@@ -96,6 +96,7 @@ type State = {
   search: string,
   selectedList?: ?string,
   isGridView: boolean,
+  isGridRewardsView: boolean,
   isListView: boolean,
   isTableHeaderHovered: boolean,
 };
@@ -104,6 +105,7 @@ const initialState = {
   search: '',
   selectedList: null,
   isGridView: true,
+  isGridRewardsView: false,
   isListView: false,
   isTableHeaderHovered: false,
 };
@@ -125,12 +127,22 @@ export default class StakePools extends Component<Props, State> {
   handleGridView = () =>
     this.setState({
       isGridView: true,
+      isGridRewardsView: false,
       isListView: false,
     });
+
+  handleGridRewardsView = () => {
+    this.setState({
+      isGridView: false,
+      isGridRewardsView: true,
+      isListView: false,
+    });
+  };
 
   handleListView = () =>
     this.setState({
       isGridView: false,
+      isGridRewardsView: false,
       isListView: true,
     });
 
@@ -174,6 +186,7 @@ export default class StakePools extends Component<Props, State> {
       selectedList,
       isListView,
       isGridView,
+      isGridRewardsView,
       isTableHeaderHovered,
     } = this.state;
 
@@ -265,11 +278,12 @@ export default class StakePools extends Component<Props, State> {
               onSearch={this.handleSearch}
               onClearSearch={this.handleClearSearch}
               onGridView={this.handleGridView}
+              onGridRewardsView={this.handleGridRewardsView}
               onListView={this.handleListView}
               isListView={isListView}
               isGridView={isGridView}
+              isGridRewardsView={isGridRewardsView}
               smashServer={smashServer}
-              isClearTooltipOpeningDownward
             />
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
@@ -290,6 +304,7 @@ export default class StakePools extends Component<Props, State> {
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}
+                  isGridRewardsView={isGridRewardsView}
                   showWithSelectButton
                 />
               </Fragment>
@@ -326,7 +341,7 @@ export default class StakePools extends Component<Props, State> {
                 />
               </Fragment>
             )}
-            {isGridView && (
+            {(isGridView || isGridRewardsView) && (
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
@@ -352,6 +367,7 @@ export default class StakePools extends Component<Props, State> {
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}
+                  isGridRewardsView={isGridRewardsView}
                 />
               </Fragment>
             )}

@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
-import { Input } from 'react-polymorph/lib/components/Input';
 import { Link } from 'react-polymorph/lib/components/Link';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
@@ -22,7 +22,7 @@ import {
 } from '../../../config/stakingConfig';
 import type { SmashServerType } from '../../../types/stakingTypes';
 import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
-
+import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
@@ -136,16 +136,18 @@ const messages = defineMessages({
 });
 
 type Props = {
-  smashServerUrl: string,
+  smashServerUrl: ?string,
   smashServerUrlError?: ?LocalizableError,
   onSelectSmashServerUrl: Function,
   onResetSmashServerError: Function,
   isLoading: boolean,
   onOpenExternalLink: Function,
+  isSyncing: boolean,
+  syncPercentage: number,
 };
 
 type State = {
-  editingSmashServerUrl: string,
+  editingSmashServerUrl: ?string,
   successfullyUpdated: boolean,
   wasLoading: boolean,
 };
@@ -222,23 +224,155 @@ export default class StakePoolsSettings extends Component<Props, State> {
     none: null,
   };
 
-  render() {
-    const { smashServerUrlError, isLoading, onOpenExternalLink } = this.props;
+  renderSmashTypeDropdown = () => {
+    const { isSyncing } = this.props;
     const { intl } = this.context;
     const { editingSmashServerUrl, successfullyUpdated } = this.state;
-    const smashServerType = getSmashServerIdFromUrl(editingSmashServerUrl);
-
-    const selectedLabel =
-      this.smashSelectMessages[smashServerType] || smashServerType;
-
+    const smashServerType = getSmashServerIdFromUrl(
+      editingSmashServerUrl || ''
+    );
     const smashSelectOptions = map(SMASH_SERVER_TYPES, (value) => ({
       label: this.smashSelectMessages[value] || value,
       value,
     }));
+    const selectedValue =
+      !isSyncing && smashServerType
+        ? this.smashSelectMessages[smashServerType] || smashServerType
+        : '-';
 
+    if (isSyncing) {
+      return (
+        <div className={styles.disabledSelect}>
+          <div className={styles.label}>
+            {intl.formatMessage(messages.smashSelectLabel)}
+          </div>
+          <div className={styles.input}>{selectedValue}</div>
+          <SVGInline svg={spinningIcon} className={styles.icon} />
+        </div>
+      );
+    }
+    return (
+      <Select
+        label={
+          <div>
+            {intl.formatMessage(messages.smashSelectLabel)}
+            {successfullyUpdated && (
+              <span className={styles.savingResultLabel}>
+                {intl.formatMessage(messages.changesSaved)}
+              </span>
+            )}
+          </div>
+        }
+        value={smashServerType}
+        options={smashSelectOptions}
+        onChange={this.handleOnSelectSmashServerType}
+        className={styles.select}
+        optionHeight={50}
+        selectionRenderer={({ label }) => (
+          <div className={styles.selectionRenderer}>{label}</div>
+        )}
+      />
+    );
+  };
+
+  renderSmashCustomServerInput = () => {
+    const { smashServerUrlError, isLoading, isSyncing } = this.props;
+    const { intl } = this.context;
+    const { editingSmashServerUrl } = this.state;
+    const smashServerType = getSmashServerIdFromUrl(
+      editingSmashServerUrl || ''
+    );
     const errorMessage = smashServerUrlError
       ? intl.formatMessage(smashServerUrlError)
       : null;
+
+    const smashServerUrlStyles = classnames([
+      styles.smashServerUrl,
+      isSyncing ? styles.syncing : null,
+    ]);
+
+    if (smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
+      return null;
+    }
+    return (
+      <InlineEditingInput
+        className={smashServerUrlStyles}
+        label={intl.formatMessage(messages.smashURLInputLabel)}
+        value={editingSmashServerUrl || ''}
+        placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
+        onSubmit={this.handleSubmit}
+        isValid={this.handleIsValid}
+        valueErrorMessage={this.handleErrorMessage}
+        errorMessage={errorMessage}
+        readOnly={isLoading}
+        isLoading={isLoading}
+        successfullyUpdated={false}
+      />
+    );
+  };
+
+  renderBottomContent = () => {
+    const { onOpenExternalLink, isSyncing, syncPercentage } = this.props;
+    const { intl } = this.context;
+    const { editingSmashServerUrl } = this.state;
+    const smashServerType = getSmashServerIdFromUrl(
+      editingSmashServerUrl || ''
+    );
+
+    if (isSyncing) {
+      return (
+        <div className={styles.optionDescription}>
+          <FormattedHTMLMessage
+            {...globalMessages.featureUnavailableWhileSyncing}
+            values={{
+              syncPercentage,
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (smashServerType === SMASH_SERVER_TYPES.IOHK) {
+      return (
+        <div className={styles.optionDescription}>
+          <p>{intl.formatMessage(messages.descriptionIOHKContent1)}</p>
+          <p>
+            <FormattedMessage
+              {...messages.descriptionIOHKContent2}
+              values={{
+                link: (
+                  <Link
+                    onClick={() =>
+                      onOpenExternalLink(
+                        intl.formatMessage(messages.descriptionIOHKLinkUrl)
+                      )
+                    }
+                    label={intl.formatMessage(
+                      messages.descriptionIOHKLinkLabel
+                    )}
+                  />
+                ),
+              }}
+            />
+          </p>
+        </div>
+      );
+    }
+
+    if (smashServerType === SMASH_SERVER_TYPES.DIRECT) {
+      return (
+        <div className={styles.optionDescription}>
+          <FormattedHTMLMessage {...messages.descriptionNone} />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  render() {
+    const { onOpenExternalLink } = this.props;
+    const { intl } = this.context;
 
     return (
       <div className={styles.component}>
@@ -261,88 +395,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
           />
         </div>
 
-        {!isLoading ? (
-          <Select
-            label={
-              <div>
-                {intl.formatMessage(messages.smashSelectLabel)}
-                {successfullyUpdated && (
-                  <span className={styles.savingResultLabel}>
-                    {intl.formatMessage(messages.changesSaved)}
-                  </span>
-                )}
-              </div>
-            }
-            value={smashServerType}
-            options={smashSelectOptions}
-            onChange={this.handleOnSelectSmashServerType}
-            className={styles.select}
-            optionHeight={50}
-            selectionRenderer={({ label }) => (
-              <div className={styles.selectionRenderer}>{label}</div>
-            )}
-          />
-        ) : (
-          <Input
-            label={intl.formatMessage(messages.smashSelectLabel)}
-            value={selectedLabel}
-            className={styles.disabledInput}
-            selectionRenderer={(label) => (
-              <div className={styles.selectionRenderer}>
-                {label}
-                <SVGInline svg={spinningIcon} className={styles.icon} />
-              </div>
-            )}
-            selectedOption={selectedLabel}
-            disabled
-          />
-        )}
-
-        {smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
-          <InlineEditingInput
-            className={styles.smashServerUrl}
-            label={intl.formatMessage(messages.smashURLInputLabel)}
-            value={editingSmashServerUrl}
-            placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
-            onSubmit={this.handleSubmit}
-            isValid={this.handleIsValid}
-            valueErrorMessage={this.handleErrorMessage}
-            errorMessage={errorMessage}
-            readOnly={isLoading}
-            isLoading={isLoading}
-            successfullyUpdated={false}
-          />
-        )}
-        {smashServerType === SMASH_SERVER_TYPES.IOHK && (
-          <div className={styles.optionDescription}>
-            <p>{intl.formatMessage(messages.descriptionIOHKContent1)}</p>
-            <p>
-              <FormattedMessage
-                {...messages.descriptionIOHKContent2}
-                values={{
-                  link: (
-                    <Link
-                      onClick={() =>
-                        onOpenExternalLink(
-                          intl.formatMessage(messages.descriptionIOHKLinkUrl)
-                        )
-                      }
-                      label={intl.formatMessage(
-                        messages.descriptionIOHKLinkLabel
-                      )}
-                    />
-                  ),
-                }}
-              />
-            </p>
-          </div>
-        )}
-
-        {smashServerType === SMASH_SERVER_TYPES.DIRECT && (
-          <div className={styles.optionDescription}>
-            <FormattedHTMLMessage {...messages.descriptionNone} />
-          </div>
-        )}
+        {this.renderSmashTypeDropdown()}
+        {this.renderSmashCustomServerInput()}
+        {this.renderBottomContent()}
       </div>
     );
   }

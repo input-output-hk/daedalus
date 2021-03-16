@@ -37,6 +37,7 @@
 
   .copyPublicKey {
     display: block;
+    opacity: 0.5;
     text-align: center;
     width: 100%;
 
@@ -44,6 +45,7 @@
       cursor: pointer;
       margin-left: 4px;
       object-fit: contain;
+
       & > svg {
         height: 12px;
         width: 10px;
@@ -58,8 +60,11 @@
       cursor: pointer;
       font-family: var(--font-regular);
       font-size: 14px;
-      opacity: 0.5;
       padding-left: 6px;
+    }
+
+    &:hover {
+      opacity: 1;
     }
   }
 }
