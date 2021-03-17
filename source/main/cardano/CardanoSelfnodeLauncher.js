@@ -68,10 +68,6 @@ export async function CardanoSelfnodeLauncher(
         )
         .then(
           () => {
-            logger.info(
-              `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
-              { pid: node.pid }
-            );
             node.connected = true;
             resolve({ node, replyPort: CARDANO_WALLET_PORT });
           },

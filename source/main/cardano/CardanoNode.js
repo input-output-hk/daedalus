@@ -351,6 +351,10 @@ export class CardanoNode {
             processName: CARDANO_PROCESS_NAME,
             onStop: this._ensureProcessIsNotRunning,
           });
+          _log.info(
+            `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
+            { pid: node.pid }
+          );
           this._node = node;
           this._handleCardanoNodeMessage({ ReplyPort: replyPort });
           resolve();
