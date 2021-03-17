@@ -56,7 +56,8 @@ Daedalus - Cryptocurrency Wallet
 
 **Notes:**
 - Be aware that the selfnode starts in Byron era and needs some time to transition through Shelley, Allegra and Mary hard forks.
-- There is a total of 3 stake pools all of which have metadata which is fetched directly (IOHK SMASH server option is not available).
+- Cardano wallet process ID shown on the "Diagnostics" screen is faked (it is expected to match the Cardano node process ID).
+- Stake pool metadata which is fetched directly by default (IOHK SMASH server option is not available).
 - Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
 
 | Parameter | Value
