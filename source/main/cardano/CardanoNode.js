@@ -356,8 +356,8 @@ export class CardanoNode {
           processList.length && processList[0].name === CARDANO_PROCESS_NAME;
         if (isSelfnodeRunning) {
           _log.info('Cardano-node is already running...');
-          const node = Object.assign({}, processList[0], {
-            wpid: processList[0].pid, // TODO: find child process ID
+          this._node = Object.assign({}, processList[0], {
+            wpid: processList[0].pid,
             stop: async () => {
               await this._ensureProcessIsNotRunning(
                 processList[0].pid,
@@ -366,7 +366,6 @@ export class CardanoNode {
             },
             connected: true,
           });
-          this._node = node;
           this._handleCardanoNodeMessage({ ReplyPort: CARDANO_WALLET_PORT });
           resolve();
         } else {
@@ -378,13 +377,14 @@ export class CardanoNode {
           });
           node.unref();
           this._node = Object.assign({}, node, {
-            wpid: node.pid, // TODO: find child process ID
+            wpid: node.pid,
             stop: async () => {
               await this._ensureProcessIsNotRunning(
                 node.pid,
                 CARDANO_PROCESS_NAME
               );
             },
+            connected: false,
           });
           tcpPortUsed.waitUntilUsed(CARDANO_WALLET_PORT, 500, 60000).then(
             () => {
