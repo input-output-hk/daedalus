@@ -7,8 +7,6 @@ import type { Launcher } from 'cardano-launcher';
 import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
-import tcpPortUsed from 'tcp-port-used';
-import find from 'find-process';
 import { environment } from '../environment';
 import {
   deriveProcessNames,
@@ -31,10 +29,10 @@ import {
   CardanoNodeImplementationOptions,
 } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
+import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
-import type { Process } from '../utils/processes';
 
 /* eslint-disable consistent-return */
 
@@ -346,73 +344,27 @@ export class CardanoNode {
       this._cardanoWalletLogFile = walletLogFile;
 
       if (isSelfnode) {
-        const CARDANO_WALLET_PORT = 8088;
-        const SHELLEY_TEST_DATA = '../../utils/cardano/selfnode';
-        const processList: Array<Process> = await find(
-          'port',
-          CARDANO_WALLET_PORT
-        );
-        const isSelfnodeRunning =
-          processList.length && processList[0].name === CARDANO_PROCESS_NAME;
-        if (isSelfnodeRunning) {
-          _log.info('Cardano-node is already running...');
-          this._node = Object.assign({}, processList[0], {
-            wpid: processList[0].pid,
-            stop: async () => {
-              await this._ensureProcessIsNotRunning(
-                processList[0].pid,
-                CARDANO_PROCESS_NAME
-              );
-            },
-            connected: true,
+        try {
+          const { selfnodeBin } = launcherConfig;
+          const { node, replyPort } = await CardanoSelfnodeLauncher({
+            selfnodeBin,
+            processName: CARDANO_PROCESS_NAME,
+            onStop: this._ensureProcessIsNotRunning,
           });
-          this._handleCardanoNodeMessage({ ReplyPort: CARDANO_WALLET_PORT });
+          this._node = node;
+          this._handleCardanoNodeMessage({ ReplyPort: replyPort });
           resolve();
-        } else {
-          _log.info('Starting cardano-node now...');
-          const node = spawn(launcherConfig.selfnodeBin, [], {
-            env: { ...process.env, CARDANO_WALLET_PORT, SHELLEY_TEST_DATA },
-            detached: true,
-            stdio: 'ignore',
-          });
-          node.unref();
-          this._node = Object.assign({}, node, {
-            wpid: node.pid,
-            stop: async () => {
-              await this._ensureProcessIsNotRunning(
-                node.pid,
-                CARDANO_PROCESS_NAME
-              );
-            },
-            connected: false,
-          });
-          tcpPortUsed.waitUntilUsed(CARDANO_WALLET_PORT, 500, 60000).then(
-            () => {
-              _log.info(
-                `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
-                { pid: node.pid }
-              );
-              this._node = Object.assign({}, this._node, {
-                connected: true,
-              });
-              this._handleCardanoNodeMessage({
-                ReplyPort: CARDANO_WALLET_PORT,
-              });
-              resolve();
-            },
-            (exitStatus) => {
-              _log.error(
-                'CardanoNode#start: Error while spawning cardano-node',
-                { exitStatus }
-              );
-              const { code, message } = exitStatus;
-              this._handleCardanoNodeError(code, message);
-              reject(
-                new Error(
-                  'CardanoNode#start: Error while spawning cardano-node'
-                )
-              );
-            }
+        } catch (error) {
+          _log.error(
+            'CardanoNode#start: Unable to initialize cardano-launcher',
+            { error }
+          );
+          const { code, signal } = error || {};
+          this._handleCardanoNodeError(code, signal);
+          reject(
+            new Error(
+              'CardanoNode#start: Unable to initialize cardano-launcher'
+            )
           );
         }
       } else {
