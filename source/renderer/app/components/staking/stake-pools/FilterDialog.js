@@ -6,7 +6,6 @@ import { observer } from 'mobx-react';
 import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
 import { emptyStakePoolFilterOptions } from '../../../stores/StakingStore';
@@ -44,11 +43,7 @@ const messages = defineMessages({
 });
 
 export type FilterDialogProps = {
-  locale: string,
-  dateFormat: string,
-  numberFormat: string,
-  defaultFilterOptions: TransactionFilterOptionsType,
-  populatedFilterOptions: TransactionFilterOptionsType,
+  populatedFilterOptions: StakePoolFilterOptionsType,
   onFilter: Function,
   triggerElement?: Element<*>,
 };
@@ -59,7 +54,6 @@ export default class FilterDialog extends Component<FilterDialogProps> {
     intl: intlShape.isRequired,
   };
 
-  dateRangeOptions: Array<{ label: string, value: string }>;
   form: ReactToolboxMobxForm;
   popoverTippyInstance: ElementRef<*> = createRef();
 
@@ -68,145 +62,65 @@ export default class FilterDialog extends Component<FilterDialogProps> {
 
     const {
       populatedFilterOptions: {
-        incomingChecked,
-        outgoingChecked,
-        dateRange,
-        fromDate,
-        toDate,
-        fromAmount,
-        toAmount,
+        retiringPoolsChecked,
+        privatePoolsChecked,
+        poolsWithoutOffChainDataChecked,
       },
     } = props;
 
     const { intl } = context;
 
-    this.dateRangeOptions = [
-      {
-        label: intl.formatMessage(messages.last7Days),
-        value: DateRangeTypes.LAST_7_DAYS,
-      },
-      {
-        label: intl.formatMessage(messages.last30Days),
-        value: DateRangeTypes.LAST_30_DAYS,
-      },
-      {
-        label: intl.formatMessage(messages.last90Days),
-        value: DateRangeTypes.LAST_90_DAYS,
-      },
-      {
-        label: intl.formatMessage(messages.thisYear),
-        value: DateRangeTypes.THIS_YEAR,
-      },
-      {
-        label: intl.formatMessage(messages.custom),
-        value: DateRangeTypes.CUSTOM,
-      },
-    ];
     this.form = new ReactToolboxMobxForm({
       fields: {
-        incomingChecked: {
+        retiringPoolsChecked: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.incoming),
-          value: incomingChecked,
+          label: intl.formatMessage(messages.retiringPools),
+          value: retiringPoolsChecked,
         },
-        outgoingChecked: {
+        privatePoolsChecked: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.outgoing),
-          value: outgoingChecked,
+          label: intl.formatMessage(messages.privatePools),
+          value: privatePoolsChecked,
         },
-        dateRange: {
-          label: intl.formatMessage(messages.dateRange),
-          value: dateRange,
-        },
-        fromDate: {
-          label: '',
-          value: fromDate,
-        },
-        toDate: {
-          label: '',
-          value: toDate,
-        },
-        fromAmount: {
-          type: 'number',
-          label: '',
-          value: fromAmount,
-        },
-        toAmount: {
-          type: 'number',
-          label: '',
-          value: toAmount,
+        poolsWithoutOffChainDataChecked: {
+          type: 'checkbox',
+          label: intl.formatMessage(messages.poolsWithoutOffChainData),
+          value: poolsWithoutOffChainDataChecked,
         },
       },
     });
   }
 
-  setFilterType = (
-    field: 'incomingChecked' | 'outgoingChecked',
-    value: boolean
-  ) => {
-    this.form.select(field).set(value);
-    if (value === false) {
-      const otherFieldName =
-        field === 'incomingChecked' ? 'outgoingChecked' : 'incomingChecked';
-      const otherField = this.form.select(otherFieldName);
-      if (otherField.value === false) {
-        otherField.set(true);
-      }
-    }
-  };
-
-  fillFormFields = (filterOptions: TransactionFilterOptionsType) => {
+  fillFormFields = (filterOptions: StakePoolFilterOptionsType) => {
     const {
-      dateRange,
-      fromDate,
-      toDate,
-      fromAmount,
-      toAmount,
-      incomingChecked,
-      outgoingChecked,
+      retiringPoolsChecked,
+      privatePoolsChecked,
+      poolsWithoutOffChainDataChecked,
     } = filterOptions;
 
-    this.form.select('dateRange').set(dateRange);
-    this.form.select('fromDate').set(fromDate);
-    this.form.select('toDate').set(toDate);
-    this.form.select('fromAmount').set(fromAmount);
-    this.form.select('toAmount').set(toAmount);
-    this.form.select('incomingChecked').set(incomingChecked);
-    this.form.select('outgoingChecked').set(outgoingChecked);
+    this.form.select('retiringPoolsChecked').set(retiringPoolsChecked);
+    this.form.select('privatePoolsChecked').set(privatePoolsChecked);
+    this.form
+      .select('poolsWithoutOffChainDataChecked')
+      .set(poolsWithoutOffChainDataChecked);
   };
 
-  resetForm = () => this.fillFormFields(emptyTransactionFilterOptions);
+  resetForm = () => this.fillFormFields(emptyStakePoolFilterOptions);
 
-  generateDefaultFilterOptions = () =>
-    this.fillFormFields(this.props.defaultFilterOptions);
-
-  isFormValuesEqualTo = (
-    comparedFilterOptions: TransactionFilterOptionsType
-  ) => {
+  isFormValuesEqualTo = (comparedFilterOptions: StakePoolFilterOptionsType) => {
     const formFieldNames = Object.keys(this.form.fields.toJSON());
     return isEqual(
-      this.getComposedFormValues(),
+      this.form.values(),
       pick(comparedFilterOptions, formFieldNames)
     );
-  };
-
-  getComposedFormValues = () => {
-    const formValues = this.form.values();
-    return {
-      ...formValues,
-      fromAmount: formValues.fromAmount.toString(),
-      toAmount: formValues.toAmount.toString(),
-    };
   };
 
   handleSubmit = () => {
     this.form.submit({
       onSuccess: () => {
         const { onFilter } = this.props;
-        const formValues = this.getComposedFormValues();
-        if (validateFilterForm(formValues).isValid) {
-          onFilter(formValues);
-        }
+        const formValues = this.form.values();
+        onFilter(formValues);
       },
       onError: () => null,
     });
@@ -215,187 +129,19 @@ export default class FilterDialog extends Component<FilterDialogProps> {
     }
   };
 
-  isValidFromDate = (date: Object) => {
-    return date.isSameOrBefore(moment().endOf('day'));
-  };
-
-  isValidToDate = (date: Object) => {
-    const { fromDate } = this.form.values();
-    return (
-      date.isSameOrBefore(moment().endOf('day')) &&
-      date.isSameOrAfter(moment(fromDate).startOf('day'))
-    );
-  };
-
-  renderTypeField = () => {
+  renderFields = () => {
     const { form } = this;
-    const incomingCheckboxField = form.$('incomingChecked');
-    const outgoingCheckboxField = form.$('outgoingChecked');
-
-    return (
-      <div className={styles.type}>
-        <div className={styles.body}>
-          <div className={styles.typeCheckbox}>
-            <TinyCheckbox
-              {...incomingCheckboxField.bind()}
-              onChange={(isSelected) =>
-                this.setFilterType('incomingChecked', isSelected)
-              }
-            />
-          </div>
-          <div className={styles.typeCheckbox}>
-            <TinyCheckbox
-              {...outgoingCheckboxField.bind()}
-              onChange={(isSelected) =>
-                this.setFilterType('outgoingChecked', isSelected)
-              }
-            />
-          </div>
-        </div>
-      </div>
+    const retiringPoolsCheckboxField = form.$('retiringPoolsChecked');
+    const privatePoolsCheckboxField = form.$('privatePoolsChecked');
+    const poolsWithoutOffChainDataCheckboxField = form.$(
+      'poolsWithoutOffChainDataChecked'
     );
-  };
-
-  renderDateRangeField = () => {
-    const { intl } = this.context;
-    const dateRangeFieldBindProps = this.form.$('dateRange').bind();
-    const { fromDate, toDate } = this.form.values();
 
     return (
-      <div className={styles.dateRange}>
-        <TinySelect
-          {...dateRangeFieldBindProps}
-          onChange={(...args) => {
-            dateRangeFieldBindProps.onChange(...args);
-            const calculatedDateRange = calculateDateRange(args[0], {
-              fromDate,
-              toDate,
-            });
-            this.form.select('fromDate').set(calculatedDateRange.fromDate);
-            this.form.select('toDate').set(calculatedDateRange.toDate);
-          }}
-          placeholder={intl.formatMessage(messages.selectTimeRange)}
-          options={this.dateRangeOptions}
-        />
-      </div>
-    );
-  };
-
-  renderDateRangeFromToField = () => {
-    const { form } = this;
-    const { intl } = this.context;
-    const { locale, dateFormat } = this.props;
-    const { invalidFields } = validateFilterForm(this.getComposedFormValues());
-    const fromDateFieldBindProps = form.$('fromDate').bind();
-    const toDateFieldBindProps = form.$('toDate').bind();
-    const fromDateLocaleClassName =
-      locale === 'ja-JP' ? styles.japaneseFromDateInput : null;
-    const toDateLocaleClassName =
-      locale === 'ja-JP' ? styles.japaneseToDateInput : null;
-    const fromDateClassNames = classNames([
-      styles.dateRangeInput,
-      styles.fromDateInput,
-      fromDateLocaleClassName,
-    ]);
-    const toDateClassNames = classNames([
-      styles.dateRangeInput,
-      styles.toDateInput,
-      toDateLocaleClassName,
-    ]);
-
-    return (
-      <div className={styles.dateRangeFromTo}>
-        <div className={styles.body}>
-          <div className={fromDateClassNames}>
-            <TinyDatePicker
-              {...fromDateFieldBindProps}
-              onChange={(...args) => {
-                fromDateFieldBindProps.onChange(...args);
-                this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
-              }}
-              label={intl.formatMessage(globalMessages.rangeFrom)}
-              pickerPanelPosition="left"
-              closeOnSelect
-              onReset={() => form.select('fromDate').set('')}
-              isValidDate={this.isValidFromDate}
-              locale={locale}
-              dateFormat={dateFormat}
-            />
-          </div>
-          <div className={toDateClassNames}>
-            <TinyDatePicker
-              {...toDateFieldBindProps}
-              onChange={(...args) => {
-                toDateFieldBindProps.onChange(...args);
-                this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
-              }}
-              label={intl.formatMessage(globalMessages.rangeTo)}
-              pickerPanelPosition="right"
-              closeOnSelect
-              onReset={() => form.select('toDate').set('')}
-              isValidDate={this.isValidToDate}
-              locale={locale}
-              dateFormat={dateFormat}
-              error={invalidFields.toDate}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  renderAmountRangeField = () => {
-    const { form } = this;
-    const { intl } = this.context;
-    const { locale, numberFormat } = this.props;
-    const { invalidFields } = validateFilterForm(this.getComposedFormValues());
-    const fromAmountField = form.$('fromAmount');
-    const toAmountField = form.$('toAmount');
-    const fromAmountLocaleClassName =
-      locale === 'ja-JP' ? styles.japaneseFromAmountInput : null;
-    const toAmountLocaleClassName =
-      locale === 'ja-JP' ? styles.japaneseToAmountInput : null;
-    const fromAmountClassNames = classNames([
-      styles.amountRangeInput,
-      styles.fromAmountInput,
-      fromAmountLocaleClassName,
-    ]);
-    const toAmountClassNames = classNames([
-      styles.amountRangeInput,
-      styles.toAmountInput,
-      toAmountLocaleClassName,
-    ]);
-
-    return (
-      <div className={styles.amountRange}>
-        <div className={styles.header}>
-          <label>{intl.formatMessage(messages.amountRange)}</label>
-        </div>
-        <div className={styles.body}>
-          <div className={fromAmountClassNames}>
-            <TinyInput
-              {...fromAmountField.bind()}
-              value={fromAmountField.value}
-              onSubmit={this.handleSubmit}
-              label={intl.formatMessage(globalMessages.rangeFrom)}
-              bigNumberFormat={NUMBER_FORMATS[numberFormat]}
-              decimalPlaces={DECIMAL_PLACES_IN_ADA}
-              allowSigns={false}
-            />
-          </div>
-          <div className={toAmountClassNames}>
-            <TinyInput
-              {...toAmountField.bind()}
-              value={toAmountField.value}
-              onSubmit={this.handleSubmit}
-              label={intl.formatMessage(globalMessages.rangeTo)}
-              bigNumberFormat={NUMBER_FORMATS[numberFormat]}
-              decimalPlaces={DECIMAL_PLACES_IN_ADA}
-              allowSigns={false}
-              error={invalidFields.toAmount}
-            />
-          </div>
-        </div>
+      <div className={styles.fields}>
+        <TinyCheckbox {...retiringPoolsCheckboxField.bind()} />
+        <TinyCheckbox {...privatePoolsCheckboxField.bind()} />
+        <TinyCheckbox {...poolsWithoutOffChainDataCheckboxField.bind()} />
       </div>
     );
   };
@@ -403,16 +149,13 @@ export default class FilterDialog extends Component<FilterDialogProps> {
   renderActionButton = () => {
     const { intl } = this.context;
     const { populatedFilterOptions } = this.props;
-    const { isValid } = validateFilterForm(this.getComposedFormValues());
 
     return (
       <div className={styles.action}>
         <TinyButton
           label={intl.formatMessage(messages.apply)}
           loading={false}
-          disabled={
-            this.isFormValuesEqualTo(populatedFilterOptions) || !isValid
-          }
+          disabled={this.isFormValuesEqualTo(populatedFilterOptions)}
           onClick={this.handleSubmit}
         />
       </div>
@@ -421,7 +164,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
 
   render() {
     const { intl } = this.context;
-    const { defaultFilterOptions, triggerElement } = this.props;
+    const { triggerElement } = this.props;
 
     return (
       <PopOver
@@ -438,7 +181,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
         placement="bottom"
         themeVariables={{
           '--rp-pop-over-bg-color':
-            'var(--theme-transactions-filter-modal-bg-color)',
+            'var(--theme-stake-pools-filter-modal-bg-color)',
           '--rp-pop-over-box-shadow': '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
           '--rp-pop-over-border-radius': '4px',
           '--rp-pop-over-border-style': 'solid',
@@ -464,16 +207,9 @@ export default class FilterDialog extends Component<FilterDialogProps> {
               <div>
                 <button
                   className={styles.titleLink}
-                  onClick={this.generateDefaultFilterOptions}
-                  disabled={this.isFormValuesEqualTo(defaultFilterOptions)}
-                >
-                  {intl.formatMessage(messages.allTransactions)}
-                </button>
-                <button
-                  className={styles.titleLink}
                   onClick={this.resetForm}
                   disabled={this.isFormValuesEqualTo(
-                    emptyTransactionFilterOptions
+                    emptyStakePoolFilterOptions
                   )}
                 >
                   {intl.formatMessage(messages.resetFilter)}
@@ -481,10 +217,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
               </div>
             </div>
             <div className={styles.content}>
-              {this.renderTypeField()}
-              {this.renderDateRangeField()}
-              {this.renderDateRangeFromToField()}
-              {this.renderAmountRangeField()}
+              {this.renderFields()}
               {this.renderActionButton()}
             </div>
           </div>

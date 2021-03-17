@@ -7,6 +7,9 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
+import FilterButton from './FilterButton';
+import FilterDialog from './FilterDialog';
+import type { FilterDialogProps } from './FilterDialog';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
@@ -64,6 +67,9 @@ type Props = {
   onGridRewardsView?: Function,
   onListView?: Function,
   search: string,
+  isFilterDisabled: boolean,
+  filterDialogProps: FilterDialogProps,
+  numberOfFilterDimensionsApplied: number,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -100,6 +106,9 @@ export class StakePoolsSearch extends Component<Props> {
       isListView,
       isGridView,
       isGridRewardsView,
+      isFilterDisabled,
+      filterDialogProps,
+      numberOfFilterDimensionsApplied,
     } = this.props;
 
     const gridButtonClasses = classnames([
@@ -193,6 +202,17 @@ export class StakePoolsSearch extends Component<Props> {
               </PopOver>
             </div>
           )}
+          <FilterDialog
+            {...filterDialogProps}
+            triggerElement={
+              <FilterButton
+                disabled={isFilterDisabled}
+                numberOfFilterDimensionsApplied={
+                  numberOfFilterDimensionsApplied
+                }
+              />
+            }
+          />
         </div>
       </div>
     );
