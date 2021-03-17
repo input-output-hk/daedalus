@@ -11,6 +11,7 @@ import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
+import { confetti } from '../../utils/uiEffects';
 
 type Props = {
   onLeftIconClick?: ?Function,
@@ -22,6 +23,7 @@ type Props = {
   hasRewardsWallets?: boolean,
   onLearnMore?: Function,
   isShelleyActivated: boolean,
+  isFullyDecentralized: boolean,
 };
 
 @observer
@@ -37,6 +39,7 @@ export default class TopBar extends Component<Props> {
       onWalletAdd,
       onLearnMore,
       isShelleyActivated,
+      isFullyDecentralized,
     } = this.props;
     const { isIncentivizedTestnet } = global;
     const topBarStyles = classNames([
@@ -93,6 +96,7 @@ export default class TopBar extends Component<Props> {
           ) : (
             <SVGInline svg={headerLogo} className={styles.headerLogo} />
           )}
+          {isFullyDecentralized ? confetti({}) : null}
           {children}
         </div>
         {IS_BYRON_WALLET_MIGRATION_ENABLED &&

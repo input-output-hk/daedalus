@@ -217,6 +217,7 @@ export default class StoryLayout extends Component<Props> {
       onWalletAdd={action('onWalletAdd')}
       hasRewardsWallets={boolean('hasRewardsWallets', true)}
       isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
+      isFullyDecentralized={boolean('isFullyDecentralized', false)}
     >
       <NodeSyncStatusIcon
         isSynced
