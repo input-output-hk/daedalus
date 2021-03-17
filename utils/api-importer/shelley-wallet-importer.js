@@ -22,20 +22,29 @@ const walletNames = [
 ];
 
 const API_PORT = process.env.API_PORT || 8088;
+const IS_HTTPS = process.env.IS_HTTPS || false;
 
 async function main() {
-  const httpsAgent = new https.Agent({
-    cert: fs.readFileSync('tls/client/client.pem'),
-    key: fs.readFileSync('tls/client/client.key'),
-    ca: fs.readFileSync('tls/client/ca.crt'),
-  });
-  const request = axios.create({ httpsAgent });
   try {
-    await Promise.all(mnemonics.map((mnemonic, index) => {
-      const name = walletNames[index];
-      const data = generateImportPayload(mnemonic, name);
-      return request.post(`https://localhost:${API_PORT}/v2/wallets`, data);
-    }));
+    if (IS_HTTPS) {
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync('tls/client/client.pem'),
+        key: fs.readFileSync('tls/client/client.key'),
+        ca: fs.readFileSync('tls/client/ca.crt'),
+      });
+      const request = axios.create({ httpsAgent });
+      await Promise.all(mnemonics.map((mnemonic, index) => {
+        const name = walletNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return request.post(`https://localhost:${API_PORT}/v2/wallets`, payload);
+      }));
+    } else {
+      await Promise.all(mnemonics.map((mnemonic, index) => {
+        const name = walletNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return axios.post(`http://localhost:${API_PORT}/v2/wallets`, payload);
+      }));
+    }
   } catch (e) {
     console.log(e);
   }

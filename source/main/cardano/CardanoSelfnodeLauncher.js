@@ -20,9 +20,9 @@ export type Selfnode = {
   connected: boolean,
 };
 
+const CARDANO_WALLET_PORT = 8088;
 const CARDANO_WALLET_START_TIMEOUT = 60 * 1000; // 60 seconds | unit: milliseconds
 const CARDANO_WALLET_START_CHECK_INTERVAL = 500; // 500 ms | unit: milliseconds
-const CARDANO_WALLET_PORT = 8088;
 const SHELLEY_TEST_DATA = '../../utils/cardano/selfnode';
 
 export async function CardanoSelfnodeLauncher(
