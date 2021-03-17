@@ -49,6 +49,7 @@ import {
 import {
   DeviceModels,
   DeviceTypes,
+  DeviceEvents,
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -1727,7 +1728,7 @@ export default class HardwareWalletsStore extends Store {
     if (
       this.unfinishedWalletTxSigning &&
       !disconnected &&
-      eventType === 'device-connect'
+      eventType === DeviceEvents.CONNECT
     ) {
       logger.debug(
         '[HW-DEBUG] CHANGE STATUS to: ',

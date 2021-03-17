@@ -6,8 +6,10 @@ import { BrowserWindow } from 'electron';
 import TrezorConnect, {
   DEVICE_EVENT,
   TRANSPORT_EVENT,
+  TRANSPORT,
   UI_EVENT,
   UI,
+  DEVICE,
   // $FlowFixMe
 } from 'trezor-connect';
 import { get, omit, last, find, includes } from 'lodash';
@@ -196,7 +198,7 @@ export const handleHardwareWalletRequests = async (
       }
     });
     TrezorConnect.on(TRANSPORT_EVENT, (event) => {
-      if (event.type === 'transport-error') {
+      if (event.type === TRANSPORT.ERROR) {
         // Send Transport error to Renderer
         getHardwareWalletConnectionChannel.send(
           {
@@ -211,9 +213,9 @@ export const handleHardwareWalletRequests = async (
     });
     TrezorConnect.on(DEVICE_EVENT, (event) => {
       const connectionChanged =
-        event.type === 'device-connect' ||
-        event.type === 'device-disconnect' ||
-        event.type === 'device-changed';
+        event.type === DEVICE.CONNECT ||
+        event.type === DEVICE.DISCONNECT ||
+        event.type === DEVICE.CHANGED;
       const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
       const deviceError = get(event, ['payload', 'error']);
 
@@ -224,7 +226,7 @@ export const handleHardwareWalletRequests = async (
       if (connectionChanged && isAcquired) {
         getHardwareWalletConnectionChannel.send(
           {
-            disconnected: event.type === 'device-disconnect',
+            disconnected: event.type === DEVICE.DISCONNECT,
             deviceType: 'trezor',
             deviceId: event.payload.id, // 123456ABCDEF
             deviceModel: event.payload.features.model, // e.g. T
