@@ -1724,7 +1724,11 @@ export default class HardwareWalletsStore extends Store {
     }
 
     // Case that allows us to re-trigger tx send process multiple times if device doesn't match sender wallet
-    if (this.unfinishedWalletTxSigning && !disconnected && eventType === 'device-connect') {
+    if (
+      this.unfinishedWalletTxSigning &&
+      !disconnected &&
+      eventType === 'device-connect'
+    ) {
       logger.debug(
         '[HW-DEBUG] CHANGE STATUS to: ',
         HwDeviceStatuses.CONNECTING

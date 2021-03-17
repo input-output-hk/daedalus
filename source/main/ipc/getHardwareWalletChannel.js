@@ -101,7 +101,6 @@ const deriveXpubChannel: MainIpcChannel<
   deriveXpubMainResponse
 > = new MainIpcChannel(DERIVE_XPUB_CHANNEL);
 
-
 let devicesMemo = {};
 class EventObserver {
   constructor(props) {
@@ -186,7 +185,8 @@ export const handleHardwareWalletRequests = async (
     TrezorConnect.removeAllListeners();
     // Initialize new device listeners
     TrezorConnect.on(UI_EVENT, (event) => {
-      if (event.type === UI.REQUEST_PASSPHRASE) { // ui-request_passphrase
+      if (event.type === UI.REQUEST_PASSPHRASE) {
+        // ui-request_passphrase
         if (event.payload && event.payload.device) {
           TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
@@ -237,7 +237,7 @@ export const handleHardwareWalletRequests = async (
         );
       }
     });
-  }
+  };
 
   getHardwareWalletTransportChannel.onRequest(async (request) => {
     logger.info('[HW-DEBUG] getHardwareWalletTransportChannel');
