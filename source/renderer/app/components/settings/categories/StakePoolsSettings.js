@@ -241,9 +241,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
         : '-';
 
     if (isSyncing) {
-      return null;
-    }
-    if (isSyncing) {
       return (
         <div className={styles.disabledSelect}>
           <div className={styles.label}>
