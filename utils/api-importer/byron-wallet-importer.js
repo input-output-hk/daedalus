@@ -1,33 +1,63 @@
 /* eslint-disable no-console */
 const axios = require('axios');
+const https = require('https');
+const fs = require('fs');
+const { sampleSize, shuffle } = require('lodash');
 
+// Taken from: https://github.com/input-output-hk/cardano-wallet/blob/master/lib/core-integration/src/Test/Integration/Faucet.hs#L1471
 const mnemonics = [
-  ['craft', 'blade', 'oil', 'fork', 'able', 'math', 'cat', 'kidney', 'clutch', 'menu', 'remind', 'clap'],
-  ['kitten', 'lesson', 'gravity', 'hurry', 'total', 'today', 'accuse', 'lottery', 'meadow', 'grab', 'shiver', 'elder'],
-  ['flash', 'nothing', 'foam', 'hint', 'vague', 'estate', 'innocent', 'lobster', 'brush', 'can', 'spray', 'radio'],
-  ['humor', 'meadow', 'now', 'mimic', 'amazing', 'increase', 'wire', 'aerobic', 'jeans', 'sleep', 'step', 'change'],
-  ['lady', 'lucky', 'charge', 'peasant', 'start', 'cheese', 'fitness', 'differ', 'city', 'amused', 'multiply', 'west'],
-  ['wash', 'truly', 'birth', 'stairs', 'quarter', 'ethics', 'afraid', 'unfold', 'medal', 'park', 'quick', 'short'],
+  ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
+  ['finish', 'evoke', 'alone', 'town', 'express', 'wide', 'pair', 'story', 'west', 'safe', 'news', 'wrap'],
+  ['fox', 'now', 'hello', 'inmate', 'era', 'jealous', 'cruel', 'wreck', 'dash', 'supply', 'book', 'attend'],
+  ['must', 'lock', 'cereal', 'water', 'silver', 'cake', 'circle', 'express', 'sock', 'arm', 'chapter', 'avoid'],
+  ['give', 'verb', 'balcony', 'hurdle', 'pistol', 'flee', 'manage', 'barely', 'pulse', 'episode', 'speak', 'school'],
+  ['divert', 'entire', 'urge', 'banner', 'repair', 'mechanic', 'muffin', 'illness', 'genre', 'intact', 'coin', 'boss'],
+  ['pink', 'radio', 'various', 'frame', 'argue', 'draft', 'sun', 'speak', 'club', 'salute', 'thank', 'price'],
+  ['all', 'beef', 'link', 'funny', 'swing', 'duck', 'sweet', 'swallow', 'slow', 'shield', 'weekend', 'open'],
+  ['green', 'friend', 'captain', 'entry', 'utility', 'lake', 'blur', 'matrix', 'will', 'prefer', 'breeze', 'shed'],
+  ['reveal', 'jazz', 'equal', 'salmon', 'first', 'decline', 'liquid', 'wolf', 'powder', 'account', 'elbow', 'figure'],
 ];
 
-const walletNames = [
-  'Rosalind',
-  'Dorothy',
-  'Gertrude',
-  'Irène',
-  'Lorenzo',
-  'Valentina',
+const names = [
+  'Barry',
+  'Benny',
+  'Billy',
+  'Blake',
+  'Bob',
+  'Bowie',
+  'Boyd',
+  'Bruce',
+  'Bruno',
+  'Byron',
 ];
 
 const API_PORT = process.env.API_PORT || 8088;
+const IS_HTTPS = process.env.IS_HTTPS || false;
+const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
 async function main() {
+  const shuffledMnemonics = shuffle(mnemonics);
+  const shuffledNames = shuffle(names);
   try {
-    await Promise.all(mnemonics.map((mnemonic, index) => {
-      const name = walletNames[index];
-      const payload = generateImportPayload(mnemonic, name);
-      return axios.post(`http://localhost:${API_PORT}/v2/byron-wallets`, payload);
-    }));
+    if (IS_HTTPS) {
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync('tls/client/client.pem'),
+        key: fs.readFileSync('tls/client/client.key'),
+        ca: fs.readFileSync('tls/client/ca.crt'),
+      });
+      const request = axios.create({ httpsAgent });
+      await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
+        const name = shuffledNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, payload);
+      }));
+    } else {
+      await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
+        const name = shuffledNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return axios.post(`http://localhost:${API_PORT}/v2/byron-wallets`, payload);
+      }));
+    }
   } catch (e) {
     console.log(e);
   }

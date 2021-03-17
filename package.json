@@ -60,6 +60,7 @@
     "nix:testnet": "NETWORK=testnet nix-shell --argstr nodeImplementation cardano --argstr cluster testnet",
     "byron:wallet:importer": "node utils/api-importer/byron-wallet-importer.js",
     "shelley:wallet:importer": "node utils/api-importer/shelley-wallet-importer.js",
+    "mary:wallet:importer": "node utils/api-importer/mary-wallet-importer.js",
     "itn:byron:wallet:importer": "node utils/api-importer/itn-byron-wallet-importer.js",
     "itn:shelley:wallet:importer": "node utils/api-importer/itn-shelley-wallet-importer.js",
     "yoroi:wallet:importer": "node utils/api-importer/yoroi-wallet-importer.js",
