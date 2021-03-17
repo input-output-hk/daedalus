@@ -49,13 +49,14 @@ Daedalus - Cryptocurrency Wallet
    - Shelley wallets: `yarn shelley:wallet:importer`
    - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
    - Yoroi Byron wallets: `yarn yoroi:wallet:importer`
-   - ITN Byron wallets: `yarn itn:byron:wallet:importer`_[Deprecated]_
-   - ITN Shelley wallets: `yarn itn:shelley:wallet:importer` _[Deprecated]_
+   - _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
+   - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
 
    These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
 
 **Notes:**
 - Be aware that the selfnode starts in Byron era and needs some time to transition through Shelley, Allegra and Mary hard forks.
+- There is a total of 3 stake pools all of which have metadata which is fetched directly (IOHK SMASH server option is not available).
 - Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
 
 | Parameter | Value
