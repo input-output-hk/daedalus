@@ -8,6 +8,7 @@ import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
 import tcpPortUsed from 'tcp-port-used';
+import find from 'find-process';
 import { environment } from '../environment';
 import {
   deriveProcessNames,
@@ -33,6 +34,7 @@ import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
+import type { Process } from '../utils/processes';
 
 /* eslint-disable consistent-return */
 
@@ -90,12 +92,14 @@ const CARDANO_UPDATE_EXIT_CODE = 20;
 const network = String(environment.network);
 const platform = String(environment.platform);
 const { nodeImplementation } = launcherConfig;
+const { isSelfnode } = environment;
 // derive storage keys based on current network
 const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
 // derive Cardano process name based on current platform and node implementation
 const { CARDANO_PROCESS_NAME } = deriveProcessNames(
   platform,
-  nodeImplementation
+  nodeImplementation,
+  isSelfnode
 );
 // create store for persisting CardanoNode and Daedalus PID's in fs
 const store = new Store();
@@ -341,12 +345,28 @@ export class CardanoNode {
       );
       this._cardanoWalletLogFile = walletLogFile;
 
-      if (environment.isSelfnode) {
+      if (isSelfnode) {
         const CARDANO_WALLET_PORT = 8088;
         const SHELLEY_TEST_DATA = '../../utils/cardano/selfnode';
-        const isSelfnodeRunning = await tcpPortUsed.check(CARDANO_WALLET_PORT);
+        const processList: Array<Process> = await find(
+          'port',
+          CARDANO_WALLET_PORT
+        );
+        const isSelfnodeRunning =
+          processList.length && processList[0].name === CARDANO_PROCESS_NAME;
         if (isSelfnodeRunning) {
           _log.info('Cardano-node is already running...');
+          const node = Object.assign({}, processList[0], {
+            wpid: processList[0].pid, // TODO: find child process ID
+            stop: async () => {
+              await this._ensureProcessIsNotRunning(
+                processList[0].pid,
+                CARDANO_PROCESS_NAME
+              );
+            },
+            connected: true,
+          });
+          this._node = node;
           this._handleCardanoNodeMessage({ ReplyPort: CARDANO_WALLET_PORT });
           resolve();
         } else {
@@ -357,13 +377,24 @@ export class CardanoNode {
             stdio: 'ignore',
           });
           node.unref();
-          this._node = node;
+          this._node = Object.assign({}, node, {
+            wpid: node.pid, // TODO: find child process ID
+            stop: async () => {
+              await this._ensureProcessIsNotRunning(
+                node.pid,
+                CARDANO_PROCESS_NAME
+              );
+            },
+          });
           tcpPortUsed.waitUntilUsed(CARDANO_WALLET_PORT, 500, 60000).then(
             () => {
               _log.info(
-                `CardanoNode#start: cardano-wallet child process spawned with PID ${node.pid}`,
+                `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
                 { pid: node.pid }
               );
+              this._node = Object.assign({}, this._node, {
+                connected: true,
+              });
               this._handleCardanoNodeMessage({
                 ReplyPort: CARDANO_WALLET_PORT,
               });
@@ -778,7 +809,6 @@ export class CardanoNode {
   _reset = () => {
     if (this._cardanoNodeLogFile) this._cardanoNodeLogFile.end();
     if (this._cardanoWalletLogFile) this._cardanoWalletLogFile.end();
-    // if (this._node) this._node.removeAllListeners();
     if (this._node) this._node = null;
     this._tlsConfig = null;
   };
@@ -864,7 +894,7 @@ export class CardanoNode {
         return Promise.reject();
       }
     }
-    this._log.info(`No ${name} process (PID: ${pid}) is running`, {
+    this._log.info(`CardanoNode: no ${name} process (PID: ${pid}) is running`, {
       name,
       pid,
     });
@@ -902,13 +932,13 @@ export class CardanoNode {
     try {
       const previousProcess = await getProcess(previousPID, processName);
       if (!previousProcess) {
-        _log.debug(
+        _log.info(
           `CardanoNode: No previous ${processName} process is running anymore`,
           { processName }
         );
         return false;
       }
-      _log.debug(`CardanoNode: previous ${processName} process found`, {
+      _log.info(`CardanoNode: previous ${processName} process found`, {
         processName,
         previousProcess,
       });
