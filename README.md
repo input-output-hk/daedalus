@@ -44,17 +44,19 @@ Daedalus - Cryptocurrency Wallet
 
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run following commands from a new terminal window if you wish to import funded wallets:
+3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
    - Byron wallets: `yarn byron:wallet:importer`
    - Shelley wallets: `yarn shelley:wallet:importer`
    - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
    - Yoroi Byron wallets: `yarn yoroi:wallet:importer`
-   - ITN Byron wallets: `yarn itn:byron:wallet:importer`
-   - ITN Shelley wallets: `yarn itn:shelley:wallet:importer`
+   - ITN Byron wallets: `yarn itn:byron:wallet:importer`_[Deprecated]_
+   - ITN Shelley wallets: `yarn itn:shelley:wallet:importer` _[Deprecated]_
 
    These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
 
-**Note:** Be aware that the selfnode starts in Byron era and needs some time to transition through Shelley, Allegra and Mary hard forks. Daedalus will ask you if you want to keep the local cluster running after it exits - this option is useful if you need to you wish to preserve local cluster state between Daedalus restarts.
+**Notes:**
+- Be aware that the selfnode starts in Byron era and needs some time to transition through Shelley, Allegra and Mary hard forks.
+- Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
 
 | Parameter | Value
 | --- | ---
