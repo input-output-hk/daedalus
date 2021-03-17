@@ -949,6 +949,7 @@ export default class HardwareWalletsStore extends Store {
                 this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
                 this.activeDevicePath = null;
                 this.unfinishedWalletTxSigning = walletId;
+                // this.unfinishedWalletTxSigning = !recognizedStoredWallet ? null : walletId;
                 this.isExportKeyAborted = false;
               }
             );
@@ -994,6 +995,7 @@ export default class HardwareWalletsStore extends Store {
             this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
             this.activeDevicePath = null;
             this.unfinishedWalletTxSigning = walletId;
+            // this.unfinishedWalletTxSigning = !recognizedStoredWallet ? null : walletId;
             this.isExportKeyAborted = false;
           }
         );
@@ -1554,8 +1556,8 @@ export default class HardwareWalletsStore extends Store {
       deviceName,
       path,
       error,
+      eventType,
     } = params;
-
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
@@ -1722,7 +1724,7 @@ export default class HardwareWalletsStore extends Store {
     }
 
     // Case that allows us to re-trigger tx send process multiple times if device doesn't match sender wallet
-    if (this.unfinishedWalletTxSigning && !disconnected) {
+    if (this.unfinishedWalletTxSigning && !disconnected && eventType === 'device-connect') {
       logger.debug(
         '[HW-DEBUG] CHANGE STATUS to: ',
         HwDeviceStatuses.CONNECTING

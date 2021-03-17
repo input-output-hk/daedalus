@@ -101,6 +101,7 @@ const deriveXpubChannel: MainIpcChannel<
   deriveXpubMainResponse
 > = new MainIpcChannel(DERIVE_XPUB_CHANNEL);
 
+
 let devicesMemo = {};
 class EventObserver {
   constructor(props) {
@@ -179,6 +180,64 @@ export const handleHardwareWalletRequests = async (
 ) => {
   let deviceConnection = null;
   let observer;
+
+  const resetTrezorListeners = () => {
+    // Remove all listeners if exist - e.g. on app refresh
+    TrezorConnect.removeAllListeners();
+    // Initialize new device listeners
+    TrezorConnect.on(UI_EVENT, (event) => {
+      if (event.type === UI.REQUEST_PASSPHRASE) { // ui-request_passphrase
+        if (event.payload && event.payload.device) {
+          TrezorConnect.uiResponse({
+            type: UI.RECEIVE_PASSPHRASE,
+            payload: { value: '', passphraseOnDevice: true },
+          });
+        }
+      }
+    });
+    TrezorConnect.on(TRANSPORT_EVENT, (event) => {
+      if (event.type === 'transport-error') {
+        // Send Transport error to Renderer
+        getHardwareWalletConnectionChannel.send(
+          {
+            error: {
+              payload: event.payload,
+            },
+          },
+          // $FlowFixMe
+          mainWindow
+        );
+      }
+    });
+    TrezorConnect.on(DEVICE_EVENT, (event) => {
+      const connectionChanged =
+        event.type === 'device-connect' ||
+        event.type === 'device-disconnect' ||
+        event.type === 'device-changed';
+      const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
+      const deviceError = get(event, ['payload', 'error']);
+
+      if (deviceError) {
+        throw new Error(deviceError);
+      }
+
+      if (connectionChanged && isAcquired) {
+        getHardwareWalletConnectionChannel.send(
+          {
+            disconnected: event.type === 'device-disconnect',
+            deviceType: 'trezor',
+            deviceId: event.payload.id, // 123456ABCDEF
+            deviceModel: event.payload.features.model, // e.g. T
+            deviceName: event.payload.label, // e.g. Test Name
+            path: event.payload.path,
+            eventType: event.type,
+          },
+          // $FlowFixMe
+          mainWindow
+        );
+      }
+    });
+  }
 
   getHardwareWalletTransportChannel.onRequest(async (request) => {
     logger.info('[HW-DEBUG] getHardwareWalletTransportChannel');
@@ -289,60 +348,7 @@ export const handleHardwareWalletRequests = async (
 
   handleInitTrezorConnectChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] INIT TREZOR');
-    // Remove all listeners if exist - e.g. on app refresh
-    TrezorConnect.removeAllListeners();
-    // Initialize new device listeners
-    TrezorConnect.on(UI_EVENT, (event) => {
-      if (event.type === UI.REQUEST_PASSPHRASE) {
-        if (event.payload && event.payload.device) {
-          TrezorConnect.uiResponse({
-            type: UI.RECEIVE_PASSPHRASE,
-            payload: { value: '', passphraseOnDevice: true },
-          });
-        }
-      }
-    });
-    TrezorConnect.on(TRANSPORT_EVENT, (event) => {
-      if (event.type === 'transport-error') {
-        // Send Transport error to Renderer
-        getHardwareWalletConnectionChannel.send(
-          {
-            error: {
-              payload: event.payload,
-            },
-          },
-          // $FlowFixMe
-          mainWindow
-        );
-      }
-    });
-    TrezorConnect.on(DEVICE_EVENT, (event) => {
-      const connectionChanged =
-        event.type === 'device-connect' ||
-        event.type === 'device-disconnect' ||
-        event.type === 'device-changed';
-      const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
-      const deviceError = get(event, ['payload', 'error']);
-
-      if (deviceError) {
-        throw new Error(deviceError);
-      }
-
-      if (connectionChanged && isAcquired) {
-        getHardwareWalletConnectionChannel.send(
-          {
-            disconnected: event.type === 'device-disconnect',
-            deviceType: 'trezor',
-            deviceId: event.payload.id, // 123456ABCDEF
-            deviceModel: event.payload.features.model, // e.g. T
-            deviceName: event.payload.label, // e.g. Test Name
-            path: event.payload.path,
-          },
-          // $FlowFixMe
-          mainWindow
-        );
-      }
-    });
+    resetTrezorListeners();
     TrezorConnect.manifest({
       email: 'email@developer.com',
       appUrl: 'http://your.application.com',

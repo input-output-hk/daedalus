@@ -225,4 +225,5 @@ export type HardwareWalletConnectionRequest = {
       error: string,
     },
   },
+  eventType?: string,
 };
