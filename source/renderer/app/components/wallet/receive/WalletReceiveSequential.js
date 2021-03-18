@@ -70,7 +70,7 @@ export default class WalletReceiveSequential extends Component<Props, State> {
     addressSlice: 0,
     addressWidth: 0,
     charWidth: 0,
-    showUsed: true,
+    showUsed: false,
   };
 
   // We need to track the mounted state in order to avoid calling

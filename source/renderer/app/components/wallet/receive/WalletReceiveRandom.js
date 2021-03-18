@@ -93,7 +93,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
   };
 
   state = {
-    showUsed: true,
+    showUsed: false,
   };
 
   passwordField: Input;
