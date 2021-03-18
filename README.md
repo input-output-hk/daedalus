@@ -53,6 +53,7 @@ Daedalus - Cryptocurrency Wallet
    - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
 
    These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
+   List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
 
 **Notes:**
 - Be aware that the selfnode starts in Byron era and needs some time to transition through Shelley, Allegra and Mary hard forks.
