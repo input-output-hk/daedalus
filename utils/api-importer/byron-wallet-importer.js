@@ -3,20 +3,7 @@ const axios = require('axios');
 const https = require('https');
 const fs = require('fs');
 const { sampleSize, shuffle } = require('lodash');
-
-// Taken from: https://github.com/input-output-hk/cardano-wallet/blob/master/lib/core-integration/src/Test/Integration/Faucet.hs#L1471
-const mnemonics = [
-  ['arctic', 'decade', 'pink', 'easy', 'jar', 'index', 'base', 'bright', 'vast', 'ocean', 'hard', 'pizza'],
-  ['finish', 'evoke', 'alone', 'town', 'express', 'wide', 'pair', 'story', 'west', 'safe', 'news', 'wrap'],
-  ['fox', 'now', 'hello', 'inmate', 'era', 'jealous', 'cruel', 'wreck', 'dash', 'supply', 'book', 'attend'],
-  ['must', 'lock', 'cereal', 'water', 'silver', 'cake', 'circle', 'express', 'sock', 'arm', 'chapter', 'avoid'],
-  ['give', 'verb', 'balcony', 'hurdle', 'pistol', 'flee', 'manage', 'barely', 'pulse', 'episode', 'speak', 'school'],
-  ['divert', 'entire', 'urge', 'banner', 'repair', 'mechanic', 'muffin', 'illness', 'genre', 'intact', 'coin', 'boss'],
-  ['pink', 'radio', 'various', 'frame', 'argue', 'draft', 'sun', 'speak', 'club', 'salute', 'thank', 'price'],
-  ['all', 'beef', 'link', 'funny', 'swing', 'duck', 'sweet', 'swallow', 'slow', 'shield', 'weekend', 'open'],
-  ['green', 'friend', 'captain', 'entry', 'utility', 'lake', 'blur', 'matrix', 'will', 'prefer', 'breeze', 'shed'],
-  ['reveal', 'jazz', 'equal', 'salmon', 'first', 'decline', 'liquid', 'wolf', 'powder', 'account', 'elbow', 'figure'],
-];
+const { byronMnemonics } = require('./mnemonics');
 
 const names = [
   'Barry',
@@ -36,7 +23,7 @@ const IS_HTTPS = process.env.IS_HTTPS || false;
 const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
 async function main() {
-  const shuffledMnemonics = shuffle(mnemonics);
+  const shuffledMnemonics = shuffle(byronMnemonics);
   const shuffledNames = shuffle(names);
   try {
     if (IS_HTTPS) {

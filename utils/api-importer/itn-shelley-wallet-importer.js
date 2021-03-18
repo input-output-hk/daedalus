@@ -3,20 +3,7 @@ const axios = require('axios');
 const https = require('https');
 const fs = require('fs');
 const { sampleSize, shuffle } = require('lodash');
-
-// Taken from: https://github.com/input-output-hk/cardano-wallet/blob/master/lib/core-integration/src/Test/Integration/Faucet.hs#L159
-const mnemonics = [
-  ['vintage', 'poem', 'topic', 'machine', 'hazard', 'cement', 'dune', 'glimpse', 'fix', 'brief', 'account', 'badge', 'mass', 'silly', 'business'],
-  ['shift', 'mistake', 'rural', 'security', 'inspire', 'loyal', 'wink', 'special', 'blast', 'retreat', 'crouch', 'noise', 'dirt', 'around', 'drastic'],
-  ['soldier', 'this', 'verb', 'copper', 'immune', 'unveil', 'engine', 'know', 'tower', 'only', 'foot', 'riot', 'orchard', 'member', 'guitar'],
-  ['cupboard', 'fringe', 'garment', 'dawn', 'caught', 'cream', 'alpha', 'sorry', 'unusual', 'federal', 'item', 'leopard', 'lawn', 'rescue', 'desk'],
-  ['glad', 'hold', 'sweet', 'tobacco', 'topple', 'rich', 'grab', 'bridge', 'adjust', 'excess', 'improve', 'job', 'lottery', 'diary', 'dust'],
-  ['all', 'flee', 'sugar', 'mail', 'response', 'minimum', 'bulk', 'stone', 'cost', 'dynamic', 'forget', 'embrace', 'spray', 'ocean', 'luggage'],
-  ['kiwi', 'million', 'space', 'squirrel', 'deliver', 'galaxy', 'cat', 'private', 'meadow', 'canvas', 'differ', 'rescue', 'artist', 'laptop', 'claim'],
-  ['length', 'alpha', 'return', 'angle', 'siren', 'buyer', 'reject', 'absurd', 'piece', 'crash', 'toilet', 'flag', 'viable', 'brick', 'sense'],
-  ['viable', 'become', 'talk', 'benefit', 'start', 'shield', 'chapter', 'skull', 'donor', 'hip', 'place', 'aware', 'acquire', 'mango', 'hold'],
-  ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
-];
+const { itnShelleyMnemonics } = require('./mnemonics');
 
 const names = [
   'Sabrina',
@@ -36,7 +23,7 @@ const IS_HTTPS = process.env.IS_HTTPS || false;
 const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
 async function main() {
-  const shuffledMnemonics = shuffle(mnemonics);
+  const shuffledMnemonics = shuffle(itnShelleyMnemonics);
   const shuffledNames = shuffle(names);
   try {
     if (IS_HTTPS) {

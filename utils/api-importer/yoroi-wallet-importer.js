@@ -3,20 +3,7 @@ const axios = require('axios');
 const https = require('https');
 const fs = require('fs');
 const { sampleSize, shuffle } = require('lodash');
-
-// Taken from: https://github.com/input-output-hk/cardano-wallet/blob/master/lib/core-integration/src/Test/Integration/Faucet.hs#L1067
-const mnemonics = [
-  ['public', 'wild', 'salad', 'cereal', 'when', 'zone', 'ship', 'circle', 'other', 'second', 'time', 'priority', 'select', 'apart', 'social'],
-  ['report', 'weird', 'border', 'gesture', 'since', 'earn', 'motor', 'elbow', 'huge', 'pilot', 'cool', 'civil', 'duty', 'outer', 'exhaust'],
-  ['illegal', 'uncover', 'fruit', 'april', 'snap', 'army', 'brown', 'sister', 'situate', 'lunch', 'they', 'fog', 'isolate', 'earn', 'vocal'],
-  ['knife', 'satisfy', 'measure', 'around', 'time', 'thought', 'cigar', 'boss', 'truck', 'bar', 'mushroom', 'hold', 'raccoon', 'asset', 'canvas'],
-  ['amazing', 'pole', 'kiss', 'expose', 'whip', 'unfair', 'example', 'slice', 'great', 'they', 'element', 'claw', 'photo', 'dwarf', 'green'],
-  ['round', 'trend', 'rescue', 'flight', 'awkward', 'enemy', 'luggage', 'range', 'eagle', 'shaft', 'giggle', 'double', 'pencil', 'jazz', 'home'],
-  ['talent', 'example', 'renew', 'true', 'amused', 'alcohol', 'immune', 'exclude', 'cat', 'ceiling', 'squeeze', 'cover', 'slender', 'pond', 'turkey'],
-  ['box', 'elegant', 'raccoon', 'brick', 'uphold', 'behind', 'blame', 'marble', 'tip', 'move', 'gift', 'juice', 'crystal', 'circle', 'sound'],
-  ['mango', 'street', 'flush', 'universe', 'clap', 'system', 'talk', 'steel', 'tray', 'target', 'forum', 'dust', 'brisk', 'expose', 'prevent'],
-  ['behind', 'rib', 'say', 'absorb', 'enroll', 'pyramid', 'balance', 'strategy', 'response', 'evolve', 'pipe', 'dolphin', 'shift', 'flag', 'history'],
-];
+const { yoroiMnemonics } = require('./mnemonics');
 
 const names = [
   'Yakov',
@@ -36,7 +23,7 @@ const IS_HTTPS = process.env.IS_HTTPS || false;
 const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
 async function main() {
-  const shuffledMnemonics = shuffle(mnemonics);
+  const shuffledMnemonics = shuffle(yoroiMnemonics);
   const shuffledNames = shuffle(names);
   try {
     if (IS_HTTPS) {
