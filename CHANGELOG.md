@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Improved receive screen's "show used" toggle UX ([PR 2446](https://github.com/input-output-hk/daedalus/pull/2446))
+
 ### Fixes
 
 - Fixed dropdown not appearing in the Stake Pools Settings screen ([PR 2460](https://github.com/input-output-hk/daedalus/pull/2460))
