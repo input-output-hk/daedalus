@@ -142,6 +142,11 @@ export default class NetworkStatusStore extends Store {
       this._forceCheckNetworkClock
     );
 
+    // @DECENTRALIZED TODO: Remove temp action
+    networkStatusActions.toggleIsFullyDecentralized.listen(
+      this._toggleIsFullyDecentralized
+    );
+
     // Request node state
     this._requestCardanoState();
 
@@ -714,6 +719,18 @@ export default class NetworkStatusStore extends Store {
 
   @computed get syncPercentage(): number {
     return this.syncProgress || 0;
+  }
+
+  // @DECENTRALIZED TODO: Remove these temp function
+  @action _toggleIsFullyDecentralized = () => {
+    console.log('BEFORE', this.tempIsFullyDecentralized);
+    this.tempIsFullyDecentralized = !this.tempIsFullyDecentralized;
+    console.log('AFTER', this.tempIsFullyDecentralized);
+  };
+  @observable tempIsFullyDecentralized: boolean = false;
+  @computed get isFullyDecentralized(): boolean {
+    console.log('computed', this.tempIsFullyDecentralized);
+    return this.tempIsFullyDecentralized;
   }
 
   @computed get isEpochsInfoAvailable(): boolean {

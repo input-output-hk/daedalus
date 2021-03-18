@@ -2,6 +2,9 @@
   overflow: visible;
   position: absolute;
   right: 100px;
+  &.isFullyDecentralized {
+    right: 162px;
+  }
   &:hover {
     .info {
       opacity: 1;

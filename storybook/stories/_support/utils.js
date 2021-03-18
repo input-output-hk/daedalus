@@ -107,9 +107,9 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
-  assets: WalletAssets,
+  assets: ?WalletAssets,
   reward?: number = 0,
-  delegatedStakePool?: StakePool,
+  delegatedStakePool?: ?StakePool,
   hasPassword?: boolean,
   status?: SyncStateStatus = WalletSyncStateStatuses.READY,
   isHardwareWallet?: boolean = false

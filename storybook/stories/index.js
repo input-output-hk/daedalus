@@ -10,6 +10,7 @@ import './nodes';
 
 // Staking
 import './staking/Staking.stories';
+import './staking/CountdownParty.stories';
 
 // Voting
 import './voting/Voting.stories';

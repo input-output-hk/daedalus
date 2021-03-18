@@ -2,25 +2,23 @@
 import canvasConfetti from 'canvas-confetti';
 import { randomInRange } from './numbers';
 
-type Settings = {
+type confettiSettings = {
   duration: number,
   startVelocity: number,
   spread: number,
   ticks: number,
   zIndex: number,
 };
-
-const DEFAULT_SETTINGS: Settings = {
+const CONFETTI_DEFAULT_SETTINGS: confettiSettings = {
   duration: 15 * 1000,
   startVelocity: 30,
   spread: 360,
   ticks: 60,
   zIndex: 0,
 };
-
-export const confetti = (customSettings: $Shape<Settings>) => {
+export const confetti = (customSettings: $Shape<confettiSettings>) => {
   const { duration, ...settings } = {
-    ...DEFAULT_SETTINGS,
+    ...CONFETTI_DEFAULT_SETTINGS,
     ...customSettings,
   };
   const animationEnd = Date.now() + duration;

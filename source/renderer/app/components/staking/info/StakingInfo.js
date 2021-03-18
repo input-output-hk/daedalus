@@ -5,6 +5,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfo.scss';
+import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 
 const messages = defineMessages({
   heading: {
@@ -36,6 +37,7 @@ const messages = defineMessages({
 type Props = {
   percentage: number,
   onLearnMoreClick: Function,
+  isFullyDecentralized?: boolean,
 };
 type State = { progressLabelClassName: string };
 
@@ -83,7 +85,7 @@ export default class StakingInfo extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { percentage, onLearnMoreClick } = this.props;
+    const { percentage, onLearnMoreClick, isFullyDecentralized } = this.props;
     const { progressLabelClassName } = this.state;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
@@ -122,6 +124,10 @@ export default class StakingInfo extends Component<Props, State> {
               }}
             />
           )}
+          <FullyDecentralizedEffect
+            isActive={isFullyDecentralized || false}
+            containerSelector="#root"
+          />
         </div>
       </div>
     );

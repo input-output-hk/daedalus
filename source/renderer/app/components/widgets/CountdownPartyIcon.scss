@@ -1,0 +1,19 @@
+.component {
+  cursor: pointer;
+  font-size: 19px;
+  position: absolute;
+  right: 104px;
+  animation: animation 0.5s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
+}
+
+@keyframes animation {
+  0% {
+    transform: rotate(20deg);
+  }
+  50% {
+    transform: rotate(-20deg);
+  }
+  100% {
+    transform: rotate(20deg);
+  }
+}
