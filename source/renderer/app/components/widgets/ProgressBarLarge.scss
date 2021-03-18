@@ -34,12 +34,14 @@
       var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
       var(--theme-staking-progress-stripe-dark-2-background-color) 20px
     );
+    background-size: 23px 24px;
     opacity: 0.3;
   }
 }
 
 .progress {
   align-items: center;
+  background-size: 23px 24px !important;
   border-radius: 5px;
   display: flex;
   height: 100%;
@@ -85,6 +87,6 @@
     background-position-x: 0;
   }
   100% {
-    background-position-x: 67px;
+    background-position-x: 68px;
   }
 }
