@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Improved receive screen's "show used" toggle UX ([PR 2446](https://github.com/input-output-hk/daedalus/pull/2446))
+- Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 
 ### Fixes
 
