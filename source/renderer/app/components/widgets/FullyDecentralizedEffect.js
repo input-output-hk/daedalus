@@ -22,7 +22,7 @@ export default class FullyDecentralizedEffect extends Component<Props, State> {
   };
 
   componentDidMount() {
-    const { containerSelector } = this.props;
+    const { containerSelector, isActive } = this.props;
     const container = document.querySelector(containerSelector);
     if (container instanceof HTMLElement) {
       const fireworks = new Fireworks({
