@@ -255,6 +255,7 @@ let
       };
     } // (lib.optionalAttrs (network == "selfnode") {
       selfnodeBin = mkBinPath "local-cluster";
+      mockTokenMetadataServerBin = mkBinPath "mock-token-metadata-server";
     }) // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
       smashUrl = envCfg.smashUrl;
     }) // (lib.optionalAttrs (__hasAttr "metadataUrl" envCfg) {

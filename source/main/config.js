@@ -78,6 +78,7 @@ export type LauncherConfig = {
   metadataUrl?: string,
   updateRunnerBin: string,
   selfnodeBin: string,
+  mockTokenMetadataServerBin: string,
 };
 
 type WindowOptionsType = {

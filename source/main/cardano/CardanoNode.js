@@ -345,9 +345,10 @@ export class CardanoNode {
 
       if (isSelfnode) {
         try {
-          const { selfnodeBin } = launcherConfig;
+          const { selfnodeBin, mockTokenMetadataServerBin } = launcherConfig;
           const { node, replyPort } = await CardanoSelfnodeLauncher({
             selfnodeBin,
+            mockTokenMetadataServerBin,
             processName: CARDANO_PROCESS_NAME,
             onStop: this._ensureProcessIsNotRunning,
           });

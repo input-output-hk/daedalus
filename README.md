@@ -53,12 +53,14 @@ Daedalus - Cryptocurrency Wallet
    - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
 
    These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
+
    List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
 
 **Notes:**
 - Be aware that the selfnode starts in Byron era and needs some time to transition through Shelley, Allegra and Mary hard forks.
-- Cardano wallet process ID shown on the "Diagnostics" screen is faked (it is expected to match the Cardano node process ID).
-- Stake pool metadata which is fetched directly by default (IOHK SMASH server option is not available).
+- Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
+- Stake pool metadata is fetched directly by default (IOHK SMASH server option is not available).
+- Token metadata is fetched from a mock token metadata server which is automatically ran alongside the local cluster (there is no need to run it [manually](https://github.com/input-output-hk/daedalus#native-token-metadata-server))
 - Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
 
 | Parameter | Value
@@ -113,7 +115,7 @@ Daedalus, by default, uses the following metadata server for all networks except
 It's also possible to use a mock server locally by running the following command in `nix-shell` prior to starting Daedalus:
 
 ```
-$ mock-token-metadata-server ./utils/cardano/native-tokens/registry.json
+$ mock-token-metadata-server --port 65432 ./utils/cardano/native-tokens/registry.json
 Mock metadata server running with url http://localhost:65432/
 ```
 
