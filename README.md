@@ -43,7 +43,7 @@ Daedalus - Cryptocurrency Wallet
 #### Selfnode
 
 1. Run `yarn nix:selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
 3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
    - Byron wallets: `yarn byron:wallet:importer`
    - Shelley wallets: `yarn shelley:wallet:importer`
