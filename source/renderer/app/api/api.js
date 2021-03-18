@@ -2336,6 +2336,7 @@ export default class AdaApi {
         desiredPoolNumber,
         minimumUtxoValue,
         hardforkAt: eras.shelley || null,
+        eras,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
