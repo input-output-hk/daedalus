@@ -325,6 +325,7 @@ export const handleHardwareWalletRequests = async (
             deviceModel: event.payload.features.model, // e.g. T
             deviceName: event.payload.label, // e.g. Test Name
             path: event.payload.path,
+            eventType: event.type,
           },
           // $FlowFixMe
           mainWindow
