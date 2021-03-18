@@ -22,12 +22,12 @@ storiesOf('News|Overlays', module)
       'downloading'
     );
 
-    let isUpdateDownloaded = true;
+    let isUpdateDownloaded = boolean('isUpdateDownloaded', true);
     let isAutomaticUpdateFailed = false;
-    let isLinux = false;
-    const isFlight = false;
-    const isTestnet = false;
-    let isWaitingToQuitDaedalus = false;
+    let isLinux = boolean('isLinux', false);
+    const isFlight = boolean('isFlight', false);
+    const isTestnet = boolean('isTestnet', false);
+    let isWaitingToQuitDaedalus = boolean('isWaitingToQuitDaedalus', false);
     let installationProgress = 0;
 
     if (scenario === 'downloading') {
