@@ -560,12 +560,9 @@ export default class Transaction extends Component<Props, State> {
                         transactionsType,
                       })}
                 </div>
-                {data.amount && (
+                {data.amountWithoutFees && (
                   <div className={styles.amount}>
-                    {
-                      // hide currency (we are showing symbol instead)
-                      formattedWalletAmount(data.amount, false)
-                    }
+                    {formattedWalletAmount(data.amountWithoutFees, false)}
                     <span>{intl.formatMessage(globalMessages.currency)}</span>
                   </div>
                 )}

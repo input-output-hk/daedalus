@@ -154,7 +154,7 @@ const transactionsCsvGenerator = async ({
     ({
       id,
       type,
-      amount,
+      amountWithoutFees,
       fee,
       date,
       addresses,
@@ -162,10 +162,10 @@ const transactionsCsvGenerator = async ({
       assets,
     }: WalletTransaction) => {
       const valueType =
-        type === 'expend'
+        (type === type) === TransactionTypes.EXPEND
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
-      const valueAmount = formattedWalletAmount(amount, false);
+      const valueAmount = formattedWalletAmount(amountWithoutFees, false);
       const hasFee = type === TransactionTypes.EXPEND && !fee.isZero();
       const valueTransactionFee = hasFee
         ? formattedWalletAmount(fee, false)
