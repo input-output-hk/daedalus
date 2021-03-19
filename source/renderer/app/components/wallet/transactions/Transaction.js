@@ -560,9 +560,9 @@ export default class Transaction extends Component<Props, State> {
                         transactionsType,
                       })}
                 </div>
-                {data.amountWithoutFees && (
+                {data.amount && (
                   <div className={styles.amount}>
-                    {formattedWalletAmount(data.amountWithoutFees, false)}
+                    {formattedWalletAmount(data.amount, false)}
                     <span>{intl.formatMessage(globalMessages.currency)}</span>
                   </div>
                 )}

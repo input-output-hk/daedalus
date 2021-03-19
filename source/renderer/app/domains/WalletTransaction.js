@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
   TransactionAddresses,
@@ -64,13 +64,5 @@ export class WalletTransaction {
     metadata: ?TransactionMetadata,
   }) {
     Object.assign(this, data);
-  }
-
-  @computed get amountWithoutFees(): BigNumber {
-    const { amount, type, fee } = this;
-    if (type === TransactionTypes.INCOME) {
-      return amount;
-    }
-    return amount.plus(fee);
   }
 }
