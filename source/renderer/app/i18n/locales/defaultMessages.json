@@ -17815,17 +17815,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Amount (ADA)",
-        "description": "Transactions CSV column - Amount",
+        "defaultMessage": "!!!TOTAL (ADA)",
+        "description": "Transactions CSV column - TOTAL",
         "end": {
           "column": 3,
           "line": 35
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
-        "id": "wallet.transactions.csv.column.amount",
+        "id": "wallet.transactions.csv.column.amount.total",
         "start": {
-          "column": 16,
+          "column": 15,
           "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Sent amount (ADA)",
+        "description": "Transactions CSV column - Sent amount",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
+        "id": "wallet.transactions.csv.column.amount.sent",
+        "start": {
+          "column": 20,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Deposit amount (ADA)",
+        "description": "Transactions CSV column - Deposit amount",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
+        "id": "wallet.transactions.csv.column.amount.deposit",
+        "start": {
+          "column": 23,
+          "line": 41
         }
       },
       {
@@ -17833,13 +17861,13 @@
         "description": "Transactions CSV column - Fee",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 50
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
-        "id": "wallet.transactions.csv.column.fee",
+        "id": "wallet.transactions.csv.column.amount.fee",
         "start": {
           "column": 13,
-          "line": 36
+          "line": 46
         }
       },
       {
@@ -17847,13 +17875,13 @@
         "description": "Transactions CSV column - Tokens",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 55
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.tokens",
         "start": {
           "column": 16,
-          "line": 41
+          "line": 51
         }
       },
       {
@@ -17861,13 +17889,13 @@
         "description": "Transactions CSV column - DateTime",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 60
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.dateTime",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 56
         }
       },
       {
@@ -17875,13 +17903,13 @@
         "description": "Transactions CSV column - Status",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 65
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.status",
         "start": {
           "column": 16,
-          "line": 51
+          "line": 61
         }
       },
       {
@@ -17889,13 +17917,13 @@
         "description": "Transactions CSV column - AddressesFrom",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 70
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.addressesFrom",
         "start": {
           "column": 23,
-          "line": 56
+          "line": 66
         }
       },
       {
@@ -17903,13 +17931,13 @@
         "description": "Transactions CSV column - AddressesTo",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 75
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.addressesTo",
         "start": {
           "column": 21,
-          "line": 61
+          "line": 71
         }
       },
       {
@@ -17917,13 +17945,13 @@
         "description": "Transactions CSV column - Withdrawals",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 80
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.withdrawals",
         "start": {
           "column": 21,
-          "line": 66
+          "line": 76
         }
       },
       {
@@ -17931,13 +17959,13 @@
         "description": "Transactions CSV value - Type Sent",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 85
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.type.sent",
         "start": {
           "column": 17,
-          "line": 71
+          "line": 81
         }
       },
       {
@@ -17945,13 +17973,13 @@
         "description": "Transactions CSV value - Type Received",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 90
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.type.received",
         "start": {
           "column": 21,
-          "line": 76
+          "line": 86
         }
       },
       {
@@ -17959,13 +17987,13 @@
         "description": "Transactions CSV value - Status Confirmed",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 95
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.statusConfirmed",
         "start": {
           "column": 24,
-          "line": 81
+          "line": 91
         }
       },
       {
@@ -17973,13 +18001,13 @@
         "description": "Transactions CSV value - Status Pending",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 100
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.statusPending",
         "start": {
           "column": 22,
-          "line": 86
+          "line": 96
         }
       },
       {
@@ -17987,13 +18015,13 @@
         "description": "Transactions CSV \"Transactions\" filename",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 105
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.filenamePrefix",
         "start": {
           "column": 18,
-          "line": 91
+          "line": 101
         }
       }
     ],

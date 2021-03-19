@@ -28,13 +28,23 @@ const messages = defineMessages({
     defaultMessage: '!!!Type',
     description: 'Transactions CSV column - Type',
   },
-  columnAmount: {
-    id: 'wallet.transactions.csv.column.amount',
-    defaultMessage: '!!!Amount (ADA)',
-    description: 'Transactions CSV column - Amount',
+  columnTotal: {
+    id: 'wallet.transactions.csv.column.amount.total',
+    defaultMessage: '!!!TOTAL (ADA)',
+    description: 'Transactions CSV column - TOTAL',
+  },
+  columnSentAmount: {
+    id: 'wallet.transactions.csv.column.amount.sent',
+    defaultMessage: '!!!Sent amount (ADA)',
+    description: 'Transactions CSV column - Sent amount',
+  },
+  columnDepositAmount: {
+    id: 'wallet.transactions.csv.column.amount.deposit',
+    defaultMessage: '!!!Deposit amount (ADA)',
+    description: 'Transactions CSV column - Deposit amount',
   },
   columnFee: {
-    id: 'wallet.transactions.csv.column.fee',
+    id: 'wallet.transactions.csv.column.amount.fee',
     defaultMessage: '!!!Fee (ADA)',
     description: 'Transactions CSV column - Fee',
   },
@@ -135,7 +145,9 @@ const transactionsCsvGenerator = async ({
   const columns = [
     intl.formatMessage(messages.columnID),
     intl.formatMessage(messages.columnType),
-    intl.formatMessage(messages.columnAmount),
+    intl.formatMessage(messages.columnTotal),
+    intl.formatMessage(messages.columnSentAmount),
+    intl.formatMessage(messages.columnDepositAmount),
     intl.formatMessage(messages.columnFee),
     intl.formatMessage(messages.columnDateTime),
     intl.formatMessage(messages.columnStatus),
@@ -145,7 +157,7 @@ const transactionsCsvGenerator = async ({
   ];
 
   if (WALLET_ASSETS_ENABLED) {
-    columns.splice(4, 0, intl.formatMessage(messages.columnTokens));
+    columns.splice(6, 0, intl.formatMessage(messages.columnTokens));
   }
 
   const fileContent = [columns];
@@ -154,7 +166,8 @@ const transactionsCsvGenerator = async ({
     ({
       id,
       type,
-      amountWithoutFees,
+      amount,
+      deposit,
       fee,
       date,
       addresses,
@@ -165,11 +178,16 @@ const transactionsCsvGenerator = async ({
         (type === type) === TransactionTypes.EXPEND
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
-      const valueAmount = formattedWalletAmount(amountWithoutFees, false);
-      const hasFee = type === TransactionTypes.EXPEND && !fee.isZero();
-      const valueTransactionFee = hasFee
-        ? formattedWalletAmount(fee, false)
-        : '';
+      const valueTotal = formattedWalletAmount(amount, false);
+      let valueSentAmount = '';
+      let valueDepositAmount = '';
+      let valueTransactionFee = '';
+      if (type === TransactionTypes.EXPEND) {
+        const amountWithoutFees = -amount.minus(-fee);
+        valueSentAmount = formattedWalletAmount(amountWithoutFees, false);
+        valueDepositAmount = formattedWalletAmount(deposit, false);
+        valueTransactionFee = formattedWalletAmount(fee, false);
+      }
       const valueTokens = filterAssets(assets, type, isInternalAddress)
         .map(({ policyId, assetName, quantity }) => {
           const { fingerprint, metadata } = getAssetDetails(
@@ -198,7 +216,9 @@ const transactionsCsvGenerator = async ({
       const txValues = [
         id,
         valueType,
-        valueAmount,
+        valueTotal,
+        valueSentAmount,
+        valueDepositAmount,
         valueTransactionFee,
         `${valueDateTime}`,
         valueStatus,
@@ -207,7 +227,7 @@ const transactionsCsvGenerator = async ({
         valueWithdrawals,
       ];
       if (WALLET_ASSETS_ENABLED) {
-        txValues.splice(4, 0, valueTokens);
+        txValues.splice(6, 0, valueTokens);
       }
       fileContent.push(txValues);
     }
