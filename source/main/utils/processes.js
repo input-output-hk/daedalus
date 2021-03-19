@@ -1,5 +1,5 @@
 // @flow
-import psList from 'ps-list';
+import find from 'find-process';
 import { isObject } from 'lodash';
 import { logger } from './logging';
 
@@ -7,21 +7,16 @@ import { logger } from './logging';
 
 export type Process = {
   pid: number,
+  ppid: number,
   name: string,
   cmd: string,
-  ppid?: number,
-  cpu: number,
-  memory: number,
+  bin: string,
 };
 
 export const getProcessById = async (processId: number): Promise<Process> => {
-  // retrieves all running processes
-  const processes: Array<Process> = await psList();
-  // filters running processes against previous PID
-  const matches: Array<Process> = processes.filter(
-    ({ pid }) => processId === pid
-  );
-  return matches.length > 0 ? matches[0] : Promise.reject();
+  // finds running processes matching PID
+  const matchingProcesses: Array<Process> = await find('pid', processId);
+  return matchingProcesses.length > 0 ? matchingProcesses[0] : Promise.reject();
 };
 
 export const getProcessName = async (processId: number) =>
@@ -30,10 +25,9 @@ export const getProcessName = async (processId: number) =>
 export const getProcessesByName = async (
   processName: string
 ): Promise<Array<Process>> => {
-  // retrieves all running processes
-  const processes: Array<Process> = await psList();
-  // filters running processes against previous PID
-  return processes.filter(({ name }) => processName === name);
+  // finds running processes matching name
+  const matchingProcesses: Array<Process> = await find('name', processName);
+  return matchingProcesses;
 };
 
 export const getProcess = async (
@@ -41,12 +35,8 @@ export const getProcess = async (
   processName: string
 ): Promise<?Process> => {
   try {
-    // retrieves all running processes
-    const runningProcesses: Array<Process> = await psList();
-    // filters running processes against given pid
-    const matchingProcesses: Array<Process> = runningProcesses.filter(
-      ({ pid }) => pid === processId
-    );
+    // finds running processes matching PID
+    const matchingProcesses: Array<Process> = await find('pid', processId);
     // no processes exist with a matching PID
     if (!matchingProcesses.length) return null;
     // Return first matching process if names match
