@@ -11,7 +11,7 @@ console.log('\n\x1b[36m%s\x1b[0m', 'Script started!\n');
 
 const dependenciesWithIntegrity = [];
 lodash.map(json.object, (entry, key) => {
-  if(entry.integrity) {
+  if (entry.integrity) {
     dependenciesWithIntegrity.push(key);
   }
 })
@@ -45,7 +45,7 @@ function fix() {
   const fixedJSON = {};
   lodash.map(json.object, (entry, key) => {
     let obj = entry;
-    if(entry.integrity) {
+    if (entry.integrity) {
       obj = lodash.omit(entry, 'integrity');
     }
     Object.assign(fixedJSON, {[key]: obj});

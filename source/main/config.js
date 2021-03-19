@@ -77,6 +77,8 @@ export type LauncherConfig = {
   smashUrl?: string,
   metadataUrl?: string,
   updateRunnerBin: string,
+  selfnodeBin: string,
+  mockTokenMetadataServerBin: string,
 };
 
 type WindowOptionsType = {
