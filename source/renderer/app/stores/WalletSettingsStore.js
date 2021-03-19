@@ -87,7 +87,6 @@ export default class WalletSettingsStore extends Store {
 
   @computed get walletsShowUsedAddressesStatuses() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
-    debugger;
     // $FlowFixMe
     return Object.values(walletsLocalData).reduce(
       (
