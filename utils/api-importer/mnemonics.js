@@ -28,16 +28,16 @@ const shelleyMnemonics = [
 
 // Taken from: https://github.com/input-output-hk/cardano-wallet/blob/master/lib/core-integration/src/Test/Integration/Faucet.hs#L963
 const maryMnemonics = [
-  ['shrug', 'library', 'ecology', 'live', 'carpet', 'body', 'bike', 'grass', 'clown', 'consider', 'drum', 'toe', 'movie', 'fan', 'give'],
-  ['shine', 'fetch', 'half', 'orange', 'document', 'creek', 'desk', 'below', 'van', 'output', 'debris', 'topic', 'first', 'below', 'soft'],
-  ['surprise', 'noise', 'address', 'earn', 'imitate', 'loyal', 'wolf', 'payment', 'earth', 'frost', 'hunt', 'afford', 'puzzle', 'salute', 'legend'],
-  ['try', 'aspect', 'verify', 'elevator', 'blossom', 'remember', 'away', 'include', 'erode', 'castle', 'review', 'leg', 'summer', 'switch', 'width'],
-  ['album', 'public', 'spawn', 'snap', 'bunker', 'label', 'grit', 'heavy', 'auto', 'survey', 'palm', 'mean', 'crouch', 'alpha', 'access'],
-  ['exclude', 'web', 'uncover', 'century', 'voice', 'praise', 'north', 'floor', 'copy', 'aware', 'lift', 'tomato', 'chalk', 'fringe', 'powder'],
-  ['click', 'code', 'cereal', 'opinion', 'doctor', 'quit', 'chicken', 'coach', 'present', 'clinic', 'net', 'marine', 'speed', 'reflect', 'ceiling'],
-  ['leader', 'initial', 'ready', 'author', 'still', 'crouch', 'fat', 'resist', 'stadium', 'embark', 'match', 'stem', 'pig', 'motor', 'minor'],
-  ['cruel', 'injury', 'safe', 'gravity', 'ladder', 'genius', 'educate', 'collect', 'lizard', 'join', 'wink', 'cruise', 'flight', 'daughter', 'sausage'],
-  ['weather', 'grain', 'few', 'awkward', 'behind', 'review', 'order', 'room', 'damage', 'sick', 'gate', 'sponsor', 'guitar', 'cement', 'lady'],
+  ['engage', 'retire', 'employ', 'north', 'sustain', 'alert', 'spot', 'grape', 'cake', 'embark', 'alien', 'garment', 'cost', 'inmate', 'barrel', 'panel', 'essence', 'repair', 'vendor', 'gain', 'wear', 'cube', 'pole', 'glow'],
+  ['sponsor', 'dose', 'cook', 'divide', 'craft', 'tape', 'myth', 'moral', 'final', 'bread', 'ranch', 'kid', 'side', 'remain', 'cinnamon', 'garlic', 'organ', 'combine', 'police', 'theme', 'bracket', 'alert', 'humor', 'bronze'],
+  ['beyond', 'sun', 'wash', 'glove', 'ability', 'market', 'enter', 'noodle', 'network', 'kiwi', 'chase', 'snake', 'light', 'medal', 'radar', 'kingdom', 'shed', 'entry', 'sausage', 'two', 'concert', 'pass', 'silent', 'unveil'],
+  ['learn', 'chalk', 'cook', 'interest', 'cruise', 'behave', 'cable', 'barrel', 'sort', 'swear', 'cruel', 'spider', 'slam', 'museum', 'private', 'slush', 'artwork', 'basket', 'promote', 'ritual', 'erode', 'scan', 'book', 'bag'],
+  ['multiply', 'one', 'enact', 'relax', 'vehicle', 'already', 'solar', 'ancient', 'work', 'era', 'bunker', 'tuna', 'blossom', 'lottery', 'tackle', 'veteran', 'fish', 'chimney', 'desert', 'common', 'enemy', 'champion', 'guard', 'glory'],
+  ['love', 'design', 'option', 'reject', 'suit', 'soon', 'start', 'afford', 'elite', 'riot', 'arrow', 'donate', 'goddess', 'speak', 'punch', 'accident', 'blanket', 'noise', 'cabbage', 'tuition', 'verb', 'chalk', 'magic', 'shuffle'],
+  ['cage', 'very', 'sport', 'happy', 'student', 'receive', 'float', 'dance', 'process', 'bus', 'belt', 'supply', 'afford', 'rain', 'hammer', 'guide', 'dust', 'dirt', 'duck', 'north', 'flash', 'tiny', 'torch', 'piano'],
+  ['melody', 'mean', 'connect', 'potato', 'salute', 'riot', 'twin', 'damp', 'puzzle', 'depart', 'castle', 'great', 'position', 'child', 'october', 'twist', 'execute', 'fog', 'wasp', 'culture', 'unveil', 'until', 'cousin', 'fee'],
+  ['burden', 'drip', 'point', 'mansion', 'asthma', 'spray', 'sort', 'sponsor', 'baby', 'sorry', 'nerve', 'logic', 'crop', 'into', 'rain', 'mouse', 'hint', 'shaft', 'deal', 'endorse', 'way', 'neck', 'ball', 'mango'],
+  ['flavor', 'miss', 'awesome', 'purchase', 'crisp', 'flavor', 'fury', 'apology', 'client', 'close', 'mask', 'weather', 'valid', 'reward', 'desert', 'weather', 'weird', 'angle', 'project', 'unit', 'coil', 'blanket', 'web', 'hundred'],
 ];
 
 // Taken from: https://github.com/input-output-hk/cardano-wallet/blob/master/lib/core-integration/src/Test/Integration/Faucet.hs#L1067

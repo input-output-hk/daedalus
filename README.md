@@ -57,7 +57,6 @@ Daedalus - Cryptocurrency Wallet
    List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
 
 **Notes:**
-- Be aware that the selfnode starts in Byron era and needs some time to transition through Shelley, Allegra and Mary hard forks.
 - Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
 - Stake pool metadata is fetched directly by default (IOHK SMASH server option is not available).
 - Token metadata is fetched from a mock token metadata server which is automatically ran alongside the local cluster (there is no need to run it [manually](https://github.com/input-output-hk/daedalus#native-token-metadata-server))
