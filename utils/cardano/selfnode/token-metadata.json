@@ -1,0 +1,81 @@
+{
+  "subjects": [
+    {
+        "subject": "4bfe7acae1bd2599649962b146a1e47d2e14933809b367e804c61f86",
+        "preImage": {
+            "value": "6d792d676f6775656e2d736372697074",
+            "hashFn": "sha256"
+        },
+        "owner": {
+          "signature": "62e800b8c540b218396174f9c42fc253ab461961e20a4cc8ed4ba8b3fdff760cf8422e80d2504829a1d84458093880f02629524416f895b802cb9211f5145808",
+          "publicKey": "25912b3081c20782aaa576af51ef3b17d7370d9fdf6641fec28012678ac1d179"
+        },
+        "name": {
+          "value": "SteveToken",
+          "signatures": [
+            {
+              "signature": "7ef6ed44ba9456737ef8d2e31596fdafb66d5775ac1a254086a553b666516e5895bb0c6b7ba8bef1f6b4d9bd9253b4449d1354de2f9e043ea4eb43fd42f87108",
+              "publicKey": "0ee262f062528667964782777917cd7139e19e8eb2c591767629e4200070c661"
+            }
+          ]
+        },
+        "description": {
+          "value": "A sample description",
+          "signatures": [
+            {
+              "signature": "83ef5c04882e43e5f1c8e9bc386bd51cdda163f5cbd1996d1d066238de063d4b79b1648b48aec63dddff05649911ca116579842c8e9a08a3bc7ae1a0ec7ef000",
+              "publicKey": "1446c9d327b0f07aa691014c08578867674f3a88b36f2017a58c37a8a7799058"
+            }
+          ]
+        },
+        "ticker": {
+            "value": "STV",
+            "signatures": []
+        },
+        "unit": {
+            "value": { "decimals": 6, "name": "MegaSteve" },
+            "signatures": []
+        },
+        "url": {
+            "value": "https://iohk.io/stevetoken",
+            "signatures": []
+        },
+        "logo": {
+            "value": "QWxtb3N0IGEgbG9nbw==",
+            "signatures": []
+        }
+    },
+    {
+      "subject": "f4137b0691b01c7ca46c2fc05576f4f0ab8eebb8f8e4946cb9107e0f6170706c65",
+      "name": {
+        "value": "Apple",
+        "signatures": []
+      },
+      "description": {
+        "value": "A healthy kind of fruit",
+        "signatures": []
+      }
+    },
+    {
+      "subject": "f4137b0691b01c7ca46c2fc05576f4f0ab8eebb8f8e4946cb9107e0f62616e616e61",
+      "name": {
+        "value": "Banana",
+        "signatures": []
+      },
+      "description": {
+        "value": "A yummy kind of fruit",
+        "signatures": []
+      }
+    },
+    {
+      "subject": "f4137b0691b01c7ca46c2fc05576f4f0ab8eebb8f8e4946cb9107e0f62636865727279",
+      "name": {
+        "value": "Cherry",
+        "signatures": []
+      },
+      "description": {
+        "value": "A special kind of fruit"
+      }
+    }
+  ]
+}

@@ -621,7 +621,7 @@ export default class Transaction extends Component<Props, State> {
                 {data.type === TransactionTypes.EXPEND && !data.fee.isZero() && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
-                    <div className={styles.transactionIdRow}>
+                    <div className={styles.transactionFeeRow}>
                       <div className={styles.transactionFeeValue}>
                         {formattedWalletAmount(data.fee, false)}&nbsp;
                         <span>
@@ -636,9 +636,11 @@ export default class Transaction extends Component<Props, State> {
                   <>
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
                     <div className={styles.depositRow}>
-                      <div className={styles.amount}>
-                        {formattedWalletAmount(data.deposit, false)}
-                        <span className={styles.currency}>ADA</span>
+                      <div className={styles.depositValue}>
+                        {formattedWalletAmount(data.deposit, false)}&nbsp;
+                        <span>
+                          {intl.formatMessage(globalMessages.unitAda)}
+                        </span>
                       </div>
                     </div>
                   </>
