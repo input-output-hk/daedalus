@@ -3,19 +3,19 @@ const axios = require('axios');
 const https = require('https');
 const fs = require('fs');
 const { sampleSize, shuffle } = require('lodash');
-const { yoroiMnemonics } = require('./mnemonics');
+const { maryMnemonics } = require('./mnemonics');
 
 const names = [
-  'Yakov',
-  'Yanni',
-  'Yara',
-  'Yasmin',
-  'Yehoshua',
-  'Yolanda',
-  'Yoseba',
-  'Yoshito',
-  'Yulia',
-  'Yusef',
+  'Madelyn',
+  'Maggie',
+  'Mary',
+  'Meadow',
+  'Megan',
+  'Melissa',
+  'Meredith',
+  'Mia',
+  'Michelle',
+  'Monica',
 ];
 
 const API_PORT = process.env.API_PORT || 8088;
@@ -23,7 +23,7 @@ const IS_HTTPS = process.env.IS_HTTPS || false;
 const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
 async function main() {
-  const shuffledMnemonics = shuffle(yoroiMnemonics);
+  const shuffledMnemonics = shuffle(maryMnemonics);
   const shuffledNames = shuffle(names);
   try {
     if (IS_HTTPS) {
@@ -36,13 +36,13 @@ async function main() {
       await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
         const name = shuffledNames[index];
         const payload = generateImportPayload(mnemonic, name);
-        return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, payload);
+        return request.post(`https://localhost:${API_PORT}/v2/wallets`, payload);
       }));
     } else {
       await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
         const name = shuffledNames[index];
         const payload = generateImportPayload(mnemonic, name);
-        return axios.post(`http://localhost:${API_PORT}/v2/byron-wallets`, payload);
+        return axios.post(`http://localhost:${API_PORT}/v2/wallets`, payload);
       }));
     }
   } catch (e) {
@@ -55,7 +55,7 @@ function generateImportPayload(mnemonic, name) {
     name,
     mnemonic_sentence: mnemonic,
     passphrase: 'Secret1234',
-    style: 'icarus',
+    address_pool_gap: 20
   };
 }
 

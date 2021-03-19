@@ -11,6 +11,9 @@ Changelog
 
 ### Chores
 
+- Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
+- Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
+- Re-enabled "Selfnode" environment ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Restored global link style on voting registration over screen ([PR 2453](https://github.com/input-output-hk/daedalus/pull/2453), [PR 2456](https://github.com/input-output-hk/daedalus/pull/2456))
 
 ## 4.0.2-FC3
