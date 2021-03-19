@@ -41,6 +41,7 @@ export default class StakingRewardsPage extends Component<Props> {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const {
       isMainnet,
+      isSelfnode,
       isStaging,
       isTestnet,
       isTest,
@@ -53,6 +54,7 @@ export default class StakingRewardsPage extends Component<Props> {
       isTestnet ||
       isIncentivizedTestnet ||
       isShelleyTestnet ||
+      isSelfnode ||
       isTest
     ) {
       return (

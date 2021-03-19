@@ -252,11 +252,11 @@ let
           genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
           topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
         };
-      } // (lib.optionalAttrs (network == "selfnode") {
-        delegationCertificate = mkConfigPath nodeConfigFiles "delegation.cert";
-        signingKey = mkConfigPath nodeConfigFiles "signing.key";
-      });
-    } // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
+      };
+    } // (lib.optionalAttrs (network == "selfnode") {
+      selfnodeBin = mkBinPath "local-cluster";
+      mockTokenMetadataServerBin = mkBinPath "mock-token-metadata-server";
+    }) // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
       smashUrl = envCfg.smashUrl;
     }) // (lib.optionalAttrs (__hasAttr "metadataUrl" envCfg) {
       metadataUrl = envCfg.metadataUrl;
