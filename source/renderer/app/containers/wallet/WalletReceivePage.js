@@ -163,7 +163,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { getWalletShowUsedAddressesStatuses } = walletSettings;
 
     const { showUsedAddresses } = getWalletShowUsedAddressesStatuses(
-      activeWallet.id
+      activeWallet ? activeWallet.id : ''
     );
 
     // Guard against potential null values
