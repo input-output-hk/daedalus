@@ -1058,7 +1058,7 @@ export default class AdaApi {
       let totalOutputs = new BigNumber(0);
 
       map(response.inputs, (input) => {
-        const inputAmount = new BigNumber(input.amount.quantity);
+        const inputAmount = new BigNumber(input.amount.quantity.toString());
         const inputAssets = map(input.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1077,7 +1077,7 @@ export default class AdaApi {
       });
 
       map(outputs, (output) => {
-        const outputAmount = new BigNumber(output.amount.quantity);
+        const outputAmount = new BigNumber(output.amount.quantity.toString());
         const outputAssets = map(output.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1110,9 +1110,8 @@ export default class AdaApi {
         amount: withdrawal.amount,
       }));
 
-      const depositsArray = map(
-        response.deposits,
-        (deposit) => deposit.quantity
+      const depositsArray = map(response.deposits, (deposit) =>
+        deposit.quantity.toString()
       );
       const deposits = depositsArray.length
         ? BigNumber.sum.apply(null, depositsArray)
@@ -1123,9 +1122,8 @@ export default class AdaApi {
           ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
           : new BigNumber(0);
 
-      const withdrawalsArray = map(
-        response.withdrawals,
-        (withdrawal) => withdrawal.amount.quantity
+      const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
+        withdrawal.amount.quantity.toString()
       );
       const withdrawals = withdrawalsArray.length
         ? BigNumber.sum.apply(null, withdrawalsArray)
@@ -2675,14 +2673,14 @@ const _createWalletFromServerData = action(
         return {
           policyId: item.policy_id,
           assetName: item.asset_name,
-          quantity: new BigNumber(item.quantity),
+          quantity: new BigNumber(item.quantity.toString()),
         };
       }),
       total: assets.total.map((item) => {
         return {
           policyId: item.policy_id,
           assetName: item.asset_name,
-          quantity: new BigNumber(item.quantity),
+          quantity: new BigNumber(item.quantity.toString()),
         };
       }),
     };
@@ -2770,7 +2768,7 @@ const _createTransactionFromServerData = action(
       ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
         policyId,
         assetName,
-        quantity: new BigNumber(quantity),
+        quantity: new BigNumber(quantity.toString()),
         address,
       })
     );
@@ -2789,8 +2787,10 @@ const _createTransactionFromServerData = action(
           ? `-${amount.quantity.toString()}`
           : amount.quantity.toString()
       ).dividedBy(LOVELACES_PER_ADA),
-      fee: new BigNumber(fee.quantity).dividedBy(LOVELACES_PER_ADA),
-      deposit: new BigNumber(deposit.quantity).dividedBy(LOVELACES_PER_ADA),
+      fee: new BigNumber(fee.quantity.toString()).dividedBy(LOVELACES_PER_ADA),
+      deposit: new BigNumber(deposit.quantity.toString()).dividedBy(
+        LOVELACES_PER_ADA
+      ),
       assets: transactionAssets,
       date: utcStringToDate(date),
       description: '',

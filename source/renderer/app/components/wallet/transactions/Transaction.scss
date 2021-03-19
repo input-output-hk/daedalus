@@ -1,5 +1,4 @@
 @import '../../../themes/mixins/link';
-@import '../../../themes/mixins/error-message';
 @import '../../../themes/mixins/animations';
 
 .component {
@@ -323,7 +322,6 @@
 
 .transactionFeeValue,
 .depositValue {
-  // @include error-message;
   color: var(--theme-transactions-list-item-highlight-color);
   font-family: var(--font-medium);
 
