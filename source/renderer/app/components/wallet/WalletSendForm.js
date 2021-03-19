@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
-import { intlShape } from 'react-intl';
+import { intlShape, FormattedHTMLMessage } from 'react-intl';
 import { filter, get, indexOf, omit, map, without } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
@@ -496,9 +496,8 @@ export default class WalletSendForm extends Component<Props, State> {
             />
           );
         } else {
-          transactionFeeError = this.context.intl.formatMessage(
-            localizableError,
-            values
+          transactionFeeError = (
+            <FormattedHTMLMessage {...localizableError} values={values} />
           );
         }
 
@@ -661,6 +660,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
     });
     this.removeAssetRow(oldFingerprint);
+    this.resetTransactionFee();
   };
 
   renderReceiverRow = (): Node => {
@@ -672,11 +672,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
       isReceiverAddressValid,
     } = this.state;
-    const {
-      currencyMaxFractionalDigits,
-      walletAmount,
-      isHardwareWallet,
-    } = this.props;
+    const { currencyMaxFractionalDigits, walletAmount } = this.props;
 
     const {
       receiver: receiverField,
@@ -832,7 +828,7 @@ export default class WalletSendForm extends Component<Props, State> {
               <Button
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
-                disabled={isHardwareWallet || !this.hasAvailableAssets}
+                disabled={!this.hasAvailableAssets}
                 onClick={() => {
                   this.addAssetRow(this.availableAssets[0].fingerprint);
                 }}

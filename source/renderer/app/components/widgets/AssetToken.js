@@ -7,7 +7,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './AssetToken.scss';
-import { ellipsis } from '../../utils/strings';
+import { ellipsis, hexToString } from '../../utils/strings';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
@@ -159,12 +159,7 @@ export default class AssetToken extends Component<Props, State> {
     );
   }
 
-  assetItemRenderer = (
-    assetId: string,
-    assetItem: string,
-    value: string,
-    singleline?: boolean
-  ) => {
+  assetItemRenderer = (assetId: string, assetItem: string, value: string) => {
     const { itemCopied } = this.state;
     const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
     const iconClassnames = classnames([
@@ -177,10 +172,15 @@ export default class AssetToken extends Component<Props, State> {
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
         <div className={styles.assetItem}>
-          <em className={singleline ? styles.singleline : null}>
+          <div className={styles.value}>
             {value}
             <SVGInline svg={icon} className={iconClassnames} />
-          </em>
+          </div>
+          {assetId === 'assetName' && (
+            <div className={styles.assetASCIIName}>
+              (ASCII: {hexToString(value)})
+            </div>
+          )}
         </div>
       </CopyToClipboard>
     );

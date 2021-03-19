@@ -3,14 +3,34 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
+- Fixed dropdown not appearing in the Stake Pools Settings screen ([PR 2460](https://github.com/input-output-hk/daedalus/pull/2460))
+- Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
+
+### Chores
+
+- Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
+- Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
+- Re-enabled "Selfnode" environment ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
+- Restored global link style on voting registration over screen ([PR 2453](https://github.com/input-output-hk/daedalus/pull/2453), [PR 2456](https://github.com/input-output-hk/daedalus/pull/2456))
+
+## 4.0.2-FC3
+
 ### Features
 
+- Enabled sending of native tokens for hardware wallets ([PR 2446](https://github.com/input-output-hk/daedalus/pull/2446))
+- Enabled the "View wallet's public key" feature ([PR 2429](https://github.com/input-output-hk/daedalus/pull/2429))
+- Added visual backdrop blur effect to some overlays and dialogs ([PR 2431](https://github.com/input-output-hk/daedalus/pull/2431))
 - Updated Tile view of stake pools with rank by rewards ([PR 2426](https://github.com/input-output-hk/daedalus/pull/2426))
 - Enabled the "Loading Stake Pools" state anytime the pools are loading ([PR 2424](https://github.com/input-output-hk/daedalus/pull/2424))
 - Implemented the syncing state for the Stake Pools settings screen ([PR 2418](https://github.com/input-output-hk/daedalus/pull/2418))
 
 ### Chores
 
+- Improved error message shown when trying to make a transaction from a wallet that contains only reward ([PR 2450](https://github.com/input-output-hk/daedalus/pull/2450))
+- Added configuration variable for native tokens formatted amounts display ([PR 2449](https://github.com/input-output-hk/daedalus/pull/2449))
 - Updated `iohk-nix` to revision `60fe72cf` ([PR 2441](https://github.com/input-output-hk/daedalus/pull/2441))
 - Updated `cardano-wallet` to version `2021-03-04` ([PR 2427](https://github.com/input-output-hk/daedalus/pull/2427))
 - Increased "Report connecting issues" timeout ([PR 2440](https://github.com/input-output-hk/daedalus/pull/2440))

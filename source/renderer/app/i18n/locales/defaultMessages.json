@@ -161,8 +161,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cannot send from a wallet that contains only rewards balances.",
-        "description": "\"Cannot send from a wallet that contains only rewards balances.\" error message",
+        "defaultMessage": "!!!Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds.",
+        "description": "\"Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds.\" error message",
         "end": {
           "column": 3,
           "line": 67
@@ -10324,13 +10324,13 @@
         "description": "Title for the \"Confirm transaction\" dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.title",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 36
         }
       },
       {
@@ -10338,13 +10338,13 @@
         "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 41
         }
       },
       {
@@ -10352,13 +10352,13 @@
         "description": "Label for the \"To\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
-          "line": 43
+          "line": 47
         }
       },
       {
@@ -10366,13 +10366,13 @@
         "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 48
+          "line": 52
         }
       },
       {
@@ -10380,13 +10380,13 @@
         "description": "Token",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.assetLabel",
         "start": {
           "column": 14,
-          "line": 54
+          "line": 58
         }
       },
       {
@@ -10394,13 +10394,13 @@
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 59
+          "line": 63
         }
       },
       {
@@ -10408,13 +10408,13 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 73
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 64
+          "line": 68
         }
       },
       {
@@ -10422,13 +10422,13 @@
         "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.receiver.label",
         "start": {
           "column": 17,
-          "line": 70
+          "line": 74
         }
       },
       {
@@ -10436,13 +10436,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 76
+          "line": 80
         }
       },
       {
@@ -10450,13 +10450,13 @@
         "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateWarning",
         "start": {
           "column": 26,
-          "line": 82
+          "line": 86
         }
       },
       {
@@ -10464,13 +10464,13 @@
         "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
         "start": {
           "column": 32,
-          "line": 89
+          "line": 93
         }
       },
       {
@@ -10478,13 +10478,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
-          "line": 96
+          "line": 100
         }
       },
       {
@@ -10492,13 +10492,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
-          "line": 102
+          "line": 106
         }
       },
       {
@@ -10506,13 +10506,55 @@
         "description": "Label for password error in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 117
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passwordError",
         "start": {
           "column": 24,
-          "line": 108
+          "line": 112
+        }
+      },
+      {
+        "defaultMessage": "!!!unformatted amount",
+        "description": "Label for \"unformated amount\"",
+        "end": {
+          "column": 3,
+          "line": 122
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.unformattedAmountLabel",
+        "start": {
+          "column": 26,
+          "line": 118
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
+        "description": "Message for \"unformated amount\"",
+        "end": {
+          "column": 3,
+          "line": 129
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
+        "start": {
+          "column": 46,
+          "line": 123
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
+        "description": "Message for \"unformated amount\"",
+        "end": {
+          "column": 3,
+          "line": 136
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
+        "start": {
+          "column": 46,
+          "line": 130
         }
       }
     ],
@@ -11299,6 +11341,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Reveal wallet public key",
+        "description": "Title \"Choose a stake pool\" on the reveal Wallet Id dialog.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyDialog.js",
+        "id": "wallet.settings.walletPublicKeyDialog.title",
+        "start": {
+          "column": 9,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Please enter your spending password to reveal your wallet’s public key.",
+        "description": "Description on the reveal Wallet Id dialog.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyDialog.js",
+        "id": "wallet.settings.walletPublicKeyDialog.description",
+        "start": {
+          "column": 15,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Reveal wallet public key",
+        "description": "Description on the reveal Wallet Id dialog.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyDialog.js",
+        "id": "wallet.settings.walletPublicKeyDialog.button",
+        "start": {
+          "column": 15,
+          "line": 28
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/WalletPublicKeyDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet public key",
         "description": "Wallet public key label.",
         "end": {
@@ -11912,13 +12001,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -11926,13 +12015,13 @@
         "description": "Undelegate wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.header",
         "start": {
           "column": 26,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -11940,13 +12029,13 @@
         "description": "Undelegate wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.warning",
         "start": {
           "column": 27,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -11954,13 +12043,13 @@
         "description": "Undelegate wallet disabled warning explaining why it is disabled.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.disabledWarning",
         "start": {
           "column": 35,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -11968,13 +12057,13 @@
         "description": "Delegate wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.delegateWallet.header",
         "start": {
           "column": 24,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -11982,13 +12071,13 @@
         "description": "Delegate wallet warning.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.delegateWallet.warning",
         "start": {
           "column": 25,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -11996,13 +12085,13 @@
         "description": "Delegate wallet disabled warning explaining why it is disabled.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.delegateWallet.disabledWarning",
         "start": {
           "column": 33,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -12010,13 +12099,13 @@
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 74
+          "line": 75
         }
       },
       {
@@ -12024,13 +12113,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
           "column": 24,
-          "line": 79
+          "line": 80
         }
       },
       {
@@ -12038,13 +12127,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
           "column": 24,
-          "line": 85
+          "line": 86
         }
       },
       {
@@ -12052,13 +12141,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 91
+          "line": 92
         }
       },
       {
@@ -12066,13 +12155,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 96
+          "line": 97
         }
       },
       {
@@ -12080,13 +12169,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 101
+          "line": 102
         }
       },
       {
@@ -12094,13 +12183,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 106
+          "line": 107
         }
       }
     ],
@@ -13227,13 +13316,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactions.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 21
+          "line": 20
         }
       }
     ],
@@ -13246,13 +13335,13 @@
         "description": "Label for the \"Transactions\" header.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsHeader.js",
         "id": "wallet.transactions.header.transactions",
         "start": {
           "column": 16,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -13260,13 +13349,13 @@
         "description": "Label for the \"Export CSV\" button.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsHeader.js",
         "id": "wallet.transactions.header.exportCSV.button.label",
         "start": {
           "column": 24,
-          "line": 19
+          "line": 20
         }
       }
     ],

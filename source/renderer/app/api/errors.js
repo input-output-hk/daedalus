@@ -61,9 +61,9 @@ export const messages = defineMessages({
   inputsDepleted: {
     id: 'api.errors.inputsDepleted',
     defaultMessage:
-      '!!!Cannot send from a wallet that contains only rewards balances.',
+      '!!!Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds.',
     description:
-      '"Cannot send from a wallet that contains only rewards balances." error message',
+      '"Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds." error message',
   },
   transactionIsTooBig: {
     id: 'api.errors.TooBigTransactionError',

@@ -49,6 +49,7 @@ export default class WalletSendPage extends Component<Props> {
           walletId,
           address,
           amount,
+          assets: selectedAssets,
         }
       );
       fee = coinsSelection.fee;

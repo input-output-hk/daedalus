@@ -245,6 +245,13 @@ export type GetWalletPublicKeyRequest = {
   index: string,
 };
 
+export type GetAccountPublicKeyRequest = {
+  walletId: string,
+  index: string,
+  passphrase: string,
+  extended: boolean,
+};
+
 export type TransferFundsCalculateFeeRequest = {
   sourceWalletId: string,
 };

@@ -5,8 +5,10 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
+import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -15,6 +17,8 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendAssetsConfirmationDialog.scss';
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
+import { IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED } from '../../../config/walletsConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
@@ -111,6 +115,25 @@ export const messages = defineMessages({
     description:
       'Label for password error in the wallet send confirmation dialog.',
   },
+  unformattedAmountLabel: {
+    id: 'wallet.send.confirmationDialog.unformattedAmountLabel',
+    defaultMessage: '!!!unformatted amount',
+    description: 'Label for "unformated amount"',
+  },
+  unformattedAmountMessageForSoftwareWallets: {
+    id:
+      'wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets',
+    defaultMessage:
+      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
+    description: 'Message for "unformated amount"',
+  },
+  unformattedAmountMessageForHardwareWallets: {
+    id:
+      'wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets',
+    defaultMessage:
+      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
+    description: 'Message for "unformated amount"',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -139,6 +162,8 @@ type Props = {
 };
 
 type State = {
+  assets: Array<WalletSummaryAsset>,
+  assetsAmounts: Array<string>,
   areTermsAccepted: boolean,
 };
 
@@ -152,8 +177,19 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   state = {
+    assets: [],
+    assetsAmounts: [],
     areTermsAccepted: false,
   };
+
+  componentDidMount() {
+    // We need to keep initial list of assets and their amounts as a state
+    // value to avoid losing them after the transaction is confirmed
+    // (this affects only hardware wallets for which we close the dialog
+    // after transaction has been confirmed)
+    const { assets, assetsAmounts } = this.props;
+    this.setState({ assets, assetsAmounts });
+  }
 
   form = new ReactToolboxMobxForm(
     {
@@ -198,11 +234,10 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
+        const { assets, assetsAmounts } = this.state;
         const {
           receiver,
           amount,
-          assets,
-          assetsAmounts,
           amountToNaturalUnits,
           isHardwareWallet,
         } = this.props;
@@ -271,7 +306,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   getAssetAmount = (index: number) => {
-    const { assetsAmounts } = this.props;
+    const { assetsAmounts } = this.state;
     const asset = get(assetsAmounts, index, 0);
     return asset;
   };
@@ -287,12 +322,11 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { areTermsAccepted } = this.state;
+    const { assets, areTermsAccepted } = this.state;
     const passphraseField = form.$('passphrase');
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
-      assets,
       amount,
       receiver,
       totalAmount,
@@ -334,7 +368,11 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
     const assetsSeparatorBasicHeight = 27;
     const assetsSeparatorCalculatedHeight = assets.length
-      ? assetsSeparatorBasicHeight * (assets.length + 1) - 18
+      ? assetsSeparatorBasicHeight *
+          (IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED
+            ? assets.length * 2
+            : assets.length + 1) -
+        18
       : assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -392,27 +430,57 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                         assetIndex
                       );
                       return (
-                        <div
-                          key={asset.fingerprint}
-                          className={styles.assetsContainer}
-                        >
-                          <h3>
-                            <span>
-                              {intl.formatMessage(messages.assetLabel)}
-                              &nbsp;#{assetIndex + 1}
-                            </span>
-                            <AssetToken
-                              asset={asset}
-                              onCopyAssetItem={onCopyAssetItem}
-                              componentClassName={styles.assetToken}
-                            />
-                          </h3>
-                          {assetAmount && (
+                        <Fragment key={asset.fingerprint}>
+                          <div className={styles.assetsContainer}>
+                            <h3>
+                              <span>
+                                {intl.formatMessage(messages.assetLabel)}
+                                &nbsp;#{assetIndex + 1}
+                              </span>
+                              <AssetToken
+                                asset={asset}
+                                onCopyAssetItem={onCopyAssetItem}
+                                componentClassName={styles.assetToken}
+                              />
+                            </h3>
                             <div className={styles.amountFeesWrapper}>
                               <div className={styles.amount}>{assetAmount}</div>
                             </div>
+                          </div>
+                          {IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED && (
+                            <div className={styles.assetsContainer}>
+                              <div className={styles.unformattedAmountLine} />
+                              <div className={styles.unformattedAmountLabel}>
+                                {intl.formatMessage(
+                                  messages.unformattedAmountLabel
+                                )}
+                                <PopOver
+                                  content={
+                                    <div className="UnformattedAmountTooltip">
+                                      <FormattedHTMLMessage
+                                        {...messages[
+                                          isHardwareWallet
+                                            ? 'unformattedAmountMessageForHardwareWallets'
+                                            : 'unformattedAmountMessageForSoftwareWallets'
+                                        ]}
+                                        tagName="div"
+                                      />
+                                    </div>
+                                  }
+                                  key="tooltip"
+                                >
+                                  <div className={styles.questionMark}>
+                                    <SVGInline svg={questionMarkIcon} />
+                                  </div>
+                                </PopOver>
+                                {':'}
+                              </div>
+                              <div className={styles.unformattedAmount}>
+                                {this.getAssetAmount(assetIndex)}
+                              </div>
+                            </div>
                           )}
-                        </div>
+                        </Fragment>
                       );
                     })}
                   </div>
