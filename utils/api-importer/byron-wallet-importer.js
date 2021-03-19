@@ -2,40 +2,49 @@
 const axios = require('axios');
 const https = require('https');
 const fs = require('fs');
+const { sampleSize, shuffle } = require('lodash');
+const { byronMnemonics } = require('./mnemonics');
 
-const mnemonics = [
-  ['craft', 'blade', 'oil', 'fork', 'able', 'math', 'cat', 'kidney', 'clutch', 'menu', 'remind', 'clap'],
-  ['kitten', 'lesson', 'gravity', 'hurry', 'total', 'today', 'accuse', 'lottery', 'meadow', 'grab', 'shiver', 'elder'],
-  ['flash', 'nothing', 'foam', 'hint', 'vague', 'estate', 'innocent', 'lobster', 'brush', 'can', 'spray', 'radio'],
-  ['humor', 'meadow', 'now', 'mimic', 'amazing', 'increase', 'wire', 'aerobic', 'jeans', 'sleep', 'step', 'change'],
-  ['lady', 'lucky', 'charge', 'peasant', 'start', 'cheese', 'fitness', 'differ', 'city', 'amused', 'multiply', 'west'],
-  ['wash', 'truly', 'birth', 'stairs', 'quarter', 'ethics', 'afraid', 'unfold', 'medal', 'park', 'quick', 'short'],
-];
-
-const walletNames = [
-  'Rosalind',
-  'Dorothy',
-  'Gertrude',
-  'Irène',
-  'Lorenzo',
-  'Valentina',
+const names = [
+  'Barry',
+  'Benny',
+  'Billy',
+  'Blake',
+  'Bob',
+  'Bowie',
+  'Boyd',
+  'Bruce',
+  'Bruno',
+  'Byron',
 ];
 
 const API_PORT = process.env.API_PORT || 8088;
+const IS_HTTPS = process.env.IS_HTTPS || false;
+const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
 async function main() {
-  const httpsAgent = new https.Agent({
-    cert: fs.readFileSync('tls/client/client.pem'),
-    key: fs.readFileSync('tls/client/client.key'),
-    ca: fs.readFileSync('tls/client/ca.crt'),
-  });
-  const request = axios.create({ httpsAgent });
+  const shuffledMnemonics = shuffle(byronMnemonics);
+  const shuffledNames = shuffle(names);
   try {
-    await Promise.all(mnemonics.map((mnemonic, index) => {
-      const name = walletNames[index];
-      const data = generateImportPayload(mnemonic, name);
-      return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, data);
-    }));
+    if (IS_HTTPS) {
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync('tls/client/client.pem'),
+        key: fs.readFileSync('tls/client/client.key'),
+        ca: fs.readFileSync('tls/client/ca.crt'),
+      });
+      const request = axios.create({ httpsAgent });
+      await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
+        const name = shuffledNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, payload);
+      }));
+    } else {
+      await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
+        const name = shuffledNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return axios.post(`http://localhost:${API_PORT}/v2/byron-wallets`, payload);
+      }));
+    }
   } catch (e) {
     console.log(e);
   }
