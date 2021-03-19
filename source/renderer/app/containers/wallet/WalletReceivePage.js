@@ -160,13 +160,11 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
 
-    const {
-      getWalletShowUsedAddressesStatuses,
-    } = walletSettings;
+    const { getWalletShowUsedAddressesStatuses } = walletSettings;
 
-    const {
-      showUsedAddresses,
-    } = getWalletShowUsedAddressesStatuses(activeWallet.id);
+    const { showUsedAddresses } = getWalletShowUsedAddressesStatuses(
+      activeWallet.id
+    );
 
     // Guard against potential null values
     if (!activeWallet)

@@ -89,10 +89,7 @@ export default class WalletSettingsStore extends Store {
     const { all: walletsLocalData } = this.stores.walletsLocal;
     // $FlowFixMe
     return Object.values(walletsLocalData).reduce(
-      (
-        obj,
-        { id, showUsedAddresses }: WalletLocalData
-      ) => {
+      (obj, { id, showUsedAddresses }: WalletLocalData) => {
         obj[id] = {
           id,
           showUsedAddresses,
@@ -311,10 +308,14 @@ export default class WalletSettingsStore extends Store {
       throw new Error(
         'Active wallet required before checking show used addresses statuses.'
       );
-    const usedAddressesStatus = this.getWalletShowUsedAddressesStatuses(activeWallet.id);
+    const usedAddressesStatus = this.getWalletShowUsedAddressesStatuses(
+      activeWallet.id
+    );
     await this.actions.walletsLocal.setWalletLocalData.trigger({
       walletId: activeWallet.id,
-      updatedWalletData: { showUsedAddresses: !usedAddressesStatus.showUsedAddresses },
+      updatedWalletData: {
+        showUsedAddresses: !usedAddressesStatus.showUsedAddresses,
+      },
     });
   };
 }
