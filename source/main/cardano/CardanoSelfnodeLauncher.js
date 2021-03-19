@@ -99,15 +99,13 @@ export async function CardanoSelfnodeLauncher(
           CARDANO_WALLET_START_CHECK_INTERVAL,
           CARDANO_WALLET_START_TIMEOUT
         )
-        .then(
-          () => {
-            node.connected = true;
-            resolve({ node, replyPort: CARDANO_WALLET_PORT });
-          },
-          (exitStatus) => {
-            reject(exitStatus);
-          }
-        );
+        .then(() => {
+          node.connected = true;
+          resolve({ node, replyPort: CARDANO_WALLET_PORT });
+        })
+        .catch((exitStatus) => {
+          reject(exitStatus);
+        });
     }
   });
 }
