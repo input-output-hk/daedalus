@@ -3,10 +3,6 @@ Changelog
 
 ## vNext
 
-### Features
-
-- Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
-
 ### Fixes
 
 - Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
@@ -15,6 +11,7 @@ Changelog
 
 ### Chores
 
+- Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 - Restored global link style on voting registration over screen ([PR 2453](https://github.com/input-output-hk/daedalus/pull/2453), [PR 2456](https://github.com/input-output-hk/daedalus/pull/2456))
 
 ## 4.0.2-FC3
