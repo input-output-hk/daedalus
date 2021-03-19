@@ -37,7 +37,7 @@ const messages = defineMessages({
 type Props = {
   percentage: number,
   onLearnMoreClick: Function,
-  isFullyDecentralized?: boolean,
+  isFullyDecentralized: boolean,
 };
 type State = { progressLabelClassName: string };
 
@@ -125,8 +125,8 @@ export default class StakingInfo extends Component<Props, State> {
             />
           )}
           <FullyDecentralizedEffect
-            isActive={isFullyDecentralized || false}
-            containerSelector="#root"
+            isActive={isFullyDecentralized}
+            id="StakingInfo"
           />
         </div>
       </div>

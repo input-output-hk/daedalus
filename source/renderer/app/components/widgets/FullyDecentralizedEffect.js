@@ -21,6 +21,8 @@ export default class FullyDecentralizedEffect extends Component<Props, State> {
     fireworks: null,
   };
 
+  fireworks: ?Object = null;
+
   componentDidMount() {
     const { containerSelector, isActive } = this.props;
     const container = document.querySelector(containerSelector);
@@ -48,13 +50,25 @@ export default class FullyDecentralizedEffect extends Component<Props, State> {
       this.setState({
         fireworks: fireworks,
       });
-      fireworks.start();
+      window.fireworks = fireworks;
+      // if (isActive) {
+      //   fireworks.start();
+      // }
     }
   }
 
-  // changeEffectActive = (isActive: boolean) => {
-  //   // const { }
-  // };
+  componentDidUpdate() {
+    const { isActive, containerSelector } = this.props;
+    const { fireworks } = this.state;
+    if (isActive && fireworks && !fireworks.isRunning) {
+      console.log('START - ', containerSelector);
+      fireworks.start();
+    } else if (!isActive && fireworks) {
+      console.log('fireworks.isRunning', fireworks.isRunning);
+      console.log('STOP - ', containerSelector);
+      fireworks.stop();
+    }
+  }
 
   render() {
     const { isActive, effect } = this.props;

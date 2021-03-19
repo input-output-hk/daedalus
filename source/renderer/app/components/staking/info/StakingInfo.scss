@@ -74,3 +74,14 @@
   color: var(--theme-staking-progress-label-light);
   transform: translateX(-8px);
 }
+
+:global {
+  #root {
+    position: relative;
+    canvas {
+      position: absolute;
+      top: 0;
+      z-index: 9;
+    }
+  }
+}

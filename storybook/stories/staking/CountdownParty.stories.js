@@ -19,8 +19,6 @@ storiesOf('Decentralization | Countdown', module)
   // ====== Stories ======
 
   .add('Countdown party', (props) => {
-    console.log('props', props);
-
     const isFullyDecentralized = boolean(
       'isFullyDecentralized',
       false,
@@ -59,13 +57,14 @@ storiesOf('Decentralization | Countdown', module)
           />
           <FullyDecentralizedEffect
             isActive={isFullyDecentralized}
-            effect={select(
+            /*effect={select(
               'Effect',
               { confett: 'confett', fireworks: 'fireworks' },
               'fireworks',
               'Party mode'
-            )}
+            )}*/
             containerSelector=".TopBar_topBar"
+            id="TopBar"
           />
         </TopBar>
         <StakingInfo
