@@ -175,7 +175,7 @@ const transactionsCsvGenerator = async ({
       assets,
     }: WalletTransaction) => {
       const valueType =
-        (type === type) === TransactionTypes.EXPEND
+        type === TransactionTypes.EXPEND
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
       const valueTotal = formattedWalletAmount(amount, false);
