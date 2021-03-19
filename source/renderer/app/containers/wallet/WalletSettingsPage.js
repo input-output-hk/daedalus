@@ -18,6 +18,7 @@ import {
 } from '../../config/cryptoConfig';
 import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
+import { DeviceTypes } from '../../../../common/types/hardware-wallets.types';
 
 type Props = InjectedProps;
 
@@ -48,17 +49,23 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       profile,
+      hardwareWallets,
     } = this.props.stores;
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
     } = wallets;
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     const { isLegacy, isHardwareWallet } = activeWallet;
+    const hardwareWalletDeviceInfo = hardwareWallets._getHardwareWalletDeviceInfoByWalletId(
+      activeWallet.id
+    );
+    const isTrezor =
+      hardwareWalletDeviceInfo &&
+      hardwareWalletDeviceInfo.deviceType === DeviceTypes.TREZOR;
 
     const { actions } = this.props;
     const {
@@ -152,6 +159,7 @@ export default class WalletSettingsPage extends Component<Props> {
           undelegateWalletDialogContainer={
             <UndelegateWalletDialogContainer
               onExternalLinkClick={app.openExternalLink}
+              isTrezor={isHardwareWallet && isTrezor}
             />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}

@@ -56,6 +56,7 @@ export type SetHardwareWalletDeviceRequestType = {
 
 export type HardwareWalletLocalData = {
   id: string,
+  deviceType: DeviceType,
   device: TransportDevice,
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
   disconnected: boolean,

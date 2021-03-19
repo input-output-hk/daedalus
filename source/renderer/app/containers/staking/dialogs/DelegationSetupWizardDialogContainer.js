@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { find, get, take } from 'lodash';
 import BigNumber from 'bignumber.js';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import { DeviceTypes } from '../../../../../common/types/hardware-wallets.types';
 import {
   MIN_DELEGATION_FUNDS,
   RECENT_STAKE_POOLS_COUNT,
@@ -182,6 +183,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       hwDeviceStatus,
       sendMoneyRequest,
       selectCoinsRequest,
+      _getHardwareWalletDeviceInfoByWalletId,
     } = hardwareWallets;
     const {
       stakePools,
@@ -201,6 +203,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
       this.handleIsWalletAcceptable(amount, reward)
     );
+
+    const hardwareWalletDeviceInfo = _getHardwareWalletDeviceInfoByWalletId(
+      selectedWallet.id
+    );
+    const isTrezor =
+      hardwareWalletDeviceInfo &&
+      hardwareWalletDeviceInfo.deviceType === DeviceTypes.TREZOR;
 
     return (
       <DelegationSetupWizardDialog
@@ -238,6 +247,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
           selectCoinsRequest.error
         }
         hwDeviceStatus={hwDeviceStatus}
+        isTrezor={isTrezor}
       />
     );
   }

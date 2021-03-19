@@ -53,6 +53,11 @@ const messages = defineMessages({
     description:
       '"Disconnect and reconnect your device to start the process again" device state',
   },
+  enterPassphrase: {
+    id: 'wallet.hardware.deviceStatus.enterPassphrase',
+    defaultMessage: '!!!Enter passphrase if needed',
+    description: '"Enter passphrase if needed" device sub-state',
+  },
   ready: {
     id: 'wallet.hardware.deviceStatus.ready',
     defaultMessage: '!!!Device ready',
@@ -61,7 +66,7 @@ const messages = defineMessages({
   verifying_transaction: {
     id: 'wallet.hardware.deviceStatus.verifying_transaction',
     defaultMessage:
-      '!!!Confirm the transaction using the "{walletName}" device ',
+      '!!!Confirm the transaction using the "{walletName}" device',
     description:
       '"Confirm the transaction using the IOHK Trezor 1 device" device state',
   },
@@ -113,7 +118,6 @@ const messages = defineMessages({
     defaultMessage: '!!!The device is not supported!',
     description: '"The device is not supported!" device state',
   },
-
   wrong_cardano_app_version: {
     id: 'wallet.hardware.deviceStatus.wrong_cardano_app_version',
     defaultMessage: '!!!Outdated Ledger software!! {instructionsLink}',
@@ -136,6 +140,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   onExternalLinkClick: Function,
   walletName?: string,
+  isTrezor: boolean,
 };
 
 type State = {
@@ -174,7 +179,7 @@ export default class HardwareWalletStatus extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onExternalLinkClick, walletName } = this.props;
+    const { onExternalLinkClick, walletName, isTrezor } = this.props;
     const { hwDeviceStatus } = this.state;
 
     const isLoading =
@@ -195,6 +200,10 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
       hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+
+    const hasPassphraseLabel =
+      hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION;
 
     const componentClasses = classnames([
       styles.component,
@@ -242,14 +251,21 @@ export default class HardwareWalletStatus extends Component<Props, State> {
     return (
       <>
         <div className={componentClasses}>
-          <div className={styles.message}>
-            {hasInstructionsLink && instructionsLink ? (
-              <FormattedMessage
-                {...messages[hwDeviceStatus]}
-                values={{ instructionsLink }}
-              />
-            ) : (
-              label
+          <div className={styles.messageWrapper}>
+            <div className={styles.message}>
+              {hasInstructionsLink && instructionsLink ? (
+                <FormattedMessage
+                  {...messages[hwDeviceStatus]}
+                  values={{ instructionsLink }}
+                />
+              ) : (
+                label
+              )}
+            </div>
+            {hasPassphraseLabel && isTrezor && (
+              <div className={styles.passphraseLabel}>
+                {intl.formatMessage(messages.enterPassphrase)}
+              </div>
             )}
           </div>
           {isLoading && (

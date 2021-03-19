@@ -1819,6 +1819,15 @@ export default class HardwareWalletsStore extends Store {
     return absoluteSlotNumber;
   };
 
+  _getHardwareWalletDeviceInfoByWalletId = (
+    walletId: string
+  ): HardwareWalletLocalData => {
+    return find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
+  };
+
   _setHardwareWalletLocalData = async ({
     walletId,
     data,
