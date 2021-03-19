@@ -49,13 +49,14 @@ type Props = {
   onShareAddress: Function,
   onCopyAddress: Function,
   onToggleSubMenus: Object,
+  showUsed: boolean,
+  onToggleUsedAddresses: Function,
 };
 
 type State = {
   addressSlice: number,
   addressWidth: number,
   charWidth: number,
-  showUsed: boolean,
 };
 
 @observer
@@ -70,7 +71,6 @@ export default class WalletReceiveSequential extends Component<Props, State> {
     addressSlice: 0,
     addressWidth: 0,
     charWidth: 0,
-    showUsed: false,
   };
 
   // We need to track the mounted state in order to avoid calling
@@ -131,7 +131,8 @@ export default class WalletReceiveSequential extends Component<Props, State> {
   };
 
   toggleUsedAddresses = () => {
-    this.setState((prevState) => ({ showUsed: !prevState.showUsed }));
+    const { onToggleUsedAddresses } = this.props;
+    onToggleUsedAddresses();
   };
 
   renderRow = (address: WalletAddress, index: number) => {
@@ -153,13 +154,12 @@ export default class WalletReceiveSequential extends Component<Props, State> {
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
     walletAddresses.filter(
-      (address: WalletAddress) => !address.used || this.state.showUsed
+      (address: WalletAddress) => !address.used || this.props.showUsed
     );
 
   render() {
-    const { walletAddresses } = this.props;
+    const { walletAddresses, showUsed } = this.props;
     const { intl } = this.context;
-    const { showUsed } = this.state;
 
     return (
       <div className={styles.component}>

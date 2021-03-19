@@ -71,6 +71,10 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
+  handleToggleUsedAddresses = () => {
+    this.props.actions.walletSettings.toggleShowUsedAddresses.trigger();
+  };
+
   getAddressAndFilepath = async (fileExtension?: string = 'pdf') => {
     const { addressToShare } = this.state;
     const { activeWallet } = this;
@@ -151,10 +155,18 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses, sidebar } = stores;
+    const { uiDialogs, addresses, sidebar, walletSettings } = stores;
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
+
+    const {
+      getWalletShowUsedAddressesStatuses,
+    } = walletSettings;
+
+    const {
+      showUsedAddresses,
+    } = getWalletShowUsedAddressesStatuses(activeWallet.id);
 
     // Guard against potential null values
     if (!activeWallet)
@@ -184,6 +196,8 @@ export default class WalletReceivePage extends Component<Props, State> {
                 addresses.createByronWalletAddressRequest.isExecuting
               }
               error={addresses.error}
+              showUsed={showUsedAddresses}
+              onToggleUsedAddresses={this.handleToggleUsedAddresses}
             />
           ) : (
             <WalletReceiveSequential
@@ -192,6 +206,8 @@ export default class WalletReceivePage extends Component<Props, State> {
               onShareAddress={this.handleShareAddress}
               onCopyAddress={this.handleCopyAddress}
               onToggleSubMenus={toggleSubMenus}
+              showUsed={showUsedAddresses}
+              onToggleUsedAddresses={this.handleToggleUsedAddresses}
             />
           )}
         </VerticalFlexContainer>

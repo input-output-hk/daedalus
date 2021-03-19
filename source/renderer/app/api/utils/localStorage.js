@@ -28,6 +28,7 @@ export type WalletLocalData = {
   id: string,
   recoveryPhraseVerificationDate?: ?Date,
   creationDate: Date,
+  showUsedAddresses: boolean,
 };
 export type WalletsLocalData = {
   [key: StorageKey]: WalletLocalData,
