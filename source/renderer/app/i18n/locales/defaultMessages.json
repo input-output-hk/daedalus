@@ -5441,13 +5441,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 27
+          "line": 26
         }
       },
       {
@@ -5455,13 +5455,13 @@
         "description": "Filename prefix for the \"Export CSV\" on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.csvFilenamePrefix",
         "start": {
           "column": 21,
-          "line": 33
+          "line": 32
         }
       },
       {
@@ -5469,13 +5469,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 39
+          "line": 38
         }
       },
       {
@@ -5483,13 +5483,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -5497,13 +5497,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 50
+          "line": 49
         }
       },
       {
@@ -5511,13 +5511,13 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 55
+          "line": 54
         }
       },
       {
@@ -5525,13 +5525,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 63
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 60
+          "line": 59
         }
       },
       {
@@ -5539,13 +5539,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 65
+          "line": 64
         }
       },
       {
@@ -5553,13 +5553,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 70
+          "line": 69
         }
       },
       {
@@ -5567,13 +5567,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 76
+          "line": 75
         }
       }
     ],
@@ -16532,13 +16532,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 18
+          "line": 17
         }
       },
       {
@@ -16546,13 +16546,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 27
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 24
+          "line": 23
         }
       },
       {
@@ -16560,13 +16560,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 32
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 29
+          "line": 28
         }
       },
       {
@@ -16574,13 +16574,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 34
+          "line": 33
         }
       }
     ],
@@ -17805,13 +17805,13 @@
         "description": "Transactions CSV column - ID",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.id",
         "start": {
           "column": 12,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -17819,13 +17819,13 @@
         "description": "Transactions CSV column - Type",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.type",
         "start": {
           "column": 14,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -17833,13 +17833,13 @@
         "description": "Transactions CSV column - TOTAL",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.amount.total",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -17847,13 +17847,13 @@
         "description": "Transactions CSV column - Sent amount",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.amount.sent",
         "start": {
           "column": 20,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -17861,13 +17861,13 @@
         "description": "Transactions CSV column - Deposit amount",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.amount.deposit",
         "start": {
           "column": 23,
-          "line": 41
+          "line": 40
         }
       },
       {
@@ -17875,13 +17875,13 @@
         "description": "Transactions CSV column - Fee",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 49
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.amount.fee",
         "start": {
           "column": 13,
-          "line": 46
+          "line": 45
         }
       },
       {
@@ -17889,13 +17889,13 @@
         "description": "Transactions CSV column - Tokens",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 54
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.tokens",
         "start": {
           "column": 16,
-          "line": 51
+          "line": 50
         }
       },
       {
@@ -17903,13 +17903,13 @@
         "description": "Transactions CSV column - DateTime",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 59
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.dateTime",
         "start": {
           "column": 18,
-          "line": 56
+          "line": 55
         }
       },
       {
@@ -17917,13 +17917,13 @@
         "description": "Transactions CSV column - Status",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 64
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.status",
         "start": {
           "column": 16,
-          "line": 61
+          "line": 60
         }
       },
       {
@@ -17931,13 +17931,13 @@
         "description": "Transactions CSV column - AddressesFrom",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 69
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.addressesFrom",
         "start": {
           "column": 23,
-          "line": 66
+          "line": 65
         }
       },
       {
@@ -17945,13 +17945,13 @@
         "description": "Transactions CSV column - AddressesTo",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 74
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.addressesTo",
         "start": {
           "column": 21,
-          "line": 71
+          "line": 70
         }
       },
       {
@@ -17959,13 +17959,13 @@
         "description": "Transactions CSV column - Withdrawals",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 79
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.withdrawals",
         "start": {
           "column": 21,
-          "line": 76
+          "line": 75
         }
       },
       {
@@ -17973,13 +17973,13 @@
         "description": "Transactions CSV value - Type Sent",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 84
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.type.sent",
         "start": {
           "column": 17,
-          "line": 81
+          "line": 80
         }
       },
       {
@@ -17987,13 +17987,13 @@
         "description": "Transactions CSV value - Type Received",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 89
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.type.received",
         "start": {
           "column": 21,
-          "line": 86
+          "line": 85
         }
       },
       {
@@ -18001,13 +18001,13 @@
         "description": "Transactions CSV value - Status Confirmed",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 94
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.statusConfirmed",
         "start": {
           "column": 24,
-          "line": 91
+          "line": 90
         }
       },
       {
@@ -18015,13 +18015,13 @@
         "description": "Transactions CSV value - Status Pending",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 99
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.statusPending",
         "start": {
           "column": 22,
-          "line": 96
+          "line": 95
         }
       },
       {
@@ -18029,13 +18029,13 @@
         "description": "Transactions CSV \"Transactions\" filename",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 104
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.filenamePrefix",
         "start": {
           "column": 18,
-          "line": 101
+          "line": 100
         }
       }
     ],
