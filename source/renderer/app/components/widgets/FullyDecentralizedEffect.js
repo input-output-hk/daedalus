@@ -1,31 +1,27 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
+import { get } from 'lodash';
 import { observer } from 'mobx-react';
-import { confetti } from '../../utils/uiEffects';
 import { Fireworks } from 'fireworks-js';
+import styles from './FullyDecentralizedEffect.scss';
 
 type Props = {
   isActive: boolean,
-  layout?: string,
-  effect?: 'fireworks' | 'confetti',
-  containerSelector: string,
-};
-
-type State = {
-  fireworks: ?Object,
 };
 
 @observer
-export default class FullyDecentralizedEffect extends Component<Props, State> {
-  state = {
-    fireworks: null,
-  };
+export default class FullyDecentralizedEffect extends Component<Props> {
+  constructor(props: Props) {
+    super(props);
+    this.container = createRef();
+  }
 
+  container: ?any;
   fireworks: ?Object = null;
 
   componentDidMount() {
-    const { containerSelector, isActive } = this.props;
-    const container = document.querySelector(containerSelector);
+    const { isActive } = this.props;
+    const container = get(this, 'container.current');
     if (container instanceof HTMLElement) {
       const fireworks = new Fireworks({
         target: container,
@@ -47,33 +43,28 @@ export default class FullyDecentralizedEffect extends Component<Props, State> {
           right: container.clientWidth,
         },
       });
-      this.setState({
-        fireworks: fireworks,
-      });
-      window.fireworks = fireworks;
-      // if (isActive) {
-      //   fireworks.start();
-      // }
+      this.fireworks = fireworks;
+      if (isActive) {
+        fireworks.start();
+      }
+    } else {
+      throw new Error('Container not found');
     }
   }
 
   componentDidUpdate() {
-    const { isActive, containerSelector } = this.props;
-    const { fireworks } = this.state;
-    if (isActive && fireworks && !fireworks.isRunning) {
-      console.log('START - ', containerSelector);
+    const { isActive } = this.props;
+    const { fireworks } = this;
+    if (isActive && fireworks) {
+      console.log('START', !fireworks.isRunning);
       fireworks.start();
     } else if (!isActive && fireworks) {
-      console.log('fireworks.isRunning', fireworks.isRunning);
-      console.log('STOP - ', containerSelector);
+      console.log('STOP', fireworks.isRunning);
       fireworks.stop();
     }
   }
 
   render() {
-    const { isActive, effect } = this.props;
-    window.Fireworks = Fireworks;
-    window.confetti = confetti;
-    return <div />;
+    return <div className={styles.component} ref={this.container} />;
   }
 }
