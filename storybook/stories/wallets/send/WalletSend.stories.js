@@ -204,6 +204,7 @@ storiesOf('Wallets|Send', module)
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
+      validateAssetAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       walletAmount={new BigNumber(123)}
       assets={sendFormAssetData}
@@ -227,6 +228,7 @@ storiesOf('Wallets|Send', module)
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
+      validateAssetAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
       addressValidator={() => true}
@@ -250,6 +252,7 @@ storiesOf('Wallets|Send', module)
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
+      validateAssetAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
       addressValidator={() => true}
@@ -273,6 +276,7 @@ storiesOf('Wallets|Send', module)
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
+      validateAssetAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
       addressValidator={() => true}
@@ -296,6 +300,7 @@ storiesOf('Wallets|Send', module)
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
+      validateAssetAmount={promise(true)}
       calculateTransactionFee={promise({
         fee: new BigNumber(number('fee', 1)),
         minimumAda: new BigNumber(number('minimumAda', 1)),

@@ -55,6 +55,7 @@ type Props = {
   ) => Promise<BigNumber>,
   walletAmount: BigNumber,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
+  validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   addressValidator: Function,
   assets: Array<WalletSummaryAsset>,
   hasAssets: boolean,
@@ -599,7 +600,7 @@ export default class WalletSendForm extends Component<Props, State> {
           ];
         }
         const amountValue = value.toString();
-        const isValidAmount = await this.props.validateAmount(
+        const isValidAmount = await this.props.validateAssetAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
         const asset = this.getAssetByFingerprint(fingerprint);

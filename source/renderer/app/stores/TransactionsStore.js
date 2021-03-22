@@ -18,7 +18,10 @@ import type {
   CreateExternalTransactionRequest,
   GetWithdrawalsResponse,
 } from '../api/transactions/types';
-import { isValidAmountInLovelaces } from '../utils/validations';
+import {
+  isValidAmountInLovelaces,
+  isValidAssetAmountInNaturalUnits,
+} from '../utils/validations';
 import transactionsCsvGenerator from '../utils/transactionsCsvGenerator';
 import { i18nContext } from '../utils/i18nContext';
 import {
@@ -317,6 +320,9 @@ export default class TransactionsStore extends Store {
 
   validateAmount = (amountInLovelaces: string): Promise<boolean> =>
     Promise.resolve(isValidAmountInLovelaces(amountInLovelaces));
+
+  validateAssetAmount = (amountInNaturalUnits: string): Promise<boolean> =>
+    Promise.resolve(isValidAssetAmountInNaturalUnits(amountInNaturalUnits));
 
   // ======================= PRIVATE ========================== //
 

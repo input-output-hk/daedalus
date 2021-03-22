@@ -83,6 +83,15 @@ export const isValidAmountInLovelaces = (value: string) => {
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
 
+export const isValidAssetAmountInNaturalUnits = (value: string) => {
+  const isNumeric = isInt(value, { allow_leading_zeroes: false });
+  if (!isNumeric) return false;
+  const numericValue = new BigNumber(value);
+  const minValue = new BigNumber(1);
+  const maxValue = new BigNumber(18446744073709551615); // cardano-wallet max asset amount of 2^64 - 1
+  return numericValue.gte(minValue) && numericValue.lte(maxValue);
+};
+
 /**
  * Mnemonics validation
  */
