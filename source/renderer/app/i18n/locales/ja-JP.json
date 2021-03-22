@@ -652,7 +652,7 @@
   "voting.votingRegistration.enterPinCode.step.continueButtonLabel": "続ける",
   "voting.votingRegistration.enterPinCode.step.description": "Fund3有権者登録のPINコードを入力してください。ここで設定したPINコードと、次のステップで表示されるQRコードは、スマートフォンでCatalyst Votingアプリを使用して投票するときに必要となります。",
   "voting.votingRegistration.enterPinCode.step.enterPinCodeLabel": "PINコードを入力してください",
-  "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode": "!!!Invalid PIN",
+  "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode": "PINが無効です",
   "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode": "PINコードが一致しません",
   "voting.votingRegistration.enterPinCode.step.reminder": "<span>PINコードを忘れないでください。</span>PINを忘れると本登録で投票することができなくなり、登録手続きをやり直すことになります。",
   "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel": "PINコードを再入力してください",
