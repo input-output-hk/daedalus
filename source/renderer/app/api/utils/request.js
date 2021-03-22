@@ -20,7 +20,7 @@ export type RequestOptions = {
 
 const ALLOWED_ERROR_EXCEPTION_PATHS = [];
 
-const { isIncentivizedTestnet } = global.environment;
+const { isIncentivizedTestnet, isSelfnode } = global.environment;
 
 function typedRequest<Response>(
   httpOptions: RequestOptions,
@@ -71,9 +71,10 @@ function typedRequest<Response>(
     }
 
     const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
-    const httpsRequest = isIncentivizedTestnet
-      ? global.http.request(httpOnlyOptions)
-      : global.https.request(options);
+    const httpsRequest =
+      isIncentivizedTestnet || isSelfnode
+        ? global.http.request(httpOnlyOptions)
+        : global.https.request(options);
 
     if (hasRequestBody) {
       if (isOctetStreamRequest) {
