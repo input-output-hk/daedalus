@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
+
 ### Fixes
 
 - Fixed asset amount validation ([PR 2472](https://github.com/input-output-hk/daedalus/pull/2472))

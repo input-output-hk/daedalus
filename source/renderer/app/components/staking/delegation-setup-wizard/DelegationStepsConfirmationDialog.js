@@ -121,6 +121,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   error: ?LocalizableError,
   onExternalLinkClick: Function,
+  isTrezor: boolean,
 };
 
 @observer
@@ -198,6 +199,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       isSubmitting,
       hwDeviceStatus,
       onExternalLinkClick,
+      isTrezor,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
@@ -339,6 +341,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               <HardwareWalletStatus
                 hwDeviceStatus={hwDeviceStatus}
                 walletName={selectedWalletName}
+                isTrezor={isTrezor}
                 onExternalLinkClick={onExternalLinkClick}
               />
             </div>
