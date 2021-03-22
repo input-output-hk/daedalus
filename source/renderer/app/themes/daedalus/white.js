@@ -261,6 +261,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',
+    '--theme-hardware-wallet-status-passphrase-label-color':
+      'rgba(45, 45, 45, 0.5)',
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(45, 45, 45, 0.6)',
