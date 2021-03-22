@@ -96,9 +96,10 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const hardwareWalletDeviceInfo = _getHardwareWalletDeviceInfoByWalletId(
       activeWallet.id
     );
+
     const isTrezor =
       hardwareWalletDeviceInfo &&
-      hardwareWalletDeviceInfo.deviceType === DeviceTypes.TREZOR;
+      hardwareWalletDeviceInfo.device.deviceType === DeviceTypes.TREZOR;
 
     return (
       <>

@@ -121,9 +121,10 @@ export default class UndelegateWalletDialogContainer extends Component<
     const hardwareWalletDeviceInfo = hardwareWallets._getHardwareWalletDeviceInfoByWalletId(
       walletToBeUndelegated.id
     );
+
     const isTrezor =
       hardwareWalletDeviceInfo &&
-      hardwareWalletDeviceInfo.deviceType === DeviceTypes.TREZOR;
+      hardwareWalletDeviceInfo.device.deviceType === DeviceTypes.TREZOR;
 
     const { name: walletName } = walletToBeUndelegated;
 

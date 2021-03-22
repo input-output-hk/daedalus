@@ -207,9 +207,10 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const hardwareWalletDeviceInfo = _getHardwareWalletDeviceInfoByWalletId(
       selectedWallet.id
     );
+
     const isTrezor =
       hardwareWalletDeviceInfo &&
-      hardwareWalletDeviceInfo.deviceType === DeviceTypes.TREZOR;
+      hardwareWalletDeviceInfo.device.deviceType === DeviceTypes.TREZOR;
 
     return (
       <DelegationSetupWizardDialog

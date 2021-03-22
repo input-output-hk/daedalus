@@ -950,7 +950,6 @@ export default class HardwareWalletsStore extends Store {
                 this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
                 this.activeDevicePath = null;
                 this.unfinishedWalletTxSigning = walletId;
-                // this.unfinishedWalletTxSigning = !recognizedStoredWallet ? null : walletId;
                 this.isExportKeyAborted = false;
               }
             );
@@ -996,7 +995,6 @@ export default class HardwareWalletsStore extends Store {
             this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
             this.activeDevicePath = null;
             this.unfinishedWalletTxSigning = walletId;
-            // this.unfinishedWalletTxSigning = !recognizedStoredWallet ? null : walletId;
             this.isExportKeyAborted = false;
           }
         );

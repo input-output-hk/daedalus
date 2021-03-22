@@ -63,9 +63,10 @@ export default class WalletSettingsPage extends Component<Props> {
     const hardwareWalletDeviceInfo = hardwareWallets._getHardwareWalletDeviceInfoByWalletId(
       activeWallet.id
     );
+
     const isTrezor =
       hardwareWalletDeviceInfo &&
-      hardwareWalletDeviceInfo.deviceType === DeviceTypes.TREZOR;
+      hardwareWalletDeviceInfo.device.deviceType === DeviceTypes.TREZOR;
 
     const { actions } = this.props;
     const {
