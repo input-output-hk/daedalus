@@ -38,20 +38,13 @@ export default class PinCode extends Component<Props> {
       inputValue !== null && inputValue !== undefined
         ? inputValue.toString()
         : '';
-
-    if (
-      !Object.prototype.hasOwnProperty.call(value, key) ||
-      value[key] === '' ||
-      inputNewValue === ''
-    ) {
-      const newValue = value;
-      newValue[key] = inputNewValue;
-      if (onChange) {
-        onChange(newValue);
-      }
-      this.focusKey = key;
-      this.add = inputValue !== null && inputValue !== undefined;
+    const newValue = value;
+    newValue[key] = inputNewValue;
+    if (onChange) {
+      onChange(newValue);
     }
+    this.focusKey = key;
+    this.add = inputValue !== null && inputValue !== undefined;
   };
 
   componentDidUpdate() {
@@ -64,6 +57,8 @@ export default class PinCode extends Component<Props> {
         this.inputsRef[inputFocusKey]
       )
         this.inputsRef[inputFocusKey].focus();
+    } else if (key === 0 && this.focusKey === 0 && this.inputsRef[this.focusKey]) {
+      this.inputsRef[this.focusKey].focus();
     }
   }
 
@@ -106,10 +101,11 @@ export default class PinCode extends Component<Props> {
               skin={InputSkin}
               onChange={(number) => this.onChange(number, key)}
               value={value ? value[key] : undefined}
-              autoFocus={autoFocus && key === 0}
+              autoFocus={autoFocus}
+              allowSigns={false}
               disabled={
                 disabled ||
-                (key !== 0 &&
+                (key &&
                   (!value ||
                     !Object.prototype.hasOwnProperty.call(value, key - 1)))
               }

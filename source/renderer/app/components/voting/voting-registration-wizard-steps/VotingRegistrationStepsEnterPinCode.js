@@ -174,6 +174,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
             label={enterPinCodeLabel}
             autoFocus
             onChange={(...args) => pinCodeFieldProps.onChange(...args)}
+            error={pinCodeField.error}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
