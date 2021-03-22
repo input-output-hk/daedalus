@@ -1,6 +1,5 @@
 // @flow
 import path from 'path';
-import moment from 'moment';
 import { intlShape, defineMessages } from 'react-intl';
 import { includes } from 'lodash';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
@@ -201,9 +200,7 @@ const transactionsCsvGenerator = async ({
           return `${formattedAmount} (${fingerprint})`;
         })
         .join(', ');
-      const valueDateTime = `${moment(date)
-        .utc()
-        .format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+      const valueDateTime = date ? date.toISOString() : '';
       const valueStatus =
         state === 'pending'
           ? intl.formatMessage(messages.valueStatusPending)

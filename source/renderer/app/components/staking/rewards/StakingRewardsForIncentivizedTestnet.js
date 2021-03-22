@@ -6,7 +6,6 @@ import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import moment from 'moment';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
@@ -136,7 +135,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       ...availableTableHeaders.map((header) => header.title),
       intl.formatMessage(messages.tableHeaderDate),
     ];
-    const date = `${moment().utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+    const date = new Date().toISOString();
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
       const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
