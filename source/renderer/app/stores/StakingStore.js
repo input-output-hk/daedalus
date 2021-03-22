@@ -168,7 +168,9 @@ export default class StakingStore extends Store {
       (smashServerUrl === SMASH_SERVER_TYPES.DIRECT &&
         localSmashServer !== SMASH_SERVER_TYPES.DIRECT)
     ) {
-      smashServerUrl = SMASH_SERVERS_LIST.iohk.url;
+      smashServerUrl = this.environment.isSelfnode
+        ? SMASH_SERVERS_LIST.direct.url
+        : SMASH_SERVERS_LIST.iohk.url;
       await this.updateSmashSettingsRequest.execute(smashServerUrl);
     }
 
