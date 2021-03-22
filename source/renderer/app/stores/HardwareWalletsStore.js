@@ -1778,6 +1778,17 @@ export default class HardwareWalletsStore extends Store {
     return this.hardwareWalletDevicesRequest.result;
   }
 
+  checkIsTrezorByWalletId = (walletId: string): boolean => {
+    const hardwareWalletConnectionData = find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
+    return (
+      hardwareWalletConnectionData &&
+      hardwareWalletConnectionData.device.deviceType === DeviceTypes.TREZOR
+    );
+  };
+
   _resetTxSignRequestData = () => {
     this.selectCoinsRequest.reset();
     this.txSignRequest = {};

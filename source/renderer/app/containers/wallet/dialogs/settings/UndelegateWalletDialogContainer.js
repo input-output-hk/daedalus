@@ -7,7 +7,6 @@ import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { DelegationCalculateFeeResponse } from '../../../../api/staking/types';
 import UndelegateWalletConfirmationDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../../components/wallet/settings/UndelegateWalletSuccessDialog';
-import { DeviceTypes } from '../../../../../../common/types/hardware-wallets.types';
 import {
   DELEGATION_ACTIONS,
   DELEGATION_DEPOSIT,
@@ -111,6 +110,7 @@ export default class UndelegateWalletDialogContainer extends Component<
       hwDeviceStatus,
       sendMoneyRequest,
       selectCoinsRequest,
+      checkIsTrezorByWalletId,
     } = hardwareWallets;
     const { stakePoolQuitFee } = this.state;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
@@ -118,13 +118,7 @@ export default class UndelegateWalletDialogContainer extends Component<
     const walletToBeUndelegated = getWalletById(this.selectedWalletId);
     if (!walletToBeUndelegated) return null;
 
-    const hardwareWalletDeviceInfo = hardwareWallets._getHardwareWalletDeviceInfoByWalletId(
-      walletToBeUndelegated.id
-    );
-
-    const isTrezor =
-      hardwareWalletDeviceInfo &&
-      hardwareWalletDeviceInfo.device.deviceType === DeviceTypes.TREZOR;
+    const isTrezor = checkIsTrezorByWalletId(walletToBeUndelegated.id);
 
     const { name: walletName } = walletToBeUndelegated;
 

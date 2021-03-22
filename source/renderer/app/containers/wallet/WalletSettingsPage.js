@@ -18,7 +18,6 @@ import {
 } from '../../config/cryptoConfig';
 import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
-import { DeviceTypes } from '../../../../common/types/hardware-wallets.types';
 
 type Props = InjectedProps;
 
@@ -51,6 +50,7 @@ export default class WalletSettingsPage extends Component<Props> {
       profile,
       hardwareWallets,
     } = this.props.stores;
+    const { checkIsTrezorByWalletId } = hardwareWallets;
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
@@ -60,13 +60,7 @@ export default class WalletSettingsPage extends Component<Props> {
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     const { isLegacy, isHardwareWallet } = activeWallet;
-    const hardwareWalletDeviceInfo = hardwareWallets._getHardwareWalletDeviceInfoByWalletId(
-      activeWallet.id
-    );
-
-    const isTrezor =
-      hardwareWalletDeviceInfo &&
-      hardwareWalletDeviceInfo.device.deviceType === DeviceTypes.TREZOR;
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     const { actions } = this.props;
     const {

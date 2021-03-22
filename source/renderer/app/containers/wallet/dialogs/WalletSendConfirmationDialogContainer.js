@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import { ellipsis } from '../../../utils/strings';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
-import { DeviceTypes } from '../../../../../common/types/hardware-wallets.types';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
@@ -77,7 +76,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       _resetTransaction: resetHardwareWalletTransaction,
       sendMoneyRequest: sendMoneyExternalRequest,
       isTransactionPending,
-      _getHardwareWalletDeviceInfoByWalletId,
+      checkIsTrezorByWalletId,
     } = stores.hardwareWallets;
     const { isFlight } = global;
 
@@ -93,13 +92,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       ? sendMoneyExternalRequest.error
       : sendMoneyRequest.error;
 
-    const hardwareWalletDeviceInfo = _getHardwareWalletDeviceInfoByWalletId(
-      activeWallet.id
-    );
-
-    const isTrezor =
-      hardwareWalletDeviceInfo &&
-      hardwareWalletDeviceInfo.device.deviceType === DeviceTypes.TREZOR;
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     return (
       <>
