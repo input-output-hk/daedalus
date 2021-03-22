@@ -3,10 +3,21 @@ import React, { Component, createRef } from 'react';
 import { get } from 'lodash';
 import { observer } from 'mobx-react';
 import { Fireworks } from 'fireworks-js';
+// import useWindowSize from 'react-use/lib/useWindowSize';
+import Confetti from 'react-confetti';
 import styles from './FullyDecentralizedEffect.scss';
+import {
+  CREATE_THEME_PARAMS,
+  CREATE_THEME_OBJ,
+} from '../../themes/utils/constants';
+
+console.log('CREATE_THEME_PARAMS', CREATE_THEME_PARAMS);
+console.log('CREATE_THEME_OBJ', CREATE_THEME_OBJ);
 
 type Props = {
   isActive: boolean,
+  effect: 'confetti' | 'fireworks',
+  currentTheme: string,
 };
 
 @observer
@@ -20,7 +31,8 @@ export default class FullyDecentralizedEffect extends Component<Props> {
   fireworks: ?Object = null;
 
   componentDidMount() {
-    const { isActive } = this.props;
+    console.log('componentDidMount');
+    const { isActive, effect } = this.props;
     const container = get(this, 'container.current');
     if (container instanceof HTMLElement) {
       const fireworks = new Fireworks({
@@ -44,18 +56,17 @@ export default class FullyDecentralizedEffect extends Component<Props> {
         },
       });
       this.fireworks = fireworks;
-      if (isActive) {
+      if (isActive && effect === 'fireworks') {
         fireworks.start();
       }
-    } else {
-      throw new Error('Container not found');
     }
   }
 
   componentDidUpdate() {
-    const { isActive } = this.props;
+    const { isActive, effect } = this.props;
+    console.log('effect', effect);
     const { fireworks } = this;
-    if (isActive && fireworks) {
+    if (isActive && fireworks && effect === 'fireworks') {
       console.log('START', !fireworks.isRunning);
       fireworks.start();
     } else if (!isActive && fireworks) {
@@ -65,6 +76,11 @@ export default class FullyDecentralizedEffect extends Component<Props> {
   }
 
   render() {
-    return <div className={styles.component} ref={this.container} />;
+    const { effect, isActive } = this.props;
+    return (
+      <div className={styles.component} ref={this.container}>
+        {isActive && effect === 'confetti' && <Confetti />}
+      </div>
+    );
   }
 }

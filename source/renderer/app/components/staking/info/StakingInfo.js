@@ -8,13 +8,25 @@ import styles from './StakingInfo.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 
 const messages = defineMessages({
-  heading: {
-    id: 'staking.info.heading',
+  headingBefore: {
+    id: 'staking.info.before.heading',
+    defaultMessage: '!!!Fully decentralized block production',
+    description: 'Headline for the Decentralization progress notification.',
+  },
+  descriptionBefore: {
+    id: 'staking.info.before.description',
+    defaultMessage:
+      '!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.',
+    description:
+      'Info description for the Decentralization progress notification.',
+  },
+  headingAfter: {
+    id: 'staking.info.after.heading',
     defaultMessage: '!!!Cardano is transitioning into a decentralized system',
     description: 'Headline for the Decentralization progress notification.',
   },
-  description: {
-    id: 'staking.info.description',
+  descriptionAfter: {
+    id: 'staking.info.after.description',
     defaultMessage:
       '!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.',
     description:
@@ -87,8 +99,12 @@ export default class StakingInfo extends Component<Props, State> {
     const { intl } = this.context;
     const { percentage, onLearnMoreClick, isFullyDecentralized } = this.props;
     const { progressLabelClassName } = this.state;
-    const heading = intl.formatMessage(messages.heading);
-    const description = intl.formatMessage(messages.description);
+    const heading = isFullyDecentralized
+      ? intl.formatMessage(messages.headingAfter)
+      : intl.formatMessage(messages.headingBefore);
+    const description = isFullyDecentralized
+      ? intl.formatMessage(messages.descriptionAfter)
+      : intl.formatMessage(messages.descriptionBefore);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const showLearnMoreButton = false;
     return (

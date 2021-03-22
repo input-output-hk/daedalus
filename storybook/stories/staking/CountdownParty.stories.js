@@ -1,7 +1,13 @@
 // @flow
 import React from 'react';
 import { storiesOf, addDecorator } from '@storybook/react';
-import { withKnobs, number, boolean, select } from '@storybook/addon-knobs';
+import {
+  withKnobs,
+  number,
+  boolean,
+  radios,
+  select,
+} from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { observable, runInAction } from 'mobx';
 
@@ -22,6 +28,12 @@ storiesOf('Decentralization | Countdown', module)
     const isFullyDecentralized = boolean(
       'isFullyDecentralized',
       false,
+      'Party mode'
+    );
+    const effect = radios(
+      'Effect',
+      { Fireworks: 'fireworks', Confetti: 'confetti' },
+      'fireworks',
       'Party mode'
     );
 
@@ -57,6 +69,7 @@ storiesOf('Decentralization | Countdown', module)
           />
           <FullyDecentralizedEffect
             isActive={isFullyDecentralized}
+            effect={effect}
             /*effect={select(
               'Effect',
               { confett: 'confett', fireworks: 'fireworks' },
