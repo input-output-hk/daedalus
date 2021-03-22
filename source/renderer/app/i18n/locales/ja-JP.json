@@ -755,6 +755,7 @@
   "wallet.hardware.deviceStatus.connecting": "デバイスを接続してPINを入力し、ロックを解除してください",
   "wallet.hardware.deviceStatus.connecting.failed": "ハードウェアウォレットデバイスを検出できません。",
   "wallet.hardware.deviceStatus.connecting.known": "「{walletName}」デバイスを接続してPINを入力し、ロックを解除してください",
+  "wallet.hardware.deviceStatus.enterPassphrase": "必要に応じてパスフレーズを入力してください",
   "wallet.hardware.deviceStatus.exportingPublicKeyError": "ハードウェアウォレットを切断して再接続し、もう一度プロセスを始めてください。",
   "wallet.hardware.deviceStatus.exporting_public_key": "デバイス上で公開鍵をエクスポートしてください",
   "wallet.hardware.deviceStatus.exporting_public_key_failed": "公開鍵のエクスポートができません",
