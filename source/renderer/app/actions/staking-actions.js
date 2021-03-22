@@ -5,6 +5,7 @@ import type {
   QuitStakePoolRequest,
 } from '../api/staking/types';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
+import type { StakePoolFilterOptionsType } from '../stores/StakingStore';
 // ======= STAKING ACTIONS =======
 
 export default class StakingActions {
@@ -33,4 +34,5 @@ export default class StakingActions {
   onConfirmationContinue: Action<{ spendingPassword: string }> = new Action();
   onResultContinue: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
+  filterStakePools: Action<StakePoolFilterOptionsType> = new Action();
 }

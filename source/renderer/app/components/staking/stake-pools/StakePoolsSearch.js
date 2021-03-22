@@ -68,8 +68,8 @@ type Props = {
   onListView?: Function,
   search: string,
   isFilterDisabled: boolean,
-  filterDialogProps: FilterDialogProps,
   numberOfFilterDimensionsApplied: number,
+  filterDialogProps: FilterDialogProps,
 };
 
 export class StakePoolsSearch extends Component<Props> {

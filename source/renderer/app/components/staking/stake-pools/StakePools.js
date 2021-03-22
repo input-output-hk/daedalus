@@ -14,6 +14,11 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import { formattedNumber } from '../../../utils/formatters';
+import {
+  getNumberOfFilterDimensionsApplied,
+  getSmashServerNameFromUrl,
+} from '../../../utils/staking';
+import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
 import StakePool from '../../../domains/StakePool';
 import {
   IS_RANKING_DATA_AVAILABLE,
@@ -21,7 +26,6 @@ import {
 } from '../../../config/stakingConfig';
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
-import { getSmashServerNameFromUrl } from '../../../utils/staking';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -90,6 +94,9 @@ type Props = {
   onSmashSettingsClick: Function,
   smashServerUrl: ?string,
   maxDelegationFunds: number,
+  filterOptions: StakePoolFilterOptionsType,
+  onFilter: Function,
+  populatedFilterOptions: StakePoolFilterOptionsType,
 };
 
 type State = {
@@ -180,6 +187,9 @@ export default class StakePools extends Component<Props, State> {
       smashServerUrl,
       onSmashSettingsClick,
       maxDelegationFunds,
+      filterOptions,
+      onFilter,
+      populatedFilterOptions,
     } = this.props;
     const {
       search,
@@ -190,10 +200,17 @@ export default class StakePools extends Component<Props, State> {
       isTableHeaderHovered,
     } = this.state;
 
+    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
+      filterOptions
+    );
+
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       search
     );
+
+    const isFilterDisabled =
+      !filteredStakePoolsList.length && !numberOfFilterDimensionsApplied;
 
     const numberOfRankedStakePools: number = stakePoolsList.filter(
       (stakePool) =>
@@ -284,6 +301,12 @@ export default class StakePools extends Component<Props, State> {
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
               smashServer={smashServer}
+              isFilterDisabled={isFilterDisabled}
+              numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
+              filterDialogProps={{
+                populatedFilterOptions,
+                onFilter,
+              }}
             />
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>

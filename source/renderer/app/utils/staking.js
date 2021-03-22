@@ -5,6 +5,8 @@ import {
   SMASH_SERVER_TYPES,
 } from '../config/stakingConfig';
 import type { SmashServerType } from '../types/stakingTypes';
+import type { StakePoolFilterOptionsType } from '../stores/StakingStore';
+import StakePool from '../domains/StakePool';
 
 export const getSmashServerNameFromUrl = (smashServerUrl: string): string =>
   reduce(
@@ -49,4 +51,34 @@ export const getUrlParts = (
   } catch (error) {
     return {};
   }
+};
+
+export const getNumberOfFilterDimensionsApplied = (
+  filterOptions: ?StakePoolFilterOptionsType
+) => {
+  const {
+    retiringPoolsChecked = true,
+    privatePoolsChecked = true,
+    poolsWithoutOffChainDataChecked = true,
+  } = filterOptions || {};
+  let result = 0;
+
+  if (!retiringPoolsChecked) {
+    result++;
+  }
+  if (!privatePoolsChecked) {
+    result++;
+  }
+  if (!poolsWithoutOffChainDataChecked) {
+    result++;
+  }
+
+  return result;
+};
+
+export const isStakePoolInFilterRange = (
+  filterOptions: ?StakePoolFilterOptionsType,
+  stakePool: StakePool
+) => {
+  return true;
 };

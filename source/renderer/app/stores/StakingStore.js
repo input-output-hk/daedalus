@@ -37,8 +37,21 @@ import LocalizableError from '../i18n/LocalizableError';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import REWARDS from '../config/stakingRewards.dummy.json';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { isStakePoolInFilterRange } from '../utils/staking';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
+
+export type StakePoolFilterOptionsType = {
+  retiringPoolsChecked?: boolean,
+  privatePoolsChecked?: boolean,
+  poolsWithoutOffChainDataChecked?: boolean,
+};
+
+export const emptyStakePoolFilterOptions = {
+  retiringPoolsChecked: true,
+  privatePoolsChecked: true,
+  poolsWithoutOffChainDataChecked: true,
+};
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
@@ -68,6 +81,9 @@ export default class StakingStore extends Store {
   @observable isFetchingStakePools: boolean = false;
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
+
+  /* ----------  Stake Pools Filter  ---------- */
+  @observable _filterOptions = {};
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -116,7 +132,10 @@ export default class StakingStore extends Store {
       this._setSelectedDelegationWalletId
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
+    stakingActions.filterStakePools.listen(this._updateFilterOptions);
+
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
+    networkStatusActions.restartNode.listen(this._clearFilterOptions);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
@@ -465,6 +484,16 @@ export default class StakingStore extends Store {
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
+  @computed get allFiltered(): Array<StakePool> {
+    const { recentFiltered } = this;
+    const allFiltered = this.stakePools.filter((stakePool) =>
+      isStakePoolInFilterRange(this.filterOptions, stakePool)
+    );
+    return !allFiltered.length && recentFiltered.length
+      ? recentFiltered
+      : allFiltered;
+  }
+
   @computed get recentStakePools(): Array<StakePool> {
     const delegatedStakePools = [];
     map(this.stores.wallets.all, (wallet) => {
@@ -492,6 +521,24 @@ export default class StakingStore extends Store {
     });
     const orderedStakePools = orderBy(delegatedStakePools, 'ranking', 'asc');
     return orderedStakePools;
+  }
+
+  @computed get recentFiltered(): Array<StakePool> {
+    return this.recentStakePools.filter((stakePool) =>
+      isStakePoolInFilterRange(this.filterOptions, stakePool)
+    );
+  }
+
+  @computed get populatedFilterOptions(): StakePoolFilterOptionsType {
+    return this.filterOptions || emptyStakePoolFilterOptions;
+  }
+
+  @computed get hasAnyFiltered(): boolean {
+    return this.stakePools ? this.stakePools.length > 0 : false;
+  }
+
+  @computed get totalFilteredAvailable(): number {
+    return this.stakePools ? this.stakePools.length : 0;
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
@@ -583,6 +630,16 @@ export default class StakingStore extends Store {
 
   @action _resetIsRanking = () => {
     this.isRanking = false;
+  };
+
+  @action _updateFilterOptions = (
+    filterOptions: StakePoolFilterOptionsType
+  ) => {
+    this.filterOptions = filterOptions;
+  };
+
+  @action _clearFilterOptions = () => {
+    this.filterOptions = emptyStakePoolFilterOptions;
   };
 
   // For testing only
