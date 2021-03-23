@@ -41,6 +41,8 @@ storiesOf('Wallets|Receive', module)
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           isIncentivizedTestnet={isIncentivizedTestnet}
           currentLocale={locale}
+          showUsed={boolean('showUsed', false)}
+          onToggleUsedAddresses={action('onToggleUsedAddresses')}
           onToggleSubMenus={onToggleSubMenus}
           isShowingSubMenus
         />
@@ -81,6 +83,8 @@ storiesOf('Wallets|Receive', module)
           isSidebarExpanded={isSidebarExpanded}
           walletHasPassword={walletHasPassword}
           isSubmitting={isSubmitting}
+          showUsed={boolean('showUsed', false)}
+          onToggleUsedAddresses={action('onToggleUsedAddresses')}
         />
       </VerticalFlexContainer>
     );

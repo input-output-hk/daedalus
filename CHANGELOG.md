@@ -17,6 +17,7 @@ Changelog
 ### Chores
 
 - Improved PIN entry component UX ([PR 2470](https://github.com/input-output-hk/daedalus/pull/2470))
+- Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 - Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Re-enabled "Selfnode" environment ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
