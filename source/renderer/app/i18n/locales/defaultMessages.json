@@ -5568,17 +5568,92 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Reset Filter",
+        "description": "Reset Filter button label.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterDialog.js",
+        "id": "staking.stakePools.filter.resetFilter",
+        "start": {
+          "column": 15,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Retiring pools",
+        "description": "Retiring pools filter type.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterDialog.js",
+        "id": "staking.stakePools.filter.retiringPools",
+        "start": {
+          "column": 17,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Private pools",
+        "description": "Private pools filter type.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterDialog.js",
+        "id": "staking.stakePools.filter.privatePools",
+        "start": {
+          "column": 16,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Pools without off-chain data",
+        "description": "Pools without off-chain data filter type.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterDialog.js",
+        "id": "staking.stakePools.filter.poolsWithoutOffChainData",
+        "start": {
+          "column": 28,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Apply",
+        "description": "Filter button label.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterDialog.js",
+        "id": "staking.stakePools.filter.apply",
+        "start": {
+          "column": 9,
+          "line": 38
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/FilterDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Staking pools you are delegating to",
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 31
         }
       },
       {
@@ -5586,13 +5661,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 32
+          "line": 36
         }
       },
       {
@@ -5600,13 +5675,13 @@
         "description": "\"listTitleLoading\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleLoading",
         "start": {
           "column": 20,
-          "line": 37
+          "line": 41
         }
       },
       {
@@ -5614,13 +5689,13 @@
         "description": "\"listTitleSearch\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleSearch",
         "start": {
           "column": 19,
-          "line": 42
+          "line": 46
         }
       },
       {
@@ -5628,13 +5703,13 @@
         "description": "\"listTitleStakePools\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleStakePools",
         "start": {
           "column": 23,
-          "line": 47
+          "line": 51
         }
       },
       {
@@ -5642,13 +5717,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 52
+          "line": 56
         }
       },
       {
@@ -5656,13 +5731,13 @@
         "description": "moderatedBy message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.moderatedBy",
         "start": {
           "column": 15,
-          "line": 58
+          "line": 62
         }
       },
       {
@@ -5670,13 +5745,13 @@
         "description": "unmoderated message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.unmoderated",
         "start": {
           "column": 15,
-          "line": 63
+          "line": 67
         }
       }
     ],
@@ -5890,13 +5965,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 18
+          "line": 21
         }
       },
       {
@@ -5904,13 +5979,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 26
         }
       },
       {
@@ -5918,13 +5993,13 @@
         "description": "\"listTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listTitle",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 31
         }
       },
       {
@@ -5932,13 +6007,13 @@
         "description": "\"gridIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.gridIconTooltip",
         "start": {
           "column": 19,
-          "line": 33
+          "line": 36
         }
       },
       {
@@ -5946,13 +6021,13 @@
         "description": "\"gridRewardsIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.gridRewardsIconTooltip",
         "start": {
           "column": 26,
-          "line": 38
+          "line": 41
         }
       },
       {
@@ -5960,13 +6035,13 @@
         "description": "\"listIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listIconTooltip",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -5974,13 +6049,13 @@
         "description": "\"clearTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.clearTooltip",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 51
         }
       }
     ],
