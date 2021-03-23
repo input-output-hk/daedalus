@@ -83,7 +83,7 @@ export default class StakingStore extends Store {
   @observable cyclesWithoutIncreasingStakePools: number = 0;
 
   /* ----------  Stake Pools Filter  ---------- */
-  @observable _filterOptions = {};
+  @observable filterOptions: ?StakePoolFilterOptionsType = null;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
