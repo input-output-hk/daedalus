@@ -84,18 +84,15 @@ export default class WalletSettingsStore extends Store {
 
   getLocalWalletDataById = (id: any): ?WalletLocalData => {
     const { all: walletsLocalData } = this.stores.walletsLocal;
-    // $FlowFixMe
     return walletsLocalData[id];
   };
 
   @computed get walletsRecoveryPhraseVerificationData() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
-    // $FlowFixMe
-    return Object.values(walletsLocalData).reduce(
-      (
-        obj,
-        { id, recoveryPhraseVerificationDate, creationDate }: WalletLocalData
-      ) => {
+
+    return Object.keys(walletsLocalData)
+      .map((key) => walletsLocalData[key])
+      .reduce((obj, { id, recoveryPhraseVerificationDate, creationDate }) => {
         const {
           recoveryPhraseVerificationStatus,
           recoveryPhraseVerificationStatusType,
@@ -116,9 +113,7 @@ export default class WalletSettingsStore extends Store {
           hasNotification,
         };
         return obj;
-      },
-      {}
-    );
+      }, {});
   }
 
   // =================== PRIVATE API ==================== //
