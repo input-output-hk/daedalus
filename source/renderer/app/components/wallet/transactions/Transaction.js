@@ -25,6 +25,7 @@ import CancelTransactionConfirmationDialog from './CancelTransactionConfirmation
 import type { WalletTransactionAsset } from '../../../api/assets/types';
 import AssetToken from '../../widgets/AssetToken';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
+import { filterAssets } from '../../../utils/assets';
 
 /* eslint-disable consistent-return */
 
@@ -259,7 +260,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  assetsDetails: Array<WalletTransactionAsset>,
+  txAssets: Array<WalletTransactionAsset>,
   hasAssetsEnabled: boolean,
   isInternalAddress: Function,
   isLoadingAssets: boolean,
@@ -410,26 +411,11 @@ export default class Transaction extends Component<Props, State> {
   }
 
   get assetsList(): Array<WalletTransactionAsset> {
-    const {
-      assetsDetails,
-      data,
-      isInternalAddress,
-      hasAssetsEnabled,
-    } = this.props;
-
+    const { txAssets, data, isInternalAddress, hasAssetsEnabled } = this.props;
     if (!hasAssetsEnabled) {
       return [];
     }
-
-    const assetsList = assetsDetails.filter(
-      (asset) =>
-        (data.type === TransactionTypes.INCOME &&
-          isInternalAddress(asset.address)) ||
-        (data.type === TransactionTypes.EXPEND &&
-          !isInternalAddress(asset.address))
-    );
-
-    return assetsList;
+    return filterAssets(txAssets, data.type, isInternalAddress);
   }
 
   includesUnresolvedAddresses = (addresses: Array<?string>) =>
@@ -576,10 +562,7 @@ export default class Transaction extends Component<Props, State> {
                 </div>
                 {data.amount && (
                   <div className={styles.amount}>
-                    {
-                      // hide currency (we are showing symbol instead)
-                      formattedWalletAmount(data.amount, false)
-                    }
+                    {formattedWalletAmount(data.amount, false)}
                     <span>{intl.formatMessage(globalMessages.currency)}</span>
                   </div>
                 )}
@@ -638,7 +621,7 @@ export default class Transaction extends Component<Props, State> {
                 {data.type === TransactionTypes.EXPEND && !data.fee.isZero() && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
-                    <div className={styles.transactionIdRow}>
+                    <div className={styles.transactionFeeRow}>
                       <div className={styles.transactionFeeValue}>
                         {formattedWalletAmount(data.fee, false)}&nbsp;
                         <span>
@@ -653,9 +636,11 @@ export default class Transaction extends Component<Props, State> {
                   <>
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
                     <div className={styles.depositRow}>
-                      <div className={styles.amount}>
-                        {formattedWalletAmount(data.deposit, false)}
-                        <span className={styles.currency}>ADA</span>
+                      <div className={styles.depositValue}>
+                        {formattedWalletAmount(data.deposit, false)}&nbsp;
+                        <span>
+                          {intl.formatMessage(globalMessages.unitAda)}
+                        </span>
                       </div>
                     </div>
                   </>

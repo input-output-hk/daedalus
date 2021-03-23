@@ -59,6 +59,7 @@ const isIncentivizedTestnetSelfnode = checkIsIncentivizedTestnetSelfnode(
 );
 const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
+const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const NODE_VERSION = '1.25.1'; // TODO: pick up this value from process.env
 const mainProcessID = get(process, 'ppid', '-');
@@ -118,6 +119,7 @@ export const environment: Environment = Object.assign(
     isMacOS,
     isLinux,
     isBlankScreenFixActive,
+    keepLocalClusterRunning,
   },
   process.env
 );

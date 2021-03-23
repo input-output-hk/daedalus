@@ -6,13 +6,20 @@ Changelog
 ### Features
 
 - Added pasting of wallet recovery phrase ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
+- This PR improves the Transactions history and Rewards CSV contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
+- Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
 
 ### Fixes
 
+- Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
+- Fixed dropdown not appearing in the Stake Pools Settings screen ([PR 2460](https://github.com/input-output-hk/daedalus/pull/2460))
 - Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
 
 ### Chores
 
+- Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
+- Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
+- Re-enabled "Selfnode" environment ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Restored global link style on voting registration over screen ([PR 2453](https://github.com/input-output-hk/daedalus/pull/2453), [PR 2456](https://github.com/input-output-hk/daedalus/pull/2456))
 
 ## 4.0.2-FC3

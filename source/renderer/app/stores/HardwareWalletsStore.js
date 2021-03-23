@@ -49,6 +49,7 @@ import {
 import {
   DeviceModels,
   DeviceTypes,
+  DeviceEvents,
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -1554,8 +1555,8 @@ export default class HardwareWalletsStore extends Store {
       deviceName,
       path,
       error,
+      eventType,
     } = params;
-
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
@@ -1722,7 +1723,11 @@ export default class HardwareWalletsStore extends Store {
     }
 
     // Case that allows us to re-trigger tx send process multiple times if device doesn't match sender wallet
-    if (this.unfinishedWalletTxSigning && !disconnected) {
+    if (
+      this.unfinishedWalletTxSigning &&
+      !disconnected &&
+      eventType === DeviceEvents.CONNECT
+    ) {
       logger.debug(
         '[HW-DEBUG] CHANGE STATUS to: ',
         HwDeviceStatuses.CONNECTING
@@ -1773,6 +1778,17 @@ export default class HardwareWalletsStore extends Store {
     return this.hardwareWalletDevicesRequest.result;
   }
 
+  checkIsTrezorByWalletId = (walletId: string): boolean => {
+    const hardwareWalletConnectionData = find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
+    return (
+      hardwareWalletConnectionData &&
+      hardwareWalletConnectionData.device.deviceType === DeviceTypes.TREZOR
+    );
+  };
+
   _resetTxSignRequestData = () => {
     this.selectCoinsRequest.reset();
     this.txSignRequest = {};
@@ -1810,6 +1826,15 @@ export default class HardwareWalletsStore extends Store {
     const { networkTip } = this.stores.networkStatus;
     const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
     return absoluteSlotNumber;
+  };
+
+  _getHardwareWalletDeviceInfoByWalletId = (
+    walletId: string
+  ): HardwareWalletLocalData => {
+    return find(
+      this.hardwareWalletsConnectionData,
+      (connectionData) => connectionData.id === walletId
+    );
   };
 
   _setHardwareWalletLocalData = async ({
