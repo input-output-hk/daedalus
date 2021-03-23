@@ -550,6 +550,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-hardware-wallet-status-ready-color': '#2dc06c',
       '--theme-hardware-wallet-title-color': '#5e6066',
       '--theme-hardware-wallet-message-color': '#5e6066',
+      '--theme-hardware-wallet-status-passphrase-label-color': `${chroma(
+        text.secondary
+      ).alpha(0.5)}`,
     },
     icon: {
       '--theme-icon-nav-color': `${text.secondary}`,

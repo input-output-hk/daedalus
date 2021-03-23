@@ -110,12 +110,15 @@ export default class UndelegateWalletDialogContainer extends Component<
       hwDeviceStatus,
       sendMoneyRequest,
       selectCoinsRequest,
+      checkIsTrezorByWalletId,
     } = hardwareWallets;
     const { stakePoolQuitFee } = this.state;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
 
     const walletToBeUndelegated = getWalletById(this.selectedWalletId);
     if (!walletToBeUndelegated) return null;
+
+    const isTrezor = checkIsTrezorByWalletId(walletToBeUndelegated.id);
 
     const { name: walletName } = walletToBeUndelegated;
 
@@ -183,6 +186,7 @@ export default class UndelegateWalletDialogContainer extends Component<
         }
         fees={stakePoolQuitFee}
         hwDeviceStatus={hwDeviceStatus}
+        isTrezor={isTrezor}
       />
     );
   }

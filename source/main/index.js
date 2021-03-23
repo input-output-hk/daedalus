@@ -1,7 +1,7 @@
 // @flow
 import os from 'os';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, dialog, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { logger } from './utils/logging';
 import {
@@ -51,11 +51,13 @@ const {
   isDev,
   isWatchMode,
   isBlankScreenFixActive,
+  isSelfnode,
   network,
   os: osName,
   version: daedalusVersion,
   nodeVersion: cardanoNodeVersion,
   apiVersion: cardanoWalletVersion,
+  keepLocalClusterRunning,
 } = environment;
 
 if (isBlankScreenFixActive) {
@@ -245,6 +247,40 @@ const onAppReady = async () => {
   app.on('before-quit', async (event) => {
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
+
+    if (isSelfnode) {
+      if (keepLocalClusterRunning) {
+        logger.info(
+          'ipcMain: Keeping the local cluster running while exiting Daedalus',
+          {
+            keepLocalClusterRunning,
+          }
+        );
+        return safeExitWithCode(0);
+      }
+
+      const exitSelfnodeDialogOptions = {
+        buttons: ['Yes', 'No'],
+        type: 'warning',
+        title: 'Daedalus is about to close',
+        message: 'Do you want to keep the local cluster running?',
+        defaultId: 0,
+        cancelId: 1,
+        noLink: true,
+      };
+      const { response } = await dialog.showMessageBox(
+        mainWindow,
+        exitSelfnodeDialogOptions
+      );
+      if (response === 0) {
+        logger.info(
+          'ipcMain: Keeping the local cluster running while exiting Daedalus'
+        );
+        return safeExitWithCode(0);
+      }
+      logger.info('ipcMain: Exiting local cluster together with Daedalus');
+    }
+
     await safeExit();
   });
 };

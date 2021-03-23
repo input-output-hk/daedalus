@@ -656,9 +656,9 @@ export default class AdaApi {
       );
       outgoingTransactions.forEach((tx: Transaction) => {
         tx.withdrawals.forEach((w: TransactionWithdrawals) => {
-          const withdrawal = new BigNumber(w.amount.quantity).dividedBy(
-            LOVELACES_PER_ADA
-          );
+          const withdrawal = new BigNumber(
+            w.amount.quantity.toString()
+          ).dividedBy(LOVELACES_PER_ADA);
           withdrawals = withdrawals.plus(withdrawal);
         });
       });
@@ -937,7 +937,8 @@ export default class AdaApi {
           data: { ...data, withdrawal },
         });
       }
-      const formattedTxAmount = new BigNumber(amount).dividedBy(
+
+      const formattedTxAmount = new BigNumber(amount.toString()).dividedBy(
         LOVELACES_PER_ADA
       );
       const { fee, minimumAda } = _createTransactionFeeFromServerData(response);
@@ -1057,7 +1058,7 @@ export default class AdaApi {
       let totalOutputs = new BigNumber(0);
 
       map(response.inputs, (input) => {
-        const inputAmount = new BigNumber(input.amount.quantity);
+        const inputAmount = new BigNumber(input.amount.quantity.toString());
         const inputAssets = map(input.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1076,7 +1077,7 @@ export default class AdaApi {
       });
 
       map(outputs, (output) => {
-        const outputAmount = new BigNumber(output.amount.quantity);
+        const outputAmount = new BigNumber(output.amount.quantity.toString());
         const outputAssets = map(output.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1109,9 +1110,8 @@ export default class AdaApi {
         amount: withdrawal.amount,
       }));
 
-      const depositsArray = map(
-        response.deposits,
-        (deposit) => deposit.quantity
+      const depositsArray = map(response.deposits, (deposit) =>
+        deposit.quantity.toString()
       );
       const deposits = depositsArray.length
         ? BigNumber.sum.apply(null, depositsArray)
@@ -1122,9 +1122,8 @@ export default class AdaApi {
           ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
           : new BigNumber(0);
 
-      const withdrawalsArray = map(
-        response.withdrawals,
-        (withdrawal) => withdrawal.amount.quantity
+      const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
+        withdrawal.amount.quantity.toString()
       );
       const withdrawals = withdrawalsArray.length
         ? BigNumber.sum.apply(null, withdrawalsArray)
@@ -2335,6 +2334,7 @@ export default class AdaApi {
         desiredPoolNumber,
         minimumUtxoValue,
         hardforkAt: eras.shelley || null,
+        eras,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
@@ -2632,18 +2632,24 @@ const _createWalletFromServerData = action(
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
-        ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
-        : new BigNumber(balance.total.quantity);
+        ? new BigNumber(balance.total.quantity.toString()).dividedBy(
+            LOVELACES_PER_ADA
+          )
+        : new BigNumber(balance.total.quantity.toString());
     const walletAvailableAmount =
       balance.available.unit === WalletUnits.LOVELACE
-        ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
-        : new BigNumber(balance.available.quantity);
+        ? new BigNumber(balance.available.quantity.toString()).dividedBy(
+            LOVELACES_PER_ADA
+          )
+        : new BigNumber(balance.available.quantity.toString());
     let walletRewardAmount = new BigNumber(0);
     if (!isLegacy) {
       walletRewardAmount =
         balance.reward.unit === WalletUnits.LOVELACE
-          ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
-          : new BigNumber(balance.reward.quantity);
+          ? new BigNumber(balance.reward.quantity.toString()).dividedBy(
+              LOVELACES_PER_ADA
+            )
+          : new BigNumber(balance.reward.quantity.toString());
     }
 
     // Current (Active)
@@ -2667,14 +2673,14 @@ const _createWalletFromServerData = action(
         return {
           policyId: item.policy_id,
           assetName: item.asset_name,
-          quantity: new BigNumber(item.quantity),
+          quantity: new BigNumber(item.quantity.toString()),
         };
       }),
       total: assets.total.map((item) => {
         return {
           policyId: item.policy_id,
           assetName: item.asset_name,
-          quantity: new BigNumber(item.quantity),
+          quantity: new BigNumber(item.quantity.toString()),
         };
       }),
     };
@@ -2762,7 +2768,7 @@ const _createTransactionFromServerData = action(
       ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
         policyId,
         assetName,
-        quantity: new BigNumber(quantity),
+        quantity: new BigNumber(quantity.toString()),
         address,
       })
     );
@@ -2777,10 +2783,14 @@ const _createTransactionFromServerData = action(
           ? TransactionTypes.EXPEND
           : TransactionTypes.INCOME,
       amount: new BigNumber(
-        direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
+        direction === 'outgoing'
+          ? `-${amount.quantity.toString()}`
+          : amount.quantity.toString()
       ).dividedBy(LOVELACES_PER_ADA),
-      fee: new BigNumber(fee.quantity).dividedBy(LOVELACES_PER_ADA),
-      deposit: new BigNumber(deposit.quantity).dividedBy(LOVELACES_PER_ADA),
+      fee: new BigNumber(fee.quantity.toString()).dividedBy(LOVELACES_PER_ADA),
+      deposit: new BigNumber(deposit.quantity.toString()).dividedBy(
+        LOVELACES_PER_ADA
+      ),
       assets: transactionAssets,
       date: utcStringToDate(date),
       description: '',
@@ -2858,8 +2868,10 @@ const _createTransactionFeeFromServerData = action(
   (data: TransactionFee) => {
     const feeAmount = get(data, ['estimated_max', 'quantity'], 0);
     const minimumAdaAmount = get(data, 'minimum_coins.[0].quantity', 0);
-    const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
-    const minimumAda = new BigNumber(minimumAdaAmount).dividedBy(
+    const fee = new BigNumber(feeAmount.toString()).dividedBy(
+      LOVELACES_PER_ADA
+    );
+    const minimumAda = new BigNumber(minimumAdaAmount.toString()).dividedBy(
       LOVELACES_PER_ADA
     );
     return {
@@ -2873,9 +2885,11 @@ const _createMigrationFeeFromServerData = action(
   'AdaApi::_createMigrationFeeFromServerData',
   (data: TransferFundsCalculateFeeApiResponse) => {
     const { quantity: feeAmount = 0 } = data.migration_cost;
-    const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
+    const fee = new BigNumber(feeAmount.toString()).dividedBy(
+      LOVELACES_PER_ADA
+    );
     const { quantity: leftoversAmount = 0 } = data.leftovers;
-    const leftovers = new BigNumber(leftoversAmount).dividedBy(
+    const leftovers = new BigNumber(leftoversAmount.toString()).dividedBy(
       LOVELACES_PER_ADA
     );
     return { fee, leftovers };
@@ -2886,10 +2900,10 @@ const _createDelegationFeeFromServerData = action(
   'AdaApi::_createDelegationFeeFromServerData',
   (data: TransactionFee) => {
     const fee = new BigNumber(
-      get(data, ['estimated_max', 'quantity'], 0)
+      get(data, ['estimated_max', 'quantity'], 0).toString()
     ).dividedBy(LOVELACES_PER_ADA);
     const deposits = new BigNumber(
-      get(data, ['deposit', 'quantity'], 0)
+      get(data, ['deposit', 'quantity'], 0).toString()
     ).dividedBy(LOVELACES_PER_ADA);
     // @TODO Use api response data when api is ready
     const depositsReclaimed = new BigNumber(0);
@@ -2931,17 +2945,19 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
-      potentialRewards: new BigNumber(nonMyopicMemberRewardsQuantity).dividedBy(
-        LOVELACES_PER_ADA
-      ),
+      potentialRewards: new BigNumber(
+        nonMyopicMemberRewardsQuantity.toString()
+      ).dividedBy(LOVELACES_PER_ADA),
       nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,
-      cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),
+      cost: new BigNumber(costQuantity.toString()).dividedBy(LOVELACES_PER_ADA),
       description,
       isCharity: false,
       name,
-      pledge: new BigNumber(pledgeQuantity).dividedBy(LOVELACES_PER_ADA),
+      pledge: new BigNumber(pledgeQuantity.toString()).dividedBy(
+        LOVELACES_PER_ADA
+      ),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring: retiringAt ? new Date(retiringAt) : null,
@@ -2955,7 +2971,7 @@ const _createRedeemItnRewardsFromServerData = action(
   (transaction: Transaction) => {
     const { quantity, unit } = get(transaction, 'withdrawals[0].amount');
     return unit === WalletUnits.LOVELACE
-      ? new BigNumber(quantity).dividedBy(LOVELACES_PER_ADA)
-      : new BigNumber(quantity);
+      ? new BigNumber(quantity.toString()).dividedBy(LOVELACES_PER_ADA)
+      : new BigNumber(quantity.toString());
   }
 );
