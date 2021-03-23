@@ -4,23 +4,28 @@
   border: 1px solid var(--theme-hardware-wallet-status-border-color);
   border-radius: 4px;
   display: flex;
-  height: 72px;
   justify-content: space-between;
-  padding: 20px;
+  min-height: 72px;
+  padding: 14px 20px;
 
-  .message {
-    align-items: center;
-    color: var(--theme-hardware-wallet-status-color);
+  .messageWrapper {
     display: flex;
+    flex-direction: column;
     font-family: var(--font-light);
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 1.38;
     padding-right: 20px;
-
-    .externalLink {
-      font-family: var(--font-light);
+    .message {
+      color: var(--theme-hardware-wallet-status-color);
       font-size: 16px;
+      font-weight: 300;
+      line-height: 1.38;
+      .externalLink {
+        font-family: var(--font-light);
+        font-size: 16px;
+      }
+    }
+    .passphraseLabel {
+      color: var(--theme-hardware-wallet-status-passphrase-label-color);
+      line-height: 1.38;
     }
   }
 

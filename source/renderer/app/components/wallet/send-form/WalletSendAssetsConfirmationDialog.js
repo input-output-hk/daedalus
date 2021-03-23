@@ -159,6 +159,7 @@ type Props = {
   onExternalLinkClick: Function,
   onCopyAssetItem: Function,
   currencyUnit: string,
+  isTrezor: boolean,
 };
 
 type State = {
@@ -268,6 +269,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       isFlight,
       onExternalLinkClick,
       walletName,
+      isTrezor,
     } = this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
@@ -277,6 +279,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             <HardwareWalletStatus
               hwDeviceStatus={hwDeviceStatus}
               walletName={walletName}
+              isTrezor={isTrezor}
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>

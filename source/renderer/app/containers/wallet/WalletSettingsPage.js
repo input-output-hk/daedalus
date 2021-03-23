@@ -48,17 +48,19 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       profile,
+      hardwareWallets,
     } = this.props.stores;
+    const { checkIsTrezorByWalletId } = hardwareWallets;
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
     } = wallets;
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     const { isLegacy, isHardwareWallet } = activeWallet;
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     const { actions } = this.props;
     const {
@@ -152,6 +154,7 @@ export default class WalletSettingsPage extends Component<Props> {
           undelegateWalletDialogContainer={
             <UndelegateWalletDialogContainer
               onExternalLinkClick={app.openExternalLink}
+              isTrezor={isHardwareWallet && isTrezor}
             />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}

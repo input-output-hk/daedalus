@@ -287,6 +287,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           error={null}
           fees={new BigNumber(10)}
           hwDeviceStatus="ready"
+          isTrezor={boolean('isTrezor', false)}
         />
       }
       deleteWalletDialogContainer={
