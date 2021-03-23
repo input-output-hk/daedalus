@@ -10,6 +10,7 @@ Changelog
 
 ### Fixes
 
+- Fixed issue when daedalus asks to connect hardware wallet after running Cardano app ([PR 2471](https://github.com/input-output-hk/daedalus/pull/2471))
 - Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
 - Fixed dropdown not appearing in the Stake Pools Settings screen ([PR 2460](https://github.com/input-output-hk/daedalus/pull/2460))
 - Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
