@@ -50,6 +50,11 @@ import {
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
+  noData: {
+    id: 'staking.stakePools.tooltip.noData',
+    defaultMessage: '!!!No data',
+    description: '"Name" placeholder when it is empty.',
+  },
   ranking: {
     id: 'staking.stakePools.tooltip.ranking',
     defaultMessage: '!!!Rank:',
@@ -766,11 +771,13 @@ export default class TooltipPool extends Component<Props, State> {
         <div className={colorBandClassnames} style={colorBandStyle} />
         {hasArrow && <div className={arrowClassnames} style={arrowStyle} />}
         <div className={styles.container}>
-          <h3 className={styles.name}>{name}</h3>
+          <h3 className={styles.name}>
+            {name || intl.formatMessage(messages.noData)}
+          </h3>
           <button className={styles.closeButton} onClick={onClick}>
             <SVGInline svg={closeCross} />
           </button>
-          <div className={styles.ticker}>{ticker}</div>
+          {ticker && <div className={styles.ticker}>{ticker}</div>}
           {retiring && (
             <div className={styles.retirement}>
               <FormattedMessage
@@ -802,13 +809,17 @@ export default class TooltipPool extends Component<Props, State> {
               </CopyToClipboard>
             </div>
           </PopOver>
-          <div className={styles.description}>{description}</div>
-          <Link
-            onClick={() => onOpenExternalLink(homepage)}
-            className={styles.homepage}
-            label={homepage}
-            skin={LinkSkin}
-          />
+          {description && (
+            <div className={styles.description}>{description}</div>
+          )}
+          {homepage && (
+            <Link
+              onClick={() => onOpenExternalLink(homepage)}
+              className={styles.homepage}
+              label={homepage}
+              skin={LinkSkin}
+            />
+          )}
           {this.renderDescriptionFields()}
         </div>
         {onSelect && showWithSelectButton && (

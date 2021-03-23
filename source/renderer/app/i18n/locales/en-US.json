@@ -522,6 +522,7 @@
   "staking.stakePools.tooltip.costPerEpochTooltip": "Fixed operational costs that the stake pool retains from any rewards earned during each epoch. ",
   "staking.stakePools.tooltip.delegateButton": "Delegate to this pool",
   "staking.stakePools.tooltip.experimentalTooltipLabel": "Experimental feature, data may be inaccurate.",
+  "staking.stakePools.tooltip.noData": "No data",
   "staking.stakePools.tooltip.pledge": "Pledge:",
   "staking.stakePools.tooltip.pledgeTooltip": "The amount of stake that a pool operator contributes to a pool. Pools with higher pledge amounts earn more rewards for themselves and their delegators. Pools that do not honor their pledge earn zero rewards and accrue low ranking.",
   "staking.stakePools.tooltip.potentialRewards": "Potential rewards:",

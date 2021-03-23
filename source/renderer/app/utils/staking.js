@@ -90,14 +90,13 @@ export const isStakePoolInFilterRange = (
     poolsWithoutOffChainDataChecked,
   } = filterOptions;
 
-  if (stakePool.isRetiring && !retiringPoolsChecked) {
+  if (
+    (stakePool.isRetiring && !retiringPoolsChecked) ||
+    (stakePool.isPrivate && !privatePoolsChecked) ||
+    (stakePool.hasNoOffChainData && !poolsWithoutOffChainDataChecked)
+  ) {
     return false;
   }
-  if (stakePool.isPrivate && !privatePoolsChecked) {
-    return false;
-  }
-  if (stakePool.hasNoOffChainData && !poolsWithoutOffChainDataChecked) {
-    return false;
-  }
+
   return true;
 };

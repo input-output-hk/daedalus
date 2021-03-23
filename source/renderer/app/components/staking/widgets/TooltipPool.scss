@@ -234,7 +234,7 @@
   font-size: 10px;
   height: 14px;
   line-height: 14px;
-  margin: -8px 0 12px;
+  margin: 0 0 12px;
   padding: 3px 0;
   transition: margin 0.4s ease-in-out;
   word-break: break-all;
@@ -346,7 +346,7 @@
   display: inline-block;
   font-size: 14px;
   line-height: 1.36;
-  margin-bottom: 9px;
+  margin-bottom: 1px;
   opacity: 0.6;
   vertical-align: middle;
 }
@@ -378,7 +378,7 @@
 
 .table {
   @extend %regularText;
-  margin: 18px 0 6px 0;
+  margin: 18px 0 0 0;
 
   .dRow {
     align-items: center;

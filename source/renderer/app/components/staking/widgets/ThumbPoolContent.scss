@@ -1,6 +1,6 @@
 .component {
   height: 69px;
-  padding: 9px 0 0;
+  padding: 6px 0 0;
   position: relative;
   width: 78px;
 
@@ -13,18 +13,41 @@
   }
 
   .ticker {
+    align-items: center;
     color: var(--theme-staking-stake-pool-ticker-color);
+    display: flex;
     font-family: var(--font-semibold);
     font-size: 14px;
+    height: 22px;
+    justify-content: center;
     letter-spacing: -0.5px;
     line-height: 1;
-    margin: 0 0 1px;
+    margin-bottom: 2px;
+    text-align: center;
+  }
+
+  .id {
+    align-items: center;
+    background-color: var(
+      --theme-staking-stake-pool-tooltip-neutral-background-color
+    );
+    border-radius: 3px;
+    color: var(--theme-staking-stake-pool-ticker-color);
+    display: flex;
+    font-family: var(--font-semibold);
+    font-size: 11px;
+    height: 22px;
+    justify-content: center;
+    line-height: 1.27;
+    margin: 0 3.5px 2px;
     text-align: center;
   }
 
   .ranking {
     font-size: 20px;
     font-weight: bold;
+    height: 22px;
+    line-height: 100%;
     position: relative;
     text-align: center;
 
