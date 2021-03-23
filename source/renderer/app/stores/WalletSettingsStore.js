@@ -82,23 +82,11 @@ export default class WalletSettingsStore extends Store {
   getWalletsRecoveryPhraseVerificationData = (walletId: string) =>
     this.walletsRecoveryPhraseVerificationData[walletId] || {};
 
-  getWalletShowUsedAddressesStatuses = (walletId: string) =>
-    this.walletsShowUsedAddressesStatuses[walletId] || {};
-
-  @computed get walletsShowUsedAddressesStatuses() {
+  getLocalWalletDataById = (id: any): ?WalletLocalData => {
     const { all: walletsLocalData } = this.stores.walletsLocal;
     // $FlowFixMe
-    return Object.values(walletsLocalData).reduce(
-      (obj, { id, showUsedAddresses }: WalletLocalData) => {
-        obj[id] = {
-          id,
-          showUsedAddresses,
-        };
-        return obj;
-      },
-      {}
-    );
-  }
+    return walletsLocalData[id];
+  };
 
   @computed get walletsRecoveryPhraseVerificationData() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
@@ -308,13 +296,17 @@ export default class WalletSettingsStore extends Store {
       throw new Error(
         'Active wallet required before checking show used addresses statuses.'
       );
-    const usedAddressesStatus = this.getWalletShowUsedAddressesStatuses(
-      activeWallet.id
+
+    const localWalletData: ?WalletLocalData = this.getLocalWalletDataById(
+      activeWallet ? activeWallet.id : ''
     );
+
+    const { showUsedAddresses } = localWalletData || {};
+
     await this.actions.walletsLocal.setWalletLocalData.trigger({
       walletId: activeWallet.id,
       updatedWalletData: {
-        showUsedAddresses: !usedAddressesStatus.showUsedAddresses,
+        showUsedAddresses: !showUsedAddresses,
       },
     });
   };

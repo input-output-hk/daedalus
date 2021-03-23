@@ -12,6 +12,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
+import type { WalletLocalData } from '../../api/utils/localStorage';
 
 const messages = defineMessages({
   address: {
@@ -160,11 +161,13 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
 
-    const { getWalletShowUsedAddressesStatuses } = walletSettings;
+    const { getLocalWalletDataById } = walletSettings;
 
-    const { showUsedAddresses } = getWalletShowUsedAddressesStatuses(
+    const localWalletData: ?WalletLocalData = getLocalWalletDataById(
       activeWallet ? activeWallet.id : ''
     );
+
+    const { showUsedAddresses } = localWalletData || {};
 
     // Guard against potential null values
     if (!activeWallet)
