@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- This PR implemented stake pools filter pop over ([PR 2461](https://github.com/input-output-hk/daedalus/pull/2461))
 - This PR improves the Transactions history and Rewards CSV contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
 - Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
 
