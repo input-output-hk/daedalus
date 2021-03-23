@@ -80,6 +80,10 @@ export const isStakePoolInFilterRange = (
   filterOptions: ?StakePoolFilterOptionsType,
   stakePool: StakePool
 ) => {
+  if (!filterOptions) {
+    return true;
+  }
+
   const {
     retiringPoolsChecked,
     privatePoolsChecked,
