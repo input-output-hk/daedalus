@@ -833,6 +833,15 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
+    '--theme-staking-stake-pools-filter-button-color': '#fafbfc',
+    '--theme-staking-stake-pools-filter-modal-bg-color': '#314259',
+    '--theme-staking-stake-pools-filter-title-button-background-color':
+      'rgba(233, 244, 254, 0.1)',
+    '--theme-staking-stake-pools-filter-title-button-background-color-hover':
+      'rgba(233, 244, 254, 0.05)',
+    '--theme-staking-stake-pools-filter-title-button-background-color-active':
+      'rgba(233, 244, 254, 0.12)',
+    '--theme-staking-stake-pools-filter-title-button-text-color': '#ffffff',
   },
   staking: {
     '--theme-staking-content-background-color': '#263345',

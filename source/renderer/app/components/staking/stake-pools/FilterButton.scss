@@ -5,7 +5,7 @@
     padding: 7px 12px;
 
     .actionLabel {
-      color: var(--theme-stake-pools-filter-button-color);
+      color: var(--theme-staking-stake-pools-filter-button-color);
       font-family: var(--font-medium);
       font-size: 14px;
       line-height: 1.36;
@@ -21,7 +21,7 @@
       width: 11px;
 
       g {
-        stroke: var(--theme-stake-pools-filter-button-color);
+        stroke: var(--theme-staking-stake-pools-filter-button-color);
       }
     }
   }

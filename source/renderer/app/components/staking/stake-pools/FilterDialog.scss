@@ -1,5 +1,5 @@
 .component {
-  background-color: var(--theme-stake-pools-filter-modal-bg-color);
+  background-color: var(--theme-staking-stake-pools-filter-modal-bg-color);
   flex: initial;
   font-family: var(--font-regular);
   padding: 20px 10px 10px 10px;
@@ -22,10 +22,10 @@
 
     .titleLink {
       background: var(
-        --theme-transactions-filter-title-button-background-color
+        --theme-staking-stake-pools-filter-title-button-background-color
       );
       border-radius: 4px;
-      color: var(--theme-transactions-filter-title-button-text-color);
+      color: var(--theme-staking-stake-pools-filter-title-button-text-color);
       cursor: pointer;
       font-size: 10px;
       font-weight: 500;
@@ -48,19 +48,19 @@
 
       &:disabled:hover {
         background: var(
-          --theme-transactions-filter-title-button-background-color
+          --theme-staking-stake-pools-filter-title-button-background-color
         );
       }
 
       &:hover {
         background: var(
-          --theme-transactions-filter-title-button-background-color-hover
+          --theme-staking-stake-pools-filter-title-button-background-color-hover
         );
       }
 
       &:active {
         background: var(
-          --theme-transactions-filter-title-button-background-color-active
+          --theme-staking-stake-pools-filter-title-button-background-color-active
         );
       }
     }

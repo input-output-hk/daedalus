@@ -825,6 +825,15 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
+    '--theme-staking-stake-pools-filter-button-color': '#fafbfc',
+    '--theme-staking-stake-pools-filter-modal-bg-color': '#fafbfc',
+    '--theme-staking-stake-pools-filter-title-button-background-color':
+      'rgba(68, 91, 124, 0.1)',
+    '--theme-staking-stake-pools-filter-title-button-background-color-hover':
+      'rgba(68, 91, 124, 0.05)',
+    '--theme-staking-stake-pools-filter-title-button-background-color-active':
+      'rgba(68, 91, 124, 0.12)',
+    '--theme-staking-stake-pools-filter-title-button-text-color': '#2d2d2d',
   },
   staking: {
     '--theme-staking-content-background-color': '#fafbfc',

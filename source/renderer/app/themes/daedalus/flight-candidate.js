@@ -812,6 +812,15 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
+    '--theme-staking-stake-pools-filter-button-color': 'rgba(18, 19, 38, 1)',
+    '--theme-staking-stake-pools-filter-modal-bg-color': '#3f404f',
+    '--theme-staking-stake-pools-filter-title-button-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-staking-stake-pools-filter-title-button-background-color-hover':
+      'rgba(255, 255, 255, 0.05)',
+    '--theme-staking-stake-pools-filter-title-button-background-color-active':
+      'rgba(255, 255, 255, 0.12)',
+    '--theme-staking-stake-pools-filter-title-button-text-color': '#ffffff',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
