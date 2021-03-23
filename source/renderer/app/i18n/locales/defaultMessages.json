@@ -11406,13 +11406,13 @@
         "description": "Wallet public key label.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
         "id": "wallet.settings.walletPublicKey",
         "start": {
           "column": 19,
-          "line": 18
+          "line": 20
         }
       },
       {
@@ -11420,13 +11420,13 @@
         "description": "Wallet public key show instruction.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
         "id": "wallet.settings.walletPublicKeyShowInstruction",
         "start": {
           "column": 34,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -11434,13 +11434,13 @@
         "description": "Show QR code tooltip.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
         "id": "wallet.settings.showQRCode",
         "start": {
           "column": 14,
-          "line": 28
+          "line": 30
         }
       }
     ],
@@ -16758,13 +16758,13 @@
         "description": "\"Address\" word in the Address PDF export",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.pdf.filenamePrefix",
         "start": {
           "column": 11,
-          "line": 17
+          "line": 18
         }
       }
     ],

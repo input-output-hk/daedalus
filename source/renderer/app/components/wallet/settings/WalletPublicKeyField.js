@@ -147,9 +147,12 @@ export default class WalletPublicKeyField extends Component<Props, State> {
           <PopOver content={toggleButtonTooltip}>
             <Button
               className={revealHideButtonStyles}
-              label={walletPublicKeyHidden ?
-                <SVGInline svg={revealKeyImage}/> :
-                <SVGInline svg={hideKeyImage}/>
+              label={
+                walletPublicKeyHidden ? (
+                  <SVGInline svg={revealKeyImage} />
+                ) : (
+                  <SVGInline svg={hideKeyImage} />
+                )
               }
               onClick={this.toggleWalletPublicKeyVisibility}
             />
