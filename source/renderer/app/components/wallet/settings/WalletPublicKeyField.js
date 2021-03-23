@@ -9,6 +9,8 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import WalletPublicKeyFieldSkin from './WalletPublicKeyFieldSkin';
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
+import revealKeyImage from '../../../assets/images/reveal-key.inline.svg';
+import hideKeyImage from '../../../assets/images/hide-key.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { LOCALES } from '../../../../../common/types/locales.types';
@@ -98,9 +100,10 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     const hiddenValuePlaceholder = intl.formatMessage(
       messages.walletPublicKeyShowInstruction
     );
-    const toggleButtonLabel = intl.formatMessage(
-      globalMessages[walletPublicKeyHidden ? 'reveal' : 'hide']
-    );
+    const toggleButtonLabel = walletPublicKeyHidden ?
+      <SVGInline svg={revealKeyImage}/> :
+      <SVGInline svg={hideKeyImage}/>;
+
     const qrCodeButtonStyles = classnames([
       styles.imageButton,
       styles.qrCodeButton,
