@@ -45,6 +45,7 @@ type Props = {
   filterOptions: StakePoolFilterOptionsType,
   onFilter: Function,
   populatedFilterOptions: StakePoolFilterOptionsType,
+  isTrezor: boolean,
 };
 
 @observer
@@ -92,6 +93,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       filterOptions,
       onFilter,
       populatedFilterOptions,
+      isTrezor,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -156,6 +158,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             error={error}
             hwDeviceStatus={hwDeviceStatus}
             onExternalLinkClick={onOpenExternalLink}
+            isTrezor={isTrezor}
           />
         );
         break;

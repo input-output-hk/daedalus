@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import DelegationStepsIntroDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
@@ -191,6 +191,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         isHardwareWallet={false}
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
         onExternalLinkClick={action('onOpenExternalLink')}
+        isTrezor={boolean('isTrezor', false)}
       />,
       <DelegationStepsSuccessDialog
         key="DelegationStepsSuccessDialog"

@@ -273,6 +273,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',
+    '--theme-hardware-wallet-status-passphrase-label-color':
+      'rgba(94, 96, 102, 0.5)',
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(250, 251, 252, 0.6)',

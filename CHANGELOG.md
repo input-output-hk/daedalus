@@ -3,6 +3,11 @@ Changelog
 
 ## vNext
 
+### Features
+
+- This PR improves the Transactions history and Rewards CSV contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
+- Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
+
 ### Fixes
 
 - Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
@@ -11,6 +16,7 @@ Changelog
 
 ### Chores
 
+- Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 - Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Re-enabled "Selfnode" environment ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))

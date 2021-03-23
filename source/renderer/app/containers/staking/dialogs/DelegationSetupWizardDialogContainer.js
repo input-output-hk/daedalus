@@ -183,6 +183,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       hwDeviceStatus,
       sendMoneyRequest,
       selectCoinsRequest,
+      checkIsTrezorByWalletId,
     } = hardwareWallets;
     const {
       stakePools,
@@ -205,6 +206,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
       this.handleIsWalletAcceptable(amount, reward)
     );
+
+    const isTrezor = checkIsTrezorByWalletId(selectedWallet.id);
 
     return (
       <DelegationSetupWizardDialog
@@ -245,6 +248,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         filterOptions={filterOptions || {}}
         populatedFilterOptions={populatedFilterOptions}
         onFilter={filterStakePools.trigger}
+        isTrezor={isTrezor}
       />
     );
   }

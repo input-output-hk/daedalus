@@ -277,6 +277,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#e9f4fe',
     '--theme-hardware-wallet-message-color': '#e9f4fe',
+    '--theme-hardware-wallet-status-passphrase-label-color':
+      'rgba(233, 244, 254, 0.5)',
   },
   icon: {
     '--theme-icon-nav-color': '#9ba6b3',
