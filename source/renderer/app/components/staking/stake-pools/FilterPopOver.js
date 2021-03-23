@@ -1,18 +1,21 @@
 // @flow
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component, createRef } from 'react';
-import type { Element, ElementRef } from 'react';
+import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
 import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
+import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
 import { emptyStakePoolFilterOptions } from '../../../stores/StakingStore';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinyButton from '../../widgets/forms/TinyButton';
+import filterIcon from '../../../assets/images/filter-dis-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
-import styles from './FilterDialog.scss';
+import styles from './FilterPopOver.scss';
 
 const messages = defineMessages({
   resetFilter: {
@@ -42,14 +45,15 @@ const messages = defineMessages({
   },
 });
 
-export type FilterDialogProps = {
+export type FilterPopOverProps = {
   populatedFilterOptions: StakePoolFilterOptionsType,
   onFilter: Function,
-  triggerElement?: Element<*>,
+  numberOfFilterDimensionsApplied: number,
+  isFilterDisabled: boolean,
 };
 
 @observer
-export default class FilterDialog extends Component<FilterDialogProps> {
+export default class FilterPopOver extends Component<FilterPopOverProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -57,7 +61,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
   form: ReactToolboxMobxForm;
   popoverTippyInstance: ElementRef<*> = createRef();
 
-  constructor(props: FilterDialogProps, context: Object) {
+  constructor(props: FilterPopOverProps, context: Object) {
     super(props);
 
     const {
@@ -164,7 +168,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
 
   render() {
     const { intl } = this.context;
-    const { triggerElement } = this.props;
+    const { numberOfFilterDimensionsApplied, isFilterDisabled } = this.props;
 
     return (
       <PopOver
@@ -181,7 +185,7 @@ export default class FilterDialog extends Component<FilterDialogProps> {
         placement="bottom"
         themeVariables={{
           '--rp-pop-over-bg-color':
-            'var(--theme-stake-pools-filter-modal-bg-color)',
+            'var(--theme-staking-stake-pools-filter-modal-bg-color)',
           '--rp-pop-over-box-shadow': '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
           '--rp-pop-over-border-radius': '4px',
           '--rp-pop-over-border-style': 'solid',
@@ -223,7 +227,26 @@ export default class FilterDialog extends Component<FilterDialogProps> {
           </div>
         }
       >
-        {triggerElement}
+        <div className={styles.triggerButton}>
+          <TinyButton
+            className={classNames(['primary', styles.actionButton])}
+            label={
+              <>
+                <div className={styles.actionLabel}>
+                  {intl.formatMessage(globalMessages.filter)}
+                  {numberOfFilterDimensionsApplied > 0 && (
+                    <span className={styles.numberIndicator}>
+                      ({numberOfFilterDimensionsApplied})
+                    </span>
+                  )}
+                </div>
+                <SVGInline svg={filterIcon} className={styles.filterIcon} />
+              </>
+            }
+            loading={false}
+            disabled={isFilterDisabled}
+          />
+        </div>
       </PopOver>
     );
   }

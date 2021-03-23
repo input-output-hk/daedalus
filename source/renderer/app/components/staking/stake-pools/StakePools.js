@@ -301,11 +301,11 @@ export default class StakePools extends Component<Props, State> {
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
               smashServer={smashServer}
-              isFilterDisabled={isFilterDisabled}
-              numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-              filterDialogProps={{
+              filterPopOverProps={{
                 populatedFilterOptions,
                 onFilter,
+                isFilterDisabled,
+                numberOfFilterDimensionsApplied,
               }}
             />
             {stakePoolsDelegatingList.length > 0 && (

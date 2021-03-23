@@ -33,11 +33,11 @@
 
   &.inputExtrasSearch {
     input {
-      padding-right: 160px;
+      padding-right: 265px;
     }
 
     &.withGridRewardsView input {
-      padding-right: 193px;
+      padding-right: 300px;
     }
   }
 }
@@ -51,10 +51,10 @@
   right: 20px;
 
   &.inputExtrasSearch {
-    right: 110px;
+    right: 217px;
 
     &.withGridRewardsView {
-      right: 145px;
+      right: 252px;
     }
   }
 }
@@ -91,28 +91,30 @@
 
 .viewButtons {
   align-items: center;
-  bottom: 0.5px;
+  bottom: 0;
   display: flex;
-  height: 48px;
+  height: 50px;
   justify-content: space-between;
-  line-height: 48px;
-  padding-left: 20px;
+  line-height: 50px;
   position: absolute;
-  right: 11px;
+  right: 0;
 
   .separator {
     color: var(--theme-staking-stake-pools-search-clear-button-color);
+    margin-top: -3px;
     opacity: 0.2;
-    padding-right: 10px;
+    padding: 0 8px;
     position: relative;
-    top: -2px;
   }
 
   button {
+    align-items: center;
     border-radius: 3px;
     color: var(--theme-about-window-icon-close-button-color);
     cursor: pointer;
+    display: flex;
     height: 28px;
+    justify-content: center;
     margin: 0 2px;
     width: 28px;
 
@@ -122,9 +124,13 @@
       );
     }
 
+    :global {
+      .SVGInline {
+        height: 15px;
+      }
+    }
+
     svg {
-      position: relative;
-      top: 1px;
       width: 18px;
 
       > g > g {
