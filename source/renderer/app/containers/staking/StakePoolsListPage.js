@@ -61,7 +61,7 @@ export default class StakePoolsListPage extends Component<Props> {
     const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
-      stakePools,
+      allFiltered,
       selectedDelegationWalletId,
       stake,
       fetchingStakePoolsFailed,
@@ -84,7 +84,7 @@ export default class StakePoolsListPage extends Component<Props> {
         <StakePools
           wallets={all}
           currentLocale={currentLocale}
-          stakePoolsList={stakePools}
+          stakePoolsList={allFiltered}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}

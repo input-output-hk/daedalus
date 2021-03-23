@@ -2181,16 +2181,10 @@ export default class AdaApi {
         stake
       );
       const stakePools = response
-        .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .filter(({ flags }: AdaApiStakePool) => !flags.includes('delisted'))
-        .filter(
-          ({ margin }: AdaApiStakePool) =>
-            margin !== undefined && margin.quantity < 100
-        )
         .map(_createStakePoolFromServerData);
       logger.debug('AdaApi::getStakePools success', {
         stakePoolsTotal: response.length,
-        stakePoolsWithMetadata: stakePools.length,
         unfilteredStakePools: response,
       });
       return stakePools;
@@ -2929,7 +2923,8 @@ const _createStakePoolFromServerData = action(
       non_myopic_member_rewards: nonMyopicMemberRewards,
       saturation,
     } = metrics; // eslint-disable-line
-    const { name, description = '', ticker, homepage } = metadata;
+    const { name = '', description = '', ticker = '', homepage = '' } =
+      metadata || {};
     const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
     const nonMyopicMemberRewardsQuantity = get(
@@ -2962,6 +2957,9 @@ const _createStakePoolFromServerData = action(
       ranking: index + 1,
       retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
+      isRetiring: !!retiringAt,
+      isPrivate: profitMarginPercentage === 100,
+      hasNoOffChainData: !metadata,
     });
   }
 );

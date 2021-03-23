@@ -80,5 +80,20 @@ export const isStakePoolInFilterRange = (
   filterOptions: ?StakePoolFilterOptionsType,
   stakePool: StakePool
 ) => {
+  const {
+    retiringPoolsChecked,
+    privatePoolsChecked,
+    poolsWithoutOffChainDataChecked,
+  } = filterOptions;
+
+  if (stakePool.isRetiring && !retiringPoolsChecked) {
+    return false;
+  }
+  if (stakePool.isPrivate && !privatePoolsChecked) {
+    return false;
+  }
+  if (stakePool.hasNoOffChainData && !poolsWithoutOffChainDataChecked) {
+    return false;
+  }
   return true;
 };
