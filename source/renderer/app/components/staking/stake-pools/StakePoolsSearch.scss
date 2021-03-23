@@ -30,16 +30,6 @@
     height: 50px;
     padding: 0 68px 0 55px;
   }
-
-  &.inputExtrasSearch {
-    input {
-      padding-right: 265px;
-    }
-
-    &.withGridRewardsView input {
-      padding-right: 300px;
-    }
-  }
 }
 
 .inputExtras {
@@ -48,15 +38,6 @@
   height: 48px;
   line-height: 48px;
   position: absolute;
-  right: 20px;
-
-  &.inputExtrasSearch {
-    right: 217px;
-
-    &.withGridRewardsView {
-      right: 252px;
-    }
-  }
 }
 
 .clearSearchButton {

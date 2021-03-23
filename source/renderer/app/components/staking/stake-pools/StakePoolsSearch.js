@@ -54,6 +54,9 @@ const messages = defineMessages({
   },
 });
 
+const INPUT_FIELD_PADDING_DELTA = 60;
+const CLEAR_BUTTON_RIGHT_DELTA = 10;
+
 type Props = {
   label?: string,
   placeholder?: string,
@@ -75,6 +78,13 @@ export class StakePoolsSearch extends Component<Props> {
   };
 
   searchInput: ?Object = null;
+  addOnRef: { current: null | HTMLDivElement };
+
+  constructor(props: Props) {
+    super(props);
+
+    this.addOnRef = React.createRef();
+  }
 
   autoSelectOnFocus = () =>
     this.searchInput ? this.searchInput.inputElement.current.select() : false;
@@ -88,6 +98,23 @@ export class StakePoolsSearch extends Component<Props> {
     if (this.searchInput) {
       this.searchInput.focus();
     }
+  };
+
+  generateDynamicStyles = () => {
+    const { current: addOnDom } = this.addOnRef;
+    if (!addOnDom) {
+      return null;
+    }
+
+    const addOnDomRect = addOnDom.getBoundingClientRect();
+    return {
+      inputField: {
+        paddingRight: `${addOnDomRect.width + INPUT_FIELD_PADDING_DELTA}px`,
+      },
+      clearButton: {
+        right: `${addOnDomRect.width + CLEAR_BUTTON_RIGHT_DELTA}px`,
+      },
+    };
   };
 
   render() {
@@ -105,6 +132,7 @@ export class StakePoolsSearch extends Component<Props> {
       isGridRewardsView,
       filterPopOverProps,
     } = this.props;
+    const dynamicStyles = this.generateDynamicStyles();
 
     const gridButtonClasses = classnames([
       styles.gridView,
@@ -123,18 +151,6 @@ export class StakePoolsSearch extends Component<Props> {
 
     const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
 
-    const searchInputClases = classnames([
-      styles.searchInput,
-      isBigSearchComponent ? styles.inputExtrasSearch : null,
-      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
-    ]);
-
-    const clearSearchClasses = classnames([
-      styles.inputExtras,
-      isBigSearchComponent ? styles.inputExtrasSearch : null,
-      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
-    ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.container}>
@@ -142,7 +158,7 @@ export class StakePoolsSearch extends Component<Props> {
           <Input
             autoFocus
             label={label || null}
-            className={searchInputClases}
+            className={styles.searchInput}
             onChange={onSearch}
             ref={(input) => {
               this.searchInput = input;
@@ -154,9 +170,13 @@ export class StakePoolsSearch extends Component<Props> {
             value={search}
             maxLength={150}
             onFocus={this.autoSelectOnFocus}
+            style={dynamicStyles ? dynamicStyles.inputField : null}
           />
           {this.hasSearchClearButton && (
-            <div className={clearSearchClasses}>
+            <div
+              className={styles.inputExtras}
+              style={dynamicStyles ? dynamicStyles.clearButton : null}
+            >
               <PopOver content={intl.formatMessage(messages.clearTooltip)}>
                 <button
                   onClick={this.handleClearSearch}
@@ -171,7 +191,7 @@ export class StakePoolsSearch extends Component<Props> {
             </div>
           )}
           {isBigSearchComponent && (
-            <div className={styles.viewButtons}>
+            <div className={styles.viewButtons} ref={this.addOnRef}>
               <span className={styles.separator}>|</span>
               <PopOver content={intl.formatMessage(messages.gridIconTooltip)}>
                 <button className={gridButtonClasses} onClick={onGridView}>
