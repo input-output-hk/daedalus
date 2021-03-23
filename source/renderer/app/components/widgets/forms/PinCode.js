@@ -57,10 +57,31 @@ export default class PinCode extends Component<Props> {
         this.inputsRef[inputFocusKey]
       )
         this.inputsRef[inputFocusKey].focus();
-    } else if (key === 0 && this.focusKey === 0 && this.inputsRef[this.focusKey]) {
+    } else if (
+      key === 0 &&
+      this.focusKey === 0 &&
+      this.inputsRef[this.focusKey]
+    ) {
       this.inputsRef[this.focusKey].focus();
     }
   }
+
+  onKeyPress = (evt: SyntheticKeyboardEvent<EventTarget>, key: string) => {
+    const { charCode } = evt;
+    const control: { blur?: Function, focus?: Function } = evt.target;
+    const focusKey = parseInt(key, 10);
+    const nextInputField = this.inputsRef[focusKey + 1];
+    if (charCode === 46 && nextInputField && nextInputField.focus) {
+      nextInputField.focus();
+    } else if (charCode === 46 && control && control.blur) {
+      control.blur();
+      setTimeout(() => {
+        if (control && control.focus) {
+          control.focus();
+        }
+      }, 0);
+    }
+  };
 
   generatePinCodeInput = () => {
     const {
@@ -100,6 +121,7 @@ export default class PinCode extends Component<Props> {
               themeId={IDENTIFIERS.INPUT}
               skin={InputSkin}
               onChange={(number) => this.onChange(number, key)}
+              onKeyPress={(event) => this.onKeyPress(event, key)}
               value={value ? value[key] : undefined}
               autoFocus={autoFocus}
               allowSigns={false}
