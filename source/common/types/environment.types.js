@@ -34,6 +34,7 @@ export type Environment = {
   isMacOS: boolean,
   isLinux: boolean,
   isBlankScreenFixActive: boolean,
+  keepLocalClusterRunning: boolean,
 };
 
 // constants

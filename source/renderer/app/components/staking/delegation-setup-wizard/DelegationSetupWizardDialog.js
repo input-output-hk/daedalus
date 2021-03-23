@@ -42,6 +42,7 @@ type Props = {
   currentLocale: string,
   getStakePoolById: Function,
   hwDeviceStatus: HwDeviceStatus,
+  isTrezor: boolean,
 };
 
 @observer
@@ -86,6 +87,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       error,
       getStakePoolById,
       hwDeviceStatus,
+      isTrezor,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -147,6 +149,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             error={error}
             hwDeviceStatus={hwDeviceStatus}
             onExternalLinkClick={onOpenExternalLink}
+            isTrezor={isTrezor}
           />
         );
         break;

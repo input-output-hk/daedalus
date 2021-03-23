@@ -28,6 +28,7 @@ export type WalletLocalData = {
   id: string,
   recoveryPhraseVerificationDate?: ?Date,
   creationDate: Date,
+  showUsedAddresses: boolean,
 };
 export type WalletsLocalData = {
   [key: StorageKey]: WalletLocalData,
@@ -56,6 +57,7 @@ export type SetHardwareWalletDeviceRequestType = {
 
 export type HardwareWalletLocalData = {
   id: string,
+  deviceType: DeviceType,
   device: TransportDevice,
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
   disconnected: boolean,
