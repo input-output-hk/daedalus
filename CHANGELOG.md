@@ -16,7 +16,7 @@ Changelog
 
 ### Chores
 
-- Improved reveal / hide action for public key field ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
+- Improved reveal / hide action for public key field ([PR 2473](https://github.com/input-output-hk/daedalus/pull/2473))
 - Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 - Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
