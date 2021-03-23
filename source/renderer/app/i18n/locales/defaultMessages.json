@@ -4608,17 +4608,45 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Fully decentralized block production",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.before.heading",
+        "start": {
+          "column": 17,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.before.description",
+        "start": {
+          "column": 21,
+          "line": 22
+        }
+      },
+      {
         "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
         "description": "Headline for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.heading",
+        "id": "staking.info.after.heading",
         "start": {
-          "column": 11,
-          "line": 10
+          "column": 16,
+          "line": 29
         }
       },
       {
@@ -4626,27 +4654,27 @@
         "description": "Info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.description",
+        "id": "staking.info.after.description",
         "start": {
-          "column": 15,
-          "line": 15
+          "column": 20,
+          "line": 34
         }
       },
       {
-        "defaultMessage": "!!!Currently, {percentage}% of the blocks are produced by the stake pools.",
-        "description": "Percentage info description for the Decentralization progress notification.",
+        "defaultMessage": "!!!Fully decentralized block production in",
+        "description": "Countdown Title for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.percentage",
+        "id": "staking.info.countdownTitle",
         "start": {
-          "column": 14,
-          "line": 22
+          "column": 18,
+          "line": 41
         }
       },
       {
@@ -4654,13 +4682,13 @@
         "description": "Button Label for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.buttonLabel",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 46
         }
       }
     ],

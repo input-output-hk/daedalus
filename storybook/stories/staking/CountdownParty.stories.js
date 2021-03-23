@@ -25,18 +25,23 @@ storiesOf('Decentralization | Countdown', module)
   // ====== Stories ======
 
   .add('Countdown party', (props) => {
-    const isFullyDecentralized = boolean(
-      'isFullyDecentralized',
-      false,
-      'Party mode'
-    );
     const effect = radios(
       'Effect',
       { Fireworks: 'fireworks', Confetti: 'confetti' },
-      'fireworks',
-      'Party mode'
+      'fireworks'
     );
-
+    const percentage = number('percentage', 98, {
+      range: true,
+      min: 0,
+      max: 100,
+      step: 1,
+    });
+    const epochNumber = number('epochNumber', 257);
+    const isFullyDecentralized = percentage === 100;
+    const date = isFullyDecentralized
+      ? new Date().getTime() + 1000
+      : new Date().getTime() - 1000;
+    const countdownDate = new Date(date).toISOString();
     return (
       <div>
         <TopBar
@@ -74,16 +79,18 @@ storiesOf('Decentralization | Countdown', module)
               'Effect',
               { confett: 'confett', fireworks: 'fireworks' },
               'fireworks',
-              'Party mode'
             )}*/
+            currentTheme="light-blue"
             containerSelector=".TopBar_topBar"
             id="TopBar"
           />
         </TopBar>
         <StakingInfo
-          percentage={number('percentage', 50)}
+          percentage={percentage}
           onLearnMoreClick={action('onLearnMoreClick')}
-          isFullyDecentralized={isFullyDecentralized}
+          epochNumber={epochNumber}
+          date2={'2021-03-25T15:33:35.313Z'}
+          date={countdownDate}
         />
       </div>
     );

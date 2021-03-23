@@ -30,9 +30,18 @@
 }
 
 .description {
-  @extend %regularText;
-  color: var(--theme-staking-font-color-light);
-  margin-bottom: 24px;
+  p {
+    color: var(--theme-staking-font-color-accent);
+    font-family: var(--font-light);
+    margin-bottom: 20px;
+  }
+}
+
+.countdownTitle {
+  color: var(--theme-staking-font-color-accent);
+  margin-bottom: 10px;
+  font-family: var(--font-medium);
+  line-height: 1.38;
 }
 
 .progressBar {

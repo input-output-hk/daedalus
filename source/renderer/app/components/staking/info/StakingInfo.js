@@ -1,11 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfo.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
+import CountdownWidget from '../../widgets/CountdownWidget';
 
 const messages = defineMessages({
   headingBefore: {
@@ -16,7 +22,7 @@ const messages = defineMessages({
   descriptionBefore: {
     id: 'staking.info.before.description',
     defaultMessage:
-      '!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.',
+      '!!!<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>',
     description:
       'Info description for the Decentralization progress notification.',
   },
@@ -32,12 +38,11 @@ const messages = defineMessages({
     description:
       'Info description for the Decentralization progress notification.',
   },
-  percentage: {
-    id: 'staking.info.percentage',
-    defaultMessage:
-      '!!!Currently, {percentage}% of the blocks are produced by the stake pools.',
+  countdownTitle: {
+    id: 'staking.info.countdownTitle',
+    defaultMessage: '!!!Fully decentralized block production in',
     description:
-      'Percentage info description for the Decentralization progress notification.',
+      'Countdown Title for the Decentralization progress notification.',
   },
   buttonLabel: {
     id: 'staking.info.buttonLabel',
@@ -49,12 +54,12 @@ const messages = defineMessages({
 type Props = {
   percentage: number,
   onLearnMoreClick: Function,
-  isFullyDecentralized: boolean,
+  epochNumber: number,
+  date: string,
 };
-type State = { progressLabelClassName: string };
 
 @observer
-export default class StakingInfo extends Component<Props, State> {
+export default class StakingInfo extends Component<Props> {
   static defaultProps = {
     percentage: 0,
   };
@@ -63,86 +68,57 @@ export default class StakingInfo extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  progressRef: any;
-
-  constructor(props: Props) {
-    super(props);
-
-    this.progressRef = React.createRef();
-    this.state = { progressLabelClassName: styles.progressLabelWhite };
-  }
-
-  componentDidMount() {
-    this.handleProgressLabelClassName();
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    const { percentage: prevPercentage } = prevProps;
-    const { percentage: currentPercentage } = this.props;
-
-    if (prevPercentage !== currentPercentage) {
-      this.handleProgressLabelClassName();
-    }
-  }
-
-  handleProgressLabelClassName = () => {
-    const { current: progressComponent } = this.progressRef;
-    const progressLabelClassName =
-      progressComponent.clientWidth >= 50
-        ? styles.progressLabelWhite
-        : styles.progressLabel;
-
-    this.setState({ progressLabelClassName });
-  };
-
   render() {
     const { intl } = this.context;
-    const { percentage, onLearnMoreClick, isFullyDecentralized } = this.props;
-    const { progressLabelClassName } = this.state;
+    const {
+      percentage,
+      onLearnMoreClick,
+      epochNumber,
+      date,
+      date2,
+    } = this.props;
+    const isFullyDecentralized = percentage === 100;
     const heading = isFullyDecentralized
       ? intl.formatMessage(messages.headingAfter)
       : intl.formatMessage(messages.headingBefore);
     const description = isFullyDecentralized
-      ? intl.formatMessage(messages.descriptionAfter)
-      : intl.formatMessage(messages.descriptionBefore);
+      ? messages.descriptionAfter
+      : messages.descriptionBefore;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const showLearnMoreButton = false;
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
           <div className={styles.heading}>{heading}</div>
-          <div className={styles.description}>{description}</div>
           <div className={styles.description}>
-            <FormattedMessage
-              {...messages.percentage}
-              values={{ percentage }}
-            />
-          </div>
-          <div className={styles.progressBar}>
-            <div className={styles.progressBarContainer}>
-              <div
-                className={styles.progress}
-                ref={this.progressRef}
-                style={{ width: `${percentage}%` }}
-              >
-                <div className={progressLabelClassName}>{percentage}%</div>
-              </div>
-            </div>
-          </div>
-          {showLearnMoreButton && (
-            <ButtonLink
-              className={styles.learnMoreButton}
-              onClick={onLearnMoreClick}
-              skin={ButtonSkin}
-              label={buttonLabel}
-              linkProps={{
-                className: styles.externalLinkIcon,
+            <FormattedHTMLMessage
+              {...description}
+              values={{
+                percentageDecentralized: percentage,
+                percentageFederated: 100 - percentage,
+                epochNumber,
               }}
             />
-          )}
+          </div>
+          <div className={styles.countdownTitle}>
+            {intl.formatMessage(messages.countdownTitle)}
+          </div>
+          (date1: {date}) (date2: {date2})
+          <CountdownWidget startDateTime={date} />
+          <ButtonLink
+            className={styles.learnMoreButton}
+            onClick={onLearnMoreClick}
+            skin={ButtonSkin}
+            label={buttonLabel}
+            linkProps={{
+              className: styles.externalLinkIcon,
+            }}
+          />
           <FullyDecentralizedEffect
-            isActive={isFullyDecentralized}
-            id="StakingInfo"
+            isActive={false}
+            effect="fireworks"
+            currentTheme="light-blue"
+            isActive1={isFullyDecentralized}
           />
         </div>
       </div>
