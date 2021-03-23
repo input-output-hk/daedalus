@@ -100,16 +100,22 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     const hiddenValuePlaceholder = intl.formatMessage(
       messages.walletPublicKeyShowInstruction
     );
-    const toggleButtonLabel = walletPublicKeyHidden ?
-      <SVGInline svg={revealKeyImage}/> :
-      <SVGInline svg={hideKeyImage}/>;
+
+    const toggleButtonTooltip = intl.formatMessage(
+      globalMessages[walletPublicKeyHidden ? 'reveal' : 'hide']
+    );
 
     const qrCodeButtonStyles = classnames([
       styles.imageButton,
       styles.qrCodeButton,
       'flat',
     ]);
-    const buttonStyles = classnames([styles.button, 'flat']);
+
+    const revealHideButtonStyles = classnames([
+      styles.imageButton,
+      walletPublicKeyHidden ? styles.revealButton : styles.hideButton,
+      'flat',
+    ]);
 
     return (
       <div className={styles.component}>
@@ -138,11 +144,16 @@ export default class WalletPublicKeyField extends Component<Props, State> {
               </PopOver>
             </div>
           )}
-          <Button
-            className={buttonStyles}
-            label={toggleButtonLabel}
-            onClick={this.toggleWalletPublicKeyVisibility}
-          />
+          <PopOver content={toggleButtonTooltip}>
+            <Button
+              className={revealHideButtonStyles}
+              label={walletPublicKeyHidden ?
+                <SVGInline svg={revealKeyImage}/> :
+                <SVGInline svg={hideKeyImage}/>
+              }
+              onClick={this.toggleWalletPublicKeyVisibility}
+            />
+          </PopOver>
         </div>
       </div>
     );
