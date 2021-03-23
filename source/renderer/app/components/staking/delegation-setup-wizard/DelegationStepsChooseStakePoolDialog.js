@@ -22,6 +22,8 @@ import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import Wallet from '../../../domains/Wallet';
 import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
+import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
+import { getNumberOfFilterDimensionsApplied } from '../../../utils/staking';
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
@@ -132,6 +134,9 @@ type Props = {
   onClose: Function,
   onBack: Function,
   onSelectPool: Function,
+  filterOptions: StakePoolFilterOptionsType,
+  onFilter: Function,
+  populatedFilterOptions: StakePoolFilterOptionsType,
 };
 
 type State = {
@@ -181,6 +186,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       selectedWallet,
       onClose,
       onBack,
+      filterOptions,
+      onFilter,
+      populatedFilterOptions,
     } = this.props;
     const { searchValue, selectedList, selectedPoolId } = this.state;
     const selectedWalletName = get(selectedWallet, 'name');
@@ -303,10 +311,17 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       />
     );
 
+    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
+      filterOptions
+    );
+
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       searchValue
     );
+
+    const isFilterDisabled =
+      !filteredStakePoolsList.length && !numberOfFilterDimensionsApplied;
 
     const numberOfRankedStakePools: number = stakePoolsList.filter(
       (stakePool) =>
@@ -389,6 +404,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onClearSearch={this.handleClearSearch}
               scrollableElementClassName="Dialog_content"
               disabledStakePoolId={activeStakePoolId}
+              filterPopOverProps={{
+                populatedFilterOptions,
+                onFilter,
+                isFilterDisabled,
+                numberOfFilterDimensionsApplied,
+              }}
             />
           </div>
 

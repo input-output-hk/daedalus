@@ -176,6 +176,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       networkStatus,
       hardwareWallets,
     } = this.props.stores;
+    const { staking: stakingActions } = this.props.actions;
     const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale } = profile;
     const {
@@ -189,7 +190,10 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       joinStakePoolRequest,
       getStakePoolById,
       isDelegationTransactionPending,
+      filterOptions,
+      populatedFilterOptions,
     } = staking;
+    const { filterStakePools } = stakingActions;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const selectedPool = find(stakePools, (pool) => pool.id === selectedPoolId);
 
@@ -238,6 +242,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
           selectCoinsRequest.error
         }
         hwDeviceStatus={hwDeviceStatus}
+        filterOptions={filterOptions || {}}
+        populatedFilterOptions={populatedFilterOptions}
+        onFilter={filterStakePools.trigger}
       />
     );
   }

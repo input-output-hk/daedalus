@@ -36,6 +36,12 @@ export const StakePoolsTableStory = (props: Props) => (
         isListView
         isGridView={false}
         isClearTooltipOpeningDownward
+        filterPopOverProps={{
+          populatedFilterOptions: {},
+          onFilter: () => null,
+          isFilterDisabled: false,
+          numberOfFilterDimensionsApplied: 0,
+        }}
       />
       <h2
         style={{
