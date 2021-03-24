@@ -7,6 +7,7 @@ import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfoCountdown.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 import CountdownWidget from '../../widgets/CountdownWidget';
+import { DECENTRALIZATED_ANIMATION_DURATION } from '../../../config/stakingConfig';
 import type { NextEpoch } from '../../../api/network/types';
 
 const messages = defineMessages({
@@ -58,8 +59,12 @@ type Props = {
   epoch: NextEpoch,
 };
 
+type State = {
+  isAnimating: boolean,
+};
+
 @observer
-export default class x extends Component<Props> {
+export default class StakingInfoCountdown extends Component<Props, State> {
   static defaultProps = {
     percentage: 0,
   };
@@ -68,8 +73,42 @@ export default class x extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    isAnimating: false,
+  };
+
+  componentDidMount() {
+    this.checkIfShouldAnimate();
+  }
+
+  componentDidUpdate() {
+    this.checkIfShouldAnimate();
+  }
+
+  checkIfShouldAnimate = () => {
+    const { percentage } = this.props;
+    const { isAnimating } = this.state;
+    if (!isAnimating && percentage === 100) {
+      this.startAnimation();
+    }
+  };
+
+  startAnimation = () => {
+    this.setState({
+      isAnimating: true,
+    });
+    setTimeout(this.stopAnimation, DECENTRALIZATED_ANIMATION_DURATION);
+  };
+
+  stopAnimation = () => {
+    this.setState({
+      isAnimating: false,
+    });
+  };
+
   render() {
     const { intl } = this.context;
+    const { isAnimating } = this.state;
     const { percentage, onLearnMoreClick, epoch } = this.props;
     const isFullyDecentralized = percentage === 100;
     const heading = isFullyDecentralized
@@ -109,12 +148,7 @@ export default class x extends Component<Props> {
               className: styles.externalLinkIcon,
             }}
           />
-          <FullyDecentralizedEffect
-            effect="fireworks"
-            currentTheme="light-blue"
-            isActive1={false}
-            isActive={isFullyDecentralized}
-          />
+          <FullyDecentralizedEffect isActive={isAnimating} />
         </div>
       </div>
     );
