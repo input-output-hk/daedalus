@@ -4615,7 +4615,7 @@
           "line": 14
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.heading",
+        "id": "staking.infoCountdown.heading",
         "start": {
           "column": 11,
           "line": 10
@@ -4629,7 +4629,7 @@
           "line": 21
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.description",
+        "id": "staking.infoCountdown.description",
         "start": {
           "column": 15,
           "line": 15
@@ -4643,7 +4643,7 @@
           "line": 28
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.percentage",
+        "id": "staking.infoCountdown.percentage",
         "start": {
           "column": 14,
           "line": 22
@@ -4657,10 +4657,24 @@
           "line": 33
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.buttonLabel",
+        "id": "staking.infoCountdown.buttonLabel",
         "start": {
           "column": 15,
           "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking info page",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.infoCountdown.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 34
         }
       }
     ],
@@ -4673,13 +4687,13 @@
         "description": "Headline for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.info.before.heading",
+        "id": "staking.infoCountdown.before.heading",
         "start": {
           "column": 17,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -4687,13 +4701,13 @@
         "description": "Info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.info.before.description",
+        "id": "staking.infoCountdown.before.description",
         "start": {
           "column": 21,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -4701,13 +4715,13 @@
         "description": "Headline for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.info.after.heading",
+        "id": "staking.infoCountdown.after.heading",
         "start": {
           "column": 16,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -4715,13 +4729,13 @@
         "description": "Info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.info.after.description",
+        "id": "staking.infoCountdown.after.description",
         "start": {
           "column": 20,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -4729,13 +4743,13 @@
         "description": "Countdown Title for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.info.countdownTitle",
+        "id": "staking.infoCountdown.countdownTitle",
         "start": {
           "column": 18,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -4743,13 +4757,27 @@
         "description": "Button Label for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.info.buttonLabel",
+        "id": "staking.infoCountdown.buttonLabel",
         "start": {
           "column": 15,
-          "line": 47
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking info page",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 53
         }
       }
     ],

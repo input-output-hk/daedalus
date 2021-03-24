@@ -240,10 +240,10 @@ storiesOf('Decentralization | Staking', module)
       });
       const epochNumber = number('epochNumber', 257);
       const isFullyDecentralized = percentage === 100;
-      const date = isFullyDecentralized
+      const epochDate = isFullyDecentralized
         ? new Date().getTime() - 100000000
         : new Date().getTime() + 100000000;
-      const epochStart = new Date(date).toISOString();
+      const epochStart = new Date(epochDate).toISOString();
       return (
         <StakingInfoCountdown
           percentage={percentage}

@@ -4,13 +4,6 @@ import { get } from 'lodash';
 import { observer } from 'mobx-react';
 import { Fireworks } from 'fireworks-js';
 import styles from './FullyDecentralizedEffect.scss';
-import {
-  CREATE_THEME_PARAMS,
-  CREATE_THEME_OBJ,
-} from '../../themes/utils/constants';
-
-console.log('CREATE_THEME_PARAMS', CREATE_THEME_PARAMS);
-console.log('CREATE_THEME_OBJ', CREATE_THEME_OBJ);
 
 type Props = {
   isActive: boolean,

@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import newsFeedIcon from '../../assets/images/top-bar/news-feed-icon.inline.svg';
 import styles from './CountdownPartyIcon.scss';
 
 type Props = {
@@ -20,7 +19,9 @@ export default class CountdownPartyIcon extends Component<Props> {
     ]);
     return (
       <button className={componentClasses} onClick={onIconClick}>
-        🎉
+        <span role="img" aria-label="tada-icon">
+          🎉
+        </span>
       </button>
     );
   }

@@ -1,12 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import {
-  defineMessages,
-  intlShape,
-  FormattedMessage,
-  FormattedHTMLMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfoCountdown.scss';
@@ -84,7 +79,6 @@ export default class x extends Component<Props> {
       ? messages.descriptionAfter
       : messages.descriptionBefore;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
-    const showLearnMoreButton = false;
     const { epochNumber, epochStart } = epoch;
     return (
       <div className={styles.component}>

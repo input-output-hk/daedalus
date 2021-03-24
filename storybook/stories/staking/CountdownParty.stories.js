@@ -1,9 +1,8 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, number, radios } from '@storybook/addon-knobs';
+import { withKnobs, number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import { observable, runInAction } from 'mobx';
 
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
@@ -18,12 +17,7 @@ storiesOf('Decentralization | Countdown', module)
 
   // ====== Stories ======
 
-  .add('Countdown party', (props) => {
-    const effect = radios(
-      'Effect',
-      { Fireworks: 'fireworks', Confetti: 'confetti' },
-      'fireworks'
-    );
+  .add('Countdown party', () => {
     const percentage = number('percentage', 98, {
       range: true,
       min: 0,
@@ -58,7 +52,10 @@ storiesOf('Decentralization | Countdown', module)
             hasTadaIcon={isFullyDecentralized}
           />
           {isFullyDecentralized && (
-            <CountdownPartyIcon onIconClick={action('onIconClick')} />
+            <CountdownPartyIcon
+              onIconClick={action('onIconClick')}
+              shouldAnimate={boolean('shouldAnimate', false)}
+            />
           )}
 
           <NewsFeedIcon

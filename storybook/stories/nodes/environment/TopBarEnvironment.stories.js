@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, select, boolean } from '@storybook/addon-knobs';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 import SidebarLayout from '../../../../source/renderer/app/components/layout/SidebarLayout';
 import TopBar from '../../../../source/renderer/app/components/layout/TopBar';
@@ -13,7 +13,7 @@ import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-i
 import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import { isShelleyTestnetTheme } from '../../_support/utils';
 
-const topBarTestEnv = (currentTheme, isFullyDecentralized) => (
+const topBarTestEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
