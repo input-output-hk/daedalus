@@ -34,17 +34,25 @@ export default class PinCode extends Component<Props> {
 
   onChange = (inputValue: ?number, key: number) => {
     const { value, onChange } = this.props;
+
     const inputNewValue =
       inputValue !== null && inputValue !== undefined
         ? inputValue.toString()
         : '';
-    const newValue = value;
-    newValue[key] = inputNewValue;
-    if (onChange) {
-      onChange(newValue);
+
+    if (
+      !Object.prototype.hasOwnProperty.call(value, key) ||
+      value[key] === '' ||
+      inputNewValue === ''
+    ) {
+      const newValue = value;
+      newValue[key] = inputNewValue;
+      if (onChange) {
+        onChange(newValue);
+      }
+      this.focusKey = key;
+      this.add = inputValue !== null && inputValue !== undefined;
     }
-    this.focusKey = key;
-    this.add = inputValue !== null && inputValue !== undefined;
   };
 
   componentDidUpdate() {
