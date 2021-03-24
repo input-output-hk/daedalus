@@ -119,7 +119,9 @@ export default class StakingInfo extends Component<Props, State> {
           {showLearnMoreButton && (
             <ButtonLink
               className={styles.learnMoreButton}
-              onClick={onLearnMoreClick}
+              onClick={() =>
+                onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
+              }
               skin={ButtonSkin}
               label={buttonLabel}
               linkProps={{

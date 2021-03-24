@@ -3,7 +3,9 @@
   font-size: 19px;
   position: absolute;
   right: 104px;
-  animation: animation 0.5s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
+  &.animate {
+    animation: animation 0.5s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
+  }
 }
 
 @keyframes animation {

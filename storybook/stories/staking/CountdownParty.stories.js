@@ -1,14 +1,7 @@
 // @flow
 import React from 'react';
-import { storiesOf, addDecorator } from '@storybook/react';
-import {
-  withKnobs,
-  number,
-  boolean,
-  radios,
-  select,
-  date,
-} from '@storybook/addon-knobs';
+import { storiesOf } from '@storybook/react';
+import { withKnobs, number, radios } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { observable, runInAction } from 'mobx';
 
@@ -62,7 +55,7 @@ storiesOf('Decentralization | Countdown', module)
             syncPercentage={100}
             isProduction
             isMainnet
-            isFullyDecentralized={isFullyDecentralized}
+            hasTadaIcon={isFullyDecentralized}
           />
           {isFullyDecentralized && (
             <CountdownPartyIcon onIconClick={action('onIconClick')} />
@@ -73,18 +66,7 @@ storiesOf('Decentralization | Countdown', module)
             hasNotification={false}
             hasUpdate={false}
           />
-          <FullyDecentralizedEffect
-            isActive={isFullyDecentralized}
-            effect={effect}
-            /*effect={select(
-              'Effect',
-              { confett: 'confett', fireworks: 'fireworks' },
-              'fireworks',
-            )}*/
-            currentTheme="light-blue"
-            containerSelector=".TopBar_topBar"
-            id="TopBar"
-          />
+          <FullyDecentralizedEffect isActive={isFullyDecentralized} />
         </TopBar>
         <StakingInfo
           percentage={percentage}

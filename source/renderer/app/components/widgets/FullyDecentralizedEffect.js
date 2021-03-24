@@ -3,8 +3,6 @@ import React, { Component, createRef } from 'react';
 import { get } from 'lodash';
 import { observer } from 'mobx-react';
 import { Fireworks } from 'fireworks-js';
-// import useWindowSize from 'react-use/lib/useWindowSize';
-import Confetti from 'react-confetti';
 import styles from './FullyDecentralizedEffect.scss';
 import {
   CREATE_THEME_PARAMS,
@@ -16,8 +14,6 @@ console.log('CREATE_THEME_OBJ', CREATE_THEME_OBJ);
 
 type Props = {
   isActive: boolean,
-  effect: 'confetti' | 'fireworks',
-  currentTheme: string,
 };
 
 @observer
@@ -31,8 +27,7 @@ export default class FullyDecentralizedEffect extends Component<Props> {
   fireworks: ?Object = null;
 
   componentDidMount() {
-    console.log('componentDidMount');
-    const { isActive, effect } = this.props;
+    const { isActive } = this.props;
     const container = get(this, 'container.current');
     if (container instanceof HTMLElement) {
       const fireworks = new Fireworks({
@@ -56,31 +51,24 @@ export default class FullyDecentralizedEffect extends Component<Props> {
         },
       });
       this.fireworks = fireworks;
-      if (isActive && effect === 'fireworks') {
+      if (isActive) {
         fireworks.start();
       }
     }
   }
 
   componentDidUpdate() {
-    const { isActive, effect } = this.props;
-    console.log('effect', effect);
+    const { isActive } = this.props;
     const { fireworks } = this;
-    if (isActive && fireworks && effect === 'fireworks') {
-      console.log('START', !fireworks.isRunning);
+    if (isActive && fireworks) {
       fireworks.start();
     } else if (!isActive && fireworks) {
-      console.log('STOP', fireworks.isRunning);
       fireworks.stop();
     }
   }
 
   render() {
-    const { effect, isActive } = this.props;
-    return (
-      <div className={styles.component} ref={this.container}>
-        {isActive && effect === 'confetti' && <Confetti />}
-      </div>
-    );
+    const { isActive } = this.props;
+    return <div className={styles.component} ref={this.container} />;
   }
 }

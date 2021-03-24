@@ -243,13 +243,15 @@ storiesOf('Decentralization | Staking', module)
       const date = isFullyDecentralized
         ? new Date().getTime() - 100000000
         : new Date().getTime() + 100000000;
-      const countdownDate = new Date(date).toISOString();
+      const epochStart = new Date(date).toISOString();
       return (
         <StakingInfoCountdown
           percentage={percentage}
           onLearnMoreClick={action('onLearnMoreClick')}
-          epochNumber={epochNumber}
-          date={countdownDate}
+          epoch={{
+            epochNumber,
+            epochStart,
+          }}
         />
       );
     },

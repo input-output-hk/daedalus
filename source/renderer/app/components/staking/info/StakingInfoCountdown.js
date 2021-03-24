@@ -16,39 +16,44 @@ import type { NextEpoch } from '../../../api/network/types';
 
 const messages = defineMessages({
   headingBefore: {
-    id: 'staking.info.before.heading',
+    id: 'staking.infoCountdown.before.heading',
     defaultMessage: '!!!Fully decentralized block production',
     description: 'Headline for the Decentralization progress notification.',
   },
   descriptionBefore: {
-    id: 'staking.info.before.description',
+    id: 'staking.infoCountdown.before.description',
     defaultMessage:
       '!!!<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>',
     description:
       'Info description for the Decentralization progress notification.',
   },
   headingAfter: {
-    id: 'staking.info.after.heading',
+    id: 'staking.infoCountdown.after.heading',
     defaultMessage: '!!!Cardano is transitioning into a decentralized system',
     description: 'Headline for the Decentralization progress notification.',
   },
   descriptionAfter: {
-    id: 'staking.info.after.description',
+    id: 'staking.infoCountdown.after.description',
     defaultMessage:
       '!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.',
     description:
       'Info description for the Decentralization progress notification.',
   },
   countdownTitle: {
-    id: 'staking.info.countdownTitle',
+    id: 'staking.infoCountdown.countdownTitle',
     defaultMessage: '!!!Fully decentralized block production in',
     description:
       'Countdown Title for the Decentralization progress notification.',
   },
   buttonLabel: {
-    id: 'staking.info.buttonLabel',
+    id: 'staking.infoCountdown.buttonLabel',
     defaultMessage: '!!!Learn more',
     description: 'Button Label for the Decentralization progress notification.',
+  },
+  learnMoreLinkUrl: {
+    id: 'staking.infoCountdown.learnMore.linkUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc',
+    description: '"Learn more" link URL in the staking info page',
   },
 });
 
@@ -70,13 +75,7 @@ export default class x extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      percentage,
-      onLearnMoreClick,
-      epochNumber,
-      date,
-      date2,
-    } = this.props;
+    const { percentage, onLearnMoreClick, epoch } = this.props;
     const isFullyDecentralized = percentage === 100;
     const heading = isFullyDecentralized
       ? intl.formatMessage(messages.headingAfter)
@@ -86,6 +85,7 @@ export default class x extends Component<Props> {
       : messages.descriptionBefore;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const showLearnMoreButton = false;
+    const { epochNumber, epochStart } = epoch;
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
@@ -103,10 +103,12 @@ export default class x extends Component<Props> {
           <div className={styles.countdownTitle}>
             {intl.formatMessage(messages.countdownTitle)}
           </div>
-          <CountdownWidget startDateTime={date} format="DD-HH-mm-ss" />
+          <CountdownWidget startDateTime={epochStart} format="DD-HH-mm-ss" />
           <ButtonLink
             className={styles.learnMoreButton}
-            onClick={onLearnMoreClick}
+            onClick={() =>
+              onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
+            }
             skin={ButtonSkin}
             label={buttonLabel}
             linkProps={{
