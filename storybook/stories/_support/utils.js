@@ -166,7 +166,7 @@ export const generateTransaction = (
     id: faker.random.uuid(),
     title: '',
     type,
-    amount,
+    amount: amount.plus(fee),
     fee,
     assets: assets || [],
     deposit,
