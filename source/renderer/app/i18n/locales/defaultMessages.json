@@ -4608,13 +4608,74 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.heading",
+        "start": {
+          "column": 11,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.description",
+        "start": {
+          "column": 15,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Currently, {percentage}% of the blocks are produced by the stake pools.",
+        "description": "Percentage info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.percentage",
+        "start": {
+          "column": 14,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Button Label for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 29
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/info/StakingInfo.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Fully decentralized block production",
         "description": "Headline for the Decentralization progress notification.",
         "end": {
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.info.before.heading",
         "start": {
           "column": 17,
@@ -4628,7 +4689,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.info.before.description",
         "start": {
           "column": 21,
@@ -4642,7 +4703,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.info.after.heading",
         "start": {
           "column": 16,
@@ -4656,7 +4717,7 @@
           "column": 3,
           "line": 40
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.info.after.description",
         "start": {
           "column": 20,
@@ -4668,9 +4729,9 @@
         "description": "Countdown Title for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.info.countdownTitle",
         "start": {
           "column": 18,
@@ -4682,17 +4743,17 @@
         "description": "Button Label for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.info.buttonLabel",
         "start": {
           "column": 15,
-          "line": 46
+          "line": 47
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/info/StakingInfo.json"
+    "path": "source/renderer/app/components/staking/info/StakingInfoCountdown.json"
   },
   {
     "descriptors": [
@@ -16673,13 +16734,13 @@
         "description": "\"Learn more\" link URL in the staking info page",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 14
         },
         "file": "source/renderer/app/containers/staking/StakingInfoPage.js",
         "id": "staking.info.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 9
+          "line": 10
         }
       }
     ],
@@ -16786,13 +16847,13 @@
         "description": "\"Address\" word in the Address PDF export",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.pdf.filenamePrefix",
         "start": {
           "column": 11,
-          "line": 17
+          "line": 18
         }
       }
     ],

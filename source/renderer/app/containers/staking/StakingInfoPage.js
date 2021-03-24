@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingInfo from '../../components/staking/info/StakingInfo';
+import StakingInfoCountdown from '../../components/staking/info/StakingInfoCountdown';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -45,7 +46,15 @@ export default class StakingInfoPage extends Component<Props> {
 
   render() {
     const { decentralizationProgress } = this.props.stores.networkStatus;
-    return (
+    const isFullyDecentralized = true;
+    return isFullyDecentralized ? (
+      <StakingInfoCountdown
+        percentage={decentralizationProgress}
+        onLearnMoreClick={this.handleLearnMoreClick}
+        date=""
+        epochNumber={257}
+      />
+    ) : (
       <StakingInfo
         percentage={decentralizationProgress}
         onLearnMoreClick={this.handleLearnMoreClick}
