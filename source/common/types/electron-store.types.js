@@ -22,7 +22,8 @@ export type StorageKey =
   | 'APP-UPDATE-COMPLETED'
   | 'CURRENCY-SELECTED'
   | 'CURRENCY-ACTIVE'
-  | 'SMASH-SERVER';
+  | 'SMASH-SERVER'
+  | 'STAKING-INFO-WAS-OPEN';
 
 export type StoreMessage = {
   type: StorageType,

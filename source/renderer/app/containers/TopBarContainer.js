@@ -4,6 +4,8 @@ import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
+import CountdownPartyIcon from '../components/widgets/CountdownPartyIcon';
+import FullyDecentralizedEffect from '../components/widgets/FullyDecentralizedEffect';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
@@ -30,7 +32,7 @@ export default class TopBarContainer extends Component<Props> {
     } = stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
-    const { isShelleyActivated, isFullyDecentralized } = networkStatus;
+    const { isShelleyActivated, epochToFullyDecentralized } = networkStatus;
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -83,6 +85,16 @@ export default class TopBarContainer extends Component<Props> {
           isSynced={isSynced}
           syncPercentage={syncPercentage}
         />
+        {isFullyDecentralized && (
+          <CountdownPartyIcon onIconClick={() => {}} shouldAnimate={false} />
+        )}
+
+        <NewsFeedIcon
+          onNewsFeedIconClick={() => {}}
+          hasNotification={false}
+          hasUpdate={false}
+        />
+        <FullyDecentralizedEffect isActive={isFullyDecentralized} />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}
