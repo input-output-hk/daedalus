@@ -9,12 +9,14 @@
         .SimpleFormField_label {
           pointer-events: none;
         }
+
         .SimpleInput_input {
           color: var(--rp-input-text-color-disabled);
           pointer-events: none;
         }
       }
     }
+
     &.valueShown {
       :global {
         .SimpleInput_input {
@@ -22,6 +24,7 @@
         }
       }
     }
+
     &.withBigToggleButton {
       :global {
         .SimpleFormField_inputWrapper {
@@ -74,6 +77,10 @@
     height: 28px;
     justify-content: center;
     width: 28px;
+
+    &:focus {
+      box-shadow: none;
+    }
 
     :global {
       .SVGInline {
