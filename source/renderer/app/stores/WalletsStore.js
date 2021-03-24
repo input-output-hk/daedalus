@@ -1,4 +1,5 @@
 // @flow
+import { IObservableArray } from 'mobx';
 import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, find, findIndex, isEqual, includes } from 'lodash';
 import { BigNumber } from 'bignumber.js';
@@ -145,6 +146,11 @@ export default class WalletsStore extends Store {
   @observable activeValue: ?BigNumber = null;
   @observable activePublicKey: ?string = null;
 
+  /* ------------ Wallet Arrays ---------- */
+  @observable all: IObservableArray<Wallet> = [];
+  @observable allWallets: IObservableArray<Wallet> = [];
+  @observable allLegacyWallets: IObservableArray<Wallet> = [];
+
   /* ------------  Currencies  ----------- */
   @observable currencyIsFetchingList: boolean = false;
   @observable currencyIsFetchingRate: boolean = false;
@@ -225,7 +231,10 @@ export default class WalletsStore extends Store {
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
 
-    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
+    this.registerReactions([
+      this._updateActiveWalletOnRouteChanges,
+      this._updateWalletArraysOnRequestUpdate,
+    ]);
 
     const {
       router,
@@ -939,22 +948,6 @@ export default class WalletsStore extends Store {
     return this.all.length >= MAX_ADA_WALLETS_COUNT;
   }
 
-  @computed get all(): Array<Wallet> {
-    return [...this.allWallets, ...this.allLegacyWallets];
-  }
-
-  @computed get allWallets(): Array<Wallet> {
-    return this.walletsRequest.result
-      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => !isLegacy)
-      : [];
-  }
-
-  @computed get allLegacyWallets(): Array<Wallet> {
-    return this.walletsRequest.result
-      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => isLegacy)
-      : [];
-  }
-
   @computed get first(): ?Wallet {
     return this.all.length > 0 ? this.all[0] : null;
   }
@@ -1078,6 +1071,23 @@ export default class WalletsStore extends Store {
           this.goToWalletRoute(this.active.id);
         }
       }
+    });
+  };
+
+  _updateWalletArraysOnRequestUpdate = () => {
+    const walletsResult = this.walletsRequest.result;
+    runInAction(() => {
+      this.allWallets.replace(
+        walletsResult
+          ? walletsResult.filter(({ isLegacy }: Wallet) => !isLegacy)
+          : []
+      );
+      this.allLegacyWallets.replace(
+        walletsResult
+          ? walletsResult.filter(({ isLegacy }: Wallet) => isLegacy)
+          : []
+      );
+      this.all.replace(this.allWallets.concat(this.allLegacyWallets));
     });
   };
 
