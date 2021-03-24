@@ -68,7 +68,9 @@ export default class StakingWithNavigation extends Component<Props, State> {
           <div
             className={styles.page}
             onScroll={this.handleScroll}
-            ref={(ref) => (this.stakingPageRef.current = ref)}
+            ref={(ref) => {
+              this.stakingPageRef.current = ref;
+            }}
           >
             {children}
           </div>

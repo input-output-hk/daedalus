@@ -1,5 +1,5 @@
 // @flow
-import { IObservableArray } from 'mobx';
+import type { IObservableArray } from 'mobx';
 import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, find, findIndex, isEqual, includes } from 'lodash';
 import { BigNumber } from 'bignumber.js';
