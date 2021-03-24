@@ -836,10 +836,12 @@ export default class StakingStore extends Store {
       reward: rewards,
       syncState,
     } = inputWallet;
+    const { stakeAddresses } = this.stores.addresses;
     const { withdrawals } = this.stores.transactions;
     const reward = rewards.plus(withdrawals[walletId]);
+    const rewardsAddress = stakeAddresses[walletId];
     const syncingProgress = get(syncState, 'progress.quantity', '');
-    return { wallet, reward, isRestoring, syncingProgress };
+    return { wallet, reward, isRestoring, syncingProgress, rewardsAddress };
   };
 
   getStakePoolById = (stakePoolId: string) =>

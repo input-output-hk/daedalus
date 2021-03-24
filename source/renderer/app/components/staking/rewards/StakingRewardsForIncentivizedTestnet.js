@@ -56,6 +56,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Reward',
     description: 'Table header "Reward" label on staking rewards page',
   },
+  tableHeaderRewardsAddress: {
+    id: 'staking.rewards.tableHeader.rewardsAddress',
+    defaultMessage: '!!!Rewards address',
+    description: 'Table header "Rewards address" label on staking rewards page',
+  },
   tableHeaderDate: {
     id: 'staking.rewards.tableHeader.date',
     defaultMessage: '!!!Date',
@@ -84,6 +89,7 @@ const REWARD_FIELDS = {
   IS_RESTORING: 'isRestoring',
   SYNCING_PROGRESS: 'syncingProgress',
   REWARD: 'reward',
+  REWARDS_ADDRESS: 'rewardsAddress',
 };
 
 const REWARD_ORDERS = {
@@ -142,7 +148,13 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
-      return [rewardWallet, isRestoring ? '-' : rewardAmount, date];
+      const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
+      return [
+        rewardWallet,
+        isRestoring ? '-' : rewardAmount,
+        rewardsAddress,
+        date,
+      ];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
@@ -211,6 +223,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         title: `${intl.formatMessage(
           messages.tableHeaderReward
         )} (${intl.formatMessage(globalMessages.unitAda)})`,
+      },
+      {
+        name: REWARD_FIELDS.REWARDS_ADDRESS,
+        title: intl.formatMessage(messages.tableHeaderRewardsAddress),
       },
     ];
     const exportCsvButtonLabel = isExporting ? (
@@ -307,6 +323,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                         reward,
                         REWARD_FIELDS.REWARD
                       ).toFormat(DECIMAL_PLACES_IN_ADA);
+                      const rewardsAddress = get(
+                        reward,
+                        REWARD_FIELDS.REWARDS_ADDRESS
+                      );
 
                       return (
                         <tr key={key}>
@@ -328,6 +348,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                               </div>
                             )}
                           </td>
+                          <td>{rewardsAddress}</td>
                         </tr>
                       );
                     })}

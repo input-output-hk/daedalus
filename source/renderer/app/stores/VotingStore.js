@@ -184,12 +184,12 @@ export default class VotingStore extends Store {
         this.votingRegistrationKey.public().bytes()
       );
 
-      let stakeKey = await this.getWalletPublicKeyRequest.execute({
+      const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
         walletId,
         role: 'mutable_account',
         index: '0',
       });
-      stakeKey = await this._getHexFromBech32(stakeKey);
+      const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
 
       const signature = await this.signMetadataRequest.execute({
         addressHex,

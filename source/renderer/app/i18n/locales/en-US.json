@@ -469,6 +469,7 @@
   "staking.rewards.tableHeader.date": "Date",
   "staking.rewards.tableHeader.pool": "Stake pool",
   "staking.rewards.tableHeader.reward": "Reward",
+  "staking.rewards.tableHeader.rewardsAddress": "Rewards address",
   "staking.rewards.tableHeader.wallet": "Wallet",
   "staking.rewards.title": "Earned delegation rewards",
   "staking.stakePools.delegatingListTitle": "Staking pools you are delegating to",

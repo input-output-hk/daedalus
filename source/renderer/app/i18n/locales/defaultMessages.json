@@ -5521,17 +5521,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Date",
-        "description": "Table header \"Date\" label in exported csv file",
+        "defaultMessage": "!!!Rewards address",
+        "description": "Table header \"Rewards address\" label on staking rewards page",
         "end": {
           "column": 3,
           "line": 63
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.tableHeader.rewardsAddress",
+        "start": {
+          "column": 29,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!Date",
+        "description": "Table header \"Date\" label in exported csv file",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 59
+          "line": 64
         }
       },
       {
@@ -5539,13 +5553,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 69
         }
       },
       {
@@ -5553,13 +5567,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 69
+          "line": 74
         }
       },
       {
@@ -5567,13 +5581,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 84
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 75
+          "line": 80
         }
       }
     ],
@@ -16758,13 +16772,13 @@
         "description": "\"Address\" word in the Address PDF export",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.pdf.filenamePrefix",
         "start": {
           "column": 11,
-          "line": 17
+          "line": 18
         }
       }
     ],
