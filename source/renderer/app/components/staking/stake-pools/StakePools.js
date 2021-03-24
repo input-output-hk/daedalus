@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
+import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsTable } from './StakePoolsTable';
@@ -292,16 +293,23 @@ export default class StakePools extends Component<Props, State> {
                     </span>
                   </span>
                 </h2>
-                <StakePoolsList
-                  stakePoolsList={stakePoolsDelegatingList}
-                  onOpenExternalLink={onOpenExternalLink}
-                  currentTheme={currentTheme}
-                  containerClassName="StakingWithNavigation_page"
-                  onSelect={this.onDelegate}
-                  numberOfRankedStakePools={numberOfRankedStakePools}
-                  isGridRewardsView={isGridRewardsView}
-                  showWithSelectButton
-                />
+                <StakingPageScrollContext.Consumer>
+                  {(stakePoolsScrollContext) => (
+                    <StakePoolsList
+                      stakePoolsList={stakePoolsDelegatingList}
+                      onOpenExternalLink={onOpenExternalLink}
+                      currentTheme={currentTheme}
+                      containerClassName="StakingWithNavigation_page"
+                      onSelect={this.onDelegate}
+                      numberOfRankedStakePools={numberOfRankedStakePools}
+                      isGridRewardsView={isGridRewardsView}
+                      showWithSelectButton
+                      scrollElementRef={
+                        stakePoolsScrollContext.scrollElementRef
+                      }
+                    />
+                  )}
+                </StakingPageScrollContext.Consumer>
               </Fragment>
             )}
             {isListView && (
@@ -351,16 +359,23 @@ export default class StakePools extends Component<Props, State> {
                   </span>
                   {smashSettings}
                 </h2>
-                <StakePoolsList
-                  showWithSelectButton
-                  stakePoolsList={filteredStakePoolsList}
-                  onOpenExternalLink={onOpenExternalLink}
-                  currentTheme={currentTheme}
-                  containerClassName="StakingWithNavigation_page"
-                  onSelect={this.onDelegate}
-                  numberOfRankedStakePools={numberOfRankedStakePools}
-                  isGridRewardsView={isGridRewardsView}
-                />
+                <StakingPageScrollContext.Consumer>
+                  {(stakePoolsScrollContext) => (
+                    <StakePoolsList
+                      showWithSelectButton
+                      stakePoolsList={filteredStakePoolsList}
+                      onOpenExternalLink={onOpenExternalLink}
+                      currentTheme={currentTheme}
+                      containerClassName="StakingWithNavigation_page"
+                      onSelect={this.onDelegate}
+                      numberOfRankedStakePools={numberOfRankedStakePools}
+                      isGridRewardsView={isGridRewardsView}
+                      scrollElementRef={
+                        stakePoolsScrollContext.scrollElementRef
+                      }
+                    />
+                  )}
+                </StakingPageScrollContext.Consumer>
               </Fragment>
             )}
           </Fragment>

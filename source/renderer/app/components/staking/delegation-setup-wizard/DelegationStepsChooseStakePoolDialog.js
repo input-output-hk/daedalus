@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import {
   defineMessages,
   intlShape,
@@ -146,6 +146,8 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  stakePoolsScrollElementRef = createRef<*>();
 
   state = {
     searchValue: '',
@@ -318,6 +320,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
+        scrollWrapperRef={this.stakePoolsScrollElementRef}
       >
         <BackToTopButton
           scrollableElementClassName="Dialog_contentWrapper"
@@ -370,6 +373,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               highlightOnHover
               highlightWithDelay
               selectOnClick
+              scrollElementRef={this.stakePoolsScrollElementRef}
             />
           </div>
 
@@ -399,6 +403,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               highlightOnHover
               highlightWithDelay
               selectOnClick
+              scrollElementRef={this.stakePoolsScrollElementRef}
             />
           </div>
         </div>

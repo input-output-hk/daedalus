@@ -18,3 +18,9 @@
   grid-template-columns: repeat(auto-fill, 80px);
   justify-content: space-between;
 }
+
+.list {
+  &:focus {
+    outline: 0;
+  }
+}
