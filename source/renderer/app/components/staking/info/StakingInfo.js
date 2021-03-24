@@ -103,8 +103,7 @@ export default class StakingInfo extends Component<Props> {
           <div className={styles.countdownTitle}>
             {intl.formatMessage(messages.countdownTitle)}
           </div>
-          (date1: {date}) (date2: {date2})
-          <CountdownWidget startDateTime={date} />
+          <CountdownWidget startDateTime={date} format="DD-HH-mm-ss" />
           <ButtonLink
             className={styles.learnMoreButton}
             onClick={onLearnMoreClick}

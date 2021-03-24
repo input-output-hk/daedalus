@@ -4,7 +4,7 @@ import { defineMessages, IntlProvider } from 'react-intl';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, number, text } from '@storybook/addon-knobs';
+import { withKnobs, boolean, number, text, date } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import StoryLayout from '../_support/StoryLayout';
@@ -13,6 +13,7 @@ import jpMessages from '../../../source/renderer/app/i18n/locales/ja-JP.json';
 import BigButtonForDialogs from '../../../source/renderer/app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
 import InlineEditingInput from '../../../source/renderer/app/components/widgets/forms/InlineEditingInput';
+import CountdownWidget from '../../../source/renderer/app/components/widgets/CountdownWidget';
 import createIcon from '../../../source/renderer/app/assets/images/create-ic.inline.svg';
 import importIcon from '../../../source/renderer/app/assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
@@ -77,6 +78,9 @@ const messages = defineMessages({
 
 storiesOf('Common|Widgets', module)
   .addDecorator((story: any, context: any) => {
+    if (context.name === 'CountdownWidget') {
+      return story();
+    }
     const onChangeAction = action('onChange');
     const state = observable({
       checked: false,
@@ -100,6 +104,13 @@ storiesOf('Common|Widgets', module)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
+
+  .add('CountdownWidget', () => (
+    <CountdownWidget
+      startDateTime={new Date(date('startDateTime')).toISOString()}
+      format="DD-HH-mm-ss"
+    />
+  ))
 
   .add('InlineEditingInput', () => (
     <div>
