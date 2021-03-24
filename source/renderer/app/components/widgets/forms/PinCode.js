@@ -43,7 +43,9 @@ export default class PinCode extends Component<Props> {
     if (
       !Object.prototype.hasOwnProperty.call(value, key) ||
       value[key] === '' ||
-      inputNewValue === ''
+      inputNewValue === '' ||
+      (inputNewValue !== '' &&
+        inputNewValue.length === 1)
     ) {
       const newValue = value;
       newValue[key] = inputNewValue;
