@@ -8,28 +8,33 @@ import styles from './StakingInfo.scss';
 
 const messages = defineMessages({
   heading: {
-    id: 'staking.info.heading',
+    id: 'staking.infoCountdown.heading',
     defaultMessage: '!!!Cardano is transitioning into a decentralized system',
     description: 'Headline for the Decentralization progress notification.',
   },
   description: {
-    id: 'staking.info.description',
+    id: 'staking.infoCountdown.description',
     defaultMessage:
       '!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.',
     description:
       'Info description for the Decentralization progress notification.',
   },
   percentage: {
-    id: 'staking.info.percentage',
+    id: 'staking.infoCountdown.percentage',
     defaultMessage:
       '!!!Currently, {percentage}% of the blocks are produced by the stake pools.',
     description:
       'Percentage info description for the Decentralization progress notification.',
   },
   buttonLabel: {
-    id: 'staking.info.buttonLabel',
+    id: 'staking.infoCountdown.buttonLabel',
     defaultMessage: '!!!Learn more',
     description: 'Button Label for the Decentralization progress notification.',
+  },
+  learnMoreLinkUrl: {
+    id: 'staking.infoCountdown.learnMore.linkUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc',
+    description: '"Learn more" link URL in the staking info page',
   },
 });
 

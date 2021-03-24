@@ -11,7 +11,10 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
-import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
+import {
+  INITIAL_DESIRED_POOLS_NUMBER,
+  EPOCH_NUMBER_TO_FULLY_DECENTRALIZED,
+} from '../config/stakingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -140,11 +143,6 @@ export default class NetworkStatusStore extends Store {
     networkStatusActions.toggleSplash.listen(this._toggleSplash);
     networkStatusActions.forceCheckNetworkClock.listen(
       this._forceCheckNetworkClock
-    );
-
-    // @DECENTRALIZED TODO: Remove temp action
-    networkStatusActions.toggleIsFullyDecentralized.listen(
-      this._toggleIsFullyDecentralized
     );
 
     // Request node state
@@ -721,16 +719,19 @@ export default class NetworkStatusStore extends Store {
     return this.syncProgress || 0;
   }
 
-  // @DECENTRALIZED TODO: Remove these temp function
-  @action _toggleIsFullyDecentralized = () => {
-    console.log('BEFORE', this.tempIsFullyDecentralized);
-    this.tempIsFullyDecentralized = !this.tempIsFullyDecentralized;
-    console.log('AFTER', this.tempIsFullyDecentralized);
+  // @DECENTRALIZED TODO: Remove temp observable & action
+  @observable
+  tempEpochToFullyDecentralized = EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
+  @action tempChangeNextEpochToStartCowntdown = (epochNumber: number) => {
+    this.tempEpochToFullyDecentralized = epochNumber;
   };
-  @observable tempIsFullyDecentralized: boolean = false;
-  @computed get isFullyDecentralized(): boolean {
-    console.log('computed', this.tempIsFullyDecentralized);
-    return this.tempIsFullyDecentralized;
+
+  @computed epochToFullyDecentralized(): ?NextEpoch {
+    const { nextEpoch } = this;
+    const { epochNumber } = nextEpoch || {};
+    return epochNumber && epochNumber >= this.tempEpochToFullyDecentralized
+      ? nextEpoch
+      : null;
   }
 
   @computed get isEpochsInfoAvailable(): boolean {

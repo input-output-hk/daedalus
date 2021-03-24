@@ -9,9 +9,10 @@ import {
 } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
-import styles from './StakingInfo.scss';
+import styles from './StakingInfoCountdown.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 import CountdownWidget from '../../widgets/CountdownWidget';
+import type { NextEpoch } from '../../../api/network/types';
 
 const messages = defineMessages({
   headingBefore: {
@@ -54,8 +55,7 @@ const messages = defineMessages({
 type Props = {
   percentage: number,
   onLearnMoreClick: Function,
-  epochNumber: number,
-  date: string,
+  epoch: NextEpoch,
 };
 
 @observer

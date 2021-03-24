@@ -45,14 +45,15 @@ export default class StakingInfoPage extends Component<Props> {
   };
 
   render() {
-    const { decentralizationProgress } = this.props.stores.networkStatus;
-    const isFullyDecentralized = true;
-    return isFullyDecentralized ? (
+    const {
+      decentralizationProgress,
+      epochToFullyDecentralized,
+    } = this.props.stores.networkStatus;
+    return epochToFullyDecentralized ? (
       <StakingInfoCountdown
         percentage={decentralizationProgress}
         onLearnMoreClick={this.handleLearnMoreClick}
-        date=""
-        epochNumber={257}
+        epoch={epochToFullyDecentralized.epochNumber}
       />
     ) : (
       <StakingInfo

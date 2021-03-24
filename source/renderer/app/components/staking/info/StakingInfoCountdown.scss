@@ -19,6 +19,8 @@
 .mainContent {
   @extend %contentBorderAndBackground;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .heading {
@@ -28,9 +30,18 @@
 }
 
 .description {
-  @extend %regularText;
-  color: var(--theme-staking-font-color-light);
-  margin-bottom: 24px;
+  p {
+    color: var(--theme-staking-font-color-accent);
+    font-family: var(--font-light);
+    margin-bottom: 20px;
+  }
+}
+
+.countdownTitle {
+  color: var(--theme-staking-font-color-accent);
+  margin-bottom: 10px;
+  font-family: var(--font-medium);
+  line-height: 1.38;
 }
 
 .progressBar {
@@ -71,4 +82,15 @@
   @extend %accentText;
   color: var(--theme-staking-progress-label-light);
   transform: translateX(-8px);
+}
+
+:global {
+  #root {
+    position: relative;
+    canvas {
+      position: absolute;
+      top: 0;
+      z-index: 9;
+    }
+  }
 }

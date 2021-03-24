@@ -10,5 +10,4 @@ export default class NetworkStatusActions {
   toggleSplash: Action<any> = new Action();
   copyStateDirectoryPath: Action<any> = new Action();
   forceCheckNetworkClock: Action<any> = new Action();
-  toggleIsFullyDecentralized: Action<any> = new Action();
 }
