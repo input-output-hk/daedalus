@@ -456,7 +456,7 @@ export default class NetworkStatusStore extends Store {
     tempCurrentEpoch: ?number,
     tempNextEpochStart: ?string
   ) => {
-    this.tempResetForced();
+    this.tempResetFakeData();
     if (tempCurrentEpoch) {
       this.tempCurrentEpoch = tempCurrentEpoch;
     }
@@ -464,9 +464,11 @@ export default class NetworkStatusStore extends Store {
       this.tempNextEpochStart = tempNextEpochStart;
     }
   };
-  @action tempResetForced = async () => {
+  @action tempResetFakeData = async () => {
     this.tempCurrentEpoch = 0;
     this.tempNextEpochStart = null;
+  };
+  @action tempResetStakingWasOpen = async () => {
     this.stores.staking.stakingInfoWasOpen = false;
     this.stores.staking.stakingInfoIsAnimating = false;
     await this.api.localStorage.unsetStakingInfoWasOpen();
