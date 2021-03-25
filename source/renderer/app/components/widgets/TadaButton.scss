@@ -3,6 +3,7 @@
   font-size: 19px;
   position: absolute;
   right: 104px;
+  transform-origin: bottom left;
   &.animate {
     animation: animation 0.5s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
   }
