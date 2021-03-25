@@ -543,22 +543,23 @@ export default class StakingStore extends Store {
   }
 
   @computed get shouldShowDecentralizationCountdown(): boolean {
-    const { epochToFullyDecentralized } = this.stores.networkStatus;
-    return !!epochToFullyDecentralized;
+    const { epochToFullyDecentralized, isSynced } = this.stores.networkStatus;
+    return isSynced && !!epochToFullyDecentralized;
   }
 
   @computed get shouldShowDecentralizationTopbarAnimation(): boolean {
-    const { isFullyDecentralized } = this.stores.networkStatus;
+    const { isFullyDecentralized, isSynced } = this.stores.networkStatus;
     const { stakingInfoWasOpen, stakingInfoIsAnimating } = this;
     return (
-      (isFullyDecentralized && !stakingInfoWasOpen) || stakingInfoIsAnimating
+      (isSynced && isFullyDecentralized && !stakingInfoWasOpen) ||
+      stakingInfoIsAnimating
     );
   }
 
   @computed get shouldShowDecentralizationTopbarTadaAnimation(): boolean {
-    const { isFullyDecentralized } = this.stores.networkStatus;
+    const { isFullyDecentralized, isSynced } = this.stores.networkStatus;
     const { stakingInfoWasOpen } = this;
-    return isFullyDecentralized && !stakingInfoWasOpen;
+    return isSynced && isFullyDecentralized && !stakingInfoWasOpen;
   }
 
   @action showCountdown(): boolean {

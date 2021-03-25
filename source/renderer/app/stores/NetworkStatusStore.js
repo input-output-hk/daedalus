@@ -728,14 +728,12 @@ export default class NetworkStatusStore extends Store {
     this.tempEpochNumberToFullyDecentralized = epochNumber;
   };
   @action tempForceStartCountdown = () => {
-    this.tempResetForced();
     const { nextEpoch } = this;
     if (nextEpoch && nextEpoch.epochNumber) {
       this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber;
     }
   };
   @action tempForceDecentralizationComplete = () => {
-    this.tempResetForced();
     const { nextEpoch } = this;
     if (nextEpoch && nextEpoch.epochNumber) {
       this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber - 2;
@@ -750,9 +748,10 @@ export default class NetworkStatusStore extends Store {
   // In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
   // then we set the `epochToFullyDecentralized` value
   @computed get epochToFullyDecentralized(): ?NextEpoch {
-    const { nextEpoch } = this;
+    const { nextEpoch, environment } = this;
     const { epochNumber } = nextEpoch || {};
-    return epochNumber &&
+    return (isFlight || environment.isMainnet) &&
+      epochNumber &&
       epochNumber >= this.tempEpochNumberToFullyDecentralized
       ? nextEpoch
       : null;
@@ -761,10 +760,12 @@ export default class NetworkStatusStore extends Store {
   // In case the next epoch number is LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
   // then we set the `isFullyDecentralized` value as true
   @computed get isFullyDecentralized(): boolean {
-    const { nextEpoch } = this;
+    const { nextEpoch, environment } = this;
     const { epochNumber } = nextEpoch || {};
     return (
-      !!epochNumber && epochNumber > this.tempEpochNumberToFullyDecentralized
+      (isFlight || environment.isMainnet) &&
+      !!epochNumber &&
+      epochNumber > this.tempEpochNumberToFullyDecentralized
     );
   }
 
