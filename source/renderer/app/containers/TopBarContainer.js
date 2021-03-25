@@ -33,7 +33,6 @@ export default class TopBarContainer extends Component<Props> {
     const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
     const {
       shouldShowDecentralizationCountdown,
-      shouldShowDecentralizationTopbarAnimation,
       shouldShowDecentralizationTopbarTadaAnimation,
     } = staking;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
@@ -88,7 +87,6 @@ export default class TopBarContainer extends Component<Props> {
         onWalletAdd={onWalletAdd}
         onLearnMore={openExternalLink}
         isShelleyActivated={isShelleyActivated}
-        isDecentralizedEffectActive={shouldShowDecentralizationTopbarAnimation}
       >
         {testnetLabel}
         <NodeSyncStatusIcon
