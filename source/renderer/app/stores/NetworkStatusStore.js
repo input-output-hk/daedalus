@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual, includes, get } from 'lodash';
+import { isEqual, includes, get, set } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -178,9 +178,6 @@ export default class NetworkStatusStore extends Store {
 
     // Blockchain verification checking
     getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
-
-    // @DECENTRALIZATION TODO: remove this
-    this.tempResetForced();
   }
 
   _restartNode = async () => {
@@ -462,6 +459,24 @@ export default class NetworkStatusStore extends Store {
       const networkStatus: GetNetworkInfoResponse = await this.getNetworkInfoRequest.execute()
         .promise;
 
+      // @DECENTRALIZATION
+      // Increases the Currenct and Next epochs by 1
+      set(
+        networkStatus,
+        'localTip.epoch',
+        get(networkStatus, 'localTip.epoch', 0) + 1
+      );
+      set(
+        networkStatus,
+        'networkTip.epoch',
+        get(networkStatus, 'networkTip.epoch', 0) + 1
+      );
+      set(
+        networkStatus,
+        'nextEpoch.epochNumber',
+        get(networkStatus, 'nextEpoch.epochNumber', 0) + 1
+      );
+
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
@@ -722,68 +737,6 @@ export default class NetworkStatusStore extends Store {
     return this.syncProgress || 0;
   }
 
-  // @DECENTRALIZATION TODO:
-  //   * Remove temp items
-  //   * Replace `this.tempEpochNumberToFullyDecentralized` by `EPOCH_NUMBER_TO_FULLY_DECENTRALIZED`
-  @observable
-  tempEpochNumberToFullyDecentralized: number = EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
-  @action tempSetNextEpochToStartCowntdown = (epochNumber: number) => {
-    this.tempEpochNumberToFullyDecentralized = epochNumber;
-  };
-  @action tempForceStartCountdown = async () => {
-    await this.tempResetForced();
-    runInAction(() => {
-      const { nextEpoch } = this;
-      if (nextEpoch && nextEpoch.epochNumber) {
-        this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber;
-      }
-    });
-  };
-  @action tempForceDecentralizationComplete = async () => {
-    await this.tempResetForced();
-    runInAction(() => {
-      const { nextEpoch } = this;
-      if (nextEpoch && nextEpoch.epochNumber) {
-        this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber - 2;
-      }
-    });
-  };
-  @action tempResetForced = async () => {
-    this.tempEpochNumberToFullyDecentralized = EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
-    this.stores.staking.stakingInfoWasOpen = false;
-    await this.api.localStorage.unsetStakingInfoWasOpen();
-  };
-
-  getPartyState = () => {
-    const { nextEpoch } = this;
-    const {
-      shouldShowDecentralizationCountdown,
-      shouldShowDecentralizationTopbarAnimation,
-      shouldShowDecentralizationTopbarTadaAnimation,
-      stakingInfoWasOpen,
-    } = this.stores.staking;
-    console.log(
-      'EpochNumberToFullyDecentralized',
-      this.tempEpochNumberToFullyDecentralized
-    );
-    console.log('NextEpoch Number', nextEpoch ? nextEpoch.epochNumber : '-');
-    console.log('epochToFullyDecentralized', this.epochToFullyDecentralized);
-    console.log('isFullyDecentralized', this.isFullyDecentralized);
-    console.log(
-      'shouldShowDecentralizationCountdown',
-      shouldShowDecentralizationCountdown
-    );
-    console.log(
-      'shouldShowDecentralizationTopbarAnimation',
-      shouldShowDecentralizationTopbarAnimation
-    );
-    console.log(
-      'shouldShowDecentralizationTopbarTadaAnimation',
-      shouldShowDecentralizationTopbarTadaAnimation
-    );
-    console.log('stakingInfoWasOpen', stakingInfoWasOpen);
-  };
-
   // In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
   // then we set the `epochToFullyDecentralized` value
   @computed get epochToFullyDecentralized(): ?NextEpoch {
@@ -791,7 +744,7 @@ export default class NetworkStatusStore extends Store {
     const { epochNumber } = nextEpoch || {};
     return (isFlight || environment.isMainnet) &&
       epochNumber &&
-      epochNumber >= this.tempEpochNumberToFullyDecentralized
+      epochNumber >= EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
       ? nextEpoch
       : null;
   }
@@ -804,7 +757,7 @@ export default class NetworkStatusStore extends Store {
     return (
       (isFlight || environment.isMainnet) &&
       !!epochNumber &&
-      epochNumber > this.tempEpochNumberToFullyDecentralized
+      epochNumber > EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
     );
   }
 
