@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
 - Updated `trezor-connect` dependency to version `8.1.25` ([PR 2474](https://github.com/input-output-hk/daedalus/pull/2474))
 - Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 - Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
@@ -37,7 +38,6 @@ Changelog
 
 ### Chores
 
-- Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
 - Improved error message shown when trying to make a transaction from a wallet that contains only reward ([PR 2450](https://github.com/input-output-hk/daedalus/pull/2450))
 - Added configuration variable for native tokens formatted amounts display ([PR 2449](https://github.com/input-output-hk/daedalus/pull/2449))
 - Updated `iohk-nix` to revision `60fe72cf` ([PR 2441](https://github.com/input-output-hk/daedalus/pull/2441))
