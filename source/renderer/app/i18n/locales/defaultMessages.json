@@ -4615,7 +4615,7 @@
           "line": 14
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.infoCountdown.heading",
+        "id": "staking.info.heading",
         "start": {
           "column": 11,
           "line": 10
@@ -4629,7 +4629,7 @@
           "line": 21
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.infoCountdown.description",
+        "id": "staking.info.description",
         "start": {
           "column": 15,
           "line": 15
@@ -4643,7 +4643,7 @@
           "line": 28
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.infoCountdown.percentage",
+        "id": "staking.info.percentage",
         "start": {
           "column": 14,
           "line": 22
@@ -4657,7 +4657,7 @@
           "line": 33
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.infoCountdown.buttonLabel",
+        "id": "staking.info.buttonLabel",
         "start": {
           "column": 15,
           "line": 29
@@ -4671,7 +4671,7 @@
           "line": 38
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.infoCountdown.learnMore.linkUrl",
+        "id": "staking.info.learnMore.linkUrl",
         "start": {
           "column": 20,
           "line": 34
