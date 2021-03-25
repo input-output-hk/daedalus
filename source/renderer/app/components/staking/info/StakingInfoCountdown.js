@@ -154,7 +154,10 @@ export default class StakingInfoCountdown extends Component<Props, State> {
             <div className={styles.countdownTitle}>
               {intl.formatMessage(messages.countdownTitle)}
             </div>
-            <CountdownWidget startDateTime={epochStart} format="DD-HH-mm-ss" />
+            <CountdownWidget
+              startDateTime={isFullyDecentralized ? '0' : epochStart}
+              format="DD-HH-mm-ss"
+            />
             <ButtonLink
               className={styles.learnMoreButton}
               onClick={() =>
