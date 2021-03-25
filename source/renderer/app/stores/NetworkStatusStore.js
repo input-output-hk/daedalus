@@ -178,6 +178,9 @@ export default class NetworkStatusStore extends Store {
 
     // Blockchain verification checking
     getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
+
+    // @DECENTRALIZATION TODO: remove this
+    this.tempResetForced();
   }
 
   _restartNode = async () => {
@@ -727,22 +730,58 @@ export default class NetworkStatusStore extends Store {
   @action tempSetNextEpochToStartCowntdown = (epochNumber: number) => {
     this.tempEpochNumberToFullyDecentralized = epochNumber;
   };
-  @action tempForceStartCountdown = () => {
-    const { nextEpoch } = this;
-    if (nextEpoch && nextEpoch.epochNumber) {
-      this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber;
-    }
+  @action tempForceStartCountdown = async () => {
+    await this.tempResetForced();
+    runInAction(() => {
+      const { nextEpoch } = this;
+      if (nextEpoch && nextEpoch.epochNumber) {
+        this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber;
+      }
+    });
   };
-  @action tempForceDecentralizationComplete = () => {
-    const { nextEpoch } = this;
-    if (nextEpoch && nextEpoch.epochNumber) {
-      this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber - 2;
-    }
+  @action tempForceDecentralizationComplete = async () => {
+    await this.tempResetForced();
+    runInAction(() => {
+      const { nextEpoch } = this;
+      if (nextEpoch && nextEpoch.epochNumber) {
+        this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber - 2;
+      }
+    });
   };
-  @action tempResetForced = () => {
+  @action tempResetForced = async () => {
     this.tempEpochNumberToFullyDecentralized = EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
-    this.api.localStorage.unsetStakingInfoWasOpen();
     this.stores.staking.stakingInfoWasOpen = false;
+    await this.api.localStorage.unsetStakingInfoWasOpen();
+  };
+
+  getPartyState = () => {
+    const { nextEpoch } = this;
+    const {
+      shouldShowDecentralizationCountdown,
+      shouldShowDecentralizationTopbarAnimation,
+      shouldShowDecentralizationTopbarTadaAnimation,
+      stakingInfoWasOpen,
+    } = this.stores.staking;
+    console.log(
+      'EpochNumberToFullyDecentralized',
+      this.tempEpochNumberToFullyDecentralized
+    );
+    console.log('NextEpoch Number', nextEpoch ? nextEpoch.epochNumber : '-');
+    console.log('epochToFullyDecentralized', this.epochToFullyDecentralized);
+    console.log('isFullyDecentralized', this.isFullyDecentralized);
+    console.log(
+      'shouldShowDecentralizationCountdown',
+      shouldShowDecentralizationCountdown
+    );
+    console.log(
+      'shouldShowDecentralizationTopbarAnimation',
+      shouldShowDecentralizationTopbarAnimation
+    );
+    console.log(
+      'shouldShowDecentralizationTopbarTadaAnimation',
+      shouldShowDecentralizationTopbarTadaAnimation
+    );
+    console.log('stakingInfoWasOpen', stakingInfoWasOpen);
   };
 
   // In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
