@@ -24,7 +24,7 @@ export const messages = defineMessages({
   },
   walletPublicKeyShowInstruction: {
     id: 'wallet.settings.walletPublicKeyShowInstruction',
-    defaultMessage: '!!!To show wallet public key click "Reveal" button',
+    defaultMessage: '!!!Click Reveal on the right-hand side to display the public key of the wallet.',
     description: 'Wallet public key show instruction.',
   },
   showQRCode: {
