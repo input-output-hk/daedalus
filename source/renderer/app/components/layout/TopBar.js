@@ -23,7 +23,7 @@ type Props = {
   hasRewardsWallets?: boolean,
   onLearnMore?: Function,
   isShelleyActivated: boolean,
-  isDecentralizedEffectActive: boolean,
+  isDecentralizedEffectActive?: boolean,
 };
 
 @observer
@@ -111,7 +111,7 @@ export default class TopBar extends Component<Props> {
               />
             )}
           <FullyDecentralizedEffect
-            isActive={isDecentralizedEffectActive}
+            isActive={isDecentralizedEffectActive || false}
             className={styles.decentralizedEffect}
           />
         </div>
