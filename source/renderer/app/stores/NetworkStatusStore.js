@@ -747,6 +747,8 @@ export default class NetworkStatusStore extends Store {
     this.stores.staking.stakingInfoWasOpen = false;
   };
 
+  // In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
+  // then we set the `epochToFullyDecentralized` value
   @computed get epochToFullyDecentralized(): ?NextEpoch {
     const { nextEpoch } = this;
     const { epochNumber } = nextEpoch || {};
@@ -756,6 +758,8 @@ export default class NetworkStatusStore extends Store {
       : null;
   }
 
+  // In case the next epoch number is LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
+  // then we set the `isFullyDecentralized` value as true
   @computed get isFullyDecentralized(): boolean {
     const { nextEpoch } = this;
     const { epochNumber } = nextEpoch || {};
