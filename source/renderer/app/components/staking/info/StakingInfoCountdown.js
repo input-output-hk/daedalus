@@ -57,10 +57,12 @@ type Props = {
   percentage: number,
   onLearnMoreClick: Function,
   epoch: NextEpoch,
+  onSetStakingInfoWasOpen: function,
 };
 
 type State = {
   isAnimating: boolean,
+  wasAnimated: boolean,
 };
 
 @observer
@@ -75,6 +77,7 @@ export default class StakingInfoCountdown extends Component<Props, State> {
 
   state = {
     isAnimating: false,
+    wasAnimated: false,
   };
 
   componentDidMount() {
@@ -86,16 +89,18 @@ export default class StakingInfoCountdown extends Component<Props, State> {
   }
 
   checkIfShouldAnimate = () => {
-    const { percentage } = this.props;
-    const { isAnimating } = this.state;
-    if (!isAnimating && percentage === 100) {
+    const { percentage, onSetStakingInfoWasOpen } = this.props;
+    const { isAnimating, wasAnimated } = this.state;
+    if (!isAnimating && !wasAnimated && percentage === 100) {
       this.startAnimation();
+      onSetStakingInfoWasOpen();
     }
   };
 
   startAnimation = () => {
     this.setState({
       isAnimating: true,
+      wasAnimated: true,
     });
     setTimeout(this.stopAnimation, DECENTRALIZATED_ANIMATION_DURATION);
   };
@@ -122,32 +127,34 @@ export default class StakingInfoCountdown extends Component<Props, State> {
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
-          <div className={styles.heading}>{heading}</div>
-          <div className={styles.description}>
-            <FormattedHTMLMessage
-              {...description}
-              values={{
-                percentageDecentralized: percentage,
-                percentageFederated: 100 - percentage,
-                epochNumber,
+          <div className={styles.content}>
+            <div className={styles.heading}>{heading}</div>
+            <div className={styles.description}>
+              <FormattedHTMLMessage
+                {...description}
+                values={{
+                  percentageDecentralized: percentage,
+                  percentageFederated: 100 - percentage,
+                  epochNumber,
+                }}
+              />
+            </div>
+            <div className={styles.countdownTitle}>
+              {intl.formatMessage(messages.countdownTitle)}
+            </div>
+            <CountdownWidget startDateTime={epochStart} format="DD-HH-mm-ss" />
+            <ButtonLink
+              className={styles.learnMoreButton}
+              onClick={() =>
+                onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
+              }
+              skin={ButtonSkin}
+              label={buttonLabel}
+              linkProps={{
+                className: styles.externalLinkIcon,
               }}
             />
           </div>
-          <div className={styles.countdownTitle}>
-            {intl.formatMessage(messages.countdownTitle)}
-          </div>
-          <CountdownWidget startDateTime={epochStart} format="DD-HH-mm-ss" />
-          <ButtonLink
-            className={styles.learnMoreButton}
-            onClick={() =>
-              onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
-            }
-            skin={ButtonSkin}
-            label={buttonLabel}
-            linkProps={{
-              className: styles.externalLinkIcon,
-            }}
-          />
           <FullyDecentralizedEffect isActive={isAnimating} />
         </div>
       </div>

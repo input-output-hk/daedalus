@@ -1,12 +1,14 @@
 // @flow
 import React, { Component, createRef } from 'react';
 import { get } from 'lodash';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { Fireworks } from 'fireworks-js';
 import styles from './FullyDecentralizedEffect.scss';
 
 type Props = {
   isActive: boolean,
+  className?: string,
 };
 
 @observer
@@ -61,7 +63,8 @@ export default class FullyDecentralizedEffect extends Component<Props> {
   }
 
   render() {
-    const { isActive } = this.props;
-    return <div className={styles.component} ref={this.container} />;
+    const { isActive, className } = this.props;
+    const componentStyles = classnames([styles.component, className]);
+    return <div className={componentStyles} ref={this.container} />;
   }
 }

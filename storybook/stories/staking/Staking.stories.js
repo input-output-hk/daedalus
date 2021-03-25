@@ -252,6 +252,7 @@ storiesOf('Decentralization | Staking', module)
             epochNumber,
             epochStart,
           }}
+          onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
         />
       );
     },

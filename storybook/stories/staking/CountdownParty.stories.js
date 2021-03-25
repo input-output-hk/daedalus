@@ -5,11 +5,10 @@ import { withKnobs, number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
-import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
+import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
-import CountdownPartyIcon from '../../../source/renderer/app/components/widgets/CountdownPartyIcon';
-import FullyDecentralizedEffect from '../../../source/renderer/app/components/widgets/FullyDecentralizedEffect';
+import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
 
 storiesOf('Decentralization | Countdown', module)
   // .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
@@ -29,7 +28,7 @@ storiesOf('Decentralization | Countdown', module)
     const date = isFullyDecentralized
       ? new Date().getTime() - 100000000
       : new Date().getTime() + 100000000;
-    const countdownDate = new Date(date).toISOString();
+    const epochStart = new Date(date).toISOString();
     return (
       <div>
         <TopBar
@@ -42,7 +41,7 @@ storiesOf('Decentralization | Countdown', module)
           onWalletAdd={action('onWalletAdd')}
           hasRewardsWallets={false}
           isShelleyActivated
-          isFullyDecentralized={isFullyDecentralized}
+          isDecentralizedEffectActive
         >
           <NodeSyncStatusIcon
             isSynced
@@ -52,8 +51,8 @@ storiesOf('Decentralization | Countdown', module)
             hasTadaIcon={isFullyDecentralized}
           />
           {isFullyDecentralized && (
-            <CountdownPartyIcon
-              onIconClick={action('onIconClick')}
+            <TadaButton
+              onClick={action('onIconClick')}
               shouldAnimate={boolean('shouldAnimate', false)}
             />
           )}
@@ -63,13 +62,15 @@ storiesOf('Decentralization | Countdown', module)
             hasNotification={false}
             hasUpdate={false}
           />
-          <FullyDecentralizedEffect isActive={isFullyDecentralized} />
         </TopBar>
-        <StakingInfo
+        <StakingInfoCountdown
           percentage={percentage}
           onLearnMoreClick={action('onLearnMoreClick')}
-          epochNumber={epochNumber}
-          date={countdownDate}
+          epoch={{
+            epochNumber,
+            epochStart,
+          }}
+          onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
         />
       </div>
     );

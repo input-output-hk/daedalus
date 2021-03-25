@@ -11,6 +11,7 @@ import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
+import FullyDecentralizedEffect from '../widgets/FullyDecentralizedEffect';
 
 type Props = {
   onLeftIconClick?: ?Function,
@@ -22,6 +23,7 @@ type Props = {
   hasRewardsWallets?: boolean,
   onLearnMore?: Function,
   isShelleyActivated: boolean,
+  isDecentralizedEffectActive: boolean,
 };
 
 @observer
@@ -37,6 +39,7 @@ export default class TopBar extends Component<Props> {
       onWalletAdd,
       onLearnMore,
       isShelleyActivated,
+      isDecentralizedEffectActive,
     } = this.props;
     const { isIncentivizedTestnet } = global;
     const topBarStyles = classNames([
@@ -83,29 +86,35 @@ export default class TopBar extends Component<Props> {
     return (
       <header>
         <div className={topBarStyles}>
-          {leftIcon && (
-            <button className={styles.leftIcon} onClick={onLeftIconClick}>
-              {leftIconSVG}
-            </button>
-          )}
-          {activeWallet ? (
-            <div className={styles.topBarTitle}>{topBarTitle}</div>
-          ) : (
-            <SVGInline svg={headerLogo} className={styles.headerLogo} />
-          )}
-          {children}
+          <div className={styles.content}>
+            {leftIcon && (
+              <button className={styles.leftIcon} onClick={onLeftIconClick}>
+                {leftIconSVG}
+              </button>
+            )}
+            {activeWallet ? (
+              <div className={styles.topBarTitle}>{topBarTitle}</div>
+            ) : (
+              <SVGInline svg={headerLogo} className={styles.headerLogo} />
+            )}
+            {children}
+          </div>
+          {IS_BYRON_WALLET_MIGRATION_ENABLED &&
+            hasLegacyNotification &&
+            activeWallet && (
+              <LegacyNotification
+                activeWalletName={activeWallet.name}
+                onLearnMore={onLearnMore}
+                onTransferFunds={onTransferFundsFn}
+                hasRewardsWallets={hasRewardsWallets}
+                onWalletAdd={onWalletAdd}
+              />
+            )}
+          <FullyDecentralizedEffect
+            isActive={isDecentralizedEffectActive}
+            className={styles.decentralizedEffect}
+          />
         </div>
-        {IS_BYRON_WALLET_MIGRATION_ENABLED &&
-          hasLegacyNotification &&
-          activeWallet && (
-            <LegacyNotification
-              activeWalletName={activeWallet.name}
-              onLearnMore={onLearnMore}
-              onTransferFunds={onTransferFundsFn}
-              hasRewardsWallets={hasRewardsWallets}
-              onWalletAdd={onWalletAdd}
-            />
-          )}
       </header>
     );
   }

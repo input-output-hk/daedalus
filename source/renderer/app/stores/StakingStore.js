@@ -68,6 +68,7 @@ export default class StakingStore extends Store {
   @observable isFetchingStakePools: boolean = false;
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
+  @observable stakingInfoWasOpen: boolean = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -122,6 +123,7 @@ export default class StakingStore extends Store {
     this.registerReactions([this._pollOnSync]);
 
     this._startStakePoolsFetchTracker();
+    this._getStakingInfoWasOpen();
   }
 
   // REQUESTS
@@ -235,6 +237,18 @@ export default class StakingStore extends Store {
       STAKE_POOLS_FETCH_TRACKER_INTERVAL
     );
     this.getStakePoolsData(true);
+  };
+
+  @action _getStakingInfoWasOpen = async () => {
+    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
+    runInAction(() => {
+      this.stakingInfoWasOpen = stakingInfoWasOpen || false;
+    });
+  };
+
+  @action setStakingInfoWasOpen = async () => {
+    this.stakingInfoWasOpen = true;
+    await this.api.localStorage.setStakingInfoWasOpen();
   };
 
   @action _stakePoolsFetchTracker = () => {

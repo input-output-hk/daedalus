@@ -4,8 +4,7 @@ import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
-import CountdownPartyIcon from '../components/widgets/CountdownPartyIcon';
-import FullyDecentralizedEffect from '../components/widgets/FullyDecentralizedEffect';
+import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
@@ -29,10 +28,17 @@ export default class TopBarContainer extends Component<Props> {
       wallets,
       newsFeed,
       appUpdate,
+      staking,
     } = stores;
-    const { isSynced, syncPercentage } = networkStatus;
+    const {
+      isSynced,
+      syncPercentage,
+      isShelleyActivated,
+      decentralizationProgress,
+      epochToFullyDecentralized,
+    } = networkStatus;
+    const { stakingInfoWasOpen } = staking;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
-    const { isShelleyActivated, epochToFullyDecentralized } = networkStatus;
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -58,6 +64,12 @@ export default class TopBarContainer extends Component<Props> {
       });
     };
 
+    const onClickTadaButton = () => {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
+    };
+
     const onTransferFunds = (sourceWalletId: string) =>
       actions.wallets.transferFundsSetSourceWalletId.trigger({
         sourceWalletId,
@@ -78,23 +90,26 @@ export default class TopBarContainer extends Component<Props> {
         onWalletAdd={onWalletAdd}
         onLearnMore={openExternalLink}
         isShelleyActivated={isShelleyActivated}
-        isFullyDecentralized={isFullyDecentralized}
+        // @DECENTRALIZATION TODO: Replace by this line to keep the animation after StakingInfo is open
+        // isDecentralizedEffectActive={decentralizationProgress === 100}
+        isDecentralizedEffectActive={
+          !stakingInfoWasOpen && decentralizationProgress === 100
+        }
       >
         {testnetLabel}
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
+          hasTadaIcon={!!epochToFullyDecentralized}
         />
-        {isFullyDecentralized && (
-          <CountdownPartyIcon onIconClick={() => {}} shouldAnimate={false} />
+        {epochToFullyDecentralized && (
+          <TadaButton
+            onClick={onClickTadaButton}
+            shouldAnimate={
+              !stakingInfoWasOpen && decentralizationProgress === 100
+            }
+          />
         )}
-
-        <NewsFeedIcon
-          onNewsFeedIconClick={() => {}}
-          hasNotification={false}
-          hasUpdate={false}
-        />
-        <FullyDecentralizedEffect isActive={isFullyDecentralized} />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}

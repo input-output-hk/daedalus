@@ -1,24 +1,24 @@
 // @flow
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import styles from './CountdownPartyIcon.scss';
+import styles from './TadaButton.scss';
 
 type Props = {
-  onIconClick: Function,
+  onClick: Function,
   iconClass?: string,
   shouldAnimate: boolean,
 };
 
-export default class CountdownPartyIcon extends Component<Props> {
+export default class TadaButton extends Component<Props> {
   render() {
-    const { onIconClick, iconClass, shouldAnimate } = this.props;
+    const { onClick, iconClass, shouldAnimate } = this.props;
     const componentClasses = classNames([
       styles.component,
       shouldAnimate ? styles.animate : null,
       iconClass,
     ]);
     return (
-      <button className={componentClasses} onClick={onIconClick}>
+      <button className={componentClasses} onClick={onClick}>
         <span role="img" aria-label="tada-icon">
           🎉
         </span>

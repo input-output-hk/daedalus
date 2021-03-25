@@ -18,17 +18,22 @@ export default class StakingInfoPage extends Component<Props> {
       decentralizationProgress,
       epochToFullyDecentralized,
     } = stores.networkStatus;
+    const { setStakingInfoWasOpen } = stores.staking;
     const { openExternalLink } = stores.app;
-    return epochToFullyDecentralized ? (
+    if (!epochToFullyDecentralized) {
+      return (
+        <StakingInfo
+          percentage={decentralizationProgress}
+          onLearnMoreClick={openExternalLink}
+        />
+      );
+    }
+    return (
       <StakingInfoCountdown
         percentage={decentralizationProgress}
         onLearnMoreClick={openExternalLink}
-        epoch={epochToFullyDecentralized.epochNumber}
-      />
-    ) : (
-      <StakingInfo
-        percentage={decentralizationProgress}
-        onLearnMoreClick={openExternalLink}
+        epoch={epochToFullyDecentralized}
+        onSetStakingInfoWasOpen={setStakingInfoWasOpen}
       />
     );
   }

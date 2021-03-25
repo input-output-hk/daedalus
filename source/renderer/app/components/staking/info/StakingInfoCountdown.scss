@@ -6,6 +6,7 @@
   text-align: center;
 
   .learnMoreButton {
+    margin-top: 30px;
     .externalLinkIcon {
       color: var(--theme-staking-info-learn-more-icon-color);
       &:before {
@@ -21,6 +22,11 @@
   padding: 20px;
   position: relative;
   z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 9;
 }
 
 .heading {

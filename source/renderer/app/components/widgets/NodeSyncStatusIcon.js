@@ -20,7 +20,7 @@ const messages = defineMessages({
 type Props = {
   isSynced: boolean,
   syncPercentage: number,
-  hasTadaIcon?: boolean,
+  hasTadaIcon: boolean,
 };
 
 export default class NodeSyncStatusIcon extends Component<Props> {

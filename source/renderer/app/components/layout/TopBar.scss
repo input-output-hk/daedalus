@@ -1,11 +1,17 @@
 .topBar {
-  align-items: center;
   background: var(--theme-topbar-background-color);
-  display: flex;
-  height: 84px;
-  padding: 0 26px;
   position: relative;
   z-index: 100;
+
+  .content {
+    position: relative;
+    z-index: 100;
+    align-items: center;
+    display: flex;
+    height: 84px;
+    height: 84px;
+    padding: 0 26px;
+  }
 
   &.withoutWallet {
     /* background: var(--theme-topbar-background-color)
@@ -83,5 +89,9 @@
     flex-grow: 1;
     justify-content: center;
     margin-right: 24px;
+  }
+
+  .decentralizedEffect {
+    z-index: 0;
   }
 }
