@@ -8,6 +8,7 @@ export type CreateVotingRegistrationRequest = {
   votingKey: string,
   stakeKey: string,
   signature: string,
+  absoluteSlotNumber: number,
 };
 
 export type CreateWalletSignatureRequest = {
@@ -18,6 +19,7 @@ export type CreateWalletSignatureRequest = {
   votingKey: string,
   stakeKey: string,
   addressHex: string,
+  absoluteSlotNumber: number,
 };
 
 export type SignatureParams = {
