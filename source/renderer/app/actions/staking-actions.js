@@ -33,4 +33,7 @@ export default class StakingActions {
   onConfirmationContinue: Action<{ spendingPassword: string }> = new Action();
   onResultContinue: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
+  startStakingInfoAnimation: Action<any> = new Action();
+  stopStakingInfoAnimation: Action<any> = new Action();
+  setStakingInfoWasOpen: Action<any> = new Action();
 }

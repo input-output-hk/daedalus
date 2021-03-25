@@ -57,11 +57,14 @@ type Props = {
   percentage: number,
   onLearnMoreClick: Function,
   epoch: NextEpoch,
-  onSetStakingInfoWasOpen: function,
+  onSetStakingInfoWasOpen: Function,
+  isAnimating: boolean,
+  isFullyDecentralized: boolean,
+  onStartStakingInfoAnimation: Function,
+  onStopStakingInfoAnimation: Function,
 };
 
 type State = {
-  isAnimating: boolean,
   wasAnimated: boolean,
 };
 
@@ -76,7 +79,6 @@ export default class StakingInfoCountdown extends Component<Props, State> {
   };
 
   state = {
-    isAnimating: false,
     wasAnimated: false,
   };
 
@@ -88,10 +90,18 @@ export default class StakingInfoCountdown extends Component<Props, State> {
     this.checkIfShouldAnimate();
   }
 
+  componentWillUnmount() {
+    this.props.onStopStakingInfoAnimation();
+  }
+
   checkIfShouldAnimate = () => {
-    const { percentage, onSetStakingInfoWasOpen } = this.props;
-    const { isAnimating, wasAnimated } = this.state;
-    if (!isAnimating && !wasAnimated && percentage === 100) {
+    const {
+      isFullyDecentralized,
+      onSetStakingInfoWasOpen,
+      isAnimating,
+    } = this.props;
+    const { wasAnimated } = this.state;
+    if (!isAnimating && !wasAnimated && isFullyDecentralized) {
       this.startAnimation();
       onSetStakingInfoWasOpen();
     }
@@ -99,22 +109,19 @@ export default class StakingInfoCountdown extends Component<Props, State> {
 
   startAnimation = () => {
     this.setState({
-      isAnimating: true,
       wasAnimated: true,
     });
+    this.props.onStartStakingInfoAnimation();
     setTimeout(this.stopAnimation, DECENTRALIZATED_ANIMATION_DURATION);
   };
 
   stopAnimation = () => {
-    this.setState({
-      isAnimating: false,
-    });
+    this.props.onStopStakingInfoAnimation();
   };
 
   render() {
     const { intl } = this.context;
-    const { isAnimating } = this.state;
-    const { percentage, onLearnMoreClick, epoch } = this.props;
+    const { percentage, onLearnMoreClick, epoch, isAnimating } = this.props;
     const isFullyDecentralized = percentage === 100;
     const heading = isFullyDecentralized
       ? intl.formatMessage(messages.headingAfter)

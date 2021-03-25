@@ -253,6 +253,10 @@ storiesOf('Decentralization | Staking', module)
             epochStart,
           }}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
+          isAnimating={boolean('isAnimating', false)}
+          isFullyDecentralized={boolean('isFullyDecentralized', false)}
+          onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
+          onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}
         />
       );
     },

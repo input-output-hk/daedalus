@@ -120,6 +120,7 @@ export const generateWallet = (
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
+    // $FlowFixMe
     assets,
     createdAt: new Date(),
     name,

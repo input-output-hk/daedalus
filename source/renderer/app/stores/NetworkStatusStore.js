@@ -105,9 +105,6 @@ export default class NetworkStatusStore extends Store {
   @observable decentralizationProgress: number = 0; // percentage
   @observable desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
 
-  // @DECENTRALIZATION TODO
-  @observable _decentralizationProgressBkp: number = 0;
-
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -628,10 +625,7 @@ export default class NetworkStatusStore extends Store {
       }
 
       runInAction('Update Decentralization Progress', () => {
-        // @DECENTRALIZATION TODO: remove this if
-        if (this.decentralizationProgress < 100) {
-          this.decentralizationProgress = decentralizationLevel.quantity;
-        }
+        this.decentralizationProgress = decentralizationLevel.quantity;
         this.isShelleyActivated = isShelleyActivated;
         this.isShelleyPending = isShelleyPending;
         this.shelleyActivationTime = epochStartTime;
@@ -725,33 +719,30 @@ export default class NetworkStatusStore extends Store {
     return this.syncProgress || 0;
   }
 
-  // @DECENTRALIZATION TODO: Remove temp items
+  // @DECENTRALIZATION TODO:
+  //   * Remove temp items
+  //   * Replace `this.tempEpochNumberToFullyDecentralized` by `EPOCH_NUMBER_TO_FULLY_DECENTRALIZED`
   @observable
   tempEpochNumberToFullyDecentralized: number = EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
   @action tempSetNextEpochToStartCowntdown = (epochNumber: number) => {
     this.tempEpochNumberToFullyDecentralized = epochNumber;
   };
   @action tempForceStartCountdown = () => {
+    this.tempResetForced();
     const { nextEpoch } = this;
     if (nextEpoch && nextEpoch.epochNumber) {
       this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber;
     }
   };
   @action tempForceDecentralizationComplete = () => {
-    const { decentralizationProgress } = this;
-    this._decentralizationProgressBkp = decentralizationProgress;
-    console.log('this.decentralizationProgress', this.decentralizationProgress);
-    this.decentralizationProgress = 100;
-    console.log('this.decentralizationProgress', this.decentralizationProgress);
+    this.tempResetForced();
+    const { nextEpoch } = this;
+    if (nextEpoch && nextEpoch.epochNumber) {
+      this.tempEpochNumberToFullyDecentralized = nextEpoch.epochNumber - 2;
+    }
   };
-  @action tempForceAll = () => {
-    this.tempForceStartCountdown();
-    this.tempForceDecentralizationComplete();
-  };
-
   @action tempResetForced = () => {
     this.tempEpochNumberToFullyDecentralized = EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
-    this.decentralizationProgress = this._decentralizationProgressBkp;
     this.api.localStorage.unsetStakingInfoWasOpen();
     this.stores.staking.stakingInfoWasOpen = false;
   };
@@ -763,6 +754,14 @@ export default class NetworkStatusStore extends Store {
       epochNumber >= this.tempEpochNumberToFullyDecentralized
       ? nextEpoch
       : null;
+  }
+
+  @computed get isFullyDecentralized(): boolean {
+    const { nextEpoch } = this;
+    const { epochNumber } = nextEpoch || {};
+    return (
+      !!epochNumber && epochNumber > this.tempEpochNumberToFullyDecentralized
+    );
   }
 
   @computed get isEpochsInfoAvailable(): boolean {

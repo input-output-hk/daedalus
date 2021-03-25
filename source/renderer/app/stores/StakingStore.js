@@ -69,6 +69,7 @@ export default class StakingStore extends Store {
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
   @observable stakingInfoWasOpen: boolean = false;
+  @observable stakingInfoIsAnimating: boolean = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -117,6 +118,13 @@ export default class StakingStore extends Store {
       this._setSelectedDelegationWalletId
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
+    stakingActions.startStakingInfoAnimation.listen(
+      this._startStakingInfoAnimation
+    );
+    stakingActions.stopStakingInfoAnimation.listen(
+      this._stopStakingInfoAnimation
+    );
+    stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
@@ -180,6 +188,14 @@ export default class StakingStore extends Store {
       this.smashServerUrl = smashServerUrl;
       this.smashServerLoading = false;
     });
+  };
+
+  @action _startStakingInfoAnimation = () => {
+    this.stakingInfoIsAnimating = true;
+  };
+
+  @action _stopStakingInfoAnimation = () => {
+    this.stakingInfoIsAnimating = false;
   };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
@@ -246,9 +262,9 @@ export default class StakingStore extends Store {
     });
   };
 
-  @action setStakingInfoWasOpen = async () => {
+  @action _setStakingInfoWasOpen = () => {
     this.stakingInfoWasOpen = true;
-    await this.api.localStorage.setStakingInfoWasOpen();
+    this.api.localStorage.setStakingInfoWasOpen();
   };
 
   @action _stakePoolsFetchTracker = () => {
@@ -524,6 +540,25 @@ export default class StakingStore extends Store {
     return wallets.allWallets.map(
       this._transformWalletToRewardForIncentivizedTestnet
     );
+  }
+
+  @computed get shouldShowDecentralizationCountdown(): boolean {
+    const { epochToFullyDecentralized } = this.stores.networkStatus;
+    return !!epochToFullyDecentralized;
+  }
+
+  @computed get shouldShowDecentralizationTopbarAnimation(): boolean {
+    const { isFullyDecentralized } = this.stores.networkStatus;
+    const { stakingInfoWasOpen, stakingInfoIsAnimating } = this;
+    return (
+      (isFullyDecentralized && !stakingInfoWasOpen) || stakingInfoIsAnimating
+    );
+  }
+
+  @computed get shouldShowDecentralizationTopbarTadaAnimation(): boolean {
+    const { isFullyDecentralized } = this.stores.networkStatus;
+    const { stakingInfoWasOpen } = this;
+    return isFullyDecentralized && !stakingInfoWasOpen;
   }
 
   @action showCountdown(): boolean {

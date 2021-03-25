@@ -63,7 +63,7 @@ export default class FullyDecentralizedEffect extends Component<Props> {
   }
 
   render() {
-    const { isActive, className } = this.props;
+    const { className } = this.props;
     const componentStyles = classnames([styles.component, className]);
     return <div className={componentStyles} ref={this.container} />;
   }

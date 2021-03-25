@@ -30,14 +30,12 @@ export default class TopBarContainer extends Component<Props> {
       appUpdate,
       staking,
     } = stores;
+    const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
     const {
-      isSynced,
-      syncPercentage,
-      isShelleyActivated,
-      decentralizationProgress,
-      epochToFullyDecentralized,
-    } = networkStatus;
-    const { stakingInfoWasOpen } = staking;
+      shouldShowDecentralizationCountdown,
+      shouldShowDecentralizationTopbarAnimation,
+      shouldShowDecentralizationTopbarTadaAnimation,
+    } = staking;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
@@ -90,24 +88,18 @@ export default class TopBarContainer extends Component<Props> {
         onWalletAdd={onWalletAdd}
         onLearnMore={openExternalLink}
         isShelleyActivated={isShelleyActivated}
-        // @DECENTRALIZATION TODO: Replace by this line to keep the animation after StakingInfo is open
-        // isDecentralizedEffectActive={decentralizationProgress === 100}
-        isDecentralizedEffectActive={
-          !stakingInfoWasOpen && decentralizationProgress === 100
-        }
+        isDecentralizedEffectActive={shouldShowDecentralizationTopbarAnimation}
       >
         {testnetLabel}
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
-          hasTadaIcon={!!epochToFullyDecentralized}
+          hasTadaIcon={shouldShowDecentralizationCountdown}
         />
-        {epochToFullyDecentralized && (
+        {shouldShowDecentralizationCountdown && (
           <TadaButton
             onClick={onClickTadaButton}
-            shouldAnimate={
-              !stakingInfoWasOpen && decentralizationProgress === 100
-            }
+            shouldAnimate={shouldShowDecentralizationTopbarTadaAnimation}
           />
         )}
         <NewsFeedIcon
