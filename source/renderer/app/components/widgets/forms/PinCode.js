@@ -82,7 +82,8 @@ export default class PinCode extends Component<Props> {
     const nextInputField = this.inputsRef[focusKey + 1];
     if (charCode === 46 && nextInputField && nextInputField.focus) {
       nextInputField.focus();
-    } else if (charCode === 46 && control && control.blur) {
+    }
+    if (charCode === 46 && control && control.blur) {
       control.blur();
       setTimeout(() => {
         if (control && control.focus) {
