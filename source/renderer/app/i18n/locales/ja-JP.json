@@ -411,7 +411,6 @@
   "staking.epochs.tableBody.slots": "スロット",
   "staking.epochs.tableHeader.performance": "パフォーマンス",
   "staking.epochs.tableHeader.sharedRewards": "報酬の割当て",
-  "staking.info.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja",
   "staking.infoCountdown.after.description": "<p>現在ステークプールがCardanoブロックを100%生成しています！</p>",
   "staking.infoCountdown.after.heading": "Cardanoネットワークではブロック生成の完全な分散化が達成されました",
   "staking.infoCountdown.before.description": "<p>Cardanoはブロック生成の完全な分散化に急速に近づいています。まもなく、Cardanoステークプールのネットワークがすべてのブロックを生成するようになります。</p> <p>現在、{percentageDecentralized}%のブロックがステークプールによって生成されており、連合型ノードが生成しているのはわずか{percentageFederated}%です。</p> <p>Cardanoエポック{epochNumber}の境界よりステークプールがブロックを100%生成し始め、ブロック生成の完全な分散化が達成されます。</p>",

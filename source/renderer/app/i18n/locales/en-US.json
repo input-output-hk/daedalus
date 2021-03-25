@@ -411,7 +411,6 @@
   "staking.epochs.tableBody.slots": "slots",
   "staking.epochs.tableHeader.performance": "Performance",
   "staking.epochs.tableHeader.sharedRewards": "Shared rewards",
-  "staking.info.learnMore.linkUrl": "https://iohk.zendesk.com/hc/en-us",
   "staking.infoCountdown.after.description": "<p>Stake pools are now producing 100% of Cardano blocks!</p>",
   "staking.infoCountdown.after.heading": "The Cardano network is now fully decentralized for block production.",
   "staking.infoCountdown.before.description": "<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>",

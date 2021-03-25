@@ -121,8 +121,13 @@ export default class StakingInfoCountdown extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { percentage, onLearnMoreClick, epoch, isAnimating } = this.props;
-    const isFullyDecentralized = percentage === 100;
+    const {
+      percentage,
+      onLearnMoreClick,
+      epoch,
+      isAnimating,
+      isFullyDecentralized,
+    } = this.props;
     const heading = isFullyDecentralized
       ? intl.formatMessage(messages.headingAfter)
       : intl.formatMessage(messages.headingBefore);
