@@ -716,6 +716,11 @@ export default class NetworkStatusStore extends Store {
     return this.syncProgress || 0;
   }
 
+  @computed get absoluteSlotNumber(): number {
+    const { networkTip } = this;
+    return get(networkTip, 'absoluteSlotNumber', 0);
+  }
+
   @computed get isEpochsInfoAvailable(): boolean {
     const { networkTip, nextEpoch } = this;
     return (
