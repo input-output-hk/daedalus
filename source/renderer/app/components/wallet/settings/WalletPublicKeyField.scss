@@ -79,7 +79,7 @@
     width: 28px;
 
     &:focus {
-      box-shadow: none;
+      box-shadow: none !important;
     }
 
     :global {
