@@ -57,19 +57,19 @@ export const getNumberOfFilterDimensionsApplied = (
   filterOptions: ?StakePoolFilterOptionsType
 ) => {
   const {
-    retiringPoolsChecked = true,
-    privatePoolsChecked = true,
-    poolsWithoutOffChainDataChecked = true,
+    retiringPoolsHidden = true,
+    privatePoolsHidden = true,
+    poolsWithoutOffChainDataHidden = true,
   } = filterOptions || {};
   let result = 0;
 
-  if (!retiringPoolsChecked) {
+  if (retiringPoolsHidden) {
     result++;
   }
-  if (!privatePoolsChecked) {
+  if (privatePoolsHidden) {
     result++;
   }
-  if (!poolsWithoutOffChainDataChecked) {
+  if (poolsWithoutOffChainDataHidden) {
     result++;
   }
 
@@ -80,20 +80,16 @@ export const isStakePoolInFilterRange = (
   filterOptions: ?StakePoolFilterOptionsType,
   stakePool: StakePool
 ) => {
-  if (!filterOptions) {
-    return true;
-  }
-
   const {
-    retiringPoolsChecked,
-    privatePoolsChecked,
-    poolsWithoutOffChainDataChecked,
-  } = filterOptions;
+    retiringPoolsHidden = true,
+    privatePoolsHidden = true,
+    poolsWithoutOffChainDataHidden = true,
+  } = filterOptions || {};
 
   if (
-    (stakePool.isRetiring && !retiringPoolsChecked) ||
-    (stakePool.isPrivate && !privatePoolsChecked) ||
-    (stakePool.hasNoOffChainData && !poolsWithoutOffChainDataChecked)
+    (stakePool.isRetiring && retiringPoolsHidden) ||
+    (stakePool.isPrivate && privatePoolsHidden) ||
+    (stakePool.hasNoOffChainData && poolsWithoutOffChainDataHidden)
   ) {
     return false;
   }

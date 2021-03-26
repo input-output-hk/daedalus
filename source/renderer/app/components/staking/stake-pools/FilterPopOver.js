@@ -23,20 +23,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Reset Filter',
     description: 'Reset Filter button label.',
   },
-  retiringPools: {
-    id: 'staking.stakePools.filter.retiringPools',
-    defaultMessage: '!!!Retiring pools',
-    description: 'Retiring pools filter type.',
+  hideRetiringPools: {
+    id: 'staking.stakePools.filter.hideRetiringPools',
+    defaultMessage: '!!!Hide retiring pools',
+    description: 'Hide retiring pools filter type.',
   },
-  privatePools: {
-    id: 'staking.stakePools.filter.privatePools',
-    defaultMessage: '!!!Private pools',
-    description: 'Private pools filter type.',
+  hidePrivatePools: {
+    id: 'staking.stakePools.filter.hidePrivatePools',
+    defaultMessage: '!!!Hide private pools',
+    description: 'Hide private pools filter type.',
   },
-  poolsWithoutOffChainData: {
-    id: 'staking.stakePools.filter.poolsWithoutOffChainData',
-    defaultMessage: '!!!Pools without off-chain data',
-    description: 'Pools without off-chain data filter type.',
+  hidePoolsWithoutOffChainData: {
+    id: 'staking.stakePools.filter.hidePoolsWithoutOffChainData',
+    defaultMessage: '!!!Hide pools without off-chain data',
+    description: 'Hide pools without off-chain data filter type.',
   },
   apply: {
     id: 'staking.stakePools.filter.apply',
@@ -66,9 +66,9 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
     const {
       populatedFilterOptions: {
-        retiringPoolsChecked,
-        privatePoolsChecked,
-        poolsWithoutOffChainDataChecked,
+        retiringPoolsHidden,
+        privatePoolsHidden,
+        poolsWithoutOffChainDataHidden,
       },
     } = props;
 
@@ -76,20 +76,20 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
     this.form = new ReactToolboxMobxForm({
       fields: {
-        retiringPoolsChecked: {
+        retiringPoolsHidden: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.retiringPools),
-          value: retiringPoolsChecked,
+          label: intl.formatMessage(messages.hideRetiringPools),
+          value: retiringPoolsHidden,
         },
-        privatePoolsChecked: {
+        privatePoolsHidden: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.privatePools),
-          value: privatePoolsChecked,
+          label: intl.formatMessage(messages.hidePrivatePools),
+          value: privatePoolsHidden,
         },
-        poolsWithoutOffChainDataChecked: {
+        poolsWithoutOffChainDataHidden: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.poolsWithoutOffChainData),
-          value: poolsWithoutOffChainDataChecked,
+          label: intl.formatMessage(messages.hidePoolsWithoutOffChainData),
+          value: poolsWithoutOffChainDataHidden,
         },
       },
     });
@@ -97,16 +97,16 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   fillFormFields = (filterOptions: StakePoolFilterOptionsType) => {
     const {
-      retiringPoolsChecked,
-      privatePoolsChecked,
-      poolsWithoutOffChainDataChecked,
+      retiringPoolsHidden,
+      privatePoolsHidden,
+      poolsWithoutOffChainDataHidden,
     } = filterOptions;
 
-    this.form.select('retiringPoolsChecked').set(retiringPoolsChecked);
-    this.form.select('privatePoolsChecked').set(privatePoolsChecked);
+    this.form.select('retiringPoolsHidden').set(retiringPoolsHidden);
+    this.form.select('privatePoolsHidden').set(privatePoolsHidden);
     this.form
-      .select('poolsWithoutOffChainDataChecked')
-      .set(poolsWithoutOffChainDataChecked);
+      .select('poolsWithoutOffChainDataHidden')
+      .set(poolsWithoutOffChainDataHidden);
   };
 
   resetForm = () => this.fillFormFields(emptyStakePoolFilterOptions);
@@ -135,10 +135,10 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   renderFields = () => {
     const { form } = this;
-    const retiringPoolsCheckboxField = form.$('retiringPoolsChecked');
-    const privatePoolsCheckboxField = form.$('privatePoolsChecked');
+    const retiringPoolsCheckboxField = form.$('retiringPoolsHidden');
+    const privatePoolsCheckboxField = form.$('privatePoolsHidden');
     const poolsWithoutOffChainDataCheckboxField = form.$(
-      'poolsWithoutOffChainDataChecked'
+      'poolsWithoutOffChainDataHidden'
     );
 
     return (
