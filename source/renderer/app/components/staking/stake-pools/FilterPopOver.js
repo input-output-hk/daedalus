@@ -59,6 +59,7 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   form: ReactToolboxMobxForm;
   popoverTippyInstance: ElementRef<*> = createRef();
+  isSubmitClicked = false;
 
   constructor(props: FilterPopOverProps, context: Object) {
     super(props);
@@ -109,6 +110,7 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
   };
 
   resetForm = () => this.fillFormFields(emptyStakePoolFilterOptions);
+  restoreForm = () => this.fillFormFields(this.props.populatedFilterOptions);
 
   isFormValuesEqualTo = (comparedFilterOptions: StakePoolFilterOptionsType) => {
     const formFieldNames = Object.keys(this.form.fields.toJSON());
@@ -127,6 +129,7 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
       },
       onError: () => null,
     });
+    this.isSubmitClicked = true;
     if (this.popoverTippyInstance.current) {
       this.popoverTippyInstance.current.hide();
     }
@@ -177,6 +180,12 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
         appendTo={document.body}
         onShow={(instance) => {
           this.popoverTippyInstance.current = instance;
+          this.isSubmitClicked = false;
+        }}
+        onHide={() => {
+          if (!this.isSubmitClicked) {
+            this.restoreForm();
+          }
         }}
         duration={0}
         offset={[0, 10]}
