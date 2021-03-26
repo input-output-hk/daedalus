@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react';
+import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './TadaButton.scss';
+import tadaIcon from '../../assets/images/tada-color-ic.inline.svg';
 
 type Props = {
   onClick: Function,
@@ -19,9 +21,7 @@ export default class TadaButton extends Component<Props> {
     ]);
     return (
       <button className={componentClasses} onClick={onClick}>
-        <span role="img" aria-label="tada-icon">
-          🎉
-        </span>
+        <SVGInline className={styles.icon} svg={tadaIcon} />
       </button>
     );
   }
