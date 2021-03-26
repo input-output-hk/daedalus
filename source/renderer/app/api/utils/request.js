@@ -1,5 +1,5 @@
 // @flow
-import { includes, omit, size } from 'lodash';
+import { includes, omit, size, values, flatten } from 'lodash';
 import JSONBigInt from 'json-bigint';
 import querystring from 'querystring';
 import { getContentLength } from '.';
@@ -22,6 +22,39 @@ const ALLOWED_ERROR_EXCEPTION_PATHS = [];
 
 const { isIncentivizedTestnet, isSelfnode } = global.environment;
 
+const agent = new global.https.Agent({
+  maxCachedSessions: 256, // Default: 100 | 0 - Disable TLS session caching
+  maxFreeSockets: 256, // Default: 256
+  maxSockets: 256, // Default: Infinity
+  maxTotalSockets: 256, // Default: Infinity
+  keepAlive: true, // Default: false
+  keepAliveMsecs: 1000, // Default: 1000 | unit: milliseconds
+  scheduling: 'lifo', // Default: 'lifo'
+  timeout: 5 * 1000, // 5 seconds | unit: milliseconds
+});
+
+// Passing ciphers, minVersion, and maxVersion speeds up TLS handshake
+const httpsOptions = {
+  ciphers: [
+    'TLS_AES_256_GCM_SHA384',
+    // 'TLS_AES_128_GCM_SHA256',
+    // 'TLS_AES_128_CCM_SHA256',
+    // 'TLS_AES_128_CCM_8_SHA256',
+    // 'TLS_CHACHA20_POLY1305_SHA256'
+  ].join(' '),
+  minVersion: 'TLSv1.3',
+  maxVersion: 'TLSv1.3',
+  agent,
+};
+
+const logSocketStats = (state: string, { sockets, freeSockets }) => {
+  const used = flatten(values(sockets)).length;
+  const free = flatten(values(freeSockets)).length;
+  const total = used + free;
+  // eslint-disable-next-line no-console
+  console.debug(`[connection:${state}]:sockets`, { used, free, total });
+};
+
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
@@ -33,7 +66,11 @@ function typedRequest<Response>(
   }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const options: RequestOptions = Object.assign({}, httpOptions);
+    const options: RequestOptions = Object.assign(
+      {},
+      httpsOptions,
+      httpOptions
+    );
     const { isOctetStreamRequest, isOctetStreamResponse } = Object.assign(
       {},
       requestOptions
@@ -70,7 +107,15 @@ function typedRequest<Response>(
       };
     }
 
-    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
+    const httpOnlyOptions = omit(options, [
+      'agent',
+      'ca',
+      'cert',
+      'key',
+      'ciphers',
+      'minVersion',
+      'maxVersion',
+    ]);
     const httpsRequest =
       isIncentivizedTestnet || isSelfnode
         ? global.http.request(httpOnlyOptions)
@@ -147,7 +192,20 @@ function typedRequest<Response>(
       });
     });
     httpsRequest.on('error', (error) => reject(error));
+    httpsRequest.on('socket', () => {
+      logSocketStats('socket', httpsRequest.agent);
+    });
+    httpsRequest.on('finish', () => {
+      logSocketStats('finish', httpsRequest.agent);
+    });
+    httpsRequest.on('timeout', () => {
+      logSocketStats('timeout', httpsRequest.agent);
+    });
+    httpsRequest.on('close', () => {
+      logSocketStats('close', httpsRequest.agent);
+    });
     httpsRequest.end();
+    logSocketStats('init', httpsRequest.agent);
   });
 }
 

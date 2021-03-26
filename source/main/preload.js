@@ -34,6 +34,7 @@ process.once('loaded', () => {
     environment,
     buildLabel,
     https: {
+      Agent: _https.Agent,
       request: (...args) => _https.request(...args),
     },
     http: {
