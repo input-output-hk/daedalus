@@ -5656,13 +5656,13 @@
         "description": "Reset Filter button label.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
         "id": "staking.stakePools.filter.resetFilter",
         "start": {
           "column": 15,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -5670,13 +5670,13 @@
         "description": "Hide retiring pools filter type.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
         "id": "staking.stakePools.filter.hideRetiringPools",
         "start": {
           "column": 21,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -5684,13 +5684,13 @@
         "description": "Hide private pools filter type.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
         "id": "staking.stakePools.filter.hidePrivatePools",
         "start": {
           "column": 20,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -5698,13 +5698,13 @@
         "description": "Hide pools without off-chain data filter type.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
         "id": "staking.stakePools.filter.hidePoolsWithoutOffChainData",
         "start": {
           "column": 32,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -5712,13 +5712,13 @@
         "description": "Filter button label.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
         "id": "staking.stakePools.filter.apply",
         "start": {
           "column": 9,
-          "line": 41
+          "line": 40
         }
       }
     ],

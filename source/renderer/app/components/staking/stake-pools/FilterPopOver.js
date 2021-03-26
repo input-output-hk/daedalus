@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component, createRef } from 'react';
 import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
