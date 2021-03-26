@@ -1816,15 +1816,13 @@ export default class HardwareWalletsStore extends Store {
   };
 
   _getTtl = (): number => {
-    const { networkTip } = this.stores.networkStatus;
-    const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
+    const { absoluteSlotNumber } = this.stores.networkStatus;
     const ttl = absoluteSlotNumber + TIME_TO_LIVE;
     return ttl;
   };
 
   _getAbsoluteSlotNumber = (): number => {
-    const { networkTip } = this.stores.networkStatus;
-    const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
+    const { absoluteSlotNumber } = this.stores.networkStatus;
     return absoluteSlotNumber;
   };
 

@@ -2431,6 +2431,7 @@ export default class AdaApi {
       votingKey,
       stakeKey,
       addressHex,
+      absoluteSlotNumber,
     } = request;
 
     try {
@@ -2461,6 +2462,14 @@ export default class AdaApi {
                 },
                 v: {
                   bytes: addressHex,
+                },
+              },
+              {
+                k: {
+                  int: 4,
+                },
+                v: {
+                  int: absoluteSlotNumber,
                 },
               },
             ],
@@ -2496,6 +2505,7 @@ export default class AdaApi {
       votingKey,
       stakeKey,
       signature,
+      absoluteSlotNumber,
     } = request;
 
     try {
@@ -2535,6 +2545,14 @@ export default class AdaApi {
                 },
                 v: {
                   bytes: addressHex,
+                },
+              },
+              {
+                k: {
+                  int: 4,
+                },
+                v: {
+                  int: absoluteSlotNumber,
                 },
               },
             ],
