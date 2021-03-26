@@ -7,7 +7,6 @@ import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfoCountdown.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 import CountdownWidget from '../../widgets/CountdownWidget';
-import { DECENTRALIZATED_ANIMATION_DURATION } from '../../../config/stakingConfig';
 import type { NextEpoch } from '../../../api/network/types';
 
 const messages = defineMessages({
@@ -58,18 +57,12 @@ type Props = {
   onLearnMoreClick: Function,
   epoch: NextEpoch,
   onSetStakingInfoWasOpen: Function,
-  isAnimating: boolean,
   isFullyDecentralized: boolean,
-  onStartStakingInfoAnimation: Function,
-  onStopStakingInfoAnimation: Function,
-};
-
-type State = {
-  wasAnimated: boolean,
+  stakingInfoWasOpen: boolean,
 };
 
 @observer
-export default class StakingInfoCountdown extends Component<Props, State> {
+export default class StakingInfoCountdown extends Component<Props> {
   static defaultProps = {
     percentage: 0,
   };
@@ -78,45 +71,23 @@ export default class StakingInfoCountdown extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    wasAnimated: false,
-  };
-
   componentDidMount() {
-    this.checkIfShouldAnimate();
+    this.checkIfShouldSetStakingInfoWasOpen();
   }
 
   componentDidUpdate() {
-    this.checkIfShouldAnimate();
+    this.checkIfShouldSetStakingInfoWasOpen();
   }
 
-  componentWillUnmount() {
-    this.props.onStopStakingInfoAnimation();
-  }
-
-  checkIfShouldAnimate = () => {
+  checkIfShouldSetStakingInfoWasOpen = () => {
     const {
-      isFullyDecentralized,
       onSetStakingInfoWasOpen,
-      isAnimating,
+      isFullyDecentralized,
+      stakingInfoWasOpen,
     } = this.props;
-    const { wasAnimated } = this.state;
-    if (!isAnimating && !wasAnimated && isFullyDecentralized) {
-      this.startAnimation();
+    if (isFullyDecentralized && !stakingInfoWasOpen) {
       onSetStakingInfoWasOpen();
     }
-  };
-
-  startAnimation = () => {
-    this.setState({
-      wasAnimated: true,
-    });
-    this.props.onStartStakingInfoAnimation();
-    setTimeout(this.stopAnimation, DECENTRALIZATED_ANIMATION_DURATION);
-  };
-
-  stopAnimation = () => {
-    this.props.onStopStakingInfoAnimation();
   };
 
   render() {
@@ -125,7 +96,6 @@ export default class StakingInfoCountdown extends Component<Props, State> {
       percentage,
       onLearnMoreClick,
       epoch,
-      isAnimating,
       isFullyDecentralized,
     } = this.props;
     const heading = isFullyDecentralized
@@ -170,7 +140,7 @@ export default class StakingInfoCountdown extends Component<Props, State> {
               }}
             />
           </div>
-          <FullyDecentralizedEffect isActive={isAnimating} />
+          <FullyDecentralizedEffect isActive={isFullyDecentralized} />
         </div>
       </div>
     );

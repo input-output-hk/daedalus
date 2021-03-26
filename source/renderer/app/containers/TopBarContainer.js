@@ -35,8 +35,11 @@ export default class TopBarContainer extends Component<Props> {
       syncPercentage,
       isShelleyActivated,
       epochToFullyDecentralized,
+      isFullyDecentralized,
     } = networkStatus;
-    const { shouldShowDecentralizationTopbarTadaAnimation } = staking;
+    const { stakingInfoWasOpen } = staking;
+    const shouldShowDecentralizationTopbarTadaAnimation =
+      isSynced && isFullyDecentralized && !stakingInfoWasOpen;
     const shouldShowDecentralizationCountdown =
       isSynced && !!epochToFullyDecentralized;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;

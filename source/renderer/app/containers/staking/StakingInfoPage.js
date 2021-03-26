@@ -19,12 +19,8 @@ export default class StakingInfoPage extends Component<Props> {
       epochToFullyDecentralized,
       isFullyDecentralized,
     } = stores.networkStatus;
-    const { stakingInfoIsAnimating } = stores.staking;
-    const {
-      startStakingInfoAnimation,
-      stopStakingInfoAnimation,
-      setStakingInfoWasOpen,
-    } = actions.staking;
+    const { stakingInfoWasOpen } = stores.staking;
+    const { setStakingInfoWasOpen } = actions.staking;
     const { openExternalLink } = stores.app;
     if (!epochToFullyDecentralized) {
       return (
@@ -40,10 +36,8 @@ export default class StakingInfoPage extends Component<Props> {
         onLearnMoreClick={openExternalLink}
         epoch={epochToFullyDecentralized}
         onSetStakingInfoWasOpen={setStakingInfoWasOpen.trigger}
-        onStartStakingInfoAnimation={startStakingInfoAnimation.trigger}
-        onStopStakingInfoAnimation={stopStakingInfoAnimation.trigger}
-        isAnimating={stakingInfoIsAnimating}
         isFullyDecentralized={isFullyDecentralized}
+        stakingInfoWasOpen={stakingInfoWasOpen}
       />
     );
   }

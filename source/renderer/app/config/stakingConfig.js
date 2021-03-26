@@ -120,4 +120,3 @@ export const IS_SATURATION_DATA_AVAILABLE = true;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
 export const EPOCH_NUMBER_TO_FULLY_DECENTRALIZED = 257;
-export const DECENTRALIZATED_ANIMATION_DURATION = 2 * 60 * 1000; // 2 minutes | unit: milliseconds
