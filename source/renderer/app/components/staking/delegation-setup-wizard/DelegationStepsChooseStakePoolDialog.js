@@ -26,6 +26,7 @@ import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/staking';
 import StakePool from '../../../domains/StakePool';
 
+const HIGH_PROFIT_MARGIN_BASE = 50;
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.title',
@@ -117,9 +118,24 @@ const messages = defineMessages({
     id:
       'staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter',
     defaultMessage:
-      '!!!The stake pool you have selected is about to be retired. If you continue the delegation process, you will need to delegate your stake to another pool at least one complete epoch before the current pool’s retirement date to avoid losing rewards.',
+      '!!!The stake pool you have selected is about to be retired. If you delegate to this pool, you will need to redelegate your wallet to a different pool at least one entire epoch before the current pool’s retirement date to avoid losing rewards.',
     description:
       'Retiring Pool Footer label on the delegation setup "choose wallet" step dialog.',
+  },
+  privatePoolFooter: {
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.privatePoolFooter',
+    defaultMessage:
+      '!!!The stake pool you have selected is private as its margin is 100%. If you delegate to this pool, all rewards will go to the stake pool, and you will not earn delegation rewards.',
+    description:
+      'Private Pool Footer label on the delegation setup "choose wallet" step dialog.',
+  },
+  highProfitMarginPoolFooter: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.highProfitMarginPoolFooter',
+    defaultMessage:
+      '!!!The stake pool you have selected has a high margin of {profitMarginPercentage}%. You could earn more  rewards by delegating to a different pool. Delegating to pools with high margins is not a concern if they are charity pools or if you are supporting a pool for different reasons.',
+    description:
+      'High Profit Margin Pool Footer label on the delegation setup "choose wallet" step dialog.',
   },
 });
 
@@ -229,12 +245,38 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       },
     ];
 
-    const footer =
-      selectedPool && selectedPool.retiring ? (
-        <div className={styles.retiringPoolFooter}>
+    const retiringFooter =
+      selectedPool && selectedPool.isRetiring ? (
+        <div className={styles.poolFooterContent}>
           {intl.formatMessage(messages.retiringPoolFooter)}
         </div>
       ) : null;
+    const privateFooter =
+      selectedPool && selectedPool.isPrivate ? (
+        <div className={styles.poolFooterContent}>
+          {intl.formatMessage(messages.privatePoolFooter)}
+        </div>
+      ) : null;
+    const highProfitMarginFooter =
+      selectedPool &&
+      !selectedPool.isPrivate &&
+      selectedPool.profitMargin > HIGH_PROFIT_MARGIN_BASE ? (
+        <div className={styles.poolFooterContent}>
+          <FormattedHTMLMessage
+            {...messages.highProfitMarginPoolFooter}
+            values={{
+              profitMarginPercentage: selectedPool.profitMargin,
+            }}
+          />
+        </div>
+      ) : null;
+    const footer = (
+      <div className={styles.poolFooter}>
+        {retiringFooter}
+        {privateFooter}
+        {highProfitMarginFooter}
+      </div>
+    );
 
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
