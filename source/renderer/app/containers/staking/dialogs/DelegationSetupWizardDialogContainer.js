@@ -207,7 +207,10 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       this.handleIsWalletAcceptable(amount, reward)
     );
 
-    const isTrezor = checkIsTrezorByWalletId(selectedWallet.id);
+    let isTrezor = false;
+    if (selectedWallet) {
+      isTrezor = checkIsTrezorByWalletId(selectedWallet.id);
+    }
 
     return (
       <DelegationSetupWizardDialog
