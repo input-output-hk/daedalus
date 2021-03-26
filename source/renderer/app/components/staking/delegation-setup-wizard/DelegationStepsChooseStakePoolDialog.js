@@ -23,10 +23,12 @@ import Wallet from '../../../domains/Wallet';
 import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
-import { getNumberOfFilterDimensionsApplied } from '../../../utils/staking';
+import {
+  getNumberOfFilterDimensionsApplied,
+  hasStakePoolHighProfitMargin,
+} from '../../../utils/staking';
 import StakePool from '../../../domains/StakePool';
 
-const HIGH_PROFIT_MARGIN_BASE = 50;
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.title',
@@ -260,7 +262,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     const highProfitMarginFooter =
       selectedPool &&
       !selectedPool.isPrivate &&
-      selectedPool.profitMargin > HIGH_PROFIT_MARGIN_BASE ? (
+      hasStakePoolHighProfitMargin(selectedPool) ? (
         <div className={styles.poolFooterContent}>
           <FormattedHTMLMessage
             {...messages.highProfitMarginPoolFooter}

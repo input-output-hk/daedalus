@@ -3708,13 +3708,13 @@
         "description": "Title \"Choose a stake pool\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 31
+          "line": 33
         }
       },
       {
@@ -3722,13 +3722,13 @@
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 39
         }
       },
       {
@@ -3736,13 +3736,13 @@
         "description": "Select / Selected pool section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel",
         "start": {
           "column": 24,
-          "line": 43
+          "line": 45
         }
       },
       {
@@ -3750,13 +3750,13 @@
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel",
         "start": {
           "column": 26,
-          "line": 51
+          "line": 53
         }
       },
       {
@@ -3764,13 +3764,13 @@
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabelRetiring",
         "start": {
           "column": 34,
-          "line": 59
+          "line": 61
         }
       },
       {
@@ -3778,13 +3778,13 @@
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel",
         "start": {
           "column": 27,
-          "line": 67
+          "line": 69
         }
       },
       {
@@ -3792,13 +3792,13 @@
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 84
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel",
         "start": {
           "column": 31,
-          "line": 75
+          "line": 77
         }
       },
       {
@@ -3806,13 +3806,13 @@
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel",
         "start": {
           "column": 20,
-          "line": 83
+          "line": 85
         }
       },
       {
@@ -3820,13 +3820,13 @@
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 97
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
           "column": 20,
-          "line": 89
+          "line": 91
         }
       },
       {
@@ -3834,13 +3834,13 @@
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 104
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
           "column": 26,
-          "line": 96
+          "line": 98
         }
       },
       {
@@ -3848,13 +3848,13 @@
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 103
+          "line": 105
         }
       },
       {
@@ -3862,13 +3862,13 @@
         "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 118
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 110
+          "line": 112
         }
       },
       {
@@ -3876,13 +3876,13 @@
         "description": "Retiring Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 124
+          "line": 126
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter",
         "start": {
           "column": 22,
-          "line": 117
+          "line": 119
         }
       },
       {
@@ -3890,13 +3890,13 @@
         "description": "Private Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 133
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.privatePoolFooter",
         "start": {
           "column": 21,
-          "line": 125
+          "line": 127
         }
       },
       {
@@ -3904,13 +3904,13 @@
         "description": "High Profit Margin Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 141
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.highProfitMarginPoolFooter",
         "start": {
           "column": 30,
-          "line": 132
+          "line": 134
         }
       }
     ],
@@ -4068,13 +4068,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -4082,13 +4082,13 @@
         "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -4096,13 +4096,13 @@
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -4110,13 +4110,13 @@
         "description": "Stake pool ID label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel",
         "start": {
           "column": 20,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -4124,13 +4124,13 @@
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -4138,13 +4138,13 @@
         "description": "Deposit label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.depositLabel",
         "start": {
           "column": 16,
-          "line": 68
+          "line": 69
         }
       },
       {
@@ -4152,13 +4152,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 74
+          "line": 75
         }
       },
       {
@@ -4166,13 +4166,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 80
+          "line": 81
         }
       },
       {
@@ -4180,13 +4180,13 @@
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -4194,13 +4194,13 @@
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 98
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -4208,13 +4208,13 @@
         "description": "\"Calculating fees\" message in the \"confirmation\" dialog.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 103
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
         "start": {
           "column": 19,
-          "line": 98
+          "line": 99
         }
       },
       {
@@ -4222,13 +4222,55 @@
         "description": "\"Calculating deposit\" message in the \"confirmation\" dialog.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 108
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit",
         "start": {
           "column": 22,
-          "line": 103
+          "line": 104
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected is about to be retired. If you delegate to this pool, you will need to redelegate your wallet to a different pool at least one entire epoch before the current pool’s retirement date to avoid losing rewards.",
+        "description": "Retiring Pool Footer label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 116
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter",
+        "start": {
+          "column": 22,
+          "line": 109
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected is private as its margin is 100%. If you delegate to this pool, all rewards will go to the stake pool, and you will not earn delegation rewards.",
+        "description": "Private Pool Footer label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 123
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.privatePoolFooter",
+        "start": {
+          "column": 21,
+          "line": 117
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected has a high margin of {profitMarginPercentage}%. You could earn more  rewards by delegating to a different pool. Delegating to pools with high margins is not a concern if they are charity pools or if you are supporting a pool for different reasons.",
+        "description": "High Profit Margin Pool Footer label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 131
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.highProfitMarginPoolFooter",
+        "start": {
+          "column": 30,
+          "line": 124
         }
       }
     ],

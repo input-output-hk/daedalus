@@ -8,6 +8,8 @@ import type { SmashServerType } from '../types/stakingTypes';
 import type { StakePoolFilterOptionsType } from '../stores/StakingStore';
 import StakePool from '../domains/StakePool';
 
+const HIGH_PROFIT_MARGIN_BASE = 50;
+
 export const getSmashServerNameFromUrl = (smashServerUrl: string): string =>
   reduce(
     SMASH_SERVERS_LIST,
@@ -95,4 +97,8 @@ export const isStakePoolInFilterRange = (
   }
 
   return true;
+};
+
+export const hasStakePoolHighProfitMargin = (stakePool: StakePool) => {
+  return stakePool.profitMargin > HIGH_PROFIT_MARGIN_BASE;
 };
