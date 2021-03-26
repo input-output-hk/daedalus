@@ -488,7 +488,8 @@ export default class StakingStore extends Store {
 
   @computed get allFiltered(): Array<StakePool> {
     const { recentFiltered } = this;
-    const allFiltered = this.stakePools.filter((stakePool) =>
+    const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
+    const allFiltered = orderedStakePools.filter((stakePool) =>
       isStakePoolInFilterRange(this.filterOptions, stakePool)
     );
     return !allFiltered.length && recentFiltered.length
