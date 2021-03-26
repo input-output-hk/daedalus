@@ -255,6 +255,7 @@ storiesOf('Decentralization | Staking', module)
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
           isAnimating={boolean('isAnimating', false)}
           isFullyDecentralized={boolean('isFullyDecentralized', false)}
+          stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
           onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
           onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}
         />

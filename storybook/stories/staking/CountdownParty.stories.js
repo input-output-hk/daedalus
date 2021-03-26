@@ -11,7 +11,6 @@ import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFe
 import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
 
 storiesOf('Decentralization | Countdown', module)
-  // .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
@@ -73,6 +72,7 @@ storiesOf('Decentralization | Countdown', module)
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
           isAnimating={boolean('isAnimating', false)}
           isFullyDecentralized={boolean('isFullyDecentralized', false)}
+          stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
           onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
           onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}
         />

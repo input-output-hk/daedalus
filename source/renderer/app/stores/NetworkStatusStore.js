@@ -470,7 +470,6 @@ export default class NetworkStatusStore extends Store {
   };
   @action tempResetStakingWasOpen = async () => {
     this.stores.staking.stakingInfoWasOpen = false;
-    this.stores.staking.stakingInfoIsAnimating = false;
     await this.api.localStorage.unsetStakingInfoWasOpen();
   };
 
@@ -493,9 +492,9 @@ export default class NetworkStatusStore extends Store {
         set(networkStatus, 'networkTip.epoch', tempCurrentEpoch);
         set(networkStatus, 'nextEpoch.epochNumber', tempCurrentEpoch + 1);
       }
-      // $FlowFixMe
       if (
         tempNextEpochStart &&
+        // $FlowFixMe
         !`${new Date(tempNextEpochStart)}`.includes('Invalid')
       ) {
         set(networkStatus, 'nextEpoch.epochStart', tempNextEpochStart);
@@ -761,8 +760,8 @@ export default class NetworkStatusStore extends Store {
     return this.syncProgress || 0;
   }
 
-  // In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
-  // then we set the `epochToFullyDecentralized` value
+  /* In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
+  then we set the `epochToFullyDecentralized` value */
   @computed get epochToFullyDecentralized(): ?NextEpoch {
     const { nextEpoch, environment } = this;
     const { epochNumber } = nextEpoch || {};
@@ -773,8 +772,8 @@ export default class NetworkStatusStore extends Store {
       : null;
   }
 
-  // In case the next epoch number is LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
-  // then we set the `isFullyDecentralized` value as true
+  /* In case the next epoch number is LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
+  then we set the `isFullyDecentralized` value as true */
   @computed get isFullyDecentralized(): boolean {
     const { nextEpoch, environment } = this;
     const { epochNumber } = nextEpoch || {};

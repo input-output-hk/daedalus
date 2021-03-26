@@ -243,7 +243,7 @@ export default class StakingStore extends Store {
   @action _getStakingInfoWasOpen = async () => {
     const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
     runInAction(() => {
-      this.stakingInfoWasOpen = stakingInfoWasOpen || false;
+      this.stakingInfoWasOpen = stakingInfoWasOpen;
     });
   };
 
