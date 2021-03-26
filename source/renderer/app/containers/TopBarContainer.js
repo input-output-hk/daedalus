@@ -30,11 +30,15 @@ export default class TopBarContainer extends Component<Props> {
       appUpdate,
       staking,
     } = stores;
-    const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
     const {
-      shouldShowDecentralizationCountdown,
-      shouldShowDecentralizationTopbarTadaAnimation,
-    } = staking;
+      isSynced,
+      syncPercentage,
+      isShelleyActivated,
+      epochToFullyDecentralized,
+    } = networkStatus;
+    const { shouldShowDecentralizationTopbarTadaAnimation } = staking;
+    const shouldShowDecentralizationCountdown =
+      isSynced && !!epochToFullyDecentralized;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
