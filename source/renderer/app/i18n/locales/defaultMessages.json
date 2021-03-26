@@ -11565,27 +11565,27 @@
         "description": "Wallet public key label.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
         "id": "wallet.settings.walletPublicKey",
         "start": {
           "column": 19,
-          "line": 18
+          "line": 20
         }
       },
       {
-        "defaultMessage": "!!!To show wallet public key click \"Reveal\" button",
+        "defaultMessage": "!!!Click Reveal on the right-hand side to display the public key of the wallet.",
         "description": "Wallet public key show instruction.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
         "id": "wallet.settings.walletPublicKeyShowInstruction",
         "start": {
           "column": 34,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -11593,13 +11593,13 @@
         "description": "Show QR code tooltip.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
         "id": "wallet.settings.showQRCode",
         "start": {
           "column": 14,
-          "line": 28
+          "line": 31
         }
       }
     ],

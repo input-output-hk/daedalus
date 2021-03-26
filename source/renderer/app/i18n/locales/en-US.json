@@ -1068,7 +1068,7 @@
   "wallet.settings.walletPublicKeyDialog.button": "Reveal wallet public key",
   "wallet.settings.walletPublicKeyDialog.description": "Please enter your spending password to reveal your wallet’s public key.",
   "wallet.settings.walletPublicKeyDialog.title": "Reveal wallet public key",
-  "wallet.settings.walletPublicKeyShowInstruction": "To show wallet public key click \"Reveal\" button",
+  "wallet.settings.walletPublicKeyShowInstruction": "Click Reveal on the right-hand side to display the public key of the wallet.",
   "wallet.statusMessages.activeRestore": "The balance and transaction history of this wallet is {percentage}% synced with the blockchain.",
   "wallet.summary.assets.tokenSendButton": "Send",
   "wallet.summary.assets.tokensTitle": "Tokens",
