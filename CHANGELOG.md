@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Updated Catalyst voting registration text copy for Fund4 ([PR 2481](https://github.com/input-output-hk/daedalus/pull/2481))
 - Improved reveal / hide action for public key field ([PR 2473](https://github.com/input-output-hk/daedalus/pull/2473))
 - Improved hardware wallets public keys exporting while signing transaction witnesses ([PR 2477](https://github.com/input-output-hk/daedalus/pull/2477))
 - Updated `trezor-connect` dependency to version `8.1.25` ([PR 2474](https://github.com/input-output-hk/daedalus/pull/2474))

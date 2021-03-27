@@ -289,16 +289,21 @@ export default class VotingStore extends Store {
     }
   };
 
-  _checkVotingRegistrationTransaction = async () => {
-    const {
-      confirmations,
-      state,
-    }: WalletTransaction = await this.stores.transactions
-      ._getTransactionRequest()
-      .execute({
-        walletId: this.selectedWalletId,
-        transactionId: this.transactionId,
-      });
+  _checkVotingRegistrationTransaction = () => {
+    const { selectedWalletId, transactionId } = this;
+    if (!selectedWalletId || !transactionId) {
+      return;
+    }
+
+    const transaction: ?WalletTransaction = this.stores.transactions._getTransaction(
+      selectedWalletId,
+      transactionId
+    );
+    if (!transaction) {
+      return;
+    }
+
+    const { confirmations, state } = transaction;
 
     // Update voting registration confirmations count
     if (this.transactionConfirmations !== confirmations) {
