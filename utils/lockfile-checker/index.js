@@ -14,7 +14,14 @@ lodash.map(json.object, (entry, key) => {
   if (entry.integrity) {
     dependenciesWithIntegrity.push(key);
   }
-})
+});
+
+const dependencyNamesToRemove = ['@types/react-syntax-highlighter', '@types/npmlog', '@types/reactcss', '@types/uglify-js', '@types/parse-json', '@types/html-minifier-terser', '@types/minimist'];
+const dependenciesToRemove = Object.keys(json.object).filter(key => dependencyNamesToRemove.find(name => key.includes(name)));
+const affectedDependencies = Object.keys(json.object).filter(key => {
+  const { dependencies } = json.object[key];
+  return dependencies && dependencyNamesToRemove.find(name => dependencies[name]);
+});
 
 const shouldFix = process.argv.slice(2)[0] === '--fix';
 if (shouldFix) {
@@ -25,17 +32,31 @@ if (shouldFix) {
 
 function check() {
   console.log('\x1b[36m%s\x1b[0m', 'Checking yarn.lock file...\n');
-  if (!dependenciesWithIntegrity.length) {
+  if (!dependenciesWithIntegrity.length && !dependenciesToRemove.length && !affectedDependencies.length) {
     console.log('\n \x1b[32m', 'All good, yarn.lock is clean!\n', '\x1b[0m');
     return;
   }
-  console.log(`\x1b[31myarn.lock is not VALID. Please check dependency integrity hashes!`, '\x1b[0m');
-  console.log(`\x1b[31mAffected dependencies: ${lodash.join(dependenciesWithIntegrity, ', ')}\n`, '\x1b[0m');
+
+  console.log(`\x1b[31myarn.lock is not VALID.`, '\x1b[0m');
+
+  if (dependenciesWithIntegrity.length) {
+    console.log(`\x1b[31mPlease check dependency integrity hashes!`, '\x1b[0m');
+    console.log(`\x1b[31mDependencies with integrity: ${lodash.join(dependenciesWithIntegrity, ', ')}\n`, '\x1b[0m');
+  }
+  if (dependenciesToRemove.length) {
+    console.log(`\x1b[31mPlease check dependencies to remove!`, '\x1b[0m');
+    console.log(`\x1b[31mDependencies to remove: ${lodash.join(dependenciesToRemove, ', ')}\n`, '\x1b[0m');
+  }
+  if (affectedDependencies.length) {
+    console.log(`\x1b[31mPlease check affected dependencies!`, '\x1b[0m');
+    console.log(`\x1b[31mAffected dependencies: ${lodash.join(affectedDependencies, ', ')}\n`, '\x1b[0m');
+  }
+  
   console.log('To FIX issues run: \x1b[36m yarn lockfile:fix\n', '\x1b[0m');
 }
 
 function fix() {
-  if (!dependenciesWithIntegrity.length) {
+  if (!dependenciesWithIntegrity.length && !dependenciesToRemove.length && !affectedDependencies.length) {
     console.log('\n \x1b[32m', 'Nothing to fix, yarn.lock is clean!\n', '\x1b[0m');
     return;
   }
@@ -44,12 +65,21 @@ function fix() {
 
   const fixedJSON = {};
   lodash.map(json.object, (entry, key) => {
+    if (dependenciesToRemove.includes(key)) {
+      return;
+    }
     let obj = entry;
     if (entry.integrity) {
       obj = lodash.omit(entry, 'integrity');
     }
+    const cleanedDependencies = obj.dependencies;
+    if (cleanedDependencies) {
+      dependencyNamesToRemove.forEach(name => delete cleanedDependencies[name]);
+      obj.dependencies = cleanedDependencies;
+    }
+
     Object.assign(fixedJSON, {[key]: obj});
-  })
+  });
 
   try {
     const fixedFileContent = lockfile.stringify(fixedJSON);
