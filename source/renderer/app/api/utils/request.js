@@ -30,6 +30,7 @@ const agent = new global.https.Agent({
   keepAlive: true, // Default: false
   keepAliveMsecs: 1000, // Default: 1000 | unit: milliseconds
   scheduling: 'lifo', // Default: 'lifo'
+  // timeout: 5 * 1000, // 5 seconds | unit: milliseconds
 });
 
 // Passing ciphers, minVersion, and maxVersion speeds up TLS handshake

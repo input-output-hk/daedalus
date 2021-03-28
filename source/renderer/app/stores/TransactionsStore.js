@@ -403,19 +403,6 @@ export default class TransactionsStore extends Store {
     return new Request(this.api.ada.getWithdrawals);
   };
 
-  _getTransactionRequest = (): Request<WalletTransaction> => {
-    return new Request(this.api.ada.getTransaction);
-  };
-
-  _getTransaction = (
-    walletId: string,
-    transactionId: string
-  ): ?WalletTransaction => {
-    const { transactions } = this._getTransactionsAllRequest(walletId).result;
-    const transaction = find(transactions, { id: transactionId });
-    return transaction || null;
-  };
-
   // ======================= REACTIONS ========================== //
 
   /**

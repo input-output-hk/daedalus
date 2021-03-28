@@ -18,6 +18,7 @@ Changelog
 
 ### Chores
 
+- Increased maximum event listeners limit to avoid IPC channel stalling ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
 - Updated Catalyst voting registration text copy for Fund4 ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
 - Improved reveal / hide action for public key field ([PR 2473](https://github.com/input-output-hk/daedalus/pull/2473))
 - Improved hardware wallets public keys exporting while signing transaction witnesses ([PR 2477](https://github.com/input-output-hk/daedalus/pull/2477))
