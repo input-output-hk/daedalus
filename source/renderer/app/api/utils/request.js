@@ -30,7 +30,6 @@ const agent = new global.https.Agent({
   keepAlive: true, // Default: false
   keepAliveMsecs: 1000, // Default: 1000 | unit: milliseconds
   scheduling: 'lifo', // Default: 'lifo'
-  timeout: 5 * 1000, // 5 seconds | unit: milliseconds
 });
 
 // Passing ciphers, minVersion, and maxVersion speeds up TLS handshake
@@ -48,11 +47,14 @@ const httpsOptions = {
 };
 
 const logSocketStats = (state: string, { sockets, freeSockets }) => {
+  if (!window.logSocketStats) {
+    return;
+  }
   const used = flatten(values(sockets)).length;
   const free = flatten(values(freeSockets)).length;
   const total = used + free;
   // eslint-disable-next-line no-console
-  console.debug(`[connection:${state}]:sockets`, { used, free, total });
+  console.debug(`[connection:${state}]:socket-stats`, { used, free, total });
 };
 
 function typedRequest<Response>(
@@ -129,7 +131,14 @@ function typedRequest<Response>(
       }
     }
 
+    httpsRequest.on('socket', () => {
+      logSocketStats('socket', httpsRequest.agent);
+    });
+    httpsRequest.on('finish', () => {
+      logSocketStats('finish', httpsRequest.agent);
+    });
     httpsRequest.on('response', (response) => {
+      logSocketStats('response', httpsRequest.agent);
       let body = '';
       let stream;
       // cardano-wallet returns chunked requests, so we need to concat them
@@ -191,19 +200,13 @@ function typedRequest<Response>(
         }
       });
     });
-    httpsRequest.on('error', (error) => reject(error));
-    httpsRequest.on('socket', () => {
-      logSocketStats('socket', httpsRequest.agent);
-    });
-    httpsRequest.on('finish', () => {
-      logSocketStats('finish', httpsRequest.agent);
-    });
     httpsRequest.on('timeout', () => {
       logSocketStats('timeout', httpsRequest.agent);
     });
     httpsRequest.on('close', () => {
       logSocketStats('close', httpsRequest.agent);
     });
+    httpsRequest.on('error', (error) => reject(error));
     httpsRequest.end();
     logSocketStats('init', httpsRequest.agent);
   });
