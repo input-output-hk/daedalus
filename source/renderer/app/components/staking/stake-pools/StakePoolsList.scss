@@ -20,6 +20,10 @@
 }
 
 .list {
+  overflow: visible !important;
+  :global(.ReactVirtualized__Grid__innerScrollContainer) {
+    overflow: visible !important;
+  }
   &:focus {
     outline: 0;
   }
