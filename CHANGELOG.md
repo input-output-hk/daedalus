@@ -11,7 +11,7 @@ Changelog
 
 ### Fixes
 
-- Fixed Catalyst voting registration being stuck at confirming transaction step issue ([PR TBD](TBD))
+- Fixed Catalyst voting registration being stuck at confirming transaction step issue ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
 - Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
 - Fixed dropdown not appearing in the Stake Pools Settings screen ([PR 2460](https://github.com/input-output-hk/daedalus/pull/2460))
 - Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
