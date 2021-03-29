@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 3.4.0
+
+### Features
+
+- Implemented "Cardano is fully decentralized" screen
+
 ## 3.3.2
 
 ### Features
