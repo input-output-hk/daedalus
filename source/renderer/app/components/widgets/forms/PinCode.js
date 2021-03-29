@@ -71,13 +71,13 @@ export default class PinCode extends Component<Props> {
     }
   }
 
-  onKeyPress = (evt: SyntheticKeyboardEvent<EventTarget>, key: string) => {
-    const { charCode, target } = evt;
+  onKeyPress = (evt: SyntheticKeyboardEvent<EventTarget>, inputKey: string) => {
+    const { key, target } = evt;
     const control: { blur?: Function, focus?: Function } = target;
-    const focusKey = parseInt(key, 10);
+    const focusKey = parseInt(inputKey, 10);
     const nextFieldFocusKey = focusKey + 1;
     const nextInputField = this.inputsRef[nextFieldFocusKey];
-    const isDotOrCommaKey = charCode === 46 || charCode === 44;
+    const isDotOrCommaKey = key === ',' || key === '.';
     if (isDotOrCommaKey) {
       if (nextInputField && nextInputField.focus) {
         nextInputField.focus();
