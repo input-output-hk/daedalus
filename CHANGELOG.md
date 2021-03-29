@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Added pasting of wallet recovery phrase ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
+- Added pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
 - Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
 - Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
 - Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
