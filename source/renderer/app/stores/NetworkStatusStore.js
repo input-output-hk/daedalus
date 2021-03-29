@@ -1,8 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-// @DECENTRALIZATION TODO: Remove `set`
-import { isEqual, includes, get, set } from 'lodash';
+import { isEqual, includes, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -450,30 +449,6 @@ export default class NetworkStatusStore extends Store {
     } catch (error) {} // eslint-disable-line
   };
 
-  // @DECENTRALIZATION TODO: Remove
-  @observable tempCurrentEpoch: number = 0;
-  @observable tempNextEpochStart: ?string = null;
-  @action tempSetFakeData = (
-    tempCurrentEpoch: ?number,
-    tempNextEpochStart: ?string
-  ) => {
-    this.tempResetFakeData();
-    if (tempCurrentEpoch) {
-      this.tempCurrentEpoch = tempCurrentEpoch;
-    }
-    if (tempNextEpochStart) {
-      this.tempNextEpochStart = tempNextEpochStart;
-    }
-  };
-  @action tempResetFakeData = async () => {
-    this.tempCurrentEpoch = 0;
-    this.tempNextEpochStart = null;
-  };
-  @action tempResetStakingWasOpen = async () => {
-    this.stores.staking.stakingInfoWasOpen = false;
-    await this.api.localStorage.unsetStakingInfoWasOpen();
-  };
-
   @action _updateNetworkStatus = async () => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
     if (!this.tlsConfig) return;
@@ -484,22 +459,6 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkStatus: GetNetworkInfoResponse = await this.getNetworkInfoRequest.execute()
         .promise;
-
-      const { tempCurrentEpoch, tempNextEpochStart } = this;
-
-      // @DECENTRALIZATION TODO: Remove
-      if (tempCurrentEpoch) {
-        set(networkStatus, 'localTip.epoch', tempCurrentEpoch);
-        set(networkStatus, 'networkTip.epoch', tempCurrentEpoch);
-        set(networkStatus, 'nextEpoch.epochNumber', tempCurrentEpoch + 1);
-      }
-      if (
-        tempNextEpochStart &&
-        // $FlowFixMe
-        !`${new Date(tempNextEpochStart)}`.includes('Invalid')
-      ) {
-        set(networkStatus, 'nextEpoch.epochStart', tempNextEpochStart);
-      }
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
