@@ -37,7 +37,7 @@ const messages = defineMessages({
   checkbox2Label: {
     id: 'voting.votingRegistration.qrCode.step.checkbox2Label',
     defaultMessage:
-      '!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund4.',
+      '!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund3.',
     description:
       'Second checkbox label on the voting registration "qr code" step.',
   },

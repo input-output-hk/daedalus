@@ -9,14 +9,14 @@ import styles from './ConfirmationDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'voting.votingRegistration.dialog.confirmation.headline',
-    defaultMessage: '!!!Cancel Fund4 voting registration?',
+    defaultMessage: '!!!Cancel Fund3 voting registration?',
     description:
       'Headline for the voting registration cancellation confirmation dialog.',
   },
   content: {
     id: 'voting.votingRegistration.dialog.confirmation.content',
     defaultMessage:
-      '!!!Are you sure that you want to cancel Fund4 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.',
+      '!!!Are you sure that you want to cancel Fund3 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.',
     description:
       'Content for the voting registration cancellation confirmation dialog.',
   },
