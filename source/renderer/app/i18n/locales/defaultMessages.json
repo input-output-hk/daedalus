@@ -4662,9 +4662,126 @@
           "column": 15,
           "line": 29
         }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking info page",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 34
+        }
       }
     ],
     "path": "source/renderer/app/components/staking/info/StakingInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fully decentralized block production",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.before.heading",
+        "start": {
+          "column": 17,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.before.description",
+        "start": {
+          "column": 21,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.after.heading",
+        "start": {
+          "column": 16,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.after.description",
+        "start": {
+          "column": 20,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Fully decentralized block production in",
+        "description": "Countdown Title for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.countdownTitle",
+        "start": {
+          "column": 18,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Button Label for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking info page",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 48
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/info/StakingInfoCountdown.json"
   },
   {
     "descriptors": [
@@ -5586,13 +5703,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -5600,13 +5717,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -5614,13 +5731,13 @@
         "description": "\"listTitleLoading\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleLoading",
         "start": {
           "column": 20,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -5628,13 +5745,13 @@
         "description": "\"listTitleSearch\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleSearch",
         "start": {
           "column": 19,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -5642,13 +5759,13 @@
         "description": "\"listTitleStakePools\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleStakePools",
         "start": {
           "column": 23,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -5656,13 +5773,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -5670,13 +5787,13 @@
         "description": "moderatedBy message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.moderatedBy",
         "start": {
           "column": 15,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -5684,13 +5801,13 @@
         "description": "unmoderated message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.unmoderated",
         "start": {
           "column": 15,
-          "line": 63
+          "line": 64
         }
       }
     ],
@@ -6278,13 +6395,13 @@
         "description": "\"Rank\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 53
+          "line": 41
         }
       },
       {
@@ -6292,13 +6409,13 @@
         "description": "\"Rank\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.rankingTooltip",
         "start": {
           "column": 18,
-          "line": 58
+          "line": 46
         }
       },
       {
@@ -6306,13 +6423,13 @@
         "description": "\"Live stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
-          "line": 64
+          "line": 52
         }
       },
       {
@@ -6320,13 +6437,13 @@
         "description": "\"Live stake\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStakeTooltip",
         "start": {
           "column": 24,
-          "line": 69
+          "line": 57
         }
       },
       {
@@ -6334,13 +6451,13 @@
         "description": "\"Pool margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 75
+          "line": 63
         }
       },
       {
@@ -6348,13 +6465,13 @@
         "description": "\"Pool margin\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMarginTooltip",
         "start": {
           "column": 23,
-          "line": 80
+          "line": 68
         }
       },
       {
@@ -6362,13 +6479,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 86
+          "line": 74
         }
       },
       {
@@ -6376,13 +6493,13 @@
         "description": "\"Cost per epoch\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 84
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpochTooltip",
         "start": {
           "column": 23,
-          "line": 91
+          "line": 79
         }
       },
       {
@@ -6390,13 +6507,13 @@
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 89
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 97
+          "line": 85
         }
       },
       {
@@ -6404,13 +6521,13 @@
         "description": "\"Blocks\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 95
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocksTooltip",
         "start": {
           "column": 25,
-          "line": 102
+          "line": 90
         }
       },
       {
@@ -6418,13 +6535,13 @@
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
           "column": 20,
-          "line": 108
+          "line": 96
         }
       },
       {
@@ -6432,13 +6549,13 @@
         "description": "\"Rewards\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 106
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
         "start": {
           "column": 27,
-          "line": 113
+          "line": 101
         }
       },
       {
@@ -6446,13 +6563,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 119
+          "line": 107
         }
       },
       {
@@ -6460,13 +6577,13 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 116
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 124
+          "line": 112
         }
       },
       {
@@ -6474,13 +6591,13 @@
         "description": "\"Saturation\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 122
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturationTooltip",
         "start": {
           "column": 21,
-          "line": 129
+          "line": 117
         }
       },
       {
@@ -6488,13 +6605,13 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 127
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
-          "line": 135
+          "line": 123
         }
       },
       {
@@ -6502,13 +6619,13 @@
         "description": "\"Pledge\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 145
+          "line": 133
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledgeTooltip",
         "start": {
           "column": 17,
-          "line": 140
+          "line": 128
         }
       },
       {
@@ -6516,13 +6633,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 139
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 146
+          "line": 134
         }
       },
       {
@@ -6530,13 +6647,13 @@
         "description": "Experimental tooltip label",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 144
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
-          "line": 152
+          "line": 140
         }
       },
       {
@@ -6544,13 +6661,13 @@
         "description": "copyId tooltip label",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 149
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
         "start": {
           "column": 22,
-          "line": 157
+          "line": 145
         }
       },
       {
@@ -6558,13 +6675,13 @@
         "description": "Data not available yet label",
         "end": {
           "column": 3,
-          "line": 166
+          "line": 154
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
-          "line": 162
+          "line": 150
         }
       }
     ],
@@ -16637,25 +16754,6 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/StakingCountdownPage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Learn more\" link URL in the staking info page",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "source/renderer/app/containers/staking/StakingInfoPage.js",
-        "id": "staking.info.learnMore.linkUrl",
-        "start": {
-          "column": 20,
-          "line": 9
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/staking/StakingInfoPage.json"
   },
   {
     "descriptors": [
