@@ -2258,7 +2258,7 @@ export default class AdaApi {
         nextEpoch: nextEpoch
           ? {
               // N+1 epoch
-              epochNumber: nextEpochNumber,
+              epochNumber: window.nextEpochNumber || nextEpochNumber,
               epochStart: nextEpochStartTime,
             }
           : null,
