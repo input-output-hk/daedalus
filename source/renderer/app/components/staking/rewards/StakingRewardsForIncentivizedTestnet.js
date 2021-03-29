@@ -21,6 +21,9 @@ import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
+import { ellipsis } from '../../../utils/strings';
+import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import CopyToClipboard from "react-copy-to-clipboard";
 
 const messages = defineMessages({
   title: {
@@ -102,6 +105,7 @@ type Props = {
   isLoading: boolean,
   isExporting: boolean,
   onExportCsv: Function,
+  onCopyAddress: Function,
 };
 
 type State = {
@@ -206,6 +210,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       rewards,
       isLoading,
       isExporting,
+      onCopyAddress,
       // onLearnMoreClick,
     } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
@@ -348,7 +353,23 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                               </div>
                             )}
                           </td>
-                          <td>{rewardsAddress}</td>
+                          <td className={styles.rewardsAddress}>
+                            {rewardsAddress && (
+                              <div>
+                                <CopyToClipboard
+                                  text={rewardsAddress}
+                                  onCopy={() => onCopyAddress(rewardsAddress)}
+                                >
+                                  <div className={styles.addressContainer}>
+                                    <span className={styles.address}>{ellipsis(rewardsAddress, 15, 15)}</span>
+                                    <span className={styles.copyAddress}>
+                                      <SVGInline svg={iconCopy} className={styles.copyIcon}/>
+                                    </span>
+                                  </div>
+                                </CopyToClipboard>
+                              </div>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}

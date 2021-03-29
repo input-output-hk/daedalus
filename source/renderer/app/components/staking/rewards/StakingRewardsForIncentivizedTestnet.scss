@@ -82,6 +82,7 @@
       &:hover {
         border-bottom: 1px solid var(--theme-staking-link-color);
         color: var(--theme-staking-link-color);
+
         svg {
           g {
             stroke: var(--theme-staking-link-color);
@@ -149,18 +150,22 @@
       & > .sortIcon {
         margin-left: 6px;
         visibility: hidden;
+
         & > svg {
           height: 7.5px;
           width: 7px;
+
           & > path {
             fill: var(--theme-staking-font-color-regular);
           }
         }
+
         &.ascending {
           & > svg {
             transform: rotateX(150deg);
           }
         }
+
         &.sorted {
           opacity: 1;
           visibility: visible;
@@ -201,6 +206,40 @@
 
         :global .LoadingSpinner_component.LoadingSpinner_medium {
           margin: 10px auto !important;
+        }
+      }
+
+      .address {
+        min-width: 235px;
+      }
+
+      .copyAddress {
+        cursor: pointer;
+        display: flex;
+        white-space: nowrap;
+      }
+
+      .copyIcon {
+        cursor: pointer;
+        margin-left: 4px;
+        object-fit: contain;
+
+        & > svg {
+          height: 10px;
+          width: 8px;
+
+          path {
+            fill: var(--theme-icon-copy-address-color);
+          }
+        }
+      }
+
+      &.rewardsAddress {
+        width: 50%;
+
+        .addressContainer {
+          align-items: center;
+          display: flex;
         }
       }
     }

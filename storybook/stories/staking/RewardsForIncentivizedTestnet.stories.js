@@ -24,5 +24,6 @@ export const StakingRewardsForIncentivizedTestnetStory = () => (
     isExporting={false}
     onLearnMoreClick={action('onLearnMoreClick')}
     onExportCsv={action('onExportCsv')}
+    onCopyAddress={action('onCopyAddress')}
   />
 );
