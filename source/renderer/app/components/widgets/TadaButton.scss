@@ -5,7 +5,12 @@
   right: 94px;
   transform-origin: bottom left;
   &.animate {
-    animation: animation 0.5s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
+    animation: animation 1s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
+    svg {
+      ellipse {
+        animation: animationEllipse 1s infinite;
+      }
+    }
   }
 }
 .icon {
@@ -14,6 +19,28 @@
     width: 32px;
   }
 }
+
+@keyframes animationEllipse {
+  0% {
+    opacity: 1;
+    transform: scale(0.7) translate(22px, 15px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) translate(-7px, -7px);
+  }
+}
+// @keyframes animationLine {
+//   0% {
+//     transform: rotate(5deg);
+//   }
+//   50% {
+//     transform: rotate(-5deg);
+//   }
+//   100% {
+//     transform: rotate(5deg);
+//   }
+// }
 
 @keyframes animation {
   0% {
