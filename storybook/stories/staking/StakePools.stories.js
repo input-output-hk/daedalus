@@ -62,39 +62,40 @@ type Props = {
   isLoading: boolean,
 };
 
-export const StakePoolsStory = (props: Props) => (
-  <StakePools
-    stakePoolsList={STAKE_POOLS.slice(
-      0,
-      number('Pools', 300, {
-        range: true,
-        min: 37,
-        max: 300,
-        step: 1,
-      })
-    )}
-    stakePoolsDelegatingList={[
-      STAKE_POOLS[1],
-      STAKE_POOLS[3],
-      STAKE_POOLS[20],
-      STAKE_POOLS[36],
-    ]}
-    isFetching={boolean('isFetching', false)}
-    onOpenExternalLink={action('onOpenExternalLink')}
-    currentTheme={props.currentTheme}
-    currentLocale={props.locale}
-    onDelegate={action('onDelegate')}
-    isLoading={props.isLoading}
-    isRanking={false}
-    updateDelegatingStake={() => null}
-    rankStakePools={() => null}
-    wallets={dummyWallets}
-    getStakePoolById={() => null}
-    onSmashSettingsClick={action('onSmashSettingsClick')}
-    smashServerUrl="https://smash.cardano-mainnet.iohk.io"
-    maxDelegationFunds={maxDelegationFunds}
-    filterOptions={{}}
-    populatedFilterOptions={{}}
-    onFilter={() => null}
-  />
-);
+export const StakePoolsStory = (props: Props) => {
+  const numberOfStakePools = number('Pools', 300, {
+    range: true,
+    min: 37,
+    max: 300,
+    step: 1,
+  });
+  return (
+    <StakePools
+      stakePoolsList={STAKE_POOLS.slice(0, numberOfStakePools)}
+      numberOfRankedStakePools={numberOfStakePools}
+      stakePoolsDelegatingList={[
+        STAKE_POOLS[1],
+        STAKE_POOLS[3],
+        STAKE_POOLS[20],
+        STAKE_POOLS[36],
+      ]}
+      isFetching={boolean('isFetching', false)}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      currentTheme={props.currentTheme}
+      currentLocale={props.locale}
+      onDelegate={action('onDelegate')}
+      isLoading={props.isLoading}
+      isRanking={false}
+      updateDelegatingStake={() => null}
+      rankStakePools={() => null}
+      wallets={dummyWallets}
+      getStakePoolById={() => null}
+      onSmashSettingsClick={action('onSmashSettingsClick')}
+      smashServerUrl="https://smash.cardano-mainnet.iohk.io"
+      maxDelegationFunds={maxDelegationFunds}
+      filterOptions={{}}
+      populatedFilterOptions={{}}
+      onFilter={() => null}
+    />
+  );
+};

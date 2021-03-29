@@ -486,6 +486,14 @@ export default class StakingStore extends Store {
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
+  @computed get all(): Array<StakePool> {
+    const { recentStakePools } = this;
+    const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
+    return !orderedStakePools.length && recentStakePools.length
+      ? recentStakePools
+      : orderedStakePools;
+  }
+
   @computed get allFiltered(): Array<StakePool> {
     const { recentFiltered } = this;
     const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');

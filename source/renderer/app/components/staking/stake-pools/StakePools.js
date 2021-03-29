@@ -20,10 +20,7 @@ import {
 } from '../../../utils/staking';
 import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
 import StakePool from '../../../domains/StakePool';
-import {
-  IS_RANKING_DATA_AVAILABLE,
-  SMASH_SERVER_TYPES,
-} from '../../../config/stakingConfig';
+import { SMASH_SERVER_TYPES } from '../../../config/stakingConfig';
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 
@@ -79,6 +76,7 @@ type Props = {
   wallets: Array<Wallet>,
   currentLocale: string,
   stakePoolsList: Array<StakePool>,
+  numberOfRankedStakePools: number,
   onOpenExternalLink: Function,
   currentTheme: string,
   updateDelegatingStake: Function,
@@ -173,6 +171,7 @@ export default class StakePools extends Component<Props, State> {
       wallets,
       currentLocale,
       stakePoolsList,
+      numberOfRankedStakePools,
       updateDelegatingStake,
       rankStakePools,
       selectedDelegationWalletId,
@@ -211,11 +210,6 @@ export default class StakePools extends Component<Props, State> {
 
     const isFilterDisabled =
       !filteredStakePoolsList.length && !numberOfFilterDimensionsApplied;
-
-    const numberOfRankedStakePools: number = stakePoolsList.filter(
-      (stakePool) =>
-        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
-    ).length;
 
     const listTitleMessage = isFetching
       ? messages.listTitleLoading
