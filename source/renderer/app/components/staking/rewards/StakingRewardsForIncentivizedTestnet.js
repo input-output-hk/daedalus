@@ -53,7 +53,7 @@ const messages = defineMessages({
   },
   tableHeaderReward: {
     id: 'staking.rewards.tableHeader.reward',
-    defaultMessage: '!!!Reward',
+    defaultMessage: '!!!Total rewards earned (ADA)',
     description: 'Table header "Reward" label on staking rewards page',
   },
   tableHeaderRewardsAddress: {

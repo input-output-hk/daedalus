@@ -468,7 +468,7 @@
   "staking.rewards.note": "Rewards earned by delegating your stake are automatically collected into your reward account and added to your wallet balance.",
   "staking.rewards.tableHeader.date": "Date",
   "staking.rewards.tableHeader.pool": "Stake pool",
-  "staking.rewards.tableHeader.reward": "Reward",
+  "staking.rewards.tableHeader.reward": "Total rewards earned",
   "staking.rewards.tableHeader.rewardsAddress": "Rewards address",
   "staking.rewards.tableHeader.wallet": "Wallet",
   "staking.rewards.title": "Earned delegation rewards",

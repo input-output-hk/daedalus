@@ -468,7 +468,7 @@
   "staking.rewards.note": "ステークを委任することにより得た報酬は自動的に報酬アカウントに振り込まれ、ウォレット残高に追加されます。",
   "staking.rewards.tableHeader.date": "日付",
   "staking.rewards.tableHeader.pool": "ステークプール",
-  "staking.rewards.tableHeader.reward": "報酬",
+  "staking.rewards.tableHeader.reward": "獲得した報酬の合計",
   "staking.rewards.tableHeader.rewardsAddress": "報酬アドレス",
   "staking.rewards.tableHeader.wallet": "ウォレット",
   "staking.rewards.title": "獲得した委任報酬",
