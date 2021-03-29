@@ -239,8 +239,41 @@
         }
       }
 
+      .actionLearnMore {
+        align-items: center;
+        border-radius: 3px;
+        display: flex;
+        height: 16px;
+        justify-content: center;
+        line-height: 16px;
+        margin-left: 15px;
+        padding: 3px 8px;
+        white-space: nowrap;
+        width: 105px;
+      }
+
+      .externalLink {
+        font-size: 8px;
+        font-weight: bold;
+        line-height: 1.25;
+        text-transform: uppercase;
+
+        &:after {
+          height: 8px !important;
+          -webkit-mask-size: 8px, 8px !important;
+          mask-size: 8px, 8px !important;
+          width: 8px !important;
+        }
+      }
+
       &.rewardsAddress {
         width: 50%;
+
+        > div {
+          align-items: center;
+          display: flex;
+          justify-content: space-between;
+        }
 
         .addressContainer {
           align-items: center;

@@ -24,6 +24,7 @@ import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { ellipsis } from '../../../utils/strings';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({
   title: {
@@ -69,11 +70,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Date',
     description: 'Table header "Date" label in exported csv file',
   },
-  learnMoreButtonLabel: {
-    id: 'staking.rewards.learnMore.ButtonLabel',
-    defaultMessage: '!!!Learn more',
-    description: 'Label for "Learn more" button on staking rewards page',
-  },
   note: {
     id: 'staking.rewards.note',
     defaultMessage:
@@ -84,6 +80,11 @@ const messages = defineMessages({
     id: 'staking.delegationCenter.syncingTooltipLabel',
     defaultMessage: '!!!Syncing {syncingProgress}%',
     description: 'unknown stake pool label on staking rewards page.',
+  },
+  actionViewInExplorer: {
+    id: 'staking.rewards.actionViewInExplorer',
+    defaultMessage: '!!!View in explorer',
+    description: 'View in explorer button label on staking rewards page.',
   },
 });
 
@@ -106,6 +107,7 @@ type Props = {
   isExporting: boolean,
   onExportCsv: Function,
   onCopyAddress: Function,
+  onOpenExternalLink: Function,
 };
 
 type State = {
@@ -211,7 +213,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       isLoading,
       isExporting,
       onCopyAddress,
-      // onLearnMoreClick,
+      onOpenExternalLink,
     } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
     const { intl } = this.context;
@@ -252,6 +254,8 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         styles.actionButton,
         ctx.scrollTop > 10 ? styles.actionButtonFaded : null,
       ]);
+
+    const learnMoreButtonClasses = classNames(['flat', styles.actionLearnMore]);
 
     return (
       <StakingPageScrollContext.Consumer>
@@ -373,6 +377,17 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                         </span>
                                       </div>
                                     </CopyToClipboard>
+                                    <ButtonLink
+                                      className={learnMoreButtonClasses}
+                                      onClick={onOpenExternalLink}
+                                      skin={ButtonSkin}
+                                      label={intl.formatMessage(messages.actionViewInExplorer)}
+                                      linkProps={{
+                                        className: styles.externalLink,
+                                        hasIconBefore: false,
+                                        hasIconAfter: true,
+                                      }}
+                                    />
                                   </div>
                                 )}
                               </>

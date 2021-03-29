@@ -71,6 +71,7 @@ export default class StakingRewardsPage extends Component<Props> {
           onLearnMoreClick={this.handleLearnMoreClick}
           onExportCsv={requestCSVFile.trigger}
           onCopyAddress={this.handleCopyAddress}
+          onOpenExternalLink={this.handleLearnMoreClick}
         />
       );
     }
