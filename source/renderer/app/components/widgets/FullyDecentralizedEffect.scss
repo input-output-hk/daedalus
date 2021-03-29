@@ -1,0 +1,15 @@
+.component {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+
+  canvas {
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 9;
+  }
+}
