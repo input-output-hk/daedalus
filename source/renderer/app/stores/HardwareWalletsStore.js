@@ -56,7 +56,6 @@ import { TransactionStates } from '../domains/WalletTransaction';
 import {
   CERTIFICATE_TYPE,
   getParamsFromPath,
-  hardenedPathToString,
 } from '../utils/hardwareWalletUtils';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
@@ -1236,25 +1235,25 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _deriveXpub = CachedDeriveXpubFactory(async (absDerivationPath) => {
-    logger.debug('[HW-DEBUG] HWStore - DERIVE xpub');
-    const response = await getExtendedPublicKeyChannel.request({
-      path: hardenedPathToString(absDerivationPath),
-      isTrezor: false,
-      devicePath: this.activeDevicePath,
-    });
-    const xpubHex = `${response.publicKeyHex}${response.chainCodeHex}`;
-    return Buffer.from(xpubHex, 'hex');
-  });
-
-  _signWitnesses = async (witnesses: Array<Witness>) => {
+  _signWitnesses = async (witnesses: Array<Witness>, xpubHex: string) => {
     const signedWitnesses = [];
     for (const witness of witnesses) {
-      const signedWitness = await this.ShelleyWitness(witness);
+      const signedWitness = await this.ShelleyWitness(witness, xpubHex);
       signedWitnesses.push(signedWitness);
     }
     return signedWitnesses;
   };
+
+  ShelleyWitness = async (witness: Witness, xpubHex: string) => {
+    const xpub = await this._deriveXpub(witness.path, xpubHex);
+    const publicKey = xpub.slice(0, 32);
+    const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
+    return ShelleyTxWitnessShelley(publicKey, signature);
+  };
+
+  _deriveXpub = CachedDeriveXpubFactory(async (xpubHex) => {
+    return Buffer.from(xpubHex, 'hex');
+  });
 
   _getRewardAccountAddress = async (walletId: string, path: Array<string>) => {
     const pathParams = getParamsFromPath(path);
@@ -1270,13 +1269,6 @@ export default class HardwareWalletsStore extends Store {
       data,
     });
     return constructedAddress.address;
-  };
-
-  ShelleyWitness = async (witness: Witness) => {
-    const xpub = await this._deriveXpub(witness.path);
-    const publicKey = xpub.slice(0, 32);
-    const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
-    return ShelleyTxWitnessShelley(publicKey, signature);
   };
 
   // Ledger - Shelley only
@@ -1298,6 +1290,25 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] HWStore - sign transaction Ledger: ', {
       walletId,
     });
+
+    const hardwareWalletConnectionData = get(
+      this.hardwareWalletsConnectionData,
+      walletId
+    );
+
+    // Guard against potential null value
+    if (!hardwareWalletConnectionData)
+      throw new Error('Wallet not paired or Device not connected');
+
+    const publicKeyHex = get(hardwareWalletConnectionData, [
+      'extendedPublicKey',
+      'publicKeyHex',
+    ]);
+    const chainCodeHex = get(hardwareWalletConnectionData, [
+      'extendedPublicKey',
+      'chainCodeHex',
+    ]);
+    const xpubHex = `${publicKeyHex}${chainCodeHex}`;
 
     const unsignedTxInputs = [];
     const inputsData = map(inputs, (input) => {
@@ -1382,7 +1393,8 @@ export default class HardwareWalletsStore extends Store {
       });
 
       const signedWitnesses = await this._signWitnesses(
-        signedTransaction.witnesses
+        signedTransaction.witnesses,
+        xpubHex
       );
       const txWitnesses = new Map();
       if (signedWitnesses.length > 0) {
@@ -1816,15 +1828,13 @@ export default class HardwareWalletsStore extends Store {
   };
 
   _getTtl = (): number => {
-    const { networkTip } = this.stores.networkStatus;
-    const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
+    const { absoluteSlotNumber } = this.stores.networkStatus;
     const ttl = absoluteSlotNumber + TIME_TO_LIVE;
     return ttl;
   };
 
   _getAbsoluteSlotNumber = (): number => {
-    const { networkTip } = this.stores.networkStatus;
-    const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
+    const { absoluteSlotNumber } = this.stores.networkStatus;
     return absoluteSlotNumber;
   };
 

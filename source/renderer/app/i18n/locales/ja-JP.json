@@ -1061,7 +1061,7 @@
   "wallet.settings.walletPublicKeyDialog.button": "ウォレットの公開鍵を表示する",
   "wallet.settings.walletPublicKeyDialog.description": "ウォレットの公開鍵を表示するには送信時パスワードを入力してください。",
   "wallet.settings.walletPublicKeyDialog.title": "ウォレットの公開鍵を表示する",
-  "wallet.settings.walletPublicKeyShowInstruction": "ウォレット公開鍵を表示するには[表示]ボタンをクリックしてください",
+  "wallet.settings.walletPublicKeyShowInstruction": "ウォレットの公開鍵を表示するには、右の[表示する]をクリックしてください。",
   "wallet.statusMessages.activeRestore": "ウォレットの残高とトランザクション履歴はブロックチェーンと{percentage}%同期されました。",
   "wallet.summary.assets.tokenSendButton": "送金",
   "wallet.summary.assets.tokensTitle": "トークン",

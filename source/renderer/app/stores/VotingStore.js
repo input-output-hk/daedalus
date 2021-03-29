@@ -165,6 +165,8 @@ export default class VotingStore extends Store {
       walletId
     );
 
+    const { absoluteSlotNumber } = this.stores.networkStatus;
+
     // Reset voting registration transaction state
     this._setIsTransactionPending(true);
     this._setIsTransactionConfirmed(false);
@@ -199,6 +201,7 @@ export default class VotingStore extends Store {
         stakeKey,
         role: 'mutable_account',
         index: '0',
+        absoluteSlotNumber,
       });
 
       const transaction = await this.createVotingRegistrationTransactionRequest.execute(
@@ -211,6 +214,7 @@ export default class VotingStore extends Store {
           votingKey,
           stakeKey,
           signature: signature.toString('hex'),
+          absoluteSlotNumber,
         }
       );
 

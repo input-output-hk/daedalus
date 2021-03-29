@@ -5,7 +5,8 @@ Changelog
 
 ### Features
 
-- This PR improves the Transactions history and Rewards CSV contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
+- Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
+- Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
 - Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
 
 ### Fixes
@@ -16,6 +17,9 @@ Changelog
 
 ### Chores
 
+- Improved reveal / hide action for public key field ([PR 2473](https://github.com/input-output-hk/daedalus/pull/2473))
+- Improved hardware wallets public keys exporting while signing transaction witnesses ([PR 2477](https://github.com/input-output-hk/daedalus/pull/2477))
+- Updated `trezor-connect` dependency to version `8.1.25` ([PR 2474](https://github.com/input-output-hk/daedalus/pull/2474))
 - Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 - Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
