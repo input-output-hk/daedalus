@@ -18,6 +18,7 @@ import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
+import { bech32EncodePublicKey } from '../utils/hardwareWalletUtils';
 import {
   WalletPaperWalletOpenPdfError,
   WalletRewardsOpenCsvError,
@@ -62,6 +63,7 @@ import {
   ITN_MAGIC,
   MAINNET_MAGIC,
 } from '../../../common/types/cardano-node.types';
+import type { WalletSummaryAsset } from '../api/assets/types';
 
 /* eslint-disable consistent-return */
 
@@ -78,8 +80,8 @@ export default class WalletsStore extends Store {
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
   );
-  @observable walletPublicKeyRequest: Request<string> = new Request(
-    this.api.ada.getWalletPublicKey
+  @observable accountPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getAccountPublicKey
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -265,6 +267,7 @@ export default class WalletsStore extends Store {
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
+    walletsActions.getAccountPublicKey.listen(this._getAccountPublicKey);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
@@ -307,24 +310,28 @@ export default class WalletsStore extends Store {
     this.setupCurrency();
   }
 
-  @action _getWalletPublicKey = async () => {
+  @action _getAccountPublicKey = async ({
+    spendingPassword: passphrase,
+  }: {
+    spendingPassword: string,
+  }) => {
     if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
       return;
     }
 
-    // @TODO Once the api is ready, role and index values should be configured properly
     const walletId = this.active.id;
-    const role = '';
-    const index = '';
+    const index = '0H';
+    const extended = true;
 
     try {
-      const walletPublicKey = await this.walletPublicKeyRequest.execute({
+      const accountPublicKey = await this.accountPublicKeyRequest.execute({
         walletId,
-        role,
         index,
+        passphrase,
+        extended,
       }).promise;
-      runInAction('update wallet public key', () => {
-        this.activePublicKey = walletPublicKey;
+      runInAction('update account public key', () => {
+        this.activePublicKey = accountPublicKey;
       });
     } catch (error) {
       throw error;
@@ -581,7 +588,7 @@ export default class WalletsStore extends Store {
         walletName,
         accountPublicKey,
       });
-      await this.actions.hardwareWallets.setHardwareWalletLocalData.trigger({
+      await this.stores.hardwareWallets._setHardwareWalletLocalData({
         walletId: wallet.id,
         data: {
           device,
@@ -590,7 +597,7 @@ export default class WalletsStore extends Store {
         },
       });
 
-      await this.actions.hardwareWallets.setHardwareWalletDevice.trigger({
+      await this.stores.hardwareWallets._setHardwareWalletDevice({
         deviceId,
         data: {
           deviceType,
@@ -668,7 +675,7 @@ export default class WalletsStore extends Store {
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
       walletId: params.walletId,
     });
-    this.actions.hardwareWallets.unsetHardwareWalletLocalData.trigger({
+    await this.stores.hardwareWallets._unsetHardwareWalletLocalData({
       walletId: params.walletId,
     });
     this._resumePolling();
@@ -761,11 +768,30 @@ export default class WalletsStore extends Store {
     receiver,
     amount,
     passphrase,
+    assets,
+    assetsAmounts: assetsAmountsStr,
   }: {
     receiver: string,
     amount: string,
     passphrase: string,
+    assets?: Array<WalletSummaryAsset>,
+    assetsAmounts?: Array<string>,
   }) => {
+    const assetsAmounts = assetsAmountsStr
+      ? assetsAmountsStr.map((assetAmount) => parseInt(assetAmount, 10))
+      : null;
+    const formattedAssets =
+      assets && assets.length
+        ? assets.map(
+            // eslint-disable-next-line
+            ({ policyId: policy_id, assetName: asset_name }, index) => ({
+              policy_id,
+              asset_name,
+              quantity: get(assetsAmounts, index, 0),
+            })
+          )
+        : null;
+
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     await this.sendMoneyRequest.execute({
@@ -774,6 +800,7 @@ export default class WalletsStore extends Store {
       passphrase,
       walletId: wallet.id,
       isLegacy: wallet.isLegacy,
+      assets: formattedAssets,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
@@ -1139,6 +1166,7 @@ export default class WalletsStore extends Store {
         );
         this.stores.transactions._refreshTransactionData();
       });
+      this.actions.wallets.refreshWalletsDataSuccess.trigger();
     }
   };
 
@@ -1188,6 +1216,24 @@ export default class WalletsStore extends Store {
         this.stores.addresses.lastGeneratedAddress = null;
         if (this.active) {
           this.activeValue = formattedWalletAmount(this.active.amount);
+          if (this.active && this.active.isHardwareWallet) {
+            const {
+              hardwareWalletsConnectionData,
+            } = this.stores.hardwareWallets;
+            const hardwareWalletConnectionData = get(
+              hardwareWalletsConnectionData,
+              this.active.id
+            );
+            if (hardwareWalletConnectionData) {
+              const { extendedPublicKey } = hardwareWalletConnectionData;
+              const extendedPublicKeyHex = `${extendedPublicKey.publicKeyHex}${extendedPublicKey.chainCodeHex}`;
+              const xpub = Buffer.from(extendedPublicKeyHex, 'hex');
+              const activePublicKey = bech32EncodePublicKey(xpub);
+              this.activePublicKey = activePublicKey || null;
+            }
+          } else {
+            this.activePublicKey = null;
+          }
         }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated

@@ -33,6 +33,7 @@ type Props = {
   listName?: string,
   isListActive?: boolean,
   setListActive?: Function,
+  isGridRewardsView?: boolean,
 };
 
 type State = {
@@ -121,6 +122,7 @@ export class StakePoolsList extends Component<Props, State> {
       numberOfRankedStakePools,
       disabledStakePoolId,
       listName,
+      isGridRewardsView,
     } = this.props;
     const { isPreloading } = this.state;
     const componentClasses = classNames([styles.component, listName]);
@@ -155,6 +157,7 @@ export class StakePoolsList extends Component<Props, State> {
               containerClassName={containerClassName}
               numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={disabledStakePoolId}
+              isGridRewardsView={isGridRewardsView}
             />
           );
         })}

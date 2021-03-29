@@ -1,7 +1,8 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual, includes, get } from 'lodash';
+// @DECENTRALIZATION TODO: Remove `set`
+import { isEqual, includes, get, set } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -11,7 +12,10 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
-import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
+import {
+  INITIAL_DESIRED_POOLS_NUMBER,
+  EPOCH_NUMBER_TO_FULLY_DECENTRALIZED,
+} from '../config/stakingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -124,6 +128,7 @@ export default class NetworkStatusStore extends Store {
   @observable stateDirectoryPath: string = '';
   @observable isShelleyActivated: boolean = false;
   @observable isShelleyPending: boolean = false;
+  @observable isFullyDecentralized: boolean = false;
   @observable shelleyActivationTime: string = '';
   @observable verificationProgress: number = 0;
 
@@ -445,6 +450,30 @@ export default class NetworkStatusStore extends Store {
     } catch (error) {} // eslint-disable-line
   };
 
+  // @DECENTRALIZATION TODO: Remove
+  @observable tempCurrentEpoch: number = 0;
+  @observable tempNextEpochStart: ?string = null;
+  @action tempSetFakeData = (
+    tempCurrentEpoch: ?number,
+    tempNextEpochStart: ?string
+  ) => {
+    this.tempResetFakeData();
+    if (tempCurrentEpoch) {
+      this.tempCurrentEpoch = tempCurrentEpoch;
+    }
+    if (tempNextEpochStart) {
+      this.tempNextEpochStart = tempNextEpochStart;
+    }
+  };
+  @action tempResetFakeData = async () => {
+    this.tempCurrentEpoch = 0;
+    this.tempNextEpochStart = null;
+  };
+  @action tempResetStakingWasOpen = async () => {
+    this.stores.staking.stakingInfoWasOpen = false;
+    await this.api.localStorage.unsetStakingInfoWasOpen();
+  };
+
   @action _updateNetworkStatus = async () => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
     if (!this.tlsConfig) return;
@@ -455,6 +484,22 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkStatus: GetNetworkInfoResponse = await this.getNetworkInfoRequest.execute()
         .promise;
+
+      const { tempCurrentEpoch, tempNextEpochStart } = this;
+
+      // @DECENTRALIZATION TODO: Remove
+      if (tempCurrentEpoch) {
+        set(networkStatus, 'localTip.epoch', tempCurrentEpoch);
+        set(networkStatus, 'networkTip.epoch', tempCurrentEpoch);
+        set(networkStatus, 'nextEpoch.epochNumber', tempCurrentEpoch + 1);
+      }
+      if (
+        tempNextEpochStart &&
+        // $FlowFixMe
+        !`${new Date(tempNextEpochStart)}`.includes('Invalid')
+      ) {
+        set(networkStatus, 'nextEpoch.epochStart', tempNextEpochStart);
+      }
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
@@ -565,6 +610,18 @@ export default class NetworkStatusStore extends Store {
             this.isTlsCertInvalid = false;
           });
         }
+      }
+
+      const { environment } = this;
+      const { epochNumber } = nextEpoch || {};
+      const isFullyDecentralized =
+        (isFlight || environment.isMainnet) &&
+        !!epochNumber &&
+        epochNumber > EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
+      if (isFullyDecentralized) {
+        runInAction('set isFullyDecentralized = true', () => {
+          this.isFullyDecentralized = true;
+        });
       }
 
       // Reset request errors since we've received a valid response
@@ -714,6 +771,23 @@ export default class NetworkStatusStore extends Store {
 
   @computed get syncPercentage(): number {
     return this.syncProgress || 0;
+  }
+
+  /* In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
+  then we set the `epochToFullyDecentralized` value */
+  @computed get epochToFullyDecentralized(): ?NextEpoch {
+    const { nextEpoch, environment } = this;
+    const { epochNumber } = nextEpoch || {};
+    return (isFlight || environment.isMainnet) &&
+      epochNumber &&
+      epochNumber >= EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
+      ? nextEpoch
+      : null;
+  }
+
+  @computed get absoluteSlotNumber(): number {
+    const { networkTip } = this;
+    return get(networkTip, 'absoluteSlotNumber', 0);
   }
 
   @computed get isEpochsInfoAvailable(): boolean {

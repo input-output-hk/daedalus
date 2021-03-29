@@ -1,9 +1,12 @@
+@import '../../themes/mixins/overlay-backdrop';
+
 .component {
   background-color: var(--theme-experimental-data-overlay-background-color);
   height: 100%;
   position: absolute;
   width: 100%;
-  z-index: 3;
+  z-index: 11;
+  @include overlay-backrop;
 
   .content {
     align-items: center;

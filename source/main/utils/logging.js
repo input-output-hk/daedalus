@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable */
 import log from 'electron-log-daedalus';
 import { environment } from '../environment';
 import { formatContext } from '../../common/utils/logging';
@@ -25,12 +26,12 @@ const environmentData = {
   version,
 };
 
-const logToLevel = (level: string) => (message: string, data: ?Object) =>
-  log[level](formatContext({ ...messageContext, level }), {
-    message,
-    data,
-    environmentData,
-  });
+const logToLevel = (level: string) => (message: string, data: ?Object) => {};
+// log[level](formatContext({ ...messageContext, level }), {
+//   message,
+//   data,
+//   environmentData,
+// });
 
 export const logger: Logger = {
   debug: logToLevel('debug'),

@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented "Cardano is fully decentralized" screen
+- Implemented "Cardano is fully decentralized" screen ([PR 2463](https://github.com/input-output-hk/daedalus/pull/2463))
 
 ## 3.3.2
 

@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 import type { Currency } from '../../types/currencyTypes';
+import type { AssetItems } from '../assets/types';
 
 export type Block = {
   slot_number: number,
@@ -38,6 +39,10 @@ export type AdaWallet = {
     available: WalletBalance,
     total: WalletBalance,
     reward: WalletBalance,
+  },
+  assets: {
+    available: AssetItems,
+    total: AssetItems,
   },
   delegation: {
     active: WalletDelegation,
@@ -238,6 +243,13 @@ export type GetWalletPublicKeyRequest = {
   walletId: string,
   role: string,
   index: string,
+};
+
+export type GetAccountPublicKeyRequest = {
+  walletId: string,
+  index: string,
+  passphrase: string,
+  extended: boolean,
 };
 
 export type TransferFundsCalculateFeeRequest = {

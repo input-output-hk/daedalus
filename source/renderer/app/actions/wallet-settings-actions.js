@@ -31,4 +31,5 @@ export default class WalletSettingsActions {
     recoveryPhrase: Array<string>,
   }> = new Action();
   recoveryPhraseVerificationClose: Action<any> = new Action();
+  toggleShowUsedAddresses: Action<any> = new Action();
 }

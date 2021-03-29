@@ -181,6 +181,7 @@ type Props = {
   containerClassName: string,
   numberOfRankedStakePools: number,
   isListView?: boolean,
+  isGridRewardsView?: boolean,
   isDelegationView?: boolean,
   hasArrow?: boolean,
 };
@@ -489,7 +490,12 @@ export default class TooltipPool extends Component<Props, State> {
   renderDescriptionFields = () => {
     const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
-    const { currentTheme, stakePool, numberOfRankedStakePools } = this.props;
+    const {
+      currentTheme,
+      stakePool,
+      numberOfRankedStakePools,
+      isGridRewardsView,
+    } = this.props;
     const {
       ranking,
       relativeStake,
@@ -642,9 +648,17 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            <span className={styles.defaultColorContent}>
-              {formattedWalletAmount(potentialRewards)}
-            </span>
+            {isGridRewardsView &&
+            potentialRewards.isZero &&
+            potentialRewards.isZero() ? (
+              <div className={styles.noDataDash}>
+                <SVGInline svg={noDataDashSmallImage} />
+              </div>
+            ) : (
+              <span className={styles.defaultColorContent}>
+                {formattedWalletAmount(potentialRewards)}
+              </span>
+            )}
           </div>
         ),
       },

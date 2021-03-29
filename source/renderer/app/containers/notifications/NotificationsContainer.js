@@ -54,6 +54,13 @@ const messages = defineMessages({
     description:
       'Notification for the wallet address copy success in the Wallet Receive page.',
   },
+  copyAssetItem: {
+    id: 'notification.copyAssetItem',
+    defaultMessage:
+      '!!!{assetItem}: <strong>{value}</strong> copied to clipboard',
+    description:
+      'Notification for the wallet assetItem copy success in the Wallet Receive page.',
+  },
   downloadAddressPDFSuccess: {
     id: 'notification.downloadAddressPDFSuccess',
     defaultMessage:
@@ -121,6 +128,10 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     {
       id: 'copyAddress',
       actionToListenAndOpen: this.props.actions.wallets.copyAddress,
+    },
+    {
+      id: 'copyAssetItem',
+      actionToListenAndOpen: this.props.actions.wallets.copyAssetItem,
     },
     {
       id: 'downloadAddressPDFSuccess',

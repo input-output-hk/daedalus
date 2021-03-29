@@ -10,7 +10,9 @@ import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
+import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
 import listIcon from '../../../assets/images/list-ic.inline.svg';
+import { IS_GRID_REWARDS_VIEW_AVAILABLE } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -21,24 +23,45 @@ const messages = defineMessages({
   delegatingListTitle: {
     id: 'staking.stakePools.search.delegatingListTitle',
     defaultMessage: '!!!Staking pools you are delegating to',
-    description: '"delegatingListTitlee" for the Stake Pools search.',
+    description: '"delegatingListTitle" for the Stake Pools search.',
   },
   listTitle: {
     id: 'staking.stakePools.search.listTitle',
     defaultMessage: '!!!Stake pools ({pools})',
     description: '"listTitle" for the Stake Pools search.',
   },
+  gridIconTooltip: {
+    id: 'staking.stakePools.search.gridIconTooltip',
+    defaultMessage: '!!!Grid View',
+    description: '"gridIconTooltip" for the Stake Pools search.',
+  },
+  gridRewardsIconTooltip: {
+    id: 'staking.stakePools.search.gridRewardsIconTooltip',
+    defaultMessage: '!!!Grid Rewards View',
+    description: '"gridRewardsIconTooltip" for the Stake Pools search.',
+  },
+  listIconTooltip: {
+    id: 'staking.stakePools.search.listIconTooltip',
+    defaultMessage: '!!!List View',
+    description: '"listIconTooltip" for the Stake Pools search.',
+  },
+  clearTooltip: {
+    id: 'staking.stakePools.search.clearTooltip',
+    defaultMessage: '!!!Clear',
+    description: '"clearTooltip" for the Stake Pools search.',
+  },
 });
 
 type Props = {
   label?: string,
   placeholder?: string,
-  isClearTooltipOpeningDownward?: boolean,
   isListView?: boolean,
   isGridView?: boolean,
+  isGridRewardsView?: boolean,
   onSearch: Function,
   onClearSearch: Function,
   onGridView?: Function,
+  onGridRewardsView?: Function,
   onListView?: Function,
   search: string,
 };
@@ -57,19 +80,26 @@ export class StakePoolsSearch extends Component<Props> {
     return this.props.search.length > 0;
   }
 
+  handleClearSearch = () => {
+    this.props.onClearSearch();
+    if (this.searchInput) {
+      this.searchInput.focus();
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {
       label,
       onSearch,
-      onClearSearch,
       onGridView,
+      onGridRewardsView,
       onListView,
       placeholder,
       search,
       isListView,
       isGridView,
-      isClearTooltipOpeningDownward,
+      isGridRewardsView,
     } = this.props;
 
     const gridButtonClasses = classnames([
@@ -77,16 +107,28 @@ export class StakePoolsSearch extends Component<Props> {
       isGridView ? styles.selected : null,
     ]);
 
+    const gridRewardsButtonClasses = classnames([
+      styles.gridRewardsView,
+      isGridRewardsView ? styles.selected : null,
+    ]);
+
     const listButtonClasses = classnames([
       styles.listView,
       isListView ? styles.selected : null,
     ]);
 
-    const isBigSearchComponent = isListView || isGridView;
+    const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
+
+    const searchInputClases = classnames([
+      styles.searchInput,
+      isBigSearchComponent ? styles.inputExtrasSearch : null,
+      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
+    ]);
 
     const clearSearchClasses = classnames([
       styles.inputExtras,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
+      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
     ]);
 
     return (
@@ -96,7 +138,7 @@ export class StakePoolsSearch extends Component<Props> {
           <Input
             autoFocus
             label={label || null}
-            className={styles.searchInput}
+            className={searchInputClases}
             onChange={onSearch}
             ref={(input) => {
               this.searchInput = input;
@@ -111,33 +153,44 @@ export class StakePoolsSearch extends Component<Props> {
           />
           {this.hasSearchClearButton && (
             <div className={clearSearchClasses}>
-              {this.hasSearchClearButton && (
-                <PopOver
-                  content="Clear"
-                  placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
+              <PopOver content={intl.formatMessage(messages.clearTooltip)}>
+                <button
+                  onClick={this.handleClearSearch}
+                  className={styles.clearSearchButton}
                 >
-                  <button
-                    onClick={onClearSearch}
-                    className={styles.clearSearchButton}
-                  >
-                    <SVGInline
-                      svg={closeIcon}
-                      className={styles.clearSearchIcon}
-                    />
-                  </button>
-                </PopOver>
-              )}
+                  <SVGInline
+                    svg={closeIcon}
+                    className={styles.clearSearchIcon}
+                  />
+                </button>
+              </PopOver>
             </div>
           )}
           {isBigSearchComponent && (
             <div className={styles.viewButtons}>
               <span className={styles.separator}>|</span>
-              <button className={gridButtonClasses} onClick={onGridView}>
-                <SVGInline svg={gridIcon} />
-              </button>
-              <button className={listButtonClasses} onClick={onListView}>
-                <SVGInline svg={listIcon} />
-              </button>
+              <PopOver content={intl.formatMessage(messages.gridIconTooltip)}>
+                <button className={gridButtonClasses} onClick={onGridView}>
+                  <SVGInline svg={gridIcon} />
+                </button>
+              </PopOver>
+              {IS_GRID_REWARDS_VIEW_AVAILABLE && (
+                <PopOver
+                  content={intl.formatMessage(messages.gridRewardsIconTooltip)}
+                >
+                  <button
+                    className={gridRewardsButtonClasses}
+                    onClick={onGridRewardsView}
+                  >
+                    <SVGInline svg={gridRewardsIcon} />
+                  </button>
+                </PopOver>
+              )}
+              <PopOver content={intl.formatMessage(messages.listIconTooltip)}>
+                <button className={listButtonClasses} onClick={onListView}>
+                  <SVGInline svg={listIcon} />
+                </button>
+              </PopOver>
             </div>
           )}
         </div>

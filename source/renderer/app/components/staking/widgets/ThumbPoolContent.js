@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
@@ -12,22 +13,45 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 type Props = {
   stakePool: StakePool,
   numberOfRankedStakePools: number,
+  isGridRewardsView?: boolean,
 };
 
 @observer
 export default class ThumbPoolContent extends Component<Props> {
+  formattedRewards = (potentialRewards: BigNumber) => {
+    const potentialRewardsAsString = formattedWalletAmount(potentialRewards);
+    let targetLength = 4;
+    if (potentialRewardsAsString.includes('.')) {
+      targetLength++;
+    }
+    if (potentialRewardsAsString.includes(',')) {
+      targetLength++;
+    }
+    if (potentialRewardsAsString.includes(' ')) {
+      targetLength++;
+    }
+    return potentialRewardsAsString.substring(0, targetLength);
+  };
+
   render() {
-    const { stakePool, numberOfRankedStakePools } = this.props;
+    const {
+      stakePool,
+      numberOfRankedStakePools,
+      isGridRewardsView,
+    } = this.props;
     const {
       ranking,
       nonMyopicMemberRewards,
       ticker,
       retiring,
       saturation,
+      potentialRewards,
     } = stakePool;
     const color = getColorFromRange(ranking, numberOfRankedStakePools);
 
@@ -44,22 +68,34 @@ export default class ThumbPoolContent extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
-        {IS_RANKING_DATA_AVAILABLE ? (
-          <div className={styles.ranking} style={{ color }}>
-            {nonMyopicMemberRewards ? (
-              ranking
-            ) : (
-              <>
-                {numberOfRankedStakePools + 1}
-                <sup>*</sup>
-              </>
-            )}
-          </div>
-        ) : (
-          <div className={styles.noDataDash}>
-            <SVGInline svg={noDataDashBigImage} />
-          </div>
-        )}
+        {isGridRewardsView &&
+          (IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+            <div className={styles.rewards}>
+              {this.formattedRewards(potentialRewards)}
+              <SVGInline svg={adaIcon} className={styles.adaIcon} />
+            </div>
+          ) : (
+            <div className={styles.noDataDash}>
+              <SVGInline svg={noDataDashBigImage} />
+            </div>
+          ))}
+        {!isGridRewardsView &&
+          (IS_RANKING_DATA_AVAILABLE ? (
+            <div className={styles.ranking} style={{ color }}>
+              {nonMyopicMemberRewards ? (
+                ranking
+              ) : (
+                <>
+                  {numberOfRankedStakePools + 1}
+                  <sup>*</sup>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className={styles.noDataDash}>
+              <SVGInline svg={noDataDashBigImage} />
+            </div>
+          ))}
         {IS_SATURATION_DATA_AVAILABLE && (
           <div className={saturationClassnames}>
             <span

@@ -288,17 +288,6 @@
       }
     }
 
-    > span:first-child {
-      height: 22px;
-      line-height: 2;
-      margin-top: 5.5px;
-    }
-
-    > span:last-child > span {
-      padding-bottom: 4px;
-      padding-top: 3px;
-    }
-
     .tooltipLabelWrapper {
       font-family: var(--font-regular);
       font-size: 13px;

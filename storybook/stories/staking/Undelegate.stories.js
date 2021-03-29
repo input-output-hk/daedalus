@@ -3,23 +3,60 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import { generateWallet } from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
 // Screens
 import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
 
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
+
 const generalWallet = generateWallet(
   'Wallet 1',
   '1000000000',
+  assets,
   0,
   STAKE_POOLS[0]
 );
 const hardwareWallet = generateWallet(
   'Wallet 1',
   '10000000',
+  assets,
   0,
   STAKE_POOLS[0],
   false,
@@ -49,6 +86,7 @@ export const StakingUndelegateConfirmationStory = (props: {
       depositsReclaimed: new BigNumber(number('depositsReclaimed', 10)),
     }}
     hwDeviceStatus="ready"
+    isTrezor={boolean('isTrezor', false)}
   />
 );
 

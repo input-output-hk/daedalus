@@ -261,6 +261,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',
+    '--theme-hardware-wallet-status-passphrase-label-color':
+      'rgba(45, 45, 45, 0.5)',
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(45, 45, 45, 0.6)',
@@ -1098,6 +1100,13 @@ export const WHITE_THEME_OUTPUT = {
   rpPopOver: {
     '--rp-pop-over-bg-color': 'rgba(45,45,45,0.9)',
     '--rp-pop-over-text-color': 'white',
+  },
+  widgets: {
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(45,45,45,0.1)',
+    '--theme-widgets-asset-token-text-color': '#2d2d2d',
+    '--theme-widgets-asset-token-background-color': '#fff',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
   },
 };
 
