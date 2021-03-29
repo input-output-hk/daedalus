@@ -44,7 +44,9 @@ export default class PinCode extends Component<Props> {
       !Object.prototype.hasOwnProperty.call(value, key) ||
       value[key] === '' ||
       inputNewValue === '' ||
-      (inputNewValue !== '' && inputNewValue.length === 1)
+      (inputNewValue &&
+        inputNewValue.length === 1 &&
+        value[key] !== inputNewValue)
     ) {
       const newValue = value;
       newValue[key] = inputNewValue;
@@ -66,30 +68,28 @@ export default class PinCode extends Component<Props> {
         this.inputsRef[inputFocusKey]
       )
         this.inputsRef[inputFocusKey].focus();
-    } else if (
-      key === 0 &&
-      this.focusKey === 0 &&
-      this.inputsRef[this.focusKey]
-    ) {
-      this.inputsRef[this.focusKey].focus();
     }
   }
 
   onKeyPress = (evt: SyntheticKeyboardEvent<EventTarget>, key: string) => {
-    const { charCode } = evt;
-    const control: { blur?: Function, focus?: Function } = evt.target;
+    const { charCode, target } = evt;
+    const control: { blur?: Function, focus?: Function } = target;
     const focusKey = parseInt(key, 10);
-    const nextInputField = this.inputsRef[focusKey + 1];
-    if (charCode === 46 && nextInputField && nextInputField.focus) {
-      nextInputField.focus();
-    }
-    if (charCode === 46 && control && control.blur) {
-      control.blur();
-      setTimeout(() => {
-        if (control && control.focus) {
-          control.focus();
-        }
-      }, 0);
+    const nextFieldFocusKey = focusKey + 1;
+    const nextInputField = this.inputsRef[nextFieldFocusKey];
+    const isDotOrCommaKey = charCode === 46 || charCode === 44;
+    if (isDotOrCommaKey) {
+      if (nextInputField && nextInputField.focus) {
+        nextInputField.focus();
+      }
+      if (control && control.blur) {
+        control.blur();
+        setTimeout(() => {
+          if (control && control.focus) {
+            control.focus();
+          }
+        }, 0);
+      }
     }
   };
 
