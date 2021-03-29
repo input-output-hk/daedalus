@@ -154,13 +154,6 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
       },
     ];
 
-    const pinCodeError =
-      isValidPinCode(
-        pinCodeFieldProps.value,
-        VOTING_REGISTRATION_PIN_CODE_LENGTH
-      ) && pinCodeField.error
-        ? pinCodeField.error
-        : null;
     const isRepeatPinCodeAutoFocused =
       pinCodeField.isValid &&
       !repeatPinCodeField.isValid &&
@@ -186,7 +179,6 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
             label={enterPinCodeLabel}
             autoFocus
             onChange={(...args) => pinCodeFieldProps.onChange(...args)}
-            error={pinCodeError}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
