@@ -343,8 +343,13 @@ export const ShelleySignedTransactionStructured = (
 
 export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
   const derivedXpubs = {};
+  let xpubMemo;
 
-  const deriveXpub = async (absDerivationPath: Array<number>) => {
+  const deriveXpub = async (
+    absDerivationPath: Array<number>,
+    xpubHex: ?string
+  ) => {
+    if (xpubHex) xpubMemo = xpubHex;
     const memoKey = JSON.stringify(absDerivationPath);
     let derivedXpubsMemo = await derivedXpubs[memoKey];
 
@@ -353,7 +358,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
         absDerivationPath.length === 0 ||
         indexIsHardened(absDerivationPath.slice(-1)[0]);
       derivedXpubsMemo = deriveHardened
-        ? await deriveXpubHardenedFn(absDerivationPath)
+        ? await deriveXpubHardenedFn(xpubMemo)
         : await deriveXpubNonhardenedFn(absDerivationPath);
     }
     /*
@@ -365,7 +370,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
 
   const deriveXpubNonhardenedFn = async (derivationPath) => {
     const lastIndex = derivationPath.slice(-1)[0];
-    const parentXpub = await deriveXpub(derivationPath.slice(0, -1));
+    const parentXpub = await deriveXpub(derivationPath.slice(0, -1), null);
     try {
       const parentXpubHex = utils.buf_to_hex(parentXpub);
       const derivedXpub = await deriveXpubChannel.request({
