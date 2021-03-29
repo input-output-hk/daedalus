@@ -5,7 +5,7 @@
   right: 94px;
   transform-origin: bottom left;
   &.animate {
-    animation: animation 1s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
+    animation: animation 0.7s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
     svg {
       ellipse {
         animation: animationEllipse 1s infinite;
@@ -30,26 +30,15 @@
     transform: scale(1.2) translate(-7px, -7px);
   }
 }
-// @keyframes animationLine {
-//   0% {
-//     transform: rotate(5deg);
-//   }
-//   50% {
-//     transform: rotate(-5deg);
-//   }
-//   100% {
-//     transform: rotate(5deg);
-//   }
-// }
 
 @keyframes animation {
   0% {
-    transform: rotate(20deg);
+    transform: rotate(10deg);
   }
   50% {
-    transform: rotate(-20deg);
+    transform: rotate(-10deg);
   }
   100% {
-    transform: rotate(20deg);
+    transform: rotate(10deg);
   }
 }
