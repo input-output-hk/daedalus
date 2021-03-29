@@ -18,7 +18,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.enterPinCode.step.description',
     defaultMessage:
-      '!!!Please enter a PIN for your Fund3 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.',
+      '!!!Please enter a PIN for your Fund4 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.',
     description:
       'Description on the voting registration "enter pin code" step.',
   },
