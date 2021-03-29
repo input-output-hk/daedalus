@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import {
@@ -23,7 +24,6 @@ import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { ellipsis } from '../../../utils/strings';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import CopyToClipboard from "react-copy-to-clipboard";
 
 const messages = defineMessages({
   title: {
