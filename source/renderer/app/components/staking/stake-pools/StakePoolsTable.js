@@ -221,8 +221,6 @@ export class StakePoolsTable extends Component<Props, State> {
       listName,
       onSelect,
       selectedPoolId,
-      setListActive,
-      isListActive,
       currentLocale,
       onTableHeaderMouseEnter,
       onTableHeaderMouseLeave,
@@ -410,8 +408,6 @@ export class StakePoolsTable extends Component<Props, State> {
                     containerClassName={containerClassName}
                     onSelect={onSelect}
                     selectedPoolId={selectedPoolId}
-                    setListActive={setListActive}
-                    isListActive={isListActive}
                     listName={listName}
                     stakePoolsList={stakePoolsList}
                     stakePoolsSortBy={stakePoolsSortBy}
