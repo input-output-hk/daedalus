@@ -340,7 +340,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       return (
                         <tr key={key}>
                           <td>{rewardWallet}</td>
-                          <td>{isRestoring ? '-' : rewardAmount}</td>
+                          <td className={styles.rewardAmount}>{isRestoring ? '-' : rewardAmount}</td>
                           <td className={styles.rewardsAddress}>
                             {isRestoring ? (
                               <div className={styles.syncingProgress}>
