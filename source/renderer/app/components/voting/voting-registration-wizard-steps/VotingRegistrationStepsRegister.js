@@ -22,7 +22,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.register.step.description',
     defaultMessage:
-      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund4 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
+      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund3 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
     description: 'Description on the voting registration "sign" step.',
   },
   continueButtonLabel: {
