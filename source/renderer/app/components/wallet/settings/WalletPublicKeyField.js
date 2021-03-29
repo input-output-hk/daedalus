@@ -9,6 +9,8 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import WalletPublicKeyFieldSkin from './WalletPublicKeyFieldSkin';
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
+import revealKeyImage from '../../../assets/images/reveal-key.inline.svg';
+import hideKeyImage from '../../../assets/images/hide-key.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { LOCALES } from '../../../../../common/types/locales.types';
@@ -22,7 +24,8 @@ export const messages = defineMessages({
   },
   walletPublicKeyShowInstruction: {
     id: 'wallet.settings.walletPublicKeyShowInstruction',
-    defaultMessage: '!!!To show wallet public key click "Reveal" button',
+    defaultMessage:
+      '!!!Click Reveal on the right-hand side to display the public key of the wallet.',
     description: 'Wallet public key show instruction.',
   },
   showQRCode: {
@@ -98,15 +101,22 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     const hiddenValuePlaceholder = intl.formatMessage(
       messages.walletPublicKeyShowInstruction
     );
-    const toggleButtonLabel = intl.formatMessage(
+
+    const toggleButtonTooltip = intl.formatMessage(
       globalMessages[walletPublicKeyHidden ? 'reveal' : 'hide']
     );
+
     const qrCodeButtonStyles = classnames([
       styles.imageButton,
       styles.qrCodeButton,
       'flat',
     ]);
-    const buttonStyles = classnames([styles.button, 'flat']);
+
+    const revealHideButtonStyles = classnames([
+      styles.imageButton,
+      walletPublicKeyHidden ? styles.revealButton : styles.hideButton,
+      'flat',
+    ]);
 
     return (
       <div className={styles.component}>
@@ -135,11 +145,19 @@ export default class WalletPublicKeyField extends Component<Props, State> {
               </PopOver>
             </div>
           )}
-          <Button
-            className={buttonStyles}
-            label={toggleButtonLabel}
-            onClick={this.toggleWalletPublicKeyVisibility}
-          />
+          <PopOver content={toggleButtonTooltip}>
+            <Button
+              className={revealHideButtonStyles}
+              label={
+                walletPublicKeyHidden ? (
+                  <SVGInline svg={revealKeyImage} />
+                ) : (
+                  <SVGInline svg={hideKeyImage} />
+                )
+              }
+              onClick={this.toggleWalletPublicKeyVisibility}
+            />
+          </PopOver>
         </div>
       </div>
     );
