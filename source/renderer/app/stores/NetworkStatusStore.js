@@ -128,6 +128,7 @@ export default class NetworkStatusStore extends Store {
   @observable stateDirectoryPath: string = '';
   @observable isShelleyActivated: boolean = false;
   @observable isShelleyPending: boolean = false;
+  @observable isFullyDecentralized: boolean = false;
   @observable shelleyActivationTime: string = '';
   @observable verificationProgress: number = 0;
 
@@ -611,6 +612,18 @@ export default class NetworkStatusStore extends Store {
         }
       }
 
+      const { environment } = this;
+      const { epochNumber } = nextEpoch || {};
+      const isFullyDecentralized =
+        (isFlight || environment.isMainnet) &&
+        !!epochNumber &&
+        epochNumber > EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
+      if (isFullyDecentralized) {
+        runInAction('set isFullyDecentralized = true', () => {
+          this.isFullyDecentralized = true;
+        });
+      }
+
       // Reset request errors since we've received a valid response
       if (this.getNetworkInfoRequest.error !== null) {
         this.getNetworkInfoRequest.reset();
@@ -770,18 +783,6 @@ export default class NetworkStatusStore extends Store {
       epochNumber >= EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
       ? nextEpoch
       : null;
-  }
-
-  /* In case the next epoch number is LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
-  then we set the `isFullyDecentralized` value as true */
-  @computed get isFullyDecentralized(): boolean {
-    const { nextEpoch, environment } = this;
-    const { epochNumber } = nextEpoch || {};
-    return (
-      (isFlight || environment.isMainnet) &&
-      !!epochNumber &&
-      epochNumber > EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
-    );
   }
 
   @computed get absoluteSlotNumber(): number {
