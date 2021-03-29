@@ -106,7 +106,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             if (!stakePoolsCount || !width) {
               return null;
             }
-            const itemsPerRow = Math.floor(
+            const itemsPerRow = Math.ceil(
               width / (POOL_THUMB_SIZE + POOL_THUMB_GRID_GAP)
             );
             const rowCount = Math.ceil(stakePoolsCount / itemsPerRow);
