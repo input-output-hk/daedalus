@@ -336,9 +336,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       return (
                         <tr key={key}>
                           <td>{rewardWallet}</td>
-                          <td>
-                            {isRestoring ? '-' : rewardAmount}
-                          </td>
+                          <td>{isRestoring ? '-' : rewardAmount}</td>
                           <td className={styles.rewardsAddress}>
                             {isRestoring ? (
                               <div className={styles.syncingProgress}>
@@ -359,13 +357,20 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                   <div>
                                     <CopyToClipboard
                                       text={rewardsAddress}
-                                      onCopy={() => onCopyAddress(rewardsAddress)}
+                                      onCopy={() =>
+                                        onCopyAddress(rewardsAddress)
+                                      }
                                     >
                                       <div className={styles.addressContainer}>
-                                        <span className={styles.address}>{ellipsis(rewardsAddress, 15, 15)}</span>
+                                        <span className={styles.address}>
+                                          {ellipsis(rewardsAddress, 15, 15)}
+                                        </span>
                                         <span className={styles.copyAddress}>
-                                      <SVGInline svg={iconCopy} className={styles.copyIcon}/>
-                                    </span>
+                                          <SVGInline
+                                            svg={iconCopy}
+                                            className={styles.copyIcon}
+                                          />
+                                        </span>
                                       </div>
                                     </CopyToClipboard>
                                   </div>

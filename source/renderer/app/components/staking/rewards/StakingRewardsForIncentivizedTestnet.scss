@@ -207,9 +207,7 @@
         :global .LoadingSpinner_component.LoadingSpinner_medium {
           margin: 10px auto !important;
 
-          .LoadingSpinner_icon
-          svg
-          path {
+          .LoadingSpinner_icon svg path {
             fill: var(--theme-loading-spinner-color);
             opacity: 0.3;
           }
