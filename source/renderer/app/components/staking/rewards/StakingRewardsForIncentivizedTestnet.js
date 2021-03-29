@@ -338,7 +338,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                           <td>{rewardWallet}</td>
                           <td>
                             {isRestoring ? '-' : rewardAmount}
-                            {isRestoring && (
+                          </td>
+                          <td className={styles.rewardsAddress}>
+                            {isRestoring ? (
                               <div className={styles.syncingProgress}>
                                 <PopOver
                                   content={intl.formatMessage(
@@ -351,23 +353,24 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                   <LoadingSpinner medium />
                                 </PopOver>
                               </div>
-                            )}
-                          </td>
-                          <td className={styles.rewardsAddress}>
-                            {rewardsAddress && (
-                              <div>
-                                <CopyToClipboard
-                                  text={rewardsAddress}
-                                  onCopy={() => onCopyAddress(rewardsAddress)}
-                                >
-                                  <div className={styles.addressContainer}>
-                                    <span className={styles.address}>{ellipsis(rewardsAddress, 15, 15)}</span>
-                                    <span className={styles.copyAddress}>
+                            ) : (
+                              <>
+                                {rewardsAddress && (
+                                  <div>
+                                    <CopyToClipboard
+                                      text={rewardsAddress}
+                                      onCopy={() => onCopyAddress(rewardsAddress)}
+                                    >
+                                      <div className={styles.addressContainer}>
+                                        <span className={styles.address}>{ellipsis(rewardsAddress, 15, 15)}</span>
+                                        <span className={styles.copyAddress}>
                                       <SVGInline svg={iconCopy} className={styles.copyIcon}/>
                                     </span>
+                                      </div>
+                                    </CopyToClipboard>
                                   </div>
-                                </CopyToClipboard>
-                              </div>
+                                )}
+                              </>
                             )}
                           </td>
                         </tr>
