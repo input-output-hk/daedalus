@@ -3,6 +3,7 @@ import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
+import EventEmitter from 'events';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -39,7 +40,6 @@ import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
-// import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
 
 /* eslint-disable consistent-return */
 
@@ -64,6 +64,10 @@ if (isBlankScreenFixActive) {
   // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
+
+// Increase maximum event listeners to avoid IPC channel stalling
+// (1/2) this line increases the limit for the main process
+EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 app.allowRendererProcessReuse = true;
 const safeExit = async () => {

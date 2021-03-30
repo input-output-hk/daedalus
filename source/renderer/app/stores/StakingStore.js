@@ -83,6 +83,7 @@ export default class StakingStore extends Store {
   @observable isFetchingStakePools: boolean = false;
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
+  @observable stakingInfoWasOpen: boolean = false;
 
   /* ----------  Stake Pools Filter  ---------- */
   @observable filterOptions: ?StakePoolFilterOptionsType = null;
@@ -135,7 +136,7 @@ export default class StakingStore extends Store {
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.filterStakePools.listen(this._updateFilterOptions);
-
+    stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
     networkStatusActions.restartNode.listen(this._clearFilterOptions);
 
@@ -143,6 +144,7 @@ export default class StakingStore extends Store {
     this.registerReactions([this._pollOnSync]);
 
     this._startStakePoolsFetchTracker();
+    this._getStakingInfoWasOpen();
   }
 
   // REQUESTS
@@ -256,6 +258,18 @@ export default class StakingStore extends Store {
       STAKE_POOLS_FETCH_TRACKER_INTERVAL
     );
     this.getStakePoolsData(true);
+  };
+
+  @action _getStakingInfoWasOpen = async () => {
+    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
+    runInAction(() => {
+      this.stakingInfoWasOpen = stakingInfoWasOpen;
+    });
+  };
+
+  @action _setStakingInfoWasOpen = () => {
+    this.stakingInfoWasOpen = true;
+    this.api.localStorage.setStakingInfoWasOpen();
   };
 
   @action _stakePoolsFetchTracker = () => {

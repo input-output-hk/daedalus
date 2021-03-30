@@ -4732,9 +4732,126 @@
           "column": 15,
           "line": 29
         }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking info page",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 34
+        }
       }
     ],
     "path": "source/renderer/app/components/staking/info/StakingInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fully decentralized block production",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.before.heading",
+        "start": {
+          "column": 17,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.before.description",
+        "start": {
+          "column": 21,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.after.heading",
+        "start": {
+          "column": 16,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.after.description",
+        "start": {
+          "column": 20,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Fully decentralized block production in",
+        "description": "Countdown Title for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.countdownTitle",
+        "start": {
+          "column": 18,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Button Label for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking info page",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 48
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/info/StakingInfoCountdown.json"
   },
   {
     "descriptors": [
@@ -6437,13 +6554,21 @@
         "description": "\"Rank\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 62
+=======
+          "line": 45
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
+<<<<<<< HEAD
           "line": 58
+=======
+          "line": 41
+>>>>>>> develop
         }
       },
       {
@@ -6451,13 +6576,21 @@
         "description": "\"Rank\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 68
+=======
+          "line": 51
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.rankingTooltip",
         "start": {
           "column": 18,
+<<<<<<< HEAD
           "line": 63
+=======
+          "line": 46
+>>>>>>> develop
         }
       },
       {
@@ -6465,13 +6598,21 @@
         "description": "\"Live stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 73
+=======
+          "line": 56
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
+<<<<<<< HEAD
           "line": 69
+=======
+          "line": 52
+>>>>>>> develop
         }
       },
       {
@@ -6479,13 +6620,21 @@
         "description": "\"Live stake\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 79
+=======
+          "line": 62
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStakeTooltip",
         "start": {
           "column": 24,
+<<<<<<< HEAD
           "line": 74
+=======
+          "line": 57
+>>>>>>> develop
         }
       },
       {
@@ -6493,13 +6642,21 @@
         "description": "\"Pool margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 84
+=======
+          "line": 67
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
+<<<<<<< HEAD
           "line": 80
+=======
+          "line": 63
+>>>>>>> develop
         }
       },
       {
@@ -6507,13 +6664,21 @@
         "description": "\"Pool margin\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 90
+=======
+          "line": 73
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMarginTooltip",
         "start": {
           "column": 23,
+<<<<<<< HEAD
           "line": 85
+=======
+          "line": 68
+>>>>>>> develop
         }
       },
       {
@@ -6521,13 +6686,21 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 95
+=======
+          "line": 78
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
+<<<<<<< HEAD
           "line": 91
+=======
+          "line": 74
+>>>>>>> develop
         }
       },
       {
@@ -6535,13 +6708,21 @@
         "description": "\"Cost per epoch\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 101
+=======
+          "line": 84
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpochTooltip",
         "start": {
           "column": 23,
+<<<<<<< HEAD
           "line": 96
+=======
+          "line": 79
+>>>>>>> develop
         }
       },
       {
@@ -6549,13 +6730,21 @@
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 106
+=======
+          "line": 89
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
+<<<<<<< HEAD
           "line": 102
+=======
+          "line": 85
+>>>>>>> develop
         }
       },
       {
@@ -6563,13 +6752,21 @@
         "description": "\"Blocks\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 112
+=======
+          "line": 95
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocksTooltip",
         "start": {
           "column": 25,
+<<<<<<< HEAD
           "line": 107
+=======
+          "line": 90
+>>>>>>> develop
         }
       },
       {
@@ -6577,13 +6774,21 @@
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 117
+=======
+          "line": 100
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
           "column": 20,
+<<<<<<< HEAD
           "line": 113
+=======
+          "line": 96
+>>>>>>> develop
         }
       },
       {
@@ -6591,13 +6796,21 @@
         "description": "\"Rewards\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 123
+=======
+          "line": 106
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
         "start": {
           "column": 27,
+<<<<<<< HEAD
           "line": 118
+=======
+          "line": 101
+>>>>>>> develop
         }
       },
       {
@@ -6605,13 +6818,21 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 128
+=======
+          "line": 111
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
+<<<<<<< HEAD
           "line": 124
+=======
+          "line": 107
+>>>>>>> develop
         }
       },
       {
@@ -6619,13 +6840,21 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 133
+=======
+          "line": 116
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
+<<<<<<< HEAD
           "line": 129
+=======
+          "line": 112
+>>>>>>> develop
         }
       },
       {
@@ -6633,13 +6862,21 @@
         "description": "\"Saturation\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 139
+=======
+          "line": 122
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturationTooltip",
         "start": {
           "column": 21,
+<<<<<<< HEAD
           "line": 134
+=======
+          "line": 117
+>>>>>>> develop
         }
       },
       {
@@ -6647,13 +6884,21 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 144
+=======
+          "line": 127
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
+<<<<<<< HEAD
           "line": 140
+=======
+          "line": 123
+>>>>>>> develop
         }
       },
       {
@@ -6661,13 +6906,21 @@
         "description": "\"Pledge\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 150
+=======
+          "line": 133
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledgeTooltip",
         "start": {
           "column": 17,
+<<<<<<< HEAD
           "line": 145
+=======
+          "line": 128
+>>>>>>> develop
         }
       },
       {
@@ -6675,13 +6928,21 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 156
+=======
+          "line": 139
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
+<<<<<<< HEAD
           "line": 151
+=======
+          "line": 134
+>>>>>>> develop
         }
       },
       {
@@ -6689,13 +6950,21 @@
         "description": "Experimental tooltip label",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 161
+=======
+          "line": 144
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
+<<<<<<< HEAD
           "line": 157
+=======
+          "line": 140
+>>>>>>> develop
         }
       },
       {
@@ -6703,13 +6972,21 @@
         "description": "copyId tooltip label",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 166
+=======
+          "line": 149
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
         "start": {
           "column": 22,
+<<<<<<< HEAD
           "line": 162
+=======
+          "line": 145
+>>>>>>> develop
         }
       },
       {
@@ -6717,13 +6994,21 @@
         "description": "Data not available yet label",
         "end": {
           "column": 3,
+<<<<<<< HEAD
           "line": 171
+=======
+          "line": 154
+>>>>>>> develop
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
+<<<<<<< HEAD
           "line": 167
+=======
+          "line": 150
+>>>>>>> develop
         }
       }
     ],
@@ -7998,7 +8283,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please enter a PIN for your Fund3 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
+        "defaultMessage": "!!!Please enter a PIN for your Fund4 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
@@ -8157,7 +8442,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund3.",
+        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund4.",
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
@@ -8204,7 +8489,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund3 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
+        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund4 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
@@ -8321,7 +8606,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cancel Fund3 voting registration?",
+        "defaultMessage": "!!!Cancel Fund4 voting registration?",
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8335,7 +8620,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Are you sure that you want to cancel Fund3 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
+        "defaultMessage": "!!!Are you sure that you want to cancel Fund4 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8382,7 +8667,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register for Fund3 voting",
+        "defaultMessage": "!!!Register for Fund4 voting",
         "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
@@ -8415,7 +8700,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register to vote on Fund3",
+        "defaultMessage": "!!!Register to vote on Fund4",
         "description": "Headline for voting registration steps",
         "end": {
           "column": 3,
@@ -8429,7 +8714,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Fund3 Voting Registration Ended",
+        "defaultMessage": "!!!Fund4 Voting Registration Ended",
         "description": "Headline for ended voting registration",
         "end": {
           "column": 3,
@@ -8443,7 +8728,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund3 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund3, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
+        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund4 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund4, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
         "description": "Description for ended voting registration",
         "end": {
           "column": 3,
@@ -8471,7 +8756,7 @@
         }
       },
       {
-        "defaultMessage": "!!!$70.000 worth of ada rewards will be distributed between ada holders who register their vote.",
+        "defaultMessage": "!!!$140.000 worth of ada rewards will be distributed between ada holders who register their vote.",
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
@@ -8527,7 +8812,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Fund3 FAQs",
+        "defaultMessage": "!!!Fund4 FAQs",
         "description": "Learn more link label for ended registration",
         "end": {
           "column": 3,
@@ -8583,7 +8868,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To register to vote for Catalyst Fund3 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
+        "defaultMessage": "!!!To register to vote for Catalyst Fund4 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
         "description": "bottomContentDescription for voting registration steps",
         "end": {
           "column": 3,
@@ -8597,7 +8882,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund3 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
+        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund4 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
         "description": "bottomContentDescription for ended registration",
         "end": {
           "column": 3,
@@ -8672,7 +8957,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting registration for Fund3 is not available as you currently do not have any Shelley-compatible wallets.",
+        "defaultMessage": "!!!Voting registration for Fund4 is not available as you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the voting info page.",
         "end": {
           "column": 3,
@@ -16796,25 +17081,6 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/StakingCountdownPage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Learn more\" link URL in the staking info page",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "source/renderer/app/containers/staking/StakingInfoPage.js",
-        "id": "staking.info.learnMore.linkUrl",
-        "start": {
-          "column": 20,
-          "line": 9
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/staking/StakingInfoPage.json"
   },
   {
     "descriptors": [
