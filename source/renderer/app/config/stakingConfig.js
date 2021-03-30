@@ -119,3 +119,4 @@ export const IS_RANKING_DATA_AVAILABLE = true;
 export const IS_SATURATION_DATA_AVAILABLE = true;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
+export const EPOCH_NUMBER_TO_FULLY_DECENTRALIZED = 257;
