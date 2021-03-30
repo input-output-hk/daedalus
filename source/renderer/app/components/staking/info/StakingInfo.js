@@ -31,6 +31,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Learn more',
     description: 'Button Label for the Decentralization progress notification.',
   },
+  learnMoreLinkUrl: {
+    id: 'staking.info.learnMore.linkUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc',
+    description: '"Learn more" link URL in the staking info page',
+  },
 });
 
 type Props = {
@@ -114,7 +119,9 @@ export default class StakingInfo extends Component<Props, State> {
           {showLearnMoreButton && (
             <ButtonLink
               className={styles.learnMoreButton}
-              onClick={onLearnMoreClick}
+              onClick={() =>
+                onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
+              }
               skin={ButtonSkin}
               label={buttonLabel}
               linkProps={{

@@ -7,6 +7,8 @@ import moment from 'moment';
 import {
   isIncentivizedTestnetTheme,
   generateWallet,
+  generateHash,
+  generatePolicyIdHash,
 } from '../../_support/utils';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import type { Locale } from '../../../../source/common/types/locales.types';
@@ -15,6 +17,7 @@ import type { Locale } from '../../../../source/common/types/locales.types';
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
@@ -71,9 +74,41 @@ const recoveryDialogOptions = {
   'Step 4 - Verification failure': 4,
 };
 
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
+
 const selectedWallet = generateWallet(
   'Wallet 1',
   '1000000000',
+  assets,
   0,
   STAKE_POOLS[0]
 );
@@ -208,6 +243,14 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           currentLocale={'en-US'}
         />
       }
+      walletPublicKeyDialogContainer={
+        <WalletPublicKeyDialog
+          onRevealPublicKey={action('onRevealPublicKey')}
+          onClose={action('onCancel')}
+          error={null}
+          hasReceivedWalletPublicKey
+        />
+      }
       walletPublicKeyQRCodeDialogContainer={
         <WalletPublicKeyQRCodeDialog
           walletName={text(
@@ -244,6 +287,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           error={null}
           fees={new BigNumber(10)}
           hwDeviceStatus="ready"
+          isTrezor={boolean('isTrezor', false)}
         />
       }
       deleteWalletDialogContainer={

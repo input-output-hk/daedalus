@@ -34,7 +34,7 @@ const messages = defineMessages({
   descriptionForEndedRegistration: {
     id: 'voting.info.descriptionForEndedRegistration',
     defaultMessage:
-      '!!!<p>Voting registration for Project Catalyst Fund3 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund3, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>',
+      '!!!<p>Voting registration for Project Catalyst Fund3 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund3, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund3 registration will start on <b>{newRegistrationStartDate}</b>.</p>',
     description: 'Description for ended voting registration',
   },
   stepTitle1: {
@@ -46,7 +46,7 @@ const messages = defineMessages({
   stepTitle2: {
     id: 'voting.info.stepTitle2',
     defaultMessage:
-      '!!!$70.000 worth of ada rewards will be distributed between ada holders who register their vote.',
+      '!!!$140.000 worth of ada rewards will be distributed between ada holders who register their vote.',
     description: 'Info step title 2 for voting registration steps',
   },
   learnMorePreviousLabel: {
@@ -227,19 +227,15 @@ export default class VotingInfo extends Component<Props, State> {
                   newRegistrationStartDate,
                 }}
               />
-              <div className={styles.learnMoreContainer}>
-                <span className={styles.learnMorePreviousLabel}>
-                  {intl.formatMessage(messages.learnMorePreviousLabel)}
-                </span>
+              <p className={styles.learnMoreContainer}>
+                {intl.formatMessage(messages.learnMorePreviousLabel)}
                 <Link
                   label={learnMoreLinkLabel}
                   onClick={() => onExternalLinkClick(learnMoreLinkUrl)}
                   className={styles.learnMoreLink}
                 />
-                <span className={styles.learnMoreNextLabel}>
-                  {intl.formatMessage(messages.learnMoreNextLabel)}
-                </span>
-              </div>
+                {intl.formatMessage(messages.learnMoreNextLabel)}
+              </p>
             </div>
           ) : (
             <>

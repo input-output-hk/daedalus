@@ -179,7 +179,6 @@ export type SubmitBugReportRequestMainResponse = void;
  */
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 export type RebuildAppMenuRendererRequest = {
-  isUpdateAvailable: boolean,
   isNavigationEnabled: boolean,
 };
 export type RebuildAppMenuMainResponse = void;

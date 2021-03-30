@@ -128,6 +128,10 @@ export default class AddressesStore extends Store {
     this.error = null;
   };
 
+  isInternalAddress = (address: string): boolean => {
+    return findIndex(this.all, { id: address }) > -1;
+  };
+
   getAddressIndex = (address: string): number => {
     return this.all.length - findIndex(this.all, { id: address }) - 1;
   };

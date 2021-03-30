@@ -2,7 +2,7 @@
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
-import { map } from 'lodash';
+import { map, groupBy, sortBy } from 'lodash';
 import {
   derivationPathToLedgerPath,
   CERTIFICATE_TYPE,
@@ -15,6 +15,8 @@ import type {
   CoinSelectionInput,
   CoinSelectionOutput,
   CoinSelectionCertificate,
+  CoinSelectionWithdrawal,
+  CoinSelectionAssetsType,
 } from '../api/transactions/types';
 import type {
   BIP32Path,
@@ -32,7 +34,7 @@ export type ShelleyTxInputType = {
 
 export type ShelleyTxOutputType = {
   address: string,
-  coins: number,
+  coins: number | [number, Map<Buffer, Map<Buffer, number>>],
   isChange: boolean,
   spendingPath: ?BIP32Path,
   stakingPath: ?BIP32Path,
@@ -62,7 +64,12 @@ export type ShelleyTxAuxType = {
   fee: ShelleyFeeType,
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
-  withdrawals: any, // @TODO - implement once delegation enabled
+  withdrawals: ?ShelleyTxWithdrawalsType,
+  encodeCBOR: Function,
+};
+
+export type ShelleyTxWithdrawalsType = {
+  withdrawals: Array<CoinSelectionWithdrawal>,
   encodeCBOR: Function,
 };
 
@@ -108,17 +115,61 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
+export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
+  const sortedAssets = sortBy(
+    assets,
+    (asset) => {
+      return asset.assetName.length;
+    },
+    ['asc'],
+    ['assetName', 'desc']
+  );
+  return groupBy(sortedAssets, 'policyId');
+};
+
+export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
+  const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
+
+  const tokenObject = groupTokensByPolicyId(assets);
+
+  Object.entries(tokenObject).forEach(([policyId, tokens]) => {
+    const assetMap = new Map<Buffer, number>();
+    map(tokens, (token) => {
+      assetMap.set(Buffer.from(token.assetName, 'hex'), token.quantity);
+    });
+    policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
+  });
+  return policyIdMap;
+};
+
+export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
+  const tokenObject = groupTokensByPolicyId(assets);
+  const tokenObjectEntries = Object.entries(tokenObject);
+
+  const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
+    const tokensList = tokens.map(({ assetName, quantity }) => ({
+      assetNameHex: assetName,
+      amountStr: quantity.toString(),
+    }));
+    return {
+      policyIdHex: policyId,
+      tokens: tokensList,
+    };
+  });
+
+  return tokenBundle;
+};
+
 export const ShelleyTxOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
 ) => {
-  const { address, amount, derivationPath } = output;
+  const { address, amount, derivationPath, assets } = output;
   const adaCoinQuantity = amount.quantity;
-
-  // @TODO - check if this is correct multiassets constructor and fallback to ADA asset for now
-  // const multiassets = output.assets;
-  // const coins = !multiassets ? adaCoinQuantity : [adaCoinQuantity, _getAssetsMap(adaCoinQuantity, multiassets)];
-  const coins = adaCoinQuantity;
+  const coins =
+    assets && assets.length > 0
+      ? [adaCoinQuantity, ShelleyTxOutputAssets(assets)]
+      : adaCoinQuantity;
 
   function encodeCBOR(encoder: any) {
     const addressBuff =
@@ -127,6 +178,7 @@ export const ShelleyTxOutput = (
         : utils.base58_decode(address);
     return encoder.pushAny([addressBuff, coins]);
   }
+
   const isChange = derivationPath !== null;
   return {
     address,
@@ -151,7 +203,7 @@ export const ShelleyTxCert = (cert: {
     hash = Buffer.from(poolHash, 'hex');
   }
 
-  function encodeCBOR(encoder) {
+  function encodeCBOR(encoder: any) {
     const accountAddressHash = utils
       .bech32_decodeAddress(accountAddress)
       .slice(1);
@@ -172,6 +224,24 @@ export const ShelleyTxCert = (cert: {
   };
 };
 
+export const ShelleyTxWithdrawal = (
+  withdrawals: Array<CoinSelectionWithdrawal>
+) => {
+  function encodeCBOR(encoder: any) {
+    const withdrawalMap = new Map();
+    map(withdrawals, (withdrawal) => {
+      const rewardAccount = utils.bech32_decodeAddress(withdrawal.stakeAddress);
+      const coin = withdrawal.amount.quantity;
+      withdrawalMap.set(rewardAccount, coin);
+    });
+    return encoder.pushAny(withdrawalMap);
+  }
+  return {
+    withdrawals,
+    encodeCBOR,
+  };
+};
+
 export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
@@ -179,6 +249,15 @@ export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
     poolKeyHashHex: cert.pool
       ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
       : null,
+  };
+};
+
+export const prepareLedgerWithdrawal = (
+  withdrawal: CoinSelectionWithdrawal
+) => {
+  return {
+    path: derivationPathToLedgerPath(withdrawal.derivationPath),
+    amountStr: withdrawal.amount.quantity.toString(),
   };
 };
 
@@ -208,7 +287,7 @@ export const ShelleyTxAux = (
   fee: ShelleyFeeType,
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
-  withdrawals: any // @TODO - implement once delegation enabled
+  withdrawals: ?ShelleyTxWithdrawalsType
 ) => {
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
@@ -264,8 +343,13 @@ export const ShelleySignedTransactionStructured = (
 
 export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
   const derivedXpubs = {};
+  let xpubMemo;
 
-  const deriveXpub = async (absDerivationPath: Array<number>) => {
+  const deriveXpub = async (
+    absDerivationPath: Array<number>,
+    xpubHex: ?string
+  ) => {
+    if (xpubHex) xpubMemo = xpubHex;
     const memoKey = JSON.stringify(absDerivationPath);
     let derivedXpubsMemo = await derivedXpubs[memoKey];
 
@@ -274,7 +358,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
         absDerivationPath.length === 0 ||
         indexIsHardened(absDerivationPath.slice(-1)[0]);
       derivedXpubsMemo = deriveHardened
-        ? await deriveXpubHardenedFn(absDerivationPath)
+        ? await deriveXpubHardenedFn(xpubMemo)
         : await deriveXpubNonhardenedFn(absDerivationPath);
     }
     /*
@@ -286,7 +370,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
 
   const deriveXpubNonhardenedFn = async (derivationPath) => {
     const lastIndex = derivationPath.slice(-1)[0];
-    const parentXpub = await deriveXpub(derivationPath.slice(0, -1));
+    const parentXpub = await deriveXpub(derivationPath.slice(0, -1), null);
     try {
       const parentXpubHex = utils.buf_to_hex(parentXpub);
       const derivedXpub = await deriveXpubChannel.request({
@@ -322,13 +406,19 @@ export const prepareLedgerOutput = (
   addressStyle: AddressStyle
 ) => {
   const isChange = output.derivationPath !== null;
+
+  let tokenBundle = [];
+  if (output.assets) {
+    tokenBundle = prepareTokenBundle(output.assets);
+  }
+
   if (isChange) {
     return {
       addressTypeNibble: 0,
       spendingPath: derivationPathToLedgerPath(output.derivationPath),
       amountStr: output.amount.quantity.toString(),
       stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
-      tokenBundle: output.assets ? _getAssets(output.assets) : null,
+      tokenBundle,
     };
   }
 
@@ -339,7 +429,7 @@ export const prepareLedgerOutput = (
   return {
     amountStr: output.amount.quantity.toString(),
     addressHex: utils.buf_to_hex(decodedAddress),
-    tokenBundle: output.assets ? _getAssets(output.assets) : null,
+    tokenBundle,
   };
 };
 
@@ -356,12 +446,12 @@ export const prepareTxAux = ({
   fee: number,
   ttl: number,
   certificates: Array<?Certificate>,
-  withdrawals: Array<any>,
+  withdrawals: ?ShelleyTxWithdrawalsType,
 }) => {
   const txFee = ShelleyFee(fee);
   const txTtl = ShelleyTtl(ttl);
   const txCerts = certificates;
-  const txWithdrawals = withdrawals[0]; // @TODO - implement once withdrawals enabled
+  const txWithdrawals = withdrawals;
   return ShelleyTxAux(
     txInputs,
     txOutputs,
@@ -383,28 +473,3 @@ export const prepareBody = (
   );
   return encode(signedTransactionStructure).toString('hex');
 };
-
-// Helper Methods
-
-const _getAssets = (assets) => {
-  const constructedAssets = map(assets, (asset) => {
-    return {
-      policyIdHex: asset.policyId,
-      tokens: {
-        assetNameHex: asset.assetName,
-        amountStr: asset.quantity.toString(),
-      },
-    };
-  });
-  return constructedAssets;
-};
-
-// @TODO - check if this is correct multiassets constructor
-// const _getAssetsMap = (adaCoinQuantity, multiassets) => {
-//   const assetsMap = new Map();
-//   assetsMap.set(0, adaCoinQuantity);
-//   map(multiassets, (asset) => {
-//     assetsMap.set(asset.policyId, { [asset.assetName]: asset.quantity })
-//   })
-//   return assetsMap;
-// }

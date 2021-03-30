@@ -18,6 +18,7 @@ import {
 } from '../config/votingConfig';
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
+import type { GetTransactionRequest } from '../api/transactions/types';
 
 export type VotingRegistrationKeyType = { bytes: Function, public: Function };
 
@@ -66,6 +67,11 @@ export default class VotingStore extends Store {
   @observable
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
+  );
+
+  @observable
+  getTransactionRequest: Request<GetTransactionRequest> = new Request(
+    this.api.ada.getTransaction
   );
 
   // ACTIONS
@@ -165,6 +171,8 @@ export default class VotingStore extends Store {
       walletId
     );
 
+    const { absoluteSlotNumber } = this.stores.networkStatus;
+
     // Reset voting registration transaction state
     this._setIsTransactionPending(true);
     this._setIsTransactionConfirmed(false);
@@ -199,6 +207,7 @@ export default class VotingStore extends Store {
         stakeKey,
         role: 'mutable_account',
         index: '0',
+        absoluteSlotNumber,
       });
 
       const transaction = await this.createVotingRegistrationTransactionRequest.execute(
@@ -211,6 +220,7 @@ export default class VotingStore extends Store {
           votingKey,
           stakeKey,
           signature: signature.toString('hex'),
+          absoluteSlotNumber,
         }
       );
 
@@ -289,12 +299,10 @@ export default class VotingStore extends Store {
     const {
       confirmations,
       state,
-    }: WalletTransaction = await this.stores.transactions
-      ._getTransactionRequest()
-      .execute({
-        walletId: this.selectedWalletId,
-        transactionId: this.transactionId,
-      });
+    }: WalletTransaction = await this.getTransactionRequest.execute({
+      walletId: this.selectedWalletId,
+      transactionId: this.transactionId,
+    });
 
     // Update voting registration confirmations count
     if (this.transactionConfirmations !== confirmations) {

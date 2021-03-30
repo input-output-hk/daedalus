@@ -13,7 +13,7 @@ import WalletAddress from '../../../domains/WalletAddress';
 const messages = defineMessages({
   instructionsTitle: {
     id: 'wallet.receive.page.instructions.instructionsTitle',
-    defaultMessage: '!!!Your wallet addresses',
+    defaultMessage: '!!!Available wallet addresses',
     description: 'Instructions Title on the wallet "Receive page"',
   },
   instructionsDescription: {

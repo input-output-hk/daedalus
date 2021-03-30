@@ -550,6 +550,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-hardware-wallet-status-ready-color': '#2dc06c',
       '--theme-hardware-wallet-title-color': '#5e6066',
       '--theme-hardware-wallet-message-color': '#5e6066',
+      '--theme-hardware-wallet-status-passphrase-label-color': `${chroma(
+        text.secondary
+      ).alpha(0.5)}`,
     },
     icon: {
       '--theme-icon-nav-color': `${text.secondary}`,
@@ -833,7 +836,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5eb',
       '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
       '--theme-progress-bar-large-progress-light-stripe-1': `${background.secondary.dark}`,
-      '--theme-progress-bar-large-progress-light-stripe-2': `${background.secondary.regular}`,
+      '--theme-progress-bar-large-progress-light-stripe-2-background-color': `${background.secondary.regular}`,
       '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
     },
     receiveQRCode: {
@@ -1275,6 +1278,17 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-not-responding-icon-color': `${text.secondary}`,
       '--theme-wallet-not-responding-link-text-color': `${text.secondary}`,
       '--theme-wallet-not-responding-title-text-color': `${text.secondary}`,
+    },
+    widgets: {
+      '--theme-widgets-asset-token-background-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.5)}`,
+      '--theme-widgets-asset-token-fingerprint-background-color': `rgba(${chroma(
+        focus
+      )
+        .alpha(0.1)
+        .rgba()})`,
+      '--theme-widgets-asset-token-text-color': `${text.primary}`,
     },
   };
 };

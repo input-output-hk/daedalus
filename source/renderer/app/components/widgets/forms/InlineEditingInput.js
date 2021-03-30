@@ -93,10 +93,7 @@ export default class InlineEditingInput extends Component<Props, State> {
                 typeof valueErrorMessage === 'function'
                   ? valueErrorMessage(value)
                   : valueErrorMessage;
-              return [
-                this.props.isValid(value) && this.state.isActive,
-                errorMessage || null,
-              ];
+              return [this.props.isValid(value), errorMessage || null];
             },
           ],
         },
@@ -117,12 +114,20 @@ export default class InlineEditingInput extends Component<Props, State> {
         this.setInputBlur();
         const { inputField } = form.values();
         const { onSubmit, errorMessage } = this.props;
-        if (!!inputField && (inputField !== this.props.value || errorMessage)) {
+        if (!inputField) {
+          return;
+        }
+        if (inputField !== this.props.value || errorMessage) {
           this.setState({
             hasChanged: true,
             successfullyUpdated: false,
           });
           await onSubmit(inputField);
+          this.setState({
+            hasChanged: false,
+            successfullyUpdated: true,
+          });
+        } else {
           this.setState({
             hasChanged: false,
           });

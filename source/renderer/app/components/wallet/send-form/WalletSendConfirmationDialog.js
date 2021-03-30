@@ -7,20 +7,19 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import Dialog from '../widgets/Dialog';
-import DialogCloseButton from '../widgets/DialogCloseButton';
-import globalMessages from '../../i18n/global-messages';
-import LocalizableError from '../../i18n/LocalizableError';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import Dialog from '../../widgets/Dialog';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { submitOnEnter } from '../../utils/form';
-import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
-import LoadingSpinner from '../widgets/LoadingSpinner';
-import { HwDeviceStatuses } from '../../domains/Wallet';
-
-import type { HwDeviceStatus } from '../../domains/Wallet';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
+import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { HwDeviceStatuses } from '../../../domains/Wallet';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -116,6 +115,7 @@ type Props = {
   onInitiateTransaction: Function,
   walletName: string,
   onExternalLinkClick: Function,
+  isTrezor: boolean,
 };
 
 type State = {
@@ -209,6 +209,7 @@ export default class WalletSendConfirmationDialog extends Component<
       isFlight,
       onExternalLinkClick,
       walletName,
+      isTrezor,
     } = this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
@@ -218,6 +219,7 @@ export default class WalletSendConfirmationDialog extends Component<
             <HardwareWalletStatus
               hwDeviceStatus={hwDeviceStatus}
               walletName={walletName}
+              isTrezor={isTrezor}
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>

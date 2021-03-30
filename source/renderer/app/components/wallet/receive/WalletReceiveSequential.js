@@ -14,14 +14,20 @@ import AddressSequential from './AddressSequential';
 const messages = defineMessages({
   instructionsTitle: {
     id: 'wallet.receive.page.instructions.instructionsTitle',
-    defaultMessage: '!!!Your wallet addresses',
+    defaultMessage: '!!!Available wallet addresses',
     description: 'Instructions Title on the wallet "Receive page"',
   },
   instructionsDescription: {
     id: 'wallet.receive.page.instructions.instructionsDescription',
     defaultMessage:
-      '!!!Share any of these wallet addresses to receive payments. To protect your privacy, always use a new address when requesting funds. New addresses will be automatically generated after you receive funds to the addresses listed here.',
+      '!!!Share any of these wallet addresses <b>to receive payments in ada or a native Cardano token</b>.',
     description: 'Instructions Description on the wallet "Receive page"',
+  },
+  privacyWarning: {
+    id: 'wallet.receive.page.instructions.privacyWarning',
+    defaultMessage:
+      '!!!Privacy warning: Please note that all of your receiving addresses include your stake key. When you share a receiving address, the recipient can search the blockchain using your stake key to locate all addresses associated with your wallet, and also discover your wallet balance and transaction history.',
+    description: 'Privacy warning on the wallet "Receive page"',
   },
   addressesTitle: {
     id: 'wallet.receive.page.addresses.addressesTitle',
@@ -43,13 +49,14 @@ type Props = {
   onShareAddress: Function,
   onCopyAddress: Function,
   onToggleSubMenus: Object,
+  showUsed: boolean,
+  onToggleUsedAddresses: Function,
 };
 
 type State = {
   addressSlice: number,
   addressWidth: number,
   charWidth: number,
-  showUsed: boolean,
 };
 
 @observer
@@ -64,7 +71,6 @@ export default class WalletReceiveSequential extends Component<Props, State> {
     addressSlice: 0,
     addressWidth: 0,
     charWidth: 0,
-    showUsed: true,
   };
 
   // We need to track the mounted state in order to avoid calling
@@ -125,7 +131,8 @@ export default class WalletReceiveSequential extends Component<Props, State> {
   };
 
   toggleUsedAddresses = () => {
-    this.setState((prevState) => ({ showUsed: !prevState.showUsed }));
+    const { onToggleUsedAddresses } = this.props;
+    onToggleUsedAddresses();
   };
 
   renderRow = (address: WalletAddress, index: number) => {
@@ -147,13 +154,12 @@ export default class WalletReceiveSequential extends Component<Props, State> {
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
     walletAddresses.filter(
-      (address: WalletAddress) => !address.used || this.state.showUsed
+      (address: WalletAddress) => !address.used || this.props.showUsed
     );
 
   render() {
-    const { walletAddresses } = this.props;
+    const { walletAddresses, showUsed } = this.props;
     const { intl } = this.context;
-    const { showUsed } = this.state;
 
     return (
       <div className={styles.component}>
@@ -165,6 +171,9 @@ export default class WalletReceiveSequential extends Component<Props, State> {
               </h2>
               <p className={styles.instructionsDescription}>
                 <FormattedHTMLMessage {...messages.instructionsDescription} />
+              </p>
+              <p className={styles.privacyWarning}>
+                {intl.formatMessage(messages.privacyWarning)}
               </p>
             </div>
             <div className={styles.addresses}>

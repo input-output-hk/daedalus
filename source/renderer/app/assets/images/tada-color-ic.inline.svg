@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="staking-decentralised" transform="translate(-1757.000000, -48.000000)">
+            <g id="header" transform="translate(168.000000, 0.000000)">
+                <g id="tada-ic" transform="translate(1589.000000, 48.000000)">
+                    <rect id="AxA" x="0.208695652" y="0" width="63.6495974" height="63.7155556"></rect>
+                    <path d="M22.1306152,21.0101694 C24.7108452,20.3052337 29.2827251,23.2345308 35.846255,29.7980606 C42.4097849,36.3615905 45.3390819,40.9334704 44.6341462,43.5137004 L7.33570958,58.308606 L22.1306152,21.0101694 Z" id="Rectangle-Copy-2" stroke="#9F051E" stroke-width="2" fill="#EA596E" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M16.5900262,31.8974456 C20.2366178,33.5567048 25.5407509,34.3863345 32.5024256,34.3863345 C39.4641003,34.3863345 44.7682334,33.5567048 48.414825,31.8974456" id="Rectangle" stroke="#9F051E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(32.502426, 33.141890) rotate(45.000000) translate(-32.502426, -33.141890) "></path>
+                    <path d="M55.3437462,17.10796 C51.9821396,17.5527506 48.86977,18.7884858 46.1993444,20.6222588" id="Oval" stroke="#77B254" stroke-width="2" stroke-linecap="round"></path>
+                    <path d="M47.884809,33.0368489 C44.5232024,33.4816395 41.4108328,34.7173747 38.7404072,36.5511477" id="Oval-Copy-12" stroke="#AA8DD8" stroke-width="2" stroke-linecap="round"></path>
+                    <path d="M29.2327786,25.4068996 C33.4641571,20.3497959 36.0115942,13.8326991 36.0115942,6.72" id="Oval" stroke="#AA8DD8" stroke-width="2" stroke-linecap="round"></path>
+                    <path d="M14.0164312,55.8117564 C14.7287963,54.2807958 15.12657,52.5735652 15.12657,50.7733333 C15.12657,48.2093018 14.3196584,45.8339298 12.9461698,43.8878011" id="Oval" stroke="#9F051E" stroke-width="2"></path>
+                    <path d="M19.9675638,53.3461861 C21.0089052,51.1303246 21.5909823,48.6554307 21.5909823,46.0444444 C21.5909823,41.4780168 19.8105538,37.3278615 16.906689,34.2516514" id="Oval-Copy-9" stroke="#9F051E" stroke-width="2"></path>
+                    <path d="M24.5446369,51.5741134 C27.1910216,47.9236548 28.7515618,43.433147 28.7515618,38.5777778 C28.7515618,34.3085647 27.5450652,30.321436 25.4547668,26.9394211" id="Oval-Copy-10" stroke="#9F051E" stroke-width="2"></path>
+                    <path d="M33.2580358,48.1503089 C35.0192648,45.2753266 36.1434631,41.9670634 36.4339537,38.4224" id="Oval-Copy-11" stroke="#9F051E" stroke-width="2"></path>
+                    <path d="M20.2516705,33.9079517 C21.3542387,32.1116787 22.2077951,30.1463532 22.7642459,28.0600471" id="Oval-Copy-13" stroke="#9F051E" stroke-width="2" stroke-linecap="round" transform="translate(21.507958, 30.983999) rotate(-58.000000) translate(-21.507958, -30.983999) "></path>
+                    <ellipse id="Oval" stroke="#FFCC4D" stroke-width="2" cx="26.3135035" cy="12.2700747" rx="2.658431" ry="2.66118585"></ellipse>
+                    <ellipse id="Oval-Copy-3" stroke="#77B254" stroke-width="2" cx="44.7027376" cy="9.71154877" rx="2.6599035" ry="2.66265988"></ellipse>
+                    <ellipse id="Oval-Copy-4" stroke="#FFCC4D" stroke-width="2" cx="56.5088568" cy="30.973771" rx="2.6599035" ry="2.66265988"></ellipse>
+                    <line x1="39.989694" y1="21.48" x2="39.989694" y2="26.306667" id="Path-4" stroke="#FFCC4D" stroke-width="2" stroke-linecap="round"></line>
+                    <line x1="37.5784219" y1="23.8933333" x2="42.4009659" y2="23.8933333" id="Path-5" stroke="#FFCC4D" stroke-width="2" stroke-linecap="round"></line>
+                    <line x1="55.9294686" y1="45.8577778" x2="55.9294686" y2="50.6844448" id="Path-4" stroke="#77B254" stroke-width="2" stroke-linecap="round"></line>
+                    <line x1="53.5181965" y1="48.2711111" x2="58.3407405" y2="48.2711111" id="Path-5" stroke="#77B254" stroke-width="2" stroke-linecap="round"></line>
+                    <line x1="15.12657" y1="11.0266667" x2="15.12657" y2="15.8533337" id="Path-4" stroke="#AA8DD8" stroke-width="2" stroke-linecap="round"></line>
+                    <line x1="12.7152979" y1="13.44" x2="17.5378419" y2="13.44" id="Path-5" stroke="#AA8DD8" stroke-width="2" stroke-linecap="round"></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
