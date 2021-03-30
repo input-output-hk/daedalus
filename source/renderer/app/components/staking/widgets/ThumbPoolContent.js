@@ -19,6 +19,7 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 
 type Props = {
   stakePool: StakePool,
+  ranking: number,
   numberOfRankedStakePools: number,
   isGridRewardsView?: boolean,
 };
@@ -43,11 +44,11 @@ export default class ThumbPoolContent extends Component<Props> {
   render() {
     const {
       stakePool,
+      ranking,
       numberOfRankedStakePools,
       isGridRewardsView,
     } = this.props;
     const {
-      ranking,
       nonMyopicMemberRewards,
       id,
       ticker,

@@ -136,14 +136,15 @@ export class StakePoolsList extends Component<Props, State> {
 
     return (
       <div className={componentClasses}>
-        {stakePoolsList.map((stakePool) => {
+        {stakePoolsList.map((stakePool, index) => {
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
 
           return (
             <ThumbPool
               stakePool={stakePool}
-              key={stakePool.id + stakePool.ranking}
+              ranking={index + 1}
+              key={stakePool.id.toString()}
               onOpenExternalLink={onOpenExternalLink}
               isHighlighted={isHighlighted}
               onClose={this.handleClose}

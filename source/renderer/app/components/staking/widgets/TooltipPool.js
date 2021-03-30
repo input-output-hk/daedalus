@@ -173,6 +173,7 @@ const messages = defineMessages({
 
 type Props = {
   stakePool: StakePool,
+  ranking: number,
   isVisible: boolean,
   fromStakePool?: boolean,
   currentTheme: string,
@@ -498,11 +499,11 @@ export default class TooltipPool extends Component<Props, State> {
     const {
       currentTheme,
       stakePool,
+      ranking,
       numberOfRankedStakePools,
       isGridRewardsView,
     } = this.props;
     const {
-      ranking,
       relativeStake,
       producedBlocks,
       potentialRewards,

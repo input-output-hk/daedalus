@@ -186,8 +186,7 @@ export class StakePoolsTableBody extends Component<
       containerClassName,
     } = this.props;
     const { intl } = this.context;
-    return map(sortedStakePoolList, (stakePool, key) => {
-      const rank = get(stakePool, 'ranking', '');
+    return map(sortedStakePoolList, (stakePool, index) => {
       const ticker = get(stakePool, 'ticker', '');
       const saturation = get(stakePool, 'saturation', '');
       const cost = new BigNumber(get(stakePool, 'cost', ''));
@@ -209,19 +208,19 @@ export class StakePoolsTableBody extends Component<
       ]);
 
       const isHighlighted = this.getIsHighlighted(stakePool.id);
-      const color = getColorFromRange(rank, numberOfRankedStakePools);
+      const color = getColorFromRange(index + 1, numberOfRankedStakePools);
       const { top, left, selectedRow } = this.state;
 
       return (
         <tr
-          key={key}
+          key={index + 1}
           className={
-            selectedRow && selectedRow === key ? styles.selected : null
+            selectedRow && selectedRow === index ? styles.selected : null
           }
         >
           <td>
             {!memberRewards.isZero() ? (
-              rank
+              index + 1
             ) : (
               <>
                 {numberOfRankedStakePools + 1}
@@ -231,6 +230,7 @@ export class StakePoolsTableBody extends Component<
             {isHighlighted && (
               <TooltipPool
                 stakePool={stakePool}
+                ranking={index + 1}
                 isVisible
                 hasArrow
                 onClick={this.handleCloseTooltip}

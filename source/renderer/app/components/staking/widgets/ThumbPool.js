@@ -22,6 +22,7 @@ type Props = {
   showWithSelectButton?: boolean,
   showSelected?: boolean,
   stakePool: StakePool,
+  ranking: number,
   isSelected?: ?Function,
   containerClassName: string,
   numberOfRankedStakePools: number,
@@ -98,6 +99,7 @@ export class ThumbPool extends Component<Props, State> {
       showWithSelectButton,
       showSelected,
       stakePool,
+      ranking,
       containerClassName,
       numberOfRankedStakePools,
       disabledStakePoolId,
@@ -105,7 +107,7 @@ export class ThumbPool extends Component<Props, State> {
     } = this.props;
     const { top, left } = this.state;
 
-    const { ranking, id } = stakePool;
+    const { id } = stakePool;
     const color = getColorFromRange(ranking, numberOfRankedStakePools);
     const isDisabled = disabledStakePoolId === id;
 
@@ -121,11 +123,13 @@ export class ThumbPool extends Component<Props, State> {
       isSelected && showSelected ? (
         <ThumbSelectedPool
           stakePool={stakePool}
+          ranking={ranking}
           numberOfRankedStakePools={numberOfRankedStakePools}
         />
       ) : (
         <ThumbPoolContent
           stakePool={stakePool}
+          ranking={ranking}
           isGridRewardsView={isGridRewardsView}
           numberOfRankedStakePools={numberOfRankedStakePools}
         />
@@ -144,6 +148,7 @@ export class ThumbPool extends Component<Props, State> {
         {isHighlighted && (
           <TooltipPool
             stakePool={stakePool}
+            ranking={ranking}
             isVisible
             hasArrow
             onClick={onClose}

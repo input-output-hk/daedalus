@@ -14,6 +14,7 @@ import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 type Props = {
   stakePool?: StakePool,
+  ranking: number,
   alreadyDelegated?: boolean,
   numberOfRankedStakePools: number,
 };
@@ -23,11 +24,12 @@ export default class ThumbSelectedPool extends Component<Props> {
   render() {
     const {
       stakePool,
+      ranking,
       alreadyDelegated,
       numberOfRankedStakePools,
     } = this.props;
 
-    const { id, ticker, retiring, ranking } = stakePool || {};
+    const { id, ticker, retiring } = stakePool || {};
     const rankColor =
       stakePool && !retiring && IS_RANKING_DATA_AVAILABLE
         ? getColorFromRange(ranking, numberOfRankedStakePools)

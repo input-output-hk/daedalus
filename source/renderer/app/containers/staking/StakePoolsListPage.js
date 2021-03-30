@@ -1,7 +1,6 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
-import { IS_RANKING_DATA_AVAILABLE } from '../../config/stakingConfig';
 import StakePools from '../../components/staking/stake-pools/StakePools';
 import StakePoolsRankingLoader from '../../components/staking/stake-pools/StakePoolsRankingLoader';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
@@ -62,7 +61,6 @@ export default class StakePoolsListPage extends Component<Props> {
     const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
-      all: allStakePools,
       allFiltered,
       selectedDelegationWalletId,
       stake,
@@ -80,10 +78,6 @@ export default class StakePoolsListPage extends Component<Props> {
     const isLoading = !isSynced || fetchingStakePoolsFailed;
     const isRanking =
       !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
-    const numberOfRankedStakePools = allStakePools.filter(
-      (stakePool) =>
-        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
-    ).length;
 
     return (
       <Fragment>
@@ -91,7 +85,6 @@ export default class StakePoolsListPage extends Component<Props> {
           wallets={allWallets}
           currentLocale={currentLocale}
           stakePoolsList={allFiltered}
-          numberOfRankedStakePools={numberOfRankedStakePools}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}
