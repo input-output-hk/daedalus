@@ -37,7 +37,7 @@ export default class PinCode extends Component<Props> {
     const { value, onChange } = this.props;
 
     const inputNewValue =
-      inputValue !== null && inputValue !== undefined && inputValue !== "NaN"
+      inputValue !== null && inputValue !== undefined && inputValue !== 'NaN'
         ? inputValue.toString()
         : '';
     if (
@@ -49,14 +49,15 @@ export default class PinCode extends Component<Props> {
         value[key] !== inputNewValue)
     ) {
       const newValue = value;
-      if (inputValue !== "NaN") {
+      if (inputValue !== 'NaN') {
         newValue[key] = inputNewValue;
       }
       if (onChange) {
         onChange(newValue);
       }
       this.focusKey = key;
-      this.add = inputValue !== null && inputValue !== undefined && inputValue !== "NaN";
+      this.add =
+        inputValue !== null && inputValue !== undefined && inputValue !== 'NaN';
     }
   };
 
