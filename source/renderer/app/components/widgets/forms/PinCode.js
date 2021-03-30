@@ -33,7 +33,7 @@ export default class PinCode extends Component<Props> {
   focusKey = 0;
   add = false;
 
-  onChange = (inputValue: ?number, key: number) => {
+  onChange = (inputValue: ?number | ?string, key: number) => {
     const { value, onChange } = this.props;
 
     const inputNewValue =
