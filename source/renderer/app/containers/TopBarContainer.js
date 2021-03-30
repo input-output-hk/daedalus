@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
+import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
@@ -27,10 +28,21 @@ export default class TopBarContainer extends Component<Props> {
       wallets,
       newsFeed,
       appUpdate,
+      staking,
     } = stores;
-    const { isSynced, syncPercentage } = networkStatus;
+    const {
+      isSynced,
+      syncPercentage,
+      isShelleyActivated,
+      epochToFullyDecentralized,
+      isFullyDecentralized,
+    } = networkStatus;
+    const { stakingInfoWasOpen } = staking;
+    const shouldShowDecentralizationTopbarTadaAnimation =
+      isFullyDecentralized && !stakingInfoWasOpen;
+    const shouldShowDecentralizationCountdown =
+      isSynced && !!epochToFullyDecentralized;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
-    const { isShelleyActivated } = networkStatus;
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -53,6 +65,12 @@ export default class TopBarContainer extends Component<Props> {
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.ADD,
+      });
+    };
+
+    const onClickTadaButton = () => {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
       });
     };
 
@@ -81,7 +99,14 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
+          hasTadaIcon={shouldShowDecentralizationCountdown}
         />
+        {shouldShowDecentralizationCountdown && (
+          <TadaButton
+            onClick={onClickTadaButton}
+            shouldAnimate={shouldShowDecentralizationTopbarTadaAnimation}
+          />
+        )}
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}
