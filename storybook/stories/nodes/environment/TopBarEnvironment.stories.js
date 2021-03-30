@@ -2,6 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 import SidebarLayout from '../../../../source/renderer/app/components/layout/SidebarLayout';
 import TopBar from '../../../../source/renderer/app/components/layout/TopBar';
@@ -19,6 +20,7 @@ const topBarTestEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
+    isFullyDecentralized={boolean('isFullyDecentralized', false)}
   >
     <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
@@ -42,6 +44,7 @@ const topBarItnEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
+    isFullyDecentralized={boolean('isFullyDecentralized', false)}
   >
     <WalletTestEnvironmentLabel network="itn_rewards_v1" />
     <NodeSyncStatusIcon
@@ -65,6 +68,7 @@ const topBarProductionEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
+    isFullyDecentralized={boolean('isFullyDecentralized', false)}
   >
     <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
     <NewsFeedIcon
@@ -77,6 +81,7 @@ const topBarProductionEnv = (currentTheme) => (
 
 storiesOf('Nodes|Environment', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator(withKnobs)
   // ====== Stories ======
   .add('Testnet', (props: { currentTheme: string }) => (
     <SidebarLayout
