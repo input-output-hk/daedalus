@@ -340,7 +340,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       return (
                         <tr key={key}>
                           <td>{rewardWallet}</td>
-                          <td className={styles.rewardAmount}>{isRestoring ? '-' : rewardAmount}</td>
+                          <td className={styles.rewardAmount}>
+                            {isRestoring ? '-' : rewardAmount}
+                          </td>
                           <td className={styles.rewardsAddress}>
                             {isRestoring ? (
                               <div className={styles.syncingProgress}>
@@ -381,7 +383,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                       className={learnMoreButtonClasses}
                                       onClick={onOpenExternalLink}
                                       skin={ButtonSkin}
-                                      label={intl.formatMessage(messages.actionViewInExplorer)}
+                                      label={intl.formatMessage(
+                                        messages.actionViewInExplorer
+                                      )}
                                       linkProps={{
                                         className: styles.externalLink,
                                         hasIconBefore: false,
