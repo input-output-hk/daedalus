@@ -79,8 +79,8 @@ export default class PinCode extends Component<Props> {
     const focusKey = parseInt(inputKey, 10);
     const nextFieldFocusKey = focusKey + 1;
     const nextInputField = this.inputsRef[nextFieldFocusKey];
-    const isDotOrCommaKey = key === decimalSeparator || key === groupSeparator;
-    if (isDotOrCommaKey) {
+    const isSeparator = key === decimalSeparator || key === groupSeparator;
+    if (isSeparator) {
       if (nextInputField && nextInputField.focus) {
         nextInputField.focus();
       }
