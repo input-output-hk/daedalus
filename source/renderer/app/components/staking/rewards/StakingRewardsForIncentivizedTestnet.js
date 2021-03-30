@@ -190,17 +190,37 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             rewardB.wallet,
             rewardsOrder === REWARD_ORDERS.ASCENDING
           );
+          const walletAddressCompareResult = stringComparator(
+            rewardA.rewardsAddress,
+            rewardB.rewardsAddress,
+            rewardsOrder === REWARD_ORDERS.ASCENDING
+          );
           if (rewardsSortBy === REWARD_FIELDS.REWARD) {
-            if (rewardCompareResult === 0) {
+            if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
               return walletNameCompareResult;
+            }
+            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+              return walletAddressCompareResult;
             }
             return rewardCompareResult;
           }
           if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-            if (walletNameCompareResult === 0) {
+            if (walletNameCompareResult === 0 && walletAddressCompareResult) {
               return rewardCompareResult;
             }
+            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+              return walletAddressCompareResult;
+            }
             return walletNameCompareResult;
+          }
+          if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
+            if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
+              return walletNameCompareResult;
+            }
+            if (walletAddressCompareResult === 0 && walletNameCompareResult === 0) {
+              return rewardCompareResult;
+            }
+            return walletAddressCompareResult;
           }
           return 0;
         }
