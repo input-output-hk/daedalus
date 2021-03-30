@@ -217,7 +217,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
               return walletNameCompareResult;
             }
-            if (walletAddressCompareResult === 0 && walletNameCompareResult === 0) {
+            if (
+              walletAddressCompareResult === 0 &&
+              walletNameCompareResult === 0
+            ) {
               return rewardCompareResult;
             }
             return walletAddressCompareResult;
@@ -401,7 +404,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                     </CopyToClipboard>
                                     <ButtonLink
                                       className={learnMoreButtonClasses}
-                                      onClick={onOpenExternalLink}
+                                      onClick={() =>
+                                        onOpenExternalLink(rewardsAddress)
+                                      }
                                       skin={ButtonSkin}
                                       label={intl.formatMessage(
                                         messages.actionViewInExplorer
