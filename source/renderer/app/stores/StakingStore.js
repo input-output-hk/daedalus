@@ -42,15 +42,17 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export type StakePoolFilterOptionsType = {
-  retiringPoolsHidden?: boolean,
-  privatePoolsHidden?: boolean,
-  poolsWithoutOffChainDataHidden?: boolean,
+  publicPoolsWithOffChainData?: boolean,
+  retiringPools?: boolean,
+  privatePools?: boolean,
+  poolsWithoutOffChainData?: boolean,
 };
 
-export const emptyStakePoolFilterOptions = {
-  retiringPoolsHidden: true,
-  privatePoolsHidden: true,
-  poolsWithoutOffChainDataHidden: true,
+export const defaultStakePoolFilterOptions = {
+  publicPoolsWithOffChainData: true,
+  retiringPools: false,
+  privatePools: false,
+  poolsWithoutOffChainData: false,
 };
 
 export default class StakingStore extends Store {
@@ -541,7 +543,7 @@ export default class StakingStore extends Store {
   }
 
   @computed get populatedFilterOptions(): StakePoolFilterOptionsType {
-    return this.filterOptions || emptyStakePoolFilterOptions;
+    return this.filterOptions || defaultStakePoolFilterOptions;
   }
 
   @computed get hasAnyFiltered(): boolean {
@@ -650,7 +652,7 @@ export default class StakingStore extends Store {
   };
 
   @action _clearFilterOptions = () => {
-    this.filterOptions = emptyStakePoolFilterOptions;
+    this.filterOptions = defaultStakePoolFilterOptions;
   };
 
   // For testing only

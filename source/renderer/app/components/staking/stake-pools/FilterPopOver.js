@@ -9,7 +9,7 @@ import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
-import { emptyStakePoolFilterOptions } from '../../../stores/StakingStore';
+import { defaultStakePoolFilterOptions } from '../../../stores/StakingStore';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinyButton from '../../widgets/forms/TinyButton';
 import filterIcon from '../../../assets/images/filter-dis-ic.inline.svg';
@@ -22,20 +22,25 @@ const messages = defineMessages({
     defaultMessage: '!!!Reset Filter',
     description: 'Reset Filter button label.',
   },
-  hideRetiringPools: {
-    id: 'staking.stakePools.filter.hideRetiringPools',
-    defaultMessage: '!!!Hide retiring pools',
-    description: 'Hide retiring pools filter type.',
+  publicPoolsWithOffChainData: {
+    id: 'staking.stakePools.filter.publicPoolsWithOffChainData',
+    defaultMessage: '!!!Public pools with off-chain data',
+    description: 'Public pools with off-chain data filter type.',
   },
-  hidePrivatePools: {
-    id: 'staking.stakePools.filter.hidePrivatePools',
-    defaultMessage: '!!!Hide private pools',
-    description: 'Hide private pools filter type.',
+  retiringPools: {
+    id: 'staking.stakePools.filter.retiringPools',
+    defaultMessage: '!!!Retiring pools',
+    description: 'Retiring pools filter type.',
   },
-  hidePoolsWithoutOffChainData: {
-    id: 'staking.stakePools.filter.hidePoolsWithoutOffChainData',
-    defaultMessage: '!!!Hide pools without off-chain data',
-    description: 'Hide pools without off-chain data filter type.',
+  privatePools: {
+    id: 'staking.stakePools.filter.privatePools',
+    defaultMessage: '!!!Private pools',
+    description: 'Private pools filter type.',
+  },
+  poolsWithoutOffChainData: {
+    id: 'staking.stakePools.filter.poolsWithoutOffChainData',
+    defaultMessage: '!!!Pools without off-chain data',
+    description: 'Pools without off-chain data filter type.',
   },
   apply: {
     id: 'staking.stakePools.filter.apply',
@@ -66,9 +71,10 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
     const {
       populatedFilterOptions: {
-        retiringPoolsHidden,
-        privatePoolsHidden,
-        poolsWithoutOffChainDataHidden,
+        publicPoolsWithOffChainData,
+        retiringPools,
+        privatePools,
+        poolsWithoutOffChainData,
       },
     } = props;
 
@@ -76,20 +82,25 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
     this.form = new ReactToolboxMobxForm({
       fields: {
-        retiringPoolsHidden: {
+        publicPoolsWithOffChainData: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.hideRetiringPools),
-          value: retiringPoolsHidden,
+          label: intl.formatMessage(messages.publicPoolsWithOffChainData),
+          value: publicPoolsWithOffChainData,
         },
-        privatePoolsHidden: {
+        retiringPools: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.hidePrivatePools),
-          value: privatePoolsHidden,
+          label: intl.formatMessage(messages.retiringPools),
+          value: retiringPools,
         },
-        poolsWithoutOffChainDataHidden: {
+        privatePools: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.hidePoolsWithoutOffChainData),
-          value: poolsWithoutOffChainDataHidden,
+          label: intl.formatMessage(messages.privatePools),
+          value: privatePools,
+        },
+        poolsWithoutOffChainData: {
+          type: 'checkbox',
+          label: intl.formatMessage(messages.poolsWithoutOffChainData),
+          value: poolsWithoutOffChainData,
         },
       },
     });
@@ -97,19 +108,21 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   fillFormFields = (filterOptions: StakePoolFilterOptionsType) => {
     const {
-      retiringPoolsHidden,
-      privatePoolsHidden,
-      poolsWithoutOffChainDataHidden,
+      publicPoolsWithOffChainData,
+      retiringPools,
+      privatePools,
+      poolsWithoutOffChainData,
     } = filterOptions;
 
-    this.form.select('retiringPoolsHidden').set(retiringPoolsHidden);
-    this.form.select('privatePoolsHidden').set(privatePoolsHidden);
     this.form
-      .select('poolsWithoutOffChainDataHidden')
-      .set(poolsWithoutOffChainDataHidden);
+      .select('publicPoolsWithOffChainData')
+      .set(publicPoolsWithOffChainData);
+    this.form.select('retiringPools').set(retiringPools);
+    this.form.select('privatePools').set(privatePools);
+    this.form.select('poolsWithoutOffChainData').set(poolsWithoutOffChainData);
   };
 
-  resetForm = () => this.fillFormFields(emptyStakePoolFilterOptions);
+  resetForm = () => this.fillFormFields(defaultStakePoolFilterOptions);
   restoreForm = () => this.fillFormFields(this.props.populatedFilterOptions);
 
   isFormValuesEqualTo = (comparedFilterOptions: StakePoolFilterOptionsType) => {
@@ -137,14 +150,18 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   renderFields = () => {
     const { form } = this;
-    const retiringPoolsCheckboxField = form.$('retiringPoolsHidden');
-    const privatePoolsCheckboxField = form.$('privatePoolsHidden');
+    const publicPoolsWithOffChainDataCheckboxField = form.$(
+      'publicPoolsWithOffChainData'
+    );
+    const retiringPoolsCheckboxField = form.$('retiringPools');
+    const privatePoolsCheckboxField = form.$('privatePools');
     const poolsWithoutOffChainDataCheckboxField = form.$(
-      'poolsWithoutOffChainDataHidden'
+      'poolsWithoutOffChainData'
     );
 
     return (
       <div className={styles.fields}>
+        <TinyCheckbox {...publicPoolsWithOffChainDataCheckboxField.bind()} />
         <TinyCheckbox {...retiringPoolsCheckboxField.bind()} />
         <TinyCheckbox {...privatePoolsCheckboxField.bind()} />
         <TinyCheckbox {...poolsWithoutOffChainDataCheckboxField.bind()} />
@@ -221,7 +238,7 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
                   className={styles.titleLink}
                   onClick={this.resetForm}
                   disabled={this.isFormValuesEqualTo(
-                    emptyStakePoolFilterOptions
+                    defaultStakePoolFilterOptions
                   )}
                 >
                   {intl.formatMessage(messages.resetFilter)}
