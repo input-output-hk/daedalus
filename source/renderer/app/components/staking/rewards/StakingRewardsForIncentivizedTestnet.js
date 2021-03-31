@@ -22,7 +22,6 @@ import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
-import { ellipsis } from '../../../utils/strings';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import ButtonLink from '../../widgets/ButtonLink';
 
@@ -367,7 +366,13 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
 
                       return (
                         <tr key={key}>
-                          <td>{rewardWallet}</td>
+                          <td className={styles.rewardWallet}>
+                            <PopOver
+                              content={rewardWallet}
+                            >
+                              {rewardWallet}
+                            </PopOver>
+                          </td>
                           <td className={styles.rewardsAddress}>
                             {rewardsAddress && (
                               <div>
@@ -377,7 +382,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                 >
                                   <div className={styles.addressContainer}>
                                     <span className={styles.address}>
-                                      {ellipsis(rewardsAddress, 15, 15)}
+                                      {rewardsAddress}
                                     </span>
                                     <span className={styles.copyAddress}>
                                       <SVGInline

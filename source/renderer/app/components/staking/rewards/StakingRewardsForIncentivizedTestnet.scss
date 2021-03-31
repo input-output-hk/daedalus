@@ -184,7 +184,6 @@
       -webkit-user-select: none;
       -ms-user-select: none;
       user-select: none;
-      width: 25%;
 
       p {
         -webkit-box-orient: vertical;
@@ -214,10 +213,6 @@
         }
       }
 
-      .address {
-        min-width: 235px;
-      }
-
       .copyAddress {
         cursor: pointer;
         display: flex;
@@ -226,8 +221,9 @@
 
       .copyIcon {
         cursor: pointer;
-        margin-left: 4px;
+        margin-left: 6px;
         object-fit: contain;
+        opacity: 0;
 
         & > svg {
           height: 10px;
@@ -266,7 +262,21 @@
         }
       }
 
+      &.rewardWallet {
+        max-width: 200px;
+        min-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.rewardAmount {
+        min-width: 250px;
+      }
+
       &.rewardsAddress {
+        min-width: 100px;
+
         > div {
           align-items: center;
           display: flex;
@@ -276,6 +286,23 @@
         .addressContainer {
           align-items: center;
           display: flex;
+
+          .address {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            &:hover {
+              cursor: pointer;
+            }
+          }
+
+          &:hover {
+            .copyIcon {
+              opacity: 1;
+            }
+          }
         }
       }
     }
