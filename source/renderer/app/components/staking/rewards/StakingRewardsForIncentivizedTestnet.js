@@ -251,14 +251,14 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         title: intl.formatMessage(messages.tableHeaderWallet),
       },
       {
+        name: REWARD_FIELDS.REWARDS_ADDRESS,
+        title: intl.formatMessage(messages.tableHeaderRewardsAddress),
+      },
+      {
         name: REWARD_FIELDS.REWARD,
         title: `${intl.formatMessage(
           messages.tableHeaderReward
         )} (${intl.formatMessage(globalMessages.unitAda)})`,
-      },
-      {
-        name: REWARD_FIELDS.REWARDS_ADDRESS,
-        title: intl.formatMessage(messages.tableHeaderRewardsAddress),
       },
     ];
     const exportCsvButtonLabel = isExporting ? (
@@ -368,23 +368,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       return (
                         <tr key={key}>
                           <td>{rewardWallet}</td>
-                          <td className={styles.rewardAmount}>
-                            {isRestoring ? '-' : rewardAmount}
-                            {isRestoring && (
-                              <div className={styles.syncingProgress}>
-                                <PopOver
-                                  content={intl.formatMessage(
-                                    messages.syncingTooltipLabel,
-                                    {
-                                      syncingProgress,
-                                    }
-                                  )}
-                                >
-                                  <LoadingSpinner medium />
-                                </PopOver>
-                              </div>
-                            )}
-                          </td>
                           <td className={styles.rewardsAddress}>
                             {rewardsAddress && (
                               <div>
@@ -421,6 +404,23 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                     }}
                                   />
                                 )}
+                              </div>
+                            )}
+                          </td>
+                          <td className={styles.rewardAmount}>
+                            {isRestoring ? '-' : rewardAmount}
+                            {isRestoring && (
+                              <div className={styles.syncingProgress}>
+                                <PopOver
+                                  content={intl.formatMessage(
+                                    messages.syncingTooltipLabel,
+                                    {
+                                      syncingProgress,
+                                    }
+                                  )}
+                                >
+                                  <LoadingSpinner medium />
+                                </PopOver>
                               </div>
                             )}
                           </td>
