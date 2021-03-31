@@ -45,7 +45,7 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
     } = this.props;
     const { intl } = this.context;
     return map(sortedStakePoolList, (stakePool, index) => {
-      const rank = index + 1;
+      const ranking = index + 1;
       const ticker = get(stakePool, 'ticker', '');
       const saturation = get(stakePool, 'saturation', '');
       const cost = new BigNumber(get(stakePool, 'cost', ''));
@@ -66,13 +66,13 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
         styles[getSaturationColor(saturation)],
       ]);
 
-      const color = getColorFromRange(rank, numberOfRankedStakePools);
+      const color = getColorFromRange(ranking, numberOfRankedStakePools);
 
       return (
         <tr key={index}>
           <td>
             {!memberRewards.isZero() ? (
-              index + 1
+              ranking
             ) : (
               <>
                 {numberOfRankedStakePools + 1}
@@ -88,6 +88,7 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
               onSelect={onSelect}
               isSelected={selectedPoolId === stakePool.id}
               stakePool={stakePool}
+              ranking={ranking}
               containerClassName={containerClassName}
               numberOfRankedStakePools={numberOfRankedStakePools}
               showWithSelectButton={showWithSelectButton}

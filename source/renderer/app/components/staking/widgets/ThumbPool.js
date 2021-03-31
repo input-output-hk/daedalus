@@ -78,6 +78,7 @@ export function ThumbPool(props: {
         openWithDelay={props.highlightWithDelay}
         onSelect={props.onSelect}
         stakePool={stakePool}
+        ranking={ranking}
         containerClassName={props.containerClassName}
         numberOfRankedStakePools={numberOfRankedStakePools}
         showWithSelectButton={props.showWithSelectButton}
