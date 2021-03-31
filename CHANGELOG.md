@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 4.0.4
+
+### Features
+
+- Disabled "Rewards tile" view on the "Stake pools" screen
+
 ## 4.0.3
 
 ### Features
