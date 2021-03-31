@@ -24,7 +24,7 @@ import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { ellipsis } from '../../../utils/strings';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-// import ButtonLink from '../../widgets/ButtonLink';
+import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({
   title: {
@@ -100,6 +100,8 @@ const REWARD_ORDERS = {
   ASCENDING: 'asc',
   DESCENDING: 'desc',
 };
+
+const IS_EXPLORER_LINK_BUTTON_ENABLED = false;
 
 type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
@@ -236,7 +238,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       isLoading,
       isExporting,
       onCopyAddress,
-      // onOpenExternalLink,
+      onOpenExternalLink,
     } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
     const { intl } = this.context;
@@ -278,7 +280,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         ctx.scrollTop > 10 ? styles.actionButtonFaded : null,
       ]);
 
-    // const learnMoreButtonClasses = classNames(['flat', styles.actionLearnMore]);
+    const explorerButtonClasses = classNames(['flat', styles.actionExplorerLink]);
 
     return (
       <StakingPageScrollContext.Consumer>
@@ -402,21 +404,23 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                         </span>
                                       </div>
                                     </CopyToClipboard>
-                                    {/* <ButtonLink
-                                      className={learnMoreButtonClasses}
-                                      onClick={() =>
-                                        onOpenExternalLink(rewardsAddress)
-                                      }
-                                      skin={ButtonSkin}
-                                      label={intl.formatMessage(
-                                        messages.actionViewInExplorer
-                                      )}
-                                      linkProps={{
-                                        className: styles.externalLink,
-                                        hasIconBefore: false,
-                                        hasIconAfter: true,
-                                      }}
-                                    /> */}
+                                    {IS_EXPLORER_LINK_BUTTON_ENABLED && (
+                                      <ButtonLink
+                                        className={explorerButtonClasses}
+                                        onClick={() =>
+                                          onOpenExternalLink(rewardsAddress)
+                                        }
+                                        skin={ButtonSkin}
+                                        label={intl.formatMessage(
+                                          messages.actionViewInExplorer
+                                        )}
+                                        linkProps={{
+                                          className: styles.externalLink,
+                                          hasIconBefore: false,
+                                          hasIconAfter: true,
+                                        }}
+                                      />
+                                    )}
                                   </div>
                                 )}
                               </>
