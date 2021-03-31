@@ -367,11 +367,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       return (
                         <tr key={key}>
                           <td className={styles.rewardWallet}>
-                            <PopOver
-                              content={rewardWallet}
-                            >
-                              {rewardWallet}
-                            </PopOver>
+                            {rewardWallet}
                           </td>
                           <td className={styles.rewardsAddress}>
                             {rewardsAddress && (
