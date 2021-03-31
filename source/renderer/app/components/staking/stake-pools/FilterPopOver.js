@@ -54,6 +54,7 @@ export type FilterPopOverProps = {
   onFilter: Function,
   numberOfFilterDimensionsApplied: number,
   isFilterDisabled: boolean,
+  containerRefDom?: null | HTMLDivElement,
 };
 
 @observer
@@ -185,20 +186,25 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   render() {
     const { intl } = this.context;
-    const { numberOfFilterDimensionsApplied, isFilterDisabled } = this.props;
+    const {
+      numberOfFilterDimensionsApplied,
+      isFilterDisabled,
+      containerRefDom,
+    } = this.props;
+
+    if (!containerRefDom) {
+      return null;
+    }
 
     return (
       <PopOver
         arrow={false}
         interactive
         trigger="click"
-        appendTo={document.body}
+        appendTo={containerRefDom}
         onShow={(instance) => {
           this.restoreForm();
           this.popoverTippyInstance.current = instance;
-          setTimeout(() => {
-            instance.popper.style.transform = 'translate(-11px, 0)';
-          }, 0);
         }}
         duration={0}
         offset={[0, 10]}

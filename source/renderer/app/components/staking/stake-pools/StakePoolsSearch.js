@@ -79,11 +79,13 @@ export class StakePoolsSearch extends Component<Props> {
 
   searchInput: ?Object = null;
   addOnRef: { current: null | HTMLDivElement };
+  selfRef: { current: null | HTMLDivElement };
 
   constructor(props: Props) {
     super(props);
 
     this.addOnRef = React.createRef();
+    this.selfRef = React.createRef();
   }
 
   autoSelectOnFocus = () =>
@@ -152,7 +154,7 @@ export class StakePoolsSearch extends Component<Props> {
     const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
 
     return (
-      <div className={styles.component}>
+      <div className={styles.component} ref={this.selfRef}>
         <div className={styles.container}>
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input
@@ -216,7 +218,10 @@ export class StakePoolsSearch extends Component<Props> {
                 </button>
               </PopOver>
               <span className={styles.separator}>|</span>
-              <FilterPopOver {...filterPopOverProps} />
+              <FilterPopOver
+                {...filterPopOverProps}
+                containerRefDom={this.selfRef.current}
+              />
             </div>
           )}
         </div>

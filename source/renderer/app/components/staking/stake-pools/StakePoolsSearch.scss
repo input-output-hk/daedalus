@@ -4,6 +4,10 @@
   position: initial;
   transition: position 1s ease-out, top 1s ease-out;
   width: 100%;
+
+  & > div[data-tippy-root] {
+    transform: translate(10px, 0);
+  }
 }
 
 .container {
