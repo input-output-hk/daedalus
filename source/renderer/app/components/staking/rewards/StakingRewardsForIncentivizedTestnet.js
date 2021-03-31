@@ -280,7 +280,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         ctx.scrollTop > 10 ? styles.actionButtonFaded : null,
       ]);
 
-    const explorerButtonClasses = classNames(['flat', styles.actionExplorerLink]);
+    const explorerButtonClasses = classNames([
+      'flat',
+      styles.actionExplorerLink,
+    ]);
 
     return (
       <StakingPageScrollContext.Consumer>
@@ -367,9 +370,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                           <td>{rewardWallet}</td>
                           <td className={styles.rewardAmount}>
                             {isRestoring ? '-' : rewardAmount}
-                          </td>
-                          <td className={styles.rewardsAddress}>
-                            {isRestoring ? (
+                            {isRestoring && (
                               <div className={styles.syncingProgress}>
                                 <PopOver
                                   content={intl.formatMessage(
@@ -382,48 +383,45 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                   <LoadingSpinner medium />
                                 </PopOver>
                               </div>
-                            ) : (
-                              <>
-                                {rewardsAddress && (
-                                  <div>
-                                    <CopyToClipboard
-                                      text={rewardsAddress}
-                                      onCopy={() =>
-                                        onCopyAddress(rewardsAddress)
-                                      }
-                                    >
-                                      <div className={styles.addressContainer}>
-                                        <span className={styles.address}>
-                                          {ellipsis(rewardsAddress, 15, 15)}
-                                        </span>
-                                        <span className={styles.copyAddress}>
-                                          <SVGInline
-                                            svg={iconCopy}
-                                            className={styles.copyIcon}
-                                          />
-                                        </span>
-                                      </div>
-                                    </CopyToClipboard>
-                                    {IS_EXPLORER_LINK_BUTTON_ENABLED && (
-                                      <ButtonLink
-                                        className={explorerButtonClasses}
-                                        onClick={() =>
-                                          onOpenExternalLink(rewardsAddress)
-                                        }
-                                        skin={ButtonSkin}
-                                        label={intl.formatMessage(
-                                          messages.actionViewInExplorer
-                                        )}
-                                        linkProps={{
-                                          className: styles.externalLink,
-                                          hasIconBefore: false,
-                                          hasIconAfter: true,
-                                        }}
+                            )}
+                          </td>
+                          <td className={styles.rewardsAddress}>
+                            {rewardsAddress && (
+                              <div>
+                                <CopyToClipboard
+                                  text={rewardsAddress}
+                                  onCopy={() => onCopyAddress(rewardsAddress)}
+                                >
+                                  <div className={styles.addressContainer}>
+                                    <span className={styles.address}>
+                                      {ellipsis(rewardsAddress, 15, 15)}
+                                    </span>
+                                    <span className={styles.copyAddress}>
+                                      <SVGInline
+                                        svg={iconCopy}
+                                        className={styles.copyIcon}
                                       />
-                                    )}
+                                    </span>
                                   </div>
+                                </CopyToClipboard>
+                                {IS_EXPLORER_LINK_BUTTON_ENABLED && (
+                                  <ButtonLink
+                                    className={explorerButtonClasses}
+                                    onClick={() =>
+                                      onOpenExternalLink(rewardsAddress)
+                                    }
+                                    skin={ButtonSkin}
+                                    label={intl.formatMessage(
+                                      messages.actionViewInExplorer
+                                    )}
+                                    linkProps={{
+                                      className: styles.externalLink,
+                                      hasIconBefore: false,
+                                      hasIconAfter: true,
+                                    }}
+                                  />
                                 )}
-                              </>
+                              </div>
                             )}
                           </td>
                         </tr>
