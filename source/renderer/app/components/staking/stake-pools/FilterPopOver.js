@@ -197,6 +197,9 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
         appendTo={document.body}
         onShow={(instance) => {
           this.popoverTippyInstance.current = instance;
+          setTimeout(() => {
+            instance.popper.style.transform = 'translate(-11px, 0)';
+          }, 0);
           this.isSubmitClicked = false;
         }}
         onHide={() => {
