@@ -75,7 +75,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             <ThumbPool
               key={stakePool.id}
               stakePool={stakePool}
-              ranking={ind + 1}
+              ranking={startIndex + ind + 1}
               onOpenExternalLink={props.onOpenExternalLink}
               highlightOnHover={props.highlightOnHover}
               highlightWithDelay={props.highlightWithDelay}
@@ -107,7 +107,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             if (!stakePoolsCount || !width) {
               return null;
             }
-            const itemsPerRow = Math.ceil(
+            const itemsPerRow = Math.floor(
               width / (POOL_THUMB_SIZE + POOL_THUMB_GRID_GAP)
             );
             const rowCount = Math.ceil(stakePoolsCount / itemsPerRow);
