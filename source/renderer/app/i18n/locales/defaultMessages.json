@@ -5968,6 +5968,20 @@
           "column": 15,
           "line": 68
         }
+      },
+      {
+        "defaultMessage": "!!!Please select at least one category in the filter or reset filter.",
+        "description": "Empty filter warning",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.filter.emptyFilterWarning",
+        "start": {
+          "column": 22,
+          "line": 73
+        }
       }
     ],
     "path": "source/renderer/app/components/staking/stake-pools/StakePools.json"
@@ -17315,17 +17329,31 @@
         }
       },
       {
-        "defaultMessage": "!!!English",
-        "description": "Language name for \"English\" language.",
+        "defaultMessage": "!!!Show",
+        "description": "The word \"show\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
           "line": 116
         },
         "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.show",
+        "start": {
+          "column": 8,
+          "line": 112
+        }
+      },
+      {
+        "defaultMessage": "!!!English",
+        "description": "Language name for \"English\" language.",
+        "end": {
+          "column": 3,
+          "line": 121
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 112
+          "line": 117
         }
       },
       {
@@ -17333,13 +17361,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 126
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 117
+          "line": 122
         }
       },
       {
@@ -17347,13 +17375,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 131
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 122
+          "line": 127
         }
       },
       {
@@ -17361,13 +17389,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 136
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 127
+          "line": 132
         }
       },
       {
@@ -17375,13 +17403,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 141
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 132
+          "line": 137
         }
       },
       {
@@ -17389,13 +17417,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 146
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 137
+          "line": 142
         }
       },
       {
@@ -17403,13 +17431,13 @@
         "description": "Colon punctuation.",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 151
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.colon",
         "start": {
           "column": 20,
-          "line": 142
+          "line": 147
         }
       },
       {
@@ -17417,13 +17445,13 @@
         "description": "Final dot punctuation.",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 156
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.dot",
         "start": {
           "column": 18,
-          "line": 147
+          "line": 152
         }
       },
       {
@@ -17431,13 +17459,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 161
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 152
+          "line": 157
         }
       },
       {
@@ -17445,13 +17473,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 166
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 157
+          "line": 162
         }
       },
       {
@@ -17459,13 +17487,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 167
+          "line": 172
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 162
+          "line": 167
         }
       },
       {
@@ -17473,13 +17501,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 173
+          "line": 178
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 168
+          "line": 173
         }
       },
       {
@@ -17487,13 +17515,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 178
+          "line": 183
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 174
+          "line": 179
         }
       },
       {
@@ -17501,13 +17529,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 185
+          "line": 190
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 179
+          "line": 184
         }
       },
       {
@@ -17515,13 +17543,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 190
+          "line": 195
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 186
+          "line": 191
         }
       },
       {
@@ -17529,13 +17557,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 195
+          "line": 200
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 191
+          "line": 196
         }
       },
       {
@@ -17543,13 +17571,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 200
+          "line": 205
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 196
+          "line": 201
         }
       },
       {
@@ -17557,13 +17585,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 205
+          "line": 210
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 201
+          "line": 206
         }
       },
       {
@@ -17571,13 +17599,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 210
+          "line": 215
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 206
+          "line": 211
         }
       },
       {
@@ -17585,13 +17613,13 @@
         "description": "\"Shelley Testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 215
+          "line": 220
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_testnet",
         "start": {
           "column": 27,
-          "line": 211
+          "line": 216
         }
       },
       {
@@ -17599,13 +17627,13 @@
         "description": "\"Shelley QA\" Cardano network",
         "end": {
           "column": 3,
-          "line": 220
+          "line": 225
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_qa",
         "start": {
           "column": 22,
-          "line": 216
+          "line": 221
         }
       },
       {
@@ -17613,13 +17641,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 225
+          "line": 230
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 221
+          "line": 226
         }
       },
       {
@@ -17627,13 +17655,13 @@
         "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
-          "line": 230
+          "line": 235
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_rewards_v1",
         "start": {
           "column": 26,
-          "line": 226
+          "line": 231
         }
       },
       {
@@ -17641,13 +17669,13 @@
         "description": "\"itn_selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 235
+          "line": 240
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_selfnode",
         "start": {
           "column": 24,
-          "line": 231
+          "line": 236
         }
       },
       {
@@ -17655,13 +17683,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 240
+          "line": 245
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 236
+          "line": 241
         }
       },
       {
@@ -17669,13 +17697,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 245
+          "line": 250
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 241
+          "line": 246
         }
       },
       {
@@ -17683,13 +17711,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 250
+          "line": 255
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 246
+          "line": 251
         }
       },
       {
@@ -17697,13 +17725,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 255
+          "line": 260
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 251
+          "line": 256
         }
       },
       {
@@ -17711,13 +17739,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 260
+          "line": 265
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 256
+          "line": 261
         }
       },
       {
@@ -17725,13 +17753,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 265
+          "line": 270
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 261
+          "line": 266
         }
       },
       {
@@ -17739,13 +17767,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 270
+          "line": 275
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 266
+          "line": 271
         }
       },
       {
@@ -17753,13 +17781,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 275
+          "line": 280
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 271
+          "line": 276
         }
       },
       {
@@ -17767,13 +17795,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 280
+          "line": 285
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 276
+          "line": 281
         }
       },
       {
@@ -17781,13 +17809,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 285
+          "line": 290
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 281
+          "line": 286
         }
       },
       {
@@ -17795,13 +17823,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 290
+          "line": 295
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 286
+          "line": 291
         }
       },
       {
@@ -17809,13 +17837,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 295
+          "line": 300
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 291
+          "line": 296
         }
       },
       {
@@ -17823,13 +17851,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 300
+          "line": 305
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 296
+          "line": 301
         }
       },
       {
@@ -17837,13 +17865,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 305
+          "line": 310
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 301
+          "line": 306
         }
       },
       {
@@ -17851,13 +17879,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 310
+          "line": 315
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 306
+          "line": 311
         }
       },
       {
@@ -17865,13 +17893,13 @@
         "description": "Reveal label.",
         "end": {
           "column": 3,
-          "line": 315
+          "line": 320
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reveal",
         "start": {
           "column": 10,
-          "line": 311
+          "line": 316
         }
       },
       {
@@ -17879,13 +17907,13 @@
         "description": "Hide label.",
         "end": {
           "column": 3,
-          "line": 320
+          "line": 325
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.hide",
         "start": {
           "column": 8,
-          "line": 316
+          "line": 321
         }
       },
       {
@@ -17893,13 +17921,13 @@
         "description": "Copy label.",
         "end": {
           "column": 3,
-          "line": 325
+          "line": 330
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.copy",
         "start": {
           "column": 8,
-          "line": 321
+          "line": 326
         }
       },
       {
@@ -17907,13 +17935,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 332
+          "line": 337
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 326
+          "line": 331
         }
       }
     ],

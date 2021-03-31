@@ -404,6 +404,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           <div className={styles.selectStakePoolWrapper}>
             <ThumbSelectedPool
               stakePool={selectedPool}
+              ranking={selectedPool.ranking}
               numberOfRankedStakePools={numberOfRankedStakePools}
               alreadyDelegated={selectedPool && !canSubmit}
             />
