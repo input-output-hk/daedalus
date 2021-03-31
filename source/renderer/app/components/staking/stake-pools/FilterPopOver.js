@@ -147,6 +147,48 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
     }
   };
 
+  renderTriggerElement = (disabled?: boolean) => {
+    const { intl } = this.context;
+    const {
+      numberOfFilterDimensionsApplied,
+      isFilterDisabled,
+      populatedFilterOptions,
+    } = this.props;
+    const tinyButtonType = isEqual(
+      populatedFilterOptions,
+      defaultStakePoolFilterOptions
+    )
+      ? 'flat'
+      : 'primary';
+
+    return (
+      <div className={styles.triggerButton}>
+        <TinyButton
+          className={classNames([tinyButtonType, styles.actionButton])}
+          label={
+            <>
+              <div className={styles.actionLabel}>
+                {intl.formatMessage(globalMessages.filter)}
+                {numberOfFilterDimensionsApplied > 0 &&
+                  !isEqual(
+                    populatedFilterOptions,
+                    defaultStakePoolFilterOptions
+                  ) && (
+                    <span className={styles.numberIndicator}>
+                      ({numberOfFilterDimensionsApplied})
+                    </span>
+                  )}
+              </div>
+              <SVGInline svg={filterIcon} className={styles.filterIcon} />
+            </>
+          }
+          loading={false}
+          disabled={isFilterDisabled || disabled}
+        />
+      </div>
+    );
+  };
+
   renderFields = () => {
     const { form } = this;
     const publicPoolsWithOffChainDataCheckboxField = form.$(
@@ -186,14 +228,10 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   render() {
     const { intl } = this.context;
-    const {
-      numberOfFilterDimensionsApplied,
-      isFilterDisabled,
-      containerRefDom,
-    } = this.props;
+    const { containerRefDom } = this.props;
 
     if (!containerRefDom) {
-      return null;
+      return this.renderTriggerElement(true);
     }
 
     return (
@@ -254,26 +292,7 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
           </div>
         }
       >
-        <div className={styles.triggerButton}>
-          <TinyButton
-            className={classNames(['primary', styles.actionButton])}
-            label={
-              <>
-                <div className={styles.actionLabel}>
-                  {intl.formatMessage(globalMessages.filter)}
-                  {numberOfFilterDimensionsApplied > 0 && (
-                    <span className={styles.numberIndicator}>
-                      ({numberOfFilterDimensionsApplied})
-                    </span>
-                  )}
-                </div>
-                <SVGInline svg={filterIcon} className={styles.filterIcon} />
-              </>
-            }
-            loading={false}
-            disabled={isFilterDisabled}
-          />
-        </div>
+        {this.renderTriggerElement()}
       </PopOver>
     );
   }
