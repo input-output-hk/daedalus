@@ -5862,13 +5862,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 32
+          "line": 34
         }
       },
       {
@@ -5876,13 +5876,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 37
+          "line": 39
         }
       },
       {
@@ -5890,13 +5890,13 @@
         "description": "\"listTitleLoading\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleLoading",
         "start": {
           "column": 20,
-          "line": 42
+          "line": 44
         }
       },
       {
@@ -5904,13 +5904,13 @@
         "description": "\"listTitleSearch\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleSearch",
         "start": {
           "column": 19,
-          "line": 47
+          "line": 49
         }
       },
       {
@@ -5918,13 +5918,13 @@
         "description": "\"listTitleStakePools\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 58
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleStakePools",
         "start": {
           "column": 23,
-          "line": 52
+          "line": 54
         }
       },
       {
@@ -5932,13 +5932,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 57
+          "line": 59
         }
       },
       {
@@ -5946,13 +5946,13 @@
         "description": "moderatedBy message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.moderatedBy",
         "start": {
           "column": 15,
-          "line": 63
+          "line": 65
         }
       },
       {
@@ -5960,27 +5960,55 @@
         "description": "unmoderated message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.unmoderated",
         "start": {
           "column": 15,
-          "line": 68
+          "line": 70
         }
       },
       {
-        "defaultMessage": "!!!Please select at least one category in the filter or reset filter.",
-        "description": "Empty filter warning",
+        "defaultMessage": "!!!Please select at least one category in the filter or",
+        "description": "Empty filter warning prefix",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
-        "id": "staking.stakePools.filter.emptyFilterWarning",
+        "id": "staking.stakePools.filter.emptyFilterWarningPrefix",
         "start": {
-          "column": 22,
-          "line": 73
+          "column": 28,
+          "line": 75
+        }
+      },
+      {
+        "defaultMessage": "!!!.",
+        "description": "Empty filter warning suffix",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.filter.emptyFilterWarningSuffix",
+        "start": {
+          "column": 28,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Reset Filter",
+        "description": "Reset Filter link label",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.filter.resetFilter",
+        "start": {
+          "column": 15,
+          "line": 85
         }
       }
     ],
