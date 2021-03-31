@@ -158,8 +158,8 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
       return [
         rewardWallet,
-        isRestoring ? '-' : rewardAmount,
         rewardsAddress,
+        isRestoring ? '-' : rewardAmount,
         date,
       ];
     });
