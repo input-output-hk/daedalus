@@ -64,7 +64,6 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
 
   form: ReactToolboxMobxForm;
   popoverTippyInstance: ElementRef<*> = createRef();
-  isSubmitClicked = false;
 
   constructor(props: FilterPopOverProps, context: Object) {
     super(props);
@@ -142,7 +141,6 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
       },
       onError: () => null,
     });
-    this.isSubmitClicked = true;
     if (this.popoverTippyInstance.current) {
       this.popoverTippyInstance.current.hide();
     }
@@ -196,16 +194,11 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
         trigger="click"
         appendTo={document.body}
         onShow={(instance) => {
+          this.restoreForm();
           this.popoverTippyInstance.current = instance;
           setTimeout(() => {
             instance.popper.style.transform = 'translate(-11px, 0)';
           }, 0);
-          this.isSubmitClicked = false;
-        }}
-        onHide={() => {
-          if (!this.isSubmitClicked) {
-            this.restoreForm();
-          }
         }}
         duration={0}
         offset={[0, 10]}

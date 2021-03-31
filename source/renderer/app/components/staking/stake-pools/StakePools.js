@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
+import { Link } from 'react-polymorph/lib/components/Link';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
@@ -20,6 +21,7 @@ import {
   getSmashServerNameFromUrl,
 } from '../../../utils/staking';
 import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
+import { defaultStakePoolFilterOptions } from '../../../stores/StakingStore';
 import StakePool from '../../../domains/StakePool';
 import {
   IS_RANKING_DATA_AVAILABLE,
@@ -70,11 +72,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Unmoderated',
     description: 'unmoderated message for the Delegation center body section.',
   },
-  emptyFilterWarning: {
-    id: 'staking.stakePools.filter.emptyFilterWarning',
-    defaultMessage:
-      '!!!Please select at least one category in the filter or reset filter.',
-    description: 'Empty filter warning',
+  emptyFilterWarningPrefix: {
+    id: 'staking.stakePools.filter.emptyFilterWarningPrefix',
+    defaultMessage: '!!!Please select at least one category in the filter or',
+    description: 'Empty filter warning prefix',
+  },
+  emptyFilterWarningSuffix: {
+    id: 'staking.stakePools.filter.emptyFilterWarningSuffix',
+    defaultMessage: '!!!.',
+    description: 'Empty filter warning suffix',
+  },
+  resetFilter: {
+    id: 'staking.stakePools.filter.resetFilter',
+    defaultMessage: '!!!Reset Filter',
+    description: 'Reset Filter link label',
   },
 });
 
@@ -170,6 +181,11 @@ export default class StakePools extends Component<Props, State> {
   onDelegate = (poolId: string) => {
     const { onDelegate } = this.props;
     onDelegate(poolId);
+  };
+
+  resetFilter = () => {
+    const { onFilter } = this.props;
+    onFilter(defaultStakePoolFilterOptions);
   };
 
   render() {
@@ -317,7 +333,7 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2 className={styles.listTitle}>
                   <span className={styles.leftContent}>
-                    <span>
+                    <span className={styles.blurText}>
                       {intl.formatMessage(messages.delegatingListTitle)}
                     </span>
                   </span>
@@ -346,11 +362,25 @@ export default class StakePools extends Component<Props, State> {
                 <h2>
                   <span className={styles.leftContent}>
                     {numberOfFilterDimensionsApplied === 0 ? (
-                      <span>
-                        {intl.formatMessage(messages.emptyFilterWarning)}
+                      <span className={styles.emptyFilterWarning}>
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningPrefix
+                          )}
+                        </span>
+                        <Link
+                          className={styles.resetFilter}
+                          onClick={this.resetFilter}
+                          label={intl.formatMessage(messages.resetFilter)}
+                        />
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningSuffix
+                          )}
+                        </span>
                       </span>
                     ) : (
-                      <span>
+                      <span className={styles.blurText}>
                         {intl.formatMessage(listTitleMessage)}
                         {listTitleSearchMessage}
                         {intl.formatMessage(messages.listTitleStakePools, {
@@ -384,11 +414,25 @@ export default class StakePools extends Component<Props, State> {
                 <h2>
                   <span className={styles.leftContent}>
                     {numberOfFilterDimensionsApplied === 0 ? (
-                      <span>
-                        {intl.formatMessage(messages.emptyFilterWarning)}
+                      <span className={styles.emptyFilterWarning}>
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningPrefix
+                          )}
+                        </span>
+                        <Link
+                          className={styles.resetFilter}
+                          onClick={this.resetFilter}
+                          label={intl.formatMessage(messages.resetFilter)}
+                        />
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningSuffix
+                          )}
+                        </span>
                       </span>
                     ) : (
-                      <span>
+                      <span className={styles.blurText}>
                         {intl.formatMessage(listTitleMessage)}
                         {listTitleSearchMessage}
                         {intl.formatMessage(messages.listTitleStakePools, {
