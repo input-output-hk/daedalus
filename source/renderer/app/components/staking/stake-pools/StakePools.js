@@ -70,6 +70,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Unmoderated',
     description: 'unmoderated message for the Delegation center body section.',
   },
+  emptyFilterWarning: {
+    id: 'staking.stakePools.filter.emptyFilterWarning',
+    defaultMessage:
+      '!!!Please select at least one category in the filter or reset filter.',
+    description: 'Empty filter warning',
+  },
 });
 
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
@@ -213,7 +219,8 @@ export default class StakePools extends Component<Props, State> {
     ).length;
 
     const isFilterDisabled =
-      !filteredStakePoolsList.length && !numberOfFilterDimensionsApplied;
+      !filteredStakePoolsList.length &&
+      numberOfFilterDimensionsApplied === Object.keys(filterOptions).length;
 
     const listTitleMessage = isFetching
       ? messages.listTitleLoading
@@ -338,13 +345,19 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
-                    <span>
-                      {intl.formatMessage(listTitleMessage)}
-                      {listTitleSearchMessage}
-                      {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: formattedNumber(filteredStakePoolsList.length),
-                      })}
-                    </span>
+                    {numberOfFilterDimensionsApplied === 0 ? (
+                      <span>
+                        {intl.formatMessage(messages.emptyFilterWarning)}
+                      </span>
+                    ) : (
+                      <span>
+                        {intl.formatMessage(listTitleMessage)}
+                        {listTitleSearchMessage}
+                        {intl.formatMessage(messages.listTitleStakePools, {
+                          pools: formattedNumber(filteredStakePoolsList.length),
+                        })}
+                      </span>
+                    )}
                     {tinyLoadingSpinner}
                   </span>
                   {smashSettings}
@@ -370,13 +383,19 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
-                    <span>
-                      {intl.formatMessage(listTitleMessage)}
-                      {listTitleSearchMessage}
-                      {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: formattedNumber(filteredStakePoolsList.length),
-                      })}
-                    </span>
+                    {numberOfFilterDimensionsApplied === 0 ? (
+                      <span>
+                        {intl.formatMessage(messages.emptyFilterWarning)}
+                      </span>
+                    ) : (
+                      <span>
+                        {intl.formatMessage(listTitleMessage)}
+                        {listTitleSearchMessage}
+                        {intl.formatMessage(messages.listTitleStakePools, {
+                          pools: formattedNumber(filteredStakePoolsList.length),
+                        })}
+                      </span>
+                    )}
                     {tinyLoadingSpinner}
                   </span>
                   {smashSettings}

@@ -234,7 +234,7 @@ export default class FilterPopOver extends Component<FilterPopOverProps> {
           <div className={styles.component}>
             <div className={styles.title}>
               <h4 className={styles.titleText}>
-                {intl.formatMessage(globalMessages.filter)}
+                {intl.formatMessage(globalMessages.show)}
               </h4>
               <div>
                 <button
