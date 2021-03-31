@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import {
@@ -21,6 +22,8 @@ import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
+import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({
   title: {
@@ -53,18 +56,18 @@ const messages = defineMessages({
   },
   tableHeaderReward: {
     id: 'staking.rewards.tableHeader.reward',
-    defaultMessage: '!!!Reward',
+    defaultMessage: '!!!Total rewards earned (ADA)',
     description: 'Table header "Reward" label on staking rewards page',
+  },
+  tableHeaderRewardsAddress: {
+    id: 'staking.rewards.tableHeader.rewardsAddress',
+    defaultMessage: '!!!Rewards address',
+    description: 'Table header "Rewards address" label on staking rewards page',
   },
   tableHeaderDate: {
     id: 'staking.rewards.tableHeader.date',
     defaultMessage: '!!!Date',
     description: 'Table header "Date" label in exported csv file',
-  },
-  learnMoreButtonLabel: {
-    id: 'staking.rewards.learnMore.ButtonLabel',
-    defaultMessage: '!!!Learn more',
-    description: 'Label for "Learn more" button on staking rewards page',
   },
   note: {
     id: 'staking.rewards.note',
@@ -77,6 +80,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Syncing {syncingProgress}%',
     description: 'unknown stake pool label on staking rewards page.',
   },
+  actionViewInExplorer: {
+    id: 'staking.rewards.actionViewInExplorer',
+    defaultMessage: '!!!View in explorer',
+    description: 'View in explorer button label on staking rewards page.',
+  },
 });
 
 const REWARD_FIELDS = {
@@ -84,6 +92,7 @@ const REWARD_FIELDS = {
   IS_RESTORING: 'isRestoring',
   SYNCING_PROGRESS: 'syncingProgress',
   REWARD: 'reward',
+  REWARDS_ADDRESS: 'rewardsAddress',
 };
 
 const REWARD_ORDERS = {
@@ -91,11 +100,15 @@ const REWARD_ORDERS = {
   DESCENDING: 'desc',
 };
 
+const IS_EXPLORER_LINK_BUTTON_ENABLED = false;
+
 type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
   isExporting: boolean,
   onExportCsv: Function,
+  onCopyAddress: Function,
+  onOpenExternalLink: Function,
 };
 
 type State = {
@@ -142,7 +155,13 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
-      return [rewardWallet, isRestoring ? '-' : rewardAmount, date];
+      const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
+      return [
+        rewardWallet,
+        rewardsAddress,
+        isRestoring ? '-' : rewardAmount,
+        date,
+      ];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
@@ -172,17 +191,40 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             rewardB.wallet,
             rewardsOrder === REWARD_ORDERS.ASCENDING
           );
+          const walletAddressCompareResult = stringComparator(
+            rewardA.rewardsAddress,
+            rewardB.rewardsAddress,
+            rewardsOrder === REWARD_ORDERS.ASCENDING
+          );
           if (rewardsSortBy === REWARD_FIELDS.REWARD) {
-            if (rewardCompareResult === 0) {
+            if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
               return walletNameCompareResult;
+            }
+            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+              return walletAddressCompareResult;
             }
             return rewardCompareResult;
           }
           if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-            if (walletNameCompareResult === 0) {
+            if (walletNameCompareResult === 0 && walletAddressCompareResult) {
               return rewardCompareResult;
             }
+            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+              return walletAddressCompareResult;
+            }
             return walletNameCompareResult;
+          }
+          if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
+            if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
+              return walletNameCompareResult;
+            }
+            if (
+              walletAddressCompareResult === 0 &&
+              walletNameCompareResult === 0
+            ) {
+              return rewardCompareResult;
+            }
+            return walletAddressCompareResult;
           }
           return 0;
         }
@@ -194,7 +236,8 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       rewards,
       isLoading,
       isExporting,
-      // onLearnMoreClick,
+      onCopyAddress,
+      onOpenExternalLink,
     } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
     const { intl } = this.context;
@@ -205,6 +248,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       {
         name: REWARD_FIELDS.WALLET_NAME,
         title: intl.formatMessage(messages.tableHeaderWallet),
+      },
+      {
+        name: REWARD_FIELDS.REWARDS_ADDRESS,
+        title: intl.formatMessage(messages.tableHeaderRewardsAddress),
       },
       {
         name: REWARD_FIELDS.REWARD,
@@ -231,6 +278,11 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         styles.actionButton,
         ctx.scrollTop > 10 ? styles.actionButtonFaded : null,
       ]);
+
+    const explorerButtonClasses = classNames([
+      'flat',
+      styles.actionExplorerLink,
+    ]);
 
     return (
       <StakingPageScrollContext.Consumer>
@@ -307,11 +359,56 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                         reward,
                         REWARD_FIELDS.REWARD
                       ).toFormat(DECIMAL_PLACES_IN_ADA);
+                      const rewardsAddress = get(
+                        reward,
+                        REWARD_FIELDS.REWARDS_ADDRESS
+                      );
 
                       return (
                         <tr key={key}>
-                          <td>{rewardWallet}</td>
-                          <td>
+                          <td className={styles.rewardWallet}>
+                            {rewardWallet}
+                          </td>
+                          <td className={styles.rewardsAddress}>
+                            {rewardsAddress && (
+                              <div>
+                                <CopyToClipboard
+                                  text={rewardsAddress}
+                                  onCopy={() => onCopyAddress(rewardsAddress)}
+                                >
+                                  <div className={styles.addressContainer}>
+                                    <span className={styles.address}>
+                                      {rewardsAddress}
+                                    </span>
+                                    <span className={styles.copyAddress}>
+                                      <SVGInline
+                                        svg={iconCopy}
+                                        className={styles.copyIcon}
+                                      />
+                                    </span>
+                                  </div>
+                                </CopyToClipboard>
+                                {IS_EXPLORER_LINK_BUTTON_ENABLED && (
+                                  <ButtonLink
+                                    className={explorerButtonClasses}
+                                    onClick={() =>
+                                      onOpenExternalLink(rewardsAddress)
+                                    }
+                                    skin={ButtonSkin}
+                                    label={intl.formatMessage(
+                                      messages.actionViewInExplorer
+                                    )}
+                                    linkProps={{
+                                      className: styles.externalLink,
+                                      hasIconBefore: false,
+                                      hasIconAfter: true,
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            )}
+                          </td>
+                          <td className={styles.rewardAmount}>
                             {isRestoring ? '-' : rewardAmount}
                             {isRestoring && (
                               <div className={styles.syncingProgress}>

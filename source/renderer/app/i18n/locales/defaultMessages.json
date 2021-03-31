@@ -5507,7 +5507,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Reward",
+        "defaultMessage": "!!!Total rewards earned",
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
@@ -5558,13 +5558,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 26
+          "line": 29
         }
       },
       {
@@ -5572,13 +5572,13 @@
         "description": "Filename prefix for the \"Export CSV\" on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.csvFilenamePrefix",
         "start": {
           "column": 21,
-          "line": 32
+          "line": 35
         }
       },
       {
@@ -5586,13 +5586,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 38
+          "line": 41
         }
       },
       {
@@ -5600,13 +5600,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 44
+          "line": 47
         }
       },
       {
@@ -5614,27 +5614,41 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 49
+          "line": 52
         }
       },
       {
-        "defaultMessage": "!!!Reward",
+        "defaultMessage": "!!!Total rewards earned (ADA)",
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 54
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards address",
+        "description": "Table header \"Rewards address\" label on staking rewards page",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.tableHeader.rewardsAddress",
+        "start": {
+          "column": 29,
+          "line": 62
         }
       },
       {
@@ -5642,27 +5656,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 59
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Label for \"Learn more\" button on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.learnMore.ButtonLabel",
-        "start": {
-          "column": 24,
-          "line": 64
+          "line": 67
         }
       },
       {
@@ -5670,13 +5670,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 69
+          "line": 72
         }
       },
       {
@@ -5684,13 +5684,27 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 75
+          "line": 78
+        }
+      },
+      {
+        "defaultMessage": "!!!View in explorer",
+        "description": "View in explorer button label on staking rewards page.",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "id": "staking.rewards.actionViewInExplorer",
+        "start": {
+          "column": 24,
+          "line": 83
         }
       }
     ],
@@ -7956,7 +7970,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please enter a PIN for your Fund3 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
+        "defaultMessage": "!!!Please enter a PIN for your Fund4 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
@@ -8115,7 +8129,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund3.",
+        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund4.",
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
@@ -8162,7 +8176,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund3 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
+        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund4 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
@@ -8279,7 +8293,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cancel Fund3 voting registration?",
+        "defaultMessage": "!!!Cancel Fund4 voting registration?",
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8293,7 +8307,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Are you sure that you want to cancel Fund3 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
+        "defaultMessage": "!!!Are you sure that you want to cancel Fund4 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8340,7 +8354,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register for Fund3 voting",
+        "defaultMessage": "!!!Register for Fund4 voting",
         "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
@@ -8373,7 +8387,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register to vote on Fund3",
+        "defaultMessage": "!!!Register to vote on Fund4",
         "description": "Headline for voting registration steps",
         "end": {
           "column": 3,
@@ -8387,7 +8401,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Fund3 Voting Registration Ended",
+        "defaultMessage": "!!!Fund4 Voting Registration Ended",
         "description": "Headline for ended voting registration",
         "end": {
           "column": 3,
@@ -8401,7 +8415,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund3 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund3, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund3 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
+        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund4 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund4, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
         "description": "Description for ended voting registration",
         "end": {
           "column": 3,
@@ -8485,7 +8499,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Fund3 FAQs",
+        "defaultMessage": "!!!Fund4 FAQs",
         "description": "Learn more link label for ended registration",
         "end": {
           "column": 3,
@@ -8541,7 +8555,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To register to vote for Catalyst Fund3 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
+        "defaultMessage": "!!!To register to vote for Catalyst Fund4 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
         "description": "bottomContentDescription for voting registration steps",
         "end": {
           "column": 3,
@@ -8555,7 +8569,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund3 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
+        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund4 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
         "description": "bottomContentDescription for ended registration",
         "end": {
           "column": 3,
@@ -8630,7 +8644,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting registration for Fund3 is not available as you currently do not have any Shelley-compatible wallets.",
+        "defaultMessage": "!!!Voting registration for Fund4 is not available as you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the voting info page.",
         "end": {
           "column": 3,
@@ -16762,13 +16776,13 @@
         "description": "\"Learn more\" link URL in the staking rewards page",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 16
         },
         "file": "source/renderer/app/containers/staking/StakingRewardsPage.js",
         "id": "staking.rewards.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 10
+          "line": 12
         }
       }
     ],

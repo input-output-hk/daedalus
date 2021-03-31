@@ -225,10 +225,7 @@ export default class WalletsStore extends Store {
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
 
-    this.registerReactions([
-      this._updateActiveWalletOnRouteChanges,
-      // this._updateWalletArraysOnRequestUpdate,
-    ]);
+    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
     const {
       router,
