@@ -82,6 +82,7 @@
       &:hover {
         border-bottom: 1px solid var(--theme-staking-link-color);
         color: var(--theme-staking-link-color);
+
         svg {
           g {
             stroke: var(--theme-staking-link-color);
@@ -149,18 +150,22 @@
       & > .sortIcon {
         margin-left: 6px;
         visibility: hidden;
+
         & > svg {
           height: 7.5px;
           width: 7px;
+
           & > path {
             fill: var(--theme-staking-font-color-regular);
           }
         }
+
         &.ascending {
           & > svg {
             transform: rotateX(150deg);
           }
         }
+
         &.sorted {
           opacity: 1;
           visibility: visible;
@@ -179,7 +184,6 @@
       -webkit-user-select: none;
       -ms-user-select: none;
       user-select: none;
-      width: 25%;
 
       p {
         -webkit-box-orient: vertical;
@@ -201,6 +205,115 @@
 
         :global .LoadingSpinner_component.LoadingSpinner_medium {
           margin: 10px auto !important;
+
+          .LoadingSpinner_icon svg path {
+            fill: var(--theme-loading-spinner-color);
+            opacity: 0.3;
+          }
+        }
+      }
+
+      .copyAddress {
+        cursor: pointer;
+        display: flex;
+        white-space: nowrap;
+      }
+
+      .copyIcon {
+        cursor: pointer;
+        margin-left: 6px;
+        object-fit: contain;
+        opacity: 0;
+
+        & > svg {
+          height: 10px;
+          width: 8px;
+
+          path {
+            fill: var(--theme-icon-copy-address-color);
+          }
+        }
+      }
+
+      .actionExplorerLink {
+        align-items: center;
+        border-radius: 3px;
+        display: flex;
+        height: 16px;
+        justify-content: center;
+        line-height: 16px;
+        margin-left: 15px;
+        padding: 3px 8px;
+        white-space: nowrap;
+        width: auto;
+      }
+
+      .externalLink {
+        font-size: 8px;
+        font-weight: bold;
+        line-height: 1.25;
+        text-transform: uppercase;
+
+        &:after {
+          height: 8px !important;
+          -webkit-mask-size: 8px, 8px !important;
+          mask-size: 8px, 8px !important;
+          width: 8px !important;
+        }
+      }
+
+      &.rewardWallet {
+        max-width: 200px;
+        min-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.rewardAmount {
+        min-width: 250px;
+      }
+
+      &.rewardsAddress {
+        min-width: 100px;
+
+        > div {
+          align-items: center;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .addressContainer {
+          align-items: center;
+          display: flex;
+
+          .address {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 237px;
+
+            &:hover {
+              cursor: pointer;
+            }
+
+            @media screen and (min-width: 992px) {
+              width: 297px;
+            }
+            @media screen and (min-width: 1024px) {
+              width: 355px;
+            }
+            @media screen and (min-width: 1098px) {
+              width: auto;
+            }
+          }
+
+          &:hover {
+            .copyIcon {
+              opacity: 1;
+            }
+          }
         }
       }
     }
