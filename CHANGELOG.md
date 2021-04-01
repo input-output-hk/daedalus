@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updates Catalyst Fund4 dates ([PR 2492](https://github.com/input-output-hk/daedalus/pull/2492))
+
 ## 4.0.3
 
 ### Features
