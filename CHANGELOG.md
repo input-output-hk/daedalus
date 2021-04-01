@@ -5,7 +5,7 @@ Changelog
 
 ### Chores
 
-- Updates Catalyst Fund4 dates ([PR 2492](https://github.com/input-output-hk/daedalus/pull/2492))
+- Updates Catalyst Fund4 dates ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
 
 ## 4.0.3
 
