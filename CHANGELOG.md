@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added Japanese translation to the external currencies list ([PR 2497](https://github.com/input-output-hk/daedalus/pull/2497))
 - Added rewards address in Rewards Delegation Screen ([PR 2475](https://github.com/input-output-hk/daedalus/pull/2475))
 - Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
 - Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
