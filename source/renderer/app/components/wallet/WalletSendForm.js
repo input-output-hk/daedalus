@@ -454,7 +454,8 @@ export default class WalletSendForm extends Component<Props, State> {
         this.isLatestTransactionFeeRequest(
           this.state.feeCalculationRequestQue,
           prevFeeCalculationRequestQue
-        )
+        ) &&
+        !this.selectedAssetsAmounts.includes('0')
       ) {
         this._isCalculatingTransactionFee = false;
         this.setState({
