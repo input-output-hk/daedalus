@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 4.0.4
+
+### Features
+
+- Added wallet rewards address display on the "Rewards" screen ([PR 2475](https://github.com/input-output-hk/daedalus/pull/2475))
+
 ## 4.0.3
 
 ### Features
