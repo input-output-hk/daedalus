@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added warning message when pasting an address of the same wallet in the send form ([PR 2506](https://github.com/input-output-hk/daedalus/pull/2506))
+
 ### Chores
 
 - Updates Catalyst Fund4 dates ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
