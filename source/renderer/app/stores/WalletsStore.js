@@ -388,7 +388,6 @@ export default class WalletsStore extends Store {
         runInAction(() => {
           this.currencyIsFetchingRate = false;
           this.currencyLastFetched = new Date();
-          console.log('currencyRate', currencyRate);
           if (currencyRate) {
             this.currencyRate = currencyRate;
             this.currencyIsAvailable = true;

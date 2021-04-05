@@ -9,6 +9,7 @@ import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
 import type { LocalizedCurrency } from '../../../types/currencyTypes';
+import type { Locale } from '../../../../../common/types/locales.types.js';
 
 const messages = defineMessages({
   currencyTitleLabel: {
@@ -49,9 +50,17 @@ type Props = {
   currencySelected: ?LocalizedCurrency,
   currencyList: Array<any>,
   currencyIsActive: boolean,
+  currentLocale: Locale,
   onSelectCurrency: Function,
   onToggleCurrencyIsActive: Function,
   onOpenExternalLink: Function,
+};
+
+const labelFormats: {
+  [key: Locale]: (code: string, name: string) => string,
+} = {
+  'ja-JP': (code: string, name: string) => `${code} – ${name}`,
+  generic: (code: string, name: string) => `${code.toUpperCase()} - ${name}`,
 };
 
 @observer
@@ -66,17 +75,17 @@ export default class WalletSettings extends Component<Props> {
       currencySelected,
       currencyList,
       currencyIsActive,
+      currentLocale,
       onSelectCurrency,
       onToggleCurrencyIsActive,
       onOpenExternalLink,
     } = this.props;
+    const labelFormatter = labelFormats[currentLocale] || labelFormats.generic;
 
-    const currencyOptions = map(currencyList, ({ code, name }) => {
-      return {
-        label: `${code.toUpperCase()} - ${name}`,
-        value: code,
-      };
-    });
+    const currencyOptions = map(currencyList, ({ code, name }) => ({
+      label: labelFormatter(code, name),
+      value: code,
+    }));
 
     return (
       <div className={styles.component}>

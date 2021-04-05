@@ -23,6 +23,7 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
       currencyRate,
       currencyIsActive,
     } = stores.wallets;
+    const { currentLocale } = stores.profile;
     const { openExternalLink } = stores.app;
     return (
       <WalletsSettings
@@ -30,6 +31,7 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
         currencyRate={currencyRate}
         currencyList={currencyList}
         currencyIsActive={currencyIsActive}
+        currentLocale={currentLocale}
         onSelectCurrency={this.handleSelectCurrency}
         onToggleCurrencyIsActive={this.handleToggleCurrencyIsActive}
         onOpenExternalLink={openExternalLink}
