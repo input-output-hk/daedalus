@@ -1250,7 +1250,6 @@ export default class WalletsStore extends Store {
         // Active wallet has been updated
         if (this.active && newActiveWallet) this.active.update(newActiveWallet);
       }
-      this.isAddressFromSameWallet = false;
     }
   };
 
@@ -1267,6 +1266,7 @@ export default class WalletsStore extends Store {
       matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))
     ) {
       this.sendMoneyRequest.reset();
+      this.isAddressFromSameWallet = false;
     }
   };
 
