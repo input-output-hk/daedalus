@@ -675,7 +675,11 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
       isReceiverAddressValid,
     } = this.state;
-    const { currencyMaxFractionalDigits, walletAmount, walletName } = this.props;
+    const {
+      currencyMaxFractionalDigits,
+      walletAmount,
+      walletName,
+    } = this.props;
 
     const {
       receiver: receiverField,
@@ -702,7 +706,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.isAddressFromSameWallet() ? styles.sameRecieverInput: null,
+      this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
     ]);
 
     const minAdaRequiredTooltip = selectedAssetFingerprints.length
@@ -719,7 +723,8 @@ export default class WalletSendForm extends Component<Props, State> {
               })}
               contentClassName={styles.sameWalletTooltipContent}
               themeVariables={{
-                '--rp-pop-over-bg-color': 'var(--rp-password-input-warning-score-color)',
+                '--rp-pop-over-bg-color':
+                  'var(--rp-password-input-warning-score-color)',
               }}
               placement="bottom"
             >

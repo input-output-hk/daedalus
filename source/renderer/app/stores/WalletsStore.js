@@ -1110,8 +1110,12 @@ export default class WalletsStore extends Store {
         return false;
       }
       runInAction('check if address is from the same wallet', () => {
-        const walletAddresses = this.stores.addresses.all.slice().map(addr => addr.id);
-        this.isAddressFromSameWallet = !!walletAddresses.filter(addr => addr === address).length;
+        const walletAddresses = this.stores.addresses.all
+          .slice()
+          .map((addr) => addr.id);
+        this.isAddressFromSameWallet = !!walletAddresses.filter(
+          (addr) => addr === address
+        ).length;
       });
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
