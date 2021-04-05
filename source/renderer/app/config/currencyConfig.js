@@ -13,7 +13,11 @@ import coingeckoConfig from './currencyConfig.coingecko';
 
 import { externalRequest } from '../api/utils/externalRequest';
 import currenciesList from './currenciesList.json';
-import type { RequestName } from '../types/currencyTypes';
+import type {
+  RequestName,
+  RawCurrency,
+  LocalizedCurrency,
+} from '../types/currencyTypes';
 import type { Locale } from '../../../common/types/locales.types';
 
 export const REQUESTS: {
@@ -50,9 +54,19 @@ export const genericCurrencyRequest = (
   return response;
 };
 
-export const localizedCurrenciesList = (currentLocale: Locale) =>
-  currenciesList.map((currency) => ({
-    ...omit(currency, ['code', 'name']),
-    code: currency.code[currentLocale],
-    name: currency.name[currentLocale],
-  }));
+export const getLocalizedCurrenciesList = (
+  rawCurrencyList: Array<RawCurrency>,
+  currentLocale: Locale
+) =>
+  rawCurrencyList.map((rawCurrency) =>
+    getLocalizedCurrency(rawCurrency, currentLocale)
+  );
+
+export const getLocalizedCurrency = (
+  rawCurrency: RawCurrency,
+  currentLocale: Locale
+): LocalizedCurrency => ({
+  ...omit(rawCurrency, ['code', 'name']),
+  code: rawCurrency.code[currentLocale],
+  name: rawCurrency.name[currentLocale],
+});

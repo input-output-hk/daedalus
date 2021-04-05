@@ -8,7 +8,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
-import type { Currency } from '../../../types/currencyTypes';
+import type { LocalizedCurrency } from '../../../types/currencyTypes';
 
 const messages = defineMessages({
   currencyTitleLabel: {
@@ -46,7 +46,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  currencySelected: ?Currency,
+  currencySelected: ?LocalizedCurrency,
   currencyList: Array<any>,
   currencyIsActive: boolean,
   onSelectCurrency: Function,
@@ -71,10 +71,10 @@ export default class WalletSettings extends Component<Props> {
       onOpenExternalLink,
     } = this.props;
 
-    const currencyOptions = map(currencyList, ({ symbol, name }) => {
+    const currencyOptions = map(currencyList, ({ code, name }) => {
       return {
-        label: `${symbol.toUpperCase()} - ${name}`,
-        value: symbol,
+        label: `${code.toUpperCase()} - ${name}`,
+        value: code,
       };
     });
 
@@ -104,7 +104,7 @@ export default class WalletSettings extends Component<Props> {
             </div>
             <Select
               label={intl.formatMessage(messages.currencySelectLabel)}
-              value={currencySelected ? currencySelected.symbol : null}
+              value={currencySelected ? currencySelected.code : null}
               options={currencyOptions}
               onChange={onSelectCurrency}
             />

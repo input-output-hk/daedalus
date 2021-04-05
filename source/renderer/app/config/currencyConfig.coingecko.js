@@ -11,7 +11,11 @@
  */
 import { get } from 'lodash';
 import { logger } from '../utils/logging';
-import type { Currency, CurrencyApiConfig } from '../types/currencyTypes.js';
+import type {
+  RawCurrency,
+  LocalizedCurrency,
+  CurrencyApiConfig,
+} from '../types/currencyTypes.js';
 import type {
   GetCurrencyListResponse,
   GetCurrencyRateResponse,
@@ -44,10 +48,10 @@ const requests = {
       path: `/${pathBase}/simple/supported_vs_currencies`,
     },
   ],
-  rate: ({ symbol }: Currency) => ({
+  rate: ({ code }: LocalizedCurrency) => ({
     hostname,
     method: 'GET',
-    path: `/${pathBase}/coins/markets?ids=cardano&vs_currency=${symbol}`,
+    path: `/${pathBase}/coins/markets?ids=cardano&vs_currency=${code}`,
   }),
 };
 
@@ -60,9 +64,9 @@ const responses = {
       const [completeList, vsCurrencies] = apiResponse;
       const list = vsCurrencies
         .map(
-          (symbol) =>
-            currenciesList[symbol] ||
-            completeList.find((currency) => currency.symbol === symbol)
+          (code) =>
+            currenciesList[code] ||
+            completeList.find((currency) => currency.symbol === code)
         )
         .filter((item) => !!item);
       logger.debug('Currency::CoingGecko::List success', { list });

@@ -11,7 +11,7 @@
  */
 import { get, values } from 'lodash';
 import { logger } from '../utils/logging';
-import type { Currency, CurrencyApiConfig } from '../types/currencyTypes.js';
+import type { RawCurrency, CurrencyApiConfig } from '../types/currencyTypes.js';
 import type {
   GetCurrencyListResponse,
   GetCurrencyRateResponse,
@@ -33,10 +33,10 @@ const version = 'v1';
 const apiKey = 'API_KEY';
 
 const requests = {
-  rate: ({ symbol }: Currency) => ({
+  rate: ({ code }: RawCurrency) => ({
     hostname,
     method: 'GET',
-    path: `/${version}/currencies/ticker?key=${apiKey}&ids=ADA&interval=1d,30d&&per-page=100&page=1&convert=${symbol.toUpperCase()}`,
+    path: `/${version}/currencies/ticker?key=${apiKey}&ids=ADA&interval=1d,30d&&per-page=100&page=1&convert=${code.toUpperCase()}`,
   }),
 };
 

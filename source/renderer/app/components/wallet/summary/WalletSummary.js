@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Wallet from '../../../domains/Wallet';
-import type { Currency } from '../../../types/currencyTypes';
+import type { LocalizedCurrency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryAssets from './WalletSummaryAssets';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
@@ -18,7 +18,7 @@ type Props = {
   currencyIsFetchingRate: boolean,
   currencyIsAvailable: boolean,
   currencyIsActive: boolean,
-  currencySelected: ?Currency,
+  currencySelected: ?LocalizedCurrency,
   currencyRate: ?number,
   currencyLastFetched: ?Date,
   onCurrencySettingClick: Function,

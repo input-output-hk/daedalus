@@ -1,8 +1,27 @@
 // @flow
 import type { HttpOptions } from '../api/utils/externalRequest';
+import { Locale } from '../../../common/types/locales.types';
 
 export type Currency = {
-  symbol: string,
+  code: string,
+  name: string,
+  decimalDigits?: number,
+  id?: string,
+};
+
+export type RawCurrency = {
+  code: {
+    [key: Locale]: string,
+  },
+  name: {
+    [key: Locale]: string,
+  },
+  decimalDigits?: number,
+  id?: string,
+};
+
+export type LocalizedCurrency = {
+  code: string,
   name: string,
   decimalDigits?: number,
   id?: string,

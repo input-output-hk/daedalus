@@ -218,24 +218,24 @@
   "brl": {
     "code": {
       "en-US": "brl",
-      "ja-JP": ""
+      "ja-JP": "BRL"
     },
     "decimalDigits": 2,
     "name": {
       "en-US": "Brazilian Real",
-      "ja-JP": ""
+      "ja-JP": "レアル"
     },
     "symbolNative": "R$"
   },
   "btc": {
     "code": {
       "en-US": "btc",
-      "ja-JP": ""
+      "ja-JP": "BTC"
     },
     "decimalDigits": 8,
     "name": {
       "en-US": "Bitcoin",
-      "ja-JP": ""
+      "ja-JP": "ビットコイン"
     },
     "symbolNative": ""
   },
@@ -734,12 +734,12 @@
   "jpy": {
     "code": {
       "en-US": "jpy",
-      "ja-JP": ""
+      "ja-JP": "日本円"
     },
     "decimalDigits": 0,
     "name": {
       "en-US": "Japanese Yen",
-      "ja-JP": ""
+      "ja-JP": "円"
     },
     "symbolNative": "￥"
   },
@@ -1430,12 +1430,12 @@
   "usd": {
     "code": {
       "en-US": "usd",
-      "ja-JP": ""
+      "ja-JP": "USD"
     },
     "decimalDigits": 2,
     "name": {
       "en-US": "US Dollar",
-      "ja-JP": ""
+      "ja-JP": "アメリカ合衆国ドル"
     },
     "symbolNative": "$"
   },

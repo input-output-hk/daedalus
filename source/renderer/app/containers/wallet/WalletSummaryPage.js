@@ -100,7 +100,7 @@ export default class WalletSummaryPage extends Component<Props> {
       currencyIsFetchingRate,
       currencyLastFetched,
       currencyRate,
-      currencySelected,
+      localizedCurrency: currencySelected,
     } = wallets;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
