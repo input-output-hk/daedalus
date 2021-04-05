@@ -44,6 +44,11 @@ export default defineMessages({
     defaultMessage: '!!!Clear',
     description: 'Label for the "Clear" button in the wallet send form.',
   },
+  sameWalletLabel: {
+    id: 'wallet.send.form.sameWalletLabel',
+    defaultMessage: '!!!This address belongs to your {walletName} wallet. No assets will be transferred, but fee will be charged',
+    description: 'Label for the same wallet tooltip in the wallet send form.',
+  },
   addAssetButtonLabel: {
     id: 'wallet.send.form.button.addAssetButtonLabel',
     defaultMessage: '!!!+ Add a token',

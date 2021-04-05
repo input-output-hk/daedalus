@@ -128,6 +128,12 @@
       }
     }
   }
+
+  &.sameRecieverInput {
+    input {
+      border-color: var(--rp-password-input-warning-score-color) !important;
+    }
+  }
 }
 
 .estimatedFeeInput,
@@ -316,4 +322,8 @@
       width: 12px !important;
     }
   }
+}
+
+.sameWalletTooltipContent {
+
 }

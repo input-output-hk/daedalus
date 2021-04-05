@@ -67,6 +67,8 @@ type Props = {
   onOpenDialogAction: Function,
   onUnsetActiveAssetFingerprint: Function,
   onExternalLinkClick: Function,
+  addressFromSameWallet: boolean,
+  walletName: string,
 };
 
 type State = {
@@ -299,8 +301,9 @@ export default class WalletSendForm extends Component<Props, State> {
     return receiverField.value.length > 0;
   };
 
-  hasAssetValue = (asset: Field) => {
-    return get(asset, 'value', false);
+  isAddressFromSameWallet = () => {
+    const { addressFromSameWallet } = this.props;
+    return this.hasReceiverValue() && addressFromSameWallet;
   };
 
   isDisabled = () =>
@@ -672,7 +675,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
       isReceiverAddressValid,
     } = this.state;
-    const { currencyMaxFractionalDigits, walletAmount } = this.props;
+    const { currencyMaxFractionalDigits, walletAmount, walletName } = this.props;
 
     const {
       receiver: receiverField,
@@ -696,28 +699,63 @@ export default class WalletSendForm extends Component<Props, State> {
       !this.hasAvailableAssets ? styles.disabled : null,
       'primary',
     ]);
+
+    const receiverFieldClasses = classNames([
+      styles.receiverInput,
+      this.isAddressFromSameWallet() ? styles.sameRecieverInput: null,
+    ]);
+
     const minAdaRequiredTooltip = selectedAssetFingerprints.length
       ? messages.minAdaRequiredWithAssetTooltip
       : messages.minAdaRequiredWithNoAssetTooltip;
 
     return (
       <div className={styles.fieldsContainer}>
-        <div className={styles.receiverInput}>
-          <Input
-            {...receiverField.bind()}
-            ref={(field) => {
-              this.addFocusableField(field);
-            }}
-            className="receiver"
-            error={receiverField.error}
-            onChange={(value) => {
-              receiverField.onChange(value || '');
-              this.setState({
-                isResetButtonDisabled: false,
-              });
-            }}
-            onKeyPress={this.handleSubmitOnEnter}
-          />
+        <div className={receiverFieldClasses}>
+          {this.isAddressFromSameWallet() ? (
+            <PopOver
+              content={intl.formatMessage(messages.sameWalletLabel, {
+                walletName,
+              })}
+              contentClassName={styles.sameWalletTooltipContent}
+              themeVariables={{
+                '--rp-pop-over-bg-color': 'var(--rp-password-input-warning-score-color)',
+              }}
+              placement="bottom"
+            >
+              <Input
+                {...receiverField.bind()}
+                ref={(field) => {
+                  this.addFocusableField(field);
+                }}
+                className="receiver"
+                error={receiverField.error}
+                onChange={(value) => {
+                  receiverField.onChange(value || '');
+                  this.setState({
+                    isResetButtonDisabled: false,
+                  });
+                }}
+                onKeyPress={this.handleSubmitOnEnter}
+              />
+            </PopOver>
+          ) : (
+            <Input
+              {...receiverField.bind()}
+              ref={(field) => {
+                this.addFocusableField(field);
+              }}
+              className="receiver"
+              error={receiverField.error}
+              onChange={(value) => {
+                receiverField.onChange(value || '');
+                this.setState({
+                  isResetButtonDisabled: false,
+                });
+              }}
+              onKeyPress={this.handleSubmitOnEnter}
+            />
+          )}
           {this.hasReceiverValue() && (
             <div className={styles.clearReceiverContainer}>
               <PopOver

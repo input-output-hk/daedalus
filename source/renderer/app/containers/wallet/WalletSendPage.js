@@ -103,7 +103,7 @@ export default class WalletSendPage extends Component<Props> {
       hardwareWallets,
       assets: assetsStore,
     } = this.props.stores;
-    const { isValidAddress } = wallets;
+    const { isValidAddress, isAddressFromSameWallet } = wallets;
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
@@ -167,6 +167,7 @@ export default class WalletSendPage extends Component<Props> {
           })
         }
         walletAmount={wallet.amount}
+        walletName={wallet.name}
         validateAmount={validateAmount}
         addressValidator={isValidAddress}
         assets={walletAssets}
@@ -182,6 +183,7 @@ export default class WalletSendPage extends Component<Props> {
         }
         onUnsetActiveAssetFingerprint={this.handleUnsetActiveAssetFingerprint}
         onExternalLinkClick={app.openExternalLink}
+        addressFromSameWallet={isAddressFromSameWallet}
       />
     );
   }
