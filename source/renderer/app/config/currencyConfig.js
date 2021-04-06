@@ -13,6 +13,7 @@ import coingeckoConfig from './currencyConfig.coingecko';
 
 import { externalRequest } from '../api/utils/externalRequest';
 import currenciesList from './currenciesList.json';
+import { LOCALES } from '../../../common/types/locales.types';
 import type {
   RequestName,
   RawCurrency,
@@ -67,6 +68,6 @@ export const getLocalizedCurrency = (
   currentLocale: Locale
 ): LocalizedCurrency => ({
   ...omit(rawCurrency, ['code', 'name']),
-  code: rawCurrency.code[currentLocale],
-  name: rawCurrency.name[currentLocale],
+  code: rawCurrency.code[currentLocale] || rawCurrency.code[LOCALES.english],
+  name: rawCurrency.name[currentLocale] || rawCurrency.name[LOCALES.english],
 });

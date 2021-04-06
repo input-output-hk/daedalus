@@ -56,13 +56,6 @@ type Props = {
   onOpenExternalLink: Function,
 };
 
-const labelFormats: {
-  [key: Locale]: (code: string, name: string) => string,
-} = {
-  'ja-JP': (code: string, name: string) => `${code} – ${name}`,
-  generic: (code: string, name: string) => `${code.toUpperCase()} - ${name}`,
-};
-
 @observer
 export default class WalletSettings extends Component<Props> {
   static contextTypes = {
@@ -80,10 +73,9 @@ export default class WalletSettings extends Component<Props> {
       onToggleCurrencyIsActive,
       onOpenExternalLink,
     } = this.props;
-    const labelFormatter = labelFormats[currentLocale] || labelFormats.generic;
 
     const currencyOptions = map(currencyList, ({ code, name }) => ({
-      label: labelFormatter(code, name),
+      label: `${code.toUpperCase()} - ${name}`,
       value: code,
     }));
 
