@@ -303,7 +303,8 @@ export default class WalletSendForm extends Component<Props, State> {
 
   isAddressFromSameWallet = () => {
     const { addressFromSameWallet } = this.props;
-    return this.hasReceiverValue() && addressFromSameWallet;
+    const receiverField = this.form.$('receiver');
+    return this.hasReceiverValue() && addressFromSameWallet && !receiverField.error;
   };
 
   isDisabled = () =>
@@ -743,11 +744,9 @@ export default class WalletSendForm extends Component<Props, State> {
     const {
       currencyMaxFractionalDigits,
       walletAmount,
-      walletName,
     } = this.props;
 
     const {
-      receiver: receiverField,
       adaAmount: adaAmountField,
       assetFields,
       assetsDropdown,
