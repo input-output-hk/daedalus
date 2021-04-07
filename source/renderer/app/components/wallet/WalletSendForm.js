@@ -304,7 +304,7 @@ export default class WalletSendForm extends Component<Props, State> {
   isAddressFromSameWallet = () => {
     const { addressFromSameWallet } = this.props;
     const receiverField = this.form.$('receiver');
-    return this.hasReceiverValue() && addressFromSameWallet && !receiverField.error;
+    return this.hasReceiverValue() && addressFromSameWallet && receiverField.isValid && !receiverField.error;
   };
 
   isDisabled = () =>
