@@ -744,10 +744,12 @@ export default class WalletSendForm extends Component<Props, State> {
     const {
       currencyMaxFractionalDigits,
       walletAmount,
+      walletName,
     } = this.props;
 
     const {
       adaAmount: adaAmountField,
+      receiver: receiverField,
       assetFields,
       assetsDropdown,
     } = formFields.receiver;
@@ -780,7 +782,34 @@ export default class WalletSendForm extends Component<Props, State> {
     return (
       <div className={styles.fieldsContainer}>
         <div className={receiverFieldClasses}>
-          {this.renderReceiverInputField()}
+          <PopOver
+            content={intl.formatMessage(messages.sameWalletLabel, {
+              walletName,
+            })}
+            trigger={this.isAddressFromSameWallet() ? 'mouseenter' : 'focus'}
+            contentClassName={styles.sameWalletTooltipContent}
+            themeVariables={{
+              '--rp-pop-over-bg-color':
+                'var(--rp-password-input-warning-score-color)',
+            }}
+            placement="bottom"
+          >
+            <Input
+              {...receiverField.bind()}
+              ref={(field) => {
+                this.addFocusableField(field);
+              }}
+              className="receiver"
+              error={receiverField.error}
+              onChange={(value) => {
+                receiverField.onChange(value || '');
+                this.setState({
+                  isResetButtonDisabled: false,
+                });
+              }}
+              onKeyPress={this.handleSubmitOnEnter}
+            />
+          </PopOver>
           {this.hasReceiverValue() && (
             <div className={styles.clearReceiverContainer}>
               <PopOver
