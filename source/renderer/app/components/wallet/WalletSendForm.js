@@ -304,7 +304,12 @@ export default class WalletSendForm extends Component<Props, State> {
   isAddressFromSameWallet = () => {
     const { addressFromSameWallet } = this.props;
     const receiverField = this.form.$('receiver');
-    return this.hasReceiverValue() && addressFromSameWallet && receiverField.isValid && !receiverField.error;
+    return (
+      this.hasReceiverValue() &&
+      addressFromSameWallet &&
+      receiverField.isValid &&
+      !receiverField.error
+    );
   };
 
   isDisabled = () =>
@@ -665,71 +670,6 @@ export default class WalletSendForm extends Component<Props, State> {
     });
     this.removeAssetRow(oldFingerprint);
     this.resetTransactionFee();
-  };
-
-  renderReceiverInputField = (): Node => {
-    const { intl } = this.context;
-    const {
-      formFields,
-    } = this.state;
-
-    const {
-      walletName,
-    } = this.props;
-
-    const {
-      receiver: receiverField,
-    } = formFields.receiver;
-
-    return (
-      <>
-        {this.isAddressFromSameWallet() ? (
-          <PopOver
-            content={intl.formatMessage(messages.sameWalletLabel, {
-              walletName,
-            })}
-            contentClassName={styles.sameWalletTooltipContent}
-            themeVariables={{
-              '--rp-pop-over-bg-color':
-                'var(--rp-password-input-warning-score-color)',
-            }}
-            placement="bottom"
-          >
-            <Input
-              {...receiverField.bind()}
-              ref={(field) => {
-                this.addFocusableField(field);
-              }}
-              className="receiver"
-              error={receiverField.error}
-              onChange={(value) => {
-                receiverField.onChange(value || '');
-                this.setState({
-                  isResetButtonDisabled: false,
-                });
-              }}
-              onKeyPress={this.handleSubmitOnEnter}
-            />
-          </PopOver>
-        ) : (
-          <Input
-            {...receiverField.bind()}
-            ref={(field) => {
-              this.addFocusableField(field);
-            }}
-            className="receiver"
-            error={receiverField.error}
-            onChange={(value) => {
-              receiverField.onChange(value || '');
-              this.setState({
-                isResetButtonDisabled: false,
-              });
-            }}
-            onKeyPress={this.handleSubmitOnEnter}
-          />
-        )}
-      </>
-    );
   };
 
   renderReceiverRow = (): Node => {
