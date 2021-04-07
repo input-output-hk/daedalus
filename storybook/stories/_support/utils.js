@@ -49,7 +49,8 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
           { "int": 42 },
           { "string": "1337" },
           { "list": [
-            { "string": "nested list" }
+            { "string": "nested list" },
+            { "string": "" }
           ]}
         ]
       },
