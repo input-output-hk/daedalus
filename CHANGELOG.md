@@ -5,7 +5,7 @@ Changelog
 
 ### Chores
 
-- Reduced the clock drift tolerance to 4,5 seconds ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
+- Reduced the clock drift tolerance to 4,5 seconds ([PR 2510](https://github.com/input-output-hk/daedalus/pull/2510))
 - Updates Catalyst Fund4 dates ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
 - Updated `cardano-wallet` to revision `7df30796` ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
 
