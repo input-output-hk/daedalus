@@ -11,6 +11,7 @@ Changelog
 ### Fixes
 
 - Fixed fee calculation edge cases in wallet send form ([PR 2501](https://github.com/input-output-hk/daedalus/pull/2501))
+- Handle empty strings in transaction metadata correctly ([PR 2503](https://github.com/input-output-hk/daedalus/pull/2503)) 
 
 ## 4.0.4
 

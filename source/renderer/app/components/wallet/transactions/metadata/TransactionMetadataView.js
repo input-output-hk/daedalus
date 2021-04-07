@@ -12,7 +12,7 @@ function flattenMetadata(data: MetadataValue) {
   if (data.int) {
     return data.int;
   }
-  if (data.string) {
+  if (data.string != null) {
     return data.string;
   }
   if (data.bytes) {
