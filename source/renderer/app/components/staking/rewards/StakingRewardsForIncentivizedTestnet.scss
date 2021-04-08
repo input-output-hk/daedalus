@@ -54,6 +54,11 @@
     height: calc(100% - 53px);
     overflow-x: hidden;
     overflow-y: scroll;
+
+    &::-webkit-scrollbar-track {
+      margin-bottom: -20px;
+      margin-top: -20px;
+    }
   }
 
   .noRewardsLabel {
