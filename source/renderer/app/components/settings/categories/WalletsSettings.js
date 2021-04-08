@@ -52,6 +52,8 @@ type Props = {
   onSelectCurrency: Function,
   onToggleCurrencyIsActive: Function,
   onOpenExternalLink: Function,
+  // @TODO SEARCH: Remove this prop
+  hasSearch: boolean,
 };
 
 @observer
@@ -69,6 +71,7 @@ export default class WalletSettings extends Component<Props> {
       onSelectCurrency,
       onToggleCurrencyIsActive,
       onOpenExternalLink,
+      hasSearch,
     } = this.props;
 
     const currencyOptions = map(currencyList, ({ symbol, name }) => {
@@ -107,7 +110,7 @@ export default class WalletSettings extends Component<Props> {
               value={currencySelected ? currencySelected.symbol : null}
               options={currencyOptions}
               onChange={onSelectCurrency}
-              hasSearch
+              hasSearch={hasSearch}
             />
             <div className={styles.disclaimer}>
               <FormattedHTMLMessage

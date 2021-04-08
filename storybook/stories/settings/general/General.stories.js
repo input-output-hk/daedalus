@@ -65,6 +65,8 @@ storiesOf('Settings|General', module)
       onSelectCurrency={action('onSelectCurrency')}
       onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
       onOpenExternalLink={action('onOpenExternalLink')}
+      // @TODO SEARCH: Remove this prop
+      hasSearch={boolean('hasSearch', true)}
     />
   ))
   .add('Stake Pools', () => (
