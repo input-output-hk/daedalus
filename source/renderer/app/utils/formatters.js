@@ -96,7 +96,7 @@ export const shortNumber = (value: number | BigNumber): string => {
 };
 
 export const formattedAmountToNaturalUnits = (amount: ?string): string => {
-  if (amount === undefined || amount === null) {
+  if (!amount) {
     return '0';
   }
 
