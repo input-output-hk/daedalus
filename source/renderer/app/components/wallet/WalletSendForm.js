@@ -410,7 +410,10 @@ export default class WalletSendForm extends Component<Props, State> {
 
   calculateTransactionFee = async () => {
     const { form } = this;
-    const hasEmptyAssetFields = this.selectedAssetsAmounts.includes('0');
+    const emptyAssetFieldValue = '0';
+    const hasEmptyAssetFields = this.selectedAssetsAmounts.includes(
+      emptyAssetFieldValue
+    );
     if (!form.isValid || hasEmptyAssetFields) {
       form.showErrors(true);
       return false;
@@ -455,7 +458,7 @@ export default class WalletSendForm extends Component<Props, State> {
           this.state.feeCalculationRequestQue,
           prevFeeCalculationRequestQue
         ) &&
-        !this.selectedAssetsAmounts.includes('0')
+        !this.selectedAssetsAmounts.includes(emptyAssetFieldValue)
       ) {
         this._isCalculatingTransactionFee = false;
         this.setState({

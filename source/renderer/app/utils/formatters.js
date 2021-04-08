@@ -95,7 +95,11 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const formattedAmountToNaturalUnits = (amount: string): string => {
+export const formattedAmountToNaturalUnits = (amount: ?string): string => {
+  if (amount === undefined || amount === null) {
+    return '0';
+  }
+
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators
     .replace(/,/g, '') // removes all the comma separators
