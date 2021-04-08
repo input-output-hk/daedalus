@@ -22,6 +22,9 @@ import SupportSettings from '../../../../source/renderer/app/components/settings
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 
+// Data
+import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
+
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
@@ -57,7 +60,7 @@ storiesOf('Settings|General', module)
         name: 'unified Stable Dollar',
       }}
       currencyRate={0.321}
-      currencyList={[]}
+      currencyList={Object.values(currenciesList)}
       currencyIsActive
       onSelectCurrency={action('onSelectCurrency')}
       onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}

@@ -1,11 +1,17 @@
 .options {
   margin-top: -7px;
 
-  ul {
-    border-radius: 4px;
-  }
-
   :global {
+    .SimpleOptions_hasSearch {
+      border-radius: 0;
+    }
+
+    :not(.SimpleOptions_hasSearch) {
+      ul {
+        border-radius: 4px;
+      }
+    }
+
     [data-bubble-arrow] {
       display: none !important;
     }

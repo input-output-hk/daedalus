@@ -107,6 +107,7 @@ export default class WalletSettings extends Component<Props> {
               value={currencySelected ? currencySelected.symbol : null}
               options={currencyOptions}
               onChange={onSelectCurrency}
+              hasSearch
             />
             <div className={styles.disclaimer}>
               <FormattedHTMLMessage

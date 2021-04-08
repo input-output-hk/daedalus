@@ -116,6 +116,7 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
         className={styles.select}
         key={id}
         optionHeight={50}
+        hasSearch
       />
     );
   };
