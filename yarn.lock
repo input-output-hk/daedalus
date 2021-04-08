@@ -13123,9 +13123,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-"react-polymorph@https://github.com/input-output-hk/react-polymorph.git#feature/ddw-620-extend-react-polymorph-dropdown-to-include-search-feature":
+"react-polymorph@https://github.com/input-output-hk/react-polymorph.git#87069fc348571ecb9b8fa72337ad4ccbf3725c7c":
   version "0.9.8-rc.14"
-  resolved "https://github.com/input-output-hk/react-polymorph.git#717f60cecb90eb8df4dea9f8d7fd06d624aafba3"
+  resolved "https://github.com/input-output-hk/react-polymorph.git#87069fc348571ecb9b8fa72337ad4ccbf3725c7c"
   dependencies:
     "@storybook/addon-knobs" "^6.2.5"
     "@tippyjs/react" "4.2.1"
