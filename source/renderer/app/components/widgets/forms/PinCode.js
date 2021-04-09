@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { map } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
