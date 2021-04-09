@@ -132,7 +132,7 @@ export default class PinCode extends Component<Props> {
                 )
                   this.inputsRef[index] = input;
               }}
-              id={id}
+              id={id + index}
               name={name}
               type={type}
               className={pinCodeClasses}
