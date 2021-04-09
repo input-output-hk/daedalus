@@ -35,9 +35,7 @@ export default class PinCode extends Component<Props> {
   inputHasNewValue = (inputNewValue: string, key: number) => {
     const { value } = this.props;
     const valueIsEmpty =
-      !value[key] ||
-      value[key] === '' ||
-      inputNewValue === '';
+      !value[key] || value[key] === '' || inputNewValue === '';
     const valueHasChanged =
       inputNewValue &&
       inputNewValue.length === 1 &&
@@ -126,7 +124,10 @@ export default class PinCode extends Component<Props> {
             <NumericInput
               ref={(input) => {
                 if (
-                  !Object.prototype.hasOwnProperty.call(this.inputsRef, index) ||
+                  !Object.prototype.hasOwnProperty.call(
+                    this.inputsRef,
+                    index
+                  ) ||
                   this.inputsRef[index] !== input
                 )
                   this.inputsRef[index] = input;
@@ -143,12 +144,7 @@ export default class PinCode extends Component<Props> {
               value={value ? value[index] : undefined}
               autoFocus={autoFocus}
               allowSigns={false}
-              disabled={
-                disabled ||
-                (index &&
-                  (!value ||
-                    !value[index - 1]))
-              }
+              disabled={disabled || (index && (!value || !value[index - 1]))}
             />
           );
         })}
