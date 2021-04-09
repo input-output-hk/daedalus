@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, createRef } from 'react';
 import type { ElementRef, Node } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import StakingNavigation from '../navigation/StakingNavigation';
 import styles from './StakingWithNavigation.scss';
@@ -13,34 +14,17 @@ type Props = {
   isIncentivizedTestnet: boolean,
 };
 
-type State = {
-  scrollTop: number,
-};
-
 type ContextValue = {
-  scrollTop: number,
   scrollElementRef: ?ElementRef<*>,
 };
 
 export const StakingPageScrollContext = React.createContext<ContextValue>({
-  scrollTop: 0,
   scrollElementRef: null,
 });
 
 @observer
-export default class StakingWithNavigation extends Component<Props, State> {
+export default class StakingWithNavigation extends Component<Props> {
   stakingPageRef = createRef<*>();
-
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      scrollTop: 0,
-    };
-  }
-
-  handleScroll = (evt: SyntheticEvent<HTMLElement>) => {
-    this.setState({ scrollTop: evt.currentTarget.scrollTop });
-  };
 
   render() {
     const {
@@ -50,13 +34,13 @@ export default class StakingWithNavigation extends Component<Props, State> {
       isActiveNavItem,
       isIncentivizedTestnet,
     } = this.props;
-    const { scrollTop } = this.state;
+    const componentStyles = classnames([styles.component, styles[activeItem]]);
 
     return (
       <StakingPageScrollContext.Provider
-        value={{ scrollTop, scrollElementRef: this.stakingPageRef }}
+        value={{ scrollElementRef: this.stakingPageRef }}
       >
-        <div className={styles.component}>
+        <div className={componentStyles}>
           <div className={styles.navigation}>
             <StakingNavigation
               isActiveNavItem={isActiveNavItem}
@@ -67,7 +51,6 @@ export default class StakingWithNavigation extends Component<Props, State> {
           </div>
           <div
             className={styles.page}
-            onScroll={this.handleScroll}
             ref={(ref) => {
               this.stakingPageRef.current = ref;
             }}
