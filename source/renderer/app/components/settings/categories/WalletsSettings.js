@@ -9,7 +9,6 @@ import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
 import type { LocalizedCurrency } from '../../../types/currencyTypes';
-import type { Locale } from '../../../../../common/types/locales.types.js';
 
 const messages = defineMessages({
   currencyTitleLabel: {
@@ -50,7 +49,6 @@ type Props = {
   currencySelected: ?LocalizedCurrency,
   currencyList: Array<any>,
   currencyIsActive: boolean,
-  currentLocale: Locale,
   onSelectCurrency: Function,
   onToggleCurrencyIsActive: Function,
   onOpenExternalLink: Function,
@@ -68,7 +66,6 @@ export default class WalletSettings extends Component<Props> {
       currencySelected,
       currencyList,
       currencyIsActive,
-      currentLocale,
       onSelectCurrency,
       onToggleCurrencyIsActive,
       onOpenExternalLink,

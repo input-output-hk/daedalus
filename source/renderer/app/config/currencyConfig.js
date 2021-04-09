@@ -6,7 +6,7 @@
  *
  */
 
-import { omit } from 'lodash';
+import { omit, map } from 'lodash';
 
 // Available APIS
 import coingeckoConfig from './currencyConfig.coingecko';
@@ -59,7 +59,7 @@ export const getLocalizedCurrenciesList = (
   rawCurrencyList: Array<RawCurrency>,
   currentLocale: Locale
 ) =>
-  rawCurrencyList.map((rawCurrency) =>
+  map(rawCurrencyList, (rawCurrency) =>
     getLocalizedCurrency(rawCurrency, currentLocale)
   );
 
@@ -67,7 +67,6 @@ export const getLocalizedCurrency = (
   rawCurrency: RawCurrency,
   currentLocale: Locale
 ): LocalizedCurrency => ({
-  ...omit(rawCurrency, ['code', 'name']),
-  code: rawCurrency.code[currentLocale] || rawCurrency.code[LOCALES.english],
+  ...omit(rawCurrency, ['name']),
   name: rawCurrency.name[currentLocale] || rawCurrency.name[LOCALES.english],
 });

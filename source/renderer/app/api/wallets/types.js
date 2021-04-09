@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
-import type { RawCurrency } from '../../types/currencyTypes';
+import type { RawCurrency, LocalizedCurrency } from '../../types/currencyTypes';
 import type { AssetItems } from '../assets/types';
 
 export type Block = {
@@ -316,6 +316,5 @@ export type CreateHardwareWalletRequest = {
 };
 
 export type GetCurrencyListResponse = Array<RawCurrency>;
-
-export type GetCurrencyRateRequest = RawCurrency;
+export type GetCurrencyRateRequest = LocalizedCurrency;
 export type GetCurrencyRateResponse = number;

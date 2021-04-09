@@ -12,7 +12,6 @@
 import { get } from 'lodash';
 import { logger } from '../utils/logging';
 import type {
-  RawCurrency,
   LocalizedCurrency,
   CurrencyApiConfig,
 } from '../types/currencyTypes.js';
