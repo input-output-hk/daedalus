@@ -4,13 +4,6 @@ import type { Locale } from '../../../common/types/locales.types';
 
 export type Currency = {
   code: string,
-  name: string,
-  decimalDigits?: number,
-  id?: string,
-};
-
-export type RawCurrency = {
-  code: string,
   name: {
     [key: Locale]: string,
   },

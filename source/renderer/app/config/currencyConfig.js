@@ -16,7 +16,7 @@ import currenciesList from './currenciesList.json';
 import { LOCALES } from '../../../common/types/locales.types';
 import type {
   RequestName,
-  RawCurrency,
+  Currency,
   LocalizedCurrency,
 } from '../types/currencyTypes';
 import type { Locale } from '../../../common/types/locales.types';
@@ -56,7 +56,7 @@ export const genericCurrencyRequest = (
 };
 
 export const getLocalizedCurrenciesList = (
-  rawCurrencyList: Array<RawCurrency>,
+  rawCurrencyList: Array<Currency>,
   currentLocale: Locale
 ) =>
   map(rawCurrencyList, (rawCurrency) =>
@@ -64,7 +64,7 @@ export const getLocalizedCurrenciesList = (
   );
 
 export const getLocalizedCurrency = (
-  rawCurrency: RawCurrency,
+  rawCurrency: Currency,
   currentLocale: Locale
 ): LocalizedCurrency => ({
   ...omit(rawCurrency, ['name']),

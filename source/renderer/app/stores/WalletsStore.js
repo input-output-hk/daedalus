@@ -42,7 +42,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
-import type { RawCurrency, LocalizedCurrency } from '../types/currencyTypes.js';
+import type { Currency, LocalizedCurrency } from '../types/currencyTypes.js';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -154,8 +154,8 @@ export default class WalletsStore extends Store {
   @observable currencyIsFetchingRate: boolean = false;
   @observable currencyIsAvailable: boolean = false;
   @observable currencyIsActive: boolean = false;
-  @observable currencyList: Array<RawCurrency> = [];
-  @observable currencySelected: ?RawCurrency = null;
+  @observable currencyList: Array<Currency> = [];
+  @observable currencySelected: ?Currency = null;
   @observable currencyRate: ?number = null;
   @observable currencyLastFetched: ?Date = null;
 
