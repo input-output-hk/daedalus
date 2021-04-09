@@ -5,12 +5,14 @@ Changelog
 
 ### Chores
 
+- Updated header section styles of delegation rewards screen ([PR 2509](https://github.com/input-output-hk/daedalus/pull/2509))
 - Reduced the clock drift tolerance to 4,5 seconds ([PR 2510](https://github.com/input-output-hk/daedalus/pull/2510))
 - Updates Catalyst Fund4 dates ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
 - Updated `cardano-wallet` to revision `7df30796` ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
 
 ### Fixes
 
+- Fixed fee calculation edge cases in wallet send form ([PR 2501](https://github.com/input-output-hk/daedalus/pull/2501))
 - Handle empty strings in transaction metadata correctly ([PR 2503](https://github.com/input-output-hk/daedalus/pull/2503)) 
 
 ## 4.0.4
