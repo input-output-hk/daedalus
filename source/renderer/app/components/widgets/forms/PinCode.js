@@ -32,6 +32,19 @@ export default class PinCode extends Component<Props> {
   focusKey = 0;
   add = false;
 
+  inputHasNewValue = (inputNewValue: string, key: number) => {
+    const { value } = this.props;
+    const valueIsEmpty =
+      !value[key] ||
+      value[key] === '' ||
+      inputNewValue === '';
+    const valueHasChanged =
+      inputNewValue &&
+      inputNewValue.length === 1 &&
+      value[key] !== inputNewValue;
+    return valueIsEmpty || valueHasChanged;
+  };
+
   onChange = (inputValue: ?number | ?string, key: number) => {
     const { value, onChange } = this.props;
 
@@ -39,14 +52,7 @@ export default class PinCode extends Component<Props> {
       inputValue !== null && inputValue !== undefined && !isNaN(inputValue)
         ? inputValue.toString()
         : '';
-    if (
-      !value[key] ||
-      value[key] === '' ||
-      inputNewValue === '' ||
-      (inputNewValue &&
-        inputNewValue.length === 1 &&
-        value[key] !== inputNewValue)
-    ) {
+    if (this.inputHasNewValue(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
         newValue[key] = inputNewValue;
