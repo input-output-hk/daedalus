@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { map } from 'lodash';
+import { map, isNaN } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -36,11 +36,11 @@ export default class PinCode extends Component<Props> {
     const { value, onChange } = this.props;
 
     const inputNewValue =
-      inputValue !== null && inputValue !== undefined && !Number.isNaN(inputValue)
+      inputValue !== null && inputValue !== undefined && !isNaN(inputValue)
         ? inputValue.toString()
         : '';
     if (
-      !Object.prototype.hasOwnProperty.call(value, key) ||
+      !value[key] ||
       value[key] === '' ||
       inputNewValue === '' ||
       (inputNewValue &&
@@ -48,7 +48,7 @@ export default class PinCode extends Component<Props> {
         value[key] !== inputNewValue)
     ) {
       const newValue = value;
-      if (!Number.isNaN(inputValue)) {
+      if (!isNaN(inputValue)) {
         newValue[key] = inputNewValue;
       }
       if (onChange) {
@@ -56,7 +56,7 @@ export default class PinCode extends Component<Props> {
       }
       this.focusKey = key;
       this.add =
-        inputValue !== null && inputValue !== undefined && !Number.isNaN(inputValue);
+        inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
     }
   };
 
@@ -115,33 +115,33 @@ export default class PinCode extends Component<Props> {
 
     return (
       <div className={styles.pinCodeInput}>
-        {map(Array(length).fill(), (action, key) => {
+        {map(Array(length).fill(), (action, index) => {
           return (
             <NumericInput
               ref={(input) => {
                 if (
-                  !Object.prototype.hasOwnProperty.call(this.inputsRef, key) ||
-                  this.inputsRef[key] !== input
+                  !Object.prototype.hasOwnProperty.call(this.inputsRef, index) ||
+                  this.inputsRef[index] !== input
                 )
-                  this.inputsRef[key] = input;
+                  this.inputsRef[index] = input;
               }}
               id={id}
               name={name}
               type={type}
               className={pinCodeClasses}
               label={null}
-              key={key}
+              key={index}
               skin={InputSkin}
-              onChange={(number) => this.onChange(number, key)}
-              onKeyPress={(event) => this.onKeyPress(event, key)}
-              value={value ? value[key] : undefined}
+              onChange={(number) => this.onChange(number, index)}
+              onKeyPress={(event) => this.onKeyPress(event, index)}
+              value={value ? value[index] : undefined}
               autoFocus={autoFocus}
               allowSigns={false}
               disabled={
                 disabled ||
-                (key &&
+                (index &&
                   (!value ||
-                    !Object.prototype.hasOwnProperty.call(value, key - 1)))
+                    !value[index - 1]))
               }
             />
           );
