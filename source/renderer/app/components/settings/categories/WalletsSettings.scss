@@ -80,6 +80,10 @@
   }
 }
 
-:global .WalletsSettings_component .OptionsOverrides_options :not(.SimpleOptions_hasSearch) ul {
+:global
+  .WalletsSettings_component
+  .OptionsOverrides_options
+  :not(.SimpleOptions_hasSearch)
+  ul {
   border-radius: 0 0 4px 4px;
 }
