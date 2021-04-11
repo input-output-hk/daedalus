@@ -45,12 +45,12 @@ export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata
 ): string => {
-  const { acronym, unit } = metadata || {};
+  const { ticker, unit } = metadata || {};
   const { decimals } = unit || {};
   const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
   let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
-  if (acronym) {
-    formattedAmount += ` ${acronym}`;
+  if (ticker) {
+    formattedAmount += ` ${ticker}`;
   }
   return formattedAmount;
 };
@@ -95,7 +95,11 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const formattedAmountToNaturalUnits = (amount: string): string => {
+export const formattedAmountToNaturalUnits = (amount: ?string): string => {
+  if (!amount) {
+    return '0';
+  }
+
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators
     .replace(/,/g, '') // removes all the comma separators

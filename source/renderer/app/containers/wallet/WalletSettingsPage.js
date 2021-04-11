@@ -7,6 +7,7 @@ import { isValidWalletName } from '../../utils/validations';
 import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
+import WalletPublicKeyDialogContainer from './dialogs/settings/WalletPublicKeyDialogContainer';
 import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
 import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
@@ -35,11 +36,6 @@ export default class WalletSettingsPage extends Component<Props> {
     wallets.copyPublicKey.trigger({ publicKey });
   };
 
-  handleGetWalletPublicKey = () => {
-    const { wallets } = this.props.stores;
-    wallets._getWalletPublicKey();
-  };
-
   handleDelegateClick = () => {
     const { goToRoute } = this.props.actions.router;
     goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
@@ -52,17 +48,19 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       profile,
+      hardwareWallets,
     } = this.props.stores;
+    const { checkIsTrezorByWalletId } = hardwareWallets;
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
     } = wallets;
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     const { isLegacy, isHardwareWallet } = activeWallet;
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     const { actions } = this.props;
     const {
@@ -144,18 +142,19 @@ export default class WalletSettingsPage extends Component<Props> {
             actions.dialogs.updateDataForActiveDialog.trigger
           }
           onDelegateClick={this.handleDelegateClick}
-          getWalletPublicKey={this.handleGetWalletPublicKey}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
           }
+          walletPublicKeyDialogContainer={<WalletPublicKeyDialogContainer />}
           walletPublicKeyQRCodeDialogContainer={
             <WalletPublicKeyQRCodeDialogContainer />
           }
           undelegateWalletDialogContainer={
             <UndelegateWalletDialogContainer
               onExternalLinkClick={app.openExternalLink}
+              isTrezor={isHardwareWallet && isTrezor}
             />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}

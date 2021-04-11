@@ -117,6 +117,7 @@ export type GetTransactionFeeRequest = {
   assets?: AssetItems,
   walletBalance: BigNumber,
   availableBalance: BigNumber,
+  rewardsBalance: BigNumber,
   isLegacy: boolean,
   withdrawal?: 'self' | Array<string>,
 };
@@ -237,6 +238,7 @@ export type CoinSelectionsPaymentRequestType = {
   walletId: string,
   address: string,
   amount: number,
+  assets?: AssetItems,
 };
 
 export type CoinSelectionsRequest =
@@ -268,3 +270,5 @@ export type GetWithdrawalsRequest = {
 export type GetWithdrawalsResponse = {
   withdrawals: BigNumber,
 };
+
+export type CoinSelectionAssetsType = Array<Asset>;

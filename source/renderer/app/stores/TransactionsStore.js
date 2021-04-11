@@ -288,6 +288,7 @@ export default class TransactionsStore extends Store {
       ...transactionFeeRequest,
       walletBalance: amount,
       availableBalance: availableAmount.plus(reward),
+      rewardsBalance: reward,
       isLegacy,
     });
   };
@@ -346,18 +347,23 @@ export default class TransactionsStore extends Store {
       stores: { profile },
       allFiltered,
       actions,
+      stores,
     } = this;
+    const { isInternalAddress } = stores.addresses;
     const { active } = this.stores.wallets;
     const { desktopDirectoryPath } = profile;
     const locale = profile.currentLocale;
     const intl = i18nContext(locale);
     const transactions = allFiltered;
     const walletName = active ? active.name : '';
+    const { getAssetDetails } = this.stores.assets;
     const success = await transactionsCsvGenerator({
       desktopDirectoryPath,
       intl,
       transactions,
       walletName,
+      getAssetDetails,
+      isInternalAddress,
     });
     if (success) actions.transactions.requestCSVFileSuccess.trigger();
   };
@@ -395,10 +401,6 @@ export default class TransactionsStore extends Store {
     if (foundRequest && foundRequest.withdrawalsRequest)
       return foundRequest.withdrawalsRequest;
     return new Request(this.api.ada.getWithdrawals);
-  };
-
-  _getTransactionRequest = (): Request<WalletTransaction> => {
-    return new Request(this.api.ada.getTransaction);
   };
 
   // ======================= REACTIONS ========================== //

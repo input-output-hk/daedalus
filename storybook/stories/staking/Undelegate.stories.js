@@ -3,7 +3,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import {
@@ -86,6 +86,7 @@ export const StakingUndelegateConfirmationStory = (props: {
       depositsReclaimed: new BigNumber(number('depositsReclaimed', 10)),
     }}
     hwDeviceStatus="ready"
+    isTrezor={boolean('isTrezor', false)}
   />
 );
 

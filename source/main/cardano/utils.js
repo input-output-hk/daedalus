@@ -80,10 +80,15 @@ export const deriveStorageKeys = (
 
 export const deriveProcessNames = (
   platform: PlatformNames,
-  nodeImplementation: CardanoNodeImplementations
+  nodeImplementation: CardanoNodeImplementations,
+  isSelfnode: boolean
 ): ProcessNames => ({
   CARDANO_PROCESS_NAME:
-    CardanoProcessNameOptions[nodeImplementation][platform] ||
+    CardanoProcessNameOptions[
+      isSelfnode
+        ? CardanoNodeImplementationOptions.SELFNODE
+        : nodeImplementation
+    ][platform] ||
     (nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR
       ? 'jormungandr'
       : 'cardano-node'),
