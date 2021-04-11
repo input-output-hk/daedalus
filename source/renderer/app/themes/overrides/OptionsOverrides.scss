@@ -12,6 +12,11 @@
       }
     }
 
+    .SimpleOptions_search button:before {
+      height: 10px;
+      width: 10px;
+    }
+
     [data-bubble-arrow] {
       display: none !important;
     }

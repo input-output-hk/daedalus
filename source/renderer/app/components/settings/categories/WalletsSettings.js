@@ -5,6 +5,7 @@ import { map } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Link } from 'react-polymorph/lib/components/Link';
+import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
@@ -52,7 +53,6 @@ type Props = {
   onSelectCurrency: Function,
   onToggleCurrencyIsActive: Function,
   onOpenExternalLink: Function,
-  // @TODO SEARCH: Remove this prop
   hasSearch: boolean,
 };
 
@@ -111,6 +111,8 @@ export default class WalletSettings extends Component<Props> {
               options={currencyOptions}
               onChange={onSelectCurrency}
               hasSearch={hasSearch}
+              skin={SelectSkin}
+              optionHeight={50}
             />
             <div className={styles.disclaimer}>
               <FormattedHTMLMessage

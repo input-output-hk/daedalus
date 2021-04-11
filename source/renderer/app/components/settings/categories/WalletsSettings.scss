@@ -79,3 +79,7 @@
     margin: 15px 0;
   }
 }
+
+:global .WalletsSettings_component .OptionsOverrides_options :not(.SimpleOptions_hasSearch) ul {
+  border-radius: 0 0 4px 4px;
+}

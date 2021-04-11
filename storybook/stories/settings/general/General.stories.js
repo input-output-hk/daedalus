@@ -67,7 +67,6 @@ storiesOf('Settings|General', module)
         }}
         onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
         onOpenExternalLink={action('onOpenExternalLink')}
-        // @TODO SEARCH: Remove this prop
         hasSearch={boolean('hasSearch', true)}
       />
     ))
