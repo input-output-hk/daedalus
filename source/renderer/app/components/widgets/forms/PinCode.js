@@ -97,7 +97,9 @@ export default class PinCode extends Component<Props, State> {
     const nextInputField = this.inputsRef[nextFieldFocusKey];
     const isSeparator = key === decimalSeparator || key === groupSeparator;
     const isBackspace = key === 'Backspace';
-    const fieldIsEmpty = this.inputsRef[focusKey] ? !this.inputsRef[focusKey].value : false;
+    const fieldIsEmpty = this.inputsRef[focusKey]
+      ? !this.inputsRef[focusKey].value
+      : false;
     if (isSeparator) {
       if (nextInputField && nextInputField.focus) {
         nextInputField.focus();
