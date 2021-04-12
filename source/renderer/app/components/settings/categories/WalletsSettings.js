@@ -111,7 +111,6 @@ export default class WalletSettings extends Component<Props> {
               options={currencyOptions}
               onChange={onSelectCurrency}
               hasSearch={hasSearch}
-              skin={SelectSkin}
               optionHeight={50}
             />
             <div className={styles.disclaimer}>
