@@ -307,6 +307,7 @@ export default class WalletSendForm extends Component<Props, State> {
     return (
       this.hasReceiverValue() &&
       addressFromSameWallet &&
+      receiverField.focused &&
       receiverField.isValid &&
       !receiverField.error
     );
@@ -730,7 +731,7 @@ export default class WalletSendForm extends Component<Props, State> {
             content={intl.formatMessage(messages.sameWalletLabel, {
               walletName,
             })}
-            trigger={this.isAddressFromSameWallet() ? 'mouseenter' : 'focus'}
+            visible={this.isAddressFromSameWallet()}
             contentClassName={styles.sameWalletTooltipContent}
             themeVariables={{
               '--rp-pop-over-bg-color':
@@ -813,7 +814,6 @@ export default class WalletSendForm extends Component<Props, State> {
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
-                  autoFocus
                 />
                 <div className={styles.minAdaRequired}>
                   <span>
