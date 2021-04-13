@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added "Voting registration not available" screen ([PR 2518](https://github.com/input-output-hk/daedalus/pull/2518))
 - Added Japanese translation to the external currencies list ([PR 2497](https://github.com/input-output-hk/daedalus/pull/2497))
 
 ### Fixes
