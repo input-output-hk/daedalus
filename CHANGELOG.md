@@ -1,13 +1,11 @@
 Changelog
 =========
 
-## vNext
+## 4.0.5
 
 ### Features
 
 - Added Japanese translation to the external currencies list ([PR 2497](https://github.com/input-output-hk/daedalus/pull/2497))
-
-## 4.0.5
 
 ### Fixes
 
