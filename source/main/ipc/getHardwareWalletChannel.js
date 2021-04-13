@@ -6,6 +6,10 @@ import { BrowserWindow } from 'electron';
 import TrezorConnect, {
   DEVICE_EVENT,
   TRANSPORT_EVENT,
+  TRANSPORT,
+  UI_EVENT,
+  UI,
+  DEVICE,
   // $FlowFixMe
 } from 'trezor-connect';
 import { get, omit, last, find, includes } from 'lodash';
@@ -194,6 +198,65 @@ export const handleHardwareWalletRequests = async (
   let deviceConnection = null;
   let observer;
 
+  const resetTrezorListeners = () => {
+    // Remove all listeners if exist - e.g. on app refresh
+    TrezorConnect.removeAllListeners();
+    // Initialize new device listeners
+    TrezorConnect.on(UI_EVENT, (event) => {
+      if (event.type === UI.REQUEST_PASSPHRASE) {
+        // ui-request_passphrase
+        if (event.payload && event.payload.device) {
+          TrezorConnect.uiResponse({
+            type: UI.RECEIVE_PASSPHRASE,
+            payload: { value: '', passphraseOnDevice: true },
+          });
+        }
+      }
+    });
+    TrezorConnect.on(TRANSPORT_EVENT, (event) => {
+      if (event.type === TRANSPORT.ERROR) {
+        // Send Transport error to Renderer
+        getHardwareWalletConnectionChannel.send(
+          {
+            error: {
+              payload: event.payload,
+            },
+          },
+          // $FlowFixMe
+          mainWindow
+        );
+      }
+    });
+    TrezorConnect.on(DEVICE_EVENT, (event) => {
+      const connectionChanged =
+        event.type === DEVICE.CONNECT ||
+        event.type === DEVICE.DISCONNECT ||
+        event.type === DEVICE.CHANGED;
+      const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
+      const deviceError = get(event, ['payload', 'error']);
+
+      if (deviceError) {
+        throw new Error(deviceError);
+      }
+
+      if (connectionChanged && isAcquired) {
+        getHardwareWalletConnectionChannel.send(
+          {
+            disconnected: event.type === DEVICE.DISCONNECT,
+            deviceType: 'trezor',
+            deviceId: event.payload.id, // 123456ABCDEF
+            deviceModel: event.payload.features.model, // e.g. T
+            deviceName: event.payload.label, // e.g. Test Name
+            path: event.payload.path,
+            eventType: event.type,
+          },
+          // $FlowFixMe
+          mainWindow
+        );
+      }
+    });
+  };
+
   getHardwareWalletTransportChannel.onRequest(async (request) => {
     logger.info('[HW-DEBUG] getHardwareWalletTransportChannel');
     const { isTrezor, devicePath } = request;
@@ -303,50 +366,7 @@ export const handleHardwareWalletRequests = async (
 
   handleInitTrezorConnectChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] INIT TREZOR');
-    // Remove all listeners if exist - e.g. on app refresh
-    TrezorConnect.removeAllListeners();
-    // Initialize new device listeners
-    TrezorConnect.on(TRANSPORT_EVENT, (event) => {
-      if (event.type === 'transport-error') {
-        // Send Transport error to Renderer
-        getHardwareWalletConnectionChannel.send(
-          {
-            error: {
-              payload: event.payload,
-            },
-          },
-          // $FlowFixMe
-          mainWindow
-        );
-      }
-    });
-    TrezorConnect.on(DEVICE_EVENT, (event) => {
-      const connectionChanged =
-        event.type === 'device-connect' ||
-        event.type === 'device-disconnect' ||
-        event.type === 'device-changed';
-      const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
-      const deviceError = get(event, ['payload', 'error']);
-
-      if (deviceError) {
-        throw new Error(deviceError);
-      }
-
-      if (connectionChanged && isAcquired) {
-        getHardwareWalletConnectionChannel.send(
-          {
-            disconnected: event.type === 'device-disconnect',
-            deviceType: 'trezor',
-            deviceId: event.payload.id, // 123456ABCDEF
-            deviceModel: event.payload.features.model, // e.g. T
-            deviceName: event.payload.label, // e.g. Test Name
-            path: event.payload.path,
-          },
-          // $FlowFixMe
-          mainWindow
-        );
-      }
-    });
+    resetTrezorListeners();
     TrezorConnect.manifest({
       email: 'email@developer.com',
       appUrl: 'http://your.application.com',
@@ -598,7 +618,6 @@ export const handleHardwareWalletRequests = async (
           device: { path: devicePath },
         });
         if (deviceFeatures.success) {
-          // trezorConnected = true;
           const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
             {
               path: `m/${path}`,
@@ -642,6 +661,7 @@ export const handleHardwareWalletRequests = async (
     }
   });
 
+  // @TODO - validityIntervalStartStr is not working with Cardano App 2.1.0
   signTransactionLedgerChannel.onRequest(async (params) => {
     const {
       inputs,
@@ -654,6 +674,7 @@ export const handleHardwareWalletRequests = async (
       withdrawals,
       metadataHashHex,
       devicePath,
+      // validityIntervalStartStr,
     } = params;
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
     deviceConnection = devicePath
@@ -664,6 +685,7 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Device not connected!');
       }
+
       const signedTransaction = await deviceConnection.signTransaction(
         networkId,
         protocolMagic,
@@ -674,6 +696,7 @@ export const handleHardwareWalletRequests = async (
         certificates,
         withdrawals,
         metadataHashHex
+        // validityIntervalStartStr
       );
       return Promise.resolve(signedTransaction);
     } catch (e) {
@@ -691,6 +714,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       certificates,
       devicePath,
+      validityIntervalStartStr,
+      withdrawals,
     } = params;
 
     if (!TrezorConnect) {
@@ -706,6 +731,8 @@ export const handleHardwareWalletRequests = async (
         protocolMagic,
         networkId,
         certificates,
+        withdrawals,
+        validityIntervalStartStr,
       };
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
         device: { path: devicePath },

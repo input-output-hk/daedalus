@@ -18,7 +18,6 @@ export const winLinuxMenu = (
   actions: MenuActions,
   translations: {},
   locale: string,
-  isUpdateAvailable: boolean,
   isNavigationEnabled: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
@@ -30,8 +29,18 @@ export const winLinuxMenu = (
         click() {
           actions.openAboutDialog();
         },
-        enabled: !isUpdateAvailable && isNavigationEnabled,
+        enabled: isNavigationEnabled,
       },
+      { type: 'separator' },
+      {
+        label: translation('daedalus.redeemItnRewards'),
+        accelerator: 'Ctrl+T',
+        click() {
+          actions.openItnRewardsRedemptionDialog();
+        },
+        enabled: isNavigationEnabled,
+      },
+      { type: 'separator' },
       {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
@@ -98,7 +107,7 @@ export const winLinuxMenu = (
         click() {
           actions.openSettingsPage();
         },
-        enabled: !isUpdateAvailable && isNavigationEnabled,
+        enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
@@ -106,7 +115,7 @@ export const winLinuxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: !isUpdateAvailable && isNavigationEnabled,
+        enabled: isNavigationEnabled,
       },
       {
         type: 'separator',
@@ -193,7 +202,6 @@ export const winLinuxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
-        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -202,7 +210,7 @@ export const winLinuxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
-        enabled: !isUpdateAvailable && isNavigationEnabled,
+        enabled: isNavigationEnabled,
       },
     ]),
   },

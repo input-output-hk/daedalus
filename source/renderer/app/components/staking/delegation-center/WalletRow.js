@@ -6,12 +6,15 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import Wallet from '../../../domains/Wallet';
+import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
+import type { WalletNextDelegation } from '../../../api/wallets/types';
 import StakePool from '../../../domains/StakePool';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { PoolPopOver } from '../widgets/PoolPopOver';
 import styles from './WalletRow.scss';
+import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
@@ -20,7 +23,6 @@ import {
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
-import TooltipPool from '../widgets/TooltipPool';
 
 const messages = defineMessages({
   walletAmount: {
@@ -84,8 +86,8 @@ type Props = {
   onDelegate: Function,
   onUndelegate: Function,
   getStakePoolById: Function,
-  nextEpochNumber: ?number,
-  futureEpochNumber: ?number,
+  nextEpochNumber: number,
+  futureEpochNumber: number,
   onSelect?: Function,
   selectedPoolId?: ?number,
   isListActive?: boolean,
@@ -99,16 +101,10 @@ type Props = {
 
 type WalletRowState = {
   highlightedPoolId: boolean,
-  top: number,
-  left: number,
 };
-
 const initialWalletRowState = {
   highlightedPoolId: false,
-  top: 0,
-  left: 0,
 };
-
 @observer
 export default class WalletRow extends Component<Props, WalletRowState> {
   static contextTypes = {
@@ -117,6 +113,95 @@ export default class WalletRow extends Component<Props, WalletRowState> {
 
   state = {
     ...initialWalletRowState,
+  };
+
+  stakePoolFirstTileRef: { current: null | HTMLDivElement };
+  stakePoolAdaSymbolRef: { current: null | HTMLDivElement };
+
+  constructor(props: Props) {
+    super(props);
+
+    this.stakePoolFirstTileRef = React.createRef();
+    this.stakePoolAdaSymbolRef = React.createRef();
+  }
+
+  componentDidUpdate() {
+    this.handleFirstTilePopOverStyle();
+  }
+
+  handleFirstTilePopOverStyle = () => {
+    const {
+      wallet: { id },
+    } = this.props;
+    const existingStyle = document.getElementById(`wallet-row-${id}-style`);
+    const { current: firstTileDom } = this.stakePoolFirstTileRef;
+    const { current: adaSymbolDom } = this.stakePoolAdaSymbolRef;
+
+    if (!firstTileDom || !adaSymbolDom) {
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+      return;
+    }
+
+    if (existingStyle) {
+      return;
+    }
+
+    const firstTileDomRect = firstTileDom.getBoundingClientRect();
+    const adaSymbolDomRect = adaSymbolDom.getBoundingClientRect();
+    const horizontalDelta =
+      firstTileDomRect.width / 2 -
+      adaSymbolDomRect.width / 2 -
+      (adaSymbolDomRect.left - firstTileDomRect.left);
+
+    const firstTilePopOverStyle = document.createElement('style');
+    firstTilePopOverStyle.setAttribute('id', `wallet-row-${id}-style`);
+    firstTilePopOverStyle.innerHTML = `.wallet-row-${id} .tippy-arrow { transform: translate(-${horizontalDelta}px, 0); }`;
+    document.getElementsByTagName('head')[0].appendChild(firstTilePopOverStyle);
+  };
+
+  handlePopOverOpen = () => {
+    this.setState({
+      highlightedPoolId: true,
+    });
+  };
+
+  handlePopOverClose = () => {
+    this.setState({
+      highlightedPoolId: false,
+    });
+  };
+
+  getPendingDelegatedStakePoolId = (
+    epochNumber: number,
+    fallbackStakePoolId: ?string
+  ): ?string => {
+    const {
+      wallet: { pendingDelegations },
+    } = this.props;
+
+    if (!pendingDelegations || !pendingDelegations.length) {
+      return fallbackStakePoolId;
+    }
+
+    const foundDelegation = pendingDelegations.find(
+      (delegation: WalletNextDelegation) =>
+        get(delegation, ['changes_at', 'epoch_number'], 0) === epochNumber
+    );
+
+    if (!foundDelegation) {
+      return fallbackStakePoolId;
+    }
+
+    const isDelegating =
+      get(foundDelegation, 'status') === WalletDelegationStatuses.DELEGATING;
+
+    if (!isDelegating) {
+      return null;
+    }
+
+    return get(foundDelegation, 'target', null);
   };
 
   render() {
@@ -129,9 +214,11 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         syncState,
         delegatedStakePoolId,
         isHardwareWallet,
+        id,
       },
       delegatedStakePool,
       numberOfRankedStakePools,
+      getStakePoolById,
       onDelegate,
       onUndelegate,
       nextEpochNumber,
@@ -141,6 +228,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       showWithSelectButton,
       containerClassName,
     } = this.props;
+    const { highlightedPoolId } = this.state;
 
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
     const isUndelegateBlocked = true;
@@ -151,44 +239,42 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     const delegateText = intl.formatMessage(messages.delegate);
     const redelegateText = intl.formatMessage(messages.redelegate);
 
-    const {
-      stakePoolId: nextPendingDelegationStakePoolId,
-      stakePool: nextPendingDelegationStakePool,
-    } = this.getPendingStakePool(nextEpochNumber || 0);
-
-    const {
-      stakePoolId: futurePendingDelegationStakePoolId,
-      stakePool: futurePendingDelegationStakePool,
-    } = this.getPendingStakePool(
-      futureEpochNumber || 0,
-      nextPendingDelegationStakePool
+    const nextPendingDelegatedStakePoolId = this.getPendingDelegatedStakePoolId(
+      nextEpochNumber,
+      delegatedStakePoolId
     );
+    const nextPendingDelegatedStakePool = nextPendingDelegatedStakePoolId
+      ? getStakePoolById(nextPendingDelegatedStakePoolId)
+      : null;
+    const futurePendingDelegatedStakePoolId = this.getPendingDelegatedStakePoolId(
+      futureEpochNumber,
+      nextPendingDelegatedStakePoolId
+    );
+    const futurePendingDelegatedStakePool = futurePendingDelegatedStakePoolId
+      ? getStakePoolById(futurePendingDelegatedStakePoolId)
+      : null;
 
-    const { top, left, highlightedPoolId } = this.state;
-
-    const stakePoolRankingColor = futurePendingDelegationStakePool
+    const stakePoolRankingColor = futurePendingDelegatedStakePool
       ? getColorFromRange(
-          futurePendingDelegationStakePool.ranking,
+          futurePendingDelegatedStakePool.ranking,
           numberOfRankedStakePools
         )
       : '';
 
     const saturationStyles = classnames([
       styles.saturationBar,
-      futurePendingDelegationStakePool
-        ? styles[
-            getSaturationColor(futurePendingDelegationStakePool.saturation)
-          ]
+      futurePendingDelegatedStakePool
+        ? styles[getSaturationColor(futurePendingDelegatedStakePool.saturation)]
         : null,
     ]);
 
     const futureStakePoolTileStyles = classnames([
       styles.stakePoolTile,
       highlightedPoolId ? styles.active : null,
-      futurePendingDelegationStakePoolId && futurePendingDelegationStakePool
+      futurePendingDelegatedStakePoolId && futurePendingDelegatedStakePool
         ? styles.futureStakePoolTileDelegated
         : styles.futureStakePoolTileUndelegated,
-      futurePendingDelegationStakePoolId && !futurePendingDelegationStakePool
+      futurePendingDelegatedStakePoolId && !futurePendingDelegatedStakePool
         ? styles.futureStakePoolTileUndefined
         : null,
     ]);
@@ -202,17 +288,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       styles.action,
       highlightedPoolId ? styles.active : null,
     ]);
-
-    const popOverThemeVariables = {
-      '--rp-pop-over-bg-color':
-        'var(--theme-staking-stake-pool-tooltip-background-color)',
-      '--rp-pop-over-box-shadow':
-        '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
-      '--rp-pop-over-border-color':
-        'var(--theme-staking-stake-pool-tooltip-border-color)',
-      '--rp-pop-over-border-radius': '5px',
-      '--rp-pop-over-border-style': 'solid',
-    };
 
     return (
       <div className={styles.component}>
@@ -243,28 +318,35 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         <div className={rightContainerStyles}>
           {!isRestoring ? (
             <Fragment>
-              <div className={styles.stakePoolTile}>
-                {delegatedStakePoolId ? (
-                  <PopOver
-                    content={
-                      <div className={styles.tooltipLabelWrapper}>
-                        <span>
-                          {intl.formatMessage(
-                            messages.TooltipPoolTickerEarningRewards
-                          )}
-                        </span>
-                      </div>
-                    }
+              {delegatedStakePoolId ? (
+                <PopOver
+                  themeOverrides={popOverThemeOverrides}
+                  className={`wallet-row-${id}`}
+                  content={
+                    <div className={styles.tooltipLabelWrapper}>
+                      <span>
+                        {intl.formatMessage(
+                          messages.TooltipPoolTickerEarningRewards
+                        )}
+                      </span>
+                    </div>
+                  }
+                >
+                  <div
+                    className={styles.stakePoolTile}
+                    ref={this.stakePoolFirstTileRef}
                   >
                     <div
                       className={!delegatedStakePool ? styles.unknown : null}
                     >
                       {delegatedStakePool ? (
                         <div className={styles.stakePoolName}>
-                          <SVGInline
-                            svg={adaIcon}
+                          <div
                             className={styles.activeAdaSymbol}
-                          />
+                            ref={this.stakePoolAdaSymbolRef}
+                          >
+                            <SVGInline svg={adaIcon} />
+                          </div>
                           <div className={styles.stakePoolTicker}>
                             {delegatedStakePool.ticker}
                           </div>
@@ -275,24 +357,26 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         </div>
                       )}
                     </div>
-                  </PopOver>
-                ) : (
+                  </div>
+                </PopOver>
+              ) : (
+                <div className={styles.stakePoolTile}>
                   <div className={styles.nonDelegatedText}>
                     {notDelegatedText}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
               <SVGInline svg={arrow} className={styles.arrow} />
               <div className={styles.stakePoolTile}>
-                {nextPendingDelegationStakePoolId ? (
+                {nextPendingDelegatedStakePoolId ? (
                   <div
                     className={
-                      !nextPendingDelegationStakePool ? styles.unknown : null
+                      !nextPendingDelegatedStakePool ? styles.unknown : null
                     }
                   >
-                    {nextPendingDelegationStakePool ? (
+                    {nextPendingDelegatedStakePool ? (
                       <div className={styles.stakePoolTicker}>
-                        {nextPendingDelegationStakePool.ticker}
+                        {nextPendingDelegatedStakePool.ticker}
                       </div>
                     ) : (
                       <div className={styles.stakePoolUnknown}>
@@ -307,49 +391,34 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                 )}
               </div>
               <SVGInline svg={arrow} className={styles.arrow} />
+
               <div className={futureStakePoolTileStyles}>
-                {futurePendingDelegationStakePoolId ? (
-                  <div
-                    onMouseEnter={this.handleShowTooltip}
-                    onMouseLeave={this.handleHideTooltip}
-                  >
-                    {futurePendingDelegationStakePool ? (
-                      <PopOver
-                        key="stakePoolTooltip"
-                        placement="auto"
-                        maxWidth={280}
-                        appendTo={'parent'}
-                        isShowingOnHover={false}
-                        isVisible={highlightedPoolId}
-                        themeVariables={popOverThemeVariables}
-                        allowHTML
-                        content={
-                          <TooltipPool
-                            stakePool={futurePendingDelegationStakePool}
-                            isVisible
-                            currentTheme={currentTheme}
-                            onClick={this.handleHideTooltip}
-                            onOpenExternalLink={onOpenExternalLink}
-                            top={top}
-                            left={left}
-                            color={stakePoolRankingColor}
-                            showWithSelectButton={showWithSelectButton}
-                            containerClassName={containerClassName}
-                            numberOfRankedStakePools={numberOfRankedStakePools}
-                            isDelegationView
-                          />
-                        }
+                {futurePendingDelegatedStakePoolId ? (
+                  <>
+                    {futurePendingDelegatedStakePool ? (
+                      <PoolPopOver
+                        openOnHover
+                        color={stakePoolRankingColor}
+                        currentTheme={currentTheme}
+                        onClose={this.handlePopOverClose}
+                        onOpen={this.handlePopOverOpen}
+                        onOpenExternalLink={onOpenExternalLink}
+                        openWithDelay={false}
+                        stakePool={futurePendingDelegatedStakePool}
+                        containerClassName={containerClassName}
+                        numberOfRankedStakePools={numberOfRankedStakePools}
+                        showWithSelectButton={showWithSelectButton}
                       >
                         <div className={styles.stakePoolTicker}>
-                          {futurePendingDelegationStakePool.ticker}
+                          {futurePendingDelegatedStakePool.ticker}
                         </div>
                         {IS_RANKING_DATA_AVAILABLE ? (
                           <div
                             className={styles.ranking}
                             style={{ color: stakePoolRankingColor }}
                           >
-                            {futurePendingDelegationStakePool.nonMyopicMemberRewards ? (
-                              futurePendingDelegationStakePool.ranking
+                            {futurePendingDelegatedStakePool.nonMyopicMemberRewards ? (
+                              futurePendingDelegatedStakePool.ranking
                             ) : (
                               <>
                                 {numberOfRankedStakePools + 1}
@@ -367,7 +436,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                             <span
                               style={{
                                 width: `${parseFloat(
-                                  futurePendingDelegationStakePool.saturation
+                                  futurePendingDelegatedStakePool.saturation
                                 ).toFixed(2)}%`,
                               }}
                             />
@@ -377,19 +446,19 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                           className={styles.stakePoolRankingIndicator}
                           style={{ background: stakePoolRankingColor }}
                         />
-                      </PopOver>
+                      </PoolPopOver>
                     ) : (
                       <div className={styles.stakePoolUnknown}>
                         {intl.formatMessage(messages.unknownStakePoolLabel)}
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <div className={styles.nonDelegatedText}>
                     {notDelegatedText}
                   </div>
                 )}
-                {futurePendingDelegationStakePoolId && !isUndelegateBlocked && (
+                {futurePendingDelegatedStakePoolId && !isUndelegateBlocked && (
                   <div
                     className={actionButtonStyles}
                     role="presentation"
@@ -404,7 +473,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                   role="presentation"
                   onClick={onDelegate}
                 >
-                  {!futurePendingDelegationStakePoolId
+                  {!futurePendingDelegatedStakePoolId
                     ? delegateText
                     : redelegateText}
                 </div>
@@ -423,55 +492,4 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       </div>
     );
   }
-
-  handleShowTooltip = () => {
-    this.setState({
-      highlightedPoolId: true,
-    });
-  };
-
-  handleHideTooltip = () => {
-    this.setState({
-      highlightedPoolId: false,
-    });
-  };
-
-  getPendingStakePool = (
-    epochNumber: number,
-    fallbackStakePool: ?StakePool
-  ) => {
-    const {
-      wallet: { delegatedStakePoolId, pendingDelegations },
-      delegatedStakePool,
-      getStakePoolById,
-    } = this.props;
-
-    let stakePoolId;
-    let stakePool;
-    const hasPendingDelegations =
-      pendingDelegations && pendingDelegations.length;
-
-    if (hasPendingDelegations) {
-      const pendingDelegation = pendingDelegations.filter(
-        (item) => get(item, ['changes_at', 'epoch_number'], 0) === epochNumber
-      );
-      stakePoolId = get(pendingDelegation, '[0].target');
-      stakePool = getStakePoolById(stakePoolId);
-    }
-
-    if (!stakePool && fallbackStakePool) {
-      stakePoolId = fallbackStakePool.id;
-      stakePool = fallbackStakePool;
-    }
-
-    if (!stakePool && delegatedStakePoolId) {
-      stakePoolId = delegatedStakePoolId;
-      stakePool = delegatedStakePool;
-    }
-
-    return {
-      stakePoolId,
-      stakePool,
-    };
-  };
 }

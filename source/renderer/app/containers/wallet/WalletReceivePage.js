@@ -13,6 +13,7 @@ import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
+import type { WalletLocalData } from '../../api/utils/localStorage';
 
 const messages = defineMessages({
   address: {
@@ -88,6 +89,10 @@ export default class WalletReceivePage extends Component<Props, State> {
 
     dialogs.closeActiveDialog.trigger();
     hardwareWallets.resetInitializedAddressVerification();
+  };
+
+  handleToggleUsedAddresses = () => {
+    this.props.actions.walletSettings.toggleShowUsedAddresses.trigger();
   };
 
   getAddressAndFilepath = async (fileExtension?: string = 'pdf') => {
@@ -182,7 +187,7 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses, sidebar, hardwareWallets } = stores;
+    const { uiDialogs, addresses, sidebar, hardwareWallets, walletSettings } = stores;
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
@@ -193,7 +198,16 @@ export default class WalletReceivePage extends Component<Props, State> {
       isAddressDerived,
       isAddressChecked,
       setAddressVerificationCheckStatus,
+      checkIsTrezorByWalletId,
     } = hardwareWallets;
+
+    const { getLocalWalletDataById } = walletSettings;
+
+    const localWalletData: ?WalletLocalData = getLocalWalletDataById(
+      activeWallet ? activeWallet.id : ''
+    );
+
+    const { showUsedAddresses } = localWalletData || {};
 
     // Guard against potential null values
     if (!activeWallet)
@@ -205,6 +219,8 @@ export default class WalletReceivePage extends Component<Props, State> {
     const isByronWalletAddressUsed = addresses.active
       ? addresses.active.used
       : false;
+
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     return (
       <Fragment>
@@ -223,6 +239,8 @@ export default class WalletReceivePage extends Component<Props, State> {
                 addresses.createByronWalletAddressRequest.isExecuting
               }
               error={addresses.error}
+              showUsed={showUsedAddresses}
+              onToggleUsedAddresses={this.handleToggleUsedAddresses}
             />
           ) : (
             <WalletReceiveSequential
@@ -231,6 +249,8 @@ export default class WalletReceivePage extends Component<Props, State> {
               onShareAddress={this.handleShareAddress}
               onCopyAddress={this.handleCopyAddress}
               onToggleSubMenus={toggleSubMenus}
+              showUsed={showUsedAddresses}
+              onToggleUsedAddresses={this.handleToggleUsedAddresses}
             />
           )}
         </VerticalFlexContainer>
@@ -252,6 +272,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             isAddressChecked={isAddressChecked}
             onChangeVerificationStatus={setAddressVerificationCheckStatus}
             onSupportRequestClick={this.handleSupportRequestClick}
+            isTrezor={isTrezor}
           />
         )}
       </Fragment>

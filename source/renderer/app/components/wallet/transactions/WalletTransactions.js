@@ -6,7 +6,6 @@ import WalletTransactionsList, {
   WalletTransactionsListScrollContext,
 } from './WalletTransactionsList';
 import WalletTransactionsHeader from './WalletTransactionsHeader';
-import FilterDialog from './FilterDialog';
 import FilterResultInfo from './FilterResultInfo';
 import WalletNoTransactions from './WalletNoTransactions';
 import VerticalFlexContainer from '../../layout/VerticalFlexContainer';
@@ -45,11 +44,14 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   totalAvailable: number,
   transactions: Array<WalletTransaction>,
+  hasAssetsEnabled: boolean,
+  getAssetDetails: Function,
+  isInternalAddress: Function,
+  onCopyAssetItem: Function,
 };
 
 type State = {
   isScrolling: boolean,
-  isFilterDialogOpen: boolean,
 };
 
 @observer
@@ -60,31 +62,17 @@ export default class WalletTransactions extends Component<Props, State> {
 
   state = {
     isScrolling: false,
-    isFilterDialogOpen: false,
   };
 
   setIsScrolling = (isScrolling: boolean) => this.setState({ isScrolling });
 
-  onFilterDialogOpen = () => {
-    this.setState(() => ({
-      isFilterDialogOpen: true,
-    }));
-  };
-
-  onFilterDialogClose = () => {
-    this.setState(() => ({
-      isFilterDialogOpen: false,
-    }));
-  };
-
   onFilter = (filterOptions: TransactionFilterOptionsType) => {
     this.props.onFilter(filterOptions);
-    this.onFilterDialogClose();
   };
 
   render() {
     const { intl } = this.context;
-    const { isFilterDialogOpen, isScrolling } = this.state;
+    const { isScrolling } = this.state;
     const {
       activeWallet,
       transactions,
@@ -104,6 +92,10 @@ export default class WalletTransactions extends Component<Props, State> {
       onRequestCSVFile,
       defaultFilterOptions,
       populatedFilterOptions,
+      hasAssetsEnabled,
+      getAssetDetails,
+      isInternalAddress,
+      onCopyAssetItem,
     } = this.props;
 
     // Guard against potential null values
@@ -144,7 +136,11 @@ export default class WalletTransactions extends Component<Props, State> {
           currentLocale={currentLocale}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
+          hasAssetsEnabled={hasAssetsEnabled}
+          getAssetDetails={getAssetDetails}
           isRenderingAsVirtualList
+          isInternalAddress={isInternalAddress}
+          onCopyAssetItem={onCopyAssetItem}
         />
       );
     }
@@ -158,22 +154,17 @@ export default class WalletTransactions extends Component<Props, State> {
             numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
             numberOfTransactions={transactions.length}
             onRequestCSVFile={onRequestCSVFile}
-            onFilterDialogOpen={this.onFilterDialogOpen}
             isScrolling={isScrolling}
             isFilterDisabled={isFilterDisabled}
-          >
-            {isFilterDialogOpen && (
-              <FilterDialog
-                locale={currentLocale}
-                dateFormat={currentDateFormat}
-                defaultFilterOptions={defaultFilterOptions}
-                populatedFilterOptions={populatedFilterOptions}
-                onFilter={this.onFilter}
-                onClose={this.onFilterDialogClose}
-                numberFormat={currentNumberFormat}
-              />
-            )}
-          </WalletTransactionsHeader>
+            filterDialogProps={{
+              defaultFilterOptions,
+              populatedFilterOptions,
+              locale: currentLocale,
+              dateFormat: currentDateFormat,
+              onFilter: this.onFilter,
+              numberFormat: currentNumberFormat,
+            }}
+          />
           <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
         </div>
       </WalletTransactionsListScrollContext.Provider>

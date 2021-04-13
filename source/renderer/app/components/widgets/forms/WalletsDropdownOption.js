@@ -11,7 +11,7 @@ import LoadingSpinner from '../LoadingSpinner';
 export type WalletOption = {
   delegatedStakePool?: ?StakePool,
   detail?: string,
-  label: string,
+  label: any,
   numberOfStakePools?: number,
   selected?: boolean,
   isSyncing?: boolean,

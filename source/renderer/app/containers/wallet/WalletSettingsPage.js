@@ -7,13 +7,16 @@ import { isValidWalletName } from '../../utils/validations';
 import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
+import WalletPublicKeyDialogContainer from './dialogs/settings/WalletPublicKeyDialogContainer';
 import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
+import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
@@ -33,9 +36,9 @@ export default class WalletSettingsPage extends Component<Props> {
     wallets.copyPublicKey.trigger({ publicKey });
   };
 
-  handleGetWalletPublicKey = () => {
-    const { wallets } = this.props.stores;
-    wallets._getWalletPublicKey();
+  handleDelegateClick = () => {
+    const { goToRoute } = this.props.actions.router;
+    goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
   };
 
   render() {
@@ -45,17 +48,19 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       profile,
+      hardwareWallets,
     } = this.props.stores;
+    const { checkIsTrezorByWalletId } = hardwareWallets;
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
     } = wallets;
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     const { isLegacy, isHardwareWallet } = activeWallet;
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     const { actions } = this.props;
     const {
@@ -109,6 +114,12 @@ export default class WalletSettingsPage extends Component<Props> {
           isLegacy={isLegacy}
           walletId={activeWallet.id}
           walletName={activeWallet.name}
+          delegationStakePoolStatus={activeWallet.delegationStakePoolStatus}
+          lastDelegationStakePoolStatus={
+            activeWallet.lastDelegationStakePoolStatus
+          }
+          isRestoring={activeWallet.isRestoring}
+          isSyncing={activeWallet.isSyncing}
           walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}
@@ -127,14 +138,24 @@ export default class WalletSettingsPage extends Component<Props> {
           onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
-          getWalletPublicKey={this.handleGetWalletPublicKey}
+          updateDataForActiveDialogAction={
+            actions.dialogs.updateDataForActiveDialog.trigger
+          }
+          onDelegateClick={this.handleDelegateClick}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
           }
+          walletPublicKeyDialogContainer={<WalletPublicKeyDialogContainer />}
           walletPublicKeyQRCodeDialogContainer={
             <WalletPublicKeyQRCodeDialogContainer />
+          }
+          undelegateWalletDialogContainer={
+            <UndelegateWalletDialogContainer
+              onExternalLinkClick={app.openExternalLink}
+              isTrezor={isHardwareWallet && isTrezor}
+            />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}

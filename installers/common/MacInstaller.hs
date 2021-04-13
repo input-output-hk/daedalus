@@ -280,6 +280,9 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "trezor-connect"
       , "js-chain-libs-node"
       , "bignumber.js"
+      , "int64-buffer"
+      , "call-bind"
+      , "get-intrinsic"
       ]
   mapM_ (\lib -> do
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)

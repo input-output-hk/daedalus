@@ -28,6 +28,7 @@ export type WalletLocalData = {
   id: string,
   recoveryPhraseVerificationDate?: ?Date,
   creationDate: Date,
+  showUsedAddresses: boolean,
 };
 export type WalletsLocalData = {
   [key: StorageKey]: WalletLocalData,
@@ -56,6 +57,7 @@ export type SetHardwareWalletDeviceRequestType = {
 
 export type HardwareWalletLocalData = {
   id: string,
+  deviceType: DeviceType,
   device: TransportDevice,
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
   disconnected: boolean,
@@ -306,6 +308,15 @@ export default class LocalStorageApi {
 
   unsetSmashServer = (): Promise<void> =>
     LocalStorageApi.unset(keys.SMASH_SERVER);
+
+  getStakingInfoWasOpen = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.STAKING_INFO_WAS_OPEN, false);
+
+  setStakingInfoWasOpen = async (): Promise<void> =>
+    LocalStorageApi.set(keys.STAKING_INFO_WAS_OPEN, true);
+
+  unsetStakingInfoWasOpen = (): Promise<void> =>
+    LocalStorageApi.unset(keys.STAKING_INFO_WAS_OPEN);
 
   // Paired Hardware wallets (software <-> hardware wallet / device)
   getHardwareWalletsLocalData = (): Promise<HardwareWalletsLocalData> =>

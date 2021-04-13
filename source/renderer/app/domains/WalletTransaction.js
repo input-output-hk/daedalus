@@ -2,11 +2,12 @@
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
-  TrasactionAddresses,
+  TransactionAddresses,
   TransactionType,
   TransactionState,
   TransactionWithdrawalType,
 } from '../api/transactions/types';
+import type { WalletAssetItems } from '../api/assets/types';
 import type { TransactionMetadata } from '../types/TransactionMetadata';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
@@ -31,9 +32,10 @@ export class WalletTransaction {
   @observable amount: BigNumber;
   @observable fee: BigNumber;
   @observable deposit: BigNumber;
+  @observable assets: WalletAssetItems;
   @observable date: ?Date;
   @observable description: string = '';
-  @observable addresses: TrasactionAddresses = {
+  @observable addresses: TransactionAddresses = {
     from: [],
     to: [],
     withdrawals: [],
@@ -52,8 +54,9 @@ export class WalletTransaction {
     fee: BigNumber,
     deposit: BigNumber,
     date: ?Date,
+    assets: WalletAssetItems,
     description: string,
-    addresses: TrasactionAddresses,
+    addresses: TransactionAddresses,
     state: TransactionState,
     confirmations: number,
     slotNumber: ?number,

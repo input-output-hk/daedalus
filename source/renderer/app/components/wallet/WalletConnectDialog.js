@@ -207,6 +207,8 @@ export default class WalletConnectDialog extends Component<Props> {
                 <HardwareWalletStatus
                   hwDeviceStatus={hwDeviceStatus}
                   onExternalLinkClick={onExternalLinkClick}
+                  isTransactionStatus={false}
+                  isTrezor={isTrezor}
                 />
               </div>
               <div className={styles.hardwareWalletIssueArticleWrapper}>

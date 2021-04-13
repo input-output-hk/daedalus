@@ -5,6 +5,7 @@
   "dialog.exportWalletsWarning.title": "ウォレットをインポートする",
   "menu.daedalus": "Daedalus",
   "menu.daedalus.about": "このDaedalusについて",
+  "menu.daedalus.redeemItnRewards": "ITN報酬の還元",
   "menu.daedalus.settings": "設定",
   "menu.daedalus.walletSettings": "ウォレットの設定",
   "menu.daedalus.hideDaedalus": "Daedalusを非表示",

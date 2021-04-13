@@ -7,7 +7,8 @@ import type {
 
 import type { SmashServerStatuses } from '../api/staking/types';
 
-const { smashUrl } = global;
+const { smashUrl, environment, isFlight } = global;
+const { isMainnet } = environment;
 
 export const SMASH_SERVERS_LIST: {
   [key: SmashServerType]: {
@@ -104,6 +105,8 @@ export const REDEEM_ITN_REWARDS_STEPS: {
   RESULT: 'result',
 };
 
+export const DELEGATION_DEPOSIT = 2; // 2 ADA | unit: lovelace
+
 export const DELEGATION_ACTIONS: {
   [key: string]: DelegationAction,
 } = {
@@ -111,8 +114,9 @@ export const DELEGATION_ACTIONS: {
   QUIT: 'quit',
 };
 
+export const IS_GRID_REWARDS_VIEW_AVAILABLE = !isMainnet && !isFlight;
 export const IS_RANKING_DATA_AVAILABLE = true;
-
 export const IS_SATURATION_DATA_AVAILABLE = true;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
+export const EPOCH_NUMBER_TO_FULLY_DECENTRALIZED = 257;

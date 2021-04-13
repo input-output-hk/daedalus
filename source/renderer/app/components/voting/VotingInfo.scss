@@ -17,6 +17,37 @@
   text-transform: uppercase;
 }
 
+.descriptionForEndedRegistration {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  p {
+    @extend %regularText;
+    color: var(--theme-voting-font-color-regular);
+    font-family: var(--font-light);
+    margin-bottom: 11px;
+    text-align: left;
+  }
+
+  b {
+    font-family: var(--font-medium);
+  }
+
+  .learnMoreContainer {
+    @extend %regularText;
+    color: var(--theme-voting-font-color-regular);
+    font-family: var(--font-light);
+    margin-bottom: 0;
+
+    .learnMoreLink {
+      font-family: var(--font-regular);
+      font-size: 16px;
+      margin: 0 5px;
+    }
+  }
+}
+
 .stepsContainer {
   display: flex;
   justify-content: space-around;

@@ -5,15 +5,16 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
-import { momentLocales } from '../../../common/types/locales.types';
+import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
+import type { AssetMetadata } from '../api/assets/types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
   long: boolean = true
-) => {
+): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
     : shortNumber(amount);
@@ -35,10 +36,24 @@ export const formattedWalletCurrencyAmount = (
   currencyRate: number,
   decimalDigits?: ?number,
   currencySymbol?: ?string
-) =>
+): string =>
   `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
     currencySymbol || ''
   }`;
+
+export const formattedTokenWalletAmount = (
+  amount: BigNumber,
+  metadata?: ?AssetMetadata
+): string => {
+  const { ticker, unit } = metadata || {};
+  const { decimals } = unit || {};
+  const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
+  let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
+  if (ticker) {
+    formattedAmount += ` ${ticker}`;
+  }
+  return formattedAmount;
+};
 
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03
@@ -80,7 +95,11 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const formattedAmountToNaturalUnits = (amount: string): string => {
+export const formattedAmountToNaturalUnits = (amount: ?string): string => {
+  if (!amount) {
+    return '0';
+  }
+
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators
     .replace(/,/g, '') // removes all the comma separators
@@ -214,3 +233,31 @@ export const formattedSize = (size: string): string => {
 
   return formattedResult;
 };
+
+export const formattedDateTime = (
+  dateTime: Date,
+  {
+    currentLocale,
+    currentDateFormat,
+    currentTimeFormat,
+  }: {
+    currentLocale: Locale,
+    currentDateFormat: string,
+    currentTimeFormat: string,
+  }
+) => {
+  moment.locale(momentLocales[currentLocale]);
+
+  const dateTimeMoment = moment(dateTime);
+  const dateFormatted = dateTimeMoment.format(currentDateFormat);
+  const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+
+  if (currentLocale === LOCALES.english) {
+    return `${dateFormatted}, ${timeFormatted}`;
+  }
+
+  return `${dateFormatted}${timeFormatted}`;
+};
+
+export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
+  '1'.padEnd(decimalPlaces + 1, '0');

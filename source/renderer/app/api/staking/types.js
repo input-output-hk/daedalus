@@ -65,6 +65,7 @@ export type RewardForIncentivizedTestnet = {
   date?: string,
   wallet: string,
   reward: BigNumber,
+  rewardsAddress: string,
   pool?: StakePool,
 };
 
@@ -96,12 +97,14 @@ export type GetDelegationFeeRequest = {
 
 export type DelegationCalculateFeeResponse = {
   fee: BigNumber,
-  deposit: BigNumber,
+  deposits: BigNumber,
+  depositsReclaimed: BigNumber,
 };
 
 export type QuitStakePoolRequest = {
   walletId: string,
   passphrase: string,
+  isHardwareWallet?: boolean,
 };
 
 export type GetRedeemItnRewardsFeeRequest = {

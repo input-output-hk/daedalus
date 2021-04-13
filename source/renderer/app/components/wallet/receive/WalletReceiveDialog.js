@@ -152,6 +152,7 @@ type Props = {
   onClose: Function,
   onChangeVerificationStatus: Function,
   onSupportRequestClick: Function,
+  isTrezor: boolean
 };
 
 type State = {
@@ -269,6 +270,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       isAddressDerived,
       isAddressChecked,
       onSupportRequestClick,
+      isTrezor,
     } = this.props;
     const {
       selectedVerificationStatus,
@@ -429,6 +431,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
               <HardwareWalletStatus
                 hwDeviceStatus={hwDeviceStatus}
                 walletName={walletName}
+                isTrezor={isTrezor}
               />
 
               <div className={styles.verificationCheckboxes}>

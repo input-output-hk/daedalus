@@ -68,6 +68,9 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.recoveryPhraseVerificationClose.listen(
       this._recoveryPhraseVerificationClose
     );
+    walletSettingsActions.toggleShowUsedAddresses.listen(
+      this._toggleShowUsedAddressesStatuses
+    );
 
     sidebarActions.walletSelected.listen(this._onWalletSelected);
   }
@@ -79,14 +82,17 @@ export default class WalletSettingsStore extends Store {
   getWalletsRecoveryPhraseVerificationData = (walletId: string) =>
     this.walletsRecoveryPhraseVerificationData[walletId] || {};
 
+  getLocalWalletDataById = (id: any): ?WalletLocalData => {
+    const { all: walletsLocalData } = this.stores.walletsLocal;
+    return walletsLocalData[id];
+  };
+
   @computed get walletsRecoveryPhraseVerificationData() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
-    // $FlowFixMe
-    return Object.values(walletsLocalData).reduce(
-      (
-        obj,
-        { id, recoveryPhraseVerificationDate, creationDate }: WalletLocalData
-      ) => {
+
+    return Object.keys(walletsLocalData)
+      .map((key) => walletsLocalData[key])
+      .reduce((obj, { id, recoveryPhraseVerificationDate, creationDate }) => {
         const {
           recoveryPhraseVerificationStatus,
           recoveryPhraseVerificationStatusType,
@@ -107,9 +113,7 @@ export default class WalletSettingsStore extends Store {
           hasNotification,
         };
         return obj;
-      },
-      {}
-    );
+      }, {});
   }
 
   // =================== PRIVATE API ==================== //
@@ -280,4 +284,25 @@ export default class WalletSettingsStore extends Store {
   };
 
   /* ====  End of Wallet Recovery Phrase Verification  ===== */
+
+  @action _toggleShowUsedAddressesStatuses = async () => {
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet)
+      throw new Error(
+        'Active wallet required before checking show used addresses statuses.'
+      );
+
+    const localWalletData: ?WalletLocalData = this.getLocalWalletDataById(
+      activeWallet ? activeWallet.id : ''
+    );
+
+    const { showUsedAddresses } = localWalletData || {};
+
+    await this.actions.walletsLocal.setWalletLocalData.trigger({
+      walletId: activeWallet.id,
+      updatedWalletData: {
+        showUsedAddresses: !showUsedAddresses,
+      },
+    });
+  };
 }

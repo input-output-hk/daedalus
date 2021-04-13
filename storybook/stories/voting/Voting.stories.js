@@ -11,16 +11,55 @@ import VotingRegistrationStepsConfirm from '../../../source/renderer/app/compone
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/VotingInfo';
-
+import {
+  LANGUAGE_OPTIONS,
+  DATE_ENGLISH_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../source/renderer/app/config/profileConfig';
 import {
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
 } from '../../../source/renderer/app/config/votingConfig';
-import { generateWallet } from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
 
 const WALLETS = [
-  generateWallet('Wallet 1', '100000000000', 0),
-  generateWallet('Wallet 2', '100', 0),
+  generateWallet('Wallet 1', '100000000000', assets, 0),
+  generateWallet('Wallet 2', '100', assets, 0),
 ];
 
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
@@ -110,6 +149,10 @@ storiesOf('Voting|Voting Info', module)
 
   .add('Voting Info', () => (
     <VotingInfo
+      currentLocale={LANGUAGE_OPTIONS[0].value}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+      currentTimeFormat={TIME_OPTIONS[0].value}
+      isRegistrationEnded={boolean('isRegistrationEnded', false)}
       onRegisterToVoteClick={action('onRegisterToVoteClick')}
       onExternalLinkClick={action('onExternalLinkClick')}
     />

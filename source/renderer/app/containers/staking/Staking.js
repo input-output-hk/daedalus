@@ -7,7 +7,7 @@ import StakingUnavailable from '../../components/staking/StakingUnavailable';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
 import ExperimentalDataOverlay from '../../components/notifications/ExperimentalDataOverlay';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
-import UndelegateConfirmationDialog from '../../components/staking/delegation-center/UndelegateConfirmationDialog';
+import UndelegateWalletConfirmationDialog from '../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -91,7 +91,7 @@ export default class Staking extends Component<Props> {
     );
 
     const isUndelegationWizardOpen = uiDialogs.isOpen(
-      UndelegateConfirmationDialog
+      UndelegateWalletConfirmationDialog
     );
 
     if (!isSynced && !(isDelegationWizardOpen || isUndelegationWizardOpen)) {

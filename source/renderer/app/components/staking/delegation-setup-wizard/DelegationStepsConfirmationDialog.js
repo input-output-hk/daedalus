@@ -121,6 +121,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   error: ?LocalizableError,
   onExternalLinkClick: Function,
+  isTrezor: boolean,
 };
 
 @observer
@@ -198,6 +199,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       isSubmitting,
       hwDeviceStatus,
       onExternalLinkClick,
+      isTrezor,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
@@ -305,15 +307,16 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                       {formattedWalletAmount(transactionFee.fee, false)}
                     </span>
                     <span className={styles.feesAmountLabel}>
-                      &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                      {` `}
+                      {intl.formatMessage(globalMessages.unitAda)}
                     </span>
                   </>
                 )}
               </p>
             </div>
             {transactionFee &&
-              transactionFee.deposit.isZero &&
-              !transactionFee.deposit.isZero() && (
+              transactionFee.deposits.isZero &&
+              !transactionFee.deposits.isZero() && (
                 <>
                   <div className={styles.depositWrapper}>
                     <p className={styles.depositLabel}>
@@ -321,10 +324,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                     </p>
                     <p className={styles.depositAmount}>
                       <span>
-                        {formattedWalletAmount(transactionFee.deposit, false)}
+                        {formattedWalletAmount(transactionFee.deposits, false)}
                       </span>
                       <span className={styles.depositAmountLabel}>
-                        &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                        {` `}
+                        {intl.formatMessage(globalMessages.unitAda)}
                       </span>
                     </p>
                   </div>
@@ -337,6 +341,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               <HardwareWalletStatus
                 hwDeviceStatus={hwDeviceStatus}
                 walletName={selectedWalletName}
+                isTrezor={isTrezor}
                 onExternalLinkClick={onExternalLinkClick}
               />
             </div>

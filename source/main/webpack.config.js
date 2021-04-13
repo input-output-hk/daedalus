@@ -79,6 +79,8 @@ module.exports = {
             process.env.BUILD_NUMBER || 'dev'
           ),
           'process.env.IS_WATCH_MODE': process.env.IS_WATCH_MODE === 'true',
+          'process.env.KEEP_LOCAL_CLUSTER_RUNNING':
+            process.env.KEEP_LOCAL_CLUSTER_RUNNING === 'true',
         },
         process.env.NODE_ENV === 'production'
           ? {

@@ -182,6 +182,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       hwDeviceStatus,
       sendMoneyRequest,
       selectCoinsRequest,
+      checkIsTrezorByWalletId,
     } = hardwareWallets;
     const {
       stakePools,
@@ -201,6 +202,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
       this.handleIsWalletAcceptable(amount, reward)
     );
+
+    let isTrezor = false;
+    if (selectedWallet) {
+      isTrezor = checkIsTrezorByWalletId(selectedWallet.id);
+    }
 
     return (
       <DelegationSetupWizardDialog
@@ -238,6 +244,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
           selectCoinsRequest.error
         }
         hwDeviceStatus={hwDeviceStatus}
+        isTrezor={isTrezor}
       />
     );
   }
@@ -261,11 +268,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         poolId,
         delegationAction: DELEGATION_ACTIONS.JOIN,
       });
-      const { feeWithDeposits, fee } = coinsSelection;
-      stakePoolJoinFee = {
-        fee,
-        deposit: feeWithDeposits.minus(fee),
-      };
+      const { deposits, depositsReclaimed, fee } = coinsSelection;
+      stakePoolJoinFee = { deposits, depositsReclaimed, fee };
       // Initiate Transaction (Delegation)
       hardwareWallets.initiateTransaction({ walletId: selectedWalletId });
     } else {
