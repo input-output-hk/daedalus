@@ -307,7 +307,6 @@ export default class WalletSendForm extends Component<Props, State> {
     return (
       this.hasReceiverValue() &&
       addressFromSameWallet &&
-      receiverField.focused &&
       receiverField.isValid
     );
   };
