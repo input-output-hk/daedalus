@@ -3,7 +3,6 @@ import React from 'react';
 import { findKey } from 'lodash';
 import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import { withState } from '@dump247/storybook-state';
 import { action } from '@storybook/addon-actions';
 import SettingsWrapper from '../utils/SettingsWrapper';
 import {
@@ -24,7 +23,6 @@ import TermsOfUseSettings from '../../../../source/renderer/app/components/setti
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 
 // Data
-import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
