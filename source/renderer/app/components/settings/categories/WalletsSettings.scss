@@ -56,11 +56,9 @@
 
   .disclaimer {
     background: var(--theme-button-flat-background-color);
-    // background-color: rgba(68, 91, 124, 0.1);
     border-radius: 4px;
     font-size: 14px;
     margin: 20px 0;
-    margin-top: 20px;
     padding: 10px 20px;
     text-align: left;
 
@@ -86,4 +84,10 @@
   :not(.SimpleOptions_hasSearch)
   ul {
   border-radius: 0 0 4px 4px;
+}
+
+:global {
+  .SimpleOptions_option em {
+    background-color: var(--rp-option-search-highlight-background-color) !important;
+  }
 }

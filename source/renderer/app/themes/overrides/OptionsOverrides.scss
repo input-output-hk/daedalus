@@ -14,6 +14,10 @@
 
     .SimpleOptions_search button:before {
       height: 10px;
+      -webkit-mask-size: 10px, 10px;
+      mask-size: 10px, 10px;
+      margin-left: -1px;
+      margin-top: -1px;
       width: 10px;
     }
 
