@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
+
 ## 4.0.5
 
 ### Features
@@ -32,7 +38,6 @@ Changelog
 ### Features
 
 - Added pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
-- Added rewards address in Rewards Delegation Screen ([PR 2475](https://github.com/input-output-hk/daedalus/pull/2475))
 - Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
 - Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
 - Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
@@ -91,9 +96,6 @@ Changelog
 ### Features
 
 - Added native token support [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
-
-### Features
-
 - Enabled rewards withdrawals on hardware wallets ([PR 2408](https://github.com/input-output-hk/daedalus/pull/2408))
 
 ### Fixes
