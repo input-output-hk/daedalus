@@ -70,21 +70,24 @@ export default class PinCode extends Component<Props> {
     const key = value.join('').length;
     const inputValue = value[key - 1];
     this.add =
-      inputValue !== null &&
-      inputValue !== undefined &&
-      !isNaN(inputValue);
-    const emptyFieldIndex = value.findIndex((item) => item === "");
+      inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
+    const emptyFieldIndex = value.findIndex((item) => item === '');
     this.focusKey =
       emptyFieldIndex !== undefined &&
       emptyFieldIndex !== null &&
-      emptyFieldIndex > -1 ?
-      emptyFieldIndex : this.focusKey;
-    if (name === selectedPinField && (key > 0 && key < length || emptyFieldIndex > -1)) {
+      emptyFieldIndex > -1
+        ? emptyFieldIndex
+        : this.focusKey;
+    const focusKey = parseInt(this.focusKey, 10);
+    if (
+      name === selectedPinField &&
+      ((key > 0 && key < length) || emptyFieldIndex > -1)
+    ) {
       let inputFocusKey = 0;
       if (emptyFieldIndex > -1) {
         inputFocusKey = emptyFieldIndex;
       } else {
-        inputFocusKey = this.add ? this.focusKey + 1 : this.focusKey - 1;
+        inputFocusKey = this.add ? focusKey + 1 : focusKey - 1;
       }
       if (
         Object.prototype.hasOwnProperty.call(this.inputsRef, inputFocusKey) &&
@@ -105,10 +108,8 @@ export default class PinCode extends Component<Props> {
     const nextInputField = this.inputsRef[nextFieldFocusKey];
     const isSeparator = key === decimalSeparator || key === groupSeparator;
     const isBackspace = key === 'Backspace';
-    const inputNewValue = this.inputsRef[focusKey].props.value;
-    const fieldIsEmpty = this.inputsRef[focusKey]
-      ? !inputNewValue
-      : false;
+    const inputNewValue = this.inputsRef[focusKey] ? this.inputsRef[focusKey].props.value : null;
+    const fieldIsEmpty = this.inputsRef[focusKey] ? !inputNewValue : false;
 
     if (isSeparator) {
       this.handleSeparatorInput(nextInputField, control);
@@ -123,7 +124,10 @@ export default class PinCode extends Component<Props> {
     }
   };
 
-  handleSeparatorInput = (nextInputField: Field, control: { blur?: Function, focus?: Function }) => {
+  handleSeparatorInput = (
+    nextInputField: Field,
+    control: { blur?: Function, focus?: Function }
+  ) => {
     if (nextInputField && nextInputField.focus) {
       nextInputField.focus();
     }
@@ -138,15 +142,7 @@ export default class PinCode extends Component<Props> {
   };
 
   generatePinCodeInput = () => {
-    const {
-      id,
-      name,
-      type,
-      autoFocus,
-      length,
-      error,
-      value,
-    } = this.props;
+    const { id, name, type, autoFocus, length, error, value } = this.props;
 
     const pinCodeClasses = classNames([
       styles.pinCode,

@@ -74,15 +74,18 @@ type State = {
 };
 
 @observer
-export default class VotingRegistrationStepsEnterPinCode extends Component<Props, State> {
+export default class VotingRegistrationStepsEnterPinCode extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   state = {
     selectedPinField: null,
-    pinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill("")),
-    repeatPinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill("")),
+    pinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill('')),
+    repeatPinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill('')),
   };
 
   form = new ReactToolboxMobxForm(
@@ -135,14 +138,19 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     }
   );
 
-  pinFocusValidity = (pinValues: Array<string>, repeatPinValues: Array<string>, isRepeatPin: boolean) => {
+  pinFocusValidity = (
+    pinValues: Array<string>,
+    repeatPinValues: Array<string>,
+    isRepeatPin: boolean
+  ) => {
     const pinKey = pinValues.join('').length;
     const repeatPinKey = repeatPinValues.join('').length;
     const isPinKeyValid = pinKey > 0 && pinKey < pinValues.length;
-    const isRepeatPinKeyValid = repeatPinKey > 0 && repeatPinKey < repeatPinValues.length;
-    return isRepeatPin ?
-      !isRepeatPinKeyValid && isPinKeyValid :
-      !isPinKeyValid && isRepeatPinKeyValid
+    const isRepeatPinKeyValid =
+      repeatPinKey > 0 && repeatPinKey < repeatPinValues.length;
+    return isRepeatPin
+      ? !isRepeatPinKeyValid && isPinKeyValid
+      : !isPinKeyValid && isRepeatPinKeyValid;
   };
 
   submit = () => {
@@ -202,11 +210,21 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
             {...pinCodeFieldProps}
             label={enterPinCodeLabel}
             autoFocus
-            onChange={(values: Array<string>, newValue: string, key: number) => {
+            onChange={(
+              values: Array<string>,
+              newValue: string,
+              key: number
+            ) => {
               const { pinValues, repeatPinValues } = this.state;
               pinValues[key] = newValue;
-              const pinFieldNotValid = this.pinFocusValidity(pinValues, repeatPinValues, false);
-              const selectedField = pinFieldNotValid ? 'repeatPinCode' : 'pinCode';
+              const pinFieldNotValid = this.pinFocusValidity(
+                pinValues,
+                repeatPinValues,
+                false
+              );
+              const selectedField = pinFieldNotValid
+                ? 'repeatPinCode'
+                : 'pinCode';
               this.setState({
                 pinValues,
                 selectedPinField: selectedField,
@@ -218,11 +236,21 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
           <PinCode
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
-            onChange={(values: Array<string>, newValue: string, key: number) => {
+            onChange={(
+              values: Array<string>,
+              newValue: string,
+              key: number
+            ) => {
               const { pinValues, repeatPinValues } = this.state;
               repeatPinValues[key] = newValue;
-              const repeatPinFieldNotValid = this.pinFocusValidity(pinValues, repeatPinValues, true);
-              const selectedField = repeatPinFieldNotValid ? 'pinCode' : 'repeatPinCode';
+              const repeatPinFieldNotValid = this.pinFocusValidity(
+                pinValues,
+                repeatPinValues,
+                true
+              );
+              const selectedField = repeatPinFieldNotValid
+                ? 'pinCode'
+                : 'repeatPinCode';
               this.setState({
                 repeatPinValues,
                 selectedPinField: selectedField,
