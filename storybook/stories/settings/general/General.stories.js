@@ -53,24 +53,22 @@ storiesOf('Settings|General', module)
       currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ))
-  .add(
-    'Wallets',
-    withState({ currencySelected: currenciesList.usd }, (store) => (
-      <WalletsSettings
-        currencySelected={store.state.currencySelected}
-        currencyRate={0.321}
-        currencyList={Object.values(currenciesList)}
-        currencyIsActive
-        onSelectCurrency={(code) => {
-          const currencySelected = currenciesList[code];
-          store.set({ currencySelected });
-        }}
-        onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        hasSearch={boolean('hasSearch', true)}
-      />
-    ))
-  )
+  .add('Wallets', () => (
+    <WalletsSettings
+      currencySelected={{
+        id: 'uniswap-state-dollar',
+        code: 'usd',
+        name: 'unified Stable Dollar',
+      }}
+      currencyRate={0.321}
+      currencyList={[]}
+      currencyIsActive
+      onSelectCurrency={action('onSelectCurrency')}
+      onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      hasSearch={boolean('hasSearch', true)}
+    />
+  ))
   .add('Stake Pools', () => (
     <StakePoolsSettings
       onSelectSmashServerUrl={action('onSelectSmashServerUrl')}
