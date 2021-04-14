@@ -13123,10 +13123,10 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.8-rc.15:
-  version "0.9.8-rc.15"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.8-rc.15.tgz#1f8e7133888e17e81de2066eed1f74dd8e40124a"
-  integrity sha512-WhOW3e27CifUPMQZfsps2NMockPBtE1y05AA9wn3GuD0P3IVSS0+l5ilIWLDL3f5U1MuLTy1Mj9W1fPyhsUFvw==
+react-polymorph@0.9.8-rc.16:
+  version "0.9.8-rc.16"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.8-rc.16.tgz#8e7dfa4caf17b70b1c11bb2738aac0eb495d567e"
+  integrity sha512-UUfeIFWZcpvq3IRJyT6Oq3/NYJ9PUEsZYY2Omnmu6CqMnQ9Y8BIPG6vOAOsrQ7Byv3hRjTqB1m8MXlRR+OZFcQ==
   dependencies:
     "@storybook/addon-knobs" "^6.2.5"
     "@tippyjs/react" "4.2.1"
