@@ -2,7 +2,10 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
-import { VOTING_REGISTRATION_MIN_WALLET_FUNDS } from '../../config/votingConfig';
+import {
+  IS_VOTING_REGISTRATION_AVAILABLE,
+  VOTING_REGISTRATION_MIN_WALLET_FUNDS,
+} from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import VotingInfo from '../../components/voting/VotingInfo';
 import VotingNoWallets from '../../components/voting/VotingNoWallets';
@@ -35,11 +38,18 @@ export default class VotingRegistrationPage extends Component<Props> {
       VotingRegistrationDialog
     );
 
-    if (!isSynced && !isVotingRegistrationDialogOpen) {
+    if (
+      !IS_VOTING_REGISTRATION_AVAILABLE ||
+      (!isSynced && !isVotingRegistrationDialogOpen)
+    ) {
       return (
         <Layout>
           <VerticalFlexContainer>
-            <VotingUnavailable syncPercentage={syncPercentage} />
+            <VotingUnavailable
+              syncPercentage={syncPercentage}
+              isVotingRegistrationAvailable={IS_VOTING_REGISTRATION_AVAILABLE}
+              onExternalLinkClick={openExternalLink}
+            />
           </VerticalFlexContainer>
         </Layout>
       );

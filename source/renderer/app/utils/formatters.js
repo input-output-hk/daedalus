@@ -35,10 +35,10 @@ export const formattedWalletCurrencyAmount = (
   amount: BigNumber,
   currencyRate: number,
   decimalDigits?: ?number,
-  currencySymbol?: ?string
+  currencyCode?: ?string
 ): string =>
   `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
-    currencySymbol || ''
+    currencyCode || ''
   }`;
 
 export const formattedTokenWalletAmount = (
