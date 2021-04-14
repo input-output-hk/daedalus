@@ -586,7 +586,18 @@ export default class WalletsStore extends Store {
     const { deviceId, deviceType, deviceModel, deviceName, path } = device;
     const accountPublicKey =
       extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
+
+    logger.debug('[HW-DEBUG] HWStore - Execute HW create / restore', {
+      deviceId,
+      deviceType,
+      deviceModel,
+      deviceName,
+      path,
+      walletName,
+    });
+
     try {
+      await this._pausePolling();
       const wallet = await this.createHardwareWalletRequest.execute({
         walletName,
         accountPublicKey,
@@ -613,12 +624,23 @@ export default class WalletsStore extends Store {
       });
 
       if (wallet) {
+        logger.debug(
+          '[HW-DEBUG] HWStore - Execute HW create / restore - Patch HW'
+        );
         await this._patchWalletRequestWithNewWallet(wallet);
+        logger.debug('[HW-DEBUG] HWStore - GO TO ROUTE');
         this.goToWalletRoute(wallet.id);
+        logger.debug('[HW-DEBUG] HWStore - Refresh wallets data');
         this.refreshWalletsData();
+        logger.debug('[HW-DEBUG] HWStore - Close dialog');
         this.actions.dialogs.closeActiveDialog.trigger();
       }
+      this._resumePolling();
     } catch (error) {
+      logger.debug('[HW-DEBUG] HWStore - HW create / restore ERROR', {
+        error,
+      });
+      this._resumePolling();
       throw error;
     }
   };

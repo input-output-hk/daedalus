@@ -255,12 +255,21 @@ export default class AdaApi {
 
   getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
+    const {
+      getHardwareWalletLocalData,
+      getHardwareWalletsLocalData,
+    } = global.daedalus.api.localStorage;
     try {
       const wallets: AdaWallets = await getWallets(this.config);
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
-      logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
+      const hwLocalData = await getHardwareWalletsLocalData();
+      logger.debug('AdaApi::getWallets success', {
+        wallets,
+        legacyWallets,
+        hwLocalData: filterLogData(hwLocalData),
+      });
       map(legacyWallets, (legacyAdaWallet) => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
@@ -281,9 +290,6 @@ export default class AdaApi {
       return await Promise.all(
         wallets.map(async (wallet) => {
           const { id } = wallet;
-          const {
-            getHardwareWalletLocalData,
-          } = global.daedalus.api.localStorage;
           const walletData = await getHardwareWalletLocalData(id);
           return _createWalletFromServerData({
             ...wallet,
@@ -2669,6 +2675,12 @@ const _createWalletFromServerData = action(
             )
           : new BigNumber(balance.reward.quantity.toString());
     }
+
+    logger.debug('[HW-DEBUG] API - createWalletFromServerData', {
+      id,
+      isHardwareWallet,
+      passphraseLastUpdatedAt,
+    });
 
     // Current (Active)
     const active = get(delegation, 'active', null);
