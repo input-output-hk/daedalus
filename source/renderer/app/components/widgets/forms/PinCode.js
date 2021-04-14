@@ -33,6 +33,7 @@ export default class PinCode extends Component<Props> {
   inputsRef = [];
   focusKey = 0;
   add = false;
+  fromBackspace = false;
 
   inputHasNewValue = (inputNewValue: string, key: number) => {
     const { value } = this.props;
@@ -69,7 +70,7 @@ export default class PinCode extends Component<Props> {
     const { value, length, name, selectedPinField } = this.props;
     const key = value.join('').length;
     const inputValue = value[key - 1];
-    this.add =
+    this.add = this.fromBackspace ? false :
       inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
     const emptyFieldIndex = value.findIndex((item) => item === '');
     this.focusKey =
@@ -84,7 +85,7 @@ export default class PinCode extends Component<Props> {
       ((key > 0 && key < length) || emptyFieldIndex > -1)
     ) {
       let inputFocusKey = 0;
-      if (emptyFieldIndex > -1) {
+      if (emptyFieldIndex > -1 && !this.fromBackspace) {
         inputFocusKey = emptyFieldIndex;
       } else {
         inputFocusKey = this.add ? focusKey + 1 : focusKey - 1;
@@ -93,6 +94,7 @@ export default class PinCode extends Component<Props> {
         Object.prototype.hasOwnProperty.call(this.inputsRef, inputFocusKey) &&
         this.inputsRef[inputFocusKey]
       ) {
+        this.fromBackspace = false;
         this.inputsRef[inputFocusKey].focus();
       }
     }
@@ -121,6 +123,9 @@ export default class PinCode extends Component<Props> {
       }
       this.focusKey = inputKey;
       this.add = false;
+      this.fromBackspace = true;
+    } else {
+      this.fromBackspace = false;
     }
   };
 
