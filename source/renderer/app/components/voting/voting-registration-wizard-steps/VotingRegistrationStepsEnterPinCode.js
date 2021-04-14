@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { map } from 'lodash';
 import { observer } from 'mobx-react';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import PinCode from '../../widgets/forms/PinCode';
@@ -66,10 +67,22 @@ type Props = {
   onSetPinCode: Function,
 };
 
+type State = {
+  selectedPinField: ?string,
+  pinValues: Array<string>,
+  repeatPinValues: Array<string>,
+};
+
 @observer
-export default class VotingRegistrationStepsEnterPinCode extends Component<Props> {
+export default class VotingRegistrationStepsEnterPinCode extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    selectedPinField: null,
+    pinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill("")),
+    repeatPinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill("")),
   };
 
   form = new ReactToolboxMobxForm(
@@ -122,6 +135,16 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     }
   );
 
+  pinFocusValidity = (pinValues: Array<string>, repeatPinValues: Array<string>, isRepeatPin: boolean) => {
+    const pinKey = pinValues.join('').length;
+    const repeatPinKey = repeatPinValues.join('').length;
+    const isPinKeyValid = pinKey > 0 && pinKey < pinValues.length;
+    const isRepeatPinKeyValid = repeatPinKey > 0 && repeatPinKey < repeatPinValues.length;
+    return isRepeatPin ?
+      !isRepeatPinKeyValid && isPinKeyValid :
+      !isPinKeyValid && isRepeatPinKeyValid
+  };
+
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -135,6 +158,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
+    const { selectedPinField } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
@@ -178,15 +202,37 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
             {...pinCodeFieldProps}
             label={enterPinCodeLabel}
             autoFocus
-            onChange={(...args) => pinCodeFieldProps.onChange(...args)}
+            onChange={(values: Array<string>, newValue: string, key: number) => {
+              const { pinValues, repeatPinValues } = this.state;
+              pinValues[key] = newValue;
+              const pinFieldNotValid = this.pinFocusValidity(pinValues, repeatPinValues, false);
+              const selectedField = pinFieldNotValid ? 'repeatPinCode' : 'pinCode';
+              this.setState({
+                pinValues,
+                selectedPinField: selectedField,
+              });
+              pinCodeFieldProps.onChange(values);
+            }}
+            selectedPinField={selectedPinField}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
-            onChange={(...args) => repeatPinCodeFieldProps.onChange(...args)}
+            onChange={(values: Array<string>, newValue: string, key: number) => {
+              const { pinValues, repeatPinValues } = this.state;
+              repeatPinValues[key] = newValue;
+              const repeatPinFieldNotValid = this.pinFocusValidity(pinValues, repeatPinValues, true);
+              const selectedField = repeatPinFieldNotValid ? 'pinCode' : 'repeatPinCode';
+              this.setState({
+                repeatPinValues,
+                selectedPinField: selectedField,
+              });
+              repeatPinCodeFieldProps.onChange(values);
+            }}
             autoFocus={isRepeatPinCodeAutoFocused}
             disabled={!pinCodeField.isValid}
             error={repeatPinCodeField.error}
+            selectedPinField={selectedPinField}
           />
         </div>
 
