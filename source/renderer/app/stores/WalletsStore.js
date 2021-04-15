@@ -624,21 +624,12 @@ export default class WalletsStore extends Store {
       });
 
       if (wallet) {
-        logger.debug(
-          '[HW-DEBUG] HWStore - Execute HW create / restore - Patch HW'
-        );
         await this._patchWalletRequestWithNewWallet(wallet);
-        logger.debug('[HW-DEBUG] HWStore - GO TO ROUTE');
         this.goToWalletRoute(wallet.id);
-        logger.debug('[HW-DEBUG] HWStore - Refresh wallets data');
         this.refreshWalletsData();
-        logger.debug('[HW-DEBUG] HWStore - Close dialog');
         this.actions.dialogs.closeActiveDialog.trigger();
       }
     } catch (error) {
-      logger.debug('[HW-DEBUG] HWStore - HW create / restore ERROR', {
-        error,
-      });
       throw error;
     } finally {
       this._resumePolling();

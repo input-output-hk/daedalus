@@ -2676,12 +2676,6 @@ const _createWalletFromServerData = action(
           : new BigNumber(balance.reward.quantity.toString());
     }
 
-    logger.debug('[HW-DEBUG] API - createWalletFromServerData', {
-      id,
-      isHardwareWallet,
-      passphraseLastUpdatedAt,
-    });
-
     // Current (Active)
     const active = get(delegation, 'active', null);
     const target = get(active, 'target', null);

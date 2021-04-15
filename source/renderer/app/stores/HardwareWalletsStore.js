@@ -615,12 +615,6 @@ export default class HardwareWalletsStore extends Store {
       if (transportDevice) {
         const { deviceType, firmwareVersion } = transportDevice;
         // Check if device is supported
-        logger.debug('[HW-DEBUG] HWStore - check firmware', {
-          deviceType,
-          firmwareVersion,
-          MINIMAL_TREZOR_FIRMWARE_VERSION,
-          MINIMAL_LEDGER_FIRMWARE_VERSION,
-        });
         if (
           (deviceType === DeviceTypes.TREZOR && !DeviceModels.TREZOR_T) ||
           (deviceType === DeviceTypes.LEDGER &&
