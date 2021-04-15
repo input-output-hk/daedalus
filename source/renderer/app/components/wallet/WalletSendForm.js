@@ -307,6 +307,7 @@ export default class WalletSendForm extends Component<Props, State> {
     return (
       this.hasReceiverValue() &&
       addressFromSameWallet &&
+      receiverField.focused &&
       receiverField.isValid
     );
   };
@@ -688,6 +689,7 @@ export default class WalletSendForm extends Component<Props, State> {
       currencyMaxFractionalDigits,
       walletAmount,
       walletName,
+      addressFromSameWallet,
     } = this.props;
 
     const {
@@ -715,7 +717,10 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
+      this.hasReceiverValue() &&
+      addressFromSameWallet &&
+      receiverField.isValid ?
+        styles.sameRecieverInput : null,
     ]);
 
     const minAdaRequiredTooltip = selectedAssetFingerprints.length
