@@ -812,6 +812,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
+                  autoFocus={!this.isAddressFromSameWallet()}
                 />
                 <div className={styles.minAdaRequired}>
                   <span>
