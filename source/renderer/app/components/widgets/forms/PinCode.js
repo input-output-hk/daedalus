@@ -70,8 +70,9 @@ export default class PinCode extends Component<Props> {
     const { value, length, name, selectedPinField } = this.props;
     const key = value.join('').length;
     const inputValue = value[key - 1];
-    this.add = this.fromBackspace ? false :
-      inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
+    this.add = this.fromBackspace
+      ? false
+      : inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
     const emptyFieldIndex = value.findIndex((item) => item === '');
     this.focusKey =
       emptyFieldIndex !== undefined &&
@@ -110,7 +111,9 @@ export default class PinCode extends Component<Props> {
     const nextInputField = this.inputsRef[nextFieldFocusKey];
     const isSeparator = key === decimalSeparator || key === groupSeparator;
     const isBackspace = key === 'Backspace';
-    const inputNewValue = this.inputsRef[focusKey] ? this.inputsRef[focusKey].props.value : null;
+    const inputNewValue = this.inputsRef[focusKey]
+      ? this.inputsRef[focusKey].props.value
+      : null;
     const fieldIsEmpty = this.inputsRef[focusKey] ? !inputNewValue : false;
 
     if (isSeparator) {
