@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Added pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
+- Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
 
 ## 4.0.5
 
