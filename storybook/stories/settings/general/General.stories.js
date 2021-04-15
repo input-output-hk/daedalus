@@ -22,8 +22,6 @@ import SupportSettings from '../../../../source/renderer/app/components/settings
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 
-// Data
-
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
