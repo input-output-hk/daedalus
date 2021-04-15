@@ -635,13 +635,13 @@ export default class WalletsStore extends Store {
         logger.debug('[HW-DEBUG] HWStore - Close dialog');
         this.actions.dialogs.closeActiveDialog.trigger();
       }
-      this._resumePolling();
     } catch (error) {
       logger.debug('[HW-DEBUG] HWStore - HW create / restore ERROR', {
         error,
       });
-      this._resumePolling();
       throw error;
+    } finally {
+      this._resumePolling();
     }
   };
 
