@@ -717,10 +717,9 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.hasReceiverValue() &&
-      addressFromSameWallet &&
-      receiverField.isValid ?
-        styles.sameRecieverInput : null,
+      this.hasReceiverValue() && addressFromSameWallet && receiverField.isValid
+        ? styles.sameRecieverInput
+        : null,
     ]);
 
     const minAdaRequiredTooltip = selectedAssetFingerprints.length
