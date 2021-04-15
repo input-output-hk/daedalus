@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented select search style variables ([PR 2512](https://github.com/input-output-hk/daedalus/pull/2512))
+
 ### Fixes
 
 - Fixed hardware wallets spending password issue ([PR 2519](https://github.com/input-output-hk/daedalus/pull/2519))

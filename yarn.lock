@@ -1034,7 +1034,7 @@
     bech32 "^1.1.4"
     node-int64 "^0.4.0"
 
-"@dump247/storybook-state@^1.6.1":
+"@dump247/storybook-state@1.6.1":
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@dump247/storybook-state/-/storybook-state-1.6.1.tgz#ac805dbad22bba380ae4f74e741189ec6c68cd4a"
   dependencies:
@@ -13000,9 +13000,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.8-rc.16:
-  version "0.9.8-rc.16"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.8-rc.16.tgz#8e7dfa4caf17b70b1c11bb2738aac0eb495d567e"
+react-polymorph@0.9.8-rc.17:
+  version "0.9.8-rc.17"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.8-rc.17.tgz#f412980dd7827b4c21dcd4b1c8f4f8cf3fef7c21"
   dependencies:
     "@storybook/addon-knobs" "^6.2.5"
     "@tippyjs/react" "4.2.1"
