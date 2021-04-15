@@ -13,10 +13,13 @@
 }
 
 .tiles {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, 80px);
+  display: flex;
+  gap: 10px;
   justify-content: space-between;
+}
+
+.rowFillerItem {
+  width: 80px;
 }
 
 .list {

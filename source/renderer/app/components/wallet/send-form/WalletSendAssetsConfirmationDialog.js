@@ -501,7 +501,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                   </div>
                   <div className={styles.adaAmount}>
                     {amount}
-                    <span className={styles.currencySymbol}>
+                    <span className={styles.currencyCode}>
                       &nbsp;{currencyUnit}
                     </span>
                   </div>
@@ -513,7 +513,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                   </div>
                   <div className={styles.fees}>
                     +{transactionFee}
-                    <span className={styles.currencySymbol}>
+                    <span className={styles.currencyCode}>
                       &nbsp;{currencyUnit}
                     </span>
                   </div>
@@ -526,7 +526,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                 </div>
                 <div className={styles.totalAmount}>
                   {totalAmount}
-                  <span className={styles.currencySymbol}>
+                  <span className={styles.currencyCode}>
                     &nbsp;{currencyUnit}
                   </span>
                 </div>
@@ -539,7 +539,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
               </div>
               <div className={styles.fees}>
                 +{transactionFee}
-                <span className={styles.currencySymbol}>
+                <span className={styles.currencyCode}>
                   &nbsp;{currencyUnit}
                 </span>
               </div>
