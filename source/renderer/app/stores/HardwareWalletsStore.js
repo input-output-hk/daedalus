@@ -482,6 +482,9 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - Recognized device found'
           );
+          logger.debug('[HW-DEBUG] HWStore - Set transport device 1', {
+            recognizedPairedHardwareWallet,
+          });
           runInAction('HardwareWalletsStore:: Set transport device', () => {
             this.transportDevice = recognizedPairedHardwareWallet;
           });
@@ -532,6 +535,9 @@ export default class HardwareWalletsStore extends Store {
               isTrezor,
             }
           );
+          logger.debug('[HW-DEBUG] HWStore - Set transport device 2', {
+            lastDeviceTransport,
+          });
           runInAction('HardwareWalletsStore:: Set transport device', () => {
             this.transportDevice = lastDeviceTransport;
           });
@@ -649,6 +655,9 @@ export default class HardwareWalletsStore extends Store {
         }
 
         // All Checks pass - mark device as connected (set transport device for this session)
+        logger.debug('[HW-DEBUG] HWStore - Set transport device 3', {
+          transportDevice,
+        });
         runInAction('HardwareWalletsStore:: set HW device CONNECTED', () => {
           this.transportDevice = transportDevice;
         });
@@ -1001,6 +1010,17 @@ export default class HardwareWalletsStore extends Store {
       }
 
       // Software Wallet not recognized, create new one with default name
+      logger.debug('[HW-DEBUG] HWStore - Initiate HW create / restore', {
+        transportDevice,
+        device: {
+          deviceId,
+          deviceType,
+          deviceModel,
+          deviceName,
+          path: forcedPath || path,
+          firmwareVersion: null,
+        },
+      });
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: deviceName || DEFAULT_HW_NAME,
         extendedPublicKey,
@@ -1013,6 +1033,7 @@ export default class HardwareWalletsStore extends Store {
           firmwareVersion: null,
         },
       });
+      logger.debug('[HW-DEBUG] HWStore - HW created / restored');
 
       // Get all Pending devices with this path and delete
       const recognizedPendingDevice = find(
@@ -1503,6 +1524,9 @@ export default class HardwareWalletsStore extends Store {
       logger.debug('[HW-DEBUG] Sign Trezor: ', { id });
       const transportDevice = await this.establishHardwareWalletConnection();
       if (transportDevice) {
+        logger.debug('[HW-DEBUG] HWStore - Set transport device 4', {
+          transportDevice,
+        });
         runInAction(
           'HardwareWalletsStore:: Set transport device fomr tx init',
           () => {

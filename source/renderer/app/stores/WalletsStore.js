@@ -588,7 +588,18 @@ export default class WalletsStore extends Store {
     const { deviceId, deviceType, deviceModel, deviceName, path } = device;
     const accountPublicKey =
       extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
+
+    logger.debug('[HW-DEBUG] HWStore - Execute HW create / restore', {
+      deviceId,
+      deviceType,
+      deviceModel,
+      deviceName,
+      path,
+      walletName,
+    });
+
     try {
+      await this._pausePolling();
       const wallet = await this.createHardwareWalletRequest.execute({
         walletName,
         accountPublicKey,
@@ -622,6 +633,8 @@ export default class WalletsStore extends Store {
       }
     } catch (error) {
       throw error;
+    } finally {
+      this._resumePolling();
     }
   };
 
