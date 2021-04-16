@@ -89,7 +89,9 @@
 :global {
   .WalletSettings_component {
     .SimpleOptions_option em {
-      background-color: var(--rp-option-search-highlight-background-color) !important;
+      background-color: var(
+        --rp-option-search-highlight-background-color
+      ) !important;
     }
   }
 }
