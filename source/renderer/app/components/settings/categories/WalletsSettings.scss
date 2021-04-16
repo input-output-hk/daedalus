@@ -84,10 +84,9 @@
       ) !important;
     }
 
-    &.OptionsOverrides_options
-    :not(.SimpleOptions_hasSearch)
+    &:not(.SimpleOptions_hasSearch)
     ul {
-      border-radius: 0 0 4px 4px;
+      border-radius: 0 0 4px 4px !important;
     }
   }
 }
