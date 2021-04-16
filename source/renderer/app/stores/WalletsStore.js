@@ -1117,6 +1117,8 @@ export default class WalletsStore extends Store {
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
     let expectedNetworkTag: ?Array<?number> | ?number;
     let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
+    this.isAddressFromSameWallet = false;
+
     if (isMainnet) {
       expectedNetworkTag = MAINNET_MAGIC;
     } else if (isStaging) {

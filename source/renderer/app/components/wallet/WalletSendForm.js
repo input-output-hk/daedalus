@@ -93,7 +93,6 @@ type State = {
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
   isTransactionFeeCalculated: boolean,
-  isHoveringReceiverField: boolean,
 };
 
 @observer
@@ -113,7 +112,6 @@ export default class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
-    isHoveringReceiverField: false,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -203,8 +201,6 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
-
   handleOnSubmit = () => {
     if (this.isDisabled()) {
       return false;
@@ -213,6 +209,8 @@ export default class WalletSendForm extends Component<Props, State> {
       dialog: WalletSendAssetsConfirmationDialog,
     });
   };
+
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   handleOnReset = () => {
     // Cancel all debounced field validations
@@ -305,13 +303,11 @@ export default class WalletSendForm extends Component<Props, State> {
 
   isAddressFromSameWallet = () => {
     const { isAddressFromSameWallet } = this.props;
-    const { isHoveringReceiverField } = this.state;
     const receiverField = this.form.$('receiver');
     return (
       this.hasReceiverValue() &&
       isAddressFromSameWallet &&
-      receiverField.isValid &&
-      (receiverField.focused || isHoveringReceiverField)
+      receiverField.isValid
     );
   };
 
@@ -720,7 +716,9 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.hasReceiverValue() && isAddressFromSameWallet && receiverField.isValid
+      this.hasReceiverValue() &&
+      isAddressFromSameWallet &&
+      receiverField.isValid
         ? styles.sameRecieverInput
         : null,
     ]);
@@ -729,39 +727,40 @@ export default class WalletSendForm extends Component<Props, State> {
       ? messages.minAdaRequiredWithAssetTooltip
       : messages.minAdaRequiredWithNoAssetTooltip;
 
+    const sameWalletError = intl.formatMessage(messages.sameWalletLabel, {
+      walletName,
+    });
+    let receiverFieldError = receiverField.error;
+    let receiverFieldThemeVars = {};
+    if (this.isAddressFromSameWallet()) {
+      receiverFieldError = sameWalletError;
+      receiverFieldThemeVars = {
+        '--rp-input-border-color-errored':
+          'var(--rp-password-input-warning-score-color)',
+        '--rp-pop-over-bg-color':
+          'var(--rp-password-input-warning-score-color)',
+      };
+    }
+
     return (
       <div className={styles.fieldsContainer}>
         <div className={receiverFieldClasses}>
-          <PopOver
-            content={intl.formatMessage(messages.sameWalletLabel, {
-              walletName,
-            })}
-            visible={this.isAddressFromSameWallet()}
-            contentClassName={styles.sameWalletTooltipContent}
-            themeVariables={{
-              '--rp-pop-over-bg-color':
-                'var(--rp-password-input-warning-score-color)',
+          <Input
+            {...receiverField.bind()}
+            ref={(field) => {
+              this.addFocusableField(field);
             }}
-            placement="bottom"
-          >
-            <Input
-              {...receiverField.bind()}
-              ref={(field) => {
-                this.addFocusableField(field);
-              }}
-              className="receiver"
-              error={receiverField.error}
-              onChange={(value) => {
-                receiverField.onChange(value || '');
-                this.setState({
-                  isResetButtonDisabled: false,
-                });
-              }}
-              onKeyPress={this.handleSubmitOnEnter}
-              onMouseEnter={() => this.setState({ isHoveringReceiverField: true })}
-              onMouseLeave={() => this.setState({ isHoveringReceiverField: false })}
-            />
-          </PopOver>
+            className="receiver"
+            error={receiverFieldError}
+            onChange={(value) => {
+              receiverField.onChange(value || '');
+              this.setState({
+                isResetButtonDisabled: false,
+              });
+            }}
+            onKeyPress={this.handleSubmitOnEnter}
+            themeVariables={receiverFieldThemeVars}
+          />
           {this.hasReceiverValue() && (
             <div className={styles.clearReceiverContainer}>
               <PopOver
@@ -771,6 +770,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 <button
                   onClick={() => this.handleOnReset()}
                   className={styles.clearReceiverButton}
+                  tabIndex={-1}
                 >
                   <SVGInline
                     svg={closeIcon}
