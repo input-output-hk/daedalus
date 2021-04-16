@@ -93,6 +93,7 @@ type State = {
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
   isTransactionFeeCalculated: boolean,
+  isHoveringReceiverField: boolean,
 };
 
 @observer
@@ -303,12 +304,13 @@ export default class WalletSendForm extends Component<Props, State> {
 
   isAddressFromSameWallet = () => {
     const { isAddressFromSameWallet } = this.props;
+    const { isHoveringReceiverField } = this.state;
     const receiverField = this.form.$('receiver');
     return (
       this.hasReceiverValue() &&
       isAddressFromSameWallet &&
-      receiverField.focused &&
-      receiverField.isValid
+      receiverField.isValid &&
+      (receiverField.focused || isHoveringReceiverField)
     );
   };
 
@@ -755,6 +757,8 @@ export default class WalletSendForm extends Component<Props, State> {
                 });
               }}
               onKeyPress={this.handleSubmitOnEnter}
+              onMouseEnter={() => this.setState({ isHoveringReceiverField: true })}
+              onMouseLeave={() => this.setState({ isHoveringReceiverField: false })}
             />
           </PopOver>
           {this.hasReceiverValue() && (
