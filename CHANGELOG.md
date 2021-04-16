@@ -7,6 +7,10 @@ Changelog
 
 - Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
 
+### Fixes
+
+- Fixed hardware wallets spending password issue ([PR 2519](https://github.com/input-output-hk/daedalus/pull/2519))
+
 ## 4.0.5
 
 ### Features
