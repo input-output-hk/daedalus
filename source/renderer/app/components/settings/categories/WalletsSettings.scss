@@ -76,6 +76,14 @@
     height: 1px;
     margin: 15px 0;
   }
+
+  :global {
+    .SimpleOptions_option em {
+      background-color: var(
+          --rp-option-search-highlight-background-color
+      ) !important;
+    }
+  }
 }
 
 :global
@@ -84,14 +92,4 @@
   :not(.SimpleOptions_hasSearch)
   ul {
   border-radius: 0 0 4px 4px;
-}
-
-:global {
-  .WalletSettings_component {
-    .SimpleOptions_option em {
-      background-color: var(
-        --rp-option-search-highlight-background-color
-      ) !important;
-    }
-  }
 }
