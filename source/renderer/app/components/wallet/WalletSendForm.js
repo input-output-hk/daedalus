@@ -113,6 +113,7 @@ export default class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
+    isHoveringReceiverField: false,
   };
 
   // We need to track the fee calculation state in order to disable
