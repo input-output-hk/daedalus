@@ -67,7 +67,7 @@ type Props = {
   onOpenDialogAction: Function,
   onUnsetActiveAssetFingerprint: Function,
   onExternalLinkClick: Function,
-  addressFromSameWallet: boolean,
+  isAddressFromSameWallet: boolean,
   walletName: string,
 };
 
@@ -302,11 +302,11 @@ export default class WalletSendForm extends Component<Props, State> {
   };
 
   isAddressFromSameWallet = () => {
-    const { addressFromSameWallet } = this.props;
+    const { isAddressFromSameWallet } = this.props;
     const receiverField = this.form.$('receiver');
     return (
       this.hasReceiverValue() &&
-      addressFromSameWallet &&
+      isAddressFromSameWallet &&
       receiverField.focused &&
       receiverField.isValid
     );
@@ -689,7 +689,7 @@ export default class WalletSendForm extends Component<Props, State> {
       currencyMaxFractionalDigits,
       walletAmount,
       walletName,
-      addressFromSameWallet,
+      isAddressFromSameWallet,
     } = this.props;
 
     const {
@@ -717,7 +717,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.hasReceiverValue() && addressFromSameWallet && receiverField.isValid
+      this.hasReceiverValue() && isAddressFromSameWallet && receiverField.isValid
         ? styles.sameRecieverInput
         : null,
     ]);

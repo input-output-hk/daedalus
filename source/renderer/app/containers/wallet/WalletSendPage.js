@@ -183,7 +183,7 @@ export default class WalletSendPage extends Component<Props> {
         }
         onUnsetActiveAssetFingerprint={this.handleUnsetActiveAssetFingerprint}
         onExternalLinkClick={app.openExternalLink}
-        addressFromSameWallet={isAddressFromSameWallet}
+        isAddressFromSameWallet={isAddressFromSameWallet}
       />
     );
   }
