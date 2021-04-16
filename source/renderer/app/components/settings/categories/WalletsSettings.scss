@@ -80,11 +80,12 @@
   :global {
     .SimpleOptions_option em {
       background-color: var(
-        --rp-option-search-highlight-background-color
+          --rp-option-search-highlight-background-color
       ) !important;
     }
 
-    &:not(.SimpleOptions_hasSearch) ul {
+    :not(.SimpleOptions_hasSearch)
+    ul {
       border-radius: 0 0 4px 4px !important;
     }
   }
