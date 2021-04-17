@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import { get, map, find, findLast, filter } from 'lodash';
+import { get, map, find, findLast, filter, includes } from 'lodash';
 import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -723,7 +723,6 @@ export default class HardwareWalletsStore extends Store {
     this.hwDeviceStatus = HwDeviceStatuses.LAUNCHING_CARDANO_APP;
     try {
       const cardanoAdaApp = await getCardanoAdaAppChannel.request({ path });
-
       logger.debug(
         '[HW-DEBUG] HWStore - cardanoAdaApp RESPONSE: ',
         cardanoAdaApp
@@ -757,6 +756,26 @@ export default class HardwareWalletsStore extends Store {
       logger.debug('[HW-DEBUG] HWStore - Cardano app fetching error', {
         error,
       });
+      const isDeviceBusy = includes(error.message, 'Ledger Device is busy');
+
+      if (isDeviceBusy) {
+        // Keep isTransactionInitiated active & Set new device listener by initiating transaction
+        // Show message to reconnect proper software wallet device pair
+        this.stopCardanoAdaAppFetchPoller();
+        logger.debug('[HW-DEBUG] Device is busy: ', {
+          walletId,
+          error,
+        });
+        runInAction(
+          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+            this.activeDevicePath = null;
+            this.unfinishedWalletTxSigning = walletId;
+          }
+        );
+      }
+
       if (error.code === 'DEVICE_NOT_CONNECTED') {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
