@@ -636,7 +636,9 @@ export default class WalletSendForm extends Component<Props, State> {
         ];
       },
     ]);
-    this.form.$(newAsset).focus();
+    if (!this.isAddressFromSameWallet()) {
+      this.form.$(newAsset).focus();
+    }
 
     const assetsDropdown = `assetsDropdown_${fingerprint}`;
     this.form.add({
