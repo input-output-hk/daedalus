@@ -11,22 +11,31 @@
     }
   }
 
-  :global {
-    .SimpleOptions_search button:before {
-      height: 10px;
-      margin-left: -1px;
-      margin-top: -1px;
-      -webkit-mask-size: 10px, 10px;
-      mask-size: 10px, 10px;
-      width: 10px;
-    }
+  button:before {
+    height: 10px;
+    margin-left: -1px;
+    margin-top: -1px;
+    -webkit-mask-size: 10px, 10px;
+    mask-size: 10px, 10px;
+    width: 10px;
+  }
 
+  :global {
     [data-bubble-arrow] {
       display: none !important;
     }
 
     :not([dir='rtl']) .SimpleOptions_search button {
+      background-color: var(
+          --theme-staking-stake-pools-search-clear-button-background-color
+      );
       top: 11px;
+
+      &:hover {
+        background-color: var(
+            --theme-staking-stake-pools-search-clear-button-hover-background-color
+        );
+      }
     }
   }
 }
