@@ -3,12 +3,31 @@
 
   .hasSearch {
     border-radius: 0;
+
+    button {
+      background-color: var(
+          --theme-staking-stake-pools-search-clear-button-background-color
+      ) !important;
+      top: 11px !important;
+
+      &:hover {
+        background-color: var(
+            --theme-staking-stake-pools-search-clear-button-hover-background-color
+        ) !important;
+      }
+    }
   }
 
   :not(.hasSearch) {
     ul {
       border-radius: 4px;
     }
+  }
+
+  option em {
+    background-color: var(
+        --rp-option-search-highlight-background-color
+    ) !important;
   }
 
   button:before {
@@ -20,22 +39,7 @@
     width: 10px;
   }
 
-  :global {
-    [data-bubble-arrow] {
-      display: none !important;
-    }
-
-    :not([dir='rtl']) .SimpleOptions_search button {
-      background-color: var(
-          --theme-staking-stake-pools-search-clear-button-background-color
-      );
-      top: 11px;
-
-      &:hover {
-        background-color: var(
-            --theme-staking-stake-pools-search-clear-button-hover-background-color
-        );
-      }
-    }
+  [data-bubble-arrow] {
+    display: none !important;
   }
 }
