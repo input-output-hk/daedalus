@@ -34,7 +34,7 @@ const allAssets = [
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z3456',
     {
       name: 'USD Coin',
-      acronym: 'USDC',
+      ticker: 'USDC',
       description: 'Test description',
       unit: {
         name: 'USDC',
@@ -50,7 +50,7 @@ const allAssets = [
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z4567',
     {
       name: 'MakerDAO',
-      acronym: 'DAI',
+      ticker: 'DAI',
       description: 'Test description',
       unit: {
         name: 'DAI',
@@ -140,7 +140,7 @@ const walletAssets = assets.total.map((assetTotal) => {
       ? assetData.metadata
       : {
           name: '',
-          acronym: '',
+          ticker: '',
           description: '',
         },
   };

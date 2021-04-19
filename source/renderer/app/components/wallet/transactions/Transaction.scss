@@ -1,5 +1,4 @@
 @import '../../../themes/mixins/link';
-@import '../../../themes/mixins/error-message';
 @import '../../../themes/mixins/animations';
 
 .component {
@@ -207,18 +206,6 @@
     }
   }
 
-  .transactionFeeRow,
-  .depositRow {
-    .amount {
-      color: var(--theme-transactions-list-item-highlight-color);
-
-      .currency {
-        font-family: var(--font-light);
-        margin-left: 5px;
-      }
-    }
-  }
-
   span {
     font-family: var(--font-light);
     font-size: 15px;
@@ -333,8 +320,9 @@
   }
 }
 
-.transactionFeeValue {
-  @include error-message;
+.transactionFeeValue,
+.depositValue {
+  color: var(--theme-transactions-list-item-highlight-color);
   font-family: var(--font-medium);
 
   span {

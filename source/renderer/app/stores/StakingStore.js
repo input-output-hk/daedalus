@@ -68,6 +68,7 @@ export default class StakingStore extends Store {
   @observable isFetchingStakePools: boolean = false;
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
+  @observable stakingInfoWasOpen: boolean = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -116,10 +117,14 @@ export default class StakingStore extends Store {
       this._setSelectedDelegationWalletId
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
+    stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
+
+    this._startStakePoolsFetchTracker();
+    this._getStakingInfoWasOpen();
   }
 
   // REQUESTS
@@ -166,7 +171,9 @@ export default class StakingStore extends Store {
       (smashServerUrl === SMASH_SERVER_TYPES.DIRECT &&
         localSmashServer !== SMASH_SERVER_TYPES.DIRECT)
     ) {
-      smashServerUrl = SMASH_SERVERS_LIST.iohk.url;
+      smashServerUrl = this.environment.isSelfnode
+        ? SMASH_SERVERS_LIST.direct.url
+        : SMASH_SERVERS_LIST.iohk.url;
       await this.updateSmashSettingsRequest.execute(smashServerUrl);
     }
 
@@ -200,6 +207,8 @@ export default class StakingStore extends Store {
         // Retrieves the API update
         this.smashServerLoading = true;
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        // Resets the Stake Pools list request
+        this.stakePoolsRequest.reset();
         // Refreshes the Stake Pools list
         this.getStakePoolsData();
         // Starts the SPs fetch tracker
@@ -231,6 +240,18 @@ export default class StakingStore extends Store {
     this.getStakePoolsData(true);
   };
 
+  @action _getStakingInfoWasOpen = async () => {
+    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
+    runInAction(() => {
+      this.stakingInfoWasOpen = stakingInfoWasOpen;
+    });
+  };
+
+  @action _setStakingInfoWasOpen = () => {
+    this.stakingInfoWasOpen = true;
+    this.api.localStorage.setStakingInfoWasOpen();
+  };
+
   @action _stakePoolsFetchTracker = () => {
     const lastNumberOfStakePoolsFetched = this.numberOfStakePoolsFetched;
     this.numberOfStakePoolsFetched = this.stakePools.length;
@@ -239,6 +260,8 @@ export default class StakingStore extends Store {
       this.numberOfStakePoolsFetched > 0
     ) {
       this.cyclesWithoutIncreasingStakePools++;
+    } else {
+      this.cyclesWithoutIncreasingStakePools = 0;
     }
     if (
       this.cyclesWithoutIncreasingStakePools >= STAKE_POOLS_FETCH_TRACKER_CYCLES
@@ -828,10 +851,12 @@ export default class StakingStore extends Store {
       reward: rewards,
       syncState,
     } = inputWallet;
+    const { stakeAddresses } = this.stores.addresses;
     const { withdrawals } = this.stores.transactions;
     const reward = rewards.plus(withdrawals[walletId]);
+    const rewardsAddress = stakeAddresses[walletId];
     const syncingProgress = get(syncState, 'progress.quantity', '');
-    return { wallet, reward, isRestoring, syncingProgress };
+    return { wallet, reward, isRestoring, syncingProgress, rewardsAddress };
   };
 
   getStakePoolById = (stakePoolId: string) =>

@@ -109,6 +109,12 @@ export type GetNetworkParametersResponse = {
   desiredPoolNumber: number,
   minimumUtxoValue: MinimumUtxoValue,
   hardforkAt: ?HardforkAt,
+  eras: {
+    byron?: HardforkAt,
+    shelley?: HardforkAt,
+    allegra?: HardforkAt,
+    mary?: HardforkAt,
+  },
 };
 
 export type GetNetworkParametersApiResponse = {

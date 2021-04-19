@@ -4,6 +4,24 @@ export type BIP32Path = Array<number>;
 export type LedgerModel = 'nanoS' | 'nanoX';
 export type TrezorModel = '1' | 'T';
 export type DeviceType = 'ledger' | 'trezor';
+export type DeviceEvent =
+  | 'device-connect'
+  | 'device-connect_unacquired'
+  | 'device-disconnect'
+  | 'device-changed'
+  | 'device-acquire'
+  | 'device-release'
+  | 'device-acquired'
+  | 'device-released'
+  | 'device-used_elsewhere'
+  | 'device-loading'
+  | 'button'
+  | 'pin'
+  | 'passphrase'
+  | 'passphrase_on_device'
+  | 'word'
+  | 'device-wait_for_selection'
+  | 'unreadable-device';
 
 export const DeviceModels: {
   LEDGER_NANO_S: LedgerModel,
@@ -23,6 +41,44 @@ export const DeviceTypes: {
 } = {
   LEDGER: 'ledger',
   TREZOR: 'trezor',
+};
+
+export const DeviceEvents: {
+  CONNECT: DeviceEvent,
+  CONNECT_UNACQUIRED: DeviceEvent,
+  DISCONNECT: DeviceEvent,
+  CHANGED: DeviceEvent,
+  ACQUIRE: DeviceEvent,
+  RELEASE: DeviceEvent,
+  ACQUIRED: DeviceEvent,
+  RELEASED: DeviceEvent,
+  USED_ELSEWHERE: DeviceEvent,
+  LOADING: DeviceEvent,
+  BUTTON: DeviceEvent,
+  PIN: DeviceEvent,
+  PASSPHRASE: DeviceEvent,
+  PASSPHRASE_ON_DEVICE: DeviceEvent,
+  WORD: DeviceEvent,
+  WAIT_FOR_SELECTION: DeviceEvent,
+  UNREADABLE: DeviceEvent,
+} = {
+  CONNECT: 'device-connect',
+  CONNECT_UNACQUIRED: 'device-connect_unacquired',
+  DISCONNECT: 'device-disconnect',
+  CHANGED: 'device-changed',
+  ACQUIRE: 'device-acquire',
+  RELEASE: 'device-release',
+  ACQUIRED: 'device-acquired',
+  RELEASED: 'device-released',
+  USED_ELSEWHERE: 'device-used_elsewhere',
+  LOADING: 'device-loading',
+  BUTTON: 'button',
+  PIN: 'pin',
+  PASSPHRASE: 'passphrase',
+  PASSPHRASE_ON_DEVICE: 'passphrase_on_device',
+  WORD: 'word',
+  WAIT_FOR_SELECTION: 'device-wait_for_selection',
+  UNREADABLE: 'unreadable-device',
 };
 
 export type AddressTypeNibble = 0b0000 | 0b0100 | 0b0110 | 0b1000 | 0b1110;
@@ -225,4 +281,5 @@ export type HardwareWalletConnectionRequest = {
       error: string,
     },
   },
+  eventType?: DeviceEvent,
 };

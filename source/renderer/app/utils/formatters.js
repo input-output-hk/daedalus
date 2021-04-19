@@ -5,7 +5,7 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
-import { momentLocales } from '../../../common/types/locales.types';
+import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
 import type { AssetMetadata } from '../api/assets/types';
@@ -35,22 +35,22 @@ export const formattedWalletCurrencyAmount = (
   amount: BigNumber,
   currencyRate: number,
   decimalDigits?: ?number,
-  currencySymbol?: ?string
+  currencyCode?: ?string
 ): string =>
   `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
-    currencySymbol || ''
+    currencyCode || ''
   }`;
 
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata
 ): string => {
-  const { acronym, unit } = metadata || {};
+  const { ticker, unit } = metadata || {};
   const { decimals } = unit || {};
   const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
   let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
-  if (acronym) {
-    formattedAmount += ` ${acronym}`;
+  if (ticker) {
+    formattedAmount += ` ${ticker}`;
   }
   return formattedAmount;
 };
@@ -95,7 +95,11 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const formattedAmountToNaturalUnits = (amount: string): string => {
+export const formattedAmountToNaturalUnits = (amount: ?string): string => {
+  if (!amount) {
+    return '0';
+  }
+
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators
     .replace(/,/g, '') // removes all the comma separators
@@ -228,6 +232,31 @@ export const formattedSize = (size: string): string => {
   const formattedResult = size.replace(/[\d,.]+/, formattedSizeNumber);
 
   return formattedResult;
+};
+
+export const formattedDateTime = (
+  dateTime: Date,
+  {
+    currentLocale,
+    currentDateFormat,
+    currentTimeFormat,
+  }: {
+    currentLocale: Locale,
+    currentDateFormat: string,
+    currentTimeFormat: string,
+  }
+) => {
+  moment.locale(momentLocales[currentLocale]);
+
+  const dateTimeMoment = moment(dateTime);
+  const dateFormatted = dateTimeMoment.format(currentDateFormat);
+  const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+
+  if (currentLocale === LOCALES.english) {
+    return `${dateFormatted}, ${timeFormatted}`;
+  }
+
+  return `${dateFormatted}${timeFormatted}`;
 };
 
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>

@@ -1,0 +1,13 @@
+@import '../../../themes/mixins/error-message';
+
+.description {
+  font-family: var(--font-regular);
+  line-height: 1.38;
+  margin-bottom: 20px;
+}
+
+.error {
+  @include error-message;
+  margin-top: 20px;
+  text-align: center;
+}

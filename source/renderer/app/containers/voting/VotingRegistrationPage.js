@@ -2,7 +2,10 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
-import { VOTING_REGISTRATION_MIN_WALLET_FUNDS } from '../../config/votingConfig';
+import {
+  IS_VOTING_REGISTRATION_AVAILABLE,
+  VOTING_REGISTRATION_MIN_WALLET_FUNDS,
+} from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import VotingInfo from '../../components/voting/VotingInfo';
 import VotingNoWallets from '../../components/voting/VotingNoWallets';
@@ -25,19 +28,28 @@ export default class VotingRegistrationPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { app, networkStatus, uiDialogs, wallets } = stores;
+    const { app, networkStatus, uiDialogs, wallets, voting, profile } = stores;
     const { openExternalLink } = app;
     const { isSynced, syncPercentage } = networkStatus;
+    const { isRegistrationEnded } = voting;
+    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
 
     const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
       VotingRegistrationDialog
     );
 
-    if (!isSynced && !isVotingRegistrationDialogOpen) {
+    if (
+      !IS_VOTING_REGISTRATION_AVAILABLE ||
+      (!isSynced && !isVotingRegistrationDialogOpen)
+    ) {
       return (
         <Layout>
           <VerticalFlexContainer>
-            <VotingUnavailable syncPercentage={syncPercentage} />
+            <VotingUnavailable
+              syncPercentage={syncPercentage}
+              isVotingRegistrationAvailable={IS_VOTING_REGISTRATION_AVAILABLE}
+              onExternalLinkClick={openExternalLink}
+            />
           </VerticalFlexContainer>
         </Layout>
       );
@@ -58,6 +70,10 @@ export default class VotingRegistrationPage extends Component<Props> {
       <Layout>
         <VerticalFlexContainer>
           <VotingInfo
+            currentLocale={currentLocale}
+            currentDateFormat={currentDateFormat}
+            currentTimeFormat={currentTimeFormat}
+            isRegistrationEnded={isRegistrationEnded}
             onRegisterToVoteClick={() =>
               actions.dialogs.open.trigger({
                 dialog: VotingRegistrationDialog,

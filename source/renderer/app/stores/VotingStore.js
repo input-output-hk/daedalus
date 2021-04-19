@@ -13,9 +13,12 @@ import {
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   VOTING_FUND_NUMBER,
+  VOTING_REGISTRATION_END_DATE,
+  VOTING_REGISTRATION_END_CHECK_INTERVAL,
 } from '../config/votingConfig';
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
+import type { GetTransactionRequest } from '../api/transactions/types';
 
 export type VotingRegistrationKeyType = { bytes: Function, public: Function };
 
@@ -29,8 +32,10 @@ export default class VotingStore extends Store {
   @observable votingRegistrationKey: ?VotingRegistrationKeyType = null;
   @observable qrCode: ?string = null;
   @observable isConfirmationDialogOpen: boolean = false;
+  @observable isRegistrationEnded: boolean = false;
 
   transactionPollingInterval: ?IntervalID = null;
+  registrationEndCheckInterval: ?IntervalID = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -45,6 +50,7 @@ export default class VotingStore extends Store {
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
+    this._initializeRegistrationEndCheckInterval();
   }
 
   // REQUESTS
@@ -61,6 +67,11 @@ export default class VotingStore extends Store {
   @observable
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
+  );
+
+  @observable
+  getTransactionRequest: Request<GetTransactionRequest> = new Request(
+    this.api.ada.getTransaction
   );
 
   // ACTIONS
@@ -100,6 +111,8 @@ export default class VotingStore extends Store {
     this.signMetadataRequest.reset();
     if (this.transactionPollingInterval)
       clearInterval(this.transactionPollingInterval);
+    if (this.registrationEndCheckInterval)
+      clearInterval(this.registrationEndCheckInterval);
   };
 
   @action _startTransactionPolling = () => {
@@ -108,6 +121,14 @@ export default class VotingStore extends Store {
     this.transactionPollingInterval = setInterval(() => {
       this._checkVotingRegistrationTransaction();
     }, VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL);
+  };
+
+  @action _initializeRegistrationEndCheckInterval = () => {
+    if (this.registrationEndCheckInterval)
+      clearInterval(this.registrationEndCheckInterval);
+    this.registrationEndCheckInterval = setInterval(() => {
+      this._checkVotingRegistrationEnd();
+    }, VOTING_REGISTRATION_END_CHECK_INTERVAL);
   };
 
   @action _setVotingRegistrationKey = (value: VotingRegistrationKeyType) => {
@@ -150,6 +171,8 @@ export default class VotingStore extends Store {
       walletId
     );
 
+    const { absoluteSlotNumber } = this.stores.networkStatus;
+
     // Reset voting registration transaction state
     this._setIsTransactionPending(true);
     this._setIsTransactionConfirmed(false);
@@ -169,12 +192,12 @@ export default class VotingStore extends Store {
         this.votingRegistrationKey.public().bytes()
       );
 
-      let stakeKey = await this.getWalletPublicKeyRequest.execute({
+      const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
         walletId,
         role: 'mutable_account',
         index: '0',
       });
-      stakeKey = await this._getHexFromBech32(stakeKey);
+      const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
 
       const signature = await this.signMetadataRequest.execute({
         addressHex,
@@ -184,6 +207,7 @@ export default class VotingStore extends Store {
         stakeKey,
         role: 'mutable_account',
         index: '0',
+        absoluteSlotNumber,
       });
 
       const transaction = await this.createVotingRegistrationTransactionRequest.execute(
@@ -196,6 +220,7 @@ export default class VotingStore extends Store {
           votingKey,
           stakeKey,
           signature: signature.toString('hex'),
+          absoluteSlotNumber,
         }
       );
 
@@ -274,12 +299,10 @@ export default class VotingStore extends Store {
     const {
       confirmations,
       state,
-    }: WalletTransaction = await this.stores.transactions
-      ._getTransactionRequest()
-      .execute({
-        walletId: this.selectedWalletId,
-        transactionId: this.transactionId,
-      });
+    }: WalletTransaction = await this.getTransactionRequest.execute({
+      walletId: this.selectedWalletId,
+      transactionId: this.transactionId,
+    });
 
     // Update voting registration confirmations count
     if (this.transactionConfirmations !== confirmations) {
@@ -300,6 +323,10 @@ export default class VotingStore extends Store {
       if (this.transactionPollingInterval)
         clearInterval(this.transactionPollingInterval);
     }
+  };
+
+  @action _checkVotingRegistrationEnd = () => {
+    this.isRegistrationEnded = new Date() >= VOTING_REGISTRATION_END_DATE;
   };
 
   _generateVotingRegistrationKey = async () => {

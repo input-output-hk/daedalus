@@ -241,7 +241,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     try {
       const [address] = await getAddressesByWalletId(this.selectedWalletId);
 
-      const fee = await calculateTransactionFee({
+      const { fee } = await calculateTransactionFee({
         walletId: this.selectedWalletId,
         address: address.id,
         amount,

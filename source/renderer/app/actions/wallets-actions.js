@@ -77,6 +77,7 @@ export default class WalletsActions {
     filePath: string,
   }> = new Action();
   saveQRCodeImageSuccess: Action<{ walletAddress: string }> = new Action();
+  getAccountPublicKey: Action<{ spendingPassword: string }> = new Action();
   copyPublicKey: Action<{ publicKey: string }> = new Action();
   copyAddress: Action<{ address: string }> = new Action();
   copyAssetItem: Action<{ assetItem: string, value: string }> = new Action();
@@ -86,7 +87,7 @@ export default class WalletsActions {
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
   finishRewardsCsv: Action<any> = new Action();
-  setCurrencySelected: Action<{ currencySymbol: string }> = new Action();
+  setCurrencySelected: Action<{ currencyCode: string }> = new Action();
   toggleCurrencyIsActive: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */

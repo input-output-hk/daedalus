@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { ellipsis } from '../../../utils/strings';
+import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
+import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
-import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type Props = {
@@ -76,6 +76,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       _resetTransaction: resetHardwareWalletTransaction,
       sendMoneyRequest: sendMoneyExternalRequest,
       isTransactionPending,
+      checkIsTrezorByWalletId,
     } = stores.hardwareWallets;
     const { isFlight } = global;
 
@@ -90,6 +91,8 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const error = isHardwareWallet
       ? sendMoneyExternalRequest.error
       : sendMoneyRequest.error;
+
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     return (
       <>
@@ -119,6 +122,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             onInitiateTransaction={this.handleInitiateTransaction}
             walletName={activeWallet.name}
             onCopyAssetItem={this.handleOnCopyAssetItem}
+            isTrezor={isTrezor}
           />
         ) : (
           <WalletSendConfirmationDialog
@@ -142,6 +146,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
             walletName={activeWallet.name}
+            isTrezor={isTrezor}
           />
         )}
       </>

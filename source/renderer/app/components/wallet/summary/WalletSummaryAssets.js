@@ -54,7 +54,6 @@ export default class WalletSummaryAssets extends Component<Props> {
     } = this.props;
     const { intl } = this.context;
 
-    const { isHardwareWallet } = wallet;
     const isRestoreActive = wallet.isRestoring;
     const numberOfAssets = assets && assets.length ? assets.length : 0;
 
@@ -100,9 +99,7 @@ export default class WalletSummaryAssets extends Component<Props> {
                       className={classNames([
                         'primary',
                         styles.assetSendButton,
-                        asset.quantity.isZero() || isHardwareWallet
-                          ? styles.disabled
-                          : null,
+                        asset.quantity.isZero() ? styles.disabled : null,
                       ])}
                       onClick={() => onOpenAssetSend(asset)}
                     >

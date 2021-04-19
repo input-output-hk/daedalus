@@ -12,6 +12,7 @@ import StakePool from '../../../domains/StakePool';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { PoolPopOver } from '../widgets/PoolPopOver';
 import styles from './WalletRow.scss';
 import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -22,7 +23,6 @@ import {
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
-import TooltipPool from '../widgets/TooltipPool';
 
 const messages = defineMessages({
   walletAmount: {
@@ -101,16 +101,10 @@ type Props = {
 
 type WalletRowState = {
   highlightedPoolId: boolean,
-  top: number,
-  left: number,
 };
-
 const initialWalletRowState = {
   highlightedPoolId: false,
-  top: 0,
-  left: 0,
 };
-
 @observer
 export default class WalletRow extends Component<Props, WalletRowState> {
   static contextTypes = {
@@ -167,13 +161,13 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     document.getElementsByTagName('head')[0].appendChild(firstTilePopOverStyle);
   };
 
-  handleShowTooltip = () => {
+  handlePopOverOpen = () => {
     this.setState({
       highlightedPoolId: true,
     });
   };
 
-  handleHideTooltip = () => {
+  handlePopOverClose = () => {
     this.setState({
       highlightedPoolId: false,
     });
@@ -234,7 +228,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       showWithSelectButton,
       containerClassName,
     } = this.props;
-    const { top, left, highlightedPoolId } = this.state;
+    const { highlightedPoolId } = this.state;
 
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
     const isUndelegateBlocked = true;
@@ -294,17 +288,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       styles.action,
       highlightedPoolId ? styles.active : null,
     ]);
-
-    const popOverThemeVariables = {
-      '--rp-pop-over-bg-color':
-        'var(--theme-staking-stake-pool-tooltip-background-color)',
-      '--rp-pop-over-box-shadow':
-        '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
-      '--rp-pop-over-border-color':
-        'var(--theme-staking-stake-pool-tooltip-border-color)',
-      '--rp-pop-over-border-radius': '5px',
-      '--rp-pop-over-border-style': 'solid',
-    };
 
     return (
       <div className={styles.component}>
@@ -408,38 +391,23 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                 )}
               </div>
               <SVGInline svg={arrow} className={styles.arrow} />
+
               <div className={futureStakePoolTileStyles}>
                 {futurePendingDelegatedStakePoolId ? (
-                  <div
-                    onMouseEnter={this.handleShowTooltip}
-                    onMouseLeave={this.handleHideTooltip}
-                  >
+                  <>
                     {futurePendingDelegatedStakePool ? (
-                      <PopOver
-                        key="stakePoolTooltip"
-                        placement="auto"
-                        maxWidth={280}
-                        appendTo={'parent'}
-                        isShowingOnHover={false}
-                        visible={highlightedPoolId}
-                        themeVariables={popOverThemeVariables}
-                        allowHTML
-                        content={
-                          <TooltipPool
-                            stakePool={futurePendingDelegatedStakePool}
-                            isVisible
-                            currentTheme={currentTheme}
-                            onClick={this.handleHideTooltip}
-                            onOpenExternalLink={onOpenExternalLink}
-                            top={top}
-                            left={left}
-                            color={stakePoolRankingColor}
-                            showWithSelectButton={showWithSelectButton}
-                            containerClassName={containerClassName}
-                            numberOfRankedStakePools={numberOfRankedStakePools}
-                            isDelegationView
-                          />
-                        }
+                      <PoolPopOver
+                        openOnHover
+                        color={stakePoolRankingColor}
+                        currentTheme={currentTheme}
+                        onClose={this.handlePopOverClose}
+                        onOpen={this.handlePopOverOpen}
+                        onOpenExternalLink={onOpenExternalLink}
+                        openWithDelay={false}
+                        stakePool={futurePendingDelegatedStakePool}
+                        containerClassName={containerClassName}
+                        numberOfRankedStakePools={numberOfRankedStakePools}
+                        showWithSelectButton={showWithSelectButton}
                       >
                         <div className={styles.stakePoolTicker}>
                           {futurePendingDelegatedStakePool.ticker}
@@ -478,13 +446,13 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                           className={styles.stakePoolRankingIndicator}
                           style={{ background: stakePoolRankingColor }}
                         />
-                      </PopOver>
+                      </PoolPopOver>
                     ) : (
                       <div className={styles.stakePoolUnknown}>
                         {intl.formatMessage(messages.unknownStakePoolLabel)}
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <div className={styles.nonDelegatedText}>
                     {notDelegatedText}

@@ -28,7 +28,7 @@ import { createSelfnodeConfig } from './utils';
 import { logger } from '../utils/logging';
 import type { CardanoNodeImplementations } from '../../common/types/cardano-node.types';
 
-export type WalletOpts = {
+export type WalletOptions = {
   nodeImplementation: CardanoNodeImplementations,
   nodeConfig: NodeConfig,
   cluster: string,
@@ -46,7 +46,9 @@ export type WalletOpts = {
   metadataUrl?: string,
 };
 
-export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
+export async function CardanoWalletLauncher(
+  walletOptions: WalletOptions
+): Launcher {
   const {
     nodeImplementation,
     nodeConfig, // For cardano-node / byron only!
@@ -63,7 +65,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     cliBin,
     isStaging,
     metadataUrl,
-  } = walletOpts;
+  } = walletOptions;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
 
@@ -213,7 +215,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   }
 
   logger.info('Setting up CardanoLauncher now...', {
-    walletOpts,
+    walletOptions,
     launcherConfig,
   });
 

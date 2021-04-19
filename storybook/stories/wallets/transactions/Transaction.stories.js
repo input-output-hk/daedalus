@@ -33,7 +33,7 @@ const date = new Date();
 const assetsMetadata = [
   {
     name: 'MakerDAO',
-    acronym: 'DAI',
+    ticker: 'DAI',
     description: 'Test description',
     unit: {
       name: 'DAI',
@@ -44,7 +44,7 @@ const assetsMetadata = [
   },
   {
     name: 'TrueUSD',
-    acronym: 'TUSD',
+    ticker: 'TUSD',
     description: 'Test description',
     unit: {
       name: 'TUSD',
@@ -55,7 +55,7 @@ const assetsMetadata = [
   },
   {
     name: 'Tether',
-    acronym: 'USDT',
+    ticker: 'USDT',
     description: 'Test description',
     unit: {
       name: 'USDT',
@@ -66,7 +66,7 @@ const assetsMetadata = [
   },
   {
     name: 'USD Coin',
-    acronym: 'USDC',
+    ticker: 'USDC',
     description: 'Test description',
     unit: {
       name: 'USDC',
@@ -137,13 +137,13 @@ storiesOf('Wallets|Transactions', module)
     const decimals = number('decimals', 1, {}, 'First Asset');
     const hasMetadata = boolean('hasMetadata', true, 'First Asset');
 
-    const assetsDetails = assets.map((txAsset, index) => ({
+    const txAssets = assets.map((txAsset, index) => ({
       ...txAsset,
       metadata:
         index === 0
           ? hasMetadata && {
               name: text('md - name', 'MakerDAO', 'First Asset'),
-              acronym: text('md - acronym', 'DAO', 'First Asset'),
+              ticker: text('md - ticker', 'DAO', 'First Asset'),
               description: text(
                 'md - description',
                 'Test description',
@@ -200,7 +200,7 @@ storiesOf('Wallets|Transactions', module)
         isLoadingAssets={boolean('isLoadingAssets', false)}
         currentTimeFormat="hh:mm:ss A"
         walletId={generateHash()}
-        assetsDetails={assetsDetails}
+        txAssets={txAssets}
         onShowMetadata={action('onShowMetadata')}
         getUrlByType={action('getUrlByType')}
         deletePendingTransaction={action('deletePendingTransaction')}

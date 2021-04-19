@@ -79,8 +79,8 @@ export const handleAddressPDFRequests = () => {
             size: [width, height],
             margins: {
               bottom: 20,
-              left: 30,
-              right: 30,
+              left: 20,
+              right: 20,
               top: 20,
             },
             info: {
@@ -115,18 +115,17 @@ export const handleAddressPDFRequests = () => {
           doc.moveDown();
 
           // Address
-          doc.font(fontBufferMono).fontSize(19).text(address, {
+          doc.font(fontBufferMono).fontSize(9).text(address, {
             align: 'center',
-            characterSpacing: 1.5,
           });
 
           if (note) {
             doc.moveDown();
             // Note title
-            doc.font(fontBufferRegular).fontSize(14).text(noteLabel);
+            doc.font(fontBufferRegular).fontSize(12).text(noteLabel);
 
             // Note
-            doc.font(fontBufferUnicode).text(note);
+            doc.font(fontBufferUnicode).fontSize(12).text(note);
           }
 
           doc.moveDown();
