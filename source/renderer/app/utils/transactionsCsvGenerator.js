@@ -1,14 +1,20 @@
 // @flow
 import path from 'path';
-import moment from 'moment';
-import BigNumber from 'bignumber.js';
 import { intlShape, defineMessages } from 'react-intl';
 import { includes } from 'lodash';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
-import { WalletTransaction } from '../domains/WalletTransaction';
+import {
+  WalletTransaction,
+  TransactionTypes,
+} from '../domains/WalletTransaction';
 import { downloadCsv } from './csvGenerator';
-import { formattedWalletAmount } from './formatters';
+import {
+  formattedWalletAmount,
+  formattedTokenWalletAmount,
+} from './formatters';
+import { WALLET_ASSETS_ENABLED } from '../config/walletsConfig';
+import { filterAssets } from './assets';
 
 const messages = defineMessages({
   columnID: {
@@ -21,10 +27,30 @@ const messages = defineMessages({
     defaultMessage: '!!!Type',
     description: 'Transactions CSV column - Type',
   },
-  columnAmount: {
-    id: 'wallet.transactions.csv.column.amount',
-    defaultMessage: '!!!Amount',
-    description: 'Transactions CSV column - Amount',
+  columnTotal: {
+    id: 'wallet.transactions.csv.column.amount.total',
+    defaultMessage: '!!!TOTAL (ADA)',
+    description: 'Transactions CSV column - TOTAL',
+  },
+  columnSentAmount: {
+    id: 'wallet.transactions.csv.column.amount.sent',
+    defaultMessage: '!!!Sent amount (ADA)',
+    description: 'Transactions CSV column - Sent amount',
+  },
+  columnDepositAmount: {
+    id: 'wallet.transactions.csv.column.amount.deposit',
+    defaultMessage: '!!!Deposit amount (ADA)',
+    description: 'Transactions CSV column - Deposit amount',
+  },
+  columnFee: {
+    id: 'wallet.transactions.csv.column.amount.fee',
+    defaultMessage: '!!!Fee (ADA)',
+    description: 'Transactions CSV column - Fee',
+  },
+  columnTokens: {
+    id: 'wallet.transactions.csv.column.tokens',
+    defaultMessage: '!!!Tokens',
+    description: 'Transactions CSV column - Tokens',
   },
   columnDateTime: {
     id: 'wallet.transactions.csv.column.dateTime',
@@ -61,11 +87,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Received',
     description: 'Transactions CSV value - Type Received',
   },
-  valueAmount: {
-    id: 'wallet.transactions.csv.value.amount',
-    defaultMessage: '!!!{amount} ADA',
-    description: 'Transactions CSV value - Amount',
-  },
   valueStatusConfirmed: {
     id: 'wallet.transactions.csv.value.statusConfirmed',
     defaultMessage: '!!!Confirmed',
@@ -88,6 +109,8 @@ type Params = {
   intl: intlShape,
   transactions: Array<WalletTransaction>,
   walletName: string,
+  getAssetDetails: Function,
+  isInternalAddress: Function,
 };
 
 const transactionsCsvGenerator = async ({
@@ -95,6 +118,8 @@ const transactionsCsvGenerator = async ({
   intl,
   transactions,
   walletName,
+  getAssetDetails,
+  isInternalAddress,
 }: Params): Promise<boolean> => {
   const prefix = `${intl.formatMessage(messages.filenamePrefix)}-${walletName}`;
   const fileName = generateFileNameWithTimestamp({
@@ -119,7 +144,10 @@ const transactionsCsvGenerator = async ({
   const columns = [
     intl.formatMessage(messages.columnID),
     intl.formatMessage(messages.columnType),
-    intl.formatMessage(messages.columnAmount),
+    intl.formatMessage(messages.columnTotal),
+    intl.formatMessage(messages.columnSentAmount),
+    intl.formatMessage(messages.columnDepositAmount),
+    intl.formatMessage(messages.columnFee),
     intl.formatMessage(messages.columnDateTime),
     intl.formatMessage(messages.columnStatus),
     intl.formatMessage(messages.columnAddressesFrom),
@@ -127,24 +155,52 @@ const transactionsCsvGenerator = async ({
     intl.formatMessage(messages.columnWithdrawals),
   ];
 
+  if (WALLET_ASSETS_ENABLED) {
+    columns.splice(6, 0, intl.formatMessage(messages.columnTokens));
+  }
+
   const fileContent = [columns];
 
   transactions.forEach(
-    ({ id, type, amount, date, addresses, state }: WalletTransaction) => {
+    ({
+      id,
+      type,
+      amount,
+      deposit,
+      fee,
+      date,
+      addresses,
+      state,
+      assets,
+    }: WalletTransaction) => {
       const valueType =
-        type === 'expend'
+        type === TransactionTypes.EXPEND
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
-      const amountNumber = formattedWalletAmount(
-        new BigNumber(Math.abs(amount)),
-        false
-      );
-      const valueAmount = intl.formatMessage(messages.valueAmount, {
-        amount: amountNumber,
-      });
-      const valueDateTime = `${moment(date)
-        .utc()
-        .format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+      const valueTotal = formattedWalletAmount(amount, false);
+      let valueSentAmount = '';
+      let valueDepositAmount = '';
+      let valueTransactionFee = '';
+      if (type === TransactionTypes.EXPEND) {
+        const amountWithoutFees = -amount.minus(-fee);
+        valueSentAmount = formattedWalletAmount(amountWithoutFees, false);
+        valueDepositAmount = formattedWalletAmount(deposit, false);
+        valueTransactionFee = formattedWalletAmount(fee, false);
+      }
+      const valueTokens = filterAssets(assets, type, isInternalAddress)
+        .map(({ policyId, assetName, quantity }) => {
+          const { fingerprint, metadata } = getAssetDetails(
+            policyId,
+            assetName
+          );
+          const formattedAmount = formattedTokenWalletAmount(
+            quantity,
+            metadata
+          );
+          return `${formattedAmount} (${fingerprint})`;
+        })
+        .join(', ');
+      const valueDateTime = date ? date.toISOString() : '';
       const valueStatus =
         state === 'pending'
           ? intl.formatMessage(messages.valueStatusPending)
@@ -157,13 +213,19 @@ const transactionsCsvGenerator = async ({
       const txValues = [
         id,
         valueType,
-        valueAmount,
+        valueTotal,
+        valueSentAmount,
+        valueDepositAmount,
+        valueTransactionFee,
         `${valueDateTime}`,
         valueStatus,
         valueAddressesFrom,
         valueAddressesTo,
         valueWithdrawals,
       ];
+      if (WALLET_ASSETS_ENABLED) {
+        txValues.splice(6, 0, valueTokens);
+      }
       fileContent.push(txValues);
     }
   );

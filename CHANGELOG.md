@@ -3,19 +3,63 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed asset amount validation ([PR 2472](https://github.com/input-output-hk/daedalus/pull/2472))
+- Fixed hardware wallets confirmation crashing issue when device is in "Busy" state ([PR 2522](https://github.com/input-output-hk/daedalus/pull/2522))
+- Fixed hardware wallets spending password issue ([PR 2519](https://github.com/input-output-hk/daedalus/pull/2519))
+
+## 4.0.5
+
 ### Features
 
+- Added "Voting registration not available" screen ([PR 2518](https://github.com/input-output-hk/daedalus/pull/2518))
+- Added Japanese translation to the external currencies list ([PR 2497](https://github.com/input-output-hk/daedalus/pull/2497))
+
+### Fixes
+
+- Fixed stake pool list cutting off items ([PR 2517](https://github.com/input-output-hk/daedalus/pull/2517))
+- Fixed fee calculation edge cases in wallet send form ([PR 2501](https://github.com/input-output-hk/daedalus/pull/2501))
+- Handle empty strings in transaction metadata correctly ([PR 2503](https://github.com/input-output-hk/daedalus/pull/2503))
+
+### Chores
+
+- Updated header section styles of delegation rewards screen ([PR 2509](https://github.com/input-output-hk/daedalus/pull/2509))
+- Reduced the clock drift tolerance to 4,5 seconds ([PR 2510](https://github.com/input-output-hk/daedalus/pull/2510))
+- Updates Catalyst Fund4 dates ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
+- Updated `cardano-wallet` to revision `7df30796` ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
+
+## 4.0.4
+
+### Features
+
+- Added wallet rewards address display on the "Rewards" screen ([PR 2475](https://github.com/input-output-hk/daedalus/pull/2475))
+
+## 4.0.3
+
+### Features
+
+- Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
+- Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
 - Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
 
 ### Fixes
 
-- Fixed asset amount validation ([PR 2472](https://github.com/input-output-hk/daedalus/pull/2472))
+- Fixed Catalyst voting registration being stuck at confirming transaction step issue ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
 - Fixed animation and positioning issues in the progress bar ([PR 2458](https://github.com/input-output-hk/daedalus/pull/2458))
 - Fixed dropdown not appearing in the Stake Pools Settings screen ([PR 2460](https://github.com/input-output-hk/daedalus/pull/2460))
 - Fixed delay on loading stake pool list after switching the SMASH server ([PR 2447](https://github.com/input-output-hk/daedalus/pull/2447))
 
 ### Chores
 
+- Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
+- Increased maximum event listeners limit to avoid IPC channel stalling ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
+- Updated Catalyst voting registration text copy for Fund4 ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
+- Improved reveal / hide action for public key field ([PR 2473](https://github.com/input-output-hk/daedalus/pull/2473))
+- Updated lockfile:check and lockfile:fix scripts ([PR 2483](https://github.com/input-output-hk/daedalus/pull/2483))
+- Improved hardware wallets public keys exporting while signing transaction witnesses ([PR 2477](https://github.com/input-output-hk/daedalus/pull/2477))
+- Updated `trezor-connect` dependency to version `8.1.25` ([PR 2474](https://github.com/input-output-hk/daedalus/pull/2474))
+- Improved receive screen's "show used" toggle UX ([PR 2466](https://github.com/input-output-hk/daedalus/pull/2466))
 - Updated `iohk-nix` to revision `bc4216c5` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Updated `cardano-wallet` to revision `1fbb9f46` ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))
 - Re-enabled "Selfnode" environment ([PR 2462](https://github.com/input-output-hk/daedalus/pull/2462))

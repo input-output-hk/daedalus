@@ -15,7 +15,7 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
-import type { WalletTransactionAsset } from '../../../api/assets/types';
+import { getTransactionAssets } from '../../../utils/assets';
 
 const messages = defineMessages({
   today: {
@@ -230,25 +230,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
       isLastInGroup ? styles.lastInGroup : null,
     ]);
 
-    // $FlowFixMe
-    const txAssets: Array<WalletTransactionAsset> = tx.assets
-      .map((rawAsset) => {
-        const { policyId, assetName } = rawAsset;
-        const assetDetails = getAssetDetails(policyId, assetName);
-        return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
-      })
-      .filter((asset) => asset != null)
-      .sort((asset1, asset2) => {
-        if (asset1 && asset2) {
-          if (asset1.fingerprint < asset2.fingerprint) {
-            return -1;
-          }
-          if (asset1.fingerprint > asset2.fingerprint) {
-            return 1;
-          }
-        }
-        return 0;
-      });
+    const txAssets = getTransactionAssets(tx.assets, getAssetDetails);
     const totalRawAssets = tx.assets.length;
     const totalAssets = txAssets.length;
     const hasRawAssets = tx.assets.length > 0;
@@ -272,7 +254,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentTimeFormat={currentTimeFormat}
-          assetsDetails={txAssets}
+          txAssets={txAssets}
           hasAssetsEnabled={hasAssetsEnabled}
           isInternalAddress={isInternalAddress}
           isLoadingAssets={isLoadingAssets}
