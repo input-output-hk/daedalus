@@ -125,7 +125,6 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     const { formatMessage } = this.context.intl;
     const componentClassNames = classNames([styles.component, 'general']);
 
-    console.log('PROFILE_SETTINGS', PROFILE_SETTINGS);
     return (
       <div className={componentClassNames}>
         {this.getSelect(PROFILE_SETTINGS[1])}
