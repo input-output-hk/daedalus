@@ -1,42 +1,35 @@
 .options {
   margin-top: -7px;
 
-  .hasSearch {
-    border-radius: 0;
-
-    button {
-      background-color: var(
-          --theme-staking-stake-pools-search-clear-button-background-color
-      ) !important;
-      top: 11px !important;
-
-      &:hover {
-        background-color: var(
-            --theme-staking-stake-pools-search-clear-button-hover-background-color
-        ) !important;
-      }
-    }
-  }
-
-  :not(.hasSearch) {
+  &:not(.hasSearch) {
     ul {
       border-radius: 4px;
     }
   }
 
-  option em {
-    background-color: var(
-        --rp-option-search-highlight-background-color
-    ) !important;
-  }
+  &.hasSearch {
+    ul {
+      border-radius: 0 0 4px 4px !important;
+    }
 
-  button:before {
-    height: 10px;
-    margin-left: -1px;
-    margin-top: -1px;
-    -webkit-mask-size: 10px, 10px;
-    mask-size: 10px, 10px;
-    width: 10px;
+    button {
+      background-color: var(--theme-button-flat-background-color) !important;
+      &:hover {
+        background-color: var(--theme-button-flat-background-color-hover);
+      }
+
+      /* @DDW-645 TODO: Move to react-polymorph? */
+      top: 11;
+      &:before {
+        height: 10px;
+        margin-left: -1px;
+        margin-top: -1px;
+        -webkit-mask-size: 10px, 10px;
+        mask-size: 10px, 10px;
+        width: 10px;
+      }
+      /* @DDW-645 TODO End */
+    }
   }
 
   [data-bubble-arrow] {
