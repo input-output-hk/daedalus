@@ -1,5 +1,5 @@
 // @flow
-import { split, get, has, map, last, size, concat, flatten } from 'lodash';
+import { split, get, map, last, size, concat, flatten } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -239,7 +239,7 @@ import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 
-const { isIncentivizedTestnet, environment } = global;
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -255,12 +255,21 @@ export default class AdaApi {
 
   getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
+    const {
+      getHardwareWalletLocalData,
+      getHardwareWalletsLocalData,
+    } = global.daedalus.api.localStorage;
     try {
       const wallets: AdaWallets = await getWallets(this.config);
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
-      logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
+      const hwLocalData = await getHardwareWalletsLocalData();
+      logger.debug('AdaApi::getWallets success', {
+        wallets,
+        legacyWallets,
+        hwLocalData: filterLogData(hwLocalData),
+      });
       map(legacyWallets, (legacyAdaWallet) => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
@@ -281,9 +290,6 @@ export default class AdaApi {
       return await Promise.all(
         wallets.map(async (wallet) => {
           const { id } = wallet;
-          const {
-            getHardwareWalletLocalData,
-          } = global.daedalus.api.localStorage;
           const walletData = await getHardwareWalletLocalData(id);
           return _createWalletFromServerData({
             ...wallet,
@@ -2437,6 +2443,7 @@ export default class AdaApi {
       votingKey,
       stakeKey,
       addressHex,
+      absoluteSlotNumber,
     } = request;
 
     try {
@@ -2467,6 +2474,14 @@ export default class AdaApi {
                 },
                 v: {
                   bytes: addressHex,
+                },
+              },
+              {
+                k: {
+                  int: 4,
+                },
+                v: {
+                  int: absoluteSlotNumber,
                 },
               },
             ],
@@ -2502,6 +2517,7 @@ export default class AdaApi {
       votingKey,
       stakeKey,
       signature,
+      absoluteSlotNumber,
     } = request;
 
     try {
@@ -2541,6 +2557,14 @@ export default class AdaApi {
                 },
                 v: {
                   bytes: addressHex,
+                },
+              },
+              {
+                k: {
+                  int: 4,
+                },
+                v: {
+                  int: absoluteSlotNumber,
                 },
               },
             ],
@@ -2814,51 +2838,11 @@ const _createAssetFromServerData = action(
       fingerprint,
       metadata,
     } = data;
-
-    // @TOKEN TODO: remove once testing is done
-    const DUMMY_TOKEN_METADATA = {
-      '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086736164636f696e': {
-        policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
-        assetName: '736164636f696e',
-        fingerprint: 'asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0egc',
-        metadata: {
-          name: "Tim's token",
-          description:
-            'This is a test token to show you how it will look in Daedalus',
-          ticker: 'TIM',
-        },
-      },
-      '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf389790866861707079636f696e': {
-        policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
-        assetName: '6861707079636f696e',
-        fingerprint: 'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8',
-        metadata: {
-          name: "Darko's token",
-          description:
-            'This is a test token to show you how it will look in Daedalus',
-          ticker: 'DARK',
-          unit: {
-            decimals: 2,
-            name: 'Ark',
-          },
-        },
-      },
-    };
-    const hasDummyTokenMetadata = has(DUMMY_TOKEN_METADATA, [
-      policyId + assetName,
-    ]);
-    window.useDummyTokenMetadata =
-      window.useDummyTokenMetadata === undefined
-        ? environment.isDev
-        : window.useDummyTokenMetadata;
     return new Asset({
       policyId,
       assetName,
       fingerprint,
-      metadata:
-        window.useDummyTokenMetadata && hasDummyTokenMetadata
-          ? DUMMY_TOKEN_METADATA[policyId + assetName].metadata
-          : metadata,
+      metadata,
     });
   }
 );

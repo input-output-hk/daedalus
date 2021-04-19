@@ -68,6 +68,7 @@ export default class StakingStore extends Store {
   @observable isFetchingStakePools: boolean = false;
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
+  @observable stakingInfoWasOpen: boolean = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -116,12 +117,14 @@ export default class StakingStore extends Store {
       this._setSelectedDelegationWalletId
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
+    stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
 
     this._startStakePoolsFetchTracker();
+    this._getStakingInfoWasOpen();
   }
 
   // REQUESTS
@@ -235,6 +238,18 @@ export default class StakingStore extends Store {
       STAKE_POOLS_FETCH_TRACKER_INTERVAL
     );
     this.getStakePoolsData(true);
+  };
+
+  @action _getStakingInfoWasOpen = async () => {
+    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
+    runInAction(() => {
+      this.stakingInfoWasOpen = stakingInfoWasOpen;
+    });
+  };
+
+  @action _setStakingInfoWasOpen = () => {
+    this.stakingInfoWasOpen = true;
+    this.api.localStorage.setStakingInfoWasOpen();
   };
 
   @action _stakePoolsFetchTracker = () => {
@@ -836,10 +851,12 @@ export default class StakingStore extends Store {
       reward: rewards,
       syncState,
     } = inputWallet;
+    const { stakeAddresses } = this.stores.addresses;
     const { withdrawals } = this.stores.transactions;
     const reward = rewards.plus(withdrawals[walletId]);
+    const rewardsAddress = stakeAddresses[walletId];
     const syncingProgress = get(syncState, 'progress.quantity', '');
-    return { wallet, reward, isRestoring, syncingProgress };
+    return { wallet, reward, isRestoring, syncingProgress, rewardsAddress };
   };
 
   getStakePoolById = (stakePoolId: string) =>

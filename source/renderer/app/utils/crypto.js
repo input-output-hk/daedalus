@@ -1,6 +1,8 @@
 // @flow
 import * as bip39 from 'bip39';
 import { Buffer } from 'safe-buffer';
+import { blake2b } from 'blakejs';
+import { bech32 } from 'bech32';
 import crypto from 'crypto';
 import { chunk } from 'lodash';
 import { pbkdf2Sync as pbkdf2 } from 'pbkdf2';
@@ -92,4 +94,26 @@ export const mnemonicToSeedHex = (mnemonic: string, password: ?string) => {
   const salt = `mnemonic${unorm.nfkd(password) || ''}`;
   const saltBuffer = Buffer.from(salt, 'utf8');
   return pbkdf2(mnemonicBuffer, saltBuffer, 2048, 32, 'sha512').toString('hex');
+};
+
+export const blake2b224 = (data: Buffer): Buffer => blake2b(data, null, 28);
+
+export const decodeBech32 = (data: string): Buffer =>
+  Buffer.from(bech32.fromWords(bech32.decode(data).words));
+
+export const encodeBech32 = (prefix: string, data: Buffer): string =>
+  bech32.encode(prefix, bech32.toWords(data));
+
+export const getStakeAddressFromStakeKey = (stakeKey: string): string => {
+  const { isMainnet, isStaging, isSelfnode } = global.environment;
+  const isMainnetLikeNetwork = isMainnet || isStaging || isSelfnode;
+  const stakeKeyHex: Buffer = decodeBech32(stakeKey);
+  const stakeKeyHash: Buffer = blake2b224(stakeKeyHex);
+  const networkPrefix = Buffer.from(isMainnetLikeNetwork ? 'e1' : 'e0', 'hex');
+  const addressPrefix = isMainnetLikeNetwork ? 'stake' : 'stake_test';
+  const stakeAddress = encodeBech32(
+    addressPrefix,
+    Buffer.from([...networkPrefix, ...stakeKeyHash])
+  );
+  return stakeAddress;
 };

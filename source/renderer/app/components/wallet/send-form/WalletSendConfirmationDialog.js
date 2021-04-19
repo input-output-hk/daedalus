@@ -115,6 +115,7 @@ type Props = {
   onInitiateTransaction: Function,
   walletName: string,
   onExternalLinkClick: Function,
+  isTrezor: boolean,
 };
 
 type State = {
@@ -208,6 +209,7 @@ export default class WalletSendConfirmationDialog extends Component<
       isFlight,
       onExternalLinkClick,
       walletName,
+      isTrezor,
     } = this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
@@ -217,6 +219,7 @@ export default class WalletSendConfirmationDialog extends Component<
             <HardwareWalletStatus
               hwDeviceStatus={hwDeviceStatus}
               walletName={walletName}
+              isTrezor={isTrezor}
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>
@@ -329,7 +332,7 @@ export default class WalletSendConfirmationDialog extends Component<
               </div>
               <div className={styles.amount}>
                 {amount}
-                <span className={styles.currencySymbol}>
+                <span className={styles.currencyCode}>
                   &nbsp;{currencyUnit}
                 </span>
               </div>
@@ -341,7 +344,7 @@ export default class WalletSendConfirmationDialog extends Component<
               </div>
               <div className={styles.fees}>
                 +{transactionFee}
-                <span className={styles.currencySymbol}>
+                <span className={styles.currencyCode}>
                   &nbsp;{currencyUnit}
                 </span>
               </div>
@@ -354,9 +357,7 @@ export default class WalletSendConfirmationDialog extends Component<
             </div>
             <div className={styles.totalAmount}>
               {totalAmount}
-              <span className={styles.currencySymbol}>
-                &nbsp;{currencyUnit}
-              </span>
+              <span className={styles.currencyCode}>&nbsp;{currencyUnit}</span>
             </div>
           </div>
 
