@@ -338,6 +338,7 @@ storiesOf('Wallets|Send', module)
         onInitiateTransaction={() => null}
         walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
         onCopyAssetItem={() => {}}
+        isTrezor={boolean('isTrezor', false)}
       />
     </div>
   ))
@@ -361,6 +362,7 @@ storiesOf('Wallets|Send', module)
         isHardwareWallet={boolean('isHardwareWallet', false)}
         onInitiateTransaction={() => null}
         walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
+        isTrezor={boolean('isTrezor', false)}
       />
     </div>
   ));

@@ -54,7 +54,7 @@ const messages = defineMessages({
   },
   tableHeaderReward: {
     id: 'staking.rewards.tableHeader.reward',
-    defaultMessage: '!!!Reward',
+    defaultMessage: '!!!Total rewards earned',
     description: 'Table header "Reward" label on staking rewards page',
   },
   learnMoreButtonLabel: {
@@ -94,6 +94,7 @@ type Props = {
 type State = {
   rewardsOrder: string,
   rewardsSortBy: string,
+  contentScrollTop: number,
 };
 
 @observer
@@ -111,6 +112,7 @@ export default class StakingRewards extends Component<Props, State> {
     this.state = {
       rewardsOrder: REWARD_ORDERS.DESCENDING,
       rewardsSortBy: REWARD_FIELDS.DATE,
+      contentScrollTop: 0,
     };
   }
 
@@ -167,9 +169,13 @@ export default class StakingRewards extends Component<Props, State> {
     });
   };
 
+  handleContentScroll = (evt: SyntheticEvent<HTMLElement>) => {
+    this.setState({ contentScrollTop: evt.currentTarget.scrollTop });
+  };
+
   render() {
     const { rewards, isLoading, onLearnMoreClick } = this.props;
-    const { rewardsOrder, rewardsSortBy } = this.state;
+    const { rewardsOrder, rewardsSortBy, contentScrollTop } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
     const showRewards = rewards && rewards.length > 0 && !isLoading;
@@ -192,10 +198,14 @@ export default class StakingRewards extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderReward),
       },
     ];
+    const headerWrapperClasses = classNames([
+      styles.headerWrapper,
+      contentScrollTop > 10 ? styles.headerWrapperWithShadow : null,
+    ]);
 
     return (
       <div className={styles.component}>
-        <div className={styles.headerWrapper}>
+        <div className={headerWrapperClasses}>
           <div className={styles.title}>
             {intl.formatMessage(messages.title)}
           </div>
@@ -205,101 +215,109 @@ export default class StakingRewards extends Component<Props, State> {
             </div>
           )}
         </div>
+        <div
+          className={styles.contentWrapper}
+          onScroll={this.handleContentScroll}
+        >
+          <BorderedBox>
+            {noRewards && (
+              <div className={styles.noRewardsLabel}>
+                {intl.formatMessage(messages.noRewards)}
+              </div>
+            )}
 
-        <BorderedBox>
-          {noRewards && (
-            <div className={styles.noRewardsLabel}>
-              {intl.formatMessage(messages.noRewards)}
-            </div>
-          )}
+            {sortedRewards && (
+              <table>
+                <thead>
+                  <tr>
+                    {map(availableTableHeaders, (tableHeader) => {
+                      const isSorted = tableHeader.name === rewardsSortBy;
+                      const sortIconClasses = classNames([
+                        styles.sortIcon,
+                        isSorted ? styles.sorted : null,
+                        isSorted && rewardsOrder === 'asc'
+                          ? styles.ascending
+                          : null,
+                      ]);
 
-          {sortedRewards && (
-            <table>
-              <thead>
-                <tr>
-                  {map(availableTableHeaders, (tableHeader) => {
-                    const isSorted = tableHeader.name === rewardsSortBy;
-                    const sortIconClasses = classNames([
-                      styles.sortIcon,
-                      isSorted ? styles.sorted : null,
-                      isSorted && rewardsOrder === 'asc'
-                        ? styles.ascending
-                        : null,
-                    ]);
+                      return (
+                        <th
+                          key={tableHeader.name}
+                          onClick={() =>
+                            this.handleRewardsSort(tableHeader.name)
+                          }
+                        >
+                          {tableHeader.title}
+                          <SVGInline
+                            svg={sortIcon}
+                            className={sortIconClasses}
+                          />
+                        </th>
+                      );
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {map(sortedRewards, (reward, key) => {
+                    const rewardDate = get(reward, REWARD_FIELDS.DATE, '');
+                    const rewardPoolTicker = get(
+                      reward,
+                      [REWARD_FIELDS.POOL, REWARD_FIELDS.TICKER],
+                      ''
+                    );
+                    const rewardPoolName = get(
+                      reward,
+                      [REWARD_FIELDS.POOL, REWARD_FIELDS.NAME],
+                      ''
+                    );
+                    const rewardWallet = get(
+                      reward,
+                      REWARD_FIELDS.WALLET_NAME,
+                      ''
+                    );
+                    const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
+                    const rewardAmount = get(
+                      reward,
+                      REWARD_FIELDS.REWARD
+                    ).toFormat(DECIMAL_PLACES_IN_ADA);
 
                     return (
-                      <th
-                        key={tableHeader.name}
-                        onClick={() => this.handleRewardsSort(tableHeader.name)}
-                      >
-                        {tableHeader.title}
-                        <SVGInline svg={sortIcon} className={sortIconClasses} />
-                      </th>
+                      <tr key={key}>
+                        <td>{rewardDate}</td>
+                        <td>
+                          <p>
+                            <span className={styles.stakePoolReference}>
+                              [{rewardPoolTicker}]
+                            </span>{' '}
+                            {rewardPoolName}
+                          </p>
+                        </td>
+                        <td>{rewardWallet}</td>
+                        <td>{isRestoring ? '-' : `${rewardAmount} ADA`}</td>
+                      </tr>
                     );
                   })}
-                </tr>
-              </thead>
-              <tbody>
-                {map(sortedRewards, (reward, key) => {
-                  const rewardDate = get(reward, REWARD_FIELDS.DATE, '');
-                  const rewardPoolTicker = get(
-                    reward,
-                    [REWARD_FIELDS.POOL, REWARD_FIELDS.TICKER],
-                    ''
-                  );
-                  const rewardPoolName = get(
-                    reward,
-                    [REWARD_FIELDS.POOL, REWARD_FIELDS.NAME],
-                    ''
-                  );
-                  const rewardWallet = get(
-                    reward,
-                    REWARD_FIELDS.WALLET_NAME,
-                    ''
-                  );
-                  const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-                  const rewardAmount = get(
-                    reward,
-                    REWARD_FIELDS.REWARD
-                  ).toFormat(DECIMAL_PLACES_IN_ADA);
+                </tbody>
+              </table>
+            )}
 
-                  return (
-                    <tr key={key}>
-                      <td>{rewardDate}</td>
-                      <td>
-                        <p>
-                          <span className={styles.stakePoolReference}>
-                            [{rewardPoolTicker}]
-                          </span>{' '}
-                          {rewardPoolName}
-                        </p>
-                      </td>
-                      <td>{rewardWallet}</td>
-                      <td>{isRestoring ? '-' : `${rewardAmount} ADA`}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-
-          {isLoading && (
-            <div className={styles.loadingSpinnerWrapper}>
-              <LoadingSpinner />
+            {isLoading && (
+              <div className={styles.loadingSpinnerWrapper}>
+                <LoadingSpinner />
+              </div>
+            )}
+          </BorderedBox>
+          <div className={styles.note}>
+            <div className={styles.asterisk}>*</div>
+            <div className={styles.noteContent}>
+              <FormattedHTMLMessage {...messages.note} />
+              <Link
+                className={styles.externalLink}
+                onClick={onLearnMoreClick}
+                label={intl.formatMessage(messages.learnMoreButtonLabel)}
+                skin={LinkSkin}
+              />
             </div>
-          )}
-        </BorderedBox>
-
-        <div className={styles.note}>
-          <div className={styles.asterisk}>*</div>
-          <div className={styles.noteContent}>
-            <FormattedHTMLMessage {...messages.note} />
-            <Link
-              className={styles.externalLink}
-              onClick={onLearnMoreClick}
-              label={intl.formatMessage(messages.learnMoreButtonLabel)}
-              skin={LinkSkin}
-            />
           </div>
         </div>
       </div>

@@ -159,6 +159,7 @@ type Props = {
   onExternalLinkClick: Function,
   onCopyAssetItem: Function,
   currencyUnit: string,
+  isTrezor: boolean,
 };
 
 type State = {
@@ -268,6 +269,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       isFlight,
       onExternalLinkClick,
       walletName,
+      isTrezor,
     } = this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
@@ -277,6 +279,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             <HardwareWalletStatus
               hwDeviceStatus={hwDeviceStatus}
               walletName={walletName}
+              isTrezor={isTrezor}
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>
@@ -498,7 +501,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                   </div>
                   <div className={styles.adaAmount}>
                     {amount}
-                    <span className={styles.currencySymbol}>
+                    <span className={styles.currencyCode}>
                       &nbsp;{currencyUnit}
                     </span>
                   </div>
@@ -510,7 +513,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                   </div>
                   <div className={styles.fees}>
                     +{transactionFee}
-                    <span className={styles.currencySymbol}>
+                    <span className={styles.currencyCode}>
                       &nbsp;{currencyUnit}
                     </span>
                   </div>
@@ -523,7 +526,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                 </div>
                 <div className={styles.totalAmount}>
                   {totalAmount}
-                  <span className={styles.currencySymbol}>
+                  <span className={styles.currencyCode}>
                     &nbsp;{currencyUnit}
                   </span>
                 </div>
@@ -536,7 +539,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
               </div>
               <div className={styles.fees}>
                 +{transactionFee}
-                <span className={styles.currencySymbol}>
+                <span className={styles.currencyCode}>
                   &nbsp;{currencyUnit}
                 </span>
               </div>

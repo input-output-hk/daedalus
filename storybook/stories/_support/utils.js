@@ -49,7 +49,8 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
           { "int": 42 },
           { "string": "1337" },
           { "list": [
-            { "string": "nested list" }
+            { "string": "nested list" },
+            { "string": "" }
           ]}
         ]
       },
@@ -166,7 +167,7 @@ export const generateTransaction = (
     id: faker.random.uuid(),
     title: '',
     type,
-    amount,
+    amount: amount.plus(fee),
     fee,
     assets: assets || [],
     deposit,

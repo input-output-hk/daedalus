@@ -260,6 +260,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#ffffff',
     '--theme-hardware-wallet-message-color': '#ffffff',
+    '--theme-hardware-wallet-status-passphrase-label-color':
+      'rgba(255, 255, 255, 0.5)',
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(255, 255, 255, 0.6)',

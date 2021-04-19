@@ -35,10 +35,10 @@ export const formattedWalletCurrencyAmount = (
   amount: BigNumber,
   currencyRate: number,
   decimalDigits?: ?number,
-  currencySymbol?: ?string
+  currencyCode?: ?string
 ): string =>
   `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
-    currencySymbol || ''
+    currencyCode || ''
   }`;
 
 export const formattedTokenWalletAmount = (
@@ -95,7 +95,11 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const formattedAmountToNaturalUnits = (amount: string): string => {
+export const formattedAmountToNaturalUnits = (amount: ?string): string => {
+  if (!amount) {
+    return '0';
+  }
+
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators
     .replace(/,/g, '') // removes all the comma separators

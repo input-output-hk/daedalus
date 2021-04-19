@@ -5,6 +5,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { ellipsis } from '../../utils/strings';
+import { getNetworkExplorerUrl } from '../../utils/network';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -30,6 +32,23 @@ export default class StakingRewardsPage extends Component<Props> {
     const { intl } = this.context;
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
+  };
+
+  onOpenExternalLink = (rewardsAddress: string) => {
+    const { app } = this.props.stores;
+    const {
+      environment: { network, rawNetwork },
+    } = app;
+    const cardanoExplorerLink = `${getNetworkExplorerUrl(
+      network,
+      rawNetwork
+    )}/address/${rewardsAddress}`;
+    this.props.stores.app.openExternalLink(cardanoExplorerLink);
+  };
+
+  handleCopyAddress = (copiedAddress: string) => {
+    const address = ellipsis(copiedAddress, 15, 15);
+    this.props.actions.wallets.copyAddress.trigger({ address });
   };
 
   render() {
@@ -64,6 +83,8 @@ export default class StakingRewardsPage extends Component<Props> {
           isExporting={wallets.generatingRewardsCsvInProgress}
           onLearnMoreClick={this.handleLearnMoreClick}
           onExportCsv={requestCSVFile.trigger}
+          onCopyAddress={this.handleCopyAddress}
+          onOpenExternalLink={this.onOpenExternalLink}
         />
       );
     }

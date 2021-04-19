@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "4.0.2-FC3",
+  "version": "4.0.5",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -197,6 +197,7 @@
     "electron-store": "5.1.1",
     "es6-error": "4.1.1",
     "find-process": "1.4.4",
+    "fireworks-js": "1.0.4",
     "form-data": "3.0.0",
     "fs-extra": "9.0.1",
     "glob": "7.1.6",
@@ -236,7 +237,7 @@
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
     "react-svg-inline": "2.1.1",
-    "react-virtualized": "9.22.2",
+    "react-virtualized": "9.22.3",
     "recharts": "1.8.5",
     "rimraf": "3.0.2",
     "rotating-file-stream": "1.4.6",
@@ -249,7 +250,7 @@
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
     "tcp-port-used": "1.0.1",
-    "trezor-connect": "8.1.22-extended",
+    "trezor-connect": "8.1.25-extended",
     "unorm": "1.6.0",
     "validator": "13.1.17"
   },

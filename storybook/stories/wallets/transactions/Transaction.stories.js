@@ -137,7 +137,7 @@ storiesOf('Wallets|Transactions', module)
     const decimals = number('decimals', 1, {}, 'First Asset');
     const hasMetadata = boolean('hasMetadata', true, 'First Asset');
 
-    const assetsDetails = assets.map((txAsset, index) => ({
+    const txAssets = assets.map((txAsset, index) => ({
       ...txAsset,
       metadata:
         index === 0
@@ -200,7 +200,7 @@ storiesOf('Wallets|Transactions', module)
         isLoadingAssets={boolean('isLoadingAssets', false)}
         currentTimeFormat="hh:mm:ss A"
         walletId={generateHash()}
-        assetsDetails={assetsDetails}
+        txAssets={txAssets}
         onShowMetadata={action('onShowMetadata')}
         getUrlByType={action('getUrlByType')}
         deletePendingTransaction={action('deletePendingTransaction')}

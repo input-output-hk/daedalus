@@ -23,18 +23,18 @@ import downloadPlayStoreIcon from '../../assets/images/voting/download-play-stor
 const messages = defineMessages({
   heading: {
     id: 'voting.info.heading',
-    defaultMessage: '!!!Register to vote on Fund3',
+    defaultMessage: '!!!Register to vote on Fund4',
     description: 'Headline for voting registration steps',
   },
   headingForEndedRegistration: {
     id: 'voting.info.headingForEndedRegistration',
-    defaultMessage: '!!!Fund3 Voting Registration Ended',
+    defaultMessage: '!!!Fund4 Voting Registration Ended',
     description: 'Headline for ended voting registration',
   },
   descriptionForEndedRegistration: {
     id: 'voting.info.descriptionForEndedRegistration',
     defaultMessage:
-      '!!!<p>Voting registration for Project Catalyst Fund3 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund3, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>',
+      '!!!<p>Voting registration for Project Catalyst Fund4 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund4, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund4 registration will start on <b>{newRegistrationStartDate}</b>.</p>',
     description: 'Description for ended voting registration',
   },
   stepTitle1: {
@@ -46,7 +46,7 @@ const messages = defineMessages({
   stepTitle2: {
     id: 'voting.info.stepTitle2',
     defaultMessage:
-      '!!!$70.000 worth of ada rewards will be distributed between ada holders who register their vote.',
+      '!!!$140.000 worth of ada rewards will be distributed between ada holders who register their vote.',
     description: 'Info step title 2 for voting registration steps',
   },
   learnMorePreviousLabel: {
@@ -66,7 +66,7 @@ const messages = defineMessages({
   },
   learnMoreLinkLabelForEndedRegistration: {
     id: 'voting.info.learnMoreLinkLabelForEndedRegistration',
-    defaultMessage: '!!!Fund3 FAQs',
+    defaultMessage: '!!!Fund4 FAQs',
     description: 'Learn more link label for ended registration',
   },
   learnMoreLinkUrl: {
@@ -88,13 +88,13 @@ const messages = defineMessages({
   bottomContentDescription: {
     id: 'voting.info.bottomContentDescription',
     defaultMessage:
-      '!!!To register to vote for Catalyst Fund3 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
+      '!!!To register to vote for Catalyst Fund4 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
     description: 'bottomContentDescription for voting registration steps',
   },
   bottomContentDescriptionForEndedRegistration: {
     id: 'voting.info.bottomContentDescriptionForEndedRegistration',
     defaultMessage:
-      '!!!To cast your vote on Project Catalyst Fund3 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
+      '!!!To cast your vote on Project Catalyst Fund4 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
     description: 'bottomContentDescription for ended registration',
   },
   checkboxLabel: {
