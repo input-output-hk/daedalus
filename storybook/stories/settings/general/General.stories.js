@@ -22,6 +22,11 @@ import SupportSettings from '../../../../source/renderer/app/components/settings
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 
+// Assets and helpers
+import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
+import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
+import type Locale from '../../../../source/common/types/locales.types';
+
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
@@ -49,7 +54,7 @@ storiesOf('Settings|General', module)
       currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ))
-  .add('Wallets', () => (
+  .add('Wallets', ({ locale }: { locale: Locale }) => (
     <WalletsSettings
       currencySelected={{
         id: 'uniswap-state-dollar',
@@ -57,7 +62,7 @@ storiesOf('Settings|General', module)
         name: 'unified Stable Dollar',
       }}
       currencyRate={0.321}
-      currencyList={[]}
+      currencyList={getLocalizedCurrenciesList(currenciesList, locale)}
       currencyIsActive
       onSelectCurrency={action('onSelectCurrency')}
       onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
