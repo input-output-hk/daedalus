@@ -1,4 +1,5 @@
 // @flow
+import { times } from 'lodash-es/util';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 import type { ElementRef } from 'react';
@@ -64,10 +65,9 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
 
   function rowRenderer(itemsPerRow, { index, key, style }) {
     const startIndex = itemsPerRow * index;
-    const stakePools = props.stakePoolsList.slice(
-      startIndex,
-      startIndex + itemsPerRow
-    );
+    const endIndex = startIndex + itemsPerRow;
+    const stakePools = props.stakePoolsList.slice(startIndex, endIndex);
+    const numberOfMissingRowItems = itemsPerRow - stakePools.length;
     return (
       <div key={key} style={style}>
         <div className={styles.tiles}>
@@ -90,6 +90,11 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
               isGridRewardsView={props.isGridRewardsView}
             />
           ))}
+          {numberOfMissingRowItems > 0
+            ? times(numberOfMissingRowItems, () => (
+                <div className={styles.rowFillerItem} />
+              ))
+            : null}
         </div>
       </div>
     );

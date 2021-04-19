@@ -7,11 +7,41 @@ Changelog
 
 - Implemented stake pools filter pop over ([PR 2461](https://github.com/input-output-hk/daedalus/pull/2461))
 
+### Fixes
+
+- Fixed hardware wallets confirmation crashing issue when device is in "Busy" state ([PR 2522](https://github.com/input-output-hk/daedalus/pull/2522))
+- Fixed hardware wallets spending password issue ([PR 2519](https://github.com/input-output-hk/daedalus/pull/2519))
+
+## 4.0.5
+
+### Features
+
+- Added "Voting registration not available" screen ([PR 2518](https://github.com/input-output-hk/daedalus/pull/2518))
+- Added Japanese translation to the external currencies list ([PR 2497](https://github.com/input-output-hk/daedalus/pull/2497))
+
+### Fixes
+
+- Fixed stake pool list cutting off items ([PR 2517](https://github.com/input-output-hk/daedalus/pull/2517))
+- Fixed fee calculation edge cases in wallet send form ([PR 2501](https://github.com/input-output-hk/daedalus/pull/2501))
+- Handle empty strings in transaction metadata correctly ([PR 2503](https://github.com/input-output-hk/daedalus/pull/2503))
+
+### Chores
+
+- Updated header section styles of delegation rewards screen ([PR 2509](https://github.com/input-output-hk/daedalus/pull/2509))
+- Reduced the clock drift tolerance to 4,5 seconds ([PR 2510](https://github.com/input-output-hk/daedalus/pull/2510))
+- Updates Catalyst Fund4 dates ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
+- Updated `cardano-wallet` to revision `7df30796` ([PR 2495](https://github.com/input-output-hk/daedalus/pull/2495))
+
+## 4.0.4
+
+### Features
+
+- Added wallet rewards address display on the "Rewards" screen ([PR 2475](https://github.com/input-output-hk/daedalus/pull/2475))
+
 ## 4.0.3
 
 ### Features
 
-- Added rewards address in Rewards Delegation Screen ([PR 2475](https://github.com/input-output-hk/daedalus/pull/2475))
 - Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
 - Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
 - Implemented Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))

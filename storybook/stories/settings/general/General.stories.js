@@ -53,7 +53,7 @@ storiesOf('Settings|General', module)
     <WalletsSettings
       currencySelected={{
         id: 'uniswap-state-dollar',
-        symbol: 'usd',
+        code: 'usd',
         name: 'unified Stable Dollar',
       }}
       currencyRate={0.321}

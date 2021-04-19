@@ -33,10 +33,10 @@ const version = 'v1';
 const apiKey = 'API_KEY';
 
 const requests = {
-  rate: ({ symbol }: Currency) => ({
+  rate: ({ code }: Currency) => ({
     hostname,
     method: 'GET',
-    path: `/${version}/exchangerate/ADA/${symbol.toUpperCase()}?apikey=${apiKey}`,
+    path: `/${version}/exchangerate/ADA/${code.toUpperCase()}?apikey=${apiKey}`,
   }),
 };
 

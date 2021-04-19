@@ -2,13 +2,18 @@
 @import '../../../themes/mixins/loading-spinner';
 
 .component {
-  padding: 20px 0 20px 20px;
+  height: 100%;
+  padding: 0 0 20px 20px;
 
   .headerWrapper {
-    align-items: flex-end;
+    align-items: center;
     display: flex;
+    justify-content: space-between;
     line-height: 1.38;
-    margin: 0 20px 10px;
+    margin: 0 0 0 -20px;
+    padding: 10px 40px;
+    position: relative;
+    transition: box-shadow 0.25s ease-out;
 
     & > .title {
       color: var(--theme-staking-font-color-lighter);
@@ -22,18 +27,7 @@
       display: flex;
       height: auto;
       padding: 7px 12px;
-      position: fixed;
-      right: 20px;
-      top: 144px;
       width: auto;
-
-      &.actionButtonFaded {
-        opacity: 0.5;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
 
       .actionLabel {
         line-height: 1.36;
@@ -49,6 +43,21 @@
           fill: var(--theme-button-flat-text-color);
         }
       }
+    }
+  }
+
+  .headerWrapperWithShadow {
+    box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  .contentWrapper {
+    height: calc(100% - 53px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar-track {
+      margin-bottom: -20px;
+      margin-top: -20px;
     }
   }
 
