@@ -35,6 +35,7 @@ import {
   CURRENCY_REQUEST_RATE_INTERVAL,
   getLocalizedCurrency,
   getLocalizedCurrenciesList,
+  getCurrencyFromCode,
 } from '../config/currencyConfig';
 import type {
   WalletKind,
@@ -350,7 +351,11 @@ export default class WalletsStore extends Store {
 
     // Check if the user has already selected a currency
     // Otherwise applies the default currency
-    const currencySelected = await this.api.localStorage.getCurrencySelected();
+    const localCurrencySelected = await this.api.localStorage.getCurrencySelected();
+    const localCurrencyCode =
+      get(localCurrencySelected, 'code') ||
+      get(localCurrencySelected, 'symbol');
+    const currencySelected = getCurrencyFromCode(localCurrencyCode);
 
     runInAction(() => {
       this.currencyIsActive = currencyIsActive;
