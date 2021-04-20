@@ -1,5 +1,10 @@
 // @flow
-import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import {
+  utils,
+  TxOutputDestinationType,
+  AddressType,
+} from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import * as LedgerTypes from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
 import { map, groupBy, sortBy } from 'lodash';
@@ -81,6 +86,12 @@ export const derivationScheme = {
   keyfileVersion: '2.0.0',
 };
 
+// TODO: Remove helper once PR is done
+export const test1 = () => {
+  // eslint-disable-next-line
+  console.debug('>>> LedgerTypes: ', { LedgerTypes, TxOutputDestinationType });
+};
+
 // Constructors
 export const ShelleyTxWitnessShelley = (
   publicKey: string,
@@ -149,7 +160,7 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
     const tokensList = tokens.map(({ assetName, quantity }) => ({
       assetNameHex: assetName,
-      amountStr: quantity.toString(),
+      amount: quantity.toString(),
     }));
     return {
       policyIdHex: policyId,
@@ -245,10 +256,12 @@ export const ShelleyTxWithdrawal = (
 export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
-    path: derivationPathToLedgerPath(cert.rewardAccountPath),
-    poolKeyHashHex: cert.pool
-      ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
-      : null,
+    params: {
+      path: derivationPathToLedgerPath(cert.rewardAccountPath),
+      poolKeyHashHex: cert.pool
+        ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
+        : null,
+    },
   };
 };
 
@@ -257,7 +270,7 @@ export const prepareLedgerWithdrawal = (
 ) => {
   return {
     path: derivationPathToLedgerPath(withdrawal.derivationPath),
-    amountStr: withdrawal.amount.quantity.toString(),
+    amount: withdrawal.amount.quantity.toString(),
   };
 };
 
@@ -414,21 +427,31 @@ export const prepareLedgerOutput = (
 
   if (isChange) {
     return {
-      addressTypeNibble: 0,
-      spendingPath: derivationPathToLedgerPath(output.derivationPath),
-      amountStr: output.amount.quantity.toString(),
-      stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
+      destination: {
+        type: TxOutputDestinationType.DEVICE_OWNED,
+        params: {
+          type: AddressType.BASE,
+          params: {
+            spendingPath: derivationPathToLedgerPath(output.derivationPath),
+            stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
+          },
+        },
+      },
+      amount: output.amount.quantity.toString(),
       tokenBundle,
     };
   }
-
-  const isSheeleyAddress = addressStyle === AddressStyles.ADDRESS_SHELLEY;
-  const decodedAddress = isSheeleyAddress
-    ? utils.bech32_decodeAddress(output.address)
-    : utils.base58_decode(output.address);
   return {
-    amountStr: output.amount.quantity.toString(),
-    addressHex: utils.buf_to_hex(decodedAddress),
+    destination: {
+      type: TxOutputDestinationType.THIRD_PARTY,
+      params: {
+        addressHex:
+          addressStyle === AddressStyles.ADDRESS_SHELLEY
+            ? utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
+            : utils.buf_to_hex(utils.base58_decode(output.address)),
+      },
+    },
+    amount: output.amount.quantity.toString(),
     tokenBundle,
   };
 };
