@@ -12730,9 +12730,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-"react-polymorph@https://github.com/input-output-hk/react-polymorph.git#ca76f01a202f691caaf9b9c1b59ccf0fbe8be91a":
-  version "0.9.8-rc.18"
-  resolved "https://github.com/input-output-hk/react-polymorph.git#ca76f01a202f691caaf9b9c1b59ccf0fbe8be91a"
+react-polymorph@0.9.8-rc.20:
+  version "0.9.8-rc.20"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.8-rc.20.tgz#bed73ed7d5c178ccd5da29ba4c0aed1ba4a08bad"
   dependencies:
     "@tippyjs/react" "4.2.1"
     create-react-context "0.2.2"
