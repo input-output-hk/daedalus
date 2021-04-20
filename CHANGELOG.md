@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Feature
+
+- Implemented search functionality in the native token dropdown ([PR 2531](https://github.com/input-output-hk/daedalus/pull/2531))
+
 ### Fixes
 
 - Fixed blank currency selection after updating to 4.0.5 ([PR 2529](https://github.com/input-output-hk/daedalus/pull/2529))
