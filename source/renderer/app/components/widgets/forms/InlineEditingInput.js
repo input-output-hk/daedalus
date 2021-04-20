@@ -304,7 +304,6 @@ export default class InlineEditingInput extends Component<Props, State> {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           onChange={this.onChange}
-          isShowingErrorOnFocus={false}
           onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={error}
           disabled={disabled}
