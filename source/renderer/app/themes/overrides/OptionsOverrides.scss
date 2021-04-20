@@ -10,4 +10,8 @@
       display: none !important;
     }
   }
+
+  &:not(.hasSearch) .option em {
+    background-color: initial !important;
+  }
 }
