@@ -351,10 +351,7 @@ export default class WalletsStore extends Store {
 
     // Check if the user has already selected a currency
     // Otherwise applies the default currency
-    const localCurrencySelected = await this.api.localStorage.getCurrencySelected();
-    const localCurrencyCode =
-      get(localCurrencySelected, 'code') ||
-      get(localCurrencySelected, 'symbol');
+    const localCurrencyCode = await this.api.localStorage.getCurrencySelected();
     const currencySelected = getCurrencyFromCode(localCurrencyCode);
 
     runInAction(() => {
@@ -422,7 +419,7 @@ export default class WalletsStore extends Store {
     if (currencySelected) {
       this.currencySelected = currencySelected;
       this.getCurrencyRate();
-      await this.api.localStorage.setCurrencySelected(currencySelected);
+      await this.api.localStorage.setCurrencySelected(currencySelected.code);
     }
   };
 

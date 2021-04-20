@@ -18,7 +18,6 @@ import type {
   RequestName,
   Currency,
   LocalizedCurrency,
-  DeprecatedCurrency,
 } from '../types/currencyTypes';
 import type { Locale } from '../../../common/types/locales.types';
 
