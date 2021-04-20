@@ -124,11 +124,9 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     const { error, onSubmit, isSubmitting } = this.props;
     const { formatMessage } = this.context.intl;
     const componentClassNames = classNames([styles.component, 'general']);
-
     return (
       <div className={componentClassNames}>
-        {this.getSelect(PROFILE_SETTINGS[1])}
-        {/* {PROFILE_SETTINGS.map((param: string) => this.getSelect(param))} */}
+        {PROFILE_SETTINGS.map((param: string) => this.getSelect(param))}
         {error && <p className={styles.error}>{error}</p>}
         {onSubmit && (
           <Button
