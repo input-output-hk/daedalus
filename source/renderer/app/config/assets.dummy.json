@@ -1,0 +1,92 @@
+[
+  {
+    "policyId": "10e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "1036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg10",
+    "metadata": {
+      "name": "Aazaan"
+    }
+  },
+  {
+    "policyId": "120e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "12036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg120",
+    "metadata": {
+      "name": "Alieu"
+    }
+  },
+  {
+    "policyId": "330e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "33036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg330",
+    "metadata": {
+      "name": "Benji"
+    }
+  },
+  {
+    "policyId": "440e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "44036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg440",
+    "metadata": {
+      "name": "Caelen"
+    }
+  },
+  {
+    "policyId": "550e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "55036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg550",
+    "metadata": {
+      "name": "Cillian"
+    }
+  },
+  {
+    "policyId": "660e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "66036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg660",
+    "metadata": {
+      "name": "Dane"
+    }
+  },
+  {
+    "policyId": "770e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "77036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg770",
+    "metadata": {
+      "name": "Diarmid"
+    }
+  },
+  {
+    "policyId": "880e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "88036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg880",
+    "metadata": {
+      "name": "Eonan"
+    }
+  },
+  {
+    "policyId": "990e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "99036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg990",
+    "metadata": {
+      "name": "Geoff"
+    }
+  },
+  {
+    "policyId": "1000e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086",
+    "assetName": "100036164636f696e",
+    "quantity": "100",
+    "fingerprint": "asset1edxkay9u0xdudvgr0vjhvjx4n20j2qp52c0eg1000",
+    "metadata": {
+      "name": "Giacomo"
+    }
+  }
+]

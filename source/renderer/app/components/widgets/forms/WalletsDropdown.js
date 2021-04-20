@@ -1,12 +1,15 @@
 // @flow
 import React, { Component } from 'react';
+import BigNumber from 'bignumber.js';
 import type { Element } from 'react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import { omit } from 'lodash';
+import { omit, escapeRegExp, get } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
 import AssetToken from '../AssetToken';
+
+import dummyAssetsList from '../../../config/assets.dummy.json';
 
 import {
   formattedTokenWalletAmount,
@@ -25,6 +28,8 @@ type SelectProps = {
   error?: string | Element<any>,
   errorPosition?: 'top' | 'bottom',
   label?: string | Element<any>,
+  hasSearch?: boolean,
+  onSearch?: boolean,
   isOpeningUpward?: boolean,
   onBlur?: Function,
   onChange?: Function,
@@ -110,7 +115,7 @@ export default class WalletsDropdown extends Component<Props> {
   render() {
     const {
       wallets,
-      assets,
+      // assets,
       numberOfStakePools,
       getStakePoolById,
       error,
@@ -118,6 +123,14 @@ export default class WalletsDropdown extends Component<Props> {
       hasAssetsEnabled,
       ...props
     } = this.props;
+
+    // TODO REMOVE
+    const dassets = dummyAssetsList.map(({ quantity, ...asset }) => ({
+      ...asset,
+      quantity: new BigNumber(quantity),
+    }));
+    const assets = [...this.props.assets, ...dassets];
+
     const walletsData =
       wallets && wallets.length
         ? wallets.map(
@@ -174,11 +187,35 @@ export default class WalletsDropdown extends Component<Props> {
     if (errorPosition === 'bottom') bottomError = error;
     else topError = error;
     const selectOptions = omit({ ...props, topError }, 'options');
+    const options = hasAssetsEnabled && assetsData ? assetsData : walletsData;
     return (
       <>
         <Select
-          options={hasAssetsEnabled && assetsData ? assetsData : walletsData}
+          options={options}
           {...selectOptions}
+          hasSearch
+          onSearch={(searchValue, list) => {
+            const regex = new RegExp(escapeRegExp(searchValue), 'i');
+            return list.filter((item) => {
+              const {
+                asset,
+                policyId,
+                assetName,
+                quantity,
+                fingerprint,
+                metadata,
+              } = get(item, 'label.props.asset', {});
+              const { name } = metadata || {};
+              return (
+                regex.test(asset) ||
+                regex.test(policyId) ||
+                regex.test(assetName) ||
+                regex.test(quantity) ||
+                regex.test(fingerprint) ||
+                regex.test(name)
+              );
+            });
+          }}
           optionHeight={50}
         />
         {bottomError && <div className={styles.error}>{bottomError}</div>}
