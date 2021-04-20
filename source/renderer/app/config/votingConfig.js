@@ -11,11 +11,11 @@ export const VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL = 1000; // 1 secon
 export const VOTING_REGISTRATION_END_DATE = new Date('Apr 30, 2021, 19:00 UTC');
 export const VOTING_REGISTRATION_END_CHECK_INTERVAL = 3000; // 3 seconds | unit: milliseconds
 export const VOTING_REGISTRATION_CAST_START_DATE = new Date(
-  'Apr 22, 2021, 19:00 UTC'
+  'Apr 19, 2021, 19:00 UTC'
 );
 export const VOTING_REGISTRATION_CAST_END_DATE = new Date(
   'May 5, 2021, 19:00 UTC'
 );
 export const VOTING_REGISTRATION_NEW_START_DATE = new Date(
-  'May 18, 2021, 19:00 UTC'
+  'Apr 18, 2021, 19:00 UTC'
 );
