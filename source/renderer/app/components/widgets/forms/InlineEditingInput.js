@@ -301,8 +301,6 @@ export default class InlineEditingInput extends Component<Props, State> {
           type="text"
           maxLength={maxLength}
           label={label}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
           onChange={this.onChange}
           onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={error}
