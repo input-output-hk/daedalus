@@ -10,4 +10,11 @@
     font-family: var(--font-light);
     margin-bottom: 20px;
   }
+  .recommended {
+    opacity: 0.5;
+  }
+  .selection {
+    padding: 17px 20px;
+    font-family: var(--font-regular);
+  }
 }

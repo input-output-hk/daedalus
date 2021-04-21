@@ -79,23 +79,25 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     this.setState({ decimalPrecision });
   };
 
-  renderOptions = () => {
+  optionRenderer = ({ value }: { value: number }) => {
     const { intl } = this.context;
     const { recommendedDecimalPrecision } = this.props;
-    return range(MAX_DECIMAL_PRECISION + 1).map((value) => {
-      let label = value;
-      if (
-        recommendedDecimalPrecision &&
-        recommendedDecimalPrecision === value
-      ) {
-        label = `${label} ${intl.formatMessage(messages.recommended)}`;
-      }
-      return {
-        value,
-        label,
-      };
-    });
+    if (recommendedDecimalPrecision && recommendedDecimalPrecision === value) {
+      return (
+        <div>
+          {value}{' '}
+          <em className={styles.recommended}>
+            {intl.formatMessage(messages.recommended)}
+          </em>
+        </div>
+      );
+    }
+    return value;
   };
+
+  selectionRenderer = (props: { value: number }) => (
+    <div className={styles.selection}>{this.optionRenderer(props)}</div>
+  );
 
   renderTitle = () => {
     const { intl } = this.context;
@@ -115,8 +117,9 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     const { onCancel, onSubmit, asset, assetAmount } = this.props;
     const { decimalPrecision } = this.state;
     const title = this.renderTitle();
-    const options = this.renderOptions();
-
+    const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
+      value,
+    }));
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
@@ -128,7 +131,6 @@ export default class AssetSettingsDialog extends Component<Props, State> {
         onClick: () => onSubmit(decimalPrecision),
       },
     ];
-
     return (
       <Dialog
         className={styles.component}
@@ -160,6 +162,8 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             className={styles.decimalPrecisionDropdown}
             label={intl.formatMessage(messages.decimalPrecisionLabel)}
             onChange={this.onSetDecimalPrecision}
+            optionRenderer={this.optionRenderer}
+            selectionRenderer={this.selectionRenderer}
           />
         </div>
       </Dialog>
