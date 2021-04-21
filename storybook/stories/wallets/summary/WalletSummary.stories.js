@@ -181,7 +181,7 @@ storiesOf('Wallets|Summary', module)
       }, {}),
       {
         id: 'uniswap-state-dollar',
-        symbol: 'usd',
+        code: 'usd',
         name: 'unified Stable Dollar',
       }
     );

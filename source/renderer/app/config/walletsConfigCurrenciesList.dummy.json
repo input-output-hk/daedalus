@@ -1,97 +1,97 @@
 [
   {
     "id": "bitcoin",
-    "symbol": "btc",
+    "code": "btc",
     "name": "Bitcoin"
   },
   {
     "id": "ethereum",
-    "symbol": "eth",
+    "code": "eth",
     "name": "Ethereum"
   },
   {
     "id": "litecoin",
-    "symbol": "ltc",
+    "code": "ltc",
     "name": "Litecoin"
   },
   {
     "id": "bitcoin-cash",
-    "symbol": "bch",
+    "code": "bch",
     "name": "Bitcoin Cash"
   },
   {
     "id": "binancecoin",
-    "symbol": "bnb",
+    "code": "bnb",
     "name": "Binance Coin"
   },
   {
     "id": "eos",
-    "symbol": "eos",
+    "code": "eos",
     "name": "EOS"
   },
   {
     "id": "ripple",
-    "symbol": "xrp",
+    "code": "xrp",
     "name": "XRP"
   },
   {
     "id": "stellar",
-    "symbol": "xlm",
+    "code": "xlm",
     "name": "Stellar"
   },
   {
     "id": "chainlink",
-    "symbol": "link",
+    "code": "link",
     "name": "Chainlink"
   },
   {
     "id": "polkadot",
-    "symbol": "dot",
+    "code": "dot",
     "name": "Polkadot"
   },
   {
     "id": "yearn-finance",
-    "symbol": "yfi",
+    "code": "yfi",
     "name": "yearn.finance"
   },
   {
     "id": "uniswap-state-dollar",
-    "symbol": "usd",
+    "code": "usd",
     "name": "unified Stable Dollar"
   },
   {
     "id": "block-duelers",
-    "symbol": "bdt",
+    "code": "bdt",
     "name": "Block Duelers"
   },
   {
     "id": "bitcoin-hd",
-    "symbol": "bhd",
+    "code": "bhd",
     "name": "Bitcoin HD"
   },
   {
     "id": "good-boy-points",
-    "symbol": "gbp",
+    "code": "gbp",
     "name": "Good Boy Points"
   },
   {
     "id": "lkr-coin",
-    "symbol": "lkr",
+    "code": "lkr",
     "name": "LKR Coin"
   },
   {
     "id": "trias",
-    "symbol": "try",
+    "code": "try",
     "name": "Trias"
   },
   {
     "id": "xrpalike-gene",
-    "symbol": "xag",
+    "code": "xag",
     "name": "Xrpalike Gene"
   },
   {
     "id": "bitcoinus",
-    "symbol": "bits",
+    "code": "bits",
     "name": "Bitcoinus"
   }
 ]
