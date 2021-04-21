@@ -40,7 +40,6 @@ import {
   ShelleyTxOutput,
   ShelleyTxCert,
   ShelleyTxWithdrawal,
-  test1,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
@@ -191,10 +190,6 @@ export default class HardwareWalletsStore extends Store {
       await handleInitTrezorConnectChannel.request();
       await this.getAvailableDevices({ isTrezor: true });
     }
-  };
-
-  test = () => {
-    test1();
   };
 
   initLedger = async () => {
@@ -1333,10 +1328,6 @@ export default class HardwareWalletsStore extends Store {
       fee: flatFee,
       withdrawals,
     } = coinSelection;
-    const isDelegationTransaction = certificates && certificates.length > 0;
-    const signingMode = isDelegationTransaction
-      ? TransactionSigningMode.ORDINARY_TRANSACTION
-      : TransactionSigningMode.ORDINARY_TRANSACTION;
     logger.debug('[HW-DEBUG] HWStore - sign transaction Ledger: ', {
       walletId,
     });
@@ -1425,9 +1416,9 @@ export default class HardwareWalletsStore extends Store {
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
+        signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
         auxiliaryData,
         devicePath,
-        signingMode,
       });
 
       const unsignedTxWithdrawals =

@@ -4,7 +4,6 @@ import {
   TxOutputDestinationType,
   AddressType,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
-import * as LedgerTypes from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
 import { map, groupBy, sortBy } from 'lodash';
@@ -84,12 +83,6 @@ export const derivationScheme = {
   type: 'v2',
   ed25519Mode: 2,
   keyfileVersion: '2.0.0',
-};
-
-// TODO: Remove helper once PR is done
-export const test1 = () => {
-  // eslint-disable-next-line
-  console.debug('>>> LedgerTypes: ', { LedgerTypes, TxOutputDestinationType });
 };
 
 // Constructors
