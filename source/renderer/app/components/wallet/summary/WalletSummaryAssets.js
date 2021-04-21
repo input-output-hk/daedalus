@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
-import AssetToken from '../../widgets/AssetToken';
+import AssetToken from '../../assets/AssetToken';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';

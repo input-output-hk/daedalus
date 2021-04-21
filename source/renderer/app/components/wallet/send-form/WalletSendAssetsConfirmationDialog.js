@@ -26,7 +26,7 @@ import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessage
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
-import AssetToken from '../../widgets/AssetToken';
+import AssetToken from '../../assets/AssetToken';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 

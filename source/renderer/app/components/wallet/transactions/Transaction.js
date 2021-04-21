@@ -23,7 +23,7 @@ import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 import type { WalletTransactionAsset } from '../../../api/assets/types';
-import AssetToken from '../../widgets/AssetToken';
+import AssetToken from '../../assets/AssetToken';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import { filterAssets } from '../../../utils/assets';
 
