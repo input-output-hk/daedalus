@@ -1,13 +1,22 @@
 // @flow
 // TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
+import { range } from 'lodash';
 import { observer } from 'mobx-react';
+import BigNumber from 'bignumber.js';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { defineMessages, intlShape } from 'react-intl';
+import AssetToken from './AssetToken';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
+import type { WalletSummaryAsset } from '../../api/assets/types';
+import { formattedTokenWalletAmount } from '../../utils/formatters';
+import {
+  DEFAULT_DECIMAL_PRECISION,
+  MAX_DECIMAL_PRECISION,
+} from '../../config/assetsConfig';
 
 const messages = defineMessages({
   title: {
@@ -36,16 +45,23 @@ const messages = defineMessages({
     defaultMessage: '!!!Decimal Precision',
     description: '"decimalPrecisionLabel" for the Asset settings dialog',
   },
+  recommended: {
+    id: 'assets.settings.dialog.recommended',
+    defaultMessage: '!!!(recommended)',
+    description: '"recommended" for the Asset settings dialog',
+  },
 });
 
 type Props = {
+  asset: WalletSummaryAsset,
+  assetAmount: BigNumber,
   onSubmit: Function,
   onCancel: Function,
   recommendedDecimalPrecision?: number,
 };
 
 type State = {
-  decimalPrecision: ?number,
+  decimalPrecision: number,
 };
 
 @observer
@@ -55,20 +71,51 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   };
 
   state = {
-    decimalPrecision: null,
+    decimalPrecision:
+      this.props.recommendedDecimalPrecision || DEFAULT_DECIMAL_PRECISION,
   };
 
-  submit = () => {
-    console.log('SUBMIT');
+  onSetDecimalPrecision = (decimalPrecision: number) => {
+    this.setState({ decimalPrecision });
   };
 
-  get decimalPrecisionValue() {
-    return this.state.decimalPrecision;
-  }
+  renderOptions = () => {
+    const { intl } = this.context;
+    const { recommendedDecimalPrecision } = this.props;
+    return range(MAX_DECIMAL_PRECISION + 1).map((value) => {
+      let label = value;
+      if (
+        recommendedDecimalPrecision &&
+        recommendedDecimalPrecision === value
+      ) {
+        label = `${label} ${intl.formatMessage(messages.recommended)}`;
+      }
+      return {
+        value,
+        label,
+      };
+    });
+  };
+
+  renderTitle = () => {
+    const { intl } = this.context;
+    const { asset } = this.props;
+    return (
+      <>
+        {intl.formatMessage(messages.title)}{' '}
+        <div>
+          <AssetToken asset={asset} hidePopOver />
+        </div>
+      </>
+    );
+  };
 
   render() {
     const { intl } = this.context;
-    const { onCancel, onSubmit } = this.props;
+    const { onCancel, onSubmit, asset, assetAmount } = this.props;
+    const { decimalPrecision } = this.state;
+    const title = this.renderTitle();
+    const options = this.renderOptions();
 
     const actions = [
       {
@@ -78,25 +125,41 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       {
         label: intl.formatMessage(globalMessages.save),
         primary: true,
-        onClick: onSubmit,
+        onClick: () => onSubmit(decimalPrecision),
       },
     ];
 
     return (
       <Dialog
         className={styles.component}
-        title={intl.formatMessage(messages.title)}
+        title={title}
         actions={actions}
         closeOnOverlayClick
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
       >
         <div>
+          <p>{intl.formatMessage(messages.description)}</p>
+          <div className={styles.label}>
+            {intl.formatMessage(messages.unformattedBalanceLabel)}
+          </div>
+          <p>{formattedTokenWalletAmount(assetAmount, asset.metadata, 0)}</p>
+          <div className={styles.label}>
+            {intl.formatMessage(messages.formattedBalanceLabel)}
+          </div>
+          <p>
+            {formattedTokenWalletAmount(
+              assetAmount,
+              asset.metadata,
+              decimalPrecision
+            )}
+          </p>
           <Select
-            options={[]}
-            value={this.decimalPrecisionValue}
+            options={options}
+            value={decimalPrecision}
             className={styles.decimalPrecisionDropdown}
             label={intl.formatMessage(messages.decimalPrecisionLabel)}
+            onChange={this.onSetDecimalPrecision}
           />
         </div>
       </Dialog>

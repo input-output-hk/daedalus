@@ -1,2 +1,13 @@
 .component {
+  .label {
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 6px;
+  }
+
+  p {
+    font-family: var(--font-light);
+    margin-bottom: 20px;
+  }
 }

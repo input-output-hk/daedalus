@@ -9,6 +9,7 @@ import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
 import type { AssetMetadata } from '../api/assets/types';
+import { DEFAULT_DECIMAL_PRECISION } from '../config/assetsConfig';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
@@ -43,10 +44,14 @@ export const formattedWalletCurrencyAmount = (
 
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
-  metadata?: ?AssetMetadata
+  metadata?: ?AssetMetadata,
+  decimalPrecision?: ?number
 ): string => {
-  const { ticker, unit } = metadata || {};
-  const { decimals } = unit || {};
+  const { ticker } = metadata || {};
+  const decimals =
+    decimalPrecision !== null && decimalPrecision !== undefined
+      ? decimalPrecision
+      : DEFAULT_DECIMAL_PRECISION;
   const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
   let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
   if (ticker) {
