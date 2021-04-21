@@ -10,7 +10,7 @@ Changelog
 
 ### Chores
 
-- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `3.0.0` ([PR 2532](https://github.com/input-output-hk/daedalus/pull/2532))
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `3.0.0` ([PR 2530](https://github.com/input-output-hk/daedalus/pull/2530))
 
 ## 4.0.5
 
