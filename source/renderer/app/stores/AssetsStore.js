@@ -4,7 +4,10 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
-import type { GetAssetsResponse } from '../api/assets/types';
+import type {
+  GetAssetsResponse,
+  WalletSummaryAsset,
+} from '../api/assets/types';
 
 type WalletId = string;
 
@@ -12,14 +15,18 @@ export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
   @observable activeAssetFingerprint: ?string = null;
-
+  @observable editingsAsset: ?WalletSummaryAsset = null;
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
   } = {};
 
   setup() {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
-    const { wallets: walletsActions } = this.actions;
+    const { assets: assetsActions, wallets: walletsActions } = this.actions;
+    assetsActions.onEditAssetOpen.listen(this._onEditAssetOpen);
+    assetsActions.onEditAssetSubmit.listen(this._onEditAssetSubmit);
+    assetsActions.onEditAssetCancel.listen(this._onEditAssetCancel);
+
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAssetFingerprint.listen(
       this._setActiveAssetFingerprint
@@ -51,6 +58,26 @@ export default class AssetsStore extends Store {
     this.details[policyId + assetName];
 
   // =================== PRIVATE ==================
+
+  @action _onEditAssetOpen = ({ asset }: { asset: WalletSummaryAsset }) => {
+    this.editingsAsset = asset;
+  };
+
+  @action _onEditAssetSubmit = ({
+    asset,
+    decimalPrecision,
+  }: {
+    asset: WalletSummaryAsset,
+    decimalPrecision: number,
+  }) => {
+    console.log('_onEditAssetSubmit');
+    console.log('asset', asset);
+    console.log('decimalPrecision', decimalPrecision);
+  };
+
+  @action _onEditAssetCancel = () => {
+    this.editingsAsset = null;
+  };
 
   @action _refreshAssetsData = () => {
     if (this.stores.networkStatus.isConnected) {

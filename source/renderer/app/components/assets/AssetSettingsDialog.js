@@ -1,5 +1,4 @@
 // @flow
-// TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
 import { range } from 'lodash';
 import { observer } from 'mobx-react';
@@ -54,7 +53,6 @@ const messages = defineMessages({
 
 type Props = {
   asset: WalletSummaryAsset,
-  assetAmount: BigNumber,
   onSubmit: Function,
   onCancel: Function,
   recommendedDecimalPrecision?: number,
@@ -114,7 +112,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onCancel, onSubmit, asset, assetAmount } = this.props;
+    const { onCancel, onSubmit, asset } = this.props;
     const { decimalPrecision } = this.state;
     const title = this.renderTitle();
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
@@ -128,7 +126,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       {
         label: intl.formatMessage(globalMessages.save),
         primary: true,
-        onClick: () => onSubmit(decimalPrecision),
+        onClick: () => onSubmit(asset, decimalPrecision),
       },
     ];
     return (
@@ -145,13 +143,13 @@ export default class AssetSettingsDialog extends Component<Props, State> {
           <div className={styles.label}>
             {intl.formatMessage(messages.unformattedBalanceLabel)}
           </div>
-          <p>{formattedTokenWalletAmount(assetAmount, asset.metadata, 0)}</p>
+          <p>{formattedTokenWalletAmount(asset.quantity, asset.metadata, 0)}</p>
           <div className={styles.label}>
             {intl.formatMessage(messages.formattedBalanceLabel)}
           </div>
           <p>
             {formattedTokenWalletAmount(
-              assetAmount,
+              asset.quantity,
               asset.metadata,
               decimalPrecision
             )}

@@ -207,6 +207,7 @@ storiesOf('Wallets|Summary', module)
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
+        onEditAsset={action('onEditAsset')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         onExternalLinkClick={action('onExternalLinkClick')}
       />
