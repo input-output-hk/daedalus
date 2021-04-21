@@ -690,7 +690,7 @@ export default class Transaction extends Component<Props, State> {
                             <AssetToken
                               asset={asset}
                               onCopyAssetItem={onCopyAssetItem}
-                              componentClassName={styles.assetToken}
+                              className={styles.assetToken}
                             />
                           </h3>
                           {asset.quantity && (

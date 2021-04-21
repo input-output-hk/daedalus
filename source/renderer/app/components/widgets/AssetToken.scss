@@ -1,5 +1,9 @@
 .component {
   display: inline-flex;
+}
+
+.popOverContainer {
+  display: inline-flex;
   min-width: 0;
   width: 100%;
 
@@ -14,7 +18,7 @@
   }
 }
 
-.content {
+.pill {
   display: flex;
   height: 22px;
   min-width: 0;
@@ -49,7 +53,7 @@
   display: none;
 }
 
-.tooltipContent {
+.popOverContent {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -174,6 +178,26 @@
 
     svg {
       margin-top: 1px;
+    }
+  }
+}
+
+.settingsButton {
+  cursor: pointer;
+  margin: 5px 0 0 6px;
+  position: relative;
+  z-index: 1;
+  svg {
+    width: 10px;
+    height: 10px;
+    opacity: 0.6;
+    > g > g {
+      fill: var(--theme-widgets-asset-token-text-color);
+    }
+  }
+  &:hover {
+    svg {
+      opacity: 1;
     }
   }
 }

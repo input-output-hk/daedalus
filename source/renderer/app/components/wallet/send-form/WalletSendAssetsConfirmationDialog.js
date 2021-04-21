@@ -443,7 +443,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                               <AssetToken
                                 asset={asset}
                                 onCopyAssetItem={onCopyAssetItem}
-                                componentClassName={styles.assetToken}
+                                className={styles.assetToken}
                               />
                             </h3>
                             <div className={styles.amountFeesWrapper}>

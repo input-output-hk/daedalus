@@ -82,6 +82,9 @@ export default class WalletSummaryAssets extends Component<Props> {
                       asset={asset}
                       onCopyAssetItem={onCopyAssetItem}
                       metadataNameChars={get('name', asset.metadata, 0)}
+                      onClickSettings={() => {
+                        console.log('onClickSettings');
+                      }}
                     />
                     <div className={styles.assetAmount}>
                       {isRestoreActive

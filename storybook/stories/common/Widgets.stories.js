@@ -3,6 +3,7 @@ import React from 'react';
 import { defineMessages, IntlProvider } from 'react-intl';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
+import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number, text, date } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -20,6 +21,7 @@ import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shar
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
+import AssetToken from '../../../source/renderer/app/components/widgets/AssetToken';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -104,6 +106,40 @@ storiesOf('Common|Widgets', module)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
+
+  .add('AssetToken', () => (
+    <div style={{ padding: '30px' }}>
+      <AssetToken
+        asset={{
+          policyId: text(
+            'policyId',
+            '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086'
+          ),
+          assetName: text('assetName', '6861707079636f696e'),
+          fingerprint: text(
+            'fingerprint',
+            'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8'
+          ),
+          quantity: new BigNumber(number('quantity', 1)),
+          metadata: {
+            name: text('name'),
+            ticker: text('ticker'),
+            description: text('description'),
+            unit: {
+              decimals: number('unit / decimals'),
+              name: text('unit / name'),
+            },
+          },
+        }}
+        small={boolean('small', false)}
+        hidePopOver={boolean('hidePopOver')}
+        onCopyAssetItem={action('onCopyAssetItem')}
+        onClickSettings={
+          boolean('Is configurable', true) ? action('onClickSettings') : null
+        }
+      />
+    </div>
+  ))
 
   .add('CountdownWidget', () => (
     <CountdownWidget

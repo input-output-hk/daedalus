@@ -10,6 +10,7 @@ import styles from './AssetToken.scss';
 import { ellipsis, hexToString } from '../../utils/strings';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
+import settingsIcon from '../../assets/images/settings-asset-token-ic.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
 import {
   ASSET_TOKEN_ID_COPY_FEEDBACK,
@@ -52,22 +53,28 @@ const messages = defineMessages({
     defaultMessage: '!!!Blank',
     description: '"Blank" item value.',
   },
+  settingsPopOver: {
+    id: 'widgets.assetToken.settingsPopOver',
+    defaultMessage: '!!!Asset settings',
+    description: 'Asset settings pop over content',
+  },
 });
 
 type Props = {
   asset: WalletSummaryAsset,
   small?: boolean,
-  hideTooltip?: boolean,
+  hidePopOver?: boolean,
+  // isConfigurable?: boolean,
   onCopyAssetItem?: Function,
-  componentClassName?: string,
-  contentClassName?: string,
+  onClickSettings?: Function,
+  className?: string,
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
   metadataNameChars?: number,
 };
 
 type State = {
-  isTooltipVisible: boolean,
+  isPopOverVisible: boolean,
   itemCopied: ?string,
 };
 
@@ -81,7 +88,7 @@ export default class AssetToken extends Component<Props, State> {
   displayDelayTimeout: TimeoutID;
 
   state = {
-    isTooltipVisible: false,
+    isPopOverVisible: false,
     itemCopied: null,
   };
 
@@ -98,23 +105,23 @@ export default class AssetToken extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  handleShowTooltip = () => {
+  handleShowPopOver = () => {
     clearTimeout(this.displayDelayTimeout);
     this.displayDelayTimeout = setTimeout(() => {
       if (this._isMounted) {
         this.setState({
-          isTooltipVisible: true,
+          isPopOverVisible: true,
         });
       }
     }, ASSET_TOKEN_DISPLAY_DELAY);
   };
 
-  handleHideTooltip = () => {
+  handleHidePopOver = () => {
     clearTimeout(this.displayDelayTimeout);
     this.displayDelayTimeout = setTimeout(() => {
       if (this._isMounted) {
         this.setState({
-          isTooltipVisible: false,
+          isPopOverVisible: false,
         });
       }
     }, ASSET_TOKEN_DISPLAY_DELAY);
@@ -136,14 +143,13 @@ export default class AssetToken extends Component<Props, State> {
     }, ASSET_TOKEN_ID_COPY_FEEDBACK);
   };
 
-  contentRender() {
-    const { asset, metadataNameChars, small, contentClassName } = this.props;
+  renderPill() {
+    const { asset, metadataNameChars, small } = this.props;
     const { fingerprint, metadata } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
-      styles.content,
+      styles.pill,
       small ? styles.small : null,
-      contentClassName,
     ]);
     return (
       <div className={contentStyles}>
@@ -159,7 +165,7 @@ export default class AssetToken extends Component<Props, State> {
     );
   }
 
-  assetItemRenderer = (assetId: string, assetItem: string, value: string) => {
+  renderAssetItem = (assetId: string, assetItem: string, value: string) => {
     const { itemCopied } = this.state;
     const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
     const iconClassnames = classnames([
@@ -186,14 +192,14 @@ export default class AssetToken extends Component<Props, State> {
     );
   };
 
-  tooltipRender() {
+  renderPopOverContent() {
     const { intl } = this.context;
     const { asset } = this.props;
     const { fingerprint, policyId, assetName, metadata } = asset;
     const { name, ticker, description } = metadata || {};
-    const item = this.assetItemRenderer;
+    const item = this.renderAssetItem;
     return (
-      <div className={styles.tooltipContent}>
+      <div className={styles.popOverContent}>
         <div className={styles.fingerprint}>
           {item(
             'fingerprint',
@@ -261,18 +267,15 @@ export default class AssetToken extends Component<Props, State> {
     );
   }
 
-  render() {
-    const children = this.contentRender();
-    const { hideTooltip, componentClassName } = this.props;
-    if (hideTooltip) return children;
-    const { isTooltipVisible } = this.state;
-    const tooltipContent = this.tooltipRender();
-    const componentStyles = classnames([styles.component, componentClassName]);
+  renderPopOverContainer = () => {
+    const pillContent = this.renderPill();
+    const popOverContent = this.renderPopOverContent();
+    const { isPopOverVisible } = this.state;
     return (
       <div
-        className={componentStyles}
-        onMouseEnter={this.handleShowTooltip}
-        onMouseLeave={this.handleHideTooltip}
+        className={styles.popOverContainer}
+        onMouseEnter={this.handleShowPopOver}
+        onMouseLeave={this.handleHidePopOver}
       >
         <PopOver
           themeVariables={{
@@ -287,15 +290,40 @@ export default class AssetToken extends Component<Props, State> {
               '0 5px 20px 0 var(--theme-widgets-asset-token-box-shadow)',
           }}
           contentClassName={styles.popOver}
-          content={tooltipContent}
-          visible={isTooltipVisible}
+          content={popOverContent}
+          visible={isPopOverVisible}
           appendTo="parent"
           maxWidth={376}
           allowHTML
           interactive
         >
-          {children}
+          {pillContent}
         </PopOver>
+      </div>
+    );
+  };
+
+  render() {
+    const { intl } = this.context;
+    const { hidePopOver, onClickSettings, asset, className } = this.props;
+    const content = hidePopOver
+      ? this.renderPill()
+      : this.renderPopOverContainer();
+    const onClickSettingsBind = () => onClickSettings && onClickSettings(asset);
+    const componenClassnames = classnames([styles.component, className]);
+    return (
+      <div className={componenClassnames}>
+        {content}
+        {onClickSettings && (
+          <PopOver content={intl.formatMessage(messages.settingsPopOver)}>
+            <button
+              className={styles.settingsButton}
+              onClick={onClickSettingsBind}
+            >
+              <SVGInline svg={settingsIcon} />
+            </button>
+          </PopOver>
+        )}
       </div>
     );
   }

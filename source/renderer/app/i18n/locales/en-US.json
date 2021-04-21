@@ -1192,5 +1192,6 @@
   "widgets.assetToken.item.fingerprint": "Fingerprint",
   "widgets.assetToken.item.name": "Name",
   "widgets.assetToken.item.policyId": "Policy Id",
-  "widgets.assetToken.item.ticker": "Ticker"
+  "widgets.assetToken.item.ticker": "Ticker",
+  "widgets.assetToken.settingsPopOver": "Asset settings"
 }
