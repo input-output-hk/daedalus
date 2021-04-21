@@ -2,7 +2,7 @@
 
 /* eslint-disable consistent-return */
 
-import { includes, without } from 'lodash';
+import { includes, without, get } from 'lodash';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import {
@@ -18,7 +18,7 @@ import type {
   DeviceType,
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
-import type { Currency } from '../../types/currencyTypes';
+import type { Currency, DeprecatedCurrency } from '../../types/currencyTypes';
 import {
   CURRENCY_IS_ACTIVE_BY_DEFAULT,
   CURRENCY_DEFAULT_SELECTED,
@@ -188,11 +188,33 @@ export default class LocalStorageApi {
   unsetDataLayerMigrationAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.DATA_LAYER_MIGRATION_ACCEPTANCE);
 
-  getCurrencySelected = (): Promise<Currency> =>
-    LocalStorageApi.get(keys.CURRENCY_SELECTED, CURRENCY_DEFAULT_SELECTED);
+  getCurrencySelected = async (): Promise<string> => {
+    const localCurrencySelected: Promise<
+      Currency | DeprecatedCurrency | string
+    > = await LocalStorageApi.get(
+      keys.CURRENCY_SELECTED,
+      CURRENCY_DEFAULT_SELECTED
+    );
+    if (typeof localCurrencySelected === 'string') return localCurrencySelected;
+    /**
+     *
+     * Prior versions were storing the whole Currency object,
+     * which could lead different formats (e.g. currency.code or currency.symbol)
+     * It now stores only the currency code string,
+     * but we need to account for users storing old formats
+     *
+     * In this case, we also set the correct local code value
+     *
+     */
+    const localCurrencyCode: string =
+      get(localCurrencySelected, 'code') ||
+      get(localCurrencySelected, 'symbol');
+    this.setCurrencySelected(localCurrencyCode);
+    return localCurrencyCode;
+  };
 
-  setCurrencySelected = (currency: Currency): Promise<void> =>
-    LocalStorageApi.set(keys.CURRENCY_SELECTED, currency);
+  setCurrencySelected = (currencyCode: string): Promise<void> =>
+    LocalStorageApi.set(keys.CURRENCY_SELECTED, currencyCode);
 
   unsetCurrencySelected = (): Promise<void> =>
     LocalStorageApi.unset(keys.CURRENCY_SELECTED);
