@@ -68,7 +68,6 @@ type Props = {
   onUnsetActiveAssetFingerprint: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
-  walletName: string,
 };
 
 type State = {
@@ -689,7 +688,6 @@ export default class WalletSendForm extends Component<Props, State> {
     const {
       currencyMaxFractionalDigits,
       walletAmount,
-      walletName,
       isAddressFromSameWallet,
     } = this.props;
 

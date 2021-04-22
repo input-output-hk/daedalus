@@ -206,7 +206,6 @@ storiesOf('Wallets|Send', module)
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       walletAmount={new BigNumber(123)}
-      walletName={'Test wallet'}
       assets={sendFormAssetData}
       addressValidator={() => true}
       onOpenDialogAction={action('onOpenDialogAction')}
@@ -236,7 +235,6 @@ storiesOf('Wallets|Send', module)
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
-      walletName={'Test wallet'}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
       isHardwareWallet={boolean('isHardwareWallet', true)}
       isLoadingAssets={boolean('isLoadingAssets', false)}
@@ -261,7 +259,6 @@ storiesOf('Wallets|Send', module)
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
-      walletName={'Test wallet'}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
       isHardwareWallet={boolean('isHardwareWallet', true)}
       isLoadingAssets={boolean('isLoadingAssets', false)}
@@ -286,7 +283,6 @@ storiesOf('Wallets|Send', module)
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
-      walletName={'Test wallet'}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
       isHardwareWallet={boolean('isHardwareWallet', true)}
       isLoadingAssets={boolean('isLoadingAssets', false)}
@@ -317,7 +313,6 @@ storiesOf('Wallets|Send', module)
       isLoadingAssets={boolean('isLoadingAssets', false)}
       assets={sendFormAssetData}
       walletAmount={new BigNumber(123)}
-      walletName={'Test wallet'}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', true)}
       selectedAsset={null}

@@ -167,7 +167,6 @@ export default class WalletSendPage extends Component<Props> {
           })
         }
         walletAmount={wallet.amount}
-        walletName={wallet.name}
         validateAmount={validateAmount}
         addressValidator={isValidAddress}
         assets={walletAssets}
