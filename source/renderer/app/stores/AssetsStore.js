@@ -8,6 +8,7 @@ import type {
   GetAssetsResponse,
   WalletSummaryAsset,
 } from '../api/assets/types';
+import type { AssetLocalData } from '../api/utils/localStorage';
 
 type WalletId = string;
 
@@ -63,16 +64,24 @@ export default class AssetsStore extends Store {
     this.editingsAsset = asset;
   };
 
-  @action _onEditAssetSubmit = ({
+  @action _onEditAssetSubmit = async ({
     asset,
     decimalPrecision,
   }: {
     asset: WalletSummaryAsset,
     decimalPrecision: number,
   }) => {
-    console.log('_onEditAssetSubmit');
-    console.log('asset', asset);
-    console.log('decimalPrecision', decimalPrecision);
+    this.editingsAsset = null;
+    const { fingerprint, policyId, assetName } = asset;
+    const assetDomain = this.getAssetDetails(policyId, assetName);
+    if (assetDomain) {
+      assetDomain.update({
+        unit: decimalPrecision,
+      });
+    }
+    await this.api.localStorage.setAssetLocalData(fingerprint, {
+      unit: decimalPrecision,
+    });
   };
 
   @action _onEditAssetCancel = () => {

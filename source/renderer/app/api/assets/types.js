@@ -6,6 +6,7 @@ import Asset from '../../domains/Asset';
 export type SingleAsset = {
   policy_id: string,
   asset_name: string,
+  fingerprint: string,
   metadata?: ?AssetMetadata,
 };
 

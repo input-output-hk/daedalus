@@ -235,6 +235,7 @@ import type {
   GetAssetsResponse,
   ApiAsset,
 } from './assets/types';
+import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
@@ -635,7 +636,13 @@ export default class AdaApi {
       logger.debug('AdaApi::getAssets success', {
         assets: response,
       });
-      const assets = response.map((asset) => _createAssetFromServerData(asset));
+      const assetsLocaldata = await global.daedalus.api.localStorage.getAssetsLocalData();
+      logger.debug('AdaApi::getAssetsLocalData success', {
+        assetsLocaldata,
+      });
+      const assets = response.map((asset) =>
+        _createAssetFromServerData(asset, assetsLocaldata[asset.fingerprint])
+      );
       return new Promise((resolve) =>
         resolve({ assets, total: response.length })
       );
@@ -2831,18 +2838,20 @@ const _createTransactionFromServerData = action(
 
 const _createAssetFromServerData = action(
   'AdaApi::_createAssetFromServerData',
-  (data: ApiAsset) => {
+  (data: ApiAsset, localData: AssetLocalData) => {
     const {
       policy_id: policyId,
       asset_name: assetName,
       fingerprint,
       metadata,
     } = data;
+    const { unit } = localData;
     return new Asset({
       policyId,
       assetName,
       fingerprint,
       metadata,
+      unit,
     });
   }
 );

@@ -71,6 +71,10 @@ export type HardwareWalletDevicesType = {
   [key: string]: TransportDevice,
 };
 
+export type AssetLocalData = {
+  unit: number,
+};
+
 /**
  * This api layer provides access to the electron local storage
  * for user settings that are not synced with any coin backend.
@@ -321,6 +325,18 @@ export default class LocalStorageApi {
 
   unsetAppUpdateCompleted = (): Promise<void> =>
     LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
+
+  getAssetsLocalData = (): Promise<AssetLocalData> =>
+    LocalStorageApi.get(keys.ASSET_DATA);
+
+  getAssetLocalData = (fingerprint: string): Promise<AssetLocalData> =>
+    LocalStorageApi.get(keys.ASSET_DATA, null, fingerprint);
+
+  setAssetLocalData = (
+    fingerprint: string,
+    assetLocalData: AssetLocalData
+  ): Promise<void> =>
+    LocalStorageApi.set(keys.ASSET_DATA, assetLocalData, fingerprint);
 
   getSmashServer = (): Promise<string> =>
     LocalStorageApi.get(keys.SMASH_SERVER);
