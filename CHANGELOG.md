@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
+
 ### Fixes
 
 - Fixed blank currency selection after updating to 4.0.5 ([PR 2529](https://github.com/input-output-hk/daedalus/pull/2529))
@@ -102,9 +106,6 @@ Changelog
 ### Features
 
 - Added native token support [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
-
-### Features
-
 - Enabled rewards withdrawals on hardware wallets ([PR 2408](https://github.com/input-output-hk/daedalus/pull/2408))
 
 ### Fixes
