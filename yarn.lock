@@ -1026,7 +1026,6 @@
 "@cardano-foundation/ledgerjs-hw-app-cardano@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-3.0.0.tgz#5faf169c9ce4aadfb1f4f26b7308dd031f151eed"
-  integrity sha512-H8SGJnQyKWDh+XGMIxYg7w9l71jH16eDCrADfREotj3FauSxF1tdCgc4q3fOX2Eu/kOd2qWWln+oIyqVcqmP/w==
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     "@types/ledgerhq__hw-transport" "^4.21.3"
@@ -1887,7 +1886,6 @@
 "@types/ledgerhq__hw-transport@^4.21.3":
   version "4.21.3"
   resolved "https://registry.yarnpkg.com/@types/ledgerhq__hw-transport/-/ledgerhq__hw-transport-4.21.3.tgz#1e658da6b5d01ffab92f9660cf57121aecfa7e2c"
-  integrity sha512-6QveiZLsFLq9WZDk8HWAZhivoGzyz5S8WV36hpUe7KrVDaTR1fDdB+syorrNRhYbyjraAuUJrIdJR5p/7doq8g==
   dependencies:
     "@types/node" "*"
 
