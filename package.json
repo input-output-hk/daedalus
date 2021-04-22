@@ -233,7 +233,7 @@
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
     "react-markdown": "4.3.1",
-    "react-polymorph": "https://github.com/input-output-hk/react-polymorph.git#26e5704c07b11f0603efa2b9895e5346bcd31ca2",
+    "react-polymorph": "0.9.8-rc.21",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
     "react-svg-inline": "2.1.1",
