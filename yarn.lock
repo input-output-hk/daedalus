@@ -15214,9 +15214,9 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
 
-trezor-connect@8.1.25-extended:
-  version "8.1.25-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.25-extended.tgz#a20d7e32c56b863d16d6783db4a6538f4bc31b51"
+trezor-connect@8.1.26-extended:
+  version "8.1.26-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.26-extended.tgz#837666ec93b2e371ed32e921f5795ea612751c71"
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
