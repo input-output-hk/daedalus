@@ -23,7 +23,11 @@ type Props = $Exact<{
   selectedPinField: ?string,
 }>;
 
-export default class PinCode extends Component<Props> {
+type State = {
+  isBackSpace: boolean,
+};
+
+export default class PinCode extends Component<Props, State> {
   static defaultProps = {
     length: 4,
     disabled: false,
@@ -34,6 +38,10 @@ export default class PinCode extends Component<Props> {
   focusKey = 0;
   add = false;
   fromBackspace = false;
+
+  state = {
+    isBackSpace: false,
+  };
 
   inputHasNewValue = (inputNewValue: string, key: number) => {
     const { value } = this.props;
@@ -48,14 +56,27 @@ export default class PinCode extends Component<Props> {
 
   onChange = (inputValue: ?number | ?string, key: number) => {
     const { value, onChange } = this.props;
+    const { isBackSpace } = this.state;
     const inputNewValue =
       inputValue !== null && inputValue !== undefined && !isNaN(inputValue)
         ? inputValue.toString()
         : '';
     if (this.inputHasNewValue(inputNewValue, key)) {
       const newValue = value;
-      if (!isNaN(inputValue)) {
-        newValue[key] = inputNewValue;
+      if (!isNaN(inputValue))  {
+        if (isBackSpace && newValue[key] !== '' && inputNewValue === '' && this.focusKey !== key) {
+          newValue[key] = value[key];
+          setTimeout(() => {
+            const inputFieldRef = this.inputsRef[key];
+            if (inputFieldRef && inputFieldRef.inputElement) {
+              inputFieldRef.focus();
+              inputFieldRef.inputElement.current.select();
+            }
+          }, 100);
+        } else {
+          newValue[key] = inputNewValue;
+          this.setState({ isBackSpace: false });
+        }
       }
       if (onChange) {
         onChange(newValue, inputNewValue, key);
@@ -68,6 +89,7 @@ export default class PinCode extends Component<Props> {
 
   componentDidUpdate() {
     const { value, length, name, selectedPinField } = this.props;
+    const { isBackSpace } = this.state;
     const key = value.join('').length;
     const inputValue = value[key - 1];
     this.add = this.fromBackspace
@@ -91,43 +113,49 @@ export default class PinCode extends Component<Props> {
       } else {
         inputFocusKey = this.add ? focusKey + 1 : focusKey - 1;
       }
+      const inputElementRef =  this.inputsRef[inputFocusKey];
       if (
         Object.prototype.hasOwnProperty.call(this.inputsRef, inputFocusKey) &&
-        this.inputsRef[inputFocusKey]
+        inputElementRef
       ) {
         this.fromBackspace = false;
-        this.inputsRef[inputFocusKey].focus();
+        if (isBackSpace && inputElementRef.inputElement && emptyFieldIndex !== inputFocusKey) {
+          inputElementRef.focus();
+          inputElementRef.inputElement.current.select();
+        } else if (!isBackSpace) {
+          inputElementRef.focus();
+        }
       }
     }
   }
 
-  onKeyDown = (evt: SyntheticKeyboardEvent<EventTarget>, inputKey: string) => {
+  onKeyDown = (evt: SyntheticKeyboardEvent<EventTarget>, inputKey: number) => {
     const { value, onChange } = this.props;
     const { decimalSeparator, groupSeparator } = BigNumber.config().FORMAT;
     const { key, target } = evt;
     const control: { blur?: Function, focus?: Function } = target;
-    const focusKey = parseInt(inputKey, 10);
-    const nextFieldFocusKey = focusKey + 1;
+    const nextFieldFocusKey = inputKey + 1;
     const nextInputField = this.inputsRef[nextFieldFocusKey];
     const isSeparator = key === decimalSeparator || key === groupSeparator;
-    const isBackspace = key === 'Backspace';
-    const inputNewValue = this.inputsRef[focusKey]
-      ? this.inputsRef[focusKey].props.value
+    const isBackSpace = key === 'Backspace';
+    const inputNewValue = this.inputsRef[inputKey]
+      ? this.inputsRef[inputKey].props.value
       : null;
-    const fieldIsEmpty = this.inputsRef[focusKey] ? !inputNewValue : false;
+    const fieldIsEmpty = this.inputsRef[inputKey] ? !inputNewValue : false;
 
     if (isSeparator) {
       this.handleSeparatorInput(nextInputField, control);
     }
-
-    if (isBackspace && fieldIsEmpty) {
+    if (isBackSpace && fieldIsEmpty) {
       if (onChange) {
+        this.setState({ isBackSpace });
         onChange(value, inputNewValue, inputKey);
       }
       this.focusKey = inputKey;
       this.add = false;
       this.fromBackspace = true;
     } else {
+      this.focusKey = inputKey;
       this.fromBackspace = false;
     }
   };
@@ -188,7 +216,7 @@ export default class PinCode extends Component<Props> {
                 disabled ||
                 (index !== 0 &&
                   (!value ||
-                    !Object.prototype.hasOwnProperty.call(value, index - 1)))
+                    !value[index - 1]))
               }
             />
           );
