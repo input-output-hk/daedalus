@@ -68,10 +68,17 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    decimalPrecision:
-      this.props.recommendedDecimalPrecision || DEFAULT_DECIMAL_PRECISION,
-  };
+  constructor(props: Props) {
+    super(props);
+    const { asset, recommendedDecimalPrecision } = this.props;
+    const decimalPrecision =
+      typeof asset.unit === 'number'
+        ? asset.unit
+        : recommendedDecimalPrecision || DEFAULT_DECIMAL_PRECISION;
+    this.state = {
+      decimalPrecision,
+    };
+  }
 
   onSetDecimalPrecision = (decimalPrecision: number) => {
     this.setState({ decimalPrecision });

@@ -59,6 +59,7 @@ export type WalletSummaryAsset = {
   fingerprint: string,
   quantity: BigNumber,
   metadata: ?AssetMetadata,
+  unit?: ?number,
 };
 
 export type WalletTransactionAsset = {
@@ -68,6 +69,7 @@ export type WalletTransactionAsset = {
   fingerprint: string,
   metadata: ?AssetMetadata,
   address?: ?string,
+  unit?: ?number,
 };
 
 export type GetUnknownAssetRequest = {
