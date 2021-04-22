@@ -47,7 +47,7 @@ export default defineMessages({
   sameWalletLabel: {
     id: 'wallet.send.form.sameWalletLabel',
     defaultMessage:
-      '!!!This address belongs to your {walletName} wallet. No assets will be transferred, but fee will be charged',
+      '!!!This receiver address belongs to the same wallet from which you are sending funds. If you proceed with this transaction, the transferred funds will remain in this wallet, and you will incur transaction fees, as outlined in Estimated fees.',
     description: 'Label for the same wallet tooltip in the wallet send form.',
   },
   addAssetButtonLabel: {

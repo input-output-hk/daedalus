@@ -729,9 +729,7 @@ export default class WalletSendForm extends Component<Props, State> {
       ? messages.minAdaRequiredWithAssetTooltip
       : messages.minAdaRequiredWithNoAssetTooltip;
 
-    const sameWalletError = intl.formatMessage(messages.sameWalletLabel, {
-      walletName,
-    });
+    const sameWalletError = intl.formatMessage(messages.sameWalletLabel);
     let receiverFieldError = receiverField.error;
     let receiverFieldThemeVars = {};
     if (this.isAddressFromSameWallet()) {

@@ -965,7 +965,7 @@
   "wallet.send.form.receiver.label": "Receiver",
   "wallet.send.form.receiver.placeholder": "Paste an address",
   "wallet.send.form.reset": "Reset",
-  "wallet.send.form.sameWalletLabel": "This address belongs to your {walletName} wallet. No assets will be transferred, but fee will be charged",
+  "wallet.send.form.sameWalletLabel": "This receiver address belongs to the same wallet from which you are sending funds. If you proceed with this transaction, the transferred funds will remain in this wallet, and you will incur transaction fees, as outlined in Estimated fees.",
   "wallet.send.form.send": "Send",
   "wallet.send.form.syncingTransactionsMessage": "The balance and transaction history of this wallet is being synced with the blockchain.",
   "wallet.send.form.syncingWallet": "syncing",
