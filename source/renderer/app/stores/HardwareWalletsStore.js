@@ -2,6 +2,7 @@
 import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast, filter, includes } from 'lodash';
 import semver from 'semver';
+import { TransactionSigningMode } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
@@ -1397,7 +1398,7 @@ export default class HardwareWalletsStore extends Store {
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
-    const metadataHashHex = null;
+    const auxiliaryData = null;
     const { isMainnet } = this.environment;
 
     try {
@@ -1415,7 +1416,8 @@ export default class HardwareWalletsStore extends Store {
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
-        metadataHashHex,
+        signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
+        auxiliaryData,
         devicePath,
       });
 
