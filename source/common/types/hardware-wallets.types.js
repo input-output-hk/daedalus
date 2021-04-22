@@ -236,10 +236,11 @@ export type LedgerSignTransactionRequest = {
   protocolMagic: number,
   certificates: Array<?Certificate>,
   withdrawals: Array<?Withdrawal>,
-  metadataHashHex: ?string,
+  auxiliaryData: ?string,
   reset?: boolean,
   devicePath: ?string,
   validityIntervalStartStr?: string,
+  signingMode: string,
 };
 
 export type TrezorSignTransactionRequest = {

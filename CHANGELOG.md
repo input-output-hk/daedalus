@@ -13,6 +13,11 @@ Changelog
 - Fixed hardware wallets confirmation crashing issue when device is in "Busy" state ([PR 2522](https://github.com/input-output-hk/daedalus/pull/2522))
 - Fixed hardware wallets spending password issue ([PR 2519](https://github.com/input-output-hk/daedalus/pull/2519))
 
+### Chores
+
+- Updated `trezor-connect` dependency to version `8.1.26` ([PR 2534](https://github.com/input-output-hk/daedalus/pull/2534))
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `3.0.0` ([PR 2530](https://github.com/input-output-hk/daedalus/pull/2530))
+
 ## 4.0.5
 
 ### Features
