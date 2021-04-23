@@ -327,10 +327,12 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
 
   getAssetsLocalData = (): Promise<AssetLocalData> =>
-    LocalStorageApi.get(keys.ASSET_DATA);
+    LocalStorageApi.get(keys.ASSET_DATA, []);
+
+  unsetAssets = (): Promise<void> => LocalStorageApi.unset(keys.ASSET_DATA);
 
   getAssetLocalData = (fingerprint: string): Promise<AssetLocalData> =>
-    LocalStorageApi.get(keys.ASSET_DATA, null, fingerprint);
+    LocalStorageApi.get(keys.ASSET_DATA, {}, fingerprint);
 
   setAssetLocalData = (
     fingerprint: string,

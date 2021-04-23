@@ -164,7 +164,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             options={options}
             value={decimals}
             className={styles.decimalsDropdown}
-            label={intl.formatMessage(messages.decimalsLabel)}
+            label={intl.formatMessage(messages.decimalPrecisionLabel)}
             onChange={this.onSetDecimalPrecision}
             optionRenderer={this.optionRenderer}
             selectionRenderer={this.selectionRenderer}

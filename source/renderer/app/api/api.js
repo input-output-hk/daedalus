@@ -641,7 +641,10 @@ export default class AdaApi {
         assetsLocaldata,
       });
       const assets = response.map((asset) =>
-        _createAssetFromServerData(asset, assetsLocaldata[asset.fingerprint])
+        _createAssetFromServerData(
+          asset,
+          assetsLocaldata[asset.fingerprint] || {}
+        )
       );
       return new Promise((resolve) =>
         resolve({ assets, total: response.length })
