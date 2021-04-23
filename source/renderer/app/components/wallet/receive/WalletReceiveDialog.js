@@ -152,7 +152,7 @@ type Props = {
   onClose: Function,
   onChangeVerificationStatus: Function,
   onSupportRequestClick: Function,
-  isTrezor: boolean
+  isTrezor: boolean,
 };
 
 type State = {

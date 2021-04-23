@@ -187,7 +187,13 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses, sidebar, hardwareWallets, walletSettings } = stores;
+    const {
+      uiDialogs,
+      addresses,
+      sidebar,
+      hardwareWallets,
+      walletSettings,
+    } = stores;
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;

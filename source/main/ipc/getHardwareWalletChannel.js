@@ -415,14 +415,13 @@ export const handleHardwareWalletRequests = async (
 
   deriveAddressChannel.onRequest(async (params) => {
     const {
-      addressTypeNibble,
-      networkIdOrProtocolMagic,
+      addressType,
       spendingPathStr,
       stakingPathStr,
       devicePath,
-      stakingKeyHashHex,
-      stakingBlockchainPointer,
       isTrezor,
+      networkId,
+      protocolMagic,
     } = params;
     const spendingPath = utils.str_to_path(spendingPathStr);
     const stakingPath = stakingPathStr
@@ -442,14 +441,19 @@ export const handleHardwareWalletRequests = async (
         throw new Error('Ledger device not connected');
       }
 
-      const { addressHex } = await deviceConnection.deriveAddress(
-        addressTypeNibble,
-        networkIdOrProtocolMagic,
-        spendingPath,
-        stakingPath,
-        stakingKeyHashHex,
-        stakingBlockchainPointer
-      );
+      const { addressHex } = await deviceConnection.deriveAddress({
+        network: {
+          networkId,
+          protocolMagic,
+        },
+        address: {
+          type: addressType,
+          params: {
+            spendingPath,
+            stakingPath,
+          },
+        },
+      });
 
       const encodedAddress = utils.bech32_encodeAddress(
         utils.hex_to_buf(addressHex)
@@ -462,14 +466,13 @@ export const handleHardwareWalletRequests = async (
 
   showAddressChannel.onRequest(async (params) => {
     const {
-      addressTypeNibble,
-      networkIdOrProtocolMagic,
+      addressType,
       spendingPathStr,
       stakingPathStr,
       devicePath,
-      stakingKeyHashHex,
-      stakingBlockchainPointer,
       isTrezor,
+      networkId,
+      protocolMagic,
     } = params;
     const spendingPath = utils.str_to_path(spendingPathStr);
     const stakingPath = stakingPathStr
@@ -489,14 +492,19 @@ export const handleHardwareWalletRequests = async (
         throw new Error('Ledger device not connected');
       }
 
-      await deviceConnection.showAddress(
-        addressTypeNibble,
-        networkIdOrProtocolMagic,
-        spendingPath,
-        stakingPath,
-        stakingKeyHashHex,
-        stakingBlockchainPointer
-      );
+      await deviceConnection.showAddress({
+        network: {
+          networkId,
+          protocolMagic,
+        },
+        address: {
+          type: addressType,
+          params: {
+            spendingPath,
+            stakingPath,
+          },
+        },
+      });
       return;
     } catch (e) {
       throw e;

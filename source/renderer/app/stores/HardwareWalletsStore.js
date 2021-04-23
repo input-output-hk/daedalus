@@ -2,7 +2,10 @@
 import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast, filter, includes } from 'lodash';
 import semver from 'semver';
-import { TransactionSigningMode } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import {
+  TransactionSigningMode,
+  AddressType,
+} from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
@@ -17,7 +20,6 @@ import {
   isHardwareWalletSupportEnabled,
   isTrezorEnabled,
   isLedgerEnabled,
-  AddressTypeNibbles,
 } from '../config/hardwareWalletsConfig';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
@@ -978,21 +980,23 @@ export default class HardwareWalletsStore extends Store {
   }) => {
     logger.debug('[HW-DEBUG] - VERIFY Address');
     const { address, path, isTrezor } = params;
+    const { isMainnet } = this.environment;
+
     this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS;
     this.tempAddressToVerify = params;
-
     try {
       const derivedAddress = await deriveAddressChannel.request({
         devicePath: path,
         isTrezor,
-        addressTypeNibble: AddressTypeNibbles.BASE, // BASE
-        networkIdOrProtocolMagic: this.environment.isMainnet
+        addressType: AddressType.BASE,
+        spendingPathStr: address.spendingPath,
+        stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
+        networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        spendingPathStr: address.spendingPath,
-        stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`, // E.g. "1852'/1815'/0'/0/19",,
-        stakingKeyHashHex: null,
-        stakingBlockchainPointer: null,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
       });
       // Derive address from path and check
       if (derivedAddress === address.id) {
@@ -1074,21 +1078,22 @@ export default class HardwareWalletsStore extends Store {
   }) => {
     logger.debug('[HW-DEBUG] - SHOW Address');
     const { address, path, isTrezor } = params;
+    const { isMainnet } = this.environment;
 
     try {
       await showAddressChannel.request({
         devicePath: path,
         isTrezor,
-        addressTypeNibble: AddressTypeNibbles.BASE, // BASE
-        networkIdOrProtocolMagic: this.environment.isMainnet
+        addressType: AddressType.BASE,
+        spendingPathStr: address.spendingPath,
+        stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
+        networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        spendingPathStr: address.spendingPath,
-        stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`, // E.g. "1852'/1815'/0'/0/19",,
-        stakingKeyHashHex: null,
-        stakingBlockchainPointer: null,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
       });
-
       runInAction(
         'HardwareWalletsStore:: Address show process finished',
         () => {

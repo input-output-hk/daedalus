@@ -422,23 +422,21 @@ export type StakingBlockchainPointer = {
 
 export type deriveAddressRendererRequestType = {
   devicePath: string,
-  addressTypeNibble: number,
-  networkIdOrProtocolMagic: number,
+  addressType: number,
+  networkId: number,
+  protocolMagic: number,
   spendingPathStr: string,
   stakingPathStr: ?string,
-  stakingKeyHashHex: ?string,
-  stakingBlockchainPointer: ?StakingBlockchainPointer,
   isTrezor: boolean,
 };
 
 export type showAddressRendererRequestType = {
   devicePath: string,
-  addressTypeNibble: number,
-  networkIdOrProtocolMagic: number,
+  addressType: number,
+  networkId: number,
+  protocolMagic: number,
   spendingPathStr: string,
   stakingPathStr: ?string,
-  stakingKeyHashHex: ?string,
-  stakingBlockchainPointer: ?StakingBlockchainPointer,
   isTrezor: boolean,
 };
 

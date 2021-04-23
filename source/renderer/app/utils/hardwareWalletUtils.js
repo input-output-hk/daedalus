@@ -41,7 +41,7 @@ export const derivationPathToString = (derivationPath: Array<string>) => {
 // m/1852'/1815'/0' => 1852'/1815'/0'
 export const derivationPathToAddressPath = (derivationPath: Array<string>) => {
   const derivationPathString = derivationPathToString(derivationPath);
-  const addressPath = derivationPathString.replace('m/', '')
+  const addressPath = derivationPathString.replace('m/', '');
   return addressPath;
 };
 
