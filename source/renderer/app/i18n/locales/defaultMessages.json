@@ -847,13 +847,13 @@
         "description": "\"Verify receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 137
+          "line": 141
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address",
         "start": {
           "column": 21,
-          "line": 133
+          "line": 137
         }
       },
       {
@@ -861,13 +861,13 @@
         "description": "\"Confirm receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 142
+          "line": 146
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_confirmation",
         "start": {
           "column": 34,
-          "line": 138
+          "line": 142
         }
       },
       {
@@ -875,13 +875,13 @@
         "description": "\"Address verification failed\" device state",
         "end": {
           "column": 3,
-          "line": 147
+          "line": 151
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_failed",
         "start": {
           "column": 28,
-          "line": 143
+          "line": 147
         }
       },
       {
@@ -889,13 +889,13 @@
         "description": "\"Address verification aborted\" device state",
         "end": {
           "column": 3,
-          "line": 152
+          "line": 156
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_aborted",
         "start": {
           "column": 29,
-          "line": 148
+          "line": 152
         }
       },
       {
@@ -903,13 +903,13 @@
         "description": "\"Address verified\" device state",
         "end": {
           "column": 3,
-          "line": 157
+          "line": 161
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_succeeded",
         "start": {
           "column": 31,
-          "line": 153
+          "line": 157
         }
       }
     ],
@@ -17239,13 +17239,13 @@
         "description": "\"Address\" word in the Address PDF export",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.pdf.filenamePrefix",
         "start": {
           "column": 11,
-          "line": 18
+          "line": 19
         }
       }
     ],
