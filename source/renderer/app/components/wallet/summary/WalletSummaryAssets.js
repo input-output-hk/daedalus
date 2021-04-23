@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -28,6 +29,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Unknown',
     description: 'Unknown label on Wallet summary assets page',
   },
+  unformattedAmount: {
+    id: 'wallet.summary.assets.unformattedAmount',
+    defaultMessage: '!!!Unformatted amount: {amount}',
+    description: 'Unknown label on Wallet summary assets page',
+  },
 });
 
 type Props = {
@@ -44,6 +50,23 @@ export default class WalletSummaryAssets extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  renderAssetAmount = (asset: WalletSummaryAsset) =>
+    asset.decimals !== 0 ? (
+      <PopOver
+        content={this.context.intl.formatMessage(messages.unformattedAmount, {
+          amount: formattedTokenWalletAmount(asset.quantity, asset.metadata, 0),
+        })}
+      >
+        {formattedTokenWalletAmount(
+          asset.quantity,
+          asset.metadata,
+          asset.decimals
+        )}
+      </PopOver>
+    ) : (
+      formattedTokenWalletAmount(asset.quantity, asset.metadata, asset.decimals)
+    );
 
   render() {
     const {
@@ -87,13 +110,7 @@ export default class WalletSummaryAssets extends Component<Props> {
                       onClickSettings={() => onAssetSettings({ asset })}
                     />
                     <div className={styles.assetAmount}>
-                      {isRestoreActive
-                        ? '-'
-                        : formattedTokenWalletAmount(
-                            asset.quantity,
-                            asset.metadata,
-                            asset.decimals
-                          )}
+                      {isRestoreActive ? '-' : this.renderAssetAmount(asset)}
                     </div>
                   </div>
                 )}
