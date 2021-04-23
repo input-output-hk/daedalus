@@ -12,6 +12,7 @@ import AmountInputSkin from '../skins/AmountInputSkin';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
+import { DEFAULT_DECIMAL_PRECISION } from '../../../config/assetsConfig';
 import type { NumberFormat } from '../../../../../common/types/number.types';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 import styles from './AssetInput.scss';
@@ -97,9 +98,9 @@ export default class AssetInput extends Component<Props> {
       return false;
     }
 
-    const { quantity, metadata } = asset;
+    const { quantity, metadata, unit } = asset;
     const ticker = get(metadata, 'ticker', null);
-    const decimals = get(metadata, 'unit.decimals', 0);
+    const decimals = unit || DEFAULT_DECIMAL_PRECISION;
     const sortedAssets = orderBy(
       [asset, ...availableAssets],
       'fingerprint',
@@ -124,7 +125,7 @@ export default class AssetInput extends Component<Props> {
           <div className={styles.amountTokenTotal}>
             {intl.formatMessage(messages.ofLabel)}
             {` `}
-            {formattedTokenWalletAmount(quantity, metadata)}
+            {formattedTokenWalletAmount(quantity, metadata, unit)}
           </div>
         )}
         <NumericInput

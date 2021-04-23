@@ -24,9 +24,9 @@ export default class AssetsStore extends Store {
   setup() {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
     const { assets: assetsActions, wallets: walletsActions } = this.actions;
-    assetsActions.onEditAssetOpen.listen(this._onEditAssetOpen);
-    assetsActions.onEditAssetSubmit.listen(this._onEditAssetSubmit);
-    assetsActions.onEditAssetCancel.listen(this._onEditAssetCancel);
+    assetsActions.onAssetSettingsOpen.listen(this._onAssetSettingsOpen);
+    assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
+    assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
 
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAssetFingerprint.listen(
@@ -60,11 +60,11 @@ export default class AssetsStore extends Store {
 
   // =================== PRIVATE ==================
 
-  @action _onEditAssetOpen = ({ asset }: { asset: WalletSummaryAsset }) => {
+  @action _onAssetSettingsOpen = ({ asset }: { asset: WalletSummaryAsset }) => {
     this.editingsAsset = asset;
   };
 
-  @action _onEditAssetSubmit = async ({
+  @action _onAssetSettingsSubmit = async ({
     asset,
     decimalPrecision,
   }: {
@@ -84,7 +84,7 @@ export default class AssetsStore extends Store {
     });
   };
 
-  @action _onEditAssetCancel = () => {
+  @action _onAssetSettingsCancel = () => {
     this.editingsAsset = null;
   };
 

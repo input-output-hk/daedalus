@@ -74,17 +74,13 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleEditAsset = (asset: WalletSummaryAsset) => {
-    const { onEditAssetOpen } = this.props.actions.assets;
-    onEditAssetOpen.trigger({ asset });
-  };
-
   render() {
     const { intl } = this.context;
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
     const { app, wallets, addresses, transactions, profile, assets } = stores;
     const { getAssetDetails } = assets;
     const { isInternalAddress } = addresses;
+    const { onAssetSettingsOpen } = actions.assets;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -204,7 +200,7 @@ export default class WalletSummaryPage extends Component<Props> {
           assets={walletAssets}
           onOpenAssetSend={this.handleOpenAssetSend}
           onCopyAssetItem={this.handleOnCopyAssetItem}
-          onEditAsset={this.handleEditAsset}
+          onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
         />
         {walletTransactions}

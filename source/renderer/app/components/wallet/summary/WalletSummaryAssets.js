@@ -35,7 +35,7 @@ type Props = {
   assets: Array<WalletSummaryAsset>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
-  onEditAsset: Function,
+  onAssetSettings: Function,
   isLoadingAssets: boolean,
 };
 
@@ -51,7 +51,7 @@ export default class WalletSummaryAssets extends Component<Props> {
       assets,
       onOpenAssetSend,
       onCopyAssetItem,
-      onEditAsset,
+      onAssetSettings,
       isLoadingAssets,
     } = this.props;
     const { intl } = this.context;
@@ -84,7 +84,7 @@ export default class WalletSummaryAssets extends Component<Props> {
                       asset={asset}
                       onCopyAssetItem={onCopyAssetItem}
                       metadataNameChars={get('name', asset.metadata, 0)}
-                      onClickSettings={() => onEditAsset(asset)}
+                      onClickSettings={() => onAssetSettings({ asset })}
                     />
                     <div className={styles.assetAmount}>
                       {isRestoreActive

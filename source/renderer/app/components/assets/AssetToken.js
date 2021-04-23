@@ -64,7 +64,6 @@ type Props = {
   asset: WalletSummaryAsset,
   small?: boolean,
   hidePopOver?: boolean,
-  // isConfigurable?: boolean,
   onCopyAssetItem?: Function,
   onClickSettings?: Function,
   className?: string,

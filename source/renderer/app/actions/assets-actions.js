@@ -5,10 +5,10 @@ import type { WalletSummaryAsset } from '../api/assets/types';
 // ======= ADDRESSES ACTIONS =======
 
 export default class AddressesActions {
-  onEditAssetOpen: Action<{ asset: WalletSummaryAsset }> = new Action();
-  onEditAssetSubmit: Action<{
+  onAssetSettingsOpen: Action<{ asset: WalletSummaryAsset }> = new Action();
+  onAssetSettingsSubmit: Action<{
     asset: WalletSummaryAsset,
     decimalPrecision: number,
   }> = new Action();
-  onEditAssetCancel: Action<any> = new Action();
+  onAssetSettingsCancel: Action<any> = new Action();
 }

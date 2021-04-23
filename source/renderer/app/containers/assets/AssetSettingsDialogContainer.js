@@ -13,8 +13,8 @@ export default class AssetSettingsDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleSubmit = (asset: WalletSummaryAsset, decimalPrecision: number) => {
-    const { onEditAssetSubmit } = this.props.actions.assets;
-    onEditAssetSubmit.trigger({ asset, decimalPrecision });
+    const { onAssetSettingsSubmit } = this.props.actions.assets;
+    onAssetSettingsSubmit.trigger({ asset, decimalPrecision });
   };
 
   render() {
@@ -27,7 +27,7 @@ export default class AssetSettingsDialogContainer extends Component<Props> {
       <AssetSettingsDialog
         asset={editingsAsset}
         onSubmit={this.handleSubmit}
-        onCancel={assetsActions.onEditAssetCancel.trigger}
+        onCancel={assetsActions.onAssetSettingsCancel.trigger}
       />
     );
   }
