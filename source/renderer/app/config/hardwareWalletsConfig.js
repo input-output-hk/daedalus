@@ -70,18 +70,6 @@ export const AddressTypeNibbles = {
   REWARD: 0b1110,
 };
 
-export const MINIMAL_LEDGER_APP_VERSION = {
-  major: 2,
-  minor: 0,
-  patch: 3,
-};
-
-export const RECOMMENDED_LEDGER_APP_VERSION = {
-  major: 2,
-  minor: 0,
-  patch: 4,
-};
-
 // JS Library supports Cardano APP version down to 2.0.4
 // https://github.com/vacuumlabs/ledgerjs-cardano-shelley/blob/develop/CHANGELOG.md#220---february-8th-2020
 export const MINIMAL_CARDANO_APP_VERSION = '2.2.0';

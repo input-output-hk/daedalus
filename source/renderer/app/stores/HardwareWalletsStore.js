@@ -1053,9 +1053,6 @@ export default class HardwareWalletsStore extends Store {
             this.isAddressChecked = false;
             this.isAddressCorrect = false;
             this.isListeningForDevice = true;
-            // this.hwDeviceStatus = isAborted
-            //   ? HwDeviceStatuses.CONNECTING
-            //   : HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
             this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
           }
         );
