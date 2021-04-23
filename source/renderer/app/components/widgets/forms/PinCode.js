@@ -67,7 +67,7 @@ export default class PinCode extends Component<Props, State> {
         if (isBackSpace && newValue[key] !== '' && inputNewValue === '' && this.focusKey !== key) {
           newValue[key] = value[key];
           setTimeout(() => {
-            const focusKey = this.inputsRef[key].inputElement.current.selectionStart === 0 ? key - 1 : key;
+            const focusKey = this.inputsRef[key] && this.inputsRef[key].inputElement.current.selectionStart === 0 ? key - 1 : key;
             const inputFieldRef = this.inputsRef[focusKey];
             if (inputFieldRef && inputFieldRef.inputElement) {
               inputFieldRef.focus();
@@ -143,7 +143,7 @@ export default class PinCode extends Component<Props, State> {
       ? this.inputsRef[inputKey].props.value
       : null;
     const fieldIsEmpty = this.inputsRef[inputKey] ? !inputNewValue : false;
-    const cursorPosition = this.inputsRef[inputKey].inputElement.current.selectionStart;
+    const cursorPosition = this.inputsRef[inputKey] ? this.inputsRef[inputKey].inputElement.current.selectionStart : 1;
     if (isSeparator) {
       this.handleSeparatorInput(nextInputField, control);
     }
