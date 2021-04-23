@@ -127,6 +127,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { onCancel, onSubmit, asset } = this.props;
+    const { recommendedDecimals } = asset;
     const { decimals } = this.state;
     const title = this.renderTitle();
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
@@ -143,6 +144,9 @@ export default class AssetSettingsDialog extends Component<Props, State> {
         onClick: () => onSubmit(asset, decimals),
       },
     ];
+    const hasRecommendedWarning =
+      typeof recommendedDecimals === 'number' &&
+      decimals !== recommendedDecimals;
     return (
       <Dialog
         className={styles.component}
@@ -175,16 +179,25 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             label={
               <>
                 {intl.formatMessage(messages.decimalPrecisionLabel)}
-                <PopOver
-                  content={intl.formatMessage(messages.recommendedPopOver)}
-                >
-                  <SVGInline className={styles.warningIcon} svg={warningIcon} />
-                </PopOver>
+                {hasRecommendedWarning && (
+                  <PopOver
+                    content={intl.formatMessage(messages.recommendedPopOver)}
+                  >
+                    <SVGInline
+                      className={styles.warningIcon}
+                      svg={warningIcon}
+                    />
+                  </PopOver>
+                )}
               </>
             }
             onChange={this.onSetDecimalPrecision}
             optionRenderer={this.optionRenderer}
             selectionRenderer={this.selectionRenderer}
+            error={
+              hasRecommendedWarning &&
+              intl.formatMessage(messages.recommendedPopOver)
+            }
           />
         </div>
       </Dialog>
