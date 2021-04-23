@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { range } from 'lodash';
 import { observer } from 'mobx-react';
-import BigNumber from 'bignumber.js';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { defineMessages, intlShape } from 'react-intl';
 import AssetToken from './AssetToken';
@@ -39,10 +38,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Formated balance',
     description: '"unformattedBalanceLabel" for the Asset settings dialog',
   },
-  decimalsLabel: {
-    id: 'assets.settings.dialog.decimals.label',
+  decimalPrecisionLabel: {
+    id: 'assets.settings.dialog.decimalPrecision.label',
     defaultMessage: '!!!Decimal Precision',
-    description: '"decimalsLabel" for the Asset settings dialog',
+    description: '"decimalPrecisionLabel" for the Asset settings dialog',
   },
   recommended: {
     id: 'assets.settings.dialog.recommended',
