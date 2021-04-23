@@ -72,8 +72,8 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     super(props);
     const { asset, recommendedDecimalPrecision } = this.props;
     const decimalPrecision =
-      typeof asset.unit === 'number'
-        ? asset.unit
+      typeof asset.decimals === 'number'
+        ? asset.decimals
         : recommendedDecimalPrecision || DEFAULT_DECIMAL_PRECISION;
     this.state = {
       decimalPrecision,

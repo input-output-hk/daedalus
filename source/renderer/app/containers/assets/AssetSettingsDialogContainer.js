@@ -12,9 +12,9 @@ type Props = InjectedProps;
 export default class AssetSettingsDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  handleSubmit = (asset: WalletSummaryAsset, decimalPrecision: number) => {
+  handleSubmit = (asset: WalletSummaryAsset, decimals: number) => {
     const { onAssetSettingsSubmit } = this.props.actions.assets;
-    onAssetSettingsSubmit.trigger({ asset, decimalPrecision });
+    onAssetSettingsSubmit.trigger({ asset, decimals });
   };
 
   render() {

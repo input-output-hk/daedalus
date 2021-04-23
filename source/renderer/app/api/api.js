@@ -2845,13 +2845,13 @@ const _createAssetFromServerData = action(
       fingerprint,
       metadata,
     } = data;
-    const { unit } = localData;
+    const { decimals } = localData;
     return new Asset({
       policyId,
       assetName,
       fingerprint,
       metadata,
-      unit,
+      decimals,
     });
   }
 );

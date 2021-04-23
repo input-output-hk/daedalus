@@ -92,7 +92,7 @@ export default class WalletSummaryAssets extends Component<Props> {
                         : formattedTokenWalletAmount(
                             asset.quantity,
                             asset.metadata,
-                            asset.unit
+                            asset.decimals
                           )}
                     </div>
                   </div>

@@ -66,21 +66,21 @@ export default class AssetsStore extends Store {
 
   @action _onAssetSettingsSubmit = async ({
     asset,
-    decimalPrecision,
+    decimals,
   }: {
     asset: WalletSummaryAsset,
-    decimalPrecision: number,
+    decimals: number,
   }) => {
     this.editingsAsset = null;
     const { fingerprint, policyId, assetName } = asset;
     const assetDomain = this.getAssetDetails(policyId, assetName);
     if (assetDomain) {
       assetDomain.update({
-        unit: decimalPrecision,
+        decimals,
       });
     }
     await this.api.localStorage.setAssetLocalData(fingerprint, {
-      unit: decimalPrecision,
+      decimals,
     });
   };
 

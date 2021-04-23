@@ -8,7 +8,7 @@ export default class AddressesActions {
   onAssetSettingsOpen: Action<{ asset: WalletSummaryAsset }> = new Action();
   onAssetSettingsSubmit: Action<{
     asset: WalletSummaryAsset,
-    decimalPrecision: number,
+    decimals: number,
   }> = new Action();
   onAssetSettingsCancel: Action<any> = new Action();
 }

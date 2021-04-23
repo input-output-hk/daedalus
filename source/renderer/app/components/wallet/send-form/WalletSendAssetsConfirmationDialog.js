@@ -315,14 +315,14 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   getFormattedAssetAmount = (
-    { metadata, unit }: WalletSummaryAsset,
+    { metadata, decimals }: WalletSummaryAsset,
     index: number
   ) => {
     const assetAmount = this.getAssetAmount(index);
     return formattedTokenWalletAmount(
       new BigNumber(assetAmount),
       metadata,
-      unit
+      decimals
     );
   };
 

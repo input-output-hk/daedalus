@@ -72,7 +72,7 @@ export type HardwareWalletDevicesType = {
 };
 
 export type AssetLocalData = {
-  unit: number,
+  decimals: number,
 };
 
 /**

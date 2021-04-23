@@ -10,7 +10,7 @@ export type AssetProps = {
   assetName: string,
   fingerprint: string,
   metadata?: ?AssetMetadata,
-  unit?: ?number,
+  decimals?: ?number,
 };
 
 export default class Asset {
@@ -18,20 +18,26 @@ export default class Asset {
   @observable assetName: string = '';
   @observable fingerprint: string = '';
   @observable metadata: ?AssetMetadata;
-  @observable unit: ?number;
+  @observable decimals: ?number;
 
   constructor(data: AssetProps) {
-    let unit;
+    let decimals;
     if (IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED) {
-      unit = data.unit || DEFAULT_DECIMAL_PRECISION;
+      decimals = data.decimals || DEFAULT_DECIMAL_PRECISION;
     }
-    Object.assign(this, data, { unit });
+    Object.assign(this, data, { decimals });
   }
 
   @action update(other: $Shape<AssetProps>) {
     Object.assign(
       this,
-      pick(other, ['policyId', 'assetName', 'fingerprint', 'metadata', 'unit'])
+      pick(other, [
+        'policyId',
+        'assetName',
+        'fingerprint',
+        'metadata',
+        'decimals',
+      ])
     );
   }
 }
