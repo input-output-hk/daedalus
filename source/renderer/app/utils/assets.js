@@ -40,7 +40,8 @@ export const getTransactionAsset = (
   getAssetDetails: Function
 ): WalletTransactionAsset => {
   const { policyId, assetName, quantity, address } = asset;
-  const { fingerprint, metadata } = getAssetDetails(policyId, assetName) || {};
+  const { fingerprint, metadata, decimals } =
+    getAssetDetails(policyId, assetName) || {};
   const txAsset = {
     policyId,
     assetName,
@@ -48,6 +49,7 @@ export const getTransactionAsset = (
     address,
     fingerprint,
     metadata,
+    decimals,
   };
   return txAsset;
 };

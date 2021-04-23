@@ -698,7 +698,8 @@ export default class Transaction extends Component<Props, State> {
                               <div className={styles.amount}>
                                 {formattedTokenWalletAmount(
                                   asset.quantity,
-                                  asset.metadata
+                                  asset.metadata,
+                                  asset.decimals
                                 )}
                               </div>
                             </div>
