@@ -99,7 +99,6 @@ import {
   generateAccountMnemonics,
   generateAdditionalMnemonics,
 } from './utils/mnemonics';
-import { getDefaultDecimalPrecision } from '../utils/assets';
 import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
@@ -117,6 +116,10 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
 import { currencyConfig } from '../config/currencyConfig';
+import {
+  ASSETS_WITH_PREDEFINED_DECIMALS,
+  DEFAULT_DECIMAL_PRECISION,
+} from '../config/assetsConfig';
 
 // Addresses Types
 import type {
@@ -2849,13 +2852,15 @@ const _createAssetFromServerData = action(
       fingerprint,
       metadata,
     } = data;
-    const { decimals = getDefaultDecimalPrecision(fingerprint) } = localData;
+    const { decimals = DEFAULT_DECIMAL_PRECISION } = localData;
+    const recommendedDecimals = ASSETS_WITH_PREDEFINED_DECIMALS[fingerprint];
     return new Asset({
       policyId,
       assetName,
       fingerprint,
       metadata,
       decimals,
+      recommendedDecimals,
     });
   }
 );

@@ -10,7 +10,8 @@ import styles from './AssetToken.scss';
 import { ellipsis, hexToString } from '../../utils/strings';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
-import settingsIcon from '../../assets/images/settings-asset-token-ic.inline.svg';
+import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
+import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
 import {
   ASSET_TOKEN_ID_COPY_FEEDBACK,
@@ -19,44 +20,50 @@ import {
 
 const messages = defineMessages({
   fingerprintItem: {
-    id: 'widgets.assetToken.item.fingerprint',
+    id: 'assets.assetToken.item.fingerprint',
     defaultMessage: '!!!Fingerprint',
     description: '"fingerprint" item.',
   },
   policyIdItem: {
-    id: 'widgets.assetToken.item.policyId',
+    id: 'assets.assetToken.item.policyId',
     defaultMessage: '!!!Policy Id',
     description: '"policyId" item.',
   },
   assetNameItem: {
-    id: 'widgets.assetToken.item.assetName',
+    id: 'assets.assetToken.item.assetName',
     defaultMessage: '!!!Asset name',
     description: '"assetName" item.',
   },
   nameItem: {
-    id: 'widgets.assetToken.item.name',
+    id: 'assets.assetToken.item.name',
     defaultMessage: '!!!Name',
     description: '"name" item.',
   },
   tickerItem: {
-    id: 'widgets.assetToken.item.ticker',
+    id: 'assets.assetToken.item.ticker',
     defaultMessage: '!!!Ticker',
     description: '"ticker" item.',
   },
   descriptionItem: {
-    id: 'widgets.assetToken.item.description',
+    id: 'assets.assetToken.item.description',
     defaultMessage: '!!!Description',
     description: '"description" item.',
   },
   blank: {
-    id: 'widgets.assetToken.item.blank',
+    id: 'assets.assetToken.item.blank',
     defaultMessage: '!!!Blank',
     description: '"Blank" item value.',
   },
   settingsPopOver: {
-    id: 'widgets.assetToken.settingsPopOver',
+    id: 'assets.assetToken.settingsPopOver',
     defaultMessage: '!!!Asset settings',
     description: 'Asset settings pop over content',
+  },
+  settingsRecommendedPopOver: {
+    id: 'assets.assetToken.settingsRecommendedPopOver',
+    defaultMessage:
+      '!!!Recommended configuration for decimal places for this native token is available.',
+    description: 'Asset settings recommended pop over content',
   },
 });
 
@@ -305,6 +312,10 @@ export default class AssetToken extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { hidePopOver, onClickSettings, asset, className } = this.props;
+    const { decimals, recommendedDecimals } = asset;
+    const hasRecommendedWarning =
+      typeof recommendedDecimals === 'number' &&
+      decimals !== recommendedDecimals;
     const content = hidePopOver
       ? this.renderPill()
       : this.renderPopOverContainer();
@@ -314,14 +325,26 @@ export default class AssetToken extends Component<Props, State> {
       <div className={componenClassnames}>
         {content}
         {onClickSettings && (
-          <PopOver content={intl.formatMessage(messages.settingsPopOver)}>
-            <button
-              className={styles.settingsButton}
-              onClick={onClickSettingsBind}
+          <button
+            className={styles.settingsButton}
+            onClick={onClickSettingsBind}
+          >
+            <PopOver
+              className={styles.test}
+              content={intl.formatMessage(messages.settingsPopOver)}
             >
-              <SVGInline svg={settingsIcon} />
-            </button>
-          </PopOver>
+              <SVGInline className={styles.settingsIcon} svg={settingsIcon} />
+            </PopOver>
+            {hasRecommendedWarning && (
+              <PopOver
+                content={intl.formatMessage(
+                  messages.settingsRecommendedPopOver
+                )}
+              >
+                <SVGInline className={styles.warningIcon} svg={warningIcon} />
+              </PopOver>
+            )}
+          </button>
         )}
       </div>
     );

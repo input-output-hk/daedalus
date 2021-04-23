@@ -1186,11 +1186,11 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName}の額",
   "wallet.transferFunds.dialog2.title": "資金を移す",
   "wallet.transferFunds.dialog2.total.label": "合計",
-  "widgets.assetToken.item.assetName": "アセット名",
-  "widgets.assetToken.item.blank": "なし",
-  "widgets.assetToken.item.description": "説明",
-  "widgets.assetToken.item.fingerprint": "フィンガープリント",
-  "widgets.assetToken.item.name": "名称",
-  "widgets.assetToken.item.policyId": "ポリシーID",
-  "widgets.assetToken.item.ticker": "ティッカー"
+  "assets.assetToken.item.assetName": "アセット名",
+  "assets.assetToken.item.blank": "なし",
+  "assets.assetToken.item.description": "説明",
+  "assets.assetToken.item.fingerprint": "フィンガープリント",
+  "assets.assetToken.item.name": "名称",
+  "assets.assetToken.item.policyId": "ポリシーID",
+  "assets.assetToken.item.ticker": "ティッカー"
 }

@@ -1,8 +1,10 @@
 // @flow
 import React, { Component } from 'react';
+import SVGInline from 'react-svg-inline';
 import { range } from 'lodash';
 import { observer } from 'mobx-react';
 import { Select } from 'react-polymorph/lib/components/Select';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import AssetToken from './AssetToken';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -11,6 +13,7 @@ import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import { formattedTokenWalletAmount } from '../../utils/formatters';
+import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
   DEFAULT_DECIMAL_PRECISION,
   MAX_DECIMAL_PRECISION,
@@ -40,7 +43,7 @@ const messages = defineMessages({
   },
   decimalPrecisionLabel: {
     id: 'assets.settings.dialog.decimalPrecision.label',
-    defaultMessage: '!!!Decimal Precision',
+    defaultMessage: '!!!Number of decimal places',
     description: '"decimalPrecisionLabel" for the Asset settings dialog',
   },
   recommended: {
@@ -48,13 +51,18 @@ const messages = defineMessages({
     defaultMessage: '!!!(recommended)',
     description: '"recommended" for the Asset settings dialog',
   },
+  recommendedPopOver: {
+    id: 'assets.settings.dialog.recommended.popOver',
+    defaultMessage:
+      '!!!Recommended configuration for decimal places for this native token is available.',
+    description: '"recommendedPopOver" for the Asset settings dialog',
+  },
 });
 
 type Props = {
   asset: WalletSummaryAsset,
   onSubmit: Function,
   onCancel: Function,
-  recommendedDecimals?: number,
 };
 
 type State = {
@@ -69,11 +77,8 @@ export default class AssetSettingsDialog extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    const { asset, recommendedDecimals } = this.props;
-    const decimals =
-      typeof asset.decimals === 'number'
-        ? asset.decimals
-        : recommendedDecimals || DEFAULT_DECIMAL_PRECISION;
+    const { asset } = this.props;
+    const { decimals = DEFAULT_DECIMAL_PRECISION } = asset;
     this.state = {
       decimals,
     };
@@ -83,10 +88,13 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     this.setState({ decimals });
   };
 
-  optionRenderer = ({ value }: { value: number }) => {
+  optionRenderer = (props: { value: number }) => {
+    const { value } = props;
     const { intl } = this.context;
-    const { recommendedDecimals } = this.props;
-    if (recommendedDecimals && recommendedDecimals === value) {
+    const { recommendedDecimals } = this.props.asset;
+    const isRecommended =
+      typeof recommendedDecimals === 'number' && recommendedDecimals === value;
+    if (isRecommended) {
       return (
         <div>
           {value}{' '}
@@ -164,7 +172,16 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             options={options}
             value={decimals}
             className={styles.decimalsDropdown}
-            label={intl.formatMessage(messages.decimalPrecisionLabel)}
+            label={
+              <>
+                {intl.formatMessage(messages.decimalPrecisionLabel)}
+                <PopOver
+                  content={intl.formatMessage(messages.recommendedPopOver)}
+                >
+                  <SVGInline className={styles.warningIcon} svg={warningIcon} />
+                </PopOver>
+              </>
+            }
             onChange={this.onSetDecimalPrecision}
             optionRenderer={this.optionRenderer}
             selectionRenderer={this.selectionRenderer}

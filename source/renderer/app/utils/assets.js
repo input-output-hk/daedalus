@@ -81,6 +81,3 @@ export const getTransactionAssets = (
       }
       return 0;
     });
-
-export const getDefaultDecimalPrecision = (fingerprint: string) =>
-  ASSETS_WITH_PREDEFINED_DECIMALS[fingerprint] || DEFAULT_DECIMAL_PRECISION;

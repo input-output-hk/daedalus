@@ -17,4 +17,10 @@
     padding: 17px 20px;
     font-family: var(--font-regular);
   }
+  .warningIcon {
+    margin-left: 6px;
+    svg {
+      width: 12px;
+    }
+  }
 }

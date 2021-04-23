@@ -60,6 +60,7 @@ export type WalletSummaryAsset = {
   quantity: BigNumber,
   metadata: ?AssetMetadata,
   decimals: number,
+  recommendedDecimals: ?number,
 };
 
 export type WalletTransactionAsset = {
