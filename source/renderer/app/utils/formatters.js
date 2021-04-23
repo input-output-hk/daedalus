@@ -45,7 +45,7 @@ export const formattedWalletCurrencyAmount = (
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata,
-  decimalPrecision?: ?number
+  decimalPrecision: ?number
 ): string => {
   const { ticker } = metadata || {};
   const decimals =

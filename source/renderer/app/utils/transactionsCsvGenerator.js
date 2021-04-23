@@ -189,13 +189,14 @@ const transactionsCsvGenerator = async ({
       }
       const valueTokens = filterAssets(assets, type, isInternalAddress)
         .map(({ policyId, assetName, quantity }) => {
-          const { fingerprint, metadata } = getAssetDetails(
+          const { fingerprint, metadata, decimals } = getAssetDetails(
             policyId,
             assetName
           );
           const formattedAmount = formattedTokenWalletAmount(
             quantity,
-            metadata
+            metadata,
+            decimals
           );
           return `${formattedAmount} (${fingerprint})`;
         })
