@@ -5,6 +5,10 @@ import type {
   WalletTransactionAsset,
 } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
+import {
+  DEFAULT_DECIMAL_PRECISION,
+  ASSETS_WITH_PREDEFINED_DECIMALS,
+} from '../config/assetsConfig';
 import type { TransactionType } from '../api/transactions/types';
 
 /**
@@ -77,3 +81,6 @@ export const getTransactionAssets = (
       }
       return 0;
     });
+
+export const getDefaultDecimalPrecision = (fingerprint: string) =>
+  ASSETS_WITH_PREDEFINED_DECIMALS[fingerprint] || DEFAULT_DECIMAL_PRECISION;

@@ -99,6 +99,7 @@ import {
   generateAccountMnemonics,
   generateAdditionalMnemonics,
 } from './utils/mnemonics';
+import { getDefaultDecimalPrecision } from '../utils/assets';
 import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
@@ -2848,7 +2849,7 @@ const _createAssetFromServerData = action(
       fingerprint,
       metadata,
     } = data;
-    const { decimals } = localData;
+    const { decimals = getDefaultDecimalPrecision(fingerprint) } = localData;
     return new Asset({
       policyId,
       assetName,

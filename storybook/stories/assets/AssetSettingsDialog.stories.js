@@ -12,6 +12,7 @@ const asset = {
   assetName: '6861707079636f696e',
   fingerprint: 'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8',
   quantity: new BigNumber(number('quantity', 1)),
+  decimals: 0,
   metadata: null,
 };
 

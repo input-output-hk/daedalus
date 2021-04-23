@@ -8,7 +8,6 @@ import type {
   GetAssetsResponse,
   WalletSummaryAsset,
 } from '../api/assets/types';
-import type { AssetLocalData } from '../api/utils/localStorage';
 
 type WalletId = string;
 

@@ -3,7 +3,6 @@ import React from 'react';
 import { defineMessages, IntlProvider } from 'react-intl';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
-import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number, text, date } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';

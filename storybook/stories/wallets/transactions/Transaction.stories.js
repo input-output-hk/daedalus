@@ -139,6 +139,7 @@ storiesOf('Wallets|Transactions', module)
 
     const txAssets = assets.map((txAsset, index) => ({
       ...txAsset,
+      decimals: 0,
       metadata:
         index === 0
           ? hasMetadata && {

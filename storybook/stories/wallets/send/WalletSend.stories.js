@@ -152,6 +152,7 @@ const confirmationAssets = assets.total.map((assetTotal) => {
     assetName: assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
+    decimals: 0,
     metadata: assetData
       ? assetData.metadata
       : {
@@ -185,6 +186,7 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
     assetName: assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
+    decimals: 0,
     metadata: assetData
       ? assetData.metadata
       : {
