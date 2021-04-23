@@ -1,7 +1,8 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import { get, map, find, findLast, filter } from 'lodash';
+import { get, map, find, findLast, filter, includes } from 'lodash';
 import semver from 'semver';
+import { TransactionSigningMode } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
@@ -512,6 +513,9 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - Establish connection:: New Transaction / Address verification initiated - Recognized device found'
           );
+          logger.debug('[HW-DEBUG] HWStore - Set transport device 1', {
+            recognizedPairedHardwareWallet,
+          });
           runInAction('HardwareWalletsStore:: Set transport device', () => {
             this.transportDevice = recognizedPairedHardwareWallet;
           });
@@ -561,6 +565,9 @@ export default class HardwareWalletsStore extends Store {
               isTrezor,
             }
           );
+          logger.debug('[HW-DEBUG] HWStore - Set transport device 2', {
+            lastDeviceTransport,
+          });
           runInAction('HardwareWalletsStore:: Set transport device', () => {
             this.transportDevice = lastDeviceTransport;
           });
@@ -678,6 +685,9 @@ export default class HardwareWalletsStore extends Store {
         }
 
         // All Checks pass - mark device as connected (set transport device for this session)
+        logger.debug('[HW-DEBUG] HWStore - Set transport device 3', {
+          transportDevice,
+        });
         runInAction('HardwareWalletsStore:: set HW device CONNECTED', () => {
           this.transportDevice = transportDevice;
         });
@@ -744,7 +754,6 @@ export default class HardwareWalletsStore extends Store {
     this.hwDeviceStatus = HwDeviceStatuses.LAUNCHING_CARDANO_APP;
     try {
       const cardanoAdaApp = await getCardanoAdaAppChannel.request({ path });
-
       logger.debug(
         '[HW-DEBUG] HWStore - cardanoAdaApp RESPONSE: ',
         cardanoAdaApp
@@ -778,6 +787,26 @@ export default class HardwareWalletsStore extends Store {
       logger.debug('[HW-DEBUG] HWStore - Cardano app fetching error', {
         error,
       });
+      const isDeviceBusy = includes(error.message, 'Ledger Device is busy');
+
+      if (isDeviceBusy) {
+        // Keep isTransactionInitiated active & Set new device listener by initiating transaction
+        // Show message to reconnect proper software wallet device pair
+        this.stopCardanoAdaAppFetchPoller();
+        logger.debug('[HW-DEBUG] Device is busy: ', {
+          walletId,
+          error,
+        });
+        runInAction(
+          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+            this.activeDevicePath = null;
+            this.unfinishedWalletTxSigning = walletId;
+          }
+        );
+      }
+
       if (error.code === 'DEVICE_NOT_CONNECTED') {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
@@ -1301,6 +1330,17 @@ export default class HardwareWalletsStore extends Store {
       }
 
       // Software Wallet not recognized, create new one with default name
+      logger.debug('[HW-DEBUG] HWStore - Initiate HW create / restore', {
+        transportDevice,
+        device: {
+          deviceId,
+          deviceType,
+          deviceModel,
+          deviceName,
+          path: forcedPath || path,
+          firmwareVersion: null,
+        },
+      });
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: deviceName || DEFAULT_HW_NAME,
         extendedPublicKey,
@@ -1313,6 +1353,7 @@ export default class HardwareWalletsStore extends Store {
           firmwareVersion: null,
         },
       });
+      logger.debug('[HW-DEBUG] HWStore - HW created / restored');
 
       // Get all Pending devices with this path and delete
       const recognizedPendingDevice = find(
@@ -1657,7 +1698,7 @@ export default class HardwareWalletsStore extends Store {
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
-    const metadataHashHex = null;
+    const auxiliaryData = null;
     const { isMainnet } = this.environment;
 
     try {
@@ -1675,7 +1716,8 @@ export default class HardwareWalletsStore extends Store {
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
-        metadataHashHex,
+        signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
+        auxiliaryData,
         devicePath,
       });
 
@@ -1803,6 +1845,9 @@ export default class HardwareWalletsStore extends Store {
       logger.debug('[HW-DEBUG] Sign Trezor: ', { id });
       const transportDevice = await this.establishHardwareWalletConnection();
       if (transportDevice) {
+        logger.debug('[HW-DEBUG] HWStore - Set transport device 4', {
+          transportDevice,
+        });
         runInAction(
           'HardwareWalletsStore:: Set transport device fomr tx init',
           () => {

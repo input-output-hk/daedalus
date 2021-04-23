@@ -79,7 +79,7 @@ export default class WalletSummaryCurrency extends Component<Props> {
         decimalDigits
       );
     const currencyWalletAmountSymbol = currencySelected
-      ? currencySelected.symbol.toUpperCase()
+      ? currencySelected.code.toUpperCase()
       : '';
     const fetchedTimeAgo = moment(currencyLastFetched)
       .locale(intl.locale)
@@ -99,7 +99,7 @@ export default class WalletSummaryCurrency extends Component<Props> {
             </div>
             <div className={styles.currencyWalletAmount}>
               {currencyWalletAmount}
-              <span className={styles.currencySymbol}>
+              <span className={styles.currencyCode}>
                 {currencyWalletAmountSymbol}
               </span>
             </div>

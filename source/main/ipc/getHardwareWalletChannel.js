@@ -513,16 +513,16 @@ export const handleHardwareWalletRequests = async (
       }
       logger.info('[HW-DEBUG] GET CARDANO APP');
       deviceConnection = devicesMemo[path].AdaConnection;
-      const appVersion = await deviceConnection.getVersion();
+      const { version } = await deviceConnection.getVersion();
       logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion');
-      const deviceSerial = await deviceConnection.getSerial();
+      const { serial } = await deviceConnection.getSerial();
       logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial');
-      const { minor, major, patch } = appVersion;
+      const { minor, major, patch } = version;
       return Promise.resolve({
         minor,
         major,
         patch,
-        deviceId: deviceSerial.serial,
+        deviceId: serial,
       });
     } catch (error) {
       const errorCode = error.code || '';
@@ -647,9 +647,10 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Ledger device not connected');
       }
-      const extendedPublicKey = await deviceConnection.getExtendedPublicKey(
-        utils.str_to_path(path)
-      );
+
+      const extendedPublicKey = await deviceConnection.getExtendedPublicKey({
+        path: utils.str_to_path(path),
+      });
       const deviceSerial = await deviceConnection.getSerial();
       return Promise.resolve({
         publicKeyHex: extendedPublicKey.publicKeyHex,
@@ -672,9 +673,10 @@ export const handleHardwareWalletRequests = async (
       networkId,
       certificates,
       withdrawals,
-      metadataHashHex,
+      auxiliaryData,
       devicePath,
       // validityIntervalStartStr,
+      signingMode,
     } = params;
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
     deviceConnection = devicePath
@@ -685,19 +687,23 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Device not connected!');
       }
-
-      const signedTransaction = await deviceConnection.signTransaction(
-        networkId,
-        protocolMagic,
-        inputs,
-        outputs,
-        fee,
-        ttl,
-        certificates,
-        withdrawals,
-        metadataHashHex
-        // validityIntervalStartStr
-      );
+      const signedTransaction = await deviceConnection.signTransaction({
+        signingMode,
+        tx: {
+          network: {
+            networkId,
+            protocolMagic,
+          },
+          inputs,
+          outputs,
+          fee,
+          ttl,
+          certificates,
+          withdrawals,
+          auxiliaryData,
+          // validityIntervalStart,
+        },
+      });
       return Promise.resolve(signedTransaction);
     } catch (e) {
       throw e;

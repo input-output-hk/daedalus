@@ -173,7 +173,7 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
-    "@cardano-foundation/ledgerjs-hw-app-cardano": "2.2.0",
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "3.0.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
@@ -233,7 +233,7 @@
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
     "react-markdown": "4.3.1",
-    "react-polymorph": "0.9.8-rc.11",
+    "react-polymorph": "0.9.8-rc.21",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
     "react-svg-inline": "2.1.1",
@@ -250,7 +250,7 @@
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
     "tcp-port-used": "1.0.1",
-    "trezor-connect": "8.1.25-extended",
+    "trezor-connect": "8.1.26-extended",
     "unorm": "1.6.0",
     "validator": "13.1.17"
   },

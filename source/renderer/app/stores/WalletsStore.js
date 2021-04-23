@@ -31,14 +31,19 @@ import {
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
 import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
-import { CURRENCY_REQUEST_RATE_INTERVAL } from '../config/currencyConfig';
+import {
+  CURRENCY_REQUEST_RATE_INTERVAL,
+  getLocalizedCurrency,
+  getLocalizedCurrenciesList,
+  getCurrencyFromCode,
+} from '../config/currencyConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
-import type { Currency } from '../types/currencyTypes.js';
+import type { Currency, LocalizedCurrency } from '../types/currencyTypes.js';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -150,7 +155,6 @@ export default class WalletsStore extends Store {
   @observable currencyIsFetchingRate: boolean = false;
   @observable currencyIsAvailable: boolean = false;
   @observable currencyIsActive: boolean = false;
-
   @observable currencyList: Array<Currency> = [];
   @observable currencySelected: ?Currency = null;
   @observable currencyRate: ?number = null;
@@ -347,7 +351,8 @@ export default class WalletsStore extends Store {
 
     // Check if the user has already selected a currency
     // Otherwise applies the default currency
-    const currencySelected = await this.api.localStorage.getCurrencySelected();
+    const localCurrencyCode = await this.api.localStorage.getCurrencySelected();
+    const currencySelected = getCurrencyFromCode(localCurrencyCode);
 
     runInAction(() => {
       this.currencyIsActive = currencyIsActive;
@@ -375,12 +380,12 @@ export default class WalletsStore extends Store {
   };
 
   @action getCurrencyRate = async () => {
-    const { currencySelected } = this;
-    if (currencySelected && currencySelected.symbol) {
+    const { localizedCurrency } = this;
+    if (localizedCurrency && localizedCurrency.code) {
       try {
         this.currencyIsFetchingRate = true;
         const currencyRate = await this.api.ada.getCurrencyRate(
-          currencySelected
+          localizedCurrency
         );
         runInAction(() => {
           this.currencyIsFetchingRate = false;
@@ -403,18 +408,18 @@ export default class WalletsStore extends Store {
   };
 
   @action _setCurrencySelected = async ({
-    currencySymbol,
+    currencyCode,
   }: {
-    currencySymbol: string,
+    currencyCode: string,
   }) => {
     const { currencyList } = this;
     const currencySelected = currencyList.find(
-      ({ symbol }) => currencySymbol === symbol
+      ({ code }) => currencyCode === code
     );
     if (currencySelected) {
       this.currencySelected = currencySelected;
       this.getCurrencyRate();
-      await this.api.localStorage.setCurrencySelected(currencySelected);
+      await this.api.localStorage.setCurrencySelected(currencySelected.code);
     }
   };
 
@@ -583,7 +588,18 @@ export default class WalletsStore extends Store {
     const { deviceId, deviceType, deviceModel, deviceName, path } = device;
     const accountPublicKey =
       extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
+
+    logger.debug('[HW-DEBUG] HWStore - Execute HW create / restore', {
+      deviceId,
+      deviceType,
+      deviceModel,
+      deviceName,
+      path,
+      walletName,
+    });
+
     try {
+      await this._pausePolling();
       const wallet = await this.createHardwareWalletRequest.execute({
         walletName,
         accountPublicKey,
@@ -617,6 +633,8 @@ export default class WalletsStore extends Store {
       }
     } catch (error) {
       throw error;
+    } finally {
+      this._resumePolling();
     }
   };
 
@@ -996,6 +1014,19 @@ export default class WalletsStore extends Store {
       default:
         return this.restoreDaedalusRequest;
     }
+  }
+
+  @computed get localizedCurrencyList(): Array<LocalizedCurrency> {
+    const { currencyList, stores } = this;
+    const { currentLocale } = stores.profile;
+    return getLocalizedCurrenciesList(currencyList, currentLocale);
+  }
+
+  @computed get localizedCurrency(): ?LocalizedCurrency {
+    const { currencySelected, stores } = this;
+    const { currentLocale } = stores.profile;
+    if (!currencySelected) return null;
+    return getLocalizedCurrency(currencySelected, currentLocale);
   }
 
   getWalletById = (id: string): ?Wallet => this.all.find((w) => w.id === id);
