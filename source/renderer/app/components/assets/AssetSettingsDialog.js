@@ -39,10 +39,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Formated balance',
     description: '"unformattedBalanceLabel" for the Asset settings dialog',
   },
-  decimalPrecisionLabel: {
-    id: 'assets.settings.dialog.decimalPrecision.label',
+  decimalsLabel: {
+    id: 'assets.settings.dialog.decimals.label',
     defaultMessage: '!!!Decimal Precision',
-    description: '"decimalPrecisionLabel" for the Asset settings dialog',
+    description: '"decimalsLabel" for the Asset settings dialog',
   },
   recommended: {
     id: 'assets.settings.dialog.recommended',
@@ -55,11 +55,11 @@ type Props = {
   asset: WalletSummaryAsset,
   onSubmit: Function,
   onCancel: Function,
-  recommendedDecimalPrecision?: number,
+  recommendedDecimals?: number,
 };
 
 type State = {
-  decimalPrecision: number,
+  decimals: number,
 };
 
 @observer
@@ -70,24 +70,24 @@ export default class AssetSettingsDialog extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    const { asset, recommendedDecimalPrecision } = this.props;
-    const decimalPrecision =
+    const { asset, recommendedDecimals } = this.props;
+    const decimals =
       typeof asset.decimals === 'number'
         ? asset.decimals
-        : recommendedDecimalPrecision || DEFAULT_DECIMAL_PRECISION;
+        : recommendedDecimals || DEFAULT_DECIMAL_PRECISION;
     this.state = {
-      decimalPrecision,
+      decimals,
     };
   }
 
-  onSetDecimalPrecision = (decimalPrecision: number) => {
-    this.setState({ decimalPrecision });
+  onSetDecimalPrecision = (decimals: number) => {
+    this.setState({ decimals });
   };
 
   optionRenderer = ({ value }: { value: number }) => {
     const { intl } = this.context;
-    const { recommendedDecimalPrecision } = this.props;
-    if (recommendedDecimalPrecision && recommendedDecimalPrecision === value) {
+    const { recommendedDecimals } = this.props;
+    if (recommendedDecimals && recommendedDecimals === value) {
       return (
         <div>
           {value}{' '}
@@ -120,7 +120,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { onCancel, onSubmit, asset } = this.props;
-    const { decimalPrecision } = this.state;
+    const { decimals } = this.state;
     const title = this.renderTitle();
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
       value,
@@ -133,7 +133,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       {
         label: intl.formatMessage(globalMessages.save),
         primary: true,
-        onClick: () => onSubmit(asset, decimalPrecision),
+        onClick: () => onSubmit(asset, decimals),
       },
     ];
     return (
@@ -158,14 +158,14 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             {formattedTokenWalletAmount(
               asset.quantity,
               asset.metadata,
-              decimalPrecision
+              decimals
             )}
           </p>
           <Select
             options={options}
-            value={decimalPrecision}
-            className={styles.decimalPrecisionDropdown}
-            label={intl.formatMessage(messages.decimalPrecisionLabel)}
+            value={decimals}
+            className={styles.decimalsDropdown}
+            label={intl.formatMessage(messages.decimalsLabel)}
             onChange={this.onSetDecimalPrecision}
             optionRenderer={this.optionRenderer}
             selectionRenderer={this.selectionRenderer}
