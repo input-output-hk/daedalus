@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented manually configurable decimal places for native tokens ([PR 2533](https://github.com/input-output-hk/daedalus/pull/2533))
+- Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
 
 ### Fixes
 
@@ -15,6 +16,7 @@ Changelog
 
 ### Chores
 
+- Updated `trezor-connect` dependency to version `8.1.26` ([PR 2534](https://github.com/input-output-hk/daedalus/pull/2534))
 - Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `3.0.0` ([PR 2530](https://github.com/input-output-hk/daedalus/pull/2530))
 
 ## 4.0.5
@@ -105,9 +107,6 @@ Changelog
 ### Features
 
 - Added native token support [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
-
-### Features
-
 - Enabled rewards withdrawals on hardware wallets ([PR 2408](https://github.com/input-output-hk/daedalus/pull/2408))
 
 ### Fixes
