@@ -13,6 +13,7 @@ const asset = {
   fingerprint: 'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8',
   quantity: new BigNumber(number('quantity', 1)),
   decimals: 0,
+  recommendedDecimals: null,
   metadata: null,
 };
 
@@ -33,7 +34,10 @@ storiesOf('Assets|AssetSettingsDialog', module)
 
   .add('With recommended decimal precision', () => (
     <AssetSettingsDialog
-      asset={asset}
+      asset={{
+        ...asset,
+        recommendedDecimals: number('recommendedDecimals', 2),
+      }}
       assetAmount={new BigNumber(number('assetAmount', 500))}
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}
