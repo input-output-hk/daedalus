@@ -78,7 +78,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const { intl } = this.context;
     const { stores, actions } = this.props;
     const { app, wallets, addresses, transactions, profile, assets } = stores;
-    const { getAssetDetails } = assets;
+    const { getAssetDetails, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
     const { onAssetSettingsOpen } = actions.assets;
     const {
@@ -198,6 +198,7 @@ export default class WalletSummaryPage extends Component<Props> {
           currencySelected={currencySelected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={walletAssets}
+          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           onOpenAssetSend={this.handleOpenAssetSend}
           onCopyAssetItem={this.handleOnCopyAssetItem}
           onAssetSettings={onAssetSettingsOpen.trigger}

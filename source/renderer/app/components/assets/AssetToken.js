@@ -56,7 +56,8 @@ const messages = defineMessages({
   },
   settingsPopOver: {
     id: 'assets.assetToken.settingsPopOver',
-    defaultMessage: '!!!Asset settings',
+    defaultMessage:
+      '!!!You can configure the number of decimal places for this native token.',
     description: 'Asset settings pop over content',
   },
   settingsRecommendedPopOver: {
@@ -73,6 +74,8 @@ type Props = {
   hidePopOver?: boolean,
   onCopyAssetItem?: Function,
   onClickSettings?: Function,
+  assetSettingsDialogWasOpened?: ?boolean,
+  anyAssetWasHovered?: ?boolean,
   className?: string,
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
@@ -80,8 +83,9 @@ type Props = {
 };
 
 type State = {
-  isPopOverVisible: boolean,
+  isPillPopOverVisible: boolean,
   itemCopied: ?string,
+  isHoveringSettingsIcon: boolean,
 };
 
 @observer
@@ -94,8 +98,9 @@ export default class AssetToken extends Component<Props, State> {
   displayDelayTimeout: TimeoutID;
 
   state = {
-    isPopOverVisible: false,
+    isPillPopOverVisible: false,
     itemCopied: null,
+    isHoveringSettingsIcon: false,
   };
 
   // We need to track the mounted state in order to avoid calling
@@ -111,27 +116,54 @@ export default class AssetToken extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  handleShowPopOver = () => {
+  handleShowPillPopOver = () => {
     clearTimeout(this.displayDelayTimeout);
     this.displayDelayTimeout = setTimeout(() => {
       if (this._isMounted) {
         this.setState({
-          isPopOverVisible: true,
+          isPillPopOverVisible: true,
         });
       }
     }, ASSET_TOKEN_DISPLAY_DELAY);
   };
 
-  handleHidePopOver = () => {
+  handleHidePillPopOver = () => {
     clearTimeout(this.displayDelayTimeout);
     this.displayDelayTimeout = setTimeout(() => {
       if (this._isMounted) {
         this.setState({
-          isPopOverVisible: false,
+          isPillPopOverVisible: false,
         });
       }
     }, ASSET_TOKEN_DISPLAY_DELAY);
   };
+
+  handleSettingsMouseEnter = () => {
+    this.setState({
+      isHoveringSettingsIcon: true,
+    });
+  };
+
+  handleSettingsMouseLeave = () => {
+    this.setState({
+      isHoveringSettingsIcon: false,
+    });
+  };
+
+  get isSettingsPopOverVisible() {
+    const { assetSettingsDialogWasOpened, anyAssetWasHovered } = this.props;
+    const { isHoveringSettingsIcon } = this.state;
+    if (isHoveringSettingsIcon) {
+      return true;
+    }
+    if (
+      assetSettingsDialogWasOpened === false &&
+      anyAssetWasHovered === false
+    ) {
+      return true;
+    }
+    return false;
+  }
 
   handleCopyItem = (itemCopied: string, assetItem: string, value: string) => {
     const { onCopyAssetItem } = this.props;
@@ -149,7 +181,7 @@ export default class AssetToken extends Component<Props, State> {
     }, ASSET_TOKEN_ID_COPY_FEEDBACK);
   };
 
-  renderPill() {
+  renderPillContent() {
     const { asset, metadataNameChars, small } = this.props;
     const { fingerprint, metadata } = asset;
     const { name } = metadata || {};
@@ -198,7 +230,7 @@ export default class AssetToken extends Component<Props, State> {
     );
   };
 
-  renderPopOverContent() {
+  renderPillPopOverContent() {
     const { intl } = this.context;
     const { asset } = this.props;
     const { fingerprint, policyId, assetName, metadata } = asset;
@@ -273,15 +305,15 @@ export default class AssetToken extends Component<Props, State> {
     );
   }
 
-  renderPopOverContainer = () => {
-    const pillContent = this.renderPill();
-    const popOverContent = this.renderPopOverContent();
-    const { isPopOverVisible } = this.state;
+  renderPillPopOverContainer = () => {
+    const pillContent = this.renderPillContent();
+    const popOverContent = this.renderPillPopOverContent();
+    const { isPillPopOverVisible } = this.state;
     return (
       <div
         className={styles.popOverContainer}
-        onMouseEnter={this.handleShowPopOver}
-        onMouseLeave={this.handleHidePopOver}
+        onMouseEnter={this.handleShowPillPopOver}
+        onMouseLeave={this.handleHidePillPopOver}
       >
         <PopOver
           themeVariables={{
@@ -297,7 +329,7 @@ export default class AssetToken extends Component<Props, State> {
           }}
           contentClassName={styles.popOver}
           content={popOverContent}
-          visible={isPopOverVisible}
+          visible={isPillPopOverVisible}
           appendTo="parent"
           maxWidth={376}
           allowHTML
@@ -309,43 +341,59 @@ export default class AssetToken extends Component<Props, State> {
     );
   };
 
-  render() {
+  renderSettingsContent = () => {
     const { intl } = this.context;
-    const { hidePopOver, onClickSettings, asset, className } = this.props;
+    const { asset, onClickSettings } = this.props;
+    if (!onClickSettings) return null;
+    const {
+      isSettingsPopOverVisible,
+      handleSettingsMouseEnter,
+      handleSettingsMouseLeave,
+    } = this;
+    const onClickSettingsBind = () => onClickSettings && onClickSettings(asset);
     const { decimals, recommendedDecimals } = asset;
     const hasRecommendedWarning =
       typeof recommendedDecimals === 'number' &&
       decimals !== recommendedDecimals;
+
+    return (
+      <button className={styles.settingsButton} onClick={onClickSettingsBind}>
+        <PopOver
+          className={styles.test}
+          content={intl.formatMessage(messages.settingsPopOver)}
+          visible={isSettingsPopOverVisible}
+        >
+          <SVGInline
+            onMouseEnter={handleSettingsMouseEnter}
+            onMouseLeave={handleSettingsMouseLeave}
+            className={styles.settingsIcon}
+            svg={settingsIcon}
+          />
+        </PopOver>
+        {hasRecommendedWarning && (
+          <PopOver
+            content={intl.formatMessage(messages.settingsRecommendedPopOver)}
+          >
+            <SVGInline className={styles.warningIcon} svg={warningIcon} />
+          </PopOver>
+        )}
+      </button>
+    );
+  };
+
+  render() {
+    const { hidePopOver, className } = this.props;
+
     const content = hidePopOver
-      ? this.renderPill()
-      : this.renderPopOverContainer();
-    const onClickSettingsBind = () => onClickSettings && onClickSettings(asset);
+      ? this.renderPillContent()
+      : this.renderPillPopOverContainer();
+    const settingsContent = this.renderSettingsContent();
+
     const componenClassnames = classnames([styles.component, className]);
     return (
       <div className={componenClassnames}>
         {content}
-        {onClickSettings && (
-          <button
-            className={styles.settingsButton}
-            onClick={onClickSettingsBind}
-          >
-            <PopOver
-              className={styles.test}
-              content={intl.formatMessage(messages.settingsPopOver)}
-            >
-              <SVGInline className={styles.settingsIcon} svg={settingsIcon} />
-            </PopOver>
-            {hasRecommendedWarning && (
-              <PopOver
-                content={intl.formatMessage(
-                  messages.settingsRecommendedPopOver
-                )}
-              >
-                <SVGInline className={styles.warningIcon} svg={warningIcon} />
-              </PopOver>
-            )}
-          </button>
-        )}
+        {settingsContent}
       </div>
     );
   }

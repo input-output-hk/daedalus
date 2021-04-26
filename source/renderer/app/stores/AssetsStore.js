@@ -4,6 +4,7 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
+import { requestGetter } from '../utils/storesUtils';
 import type {
   GetAssetsResponse,
   WalletSummaryAsset,
@@ -19,6 +20,12 @@ export default class AssetsStore extends Store {
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
   } = {};
+
+  // REQUESTS
+  @observable
+  getAssetSettingsDialogWasOpenedRequest: Request<void> = new Request(
+    this.api.localStorage.getAssetSettingsDialogWasOpened
+  );
 
   setup() {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
@@ -57,10 +64,16 @@ export default class AssetsStore extends Store {
   getAssetDetails = (policyId: string, assetName: string): ?Asset =>
     this.details[policyId + assetName];
 
+  @computed get assetSettingsDialogWasOpened(): Boolean {
+    return requestGetter(this.getAssetSettingsDialogWasOpenedRequest, false);
+  }
+
   // =================== PRIVATE ==================
 
   @action _onAssetSettingsOpen = ({ asset }: { asset: WalletSummaryAsset }) => {
     this.editingsAsset = asset;
+    this.api.localStorage.setAssetSettingsDialogWasOpened();
+    this.getAssetSettingsDialogWasOpenedRequest.execute();
   };
 
   @action _onAssetSettingsSubmit = async ({

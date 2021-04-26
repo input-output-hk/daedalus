@@ -329,7 +329,8 @@ export default class LocalStorageApi {
   getAssetsLocalData = (): Promise<AssetLocalData> =>
     LocalStorageApi.get(keys.ASSET_DATA, []);
 
-  unsetAssets = (): Promise<void> => LocalStorageApi.unset(keys.ASSET_DATA);
+  unsetAssetsLocalData = (): Promise<void> =>
+    LocalStorageApi.unset(keys.ASSET_DATA);
 
   getAssetLocalData = (fingerprint: string): Promise<AssetLocalData> =>
     LocalStorageApi.get(keys.ASSET_DATA, {}, fingerprint);
@@ -339,6 +340,15 @@ export default class LocalStorageApi {
     assetLocalData: AssetLocalData
   ): Promise<void> =>
     LocalStorageApi.set(keys.ASSET_DATA, assetLocalData, fingerprint);
+
+  getAssetSettingsDialogWasOpened = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, false);
+
+  setAssetSettingsDialogWasOpened = (): Promise<void> =>
+    LocalStorageApi.set(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, true);
+
+  unsetAssetSettingsDialogWasOpened = (): Promise<void> =>
+    LocalStorageApi.unset(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED);
 
   getSmashServer = (): Promise<string> =>
     LocalStorageApi.get(keys.SMASH_SERVER);

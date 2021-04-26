@@ -27,6 +27,7 @@ type Props = {
   onCopyAssetItem: Function,
   onAssetSettings: Function,
   isLoadingAssets: boolean,
+  assetSettingsDialogWasOpened: boolean,
   onExternalLinkClick: Function,
 };
 
@@ -50,6 +51,7 @@ export default class WalletSummary extends Component<Props> {
       onOpenAssetSend,
       onCopyAssetItem,
       onAssetSettings,
+      assetSettingsDialogWasOpened,
       isLoadingAssets,
       onExternalLinkClick,
     } = this.props;
@@ -97,6 +99,7 @@ export default class WalletSummary extends Component<Props> {
                 isLoadingAssets={isLoadingAssets}
                 onCopyAssetItem={onCopyAssetItem}
                 onAssetSettings={onAssetSettings}
+                assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
               />
             ) : (
               <WalletSummaryNoTokens

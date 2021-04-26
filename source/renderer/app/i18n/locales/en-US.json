@@ -42,7 +42,7 @@
   "assets.assetToken.item.name": "Name",
   "assets.assetToken.item.policyId": "Policy Id",
   "assets.assetToken.item.ticker": "Ticker",
-  "assets.assetToken.settingsPopOver": "Asset settings",
+  "assets.assetToken.settingsPopOver": "You can configure the number of decimal places for this native token.",
   "assets.assetToken.settingsRecommendedPopOver": "Recommended configuration for decimal places for this native token is available.",
   "assets.settings.dialog.decimalPrecision.label": "Number of decimal places",
   "assets.settings.dialog.description": "Updates made here will be applied in other wallets containing this token too.",

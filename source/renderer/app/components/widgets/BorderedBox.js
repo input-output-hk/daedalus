@@ -9,17 +9,34 @@ type Props = {
   children?: Node,
   className?: string,
   fullHeight?: boolean,
+  onMouseEnter: ?Function,
+  onMouseLeave: ?Function,
 };
 
 @observer
 export default class BorderedBox extends Component<Props> {
   render() {
-    const { children, className, fullHeight } = this.props;
+    const {
+      children,
+      className,
+      fullHeight,
+      onMouseEnter,
+      onMouseLeave,
+    } = this.props;
     const componentClasses = classnames([
       styles.component,
       fullHeight ? styles.fullHeight : null,
       className,
     ]);
-    return <div className={componentClasses}>{children}</div>;
+
+    return (
+      <div
+        className={componentClasses}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {children}
+      </div>
+    );
   }
 }

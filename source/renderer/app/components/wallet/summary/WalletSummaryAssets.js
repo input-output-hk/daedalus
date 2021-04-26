@@ -43,16 +43,25 @@ type Props = {
   onCopyAssetItem: Function,
   onAssetSettings: Function,
   isLoadingAssets: boolean,
+  assetSettingsDialogWasOpened: boolean,
+};
+
+type State = {
+  anyAssetWasHovered: boolean,
 };
 
 @observer
-export default class WalletSummaryAssets extends Component<Props> {
+export default class WalletSummaryAssets extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    anyAssetWasHovered: false,
+  };
+
   renderAssetAmount = (asset: WalletSummaryAsset) =>
-    asset.decimals !== 0 ? (
+    asset.decimals ? (
       <PopOver
         content={this.context.intl.formatMessage(messages.unformattedAmount, {
           amount: formattedTokenWalletAmount(asset.quantity, asset.metadata, 0),
@@ -68,6 +77,10 @@ export default class WalletSummaryAssets extends Component<Props> {
       formattedTokenWalletAmount(asset.quantity, asset.metadata, asset.decimals)
     );
 
+  handleHoverAsset = () => {
+    this.setState({ anyAssetWasHovered: true });
+  };
+
   render() {
     const {
       wallet,
@@ -75,8 +88,10 @@ export default class WalletSummaryAssets extends Component<Props> {
       onOpenAssetSend,
       onCopyAssetItem,
       onAssetSettings,
+      assetSettingsDialogWasOpened,
       isLoadingAssets,
     } = this.props;
+    const { anyAssetWasHovered } = this.state;
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -96,10 +111,11 @@ export default class WalletSummaryAssets extends Component<Props> {
           </div>
         ) : (
           <div className={styles.component}>
-            {assets.map((asset: WalletSummaryAsset) => (
+            {assets.map((asset: WalletSummaryAsset, index: number) => (
               <BorderedBox
                 className={styles.assetsContainer}
                 key={asset.policyId + asset.assetName + asset.fingerprint}
+                onMouseEnter={this.handleHoverAsset}
               >
                 {asset.fingerprint && (
                   <div className={styles.assetsLeftContainer}>
@@ -108,6 +124,10 @@ export default class WalletSummaryAssets extends Component<Props> {
                       onCopyAssetItem={onCopyAssetItem}
                       metadataNameChars={get('name', asset.metadata, 0)}
                       onClickSettings={() => onAssetSettings({ asset })}
+                      assetSettingsDialogWasOpened={
+                        index === 0 ? assetSettingsDialogWasOpened : null
+                      }
+                      anyAssetWasHovered={anyAssetWasHovered}
                     />
                     <div className={styles.assetAmount}>
                       {isRestoreActive ? '-' : this.renderAssetAmount(asset)}
