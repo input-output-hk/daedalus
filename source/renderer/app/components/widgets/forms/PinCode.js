@@ -66,8 +66,8 @@ export default class PinCode extends Component<Props, State> {
       if (!isNaN(inputValue))  {
         if (isBackSpace && newValue[key] !== '' && inputNewValue === '' && this.focusKey !== key) {
           newValue[key] = value[key];
+          const focusKey = this.inputsRef[key] && this.inputsRef[key].inputElement.current.selectionStart === 0 && (key > 2 && key < this.inputsRef.length) ? key - 1 : key;
           setTimeout(() => {
-            const focusKey = this.inputsRef[key] && this.inputsRef[key].inputElement.current.selectionStart === 0 ? key - 1 : key;
             const inputFieldRef = this.inputsRef[focusKey];
             if (inputFieldRef && inputFieldRef.inputElement) {
               inputFieldRef.focus();
