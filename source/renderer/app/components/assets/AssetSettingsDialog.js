@@ -51,11 +51,10 @@ const messages = defineMessages({
     defaultMessage: '!!!(recommended)',
     description: '"recommended" for the Asset settings dialog',
   },
-  recommendedPopOver: {
-    id: 'assets.settings.dialog.recommended.popOver',
-    defaultMessage:
-      '!!!Recommended configuration for decimal places for this native token is available.',
-    description: '"recommendedPopOver" for the Asset settings dialog',
+  default: {
+    id: 'assets.settings.dialog.default',
+    defaultMessage: '!!!(default)',
+    description: '"default" for the Asset settings dialog',
   },
   warningPopOverAvailable: {
     id: 'assets.warning.available',
@@ -104,15 +103,22 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     const { value } = props;
     const { intl } = this.context;
     const { recommendedDecimals } = this.props.asset;
-    const isRecommended =
-      typeof recommendedDecimals === 'number' && recommendedDecimals === value;
-    if (isRecommended) {
+    let extraLabel;
+    if (
+      typeof recommendedDecimals === 'number' &&
+      recommendedDecimals === value
+    ) {
+      extraLabel = messages.recommended;
+    } else if (
+      typeof recommendedDecimals !== 'number' &&
+      value === DEFAULT_DECIMAL_PRECISION
+    ) {
+      extraLabel = messages.default;
+    }
+    if (extraLabel) {
       return (
         <div>
-          {value}{' '}
-          <i className={styles.recommended}>
-            {intl.formatMessage(messages.recommended)}
-          </i>
+          {value} <i>{intl.formatMessage(extraLabel)}</i>
         </div>
       );
     }
