@@ -164,7 +164,14 @@ export default class WalletsDropdown extends Component<Props> {
             );
             return {
               detail: formattedAmount,
-              label: <AssetToken asset={asset} hidePopOver small />,
+              label: (
+                <AssetToken
+                  asset={asset}
+                  className={styles.assetToken}
+                  hidePopOver
+                  small
+                />
+              ),
               value: fingerprint,
             };
           })
