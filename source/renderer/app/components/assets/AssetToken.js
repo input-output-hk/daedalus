@@ -54,16 +54,22 @@ const messages = defineMessages({
     defaultMessage: '!!!Blank',
     description: '"Blank" item value.',
   },
-  settingsPopOver: {
-    id: 'assets.assetToken.settingsPopOver',
+  settingsCogPopOver: {
+    id: 'assets.assetToken.settings.cogPopOver',
     defaultMessage:
       '!!!You can configure the number of decimal places for this native token.',
     description: 'Asset settings pop over content',
   },
-  settingsRecommendedPopOver: {
-    id: 'assets.assetToken.settingsRecommendedPopOver',
+  settingsWarningPopOverAvailable: {
+    id: 'assets.assetToken.settings.warningPopOver.available',
     defaultMessage:
       '!!!Recommended configuration for decimal places for this native token is available.',
+    description: 'Asset settings recommended pop over content',
+  },
+  settingsWarningPopOverNotUsing: {
+    id: 'assets.assetToken.settings.warningPopOver.notUsing',
+    defaultMessage:
+      '!!!You are not using the recommended decimal place configuration for this native token.',
     description: 'Asset settings recommended pop over content',
   },
 });
@@ -352,15 +358,21 @@ export default class AssetToken extends Component<Props, State> {
     } = this;
     const onClickSettingsBind = () => onClickSettings && onClickSettings(asset);
     const { decimals, recommendedDecimals } = asset;
-    const hasRecommendedWarning =
+    const hasWarning =
       typeof recommendedDecimals === 'number' &&
       decimals !== recommendedDecimals;
-
+    let warningPopOverMessage;
+    if (hasWarning) {
+      warningPopOverMessage =
+        typeof decimals === 'number'
+          ? messages.settingsWarningPopOverNotUsing
+          : messages.settingsWarningPopOverAvailable;
+    }
     return (
       <button className={styles.settingsButton} onClick={onClickSettingsBind}>
         <PopOver
           className={styles.test}
-          content={intl.formatMessage(messages.settingsPopOver)}
+          content={intl.formatMessage(messages.settingsCogPopOver)}
           visible={isSettingsPopOverVisible}
         >
           <SVGInline
@@ -370,10 +382,8 @@ export default class AssetToken extends Component<Props, State> {
             svg={settingsIcon}
           />
         </PopOver>
-        {hasRecommendedWarning && (
-          <PopOver
-            content={intl.formatMessage(messages.settingsRecommendedPopOver)}
-          >
+        {hasWarning && (
+          <PopOver content={intl.formatMessage(warningPopOverMessage)}>
             <SVGInline className={styles.warningIcon} svg={warningIcon} />
           </PopOver>
         )}
