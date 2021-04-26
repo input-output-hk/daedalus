@@ -149,6 +149,7 @@ export const generateAsset = (
     fingerprint,
     metadata,
     decimals: 0,
+    recommendedDecimals: null,
   });
 
 export const generateTransaction = (

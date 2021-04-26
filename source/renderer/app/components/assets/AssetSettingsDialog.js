@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-import { range, get } from 'lodash';
+import { range } from 'lodash';
 import { observer } from 'mobx-react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -57,6 +57,18 @@ const messages = defineMessages({
       '!!!Recommended configuration for decimal places for this native token is available.',
     description: '"recommendedPopOver" for the Asset settings dialog',
   },
+  warningPopOverAvailable: {
+    id: 'assets.warning.available',
+    defaultMessage:
+      '!!!Recommended configuration for decimal places for this native token is available.',
+    description: 'Asset settings recommended pop over content',
+  },
+  warningPopOverNotUsing: {
+    id: 'assets.warning.notUsing',
+    defaultMessage:
+      '!!!You are not using the recommended decimal place configuration for this native token.',
+    description: 'Asset settings recommended pop over content',
+  },
 });
 
 type Props = {
@@ -66,7 +78,7 @@ type Props = {
 };
 
 type State = {
-  decimals: number,
+  decimals: ?number,
 };
 
 @observer
@@ -78,7 +90,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { asset } = this.props;
-    const decimals = get(asset, 'decimals', DEFAULT_DECIMAL_PRECISION);
+    const { decimals } = asset;
     this.state = {
       decimals,
     };
@@ -98,9 +110,9 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       return (
         <div>
           {value}{' '}
-          <em className={styles.recommended}>
+          <i className={styles.recommended}>
             {intl.formatMessage(messages.recommended)}
-          </em>
+          </i>
         </div>
       );
     }
@@ -144,9 +156,17 @@ export default class AssetSettingsDialog extends Component<Props, State> {
         onClick: () => onSubmit(asset, decimals),
       },
     ];
-    const hasRecommendedWarning =
+    const hasWarning =
       typeof recommendedDecimals === 'number' &&
       decimals !== recommendedDecimals;
+    let warningPopOverMessage;
+    if (hasWarning) {
+      warningPopOverMessage =
+        typeof decimals === 'number'
+          ? messages.warningPopOverNotUsing
+          : messages.warningPopOverAvailable;
+    }
+
     return (
       <Dialog
         className={styles.component}
@@ -174,15 +194,13 @@ export default class AssetSettingsDialog extends Component<Props, State> {
           </p>
           <Select
             options={options}
-            value={decimals}
+            value={decimals || DEFAULT_DECIMAL_PRECISION}
             className={styles.decimalsDropdown}
             label={
               <>
                 {intl.formatMessage(messages.decimalPrecisionLabel)}
-                {hasRecommendedWarning && (
-                  <PopOver
-                    content={intl.formatMessage(messages.recommendedPopOver)}
-                  >
+                {hasWarning && (
+                  <PopOver content={intl.formatMessage(warningPopOverMessage)}>
                     <SVGInline
                       className={styles.warningIcon}
                       svg={warningIcon}
@@ -194,10 +212,6 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             onChange={this.onSetDecimalPrecision}
             optionRenderer={this.optionRenderer}
             selectionRenderer={this.selectionRenderer}
-            error={
-              hasRecommendedWarning &&
-              intl.formatMessage(messages.recommendedPopOver)
-            }
           />
         </div>
       </Dialog>

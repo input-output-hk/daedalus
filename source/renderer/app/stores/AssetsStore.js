@@ -64,7 +64,7 @@ export default class AssetsStore extends Store {
   getAssetDetails = (policyId: string, assetName: string): ?Asset =>
     this.details[policyId + assetName];
 
-  @computed get assetSettingsDialogWasOpened(): Boolean {
+  @computed get assetSettingsDialogWasOpened(): boolean {
     return requestGetter(this.getAssetSettingsDialogWasOpenedRequest, false);
   }
 

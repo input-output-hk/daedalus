@@ -211,6 +211,10 @@ storiesOf('Wallets|Summary', module)
         onCopyAssetItem={action('onCopyAsset')}
         onAssetSettings={action('onAssetSettings')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
+        assetSettingsDialogWasOpened={boolean(
+          'assetSettingsDialogWasOpened',
+          false
+        )}
         onExternalLinkClick={action('onExternalLinkClick')}
       />
     );

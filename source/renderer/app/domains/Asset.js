@@ -8,7 +8,8 @@ export type AssetProps = {
   assetName: string,
   fingerprint: string,
   metadata?: ?AssetMetadata,
-  decimals: number,
+  decimals: ?number,
+  recommendedDecimals: ?number,
 };
 
 export default class Asset {

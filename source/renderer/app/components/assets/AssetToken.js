@@ -61,13 +61,13 @@ const messages = defineMessages({
     description: 'Asset settings pop over content',
   },
   settingsWarningPopOverAvailable: {
-    id: 'assets.assetToken.settings.warningPopOver.available',
+    id: 'assets.warning.available',
     defaultMessage:
       '!!!Recommended configuration for decimal places for this native token is available.',
     description: 'Asset settings recommended pop over content',
   },
   settingsWarningPopOverNotUsing: {
-    id: 'assets.assetToken.settings.warningPopOver.notUsing',
+    id: 'assets.warning.notUsing',
     defaultMessage:
       '!!!You are not using the recommended decimal place configuration for this native token.',
     description: 'Asset settings recommended pop over content',

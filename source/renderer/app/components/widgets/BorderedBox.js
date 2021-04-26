@@ -9,8 +9,8 @@ type Props = {
   children?: Node,
   className?: string,
   fullHeight?: boolean,
-  onMouseEnter: ?Function,
-  onMouseLeave: ?Function,
+  onMouseEnter?: Function,
+  onMouseLeave?: Function,
 };
 
 @observer
