@@ -5,10 +5,6 @@ import type {
   WalletTransactionAsset,
 } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
-import {
-  DEFAULT_DECIMAL_PRECISION,
-  ASSETS_WITH_PREDEFINED_DECIMALS,
-} from '../config/assetsConfig';
 import type { TransactionType } from '../api/transactions/types';
 
 /**
@@ -44,7 +40,7 @@ export const getTransactionAsset = (
   getAssetDetails: Function
 ): WalletTransactionAsset => {
   const { policyId, assetName, quantity, address } = asset;
-  const { fingerprint, metadata, decimals } =
+  const { fingerprint, metadata, decimals, recommendedDecimals } =
     getAssetDetails(policyId, assetName) || {};
   const txAsset = {
     policyId,
@@ -54,6 +50,7 @@ export const getTransactionAsset = (
     fingerprint,
     metadata,
     decimals,
+    recommendedDecimals,
   };
   return txAsset;
 };

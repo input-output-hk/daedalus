@@ -28,6 +28,7 @@ storiesOf('Assets|AssetToken', module)
           ),
           quantity: new BigNumber(number('quantity', 1)),
           decimals: 0,
+          recommendedDecimals: null,
           metadata: {
             name: text('name'),
             ticker: text('ticker'),

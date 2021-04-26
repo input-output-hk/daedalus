@@ -7,7 +7,6 @@ import { omit } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
 import AssetToken from '../../assets/AssetToken';
-
 import {
   formattedTokenWalletAmount,
   formattedWalletAmount,

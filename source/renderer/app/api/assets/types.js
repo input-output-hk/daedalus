@@ -59,7 +59,7 @@ export type WalletSummaryAsset = {
   fingerprint: string,
   quantity: BigNumber,
   metadata: ?AssetMetadata,
-  decimals: number,
+  decimals: ?number,
   recommendedDecimals: ?number,
 };
 
@@ -70,7 +70,8 @@ export type WalletTransactionAsset = {
   fingerprint: string,
   metadata: ?AssetMetadata,
   address?: ?string,
-  decimals: number,
+  decimals: ?number,
+  recommendedDecimals: ?number,
 };
 
 export type GetUnknownAssetRequest = {

@@ -16,7 +16,7 @@ export default class Asset {
   @observable assetName: string = '';
   @observable fingerprint: string = '';
   @observable metadata: ?AssetMetadata;
-  @observable decimals: number;
+  @observable decimals: ?number;
   @observable recommendedDecimals: ?number;
 
   constructor(data: AssetProps) {

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-import { range } from 'lodash';
+import { range, get } from 'lodash';
 import { observer } from 'mobx-react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -78,7 +78,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { asset } = this.props;
-    const { decimals = DEFAULT_DECIMAL_PRECISION } = asset;
+    const decimals = get(asset, 'decimals', DEFAULT_DECIMAL_PRECISION);
     this.state = {
       decimals,
     };

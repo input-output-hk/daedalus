@@ -116,10 +116,7 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
 import { currencyConfig } from '../config/currencyConfig';
-import {
-  ASSETS_WITH_PREDEFINED_DECIMALS,
-  DEFAULT_DECIMAL_PRECISION,
-} from '../config/assetsConfig';
+import { ASSETS_WITH_PREDEFINED_DECIMALS } from '../config/assetsConfig';
 
 // Addresses Types
 import type {
@@ -2852,7 +2849,7 @@ const _createAssetFromServerData = action(
       fingerprint,
       metadata,
     } = data;
-    const { decimals = DEFAULT_DECIMAL_PRECISION } = localData;
+    const { decimals } = localData;
     const recommendedDecimals = ASSETS_WITH_PREDEFINED_DECIMALS[fingerprint];
     return new Asset({
       policyId,

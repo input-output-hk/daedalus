@@ -137,6 +137,7 @@ const walletAssets = assets.total.map((assetTotal) => {
     fingerprint,
     quantity: assetTotal.quantity,
     decimals: 0,
+    recommendedDecimals: null,
     metadata: assetData
       ? assetData.metadata
       : {
