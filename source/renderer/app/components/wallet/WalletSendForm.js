@@ -132,7 +132,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (selectedAsset) {
       setTimeout(() => {
         if (this._isMounted) {
-          this.addAssetRow(selectedAsset.fingerprint);
+          this.addAssetRow(selectedAsset.fingerprint, true);
         }
       });
     }
@@ -549,8 +549,8 @@ export default class WalletSendForm extends Component<Props, State> {
     });
   };
 
-  addAssetRow = (fingerprint: string) => {
-    this.addAssetFields(fingerprint);
+  addAssetRow = (fingerprint: string, preventFocus?: boolean) => {
+    this.addAssetFields(fingerprint, preventFocus);
     this.updateFormFields(false, fingerprint);
     const { selectedAssetFingerprints } = this.state;
     selectedAssetFingerprints.push(fingerprint);
@@ -585,7 +585,7 @@ export default class WalletSendForm extends Component<Props, State> {
     });
   };
 
-  addAssetFields = (fingerprint: string) => {
+  addAssetFields = (fingerprint: string, preventFocus?: boolean) => {
     const newAsset = `asset_${fingerprint}`;
     this.form.add({ name: newAsset, value: null, key: newAsset });
     this.form
@@ -635,7 +635,7 @@ export default class WalletSendForm extends Component<Props, State> {
         ];
       },
     ]);
-    if (!this.isAddressFromSameWallet()) {
+    if (!preventFocus) {
       this.form.$(newAsset).focus();
     }
 
