@@ -4,6 +4,7 @@ import { findKey } from 'lodash';
 import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { withState } from '@dump247/storybook-state';
 import SettingsWrapper from '../utils/SettingsWrapper';
 import {
   DATE_ENGLISH_OPTIONS,
@@ -54,22 +55,32 @@ storiesOf('Settings|General', module)
       currentTimeFormat={TIME_OPTIONS[0].value}
     />
   ))
-  .add('Wallets', ({ locale }: { locale: Locale }) => (
-    <WalletsSettings
-      currencySelected={{
-        id: 'uniswap-state-dollar',
-        code: 'usd',
-        name: 'unified Stable Dollar',
-      }}
-      currencyRate={0.321}
-      currencyList={getLocalizedCurrenciesList(currenciesList, locale)}
-      currencyIsActive
-      onSelectCurrency={action('onSelectCurrency')}
-      onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
-      onOpenExternalLink={action('onOpenExternalLink')}
-      hasSearch={boolean('hasSearch', true)}
-    />
-  ))
+  .add(
+    'Wallets',
+    withState(
+      {
+        currencySelected: {
+          id: 'uniswap-state-dollar',
+          code: 'usd',
+          name: 'unified Stable Dollar',
+        },
+      },
+      (store) => (
+        <WalletsSettings
+          currencySelected={store.state.currencySelected}
+          currencyRate={0.321}
+          currencyList={getLocalizedCurrenciesList(currenciesList, 'en-US')}
+          currencyIsActive
+          onSelectCurrency={(code) =>
+            store.set({ currencySelected: currenciesList[code] })
+          }
+          onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
+          onOpenExternalLink={action('onOpenExternalLink')}
+          hasSearch={boolean('hasSearch', true)}
+        />
+      )
+    )
+  )
   .add('Stake Pools', () => (
     <StakePoolsSettings
       onSelectSmashServerUrl={action('onSelectSmashServerUrl')}
