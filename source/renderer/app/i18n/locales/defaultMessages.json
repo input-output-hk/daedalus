@@ -619,17 +619,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
-        "description": "\"recommendedPopOver\" for the Asset settings dialog",
+        "defaultMessage": "!!!(default)",
+        "description": "\"default\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
-        "id": "assets.settings.dialog.recommended.popOver",
+        "id": "assets.settings.dialog.default",
         "start": {
-          "column": 22,
+          "column": 11,
           "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.warning.available",
+        "start": {
+          "column": 27,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 26,
+          "line": 65
         }
       }
     ],
@@ -736,16 +764,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Asset settings",
+        "defaultMessage": "!!!You can configure the number of decimal places for this native token.",
         "description": "Asset settings pop over content",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.settingsPopOver",
+        "id": "assets.assetToken.settings.cogPopOver",
         "start": {
-          "column": 19,
+          "column": 22,
           "line": 57
         }
       },
@@ -754,13 +782,27 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.settingsRecommendedPopOver",
+        "id": "assets.warning.available",
         "start": {
-          "column": 30,
-          "line": 62
+          "column": 35,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 34,
+          "line": 69
         }
       }
     ],
