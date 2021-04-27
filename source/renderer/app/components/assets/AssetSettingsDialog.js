@@ -190,7 +190,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             value={decimals || DEFAULT_DECIMAL_PRECISION}
             className={styles.decimalsDropdown}
             label={
-              <>
+              <span className={styles.decimalsDropdownLabel}>
                 {intl.formatMessage(messages.decimalPrecisionLabel)}
                 {hasWarning && (
                   <PopOver content={intl.formatMessage(warningPopOverMessage)}>
@@ -200,7 +200,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
                     />
                   </PopOver>
                 )}
-              </>
+              </span>
             }
             onChange={this.onSetDecimalPrecision}
             optionRenderer={this.optionRenderer}
