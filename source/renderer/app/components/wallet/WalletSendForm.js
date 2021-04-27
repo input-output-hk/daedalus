@@ -132,8 +132,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (selectedAsset) {
       setTimeout(() => {
         if (this._isMounted) {
-          const shouldFocus = !this.isAddressFromSameWallet();
-          this.addAssetRow(selectedAsset.fingerprint, shouldFocus);
+          this.addAssetRow(selectedAsset.fingerprint);
         }
       });
     }
@@ -198,9 +197,6 @@ export default class WalletSendForm extends Component<Props, State> {
     const focusableField = this.focusableFields[fieldName];
     if (focusableField) {
       focusableField.focus();
-    }
-    if (field && field.focus) {
-      field.focus();
     }
   };
 
@@ -341,16 +337,20 @@ export default class WalletSendForm extends Component<Props, State> {
               this.setReceiverValidity(isValid);
               const adaAmountField = form.$('adaAmount');
               const isAdaAmountValid = adaAmountField.isValid;
+              const { selectedAsset } = this.props;
+              const shouldFocus = !this.isAddressFromSameWallet();
+              if (selectedAsset && !shouldFocus) {
+                const newAsset = `asset_${selectedAsset.fingerprint}`;
+                const newAssetField = this.form.$(newAsset);
+                const { name: fieldName } = newAssetField;
+                const focusableField = this.focusableFields[fieldName];
+                if (focusableField && focusableField.inputElement) {
+                  focusableField.inputElement.current.blur();
+                }
+              }
               if (isValid && isAdaAmountValid) {
                 this.calculateTransactionFee();
               } else {
-                const { selectedAsset } = this.props;
-                const shouldFocus = !this.isAddressFromSameWallet();
-                if (selectedAsset && shouldFocus) {
-                  const newAsset = `asset_${selectedAsset.fingerprint}`;
-                  const newAssetField = this.form.$(newAsset);
-                  this.focusField(newAssetField);
-                }
                 this.resetTransactionFee();
               }
               return [
@@ -559,8 +559,8 @@ export default class WalletSendForm extends Component<Props, State> {
     });
   };
 
-  addAssetRow = (fingerprint: string, preventFocus?: boolean) => {
-    this.addAssetFields(fingerprint, preventFocus);
+  addAssetRow = (fingerprint: string) => {
+    this.addAssetFields(fingerprint);
     this.updateFormFields(false, fingerprint);
     const { selectedAssetFingerprints } = this.state;
     selectedAssetFingerprints.push(fingerprint);
@@ -595,7 +595,7 @@ export default class WalletSendForm extends Component<Props, State> {
     });
   };
 
-  addAssetFields = (fingerprint: string, preventFocus?: boolean) => {
+  addAssetFields = (fingerprint: string) => {
     const newAsset = `asset_${fingerprint}`;
     this.form.add({ name: newAsset, value: null, key: newAsset });
     this.form
@@ -645,10 +645,7 @@ export default class WalletSendForm extends Component<Props, State> {
         ];
       },
     ]);
-    if (!preventFocus) {
-      const newAssetField = this.form.$(newAsset);
-      this.focusField(newAssetField);
-    }
+    this.form.$(newAsset).focus();
 
     const assetsDropdown = `assetsDropdown_${fingerprint}`;
     this.form.add({
@@ -884,7 +881,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
                 onClick={() => {
-                  this.addAssetRow(this.availableAssets[0].fingerprint, false);
+                  this.addAssetRow(this.availableAssets[0].fingerprint);
                 }}
               />
             </div>
