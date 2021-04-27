@@ -132,7 +132,8 @@ export default class WalletSendForm extends Component<Props, State> {
     if (selectedAsset) {
       setTimeout(() => {
         if (this._isMounted) {
-          this.addAssetRow(selectedAsset.fingerprint, true);
+          const shouldFocus = !this.isAddressFromSameWallet();
+          this.addAssetRow(selectedAsset.fingerprint, shouldFocus);
         }
       });
     }
@@ -340,6 +341,11 @@ export default class WalletSendForm extends Component<Props, State> {
               if (isValid && isAdaAmountValid) {
                 this.calculateTransactionFee();
               } else {
+                const { selectedAsset } = this.props;
+                const shouldFocus = !this.isAddressFromSameWallet();
+                if (selectedAsset && shouldFocus) {
+                  this.focusAssetField(selectedAsset.fingerprint);
+                }
                 this.resetTransactionFee();
               }
               return [
@@ -522,6 +528,12 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
+  focusAssetField = (fingerprint: string) => {
+    const newAsset = `asset_${fingerprint}`;
+    const newAssetField = this.form.$(newAsset);
+    if (newAssetField) newAssetField.focus();
+  };
+
   resetTransactionFee() {
     if (this._isMounted) {
       this._isCalculatingTransactionFee = false;
@@ -689,6 +701,7 @@ export default class WalletSendForm extends Component<Props, State> {
       currencyMaxFractionalDigits,
       walletAmount,
       isAddressFromSameWallet,
+      selectedAsset,
     } = this.props;
 
     const {
@@ -819,7 +832,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
-                  autoFocus={!this.isAddressFromSameWallet()}
+                  autoFocus={!this.isAddressFromSameWallet() && !selectedAsset}
                 />
                 <div className={styles.minAdaRequired}>
                   <span>
@@ -863,6 +876,11 @@ export default class WalletSendForm extends Component<Props, State> {
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
                       onChangeAsset={this.onChangeAsset}
+                      autoFocus={
+                        !this.isAddressFromSameWallet() &&
+                        !!selectedAsset &&
+                        selectedAsset.fingerprint === fingerprint
+                      }
                     />
                   )
                 )}
