@@ -35,11 +35,12 @@ export default class AssetToken extends Component<Props> {
     const { amount, metadata, decimals, isLoading, className } = this.props;
     if (isLoading) return '-';
     const componentStyles = classnames([styles.component, className]);
+    const content = !isLoading
+      ? formattedTokenWalletAmount(amount, metadata, decimals)
+      : '-';
     return (
       <div className={componentStyles}>
-        {isLoading ? (
-          <span>-</span>
-        ) : (
+        {decimals ? (
           <PopOver
             content={
               <FormattedHTMLMessage
@@ -52,8 +53,10 @@ export default class AssetToken extends Component<Props> {
             visible={decimals ? undefined : false}
             className={styles.unformattedAmount}
           >
-            {formattedTokenWalletAmount(amount, metadata, decimals)}
+            {content}
           </PopOver>
+        ) : (
+          content
         )}
       </div>
     );

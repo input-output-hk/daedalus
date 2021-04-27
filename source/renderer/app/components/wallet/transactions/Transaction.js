@@ -24,7 +24,7 @@ import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 import type { WalletTransactionAsset } from '../../../api/assets/types';
 import AssetToken from '../../assets/AssetToken';
-import { formattedTokenWalletAmount } from '../../../utils/formatters';
+import AssetAmount from '../../assets/AssetAmount';
 import { filterAssets } from '../../../utils/assets';
 
 /* eslint-disable consistent-return */
@@ -694,15 +694,12 @@ export default class Transaction extends Component<Props, State> {
                             />
                           </h3>
                           {asset.quantity && (
-                            <div className={styles.amountFeesWrapper}>
-                              <div className={styles.amount}>
-                                {formattedTokenWalletAmount(
-                                  asset.quantity,
-                                  asset.metadata,
-                                  asset.decimals
-                                )}
-                              </div>
-                            </div>
+                            <AssetAmount
+                              amount={asset.quantity}
+                              metadata={asset.metadata}
+                              decimals={asset.decimals}
+                              className={styles.assetAmount}
+                            />
                           )}
                         </div>
                       ))
