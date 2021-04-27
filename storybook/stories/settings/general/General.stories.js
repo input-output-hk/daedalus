@@ -26,7 +26,6 @@ import WalletsSettings from '../../../../source/renderer/app/components/settings
 // Assets and helpers
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
-import type { Locale } from '../../../../source/common/types/locales.types';
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
