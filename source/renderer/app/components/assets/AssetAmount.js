@@ -56,7 +56,7 @@ export default class AssetToken extends Component<Props> {
             {content}
           </PopOver>
         ) : (
-          content
+          <span>{content}</span>
         )}
       </div>
     );
