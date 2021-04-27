@@ -37,7 +37,6 @@ type Props = {
   handleSubmitOnEnter: Function,
   clearAssetFieldValue: Function,
   onChangeAsset: Function,
-  autoFocus?: boolean,
 };
 
 const INPUT_FIELD_PADDING_DELTA = 10;
@@ -92,7 +91,6 @@ export default class AssetInput extends Component<Props> {
       handleSubmitOnEnter,
       clearAssetFieldValue,
       onChangeAsset,
-      autoFocus,
     } = this.props;
     const asset = getAssetByFingerprint(fingerprint);
     if (!asset) {
@@ -166,7 +164,6 @@ export default class AssetInput extends Component<Props> {
           error={assetField.error}
           skin={AmountInputSkin}
           style={inputFieldStyle}
-          autoFocus={autoFocus}
           onKeyPress={(evt: SyntheticKeyboardEvent<EventTarget>) => {
             if (decimals === 0) {
               const { charCode } = evt;
