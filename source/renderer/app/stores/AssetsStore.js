@@ -91,6 +91,7 @@ export default class AssetsStore extends Store {
         decimals,
       });
     }
+    this._refreshAssetsData();
     await this.api.localStorage.setAssetLocalData(fingerprint, {
       decimals,
     });
