@@ -1,17 +1,30 @@
 .options {
   margin-top: -7px;
 
-  ul {
-    border-radius: 4px;
+  &:not(.hasSearch) {
+    ul {
+      border-radius: 4px;
+    }
   }
 
-  :global {
-    [data-bubble-arrow] {
-      display: none !important;
+  &.hasSearch {
+    ul {
+      border-radius: 0 0 4px 4px !important;
+    }
+
+    button {
+      background-color: var(--theme-button-flat-background-color) !important;
+      &:hover {
+        background-color: var(--theme-button-flat-background-color-hover);
+      }
     }
   }
 
   &:not(.hasSearch) .option em {
     background-color: initial !important;
+  }
+
+  [data-bubble-arrow] {
+    display: none !important;
   }
 }

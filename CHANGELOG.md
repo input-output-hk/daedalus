@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Added warning message when pasting an address of the same wallet in the send form ([PR 2506](https://github.com/input-output-hk/daedalus/pull/2506))
+- Implemented select search style variables ([PR 2512](https://github.com/input-output-hk/daedalus/pull/2512))
 - Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
 
 ### Fixes
