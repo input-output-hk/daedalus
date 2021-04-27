@@ -12,7 +12,7 @@ import {
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
-import currencyList from '../_utils/currencies.json';
+import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -175,18 +175,11 @@ storiesOf('Wallets|Summary', module)
       currencyIsActive = false;
     }
 
-    const currencySelected = select(
-      'currencySelected',
-      currencyList.reduce((obj, currency) => {
-        obj[`${currency.id} - ${currency.name}`] = currency;
-        return obj;
-      }, {}),
-      {
-        id: 'uniswap-state-dollar',
-        code: 'usd',
-        name: 'unified Stable Dollar',
-      }
-    );
+    const currencySelected = select('currencySelected', currenciesList, {
+      id: 'uniswap-state-dollar',
+      symbol: 'usd',
+      name: 'unified Stable Dollar',
+    });
 
     return (
       <WalletSummary

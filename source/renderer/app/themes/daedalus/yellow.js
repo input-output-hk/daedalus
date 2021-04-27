@@ -609,6 +609,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-option-text-color': '#2d2d2d',
     '--rp-options-border-color': 'rgba(45, 45, 45, 0.7)',
     '--rp-options-shadow': 'none',
+    '--rp-option-search-highlight-background-color': 'rgba(125, 3, 146, 0.3)',
   },
   rpRadio: {
     '--rp-radio-border': '2px solid #2d2d2d',
