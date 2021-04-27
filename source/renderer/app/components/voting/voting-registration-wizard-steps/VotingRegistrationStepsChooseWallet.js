@@ -130,7 +130,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       (wallet: Wallet) => wallet && wallet.id === selectedWalletId
     );
 
-    const { amount, reward, isLegacy, isHardwareWallet, isRestoring } =
+    const { amount, reward, isLegacy, isRestoring } =
       selectedWallet || {};
 
     let errorMessage;
@@ -138,23 +138,21 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       selectedWallet &&
       !isWalletAcceptable(
         isLegacy,
-        isHardwareWallet,
         isRestoring,
         amount,
         reward
       )
-    ) {
+    ) { // TODO: HW Ledger Enabled, disable Trezor
       // Wallet is a legacy wallet
       if (isLegacy) errorMessage = messages.errorLegacyWallet;
-      // Wallet is a hardware wallet
-      else if (isHardwareWallet) errorMessage = messages.errorHardwareWallet;
       // Wallet is restoring
       else if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.isEqualTo(reward))
+      else if (!amount.isZero() && amount.isEqualTo(reward)) {
         errorMessage = messages.errorMinVotingFundsRewardsOnly;
-      // Wallet balance < min voting registration funds
-      else errorMessage = messages.errorMinVotingFunds;
+      } else {
+        errorMessage = messages.errorMinVotingFunds;
+      }
     }
 
     const error = errorMessage && (

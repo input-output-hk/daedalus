@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added voting registration with Ledger ([PR 2535](https://github.com/input-output-hk/daedalus/pull/2535))
 - Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
 
 ### Fixes

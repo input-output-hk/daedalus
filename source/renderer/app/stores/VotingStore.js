@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -170,6 +171,16 @@ export default class VotingStore extends Store {
     const [address] = await this.stores.addresses.getAddressesByWalletId(
       walletId
     );
+    const selectedWallet = this.stores.wallets.getWalletById(walletId);
+    const isHardwareWallet= get(selectedWallet, 'isHardwareWallet', false);
+
+    if (isHardwareWallet) {
+      // TODO: Init Voting Registration with Ledger
+      return;
+    }
+
+    // TODO: Remove this once HW registration is implemented
+    return;
 
     const { absoluteSlotNumber } = this.stores.networkStatus;
 
