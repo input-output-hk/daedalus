@@ -6,9 +6,16 @@
     margin-bottom: 6px;
   }
 
+  .description {
+    p:first-child {
+      margin-bottom: 10px;
+    }
+  }
+
   p {
     font-family: var(--font-light);
     margin-bottom: 20px;
+    line-height: 1.38;
   }
   i {
     opacity: 0.5;
@@ -21,6 +28,14 @@
     margin-left: 6px;
     svg {
       width: 12px;
+    }
+  }
+  .assetToken {
+    text-align: left;
+  }
+  :global {
+    .Dialog_subtitle {
+      margin: -20px 0 20px;
     }
   }
 }

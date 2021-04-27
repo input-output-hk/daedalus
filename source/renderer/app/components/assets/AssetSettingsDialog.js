@@ -5,7 +5,7 @@ import { range } from 'lodash';
 import { observer } from 'mobx-react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import AssetToken from './AssetToken';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
@@ -32,13 +32,13 @@ const messages = defineMessages({
     description: '"description" for the Asset settings dialog',
   },
   formattedBalanceLabel: {
-    id: 'assets.settings.dialog.formattedBalance.label',
-    defaultMessage: '!!!Unformated balance',
+    id: 'assets.settings.dialog.formattedAmount.label',
+    defaultMessage: '!!!Unformated amount',
     description: '"formattedBalanceLabel" for the Asset settings dialog',
   },
   unformattedBalanceLabel: {
-    id: 'assets.settings.dialog.unformattedBalance.label',
-    defaultMessage: '!!!Formated balance',
+    id: 'assets.settings.dialog.unformattedAmount.label',
+    defaultMessage: '!!!Formated amount',
     description: '"unformattedBalanceLabel" for the Asset settings dialog',
   },
   decimalPrecisionLabel: {
@@ -109,10 +109,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       recommendedDecimals === value
     ) {
       extraLabel = messages.recommended;
-    } else if (
-      typeof recommendedDecimals !== 'number' &&
-      value === DEFAULT_DECIMAL_PRECISION
-    ) {
+    } else if (value === DEFAULT_DECIMAL_PRECISION) {
       extraLabel = messages.default;
     }
     if (extraLabel) {
@@ -129,25 +126,11 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     <div className={styles.selection}>{this.optionRenderer(props)}</div>
   );
 
-  renderTitle = () => {
-    const { intl } = this.context;
-    const { asset } = this.props;
-    return (
-      <>
-        {intl.formatMessage(messages.title)}{' '}
-        <div>
-          <AssetToken asset={asset} hidePopOver />
-        </div>
-      </>
-    );
-  };
-
   render() {
     const { intl } = this.context;
     const { onCancel, onSubmit, asset } = this.props;
     const { recommendedDecimals } = asset;
     const { decimals } = this.state;
-    const title = this.renderTitle();
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
       value,
     }));
@@ -176,18 +159,22 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     return (
       <Dialog
         className={styles.component}
-        title={title}
+        title={intl.formatMessage(messages.title)}
+        subtitle={<AssetToken asset={asset} className={styles.assetToken} />}
         actions={actions}
         closeOnOverlayClick
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
+        className1={styles.dialog}
       >
         <div>
-          <p>{intl.formatMessage(messages.description)}</p>
+          <div className={styles.description}>
+            <FormattedHTMLMessage {...messages.description} />
+          </div>
           <div className={styles.label}>
             {intl.formatMessage(messages.unformattedBalanceLabel)}
           </div>
-          <p>{formattedTokenWalletAmount(asset.quantity, asset.metadata, 0)}</p>
+          <p>{formattedTokenWalletAmount(asset.quantity, null, 0)}</p>
           <div className={styles.label}>
             {intl.formatMessage(messages.formattedBalanceLabel)}
           </div>

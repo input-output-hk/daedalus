@@ -535,6 +535,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Unformatted amount {amount}",
+        "description": "Unformatted amount",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/assets/AssetAmount.js",
+        "id": "assets.assetAmount.unformattedAmount",
+        "start": {
+          "column": 21,
+          "line": 13
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/assets/AssetAmount.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Native token settings",
         "description": "\"title\" for the Asset settings dialog",
         "end": {
@@ -563,28 +582,28 @@
         }
       },
       {
-        "defaultMessage": "!!!Unformated balance",
+        "defaultMessage": "!!!Unformated amount",
         "description": "\"formattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
           "line": 38
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
-        "id": "assets.settings.dialog.formattedBalance.label",
+        "id": "assets.settings.dialog.formattedAmount.label",
         "start": {
           "column": 25,
           "line": 34
         }
       },
       {
-        "defaultMessage": "!!!Formated balance",
+        "defaultMessage": "!!!Formated amount",
         "description": "\"unformattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
-        "id": "assets.settings.dialog.unformattedBalance.label",
+        "id": "assets.settings.dialog.unformattedAmount.label",
         "start": {
           "column": 27,
           "line": 39
@@ -12759,13 +12778,13 @@
         "description": "Number of tokens title on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 20
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 15,
-          "line": 17
+          "line": 16
         }
       },
       {
@@ -12773,13 +12792,13 @@
         "description": "Send button on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
         "id": "wallet.summary.assets.tokenSendButton",
         "start": {
           "column": 19,
-          "line": 22
+          "line": 21
         }
       },
       {
@@ -12787,27 +12806,13 @@
         "description": "Unknown label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
         "id": "wallet.summary.assets.unknownLabel",
         "start": {
           "column": 16,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Unformatted amount: {amount}",
-        "description": "Unknown label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.unformattedAmount",
-        "start": {
-          "column": 21,
-          "line": 32
+          "line": 26
         }
       }
     ],

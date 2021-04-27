@@ -2,16 +2,15 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
 import AssetToken from '../../assets/AssetToken';
+import AssetAmount from '../../assets/AssetAmount';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { formattedTokenWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -27,11 +26,6 @@ const messages = defineMessages({
   unknownLabel: {
     id: 'wallet.summary.assets.unknownLabel',
     defaultMessage: '!!!Unknown',
-    description: 'Unknown label on Wallet summary assets page',
-  },
-  unformattedAmount: {
-    id: 'wallet.summary.assets.unformattedAmount',
-    defaultMessage: '!!!Unformatted amount: {amount}',
     description: 'Unknown label on Wallet summary assets page',
   },
 });
@@ -59,23 +53,6 @@ export default class WalletSummaryAssets extends Component<Props, State> {
   state = {
     anyAssetWasHovered: false,
   };
-
-  renderAssetAmount = (asset: WalletSummaryAsset) =>
-    asset.decimals ? (
-      <PopOver
-        content={this.context.intl.formatMessage(messages.unformattedAmount, {
-          amount: formattedTokenWalletAmount(asset.quantity, asset.metadata, 0),
-        })}
-      >
-        {formattedTokenWalletAmount(
-          asset.quantity,
-          asset.metadata,
-          asset.decimals
-        )}
-      </PopOver>
-    ) : (
-      formattedTokenWalletAmount(asset.quantity, asset.metadata, asset.decimals)
-    );
 
   handleHoverAsset = () => {
     this.setState({ anyAssetWasHovered: true });
@@ -129,8 +106,14 @@ export default class WalletSummaryAssets extends Component<Props, State> {
                       }
                       anyAssetWasHovered={anyAssetWasHovered}
                     />
-                    <div className={styles.assetAmount}>
-                      {isRestoreActive ? '-' : this.renderAssetAmount(asset)}
+                    <div>
+                      <AssetAmount
+                        amount={asset.quantity}
+                        metadata={asset.metadata}
+                        decimals={asset.decimals}
+                        isLoading={isRestoreActive}
+                        className={styles.assetAmount}
+                      />
                     </div>
                   </div>
                 )}
