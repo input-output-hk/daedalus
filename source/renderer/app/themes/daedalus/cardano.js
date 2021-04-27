@@ -624,6 +624,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-option-text-color': '#5e6066',
     '--rp-options-border-color': 'rgba(94, 96, 102, 0.7)',
     '--rp-options-shadow': 'none',
+    '--rp-option-search-highlight-background-color': 'rgba(242, 162, 24, 0.3)',
   },
   rpRadio: {
     '--rp-radio-border': '2px solid #2cbb69',
