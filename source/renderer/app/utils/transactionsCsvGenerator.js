@@ -49,7 +49,7 @@ const messages = defineMessages({
   },
   columnTokens: {
     id: 'wallet.transactions.csv.column.tokens',
-    defaultMessage: '!!!Tokens',
+    defaultMessage: '!!!Tokens (unformatted amount)',
     description: 'Transactions CSV column - Tokens',
   },
   columnDateTime: {
@@ -189,14 +189,14 @@ const transactionsCsvGenerator = async ({
       }
       const valueTokens = filterAssets(assets, type, isInternalAddress)
         .map(({ policyId, assetName, quantity }) => {
-          const { fingerprint, metadata, decimals } = getAssetDetails(
+          const { fingerprint, metadata } = getAssetDetails(
             policyId,
             assetName
           );
           const formattedAmount = formattedTokenWalletAmount(
             quantity,
             metadata,
-            decimals
+            0
           );
           return `${formattedAmount} (${fingerprint})`;
         })

@@ -18292,7 +18292,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Tokens",
+        "defaultMessage": "!!!Tokens (unformatted amount)",
         "description": "Transactions CSV column - Tokens",
         "end": {
           "column": 3,

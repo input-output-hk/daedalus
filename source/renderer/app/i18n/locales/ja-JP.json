@@ -1178,7 +1178,7 @@
   "wallet.transactions.csv.column.dateTime": "日時",
   "wallet.transactions.csv.column.id": "ID",
   "wallet.transactions.csv.column.status": "ステータス",
-  "wallet.transactions.csv.column.tokens": "トークン",
+  "wallet.transactions.csv.column.tokens": "トークン（書式なしの金額）",
   "wallet.transactions.csv.column.type": "タイプ",
   "wallet.transactions.csv.column.withdrawals": "引き出し",
   "wallet.transactions.csv.filenamePrefix": "トランザクション",
