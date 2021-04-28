@@ -1,9 +1,18 @@
 // @flow
+import assetsPredefinedDecimals from './assetsPredefinedDecimals.json';
+import assetsPredefinedDecimalsTestnet from './assetsPredefinedDecimals-testnet.json';
+
+const { isTestnet } = global.environment;
+
 export const MAX_DECIMAL_PRECISION = 20;
 export const DEFAULT_DECIMAL_PRECISION = 0;
-export const ASSETS_WITH_PREDEFINED_DECIMALS: {
-  // Fingerprint
-  [key: string]: number,
-} = {
-  asset19mwamgpre24at3z34v2e5achszlhhqght9djqp: 5,
-};
+
+/**
+ *
+ * Assets with predefined decimal precision
+ * "[key: fingerprint]": number,
+ *
+ */
+export const ASSETS_PREDEFINED_DECIMALS = isTestnet
+  ? assetsPredefinedDecimalsTestnet
+  : assetsPredefinedDecimals;
