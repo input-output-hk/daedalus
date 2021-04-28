@@ -337,18 +337,13 @@ export default class WalletSendForm extends Component<Props, State> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
-
               const isValid = await this.props.addressValidator(value);
-
-              if (this.isAddressFromSameWallet()) {
+              if (isValid && this.isAddressFromSameWallet()) {
                 this._isAutoFocusEnabled = false;
               }
-
               this.setReceiverValidity(isValid);
-
               const adaAmountField = form.$('adaAmount');
               const isAdaAmountValid = adaAmountField.isValid;
-
               if (isValid && isAdaAmountValid) {
                 this.calculateTransactionFee();
               } else {
@@ -523,6 +518,7 @@ export default class WalletSendForm extends Component<Props, State> {
             <FormattedHTMLMessage {...localizableError} values={values} />
           );
         }
+
         this._isCalculatingTransactionFee = false;
         this.setState({
           isTransactionFeeCalculated: false,
