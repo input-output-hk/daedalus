@@ -182,10 +182,6 @@
   }
 }
 
-.test {
-  background: orange;
-}
-
 .settingsButton {
   cursor: pointer;
   display: flex;
@@ -210,15 +206,14 @@
   }
   .settingsIcon {
     svg {
-      width: 10px;
       height: 10px;
+      width: 10px;
       > g > g {
         fill: var(--theme-widgets-asset-token-text-color);
       }
     }
   }
   .warningIcon {
-    // margin-top: 1px;
     svg {
       height: 9px;
       width: 11px;

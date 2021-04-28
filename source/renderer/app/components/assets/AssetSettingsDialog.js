@@ -88,7 +88,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    const { asset } = this.props;
+    const { asset } = props;
     const { decimals } = asset;
     this.state = {
       decimals,

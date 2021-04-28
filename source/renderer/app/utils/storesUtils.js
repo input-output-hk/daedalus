@@ -17,7 +17,7 @@ export const getRequestKeys = (
   };
 };
 
-export const requestGetter = (req: Request, systemValue: any) => {
+export const requestGetter = (req: Request, systemValue: string | boolean) => {
   const { result } = req.execute();
   if (isRequestSet(req)) return result;
   return systemValue;

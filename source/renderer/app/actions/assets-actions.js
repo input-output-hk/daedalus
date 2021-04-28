@@ -2,9 +2,9 @@
 import Action from './lib/Action';
 import type { WalletSummaryAsset } from '../api/assets/types';
 
-// ======= ADDRESSES ACTIONS =======
+// ======= ASSETS ACTIONS =======
 
-export default class AddressesActions {
+export default class AssetsActions {
   onAssetSettingsOpen: Action<{ asset: WalletSummaryAsset }> = new Action();
   onAssetSettingsSubmit: Action<{
     asset: WalletSummaryAsset,
