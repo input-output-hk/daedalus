@@ -10,7 +10,7 @@ export const DEFAULT_DECIMAL_PRECISION = 0;
 /**
  *
  * Assets with predefined decimal precision
- * "[key: fingerprint]": number,
+ * "[key: policyId + assetName]": number,
  *
  */
 export const ASSETS_PREDEFINED_DECIMALS = isTestnet
