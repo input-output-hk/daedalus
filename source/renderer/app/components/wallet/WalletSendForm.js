@@ -125,6 +125,10 @@ export default class WalletSendForm extends Component<Props, State> {
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
   _isMounted = false;
 
+  // We need to prevent auto focus of ada and token amount fields in case user pastes
+  // or enters a receiver address which belongs to the same wallet he is sending from.
+  _isAutoFocusEnabled = true;
+
   componentDidMount() {
     this._isMounted = true;
     this.updateFormFields(true);
@@ -200,6 +204,8 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
+
   handleOnSubmit = () => {
     if (this.isDisabled()) {
       return false;
@@ -208,8 +214,6 @@ export default class WalletSendForm extends Component<Props, State> {
       dialog: WalletSendAssetsConfirmationDialog,
     });
   };
-
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   handleOnReset = () => {
     // Cancel all debounced field validations
@@ -333,21 +337,18 @@ export default class WalletSendForm extends Component<Props, State> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               const isValid = await this.props.addressValidator(value);
+
+              if (this.isAddressFromSameWallet()) {
+                this._isAutoFocusEnabled = false;
+              }
+
               this.setReceiverValidity(isValid);
+
               const adaAmountField = form.$('adaAmount');
               const isAdaAmountValid = adaAmountField.isValid;
-              const { selectedAsset } = this.props;
-              const shouldFocus = !this.isAddressFromSameWallet();
-              if (selectedAsset && !shouldFocus) {
-                const newAsset = `asset_${selectedAsset.fingerprint}`;
-                const newAssetField = this.form.$(newAsset);
-                const { name: fieldName } = newAssetField;
-                const focusableField = this.focusableFields[fieldName];
-                if (focusableField && focusableField.inputElement) {
-                  focusableField.inputElement.current.blur();
-                }
-              }
+
               if (isValid && isAdaAmountValid) {
                 this.calculateTransactionFee();
               } else {
@@ -568,6 +569,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
     });
     this.resetTransactionFee();
+    this._isAutoFocusEnabled = true;
   };
 
   removeAssetRow = (fingerprint: string) => {
@@ -645,7 +647,6 @@ export default class WalletSendForm extends Component<Props, State> {
         ];
       },
     ]);
-    this.form.$(newAsset).focus();
 
     const assetsDropdown = `assetsDropdown_${fingerprint}`;
     this.form.add({
@@ -696,8 +697,6 @@ export default class WalletSendForm extends Component<Props, State> {
     const {
       currencyMaxFractionalDigits,
       walletAmount,
-      isAddressFromSameWallet,
-      selectedAsset,
     } = this.props;
 
     const {
@@ -725,9 +724,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.hasReceiverValue() &&
-      isAddressFromSameWallet &&
-      receiverField.isValid
+      this.isAddressFromSameWallet()
         ? styles.sameRecieverInput
         : null,
     ]);
@@ -828,7 +825,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
-                  autoFocus={!this.isAddressFromSameWallet() && !selectedAsset}
+                  autoFocus={this._isAutoFocusEnabled}
                 />
                 <div className={styles.minAdaRequired}>
                   <span>
@@ -872,6 +869,7 @@ export default class WalletSendForm extends Component<Props, State> {
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
                       onChangeAsset={this.onChangeAsset}
+                      autoFocus={this._isAutoFocusEnabled}
                     />
                   )
                 )}
