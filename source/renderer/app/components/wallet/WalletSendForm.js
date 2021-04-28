@@ -694,10 +694,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
       isReceiverAddressValid,
     } = this.state;
-    const {
-      currencyMaxFractionalDigits,
-      walletAmount,
-    } = this.props;
+    const { currencyMaxFractionalDigits, walletAmount } = this.props;
 
     const {
       adaAmount: adaAmountField,
@@ -724,9 +721,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.isAddressFromSameWallet()
-        ? styles.sameRecieverInput
-        : null,
+      this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
     ]);
 
     const minAdaRequiredTooltip = selectedAssetFingerprints.length
