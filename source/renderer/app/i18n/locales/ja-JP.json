@@ -35,7 +35,7 @@
   "appUpdate.overlay.postponeInstall.link.label": "後で更新する",
   "appUpdate.overlay.subtitle": "このDaedalusはバージョン<b>{currentAppVersion}</b>です。<br />現在Daedalus <b>{availableAppVersion}</b>がダウンロード可能です",
   "appUpdate.overlay.title": "ソフトウェアが更新できます!",
-  "assets.assetAmount.unformattedAmount": "<span>書式なしの金額：</span>{amount}",
+  "assets.assetAmount.unformattedAmount": "<em>書式なしの金額：</em>{amount}",
   "assets.assetToken.item.assetName": "アセット名",
   "assets.assetToken.item.blank": "なし",
   "assets.assetToken.item.description": "説明",

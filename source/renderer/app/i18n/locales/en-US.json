@@ -35,7 +35,7 @@
   "appUpdate.overlay.postponeInstall.link.label": "Postpone the update",
   "appUpdate.overlay.subtitle": "You are currently running Daedalus version <b>{currentAppVersion}</b>.<br />Daedalus version <b>{availableAppVersion}</b> is now available to download.",
   "appUpdate.overlay.title": "Software update available!",
-  "assets.assetAmount.unformattedAmount": "<span>Unformatted amount:</span> {amount}",
+  "assets.assetAmount.unformattedAmount": "<em>Unformatted amount:</em> {amount}",
   "assets.assetToken.item.assetName": "Asset name",
   "assets.assetToken.item.blank": "Blank",
   "assets.assetToken.item.description": "Description",
