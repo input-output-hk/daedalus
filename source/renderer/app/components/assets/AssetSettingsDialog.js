@@ -193,7 +193,11 @@ export default class AssetSettingsDialog extends Component<Props, State> {
               <span className={styles.decimalsDropdownLabel}>
                 {intl.formatMessage(messages.decimalPrecisionLabel)}
                 {hasWarning && (
-                  <PopOver content={intl.formatMessage(warningPopOverMessage)}>
+                  <PopOver
+                    content={intl.formatMessage(warningPopOverMessage, {
+                      recommendedDecimals,
+                    })}
+                  >
                     <SVGInline
                       className={styles.warningIcon}
                       svg={warningIcon}

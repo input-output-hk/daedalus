@@ -51,7 +51,7 @@
   "assets.settings.dialog.recommended": "(recommended)",
   "assets.settings.dialog.title": "Native token settings",
   "assets.settings.dialog.unformattedAmount.label": "Unformatted amount",
-  "assets.warning.available": "Recommended decimal place configuration for this native token is available.",
+  "assets.warning.available": "The recommended value for decimal place configuration for this native token is {recommendedDecimals} decimal places. ",
   "assets.warning.notUsing": "You are not using the recommended decimal place configuration for this native token.",
   "backToTopButton.label": "Back to top",
   "cancel.transaction.confirmation.dialog.button.backLabel": "No, leave transaction pending",

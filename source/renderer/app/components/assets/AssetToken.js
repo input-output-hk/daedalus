@@ -383,7 +383,11 @@ export default class AssetToken extends Component<Props, State> {
           />
         </PopOver>
         {hasWarning && (
-          <PopOver content={intl.formatMessage(warningPopOverMessage)}>
+          <PopOver
+            content={intl.formatMessage(warningPopOverMessage, {
+              recommendedDecimals,
+            })}
+          >
             <SVGInline className={styles.warningIcon} svg={warningIcon} />
           </PopOver>
         )}

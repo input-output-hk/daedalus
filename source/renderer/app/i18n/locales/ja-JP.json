@@ -51,7 +51,7 @@
   "assets.settings.dialog.recommended": "（推奨）",
   "assets.settings.dialog.title": "ネイティブトークンの設定",
   "assets.settings.dialog.unformattedAmount.label": "書式なしの金額",
-  "assets.warning.available": "このネイティブトークンに推奨される少数設定が利用できます",
+  "assets.warning.available": "このネイティブトークンに推奨される少数設定は、小数点以下{recommendedDecimals}桁です",
   "assets.warning.notUsing": "このネイティブトークンに推奨される小数設定は使用されていません",
   "backToTopButton.label": "トップに戻る",
   "cancel.transaction.confirmation.dialog.button.backLabel": "いいえ、トランザクションを保留にしておきます",
