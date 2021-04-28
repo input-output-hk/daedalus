@@ -157,6 +157,7 @@ export const createReactPolymorphTheme = (
       '--rp-option-text-color': `${text.primary}`,
       '--rp-options-border-color': `${border}`,
       '--rp-options-shadow': 'none',
+      '--rp-option-search-highlight-background-color': `rgba(242, 162, 24, 0.3)`,
     },
     rpPopOver: {
       '--rp-pop-over-bg-color': '',
