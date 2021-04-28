@@ -5,5 +5,5 @@ export const ASSETS_WITH_PREDEFINED_DECIMALS: {
   // Fingerprint
   [key: string]: number,
 } = {
-  asset1cvmyrfrc7lpht2hcjwr9lulzyyjv27uxh3kcz0: 5,
+  asset19mwamgpre24at3z34v2e5achszlhhqght9djqp: 5,
 };
