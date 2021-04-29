@@ -5,6 +5,7 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
+import { DEFAULT_DECIMAL_PRECISION } from '../config/assetsConfig';
 import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
@@ -43,11 +44,14 @@ export const formattedWalletCurrencyAmount = (
 
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
-  metadata?: ?AssetMetadata
+  metadata?: ?AssetMetadata,
+  decimals: ?number
 ): string => {
-  const { ticker, unit } = metadata || {};
-  const { decimals } = unit || {};
-  const divider = parseInt(getMultiplierFromDecimalPlaces(decimals), 10);
+  const { ticker } = metadata || {};
+  const divider = parseInt(
+    getMultiplierFromDecimalPlaces(decimals || DEFAULT_DECIMAL_PRECISION),
+    10
+  );
   let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
   if (ticker) {
     formattedAmount += ` ${ticker}`;

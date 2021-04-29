@@ -6,8 +6,7 @@ import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { omit } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
-import AssetToken from '../AssetToken';
-
+import AssetToken from '../../assets/AssetToken';
 import {
   formattedTokenWalletAmount,
   formattedWalletAmount,
@@ -157,14 +156,22 @@ export default class WalletsDropdown extends Component<Props> {
     const assetsData =
       assets && assets.length
         ? assets.map((asset: WalletSummaryAsset) => {
-            const { metadata, quantity, fingerprint } = asset;
+            const { metadata, quantity, fingerprint, decimals } = asset;
             const formattedAmount = formattedTokenWalletAmount(
               quantity,
-              metadata
+              metadata,
+              decimals
             );
             return {
               detail: formattedAmount,
-              label: <AssetToken asset={asset} hideTooltip small />,
+              label: (
+                <AssetToken
+                  asset={asset}
+                  className={styles.assetToken}
+                  hidePopOver
+                  small
+                />
+              ),
               value: fingerprint,
             };
           })

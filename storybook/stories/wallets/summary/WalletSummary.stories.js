@@ -136,6 +136,8 @@ const walletAssets = assets.total.map((assetTotal) => {
     assetName: assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
+    decimals: 0,
+    recommendedDecimals: null,
     metadata: assetData
       ? assetData.metadata
       : {
@@ -200,7 +202,12 @@ storiesOf('Wallets|Summary', module)
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
+        onAssetSettings={action('onAssetSettings')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
+        assetSettingsDialogWasOpened={boolean(
+          'assetSettingsDialogWasOpened',
+          false
+        )}
         onExternalLinkClick={action('onExternalLinkClick')}
       />
     );

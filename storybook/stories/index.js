@@ -18,6 +18,10 @@ import './voting/Voting.stories';
 // Settings
 import './settings';
 
+// Assets
+import './assets/AssetToken.stories';
+import './assets/AssetSettingsDialog.stories';
+
 // News
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';

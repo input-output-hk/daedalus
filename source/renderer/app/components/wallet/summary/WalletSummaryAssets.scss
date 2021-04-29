@@ -85,27 +85,7 @@
   color: var(--theme-bordered-box-text-color);
   font-family: var(--font-light);
   font-size: 16px;
-  font-weight: 300;
   letter-spacing: 0.5px;
   line-height: 1.38;
   margin-top: 4px;
-  user-select: text;
-  word-break: break-all;
-
-  & > .decimal {
-    font-family: var(--font-medium);
-    font-size: 18px;
-  }
-
-  & > .currencySymbolBig {
-    display: inline-block;
-    margin-left: 10px;
-    & > svg {
-      height: 27.5px;
-      width: 25px;
-      & > g > g {
-        stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
-      }
-    }
-  }
 }
