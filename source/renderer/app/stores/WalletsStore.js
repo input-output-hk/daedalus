@@ -81,6 +81,8 @@ export default class WalletsStore extends Store {
 
   @observable undelegateWalletSubmissionSuccess: ?boolean = null;
 
+  @observable isAddressFromSameWallet: boolean = false;
+
   // REQUESTS
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
@@ -1117,6 +1119,8 @@ export default class WalletsStore extends Store {
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
     let expectedNetworkTag: ?Array<?number> | ?number;
     let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
+    this.isAddressFromSameWallet = false;
+
     if (isMainnet) {
       expectedNetworkTag = MAINNET_MAGIC;
     } else if (isStaging) {
@@ -1138,6 +1142,14 @@ export default class WalletsStore extends Store {
       if (response === 'Invalid') {
         return false;
       }
+      runInAction('check if address is from the same wallet', () => {
+        const walletAddresses = this.stores.addresses.all
+          .slice()
+          .map((addr) => addr.id);
+        this.isAddressFromSameWallet = !!walletAddresses.filter(
+          (addr) => addr === address
+        ).length;
+      });
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
         ((Array.isArray(expectedNetworkTag) &&
@@ -1205,6 +1217,7 @@ export default class WalletsStore extends Store {
     this.walletsRequest.reset();
     this.stores.addresses.addressesRequests = [];
     this.stores.transactions.transactionsRequests = [];
+    this.isAddressFromSameWallet = false;
   };
 
   @action _importWalletFromFile = async (
@@ -1286,6 +1299,7 @@ export default class WalletsStore extends Store {
       matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))
     ) {
       this.sendMoneyRequest.reset();
+      this.isAddressFromSameWallet = false;
     }
   };
 

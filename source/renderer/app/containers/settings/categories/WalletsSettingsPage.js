@@ -36,6 +36,7 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
         onSelectCurrency={this.handleSelectCurrency}
         onToggleCurrencyIsActive={this.handleToggleCurrencyIsActive}
         onOpenExternalLink={openExternalLink}
+        hasSearch
       />
     );
   }
