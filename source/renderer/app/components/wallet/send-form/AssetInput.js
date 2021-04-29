@@ -37,6 +37,7 @@ type Props = {
   handleSubmitOnEnter: Function,
   clearAssetFieldValue: Function,
   onChangeAsset: Function,
+  autoFocus: boolean,
 };
 
 const INPUT_FIELD_PADDING_DELTA = 10;
@@ -91,6 +92,7 @@ export default class AssetInput extends Component<Props> {
       handleSubmitOnEnter,
       clearAssetFieldValue,
       onChangeAsset,
+      autoFocus,
     } = this.props;
     const asset = getAssetByFingerprint(fingerprint);
     if (!asset) {
@@ -175,6 +177,7 @@ export default class AssetInput extends Component<Props> {
             handleSubmitOnEnter(evt);
           }}
           allowSigns={false}
+          autoFocus={autoFocus}
         />
         <div className={styles.rightContent} ref={this.rightContentRef}>
           {this.hasAssetValue(assetField) && (

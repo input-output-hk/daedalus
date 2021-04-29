@@ -222,6 +222,7 @@ storiesOf('Wallets|Send', module)
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
       onUnsetActiveAssetFingerprint={() => {}}
+      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
@@ -245,6 +246,7 @@ storiesOf('Wallets|Send', module)
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
       onUnsetActiveAssetFingerprint={() => {}}
+      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
@@ -268,6 +270,7 @@ storiesOf('Wallets|Send', module)
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
       onUnsetActiveAssetFingerprint={() => {}}
+      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
@@ -291,6 +294,7 @@ storiesOf('Wallets|Send', module)
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
       onUnsetActiveAssetFingerprint={() => {}}
+      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
   .add('Send - With Assets', () => (
@@ -317,6 +321,7 @@ storiesOf('Wallets|Send', module)
       hasAssets={boolean('hasAssets', true)}
       selectedAsset={null}
       onUnsetActiveAssetFingerprint={() => {}}
+      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => (
