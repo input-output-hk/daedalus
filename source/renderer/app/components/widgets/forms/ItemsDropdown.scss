@@ -1,0 +1,8 @@
+@import '../../../themes/mixins/error-message';
+
+.error {
+  @include error-message;
+  font-size: 14px;
+  margin-top: -10px;
+  text-align: center;
+}
