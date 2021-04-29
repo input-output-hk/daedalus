@@ -449,39 +449,37 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                               <div className={styles.amount}>{assetAmount}</div>
                             </div>
                           </div>
-                          {
-                            <div className={styles.assetsContainer}>
-                              <div className={styles.unformattedAmountLine} />
-                              <div className={styles.unformattedAmountLabel}>
-                                {intl.formatMessage(
-                                  messages.unformattedAmountLabel
-                                )}
-                                <PopOver
-                                  content={
-                                    <div className="UnformattedAmountTooltip">
-                                      <FormattedHTMLMessage
-                                        {...messages[
-                                          isHardwareWallet
-                                            ? 'unformattedAmountMessageForHardwareWallets'
-                                            : 'unformattedAmountMessageForSoftwareWallets'
-                                        ]}
-                                        tagName="div"
-                                      />
-                                    </div>
-                                  }
-                                  key="tooltip"
-                                >
-                                  <div className={styles.questionMark}>
-                                    <SVGInline svg={questionMarkIcon} />
+                          <div className={styles.assetsContainer}>
+                            <div className={styles.unformattedAmountLine} />
+                            <div className={styles.unformattedAmountLabel}>
+                              {intl.formatMessage(
+                                messages.unformattedAmountLabel
+                              )}
+                              <PopOver
+                                content={
+                                  <div className="UnformattedAmountTooltip">
+                                    <FormattedHTMLMessage
+                                      {...messages[
+                                        isHardwareWallet
+                                          ? 'unformattedAmountMessageForHardwareWallets'
+                                          : 'unformattedAmountMessageForSoftwareWallets'
+                                      ]}
+                                      tagName="div"
+                                    />
                                   </div>
-                                </PopOver>
-                                {':'}
-                              </div>
-                              <div className={styles.unformattedAmount}>
-                                {this.getAssetAmount(assetIndex)}
-                              </div>
+                                }
+                                key="tooltip"
+                              >
+                                <div className={styles.questionMark}>
+                                  <SVGInline svg={questionMarkIcon} />
+                                </div>
+                              </PopOver>
+                              {':'}
                             </div>
-                          }
+                            <div className={styles.unformattedAmount}>
+                              {this.getAssetAmount(assetIndex)}
+                            </div>
+                          </div>
                         </Fragment>
                       );
                     })}
