@@ -384,7 +384,7 @@
   margin-top: -2px;
 }
 
-.amountFeesWrapper {
+.assetAmount {
   background-color: var(--theme-staking-stake-pool-grey-bg-color);
   border-radius: 3px;
   display: flex;
@@ -394,27 +394,9 @@
   max-width: 250px;
   padding: 3px 9px;
 
-  .amountLabel,
-  .feesLabel {
-    line-height: 1.38;
-  }
-
-  .amount {
+  span {
+    font-family: var(--font-semibold);
     font-size: 11px;
-    font-weight: bold;
-    line-height: 1.36;
-    margin-left: initial;
-  }
-
-  .fees {
-    color: var(--theme-send-confirmation-dialog-send-values-color);
     line-height: 1.38;
-    margin-top: 6px;
-    user-select: text;
-    word-break: break-word;
-  }
-
-  .fees {
-    opacity: 0.5;
   }
 }
