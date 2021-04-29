@@ -49,29 +49,13 @@ export default class WalletsDropdownTopLabel extends Component<WalletOption> {
     );
   };
 
-  renderTicker = (ticker: string, color: string) => (
-    <div style={{ color }} className={styles.ticker}>
-      [{ticker}]
-    </div>
-  );
-
-  render() {
+  renderTicker = () => {
+    const { wallet, getStakePoolById, numberOfStakePools } = this.props;
     const {
-      getStakePoolById,
-      isSyncing,
-      numberOfStakePools,
-      syncingLabel,
-      wallet,
-    } = this.props;
-
-    const {
-      name: walletName,
       delegatedStakePoolId,
       lastDelegatedStakePoolId,
       pendingDelegations,
-      isHardwareWallet,
     } = wallet;
-
     const hasPendingDelegations =
       pendingDelegations && pendingDelegations.length > 0;
     let currentStakePoolId = delegatedStakePoolId;
@@ -79,36 +63,52 @@ export default class WalletsDropdownTopLabel extends Component<WalletOption> {
       currentStakePoolId = lastDelegatedStakePoolId;
     }
     const delegatedStakePool = getStakePoolById(currentStakePoolId);
-
-    if (!delegatedStakePool || !numberOfStakePools) {
-      return (
-        <div className={styles.topRow}>
-          <div className={styles.topRowTicker}>
-            {isSyncing && syncingLabel
-              ? this.renderLabelSyncing(
-                  walletName,
-                  syncingLabel,
-                  isHardwareWallet
-                )
-              : this.renderLabel(walletName, isHardwareWallet)}
-          </div>
-          <div className={styles.topRowSync}>
-            {isSyncing && (
-              <div className={styles.syncing}>
-                <LoadingSpinner />
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
     const { ranking, ticker } = delegatedStakePool;
+    if (!numberOfStakePools || !delegatedStakePool) {
+      return null;
+    }
     const color = getColorFromRange(ranking, numberOfStakePools);
+    return (
+      <div style={{ color }} className={styles.ticker}>
+        [{ticker}]
+      </div>
+    );
+  };
+
+  render() {
+    const { isSyncing, syncingLabel, wallet } = this.props;
+
+    const { name: walletName, isHardwareWallet } = wallet;
+
+    // if (!delegatedStakePool || !numberOfStakePools) {
+    //   return (
+    //     <div className={styles.topRow}>
+    //       <div className={styles.topRowTicker}>
+    //         {isSyncing && syncingLabel
+    //           ? this.renderLabelSyncing(
+    //               walletName,
+    //               syncingLabel,
+    //               isHardwareWallet
+    //             )
+    //           : this.renderLabel(walletName, isHardwareWallet)}
+    //       </div>
+    //       <div className={styles.topRowSync}>
+    //         {isSyncing && (
+    //           <div className={styles.syncing}>
+    //             <LoadingSpinner />
+    //           </div>
+    //         )}
+    //       </div>
+    //     </div>
+    //   );
+    // }
+
+    const ticker = this.renderTicker();
+
     return (
       <div className={styles.topRow}>
         <div className={styles.topRowTicker}>
-          {this.renderTicker(ticker, color)}
+          {ticker}
           <div className={styles.walletName}>
             {walletName}
             {isHardwareWallet && (
@@ -116,6 +116,9 @@ export default class WalletsDropdownTopLabel extends Component<WalletOption> {
                 svg={hardwareWalletsIcon}
                 className={styles.hardwareWalletsIcon}
               />
+            )}
+            {!ticker && isSyncing && syncingLabel && (
+              <span className={styles.walletNameSync}> {syncingLabel}</span>
             )}
           </div>
         </div>

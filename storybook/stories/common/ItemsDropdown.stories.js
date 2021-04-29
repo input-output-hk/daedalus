@@ -142,9 +142,10 @@ storiesOf('Common|ItemsDropdown', module)
           find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
         }
         isSyncing={boolean('isSyncing', false)}
-        label={text('label', 'Syncing')}
-        numberOfStakePools={number('numberOfStakePools', 1)}
-        syncingLabel={text('syncingLabel')}
+        numberOfStakePools={
+          boolean('Has stake pools', false) ? STAKE_POOLS.length : 0
+        }
+        syncingLabel={text('syncingLabel', 'Syncing')}
         wallet={wallet}
       />
     );
