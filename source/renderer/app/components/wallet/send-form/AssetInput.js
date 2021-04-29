@@ -209,6 +209,28 @@ export default class AssetInput extends Component<Props> {
                   onChangeAsset(fingerprint, newFingerprint);
                 }
               }}
+              onSearch={(searchValue, list) => {
+                const regex = new RegExp(escapeRegExp(searchValue), 'i');
+                return list.filter((item) => {
+                  const {
+                    asset,
+                    policyId,
+                    assetName,
+                    quantity,
+                    fingerprint,
+                    metadata,
+                  } = get(item, 'label.props.asset', {});
+                  const { name } = metadata || {};
+                  return (
+                    regex.test(asset) ||
+                    regex.test(policyId) ||
+                    regex.test(assetName) ||
+                    regex.test(quantity) ||
+                    regex.test(fingerprint) ||
+                    regex.test(name)
+                  );
+                });
+              }}
               syncingLabel={intl.formatMessage(messages.syncingWallet)}
               hasAssetsEnabled
               value={fingerprint}

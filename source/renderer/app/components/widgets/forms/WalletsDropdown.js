@@ -28,8 +28,7 @@ type SelectProps = {
   error?: string | Element<any>,
   errorPosition?: 'top' | 'bottom',
   label?: string | Element<any>,
-  hasSearch?: boolean,
-  onSearch?: boolean,
+  onSearch?: Function,
   isOpeningUpward?: boolean,
   onBlur?: Function,
   onChange?: Function,
@@ -115,22 +114,15 @@ export default class WalletsDropdown extends Component<Props> {
   render() {
     const {
       wallets,
-      // assets,
+      assets,
       numberOfStakePools,
       getStakePoolById,
       error,
       errorPosition,
       hasAssetsEnabled,
+      onSearch,
       ...props
     } = this.props;
-
-    // TODO REMOVE
-    // const dassets = dummyAssetsList.map(({ quantity, ...asset }) => ({
-    //   ...asset,
-    //   quantity: new BigNumber(quantity),
-    // }));
-    const dassets = [];
-    const assets = [...this.props.assets, ...dassets];
 
     const walletsData =
       wallets && wallets.length
@@ -202,29 +194,8 @@ export default class WalletsDropdown extends Component<Props> {
         <Select
           options={options}
           {...selectOptions}
-          hasSearch
-          onSearch={(searchValue, list) => {
-            const regex = new RegExp(escapeRegExp(searchValue), 'i');
-            return list.filter((item) => {
-              const {
-                asset,
-                policyId,
-                assetName,
-                quantity,
-                fingerprint,
-                metadata,
-              } = get(item, 'label.props.asset', {});
-              const { name } = metadata || {};
-              return (
-                regex.test(asset) ||
-                regex.test(policyId) ||
-                regex.test(assetName) ||
-                regex.test(quantity) ||
-                regex.test(fingerprint) ||
-                regex.test(name)
-              );
-            });
-          }}
+          hasSearch={!!onSearch}
+          onSearch={onSearch}
           optionHeight={50}
         />
         {bottomError && <div className={styles.error}>{bottomError}</div>}
