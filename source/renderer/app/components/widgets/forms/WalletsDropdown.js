@@ -7,10 +7,10 @@ import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { omit, escapeRegExp, get } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
-import AssetToken from '../AssetToken';
 
 import dummyAssetsList from '../../../config/assets.dummy.json';
 
+import AssetToken from '../../assets/AssetToken';
 import {
   formattedTokenWalletAmount,
   formattedWalletAmount,
@@ -125,10 +125,11 @@ export default class WalletsDropdown extends Component<Props> {
     } = this.props;
 
     // TODO REMOVE
-    const dassets = dummyAssetsList.map(({ quantity, ...asset }) => ({
-      ...asset,
-      quantity: new BigNumber(quantity),
-    }));
+    // const dassets = dummyAssetsList.map(({ quantity, ...asset }) => ({
+    //   ...asset,
+    //   quantity: new BigNumber(quantity),
+    // }));
+    const dassets = [];
     const assets = [...this.props.assets, ...dassets];
 
     const walletsData =
@@ -170,14 +171,22 @@ export default class WalletsDropdown extends Component<Props> {
     const assetsData =
       assets && assets.length
         ? assets.map((asset: WalletSummaryAsset) => {
-            const { metadata, quantity, fingerprint } = asset;
+            const { metadata, quantity, fingerprint, decimals } = asset;
             const formattedAmount = formattedTokenWalletAmount(
               quantity,
-              metadata
+              metadata,
+              decimals
             );
             return {
               detail: formattedAmount,
-              label: <AssetToken asset={asset} hideTooltip small />,
+              label: (
+                <AssetToken
+                  asset={asset}
+                  className={styles.assetToken}
+                  hidePopOver
+                  small
+                />
+              ),
               value: fingerprint,
             };
           })

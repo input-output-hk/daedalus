@@ -37,6 +37,7 @@ type Props = {
   handleSubmitOnEnter: Function,
   clearAssetFieldValue: Function,
   onChangeAsset: Function,
+  autoFocus: boolean,
 };
 
 const INPUT_FIELD_PADDING_DELTA = 10;
@@ -91,15 +92,15 @@ export default class AssetInput extends Component<Props> {
       handleSubmitOnEnter,
       clearAssetFieldValue,
       onChangeAsset,
+      autoFocus,
     } = this.props;
     const asset = getAssetByFingerprint(fingerprint);
     if (!asset) {
       return false;
     }
 
-    const { quantity, metadata } = asset;
+    const { quantity, metadata, decimals } = asset;
     const ticker = get(metadata, 'ticker', null);
-    const decimals = get(metadata, 'unit.decimals', 0);
     const sortedAssets = orderBy(
       [asset, ...availableAssets],
       'fingerprint',
@@ -124,7 +125,7 @@ export default class AssetInput extends Component<Props> {
           <div className={styles.amountTokenTotal}>
             {intl.formatMessage(messages.ofLabel)}
             {` `}
-            {formattedTokenWalletAmount(quantity, metadata)}
+            {formattedTokenWalletAmount(quantity, metadata, decimals)}
           </div>
         )}
         <NumericInput
@@ -176,6 +177,7 @@ export default class AssetInput extends Component<Props> {
             handleSubmitOnEnter(evt);
           }}
           allowSigns={false}
+          autoFocus={autoFocus}
         />
         <div className={styles.rightContent} ref={this.rightContentRef}>
           {this.hasAssetValue(assetField) && (

@@ -20,6 +20,10 @@
     }
   }
 
+  &:not(.hasSearch) .option em {
+    background-color: initial !important;
+  }
+
   [data-bubble-arrow] {
     display: none !important;
   }

@@ -67,6 +67,7 @@ type Props = {
   onOpenDialogAction: Function,
   onUnsetActiveAssetFingerprint: Function,
   onExternalLinkClick: Function,
+  isAddressFromSameWallet: boolean,
 };
 
 type State = {
@@ -123,6 +124,10 @@ export default class WalletSendForm extends Component<Props, State> {
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
   _isMounted = false;
+
+  // We need to prevent auto focus of ada and token amount fields in case user pastes
+  // or enters a receiver address which belongs to the same wallet he is sending from.
+  _isAutoFocusEnabled = true;
 
   componentDidMount() {
     this._isMounted = true;
@@ -299,8 +304,14 @@ export default class WalletSendForm extends Component<Props, State> {
     return receiverField.value.length > 0;
   };
 
-  hasAssetValue = (asset: Field) => {
-    return get(asset, 'value', false);
+  isAddressFromSameWallet = () => {
+    const { isAddressFromSameWallet } = this.props;
+    const receiverField = this.form.$('receiver');
+    return (
+      this.hasReceiverValue() &&
+      isAddressFromSameWallet &&
+      receiverField.isValid
+    );
   };
 
   isDisabled = () =>
@@ -327,6 +338,9 @@ export default class WalletSendForm extends Component<Props, State> {
                 ];
               }
               const isValid = await this.props.addressValidator(value);
+              if (isValid && this.isAddressFromSameWallet()) {
+                this._isAutoFocusEnabled = false;
+              }
               this.setReceiverValidity(isValid);
               const adaAmountField = form.$('adaAmount');
               const isAdaAmountValid = adaAmountField.isValid;
@@ -551,6 +565,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetFingerprints,
     });
     this.resetTransactionFee();
+    this._isAutoFocusEnabled = true;
   };
 
   removeAssetRow = (fingerprint: string) => {
@@ -628,7 +643,6 @@ export default class WalletSendForm extends Component<Props, State> {
         ];
       },
     ]);
-    this.form.$(newAsset).focus();
 
     const assetsDropdown = `assetsDropdown_${fingerprint}`;
     this.form.add({
@@ -679,8 +693,8 @@ export default class WalletSendForm extends Component<Props, State> {
     const { currencyMaxFractionalDigits, walletAmount } = this.props;
 
     const {
-      receiver: receiverField,
       adaAmount: adaAmountField,
+      receiver: receiverField,
       assetFields,
       assetsDropdown,
     } = formFields.receiver;
@@ -700,20 +714,39 @@ export default class WalletSendForm extends Component<Props, State> {
       !this.hasAvailableAssets ? styles.disabled : null,
       'primary',
     ]);
+
+    const receiverFieldClasses = classNames([
+      styles.receiverInput,
+      this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
+    ]);
+
     const minAdaRequiredTooltip = selectedAssetFingerprints.length
       ? messages.minAdaRequiredWithAssetTooltip
       : messages.minAdaRequiredWithNoAssetTooltip;
 
+    const sameWalletError = intl.formatMessage(messages.sameWalletLabel);
+    let receiverFieldError = receiverField.error;
+    let receiverFieldThemeVars = {};
+    if (this.isAddressFromSameWallet()) {
+      receiverFieldError = sameWalletError;
+      receiverFieldThemeVars = {
+        '--rp-input-border-color-errored':
+          'var(--rp-password-input-warning-score-color)',
+        '--rp-pop-over-bg-color':
+          'var(--rp-password-input-warning-score-color)',
+      };
+    }
+
     return (
       <div className={styles.fieldsContainer}>
-        <div className={styles.receiverInput}>
+        <div className={receiverFieldClasses}>
           <Input
             {...receiverField.bind()}
             ref={(field) => {
               this.addFocusableField(field);
             }}
             className="receiver"
-            error={receiverField.error}
+            error={receiverFieldError}
             onChange={(value) => {
               receiverField.onChange(value || '');
               this.setState({
@@ -721,6 +754,7 @@ export default class WalletSendForm extends Component<Props, State> {
               });
             }}
             onKeyPress={this.handleSubmitOnEnter}
+            themeVariables={receiverFieldThemeVars}
           />
           {this.hasReceiverValue() && (
             <div className={styles.clearReceiverContainer}>
@@ -731,6 +765,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 <button
                   onClick={() => this.handleOnReset()}
                   className={styles.clearReceiverButton}
+                  tabIndex={-1}
                 >
                   <SVGInline
                     svg={closeIcon}
@@ -781,7 +816,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
-                  autoFocus
+                  autoFocus={this._isAutoFocusEnabled}
                 />
                 <div className={styles.minAdaRequired}>
                   <span>
@@ -825,6 +860,7 @@ export default class WalletSendForm extends Component<Props, State> {
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
                       onChangeAsset={this.onChangeAsset}
+                      autoFocus={this._isAutoFocusEnabled}
                     />
                   )
                 )}
