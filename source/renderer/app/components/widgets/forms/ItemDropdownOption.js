@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import classnames from 'classnames';
-import styles from './ItemsDropdownOption.scss';
+import styles from './ItemDropdownOption.scss';
 
 export type ItemDropdown = {
   topLabel: string | Node,
@@ -11,7 +11,7 @@ export type ItemDropdown = {
   // isSyncing?: boolean,
 };
 
-export default class ItemsDropdownOption extends Component<ItemDropdown> {
+export default class ItemDropdownOption extends Component<ItemDropdown> {
   render() {
     const { topLabel, bottomLabel, selected } = this.props;
     const componentStyles = classnames(styles.component, {

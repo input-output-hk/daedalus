@@ -44,6 +44,7 @@ storiesOf('Wallets|Legacy Wallets', module)
       ...sourceWalletSelect,
       amount: new BigNumber(sourceWalletSelect.amount),
     };
+    console.log('WALLETS_V2', WALLETS_V2);
     return (
       <TransferFundsStep1Dialog
         onClose={action('onClose')}

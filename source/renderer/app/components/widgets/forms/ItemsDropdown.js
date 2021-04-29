@@ -4,11 +4,11 @@ import type { Element } from 'react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { omit } from 'lodash';
-import ItemsDropdownOption from './ItemsDropdownOption';
+import ItemDropdownOption from './ItemDropdownOption';
 import styles from './ItemsDropdown.scss';
-import type { ItemDropdown } from './ItemsDropdownOption';
+import type { ItemDropdown } from './ItemDropdownOption';
 
-type SelectProps = {
+export type SelectProps = {
   allowBlank: boolean,
   autoFocus: boolean,
   className?: string,
@@ -37,17 +37,17 @@ type SelectProps = {
   value: string,
 };
 
-type Props = {
+export type ItemDropdownProps = {
   ...$Shape<SelectProps>,
   options: Array<ItemDropdown>,
   isSyncing?: boolean,
 };
 
-export default class ItemsDropdown extends Component<Props> {
+export default class ItemsDropdown extends Component<ItemDropdownProps> {
   static defaultProps = {
-    optionRenderer: (optionProps) => <ItemsDropdownOption {...optionProps} />,
+    optionRenderer: (optionProps) => <ItemDropdownOption {...optionProps} />,
     selectionRenderer: (optionProps) => (
-      <ItemsDropdownOption selected {...optionProps} />
+      <ItemDropdownOption selected {...optionProps} />
     ),
     skin: SelectSkin,
     errorPosition: 'top',

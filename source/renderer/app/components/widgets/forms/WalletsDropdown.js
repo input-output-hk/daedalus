@@ -1,195 +1,32 @@
 // @flow
 import React, { Component } from 'react';
-import type { Element } from 'react';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import { omit } from 'lodash';
-import WalletsDropdownOption from './WalletsDropdownOption';
-import styles from './WalletsDropdown.scss';
-import AssetToken from '../../assets/AssetToken';
-import {
-  formattedTokenWalletAmount,
-  formattedWalletAmount,
-} from '../../../utils/formatters';
+import WalletsDropdownTopLabel from './WalletsDropdownTopLabel';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
-import StakePool from '../../../domains/StakePool';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
-
-type SelectProps = {
-  allowBlank?: boolean,
-  autoFocus?: boolean,
-  className?: string,
-  context?: any,
-  disabled?: boolean,
-  error?: string | Element<any>,
-  errorPosition?: 'top' | 'bottom',
-  label?: string | Element<any>,
-  isOpeningUpward?: boolean,
-  onBlur?: Function,
-  onChange?: Function,
-  onFocus?: Function,
-  optionRenderer?: Function,
-  options?: Array<any>,
-  placeholder?: string,
-  selectionRenderer?: Function,
-  skin?: Element<any>,
-  theme?: ?Object, // will take precedence over theme in context if passed
-  themeId?: string,
-  themeOverrides?: Object,
-  value: ?string,
-};
+import ItemsDropdown from './ItemsDropdown';
+import type { SelectProps } from './ItemsDropdown';
 
 type Props = {
   ...$Shape<SelectProps>,
-  numberOfStakePools: number,
-  wallets?: Array<$Shape<Wallet>>,
-  assets?: Array<$Shape<WalletSummaryAsset>>,
   getStakePoolById: Function,
-  syncingLabel?: string,
-  hasAssetsEnabled?: string,
-};
-
-type WalletOption = {
-  delegatedStakePool?: ?StakePool,
-  label: string,
+  isSyncing: boolean,
   numberOfStakePools: number,
-  detail: string,
-  value: string,
-  syncing?: boolean,
   syncingLabel?: string,
-  isHardwareWallet: boolean,
-  hasAssetsEnabled?: boolean,
+  wallets?: Array<$Shape<Wallet>>,
 };
 
 export default class WalletsDropdown extends Component<Props> {
-  static defaultProps = {
-    optionRenderer: ({
-      label,
-      detail,
-      numberOfStakePools,
-      delegatedStakePool,
-      isHardwareWallet,
-      syncing,
-      syncingLabel,
-    }: WalletOption) => (
-      <WalletsDropdownOption
-        isSyncing={syncing}
-        label={label}
-        numberOfStakePools={numberOfStakePools}
-        detail={detail}
-        delegatedStakePool={delegatedStakePool}
-        isHardwareWallet={isHardwareWallet}
-        syncingLabel={syncingLabel}
-      />
-    ),
-    selectionRenderer: ({
-      label,
-      detail,
-      numberOfStakePools,
-      delegatedStakePool,
-      isHardwareWallet,
-      syncing,
-      syncingLabel,
-    }: WalletOption) => (
-      <WalletsDropdownOption
-        selected
-        isSyncing={syncing}
-        label={label}
-        numberOfStakePools={numberOfStakePools}
-        detail={detail}
-        delegatedStakePool={delegatedStakePool}
-        isHardwareWallet={isHardwareWallet}
-        syncingLabel={syncingLabel}
-      />
-    ),
-    skin: SelectSkin,
-    errorPosition: 'top',
-  };
-
   render() {
-    const {
-      wallets,
-      assets,
-      numberOfStakePools,
-      getStakePoolById,
-      error,
-      errorPosition,
-      hasAssetsEnabled,
-      ...props
-    } = this.props;
-    const walletsData =
-      wallets && wallets.length
-        ? wallets.map(
-            ({
-              name: label,
-              id: value,
-              amount,
-              delegatedStakePoolId,
-              lastDelegatedStakePoolId,
-              pendingDelegations,
-              isRestoring,
-              isHardwareWallet,
-            }: Wallet) => {
-              const hasPendingDelegations =
-                pendingDelegations && pendingDelegations.length > 0;
-              let currentStakePoolId = delegatedStakePoolId;
-              if (hasPendingDelegations) {
-                currentStakePoolId = lastDelegatedStakePoolId;
-              }
-              const delegatedStakePool = getStakePoolById(currentStakePoolId);
-              const detail = !isRestoring
-                ? formattedWalletAmount(amount)
-                : null;
-              return {
-                detail,
-                syncing: isRestoring,
-                label,
-                value,
-                numberOfStakePools,
-                delegatedStakePool,
-                isHardwareWallet,
-                syncingLabel: this.props.syncingLabel,
-              };
-            }
-          )
-        : null;
-    const assetsData =
-      assets && assets.length
-        ? assets.map((asset: WalletSummaryAsset) => {
-            const { metadata, quantity, fingerprint, decimals } = asset;
-            const formattedAmount = formattedTokenWalletAmount(
-              quantity,
-              metadata,
-              decimals
-            );
-            return {
-              detail: formattedAmount,
-              label: (
-                <AssetToken
-                  asset={asset}
-                  className={styles.assetToken}
-                  hidePopOver
-                  small
-                />
-              ),
-              value: fingerprint,
-            };
-          })
-        : null;
-    let topError;
-    let bottomError;
-    if (errorPosition === 'bottom') bottomError = error;
-    else topError = error;
-    const selectOptions = omit({ ...props, topError }, 'options');
-    return (
-      <>
-        <Select
-          options={hasAssetsEnabled && assetsData ? assetsData : walletsData}
-          {...selectOptions}
-          optionHeight={50}
-        />
-        {bottomError && <div className={styles.error}>{bottomError}</div>}
-      </>
-    );
+    const { wallets = [] } = this.props;
+    const formattedOptions = wallets.map((wallet) => {
+      const { id: value, amount, isRestoring } = wallet;
+      const bottomLabel = !isRestoring ? formattedWalletAmount(amount) : null;
+      return {
+        topLabel: <WalletsDropdownTopLabel wallet={wallet} {...this.props} />,
+        bottomLabel,
+        value,
+      };
+    });
+    return <ItemsDropdown options={formattedOptions} {...this.props} />;
   }
 }
