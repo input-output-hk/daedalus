@@ -644,7 +644,7 @@ export default class AdaApi {
       const assets = response.map((asset) =>
         _createAssetFromServerData(
           asset,
-          assetsLocaldata[asset.fingerprint] || {}
+          assetsLocaldata[asset.policy_id + asset.asset_name] || {}
         )
       );
       return new Promise((resolve) =>

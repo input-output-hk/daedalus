@@ -84,7 +84,7 @@ export default class AssetsStore extends Store {
     decimals: number,
   }) => {
     this.editingsAsset = null;
-    const { fingerprint, policyId, assetName } = asset;
+    const { policyId, assetName } = asset;
     const assetDomain = this.getAssetDetails(policyId, assetName);
     if (assetDomain) {
       assetDomain.update({
@@ -92,7 +92,7 @@ export default class AssetsStore extends Store {
       });
     }
     this._refreshAssetsData();
-    await this.api.localStorage.setAssetLocalData(fingerprint, {
+    await this.api.localStorage.setAssetLocalData(policyId, assetName, {
       decimals,
     });
   };
