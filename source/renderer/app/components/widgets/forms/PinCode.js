@@ -54,6 +54,12 @@ export default class PinCode extends Component<Props, State> {
     return valueIsEmpty || valueHasChanged;
   };
 
+  inputIsMarked = (input: Field) => {
+    const { inputElement } = input;
+    const { current } = inputElement;
+    return current.selectionStart !== current.selectionEnd;
+  };
+
   onChange = (inputValue: ?number | ?string, key: number) => {
     const { value, onChange } = this.props;
     const { isBackSpace } = this.state;
@@ -149,6 +155,9 @@ export default class PinCode extends Component<Props, State> {
     }
     if (isBackSpace && (fieldIsEmpty || cursorPosition === 0)) {
       if (onChange) {
+        if (this.inputIsMarked(this.inputsRef[inputKey])) {
+          value[inputKey] = "";
+        }
         this.setState({ isBackSpace });
         onChange(value, inputNewValue, inputKey);
       }
