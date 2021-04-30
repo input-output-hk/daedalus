@@ -278,7 +278,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
 
-    const validRecoveryPhase = recoveryPhraseField.isValid;
+    const validRecoveryPhase = true;
+    // recoveryPhraseField.isValid;
 
     const buttonClasses = classnames([
       'primary',
