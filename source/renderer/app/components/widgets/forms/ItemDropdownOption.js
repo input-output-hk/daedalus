@@ -8,7 +8,6 @@ export type ItemDropdown = {
   label: string | Node,
   detail?: string | Node,
   selected?: boolean,
-  // isSyncing?: boolean,
 };
 
 export default class ItemDropdownOption extends Component<ItemDropdown> {

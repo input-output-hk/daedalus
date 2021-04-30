@@ -16,7 +16,6 @@ import type { ItemDropdown } from './ItemDropdownOption';
  */
 export type ItemDropdownProps = {
   options: Array<ItemDropdown>,
-  isSyncing?: boolean,
 };
 
 export const onSearchItemsDropdown = (

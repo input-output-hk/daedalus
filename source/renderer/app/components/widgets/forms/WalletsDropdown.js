@@ -6,6 +6,15 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
 import ItemsDropdown from './ItemsDropdown';
 
+/**
+ *
+ * This component extends the ItemDropdownProps component
+ * which is based on React Polymorph's Select
+ * Any prop from it can be used
+ * Reference:
+ * https://github.com/input-output-hk/react-polymorph/blob/develop/source/components/Select.js
+ *
+ */
 type Props = {
   getStakePoolById: Function,
   isSyncing?: boolean,
@@ -21,7 +30,7 @@ export const onSearchWalletsDropdown = (
   return filter(options, (option) => {
     const { walletName, detail } = option;
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
-    return regex.test(walletName) || regex.test(detail);
+    return [walletName, detail].some((item) => regex.test(item));
   });
 };
 
