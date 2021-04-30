@@ -99,9 +99,8 @@ export default class AssetInput extends Component<Props> {
       return false;
     }
 
-    const { quantity, metadata } = asset;
+    const { quantity, metadata, decimals } = asset;
     const ticker = get(metadata, 'ticker', null);
-    const decimals = get(metadata, 'unit.decimals', 0);
     const sortedAssets = orderBy(
       [asset, ...availableAssets],
       'fingerprint',
@@ -126,7 +125,7 @@ export default class AssetInput extends Component<Props> {
           <div className={styles.amountTokenTotal}>
             {intl.formatMessage(messages.ofLabel)}
             {` `}
-            {formattedTokenWalletAmount(quantity, metadata)}
+            {formattedTokenWalletAmount(quantity, metadata, decimals)}
           </div>
         )}
         <NumericInput

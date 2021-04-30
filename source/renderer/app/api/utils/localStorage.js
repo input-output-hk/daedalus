@@ -71,6 +71,10 @@ export type HardwareWalletDevicesType = {
   [key: string]: TransportDevice,
 };
 
+export type AssetLocalData = {
+  decimals: number,
+};
+
 /**
  * This api layer provides access to the electron local storage
  * for user settings that are not synced with any coin backend.
@@ -321,6 +325,34 @@ export default class LocalStorageApi {
 
   unsetAppUpdateCompleted = (): Promise<void> =>
     LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
+
+  getAssetsLocalData = (): Promise<AssetLocalData> =>
+    LocalStorageApi.get(keys.ASSET_DATA, []);
+
+  unsetAssetsLocalData = (): Promise<void> =>
+    LocalStorageApi.unset(keys.ASSET_DATA);
+
+  getAssetLocalData = (
+    policyId: string,
+    assetName: string
+  ): Promise<AssetLocalData> =>
+    LocalStorageApi.get(keys.ASSET_DATA, {}, policyId + assetName);
+
+  setAssetLocalData = (
+    policyId: string,
+    assetName: string,
+    assetLocalData: AssetLocalData
+  ): Promise<void> =>
+    LocalStorageApi.set(keys.ASSET_DATA, assetLocalData, policyId + assetName);
+
+  getAssetSettingsDialogWasOpened = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, false);
+
+  setAssetSettingsDialogWasOpened = (): Promise<void> =>
+    LocalStorageApi.set(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, true);
+
+  unsetAssetSettingsDialogWasOpened = (): Promise<void> =>
+    LocalStorageApi.unset(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED);
 
   getSmashServer = (): Promise<string> =>
     LocalStorageApi.get(keys.SMASH_SERVER);

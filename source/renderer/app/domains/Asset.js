@@ -1,7 +1,6 @@
 // @flow
-import { omit, pick } from 'lodash';
+import { pick } from 'lodash';
 import { observable, action } from 'mobx';
-import { IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED } from '../config/walletsConfig';
 import type { AssetMetadata } from '../api/assets/types';
 
 export type AssetProps = {
@@ -9,6 +8,8 @@ export type AssetProps = {
   assetName: string,
   fingerprint: string,
   metadata?: ?AssetMetadata,
+  decimals: ?number,
+  recommendedDecimals: ?number,
 };
 
 export default class Asset {
@@ -16,18 +17,24 @@ export default class Asset {
   @observable assetName: string = '';
   @observable fingerprint: string = '';
   @observable metadata: ?AssetMetadata;
+  @observable decimals: ?number;
+  @observable recommendedDecimals: ?number;
 
   constructor(data: AssetProps) {
-    const metadata = !IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED
-      ? omit(data.metadata, 'unit')
-      : data.metadata;
-    Object.assign(this, data, { metadata });
+    Object.assign(this, data);
   }
 
-  @action update(other: Asset) {
+  @action update(other: $Shape<AssetProps>) {
     Object.assign(
       this,
-      pick(other, ['policyId', 'assetName', 'fingerprint', 'metadata'])
+      pick(other, [
+        'policyId',
+        'assetName',
+        'fingerprint',
+        'metadata',
+        'decimals',
+        'recommendedDecimals',
+      ])
     );
   }
 }
