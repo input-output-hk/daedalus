@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { filter, escapeRegExp } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ItemDropdownOption from './ItemDropdownOption';
@@ -18,6 +19,17 @@ export type ItemDropdownProps = {
   isSyncing?: boolean,
 };
 
+export const onSearchItemsDropdown = (
+  searchValue: string,
+  options: Array<any>
+) => {
+  return filter(options, (option) => {
+    const { topLabel, bottomLabel, value } = option;
+    const regex = new RegExp(escapeRegExp(searchValue), 'i');
+    return regex.test(topLabel) || regex.test(bottomLabel) || regex.test(value);
+  });
+};
+
 export default class ItemsDropdown extends Component<ItemDropdownProps> {
   static defaultProps = {
     optionRenderer: (optionProps: ItemDropdown) => (
@@ -26,6 +38,7 @@ export default class ItemsDropdown extends Component<ItemDropdownProps> {
     selectionRenderer: (optionProps: ItemDropdown) => (
       <ItemDropdownOption selected {...optionProps} />
     ),
+    onSearch: onSearchItemsDropdown,
     skin: SelectSkin,
   };
   render() {
