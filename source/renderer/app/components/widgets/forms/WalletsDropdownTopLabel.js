@@ -16,39 +16,6 @@ export type WalletOption = {
 };
 
 export default class WalletsDropdownTopLabel extends Component<WalletOption> {
-  renderLabel = (walletName: string, isHardwareWallet: boolean) => {
-    return (
-      <div className={styles.walletName}>
-        {walletName}
-        {isHardwareWallet && (
-          <SVGInline
-            svg={hardwareWalletsIcon}
-            className={styles.hardwareWalletsIcon}
-          />
-        )}
-      </div>
-    );
-  };
-
-  renderLabelSyncing = (
-    walletName: string,
-    syncingLabel: string,
-    isHardwareWallet: boolean
-  ) => {
-    return (
-      <div className={styles.walletName}>
-        {walletName}
-        {isHardwareWallet && (
-          <SVGInline
-            svg={hardwareWalletsIcon}
-            className={styles.hardwareWalletsIcon}
-          />
-        )}
-        <span className={styles.walletNameSync}> {syncingLabel}</span>
-      </div>
-    );
-  };
-
   renderTicker = () => {
     const { wallet, getStakePoolById, numberOfStakePools } = this.props;
     const {
@@ -77,50 +44,34 @@ export default class WalletsDropdownTopLabel extends Component<WalletOption> {
 
   render() {
     const { isSyncing, syncingLabel, wallet } = this.props;
-
-    const { name: walletName, isHardwareWallet } = wallet;
-
-    // if (!delegatedStakePool || !numberOfStakePools) {
-    //   return (
-    //     <div className={styles.topRow}>
-    //       <div className={styles.topRowTicker}>
-    //         {isSyncing && syncingLabel
-    //           ? this.renderLabelSyncing(
-    //               walletName,
-    //               syncingLabel,
-    //               isHardwareWallet
-    //             )
-    //           : this.renderLabel(walletName, isHardwareWallet)}
-    //       </div>
-    //       <div className={styles.topRowSync}>
-    //         {isSyncing && (
-    //           <div className={styles.syncing}>
-    //             <LoadingSpinner />
-    //           </div>
-    //         )}
-    //       </div>
-    //     </div>
-    //   );
-    // }
-
+    const { name, isHardwareWallet } = wallet;
     const ticker = this.renderTicker();
-
+    const hasSyncing = !ticker && isSyncing && syncingLabel;
     return (
       <div className={styles.topRow}>
         <div className={styles.topRowTicker}>
           {ticker}
           <div className={styles.walletName}>
-            {walletName}
+            {name}
             {isHardwareWallet && (
               <SVGInline
                 svg={hardwareWalletsIcon}
                 className={styles.hardwareWalletsIcon}
               />
             )}
-            {!ticker && isSyncing && syncingLabel && (
+            {hasSyncing && (
               <span className={styles.walletNameSync}> {syncingLabel}</span>
             )}
           </div>
+          {hasSyncing && (
+            <div className={styles.topRowSync}>
+              {isSyncing && (
+                <div className={styles.syncing}>
+                  <LoadingSpinner />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );

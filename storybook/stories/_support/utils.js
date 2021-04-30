@@ -108,7 +108,7 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
-  assets: WalletAssets,
+  assets?: WalletAssets = { available: [], total: [] },
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,

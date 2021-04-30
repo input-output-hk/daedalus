@@ -22,10 +22,10 @@ import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.d
 import { generateWallet } from '../_support/utils';
 
 const WALLETS = [
-  generateWallet('Second Wallet', '500000000', []),
-  generateWallet('Third Wallet', '100000000', []),
-  generateWallet('Fourth Wallet', '50000000', []),
-  generateWallet('Fifth Wallet', '7000000', []),
+  generateWallet('Second Wallet', '500000000'),
+  generateWallet('Third Wallet', '100000000'),
+  generateWallet('Fourth Wallet', '50000000'),
+  generateWallet('Fifth Wallet', '7000000'),
 ];
 
 const stakePoolsList = [
@@ -58,7 +58,7 @@ storiesOf('Common|ItemsDropdown', module)
       <StoryDecorator propsForChildren={state}>
         <StoryProvider>
           <StoryLayout activeSidebarCategory={null} {...context}>
-            {story()}
+            <div style={{ margin: 50, height: 400 }}>{story()}</div>
           </StoryLayout>
         </StoryProvider>
       </StoryDecorator>
@@ -88,6 +88,15 @@ storiesOf('Common|ItemsDropdown', module)
         value: 'item3',
       },
     ];
+    const errorPosition = select(
+      'Error',
+      {
+        'No error': null,
+        'Top error': 'top',
+        'Bottom error': 'bottom',
+      },
+      null
+    );
     return (
       <ItemsDropdown
         options={options}
@@ -104,6 +113,8 @@ storiesOf('Common|ItemsDropdown', module)
             );
           });
         }}
+        errorPosition={errorPosition}
+        error={boolean('Has error', false) ? 'Error message' : ''}
       />
     );
   })
@@ -129,7 +140,7 @@ storiesOf('Common|ItemsDropdown', module)
     const wallet = generateWallet(
       text('Wallet - Name', 'Wallet name'),
       `${number('Wallet - Amount', 1000000000)}`,
-      [],
+      undefined,
       undefined,
       select('Wallet - Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
       true,
