@@ -605,6 +605,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-option-text-color': '#ffffff',
     '--rp-options-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-options-shadow': 'none',
+    '--rp-option-search-highlight-background-color': 'rgba(242, 162, 24, 0.3)',
   },
   rpRadio: {
     '--rp-radio-border': '2px solid #eb2256',

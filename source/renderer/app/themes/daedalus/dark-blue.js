@@ -627,6 +627,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-option-text-color': '#e9f4fe',
     '--rp-options-border-color': 'rgba(233, 244, 254, 0.7)',
     '--rp-options-shadow': 'none',
+    '--rp-option-search-highlight-background-color': 'rgba(242, 162, 24, 0.3)',
   },
   rpRadio: {
     '--rp-radio-border': '2px solid #536370',

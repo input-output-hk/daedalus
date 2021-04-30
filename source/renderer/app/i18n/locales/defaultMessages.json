@@ -535,6 +535,301 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Unformatted amount {amount}",
+        "description": "Unformatted amount",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/assets/AssetAmount.js",
+        "id": "assets.assetAmount.unformattedAmount",
+        "start": {
+          "column": 21,
+          "line": 13
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/assets/AssetAmount.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Native token settings",
+        "description": "\"title\" for the Asset settings dialog",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.settings.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Updates made here will be applied in other wallets containing this token too.",
+        "description": "\"description\" for the Asset settings dialog",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.settings.dialog.description",
+        "start": {
+          "column": 15,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Unformated amount",
+        "description": "\"formattedBalanceLabel\" for the Asset settings dialog",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.settings.dialog.formattedAmount.label",
+        "start": {
+          "column": 25,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Formated amount",
+        "description": "\"unformattedBalanceLabel\" for the Asset settings dialog",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.settings.dialog.unformattedAmount.label",
+        "start": {
+          "column": 27,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Number of decimal places",
+        "description": "\"decimalPrecisionLabel\" for the Asset settings dialog",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.settings.dialog.decimalPrecision.label",
+        "start": {
+          "column": 25,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!(recommended)",
+        "description": "\"recommended\" for the Asset settings dialog",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.settings.dialog.recommended",
+        "start": {
+          "column": 15,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!(default)",
+        "description": "\"default\" for the Asset settings dialog",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.settings.dialog.default",
+        "start": {
+          "column": 11,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.warning.available",
+        "start": {
+          "column": 27,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/assets/AssetSettingsDialog.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 26,
+          "line": 65
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/assets/AssetSettingsDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fingerprint",
+        "description": "\"fingerprint\" item.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.item.fingerprint",
+        "start": {
+          "column": 19,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Policy Id",
+        "description": "\"policyId\" item.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.item.policyId",
+        "start": {
+          "column": 16,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Asset name",
+        "description": "\"assetName\" item.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.item.assetName",
+        "start": {
+          "column": 17,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Name",
+        "description": "\"name\" item.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.item.name",
+        "start": {
+          "column": 12,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Ticker",
+        "description": "\"ticker\" item.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.item.ticker",
+        "start": {
+          "column": 14,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Description",
+        "description": "\"description\" item.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.item.description",
+        "start": {
+          "column": 19,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Blank",
+        "description": "\"Blank\" item value.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.item.blank",
+        "start": {
+          "column": 9,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!You can configure the number of decimal places for this native token.",
+        "description": "Asset settings pop over content",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.assetToken.settings.cogPopOver",
+        "start": {
+          "column": 22,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.warning.available",
+        "start": {
+          "column": 35,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/assets/AssetToken.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 34,
+          "line": 69
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/assets/AssetToken.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "end": {
@@ -10619,17 +10914,31 @@
         }
       },
       {
-        "defaultMessage": "!!!+ Add a token",
-        "description": "Label for the \"+ Add a token\" button in the wallet send form.",
+        "defaultMessage": "!!!This receiver address belongs to the same wallet from which you are sending funds. If you proceed with this transaction, the transferred funds will remain in this wallet, and you will incur transaction fees, as outlined in Estimated fees.",
+        "description": "Label for the same wallet tooltip in the wallet send form.",
         "end": {
           "column": 3,
           "line": 52
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.sameWalletLabel",
+        "start": {
+          "column": 19,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!+ Add a token",
+        "description": "Label for the \"+ Add a token\" button in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.button.addAssetButtonLabel",
         "start": {
           "column": 23,
-          "line": 47
+          "line": 53
         }
       },
       {
@@ -10637,13 +10946,13 @@
         "description": "Label for the \"Estimated fees\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.estimatedFee.label",
         "start": {
           "column": 21,
-          "line": 53
+          "line": 59
         }
       },
       {
@@ -10651,13 +10960,13 @@
         "description": "Label for the \"of\" max ADA value in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.of.label",
         "start": {
           "column": 11,
-          "line": 59
+          "line": 65
         }
       },
       {
@@ -10665,13 +10974,13 @@
         "description": "Label for the min ADA required value in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.minAdaRequired",
         "start": {
           "column": 18,
-          "line": 64
+          "line": 70
         }
       },
       {
@@ -10679,13 +10988,13 @@
         "description": "Tooltip for the min ADA required value in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.minAdaRequiredWithAssetTooltip",
         "start": {
           "column": 34,
-          "line": 70
+          "line": 76
         }
       },
       {
@@ -10693,13 +11002,13 @@
         "description": "Tooltip for the min ADA required value in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.minAdaRequiredWithNoAssetTooltip",
         "start": {
           "column": 36,
-          "line": 77
+          "line": 83
         }
       },
       {
@@ -10707,13 +11016,13 @@
         "description": "Label for the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
-          "line": 84
+          "line": 90
         }
       },
       {
@@ -10721,13 +11030,13 @@
         "description": "Hint in the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
-          "line": 90
+          "line": 96
         }
       },
       {
@@ -10735,13 +11044,13 @@
         "description": "Label for the reset button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.reset",
         "start": {
           "column": 20,
-          "line": 95
+          "line": 101
         }
       },
       {
@@ -10749,13 +11058,13 @@
         "description": "Label for the send button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.send",
         "start": {
           "column": 19,
-          "line": 100
+          "line": 106
         }
       },
       {
@@ -10763,13 +11072,13 @@
         "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 115
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 105
+          "line": 111
         }
       },
       {
@@ -10777,13 +11086,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 110
+          "line": 116
         }
       },
       {
@@ -10791,13 +11100,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 128
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 116
+          "line": 122
         }
       },
       {
@@ -10805,13 +11114,13 @@
         "description": "Label for the \"Calculating fees\" message for amount input field.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 134
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.calculatingFeesLabel",
         "start": {
           "column": 24,
-          "line": 123
+          "line": 129
         }
       },
       {
@@ -10819,13 +11128,13 @@
         "description": "Syncing wallet label on the send tokens form.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 139
         },
         "file": "source/renderer/app/components/wallet/send-form/messages.js",
         "id": "wallet.send.form.syncingWallet",
         "start": {
           "column": 17,
-          "line": 129
+          "line": 135
         }
       }
     ],
@@ -10838,13 +11147,13 @@
         "description": "Title for the \"Confirm transaction\" dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.title",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -10852,13 +11161,13 @@
         "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 41
+          "line": 40
         }
       },
       {
@@ -10866,13 +11175,13 @@
         "description": "Label for the \"To\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
-          "line": 47
+          "line": 46
         }
       },
       {
@@ -10880,13 +11189,13 @@
         "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -10894,13 +11203,13 @@
         "description": "Token",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.assetLabel",
         "start": {
           "column": 14,
-          "line": 58
+          "line": 57
         }
       },
       {
@@ -10908,13 +11217,13 @@
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 63
+          "line": 62
         }
       },
       {
@@ -10922,13 +11231,13 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 72
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 68
+          "line": 67
         }
       },
       {
@@ -10936,13 +11245,13 @@
         "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.receiver.label",
         "start": {
           "column": 17,
-          "line": 74
+          "line": 73
         }
       },
       {
@@ -10950,13 +11259,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 80
+          "line": 79
         }
       },
       {
@@ -10964,13 +11273,13 @@
         "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateWarning",
         "start": {
           "column": 26,
-          "line": 86
+          "line": 85
         }
       },
       {
@@ -10978,13 +11287,13 @@
         "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 98
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
         "start": {
           "column": 32,
-          "line": 93
+          "line": 92
         }
       },
       {
@@ -10992,13 +11301,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 104
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
-          "line": 100
+          "line": 99
         }
       },
       {
@@ -11006,13 +11315,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
-          "line": 106
+          "line": 105
         }
       },
       {
@@ -11020,13 +11329,13 @@
         "description": "Label for password error in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 116
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passwordError",
         "start": {
           "column": 24,
-          "line": 112
+          "line": 111
         }
       },
       {
@@ -11034,13 +11343,13 @@
         "description": "Label for \"unformated amount\"",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.unformattedAmountLabel",
         "start": {
           "column": 26,
-          "line": 118
+          "line": 117
         }
       },
       {
@@ -11048,13 +11357,13 @@
         "description": "Message for \"unformated amount\"",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 128
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
         "start": {
           "column": 46,
-          "line": 123
+          "line": 122
         }
       },
       {
@@ -11062,13 +11371,13 @@
         "description": "Message for \"unformated amount\"",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 135
         },
         "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
         "start": {
           "column": 46,
-          "line": 130
+          "line": 129
         }
       }
     ],
@@ -16428,109 +16737,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Fingerprint",
-        "description": "\"fingerprint\" item.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.fingerprint",
-        "start": {
-          "column": 19,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Policy Id",
-        "description": "\"policyId\" item.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.policyId",
-        "start": {
-          "column": 16,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Asset name",
-        "description": "\"assetName\" item.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.assetName",
-        "start": {
-          "column": 17,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Name",
-        "description": "\"name\" item.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.name",
-        "start": {
-          "column": 12,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Ticker",
-        "description": "\"ticker\" item.",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.ticker",
-        "start": {
-          "column": 14,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Description",
-        "description": "\"description\" item.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.description",
-        "start": {
-          "column": 19,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Blank",
-        "description": "\"Blank\" item value.",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "source/renderer/app/components/widgets/AssetToken.js",
-        "id": "widgets.assetToken.item.blank",
-        "start": {
-          "column": 9,
-          "line": 50
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/AssetToken.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Back to top",
         "description": "\"backToTop\" button label.",
         "end": {
@@ -18366,7 +18572,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Tokens",
+        "defaultMessage": "!!!Tokens (unformatted amount)",
         "description": "Transactions CSV column - Tokens",
         "end": {
           "column": 3,

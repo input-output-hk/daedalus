@@ -148,6 +148,8 @@ export const generateAsset = (
     assetName,
     fingerprint,
     metadata,
+    decimals: 0,
+    recommendedDecimals: null,
   });
 
 export const generateTransaction = (

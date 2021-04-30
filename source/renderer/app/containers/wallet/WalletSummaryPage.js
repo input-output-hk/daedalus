@@ -76,10 +76,11 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
     const { app, wallets, addresses, transactions, profile, assets } = stores;
-    const { getAssetDetails } = assets;
+    const { getAssetDetails, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
+    const { onAssetSettingsOpen } = actions.assets;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -197,8 +198,10 @@ export default class WalletSummaryPage extends Component<Props> {
           currencySelected={currencySelected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={walletAssets}
+          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           onOpenAssetSend={this.handleOpenAssetSend}
           onCopyAssetItem={this.handleOnCopyAssetItem}
+          onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
         />
         {walletTransactions}
