@@ -29,11 +29,13 @@ export default class WalletsDropdownTopLabel extends Component<WalletOption> {
     if (hasPendingDelegations) {
       currentStakePoolId = lastDelegatedStakePoolId;
     }
-    const delegatedStakePool = getStakePoolById(currentStakePoolId);
-    const { ranking, ticker } = delegatedStakePool;
+    const delegatedStakePool = currentStakePoolId
+      ? getStakePoolById(currentStakePoolId)
+      : null;
     if (!numberOfStakePools || !delegatedStakePool) {
       return null;
     }
+    const { ranking, ticker } = delegatedStakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
     return (
       <div style={{ color }} className={styles.ticker}>

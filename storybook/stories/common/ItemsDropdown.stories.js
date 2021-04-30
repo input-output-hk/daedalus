@@ -21,11 +21,11 @@ import WalletsDropdownOption from '../../../source/renderer/app/components/widge
 import WalletsDropdownTopLabel from '../../../source/renderer/app/components/widgets/forms/WalletsDropdownTopLabel';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import currenciesList from '../../../source/renderer/app/config/currenciesList.json';
-import { generateWallet } from '../_support/utils';
+import { generateWallet, generateHash } from '../_support/utils';
 
 const WALLETS = [
   generateWallet('Second Wallet', '500000000'),
-  generateWallet('Third Wallet', '100000000'),
+  generateWallet('Third Wallet', '100000000', STAKE_POOLS[3]),
   generateWallet('Fourth Wallet', '50000000'),
   generateWallet('Fifth Wallet', '7000000'),
 ];
@@ -35,6 +35,8 @@ const stakePoolsList = [
   ...STAKE_POOLS.slice(150, 155),
   ...STAKE_POOLS.slice(290, 295),
 ];
+
+const firstWalletId = generateHash();
 
 const stakePoolsOptions = stakePoolsList.reduce((obj, pool) => {
   const { name, ticker, ranking } = pool;
@@ -73,7 +75,7 @@ storiesOf('Common|ItemsDropdown', module)
 
   .add(
     'Generic',
-    withState({ value: 'brl' }, (store) => {
+    withState({ value: 'usd' }, (store) => {
       const options = Object.values(currenciesList).map((currency) => {
         const topLabel = get(currency, 'name.en-US');
         const code = get(currency, 'code');
@@ -141,31 +143,35 @@ storiesOf('Common|ItemsDropdown', module)
     );
   })
 
-  .add('Wallets', () => {
-    const firstWallet = generateWallet(
-      text('Name', 'First Wallet', 'First wallet'),
-      `${number('Amount', 1000000000, {}, 'First wallet')}`,
-      [],
-      undefined,
-      select('Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
-      true,
-      undefined,
-      boolean('Wallet - isHardwareWallet', true, 'First wallet')
-    );
-    const wallets = [firstWallet, ...WALLETS.slice(1)];
-    return (
-      <WalletsDropdown
-        getStakePoolById={(poolId) =>
-          find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
-        }
-        isSyncing={boolean('isSyncing', false)}
-        label={text('label', 'Wallets')}
-        numberOfStakePools={STAKE_POOLS.length}
-        onChange={action('onChange')}
-        placeholder={text('placeholder')}
-        syncingLabel={text('syncingLabel', 'Syncing')}
-        value={firstWallet.id}
-        wallets={wallets}
-      />
-    );
-  });
+  .add(
+    'Wallets',
+    withState({ walletId: firstWalletId }, (store) => {
+      const firstWallet = generateWallet(
+        text('Name', 'First Wallet', 'First wallet'),
+        `${number('Amount', 1000000000, {}, 'First wallet')}`,
+        undefined,
+        undefined,
+        select('Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
+        true,
+        undefined,
+        boolean('Wallet - isHardwareWallet', true, 'First wallet'),
+        firstWalletId
+      );
+      const wallets = [firstWallet, ...WALLETS];
+      return (
+        <WalletsDropdown
+          getStakePoolById={(poolId) =>
+            find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
+          }
+          isSyncing={boolean('isSyncing', false)}
+          label={text('label', 'Wallets')}
+          numberOfStakePools={STAKE_POOLS.length}
+          onChange={(walletId) => store.set({ walletId })}
+          placeholder={text('placeholder')}
+          syncingLabel={text('syncingLabel', 'Syncing')}
+          value={store.state.walletId}
+          wallets={wallets}
+        />
+      );
+    })
+  );

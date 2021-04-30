@@ -113,10 +113,11 @@ export const generateWallet = (
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
   status?: SyncStateStatus = WalletSyncStateStatuses.READY,
-  isHardwareWallet?: boolean = false
+  isHardwareWallet?: boolean = false,
+  id?: string = generateHash()
 ) =>
   new Wallet({
-    id: generateHash(),
+    id,
     addressPoolGap: 20,
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
