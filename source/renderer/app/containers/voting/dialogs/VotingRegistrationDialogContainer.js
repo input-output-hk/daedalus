@@ -240,7 +240,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     const { calculateTransactionFee } = transactions;
     const { getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;
-    const { selectCoins } = hardwareWallets;
+    const { selectCoins, initiateTransaction } = hardwareWallets;
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
     );
@@ -260,6 +260,7 @@ export default class VotingRegistrationDialogContainer extends Component<
           address: address.id,
           amount,
         }));
+        hardwareWallets.initiateTransaction({ walletId: this.selectedWalletId, isVotingRegistration: true });
       } else {
         ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,

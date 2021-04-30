@@ -556,7 +556,7 @@ export const handleHardwareWalletRequests = async (
     }
   });
 
-  // @TODO - validityIntervalStartStr is not working with Cardano App 2.1.0
+  // @TODO - validityIntervalStart is not working with Cardano App 2.1.0
   signTransactionLedgerChannel.onRequest(async (params) => {
     const {
       inputs,
@@ -569,7 +569,7 @@ export const handleHardwareWalletRequests = async (
       withdrawals,
       auxiliaryData,
       devicePath,
-      // validityIntervalStartStr,
+      validityIntervalStart,
       signingMode,
     } = params;
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
@@ -595,7 +595,7 @@ export const handleHardwareWalletRequests = async (
           certificates,
           withdrawals,
           auxiliaryData,
-          // validityIntervalStart,
+          validityIntervalStart,
         },
       });
       return Promise.resolve(signedTransaction);
