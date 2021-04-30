@@ -151,7 +151,7 @@ storiesOf('Common|ItemsDropdown', module)
         `${number('Amount', 1000000000, {}, 'First wallet')}`,
         undefined,
         undefined,
-        select('Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
+        select('Stake pool', stakePoolsOptions, STAKE_POOLS[0], 'First wallet'),
         true,
         undefined,
         boolean('Wallet - isHardwareWallet', true, 'First wallet'),
