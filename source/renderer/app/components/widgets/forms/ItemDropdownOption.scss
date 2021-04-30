@@ -14,7 +14,7 @@
   }
 }
 
-.topLabel {
+.label {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -33,7 +33,7 @@
   white-space: nowrap;
 }
 
-.bottomLabel {
+.detail {
   font-size: 12px;
   line-height: 16px;
   max-width: 100%;
@@ -48,7 +48,7 @@
   height: 100%;
   padding: 8px 20px;
 
-  .topLabel {
+  .label {
     height: initial;
 
     .topRowSync {

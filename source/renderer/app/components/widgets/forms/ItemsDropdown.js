@@ -24,9 +24,9 @@ export const onSearchItemsDropdown = (
   options: Array<any>
 ) => {
   return filter(options, (option) => {
-    const { topLabel, bottomLabel, value } = option;
+    const { label, detail, value } = option;
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
-    return regex.test(topLabel) || regex.test(bottomLabel) || regex.test(value);
+    return regex.test(label) || regex.test(detail) || regex.test(value);
   });
 };
 

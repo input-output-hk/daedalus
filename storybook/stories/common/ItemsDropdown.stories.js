@@ -17,7 +17,7 @@ import StoryProvider from '../_support/StoryProvider';
 import StoryLayout from '../_support/StoryLayout';
 import ItemsDropdown from '../../../source/renderer/app/components/widgets/forms/ItemsDropdown';
 import WalletsDropdown from '../../../source/renderer/app/components/widgets/forms/WalletsDropdown';
-import WalletsDropdownTopLabel from '../../../source/renderer/app/components/widgets/forms/WalletsDropdownTopLabel';
+import WalletsDropdownLabel from '../../../source/renderer/app/components/widgets/forms/WalletsDropdownLabel';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import currenciesList from '../../../source/renderer/app/config/currenciesList.json';
 import { generateWallet, generateHash } from '../_support/utils';
@@ -76,14 +76,14 @@ storiesOf('Common|ItemsDropdown', module)
     'Generic',
     withState({ value: 'usd' }, (store) => {
       const options = Object.values(currenciesList).map((currency) => {
-        const topLabel = get(currency, 'name.en-US');
+        const label = get(currency, 'name.en-US');
         const code = get(currency, 'code');
         const decimalDigits = get(currency, 'decimalDigits');
-        const bottomLabel = `Code: ${code} - Decimal digits: ${decimalDigits}`;
+        const detail = `Code: ${code} - Decimal digits: ${decimalDigits}`;
         const value = code;
         return {
-          topLabel,
-          bottomLabel,
+          label,
+          detail,
           value,
         };
       });
@@ -133,7 +133,7 @@ storiesOf('Common|ItemsDropdown', module)
     })
   )
 
-  .add('Wallets - TopLabel only', () => {
+  .add('Wallets - Label only', () => {
     const wallet = generateWallet(
       text('Wallet - Name', 'Wallet name'),
       '1000000000',
@@ -154,7 +154,7 @@ storiesOf('Common|ItemsDropdown', module)
             'var(--theme-delegation-steps-choose-wallet-custom-value-color)',
         }}
       >
-        <WalletsDropdownTopLabel
+        <WalletsDropdownLabel
           getStakePoolById={(poolId) =>
             find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
           }

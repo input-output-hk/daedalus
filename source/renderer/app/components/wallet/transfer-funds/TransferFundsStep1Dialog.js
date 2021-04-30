@@ -92,8 +92,8 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
         </p>
         <div className={styles.sourceWallet}>
           <ItemDropdownOption
-            topLabel={sourceWallet.name}
-            bottomLabel={formattedWalletAmount(sourceWallet.amount)}
+            label={sourceWallet.name}
+            detail={formattedWalletAmount(sourceWallet.amount)}
             selected
           />
         </div>

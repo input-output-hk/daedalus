@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { getColorFromRange } from '../../../utils/colors';
-import styles from './WalletsDropdownTopLabel.scss';
+import styles from './WalletsDropdownLabel.scss';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import LoadingSpinner from '../LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
@@ -15,7 +15,7 @@ export type WalletOption = {
   syncingLabel?: string,
 };
 
-export default class WalletsDropdownTopLabel extends Component<WalletOption> {
+export default class WalletsDropdownLabel extends Component<WalletOption> {
   renderTicker = () => {
     const { wallet, getStakePoolById, numberOfStakePools } = this.props;
     const {
