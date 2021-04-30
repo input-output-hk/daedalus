@@ -18,9 +18,14 @@ import StoryLayout from '../_support/StoryLayout';
 import ItemsDropdown from '../../../source/renderer/app/components/widgets/forms/ItemsDropdown';
 import WalletsDropdown from '../../../source/renderer/app/components/widgets/forms/WalletsDropdown';
 import WalletsDropdownLabel from '../../../source/renderer/app/components/widgets/forms/WalletsDropdownLabel';
+import AssetsDropdown from '../../../source/renderer/app/components/widgets/forms/AssetsDropdown';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import currenciesList from '../../../source/renderer/app/config/currenciesList.json';
-import { generateWallet, generateHash } from '../_support/utils';
+import {
+  generateWallet,
+  generateHash,
+  generateWalletSummaryAsset,
+} from '../_support/utils';
 
 const WALLETS = [
   generateWallet('Second Wallet', '500000000'),
@@ -33,6 +38,29 @@ const stakePoolsList = [
   ...STAKE_POOLS.slice(0, 5),
   ...STAKE_POOLS.slice(150, 155),
   ...STAKE_POOLS.slice(290, 295),
+];
+
+const assets = [
+  generateWalletSummaryAsset(generateHash(), '', generateHash(), 100, {
+    name: 'Asset 1',
+    ticker: 'ABCD',
+    description: 'Asset 1 description',
+  }),
+  generateWalletSummaryAsset(generateHash(), '', generateHash(), 200, {
+    name: 'Asset 2',
+    ticker: 'EFG',
+    description: 'Asset 2 description',
+  }),
+  generateWalletSummaryAsset(generateHash(), '', generateHash(), 300, {
+    name: 'Asset 3',
+    ticker: 'HI',
+    description: 'Asset 3 description',
+  }),
+  generateWalletSummaryAsset(generateHash(), '', generateHash(), 400, {
+    name: 'Asset 4',
+    ticker: 'JKL',
+    description: 'Asset 4 description',
+  }),
 ];
 
 const firstWalletId = generateHash();
@@ -167,4 +195,17 @@ storiesOf('Common|ItemsDropdown', module)
         />
       </div>
     );
-  });
+  })
+
+  .add(
+    'Assets',
+    withState({ assetId: assets[0].fingerprint }, (store) => {
+      return (
+        <AssetsDropdown
+          assets={assets}
+          value={store.state.assetId}
+          onChange={(assetId) => store.set({ assetId })}
+        />
+      );
+    })
+  );

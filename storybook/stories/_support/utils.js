@@ -24,6 +24,7 @@ import type {
   TransactionType,
   TransactionState,
 } from '../../../source/renderer/app/api/transactions/types';
+import { WalletSummaryAsset } from '../../../source/renderer/app/api/assets/types';
 import Asset from '../../../source/renderer/app/domains/Asset';
 import type {
   AssetMetadata,
@@ -152,6 +153,24 @@ export const generateAsset = (
     decimals: 0,
     recommendedDecimals: null,
   });
+
+export const generateWalletSummaryAsset = (
+  policyId: string,
+  assetName: string = '',
+  fingerprint: string = '',
+  quantity: number,
+  metadata: ?AssetMetadata,
+  decimals: ?number,
+  recommendedDecimals: ?number
+): WalletSummaryAsset => ({
+  policyId,
+  assetName,
+  fingerprint,
+  metadata,
+  quantity: new BigNumber(quantity),
+  decimals,
+  recommendedDecimals,
+});
 
 export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
