@@ -1,52 +1,19 @@
 .component {
-  align-items: flex-start;
-  color: var(--theme-delegation-steps-choose-wallet-error-select-options-color);
   display: flex;
-  flex-direction: column;
-  font-family: var(--font-regular);
-  justify-content: center;
-  max-width: calc(100% - 20px);
-
-  :global {
-    .SimpleOptions_option {
-      padding: 8px 20px;
-    }
-  }
-}
-
-.walletName {
-  font-size: 14px;
-  line-height: 18px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  .labelSync {
-    opacity: 0.5;
-  }
-}
-
-.topRow {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  max-width: 100%;
-  overflow: hidden;
-  padding-right: 0;
-  text-overflow: ellipsis;
-  width: 100%;
+  min-width: 0;
 
   .ticker {
-    font-size: 14px;
-    line-height: 18px;
     margin-right: 6px;
     text-transform: uppercase;
   }
 
-  .topRowTicker {
-    display: flex;
+  .walletName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .labelSync {
+      opacity: 0.5;
+    }
   }
 
   .topRowSync {
@@ -64,32 +31,6 @@
         fill: var(--theme-dialog-fullsize-text-highlight-color) !important;
         opacity: 0.5;
       }
-    }
-  }
-}
-
-.detail {
-  font-size: 12px;
-  line-height: 16px;
-  max-width: 100%;
-  opacity: 0.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.selected {
-  color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
-  height: 100%;
-  padding: 8px 20px;
-
-  .topRow {
-    height: initial;
-
-    .topRowSync {
-      position: absolute;
-      right: 50px;
-      top: 13px;
     }
   }
 }

@@ -50,31 +50,29 @@ export default class WalletsDropdownTopLabel extends Component<WalletOption> {
     const ticker = this.renderTicker();
     const hasSyncing = !ticker && isSyncing && syncingLabel;
     return (
-      <div className={styles.topRow}>
-        <div className={styles.topRowTicker}>
-          {ticker}
-          <div className={styles.walletName}>
-            {name}
-            {isHardwareWallet && (
-              <SVGInline
-                svg={hardwareWalletsIcon}
-                className={styles.hardwareWalletsIcon}
-              />
-            )}
-            {hasSyncing && (
-              <span className={styles.walletNameSync}> {syncingLabel}</span>
-            )}
-          </div>
+      <div className={styles.component}>
+        {ticker}
+        <div className={styles.walletName}>
+          {name}
+          {isHardwareWallet && (
+            <SVGInline
+              svg={hardwareWalletsIcon}
+              className={styles.hardwareWalletsIcon}
+            />
+          )}
           {hasSyncing && (
-            <div className={styles.topRowSync}>
-              {isSyncing && (
-                <div className={styles.syncing}>
-                  <LoadingSpinner />
-                </div>
-              )}
-            </div>
+            <span className={styles.labelSync}> {syncingLabel}</span>
           )}
         </div>
+        {hasSyncing && (
+          <div className={styles.topRowSync}>
+            {isSyncing && (
+              <div className={styles.syncing}>
+                <LoadingSpinner />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   }

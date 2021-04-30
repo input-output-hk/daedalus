@@ -17,7 +17,6 @@ import StoryProvider from '../_support/StoryProvider';
 import StoryLayout from '../_support/StoryLayout';
 import ItemsDropdown from '../../../source/renderer/app/components/widgets/forms/ItemsDropdown';
 import WalletsDropdown from '../../../source/renderer/app/components/widgets/forms/WalletsDropdown';
-import WalletsDropdownOption from '../../../source/renderer/app/components/widgets/forms/WalletsDropdownOption';
 import WalletsDropdownTopLabel from '../../../source/renderer/app/components/widgets/forms/WalletsDropdownTopLabel';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import currenciesList from '../../../source/renderer/app/config/currenciesList.json';
@@ -62,7 +61,7 @@ storiesOf('Common|ItemsDropdown', module)
       <StoryDecorator propsForChildren={state}>
         <StoryProvider>
           <StoryLayout activeSidebarCategory={null} {...context}>
-            <div style={{ margin: 50, height: 400 }}>{story()}</div>
+            <div style={{ margin: 50 }}>{story()}</div>
           </StoryLayout>
         </StoryProvider>
       </StoryDecorator>
@@ -100,49 +99,6 @@ storiesOf('Common|ItemsDropdown', module)
     })
   )
 
-  .add('Wallets - Standalone option', () => {
-    return (
-      <WalletsDropdownOption
-        delegatedStakePool={
-          boolean('has delegatedStakePool') ? STAKE_POOLS[0] : null
-        }
-        detail={text('detail', 'detail')}
-        label={text('label', 'label')}
-        numberOfStakePools={number('numberOfStakePools', 1)}
-        selected={boolean('selected', false)}
-        isSyncing={boolean('isSyncing', false)}
-        syncingLabel={text('syncingLabel')}
-        isHardwareWallet={boolean('isHardwareWallet', false)}
-      />
-    );
-  })
-
-  .add('Wallets - TopLabel', () => {
-    const wallet = generateWallet(
-      text('Wallet - Name', 'Wallet name'),
-      `${number('Wallet - Amount', 1000000000)}`,
-      undefined,
-      undefined,
-      select('Wallet - Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
-      true,
-      undefined,
-      boolean('Wallet - isHardwareWallet', false)
-    );
-    return (
-      <WalletsDropdownTopLabel
-        getStakePoolById={(poolId) =>
-          find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
-        }
-        isSyncing={boolean('isSyncing', false)}
-        numberOfStakePools={
-          boolean('Has stake pools', false) ? STAKE_POOLS.length : 0
-        }
-        syncingLabel={text('syncingLabel', 'Syncing')}
-        wallet={wallet}
-      />
-    );
-  })
-
   .add(
     'Wallets',
     withState({ walletId: firstWalletId }, (store) => {
@@ -168,11 +124,47 @@ storiesOf('Common|ItemsDropdown', module)
           numberOfStakePools={STAKE_POOLS.length}
           onChange={(walletId) => store.set({ walletId })}
           placeholder={text('placeholder')}
-          syncingLabel={text('syncingLabel', 'Syncing')}
+          syncingLabel={text('syncingLabel', 'syncing')}
           value={store.state.walletId}
           wallets={wallets}
           hasSearch={boolean('hasSearch', false)}
         />
       );
     })
-  );
+  )
+
+  .add('Wallets - TopLabel only', () => {
+    const wallet = generateWallet(
+      text('Wallet - Name', 'Wallet name'),
+      '1000000000',
+      undefined,
+      undefined,
+      select('Wallet - Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
+      true,
+      undefined,
+      boolean('Wallet - isHardwareWallet', true)
+    );
+    return (
+      <div
+        style={{
+          fontFamily: 'var(--font-regular)',
+          fontSize: 14,
+          lineHeight: 18,
+          color:
+            'var(--theme-delegation-steps-choose-wallet-custom-value-color)',
+        }}
+      >
+        <WalletsDropdownTopLabel
+          getStakePoolById={(poolId) =>
+            find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
+          }
+          isSyncing={boolean('isSyncing', false)}
+          numberOfStakePools={
+            boolean('Has stake pools', true) ? STAKE_POOLS.length : 0
+          }
+          syncingLabel={text('syncingLabel', 'syncing')}
+          wallet={wallet}
+        />
+      </div>
+    );
+  });

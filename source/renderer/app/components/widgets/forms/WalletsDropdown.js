@@ -19,11 +19,9 @@ export const onSearchWalletsDropdown = (
   options: Array<any>
 ) => {
   return filter(options, (option) => {
-    const { walletName, bottomLabel, value } = option;
+    const { label, bottomLabel, value } = option;
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
-    return (
-      regex.test(walletName) || regex.test(bottomLabel) || regex.test(value)
-    );
+    return regex.test(label) || regex.test(bottomLabel) || regex.test(value);
   });
 };
 
@@ -38,10 +36,10 @@ export default class WalletsDropdown extends Component<Props> {
       const { id: value, amount, isRestoring } = wallet;
       const bottomLabel = !isRestoring ? formattedWalletAmount(amount) : null;
       return {
-        walletName: wallet.name,
         topLabel: <WalletsDropdownTopLabel wallet={wallet} {...props} />,
         bottomLabel,
         value,
+        label: wallet.name,
       };
     });
     return <ItemsDropdown options={formattedOptions} {...props} />;
