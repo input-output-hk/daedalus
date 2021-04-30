@@ -171,6 +171,7 @@ storiesOf('Common|ItemsDropdown', module)
           syncingLabel={text('syncingLabel', 'Syncing')}
           value={store.state.walletId}
           wallets={wallets}
+          hasSearch={boolean('hasSearch', false)}
         />
       );
     })
