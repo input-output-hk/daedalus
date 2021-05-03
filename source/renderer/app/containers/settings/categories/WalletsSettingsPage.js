@@ -10,11 +10,11 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   handleSelectCurrency = (currencyCode: string) => {
-    this.props.actions.wallets.setCurrencySelected.trigger({ currencyCode });
+    this.props.actions.currency.setCurrencySelected.trigger({ currencyCode });
   };
 
   handleToggleCurrencyIsActive = () =>
-    this.props.actions.wallets.toggleCurrencyIsActive.trigger();
+    this.props.actions.currency.toggleCurrencyIsActive.trigger();
 
   render() {
     const { stores } = this.props;
@@ -23,7 +23,7 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
       localizedCurrencyList: currencyList,
       currencyRate,
       currencyIsActive,
-    } = stores.wallets;
+    } = stores.currency;
     const { currentLocale } = stores.profile;
     const { openExternalLink } = stores.app;
     return (

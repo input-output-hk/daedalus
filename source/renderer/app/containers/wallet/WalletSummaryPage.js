@@ -77,7 +77,15 @@ export default class WalletSummaryPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { stores, actions } = this.props;
-    const { app, wallets, addresses, transactions, profile, assets } = stores;
+    const {
+      app,
+      wallets,
+      addresses,
+      transactions,
+      profile,
+      assets,
+      currency,
+    } = stores;
     const { getAssetDetails, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
     const { onAssetSettingsOpen } = actions.assets;
@@ -94,15 +102,16 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
+    const { active: wallet } = wallets;
     const {
-      active: wallet,
       currencyIsActive,
       currencyIsAvailable,
       currencyIsFetchingRate,
       currencyLastFetched,
       currencyRate,
       currencySelected,
-    } = wallets;
+    } = currency;
+
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 

@@ -3,6 +3,7 @@ import AddressesActions from './addresses-actions';
 import AppActions from './app-actions';
 import AppUpdateActions from './app-update-actions';
 import AssetsActions from './assets-actions';
+import CurrencyActions from './currency-actions';
 import DialogsActions from './dialogs-actions';
 import HardwareWalletsActions from './hardware-wallets-actions';
 import NetworkStatusActions from './network-status-actions';
@@ -26,6 +27,7 @@ export type ActionsMap = {
   appUpdate: AppUpdateActions,
   assets: AssetsActions,
   dialogs: DialogsActions,
+  currency: CurrencyActions,
   hardwareWallets: HardwareWalletsActions,
   networkStatus: NetworkStatusActions,
   notifications: NotificationsActions,
@@ -48,6 +50,7 @@ const actionsMap: ActionsMap = {
   app: new AppActions(),
   appUpdate: new AppUpdateActions(),
   assets: new AssetsActions(),
+  currency: new CurrencyActions(),
   dialogs: new DialogsActions(),
   hardwareWallets: new HardwareWalletsActions(),
   networkStatus: new NetworkStatusActions(),
