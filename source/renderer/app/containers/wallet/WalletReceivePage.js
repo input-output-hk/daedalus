@@ -71,13 +71,10 @@ export default class WalletReceivePage extends Component<Props, State> {
       addressToShare,
     });
     const dialog = WalletReceiveDialog;
-    if (activeWallet) {
-      const showAddressVerification = hardwareWallets.isAddressVerificationEnabled(
-        activeWallet.id
-      );
-      if (showAddressVerification) {
-        hardwareWallets.initiateAddressVerification(addressToShare);
-      }
+    console.debug('>>> SHARE: ', activeWallet);
+    if (activeWallet.isHardwareWallet) {
+      console.debug('>>> CALL INIT verify 2');
+      hardwareWallets.initiateAddressVerification(addressToShare);
     }
     dialogs.open.trigger({ dialog });
   };
@@ -198,7 +195,6 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
     const {
-      isAddressVerificationEnabled,
       hwDeviceStatus,
       transportDevice,
       isAddressDerived,
@@ -268,9 +264,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             onDownloadPDF={this.handleDownloadPDF}
             onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
-            isAddressVerificationEnabled={isAddressVerificationEnabled(
-              activeWallet.id
-            )}
+            isAddressVerificationEnabled={activeWallet.isHardwareWallet}
             walletName={activeWallet.name}
             hwDeviceStatus={hwDeviceStatus}
             transportDevice={transportDevice}

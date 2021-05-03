@@ -416,6 +416,7 @@ export const handleHardwareWalletRequests = async (
   deriveAddressChannel.onRequest(async (params) => {
     const {
       addressType,
+      address,
       spendingPathStr,
       stakingPathStr,
       devicePath,
@@ -432,8 +433,28 @@ export const handleHardwareWalletRequests = async (
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
       logger.info('[HW-DEBUG] DERIVE ADDRESS');
 
+      console.debug('>>> PARAMS ++: ', {
+        params,
+        spendingPath,
+        stakingPath,
+      })
+
       if (isTrezor) {
-        throw new Error('Address verification not supported on Trezor devices');
+        // throw new Error('Address verification not supported on Trezor devices');
+        const result = await TrezorConnect.cardanoGetAddress({
+          device: { path: devicePath },
+          addressParameters: {
+            addressType: addressType,
+            path: "m/1852'/1815'/0'/0/5",
+            stakingPath: "m/1852'/1815'/0'/2/0",
+          },
+          protocolMagic,
+          networkId,
+          // address: "Ae2tdPwUPEZ5YUb8sM3eS8JqKgrRLzhiu71crfuH2MFtqaYr5ACNRdsswsZ",
+          address,
+        });
+        console.debug('>>> RES: ', result);
+        return result;
       }
 
       // Check if Ledger instantiated

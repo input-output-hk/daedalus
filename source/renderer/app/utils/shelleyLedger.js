@@ -14,6 +14,8 @@ import {
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { AddressStyles } from '../domains/WalletAddress';
 
+import _ from 'lodash';
+
 // Types
 import type {
   CoinSelectionInput,
@@ -126,9 +128,32 @@ export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
       return asset.assetName.length;
     },
     ['asc'],
-    ['assetName', 'desc']
+    ['assetName', 'asc']
   );
-  return groupBy(sortedAssets, 'policyId');
+
+  const grouped1 = groupBy(sortedAssets, 'policyId')
+  console.debug('>>> SORTED & Grouped 1: ', {sortedAssets, grouped1});
+
+
+  const compareStringsCanonically = (string1: string, string2: string) =>
+    string1.length - string2.length || string1.localeCompare(string2)
+
+  const aa = _(assets)
+  .orderBy(['policyId', 'assetName'], ['asc', 'asc'])
+  .groupBy(({policyId}) => policyId)
+  .mapValues((tokens) => tokens.map(({assetName, quantity}) => ({assetName, quantity})))
+  .map((tokens, policyId) => ({
+    policyId,
+    assets: tokens.sort((token1, token2) =>
+      compareStringsCanonically(token1.assetName, token2.assetName)
+    ),
+  }))
+  .sort((token1, token2) => compareStringsCanonically(token1.policyId, token2.policyId))
+  .value()
+
+  console.debug('>>> aa: ', aa);
+
+  return grouped1;
 };
 
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
@@ -143,11 +168,13 @@ export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
     });
     policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
   });
+  console.debug('>>> ShelleyTxOutputAssets: ', policyIdMap);
   return policyIdMap;
 };
 
 export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
+  console.debug('>>> GROUPED: ', tokenObject)
   const tokenObjectEntries = Object.entries(tokenObject);
 
   const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
@@ -161,6 +188,7 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
     };
   });
 
+  console.debug('>>> Token bundle: ', tokenBundle);
   return tokenBundle;
 };
 
