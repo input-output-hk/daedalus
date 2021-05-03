@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Moved currency related code into a dedicated store ([PR 2546](https://github.com/input-output-hk/daedalus/pull/2546))
 - Implemented manually configurable decimal places for native tokens ([PR 2533](https://github.com/input-output-hk/daedalus/pull/2533))
 - Added warning message when pasting an address of the same wallet in the send form ([PR 2506](https://github.com/input-output-hk/daedalus/pull/2506))
 - Implemented select search style variables ([PR 2512](https://github.com/input-output-hk/daedalus/pull/2512))
