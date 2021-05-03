@@ -12,6 +12,7 @@ Changelog
 
 ### Fixes
 
+- Fixed hardware wallets transactions issue with native tokens ([PR 2543](https://github.com/input-output-hk/daedalus/pull/2543))
 - Fixed hardware wallets transaction initialization issue on device reconnect ([PR 2541](https://github.com/input-output-hk/daedalus/pull/2541))
 - Fixed blank currency selection after updating to 4.0.5 ([PR 2529](https://github.com/input-output-hk/daedalus/pull/2529))
 - Fixed hardware wallets confirmation crashing issue when device is in "Busy" state ([PR 2522](https://github.com/input-output-hk/daedalus/pull/2522))
