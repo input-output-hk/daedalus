@@ -13,6 +13,16 @@ import type { ItemDropdown } from './ItemDropdownOption';
  * Reference:
  * https://github.com/input-output-hk/react-polymorph/blob/develop/source/components/Select.js
  *
+ * For a simple usage, it only requires an `option` array, with an extra `detail` item:
+ *
+ * [
+ *   {
+ *     label: 'Top content',
+ *     detail: 'Bottom content',
+ *     value: '...'
+ *   }
+ * ]
+ *
  */
 export type ItemDropdownProps = {
   options: Array<ItemDropdown>,
