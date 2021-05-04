@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import { get, map, find, findLast, filter, includes } from 'lodash';
+import { get, map, find, findLast, includes } from 'lodash';
 import semver from 'semver';
 import {
   TransactionSigningMode,
@@ -1962,20 +1962,20 @@ export default class HardwareWalletsStore extends Store {
     if (disconnected && deviceType === DeviceTypes.LEDGER) {
       // Remove all stored Ledger instances from LC - both pending and paired (with software Wallets)
       logger.debug('[HW-DEBUG] HWStore - device disconnected');
-      const recognizedLedgerDevices = filter(
+
+      const recognizedLedgerDevice = find(
         hardwareWalletDevices,
-        (hardwareWalletDevice) =>
-          hardwareWalletDevice.deviceType === DeviceTypes.LEDGER &&
-          hardwareWalletDevice.path === path
+        (hardwareWalletDevice) => hardwareWalletDevice.path === path
       );
 
-      // Delete or pending or paired Ledger device
-      map(recognizedLedgerDevices, (recognizedLedgerDevice) => {
-        logger.debug('[HW-DEBUG] HWStore - UNSET: ', recognizedLedgerDevice.id);
-        return this._unsetHardwareWalletDevice({
+      if (recognizedLedgerDevice) {
+        logger.debug('[HW-DEBUG] HWStore - Remove Device from LC', {
+          recognizedLedgerDevice,
+        });
+        await this._unsetHardwareWalletDevice({
           deviceId: recognizedLedgerDevice.id,
         });
-      });
+      }
 
       logger.debug('[HW-DEBUG] HWStore - GET Paired and set to disconnected');
       const recognizedLedgerWallet = find(
