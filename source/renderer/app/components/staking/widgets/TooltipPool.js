@@ -38,6 +38,11 @@ import {
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
+  noData: {
+    id: 'staking.stakePools.tooltip.noData',
+    defaultMessage: '!!!No data',
+    description: '"Name" placeholder when it is empty.',
+  },
   ranking: {
     id: 'staking.stakePools.tooltip.ranking',
     defaultMessage: '!!!Rank:',
@@ -156,6 +161,7 @@ const messages = defineMessages({
 
 type Props = {
   stakePool: StakePool,
+  ranking: number,
   currentTheme: string,
   onClose: () => void,
   onOpenExternalLink: (string) => void,
@@ -222,11 +228,11 @@ export default class TooltipPool extends Component<Props, State> {
     const {
       currentTheme,
       stakePool,
+      ranking,
       numberOfRankedStakePools,
       isGridRewardsView,
     } = this.props;
     const {
-      ranking,
       relativeStake,
       producedBlocks,
       potentialRewards,
@@ -476,7 +482,9 @@ export default class TooltipPool extends Component<Props, State> {
       >
         <div className={colorBandClassnames} style={colorBandStyle} />
         <div className={styles.container}>
-          <h3 className={styles.name}>{name}</h3>
+          <h3 className={styles.name}>
+            {name || intl.formatMessage(messages.noData)}
+          </h3>
           <button
             className={styles.closeButton}
             onClick={(e) => {
@@ -486,7 +494,7 @@ export default class TooltipPool extends Component<Props, State> {
           >
             <SVGInline svg={closeCross} />
           </button>
-          <div className={styles.ticker}>{ticker}</div>
+          {ticker && <div className={styles.ticker}>{ticker}</div>}
           {retiring && (
             <div className={styles.retirement}>
               <FormattedMessage
@@ -518,13 +526,17 @@ export default class TooltipPool extends Component<Props, State> {
               </CopyToClipboard>
             </div>
           </PopOver>
-          <div className={styles.description}>{description}</div>
-          <Link
-            onClick={() => onOpenExternalLink(homepage)}
-            className={styles.homepage}
-            label={homepage}
-            skin={LinkSkin}
-          />
+          {description && (
+            <div className={styles.description}>{description}</div>
+          )}
+          {homepage && (
+            <Link
+              onClick={() => onOpenExternalLink(homepage)}
+              className={styles.homepage}
+              label={homepage}
+              skin={LinkSkin}
+            />
+          )}
           {this.renderDescriptionFields()}
         </div>
         {onSelect && showWithSelectButton && (

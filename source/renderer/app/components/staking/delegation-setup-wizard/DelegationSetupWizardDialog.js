@@ -10,8 +10,8 @@ import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDial
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
 import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
+import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
 import Wallet from '../../../domains/Wallet';
-
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
@@ -42,6 +42,9 @@ type Props = {
   currentLocale: string,
   getStakePoolById: Function,
   hwDeviceStatus: HwDeviceStatus,
+  filterOptions: StakePoolFilterOptionsType,
+  onFilter: Function,
+  populatedFilterOptions: StakePoolFilterOptionsType,
   isTrezor: boolean,
 };
 
@@ -87,6 +90,9 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       error,
       getStakePoolById,
       hwDeviceStatus,
+      filterOptions,
+      onFilter,
+      populatedFilterOptions,
       isTrezor,
     } = this.props;
 
@@ -132,6 +138,9 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onClose={onClose}
             onBack={onBack}
             onSelectPool={onSelectPool}
+            filterOptions={filterOptions}
+            onFilter={onFilter}
+            populatedFilterOptions={populatedFilterOptions}
           />
         );
         break;

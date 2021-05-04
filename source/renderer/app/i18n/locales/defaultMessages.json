@@ -4003,13 +4003,13 @@
         "description": "Title \"Choose a stake pool\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 28
+          "line": 33
         }
       },
       {
@@ -4017,13 +4017,13 @@
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 34
+          "line": 39
         }
       },
       {
@@ -4031,13 +4031,13 @@
         "description": "Select / Selected pool section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel",
         "start": {
           "column": 24,
-          "line": 40
+          "line": 45
         }
       },
       {
@@ -4045,13 +4045,13 @@
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel",
         "start": {
           "column": 26,
-          "line": 48
+          "line": 53
         }
       },
       {
@@ -4059,13 +4059,13 @@
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabelRetiring",
         "start": {
           "column": 34,
-          "line": 56
+          "line": 61
         }
       },
       {
@@ -4073,13 +4073,13 @@
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel",
         "start": {
           "column": 27,
-          "line": 64
+          "line": 69
         }
       },
       {
@@ -4087,13 +4087,13 @@
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 84
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel",
         "start": {
           "column": 31,
-          "line": 72
+          "line": 77
         }
       },
       {
@@ -4101,13 +4101,13 @@
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel",
         "start": {
           "column": 20,
-          "line": 80
+          "line": 85
         }
       },
       {
@@ -4115,13 +4115,13 @@
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 97
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
           "column": 20,
-          "line": 86
+          "line": 91
         }
       },
       {
@@ -4129,13 +4129,13 @@
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 104
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
           "column": 26,
-          "line": 93
+          "line": 98
         }
       },
       {
@@ -4143,13 +4143,13 @@
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 100
+          "line": 105
         }
       },
       {
@@ -4157,27 +4157,55 @@
         "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 118
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 107
+          "line": 112
         }
       },
       {
-        "defaultMessage": "!!!The stake pool you have selected is about to be retired. If you continue the delegation process, you will need to delegate your stake to another pool at least one complete epoch before the current pool’s retirement date to avoid losing rewards.",
+        "defaultMessage": "!!!The stake pool you have selected is about to be retired. If you delegate to this pool, you will need to redelegate your wallet to a different pool at least one entire epoch before the current pool’s retirement date to avoid losing rewards.",
         "description": "Retiring Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 126
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter",
         "start": {
           "column": 22,
-          "line": 114
+          "line": 119
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected is private as its margin is 100%. If you delegate to this pool, all rewards will go to the stake pool, and you will not earn delegation rewards.",
+        "description": "Private Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 133
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.privatePoolFooter",
+        "start": {
+          "column": 21,
+          "line": 127
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected has a high margin of {profitMarginPercentage}%. You could earn more  rewards by delegating to a different pool. Delegating to pools with high margins is not a concern if they are charity pools or if you are supporting a pool for different reasons.",
+        "description": "High Profit Margin Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 141
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.highProfitMarginPoolFooter",
+        "start": {
+          "column": 30,
+          "line": 134
         }
       }
     ],
@@ -4335,13 +4363,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -4349,13 +4377,13 @@
         "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -4363,13 +4391,13 @@
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -4377,13 +4405,13 @@
         "description": "Stake pool ID label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel",
         "start": {
           "column": 20,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -4391,13 +4419,13 @@
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -4405,13 +4433,13 @@
         "description": "Deposit label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.depositLabel",
         "start": {
           "column": 16,
-          "line": 68
+          "line": 69
         }
       },
       {
@@ -4419,13 +4447,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 74
+          "line": 75
         }
       },
       {
@@ -4433,13 +4461,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 80
+          "line": 81
         }
       },
       {
@@ -4447,13 +4475,13 @@
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -4461,13 +4489,13 @@
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 98
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -4475,13 +4503,13 @@
         "description": "\"Calculating fees\" message in the \"confirmation\" dialog.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 103
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
         "start": {
           "column": 19,
-          "line": 98
+          "line": 99
         }
       },
       {
@@ -4489,13 +4517,55 @@
         "description": "\"Calculating deposit\" message in the \"confirmation\" dialog.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 108
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit",
         "start": {
           "column": 22,
-          "line": 103
+          "line": 104
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected is about to be retired. If you delegate to this pool, you will need to redelegate your wallet to a different pool at least one entire epoch before the current pool’s retirement date to avoid losing rewards.",
+        "description": "Retiring Pool Footer label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 116
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter",
+        "start": {
+          "column": 22,
+          "line": 109
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected is private as its margin is 100%. If you delegate to this pool, all rewards will go to the stake pool, and you will not earn delegation rewards.",
+        "description": "Private Pool Footer label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 123
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.privatePoolFooter",
+        "start": {
+          "column": 21,
+          "line": 117
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected has a high margin of {profitMarginPercentage}%. You could earn more  rewards by delegating to a different pool. Delegating to pools with high margins is not a concern if they are charity pools or if you are supporting a pool for different reasons.",
+        "description": "High Profit Margin Pool Footer label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 131
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.highProfitMarginPoolFooter",
+        "start": {
+          "column": 30,
+          "line": 124
         }
       }
     ],
@@ -6008,17 +6078,106 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Reset Filter",
+        "description": "Reset Filter button label.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
+        "id": "staking.stakePools.filter.resetFilter",
+        "start": {
+          "column": 15,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Public pools with off-chain data",
+        "description": "Public pools with off-chain data filter type.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
+        "id": "staking.stakePools.filter.publicPoolsWithOffChainData",
+        "start": {
+          "column": 31,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Retiring pools",
+        "description": "Retiring pools filter type.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
+        "id": "staking.stakePools.filter.retiringPools",
+        "start": {
+          "column": 17,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Private pools",
+        "description": "Private pools filter type.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
+        "id": "staking.stakePools.filter.privatePools",
+        "start": {
+          "column": 16,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Pools without off-chain data",
+        "description": "Pools without off-chain data filter type.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
+        "id": "staking.stakePools.filter.poolsWithoutOffChainData",
+        "start": {
+          "column": 28,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!Apply",
+        "description": "Filter button label.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/FilterPopOver.js",
+        "id": "staking.stakePools.filter.apply",
+        "start": {
+          "column": 9,
+          "line": 45
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/FilterPopOver.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Staking pools you are delegating to",
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 28
+          "line": 34
         }
       },
       {
@@ -6026,13 +6185,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 33
+          "line": 39
         }
       },
       {
@@ -6040,13 +6199,13 @@
         "description": "\"listTitleLoading\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleLoading",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 44
         }
       },
       {
@@ -6054,13 +6213,13 @@
         "description": "\"listTitleSearch\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleSearch",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 49
         }
       },
       {
@@ -6068,13 +6227,13 @@
         "description": "\"listTitleStakePools\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 58
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleStakePools",
         "start": {
           "column": 23,
-          "line": 48
+          "line": 54
         }
       },
       {
@@ -6082,13 +6241,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 53
+          "line": 59
         }
       },
       {
@@ -6096,13 +6255,13 @@
         "description": "moderatedBy message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.moderatedBy",
         "start": {
           "column": 15,
-          "line": 59
+          "line": 65
         }
       },
       {
@@ -6110,13 +6269,55 @@
         "description": "unmoderated message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.unmoderated",
         "start": {
           "column": 15,
-          "line": 64
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!Please select at least one category in the filter or",
+        "description": "Empty filter warning prefix",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.filter.emptyFilterWarningPrefix",
+        "start": {
+          "column": 28,
+          "line": 75
+        }
+      },
+      {
+        "defaultMessage": "!!!.",
+        "description": "Empty filter warning suffix",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.filter.emptyFilterWarningSuffix",
+        "start": {
+          "column": 28,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Reset Filter",
+        "description": "Reset Filter link label",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.filter.resetFilter",
+        "start": {
+          "column": 15,
+          "line": 85
         }
       }
     ],
@@ -6330,13 +6531,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 18
+          "line": 20
         }
       },
       {
@@ -6344,13 +6545,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -6358,13 +6559,13 @@
         "description": "\"listTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listTitle",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -6372,13 +6573,13 @@
         "description": "\"gridIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.gridIconTooltip",
         "start": {
           "column": 19,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -6386,13 +6587,13 @@
         "description": "\"gridRewardsIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.gridRewardsIconTooltip",
         "start": {
           "column": 26,
-          "line": 38
+          "line": 40
         }
       },
       {
@@ -6400,13 +6601,13 @@
         "description": "\"listIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listIconTooltip",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 45
         }
       },
       {
@@ -6414,13 +6615,13 @@
         "description": "\"clearTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.clearTooltip",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 50
         }
       }
     ],
@@ -6700,17 +6901,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Rank:",
-        "description": "\"Rank\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!No data",
+        "description": "\"Name\" placeholder when it is empty.",
         "end": {
           "column": 3,
           "line": 45
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.noData",
+        "start": {
+          "column": 10,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Rank:",
+        "description": "\"Rank\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 41
+          "line": 46
         }
       },
       {
@@ -6718,13 +6933,13 @@
         "description": "\"Rank\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.rankingTooltip",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 51
         }
       },
       {
@@ -6732,13 +6947,13 @@
         "description": "\"Live stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
-          "line": 52
+          "line": 57
         }
       },
       {
@@ -6746,13 +6961,13 @@
         "description": "\"Live stake\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStakeTooltip",
         "start": {
           "column": 24,
-          "line": 57
+          "line": 62
         }
       },
       {
@@ -6760,13 +6975,13 @@
         "description": "\"Pool margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 63
+          "line": 68
         }
       },
       {
@@ -6774,13 +6989,13 @@
         "description": "\"Pool margin\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMarginTooltip",
         "start": {
           "column": 23,
-          "line": 68
+          "line": 73
         }
       },
       {
@@ -6788,13 +7003,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 74
+          "line": 79
         }
       },
       {
@@ -6802,13 +7017,13 @@
         "description": "\"Cost per epoch\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 89
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpochTooltip",
         "start": {
           "column": 23,
-          "line": 79
+          "line": 84
         }
       },
       {
@@ -6816,13 +7031,13 @@
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 85
+          "line": 90
         }
       },
       {
@@ -6830,13 +7045,13 @@
         "description": "\"Blocks\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocksTooltip",
         "start": {
           "column": 25,
-          "line": 90
+          "line": 95
         }
       },
       {
@@ -6844,13 +7059,13 @@
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 105
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
           "column": 20,
-          "line": 96
+          "line": 101
         }
       },
       {
@@ -6858,13 +7073,13 @@
         "description": "\"Rewards\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
         "start": {
           "column": 27,
-          "line": 101
+          "line": 106
         }
       },
       {
@@ -6872,13 +7087,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 116
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 107
+          "line": 112
         }
       },
       {
@@ -6886,13 +7101,13 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 121
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 112
+          "line": 117
         }
       },
       {
@@ -6900,13 +7115,13 @@
         "description": "\"Saturation\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 127
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturationTooltip",
         "start": {
           "column": 21,
-          "line": 117
+          "line": 122
         }
       },
       {
@@ -6914,13 +7129,13 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 132
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
-          "line": 123
+          "line": 128
         }
       },
       {
@@ -6928,13 +7143,13 @@
         "description": "\"Pledge\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 138
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledgeTooltip",
         "start": {
           "column": 17,
-          "line": 128
+          "line": 133
         }
       },
       {
@@ -6942,13 +7157,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 144
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 134
+          "line": 139
         }
       },
       {
@@ -6956,13 +7171,13 @@
         "description": "Experimental tooltip label",
         "end": {
           "column": 3,
-          "line": 144
+          "line": 149
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
-          "line": 140
+          "line": 145
         }
       },
       {
@@ -6970,13 +7185,13 @@
         "description": "copyId tooltip label",
         "end": {
           "column": 3,
-          "line": 149
+          "line": 154
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
         "start": {
           "column": 22,
-          "line": 145
+          "line": 150
         }
       },
       {
@@ -6984,13 +7199,13 @@
         "description": "Data not available yet label",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 159
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
-          "line": 150
+          "line": 155
         }
       }
     ],
@@ -17465,17 +17680,31 @@
         }
       },
       {
-        "defaultMessage": "!!!English",
-        "description": "Language name for \"English\" language.",
+        "defaultMessage": "!!!Show",
+        "description": "The word \"show\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
           "line": 116
         },
         "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.show",
+        "start": {
+          "column": 8,
+          "line": 112
+        }
+      },
+      {
+        "defaultMessage": "!!!English",
+        "description": "Language name for \"English\" language.",
+        "end": {
+          "column": 3,
+          "line": 121
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 112
+          "line": 117
         }
       },
       {
@@ -17483,13 +17712,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 126
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 117
+          "line": 122
         }
       },
       {
@@ -17497,13 +17726,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 131
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 122
+          "line": 127
         }
       },
       {
@@ -17511,13 +17740,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 136
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 127
+          "line": 132
         }
       },
       {
@@ -17525,13 +17754,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 141
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 132
+          "line": 137
         }
       },
       {
@@ -17539,13 +17768,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 146
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 137
+          "line": 142
         }
       },
       {
@@ -17553,13 +17782,13 @@
         "description": "Colon punctuation.",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 151
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.colon",
         "start": {
           "column": 20,
-          "line": 142
+          "line": 147
         }
       },
       {
@@ -17567,13 +17796,13 @@
         "description": "Final dot punctuation.",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 156
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.dot",
         "start": {
           "column": 18,
-          "line": 147
+          "line": 152
         }
       },
       {
@@ -17581,13 +17810,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 161
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 152
+          "line": 157
         }
       },
       {
@@ -17595,13 +17824,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 166
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 157
+          "line": 162
         }
       },
       {
@@ -17609,13 +17838,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 167
+          "line": 172
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 162
+          "line": 167
         }
       },
       {
@@ -17623,13 +17852,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 173
+          "line": 178
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 168
+          "line": 173
         }
       },
       {
@@ -17637,13 +17866,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 178
+          "line": 183
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 174
+          "line": 179
         }
       },
       {
@@ -17651,13 +17880,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 185
+          "line": 190
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 179
+          "line": 184
         }
       },
       {
@@ -17665,13 +17894,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 190
+          "line": 195
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 186
+          "line": 191
         }
       },
       {
@@ -17679,13 +17908,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 195
+          "line": 200
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 191
+          "line": 196
         }
       },
       {
@@ -17693,13 +17922,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 200
+          "line": 205
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 196
+          "line": 201
         }
       },
       {
@@ -17707,13 +17936,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 205
+          "line": 210
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 201
+          "line": 206
         }
       },
       {
@@ -17721,13 +17950,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 210
+          "line": 215
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 206
+          "line": 211
         }
       },
       {
@@ -17735,13 +17964,13 @@
         "description": "\"Shelley Testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 215
+          "line": 220
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_testnet",
         "start": {
           "column": 27,
-          "line": 211
+          "line": 216
         }
       },
       {
@@ -17749,13 +17978,13 @@
         "description": "\"Shelley QA\" Cardano network",
         "end": {
           "column": 3,
-          "line": 220
+          "line": 225
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_qa",
         "start": {
           "column": 22,
-          "line": 216
+          "line": 221
         }
       },
       {
@@ -17763,13 +17992,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 225
+          "line": 230
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 221
+          "line": 226
         }
       },
       {
@@ -17777,13 +18006,13 @@
         "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
-          "line": 230
+          "line": 235
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_rewards_v1",
         "start": {
           "column": 26,
-          "line": 226
+          "line": 231
         }
       },
       {
@@ -17791,13 +18020,13 @@
         "description": "\"itn_selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 235
+          "line": 240
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_selfnode",
         "start": {
           "column": 24,
-          "line": 231
+          "line": 236
         }
       },
       {
@@ -17805,13 +18034,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 240
+          "line": 245
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 236
+          "line": 241
         }
       },
       {
@@ -17819,13 +18048,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 245
+          "line": 250
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 241
+          "line": 246
         }
       },
       {
@@ -17833,13 +18062,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 250
+          "line": 255
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 246
+          "line": 251
         }
       },
       {
@@ -17847,13 +18076,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 255
+          "line": 260
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 251
+          "line": 256
         }
       },
       {
@@ -17861,13 +18090,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 260
+          "line": 265
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 256
+          "line": 261
         }
       },
       {
@@ -17875,13 +18104,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 265
+          "line": 270
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 261
+          "line": 266
         }
       },
       {
@@ -17889,13 +18118,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 270
+          "line": 275
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 266
+          "line": 271
         }
       },
       {
@@ -17903,13 +18132,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 275
+          "line": 280
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 271
+          "line": 276
         }
       },
       {
@@ -17917,13 +18146,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 280
+          "line": 285
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 276
+          "line": 281
         }
       },
       {
@@ -17931,13 +18160,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 285
+          "line": 290
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 281
+          "line": 286
         }
       },
       {
@@ -17945,13 +18174,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 290
+          "line": 295
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 286
+          "line": 291
         }
       },
       {
@@ -17959,13 +18188,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 295
+          "line": 300
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 291
+          "line": 296
         }
       },
       {
@@ -17973,13 +18202,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 300
+          "line": 305
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 296
+          "line": 301
         }
       },
       {
@@ -17987,13 +18216,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 305
+          "line": 310
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 301
+          "line": 306
         }
       },
       {
@@ -18001,13 +18230,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 310
+          "line": 315
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 306
+          "line": 311
         }
       },
       {
@@ -18015,13 +18244,13 @@
         "description": "Reveal label.",
         "end": {
           "column": 3,
-          "line": 315
+          "line": 320
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reveal",
         "start": {
           "column": 10,
-          "line": 311
+          "line": 316
         }
       },
       {
@@ -18029,13 +18258,13 @@
         "description": "Hide label.",
         "end": {
           "column": 3,
-          "line": 320
+          "line": 325
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.hide",
         "start": {
           "column": 8,
-          "line": 316
+          "line": 321
         }
       },
       {
@@ -18043,13 +18272,13 @@
         "description": "Copy label.",
         "end": {
           "column": 3,
-          "line": 325
+          "line": 330
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.copy",
         "start": {
           "column": 8,
-          "line": 321
+          "line": 326
         }
       },
       {
@@ -18057,13 +18286,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 332
+          "line": 337
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 326
+          "line": 331
         }
       }
     ],

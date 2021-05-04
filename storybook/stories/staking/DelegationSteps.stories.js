@@ -169,6 +169,9 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onSelectPool={this.onContinue}
         selectedPool={null}
         selectedWallet={WALLETS[0]}
+        filterOptions={{}}
+        onFilter={() => null}
+        populatedFilterOptions={{}}
       />,
       <DelegationStepsConfirmationDialog
         key="DelegationStepsConfirmationDialog"

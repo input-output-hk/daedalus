@@ -8,6 +8,7 @@ import clockIcon from '../../../assets/images/clock-corner.inline.svg';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
+import { ellipsis } from '../../../utils/strings';
 import StakePool from '../../../domains/StakePool';
 import {
   IS_RANKING_DATA_AVAILABLE,
@@ -18,6 +19,7 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 
 type Props = {
   stakePool: StakePool,
+  ranking: number,
   numberOfRankedStakePools: number,
   isGridRewardsView?: boolean,
 };
@@ -42,12 +44,13 @@ export default class ThumbPoolContent extends Component<Props> {
   render() {
     const {
       stakePool,
+      ranking,
       numberOfRankedStakePools,
       isGridRewardsView,
     } = this.props;
     const {
-      ranking,
       nonMyopicMemberRewards,
+      id,
       ticker,
       retiring,
       saturation,
@@ -67,7 +70,11 @@ export default class ThumbPoolContent extends Component<Props> {
 
     return (
       <div className={componentClassnames}>
-        <div className={styles.ticker}>{ticker}</div>
+        {ticker ? (
+          <div className={styles.ticker}>{ticker}</div>
+        ) : (
+          <div className={styles.id}>{ellipsis(id, 4, 4)}</div>
+        )}
         {isGridRewardsView &&
           (IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
             <div className={styles.rewards}>

@@ -10,6 +10,10 @@ Changelog
 - Implemented select search style variables ([PR 2512](https://github.com/input-output-hk/daedalus/pull/2512))
 - Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
 
+### Features
+
+- Implemented stake pools filter pop over ([PR 2461](https://github.com/input-output-hk/daedalus/pull/2461))
+
 ### Fixes
 
 - Fixed hardware wallets transactions issue with native tokens ([PR 2543](https://github.com/input-output-hk/daedalus/pull/2543))
@@ -55,7 +59,7 @@ Changelog
 
 - Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
 - Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
-- Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
+- Implemented Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
 
 ### Fixes
 

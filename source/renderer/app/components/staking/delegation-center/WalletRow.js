@@ -405,6 +405,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         onOpenExternalLink={onOpenExternalLink}
                         openWithDelay={false}
                         stakePool={futurePendingDelegatedStakePool}
+                        ranking={futurePendingDelegatedStakePool.ranking}
                         containerClassName={containerClassName}
                         numberOfRankedStakePools={numberOfRankedStakePools}
                         showWithSelectButton={showWithSelectButton}
