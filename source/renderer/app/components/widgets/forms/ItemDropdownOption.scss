@@ -1,30 +1,36 @@
 .component {
-  align-items: flex-start;
-  color: var(--theme-delegation-steps-choose-wallet-error-select-options-color);
+  color: var(--theme-widgets-itemsDropdown-option-label-text-color);
   display: flex;
   flex-direction: column;
+  flex: 1;
   font-family: var(--font-regular);
+  height: 50px;
   justify-content: center;
   max-width: calc(100% - 20px);
+  padding: 10px 20px;
+  position: relative;
 }
 
 .label {
   align-items: center;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  max-width: 100%;
-  overflow: hidden;
-  padding-right: 0;
-  text-overflow: ellipsis;
-  width: 100%;
-
   font-size: 14px;
   line-height: 18px;
   max-width: 100%;
+  max-width: 100%;
   overflow: hidden;
+  overflow: hidden;
+  padding-right: 0;
+  text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
+
+  .syncingLabel {
+    margin-left: 10px;
+    opacity: 0.5;
+  }
 }
 
 .detail {
@@ -37,18 +43,19 @@
   white-space: nowrap;
 }
 
-.selected {
-  color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
-  height: 100%;
-  padding: 8px 20px;
+.syncingSpinner {
+  height: 24px;
+  position: absolute;
+  right: 12px;
+  width: 24px;
+  padding: 0;
 
-  .label {
-    height: initial;
+  &.selected {
+    right: 24px;
+  }
 
-    .topRowSync {
-      position: absolute;
-      right: 50px;
-      top: 13px;
-    }
+  svg path {
+    fill: var(--theme-widgets-itemsdropdown-option-label-text-color) !important;
+    opacity: 0.5;
   }
 }

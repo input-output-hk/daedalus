@@ -5,7 +5,7 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ItemDropdownOption from './ItemDropdownOption';
 import type { ItemDropdown } from './ItemDropdownOption';
-import styles from './ItemDropdown.scss';
+import styles from './ItemsDropdown.scss';
 
 /**
  *

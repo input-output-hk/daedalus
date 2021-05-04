@@ -385,7 +385,6 @@
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel": "ウォレット",
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder": "ウォレットを選択してください",
   "staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel": "ステップ{currentStep}/{totalSteps}",
-  "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet": "同期",
   "staking.delegationSetup.chooseWallet.step.dialog.title": "ウォレットを委任する",
   "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit": "デポジットを計算しています",
   "staking.delegationSetup.confirmation.step.dialog.calculatingFees": "手数料を計算しています",
@@ -986,7 +985,6 @@
   "wallet.send.form.sameWalletLabel": "この送金先アドレスは、送金元となるウォレットと同じウォレットのものです。このトランザクションを実行すると、送信された資金はこのウォレットにとどまりますが、見積もり手数料に示されるトランザクション手数料は発生します。",
   "wallet.send.form.send": "送信",
   "wallet.send.form.syncingTransactionsMessage": "ウォレットの残高とトランザクション履歴は現在ブロックチェーンと同期中です。",
-  "wallet.send.form.syncingWallet": "同期",
   "wallet.send.form.title.hint": "例：太郎用資金",
   "wallet.send.form.title.label": "タイトル",
   "wallet.settings.assurance": "!!!Transaction assurance security level",
@@ -1204,5 +1202,6 @@
   "wallet.transferFunds.dialog2.passphraseLabel": "送信時パスワード",
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName}の額",
   "wallet.transferFunds.dialog2.title": "資金を移す",
-  "wallet.transferFunds.dialog2.total.label": "合計"
+  "wallet.transferFunds.dialog2.total.label": "合計",
+  "widgets.itemsDropdown.option.syncingLabel": "同期"
 }

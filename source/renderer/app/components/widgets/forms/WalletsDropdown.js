@@ -17,7 +17,6 @@ import ItemsDropdown from './ItemsDropdown';
  */
 type Props = {
   getStakePoolById: Function,
-  isSyncing?: boolean,
   numberOfStakePools: number,
   syncingLabel?: string,
   wallets?: Array<$Shape<Wallet>>,
@@ -42,13 +41,14 @@ export default class WalletsDropdown extends Component<Props> {
     const { wallets = [] } = this.props;
     const props = omit(this.props, ['wallets', 'options']);
     const formattedOptions = wallets.map((wallet) => {
-      const { id: value, amount, isRestoring } = wallet;
+      const { id: value, amount, isRestoring, isSyncing } = wallet;
       const detail = !isRestoring ? formattedWalletAmount(amount) : null;
       return {
         label: <WalletsDropdownLabel wallet={wallet} {...props} />,
         detail,
         value,
         walletName: wallet.name,
+        isSyncing,
       };
     });
     return <ItemsDropdown options={formattedOptions} {...props} />;

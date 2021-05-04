@@ -24,12 +24,12 @@ import type {
   TransactionType,
   TransactionState,
 } from '../../../source/renderer/app/api/transactions/types';
-import { WalletSummaryAsset } from '../../../source/renderer/app/api/assets/types';
 import Asset from '../../../source/renderer/app/domains/Asset';
 import type {
   AssetMetadata,
   WalletAssetItems,
   WalletAssets,
+  WalletSummaryAsset,
 } from '../../../source/renderer/app/api/assets/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';

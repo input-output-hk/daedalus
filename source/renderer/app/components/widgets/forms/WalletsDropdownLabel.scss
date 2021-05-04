@@ -15,24 +15,6 @@
       opacity: 0.5;
     }
   }
-
-  .topRowSync {
-    position: absolute;
-    right: 15px;
-  }
-
-  .syncing {
-    > div {
-      height: 24px;
-      margin: 0 !important;
-      width: 24px;
-
-      :global .LoadingSpinner_icon svg path {
-        fill: var(--theme-dialog-fullsize-text-highlight-color) !important;
-        opacity: 0.5;
-      }
-    }
-  }
 }
 
 .hardwareWalletsIcon {

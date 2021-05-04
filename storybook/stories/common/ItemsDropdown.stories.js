@@ -26,13 +26,23 @@ import {
   generateHash,
   generateWalletSummaryAsset,
 } from '../_support/utils';
+import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
 
 const WALLETS = [
   generateWallet('Second Wallet', '500000000'),
   generateWallet('Third Wallet', '100000000', STAKE_POOLS[3]),
-  generateWallet('Fourth Wallet', '50000000'),
+  generateWallet(
+    'Fourth Syncing Wallet',
+    '50000000',
+    undefined,
+    undefined,
+    undefined,
+    true,
+    WalletSyncStateStatuses.SYNCING
+  ),
   generateWallet('Fifth Wallet', '7000000'),
 ];
+console.log('WALLETS', WALLETS);
 
 const stakePoolsList = [
   ...STAKE_POOLS.slice(0, 5),
@@ -103,16 +113,18 @@ storiesOf('Common|ItemsDropdown', module)
   .add(
     'Generic',
     withState({ value: 'usd' }, (store) => {
-      const options = Object.values(currenciesList).map((currency) => {
+      const options = Object.values(currenciesList).map((currency, index) => {
         const label = get(currency, 'name.en-US');
         const code = get(currency, 'code');
         const decimalDigits = get(currency, 'decimalDigits');
         const detail = `Code: ${code} - Decimal digits: ${decimalDigits}`;
         const value = code;
+        const isSyncing = index === 1;
         return {
           label,
           detail,
           value,
+          isSyncing,
         };
       });
       return (
@@ -137,7 +149,9 @@ storiesOf('Common|ItemsDropdown', module)
         undefined,
         select('Stake pool', stakePoolsOptions, STAKE_POOLS[0], 'First wallet'),
         true,
-        undefined,
+        boolean('isSyncing', false, 'First wallet')
+          ? WalletSyncStateStatuses.SYNCING
+          : WalletSyncStateStatuses.READY,
         boolean('Wallet - isHardwareWallet', true, 'First wallet'),
         firstWalletId
       );
@@ -147,9 +161,12 @@ storiesOf('Common|ItemsDropdown', module)
           getStakePoolById={(poolId) =>
             find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
           }
-          isSyncing={boolean('isSyncing', false)}
           label={text('label', 'Wallets')}
-          numberOfStakePools={STAKE_POOLS.length}
+          numberOfStakePools={
+            boolean('Has stake pools', true, 'First wallet')
+              ? STAKE_POOLS.length
+              : 0
+          }
           onChange={(walletId) => store.set({ walletId })}
           placeholder={text('placeholder')}
           syncingLabel={text('syncingLabel', 'syncing')}

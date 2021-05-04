@@ -132,9 +132,4 @@ export default defineMessages({
     description:
       'Label for the "Calculating fees" message for amount input field.',
   },
-  syncingWallet: {
-    id: 'wallet.send.form.syncingWallet',
-    defaultMessage: '!!!syncing',
-    description: 'Syncing wallet label on the send tokens form.',
-  },
 });

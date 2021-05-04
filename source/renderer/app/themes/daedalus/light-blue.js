@@ -1115,6 +1115,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-widgets-asset-token-text-color': '#5e6066',
     '--theme-widgets-asset-token-background-color': 'rgba(255, 255, 255, 0.97)',
     '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-widgets-itemsDropdown-option-label-text-color': '#5e6066',
   },
 };
 

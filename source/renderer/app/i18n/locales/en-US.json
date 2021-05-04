@@ -385,7 +385,6 @@
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel": "Wallet",
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder": "Select wallet",
   "staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel": "STEP {currentStep} OF {totalSteps}",
-  "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet": "syncing",
   "staking.delegationSetup.chooseWallet.step.dialog.title": "Delegate wallet",
   "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit": "Calculating deposit",
   "staking.delegationSetup.confirmation.step.dialog.calculatingFees": "Calculating fees",
@@ -986,7 +985,6 @@
   "wallet.send.form.sameWalletLabel": "This receiver address belongs to the same wallet from which you are sending funds. If you proceed with this transaction, the transferred funds will remain in this wallet, and you will incur transaction fees, as outlined in Estimated fees.",
   "wallet.send.form.send": "Send",
   "wallet.send.form.syncingTransactionsMessage": "The balance and transaction history of this wallet is being synced with the blockchain.",
-  "wallet.send.form.syncingWallet": "syncing",
   "wallet.send.form.title.hint": "E.g: Money for Frank",
   "wallet.send.form.title.label": "Title",
   "wallet.settings.assurance": "Transaction assurance security level",
@@ -1204,5 +1202,6 @@
   "wallet.transferFunds.dialog2.passphraseLabel": "Spending password",
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName} amount",
   "wallet.transferFunds.dialog2.title": "Transfer funds",
-  "wallet.transferFunds.dialog2.total.label": "Total"
+  "wallet.transferFunds.dialog2.total.label": "Total",
+  "widgets.itemsDropdown.option.syncingLabel": "syncing"
 }
