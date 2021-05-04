@@ -1,11 +1,16 @@
 Changelog
 =========
 
-## 4.1.0-FC1
+## vNext
 
 ### Features
 
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
+
+## 4.1.0-FC1
+
+### Features
+
 - Implemented manually configurable decimal places for native tokens ([PR 2533](https://github.com/input-output-hk/daedalus/pull/2533))
 - Added warning message when pasting an address of the same wallet in the send form ([PR 2506](https://github.com/input-output-hk/daedalus/pull/2506))
 - Implemented select search style variables ([PR 2512](https://github.com/input-output-hk/daedalus/pull/2512))
