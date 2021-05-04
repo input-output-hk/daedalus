@@ -10,14 +10,14 @@ import {
 import type { Currency, LocalizedCurrency } from '../types/currencyTypes.js';
 
 export default class CurrencyStore extends Store {
-  @observable currencyIsFetchingList: boolean = false;
-  @observable currencyIsFetchingRate: boolean = false;
-  @observable currencyIsAvailable: boolean = false;
-  @observable currencyIsActive: boolean = false;
-  @observable currencyList: Array<Currency> = [];
-  @observable currencySelected: ?Currency = null;
-  @observable currencyRate: ?number = null;
-  @observable currencyLastFetched: ?Date = null;
+  @observable isFetchingList: boolean = false;
+  @observable isFetchingRate: boolean = false;
+  @observable isAvailable: boolean = false;
+  @observable isActive: boolean = false;
+  @observable list: Array<Currency> = [];
+  @observable selected: ?Currency = null;
+  @observable rate: ?number = null;
+  @observable lastFetched: ?Date = null;
   _getCurrencyRateInterval: ?IntervalID = null;
 
   setup() {
@@ -31,24 +31,24 @@ export default class CurrencyStore extends Store {
   // PUBLIC
 
   @computed get localizedCurrencyList(): Array<LocalizedCurrency> {
-    const { currencyList, stores } = this;
+    const { list, stores } = this;
     const { currentLocale } = stores.profile;
-    return getLocalizedCurrenciesList(currencyList, currentLocale);
+    return getLocalizedCurrenciesList(list, currentLocale);
   }
 
   @computed get localizedCurrency(): ?LocalizedCurrency {
-    const { currencySelected, stores } = this;
+    const { selected, stores } = this;
     const { currentLocale } = stores.profile;
-    if (!currencySelected) return null;
-    return getLocalizedCurrency(currencySelected, currentLocale);
+    if (!selected) return null;
+    return getLocalizedCurrency(selected, currentLocale);
   }
 
   @action getCurrencyList = async () => {
-    this.currencyIsFetchingList = true;
-    const currencyList = await this.api.ada.getCurrencyList();
+    this.isFetchingList = true;
+    const list = await this.api.ada.getCurrencyList();
     runInAction(() => {
-      this.currencyList = currencyList;
-      this.currencyIsFetchingList = false;
+      this.list = list;
+      this.isFetchingList = false;
     });
   };
 
@@ -56,24 +56,22 @@ export default class CurrencyStore extends Store {
     const { localizedCurrency } = this;
     if (localizedCurrency && localizedCurrency.code) {
       try {
-        this.currencyIsFetchingRate = true;
-        const currencyRate = await this.api.ada.getCurrencyRate(
-          localizedCurrency
-        );
+        this.isFetchingRate = true;
+        const rate = await this.api.ada.getCurrencyRate(localizedCurrency);
         runInAction(() => {
-          this.currencyIsFetchingRate = false;
-          this.currencyLastFetched = new Date();
-          if (currencyRate) {
-            this.currencyRate = currencyRate;
-            this.currencyIsAvailable = true;
+          this.isFetchingRate = false;
+          this.lastFetched = new Date();
+          if (rate) {
+            this.rate = rate;
+            this.isAvailable = true;
           } else {
             throw new Error('Error fetching the Currency rate');
           }
         });
       } catch (error) {
         runInAction(() => {
-          this.currencyRate = null;
-          this.currencyIsAvailable = false;
+          this.rate = null;
+          this.isAvailable = false;
         });
         clearInterval(this._getCurrencyRateInterval);
       }
@@ -85,16 +83,16 @@ export default class CurrencyStore extends Store {
   @action _setupCurrency = async () => {
     // Check if the user has enabled currencies
     // Otherwise applies the default config
-    const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
+    const isActive = await this.api.localStorage.getCurrencyIsActive();
 
     // Check if the user has already selected a currency
     // Otherwise applies the default currency
     const localCurrencyCode = await this.api.localStorage.getCurrencySelected();
-    const currencySelected = getCurrencyFromCode(localCurrencyCode);
+    const selected = getCurrencyFromCode(localCurrencyCode);
 
     runInAction(() => {
-      this.currencyIsActive = currencyIsActive;
-      this.currencySelected = currencySelected;
+      this.isActive = isActive;
+      this.selected = selected;
     });
 
     clearInterval(this._getCurrencyRateInterval);
@@ -108,24 +106,18 @@ export default class CurrencyStore extends Store {
     this.getCurrencyRate();
   };
 
-  @action _setCurrencySelected = async ({
-    currencyCode,
-  }: {
-    currencyCode: string,
-  }) => {
-    const { currencyList } = this;
-    const currencySelected = currencyList.find(
-      ({ code }) => currencyCode === code
-    );
-    if (currencySelected) {
-      this.currencySelected = currencySelected;
+  @action _setCurrencySelected = async ({ code }: { code: string }) => {
+    const { list } = this;
+    const selected = list.find((item) => item.code === code);
+    if (selected) {
+      this.selected = selected;
       this.getCurrencyRate();
-      await this.api.localStorage.setCurrencySelected(currencySelected.code);
+      await this.api.localStorage.setCurrencySelected(selected.code);
     }
   };
 
   @action _toggleCurrencyIsActive = () => {
-    this.currencyIsActive = !this.currencyIsActive;
-    this.api.localStorage.setCurrencyIsActive(this.currencyIsActive);
+    this.isActive = !this.isActive;
+    this.api.localStorage.setCurrencyIsActive(this.isActive);
   };
 }

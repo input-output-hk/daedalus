@@ -4,6 +4,6 @@ import Action from './lib/Action';
 // ======= CURRENCY ACTIONS =======
 
 export default class CurrencyActions {
-  setCurrencySelected: Action<{ currencyCode: string }> = new Action();
+  setCurrencySelected: Action<{ code: string }> = new Action();
   toggleCurrencyIsActive: Action<any> = new Action();
 }
