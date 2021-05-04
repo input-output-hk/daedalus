@@ -5,6 +5,7 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ItemDropdownOption from './ItemDropdownOption';
 import type { ItemDropdown } from './ItemDropdownOption';
+import styles from './ItemDropdown.scss';
 
 /**
  *
@@ -51,6 +52,8 @@ export default class ItemsDropdown extends Component<ItemDropdownProps> {
     skin: SelectSkin,
   };
   render() {
-    return <Select {...this.props} optionHeight={50} />;
+    return (
+      <Select {...this.props} className={styles.component} optionHeight={50} />
+    );
   }
 }
