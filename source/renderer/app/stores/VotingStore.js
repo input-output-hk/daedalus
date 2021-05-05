@@ -183,7 +183,9 @@ export default class VotingStore extends Store {
     this.signMetadataRequest.reset();
 
     try {
-      const addressHex = await this._getHexFromBech32(address.id);
+      const { stakeAddresses } = this.stores.addresses;
+      const stakeAddress = stakeAddresses[walletId];
+      const addressHex = await this._getHexFromBech32(stakeAddress);
 
       await this._generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
