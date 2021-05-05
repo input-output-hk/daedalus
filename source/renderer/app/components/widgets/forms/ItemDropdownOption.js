@@ -63,9 +63,10 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
   };
 
   render() {
-    const { selected } = this.props;
+    const { selected, detail, isSyncing } = this.props;
     const componentStyles = classnames(styles.component, {
       [styles.selected]: selected,
+      [styles.noDetail]: !detail || isSyncing,
     });
     return (
       <div className={componentStyles}>

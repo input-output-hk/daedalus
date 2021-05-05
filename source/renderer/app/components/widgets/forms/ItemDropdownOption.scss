@@ -4,12 +4,17 @@
   flex-direction: column;
   flex: 1;
   font-family: var(--font-regular);
-  justify-content: center;
+  justify-content: space-between;
   max-width: calc(100% - 20px);
   position: relative;
 
   &.selected {
+    height: 50px;
     padding: 8px 20px;
+  }
+
+  &.noDetail {
+    justify-content: center;
   }
 }
 
@@ -37,6 +42,7 @@
 
 .detail {
   font-size: 12px;
+  height: 17px;
   line-height: 16px;
   max-width: 100%;
   opacity: 0.5;
