@@ -91,10 +91,13 @@ export default class PinCode extends Component<Props, State> {
               const inputFieldRef = this.inputsRef[focusKey];
               if (inputFieldRef && inputFieldRef.inputElement) {
                 inputFieldRef.focus();
-                inputFieldRef.inputElement.current.select();
+                if (inputFieldRef.props.value) {
+                  inputFieldRef.inputElement.current.selectionStart = 1;
+                  inputFieldRef.inputElement.current.selectionEnd = 1;
+                }
                 this.setState({ focusKeyChanged: false });
               }
-            }, 100);
+            }, 50);
           }
         } else {
           newValue[key] = inputNewValue;
@@ -148,7 +151,10 @@ export default class PinCode extends Component<Props, State> {
           emptyFieldIndex !== inputFocusKey
         ) {
           inputElementRef.focus();
-          inputElementRef.inputElement.current.select();
+          if (inputElementRef.props.value) {
+            inputElementRef.inputElement.current.selectionStart = 1;
+            inputElementRef.inputElement.current.selectionEnd = 1;
+          }
         } else if (!isBackSpace) {
           inputElementRef.focus();
         }
