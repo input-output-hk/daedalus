@@ -62,8 +62,15 @@
     right: 24px;
   }
 
-  svg path {
-    fill: var(--theme-widgets-itemsdropdown-option-label-text-color) !important;
-    opacity: 0.5;
+  :global {
+    .LoadingSpinner_component.LoadingSpinner_medium {
+      margin: 0 !important;
+      .LoadingSpinner_icon {
+        svg path {
+          fill: var(--rp-option-text-color) !important;
+          opacity: 0.5;
+        }
+      }
+    }
   }
 }

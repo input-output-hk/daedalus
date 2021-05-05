@@ -290,14 +290,17 @@ export default class AdaApi {
 
       // @TODO - Remove this once we get hardware wallet flag from WBE
       return await Promise.all(
-        wallets.map(async (wallet) => {
+        wallets.map(async (wallet, index) => {
           const { id } = wallet;
           const walletData = await getHardwareWalletLocalData(id);
-          return _createWalletFromServerData({
-            ...wallet,
-            isHardwareWallet:
-              walletData && walletData.device && size(walletData.device) > 0,
-          });
+          return _createWalletFromServerData(
+            {
+              ...wallet,
+              isHardwareWallet:
+                walletData && walletData.device && size(walletData.device) > 0,
+            },
+            index
+          );
         })
       );
     } catch (error) {
@@ -2648,7 +2651,7 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (wallet: AdaWallet) => {
+  (wallet: AdaWallet, index) => {
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
@@ -2657,12 +2660,22 @@ const _createWalletFromServerData = action(
       assets,
       passphrase,
       delegation,
-      state: syncState,
+      // state: syncState,
       isLegacy = false,
       discovery,
       isHardwareWallet = false,
+      state,
     } = wallet;
-
+    const syncState =
+      index === 1
+        ? {
+            status: 'syncing',
+            progress: {
+              quantity: 90,
+              unit: 'percentage',
+            },
+          }
+        : state;
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =

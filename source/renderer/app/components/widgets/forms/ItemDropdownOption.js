@@ -35,9 +35,7 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
       <div className={styles.label}>
         {label}
         {isSyncing && typeof label === 'string' && (
-          <span className={styles.syncingLabel}>
-            {isSyncing && syncingLabel}
-          </span>
+          <span className={styles.syncingLabel}>{syncingLabel}</span>
         )}
       </div>
     );

@@ -1,20 +1,32 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
+import { intlShape, defineMessages } from 'react-intl';
 import { getColorFromRange } from '../../../utils/colors';
 import styles from './WalletsDropdownLabel.scss';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 
+const messages = defineMessages({
+  syncingLabel: {
+    id: 'widgets.itemsDropdown.option.syncingLabel',
+    defaultMessage: '!!!syncing',
+    description: 'syncingLabel for ItemDropdownOption',
+  },
+});
+
 export type WalletOption = {
   wallet: $Shape<Wallet>,
   getStakePoolById: Function,
   numberOfStakePools?: number,
-  isSyncing?: boolean,
   syncingLabel?: string,
 };
 
 export default class WalletsDropdownLabel extends Component<WalletOption> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   renderTicker = () => {
     const { wallet, getStakePoolById, numberOfStakePools } = this.props;
     const {
@@ -44,11 +56,11 @@ export default class WalletsDropdownLabel extends Component<WalletOption> {
   };
 
   render() {
-    const { isSyncing, syncingLabel, wallet } = this.props;
-    const { name, isHardwareWallet } = wallet;
+    const { intl } = this.context;
+    const defaultSyncingLabel = intl.formatMessage(messages.syncingLabel);
+    const { wallet, syncingLabel = defaultSyncingLabel } = this.props;
+    const { name, isHardwareWallet, isSyncing } = wallet;
     const ticker = this.renderTicker();
-    const hasSyncing = isSyncing && syncingLabel;
-    console.log('hasSyncing', hasSyncing);
     return (
       <div className={styles.component}>
         {ticker}
@@ -60,8 +72,8 @@ export default class WalletsDropdownLabel extends Component<WalletOption> {
               className={styles.hardwareWalletsIcon}
             />
           )}
-          {hasSyncing && (
-            <span className={styles.labelSync}> {syncingLabel}</span>
+          {isSyncing && (
+            <span className={styles.labelSync}>{syncingLabel}</span>
           )}
         </div>
       </div>
