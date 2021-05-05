@@ -9,29 +9,29 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 export default class WalletsSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
-  handleSelectCurrency = (currencyCode: string) => {
-    this.props.actions.wallets.setCurrencySelected.trigger({ currencyCode });
+  handleSelectCurrency = (code: string) => {
+    this.props.actions.currency.setCurrencySelected.trigger({ code });
   };
 
   handleToggleCurrencyIsActive = () =>
-    this.props.actions.wallets.toggleCurrencyIsActive.trigger();
+    this.props.actions.currency.toggleCurrencyIsActive.trigger();
 
   render() {
     const { stores } = this.props;
     const {
-      localizedCurrency: currencySelected,
+      localizedCurrency: selected,
       localizedCurrencyList: currencyList,
-      currencyRate,
-      currencyIsActive,
-    } = stores.wallets;
+      rate,
+      isActive,
+    } = stores.currency;
     const { currentLocale } = stores.profile;
     const { openExternalLink } = stores.app;
     return (
       <WalletsSettings
-        currencySelected={currencySelected}
-        currencyRate={currencyRate}
+        currencySelected={selected}
+        currencyRate={rate}
         currencyList={currencyList}
-        currencyIsActive={currencyIsActive}
+        currencyIsActive={isActive}
         currentLocale={currentLocale}
         onSelectCurrency={this.handleSelectCurrency}
         onToggleCurrencyIsActive={this.handleToggleCurrencyIsActive}
