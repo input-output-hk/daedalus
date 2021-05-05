@@ -42,7 +42,6 @@ const WALLETS = [
   ),
   generateWallet('Fifth Wallet', '7000000'),
 ];
-console.log('WALLETS', WALLETS);
 
 const stakePoolsList = [
   ...STAKE_POOLS.slice(0, 5),
