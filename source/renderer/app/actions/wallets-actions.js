@@ -87,8 +87,6 @@ export default class WalletsActions {
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
   finishRewardsCsv: Action<any> = new Action();
-  setCurrencySelected: Action<{ currencyCode: string }> = new Action();
-  toggleCurrencyIsActive: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
   setActiveAssetFingerprint: Action<{
