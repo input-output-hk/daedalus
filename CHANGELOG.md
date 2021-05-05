@@ -6,6 +6,7 @@ Changelog
 ### Chores
 
 - Implemented the Items Dropdown component and simplified the Wallets and Assets Dropdowns ([PR 2540](https://github.com/input-output-hk/daedalus/pull/2540))
+- Updated Catalyst voting registration to include rewards address instead of the payment one ([PR 2550](https://github.com/input-output-hk/daedalus/pull/2550))
 - Moved currency related code into a dedicated store ([PR 2546](https://github.com/input-output-hk/daedalus/pull/2546))
 
 ## 4.1.0-FC1
