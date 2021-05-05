@@ -260,6 +260,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
       walletSelectorLanguageMap[currentLocale],
       selectedDelegationWalletId === null ? 'noValueSelected' : null,
     ]);
+    const walletSelectorContainerClasses = classnames([
+      styles.walletSelectorContainer,
+      styles.col,
+    ]);
     const learnMoreUrl = intl.formatMessage(messages.rankingLearnMoreUrl);
 
     let walletSelectionStart = null;
@@ -283,6 +287,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     return {
       walletSelectorWallets,
       walletSelectorClasses,
+      walletSelectorContainerClasses,
       walletSelectionStart,
       walletSelectionEnd,
       learnMoreUrl,
@@ -308,6 +313,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const {
       walletSelectorWallets,
       walletSelectorClasses,
+      walletSelectorContainerClasses,
       walletSelectionStart,
       walletSelectionEnd,
       learnMoreUrl,
@@ -329,7 +335,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
             {getFilteredWallets(wallets).length > 0 ? (
               <div className={styles.row}>
                 <div className={styles.col}>{walletSelectionStart}</div>
-                <div className={styles.col}>
+                <div className={walletSelectorContainerClasses}>
                   <WalletsDropdown
                     className={walletSelectorClasses}
                     placeholder={intl.formatMessage(
@@ -338,13 +344,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
                     wallets={walletSelectorWallets}
                     onChange={this.onSelectedWalletChange}
                     disabled={isLoading || isRanking}
-                    value={selectedDelegationWalletId}
+                    value={selectedDelegationWalletId || '0'}
                     selectionRenderer={(option) => (
                       <button
                         className="customValue"
                         onClick={() => {
                           const selectionInput = document.querySelector(
-                            '.StakePoolsRanking_walletSelector .SimpleInput_input'
+                            '.StakePoolsRanking_walletSelectorContainer input'
                           );
                           if (selectionInput) {
                             selectionInput.click();

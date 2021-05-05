@@ -41,10 +41,7 @@
           }
         }
       }
-
-      .walletSelector {
-        padding-right: 15px;
-
+      .walletSelectorContainer {
         :global {
           .SimpleInput_input {
             border: none;
@@ -70,6 +67,7 @@
             cursor: pointer;
             font-family: var(--font-semibold);
             font-size: 16px;
+            margin-right: 15px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -88,6 +86,10 @@
             }
           }
         }
+      }
+
+      .walletSelector {
+        padding-right: 15px;
 
         ::-webkit-input-placeholder {
           color: var(--theme-staking-font-color-regular);
