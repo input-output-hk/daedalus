@@ -4,11 +4,13 @@
   flex-direction: column;
   flex: 1;
   font-family: var(--font-regular);
-  height: 50px;
   justify-content: center;
   max-width: calc(100% - 20px);
-  padding: 10px 20px;
   position: relative;
+
+  &.selected {
+    padding: 8px 20px;
+  }
 }
 
 .label {
