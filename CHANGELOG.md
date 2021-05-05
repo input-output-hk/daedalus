@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Updated Catalyst voting registration to include rewards address instead of the payment one ([PR 2550](https://github.com/input-output-hk/daedalus/pull/2550))
 - Moved currency related code into a dedicated store ([PR 2546](https://github.com/input-output-hk/daedalus/pull/2546))
 
 ## 4.1.0-FC1
