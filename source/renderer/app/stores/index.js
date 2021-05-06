@@ -4,6 +4,8 @@ import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
 import AppUpdateStore from './AppUpdateStore';
+import AssetsStore from './AssetsStore';
+import CurrencyStore from './CurrencyStore';
 import HardwareWalletsStore from './HardwareWalletsStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
@@ -11,15 +13,14 @@ import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
-import AssetsStore from './AssetsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import VotingStore from './VotingStore';
-import WalletsStore from './WalletsStore';
-import WalletsLocalStore from './WalletsLocalStore';
 import WalletBackupStore from './WalletBackupStore';
 import WalletMigrationStore from './WalletMigrationStore';
 import WalletSettingsStore from './WalletSettingsStore';
+import WalletsLocalStore from './WalletsLocalStore';
+import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
 
 export const storeClasses = {
@@ -27,6 +28,7 @@ export const storeClasses = {
   app: AppStore,
   appUpdate: AppUpdateStore,
   assets: AssetsStore,
+  currency: CurrencyStore,
   hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
@@ -49,6 +51,7 @@ export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
   appUpdate: AppUpdateStore,
+  currency: CurrencyStore,
   assets: AssetsStore,
   hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
@@ -93,6 +96,7 @@ export default action((api, actions, router): StoresMap => {
     addresses: createStoreInstanceOf(AddressesStore),
     app: createStoreInstanceOf(AppStore),
     assets: createStoreInstanceOf(AssetsStore),
+    currency: createStoreInstanceOf(CurrencyStore),
     appUpdate: createStoreInstanceOf(AppUpdateStore),
     hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
