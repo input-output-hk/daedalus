@@ -16,6 +16,15 @@
     text-transform: uppercase;
   }
 
+  & > .walletName {
+    font-family: var(--font-medium);
+    font-size: 12px;
+    line-height: 1.83;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
   & > .subtitle {
     font-family: var(--font-medium);
     font-size: 12px;
