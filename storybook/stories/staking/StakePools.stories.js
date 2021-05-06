@@ -15,6 +15,7 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
+import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
 
 const assets = {
   available: [
@@ -49,7 +50,16 @@ const assets = {
 
 const dummyWallets = [
   generateWallet('Dummy1', '1000000000000', assets),
-  generateWallet('Dummy2', '2000000000000', assets),
+  generateWallet(
+    'Dummy2',
+    '2000000000000',
+    assets,
+    0,
+    undefined,
+    true,
+    WalletSyncStateStatuses.SYNCING
+  ),
+  generateWallet('Dummy3', '2000000000000', assets),
 ];
 
 const maxDelegationFunds = Math.round(
