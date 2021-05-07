@@ -99,19 +99,17 @@ export default class PinCode extends Component<Props, State> {
             key < this.inputsRef.length
               ? key - 1
               : key;
-          if (focusKeyChanged) {
-            setTimeout(() => {
-              const inputFieldRef = this.inputsRef[focusKey];
-              if (inputFieldRef && inputFieldRef.inputElement) {
-                inputFieldRef.focus();
-                if (inputFieldRef.props.value) {
-                  inputFieldRef.inputElement.current.selectionStart = 1;
-                  inputFieldRef.inputElement.current.selectionEnd = 1;
-                }
-                this.setState({ focusKeyChanged: false });
+          setTimeout(() => {
+            const inputFieldRef = this.inputsRef[focusKey];
+            if (inputFieldRef && inputFieldRef.inputElement) {
+              inputFieldRef.focus();
+              if (inputFieldRef.props.value) {
+                inputFieldRef.inputElement.current.selectionStart = 1;
+                inputFieldRef.inputElement.current.selectionEnd = 1;
               }
-            }, 50);
-          }
+              this.setState({ focusKeyChanged: false });
+            }
+          }, 50);
         } else {
           newValue[key] = inputNewValue;
           this.setState({ isBackSpace: false, focusKeyChanged: false });
