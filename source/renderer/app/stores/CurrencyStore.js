@@ -58,20 +58,40 @@ export default class CurrencyStore extends Store {
       try {
         this.isFetchingRate = true;
         const rate = await this.api.ada.getCurrencyRate(localizedCurrency);
+        if (!rate) {
+          throw new Error('Error fetching the Currency rate');
+        }
         runInAction(() => {
           this.isFetchingRate = false;
           this.lastFetched = new Date();
-          if (rate) {
-            this.rate = rate;
-            this.isAvailable = true;
-          } else {
-            throw new Error('Error fetching the Currency rate');
-          }
+          this.rate = rate;
+          this.isAvailable = true;
         });
+        await this.api.localStorage.setCurrencyRate(
+          localizedCurrency.code,
+          rate
+        );
       } catch (error) {
+        /*
+         * In case the currency rate API fetching fails,
+         * it tries to use the stored local data
+         */
+        let rate = null;
+        let lastFetched;
+        let isAvailable = false;
+        const localRate = await this.api.localStorage.getCurrencyRate(
+          localizedCurrency.code
+        );
+        if (localRate) {
+          rate = localRate.rate;
+          lastFetched = localRate.date;
+          isAvailable = true;
+        }
         runInAction(() => {
-          this.rate = null;
-          this.isAvailable = false;
+          this.rate = rate;
+          this.isAvailable = isAvailable;
+          this.lastFetched = lastFetched;
+          this.isFetchingRate = false;
         });
         clearInterval(this._getCurrencyRateInterval);
       }
