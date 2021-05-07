@@ -1,12 +1,4 @@
 .container {
-  .dialog {
-    :global {
-      .Dialog_title {
-        margin-bottom: 0;
-      }
-    }
-  }
-
   :global {
     .attention {
       color: var(
@@ -171,6 +163,14 @@
       p {
         line-height: 1.36;
       }
+    }
+  }
+}
+
+.dialog {
+  :global {
+    .Dialog_title {
+      margin-bottom: 0;
     }
   }
 }

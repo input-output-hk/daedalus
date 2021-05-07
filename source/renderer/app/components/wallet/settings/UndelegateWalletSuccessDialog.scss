@@ -1,6 +1,12 @@
 .dialog {
   font-family: var(--font-light);
 
+  :global {
+    .Dialog_title {
+      margin-bottom: 0;
+    }
+  }
+
   .sadLogoContainer {
     display: flex;
     justify-content: center;
@@ -18,12 +24,14 @@
       }
     }
   }
+
   .description {
     p {
       font-weight: 300;
       line-height: 1.38;
       margin-bottom: 15px;
     }
+
     p:last-child {
       margin-bottom: 0;
     }
