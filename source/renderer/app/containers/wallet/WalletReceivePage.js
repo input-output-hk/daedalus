@@ -72,19 +72,21 @@ export default class WalletReceivePage extends Component<Props, State> {
     });
     const dialog = WalletReceiveDialog;
     if (activeWallet.isHardwareWallet) {
-      console.debug('>>> CALL INIT verify 2');
       hardwareWallets.initiateAddressVerification(addressToShare);
     }
     dialogs.open.trigger({ dialog });
   };
 
   handleCloseShareAddress = () => {
+    const { activeWallet } = this;
     const { actions, stores } = this.props;
     const { dialogs } = actions;
     const { hardwareWallets } = stores;
 
     dialogs.closeActiveDialog.trigger();
-    hardwareWallets.resetInitializedAddressVerification();
+    if (activeWallet.isHardwareWallet) {
+      hardwareWallets.resetInitializedAddressVerification({ cancelDeviceAction: true });
+    }
   };
 
   handleToggleUsedAddresses = () => {
