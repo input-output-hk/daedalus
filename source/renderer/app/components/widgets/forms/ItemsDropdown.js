@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import { filter, escapeRegExp } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
@@ -27,6 +28,7 @@ import styles from './ItemsDropdown.scss';
  */
 export type ItemDropdownProps = {
   options: Array<ItemDropdown>,
+  className?: string,
 };
 
 export const onSearchItemsDropdown = (
@@ -52,8 +54,10 @@ export default class ItemsDropdown extends Component<ItemDropdownProps> {
     skin: SelectSkin,
   };
   render() {
+    const { className } = this.props;
+    const componentStyles = classnames([styles.component, className]);
     return (
-      <Select {...this.props} className={styles.component} optionHeight={50} />
+      <Select {...this.props} className={componentStyles} optionHeight={50} />
     );
   }
 }

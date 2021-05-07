@@ -20,6 +20,7 @@ type Props = {
   numberOfStakePools: number,
   syncingLabel?: string,
   wallets?: Array<$Shape<Wallet>>,
+  className?: string,
 };
 
 export const onSearchWalletsDropdown = (
@@ -38,7 +39,7 @@ export default class WalletsDropdown extends Component<Props> {
     onSearch: onSearchWalletsDropdown,
   };
   render() {
-    const { wallets = [] } = this.props;
+    const { wallets = [], className } = this.props;
     const props = omit(this.props, ['wallets', 'options']);
     const formattedOptions = wallets.map((wallet) => {
       const { id: value, amount, isRestoring, isSyncing } = wallet;
@@ -51,6 +52,12 @@ export default class WalletsDropdown extends Component<Props> {
         isSyncing,
       };
     });
-    return <ItemsDropdown options={formattedOptions} {...props} />;
+    return (
+      <ItemsDropdown
+        className={className}
+        options={formattedOptions}
+        {...props}
+      />
+    );
   }
 }
