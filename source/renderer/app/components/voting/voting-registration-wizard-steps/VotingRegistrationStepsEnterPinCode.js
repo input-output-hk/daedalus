@@ -153,11 +153,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
       : !isPinKeyValid && isRepeatPinKeyValid;
   };
 
-  onChangePinCode = (
-    values: Array<string>,
-    newValue: string,
-    key: number,
-  ) => {
+  onChangePinCode = (values: Array<string>, newValue: string, key: number) => {
     const { form } = this;
     const pinCodeField = form.$('pinCode');
     const pinCodeFieldProps = pinCodeField.bind();
@@ -168,9 +164,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
       repeatPinValues,
       false
     );
-    const selectedField = pinFieldNotValid
-      ? 'repeatPinCode'
-      : 'pinCode';
+    const selectedField = pinFieldNotValid ? 'repeatPinCode' : 'pinCode';
     this.setState({
       pinValues,
       selectedPinField: selectedField,
@@ -181,7 +175,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
   onChangeRepeatPinCode = (
     values: Array<string>,
     newValue: string,
-    key: number,
+    key: number
   ) => {
     const { form } = this;
     const repeatPinCodeField = form.$('repeatPinCode');
@@ -193,9 +187,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
       repeatPinValues,
       true
     );
-    const selectedField = repeatPinFieldNotValid
-      ? 'pinCode'
-      : 'repeatPinCode';
+    const selectedField = repeatPinFieldNotValid ? 'pinCode' : 'repeatPinCode';
     this.setState({
       repeatPinValues,
       selectedPinField: selectedField,
