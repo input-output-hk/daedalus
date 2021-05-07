@@ -85,13 +85,16 @@ export default class PinCode extends Component<Props, State> {
     if (this.hasInputNewValue(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
+        // Recheck if user pressed backspace and moved cursor to previous input field which has value
         if (
           isBackSpace &&
           newValue[key] !== '' &&
           inputNewValue === '' &&
           this.focusKey !== key
         ) {
+          // Set old value to field because it was previously deleted while shifting focus
           newValue[key] = value[key];
+          // Calculate new field key for focus
           const focusKey =
             this.inputsRef[key] &&
             this.inputsRef[key].inputElement.current.selectionStart === 0 &&
@@ -99,6 +102,7 @@ export default class PinCode extends Component<Props, State> {
             key < this.inputsRef.length
               ? key - 1
               : key;
+          // Delay focus to the same field while waiting for the validation to pass
           setTimeout(() => {
             const inputFieldRef = this.inputsRef[focusKey];
             if (inputFieldRef && inputFieldRef.inputElement) {
@@ -111,14 +115,18 @@ export default class PinCode extends Component<Props, State> {
             }
           }, 50);
         } else {
+          // Set new value to input field when focus was not shifted to previous field
           newValue[key] = inputNewValue;
           this.setState({ isBackSpace: false, focusKeyChanged: false });
         }
       }
       if (onChange) {
+        // Send new updated value to onChange event
         onChange(newValue, inputNewValue, key);
       }
+      // Update focus key
       this.focusKey = key;
+      // Recheck if user is adding or deleting value
       this.add =
         inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
     }
@@ -132,7 +140,9 @@ export default class PinCode extends Component<Props, State> {
     this.add = this.fromBackspace
       ? false
       : inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
+    // Find index of first empty input field element
     const emptyFieldIndex = value.findIndex((item) => item === '');
+    // Update focus key index
     this.focusKey =
       emptyFieldIndex !== undefined &&
       emptyFieldIndex !== null &&
@@ -145,17 +155,21 @@ export default class PinCode extends Component<Props, State> {
       ((key > 0 && key < length) || emptyFieldIndex > -1 || focusKeyChanged)
     ) {
       let inputFocusKey = 0;
+      // Calculate new input focus key based on a action - delete/add of field value
       if (emptyFieldIndex > -1 && !this.fromBackspace) {
         inputFocusKey = emptyFieldIndex;
       } else {
         inputFocusKey = this.add ? focusKey + 1 : focusKey - 1;
       }
+      // Grab current focused element reference
       const inputElementRef = this.inputsRef[inputFocusKey];
       if (
         Object.prototype.hasOwnProperty.call(this.inputsRef, inputFocusKey) &&
         inputElementRef
       ) {
         this.fromBackspace = false;
+        // Check if backspace was pressed and focus key is different
+        // Then re-focus field and move cursor pointer in front (before) of field value
         if (
           isBackSpace &&
           inputElementRef.inputElement &&
@@ -167,6 +181,7 @@ export default class PinCode extends Component<Props, State> {
             inputElementRef.inputElement.current.selectionEnd = 1;
           }
         } else if (!isBackSpace) {
+          // If new value was added to already empty field, just re-focus to the same field
           inputElementRef.focus();
         }
       }
@@ -181,12 +196,17 @@ export default class PinCode extends Component<Props, State> {
     const control: { blur?: Function, focus?: Function } = target;
     const nextFieldFocusKey = inputKey + 1;
     const nextInputField = this.inputsRef[nextFieldFocusKey];
+    // Recheck if input value is a separator value
     const isSeparator = key === decimalSeparator || key === groupSeparator;
+    // Recheck if input value is a backspace value
     const isBackSpace = key === 'Backspace';
+    // Get input field new value
     const inputNewValue = this.inputsRef[inputKey]
       ? this.inputsRef[inputKey].props.value
       : null;
+    // Recheck if field is empty
     const fieldIsEmpty = this.inputsRef[inputKey] ? !inputNewValue : false;
+    // Get cursor pointer position from input field
     const cursorPosition = this.inputsRef[inputKey]
       ? this.inputsRef[inputKey].inputElement.current.selectionStart
       : 1;
@@ -196,12 +216,16 @@ export default class PinCode extends Component<Props, State> {
     let focusKeyUpdated = false;
     if (isBackSpace && (fieldIsEmpty || cursorPosition === 0)) {
       if (onChange) {
+        // Handle specific case when user pressed backspace and field is empty
+        // or cursor pointer position was in front of the value
         if (this.isInputValueSelected(this.inputsRef[inputKey])) {
+          // Remove value from input field
           value[inputKey] = '';
         } else {
           focusKeyUpdated = true;
         }
         this.setState({ isBackSpace, focusKeyChanged: focusKeyUpdated });
+        // Call onChange function to validate new value in focused input field
         onChange(value, inputNewValue, inputKey);
       }
       this.focusKey = focusKeyChanged ? inputKey - 1 : inputKey;
