@@ -108,14 +108,8 @@ const messages = defineMessages({
   },
 });
 
-const walletSelectorLanguageMap = {
-  'en-US': 'enSelector',
-  'ja-JP': 'jaSelector',
-};
-
 type Props = {
   wallets: Array<Wallet>,
-  currentLocale: string,
   onOpenExternalLink: Function,
   updateDelegatingStake: Function,
   rankStakePools: Function,
@@ -247,7 +241,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   generateInfo = () => {
     const { intl } = this.context;
-    const { wallets, currentLocale, selectedDelegationWalletId } = this.props;
+    const { wallets, selectedDelegationWalletId } = this.props;
     const allWalletsItem = {
       id: ALL_WALLETS_SELECTION_ID,
       name: intl.formatMessage(messages.rankingAllWallets),
@@ -257,7 +251,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const walletSelectorWallets = [allWalletsItem, ...filteredWallets];
     const walletSelectorClasses = classnames([
       styles.walletSelector,
-      walletSelectorLanguageMap[currentLocale],
       selectedDelegationWalletId === null ? 'noValueSelected' : null,
     ]);
     const walletSelectorContainerClasses = classnames([
