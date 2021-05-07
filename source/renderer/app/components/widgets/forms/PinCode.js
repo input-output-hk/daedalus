@@ -77,7 +77,7 @@ export default class PinCode extends Component<Props, State> {
 
   onChange = (inputValue: ?number | ?string, key: number) => {
     const { value, onChange } = this.props;
-    const { isBackSpace, focusKeyChanged } = this.state;
+    const { isBackSpace } = this.state;
     const inputNewValue =
       inputValue !== null && inputValue !== undefined && !isNaN(inputValue)
         ? inputValue.toString()
