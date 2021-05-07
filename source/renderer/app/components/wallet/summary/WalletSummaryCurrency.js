@@ -79,10 +79,9 @@ export default class WalletSummaryCurrency extends Component<Props> {
         decimalDigits
       );
     const currencyWalletAmountSymbol =
-      currencySelected &&
-      currencySelected.code
+      currencySelected && currencySelected.code
         ? currencySelected.code.toUpperCase()
-        : "";
+        : '';
     const fetchedTimeAgo = moment(currencyLastFetched)
       .locale(intl.locale)
       .fromNow();
