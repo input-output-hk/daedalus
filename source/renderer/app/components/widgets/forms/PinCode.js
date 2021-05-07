@@ -45,7 +45,7 @@ export default class PinCode extends Component<Props, State> {
     focusKeyChanged: false,
   };
 
-  inputHasNewValue = (inputNewValue: string, key: number) => {
+  hasInputNewValue = (inputNewValue: string, key: number) => {
     const { value } = this.props;
     const valueIsEmpty =
       !value[key] || value[key] === '' || inputNewValue === '';
@@ -56,7 +56,7 @@ export default class PinCode extends Component<Props, State> {
     return valueIsEmpty || valueHasChanged;
   };
 
-  inputIsMarked = (input: Field) => {
+  isInputValueSelected = (input: Field) => {
     const { inputElement } = input;
     const { current } = inputElement;
     return current.selectionStart !== current.selectionEnd;
@@ -82,7 +82,7 @@ export default class PinCode extends Component<Props, State> {
       inputValue !== null && inputValue !== undefined && !isNaN(inputValue)
         ? inputValue.toString()
         : '';
-    if (this.inputHasNewValue(inputNewValue, key)) {
+    if (this.hasInputNewValue(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
         if (
@@ -196,7 +196,7 @@ export default class PinCode extends Component<Props, State> {
     let focusKeyUpdated = false;
     if (isBackSpace && (fieldIsEmpty || cursorPosition === 0)) {
       if (onChange) {
-        if (this.inputIsMarked(this.inputsRef[inputKey])) {
+        if (this.isInputValueSelected(this.inputsRef[inputKey])) {
           value[inputKey] = '';
         } else {
           focusKeyUpdated = true;
