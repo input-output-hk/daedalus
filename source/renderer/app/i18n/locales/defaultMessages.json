@@ -1136,6 +1136,76 @@
           "column": 38,
           "line": 131
         }
+      },
+      {
+        "defaultMessage": "!!!Verify address on your \"{walletName}\" device",
+        "description": "\"Verify receiving address on your Hardware Wallet device",
+        "end": {
+          "column": 3,
+          "line": 141
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address",
+        "start": {
+          "column": 21,
+          "line": 137
+        }
+      },
+      {
+        "defaultMessage": "!!!Please answer the question below",
+        "description": "\"Confirm receiving address on your Hardware Wallet device",
+        "end": {
+          "column": 3,
+          "line": 146
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address_confirmation",
+        "start": {
+          "column": 34,
+          "line": 142
+        }
+      },
+      {
+        "defaultMessage": "!!!Address verification failed",
+        "description": "\"Address verification failed\" device state",
+        "end": {
+          "column": 3,
+          "line": 151
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address_failed",
+        "start": {
+          "column": 28,
+          "line": 147
+        }
+      },
+      {
+        "defaultMessage": "!!!Verification was aborted by the user",
+        "description": "\"Address verification aborted\" device state",
+        "end": {
+          "column": 3,
+          "line": 156
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address_aborted",
+        "start": {
+          "column": 29,
+          "line": 152
+        }
+      },
+      {
+        "defaultMessage": "!!!Address verified",
+        "description": "\"Address verified\" device state",
+        "end": {
+          "column": 3,
+          "line": 161
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address_succeeded",
+        "start": {
+          "column": 31,
+          "line": 157
+        }
       }
     ],
     "path": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.json"
@@ -10273,13 +10343,13 @@
         "description": "placeholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputLabel",
         "start": {
           "column": 14,
-          "line": 19
+          "line": 34
         }
       },
       {
@@ -10287,13 +10357,13 @@
         "description": "inputPlaceholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputPlaceholder",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 39
         }
       },
       {
@@ -10301,13 +10371,13 @@
         "description": "saveQRCodeImage on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.saveQRCodeImage",
         "start": {
           "column": 19,
-          "line": 29
+          "line": 44
         }
       },
       {
@@ -10315,13 +10385,13 @@
         "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 34
+          "line": 49
         }
       },
       {
@@ -10329,13 +10399,13 @@
         "description": "dialogTitle on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 39
+          "line": 54
         }
       },
       {
@@ -10343,13 +10413,209 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiving address path",
+        "description": "Tooltip for the receiving address path",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.spendingPathTooltip",
+        "start": {
+          "column": 23,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards address path",
+        "description": "Tooltip for the rewards address path",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.stakingPathTooltip",
+        "start": {
+          "column": 22,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit a request to IOHK Support",
+        "description": "Support request button label",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.supportRequestButtonLabel",
+        "start": {
+          "column": 29,
+          "line": 74
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "Support request link URL",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.supportRequestLinkUrl",
+        "start": {
+          "column": 25,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!Yes, I am sure I have compared the address displayed in Daedalus with the address displayed on the Ledger device by comparing the beginning and ending of the address.",
+        "description": "Invalid address confirmation checkbox label",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.invalidAddressConfirmationLabel",
+        "start": {
+          "column": 35,
+          "line": 84
+        }
+      },
+      {
+        "defaultMessage": "!!!Is the address you have verified correct?",
+        "description": "Verification options section label",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.verificationCheckOptionsLabel",
+        "start": {
+          "column": 33,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Yes",
+        "description": "Verification option \"Valid\" label",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.verificationCheckOptionValid",
+        "start": {
+          "column": 32,
+          "line": 95
+        }
+      },
+      {
+        "defaultMessage": "!!!No, I am sure that address displayed in Daedalus is different from the address displayed on my Ledger device",
+        "description": "Verification option \"Invalid\" label",
+        "end": {
+          "column": 3,
+          "line": 105
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.verificationCheckOptionInvalid",
+        "start": {
+          "column": 34,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!No, reverify",
+        "description": "Verification option \"Reverify\" label",
+        "end": {
+          "column": 3,
+          "line": 110
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.verificationCheckOptionReverify",
+        "start": {
+          "column": 35,
+          "line": 106
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus verified the address",
+        "description": "Daedalus verification status check label",
+        "end": {
+          "column": 3,
+          "line": 115
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.softwareCheckLabel",
+        "start": {
+          "column": 22,
+          "line": 111
+        }
+      },
+      {
+        "defaultMessage": "!!!You have verified the address",
+        "description": "User verification status check label",
+        "end": {
+          "column": 3,
+          "line": 120
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.confirmationCheckLabel",
+        "start": {
+          "column": 26,
+          "line": 116
+        }
+      },
+      {
+        "defaultMessage": "!!!Please compare the address displayed here on the screen with the address displayed on the Ledger device by comparing <b>at least the first 5 characters at the start</b> of the address after the \"addr\" part and <b>at least 5 characters at the end</b> of the address.",
+        "description": "Address verification instructions",
+        "end": {
+          "column": 3,
+          "line": 126
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.addressVerificationInstructions",
+        "start": {
+          "column": 35,
+          "line": 121
+        }
+      },
+      {
+        "defaultMessage": "!!!Warning, your copy of Daedalus may be hacked!",
+        "description": "Invalid address \"Warning\" title",
+        "end": {
+          "column": 3,
+          "line": 131
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.invalidAddressWarningTitle",
+        "start": {
+          "column": 30,
+          "line": 127
+        }
+      },
+      {
+        "defaultMessage": "!!!You have manually compared the address shown in Daedalus with the address shown on the hardware wallet device and reported that they are different. If this is the case, please contact support and make sure you download and attach logs.",
+        "description": "Invalid address \"Warning\" description",
+        "end": {
+          "column": 3,
+          "line": 137
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.invalidAddressWarningDescription",
+        "start": {
+          "column": 36,
+          "line": 132
         }
       }
     ],
@@ -17179,13 +17445,13 @@
         "description": "\"Address\" word in the Address PDF export",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.pdf.filenamePrefix",
         "start": {
           "column": 11,
-          "line": 18
+          "line": 19
         }
       }
     ],
