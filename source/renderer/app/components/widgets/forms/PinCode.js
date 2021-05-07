@@ -62,6 +62,19 @@ export default class PinCode extends Component<Props, State> {
     return current.selectionStart !== current.selectionEnd;
   };
 
+  isInputFieldDisabled = (
+    index: number,
+    value: Array<string>,
+    disabled: boolean
+  ) => {
+    return (
+      disabled ||
+      (index !== 0 && (!value || !value[index - 1])) ||
+      (index > 1 && index <= 4 && !value[index - 2]) ||
+      (index === 3 && value[index - 3] === '')
+    );
+  };
+
   onChange = (inputValue: ?number | ?string, key: number) => {
     const { value, onChange } = this.props;
     const { isBackSpace, focusKeyChanged } = this.state;
@@ -263,9 +276,7 @@ export default class PinCode extends Component<Props, State> {
               value={value ? value[index] : undefined}
               autoFocus={autoFocus && index === 0}
               allowSigns={false}
-              disabled={
-                disabled || (index !== 0 && (!value || !value[index - 1]))
-              }
+              disabled={this.isInputFieldDisabled(index, value, disabled)}
             />
           );
         })}
