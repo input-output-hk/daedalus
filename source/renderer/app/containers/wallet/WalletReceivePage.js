@@ -272,7 +272,6 @@ export default class WalletReceivePage extends Component<Props, State> {
             isAddressVerificationEnabled={isAddressVerificationEnabled(
               activeWallet.id
             )}
-            walletName={activeWallet.name}
             hwDeviceStatus={hwDeviceStatus}
             transportDevice={transportDevice}
             isAddressDerived={isAddressDerived}

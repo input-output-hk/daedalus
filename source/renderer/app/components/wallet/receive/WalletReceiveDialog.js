@@ -153,7 +153,6 @@ type Props = {
   onChangeVerificationStatus: Function,
   onSupportRequestClick: Function,
   isTrezor: boolean,
-  walletName: string,
 };
 
 type State = {
@@ -272,7 +271,6 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       isAddressChecked,
       onSupportRequestClick,
       isTrezor,
-      walletName,
     } = this.props;
     const {
       selectedVerificationStatus,
