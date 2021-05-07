@@ -431,13 +431,6 @@ export const handleHardwareWalletRequests = async (
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
       logger.info('[HW-DEBUG] DERIVE ADDRESS');
-
-      console.debug('>>> PARAMS ++: ', {
-        params,
-        spendingPath,
-        stakingPath,
-      })
-
       if (isTrezor) {
         // throw new Error('Address verification not supported on Trezor devices');
         const result = await TrezorConnect.cardanoGetAddress({
@@ -446,14 +439,13 @@ export const handleHardwareWalletRequests = async (
             showOnTrezor: true,
           },
           addressParameters: {
-            addressType: addressType,
+            addressType,
             path: `m/${spendingPathStr}`,
-            stakingPath: `m/${stakingPathStr}`,
+            stakingPath: stakingPathStr ? `m/${stakingPathStr}` : null,
           },
           protocolMagic,
           networkId,
         });
-        console.debug('>>> RES: ', result);
         return result.payload.address;
       }
 

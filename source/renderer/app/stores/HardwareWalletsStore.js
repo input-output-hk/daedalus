@@ -48,7 +48,6 @@ import {
   ShelleyTxOutput,
   ShelleyTxCert,
   ShelleyTxWithdrawal,
-  groupTokensByPolicyId,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
@@ -217,13 +216,6 @@ export default class HardwareWalletsStore extends Store {
     this.hardwareWalletDevicesRequest.execute();
   }
 
-  test1 = () => {
-    const aa = JSON.parse('{"inputs":[{"address":"addr_test1qrhm5sqga9whsg9ea2l30ejdq9wcyqg2wwr38d9gtfkxf4kss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6scjppzz","amount":{"quantity":65936866,"unit":"lovelace"},"id":"2cea6bf5ed16685480275bb21a4d25144704af1b258db4ff414aa1788c76f6bb","index":1,"derivationPath":["1852H","1815H","0H","1","155"],"assets":[{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"","quantity":1},{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"6861707079636f696e","quantity":2},{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"7375706572636f696e","quantity":3},{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"74727565636f696e","quantity":11},{"policyId":"94d4cdbcffb09ebd4780d94f932a657dc4852530fa8013df66c72d4c","assetName":"","quantity":4},{"policyId":"94d4cdbcffb09ebd4780d94f932a657dc4852530fa8013df66c72d4c","assetName":"676f6f64636f696e","quantity":3}]},{"address":"addr_test1qzy5dkyavfj0tnqsrxf8fn7ffk2uw2c7vtfwhs3rsywvxvkss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6ss3n5k3","amount":{"quantity":2000000,"unit":"lovelace"},"id":"1de741f03ae8587bb023230a196e5df2e01045463092f4650cbc31aa9dbb72cb","index":0,"derivationPath":["1852H","1815H","0H","0","26"],"assets":[{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"","quantity":1}]},{"address":"addr_test1qprs0vx8v08c4l0ruqmu2drajxrnz7dwx8xtmnlany86x7kss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sf8utl9","amount":{"quantity":2000000,"unit":"lovelace"},"id":"1c6bfb1652a01ba4f397ba5db718390f670d3a53124bb3363b6558919ec01591","index":0,"derivationPath":["1852H","1815H","0H","0","25"],"assets":[]}],"outputs":[{"address":"addr_test1qq9xeux6exqrv7wh8uw04hc7lr8mutgcg8dvv06p5m35vr7ss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6slp4hwt","amount":{"quantity":2000000,"unit":"lovelace"},"derivationPath":null,"assets":[{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"","quantity":1}]},{"address":"addr_test1qr7v9p5ewkymv5z7f8n6904239y5tvnqpj76364fyrymauwss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6slwph6d","amount":{"quantity":67740917,"unit":"lovelace"},"derivationPath":["1852H","1815H","0H","1","178"],"assets":[{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"","quantity":1},{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"6861707079636f696e","quantity":2},{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"7375706572636f696e","quantity":3},{"policyId":"789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1","assetName":"74727565636f696e","quantity":11},{"policyId":"94d4cdbcffb09ebd4780d94f932a657dc4852530fa8013df66c72d4c","assetName":"","quantity":4},{"policyId":"94d4cdbcffb09ebd4780d94f932a657dc4852530fa8013df66c72d4c","assetName":"676f6f64636f696e","quantity":3}]}],"certificates":[],"withdrawals":[],"fee":"0.195949","deposits":"0","depositsReclaimed":"0"}');
-
-    console.debug('>>> PARSED: ', aa)
-    groupTokensByPolicyId(aa.outputs[1].assets)
-  }
-
   initTrezor = async () => {
     if (isHardwareWalletSupportEnabled && isTrezorEnabled) {
       logger.debug('[HW-DEBUG] HWStore - start trezor');
@@ -293,7 +285,6 @@ export default class HardwareWalletsStore extends Store {
       try {
         logger.debug('[HW-DEBUG] HWStore - CHECK device');
         if (device.deviceType === DeviceTypes.TREZOR) {
-          console.debug('>>> Call 0')
           await getHardwareWalletTransportChannel.request({
             devicePath: device.path,
             isTrezor: true,
@@ -573,7 +564,7 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - Connect - New Transaction / Address verification initiated - return last device'
           );
-          console.debug('>>> CALL 1');
+          // $FlowFixMe
           lastDeviceTransport = await getHardwareWalletTransportChannel.request(
             {
               devicePath: null, // Use last plugged device
@@ -637,7 +628,6 @@ export default class HardwareWalletsStore extends Store {
         );
 
         if (lastUnpairedDevice.deviceType === DeviceTypes.TREZOR) {
-          console.debug('>>> Call 2')
           transportDevice = await getHardwareWalletTransportChannel.request({
             devicePath,
             isTrezor,
@@ -941,7 +931,6 @@ export default class HardwareWalletsStore extends Store {
     address: WalletAddress,
     path?: string
   ) => {
-    console.debug('>>> INIT: ', {address, path});
     if (this.isAddressVerificationInitiated) return;
     logger.debug('[HW-DEBUG] HWStore - Initiate Address Verification: ', {
       address,
@@ -979,8 +968,6 @@ export default class HardwareWalletsStore extends Store {
       }
     );
 
-    console.debug('>>> INIT: hardwareWalletConnectionData: ', {hardwareWalletConnectionData, disconnected, path})
-
     let transportDevice;
     if (disconnected && !path) {
       // Wait for connection to be established and continue with address verification
@@ -996,16 +983,18 @@ export default class HardwareWalletsStore extends Store {
 
     // Add more cases / edge cases if needed
     if (deviceType === DeviceTypes.TREZOR) {
-      console.debug('>>> CALL Verify');
       logger.debug('[HW-DEBUG] Verify Address with Trezor: ', { address });
       this.verifyAddress({
         address,
         path: devicePath,
         isTrezor: true,
       });
-      runInAction('HardwareWalletsStore:: Initiate address verification', () => {
-        this.isAddressVerificationInitiated = false;
-      });
+      runInAction(
+        'HardwareWalletsStore:: Initiate address verification',
+        () => {
+          this.isAddressVerificationInitiated = false;
+        }
+      );
     } else {
       logger.debug('[HW-DEBUG] Verify Address with Ledger: ', {
         address,
@@ -1040,7 +1029,6 @@ export default class HardwareWalletsStore extends Store {
     try {
       let derivedAddress;
       if (isTrezor) {
-        console.debug('>>> Derive with Trezor');
         derivedAddress = await deriveAddressChannel.request({
           devicePath: path,
           isTrezor,
@@ -1056,21 +1044,23 @@ export default class HardwareWalletsStore extends Store {
         });
 
         if (derivedAddress === address.id) {
-          console.debug('>>> SUCCESS: ', derivedAddress);
-          logger.debug('[HW-DEBUG] HWStore - Address successfully verified - Trezor', {
-            address: derivedAddress,
-          });
+          logger.debug(
+            '[HW-DEBUG] HWStore - Address successfully verified - Trezor',
+            {
+              address: derivedAddress,
+            }
+          );
           runInAction(
             'HardwareWalletsStore:: Address Verified and is correct',
             () => {
               this.isAddressDerived = true;
               this.isAddressChecked = true;
               this.isListeningForDevice = false;
-              this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
+              this.hwDeviceStatus =
+                HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
             }
           );
         } else {
-          console.debug('>>> SUCCESS with error: ', derivedAddress);
           runInAction(
             'HardwareWalletsStore:: Address Verified but not correct',
             () => {
@@ -1081,8 +1071,6 @@ export default class HardwareWalletsStore extends Store {
             }
           );
         }
-
-        console.debug('>>> derivedAddress: ', derivedAddress)
       } else {
         derivedAddress = await deriveAddressChannel.request({
           devicePath: path,
@@ -1122,7 +1110,6 @@ export default class HardwareWalletsStore extends Store {
         }
       }
     } catch (error) {
-      console.debug('>>> Verification error: ', error)
       logger.debug('[HW-DEBUG] HWStore - Verifying address error');
       /**
        * ============  Verifying aborted  =============
@@ -1761,8 +1748,6 @@ export default class HardwareWalletsStore extends Store {
       walletId
     );
 
-    console.debug('>>> Coin selection: ', JSON.stringify(coinSelection));
-
     // Guard against potential null value
     if (!hardwareWalletConnectionData)
       throw new Error('Wallet not paired or Device not connected');
@@ -1847,20 +1832,8 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       });
 
-      console.debug('>>> signedTransaction: ', JSON.stringify(signedTransaction));
-
       const unsignedTxWithdrawals =
         withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
-
-      console.debug('>>>> Data for TX Aux: ', {
-        txInputs: unsignedTxInputs,
-        txOutputs: unsignedTxOutputs,
-        fee,
-        ttl,
-        certificates: unsignedTxCerts,
-        withdrawals: unsignedTxWithdrawals,
-        signedTransaction,
-      })
 
       // Prepare unsigned transaction structure for serialzation
       const unsignedTx = prepareTxAux({
@@ -1872,8 +1845,6 @@ export default class HardwareWalletsStore extends Store {
         withdrawals: unsignedTxWithdrawals,
       });
 
-      console.debug('>>> unsigned TX: ', unsignedTx);
-
       const signedWitnesses = await this._signWitnesses(
         signedTransaction.witnesses,
         xpubHex
@@ -1883,12 +1854,8 @@ export default class HardwareWalletsStore extends Store {
         txWitnesses.set(0, signedWitnesses);
       }
 
-      console.debug('>>> txWitnesses: ', txWitnesses);
-
       // Prepare serialized transaction with unsigned data and signed witnesses
       const txBody = await prepareBody(unsignedTx, txWitnesses);
-
-      console.debug('>>> TX Body: ', txBody)
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
@@ -1950,7 +1917,6 @@ export default class HardwareWalletsStore extends Store {
             transportDevice = lastUnpairedDevice;
           } else {
             logger.debug('[HW-DEBUG] CHECK FOR NEXT device');
-            console.debug('>>> CALL 3')
             transportDevice = await getHardwareWalletTransportChannel.request({
               devicePath: null,
               isTrezor: true,
@@ -2059,7 +2025,6 @@ export default class HardwareWalletsStore extends Store {
       error,
       eventType,
     } = params;
-    console.debug('>> DEVICE CHANGED: ', params);
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
@@ -2208,11 +2173,11 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletDevices();
 
     // Start connection establishing process if devices listener flag is UP
-    if (this.isListeningForDevice && !disconnected && (!eventType || eventType === DeviceEvents.CONNECT)) {
-      console.debug('>>> establishHardwareWalletConnection 1: ', {
-        isListeningForDevice: this.isListeningForDevice,
-        disconnected
-      });
+    if (
+      this.isListeningForDevice &&
+      !disconnected &&
+      (!eventType || eventType === DeviceEvents.CONNECT)
+    ) {
       runInAction('HardwareWalletsStore:: remove device listener', () => {
         this.isListeningForDevice = false;
       });
@@ -2250,7 +2215,12 @@ export default class HardwareWalletsStore extends Store {
     }
 
     // Case that allows us to re-trigger address verification process multiple times if fails
-    if (this.unfinishedWalletAddressVerification && !disconnected && path && (!eventType || eventType === DeviceEvents.CONNECT)) {
+    if (
+      this.unfinishedWalletAddressVerification &&
+      !disconnected &&
+      path &&
+      (!eventType || eventType === DeviceEvents.CONNECT)
+    ) {
       logger.debug(
         '[HW-DEBUG] CHANGE STATUS to: ',
         HwDeviceStatuses.CONNECTING

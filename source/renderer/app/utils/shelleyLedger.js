@@ -163,13 +163,11 @@ export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
     });
     policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
   });
-  console.debug('>>> ShelleyTxOutputAssets: ', policyIdMap);
   return policyIdMap;
 };
 
 export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
-  console.debug('>>> GROUPED: ', tokenObject)
   const tokenObjectEntries = Object.entries(tokenObject);
 
   const tokenBundle = _.map(tokenObjectEntries, ([policyId, tokens]) => {
@@ -182,8 +180,6 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
       tokens: tokensList,
     };
   });
-
-  console.debug('>>> Token bundle: ', tokenBundle);
   return tokenBundle;
 };
 

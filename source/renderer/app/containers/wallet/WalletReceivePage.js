@@ -71,7 +71,7 @@ export default class WalletReceivePage extends Component<Props, State> {
       addressToShare,
     });
     const dialog = WalletReceiveDialog;
-    if (activeWallet.isHardwareWallet) {
+    if (activeWallet && activeWallet.isHardwareWallet) {
       hardwareWallets.initiateAddressVerification(addressToShare);
     }
     dialogs.open.trigger({ dialog });
@@ -84,8 +84,10 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { hardwareWallets } = stores;
 
     dialogs.closeActiveDialog.trigger();
-    if (activeWallet.isHardwareWallet) {
-      hardwareWallets.resetInitializedAddressVerification({ cancelDeviceAction: true });
+    if (activeWallet && activeWallet.isHardwareWallet) {
+      hardwareWallets.resetInitializedAddressVerification({
+        cancelDeviceAction: true,
+      });
     }
   };
 
