@@ -267,6 +267,7 @@ export default class WalletSendConfirmationDialog extends Component<
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
+      walletName,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -310,6 +311,7 @@ export default class WalletSendConfirmationDialog extends Component<
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        walletName={walletName}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
