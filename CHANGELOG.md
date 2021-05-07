@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
+
 ### Chores
 
 - Updated `cardano-wallet` to version `2021-04-28` and `cardano-node` to version `1.26.2` ([PR 2551](https://github.com/input-output-hk/daedalus/pull/2551))
