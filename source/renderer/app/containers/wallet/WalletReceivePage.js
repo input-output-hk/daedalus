@@ -71,7 +71,6 @@ export default class WalletReceivePage extends Component<Props, State> {
       addressToShare,
     });
     const dialog = WalletReceiveDialog;
-    console.debug('>>> SHARE: ', activeWallet);
     if (activeWallet.isHardwareWallet) {
       console.debug('>>> CALL INIT verify 2');
       hardwareWallets.initiateAddressVerification(addressToShare);

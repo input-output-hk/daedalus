@@ -384,7 +384,6 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
         actions={showActions ? actions : []}
-        closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >

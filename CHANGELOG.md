@@ -6,6 +6,17 @@ Changelog
 ### Features
 
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-04-28` and `cardano-node` to version `1.26.2` ([PR 2551](https://github.com/input-output-hk/daedalus/pull/2551))
+- Updated Catalyst voting registration to include rewards address instead of the payment one ([PR 2550](https://github.com/input-output-hk/daedalus/pull/2550))
+- Moved currency related code into a dedicated store ([PR 2546](https://github.com/input-output-hk/daedalus/pull/2546))
+
+## 4.1.0-FC1
+
+### Features
+
 - Implemented manually configurable decimal places for native tokens ([PR 2533](https://github.com/input-output-hk/daedalus/pull/2533))
 - Added warning message when pasting an address of the same wallet in the send form ([PR 2506](https://github.com/input-output-hk/daedalus/pull/2506))
 - Implemented select search style variables ([PR 2512](https://github.com/input-output-hk/daedalus/pull/2512))
@@ -13,6 +24,8 @@ Changelog
 
 ### Fixes
 
+- Fixed hardware wallets transactions issue with native tokens ([PR 2543](https://github.com/input-output-hk/daedalus/pull/2543))
+- Fixed hardware wallets transaction initialization issue on device reconnect ([PR 2541](https://github.com/input-output-hk/daedalus/pull/2541))
 - Fixed blank currency selection after updating to 4.0.5 ([PR 2529](https://github.com/input-output-hk/daedalus/pull/2529))
 - Fixed hardware wallets confirmation crashing issue when device is in "Busy" state ([PR 2522](https://github.com/input-output-hk/daedalus/pull/2522))
 - Fixed hardware wallets spending password issue ([PR 2519](https://github.com/input-output-hk/daedalus/pull/2519))

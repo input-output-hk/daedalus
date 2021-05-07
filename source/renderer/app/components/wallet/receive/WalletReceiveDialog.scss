@@ -130,6 +130,11 @@
             line-height: 1.38;
           }
         }
+        .SimpleRadio_root:nth-child(3) {
+          .SimpleRadio_circle {
+            align-self: normal;
+          }
+        }
       }
     }
   }
