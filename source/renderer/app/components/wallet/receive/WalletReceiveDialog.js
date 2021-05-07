@@ -56,6 +56,7 @@ type Props = {
   onDownloadPDF: Function,
   onSaveQRCodeImage: Function,
   onClose: Function,
+  walletName: string,
 };
 
 @observer
@@ -92,7 +93,7 @@ export default class WalletReceiveDialog extends Component<Props> {
   };
 
   render() {
-    const { address, onCopyAddress, onSaveQRCodeImage, onClose } = this.props;
+    const { address, onCopyAddress, onSaveQRCodeImage, onClose, walletName } = this.props;
     const { intl } = this.context;
     const noteInputField = this.form.$('noteInput');
 
@@ -124,9 +125,11 @@ export default class WalletReceiveDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        walletName={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
+        className={styles.dialog}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <div className={styles.container}>

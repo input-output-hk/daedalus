@@ -38,6 +38,7 @@ export const messages = defineMessages({
 
 type Props = {
   onClose: Function,
+  walletName: string,
 };
 
 type State = {
@@ -65,7 +66,7 @@ export default class WalletRecoveryPhraseStep3Dialog extends Component<
 
   render() {
     const { intl } = this.context;
-    const { onClose } = this.props;
+    const { onClose, walletName } = this.props;
     const { safetyAgreement } = this.state;
 
     const actions = [
@@ -83,6 +84,7 @@ export default class WalletRecoveryPhraseStep3Dialog extends Component<
       <Dialog
         className={dialogStyles}
         title={intl.formatMessage(messages.recoveryPhraseStep3Title)}
+        walletName={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}

@@ -274,6 +274,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           ],
           { walletName }
         )}
+        walletName={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => {}}

@@ -53,6 +53,7 @@ type Props = {
   onClose: Function,
   onContinue: Function,
   openExternalLink: Function,
+  walletName: string,
 };
 
 @observer
@@ -62,7 +63,7 @@ export default class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
   };
   render() {
     const { intl } = this.context;
-    const { onClose, onContinue, openExternalLink } = this.props;
+    const { onClose, onContinue, openExternalLink, walletName } = this.props;
 
     const actions = [
       {
@@ -82,6 +83,7 @@ export default class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
       <Dialog
         className={dialogStyles}
         title={intl.formatMessage(messages.recoveryPhraseStep4Title)}
+        walletName={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
