@@ -12,6 +12,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
+import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 import type { WalletLocalData } from '../../api/utils/localStorage';
 
 const messages = defineMessages({
@@ -61,15 +62,33 @@ export default class WalletReceivePage extends Component<Props, State> {
   };
 
   handleShareAddress = (addressToShare: WalletAddress) => {
+    const { activeWallet } = this;
+    const { actions, stores } = this.props;
+    const { dialogs } = actions;
+    const { hardwareWallets } = stores;
+
     this.setState({
       addressToShare,
     });
     const dialog = WalletReceiveDialog;
-    this.props.actions.dialogs.open.trigger({ dialog });
+    if (activeWallet) {
+      const showAddressVerification = hardwareWallets.isAddressVerificationEnabled(
+        activeWallet.id
+      );
+      if (showAddressVerification) {
+        hardwareWallets.initiateAddressVerification(addressToShare);
+      }
+    }
+    dialogs.open.trigger({ dialog });
   };
 
   handleCloseShareAddress = () => {
-    this.props.actions.dialogs.closeActiveDialog.trigger();
+    const { actions, stores } = this.props;
+    const { dialogs } = actions;
+    const { hardwareWallets } = stores;
+
+    dialogs.closeActiveDialog.trigger();
+    hardwareWallets.resetInitializedAddressVerification();
   };
 
   handleToggleUsedAddresses = () => {
@@ -154,12 +173,39 @@ export default class WalletReceivePage extends Component<Props, State> {
     }
   };
 
+  handleSupportRequestClick = async (supportRequestLinkUrl: string) => {
+    const { profile, app } = this.props.stores;
+    const { environment, openExternalLink } = app;
+    const supportUrl = generateSupportRequestLink(
+      supportRequestLinkUrl,
+      environment,
+      profile.currentLocale
+    );
+    openExternalLink(supportUrl);
+    this.handleCloseShareAddress();
+  };
+
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses, sidebar, walletSettings } = stores;
+    const {
+      uiDialogs,
+      addresses,
+      sidebar,
+      hardwareWallets,
+      walletSettings,
+    } = stores;
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
+    const {
+      isAddressVerificationEnabled,
+      hwDeviceStatus,
+      transportDevice,
+      isAddressDerived,
+      isAddressChecked,
+      setAddressVerificationCheckStatus,
+      checkIsTrezorByWalletId,
+    } = hardwareWallets;
 
     const { getLocalWalletDataById } = walletSettings;
 
@@ -179,6 +225,8 @@ export default class WalletReceivePage extends Component<Props, State> {
     const isByronWalletAddressUsed = addresses.active
       ? addresses.active.used
       : false;
+
+    const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     return (
       <Fragment>
@@ -221,6 +269,17 @@ export default class WalletReceivePage extends Component<Props, State> {
             onDownloadPDF={this.handleDownloadPDF}
             onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
+            isAddressVerificationEnabled={isAddressVerificationEnabled(
+              activeWallet.id
+            )}
+            walletName={activeWallet.name}
+            hwDeviceStatus={hwDeviceStatus}
+            transportDevice={transportDevice}
+            isAddressDerived={isAddressDerived}
+            isAddressChecked={isAddressChecked}
+            onChangeVerificationStatus={setAddressVerificationCheckStatus}
+            onSupportRequestClick={this.handleSupportRequestClick}
+            isTrezor={isTrezor}
           />
         )}
       </Fragment>

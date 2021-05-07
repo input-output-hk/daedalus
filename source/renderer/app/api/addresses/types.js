@@ -12,6 +12,7 @@ export type GetAddressesRequestQueryParams = {
 export type Address = {
   id: string,
   state: AddressState,
+  derivation_path: Array<string>,
 };
 
 export type Addresses = Array<Address>;

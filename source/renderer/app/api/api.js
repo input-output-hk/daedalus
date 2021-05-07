@@ -100,6 +100,7 @@ import {
   generateAdditionalMnemonics,
 } from './utils/mnemonics';
 import { filterLogData } from '../../../common/utils/logging';
+import { derivationPathToAddressPath } from '../utils/hardwareWalletUtils';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
@@ -2747,10 +2748,11 @@ const _createWalletFromServerData = action(
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
   (address: Address) => {
-    const { id, state } = address;
+    const { id, state, derivation_path: derivationPath } = address;
     return new WalletAddress({
       id,
       used: state === 'used',
+      spendingPath: derivationPathToAddressPath(derivationPath), // E.g. "1852'/1815'/0'/0/19",
     });
   }
 );
