@@ -53,7 +53,14 @@ export default class CurrencyStore extends Store {
   };
 
   @action getCurrencyRate = async () => {
-    const { localizedCurrency } = this;
+    const { localizedCurrency, list } = this;
+    /**
+     * In case the list was not fetched when loading,
+     * it tries again
+     */
+    if (!list || !list.length) {
+      this.getCurrencyList();
+    }
     if (localizedCurrency && localizedCurrency.code) {
       try {
         this.isFetchingRate = true;
@@ -93,7 +100,6 @@ export default class CurrencyStore extends Store {
           this.lastFetched = lastFetched;
           this.isFetchingRate = false;
         });
-        clearInterval(this._getCurrencyRateInterval);
       }
     }
   };
