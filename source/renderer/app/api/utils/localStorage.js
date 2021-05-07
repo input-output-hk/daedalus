@@ -223,6 +223,20 @@ export default class LocalStorageApi {
   unsetCurrencySelected = (): Promise<void> =>
     LocalStorageApi.unset(keys.CURRENCY_SELECTED);
 
+  getCurrencyLastFetched = (currencyCode: string): Promise<number> =>
+    LocalStorageApi.get(keys.CURRENCY_LAST_FETCHED, null, currencyCode);
+  setCurrencyLastFetched = (currencyCode: string, date: Date): Promise<void> =>
+    LocalStorageApi.set(keys.CURRENCY_LAST_FETCHED, date, currencyCode);
+  unsetCurrencyLastFetched = (currencyCode: string): Promise<void> =>
+    LocalStorageApi.unset(keys.CURRENCY_LAST_FETCHED, currencyCode);
+
+  getCurrencyRate = (currencyCode: string): Promise<number> =>
+    LocalStorageApi.get(keys.CURRENCY_LAST_FETCHED, null, currencyCode);
+  setCurrencyRate = (currencyCode: string, rate: number): Promise<void> =>
+    LocalStorageApi.set(keys.CURRENCY_LAST_FETCHED, rate, currencyCode);
+  unsetCurrencyRate = (currencyCode: string): Promise<void> =>
+    LocalStorageApi.unset(keys.CURRENCY_LAST_FETCHED, currencyCode);
+
   getCurrencyIsActive = (): Promise<boolean> =>
     LocalStorageApi.get(keys.CURRENCY_ACTIVE, CURRENCY_IS_ACTIVE_BY_DEFAULT);
 
