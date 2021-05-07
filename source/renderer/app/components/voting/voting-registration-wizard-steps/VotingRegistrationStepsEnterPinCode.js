@@ -138,7 +138,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }
   );
 
-  pinFocusValidity = (
+  checkPinCodesFieldFocus = (
     pinValues: Array<string>,
     repeatPinValues: Array<string>,
     isRepeatPin: boolean
@@ -151,6 +151,56 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     return isRepeatPin
       ? !isRepeatPinKeyValid && isPinKeyValid
       : !isPinKeyValid && isRepeatPinKeyValid;
+  };
+
+  onChangePinCode = (
+    values: Array<string>,
+    newValue: string,
+    key: number,
+  ) => {
+    const { form } = this;
+    const pinCodeField = form.$('pinCode');
+    const pinCodeFieldProps = pinCodeField.bind();
+    const { pinValues, repeatPinValues } = this.state;
+    pinValues[key] = newValue;
+    const pinFieldNotValid = this.checkPinCodesFieldFocus(
+      pinValues,
+      repeatPinValues,
+      false
+    );
+    const selectedField = pinFieldNotValid
+      ? 'repeatPinCode'
+      : 'pinCode';
+    this.setState({
+      pinValues,
+      selectedPinField: selectedField,
+    });
+    pinCodeFieldProps.onChange(values);
+  };
+
+  onChangeRepeatPinCode = (
+    values: Array<string>,
+    newValue: string,
+    key: number,
+  ) => {
+    const { form } = this;
+    const repeatPinCodeField = form.$('repeatPinCode');
+    const repeatPinCodeFieldProps = repeatPinCodeField.bind();
+    const { pinValues, repeatPinValues } = this.state;
+    repeatPinValues[key] = newValue;
+    const repeatPinFieldNotValid = this.checkPinCodesFieldFocus(
+      pinValues,
+      repeatPinValues,
+      true
+    );
+    const selectedField = repeatPinFieldNotValid
+      ? 'pinCode'
+      : 'repeatPinCode';
+    this.setState({
+      repeatPinValues,
+      selectedPinField: selectedField,
+    });
+    repeatPinCodeFieldProps.onChange(values);
   };
 
   submit = () => {
@@ -210,53 +260,17 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             {...pinCodeFieldProps}
             label={enterPinCodeLabel}
             autoFocus
-            onChange={(
-              values: Array<string>,
-              newValue: string,
-              key: number
-            ) => {
-              const { pinValues, repeatPinValues } = this.state;
-              pinValues[key] = newValue;
-              const pinFieldNotValid = this.pinFocusValidity(
-                pinValues,
-                repeatPinValues,
-                false
-              );
-              const selectedField = pinFieldNotValid
-                ? 'repeatPinCode'
-                : 'pinCode';
-              this.setState({
-                pinValues,
-                selectedPinField: selectedField,
-              });
-              pinCodeFieldProps.onChange(values);
-            }}
+            onChange={(values, newValue, key) =>
+              this.onChangePinCode(values, newValue, key)
+            }
             selectedPinField={selectedPinField}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
-            onChange={(
-              values: Array<string>,
-              newValue: string,
-              key: number
-            ) => {
-              const { pinValues, repeatPinValues } = this.state;
-              repeatPinValues[key] = newValue;
-              const repeatPinFieldNotValid = this.pinFocusValidity(
-                pinValues,
-                repeatPinValues,
-                true
-              );
-              const selectedField = repeatPinFieldNotValid
-                ? 'pinCode'
-                : 'repeatPinCode';
-              this.setState({
-                repeatPinValues,
-                selectedPinField: selectedField,
-              });
-              repeatPinCodeFieldProps.onChange(values);
-            }}
+            onChange={(values, newValue, key) =>
+              this.onChangeRepeatPinCode(values, newValue, key)
+            }
             autoFocus={isRepeatPinCodeAutoFocused}
             disabled={!pinCodeField.isValid}
             error={repeatPinCodeField.error}
