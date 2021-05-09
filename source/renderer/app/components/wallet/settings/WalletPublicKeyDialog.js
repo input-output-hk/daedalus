@@ -37,6 +37,7 @@ type Props = {
   onClose: Function,
   error: ?LocalizableError,
   hasReceivedWalletPublicKey: boolean,
+  walletName: string,
 };
 
 @observer
@@ -103,7 +104,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, error } = this.props;
+    const { onClose, error, walletName } = this.props;
     const { form } = this;
     const spendingPasswordField = form.$('spendingPassword');
     const actions = [
@@ -117,9 +118,11 @@ export default class WalletPublicKeyDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
+        walletName={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
+        className={styles.dialog}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <div className={styles.description}>
