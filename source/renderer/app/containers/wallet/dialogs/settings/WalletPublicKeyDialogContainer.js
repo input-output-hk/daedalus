@@ -27,6 +27,8 @@ export default class WalletPublicKeyDialogContainer extends Component<Props> {
       active: activeWallet,
     } = stores.wallets;
 
+    if (!activeWallet) throw new Error('Active wallet required.');
+
     return (
       <WalletPublicKeyDialog
         onRevealPublicKey={getAccountPublicKey.trigger}
