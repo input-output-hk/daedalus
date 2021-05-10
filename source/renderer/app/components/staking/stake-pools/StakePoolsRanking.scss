@@ -60,7 +60,8 @@
             text-overflow: ellipsis;
             white-space: nowrap;
 
-            .WalletsDropdownLabel_labelSync {
+            .WalletsDropdownLabel_labelSync,
+            .WalletsDropdownLabel_ticker {
               display: none;
             }
           }

@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number, boolean, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
@@ -15,7 +16,6 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
-import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
 
 const assets = {
   available: [
@@ -49,15 +49,15 @@ const assets = {
 };
 
 const dummyWallets = [
-  generateWallet('Dummy1', '1000000000000', assets),
+  generateWallet('Dummy1', '1000000000000', assets, 0, STAKE_POOLS[0]),
   generateWallet(
     'Dummy2',
     '2000000000000',
     assets,
     0,
-    undefined,
+    STAKE_POOLS[1],
     true,
-    WalletSyncStateStatuses.SYNCING
+    'syncing'
   ),
   generateWallet('Dummy3', '2000000000000', assets),
 ];
@@ -82,7 +82,7 @@ export const StakePoolsStory = (props: Props) => {
         return obj;
       }, {}),
     },
-    '0'
+    null
   );
   return (
     <StakePools
@@ -111,7 +111,9 @@ export const StakePoolsStory = (props: Props) => {
       updateDelegatingStake={() => null}
       rankStakePools={() => null}
       wallets={dummyWallets}
-      getStakePoolById={() => null}
+      getStakePoolById={(poolId) =>
+        find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
+      }
       onSmashSettingsClick={action('onSmashSettingsClick')}
       smashServerUrl="https://smash.cardano-mainnet.iohk.io"
       maxDelegationFunds={maxDelegationFunds}
