@@ -138,36 +138,16 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }
   );
 
-  checkPinCodesFieldFocus = (
-    pinValues: Array<string>,
-    repeatPinValues: Array<string>,
-    isRepeatPin: boolean
-  ) => {
-    const pinKey = pinValues.join('').length;
-    const repeatPinKey = repeatPinValues.join('').length;
-    const isPinKeyValid = pinKey > 0 && pinKey < pinValues.length;
-    const isRepeatPinKeyValid =
-      repeatPinKey > 0 && repeatPinKey < repeatPinValues.length;
-    return isRepeatPin
-      ? !isRepeatPinKeyValid && isPinKeyValid
-      : !isPinKeyValid && isRepeatPinKeyValid;
-  };
-
   onChangePinCode = (values: Array<string>, newValue: string, key: number) => {
     const { form } = this;
     const pinCodeField = form.$('pinCode');
     const pinCodeFieldProps = pinCodeField.bind();
-    const { pinValues, repeatPinValues } = this.state;
+    const { pinValues } = this.state;
     pinValues[key] = newValue;
-    const pinFieldNotValid = this.checkPinCodesFieldFocus(
-      pinValues,
-      repeatPinValues,
-      false
-    );
-    const selectedField = pinFieldNotValid ? 'repeatPinCode' : 'pinCode';
+
     this.setState({
       pinValues,
-      selectedPinField: selectedField,
+      selectedPinField: 'pinCode',
     });
     pinCodeFieldProps.onChange(values);
   };
@@ -180,17 +160,11 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const { form } = this;
     const repeatPinCodeField = form.$('repeatPinCode');
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
-    const { pinValues, repeatPinValues } = this.state;
+    const { repeatPinValues } = this.state;
     repeatPinValues[key] = newValue;
-    const repeatPinFieldNotValid = this.checkPinCodesFieldFocus(
-      pinValues,
-      repeatPinValues,
-      true
-    );
-    const selectedField = repeatPinFieldNotValid ? 'pinCode' : 'repeatPinCode';
     this.setState({
       repeatPinValues,
-      selectedPinField: selectedField,
+      selectedPinField: 'repeatPinCode',
     });
     repeatPinCodeFieldProps.onChange(values);
   };
