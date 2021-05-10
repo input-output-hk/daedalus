@@ -1,8 +1,8 @@
 .component {
   color: var(--theme-widgets-itemsDropdown-option-label-text-color);
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
   font-family: var(--font-regular);
   justify-content: space-between;
   max-width: calc(100% - 20px);
