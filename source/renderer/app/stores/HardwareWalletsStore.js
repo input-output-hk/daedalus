@@ -991,19 +991,26 @@ export default class HardwareWalletsStore extends Store {
         logger.debug('[HW-DEBUG] HWStore - Establishing connection failed');
       }
     }
-
-    // Add more cases / edge cases if needed
     if (deviceType === DeviceTypes.TREZOR) {
       logger.debug('[HW-DEBUG] Verify Address with Trezor: ', { address });
+      if (!transportDevice) {
+        transportDevice = await this.establishHardwareWalletConnection();
+        logger.debug('[HW-DEBUG] HWStore - Set transport device 4', {
+          transportDevice,
+        });
+      }
+      runInAction(
+        'HardwareWalletsStore:: Set transport device fomr tx init',
+        () => {
+          this.transportDevice = transportDevice;
+        }
+      );
       const newConnectionData = get(
         this.hardwareWalletsConnectionData,
         walletId
       );
-      await this._getExtendedPublicKey(
-        newConnectionData.path,
-        walletId,
-        address
-      );
+      devicePath = newConnectionData.path || newConnectionData.device.path;
+      await this._getExtendedPublicKey(devicePath, walletId, address);
     } else {
       logger.debug('[HW-DEBUG] Verify Address with Ledger: ', {
         address,
