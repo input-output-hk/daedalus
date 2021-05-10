@@ -498,7 +498,6 @@ export default class HardwareWalletsStore extends Store {
       logger.debug(
         '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: START'
       );
-
       // Tx Special cases!
       // This means that transaction needs to be signed but we don't know device connected to Software wallet
       let transportDevice;
@@ -957,7 +956,10 @@ export default class HardwareWalletsStore extends Store {
 
     const { disconnected, device } = hardwareWalletConnectionData;
     const { deviceType } = device;
-    let devicePath = path || hardwareWalletConnectionData.device.path;
+    let devicePath =
+      path ||
+      hardwareWalletConnectionData.path ||
+      hardwareWalletConnectionData.device.path;
 
     logger.debug(
       '[HW-DEBUG] HWStore - Verify address - check is device connected: ',
@@ -969,12 +971,21 @@ export default class HardwareWalletsStore extends Store {
     );
 
     let transportDevice;
-    if (disconnected && !path) {
-      // Wait for connection to be established and continue with address verification
+    if (disconnected) {
+      logger.debug('[HW-DEBUG] CHECK FOR NEXT device');
       try {
         transportDevice = await this.establishHardwareWalletConnection();
         if (transportDevice) {
           devicePath = transportDevice.path;
+          logger.debug('[HW-DEBUG] HWStore - Set transport device 4', {
+            transportDevice,
+          });
+          runInAction(
+            'HardwareWalletsStore:: Set transport device fomr tx init',
+            () => {
+              this.transportDevice = transportDevice;
+            }
+          );
         }
       } catch (e) {
         logger.debug('[HW-DEBUG] HWStore - Establishing connection failed');
@@ -984,16 +995,14 @@ export default class HardwareWalletsStore extends Store {
     // Add more cases / edge cases if needed
     if (deviceType === DeviceTypes.TREZOR) {
       logger.debug('[HW-DEBUG] Verify Address with Trezor: ', { address });
-      this.verifyAddress({
-        address,
-        path: devicePath,
-        isTrezor: true,
-      });
-      runInAction(
-        'HardwareWalletsStore:: Initiate address verification',
-        () => {
-          this.isAddressVerificationInitiated = false;
-        }
+      const newConnectionData = get(
+        this.hardwareWalletsConnectionData,
+        walletId
+      );
+      await this._getExtendedPublicKey(
+        newConnectionData.path,
+        walletId,
+        address
       );
     } else {
       logger.debug('[HW-DEBUG] Verify Address with Ledger: ', {
@@ -1255,7 +1264,6 @@ export default class HardwareWalletsStore extends Store {
         'Can not export extended public key: Device not recognized!'
       );
     }
-
     const { deviceType, path, deviceName, deviceModel } = transportDevice;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
 
@@ -1391,7 +1399,6 @@ export default class HardwareWalletsStore extends Store {
           }
           return;
         }
-
         if (this.isAddressVerificationInitiated && address && devicePath) {
           logger.debug(
             '[HW-DEBUG] HWStore - Re-initiate Address verification from _getExtendedPublicKey: ',
@@ -1408,7 +1415,7 @@ export default class HardwareWalletsStore extends Store {
               this.isExportKeyAborted = false;
             }
           );
-          this.verifyAddress({ address, path: devicePath, isTrezor: false });
+          this.verifyAddress({ address, path: devicePath, isTrezor });
           return;
         }
 
