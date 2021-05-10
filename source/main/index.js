@@ -49,6 +49,7 @@ let cardanoNode: ?CardanoNode;
 
 const {
   isDev,
+  isTest,
   isWatchMode,
   isBlankScreenFixActive,
   isSelfnode,
@@ -253,7 +254,7 @@ const onAppReady = async () => {
     event.preventDefault(); // prevent Daedalus from quitting immediately
 
     if (isSelfnode) {
-      if (keepLocalClusterRunning) {
+      if (keepLocalClusterRunning || isTest) {
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus',
           {
