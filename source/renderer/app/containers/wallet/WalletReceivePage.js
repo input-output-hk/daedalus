@@ -267,7 +267,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             onDownloadPDF={this.handleDownloadPDF}
             onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
-            isAddressVerificationEnabled={activeWallet.isHardwareWallet}
+            isHardwareWallet={activeWallet.isHardwareWallet}
             walletName={activeWallet.name}
             hwDeviceStatus={hwDeviceStatus}
             transportDevice={transportDevice}

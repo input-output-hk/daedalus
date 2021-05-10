@@ -10479,7 +10479,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Yes, I am sure I have compared the address displayed in Daedalus with the address displayed on the Ledger device by comparing the beginning and ending of the address.",
+        "defaultMessage": "!!!Yes, I am sure I have compared the address displayed in Daedalus with the address displayed on the {deviceType} device by comparing the beginning and ending of the address.",
         "description": "Invalid address confirmation checkbox label",
         "end": {
           "column": 3,
@@ -10521,7 +10521,7 @@
         }
       },
       {
-        "defaultMessage": "!!!No, I am sure that address displayed in Daedalus is different from the address displayed on my Ledger device",
+        "defaultMessage": "!!!No, I am sure that address displayed in Daedalus is different from the address displayed on my {deviceType} device",
         "description": "Verification option \"Invalid\" label",
         "end": {
           "column": 3,
@@ -10577,7 +10577,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please compare the address displayed here on the screen with the address displayed on the Ledger device by comparing <b>at least the first 5 characters at the start</b> of the address after the \"addr\" part and <b>at least 5 characters at the end</b> of the address.",
+        "defaultMessage": "!!!Please compare the address displayed here on the screen with the address displayed on the {deviceType} device by comparing <b>at least the first 5 characters at the start</b> of the address after the \"addr\" part and <b>at least 5 characters at the end</b> of the address.",
         "description": "Address verification instructions",
         "end": {
           "column": 3,
