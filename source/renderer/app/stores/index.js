@@ -1,5 +1,5 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, get, isFunction } from 'mobx';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
@@ -81,6 +81,16 @@ function executeOnEveryStore(fn: (store: Store) => void) {
     if (stores && stores[name]) fn(stores[name]);
   });
 }
+
+// Executes `onExit` on stores that have this method
+export const onExitStores = () => {
+  executeOnEveryStore((store) => {
+    const { onExit } = store;
+    if (onExit && typeof onExit === 'function') {
+      store.onExit();
+    }
+  });
+};
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
 export default action((api, actions, router): StoresMap => {

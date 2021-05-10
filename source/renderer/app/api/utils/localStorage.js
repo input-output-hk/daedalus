@@ -233,12 +233,8 @@ export default class LocalStorageApi {
 
   setCurrencyRate = async (
     currencyCode: string,
-    rate: number
+    currencyLocalRate: CurrencyLocalRate
   ): Promise<void> => {
-    const currencyLocalRate: CurrencyLocalRate = {
-      rate,
-      date: new Date(),
-    };
     await LocalStorageApi.set(
       keys.CURRENCY_LAST_FETCHED,
       currencyLocalRate,
