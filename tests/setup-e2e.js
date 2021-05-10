@@ -26,6 +26,9 @@ import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-step
 import { refreshClient } from './app/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
+import { environment } from '../source/main/environment';
+
+global.environment = environment;
 
 /* eslint-disable consistent-return */
 
