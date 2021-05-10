@@ -1036,31 +1036,27 @@ export default class HardwareWalletsStore extends Store {
     this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS;
     this.tempAddressToVerify = params;
     try {
-      let derivedAddress;
-      if (isTrezor) {
-        derivedAddress = await deriveAddressChannel.request({
-          devicePath: path,
-          isTrezor,
-          addressType: AddressType.BASE,
-          spendingPathStr: address.spendingPath,
-          stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-          networkId: isMainnet
-            ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-            : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-          protocolMagic: isMainnet
-            ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-            : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
-        });
+      const derivedAddress = await deriveAddressChannel.request({
+        devicePath: path,
+        isTrezor,
+        addressType: AddressType.BASE,
+        spendingPathStr: address.spendingPath,
+        stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
+        networkId: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+      });
 
-        if (derivedAddress === address.id) {
-          logger.debug(
-            '[HW-DEBUG] HWStore - Address successfully verified - Trezor',
-            {
-              address: derivedAddress,
-            }
-          );
+      if (derivedAddress === address.id) {
+        logger.debug('[HW-DEBUG] HWStore - Address successfully verified ', {
+          address: derivedAddress,
+        });
+        if (isTrezor) {
           runInAction(
-            'HardwareWalletsStore:: Address Verified and is correct',
+            'HardwareWalletsStore:: Address Verified and is correct - Trezor',
             () => {
               this.isAddressDerived = true;
               this.isAddressChecked = true;
@@ -1071,52 +1067,23 @@ export default class HardwareWalletsStore extends Store {
           );
         } else {
           runInAction(
-            'HardwareWalletsStore:: Address Verified but not correct',
-            () => {
-              this.isAddressDerived = false;
-              this.isAddressChecked = false;
-              this.isAddressCorrect = false;
-              this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
-            }
-          );
-        }
-      } else {
-        derivedAddress = await deriveAddressChannel.request({
-          devicePath: path,
-          isTrezor,
-          addressType: AddressType.BASE,
-          spendingPathStr: address.spendingPath,
-          stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-          networkId: isMainnet
-            ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-            : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-          protocolMagic: isMainnet
-            ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-            : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
-        });
-        // Derive address from path and check
-        if (derivedAddress === address.id) {
-          logger.debug('[HW-DEBUG] HWStore - Address successfully verified', {
-            address: derivedAddress,
-          });
-          runInAction(
-            'HardwareWalletsStore:: Address Verified and is correct',
+            'HardwareWalletsStore:: Address Verified and is correct - Ledger',
             () => {
               this.isAddressDerived = true;
             }
           );
           this.showAddress(params);
-        } else {
-          runInAction(
-            'HardwareWalletsStore:: Address Verified but not correct',
-            () => {
-              this.isAddressDerived = false;
-              this.isAddressChecked = false;
-              this.isAddressCorrect = false;
-              this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
-            }
-          );
         }
+      } else {
+        runInAction(
+          'HardwareWalletsStore:: Address Verified but not correct',
+          () => {
+            this.isAddressDerived = false;
+            this.isAddressChecked = false;
+            this.isAddressCorrect = false;
+            this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
+          }
+        );
       }
     } catch (error) {
       logger.debug('[HW-DEBUG] HWStore - Verifying address error');
