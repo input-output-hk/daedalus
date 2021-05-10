@@ -4380,20 +4380,6 @@
           "column": 23,
           "line": 77
         }
-      },
-      {
-        "defaultMessage": "!!!syncing",
-        "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 88
-        },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
-        "start": {
-          "column": 17,
-          "line": 83
-        }
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.json"
@@ -5513,20 +5499,6 @@
         "start": {
           "column": 25,
           "line": 123
-        }
-      },
-      {
-        "defaultMessage": "!!!syncing",
-        "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 134
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
-        "start": {
-          "column": 17,
-          "line": 129
         }
       }
     ],
@@ -11121,20 +11093,6 @@
         "start": {
           "column": 24,
           "line": 129
-        }
-      },
-      {
-        "defaultMessage": "!!!syncing",
-        "description": "Syncing wallet label on the send tokens form.",
-        "end": {
-          "column": 3,
-          "line": 139
-        },
-        "file": "source/renderer/app/components/wallet/send-form/messages.js",
-        "id": "wallet.send.form.syncingWallet",
-        "start": {
-          "column": 17,
-          "line": 135
         }
       }
     ],
@@ -16803,6 +16761,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!syncing",
+        "description": "syncingLabel for ItemDropdownOption",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/widgets/forms/ItemDropdownOption.js",
+        "id": "widgets.itemsDropdown.option.syncingLabel",
+        "start": {
+          "column": 16,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/forms/ItemDropdownOption.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Language",
         "description": "Label for the language select.",
         "end": {
@@ -16874,6 +16851,25 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!syncing",
+        "description": "syncingLabel for ItemDropdownOption",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/widgets/forms/WalletsDropdownLabel.js",
+        "id": "widgets.itemsDropdown.option.syncingLabel",
+        "start": {
+          "column": 16,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/forms/WalletsDropdownLabel.json"
   },
   {
     "descriptors": [
