@@ -1222,5 +1222,5 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName} amount",
   "wallet.transferFunds.dialog2.title": "Transfer funds",
   "wallet.transferFunds.dialog2.total.label": "Total",
-  "widgets.itemsDropdown.option.syncingLabel": "syncing"
+  "widgets.itemsDropdown.syncingLabel": "syncing"
 }

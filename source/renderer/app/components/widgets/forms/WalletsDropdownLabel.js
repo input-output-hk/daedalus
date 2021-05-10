@@ -1,19 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-import { intlShape, defineMessages } from 'react-intl';
 import { getColorFromRange } from '../../../utils/colors';
 import styles from './WalletsDropdownLabel.scss';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
-
-const messages = defineMessages({
-  syncingLabel: {
-    id: 'widgets.itemsDropdown.option.syncingLabel',
-    defaultMessage: '!!!syncing',
-    description: 'syncingLabel for ItemDropdownOption',
-  },
-});
 
 export type WalletOption = {
   wallet: $Shape<Wallet>,
@@ -23,10 +14,6 @@ export type WalletOption = {
 };
 
 export default class WalletsDropdownLabel extends Component<WalletOption> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   renderTicker = () => {
     const { wallet, getStakePoolById, numberOfStakePools } = this.props;
     const {
@@ -56,10 +43,8 @@ export default class WalletsDropdownLabel extends Component<WalletOption> {
   };
 
   render() {
-    const { intl } = this.context;
-    const defaultSyncingLabel = intl.formatMessage(messages.syncingLabel);
-    const { wallet, syncingLabel = defaultSyncingLabel } = this.props;
-    const { name, isHardwareWallet, isSyncing } = wallet;
+    const { wallet } = this.props;
+    const { name, isHardwareWallet } = wallet;
     const ticker = this.renderTicker();
     return (
       <div className={styles.component}>
@@ -71,9 +56,6 @@ export default class WalletsDropdownLabel extends Component<WalletOption> {
               svg={hardwareWalletsIcon}
               className={styles.hardwareWalletsIcon}
             />
-          )}
-          {isSyncing && (
-            <span className={styles.labelSync}>{syncingLabel}</span>
           )}
         </div>
       </div>

@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { intlShape, defineMessages } from 'react-intl';
 import classnames from 'classnames';
 import LoadingSpinner from '../LoadingSpinner';
@@ -8,7 +9,7 @@ import styles from './ItemDropdownOption.scss';
 
 const messages = defineMessages({
   syncingLabel: {
-    id: 'widgets.itemsDropdown.option.syncingLabel',
+    id: 'widgets.itemsDropdown.syncingLabel',
     defaultMessage: '!!!syncing',
     description: 'syncingLabel for ItemDropdownOption',
   },
@@ -27,20 +28,6 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
     intl: intlShape.isRequired,
   };
 
-  renderLabel = () => {
-    const { intl } = this.context;
-    const defaultSyncingLabel = intl.formatMessage(messages.syncingLabel);
-    const { label, isSyncing, syncingLabel = defaultSyncingLabel } = this.props;
-    return (
-      <div className={styles.label}>
-        {label}
-        {isSyncing && typeof label === 'string' && (
-          <span className={styles.syncingLabel}>{syncingLabel}</span>
-        )}
-      </div>
-    );
-  };
-
   renderDetail = () => {
     const { detail, isSyncing } = this.props;
     if (!detail || isSyncing) return null;
@@ -48,27 +35,35 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
   };
 
   renderSyncingSpinner = () => {
-    const { isSyncing, selected } = this.props;
+    const { intl } = this.context;
+    const defaultSyncingLabel = intl.formatMessage(messages.syncingLabel);
+    const {
+      isSyncing,
+      selected,
+      syncingLabel = defaultSyncingLabel,
+    } = this.props;
     if (!isSyncing) return null;
     const syncingSpinnerStyles = classnames(styles.syncingSpinner, {
       [styles.selected]: selected,
     });
     return (
       <div className={syncingSpinnerStyles}>
-        <LoadingSpinner medium />
+        <PopOver content={syncingLabel} className={styles.syncingLabel1}>
+          <LoadingSpinner medium />
+        </PopOver>
       </div>
     );
   };
 
   render() {
-    const { selected, detail, isSyncing } = this.props;
+    const { selected, detail, isSyncing, label } = this.props;
     const componentStyles = classnames(styles.component, {
       [styles.selected]: selected,
       [styles.noDetail]: !detail || isSyncing,
     });
     return (
       <div className={componentStyles}>
-        {this.renderLabel()}
+        <div className={styles.label}>{label}</div>
         {this.renderDetail()}
         {this.renderSyncingSpinner()}
       </div>
