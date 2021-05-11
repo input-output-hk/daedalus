@@ -33,11 +33,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
-
-  .syncingLabel {
-    margin-left: 10px;
-    opacity: 0.5;
-  }
 }
 
 .detail {
@@ -52,25 +47,25 @@
 }
 
 .syncingSpinner {
-  height: 24px;
-  padding: 0;
-  position: absolute;
-  right: -25px;
-  width: 24px;
+  margin: -5px 0 0 6px;
+  height: 10px;
+  width: 10px;
 
-  &.selected {
-    right: 27px;
+  svg {
+    height: 10px;
+    width: 10px;
+    animation: rotating-spinner 1.2s linear infinite;
+    circle {
+      stroke: var(--theme-widgets-itemsDropdown-option-label-text-color);
+    }
   }
 
-  :global {
-    .LoadingSpinner_component.LoadingSpinner_medium {
-      margin: 0 !important;
-      .LoadingSpinner_icon {
-        svg path {
-          fill: var(--rp-option-text-color) !important;
-          opacity: 0.5;
-        }
-      }
+  @keyframes rotating-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }

@@ -5,11 +5,6 @@
       height: 50px;
       line-height: 33px;
       padding: 10px 20px;
-      &.SimpleOptions_selectedOption {
-        .ItemDropdownOption_syncingSpinner {
-          display: none;
-        }
-      }
     }
     --rp-bubble-border-radius: 2px;
   }

@@ -1,11 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
+import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { intlShape, defineMessages } from 'react-intl';
 import classnames from 'classnames';
-import LoadingSpinner from '../LoadingSpinner';
 import styles from './ItemDropdownOption.scss';
+import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 
 const messages = defineMessages({
   syncingLabel: {
@@ -37,19 +38,12 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
   renderSyncingSpinner = () => {
     const { intl } = this.context;
     const defaultSyncingLabel = intl.formatMessage(messages.syncingLabel);
-    const {
-      isSyncing,
-      selected,
-      syncingLabel = defaultSyncingLabel,
-    } = this.props;
+    const { isSyncing, syncingLabel = defaultSyncingLabel } = this.props;
     if (!isSyncing) return null;
-    const syncingSpinnerStyles = classnames(styles.syncingSpinner, {
-      [styles.selected]: selected,
-    });
     return (
-      <div className={syncingSpinnerStyles}>
-        <PopOver content={syncingLabel} className={styles.syncingLabel1}>
-          <LoadingSpinner medium />
+      <div className={styles.syncingSpinner}>
+        <PopOver content={syncingLabel} className={styles.syncingLabel}>
+          <SVGInline svg={tinySpinnerIcon} className={styles.tinySpinner} />
         </PopOver>
       </div>
     );
@@ -63,9 +57,11 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
     });
     return (
       <div className={componentStyles}>
-        <div className={styles.label}>{label}</div>
+        <div className={styles.label}>
+          {label}
+          {this.renderSyncingSpinner()}
+        </div>
         {this.renderDetail()}
-        {this.renderSyncingSpinner()}
       </div>
     );
   }
