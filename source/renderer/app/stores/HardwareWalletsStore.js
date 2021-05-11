@@ -110,7 +110,7 @@ export type AddressVerificationCheckStatus = 'valid' | 'invalid' | 'reverify';
 
 export type TempAddressToVerify = {
   address: WalletAddress,
-  path: string,
+  path: ?string,
   isTrezor: boolean,
 };
 
@@ -928,7 +928,7 @@ export default class HardwareWalletsStore extends Store {
 
   initiateAddressVerification = async (
     address: WalletAddress,
-    path?: string
+    path: ?string
   ) => {
     if (this.isAddressVerificationInitiated) return;
     logger.debug('[HW-DEBUG] HWStore - Initiate Address Verification: ', {
@@ -969,7 +969,6 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       }
     );
-
     let transportDevice;
     if (disconnected) {
       logger.debug('[HW-DEBUG] CHECK FOR NEXT device');
@@ -1000,7 +999,7 @@ export default class HardwareWalletsStore extends Store {
         });
       }
       runInAction(
-        'HardwareWalletsStore:: Set transport device fomr tx init',
+        'HardwareWalletsStore:: Set transport device from tx init',
         () => {
           this.transportDevice = transportDevice;
         }
@@ -1009,7 +1008,12 @@ export default class HardwareWalletsStore extends Store {
         this.hardwareWalletsConnectionData,
         walletId
       );
-      devicePath = newConnectionData.path || newConnectionData.device.path;
+      const activeDevice =
+        find(
+          this.hardwareWalletDevices,
+          (hardwareWalletDevice) => hardwareWalletDevice.paired === walletId
+        ) || {};
+      devicePath = activeDevice.path || path || newConnectionData.path || null;
       await this._getExtendedPublicKey(devicePath, walletId, address);
     } else {
       logger.debug('[HW-DEBUG] Verify Address with Ledger: ', {
@@ -1033,7 +1037,7 @@ export default class HardwareWalletsStore extends Store {
 
   @action verifyAddress = async (params: {
     address: WalletAddress,
-    path: string,
+    path: ?string,
     isTrezor: boolean,
   }) => {
     logger.debug('[HW-DEBUG] - VERIFY Address');
@@ -1141,7 +1145,7 @@ export default class HardwareWalletsStore extends Store {
 
   @action showAddress = async (params: {
     address: WalletAddress,
-    path: string,
+    path: ?string,
     isTrezor: boolean,
   }) => {
     logger.debug('[HW-DEBUG] - SHOW Address');
@@ -1267,7 +1271,6 @@ export default class HardwareWalletsStore extends Store {
       const recognizedWallet = recognizedStoredWallet
         ? this.stores.wallets.getWalletById(recognizedStoredWallet.id)
         : null;
-
       // Check if public key matches already restored hardware wallet public key
       // Update LC data and redirect to paired wallet
       if (recognizedWallet) {
@@ -1373,23 +1376,50 @@ export default class HardwareWalletsStore extends Store {
           }
           return;
         }
-        if (this.isAddressVerificationInitiated && address && devicePath) {
+        if (this.isAddressVerificationInitiated && address) {
           logger.debug(
             '[HW-DEBUG] HWStore - Re-initiate Address verification from _getExtendedPublicKey: ',
             {
               address,
               devicePath,
+              walletId,
+              recognizedWalletId: recognizedWallet.id,
+              deviceId,
             }
           );
-          runInAction(
-            'HardwareWalletsStore:: Re-Initiate Address verification',
-            () => {
+          if (!walletId || recognizedWallet.id !== walletId) {
+            logger.debug(
+              '[HW-DEBUG] HWStore - Device not belongs to this wallet'
+            );
+            // Keep isTransactionInitiated active & Set new device listener by initiating transaction
+            // Show message to reconnect proper software wallet device pair
+            logger.debug(
+              '[HW-DEBUG] unfinishedWalletAddressVerification SET: ',
+              walletId
+            );
+            runInAction(
+              'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+              () => {
+                this.isAddressVerificationInitiated = false;
+                this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+                this.activeDevicePath = null;
+                this.unfinishedWalletAddressVerification = address;
+                this.isExportKeyAborted = false;
+              }
+            );
+          } else {
+            logger.debug(
+              '[HW-DEBUG] HWStore - Address Verification - Close: ',
+              walletId
+            );
+            logger.debug('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
+            runInAction('HardwareWalletsStore:: Initiate transaction', () => {
               this.isAddressVerificationInitiated = false;
-              this.unfinishedWalletAddressVerification = address;
+              this.unfinishedWalletAddressVerification = null;
               this.isExportKeyAborted = false;
-            }
-          );
-          this.verifyAddress({ address, path: devicePath, isTrezor });
+            });
+            this.verifyAddress({ address, path: devicePath, isTrezor });
+          }
           return;
         }
 
@@ -2199,7 +2229,6 @@ export default class HardwareWalletsStore extends Store {
     if (
       this.unfinishedWalletAddressVerification &&
       !disconnected &&
-      path &&
       (!eventType || eventType === DeviceEvents.CONNECT)
     ) {
       logger.debug(
