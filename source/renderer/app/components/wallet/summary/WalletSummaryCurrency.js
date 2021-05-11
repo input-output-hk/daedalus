@@ -68,7 +68,7 @@ export default class WalletSummaryCurrency extends Component<Props> {
     const { decimalDigits } = currencySelected || {};
 
     let currencyWalletAmount;
-    if (isRestoreActive || !currencyRate) currencyWalletAmount = '– ';
+    if (isRestoreActive || !currencyRate) currencyWalletAmount = '–';
     else if (hasCurrency && currencyRate)
       currencyWalletAmount = formattedWalletCurrencyAmount(
         wallet.amount,
@@ -95,6 +95,7 @@ export default class WalletSummaryCurrency extends Component<Props> {
         <div className={styles.currencyWalletAmount}>
           {currencyWalletAmount}
           <span className={styles.currencyCode}>
+            {' '}
             {currencyWalletAmountSymbol}
           </span>
         </div>
