@@ -4,6 +4,10 @@
   text-align: center;
 
   :global {
+    .Dialog_title {
+      margin-bottom: 0;
+    }
+
     .Dialog_subtitle {
       text-transform: uppercase;
     }

@@ -387,7 +387,6 @@ export default class WalletReceiveDialog extends Component<Props, State> {
         actions={showActions ? actions : []}
         closeOnOverlayClick={false}
         onClose={onClose}
-        className={styles.dialog}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <div className={styles.container}>

@@ -4,6 +4,12 @@
   font-family: var(--font-medium);
   width: 580px;
 
+  :global {
+    .Dialog_title {
+      margin-bottom: 20px;
+    }
+  }
+
   .currencySymbol {
     font-family: var(--font-light);
     text-transform: uppercase;

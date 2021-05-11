@@ -1,4 +1,10 @@
 .dialog {
+  :global {
+    .Dialog_title {
+      margin-bottom: 0;
+    }
+  }
+
   .walletPublicKeyQRCode {
     align-items: center;
     display: flex;
