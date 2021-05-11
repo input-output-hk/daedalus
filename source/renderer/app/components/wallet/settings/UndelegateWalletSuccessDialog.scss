@@ -1,12 +1,6 @@
 .dialog {
   font-family: var(--font-light);
 
-  :global {
-    .Dialog_title {
-      margin-bottom: 0;
-    }
-  }
-
   .sadLogoContainer {
     display: flex;
     justify-content: center;

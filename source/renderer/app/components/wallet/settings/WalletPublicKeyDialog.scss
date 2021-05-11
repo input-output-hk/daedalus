@@ -1,13 +1,5 @@
 @import '../../../themes/mixins/error-message';
 
-.dialog {
-  :global {
-    .Dialog_title {
-      margin-bottom: 0;
-    }
-  }
-}
-
 .description {
   font-family: var(--font-regular);
   line-height: 1.38;
