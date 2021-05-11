@@ -12,7 +12,6 @@ import type { Currency, LocalizedCurrency } from '../types/currencyTypes.js';
 export default class CurrencyStore extends Store {
   @observable isFetchingList: boolean = false;
   @observable isFetchingRate: boolean = false;
-  @observable isAvailable: boolean = false;
   @observable isActive: boolean = false;
   @observable list: Array<Currency> = [];
   @observable selected: ?Currency = null;
@@ -72,11 +71,12 @@ export default class CurrencyStore extends Store {
           this.lastFetched = new Date();
           this.rate = rate;
           this.isFetchingRate = false;
-          this.isAvailable = true;
         });
       } catch (error) {
         runInAction(() => {
-          this.isAvailable = false;
+          if (this.rate) {
+            this.isFetchingRate = false;
+          }
         });
       }
     }

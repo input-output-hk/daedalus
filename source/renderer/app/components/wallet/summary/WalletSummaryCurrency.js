@@ -34,7 +34,6 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   currencyIsFetchingRate: boolean,
-  currencyIsAvailable: boolean,
   currencyIsActive: boolean,
   currencySelected: ?Currency,
   currencyRate: ?number,
@@ -52,7 +51,6 @@ export default class WalletSummaryCurrency extends Component<Props> {
     const {
       wallet,
       currencyIsActive,
-      currencyIsAvailable,
       currencyIsFetchingRate,
       currencyLastFetched,
       currencyRate,
@@ -70,7 +68,7 @@ export default class WalletSummaryCurrency extends Component<Props> {
     const { decimalDigits } = currencySelected || {};
 
     let currencyWalletAmount;
-    if (isRestoreActive || !currencyIsAvailable) currencyWalletAmount = '– ';
+    if (isRestoreActive || !currencyRate) currencyWalletAmount = '– ';
     else if (hasCurrency && currencyRate)
       currencyWalletAmount = formattedWalletCurrencyAmount(
         wallet.amount,

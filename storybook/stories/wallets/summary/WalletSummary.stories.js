@@ -163,7 +163,6 @@ storiesOf('Wallets|Summary', module)
     );
 
     let currencyIsFetchingRate = false;
-    let currencyIsAvailable = true;
     let currencyIsActive = true;
     let currencyLastFetched = new Date();
 
@@ -171,7 +170,6 @@ storiesOf('Wallets|Summary', module)
       currencyIsFetchingRate = true;
       currencyLastFetched = null;
     } else if (currencyState === 'off') {
-      currencyIsAvailable = false;
       currencyIsActive = false;
     }
 
@@ -192,7 +190,6 @@ storiesOf('Wallets|Summary', module)
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
         currencyIsFetchingRate={currencyIsFetchingRate}
-        currencyIsAvailable={currencyIsAvailable}
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
         currencyRate={0.321}
