@@ -1062,7 +1062,7 @@ export default class HardwareWalletsStore extends Store {
       });
 
       if (derivedAddress === address.id) {
-        logger.debug('[HW-DEBUG] HWStore - Address successfully verified ', {
+        logger.debug('[HW-DEBUG] HWStore - Address successfully verified', {
           address: derivedAddress,
         });
         if (isTrezor) {
@@ -1376,6 +1376,8 @@ export default class HardwareWalletsStore extends Store {
           }
           return;
         }
+
+        // Prevent redirect / check if device is valid / proceed with address verification
         if (this.isAddressVerificationInitiated && address) {
           logger.debug(
             '[HW-DEBUG] HWStore - Re-initiate Address verification from _getExtendedPublicKey: ',
@@ -1391,7 +1393,6 @@ export default class HardwareWalletsStore extends Store {
             logger.debug(
               '[HW-DEBUG] HWStore - Device not belongs to this wallet'
             );
-            // Keep isTransactionInitiated active & Set new device listener by initiating transaction
             // Show message to reconnect proper software wallet device pair
             logger.debug(
               '[HW-DEBUG] unfinishedWalletAddressVerification SET: ',
