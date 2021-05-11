@@ -2662,7 +2662,6 @@ const _createWalletFromServerData = action(
       isLegacy = false,
       discovery,
       isHardwareWallet = false,
-      state,
     } = wallet;
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;

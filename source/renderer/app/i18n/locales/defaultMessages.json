@@ -16761,17 +16761,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!syncing",
+        "defaultMessage": "!!!Syncing",
         "description": "syncingLabel for ItemDropdownOption",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 16
         },
         "file": "source/renderer/app/components/widgets/forms/ItemDropdownOption.js",
-        "id": "widgets.itemsDropdown.option.syncingLabel",
+        "id": "widgets.itemsDropdown.syncingLabel",
         "start": {
           "column": 16,
-          "line": 10
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Syncing {syncingProgress}%",
+        "description": "syncingLabel for WalletsDropdown",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/widgets/forms/ItemDropdownOption.js",
+        "id": "widgets.itemsDropdown.syncingLabelProgress",
+        "start": {
+          "column": 24,
+          "line": 17
         }
       }
     ],
@@ -16851,25 +16865,6 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/forms/ProfileSettingsForm.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!syncing",
-        "description": "syncingLabel for ItemDropdownOption",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/components/widgets/forms/WalletsDropdownLabel.js",
-        "id": "widgets.itemsDropdown.option.syncingLabel",
-        "start": {
-          "column": 16,
-          "line": 11
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/forms/WalletsDropdownLabel.json"
   },
   {
     "descriptors": [

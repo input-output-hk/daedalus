@@ -11,8 +11,13 @@ import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 const messages = defineMessages({
   syncingLabel: {
     id: 'widgets.itemsDropdown.syncingLabel',
-    defaultMessage: '!!!syncing',
+    defaultMessage: '!!!Syncing',
     description: 'syncingLabel for ItemDropdownOption',
+  },
+  syncingLabelProgress: {
+    id: 'widgets.itemsDropdown.syncingLabelProgress',
+    defaultMessage: '!!!Syncing {syncingProgress}%',
+    description: 'syncingLabel for WalletsDropdown',
   },
 });
 
@@ -22,6 +27,7 @@ export type ItemDropdown = {
   selected?: boolean,
   isSyncing?: boolean,
   syncingLabel?: string,
+  syncingProgress?: number,
 };
 
 export default class ItemDropdownOption extends Component<ItemDropdown> {
@@ -37,7 +43,11 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
 
   renderSyncingSpinner = () => {
     const { intl } = this.context;
-    const defaultSyncingLabel = intl.formatMessage(messages.syncingLabel);
+    const { syncingProgress } = this.props;
+    const defaultSyncingLabel =
+      typeof syncingProgress === 'number' || typeof syncingProgress === 'string'
+        ? intl.formatMessage(messages.syncingLabelProgress, { syncingProgress })
+        : intl.formatMessage(messages.syncingLabel);
     const { isSyncing, syncingLabel = defaultSyncingLabel } = this.props;
     if (!isSyncing) return null;
     return (

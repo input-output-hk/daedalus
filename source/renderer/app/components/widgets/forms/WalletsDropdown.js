@@ -42,7 +42,13 @@ export default class WalletsDropdown extends Component<Props> {
     const { wallets = [], className } = this.props;
     const props = omit(this.props, ['wallets', 'options']);
     const formattedOptions = wallets.map((wallet) => {
-      const { id: value, amount, isRestoring, isSyncing } = wallet;
+      const {
+        id: value,
+        amount,
+        isRestoring,
+        isSyncing,
+        restorationProgress: syncingProgress,
+      } = wallet;
       const detail = !isRestoring ? formattedWalletAmount(amount) : null;
       return {
         label: <WalletsDropdownLabel wallet={wallet} {...props} />,
@@ -50,6 +56,7 @@ export default class WalletsDropdown extends Component<Props> {
         value,
         walletName: wallet.name,
         isSyncing,
+        syncingProgress,
       };
     });
     return (
