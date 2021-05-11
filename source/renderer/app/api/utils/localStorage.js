@@ -75,11 +75,6 @@ export type AssetLocalData = {
   decimals: number,
 };
 
-export type CurrencyLocalRate = {
-  rate: number,
-  date: Date,
-};
-
 /**
  * This api layer provides access to the electron local storage
  * for user settings that are not synced with any coin backend.
@@ -227,27 +222,6 @@ export default class LocalStorageApi {
 
   unsetCurrencySelected = (): Promise<void> =>
     LocalStorageApi.unset(keys.CURRENCY_SELECTED);
-
-  getCurrencyRate = (currencyCode: string): Promise<CurrencyLocalRate> =>
-    LocalStorageApi.get(keys.CURRENCY_LAST_FETCHED, null, currencyCode);
-
-  setCurrencyRate = async (
-    currencyCode: string,
-    rate: number
-  ): Promise<void> => {
-    const currencyLocalRate: CurrencyLocalRate = {
-      rate,
-      date: new Date(),
-    };
-    await LocalStorageApi.set(
-      keys.CURRENCY_LAST_FETCHED,
-      currencyLocalRate,
-      currencyCode
-    );
-  };
-
-  unsetCurrencyRate = (currencyCode: string): Promise<void> =>
-    LocalStorageApi.unset(keys.CURRENCY_LAST_FETCHED, currencyCode);
 
   getCurrencyIsActive = (): Promise<boolean> =>
     LocalStorageApi.get(keys.CURRENCY_ACTIVE, CURRENCY_IS_ACTIVE_BY_DEFAULT);

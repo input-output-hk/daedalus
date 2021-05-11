@@ -69,35 +69,13 @@ export default class CurrencyStore extends Store {
           throw new Error('Error fetching the Currency rate');
         }
         runInAction(() => {
-          this.isFetchingRate = false;
           this.lastFetched = new Date();
           this.rate = rate;
+          this.isFetchingRate = false;
           this.isAvailable = true;
         });
-        await this.api.localStorage.setCurrencyRate(
-          localizedCurrency.code,
-          rate
-        );
       } catch (error) {
-        /*
-         * In case the currency rate API fetching fails,
-         * it tries to use the stored local data
-         */
-        let rate = null;
-        let lastFetched;
-        let isAvailable = false;
-        const localRate = await this.api.localStorage.getCurrencyRate(
-          localizedCurrency.code
-        );
-        if (localRate) {
-          rate = localRate.rate;
-          lastFetched = localRate.date;
-          isAvailable = true;
-        }
         runInAction(() => {
-          this.rate = rate;
-          this.isAvailable = isAvailable;
-          this.lastFetched = lastFetched;
           this.isFetchingRate = false;
         });
       }
