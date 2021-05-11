@@ -84,7 +84,7 @@ export default class WalletRecoveryPhraseStep1Dialog extends Component<
       <Dialog
         className={styles.dialog}
         title={intl.formatMessage(messages.recoveryPhraseStep1Title)}
-        walletName={walletName}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}

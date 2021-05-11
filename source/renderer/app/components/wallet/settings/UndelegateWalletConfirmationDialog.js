@@ -308,7 +308,7 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
-        walletName={walletName}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => null}

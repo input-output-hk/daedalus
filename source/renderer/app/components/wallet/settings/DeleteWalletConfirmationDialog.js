@@ -129,7 +129,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
-        walletName={walletName}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onCancel}

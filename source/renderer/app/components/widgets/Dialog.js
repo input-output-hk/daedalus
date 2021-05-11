@@ -38,7 +38,6 @@ export type DialogActions = DialogActionItems | DialogActionOptions;
 
 type Props = {
   title?: string | Element<any>,
-  walletName?: string,
   subtitle?: string | Node,
   children?: Node,
   footer?: Node,
@@ -63,7 +62,6 @@ export default class Dialog extends Component<Props> {
   render() {
     const {
       title,
-      walletName,
       subtitle,
       children,
       footer,
@@ -110,12 +108,6 @@ export default class Dialog extends Component<Props> {
           {title && (
             <div className={styles.title}>
               <h1>{title}</h1>
-            </div>
-          )}
-
-          {walletName && (
-            <div className={styles.walletName}>
-              <h1>{walletName}</h1>
             </div>
           )}
 

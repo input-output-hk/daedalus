@@ -394,7 +394,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
-        walletName={walletName}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
