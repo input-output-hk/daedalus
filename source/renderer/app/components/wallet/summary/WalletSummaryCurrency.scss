@@ -1,6 +1,6 @@
 @import '../../../themes/mixins/animations';
 
-.currency {
+.component {
   color: var(--theme-bordered-box-text-color);
   font-family: var(--font-bold);
   font-size: 22px;
@@ -22,7 +22,7 @@
   font-style: normal;
   letter-spacing: normal;
   line-height: 1.67;
-  margin: 8px 0 6px;
+  margin: 1px 0 6px;
   opacity: 0.7;
   text-align: right;
 }
@@ -39,7 +39,6 @@
   span {
     font-size: 16px;
     font-size: 16px;
-    margin-left: 6px;
     opacity: 0.7;
   }
 }
@@ -51,6 +50,7 @@
   margin-bottom: -6px;
   opacity: 0.7;
   text-align: right;
+  transition: opacity 0.25s;
 }
 
 .currencyLastFetched {

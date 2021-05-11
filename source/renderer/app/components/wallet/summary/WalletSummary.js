@@ -57,13 +57,6 @@ export default class WalletSummary extends Component<Props> {
     } = this.props;
 
     const { isRestoring } = wallet;
-
-    const hasCurrency =
-      currencyIsActive &&
-      currencyIsAvailable &&
-      !!currencySelected &&
-      (!!currencyRate || currencyIsFetchingRate);
-
     const hasAssets = assets.length;
 
     return (
@@ -75,18 +68,16 @@ export default class WalletSummary extends Component<Props> {
           numberOfPendingTransactions={numberOfPendingTransactions}
           isLoadingTransactions={isLoadingTransactions}
           currency={
-            hasCurrency && (
-              <WalletSummaryCurrency
-                wallet={wallet}
-                currencyIsFetchingRate={currencyIsFetchingRate}
-                currencyIsAvailable={currencyIsAvailable}
-                currencyIsActive={currencyIsActive}
-                currencySelected={currencySelected}
-                currencyRate={currencyRate}
-                currencyLastFetched={currencyLastFetched}
-                onCurrencySettingClick={onCurrencySettingClick}
-              />
-            )
+            <WalletSummaryCurrency
+              wallet={wallet}
+              currencyIsFetchingRate={currencyIsFetchingRate}
+              currencyIsAvailable={currencyIsAvailable}
+              currencyIsActive={currencyIsActive}
+              currencySelected={currencySelected}
+              currencyRate={currencyRate}
+              currencyLastFetched={currencyLastFetched}
+              onCurrencySettingClick={onCurrencySettingClick}
+            />
           }
         />
         {!isRestoring && (

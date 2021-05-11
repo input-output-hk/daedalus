@@ -76,7 +76,7 @@ export default class CurrencyStore extends Store {
         });
       } catch (error) {
         runInAction(() => {
-          this.isFetchingRate = false;
+          this.isAvailable = false;
         });
       }
     }
