@@ -74,6 +74,10 @@ export default class CurrencyStore extends Store {
           this.rate = rate;
           this.isAvailable = true;
         });
+        await this.api.localStorage.setCurrencyRate(
+          localizedCurrency.code,
+          rate
+        );
       } catch (error) {
         /*
          * In case the currency rate API fetching fails,
@@ -142,23 +146,4 @@ export default class CurrencyStore extends Store {
     this.isActive = !this.isActive;
     this.api.localStorage.setCurrencyIsActive(this.isActive);
   };
-
-  _setLocalRate = async () => {
-    const { localizedCurrency, rate, lastFetched } = this;
-    if (localizedCurrency && localizedCurrency.code && rate) {
-      const currencyLocalRate = {
-        rate,
-        date: lastFetched || new Date(),
-      };
-      this.api.localStorage.setCurrencyRate(
-        localizedCurrency.code,
-        currencyLocalRate
-      );
-    }
-  };
-
-  onExit() {
-    // Save the last fetching to the localStorage
-    this._setLocalRate();
-  }
 }

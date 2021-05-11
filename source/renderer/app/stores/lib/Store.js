@@ -24,22 +24,12 @@ export default class Store {
     );
   }
 
-  /**
-   *
-   * Executed after the `stores` object is created
-   *
-   */
   configure(stores: StoresMap) {
     this.stores = stores;
   }
 
   setup() {}
 
-  /**
-   *
-   * Executed after all the stores are configured
-   *
-   */
   initialize() {
     this.setup();
     this._reactions.forEach((reaction) => reaction.start());
@@ -48,11 +38,4 @@ export default class Store {
   teardown() {
     this._reactions.forEach((reaction) => reaction.stop());
   }
-
-  /**
-   *
-   * Executed before the App component is unmount
-   *
-   */
-  onExit() {}
 }

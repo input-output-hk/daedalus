@@ -17,7 +17,6 @@ import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDi
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
-import { onExitStores } from './stores/index';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
@@ -31,11 +30,6 @@ export default class App extends Component<{
   componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
-  }
-
-  componentWillUnmount() {
-    // Executes `onExit` on stores that have this method
-    onExitStores();
   }
 
   render() {
