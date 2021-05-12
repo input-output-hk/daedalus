@@ -66,15 +66,17 @@ export default class WalletSummary extends Component<Props> {
           numberOfPendingTransactions={numberOfPendingTransactions}
           isLoadingTransactions={isLoadingTransactions}
           currency={
-            <WalletSummaryCurrency
-              wallet={wallet}
-              currencyIsFetchingRate={currencyIsFetchingRate}
-              currencyIsActive={currencyIsActive}
-              currencySelected={currencySelected}
-              currencyRate={currencyRate}
-              currencyLastFetched={currencyLastFetched}
-              onCurrencySettingClick={onCurrencySettingClick}
-            />
+            currencyIsActive && (
+              <WalletSummaryCurrency
+                wallet={wallet}
+                currencyIsFetchingRate={currencyIsFetchingRate}
+                currencyIsActive={currencyIsActive}
+                currencySelected={currencySelected}
+                currencyRate={currencyRate}
+                currencyLastFetched={currencyLastFetched}
+                onCurrencySettingClick={onCurrencySettingClick}
+              />
+            )
           }
         />
         {!isRestoring && (
