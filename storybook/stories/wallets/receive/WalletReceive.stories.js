@@ -55,7 +55,7 @@ storiesOf('Wallets|Receive', module)
             onSaveQRCodeImage={action('onSaveQRCodeImage')}
             onClose={action('onClose')}
             hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-            isAddressVerificationEnabled={false}
+            isHardwareWallet={false}
             walletName="Wallet 1"
             isAddressDerived={false}
             isAddressChecked={false}
@@ -108,7 +108,7 @@ storiesOf('Wallets|Receive', module)
               },
               HwDeviceStatuses.VERIFYING_ADDRESS
             )}
-            isAddressVerificationEnabled
+            isHardwareWallet
             walletName="Ledger Nano S"
             isAddressDerived={false}
             isAddressChecked={false}
