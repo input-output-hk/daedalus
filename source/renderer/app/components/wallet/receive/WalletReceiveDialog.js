@@ -84,7 +84,7 @@ const messages = defineMessages({
   invalidAddressConfirmationLabel: {
     id: 'wallet.receive.dialog.invalidAddressConfirmationLabel',
     defaultMessage:
-      '!!!Yes, I am sure I have compared the address displayed in Daedalus with the address displayed on the Ledger device by comparing the beginning and ending of the address.',
+      '!!!Yes, I am sure I have compared the address displayed in Daedalus with the address displayed on the {deviceType} device by comparing the beginning and ending of the address.',
     description: 'Invalid address confirmation checkbox label',
   },
   verificationCheckOptionsLabel: {
@@ -100,7 +100,7 @@ const messages = defineMessages({
   verificationCheckOptionInvalid: {
     id: 'wallet.receive.dialog.verificationCheckOptionInvalid',
     defaultMessage:
-      '!!!No, I am sure that address displayed in Daedalus is different from the address displayed on my Ledger device',
+      '!!!No, I am sure that address displayed in Daedalus is different from the address displayed on my {deviceType} device',
     description: 'Verification option "Invalid" label',
   },
   verificationCheckOptionReverify: {
@@ -121,7 +121,7 @@ const messages = defineMessages({
   addressVerificationInstructions: {
     id: 'wallet.receive.dialog.addressVerificationInstructions',
     defaultMessage:
-      '!!!Please compare the address displayed here on the screen with the address displayed on the Ledger device by comparing <b>at least the first 5 characters at the start</b> of the address after the "addr" part and <b>at least 5 characters at the end</b> of the address.',
+      '!!!Please compare the address displayed here on the screen with the address displayed on the {deviceType} device by comparing <b>at least the first 5 characters at the start</b> of the address after the "addr" part and <b>at least 5 characters at the end</b> of the address.',
     description: 'Address verification instructions',
   },
   invalidAddressWarningTitle: {
@@ -141,7 +141,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   address: WalletAddress,
-  isAddressVerificationEnabled: boolean,
+  isHardwareWallet: boolean,
   walletName: string,
   hwDeviceStatus: HwDeviceStatus,
   isAddressDerived: boolean,
@@ -266,7 +266,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       onClose,
       walletName,
       hwDeviceStatus,
-      isAddressVerificationEnabled,
+      isHardwareWallet,
       isAddressDerived,
       isAddressChecked,
       onSupportRequestClick,
@@ -279,6 +279,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     } = this.state;
     const { intl } = this.context;
     const noteInputField = this.form.$('noteInput');
+    const deviceType = isHardwareWallet && isTrezor ? 'Trezor' : 'Ledger';
     const isSubmitting = false;
     const buttonClasses = classnames([
       'attention',
@@ -346,7 +347,9 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       },
       {
         status: AddressVerificationCheckStatuses.INVALID,
-        label: intl.formatMessage(messages.verificationCheckOptionInvalid),
+        label: intl.formatMessage(messages.verificationCheckOptionInvalid, {
+          deviceType,
+        }),
       },
     ];
 
@@ -368,8 +371,8 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     );
 
     const showActions =
-      !isAddressVerificationEnabled ||
-      (isAddressVerificationEnabled &&
+      !isHardwareWallet ||
+      (isHardwareWallet &&
         (selectedVerificationStatus ===
           AddressVerificationCheckStatuses.INVALID ||
           selectedVerificationStatus ===
@@ -427,7 +430,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
             </span>
           </CopyToClipboard>
 
-          {isAddressVerificationEnabled && (
+          {isHardwareWallet && (
             <div className={styles.hardwareWalletStatusWrapper}>
               <HardwareWalletStatus
                 hwDeviceStatus={hwDeviceStatus}
@@ -453,6 +456,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
               <p className={styles.verificationInstructions}>
                 <FormattedHTMLMessage
                   {...messages.addressVerificationInstructions}
+                  values={{ deviceType }}
                 />
               </p>
 
@@ -484,7 +488,8 @@ export default class WalletReceiveDialog extends Component<Props, State> {
             <div className={styles.warningWrapper}>
               <Checkbox
                 label={intl.formatMessage(
-                  messages.invalidAddressConfirmationLabel
+                  messages.invalidAddressConfirmationLabel,
+                  { deviceType }
                 )}
                 onChange={this.handleConfirmInvalidAddress}
                 checked={isInvalidAddressConfirmed}
@@ -496,13 +501,14 @@ export default class WalletReceiveDialog extends Component<Props, State> {
                 </p>
                 <p className={styles.warningDescription}>
                   {intl.formatMessage(
-                    messages.invalidAddressWarningDescription
+                    messages.invalidAddressWarningDescription,
+                    { deviceType }
                   )}
                 </p>
               </div>
             </div>
           )}
-          {!isAddressVerificationEnabled ||
+          {!isHardwareWallet ||
             (selectedVerificationStatus ===
               AddressVerificationCheckStatuses.VALID && (
               <TextArea

@@ -71,24 +71,24 @@ export default class WalletReceivePage extends Component<Props, State> {
       addressToShare,
     });
     const dialog = WalletReceiveDialog;
-    if (activeWallet) {
-      const showAddressVerification = hardwareWallets.isAddressVerificationEnabled(
-        activeWallet.id
-      );
-      if (showAddressVerification) {
-        hardwareWallets.initiateAddressVerification(addressToShare);
-      }
+    if (activeWallet && activeWallet.isHardwareWallet) {
+      hardwareWallets.initiateAddressVerification(addressToShare);
     }
     dialogs.open.trigger({ dialog });
   };
 
   handleCloseShareAddress = () => {
+    const { activeWallet } = this;
     const { actions, stores } = this.props;
     const { dialogs } = actions;
     const { hardwareWallets } = stores;
 
     dialogs.closeActiveDialog.trigger();
-    hardwareWallets.resetInitializedAddressVerification();
+    if (activeWallet && activeWallet.isHardwareWallet) {
+      hardwareWallets.resetInitializedAddressVerification({
+        cancelDeviceAction: true,
+      });
+    }
   };
 
   handleToggleUsedAddresses = () => {
@@ -198,7 +198,6 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
     const {
-      isAddressVerificationEnabled,
       hwDeviceStatus,
       transportDevice,
       isAddressDerived,
@@ -269,9 +268,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             onDownloadPDF={this.handleDownloadPDF}
             onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
-            isAddressVerificationEnabled={isAddressVerificationEnabled(
-              activeWallet.id
-            )}
+            isHardwareWallet={activeWallet.isHardwareWallet}
             hwDeviceStatus={hwDeviceStatus}
             transportDevice={transportDevice}
             isAddressDerived={isAddressDerived}
