@@ -14,6 +14,7 @@ import Asset from '../../domains/Asset';
 import type {
   AssetItems,
   WalletTransactionAsset,
+  AssetUniqueId,
 } from '../../api/assets/types';
 
 type Props = InjectedProps;
@@ -81,19 +82,18 @@ export default class WalletSendPage extends Component<Props> {
     }
   };
 
-  getAssetByFingerprint = (fingerprint: string, allAssets: Array<Asset>) => {
-    return allAssets.find((asset) => asset.fingerprint === fingerprint);
-  };
-
-  handleUnsetActiveAssetFingerprint = () => {
-    const { wallets: walletActions } = this.props.actions;
-    walletActions.setActiveAssetFingerprint.trigger({
-      fingerprint: null,
-    });
+  getAssetByUniqueId = (
+    { policyId, assetName }: AssetUniqueId,
+    allAssets: Array<Asset>
+  ) => {
+    return allAssets.find(
+      (asset) => asset.policyId === policyId && asset.assetName === assetName
+    );
   };
 
   render() {
     const { intl } = this.context;
+    const { stores, actions } = this.props;
     const {
       uiDialogs,
       wallets,
@@ -102,19 +102,16 @@ export default class WalletSendPage extends Component<Props> {
       profile,
       hardwareWallets,
       assets: assetsStore,
-    } = this.props.stores;
+    } = stores;
     const { isValidAddress, isAddressFromSameWallet } = wallets;
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const {
-      all: allAssets,
-      activeAssetFingerprint,
-      getAssetDetails,
-    } = assetsStore;
+    const { all: allAssets, activeAsset, getAssetDetails } = assetsStore;
+    const { unsetActiveAsset } = actions.wallets;
 
-    const selectedAsset = activeAssetFingerprint
-      ? this.getAssetByFingerprint(activeAssetFingerprint, allAssets)
+    const selectedAsset = activeAsset
+      ? this.getAssetByUniqueId(activeAsset, allAssets)
       : null;
 
     // Guard against potential null values
@@ -180,7 +177,7 @@ export default class WalletSendPage extends Component<Props> {
         onOpenDialogAction={(params) =>
           this.openDialog(params.dialog, isHardwareWallet, wallet.id)
         }
-        onUnsetActiveAssetFingerprint={this.handleUnsetActiveAssetFingerprint}
+        onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
         isAddressFromSameWallet={isAddressFromSameWallet}
       />

@@ -3,13 +3,6 @@ import BigNumber from 'bignumber.js';
 
 import Asset from '../../domains/Asset';
 
-export type SingleAsset = {
-  policy_id: string,
-  asset_name: string,
-  fingerprint: string,
-  metadata?: ?AssetMetadata,
-};
-
 export type ApiAsset = {
   policy_id: string,
   asset_name: string,
@@ -42,7 +35,7 @@ export type WalletAssetItem = {
   address?: ?string,
 };
 
-export type Assets = Array<SingleAsset>;
+export type Assets = Array<ApiAsset>;
 
 export type AssetItems = Array<AssetItem>;
 
@@ -86,4 +79,9 @@ export type GetAssetsRequest = {
 export type GetAssetsResponse = {
   assets: Array<Asset>,
   total: number,
+};
+
+export type AssetUniqueId = {
+  policyId: string,
+  assetName: string,
 };

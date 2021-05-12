@@ -221,7 +221,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -245,7 +245,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -269,7 +269,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -293,7 +293,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -320,7 +320,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', true)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))

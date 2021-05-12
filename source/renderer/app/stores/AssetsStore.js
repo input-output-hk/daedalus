@@ -8,6 +8,7 @@ import { requestGetter } from '../utils/storesUtils';
 import type {
   GetAssetsResponse,
   WalletSummaryAsset,
+  AssetUniqueId,
 } from '../api/assets/types';
 
 type WalletId = string;
@@ -15,7 +16,8 @@ type WalletId = string;
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
-  @observable activeAssetFingerprint: ?string = null;
+  // @FINGERPRINT TODO
+  @observable activeAsset: ?AssetUniqueId = null;
   @observable editingsAsset: ?WalletSummaryAsset = null;
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
@@ -35,9 +37,8 @@ export default class AssetsStore extends Store {
     assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
 
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
-    walletsActions.setActiveAssetFingerprint.listen(
-      this._setActiveAssetFingerprint
-    );
+    walletsActions.setActiveAsset.listen(this._setActiveAsset);
+    walletsActions.unsetActiveAsset.listen(this._unsetActiveAsset);
   }
 
   // ==================== PUBLIC ==================
@@ -111,8 +112,12 @@ export default class AssetsStore extends Store {
     }
   };
 
-  @action _setActiveAssetFingerprint = (params: { fingerprint: ?string }) => {
-    this.activeAssetFingerprint = params.fingerprint;
+  @action _setActiveAsset = (assetUniqueId: AssetUniqueId) => {
+    this.activeAsset = assetUniqueId;
+  };
+
+  @action _unsetActiveAsset = () => {
+    this.activeAsset = null;
   };
 
   @action _createWalletAssetsRequest = (

@@ -65,8 +65,7 @@ type Props = {
   isHardwareWallet: boolean,
   hwDeviceStatus: HwDeviceStatus,
   onOpenDialogAction: Function,
-  // @FINGERPRINT TODO
-  onUnsetActiveAssetFingerprint: Function,
+  onUnsetActiveAsset: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
 };
@@ -151,7 +150,7 @@ export default class WalletSendForm extends Component<Props, State> {
   componentWillUnmount() {
     this._isMounted = false;
     // @FINGERPRINT TODO
-    this.props.onUnsetActiveAssetFingerprint();
+    this.props.onUnsetActiveAsset();
   }
 
   getCurrentNumberFormat() {
