@@ -11,6 +11,7 @@ Changelog
 ### Chores
 
 - Included wallet names in dialog windows ([PR 2552](https://github.com/input-output-hk/daedalus/pull/2552))
+- Updated `cardano-cli` version to always match the one from `cardano-wallet` ([PR 2561](https://github.com/input-output-hk/daedalus/pull/2561))
 - Updated `react-polymorph` to version `1.0.0` ([PR 2549](https://github.com/input-output-hk/daedalus/pull/2549))
 - Updated `cardano-wallet` to version `2021-04-28` and `cardano-node` to version `1.26.2` ([PR 2551](https://github.com/input-output-hk/daedalus/pull/2551))
 - Updated Catalyst voting registration to include rewards address instead of the payment one ([PR 2550](https://github.com/input-output-hk/daedalus/pull/2550))
