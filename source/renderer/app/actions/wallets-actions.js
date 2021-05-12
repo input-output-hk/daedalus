@@ -89,6 +89,7 @@ export default class WalletsActions {
   finishRewardsCsv: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
+  // @FINGERPRINT TODO
   setActiveAssetFingerprint: Action<{
     fingerprint: ?string,
   }> = new Action();

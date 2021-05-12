@@ -65,6 +65,7 @@ type Props = {
   isHardwareWallet: boolean,
   hwDeviceStatus: HwDeviceStatus,
   onOpenDialogAction: Function,
+  // @FINGERPRINT TODO
   onUnsetActiveAssetFingerprint: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
@@ -75,9 +76,11 @@ type State = {
     receiver: {
       receiver: Field,
       adaAmount: Field,
+      // @FINGERPRINT TODO
       assetFields: {
         [fingerprint: string]: Field,
       },
+      // @FINGERPRINT TODO
       assetsDropdown: {
         [fingerprint: string]: Field,
       },
@@ -87,6 +90,7 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
+  // @FINGERPRINT TODO
   showRemoveAssetButton: { [fingerprint: string]: boolean },
   selectedAssetFingerprints: Array<string>,
   isResetButtonDisabled: boolean,
@@ -107,6 +111,7 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
     showRemoveAssetButton: {},
+    // @FINGERPRINT TODO
     selectedAssetFingerprints: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
@@ -136,6 +141,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (selectedAsset) {
       setTimeout(() => {
         if (this._isMounted) {
+          // @FINGERPRINT TODO
           this.addAssetRow(selectedAsset.fingerprint);
         }
       });
@@ -144,6 +150,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    // @FINGERPRINT TODO
     this.props.onUnsetActiveAssetFingerprint();
   }
 
@@ -151,6 +158,7 @@ export default class WalletSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
+  // @FINGERPRINT TODO
   get selectedAssets(): Array<WalletSummaryAsset> {
     const { selectedAssetFingerprints } = this.state;
     const { assets: allAssets } = this.props;
