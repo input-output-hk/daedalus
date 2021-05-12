@@ -180,6 +180,10 @@
       color: var(--theme-dialog-fullsize-text-highlight-color) !important;
     }
 
+    .ItemDropdownOption_syncingSpinner svg circle {
+      stroke: var(--theme-dialog-fullsize-text-highlight-color) !important;
+    }
+
     .SimpleAutocomplete_selectedWordBox {
       background-color: var(
         --rp-autocomplete-selected-word-dialog-box-bg-color

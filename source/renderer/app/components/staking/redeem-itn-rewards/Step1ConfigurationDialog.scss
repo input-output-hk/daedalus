@@ -35,6 +35,13 @@
     margin-bottom: 17px;
   }
 
+  .walletsDropdown {
+    &.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+
   .checkbox {
     margin-bottom: 20px;
 
