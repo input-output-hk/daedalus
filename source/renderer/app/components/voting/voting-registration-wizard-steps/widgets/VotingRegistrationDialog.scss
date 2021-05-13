@@ -4,13 +4,17 @@
   text-align: center;
 
   :global {
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-top: -8px;
+    }
+
     .Dialog_subtitle {
       text-transform: uppercase;
     }
   }
 
   .votingRegistrationStepsIndicatorWrapper {
-    margin: 4px auto 0;
+    margin: -20px auto 0;
     width: 450px;
 
     .stepIndicatorLabel {
