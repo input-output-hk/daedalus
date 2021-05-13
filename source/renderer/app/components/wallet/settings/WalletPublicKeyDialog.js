@@ -122,6 +122,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
+        className={styles.dialog}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <div className={styles.description}>

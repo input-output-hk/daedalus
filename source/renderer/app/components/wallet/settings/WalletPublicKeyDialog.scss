@@ -1,9 +1,18 @@
 @import '../../../themes/mixins/error-message';
 
+.dialog {
+  :global {
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-top: 12px;
+    }
+  }
+}
+
 .description {
   font-family: var(--font-regular);
   line-height: 1.38;
   margin-bottom: 20px;
+  padding-top: 20px;
 }
 
 .error {

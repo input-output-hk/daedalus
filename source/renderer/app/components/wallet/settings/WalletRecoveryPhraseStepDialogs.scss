@@ -8,12 +8,17 @@
     line-height: 1.38;
     &:first-child {
       margin-bottom: 20px;
+      padding-top: 20px;
     }
   }
 }
 
 .dialog4 {
   :global {
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-top: 12px;
+    }
+
     .Dialog_actions {
       margin-bottom: 50px;
     }
