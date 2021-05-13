@@ -421,7 +421,7 @@ export type StakingBlockchainPointer = {
 };
 
 export type deriveAddressRendererRequestType = {
-  devicePath: string,
+  devicePath: ?string,
   addressType: number,
   networkId: number,
   protocolMagic: number,
@@ -431,7 +431,7 @@ export type deriveAddressRendererRequestType = {
 };
 
 export type showAddressRendererRequestType = {
-  devicePath: string,
+  devicePath: ?string,
   addressType: number,
   networkId: number,
   protocolMagic: number,

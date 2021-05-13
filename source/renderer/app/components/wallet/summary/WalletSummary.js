@@ -16,7 +16,6 @@ type Props = {
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
   currencyIsFetchingRate: boolean,
-  currencyIsAvailable: boolean,
   currencyIsActive: boolean,
   currencySelected: ?Currency,
   currencyRate: ?number,
@@ -41,7 +40,6 @@ export default class WalletSummary extends Component<Props> {
       numberOfTransactions,
       isLoadingTransactions,
       currencyIsActive,
-      currencyIsAvailable,
       currencyIsFetchingRate,
       currencyLastFetched,
       currencyRate,
@@ -57,13 +55,6 @@ export default class WalletSummary extends Component<Props> {
     } = this.props;
 
     const { isRestoring } = wallet;
-
-    const hasCurrency =
-      currencyIsActive &&
-      currencyIsAvailable &&
-      !!currencySelected &&
-      (!!currencyRate || currencyIsFetchingRate);
-
     const hasAssets = assets.length;
 
     return (
@@ -75,11 +66,10 @@ export default class WalletSummary extends Component<Props> {
           numberOfPendingTransactions={numberOfPendingTransactions}
           isLoadingTransactions={isLoadingTransactions}
           currency={
-            hasCurrency && (
+            currencyIsActive && (
               <WalletSummaryCurrency
                 wallet={wallet}
                 currencyIsFetchingRate={currencyIsFetchingRate}
-                currencyIsAvailable={currencyIsAvailable}
                 currencyIsActive={currencyIsActive}
                 currencySelected={currencySelected}
                 currencyRate={currencyRate}
