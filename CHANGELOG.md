@@ -8,6 +8,10 @@ Changelog
 - Added address verification for "Trezor" hardware wallet devices ([PR 2558](https://github.com/input-output-hk/daedalus/pull/2558))
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
 
+### Fixes
+
+- Fixed external currencies not appearing when not connected ([PR 2556](https://github.com/input-output-hk/daedalus/pull/2556))
+
 ### Chores
 
 - Included wallet names in dialog windows ([PR 2552](https://github.com/input-output-hk/daedalus/pull/2552))
