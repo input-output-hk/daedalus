@@ -34,7 +34,6 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   currencyIsFetchingRate: boolean,
-  currencyIsAvailable: boolean,
   currencyIsActive: boolean,
   currencySelected: ?Currency,
   currencyRate: ?number,
@@ -52,7 +51,6 @@ export default class WalletSummaryCurrency extends Component<Props> {
     const {
       wallet,
       currencyIsActive,
-      currencyIsAvailable,
       currencyIsFetchingRate,
       currencyLastFetched,
       currencyRate,
@@ -64,14 +62,13 @@ export default class WalletSummaryCurrency extends Component<Props> {
     const isRestoreActive = wallet.isRestoring;
     const hasCurrency =
       currencyIsActive &&
-      currencyIsAvailable &&
       !!currencySelected &&
       (!!currencyRate || currencyIsFetchingRate);
 
     const { decimalDigits } = currencySelected || {};
 
     let currencyWalletAmount;
-    if (isRestoreActive) currencyWalletAmount = '- ';
+    if (isRestoreActive || !currencyRate) currencyWalletAmount = '–';
     else if (hasCurrency && currencyRate)
       currencyWalletAmount = formattedWalletCurrencyAmount(
         wallet.amount,
@@ -85,43 +82,40 @@ export default class WalletSummaryCurrency extends Component<Props> {
       .locale(intl.locale)
       .fromNow();
 
-    const buttonClasses = classnames([
+    const buttonStyles = classnames([
       styles.currencyLastFetched,
       currencyIsFetchingRate ? styles.currencyIsFetchingRate : null,
     ]);
 
     return (
       <div className={styles.component}>
-        <div className={styles.walletContent}>
-          <div className={styles.currency}>
-            <div className={styles.currencyTitle}>
-              {intl.formatMessage(messages.currencyTitle)}
-            </div>
-            <div className={styles.currencyWalletAmount}>
-              {currencyWalletAmount}
-              <span className={styles.currencyCode}>
-                {currencyWalletAmountSymbol}
-              </span>
-            </div>
-            <div className={styles.currencyRate}>
-              1 {intl.formatMessage(globalMessages.unitAda)} = {currencyRate}{' '}
-              {currencyWalletAmountSymbol}
-            </div>
-            <button className={buttonClasses} onClick={onCurrencySettingClick}>
-              <em>
-                {currencyIsFetchingRate
-                  ? intl.formatMessage(messages.currencyIsFetchingRate)
-                  : intl.formatMessage(messages.currencyLastFetched, {
-                      fetchedTimeAgo,
-                    })}
-              </em>
-              <SVGInline
-                svg={currencySettingsIcon}
-                className={styles.currencySettingsIcon}
-              />
-            </button>
-          </div>
+        <div className={styles.currencyTitle}>
+          {intl.formatMessage(messages.currencyTitle)}
         </div>
+        <div className={styles.currencyWalletAmount}>
+          {currencyWalletAmount}
+          <span className={styles.currencyCode}>
+            {' '}
+            {currencyWalletAmountSymbol}
+          </span>
+        </div>
+        <div className={styles.currencyRate}>
+          1 {intl.formatMessage(globalMessages.unitAda)} = {currencyRate || '–'}{' '}
+          {currencyWalletAmountSymbol}
+        </div>
+        <button className={buttonStyles} onClick={onCurrencySettingClick}>
+          <em>
+            {currencyIsFetchingRate
+              ? intl.formatMessage(messages.currencyIsFetchingRate)
+              : intl.formatMessage(messages.currencyLastFetched, {
+                  fetchedTimeAgo,
+                })}
+          </em>
+          <SVGInline
+            svg={currencySettingsIcon}
+            className={styles.currencySettingsIcon}
+          />
+        </button>
       </div>
     );
   }
