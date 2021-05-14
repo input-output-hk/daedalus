@@ -6,6 +6,7 @@
 .popOverContainer {
   display: inline-flex;
   min-width: 0;
+  text-transform: initial;
 
   > span {
     min-width: 0;

@@ -65,6 +65,7 @@ type Props = {
   onContinue: Function,
   onClose: Function,
   expectedWordCount: number | Array<number>,
+  walletName: string,
 };
 
 type State = {
@@ -114,7 +115,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onContinue, expectedWordCount } = this.props;
+    const { onClose, onContinue, expectedWordCount, walletName } = this.props;
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
@@ -147,6 +148,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
       <Dialog
         className={styles.dialog}
         title={intl.formatMessage(messages.recoveryPhraseStep2Title)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick={false}
         onClose={onClose}

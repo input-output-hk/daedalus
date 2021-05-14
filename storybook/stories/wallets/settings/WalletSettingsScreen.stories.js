@@ -248,6 +248,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           onRevealPublicKey={action('onRevealPublicKey')}
           onClose={action('onCancel')}
           error={null}
+          walletName={'Test Wallet'}
           hasReceivedWalletPublicKey
         />
       }
