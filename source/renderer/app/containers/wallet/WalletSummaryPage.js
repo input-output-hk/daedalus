@@ -101,14 +101,7 @@ export default class WalletSummaryPage extends Component<Props> {
       pendingTransactionsCount,
     } = transactions;
     const { active: wallet } = wallets;
-    const {
-      isActive,
-      isAvailable,
-      isFetchingRate,
-      lastFetched,
-      rate,
-      selected,
-    } = currency;
+    const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
 
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
@@ -198,7 +191,6 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingAssets={isLoadingAssets}
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
           currencyIsActive={isActive}
-          currencyIsAvailable={isAvailable}
           currencyIsFetchingRate={isFetchingRate}
           currencyLastFetched={lastFetched}
           currencyRate={rate}

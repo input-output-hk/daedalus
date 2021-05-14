@@ -38,6 +38,7 @@ export const messages = defineMessages({
 type Props = {
   onContinue: Function,
   onClose: Function,
+  walletName: string,
 };
 
 type State = {
@@ -65,7 +66,7 @@ export default class WalletRecoveryPhraseStep1Dialog extends Component<
 
   render() {
     const { intl } = this.context;
-    const { onContinue, onClose } = this.props;
+    const { onContinue, onClose, walletName } = this.props;
     const { safetyAgreement } = this.state;
     const isSubmitting = false;
 
@@ -83,6 +84,7 @@ export default class WalletRecoveryPhraseStep1Dialog extends Component<
       <Dialog
         className={styles.dialog}
         title={intl.formatMessage(messages.recoveryPhraseStep1Title)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}

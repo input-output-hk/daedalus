@@ -7,10 +7,12 @@
     .icon {
       display: inline-block;
       height: 66px;
-      margin: 10px 0 30px;
+      margin: 0 0 30px;
+
       svg {
         height: 66px;
         width: 66px;
+
         g {
           fill: var(
             --theme-delegation-steps-not-available-icon-color
@@ -21,6 +23,7 @@
 
     .description {
       color: var(--theme-delegation-steps-not-available-description-text-color);
+
       span > span {
         color: var(
           --theme-delegation-steps-not-available-description-highlight-text-color

@@ -2,14 +2,6 @@
 @import '../../themes/mixins/place-form-field-error-below-input';
 
 .component {
-  &.dialogWithCertificateRestore {
-    :global {
-      .Dialog_title {
-        margin-bottom: 0;
-      }
-    }
-  }
-
   .walletName {
     margin-bottom: 20px;
   }
