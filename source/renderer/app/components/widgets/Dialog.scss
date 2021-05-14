@@ -11,7 +11,6 @@
     font-size: 18px;
     letter-spacing: 1px;
     line-height: 1.39;
-    margin-bottom: 20px;
     text-align: center;
     text-transform: uppercase;
   }
@@ -19,9 +18,9 @@
   & > .subtitle {
     font-family: var(--font-medium);
     font-size: 12px;
-    font-weight: 500;
     line-height: 1.83;
     text-align: center;
+    text-transform: uppercase;
   }
 
   & > .contentWrapper {
@@ -30,6 +29,7 @@
     overflow-x: hidden;
     overflow-y: overlay;
     padding-right: 25px;
+    padding-top: 20px;
     scroll-behavior: smooth;
 
     &::-webkit-scrollbar-button {
@@ -38,7 +38,7 @@
 
     &::-webkit-scrollbar-track {
       margin-bottom: 12px;
-      margin-top: -8px;
+      margin-top: 12px;
     }
 
     .content {

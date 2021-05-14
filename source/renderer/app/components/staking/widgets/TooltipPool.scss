@@ -279,6 +279,8 @@ $tooltip-width: 280px;
   margin-right: -5px;
   max-height: 57px;
   overflow-y: auto;
+  // keep text content in bounds when no scroll bar is visible:
+  padding-right: 5px;
   word-break: break-word;
 }
 

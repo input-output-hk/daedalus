@@ -12,7 +12,7 @@ import {
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
-import currencyList from '../_utils/currencies.json';
+import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -136,6 +136,8 @@ const walletAssets = assets.total.map((assetTotal) => {
     assetName: assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
+    decimals: 0,
+    recommendedDecimals: null,
     metadata: assetData
       ? assetData.metadata
       : {
@@ -161,7 +163,6 @@ storiesOf('Wallets|Summary', module)
     );
 
     let currencyIsFetchingRate = false;
-    let currencyIsAvailable = true;
     let currencyIsActive = true;
     let currencyLastFetched = new Date();
 
@@ -169,22 +170,14 @@ storiesOf('Wallets|Summary', module)
       currencyIsFetchingRate = true;
       currencyLastFetched = null;
     } else if (currencyState === 'off') {
-      currencyIsAvailable = false;
       currencyIsActive = false;
     }
 
-    const currencySelected = select(
-      'currencySelected',
-      currencyList.reduce((obj, currency) => {
-        obj[`${currency.id} - ${currency.name}`] = currency;
-        return obj;
-      }, {}),
-      {
-        id: 'uniswap-state-dollar',
-        symbol: 'usd',
-        name: 'unified Stable Dollar',
-      }
-    );
+    const currencySelected = select('currencySelected', currenciesList, {
+      id: 'uniswap-state-dollar',
+      symbol: 'usd',
+      name: 'unified Stable Dollar',
+    });
 
     return (
       <WalletSummary
@@ -197,7 +190,6 @@ storiesOf('Wallets|Summary', module)
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
         currencyIsFetchingRate={currencyIsFetchingRate}
-        currencyIsAvailable={currencyIsAvailable}
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
         currencyRate={0.321}
@@ -207,7 +199,12 @@ storiesOf('Wallets|Summary', module)
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
+        onAssetSettings={action('onAssetSettings')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
+        assetSettingsDialogWasOpened={boolean(
+          'assetSettingsDialogWasOpened',
+          false
+        )}
         onExternalLinkClick={action('onExternalLinkClick')}
       />
     );

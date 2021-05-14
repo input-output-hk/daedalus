@@ -8,7 +8,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
-import type { Currency } from '../../../types/currencyTypes';
+import type { LocalizedCurrency } from '../../../types/currencyTypes';
 
 const messages = defineMessages({
   currencyTitleLabel: {
@@ -46,12 +46,13 @@ const messages = defineMessages({
 });
 
 type Props = {
-  currencySelected: ?Currency,
+  currencySelected: ?LocalizedCurrency,
   currencyList: Array<any>,
   currencyIsActive: boolean,
   onSelectCurrency: Function,
   onToggleCurrencyIsActive: Function,
   onOpenExternalLink: Function,
+  hasSearch: boolean,
 };
 
 @observer
@@ -69,14 +70,13 @@ export default class WalletSettings extends Component<Props> {
       onSelectCurrency,
       onToggleCurrencyIsActive,
       onOpenExternalLink,
+      hasSearch,
     } = this.props;
 
-    const currencyOptions = map(currencyList, ({ symbol, name }) => {
-      return {
-        label: `${symbol.toUpperCase()} - ${name}`,
-        value: symbol,
-      };
-    });
+    const currencyOptions = map(currencyList, ({ code, name }) => ({
+      label: `${code.toUpperCase()} - ${name}`,
+      value: code,
+    }));
 
     return (
       <div className={styles.component}>
@@ -104,9 +104,11 @@ export default class WalletSettings extends Component<Props> {
             </div>
             <Select
               label={intl.formatMessage(messages.currencySelectLabel)}
-              value={currencySelected ? currencySelected.symbol : null}
+              value={currencySelected ? currencySelected.code : null}
               options={currencyOptions}
               onChange={onSelectCurrency}
+              hasSearch={hasSearch}
+              optionHeight={50}
             />
             <div className={styles.disclaimer}>
               <FormattedHTMLMessage

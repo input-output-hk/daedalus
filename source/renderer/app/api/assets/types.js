@@ -6,6 +6,7 @@ import Asset from '../../domains/Asset';
 export type SingleAsset = {
   policy_id: string,
   asset_name: string,
+  fingerprint: string,
   metadata?: ?AssetMetadata,
 };
 
@@ -58,6 +59,8 @@ export type WalletSummaryAsset = {
   fingerprint: string,
   quantity: BigNumber,
   metadata: ?AssetMetadata,
+  decimals: ?number,
+  recommendedDecimals: ?number,
 };
 
 export type WalletTransactionAsset = {
@@ -67,6 +70,8 @@ export type WalletTransactionAsset = {
   fingerprint: string,
   metadata: ?AssetMetadata,
   address?: ?string,
+  decimals: ?number,
+  recommendedDecimals: ?number,
 };
 
 export type GetUnknownAssetRequest = {

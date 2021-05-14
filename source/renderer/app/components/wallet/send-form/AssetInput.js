@@ -9,7 +9,7 @@ import SVGInline from 'react-svg-inline';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import AmountInputSkin from '../skins/AmountInputSkin';
-import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import AssetsDropdown from '../../widgets/forms/AssetsDropdown';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { NumberFormat } from '../../../../../common/types/number.types';
@@ -37,6 +37,7 @@ type Props = {
   handleSubmitOnEnter: Function,
   clearAssetFieldValue: Function,
   onChangeAsset: Function,
+  autoFocus: boolean,
 };
 
 const INPUT_FIELD_PADDING_DELTA = 10;
@@ -91,15 +92,15 @@ export default class AssetInput extends Component<Props> {
       handleSubmitOnEnter,
       clearAssetFieldValue,
       onChangeAsset,
+      autoFocus,
     } = this.props;
     const asset = getAssetByFingerprint(fingerprint);
     if (!asset) {
       return false;
     }
 
-    const { quantity, metadata } = asset;
+    const { quantity, metadata, decimals } = asset;
     const ticker = get(metadata, 'ticker', null);
-    const decimals = get(metadata, 'unit.decimals', 0);
     const sortedAssets = orderBy(
       [asset, ...availableAssets],
       'fingerprint',
@@ -124,7 +125,7 @@ export default class AssetInput extends Component<Props> {
           <div className={styles.amountTokenTotal}>
             {intl.formatMessage(messages.ofLabel)}
             {` `}
-            {formattedTokenWalletAmount(quantity, metadata)}
+            {formattedTokenWalletAmount(quantity, metadata, decimals)}
           </div>
         )}
         <NumericInput
@@ -176,6 +177,7 @@ export default class AssetInput extends Component<Props> {
             handleSubmitOnEnter(evt);
           }}
           allowSigns={false}
+          autoFocus={autoFocus}
         />
         <div className={styles.rightContent} ref={this.rightContentRef}>
           {this.hasAssetValue(assetField) && (
@@ -198,7 +200,7 @@ export default class AssetInput extends Component<Props> {
             </div>
           )}
           <div className={styles.assetsDropdownWrapper}>
-            <WalletsDropdown
+            <AssetsDropdown
               className={styles.assetsDropdown}
               {...assetsDropdownField.bind()}
               assets={sortedAssets}
@@ -207,11 +209,8 @@ export default class AssetInput extends Component<Props> {
                   onChangeAsset(fingerprint, newFingerprint);
                 }
               }}
-              syncingLabel={intl.formatMessage(messages.syncingWallet)}
-              hasAssetsEnabled
               value={fingerprint}
-              getStakePoolById={() => {}}
-              errorPosition="bottom"
+              hasSearch
             />
           </div>
         </div>

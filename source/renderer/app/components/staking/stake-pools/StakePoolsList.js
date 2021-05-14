@@ -1,4 +1,5 @@
 // @flow
+import { times } from 'lodash-es/util';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 import type { ElementRef } from 'react';
@@ -49,9 +50,21 @@ type StakePoolsListProps = {
 export const StakePoolsList = observer((props: StakePoolsListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    window.addEventListener('scroll', hideAllPopOvers, true);
+    // Feature: Hide pool pop overs if the list scroll container is scrolled
+    // Note: do not use window here otherwise the pool description cannot be
+    // scrolled anymore because it closes the pop over immediately.
+    const scrollContainer = props.scrollElementRef
+      ? props.scrollElementRef.current
+      : null;
+    if (scrollContainer !== null) {
+      scrollContainer.addEventListener('scroll', hideAllPopOvers, true);
+    }
     setTimeout(() => setIsLoading(false));
-    return () => window.removeEventListener('scroll', hideAllPopOvers);
+    return () => {
+      if (scrollContainer !== null) {
+        scrollContainer.removeEventListener('scroll', hideAllPopOvers);
+      }
+    };
   });
   if (props.stakePoolsList.length > PRELOADER_THRESHOLD && isLoading) {
     return (
@@ -64,10 +77,9 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
 
   function rowRenderer(itemsPerRow, { index, key, style }) {
     const startIndex = itemsPerRow * index;
-    const stakePools = props.stakePoolsList.slice(
-      startIndex,
-      startIndex + itemsPerRow
-    );
+    const endIndex = startIndex + itemsPerRow;
+    const stakePools = props.stakePoolsList.slice(startIndex, endIndex);
+    const numberOfMissingRowItems = itemsPerRow - stakePools.length;
     return (
       <div key={key} style={style}>
         <div className={styles.tiles}>
@@ -89,6 +101,11 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
               isGridRewardsView={props.isGridRewardsView}
             />
           ))}
+          {numberOfMissingRowItems > 0
+            ? times(numberOfMissingRowItems, () => (
+                <div className={styles.rowFillerItem} />
+              ))
+            : null}
         </div>
       </div>
     );
@@ -106,7 +123,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             if (!stakePoolsCount || !width) {
               return null;
             }
-            const itemsPerRow = Math.ceil(
+            const itemsPerRow = Math.floor(
               width / (POOL_THUMB_SIZE + POOL_THUMB_GRID_GAP)
             );
             const rowCount = Math.ceil(stakePoolsCount / itemsPerRow);

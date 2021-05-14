@@ -29,6 +29,7 @@ import type {
   AssetMetadata,
   WalletAssetItems,
   WalletAssets,
+  WalletSummaryAsset,
 } from '../../../source/renderer/app/api/assets/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
@@ -108,15 +109,16 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
-  assets: WalletAssets,
+  assets?: WalletAssets = { available: [], total: [] },
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
   status?: SyncStateStatus = WalletSyncStateStatuses.READY,
-  isHardwareWallet?: boolean = false
+  isHardwareWallet?: boolean = false,
+  id?: string = generateHash()
 ) =>
   new Wallet({
-    id: generateHash(),
+    id,
     addressPoolGap: 20,
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
@@ -148,7 +150,27 @@ export const generateAsset = (
     assetName,
     fingerprint,
     metadata,
+    decimals: 0,
+    recommendedDecimals: null,
   });
+
+export const generateWalletSummaryAsset = (
+  policyId: string,
+  assetName: string = '',
+  fingerprint: string = '',
+  quantity: number,
+  metadata: ?AssetMetadata,
+  decimals: ?number,
+  recommendedDecimals: ?number
+): WalletSummaryAsset => ({
+  policyId,
+  assetName,
+  fingerprint,
+  metadata,
+  quantity: new BigNumber(quantity),
+  decimals,
+  recommendedDecimals,
+});
 
 export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
@@ -217,6 +239,7 @@ export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
     used,
+    spendingPath: "1852'/1815'/0'/0/19",
   });
 
 export const promise = (returnValue: any): (() => Promise<any>) => () =>

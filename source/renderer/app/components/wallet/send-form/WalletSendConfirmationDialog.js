@@ -267,6 +267,7 @@ export default class WalletSendConfirmationDialog extends Component<
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
+      walletName,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -310,6 +311,7 @@ export default class WalletSendConfirmationDialog extends Component<
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
@@ -332,7 +334,7 @@ export default class WalletSendConfirmationDialog extends Component<
               </div>
               <div className={styles.amount}>
                 {amount}
-                <span className={styles.currencySymbol}>
+                <span className={styles.currencyCode}>
                   &nbsp;{currencyUnit}
                 </span>
               </div>
@@ -344,7 +346,7 @@ export default class WalletSendConfirmationDialog extends Component<
               </div>
               <div className={styles.fees}>
                 +{transactionFee}
-                <span className={styles.currencySymbol}>
+                <span className={styles.currencyCode}>
                   &nbsp;{currencyUnit}
                 </span>
               </div>
@@ -357,9 +359,7 @@ export default class WalletSendConfirmationDialog extends Component<
             </div>
             <div className={styles.totalAmount}>
               {totalAmount}
-              <span className={styles.currencySymbol}>
-                &nbsp;{currencyUnit}
-              </span>
+              <span className={styles.currencyCode}>&nbsp;{currencyUnit}</span>
             </div>
           </div>
 

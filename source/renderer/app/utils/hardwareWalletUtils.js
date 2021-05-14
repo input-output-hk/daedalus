@@ -38,7 +38,14 @@ export const derivationPathToString = (derivationPath: Array<string>) => {
   return constructedPath;
 };
 
-// // [1852H, 1815H, 0H] => [2147485500, 2147485463, 2147483648]
+// m/1852'/1815'/0' => 1852'/1815'/0'
+export const derivationPathToAddressPath = (derivationPath: Array<string>) => {
+  const derivationPathString = derivationPathToString(derivationPath);
+  const addressPath = derivationPathString.replace('m/', '');
+  return addressPath;
+};
+
+// [1852H, 1815H, 0H] => [2147485500, 2147485463, 2147483648]
 export const derivationPathToLedgerPath = (derivationPath: Array<string>) => {
   const transformedPath = map(derivationPath, (chunk) =>
     chunk.replace('H', "'")
@@ -57,9 +64,29 @@ export const getParamsFromPath = (derivationPath: Array<string>) => {
 };
 
 // [2147485500, 2147485463, 2147483648] => 1852'/1815'/0'
-export const hardenedPathToString = (hardendedPath: Array<string>) => {
+export const hardenedPathToString = (hardendedPath: Array<number>) => {
   const path = map(hardendedPath, (chunk) => `${chunk - HARDENED}H`);
   return derivationPathToString(path).replace('m/', '');
+};
+
+// [2147485500, 2147485463, 2147483648] => [1852H, 1815H, 0H, 0, 1]
+export const hardenedPathToDerivationPath = (hardendedPath: Array<number>) => {
+  const derivationPath = [];
+  const constructedDerivationPath = ['m'];
+  map(hardendedPath, (chunk, index) => {
+    let pathChunk = chunk.toString();
+    let constructedPathChunk = chunk.toString();
+    if (index <= 2) {
+      pathChunk = `${chunk - HARDENED}H`;
+      constructedPathChunk = `${chunk - HARDENED}'`;
+    }
+    derivationPath.push(pathChunk);
+    constructedDerivationPath.push(constructedPathChunk);
+  });
+  return {
+    derivationPath,
+    constructed: constructedDerivationPath,
+  };
 };
 
 export const bech32EncodePublicKey = (data: Buffer): string => {

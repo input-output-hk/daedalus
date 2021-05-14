@@ -76,10 +76,19 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { stores } = this.props;
-    const { app, wallets, addresses, transactions, profile, assets } = stores;
-    const { getAssetDetails } = assets;
+    const { stores, actions } = this.props;
+    const {
+      app,
+      wallets,
+      addresses,
+      transactions,
+      profile,
+      assets,
+      currency,
+    } = stores;
+    const { getAssetDetails, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
+    const { onAssetSettingsOpen } = actions.assets;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -93,15 +102,9 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
-    const {
-      active: wallet,
-      currencyIsActive,
-      currencyIsAvailable,
-      currencyIsFetchingRate,
-      currencyLastFetched,
-      currencyRate,
-      currencySelected,
-    } = wallets;
+    const { active: wallet } = wallets;
+    const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
+
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
@@ -189,16 +192,17 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isLoadingAssets={isLoadingAssets}
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
-          currencyIsActive={currencyIsActive}
-          currencyIsAvailable={currencyIsAvailable}
-          currencyIsFetchingRate={currencyIsFetchingRate}
-          currencyLastFetched={currencyLastFetched}
-          currencyRate={currencyRate}
-          currencySelected={currencySelected}
+          currencyIsActive={isActive}
+          currencyIsFetchingRate={isFetchingRate}
+          currencyLastFetched={lastFetched}
+          currencyRate={rate}
+          currencySelected={selected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={walletAssets}
+          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           onOpenAssetSend={this.handleOpenAssetSend}
           onCopyAssetItem={this.handleOnCopyAssetItem}
+          onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
         />
         {walletTransactions}

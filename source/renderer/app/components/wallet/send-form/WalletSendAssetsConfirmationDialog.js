@@ -18,7 +18,6 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendAssetsConfirmationDialog.scss';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
-import { IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED } from '../../../config/walletsConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
@@ -26,7 +25,7 @@ import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessage
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
-import AssetToken from '../../widgets/AssetToken';
+import AssetToken from '../../assets/AssetToken';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 
@@ -315,11 +314,15 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   getFormattedAssetAmount = (
-    { metadata }: WalletSummaryAsset,
+    { metadata, decimals }: WalletSummaryAsset,
     index: number
   ) => {
     const assetAmount = this.getAssetAmount(index);
-    return formattedTokenWalletAmount(new BigNumber(assetAmount), metadata);
+    return formattedTokenWalletAmount(
+      new BigNumber(assetAmount),
+      metadata,
+      decimals
+    );
   };
 
   render() {
@@ -342,6 +345,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       isHardwareWallet,
       onCopyAssetItem,
       currencyUnit,
+      walletName,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -371,11 +375,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
     const assetsSeparatorBasicHeight = 27;
     const assetsSeparatorCalculatedHeight = assets.length
-      ? assetsSeparatorBasicHeight *
-          (IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED
-            ? assets.length * 2
-            : assets.length + 1) -
-        18
+      ? assetsSeparatorBasicHeight * assets.length * 2 - 18
       : assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -394,6 +394,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
@@ -443,46 +444,44 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                               <AssetToken
                                 asset={asset}
                                 onCopyAssetItem={onCopyAssetItem}
-                                componentClassName={styles.assetToken}
+                                className={styles.assetToken}
                               />
                             </h3>
                             <div className={styles.amountFeesWrapper}>
                               <div className={styles.amount}>{assetAmount}</div>
                             </div>
                           </div>
-                          {IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED && (
-                            <div className={styles.assetsContainer}>
-                              <div className={styles.unformattedAmountLine} />
-                              <div className={styles.unformattedAmountLabel}>
-                                {intl.formatMessage(
-                                  messages.unformattedAmountLabel
-                                )}
-                                <PopOver
-                                  content={
-                                    <div className="UnformattedAmountTooltip">
-                                      <FormattedHTMLMessage
-                                        {...messages[
-                                          isHardwareWallet
-                                            ? 'unformattedAmountMessageForHardwareWallets'
-                                            : 'unformattedAmountMessageForSoftwareWallets'
-                                        ]}
-                                        tagName="div"
-                                      />
-                                    </div>
-                                  }
-                                  key="tooltip"
-                                >
-                                  <div className={styles.questionMark}>
-                                    <SVGInline svg={questionMarkIcon} />
+                          <div className={styles.assetsContainer}>
+                            <div className={styles.unformattedAmountLine} />
+                            <div className={styles.unformattedAmountLabel}>
+                              {intl.formatMessage(
+                                messages.unformattedAmountLabel
+                              )}
+                              <PopOver
+                                content={
+                                  <div className="UnformattedAmountTooltip">
+                                    <FormattedHTMLMessage
+                                      {...messages[
+                                        isHardwareWallet
+                                          ? 'unformattedAmountMessageForHardwareWallets'
+                                          : 'unformattedAmountMessageForSoftwareWallets'
+                                      ]}
+                                      tagName="div"
+                                    />
                                   </div>
-                                </PopOver>
-                                {':'}
-                              </div>
-                              <div className={styles.unformattedAmount}>
-                                {this.getAssetAmount(assetIndex)}
-                              </div>
+                                }
+                                key="tooltip"
+                              >
+                                <div className={styles.questionMark}>
+                                  <SVGInline svg={questionMarkIcon} />
+                                </div>
+                              </PopOver>
+                              {':'}
                             </div>
-                          )}
+                            <div className={styles.unformattedAmount}>
+                              {this.getAssetAmount(assetIndex)}
+                            </div>
+                          </div>
                         </Fragment>
                       );
                     })}
@@ -501,7 +500,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                   </div>
                   <div className={styles.adaAmount}>
                     {amount}
-                    <span className={styles.currencySymbol}>
+                    <span className={styles.currencyCode}>
                       &nbsp;{currencyUnit}
                     </span>
                   </div>
@@ -513,7 +512,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                   </div>
                   <div className={styles.fees}>
                     +{transactionFee}
-                    <span className={styles.currencySymbol}>
+                    <span className={styles.currencyCode}>
                       &nbsp;{currencyUnit}
                     </span>
                   </div>
@@ -526,7 +525,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                 </div>
                 <div className={styles.totalAmount}>
                   {totalAmount}
-                  <span className={styles.currencySymbol}>
+                  <span className={styles.currencyCode}>
                     &nbsp;{currencyUnit}
                   </span>
                 </div>
@@ -539,7 +538,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
               </div>
               <div className={styles.fees}>
                 +{transactionFee}
-                <span className={styles.currencySymbol}>
+                <span className={styles.currencyCode}>
                   &nbsp;{currencyUnit}
                 </span>
               </div>

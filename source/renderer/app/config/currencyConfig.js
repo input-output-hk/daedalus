@@ -6,12 +6,20 @@
  *
  */
 
+import { omit, map } from 'lodash';
+
 // Available APIS
 import coingeckoConfig from './currencyConfig.coingecko';
 
 import { externalRequest } from '../api/utils/externalRequest';
 import currenciesList from './currenciesList.json';
-import type { RequestName } from '../types/currencyTypes';
+import { LOCALES } from '../../../common/types/locales.types';
+import type {
+  RequestName,
+  Currency,
+  LocalizedCurrency,
+} from '../types/currencyTypes';
+import type { Locale } from '../../../common/types/locales.types';
 
 export const REQUESTS: {
   [key: string]: RequestName,
@@ -46,3 +54,22 @@ export const genericCurrencyRequest = (
   }
   return response;
 };
+
+export const getLocalizedCurrenciesList = (
+  rawCurrencyList: Array<Currency>,
+  currentLocale: Locale
+) =>
+  map(rawCurrencyList, (rawCurrency) =>
+    getLocalizedCurrency(rawCurrency, currentLocale)
+  );
+
+export const getLocalizedCurrency = (
+  rawCurrency: Currency,
+  currentLocale: Locale
+): LocalizedCurrency => ({
+  ...omit(rawCurrency, ['name']),
+  name: rawCurrency.name[currentLocale] || rawCurrency.name[LOCALES.english],
+});
+
+export const getCurrencyFromCode = (code: string): Currency =>
+  currenciesList[code];
