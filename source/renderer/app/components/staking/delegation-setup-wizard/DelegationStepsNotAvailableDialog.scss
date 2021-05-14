@@ -15,7 +15,7 @@
 
         g {
           fill: var(
-              --theme-delegation-steps-not-available-icon-color
+            --theme-delegation-steps-not-available-icon-color
           ) !important;
         }
       }
@@ -26,7 +26,7 @@
 
       span > span {
         color: var(
-            --theme-delegation-steps-not-available-description-highlight-text-color
+          --theme-delegation-steps-not-available-description-highlight-text-color
         );
         font-family: var(--font-medium);
         font-weight: 500;
