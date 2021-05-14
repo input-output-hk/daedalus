@@ -233,7 +233,8 @@ export default class HardwareWalletStatus extends Component<Props, State> {
 
     const hasPassphraseLabel =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS;
 
     const componentClasses = classnames([
       styles.component,

@@ -180,7 +180,6 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
       tokens: tokensList,
     };
   });
-
   return tokenBundle;
 };
 

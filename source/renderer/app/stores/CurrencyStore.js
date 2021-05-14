@@ -12,7 +12,6 @@ import type { Currency, LocalizedCurrency } from '../types/currencyTypes.js';
 export default class CurrencyStore extends Store {
   @observable isFetchingList: boolean = false;
   @observable isFetchingRate: boolean = false;
-  @observable isAvailable: boolean = false;
   @observable isActive: boolean = false;
   @observable list: Array<Currency> = [];
   @observable selected: ?Currency = null;
@@ -53,27 +52,32 @@ export default class CurrencyStore extends Store {
   };
 
   @action getCurrencyRate = async () => {
-    const { localizedCurrency } = this;
+    const { localizedCurrency, list } = this;
+    /**
+     * In case the list was not fetched when loading,
+     * it tries again
+     */
+    if (!list || !list.length) {
+      this.getCurrencyList();
+    }
     if (localizedCurrency && localizedCurrency.code) {
       try {
         this.isFetchingRate = true;
         const rate = await this.api.ada.getCurrencyRate(localizedCurrency);
+        if (!rate) {
+          throw new Error('Error fetching the Currency rate');
+        }
         runInAction(() => {
-          this.isFetchingRate = false;
           this.lastFetched = new Date();
-          if (rate) {
-            this.rate = rate;
-            this.isAvailable = true;
-          } else {
-            throw new Error('Error fetching the Currency rate');
-          }
+          this.rate = rate;
+          this.isFetchingRate = false;
         });
       } catch (error) {
         runInAction(() => {
-          this.rate = null;
-          this.isAvailable = false;
+          if (this.rate) {
+            this.isFetchingRate = false;
+          }
         });
-        clearInterval(this._getCurrencyRateInterval);
       }
     }
   };
