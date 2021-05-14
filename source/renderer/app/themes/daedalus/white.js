@@ -1108,6 +1108,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-widgets-asset-token-text-color': '#2d2d2d',
     '--theme-widgets-asset-token-background-color': '#fff',
     '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-widgets-itemsDropdown-option-label-text-color': '#2d2d2d',
   },
 };
 

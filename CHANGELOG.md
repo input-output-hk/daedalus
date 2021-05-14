@@ -15,6 +15,7 @@ Changelog
 
 ### Chores
 
+- Implemented the Items Dropdown component and simplified the Wallets and Assets Dropdowns ([PR 2540](https://github.com/input-output-hk/daedalus/pull/2540))
 - Included wallet names in dialog windows ([PR 2552](https://github.com/input-output-hk/daedalus/pull/2552))
 - Updated `cardano-cli` version to always match the one from `cardano-wallet` ([PR 2561](https://github.com/input-output-hk/daedalus/pull/2561))
 - Updated `react-polymorph` to version `1.0.0` ([PR 2549](https://github.com/input-output-hk/daedalus/pull/2549))
