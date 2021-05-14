@@ -50,7 +50,7 @@ export default class AssetsDropdown extends Component<Props> {
     const { assets = [] } = this.props;
     const props = omit(this.props, ['wallets', 'options']);
     const formattedOptions = assets.map((asset) => {
-      const { fingerprint: value, metadata, quantity, decimals } = asset;
+      const { uniqueId: value, metadata, quantity, decimals } = asset;
       const detail = formattedTokenWalletAmount(quantity, metadata, decimals);
       return {
         label: (

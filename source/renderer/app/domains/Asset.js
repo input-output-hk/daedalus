@@ -15,26 +15,32 @@ export type AssetProps = {
 export default class Asset {
   @observable policyId: string = '';
   @observable assetName: string = '';
+  @observable uniqueId: string = '';
   @observable fingerprint: string = '';
   @observable metadata: ?AssetMetadata;
   @observable decimals: ?number;
   @observable recommendedDecimals: ?number;
 
-  constructor(data: AssetProps) {
-    Object.assign(this, data);
+  constructor(props: AssetProps) {
+    const { policyId, assetName } = props;
+    const uniqueId = policyId + assetName;
+    Object.assign(this, props, { uniqueId });
   }
 
-  @action update(other: $Shape<AssetProps>) {
+  @action update(props: $Shape<AssetProps>) {
+    const { policyId, assetName } = props;
+    const uniqueId = policyId + assetName;
     Object.assign(
       this,
-      pick(other, [
+      pick(props, [
         'policyId',
         'assetName',
         'fingerprint',
         'metadata',
         'decimals',
         'recommendedDecimals',
-      ])
+      ]),
+      { uniqueId }
     );
   }
 }

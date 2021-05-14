@@ -204,10 +204,11 @@ export default class AssetInput extends Component<Props> {
               className={styles.assetsDropdown}
               {...assetsDropdownField.bind()}
               assets={sortedAssets}
-              onChange={(newFingerprint) => {
-                if (newFingerprint !== fingerprint) {
-                  onChangeAsset(fingerprint, newFingerprint);
-                }
+              onChange={(newAsset) => {
+                console.log('AssetInput.js');
+                console.log('asset', asset);
+                console.log('newAsset', newAsset);
+                return onChangeAsset(asset, newAsset);
               }}
               value={fingerprint}
               hasSearch

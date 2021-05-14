@@ -49,6 +49,7 @@ export type WalletAssets = {
 export type WalletSummaryAsset = {
   policyId: string,
   assetName: string,
+  uniqueId: string,
   fingerprint: string,
   quantity: BigNumber,
   metadata: ?AssetMetadata,
