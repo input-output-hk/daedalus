@@ -23,6 +23,7 @@ export const defaultProps = {
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       wordCount={number('wordCount', 15)}
+      walletName="My Wallet"
     />
   ),
   walletRecoveryPhraseStep2Container: (
@@ -31,16 +32,21 @@ export const defaultProps = {
       onContinue={action('onContinue')}
       wordCount={number('wordCount', 15)}
       expectedWordCount={15}
+      walletName="My Wallet"
     />
   ),
   walletRecoveryPhraseStep3Container: (
-    <WalletRecoveryPhraseStep3Dialog onClose={action('onClose')} />
+    <WalletRecoveryPhraseStep3Dialog
+      onClose={action('onClose')}
+      walletName="My Wallet"
+    />
   ),
   walletRecoveryPhraseStep4Container: (
     <WalletRecoveryPhraseStep4Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       openExternalLink={action('openExternalLink')}
+      walletName="My Wallet"
     />
   ),
   activeField: null,

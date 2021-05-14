@@ -10,7 +10,6 @@ export type WalletOption = {
   wallet: $Shape<Wallet>,
   getStakePoolById: Function,
   numberOfStakePools?: number,
-  syncingLabel?: string,
 };
 
 export default class WalletsDropdownLabel extends Component<WalletOption> {

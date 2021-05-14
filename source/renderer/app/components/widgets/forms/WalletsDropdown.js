@@ -18,7 +18,6 @@ import ItemsDropdown from './ItemsDropdown';
 type Props = {
   getStakePoolById: Function,
   numberOfStakePools: number,
-  syncingLabel?: string,
   wallets?: Array<$Shape<Wallet>>,
   className?: string,
 };

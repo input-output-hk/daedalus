@@ -338,7 +338,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
                     onChange={this.onSelectedWalletChange}
                     disabled={isLoading || isRanking}
                     value={selectedDelegationWalletId || '0'}
-                    syncingLabel=""
                     selectionRenderer={(option) => (
                       <button
                         className="customValue"
