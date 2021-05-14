@@ -14,7 +14,7 @@ import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { ellipsis } from '../../utils/strings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { WalletSummaryAsset, AssetUniqueId } from '../../api/assets/types';
+import type { WalletSummaryAsset } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -49,14 +49,14 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = (asset: WalletSummaryAsset) => {
+  handleOpenAssetSend = ({ uniqueId }: WalletSummaryAsset) => {
     const { stores } = this.props;
     const { wallets } = stores;
     const { active } = wallets;
     if (active) {
       const { id } = active;
       const { wallets: walletActions, router } = this.props.actions;
-      walletActions.setActiveAsset.trigger(asset);
+      walletActions.setActiveAsset.trigger(uniqueId);
       router.goToRoute.trigger({
         route: ROUTES.WALLETS.PAGE,
         params: { id, page: 'send' },

@@ -8,7 +8,6 @@ import { requestGetter } from '../utils/storesUtils';
 import type {
   GetAssetsResponse,
   WalletSummaryAsset,
-  AssetUniqueId,
 } from '../api/assets/types';
 
 type WalletId = string;
@@ -17,7 +16,7 @@ export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
   // @FINGERPRINT TODO
-  @observable activeAsset: ?AssetUniqueId = null;
+  @observable activeAsset: ?string = null;
   @observable editingsAsset: ?WalletSummaryAsset = null;
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
@@ -112,8 +111,8 @@ export default class AssetsStore extends Store {
     }
   };
 
-  @action _setActiveAsset = (assetUniqueId: AssetUniqueId) => {
-    this.activeAsset = assetUniqueId;
+  @action _setActiveAsset = (uniqueId: string) => {
+    this.activeAsset = uniqueId;
   };
 
   @action _unsetActiveAsset = () => {

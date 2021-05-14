@@ -14,7 +14,6 @@ import Asset from '../../domains/Asset';
 import type {
   AssetItems,
   WalletTransactionAsset,
-  AssetUniqueId,
 } from '../../api/assets/types';
 
 type Props = InjectedProps;
@@ -82,13 +81,8 @@ export default class WalletSendPage extends Component<Props> {
     }
   };
 
-  getAssetByUniqueId = (
-    { policyId, assetName }: AssetUniqueId,
-    allAssets: Array<Asset>
-  ) => {
-    return allAssets.find(
-      (asset) => asset.policyId === policyId && asset.assetName === assetName
-    );
+  getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) => {
+    return allAssets.find((asset) => asset.uniqueId === uniqueId);
   };
 
   render() {

@@ -81,8 +81,3 @@ export type GetAssetsResponse = {
   assets: Array<Asset>,
   total: number,
 };
-
-export type AssetUniqueId = {
-  policyId: string,
-  assetName: string,
-};
