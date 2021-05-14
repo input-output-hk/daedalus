@@ -345,6 +345,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       isHardwareWallet,
       onCopyAssetItem,
       currencyUnit,
+      walletName,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -393,6 +394,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus

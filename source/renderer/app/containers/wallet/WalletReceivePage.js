@@ -263,12 +263,12 @@ export default class WalletReceivePage extends Component<Props, State> {
         {uiDialogs.isOpen(WalletReceiveDialog) && addressToShare && (
           <WalletReceiveDialog
             address={addressToShare}
+            walletName={activeWallet.name}
             onCopyAddress={this.handleCopyAddress}
             onDownloadPDF={this.handleDownloadPDF}
             onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
             isHardwareWallet={activeWallet.isHardwareWallet}
-            walletName={activeWallet.name}
             hwDeviceStatus={hwDeviceStatus}
             transportDevice={transportDevice}
             isAddressDerived={isAddressDerived}
