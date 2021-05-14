@@ -1,10 +1,4 @@
 .dialog {
-  :global {
-    .Dialog_contentWrapper::-webkit-scrollbar-track {
-      margin-top: 12px;
-    }
-  }
-
   .walletPublicKeyQRCode {
     align-items: center;
     display: flex;
