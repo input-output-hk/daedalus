@@ -11,7 +11,7 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
-import type { WalletSummaryAsset } from '../../api/assets/types';
+import type { AssetTokenProps } from '../../api/assets/types';
 import { formattedTokenWalletAmount } from '../../utils/formatters';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
@@ -71,7 +71,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  asset: WalletSummaryAsset,
+  asset: AssetTokenProps,
   onSubmit: Function,
   onCancel: Function,
 };

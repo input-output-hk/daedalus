@@ -22,7 +22,7 @@ import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
-import type { WalletTransactionAsset } from '../../../api/assets/types';
+import type { AssetTokenProps } from '../../../api/assets/types';
 import AssetToken from '../../assets/AssetToken';
 import AssetAmount from '../../assets/AssetAmount';
 import { filterAssets } from '../../../utils/assets';
@@ -260,7 +260,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  txAssets: Array<WalletTransactionAsset>,
+  assetTokens: Array<AssetTokenProps>,
   hasAssetsEnabled: boolean,
   isInternalAddress: Function,
   isLoadingAssets: boolean,
@@ -410,12 +410,17 @@ export default class Transaction extends Component<Props, State> {
     return !!this.assetsList.length;
   }
 
-  get assetsList(): Array<WalletTransactionAsset> {
-    const { txAssets, data, isInternalAddress, hasAssetsEnabled } = this.props;
+  get assetsList(): Array<AssetTokenProps> {
+    const {
+      assetTokens,
+      data,
+      isInternalAddress,
+      hasAssetsEnabled,
+    } = this.props;
     if (!hasAssetsEnabled) {
       return [];
     }
-    return filterAssets(txAssets, data.type, isInternalAddress);
+    return filterAssets(assetTokens, data.type, isInternalAddress);
   }
 
   includesUnresolvedAddresses = (addresses: Array<?string>) =>

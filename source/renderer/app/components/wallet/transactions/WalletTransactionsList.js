@@ -15,7 +15,7 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
-import { getTransactionAssets } from '../../../utils/assets';
+import { getAssetTokens } from '../../../utils/assets';
 
 const messages = defineMessages({
   today: {
@@ -67,7 +67,7 @@ type Props = {
   currentDateFormat: string,
   currentTimeFormat: string,
   hasAssetsEnabled: boolean,
-  getAssetDetails: Function,
+  getAssetDomain: Function,
   isInternalAddress: Function,
   onCopyAssetItem: Function,
 };
@@ -219,7 +219,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
       isDeletingTransaction,
       currentTimeFormat,
       hasAssetsEnabled,
-      getAssetDetails,
+      getAssetDomain,
       isInternalAddress,
       onCopyAssetItem,
     } = this.props;
@@ -230,9 +230,10 @@ export default class WalletTransactionsList extends Component<Props, State> {
       isLastInGroup ? styles.lastInGroup : null,
     ]);
 
-    const txAssets = getTransactionAssets(tx.assets, getAssetDetails);
+    const txTokens = tx.assets;
+    const assetTokens = getAssetTokens(txTokens, getAssetDomain);
     const totalRawAssets = tx.assets.length;
-    const totalAssets = txAssets.length;
+    const totalAssets = assetTokens.length;
     const hasRawAssets = tx.assets.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
@@ -254,7 +255,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentTimeFormat={currentTimeFormat}
-          txAssets={txAssets}
+          assetTokens={assetTokens}
           hasAssetsEnabled={hasAssetsEnabled}
           isInternalAddress={isInternalAddress}
           isLoadingAssets={isLoadingAssets}

@@ -9,7 +9,7 @@ import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
 import AssetToken from '../../assets/AssetToken';
 import AssetAmount from '../../assets/AssetAmount';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import type { AssetTokenProps } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
@@ -32,7 +32,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  assets: Array<WalletSummaryAsset>,
+  assets: Array<AssetTokenProps>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
   onAssetSettings: Function,
@@ -45,7 +45,7 @@ type State = {
 };
 
 @observer
-export default class WalletSummaryAssets extends Component<Props, State> {
+export default class AssetTokens extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -88,13 +88,13 @@ export default class WalletSummaryAssets extends Component<Props, State> {
           </div>
         ) : (
           <div className={styles.component}>
-            {assets.map((asset: WalletSummaryAsset, index: number) => (
+            {assets.map((asset: AssetTokenProps, index: number) => (
               <BorderedBox
                 className={styles.assetsContainer}
-                key={asset.policyId + asset.assetName + asset.fingerprint}
+                key={asset.uniqueId}
                 onMouseEnter={this.handleHoverAsset}
               >
-                {asset.fingerprint && (
+                {asset.uniqueId && (
                   <div className={styles.assetsLeftContainer}>
                     <AssetToken
                       asset={asset}
@@ -117,7 +117,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
                     </div>
                   </div>
                 )}
-                {asset.fingerprint && (
+                {asset.uniqueId && (
                   <div className={styles.assetRightContainer}>
                     <button
                       className={classNames([

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import ItemsDropdown from './ItemsDropdown';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import type { AssetTokenProps } from '../../../api/assets/types';
 import AssetToken from '../../assets/AssetToken';
 import styles from './AssetsDropdown.scss';
 
@@ -17,7 +17,7 @@ import styles from './AssetsDropdown.scss';
  *
  */
 type Props = {
-  assets?: Array<$Shape<WalletSummaryAsset>>,
+  assets?: Array<$Shape<AssetTokenProps>>,
 };
 
 export const onSearchAssetsDropdown = (

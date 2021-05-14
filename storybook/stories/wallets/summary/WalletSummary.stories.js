@@ -134,6 +134,7 @@ const walletAssets = assets.total.map((assetTotal) => {
   return {
     policyId: assetTotal.policyId,
     assetName: assetTotal.assetName,
+    uniqueId: assetTotal.policyId + assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
     decimals: 0,

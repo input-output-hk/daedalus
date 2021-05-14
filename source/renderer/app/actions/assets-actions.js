@@ -1,13 +1,13 @@
 // @flow
 import Action from './lib/Action';
-import type { WalletSummaryAsset } from '../api/assets/types';
+import type { AssetTokenProps } from '../api/assets/types';
 
 // ======= ASSETS ACTIONS =======
 
 export default class AssetsActions {
-  onAssetSettingsOpen: Action<{ asset: WalletSummaryAsset }> = new Action();
+  onAssetSettingsOpen: Action<{ asset: AssetTokenProps }> = new Action();
   onAssetSettingsSubmit: Action<{
-    asset: WalletSummaryAsset,
+    asset: AssetTokenProps,
     decimals: number,
   }> = new Action();
   onAssetSettingsCancel: Action<any> = new Action();

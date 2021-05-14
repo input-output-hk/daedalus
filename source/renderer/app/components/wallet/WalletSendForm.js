@@ -21,7 +21,6 @@ import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
 import closeIcon from '../../assets/images/close-cross.inline.svg';
 import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
-/* eslint-disable consistent-return */
 import { messages as apiErrorMessages } from '../../api/errors';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../utils/form';
@@ -39,7 +38,7 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-import type { AssetItems, WalletSummaryAsset } from '../../api/assets/types';
+import type { AssetTokenProps, ApiTokens } from '../../api/assets/types';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -48,15 +47,11 @@ type Props = {
   currencyMaxIntegerDigits: number,
   currencyMaxFractionalDigits: number,
   currentNumberFormat: string,
-  calculateTransactionFee: (
-    address: string,
-    amount: number,
-    assets: AssetItems
-  ) => Promise<BigNumber>,
+  calculateTransactionFee: Function,
   walletAmount: BigNumber,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   addressValidator: Function,
-  assets: Array<WalletSummaryAsset>,
+  assets: Array<AssetTokenProps>,
   hasAssets: boolean,
   selectedAsset: ?Asset,
   isLoadingAssets: boolean,
@@ -75,13 +70,11 @@ type State = {
     receiver: {
       receiver: Field,
       adaAmount: Field,
-      // @FINGERPRINT TODO
       assetFields: {
-        [fingerprint: string]: Field,
+        [uniqueId: string]: Field,
       },
-      // @FINGERPRINT TODO
       assetsDropdown: {
-        [fingerprint: string]: Field,
+        [uniqueId: string]: Field,
       },
     },
   },
@@ -89,9 +82,8 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
-  // @FINGERPRINT TODO
-  showRemoveAssetButton: { [fingerprint: string]: boolean },
-  selectedAssetFingerprints: Array<string>,
+  showRemoveAssetButton: { [uniqueId: string]: boolean },
+  selectedAssetUniqueIds: Array<string>,
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
   isTransactionFeeCalculated: boolean,
@@ -110,8 +102,7 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
     showRemoveAssetButton: {},
-    // @FINGERPRINT TODO
-    selectedAssetFingerprints: [],
+    selectedAssetUniqueIds: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
@@ -140,8 +131,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (selectedAsset) {
       setTimeout(() => {
         if (this._isMounted) {
-          // @FINGERPRINT TODO
-          this.addAssetRow(selectedAsset.fingerprint);
+          this.addAssetRow(selectedAsset.uniqueId);
         }
       });
     }
@@ -149,7 +139,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
-    // @FINGERPRINT TODO
     this.props.onUnsetActiveAsset();
   }
 
@@ -157,29 +146,28 @@ export default class WalletSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
-  // @FINGERPRINT TODO
-  get selectedAssets(): Array<WalletSummaryAsset> {
-    const { selectedAssetFingerprints } = this.state;
+  get selectedAssets(): Array<AssetTokenProps> {
+    const { selectedAssetUniqueIds } = this.state;
     const { assets: allAssets } = this.props;
-    return map(selectedAssetFingerprints, (fingerprint) =>
-      allAssets.find((asset) => asset.fingerprint === fingerprint)
+    return map(selectedAssetUniqueIds, (uniqueId) =>
+      allAssets.find((asset) => asset.uniqueId === uniqueId)
     );
   }
 
   get selectedAssetsAmounts(): Array<string> {
-    const { selectedAssetFingerprints, formFields } = this.state;
+    const { selectedAssetUniqueIds, formFields } = this.state;
     const assetFields = get(formFields, 'receiver.assetFields');
-    return map(selectedAssetFingerprints, (fingerprint) =>
-      formattedAmountToNaturalUnits(assetFields[fingerprint].value)
+    return map(selectedAssetUniqueIds, (uniqueId) =>
+      formattedAmountToNaturalUnits(assetFields[uniqueId].value)
     );
   }
 
-  get availableAssets(): Array<WalletSummaryAsset> {
+  get availableAssets(): Array<AssetTokenProps> {
     const { assets: allAssets } = this.props;
-    const { selectedAssetFingerprints } = this.state;
+    const { selectedAssetUniqueIds } = this.state;
     return filter(
       allAssets,
-      ({ fingerprint }) => !selectedAssetFingerprints.includes(fingerprint)
+      ({ uniqueId }) => !selectedAssetUniqueIds.includes(uniqueId)
     );
   }
 
@@ -187,13 +175,13 @@ export default class WalletSendForm extends Component<Props, State> {
     return this.availableAssets.length > 0;
   }
 
-  getAssetByFingerprint = (fingerprint: string): ?WalletSummaryAsset => {
+  getAssetByUniqueId = (uniqueId: string): ?AssetTokenProps => {
     const { assets: allAssets } = this.props;
-    return allAssets.find((asset) => asset.fingerprint === fingerprint);
+    return allAssets.find((asset) => asset.uniqueId === uniqueId);
   };
 
   focusableFields: {
-    [fingerprint: string]: Field,
+    [uniqueId: string]: Field,
   } = {};
 
   addFocusableField = (field: ?Field) => {
@@ -215,7 +203,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
   handleOnSubmit = () => {
     if (this.isDisabled()) {
-      return false;
+      return;
     }
     this.props.onOpenDialogAction({
       dialog: WalletSendAssetsConfirmationDialog,
@@ -265,13 +253,13 @@ export default class WalletSendForm extends Component<Props, State> {
     this.resetTransactionFee();
   };
 
-  updateFormFields = (resetFormFields: boolean, fingerprint?: string) => {
+  updateFormFields = (resetFormFields: boolean, uniqueId?: string) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get('receiver');
     const adaAmountField = formFields.get('adaAmount');
     if (resetFormFields) {
       this.setState({
-        selectedAssetFingerprints: [],
+        selectedAssetUniqueIds: [],
         formFields: {
           receiver: {
             receiver: receiverField,
@@ -281,17 +269,15 @@ export default class WalletSendForm extends Component<Props, State> {
           },
         },
       });
-    } else if (fingerprint) {
+    } else if (uniqueId) {
       const { assetFields, assetsDropdown } = this.state.formFields.receiver;
-      const assetField = formFields.get(`asset_${fingerprint}`);
+      const assetField = formFields.get(`asset_${uniqueId}`);
       if (assetField) {
-        assetFields[fingerprint] = assetField;
+        assetFields[uniqueId] = assetField;
       }
-      const assetsDropdownField = formFields.get(
-        `assetsDropdown_${fingerprint}`
-      );
+      const assetsDropdownField = formFields.get(`assetsDropdown_${uniqueId}`);
       if (assetsDropdownField) {
-        assetsDropdown[fingerprint] = assetsDropdownField;
+        assetsDropdown[uniqueId] = assetsDropdownField;
       }
       this.setState((prevState) => ({
         formFields: {
@@ -437,14 +423,14 @@ export default class WalletSendForm extends Component<Props, State> {
     );
     if (!form.isValid || hasEmptyAssetFields) {
       form.showErrors(true);
-      return false;
+      return;
     }
 
     const receiverField = form.$('receiver');
     const receiver = receiverField.value;
     const adaAmountField = form.$('adaAmount');
     const adaAmount = formattedAmountToLovelace(adaAmountField.value);
-    const assets = filter(
+    const assets: ApiTokens = filter(
       this.selectedAssets.map(({ policyId, assetName }, index) => {
         const quantity = new BigNumber(this.selectedAssetsAmounts[index]);
         return {
@@ -457,7 +443,7 @@ export default class WalletSendForm extends Component<Props, State> {
     );
 
     const {
-      selectedAssetFingerprints,
+      selectedAssetUniqueIds,
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
     } = this.state;
     this.setState((prevState) => ({
@@ -505,7 +491,7 @@ export default class WalletSendForm extends Component<Props, State> {
         if (error.id === 'api.errors.utxoTooSmall') {
           const minimumAda = get(error, 'values.minimumAda');
           if (minimumAda && !Number.isNaN(Number(minimumAda))) {
-            localizableError = selectedAssetFingerprints.length
+            localizableError = selectedAssetUniqueIds.length
               ? messages.minAdaRequiredWithAssetTooltip
               : messages.minAdaRequiredWithNoAssetTooltip;
             values = { minimumAda };
@@ -547,44 +533,41 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  showRemoveAssetButton = (fingerprint: string) => {
+  showRemoveAssetButton = (uniqueId: string) => {
     const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[fingerprint] = true;
+    showRemoveAssetButton[uniqueId] = true;
     this.setState({
       showRemoveAssetButton,
     });
   };
 
-  hideRemoveAssetButton = (fingerprint: string) => {
+  hideRemoveAssetButton = (uniqueId: string) => {
     const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[fingerprint] = false;
+    showRemoveAssetButton[uniqueId] = false;
     this.setState({
       showRemoveAssetButton,
     });
   };
 
-  addAssetRow = (fingerprint: string) => {
-    this.addAssetFields(fingerprint);
-    this.updateFormFields(false, fingerprint);
-    const { selectedAssetFingerprints } = this.state;
-    selectedAssetFingerprints.push(fingerprint);
+  addAssetRow = (uniqueId: string) => {
+    this.addAssetFields(uniqueId);
+    this.updateFormFields(false, uniqueId);
+    const { selectedAssetUniqueIds } = this.state;
+    selectedAssetUniqueIds.push(uniqueId);
     this.setState({
-      selectedAssetFingerprints,
+      selectedAssetUniqueIds,
     });
     this.resetTransactionFee();
     this._isAutoFocusEnabled = true;
   };
 
-  removeAssetRow = (fingerprint: string) => {
-    const { formFields, selectedAssetFingerprints } = this.state;
+  removeAssetRow = (uniqueId: string) => {
+    const { formFields, selectedAssetUniqueIds } = this.state;
     const { receiver } = formFields;
-    const assetFields = omit(receiver.assetFields, fingerprint);
-    const assetsDropdown = omit(receiver.assetsDropdown, fingerprint);
+    const assetFields = omit(receiver.assetFields, uniqueId);
+    const assetsDropdown = omit(receiver.assetsDropdown, uniqueId);
     this.setState({
-      selectedAssetFingerprints: without(
-        selectedAssetFingerprints,
-        fingerprint
-      ),
+      selectedAssetUniqueIds: without(selectedAssetUniqueIds, uniqueId),
       formFields: {
         ...formFields,
         receiver: {
@@ -594,14 +577,14 @@ export default class WalletSendForm extends Component<Props, State> {
         },
       },
     });
-    this.removeAssetFields(fingerprint);
+    this.removeAssetFields(uniqueId);
     setTimeout(() => {
       this.calculateTransactionFee();
     });
   };
 
-  addAssetFields = (fingerprint: string) => {
-    const newAsset = `asset_${fingerprint}`;
+  addAssetFields = (uniqueId: string) => {
+    const newAsset = `asset_${uniqueId}`;
     this.form.add({ name: newAsset, value: null, key: newAsset });
     this.form
       .$(newAsset)
@@ -628,7 +611,7 @@ export default class WalletSendForm extends Component<Props, State> {
         const isValidAmount = await this.props.validateAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
-        const asset = this.getAssetByFingerprint(fingerprint);
+        const asset = this.getAssetByUniqueId(uniqueId);
         if (!asset) {
           return false;
         }
@@ -651,7 +634,7 @@ export default class WalletSendForm extends Component<Props, State> {
       },
     ]);
 
-    const assetsDropdown = `assetsDropdown_${fingerprint}`;
+    const assetsDropdown = `assetsDropdown_${uniqueId}`;
     this.form.add({
       name: assetsDropdown,
       value: null,
@@ -660,31 +643,32 @@ export default class WalletSendForm extends Component<Props, State> {
     this.form.$(assetsDropdown).set('type', 'select');
   };
 
-  removeAssetFields = (fingerprint: string) => {
-    const assetFieldToDelete = `asset_${fingerprint}`;
+  removeAssetFields = (uniqueId: string) => {
+    const assetFieldToDelete = `asset_${uniqueId}`;
     this.form.del(assetFieldToDelete);
-    const assetsDropdownFieldToDelete = `assetsDropdown_${fingerprint}`;
+    const assetsDropdownFieldToDelete = `assetsDropdown_${uniqueId}`;
     this.form.del(assetsDropdownFieldToDelete);
   };
 
-  onChangeAsset = (oldFingerprint: string, newFingerprint: string) => {
-    this.addAssetFields(newFingerprint);
-    this.updateFormFields(false, newFingerprint);
-    let { selectedAssetFingerprints } = this.state;
-    const index = indexOf(selectedAssetFingerprints, oldFingerprint);
+  onChangeAsset = (currentUniqueId: string, newUniqueId: string) => {
+    if (currentUniqueId === newUniqueId) return;
+    this.addAssetFields(newUniqueId);
+    this.updateFormFields(false, newUniqueId);
+    let { selectedAssetUniqueIds } = this.state;
+    const index = indexOf(selectedAssetUniqueIds, currentUniqueId);
     if (index > -1) {
-      selectedAssetFingerprints = selectedAssetFingerprints.splice(
+      selectedAssetUniqueIds = selectedAssetUniqueIds.splice(
         index,
         1,
-        newFingerprint
+        newUniqueId
       );
     } else {
-      selectedAssetFingerprints.push(newFingerprint);
+      selectedAssetUniqueIds.push(newUniqueId);
     }
     this.setState({
-      selectedAssetFingerprints,
+      selectedAssetUniqueIds,
     });
-    this.removeAssetRow(oldFingerprint);
+    this.removeAssetRow(currentUniqueId);
     this.resetTransactionFee();
   };
 
@@ -694,7 +678,7 @@ export default class WalletSendForm extends Component<Props, State> {
       formFields,
       minimumAda,
       transactionFeeError,
-      selectedAssetFingerprints,
+      selectedAssetUniqueIds,
       isReceiverAddressValid,
     } = this.state;
     const { currencyMaxFractionalDigits, walletAmount } = this.props;
@@ -707,9 +691,9 @@ export default class WalletSendForm extends Component<Props, State> {
     } = formFields.receiver;
 
     const assetsSeparatorBasicHeight = 140;
-    const assetsSeparatorCalculatedHeight = selectedAssetFingerprints.length
-      ? assetsSeparatorBasicHeight * (selectedAssetFingerprints.length + 1) -
-        40 * selectedAssetFingerprints.length
+    const assetsSeparatorCalculatedHeight = selectedAssetUniqueIds.length
+      ? assetsSeparatorBasicHeight * (selectedAssetUniqueIds.length + 1) -
+        40 * selectedAssetUniqueIds.length
       : assetsSeparatorBasicHeight;
 
     const minimumAdaValue = minimumAda.isZero()
@@ -727,7 +711,7 @@ export default class WalletSendForm extends Component<Props, State> {
       this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
     ]);
 
-    const minAdaRequiredTooltip = selectedAssetFingerprints.length
+    const minAdaRequiredTooltip = selectedAssetUniqueIds.length
       ? messages.minAdaRequiredWithAssetTooltip
       : messages.minAdaRequiredWithNoAssetTooltip;
 
@@ -846,13 +830,13 @@ export default class WalletSendForm extends Component<Props, State> {
                 </div>
               </Fragment>
               <Fragment>
-                {selectedAssetFingerprints.map(
-                  (fingerprint: string, index: number) => (
+                {selectedAssetUniqueIds.map(
+                  (uniqueId: string, index: number) => (
                     <AssetInput
-                      key={fingerprint}
-                      fingerprint={fingerprint}
+                      key={uniqueId}
+                      uniqueId={uniqueId}
                       index={index}
-                      getAssetByFingerprint={this.getAssetByFingerprint}
+                      getAssetByUniqueId={this.getAssetByUniqueId}
                       availableAssets={this.availableAssets}
                       assetFields={assetFields}
                       assetsDropdown={assetsDropdown}
@@ -866,7 +850,9 @@ export default class WalletSendForm extends Component<Props, State> {
                       removeAssetRow={this.removeAssetRow}
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
-                      onChangeAsset={this.onChangeAsset}
+                      onChangeAsset={(newUniqueId) =>
+                        this.onChangeAsset(uniqueId, newUniqueId)
+                      }
                       autoFocus={this._isAutoFocusEnabled}
                     />
                   )
@@ -877,7 +863,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
                 onClick={() => {
-                  this.addAssetRow(this.availableAssets[0].fingerprint);
+                  this.addAssetRow(this.availableAssets[0].uniqueId);
                 }}
               />
             </div>

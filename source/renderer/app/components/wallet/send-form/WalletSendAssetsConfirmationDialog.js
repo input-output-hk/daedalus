@@ -27,7 +27,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
 import AssetToken from '../../assets/AssetToken';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import type { AssetTokenProps } from '../../../api/assets/types';
 
 const SHOW_TOTAL_AMOUNT = false;
 
@@ -141,7 +141,7 @@ type Props = {
   amount: string,
   totalAmount: ?string,
   receiver: string,
-  assets: Array<WalletSummaryAsset>,
+  assets: Array<AssetTokenProps>,
   assetsAmounts: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
@@ -162,7 +162,7 @@ type Props = {
 };
 
 type State = {
-  assets: Array<WalletSummaryAsset>,
+  assets: Array<AssetTokenProps>,
   assetsAmounts: Array<string>,
   areTermsAccepted: boolean,
 };
@@ -314,7 +314,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   getFormattedAssetAmount = (
-    { metadata, decimals }: WalletSummaryAsset,
+    { metadata, decimals }: AssetTokenProps,
     index: number
   ) => {
     const assetAmount = this.getAssetAmount(index);
@@ -434,7 +434,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                         assetIndex
                       );
                       return (
-                        <Fragment key={asset.fingerprint}>
+                        <Fragment key={asset.uniqueId}>
                           <div className={styles.assetsContainer}>
                             <h3>
                               <span>

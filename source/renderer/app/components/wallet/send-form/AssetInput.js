@@ -13,23 +13,23 @@ import AssetsDropdown from '../../widgets/forms/AssetsDropdown';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { NumberFormat } from '../../../../../common/types/number.types';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import type { AssetTokenProps } from '../../../api/assets/types';
 import styles from './AssetInput.scss';
 import messages from './messages';
 
 type Props = {
-  fingerprint: string,
+  uniqueId: string,
   index: number,
-  getAssetByFingerprint: Function,
-  availableAssets: Array<WalletSummaryAsset>,
+  getAssetByUniqueId: Function,
+  availableAssets: Array<AssetTokenProps>,
   assetFields: {
-    [fingerprint: string]: Field,
+    [uniqueId: string]: Field,
   },
   assetsDropdown: {
-    [fingerprint: string]: Field,
+    [uniqueId: string]: Field,
   },
   addFocusableField: Function,
-  removeAssetButtonVisible: { [fingerprint: string]: boolean },
+  removeAssetButtonVisible: { [uniqueId: string]: boolean },
   showRemoveAssetButton: Function,
   hideRemoveAssetButton: Function,
   currentNumberFormat: NumberFormat,
@@ -77,9 +77,9 @@ export default class AssetInput extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      fingerprint,
+      uniqueId,
       index,
-      getAssetByFingerprint,
+      getAssetByUniqueId,
       availableAssets,
       assetFields,
       assetsDropdown,
@@ -94,7 +94,7 @@ export default class AssetInput extends Component<Props> {
       onChangeAsset,
       autoFocus,
     } = this.props;
-    const asset = getAssetByFingerprint(fingerprint);
+    const asset = getAssetByUniqueId(uniqueId);
     if (!asset) {
       return false;
     }
@@ -103,19 +103,19 @@ export default class AssetInput extends Component<Props> {
     const ticker = get(metadata, 'ticker', null);
     const sortedAssets = orderBy(
       [asset, ...availableAssets],
-      'fingerprint',
+      'uniqueId',
       'asc'
     );
-    const assetField = assetFields[fingerprint];
-    const assetsDropdownField = assetsDropdown[fingerprint];
+    const assetField = assetFields[uniqueId];
+    const assetsDropdownField = assetsDropdown[uniqueId];
     const inputFieldStyle = this.generateInputFieldStyle();
 
     return (
       <div
-        key={`receiver_asset_${fingerprint}`}
-        onMouseOver={() => showRemoveAssetButton(fingerprint)}
-        onMouseLeave={() => hideRemoveAssetButton(fingerprint)}
-        onMouseEnter={() => showRemoveAssetButton(fingerprint)}
+        key={`receiver_asset_${uniqueId}`}
+        onMouseOver={() => showRemoveAssetButton(uniqueId)}
+        onMouseLeave={() => hideRemoveAssetButton(uniqueId)}
+        onMouseEnter={() => showRemoveAssetButton(uniqueId)}
         onFocus={() => {
           // jsx-a11y/mouse-events-have-key-events
         }}
@@ -142,10 +142,10 @@ export default class AssetInput extends Component<Props> {
           label={
             <>
               {`${intl.formatMessage(messages.assetLabel)} #${index + 1}`}
-              {removeAssetButtonVisible[fingerprint] && (
+              {removeAssetButtonVisible[uniqueId] && (
                 <span
                   className={classNames([styles.removeAssetButton, 'flat'])}
-                  onClick={() => removeAssetRow(fingerprint)}
+                  onClick={() => removeAssetRow(uniqueId)}
                 >
                   {intl.formatMessage(messages.removeLabel)}
                 </span>
@@ -204,13 +204,8 @@ export default class AssetInput extends Component<Props> {
               className={styles.assetsDropdown}
               {...assetsDropdownField.bind()}
               assets={sortedAssets}
-              onChange={(newAsset) => {
-                console.log('AssetInput.js');
-                console.log('asset', asset);
-                console.log('newAsset', newAsset);
-                return onChangeAsset(asset, newAsset);
-              }}
-              value={fingerprint}
+              onChange={onChangeAsset}
+              value={uniqueId}
               hasSearch
             />
           </div>

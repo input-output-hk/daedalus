@@ -3,13 +3,14 @@ import { pick } from 'lodash';
 import { observable, action } from 'mobx';
 import type { AssetMetadata } from '../api/assets/types';
 
-export type AssetProps = {
-  policyId: string,
+export type AssetDomainProps = {
   assetName: string,
+  decimals: ?number,
   fingerprint: string,
   metadata?: ?AssetMetadata,
-  decimals: ?number,
+  policyId: string,
   recommendedDecimals: ?number,
+  uniqueId: string,
 };
 
 export default class Asset {
@@ -21,13 +22,13 @@ export default class Asset {
   @observable decimals: ?number;
   @observable recommendedDecimals: ?number;
 
-  constructor(props: AssetProps) {
+  constructor(props: AssetDomainProps) {
     const { policyId, assetName } = props;
     const uniqueId = policyId + assetName;
     Object.assign(this, props, { uniqueId });
   }
 
-  @action update(props: $Shape<AssetProps>) {
+  @action update(props: $Shape<AssetDomainProps>) {
     const { policyId, assetName } = props;
     const uniqueId = policyId + assetName;
     Object.assign(

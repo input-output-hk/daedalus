@@ -135,7 +135,7 @@ const assets = {
   ],
 };
 
-const getAssetDetails = (policyId: string, assetName: string): ?Asset =>
+const getAssetDomain = (policyId: string, assetName: string): ?Asset =>
   assetDetails[policyId + assetName];
 
 /* eslint-disable consistent-return */
@@ -202,7 +202,7 @@ storiesOf('Wallets|Transactions', module)
         totalAvailable={totalAvailable}
         transactions={transactions}
         hasAssetsEnabled={false}
-        getAssetDetails={getAssetDetails}
+        getAssetDomain={getAssetDomain}
         onCopyAssetItem={() => {}}
       />
     );
@@ -244,7 +244,7 @@ storiesOf('Wallets|Transactions', module)
         totalAvailable={totalAvailable}
         transactions={transactions}
         hasAssetsEnabled={hasAssetsEnabled}
-        getAssetDetails={getAssetDetails}
+        getAssetDomain={getAssetDomain}
         onCopyAssetItem={() => {}}
       />
     );

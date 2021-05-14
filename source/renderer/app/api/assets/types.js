@@ -2,12 +2,40 @@
 import BigNumber from 'bignumber.js';
 
 import Asset from '../../domains/Asset';
+import type { AssetDomainProps } from '../../domains/Asset';
 
+export type Assets = Array<ApiAsset>;
 export type ApiAsset = {
   policy_id: string,
   asset_name: string,
   fingerprint: string,
   metadata?: ?AssetMetadata,
+};
+
+export type ApiToken = {
+  policy_id: string,
+  asset_name: string,
+  quantity: number,
+  address?: ?string,
+};
+export type ApiTokens = Array<ApiToken>;
+
+export type Token = {
+  policyId: string,
+  assetName: string,
+  quantity: BigNumber,
+  address?: ?string,
+};
+export type Tokens = Array<Token>;
+
+export type WalletTokens = {
+  available: Tokens,
+  total: Tokens,
+};
+
+export type AssetTokenProps = {
+  ...$Exact<Token>,
+  ...$Exact<AssetDomainProps>,
 };
 
 export type AssetMetadata = {
@@ -20,52 +48,6 @@ export type AssetMetadata = {
   },
   url?: string,
   logo?: string,
-};
-
-export type AssetItem = {
-  policy_id: string,
-  asset_name: string,
-  quantity: number,
-};
-
-export type WalletAssetItem = {
-  policyId: string,
-  assetName: string,
-  quantity: BigNumber,
-  address?: ?string,
-};
-
-export type Assets = Array<ApiAsset>;
-
-export type AssetItems = Array<AssetItem>;
-
-export type WalletAssetItems = Array<WalletAssetItem>;
-
-export type WalletAssets = {
-  available: WalletAssetItems,
-  total: WalletAssetItems,
-};
-
-export type WalletSummaryAsset = {
-  policyId: string,
-  assetName: string,
-  uniqueId: string,
-  fingerprint: string,
-  quantity: BigNumber,
-  metadata: ?AssetMetadata,
-  decimals: ?number,
-  recommendedDecimals: ?number,
-};
-
-export type WalletTransactionAsset = {
-  policyId: string,
-  assetName: string,
-  quantity: BigNumber,
-  fingerprint: string,
-  metadata: ?AssetMetadata,
-  address?: ?string,
-  decimals: ?number,
-  recommendedDecimals: ?number,
 };
 
 export type GetUnknownAssetRequest = {

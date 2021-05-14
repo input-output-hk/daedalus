@@ -5,19 +5,15 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
 import { requestGetter } from '../utils/storesUtils';
-import type {
-  GetAssetsResponse,
-  WalletSummaryAsset,
-} from '../api/assets/types';
+import type { GetAssetsResponse, AssetTokenProps } from '../api/assets/types';
 
 type WalletId = string;
 
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
-  // @FINGERPRINT TODO
   @observable activeAsset: ?string = null;
-  @observable editingsAsset: ?WalletSummaryAsset = null;
+  @observable editingsAsset: ?AssetTokenProps = null;
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
   } = {};
@@ -61,7 +57,7 @@ export default class AssetsStore extends Store {
     }, {});
   }
 
-  getAssetDetails = (policyId: string, assetName: string): ?Asset =>
+  getAssetDomain = (policyId: string, assetName: string): ?Asset =>
     this.details[policyId + assetName];
 
   @computed get assetSettingsDialogWasOpened(): boolean {
@@ -70,7 +66,7 @@ export default class AssetsStore extends Store {
 
   // =================== PRIVATE ==================
 
-  @action _onAssetSettingsOpen = ({ asset }: { asset: WalletSummaryAsset }) => {
+  @action _onAssetSettingsOpen = ({ asset }: { asset: AssetTokenProps }) => {
     this.editingsAsset = asset;
     this.api.localStorage.setAssetSettingsDialogWasOpened();
     this.getAssetSettingsDialogWasOpenedRequest.execute();
@@ -80,12 +76,12 @@ export default class AssetsStore extends Store {
     asset,
     decimals,
   }: {
-    asset: WalletSummaryAsset,
+    asset: AssetTokenProps,
     decimals: number,
   }) => {
     this.editingsAsset = null;
     const { policyId, assetName } = asset;
-    const assetDomain = this.getAssetDetails(policyId, assetName);
+    const assetDomain = this.getAssetDomain(policyId, assetName);
     if (assetDomain) {
       assetDomain.update({
         decimals,
@@ -119,7 +115,7 @@ export default class AssetsStore extends Store {
     this.activeAsset = null;
   };
 
-  @action _createWalletAssetsRequest = (
+  @action _createWalletTokensRequest = (
     walletId: string
   ): Request<GetAssetsResponse> => {
     this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
@@ -127,5 +123,5 @@ export default class AssetsStore extends Store {
   };
 
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
-    this.assetsRequests[walletId] || this._createWalletAssetsRequest(walletId);
+    this.assetsRequests[walletId] || this._createWalletTokensRequest(walletId);
 }

@@ -11,10 +11,8 @@ import {
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
-import type {
-  AssetItems,
-  WalletTransactionAsset,
-} from '../../api/assets/types';
+import type { Tokens, ApiTokens } from '../../api/assets/types';
+import { getAssetTokens } from '../../utils/assets';
 
 type Props = InjectedProps;
 
@@ -32,7 +30,7 @@ export default class WalletSendPage extends Component<Props> {
     address: string,
     amount: number,
     isHardwareWallet: boolean,
-    selectedAssets?: AssetItems,
+    selectedAssets?: ApiTokens,
   }) => {
     const {
       walletId,
@@ -101,7 +99,7 @@ export default class WalletSendPage extends Component<Props> {
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { all: allAssets, activeAsset, getAssetDetails } = assetsStore;
+    const { all: allAssets, activeAsset, getAssetDomain } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
 
     const selectedAsset = activeAsset
@@ -114,27 +112,10 @@ export default class WalletSendPage extends Component<Props> {
 
     const { isHardwareWallet } = wallet;
 
-    // $FlowFixMe
-    const walletAssets: Array<WalletTransactionAsset> = wallet.assets.total
-      .map((rawAsset) => {
-        const { policyId, assetName } = rawAsset;
-        const assetDetails = getAssetDetails(policyId, assetName);
-        return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
-      })
-      .filter((asset) => asset != null)
-      .sort((asset1, asset2) => {
-        if (asset1 && asset2) {
-          if (asset1.fingerprint < asset2.fingerprint) {
-            return -1;
-          }
-          if (asset1.fingerprint > asset2.fingerprint) {
-            return 1;
-          }
-        }
-        return 0;
-      });
+    const walletTokens = wallet.assets.total;
+    const assetTokens = getAssetTokens(walletTokens, getAssetDomain);
     const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = walletAssets.length;
+    const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
@@ -147,7 +128,7 @@ export default class WalletSendPage extends Component<Props> {
         calculateTransactionFee={(
           address: string,
           amount: number,
-          selectedAssets: AssetItems
+          selectedAssets: ApiTokens
         ) =>
           this.calculateTransactionFee({
             walletId: wallet.id,
@@ -160,7 +141,7 @@ export default class WalletSendPage extends Component<Props> {
         walletAmount={wallet.amount}
         validateAmount={validateAmount}
         addressValidator={isValidAddress}
-        assets={walletAssets}
+        assets={assetTokens}
         hasAssets={hasAssetsEnabled && hasRawAssets}
         selectedAsset={selectedAsset}
         isLoadingAssets={isLoadingAssets}

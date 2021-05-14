@@ -61,7 +61,7 @@ import {
   ITN_MAGIC,
   MAINNET_MAGIC,
 } from '../../../common/types/cardano-node.types';
-import type { WalletSummaryAsset } from '../api/assets/types';
+import type { AssetTokenProps } from '../api/assets/types';
 
 /* eslint-disable consistent-return */
 
@@ -686,7 +686,7 @@ export default class WalletsStore extends Store {
     receiver: string,
     amount: string,
     passphrase: string,
-    assets?: Array<WalletSummaryAsset>,
+    assets?: Array<AssetTokenProps>,
     assetsAmounts?: Array<string>,
   }) => {
     const assetsAmounts = assetsAmountsStr

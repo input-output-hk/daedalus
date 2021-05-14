@@ -8,7 +8,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './AssetToken.scss';
 import { ellipsis, hexToString } from '../../utils/strings';
-import type { WalletSummaryAsset } from '../../api/assets/types';
+import type { AssetTokenProps } from '../../api/assets/types';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
@@ -75,7 +75,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  asset: WalletSummaryAsset,
+  asset: AssetTokenProps,
   small?: boolean,
   hidePopOver?: boolean,
   onCopyAssetItem?: Function,

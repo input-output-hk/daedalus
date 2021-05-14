@@ -14,7 +14,7 @@ import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { ellipsis } from '../../utils/strings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { WalletSummaryAsset } from '../../api/assets/types';
+import type { AssetTokenProps } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -49,7 +49,7 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = ({ uniqueId }: WalletSummaryAsset) => {
+  handleOpenAssetSend = ({ uniqueId }: AssetTokenProps) => {
     const { stores } = this.props;
     const { wallets } = stores;
     const { active } = wallets;
@@ -84,7 +84,7 @@ export default class WalletSummaryPage extends Component<Props> {
       assets,
       currency,
     } = stores;
-    const { getAssetDetails, assetSettingsDialogWasOpened } = assets;
+    const { getAssetDomain, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
     const { onAssetSettingsOpen } = actions.assets;
     const {
@@ -113,10 +113,10 @@ export default class WalletSummaryPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     // $FlowFixMe
-    const walletAssets: Array<WalletSummaryAsset> = wallet.assets.total
+    const walletAssets: Array<AssetTokenProps> = wallet.assets.total
       .map((rawAsset) => {
         const { policyId, assetName } = rawAsset;
-        const assetDetails = getAssetDetails(policyId, assetName);
+        const assetDetails = getAssetDomain(policyId, assetName);
         return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
       })
       .filter((asset) => asset != null)
@@ -172,7 +172,7 @@ export default class WalletSummaryPage extends Component<Props> {
           currentDateFormat={currentDateFormat}
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
-          getAssetDetails={getAssetDetails}
+          getAssetDomain={getAssetDomain}
           onCopyAssetItem={this.handleOnCopyAssetItem}
         />
       );
