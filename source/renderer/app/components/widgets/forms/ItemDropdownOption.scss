@@ -1,0 +1,76 @@
+.component {
+  color: var(--theme-widgets-itemsDropdown-option-label-text-color);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  justify-content: space-between;
+  max-width: calc(100% - 20px);
+  position: relative;
+
+  &.selected {
+    height: 50px;
+    padding: 8px 20px;
+  }
+
+  &.noDetail {
+    justify-content: center;
+  }
+}
+
+.label {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  font-size: 14px;
+  line-height: 18px;
+  max-width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  overflow: hidden;
+  padding-right: 0;
+  text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.detail {
+  font-size: 12px;
+  height: 17px;
+  line-height: 16px;
+  max-width: 100%;
+  opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.syncingSpinner {
+  height: 10px;
+  margin-left: 6px;
+  width: 10px;
+
+  > span {
+    display: block;
+  }
+
+  svg {
+    animation: rotating-spinner 1.2s linear infinite;
+    display: block;
+    height: 10px;
+    width: 10px;
+    circle {
+      stroke: var(--theme-widgets-itemsDropdown-option-label-text-color);
+    }
+  }
+
+  @keyframes rotating-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

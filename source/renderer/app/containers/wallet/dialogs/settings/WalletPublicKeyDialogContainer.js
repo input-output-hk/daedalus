@@ -21,7 +21,13 @@ export default class WalletPublicKeyDialogContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { getAccountPublicKey } = actions.wallets;
-    const { accountPublicKeyRequest, activePublicKey } = stores.wallets;
+    const {
+      accountPublicKeyRequest,
+      activePublicKey,
+      active: activeWallet,
+    } = stores.wallets;
+
+    if (!activeWallet) throw new Error('Active wallet required.');
 
     return (
       <WalletPublicKeyDialog
@@ -29,6 +35,7 @@ export default class WalletPublicKeyDialogContainer extends Component<Props> {
         onClose={this.handleClose}
         hasReceivedWalletPublicKey={!!activePublicKey}
         error={accountPublicKeyRequest.error}
+        walletName={activeWallet.name}
       />
     );
   }

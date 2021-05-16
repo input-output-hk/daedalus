@@ -80,12 +80,6 @@ const messages = defineMessages({
     description:
       'Label for continue button on the delegation setup "choose wallet" step dialog.',
   },
-  syncingWallet: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
-    defaultMessage: '!!!syncing',
-    description:
-      'Syncing wallet label on the delegation setup "choose wallet" step dialog.',
-  },
 });
 
 type Props = {
@@ -234,7 +228,6 @@ export default class DelegationStepsChooseWalletDialog extends Component<
               messages.selectWalletInputPlaceholder
             )}
             value={selectedWalletId}
-            syncingLabel={intl.formatMessage(messages.syncingWallet)}
             getStakePoolById={getStakePoolById}
           />
           {error}

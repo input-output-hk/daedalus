@@ -66,13 +66,13 @@ export default class WalletPublicKeyQRCodeDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
         className={styles.dialog}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
-        <div className={styles.walletName}>{walletName}</div>
         <div className={styles.walletPublicKeyQRCode}>
           <QRCode
             value={walletPublicKey}

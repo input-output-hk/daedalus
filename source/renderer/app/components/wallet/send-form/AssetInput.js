@@ -9,7 +9,7 @@ import SVGInline from 'react-svg-inline';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import AmountInputSkin from '../skins/AmountInputSkin';
-import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import AssetsDropdown from '../../widgets/forms/AssetsDropdown';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { NumberFormat } from '../../../../../common/types/number.types';
@@ -200,7 +200,7 @@ export default class AssetInput extends Component<Props> {
             </div>
           )}
           <div className={styles.assetsDropdownWrapper}>
-            <WalletsDropdown
+            <AssetsDropdown
               className={styles.assetsDropdown}
               {...assetsDropdownField.bind()}
               assets={sortedAssets}
@@ -209,11 +209,8 @@ export default class AssetInput extends Component<Props> {
                   onChangeAsset(fingerprint, newFingerprint);
                 }
               }}
-              syncingLabel={intl.formatMessage(messages.syncingWallet)}
-              hasAssetsEnabled
               value={fingerprint}
-              getStakePoolById={() => {}}
-              errorPosition="bottom"
+              hasSearch
             />
           </div>
         </div>
