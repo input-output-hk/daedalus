@@ -26,7 +26,7 @@ type Props = {
 };
 
 @observer
-export default class Asset extends Component<Props> {
+export default class AssetAmount extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
