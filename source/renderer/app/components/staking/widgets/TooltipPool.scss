@@ -272,16 +272,28 @@ $tooltip-width: 280px;
 }
 
 .description {
+  box-sizing: border-box;
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
-  margin-right: -5px;
   max-height: 57px;
   overflow-y: auto;
-  // keep text content in bounds when no scroll bar is visible:
-  padding-right: 5px;
+  padding-right: 6px;
   word-break: break-word;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: block;
+    height: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: none;
+  }
 }
 
 .table {
