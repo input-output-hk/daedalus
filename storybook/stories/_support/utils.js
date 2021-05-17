@@ -29,7 +29,7 @@ import type {
   AssetMetadata,
   Tokens,
   WalletTokens,
-  AssetTokenProps,
+  AssetToken,
 } from '../../../source/renderer/app/api/assets/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
@@ -139,12 +139,12 @@ export const generateWallet = (
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
-export const generateAsset = (
+export const generateAssetDomain = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
   metadata?: AssetMetadata = {}
-) =>
+): Asset =>
   new Asset({
     policyId,
     assetName,
@@ -163,7 +163,7 @@ export const generateAssetToken = (
   metadata: ?AssetMetadata,
   decimals: ?number,
   recommendedDecimals: ?number
-): AssetTokenProps => ({
+): AssetToken => ({
   policyId,
   assetName,
   fingerprint,

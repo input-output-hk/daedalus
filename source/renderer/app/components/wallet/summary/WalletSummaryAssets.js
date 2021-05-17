@@ -7,9 +7,9 @@ import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
-import AssetToken from '../../assets/AssetToken';
+import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
-import type { AssetTokenProps } from '../../../api/assets/types';
+import type { AssetToken } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
@@ -32,7 +32,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  assets: Array<AssetTokenProps>,
+  assets: Array<AssetToken>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
   onAssetSettings: Function,
@@ -45,7 +45,7 @@ type State = {
 };
 
 @observer
-export default class AssetTokens extends Component<Props, State> {
+export default class Assets extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -88,7 +88,7 @@ export default class AssetTokens extends Component<Props, State> {
           </div>
         ) : (
           <div className={styles.component}>
-            {assets.map((asset: AssetTokenProps, index: number) => (
+            {assets.map((asset: AssetToken, index: number) => (
               <BorderedBox
                 className={styles.assetsContainer}
                 key={asset.uniqueId}
@@ -96,7 +96,7 @@ export default class AssetTokens extends Component<Props, State> {
               >
                 {asset.uniqueId && (
                   <div className={styles.assetsLeftContainer}>
-                    <AssetToken
+                    <Asset
                       asset={asset}
                       onCopyAssetItem={onCopyAssetItem}
                       metadataNameChars={get('name', asset.metadata, 0)}

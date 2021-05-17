@@ -38,7 +38,7 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-import type { AssetTokenProps, ApiTokens } from '../../api/assets/types';
+import type { AssetToken, ApiTokens } from '../../api/assets/types';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -51,7 +51,7 @@ type Props = {
   walletAmount: BigNumber,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   addressValidator: Function,
-  assets: Array<AssetTokenProps>,
+  assets: Array<AssetToken>,
   hasAssets: boolean,
   selectedAsset: ?Asset,
   isLoadingAssets: boolean,
@@ -146,7 +146,7 @@ export default class WalletSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
-  get selectedAssets(): Array<AssetTokenProps> {
+  get selectedAssets(): Array<AssetToken> {
     const { selectedAssetUniqueIds } = this.state;
     const { assets: allAssets } = this.props;
     return map(selectedAssetUniqueIds, (uniqueId) =>
@@ -162,7 +162,7 @@ export default class WalletSendForm extends Component<Props, State> {
     );
   }
 
-  get availableAssets(): Array<AssetTokenProps> {
+  get availableAssets(): Array<AssetToken> {
     const { assets: allAssets } = this.props;
     const { selectedAssetUniqueIds } = this.state;
     return filter(
@@ -175,7 +175,7 @@ export default class WalletSendForm extends Component<Props, State> {
     return this.availableAssets.length > 0;
   }
 
-  getAssetByUniqueId = (uniqueId: string): ?AssetTokenProps => {
+  getAssetByUniqueId = (uniqueId: string): ?AssetToken => {
     const { assets: allAssets } = this.props;
     return allAssets.find((asset) => asset.uniqueId === uniqueId);
   };

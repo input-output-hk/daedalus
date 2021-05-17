@@ -60,7 +60,7 @@ export type WalletTokens = {
  * It has all the data combined: quantity, address, fingerprint, metadata, etc.
  *
  */
-export type AssetTokenProps = {
+export type AssetToken = {
   ...$Exact<Token>,
   ...$Exact<AssetDomainProps>,
 };

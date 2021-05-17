@@ -6,9 +6,9 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
-import styles from './AssetToken.scss';
+import styles from './Asset.scss';
 import { ellipsis, hexToString } from '../../utils/strings';
-import type { AssetTokenProps } from '../../api/assets/types';
+import type { AssetDomainProps } from '../../domains/Asset';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
@@ -75,7 +75,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  asset: AssetTokenProps,
+  asset: AssetDomainProps,
   small?: boolean,
   hidePopOver?: boolean,
   onCopyAssetItem?: Function,
@@ -95,7 +95,7 @@ type State = {
 };
 
 @observer
-export default class AssetToken extends Component<Props, State> {
+export default class Asset extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
-import type { AssetTokenProps } from '../../api/assets/types';
+import type { AssetToken } from '../../api/assets/types';
 
 type Props = InjectedProps;
 
@@ -12,7 +12,7 @@ type Props = InjectedProps;
 export default class AssetSettingsDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  handleSubmit = (asset: AssetTokenProps, decimals: number) => {
+  handleSubmit = (asset: AssetToken, decimals: number) => {
     const { onAssetSettingsSubmit } = this.props.actions.assets;
     onAssetSettingsSubmit.trigger({ asset, decimals });
   };

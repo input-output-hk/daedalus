@@ -13,7 +13,7 @@ import AssetsDropdown from '../../widgets/forms/AssetsDropdown';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { NumberFormat } from '../../../../../common/types/number.types';
-import type { AssetTokenProps } from '../../../api/assets/types';
+import type { AssetToken } from '../../../api/assets/types';
 import styles from './AssetInput.scss';
 import messages from './messages';
 
@@ -21,7 +21,7 @@ type Props = {
   uniqueId: string,
   index: number,
   getAssetByUniqueId: Function,
-  availableAssets: Array<AssetTokenProps>,
+  availableAssets: Array<AssetToken>,
   assetFields: {
     [uniqueId: string]: Field,
   },

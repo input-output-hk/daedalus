@@ -7,7 +7,7 @@ import type {
 } from '../../../common/types/hardware-wallets.types';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { QuitStakePoolRequest } from '../api/staking/types';
-import type { AssetTokenProps } from '../api/assets/types';
+import type { AssetToken } from '../api/assets/types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -55,7 +55,7 @@ export default class WalletsActions {
     receiver: string,
     amount: string,
     passphrase: string,
-    assets?: Array<AssetTokenProps>,
+    assets?: Array<AssetToken>,
     assetsAmounts?: Array<string>,
   }> = new Action();
   chooseWalletExportType: Action<{

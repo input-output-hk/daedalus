@@ -12,7 +12,7 @@ import WalletSendForm from '../../components/wallet/WalletSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { Tokens, ApiTokens } from '../../api/assets/types';
-import { getAssetTokens } from '../../utils/assets';
+import { getAssets } from '../../utils/assets';
 
 type Props = InjectedProps;
 
@@ -113,7 +113,7 @@ export default class WalletSendPage extends Component<Props> {
     const { isHardwareWallet } = wallet;
 
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAssetDomain);
+    const assetTokens = getAssets(walletTokens, getAssetDomain);
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;

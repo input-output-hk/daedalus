@@ -7,14 +7,14 @@ import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-import type { AssetTokenProps } from '../../../api/assets/types';
+import type { AssetToken } from '../../../api/assets/types';
 
 type Props = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
   amount: string,
   receiver: string,
-  assets: Array<AssetTokenProps>,
+  assets: Array<AssetToken>,
   assetsAmounts: Array<string>,
   totalAmount: ?string,
   transactionFee: ?string,

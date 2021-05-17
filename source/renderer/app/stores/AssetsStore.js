@@ -5,7 +5,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
 import { requestGetter } from '../utils/storesUtils';
-import type { GetAssetsResponse, AssetTokenProps } from '../api/assets/types';
+import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
 
 type WalletId = string;
 
@@ -13,7 +13,7 @@ export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
   @observable activeAsset: ?string = null;
-  @observable editingsAsset: ?AssetTokenProps = null;
+  @observable editingsAsset: ?AssetToken = null;
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
   } = {};
@@ -66,7 +66,7 @@ export default class AssetsStore extends Store {
 
   // =================== PRIVATE ==================
 
-  @action _onAssetSettingsOpen = ({ asset }: { asset: AssetTokenProps }) => {
+  @action _onAssetSettingsOpen = ({ asset }: { asset: AssetToken }) => {
     this.editingsAsset = asset;
     this.api.localStorage.setAssetSettingsDialogWasOpened();
     this.getAssetSettingsDialogWasOpenedRequest.execute();
@@ -76,7 +76,7 @@ export default class AssetsStore extends Store {
     asset,
     decimals,
   }: {
-    asset: AssetTokenProps,
+    asset: AssetToken,
     decimals: number,
   }) => {
     this.editingsAsset = null;

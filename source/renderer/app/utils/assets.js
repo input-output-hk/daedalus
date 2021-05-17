@@ -1,5 +1,5 @@
 // @flow
-import type { Token, Tokens, AssetTokenProps } from '../api/assets/types';
+import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 
@@ -30,10 +30,10 @@ export const filterAssets = (
  * Data from the Token: policyId, assetName, quantity, address
  * Data from the Asset: fingerprint, metadata, decimals, recommendedDecimals, uniqueId
  */
-export const getAssetToken = (
+export const getAsset = (
   asset: Token,
   getAssetDomain: Function
-): AssetTokenProps => {
+): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
     getAssetDomain(policyId, assetName) || {};
@@ -54,22 +54,17 @@ export const getAssetToken = (
 /**
  *
  * This function receives a list of Tokens (the assets included in a wallet or transaction)
- * then retrieves the AssetTokens
+ * then retrieves the Assets
  * and sort them accordingly
  *
  */
-export const getAssetTokens = (
+export const getAssets = (
   tokens: Tokens,
   getAssetDomain: Function
-): Array<AssetTokenProps> =>
-  tokens
-    .map((token) => getAssetToken(token, getAssetDomain))
-    .sort(sortAssetTokens);
+): Array<AssetToken> =>
+  tokens.map((token) => getAsset(token, getAssetDomain)).sort(sortAssets);
 
-export const sortAssetTokens = (
-  asset1: AssetTokenProps,
-  asset2: AssetTokenProps
-) => {
+export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
   if (asset1 && asset2) {
     if (asset1.uniqueId < asset2.uniqueId) {
       return -1;

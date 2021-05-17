@@ -6,7 +6,7 @@ import { boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import {
   generateHash,
-  generateAsset,
+  generateAssetToken,
   generateWallet,
   promise,
 } from '../../_support/utils';
@@ -25,10 +25,11 @@ import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/u
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 
 const allAssets = [
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+    100,
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -41,15 +42,17 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342'
+    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
+    400
   ),
-  generateAsset(
+  generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
+    100,
     {
       name: 'Tether',
       ticker: 'USDT',
@@ -62,10 +65,11 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
     'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
+    100,
     {
       name: 'USD Coin',
       ticker: 'USDC',

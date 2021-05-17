@@ -25,9 +25,9 @@ import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessage
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
-import AssetToken from '../../assets/AssetToken';
+import Asset from '../../assets/Asset';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-import type { AssetTokenProps } from '../../../api/assets/types';
+import type { AssetToken } from '../../../api/assets/types';
 
 const SHOW_TOTAL_AMOUNT = false;
 
@@ -141,7 +141,7 @@ type Props = {
   amount: string,
   totalAmount: ?string,
   receiver: string,
-  assets: Array<AssetTokenProps>,
+  assets: Array<AssetToken>,
   assetsAmounts: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
@@ -162,7 +162,7 @@ type Props = {
 };
 
 type State = {
-  assets: Array<AssetTokenProps>,
+  assets: Array<AssetToken>,
   assetsAmounts: Array<string>,
   areTermsAccepted: boolean,
 };
@@ -314,7 +314,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   getFormattedAssetAmount = (
-    { metadata, decimals }: AssetTokenProps,
+    { metadata, decimals }: AssetToken,
     index: number
   ) => {
     const assetAmount = this.getAssetAmount(index);
@@ -441,7 +441,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                                 {intl.formatMessage(messages.assetLabel)}
                                 &nbsp;#{assetIndex + 1}
                               </span>
-                              <AssetToken
+                              <Asset
                                 asset={asset}
                                 onCopyAssetItem={onCopyAssetItem}
                                 className={styles.assetToken}

@@ -5,9 +5,9 @@ import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number, text } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
-import AssetToken from '../../../source/renderer/app/components/assets/AssetToken';
+import Asset from '../../../source/renderer/app/components/assets/Asset';
 
-storiesOf('Assets|AssetToken', module)
+storiesOf('Assets|Asset pill', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
@@ -21,7 +21,7 @@ storiesOf('Assets|AssetToken', module)
     const assetName = text('assetName', '6861707079636f696e');
     return (
       <div style={{ padding: '30px' }}>
-        <AssetToken
+        <Asset
           asset={{
             policyId,
             assetName,
