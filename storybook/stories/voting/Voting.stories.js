@@ -58,8 +58,16 @@ const assets = {
 };
 
 const WALLETS = [
-  generateWallet('Wallet 1', '100000000000', assets, 0),
-  generateWallet('Wallet 2', '100', assets, 0),
+  generateWallet('Wallet 1', '100000000000000', assets, 0),
+  generateWallet(
+    'Wallet 2',
+    '500000000',
+    assets,
+    0,
+    undefined,
+    true,
+    'syncing'
+  ),
 ];
 
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];

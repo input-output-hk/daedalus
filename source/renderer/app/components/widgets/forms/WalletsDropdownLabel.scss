@@ -1,0 +1,30 @@
+.component {
+  display: flex;
+  min-width: 0;
+
+  .ticker {
+    margin-right: 6px;
+    text-transform: uppercase;
+  }
+
+  .walletName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .labelSync {
+      margin-left: 20px;
+      opacity: 0.5;
+    }
+  }
+}
+
+.hardwareWalletsIcon {
+  svg {
+    height: 11px;
+    margin-left: 6px;
+    width: 11px;
+    path {
+      fill: var(--theme-staking-font-color-accent);
+    }
+  }
+}

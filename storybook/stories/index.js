@@ -35,3 +35,4 @@ import './navigation/SidebarWalletsMenu.stories';
 
 // Common
 import './common/Widgets.stories';
+import './common/ItemsDropdown.stories';
