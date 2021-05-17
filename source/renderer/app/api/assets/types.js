@@ -1,8 +1,7 @@
 // @flow
 import BigNumber from 'bignumber.js';
 
-import Asset from '../../domains/Asset';
-import type { AssetDomainProps } from '../../domains/Asset';
+import AssetDomain from '../../domains/Asset';
 
 /**
  *
@@ -15,12 +14,21 @@ import type { AssetDomainProps } from '../../domains/Asset';
  * Missing data: quantity, address
  *
  */
-export type Assets = Array<ApiAsset>;
+export type ApiAssets = Array<ApiAsset>;
 export type ApiAsset = {
   policy_id: string,
   asset_name: string,
   fingerprint: string,
   metadata?: ?AssetMetadata,
+};
+export type Asset = {
+  assetName: string,
+  decimals: ?number,
+  fingerprint: string,
+  metadata?: ?AssetMetadata,
+  policyId: string,
+  recommendedDecimals: ?number,
+  uniqueId: string,
 };
 
 /**
@@ -62,7 +70,7 @@ export type WalletTokens = {
  */
 export type AssetToken = {
   ...$Exact<Token>,
-  ...$Exact<AssetDomainProps>,
+  ...$Exact<Asset>,
 };
 
 export type AssetMetadata = {
@@ -87,6 +95,6 @@ export type GetAssetsRequest = {
 };
 
 export type GetAssetsResponse = {
-  assets: Array<Asset>,
+  assets: Array<AssetDomain>,
   total: number,
 };

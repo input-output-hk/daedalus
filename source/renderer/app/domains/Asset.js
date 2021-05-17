@@ -1,17 +1,7 @@
 // @flow
 import { pick } from 'lodash';
 import { observable, action } from 'mobx';
-import type { AssetMetadata } from '../api/assets/types';
-
-export type AssetDomainProps = {
-  assetName: string,
-  decimals: ?number,
-  fingerprint: string,
-  metadata?: ?AssetMetadata,
-  policyId: string,
-  recommendedDecimals: ?number,
-  uniqueId: string,
-};
+import type { Asset as AssetProps, AssetMetadata } from '../api/assets/types';
 
 export default class Asset {
   @observable policyId: string = '';
@@ -22,13 +12,13 @@ export default class Asset {
   @observable decimals: ?number;
   @observable recommendedDecimals: ?number;
 
-  constructor(props: AssetDomainProps) {
+  constructor(props: AssetProps) {
     const { policyId, assetName } = props;
     const uniqueId = `${policyId}${assetName}`;
     Object.assign(this, props, { uniqueId });
   }
 
-  @action update(props: $Shape<AssetDomainProps>) {
+  @action update(props: $Shape<AssetProps>) {
     const { policyId, assetName } = props;
     const uniqueId = `${policyId}${assetName}`;
     Object.assign(

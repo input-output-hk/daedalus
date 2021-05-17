@@ -8,7 +8,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './Asset.scss';
 import { ellipsis, hexToString } from '../../utils/strings';
-import type { AssetDomainProps } from '../../domains/Asset';
+
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
@@ -17,6 +17,7 @@ import {
   ASSET_TOKEN_ID_COPY_FEEDBACK,
   ASSET_TOKEN_DISPLAY_DELAY,
 } from '../../config/timingConfig';
+import type { Asset as AssetProps } from '../../api/assets/types';
 
 const messages = defineMessages({
   fingerprintItem: {
@@ -75,7 +76,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  asset: AssetDomainProps,
+  asset: AssetProps,
   small?: boolean,
   hidePopOver?: boolean,
   onCopyAssetItem?: Function,
