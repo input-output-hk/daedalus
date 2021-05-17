@@ -13,6 +13,7 @@ import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { ellipsis } from '../../utils/strings';
+import { getAssetTokens } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { AssetToken } from '../../api/assets/types';
 
@@ -112,27 +113,10 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    // $FlowFixMe
-    const walletAssets: Array<AssetToken> = wallet.assets.total
-      .map((rawAsset) => {
-        const { policyId, assetName } = rawAsset;
-        const assetDetails = getAssetDomain(policyId, assetName);
-        return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
-      })
-      .filter((asset) => asset != null)
-      .sort((asset1, asset2) => {
-        if (asset1 && asset2) {
-          if (asset1.fingerprint < asset2.fingerprint) {
-            return -1;
-          }
-          if (asset1.fingerprint > asset2.fingerprint) {
-            return 1;
-          }
-        }
-        return 0;
-      });
+    const walletTokens = wallet.assets.total;
+    const assetTokens = getAssetTokens(walletTokens, getAssetDomain);
     const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = walletAssets.length;
+    const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
@@ -196,7 +180,7 @@ export default class WalletSummaryPage extends Component<Props> {
           currencyRate={rate}
           currencySelected={selected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
-          assets={walletAssets}
+          assets={assetTokens}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           onOpenAssetSend={this.handleOpenAssetSend}
           onCopyAssetItem={this.handleOnCopyAssetItem}

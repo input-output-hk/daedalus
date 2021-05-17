@@ -75,5 +75,3 @@ export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
   }
   return 0;
 };
-
-// export const getUniqueId = (asset: Token) =>
