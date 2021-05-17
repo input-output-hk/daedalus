@@ -140,7 +140,7 @@ const assets = {
 };
 
 const getAssetDomain = (policyId: string, assetName: string): ?Asset =>
-  assetDetails[policyId + assetName];
+  assetDetails[`${policyId}${assetName}`];
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Transactions', module)

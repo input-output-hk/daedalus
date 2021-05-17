@@ -30,7 +30,7 @@ export const filterAssets = (
  * Data from the Token: policyId, assetName, quantity, address
  * Data from the Asset: fingerprint, metadata, decimals, recommendedDecimals, uniqueId
  */
-export const getAsset = (
+export const getAssetToken = (
   asset: Token,
   getAssetDomain: Function
 ): AssetToken => {
@@ -58,11 +58,11 @@ export const getAsset = (
  * and sort them accordingly
  *
  */
-export const getAssets = (
+export const getAssetTokens = (
   tokens: Tokens,
   getAssetDomain: Function
 ): Array<AssetToken> =>
-  tokens.map((token) => getAsset(token, getAssetDomain)).sort(sortAssets);
+  tokens.map((token) => getAssetToken(token, getAssetDomain)).sort(sortAssets);
 
 export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
   if (asset1 && asset2) {
@@ -75,3 +75,5 @@ export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
   }
   return 0;
 };
+
+// export const getUniqueId = (asset: Token) =>

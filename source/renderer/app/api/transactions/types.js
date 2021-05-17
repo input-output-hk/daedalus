@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 import { WalletUnits } from '../../domains/Wallet';
 import type { DelegationAction } from '../../types/stakingTypes';
-import type { ApiTokens, Tokens } from '../assets/types';
+import type { ApiTokens } from '../assets/types';
 import type { TransactionMetadata } from '../../types/TransactionMetadata';
 
 export type TransactionAmount = {

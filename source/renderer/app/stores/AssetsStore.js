@@ -52,13 +52,13 @@ export default class AssetsStore extends Store {
   } {
     return this.all.reduce((details, asset) => {
       const { policyId, assetName } = asset;
-      details[policyId + assetName] = asset;
+      details[`${policyId}${assetName}`] = asset;
       return details;
     }, {});
   }
 
   getAssetDomain = (policyId: string, assetName: string): ?Asset =>
-    this.details[policyId + assetName];
+    this.details[`${policyId}${assetName}`];
 
   @computed get assetSettingsDialogWasOpened(): boolean {
     return requestGetter(this.getAssetSettingsDialogWasOpenedRequest, false);

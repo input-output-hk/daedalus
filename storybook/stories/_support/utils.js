@@ -152,7 +152,7 @@ export const generateAssetDomain = (
     metadata,
     decimals: 0,
     recommendedDecimals: null,
-    uniqueId: policyId + assetName,
+    uniqueId: `${policyId}${assetName}`,
   });
 
 export const generateAssetToken = (
@@ -171,7 +171,7 @@ export const generateAssetToken = (
   quantity: new BigNumber(quantity),
   decimals,
   recommendedDecimals,
-  uniqueId: policyId + assetName,
+  uniqueId: `${policyId}${assetName}`,
 });
 
 export const generateTransaction = (

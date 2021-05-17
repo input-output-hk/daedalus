@@ -45,7 +45,7 @@ type State = {
 };
 
 @observer
-export default class Assets extends Component<Props, State> {
+export default class WalletSummaryAssets extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

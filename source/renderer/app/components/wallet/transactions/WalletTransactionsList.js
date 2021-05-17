@@ -15,7 +15,7 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
-import { getAssets } from '../../../utils/assets';
+import { getAssetTokens } from '../../../utils/assets';
 
 const messages = defineMessages({
   today: {
@@ -231,7 +231,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
     ]);
 
     const txTokens = tx.assets;
-    const assetTokens = getAssets(txTokens, getAssetDomain);
+    const assetTokens = getAssetTokens(txTokens, getAssetDomain);
     const totalRawAssets = tx.assets.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = tx.assets.length > 0;

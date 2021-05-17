@@ -24,13 +24,13 @@ export default class Asset {
 
   constructor(props: AssetDomainProps) {
     const { policyId, assetName } = props;
-    const uniqueId = policyId + assetName;
+    const uniqueId = `${policyId}${assetName}`;
     Object.assign(this, props, { uniqueId });
   }
 
   @action update(props: $Shape<AssetDomainProps>) {
     const { policyId, assetName } = props;
-    const uniqueId = policyId + assetName;
+    const uniqueId = `${policyId}${assetName}`;
     Object.assign(
       this,
       pick(props, [

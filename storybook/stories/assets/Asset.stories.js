@@ -25,7 +25,7 @@ storiesOf('Assets|Asset pill', module)
           asset={{
             policyId,
             assetName,
-            uniqueId: policyId + assetName,
+            uniqueId: `${policyId}${assetName}`,
             fingerprint: text(
               'fingerprint',
               'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8'
