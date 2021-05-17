@@ -26,6 +26,7 @@ type Props = $Exact<{
 type State = {
   isBackSpace: boolean,
   focusKeyChanged: boolean,
+  focusIsUpdated: boolean,
 };
 
 export default class PinCode extends Component<Props, State> {
@@ -43,6 +44,7 @@ export default class PinCode extends Component<Props, State> {
   state = {
     isBackSpace: false,
     focusKeyChanged: false,
+    focusIsUpdated: false,
   };
 
   hasInputNewValue = (inputNewValue: string, key: number) => {
@@ -111,13 +113,13 @@ export default class PinCode extends Component<Props, State> {
                 inputFieldRef.inputElement.current.selectionStart = 1;
                 inputFieldRef.inputElement.current.selectionEnd = 1;
               }
-              this.setState({ focusKeyChanged: false });
+              this.setState({ focusKeyChanged: false, focusIsUpdated: true });
             }
           }, 50);
         } else {
           // Set new value to input field when focus was not shifted to previous field
           newValue[key] = inputNewValue;
-          this.setState({ isBackSpace: false, focusKeyChanged: false });
+          this.setState({ isBackSpace: false, focusKeyChanged: false, focusIsUpdated: false });
         }
       }
       if (onChange) {
@@ -134,7 +136,7 @@ export default class PinCode extends Component<Props, State> {
 
   componentDidUpdate() {
     const { value, length, name, selectedPinField } = this.props;
-    const { isBackSpace, focusKeyChanged } = this.state;
+    const { isBackSpace, focusKeyChanged, focusIsUpdated } = this.state;
     const key = value.join('').length;
     const inputValue = value[key - 1];
     this.add = this.fromBackspace
@@ -152,7 +154,7 @@ export default class PinCode extends Component<Props, State> {
     const focusKey = parseInt(this.focusKey, 10);
     if (
       name === selectedPinField &&
-      ((key > 0 && key < length) || emptyFieldIndex > -1 || focusKeyChanged)
+      ((!focusIsUpdated && (key > 0 && key < length)) || emptyFieldIndex > -1 || focusKeyChanged)
     ) {
       let inputFocusKey = 0;
       // Calculate new input focus key based on a action - delete/add of field value
