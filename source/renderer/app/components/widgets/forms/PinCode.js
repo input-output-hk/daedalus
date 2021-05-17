@@ -115,11 +115,15 @@ export default class PinCode extends Component<Props, State> {
               }
               this.setState({ focusKeyChanged: false, focusIsUpdated: true });
             }
-          }, 50);
+          }, 0);
         } else {
           // Set new value to input field when focus was not shifted to previous field
           newValue[key] = inputNewValue;
-          this.setState({ isBackSpace: false, focusKeyChanged: false, focusIsUpdated: false });
+          this.setState({
+            isBackSpace: false,
+            focusKeyChanged: false,
+            focusIsUpdated: false,
+          });
         }
       }
       if (onChange) {
@@ -154,7 +158,9 @@ export default class PinCode extends Component<Props, State> {
     const focusKey = parseInt(this.focusKey, 10);
     if (
       name === selectedPinField &&
-      ((!focusIsUpdated && (key > 0 && key < length)) || emptyFieldIndex > -1 || focusKeyChanged)
+      ((!focusIsUpdated && key > 0 && key < length) ||
+        emptyFieldIndex > -1 ||
+        focusKeyChanged)
     ) {
       let inputFocusKey = 0;
       // Calculate new input focus key based on a action - delete/add of field value
