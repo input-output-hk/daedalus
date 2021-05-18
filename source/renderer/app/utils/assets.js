@@ -59,14 +59,17 @@ export const getAssetTokens = (
   tokens: Tokens,
   getAsset: Function
 ): Array<AssetToken> =>
-  tokens.map((token) => getAssetToken(token, getAsset)).sort(sortAssets);
+  tokens
+    .map((token) => getAssetToken(token, getAsset))
+    .filter((token) => !!token.uniqueId)
+    .sort(sortAssets);
 
 export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
   if (asset1 && asset2) {
-    if (asset1.uniqueId < asset2.uniqueId) {
+    if (asset1.fingerprint < asset2.fingerprint) {
       return -1;
     }
-    if (asset1.uniqueId > asset2.uniqueId) {
+    if (asset1.fingerprint > asset2.fingerprint) {
       return 1;
     }
   }
