@@ -37,16 +37,16 @@ $ yarn test:unit
 ```
 
 ### Unbound tests
-   
-Unbound tests run as long as you keep them running 
+
+Unbound tests run as long as you keep them running
 (never end except if an error occurs).
-   
+
 Example:
-`yarn test:unit:unbound --tags @mnemonics` 
-generates and validates mnemonics as long as you keep it 
+`yarn test:unit:unbound --tags @mnemonics`
+generates and validates mnemonics as long as you keep it
 running (the number of executions is updated in the terminal)
 
-### Run end-to-end tests with Jörmungandr self-node
+### Run end-to-end tests with Cardano self-node
 
 1. Make sure Daedalus is properly installed (see above).
 2. Make sure your state directory is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
@@ -54,16 +54,16 @@ running (the number of executions is updated in the terminal)
 
 ```bash
 $ cd daedalus/
-$ yarn nix:dev
+$ yarn nix:selfnode
 $ yarn build
 $ yarn test:e2e
 ```
 
 #### Re-running in case of failing test cases
 
-If one test case fails, it + all remaining test cases are immediately skipped and saved into `tests/@rerun.txt`. 
-This list can then be re-run with `yarn test:unit:rerun` or `yarn test:e2e:rerun` depending on what kind of test 
-failed. This way you don't have to re-run all the passing tests again just to see if the one that failed is 
+If one test case fails, it + all remaining test cases are immediately skipped and saved into `tests/@rerun.txt`.
+This list can then be re-run with `yarn test:unit:rerun` or `yarn test:e2e:rerun` depending on what kind of test
+failed. This way you don't have to re-run all the passing tests again just to see if the one that failed is
 still broken.
 
 ### Running tests for development
@@ -93,7 +93,7 @@ $ yarn test
 
 ### Keeping Daedalus alive after end-to-end tests
 
-While working on the tests it's often useful to keep Daedalus alive after the tests have run 
+While working on the tests it's often useful to keep Daedalus alive after the tests have run
 (e.g: to inspect the app state). You can pass a special environment var to tell the test script
 not to close the app:
 
