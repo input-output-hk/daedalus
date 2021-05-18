@@ -51,7 +51,7 @@ export default class WalletTransactionsPage extends Component<Props> {
 
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
-    const { getAssetDomain } = assets;
+    const { getAsset } = assets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -90,7 +90,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         onRequestCSVFile={requestCSVFile.trigger}
         hasAssetsEnabled={hasAssetsEnabled}
         isInternalAddress={isInternalAddress}
-        getAssetDomain={getAssetDomain}
+        getAsset={getAsset}
         onCopyAssetItem={this.handleOnCopyAssetItem}
       />
     );

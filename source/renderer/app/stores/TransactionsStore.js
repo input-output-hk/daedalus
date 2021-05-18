@@ -356,13 +356,13 @@ export default class TransactionsStore extends Store {
     const intl = i18nContext(locale);
     const transactions = allFiltered;
     const walletName = active ? active.name : '';
-    const { getAssetDomain } = this.stores.assets;
+    const { getAsset } = this.stores.assets;
     const success = await transactionsCsvGenerator({
       desktopDirectoryPath,
       intl,
       transactions,
       walletName,
-      getAssetDomain,
+      getAsset,
       isInternalAddress,
     });
     if (success) actions.transactions.requestCSVFileSuccess.trigger();

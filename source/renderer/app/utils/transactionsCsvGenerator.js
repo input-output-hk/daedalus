@@ -109,7 +109,7 @@ type Params = {
   intl: intlShape,
   transactions: Array<WalletTransaction>,
   walletName: string,
-  getAssetDomain: Function,
+  getAsset: Function,
   isInternalAddress: Function,
 };
 
@@ -118,7 +118,7 @@ const transactionsCsvGenerator = async ({
   intl,
   transactions,
   walletName,
-  getAssetDomain,
+  getAsset,
   isInternalAddress,
 }: Params): Promise<boolean> => {
   const prefix = `${intl.formatMessage(messages.filenamePrefix)}-${walletName}`;
@@ -189,7 +189,7 @@ const transactionsCsvGenerator = async ({
       }
       const valueTokens = filterAssets(assets, type, isInternalAddress)
         .map(({ policyId, assetName, quantity }) => {
-          const { fingerprint, metadata } = getAssetDomain(policyId, assetName);
+          const { fingerprint, metadata } = getAsset(policyId, assetName);
           const formattedAmount = formattedTokenWalletAmount(
             quantity,
             metadata,

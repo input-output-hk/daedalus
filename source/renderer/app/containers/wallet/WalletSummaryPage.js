@@ -85,7 +85,7 @@ export default class WalletSummaryPage extends Component<Props> {
       assets,
       currency,
     } = stores;
-    const { getAssetDomain, assetSettingsDialogWasOpened } = assets;
+    const { getAsset, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
     const { onAssetSettingsOpen } = actions.assets;
     const {
@@ -114,7 +114,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAssetDomain);
+    const assetTokens = getAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
@@ -156,7 +156,7 @@ export default class WalletSummaryPage extends Component<Props> {
           currentDateFormat={currentDateFormat}
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
-          getAssetDomain={getAssetDomain}
+          getAsset={getAsset}
           onCopyAssetItem={this.handleOnCopyAssetItem}
         />
       );

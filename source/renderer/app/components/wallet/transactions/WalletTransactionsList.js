@@ -67,7 +67,7 @@ type Props = {
   currentDateFormat: string,
   currentTimeFormat: string,
   hasAssetsEnabled: boolean,
-  getAssetDomain: Function,
+  getAsset: Function,
   isInternalAddress: Function,
   onCopyAssetItem: Function,
 };
@@ -219,7 +219,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
       isDeletingTransaction,
       currentTimeFormat,
       hasAssetsEnabled,
-      getAssetDomain,
+      getAsset,
       isInternalAddress,
       onCopyAssetItem,
     } = this.props;
@@ -231,7 +231,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
     ]);
 
     const txTokens = tx.assets;
-    const assetTokens = getAssetTokens(txTokens, getAssetDomain);
+    const assetTokens = getAssetTokens(txTokens, getAsset);
     const totalRawAssets = tx.assets.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = tx.assets.length > 0;

@@ -24,19 +24,16 @@ export const filterAssets = (
 
 /**
  *
- * This function receives a list os Tokens (the assets included in a wallet or transaction)
+ * This function receives a Token (the asset included in a wallet or transaction)
  * and combines with the data from the Asset
  *
  * Data from the Token: policyId, assetName, quantity, address
  * Data from the Asset: fingerprint, metadata, decimals, recommendedDecimals, uniqueId
  */
-export const getAssetToken = (
-  asset: Token,
-  getAssetDomain: Function
-): AssetToken => {
+export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
-    getAssetDomain(policyId, assetName) || {};
+    getAsset(policyId, assetName) || {};
   const txAsset = {
     policyId,
     assetName,
@@ -60,9 +57,9 @@ export const getAssetToken = (
  */
 export const getAssetTokens = (
   tokens: Tokens,
-  getAssetDomain: Function
+  getAsset: Function
 ): Array<AssetToken> =>
-  tokens.map((token) => getAssetToken(token, getAssetDomain)).sort(sortAssets);
+  tokens.map((token) => getAssetToken(token, getAsset)).sort(sortAssets);
 
 export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
   if (asset1 && asset2) {

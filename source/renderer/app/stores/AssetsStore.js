@@ -57,7 +57,7 @@ export default class AssetsStore extends Store {
     }, {});
   }
 
-  getAssetDomain = (policyId: string, assetName: string): ?Asset =>
+  getAsset = (policyId: string, assetName: string): ?Asset =>
     this.details[`${policyId}${assetName}`];
 
   @computed get assetSettingsDialogWasOpened(): boolean {
@@ -81,7 +81,7 @@ export default class AssetsStore extends Store {
   }) => {
     this.editingsAsset = null;
     const { policyId, assetName } = asset;
-    const assetDomain = this.getAssetDomain(policyId, assetName);
+    const assetDomain = this.getAsset(policyId, assetName);
     if (assetDomain) {
       assetDomain.update({
         decimals,

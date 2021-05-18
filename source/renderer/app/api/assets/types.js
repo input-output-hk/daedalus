@@ -14,13 +14,13 @@ import AssetDomain from '../../domains/Asset';
  * Missing data: quantity, address
  *
  */
-export type ApiAssets = Array<ApiAsset>;
 export type ApiAsset = {
   policy_id: string,
   asset_name: string,
   fingerprint: string,
   metadata?: ?AssetMetadata,
 };
+export type ApiAssets = Array<ApiAsset>;
 export type Asset = {
   assetName: string,
   decimals: ?number,

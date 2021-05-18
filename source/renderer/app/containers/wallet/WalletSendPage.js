@@ -99,7 +99,7 @@ export default class WalletSendPage extends Component<Props> {
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { all: allAssets, activeAsset, getAssetDomain } = assetsStore;
+    const { all: allAssets, activeAsset, getAsset } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
 
     const selectedAsset = activeAsset
@@ -113,7 +113,7 @@ export default class WalletSendPage extends Component<Props> {
     const { isHardwareWallet } = wallet;
 
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAssetDomain);
+    const assetTokens = getAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
