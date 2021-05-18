@@ -78,7 +78,7 @@ export type AssetMetadata = {
   ticker: string,
   description: string,
   unit?: {
-    decimals: number,
+    decimals?: number,
     name: string,
   },
   url?: string,
