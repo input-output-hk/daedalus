@@ -313,7 +313,7 @@ export const ShelleyTxAux = ({
   certs,
   withdrawals,
   auxiliaryData,
-  metadataHash,
+  auxiliaryDataHash,
   validityIntervalStart,
 }: {
   inputs: Array<ShelleyTxInputType>,
@@ -323,10 +323,10 @@ export const ShelleyTxAux = ({
   certs: Array<?Certificate>,
   withdrawals: ?ShelleyTxWithdrawalsType,
   auxiliaryData: any, // TODO - add real type
-  metadataHash: string,
+  auxiliaryDataHash: string,
   validityIntervalStart: ShelleyValidityIntervalStartType,
 }) => {
-  console.debug('>>> ShelleyTxAux: validityIntervalStart: ', validityIntervalStart);
+  console.debug('>>> Prepare ShelleyTxAux: ', validityIntervalStart);
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
     return blake2b(
@@ -339,7 +339,7 @@ export const ShelleyTxAux = ({
           certs,
           withdrawals,
           auxiliaryData,
-          metadataHash,
+          auxiliaryDataHash,
           validityIntervalStart,
         })
       ),
@@ -355,8 +355,8 @@ export const ShelleyTxAux = ({
     txBody.set(3, ttl);
     if (certs && certs.length) txBody.set(4, certs);
     if (withdrawals) txBody.set(5, withdrawals);
-    if (metadataHash) txBody.set(6, Buffer.from(metadataHash, 'hex'))
-    if (validityIntervalStart !== null) txBody.set(7, validityIntervalStart)
+    if (auxiliaryDataHash) txBody.set(7, Buffer.from(auxiliaryDataHash, 'hex'))
+    if (validityIntervalStart !== null) txBody.set(8, validityIntervalStart)
     return encoder.pushAny(txBody);
   }
 
@@ -368,8 +368,8 @@ export const ShelleyTxAux = ({
     ttl,
     certs,
     withdrawals,
-    metadataHash,
     auxiliaryData,
+    auxiliaryDataHash,
     validityIntervalStart,
     encodeCBOR,
   };
@@ -378,14 +378,14 @@ export const ShelleyTxAux = ({
 export const ShelleySignedTransactionStructured = (
   txAux: ShelleyTxAuxType,
   witnesses: Map<number, ShelleyTxWitnessType>,
-  meta: ?any // @TODO - TBD once meta introduced
+  txAuxiliaryData: ?any // @TODO - TBD once meta introduced
 ) => {
   function getId() {
     return txAux.getId();
   }
 
   function encodeCBOR(encoder: any) {
-    return encoder.pushAny([txAux, witnesses, meta]);
+    return encoder.pushAny([txAux, witnesses, txAuxiliaryData]);
   }
 
   return {
@@ -499,29 +499,66 @@ export const prepareLedgerOutput = (
 };
 
 export type TxAuxiliaryData = {
-  votingPubKey: string
-  stakePubKey: HexString
-  nonce: BigInt
+  votingPubKey: string,
+  stakePubKey: HexString,
+  nonce: BigInt,
   rewardDestinationAddress: {
-    address: Address
-    spendingPath: BIP32Path
-    stakingPath: BIP32Path
-  }
+    address: Address,
+    spendingPath: BIP32Path,
+    stakingPath: BIP32Path,
+  },
 }
 
 export type CborizedVotingRegistrationMetadata = [Map<number, Map<number, Buffer | BigInt>>, []]
 
-export const prepareMeta = async (
-  auxiliaryData: TxAuxiliaryData
-): Promise<CborizedVotingRegistrationMetadata> => {
-  const cborizedRegistrationData = cborizeTxVotingRegistration(auxiliaryData)
-  const registrationDataHash = blake2b(encode(cborizedRegistrationData), 32).toString('hex')
-  const stakingPath = auxiliaryData.rewardDestinationAddress.stakingPath
-  const registrationDataWitness = await prepareShelleyWitness(registrationDataHash, stakingPath)
-  const registrationDataSignature = registrationDataWitness.signature.toString('hex')
-  const txAuxiliaryData = cborizeTxAuxiliaryVotingData(auxiliaryData, registrationDataSignature)
-  return txAuxiliaryData
+// export const prepareMeta = async (
+//   auxiliaryData: TxAuxiliaryData
+// ): Promise<CborizedVotingRegistrationMetadata> => {
+//   const cborizedRegistrationData = cborizeTxVotingRegistration(auxiliaryData)
+//   const registrationDataHash = blake2b(encode(cborizedRegistrationData), 32).toString('hex')
+//   const stakingPath = auxiliaryData.rewardDestinationAddress.stakingPath
+//   const registrationDataWitness = await prepareShelleyWitness(registrationDataHash, stakingPath)
+//   const registrationDataSignature = registrationDataWitness.signature.toString('hex')
+//   const txAuxiliaryData = cborizeTxAuxiliaryVotingData(auxiliaryData, registrationDataSignature)
+//
+//   console.debug('>>> FIN - txAuxiliaryData: ', txAuxiliaryData);
+//
+//   return txAuxiliaryData
+// }
+
+export const cborizeTxVotingRegistration = ({
+  votingPubKey,
+  stakePubKey,
+  rewardDestinationAddress,
+  nonce,
+}) => {
+  console.debug('>>> PARAMS: ', {
+    votingPubKey,
+    stakePubKey,
+    rewardDestinationAddress,
+    nonce,
+  })
+  return [
+    61284,
+    new Map<number, Buffer | BigInt>([
+      [1, Buffer.from(votingPubKey, 'hex')],
+      [2, Buffer.from(stakePubKey, 'hex')],
+      [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
+      [4, Number(nonce)],
+    ]),
+  ]
 }
+
+export const cborizeTxAuxiliaryVotingData = (
+  txAuxiliaryData: TxAuxiliaryData,
+  signatureHex: string
+) => [
+  new Map<number, Map<number, Buffer | BigInt>>([
+    cborizeTxVotingRegistration(txAuxiliaryData),
+    [61285, new Map<number, Buffer>([[1, Buffer.from(signatureHex, 'hex')]])],
+  ]),
+  [],
+]
 
 export const prepareTxAux = ({
   txInputs,
@@ -531,12 +568,14 @@ export const prepareTxAux = ({
   certificates,
   withdrawals,
   txAuxiliaryData,
+  txAuxiliaryDataHash,
   validityIntervalStart,
   metadataHash,
 }: {
   txInputs: Array<ShelleyTxInputType>,
   txOutputs: Array<ShelleyTxOutputType>,
   txAuxiliaryData: ?TxAuxiliaryData,
+  txAuxiliaryDataHash: ?string,
   fee: number,
   ttl: number,
   certificates: Array<?Certificate>,
@@ -558,6 +597,7 @@ export const prepareTxAux = ({
     certs: txCerts,
     withdrawals: txWithdrawals,
     auxiliaryData: txAuxiliaryData,
+    auxiliaryDataHash: txAuxiliaryDataHash,
     validityIntervalStart: txValidityIntervalStart,
   };
 
@@ -574,13 +614,13 @@ export const prepareTxAux = ({
 
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
-  txWitnesses: any // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
-  txMeta: string,
+  txWitnesses: any, // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
+  txAuxiliaryData: any,
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,
     txWitnesses,
-    txMeta // TODO: declare and improve ShelleySignedTransactionStructured with txMeta
+    txAuxiliaryData // TODO: declare and improve ShelleySignedTransactionStructured with txMeta
   );
   return encode(signedTransactionStructure).toString('hex');
 };

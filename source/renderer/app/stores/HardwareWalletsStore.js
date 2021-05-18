@@ -40,6 +40,7 @@ import {
   ShelleyTxOutput,
   ShelleyTxCert,
   ShelleyTxWithdrawal,
+  cborizeTxAuxiliaryVotingData,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
@@ -1314,6 +1315,278 @@ export default class HardwareWalletsStore extends Store {
     return constructedAddress.address;
   };
 
+  formatAuxiliaryAdata = (txAuxiliaryData) => {
+    switch (txAuxiliaryData.type) {
+      case 'CATALYST_VOTING':
+        return {
+          type: 'catalyst_registration', // LedgerTypes.TxAuxiliaryDataType.CATALYST_REGISTRATION,
+          params: {
+            votingPublicKeyHex: txAuxiliaryData.votingPubKey,
+            stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
+            rewardsDestination: {
+              type: 14, // LedgerTypes.AddressType.REWARD,
+              params: {
+                stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
+              },
+            },
+            nonce: `${txAuxiliaryData.nonce}`,
+          },
+        }
+      default:
+        return null;
+    }
+  }
+
+  finalizeTxAuxWithMetadata = (
+    txAux: any,
+    auxiliaryDataSupplement: any
+  ) => {
+    console.debug('>>> finalizeTxAuxWithMetadata: ', {
+      txAux,
+      auxiliaryDataSupplement,
+    });
+    if (!txAux.auxiliaryData) {
+      console.debug('>>> NO auxiliaryData');
+      return {
+        finalizedTxAux: txAux,
+        txAuxiliaryData: null,
+      }
+    }
+    switch (txAux.auxiliaryData.type) {
+      case 'CATALYST_VOTING':
+        return {
+          finalizedTxAux: ShelleyTxAux({
+            ...txAux,
+            auxiliaryDataHash: auxiliaryDataSupplement.auxiliaryDataHashHex,
+          }),
+          // txAuxiliaryData: cborizeTxAuxiliaryVotingData(
+          //   txAux.auxiliaryData,
+          //   auxiliaryDataSupplement.catalystRegistrationSignatureHex
+          // ),
+        }
+      default:
+        return null
+    }
+  }
+
+  _test = async () => {
+    const cSelection = {
+      ttl: 29443543,
+      fee: 175772,
+      withdrawals: [],
+      certificates: [],
+      validityIntervalStart: null,
+      inputs: [{
+        id: "34766009c441fed2b3a9483399bfb3e2a3dbb3445b3ec908d5dfff4fb8c1b15a",
+        index: 1,
+        address: "addr1q9dt0vjt5ufzvawg2qny6z3qjjdehacmf4u039eg95lfp8kss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6svmyk7e",
+        amount: {
+          quantity: 4296454,
+          unit: 'lovelace',
+        },
+        assets: [],
+        derivationPath: ["1852H", "1815H", "0H", "1", "30"]
+      }],
+      outputs: [{
+        address: "addr1qypq77cn4ugc2tzy5wsna2r6w6fffcc8ygatkz5hm79j2gxss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sztdpc2",
+        amount: {
+          quantity: 4120682,
+          unit: 'lovelace',
+        },
+        derivationPath: ["1852H", "1815H", "0H", "0", "0"],
+        assets: [],
+      }],
+    }
+
+    // txAux.auxiliaryData
+    const txAux = {
+      ...cSelection,
+      auxiliaryData: {
+        nonce: "29443543", // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
+        rewardDestinationAddress: {
+          address: "stake1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdguw9cph",
+          // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
+          stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
+        }, // ShelleyAddressParams,
+        stakePubKey: "23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
+        type: "CATALYST_VOTING",
+        votingPubKey: '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+      }
+    };
+    console.debug('>>> txAux: ', txAux);
+
+    // THIS SHOULD BE SENT TO LEDGER
+    const formattedAuxiliaryData = txAux.auxiliaryData
+      ? this.formatAuxiliaryAdata(txAux.auxiliaryData)
+      : null
+
+    console.debug('>>> formattedAuxiliaryData: ', formattedAuxiliaryData);
+
+
+    const response = {
+      auxiliaryDataSupplement: {
+        auxiliaryDataHashHex: "bf11c8a0415eaf932ee94534c227951e852484ac0cdfab9d1dde2df92bbc7954",
+        catalystRegistrationSignatureHex: "d4ea645fe997d5ad825bdd726014f36230e0132e81176f226b0e97f51b5b59f3987fed154c82190da477b4d03fac1a75015ae4157c6872270607122e81b90b02",
+        type: "catalyst_registration",
+      },
+      txHashHex: "41900087ffde7e5dd0b9f614171a8caf57757ea8f35e4bed125faee9b199329b",
+      witnesses: [
+        {
+          path: [2147485500, 2147485463, 2147483648, 1, 127],
+          witnessSignatureHex: "e4c854833da64313250b5b2ccaf6afcea7a4723a54fb298b1df150d8241cc683b355518575f4957ab1089098d6ce68e04e2f4b08b968eab4f432397c6ab2660c",
+        }
+      ]
+    }
+    console.debug('>>> NOW IS SIGNED - response: ', response);
+
+    // Prepare DATA
+
+    const unsignedTxInputs = [];
+    const inputsData = map(txAux.inputs, (input) => {
+      const shelleyTxInput = ShelleyTxInputFromUtxo(input);
+      unsignedTxInputs.push(shelleyTxInput);
+      return prepareLedgerInput(input);
+    });
+
+    const unsignedTxOutputs = [];
+    const outputsData = [];
+    for (const output of txAux.outputs) {
+      const {
+        address_style: addressStyle,
+      } = await this.stores.addresses._inspectAddress({
+        addressId: output.address,
+      });
+
+      console.debug('>>>> addressStyle: ', addressStyle)
+
+      const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
+      unsignedTxOutputs.push(shelleyTxOutput);
+      const ledgerOutput = prepareLedgerOutput(output, addressStyle);
+      outputsData.push(ledgerOutput);
+    }
+
+    // Construct certificates
+    const unsignedTxCerts = [];
+    const _certificatesData = map(txAux.certificates, async (certificate) => {
+      const accountAddress = await this._getRewardAccountAddress(
+        walletId,
+        certificate.rewardAccountPath
+      );
+      const shelleyTxCert = ShelleyTxCert({
+        accountAddress,
+        pool: certificate.pool,
+        type: CERTIFICATE_TYPE[certificate.certificateType],
+      });
+      unsignedTxCerts.push(shelleyTxCert);
+      return prepareLedgerCertificate(certificate);
+    });
+    const certificatesData = await Promise.all(_certificatesData);
+
+    // Construct Withdrawals
+    const _withdrawalsData = map(txAux.withdrawals, async (withdrawal) =>
+      prepareLedgerWithdrawal(withdrawal)
+    );
+    const withdrawalsData = await Promise.all(_withdrawalsData);
+
+    const fee = txAux.fee;
+    const ttl = txAux.ttl;
+    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
+    const { isMainnet } = this.environment;
+
+    const unsignedTxWithdrawals =
+      txAux.withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
+
+    console.debug('>>> txAux: ', {
+      txInputs: unsignedTxInputs,
+      txOutputs: unsignedTxOutputs,
+      fee: txAux.fee,
+      ttl: txAux.ttl,
+      certificates: unsignedTxCerts,
+      withdrawals: unsignedTxWithdrawals,
+      validityIntervalStart: txAux.validityIntervalStart,
+      // Meta
+      txAuxiliaryData: txAux.auxiliaryData,
+      txAuxiliaryDataHash: response.auxiliaryDataSupplement.auxiliaryDataHashHex,
+    })
+
+    const unsignedTx = prepareTxAux({
+      txInputs: unsignedTxInputs,
+      txOutputs: unsignedTxOutputs,
+      fee: txAux.fee,
+      ttl: txAux.ttl,
+      certificates: unsignedTxCerts,
+      withdrawals: unsignedTxWithdrawals,
+      validityIntervalStart: txAux.validityIntervalStart,
+      // Meta
+      txAuxiliaryData: txAux.auxiliaryData,
+      txAuxiliaryDataHash: response.auxiliaryDataSupplement.auxiliaryDataHashHex,
+    });
+
+    console.debug('>>> unsignedTx: ', unsignedTx)
+
+    // END of Prepare DATA
+
+    const txAuxiliaryData = cborizeTxAuxiliaryVotingData(
+      txAux.auxiliaryData,
+      response.auxiliaryDataSupplement.catalystRegistrationSignatureHex
+    );
+
+    // const auxWithMetadata = this.finalizeTxAuxWithMetadata(
+    //   txAux,
+    //   response.auxiliaryDataSupplement
+    // )
+
+    console.debug('>>> txAuxiliaryData: ', txAuxiliaryData);
+
+    const xpubHex = "153f969cb82b6c5d022eec310f71aaec76babb6e7a3b1753a6ebc8ae257329737e096831d47a6ac45849f6c6703dc0a5fba9300a761ec650096348810d2ffd0a";
+
+    const signedWitnesses = await this._signWitnesses(
+      response.witnesses,
+      xpubHex
+    );
+    const txWitnesses = new Map();
+    if (signedWitnesses.length > 0) {
+      txWitnesses.set(0, signedWitnesses);
+    }
+
+    console.debug('>>> txWitnesses: ', {
+      txWitnesses,
+      witnesses: response.witnesses,
+      signedWitnesses,
+    });
+
+    // const structuredTx = ShelleySignedTransactionStructured(
+    //   finalizedTxAux,
+    //   txWitnesses,
+    //   txAuxiliaryData
+    // )
+
+    const txBody = await prepareBody(unsignedTx, txWitnesses, txAuxiliaryData);
+
+    console.debug('>>> TX BODY: ', txBody);
+
+    return;
+
+    const auxiliaryData = {
+      type: 'catalyst_registration', // TxAuxiliaryDataType.CATALYST_REGISTRATION,
+      params: {
+        nonce: "29443543", // absoluteSlotNumber, // 1454448, // TTL ???
+        votingPublicKeyHex: '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+        stakingPath: str_to_path("1852'/1815'/0'/2/0"), // ValidBIP32Path
+        rewardsDestination: {
+          // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
+          type: 14,
+          params: {
+            // spendingPath: str_to_path("1852'/1815'/0'/0/0"),
+            stakingPath: str_to_path("1852'/1815'/0'/2/0"),
+          }
+        }, // ShelleyAddressParams,
+      }
+    }
+
+    console.debug('>>> auxiliaryData: ', auxiliaryData);
+  }
+
   // Ledger - Shelley only
   @action _signTransactionLedger = async (
     walletId: string,
@@ -1322,7 +1595,6 @@ export default class HardwareWalletsStore extends Store {
     runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
-
     const { coinSelection } = this.txSignRequest;
     const {
       inputs,
@@ -1408,7 +1680,6 @@ export default class HardwareWalletsStore extends Store {
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
-    const auxiliaryData = null;
     const { isMainnet } = this.environment;
 
     console.debug('>>> DATA TO SIGN: ', {
@@ -1426,7 +1697,7 @@ export default class HardwareWalletsStore extends Store {
       certificates: certificatesData,
       withdrawals: withdrawalsData,
       signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
-      auxiliaryData,
+      auxiliaryData: null,
       devicePath,
     });
 
@@ -1476,14 +1747,14 @@ export default class HardwareWalletsStore extends Store {
       // Typeof TxAuxiliaryData
       // TODO - check formats
       unsignedAuxiliaryData = {
-        votingPubKey: string
-        stakePubKey: HexString
-        nonce: BigInt
+        votingPubKey: string,
+        stakePubKey: HexString,
+        nonce: BigInt,
         rewardDestinationAddress: {
-          address: Address
-          spendingPath: BIP32Path
-          stakingPath: BIP32Path
-        }
+          address: Address,
+          spendingPath: BIP32Path,
+          stakingPath: BIP32Path,
+        },
       }
       // txMeta = await prepareMeta(txAuxiliaryData)
       // metadataHash: blake2b(encode(txMeta), 32).toString('hex'),
@@ -1497,7 +1768,6 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        validityIntervalStartStr: absoluteSlotNumber.toString(),
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
