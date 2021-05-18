@@ -10,7 +10,7 @@ Changelog
 
 ### Fixes
 
-- Fixed pool description scrolling and styling ([PR 2556](https://github.com/input-output-hk/daedalus/pull/2564))
+- Fixed pool description scrolling and styling ([PR 2556](https://github.com/input-output-hk/daedalus/pull/2564), [PR 2568](https://github.com/input-output-hk/daedalus/pull/2568))
 - Fixed external currencies not appearing when not connected ([PR 2556](https://github.com/input-output-hk/daedalus/pull/2556))
 
 ### Chores
