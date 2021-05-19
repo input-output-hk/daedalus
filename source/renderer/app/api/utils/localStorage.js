@@ -336,14 +336,18 @@ export default class LocalStorageApi {
     policyId: string,
     assetName: string
   ): Promise<AssetLocalData> =>
-    LocalStorageApi.get(keys.ASSET_DATA, {}, policyId + assetName);
+    LocalStorageApi.get(keys.ASSET_DATA, {}, `${policyId}${assetName}`);
 
   setAssetLocalData = (
     policyId: string,
     assetName: string,
     assetLocalData: AssetLocalData
   ): Promise<void> =>
-    LocalStorageApi.set(keys.ASSET_DATA, assetLocalData, policyId + assetName);
+    LocalStorageApi.set(
+      keys.ASSET_DATA,
+      assetLocalData,
+      `${policyId}${assetName}`
+    );
 
   getAssetSettingsDialogWasOpened = (): Promise<boolean> =>
     LocalStorageApi.get(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, false);

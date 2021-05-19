@@ -7,7 +7,7 @@ import { boolean, number, select } from '@storybook/addon-knobs';
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
 import {
-  generateAsset,
+  generateAssetToken,
   generateHash,
   generateWallet,
 } from '../../_support/utils';
@@ -18,20 +18,23 @@ import currenciesList from '../../../../source/renderer/app/config/currenciesLis
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
 
 const allAssets = [
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234'
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234',
+    100
   ),
-  generateAsset(
+  generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345'
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
+    100
   ),
-  generateAsset(
+  generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z3456',
+    100,
     {
       name: 'USD Coin',
       ticker: 'USDC',
@@ -44,10 +47,11 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z4567',
+    100,
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -134,6 +138,7 @@ const walletAssets = assets.total.map((assetTotal) => {
   return {
     policyId: assetTotal.policyId,
     assetName: assetTotal.assetName,
+    uniqueId: assetTotal.policyId + assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
     decimals: 0,

@@ -7,7 +7,7 @@ import type {
 } from '../../../common/types/hardware-wallets.types';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { QuitStakePoolRequest } from '../api/staking/types';
-import type { WalletSummaryAsset } from '../api/assets/types';
+import type { AssetToken } from '../api/assets/types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -55,7 +55,7 @@ export default class WalletsActions {
     receiver: string,
     amount: string,
     passphrase: string,
-    assets?: Array<WalletSummaryAsset>,
+    assets?: Array<AssetToken>,
     assetsAmounts?: Array<string>,
   }> = new Action();
   chooseWalletExportType: Action<{
@@ -89,9 +89,8 @@ export default class WalletsActions {
   finishRewardsCsv: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
-  setActiveAssetFingerprint: Action<{
-    fingerprint: ?string,
-  }> = new Action();
+  setActiveAsset: Action<string> = new Action();
+  unsetActiveAsset: Action<any> = new Action();
   transferFundsNextStep: Action<any> = new Action();
   transferFundsPrevStep: Action<any> = new Action();
   transferFundsSetSourceWalletId: Action<{
