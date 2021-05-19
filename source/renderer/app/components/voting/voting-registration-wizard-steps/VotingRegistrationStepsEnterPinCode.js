@@ -238,7 +238,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
               this.onChangeRepeatPinCode(values, newValue, key)
             }
             autoFocus={isRepeatPinCodeAutoFocused}
-            disabled={!pinCodeField.isValid}
+            disabled={!pinCodeField.isValid && !repeatPinCodeField.value.length}
             error={repeatPinCodeField.error}
             selectedPinField={selectedPinField}
           />
