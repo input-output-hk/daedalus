@@ -2851,9 +2851,10 @@ const _createAssetFromServerData = action(
       fingerprint,
       metadata,
     } = data;
+    const uniqueId = `${policyId}${assetName}`;
     const { decimals } = localData;
     const recommendedDecimals =
-      ASSETS_PREDEFINED_DECIMALS[policyId + assetName];
+      ASSETS_PREDEFINED_DECIMALS[`${policyId}${assetName}`];
     return new Asset({
       policyId,
       assetName,
@@ -2861,6 +2862,7 @@ const _createAssetFromServerData = action(
       metadata,
       decimals,
       recommendedDecimals,
+      uniqueId,
     });
   }
 );
