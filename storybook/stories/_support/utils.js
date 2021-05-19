@@ -27,9 +27,9 @@ import type {
 import Asset from '../../../source/renderer/app/domains/Asset';
 import type {
   AssetMetadata,
-  WalletAssetItems,
-  WalletAssets,
-  WalletSummaryAsset,
+  Tokens,
+  WalletTokens,
+  AssetToken,
 } from '../../../source/renderer/app/api/assets/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
@@ -109,7 +109,7 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
-  assets?: WalletAssets = { available: [], total: [] },
+  assets?: WalletTokens = { available: [], total: [] },
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
@@ -139,12 +139,12 @@ export const generateWallet = (
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
-export const generateAsset = (
+export const generateAssetDomain = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
-  metadata?: AssetMetadata
-) =>
+  metadata?: AssetMetadata = {}
+): Asset =>
   new Asset({
     policyId,
     assetName,
@@ -152,9 +152,10 @@ export const generateAsset = (
     metadata,
     decimals: 0,
     recommendedDecimals: null,
+    uniqueId: `${policyId}${assetName}`,
   });
 
-export const generateWalletSummaryAsset = (
+export const generateAssetToken = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
@@ -162,7 +163,7 @@ export const generateWalletSummaryAsset = (
   metadata: ?AssetMetadata,
   decimals: ?number,
   recommendedDecimals: ?number
-): WalletSummaryAsset => ({
+): AssetToken => ({
   policyId,
   assetName,
   fingerprint,
@@ -170,6 +171,7 @@ export const generateWalletSummaryAsset = (
   quantity: new BigNumber(quantity),
   decimals,
   recommendedDecimals,
+  uniqueId: `${policyId}${assetName}`,
 });
 
 export const generateTransaction = (
@@ -182,7 +184,7 @@ export const generateTransaction = (
   noIncomeAddresses: boolean = false,
   noWithdrawals: boolean = true,
   fee: BigNumber = new BigNumber(faker.finance.amount()),
-  assets?: WalletAssetItems,
+  assets?: Tokens,
   metadata?: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({

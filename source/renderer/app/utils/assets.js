@@ -1,9 +1,5 @@
 // @flow
-import type {
-  WalletAssetItem,
-  WalletAssetItems,
-  WalletTransactionAsset,
-} from '../api/assets/types';
+import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 
@@ -28,20 +24,16 @@ export const filterAssets = (
 
 /**
  *
- * This function receives a list os Wallet Assets
- * which don't contain fingerprint nor metadata
+ * This function receives a Token (the asset included in a wallet or transaction)
+ * and combines with the data from the Asset
  *
- * And a function which gathers this missing items
- * from the `details` in the Assets Store
- *
+ * Data from the Token: policyId, assetName, quantity, address
+ * Data from the Asset: fingerprint, metadata, decimals, recommendedDecimals, uniqueId
  */
-export const getTransactionAsset = (
-  asset: WalletAssetItem,
-  getAssetDetails: Function
-): WalletTransactionAsset => {
+export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
-  const { fingerprint, metadata, decimals, recommendedDecimals } =
-    getAssetDetails(policyId, assetName) || {};
+  const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
+    getAsset(policyId, assetName) || {};
   const txAsset = {
     policyId,
     assetName,
@@ -51,30 +43,35 @@ export const getTransactionAsset = (
     metadata,
     decimals,
     recommendedDecimals,
+    uniqueId,
   };
   return txAsset;
 };
 
 /**
  *
- * This function gets the complete Tx Asset from `getTransactionAsset`
- * and sorts it accordingly
+ * This function receives a list of Tokens (the assets included in a wallet or transaction)
+ * then retrieves the Assets
+ * and sort them accordingly
  *
  */
-export const getTransactionAssets = (
-  assets: WalletAssetItems,
-  getAssetDetails: Function
-): Array<WalletTransactionAsset> =>
-  assets
-    .map((rawAsset) => getTransactionAsset(rawAsset, getAssetDetails))
-    .sort((asset1, asset2) => {
-      if (asset1 && asset2) {
-        if (asset1.fingerprint < asset2.fingerprint) {
-          return -1;
-        }
-        if (asset1.fingerprint > asset2.fingerprint) {
-          return 1;
-        }
-      }
-      return 0;
-    });
+export const getAssetTokens = (
+  tokens: Tokens,
+  getAsset: Function
+): Array<AssetToken> =>
+  tokens
+    .map((token) => getAssetToken(token, getAsset))
+    .filter((token) => !!token.uniqueId)
+    .sort(sortAssets);
+
+export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
+  if (asset1 && asset2) {
+    if (asset1.fingerprint < asset2.fingerprint) {
+      return -1;
+    }
+    if (asset1.fingerprint > asset2.fingerprint) {
+      return 1;
+    }
+  }
+  return 0;
+};

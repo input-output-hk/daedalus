@@ -45,7 +45,7 @@ type Props = {
   totalAvailable: number,
   transactions: Array<WalletTransaction>,
   hasAssetsEnabled: boolean,
-  getAssetDetails: Function,
+  getAsset: Function,
   isInternalAddress: Function,
   onCopyAssetItem: Function,
 };
@@ -93,7 +93,7 @@ export default class WalletTransactions extends Component<Props, State> {
       defaultFilterOptions,
       populatedFilterOptions,
       hasAssetsEnabled,
-      getAssetDetails,
+      getAsset,
       isInternalAddress,
       onCopyAssetItem,
     } = this.props;
@@ -137,7 +137,7 @@ export default class WalletTransactions extends Component<Props, State> {
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
           hasAssetsEnabled={hasAssetsEnabled}
-          getAssetDetails={getAssetDetails}
+          getAsset={getAsset}
           isRenderingAsVirtualList
           isInternalAddress={isInternalAddress}
           onCopyAssetItem={onCopyAssetItem}

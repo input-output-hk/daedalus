@@ -19,7 +19,7 @@ import './voting/Voting.stories';
 import './settings';
 
 // Assets
-import './assets/AssetToken.stories';
+import './assets/Asset.stories';
 import './assets/AssetSettingsDialog.stories';
 
 // News

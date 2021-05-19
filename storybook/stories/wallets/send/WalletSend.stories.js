@@ -6,7 +6,7 @@ import { boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import {
   generateHash,
-  generateAsset,
+  generateAssetToken,
   generateWallet,
   promise,
 } from '../../_support/utils';
@@ -22,11 +22,14 @@ import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/
 import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
+import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
+
 const allAssets = [
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+    100,
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -39,15 +42,17 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342'
+    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
+    400
   ),
-  generateAsset(
+  generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
+    100,
     {
       name: 'Tether',
       ticker: 'USDT',
@@ -60,10 +65,11 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
     'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
+    100,
     {
       name: 'USD Coin',
       ticker: 'USDC',
@@ -78,7 +84,7 @@ const allAssets = [
   ),
 ];
 
-const assets = {
+const walletTokens: WalletTokens = {
   available: [
     {
       id: generateHash(),
@@ -133,7 +139,7 @@ const assets = {
   ],
 };
 
-const confirmationAssets = assets.total.map((assetTotal) => {
+const confirmationTokens = walletTokens.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
@@ -150,6 +156,7 @@ const confirmationAssets = assets.total.map((assetTotal) => {
   return {
     policyId: assetTotal.policyId,
     assetName: assetTotal.assetName,
+    uniqueId: assetTotal.policyId + assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
     decimals: 0,
@@ -164,11 +171,11 @@ const confirmationAssets = assets.total.map((assetTotal) => {
   };
 });
 
-const confirmationAssetsAmounts = confirmationAssets.map(
-  (asset) => `${asset.quantity}`
+const confirmationTokensAmounts = confirmationTokens.map(
+  (token) => `${token.quantity}`
 );
 
-const sendFormAssetData = assets.total.map((assetTotal) => {
+const sendFormAssetData = walletTokens.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
@@ -185,6 +192,7 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
   return {
     policyId: assetTotal.policyId,
     assetName: assetTotal.assetName,
+    uniqueId: assetTotal.policyId + assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
     decimals: 0,
@@ -221,7 +229,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -245,7 +253,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -269,7 +277,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -293,7 +301,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', false)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -320,7 +328,7 @@ storiesOf('Wallets|Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets={boolean('hasAssets', true)}
       selectedAsset={null}
-      onUnsetActiveAssetFingerprint={() => {}}
+      onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
@@ -330,10 +338,12 @@ storiesOf('Wallets|Send', module)
         currencyUnit="Ada"
         amount="20.000000"
         totalAmount="21.000000"
-        sender={generateWallet('Wallet name', '45119903750165', assets).id}
+        sender={
+          generateWallet('Wallet name', '45119903750165', walletTokens).id
+        }
         receiver={generateHash()}
-        assets={confirmationAssets}
-        assetsAmounts={confirmationAssetsAmounts}
+        assets={confirmationTokens}
+        assetsAmounts={confirmationTokensAmounts}
         transactionFee="1.000000"
         amountToNaturalUnits={formattedAmountToNaturalUnits}
         onSubmit={() => null}
@@ -345,7 +355,9 @@ storiesOf('Wallets|Send', module)
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
         isHardwareWallet={boolean('isHardwareWallet', false)}
         onInitiateTransaction={() => null}
-        walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
+        walletName={
+          generateWallet('TrueUSD', '15119903750165', walletTokens).name
+        }
         onCopyAssetItem={() => {}}
         isTrezor={boolean('isTrezor', false)}
       />
@@ -357,7 +369,9 @@ storiesOf('Wallets|Send', module)
         amount="20.000000"
         totalAmount="21.000000"
         currencyUnit="ADA"
-        sender={generateWallet('Wallet name', '45119903750165', assets).id}
+        sender={
+          generateWallet('Wallet name', '45119903750165', walletTokens).id
+        }
         receiver={generateHash()}
         transactionFee="1.000000"
         amountToNaturalUnits={formattedAmountToNaturalUnits}
@@ -370,7 +384,9 @@ storiesOf('Wallets|Send', module)
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
         isHardwareWallet={boolean('isHardwareWallet', false)}
         onInitiateTransaction={() => null}
-        walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
+        walletName={
+          generateWallet('TrueUSD', '15119903750165', walletTokens).name
+        }
         isTrezor={boolean('isTrezor', false)}
       />
     </div>
