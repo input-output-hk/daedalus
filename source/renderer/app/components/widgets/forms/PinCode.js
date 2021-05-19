@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, ElementRef } from 'react';
 import { map, isNaN } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -108,11 +108,7 @@ export default class PinCode extends Component<Props, State> {
           setTimeout(() => {
             const inputFieldRef = this.inputsRef[focusKey];
             if (inputFieldRef && inputFieldRef.inputElement) {
-              inputFieldRef.focus();
-              if (inputFieldRef.props.value) {
-                inputFieldRef.inputElement.current.selectionStart = 1;
-                inputFieldRef.inputElement.current.selectionEnd = 1;
-              }
+              this.setFocusOnField(inputFieldRef);
               this.setState({ focusKeyChanged: false, focusIsUpdated: true });
             }
           }, 0);
@@ -183,11 +179,7 @@ export default class PinCode extends Component<Props, State> {
           inputElementRef.inputElement &&
           emptyFieldIndex !== inputFocusKey
         ) {
-          inputElementRef.focus();
-          if (inputElementRef.props.value) {
-            inputElementRef.inputElement.current.selectionStart = 1;
-            inputElementRef.inputElement.current.selectionEnd = 1;
-          }
+          this.setFocusOnField(inputElementRef);
         } else if (!isBackSpace) {
           // If new value was added to already empty field, just re-focus to the same field
           inputElementRef.focus();
@@ -197,8 +189,6 @@ export default class PinCode extends Component<Props, State> {
   }
 
   onKeyDown = (evt: SyntheticKeyboardEvent<EventTarget>, inputKey: number) => {
-    const { value, onChange } = this.props;
-    const { focusKeyChanged } = this.state;
     const { decimalSeparator, groupSeparator } = BigNumber.config().FORMAT;
     const { key, target } = evt;
     const control: { blur?: Function, focus?: Function } = target;
@@ -221,6 +211,24 @@ export default class PinCode extends Component<Props, State> {
     if (isSeparator) {
       this.handleSeparatorInput(nextInputField, control);
     }
+    this.handleBackspaceClick(
+      inputNewValue,
+      isBackSpace,
+      fieldIsEmpty,
+      inputKey,
+      cursorPosition
+    );
+  };
+
+  handleBackspaceClick = (
+    inputNewValue: string | null,
+    isBackSpace: boolean,
+    fieldIsEmpty: boolean,
+    inputKey: number,
+    cursorPosition: number
+  ) => {
+    const { value, onChange } = this.props;
+    const { focusKeyChanged } = this.state;
     let focusKeyUpdated = false;
     if (isBackSpace && (fieldIsEmpty || cursorPosition === 0)) {
       if (onChange) {
@@ -242,6 +250,14 @@ export default class PinCode extends Component<Props, State> {
     } else {
       this.focusKey = inputKey;
       this.fromBackspace = false;
+    }
+  };
+
+  setFocusOnField = (inputFieldRef: ElementRef<'input'>) => {
+    inputFieldRef.focus();
+    if (inputFieldRef.props.value) {
+      inputFieldRef.inputElement.current.selectionStart = 0;
+      inputFieldRef.inputElement.current.selectionEnd = 1;
     }
   };
 
