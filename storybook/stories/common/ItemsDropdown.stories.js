@@ -24,7 +24,7 @@ import currenciesList from '../../../source/renderer/app/config/currenciesList.j
 import {
   generateWallet,
   generateHash,
-  generateWalletSummaryAsset,
+  generateAssetToken,
 } from '../_support/utils';
 import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
 
@@ -50,22 +50,22 @@ const stakePoolsList = [
 ];
 
 const assets = [
-  generateWalletSummaryAsset(generateHash(), '', generateHash(), 100, {
+  generateAssetToken(generateHash(), '', generateHash(), 100, {
     name: 'Asset 1',
     ticker: 'ABCD',
     description: 'Asset 1 description',
   }),
-  generateWalletSummaryAsset(generateHash(), '', generateHash(), 200, {
+  generateAssetToken(generateHash(), '', generateHash(), 200, {
     name: 'Asset 2',
     ticker: 'EFG',
     description: 'Asset 2 description',
   }),
-  generateWalletSummaryAsset(generateHash(), '', generateHash(), 300, {
+  generateAssetToken(generateHash(), '', generateHash(), 300, {
     name: 'Asset 3',
     ticker: 'HI',
     description: 'Asset 3 description',
   }),
-  generateWalletSummaryAsset(generateHash(), '', generateHash(), 400, {
+  generateAssetToken(generateHash(), '', generateHash(), 400, {
     name: 'Asset 4',
     ticker: 'JKL',
     description: 'Asset 4 description',
