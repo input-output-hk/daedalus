@@ -205,9 +205,13 @@ export default class PinCode extends Component<Props, State> {
     // Recheck if field is empty
     const fieldIsEmpty = this.inputsRef[inputKey] ? !inputNewValue : false;
     // Get cursor pointer position from input field
-    const cursorPosition = this.inputsRef[inputKey]
+    const selectionStart = this.inputsRef[inputKey]
       ? this.inputsRef[inputKey].inputElement.current.selectionStart
-      : 1;
+      : 0;
+    const selectionEnd = this.inputsRef[inputKey]
+      ? this.inputsRef[inputKey].inputElement.current.selectionEnd
+      : 0;
+    const isEntrySelected = selectionStart !== selectionEnd;
     if (isSeparator) {
       this.handleSeparatorInput(nextInputField, control);
     }
@@ -216,7 +220,7 @@ export default class PinCode extends Component<Props, State> {
       isBackSpace,
       fieldIsEmpty,
       inputKey,
-      cursorPosition
+      isEntrySelected
     );
   };
 
@@ -225,12 +229,12 @@ export default class PinCode extends Component<Props, State> {
     isBackSpace: boolean,
     fieldIsEmpty: boolean,
     inputKey: number,
-    cursorPosition: number
+    isEntrySelected: boolean,
   ) => {
     const { value, onChange } = this.props;
     const { focusKeyChanged } = this.state;
     let focusKeyUpdated = false;
-    if (isBackSpace && (fieldIsEmpty || cursorPosition === 0)) {
+    if (isBackSpace && fieldIsEmpty && !isEntrySelected) {
       if (onChange) {
         // Handle specific case when user pressed backspace and field is empty
         // or cursor pointer position was in front of the value
