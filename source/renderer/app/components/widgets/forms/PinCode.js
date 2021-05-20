@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import type { Field } from 'mobx-react-form';
 import styles from './PinCode.scss';
+import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
 
 type Props = $Exact<{
   id: string,
@@ -31,7 +32,7 @@ type State = {
 
 export default class PinCode extends Component<Props, State> {
   static defaultProps = {
-    length: 4,
+    length: VOTING_REGISTRATION_PIN_CODE_LENGTH,
     disabled: false,
     value: [],
   };
