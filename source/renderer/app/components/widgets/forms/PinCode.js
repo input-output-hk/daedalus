@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, ElementRef } from 'react';
+import React, { Component } from 'react';
 import { map, isNaN } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -229,7 +229,7 @@ export default class PinCode extends Component<Props, State> {
     isBackSpace: boolean,
     fieldIsEmpty: boolean,
     inputKey: number,
-    isEntrySelected: boolean,
+    isEntrySelected: boolean
   ) => {
     const { value, onChange } = this.props;
     const { focusKeyChanged } = this.state;
@@ -257,11 +257,12 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
-  setFocusOnField = (inputFieldRef: ElementRef<'input'>) => {
-    inputFieldRef.focus();
-    if (inputFieldRef.props.value) {
-      inputFieldRef.inputElement.current.selectionStart = 0;
-      inputFieldRef.inputElement.current.selectionEnd = 1;
+  setFocusOnField = (inputFieldRef: { focus: ?Function, props: ?Object, inputElement: ?Object }) => {
+    const { focus, props, inputElement } = inputFieldRef;
+    if (focus) focus();
+    if (inputElement && props && props.value) {
+      inputElement.current.selectionStart = 0;
+      inputElement.current.selectionEnd = 1;
     }
   };
 
