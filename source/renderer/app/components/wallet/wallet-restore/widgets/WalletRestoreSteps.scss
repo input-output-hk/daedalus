@@ -1,5 +1,5 @@
 .component {
-  margin: 0 auto 20px;
+  margin: -20px auto 20px;
   width: 340px;
 
   :global {
@@ -7,12 +7,4 @@
       left: -43%;
     }
   }
-}
-
-.stepCounter {
-  font-family: var(--font-regular);
-  font-size: 12px;
-  line-height: 1.83;
-  margin-bottom: 5px;
-  text-align: center;
 }

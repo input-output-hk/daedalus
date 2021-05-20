@@ -4,7 +4,10 @@
 import './summary/WalletSummary.stories';
 import './send/WalletSend.stories';
 import './receive/WalletReceive.stories';
-import './transactions/WalletTransactions.stories';
+import './transactions/TransactionsList.stories';
+import './transactions/Transaction.stories';
+import './transactions/TransactionMetadata.stories';
+import './transactions/Utxo.stories';
 import './settings/WalletSettings.stories';
 import './addWallet/AddWallet.stories';
 import './import/WalletImportFile.stories';

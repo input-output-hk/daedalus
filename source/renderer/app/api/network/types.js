@@ -1,7 +1,8 @@
 // @flow
 export type TipInfo = {
-  epoch: ?number,
-  slot: ?number,
+  epoch: number,
+  slot: number,
+  absoluteSlotNumber: number,
 };
 
 export type NextEpoch = {
@@ -29,7 +30,7 @@ export type EpochLength = {
   unit: string,
 };
 
-export type EpochStability = {
+export type SecurityParameter = {
   quantity: number,
   unit: string,
 };
@@ -102,12 +103,18 @@ export type GetNetworkParametersResponse = {
   blockchainStartTime: number,
   slotLength: SlotLength,
   epochLength: EpochLength,
-  epochStability: EpochStability,
+  securityParameter: SecurityParameter,
   activeSlotCoefficient: ActiveSlotCoefficient,
   decentralizationLevel: DecentralizationLevel,
   desiredPoolNumber: number,
   minimumUtxoValue: MinimumUtxoValue,
   hardforkAt: ?HardforkAt,
+  eras: {
+    byron?: HardforkAt,
+    shelley?: HardforkAt,
+    allegra?: HardforkAt,
+    mary?: HardforkAt,
+  },
 };
 
 export type GetNetworkParametersApiResponse = {
@@ -115,10 +122,15 @@ export type GetNetworkParametersApiResponse = {
   blockchain_start_time: string,
   slot_length: SlotLength,
   epoch_length: EpochLength,
-  epoch_stability: EpochStability,
+  security_parameter: SecurityParameter,
   active_slot_coefficient: ActiveSlotCoefficient,
   decentralization_level: DecentralizationLevel,
   desired_pool_number: number,
   minimum_utxo_value: MinimumUtxoValue,
-  hardfork_at?: HardforkAt,
+  eras: {
+    byron?: HardforkAt,
+    shelley?: HardforkAt,
+    allegra?: HardforkAt,
+    mary?: HardforkAt,
+  },
 };

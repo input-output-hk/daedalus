@@ -6,15 +6,21 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './CancelTransactionButton.scss';
 
 const messages = defineMessages({
-  label: {
+  cancelLabel: {
     id: 'wallet.transaction.pending.cancelTransactionButton',
     defaultMessage: '!!!Cancel pending transaction',
     description: 'Label for the cancel pending transaction button',
+  },
+  removeLabel: {
+    id: 'wallet.transaction.failed.removeTransactionButton',
+    defaultMessage: '!!!Remove failed transaction',
+    description: 'Label for the remove failed transaction button',
   },
 });
 
 type Props = {
   onClick: Function,
+  state: 'cancel' | 'remove',
 };
 
 export default class CancelTransactionButton extends Component<Props> {
@@ -23,8 +29,9 @@ export default class CancelTransactionButton extends Component<Props> {
   };
 
   render() {
-    const { onClick } = this.props;
-    const label = this.context.intl.formatMessage(messages.label);
+    const { onClick, state } = this.props;
+    const label = this.context.intl.formatMessage(messages[`${state}Label`]);
+
     return (
       <Button
         className="attention"

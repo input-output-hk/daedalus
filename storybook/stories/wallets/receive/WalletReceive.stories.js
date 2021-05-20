@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { number, boolean } from '@storybook/addon-knobs';
+import { number, boolean, select } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -13,6 +13,7 @@ import WalletReceiveSequential from '../../../../source/renderer/app/components/
 import WalletReceiveRandom from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveRandom';
 import WalletReceiveDialog from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../../../source/renderer/app/components/layout/VerticalFlexContainer';
+import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 
 const onToggleSubMenus = {
   listen: action('onToggleSubMenus:listen'),
@@ -21,6 +22,104 @@ const onToggleSubMenus = {
 
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
+  .add('Receive - sequential', ({ locale }: { locale: string }) => {
+    const isIncentivizedTestnet = boolean('isIncentivizedTestnet', false);
+    const showDialog = boolean('showDialog', false);
+
+    return (
+      <VerticalFlexContainer>
+        <WalletReceiveSequential
+          walletAddresses={[
+            ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
+              generateAddress(true)
+            ),
+            ...Array.from(Array(number('Addresses', 10))).map(() =>
+              generateAddress()
+            ),
+          ]}
+          onShareAddress={action('onShareAddress')}
+          onCopyAddress={action('onCopyAddress')}
+          isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
+          isIncentivizedTestnet={isIncentivizedTestnet}
+          currentLocale={locale}
+          showUsed={boolean('showUsed', false)}
+          onToggleUsedAddresses={action('onToggleUsedAddresses')}
+          onToggleSubMenus={onToggleSubMenus}
+          isShowingSubMenus
+        />
+        {showDialog && (
+          <WalletReceiveDialog
+            address={generateAddress()}
+            onCopyAddress={action('onCopyAddress')}
+            onDownloadPDF={action('onDownloadPDF')}
+            onSaveQRCodeImage={action('onSaveQRCodeImage')}
+            onClose={action('onClose')}
+            hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+            isHardwareWallet={false}
+            walletName="Wallet 1"
+            isAddressDerived={false}
+            isAddressChecked={false}
+            onChangeVerificationStatus={action('onChangeVerificationStatus')}
+            onSupportRequestClick={action('onSupportRequestClick')}
+            isTrezor={boolean('isTrezor', false)}
+          />
+        )}
+      </VerticalFlexContainer>
+    );
+  })
+  .add(
+    'Receive - sequential with address verification',
+    ({ locale }: { locale: string }) => {
+      const isIncentivizedTestnet = boolean('isIncentivizedTestnet', false);
+
+      return (
+        <VerticalFlexContainer>
+          <WalletReceiveSequential
+            walletAddresses={[
+              ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
+                generateAddress(true)
+              ),
+              ...Array.from(Array(number('Addresses', 10))).map(() =>
+                generateAddress()
+              ),
+            ]}
+            onShareAddress={action('onShareAddress')}
+            onCopyAddress={action('onCopyAddress')}
+            isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
+            isIncentivizedTestnet={isIncentivizedTestnet}
+            currentLocale={locale}
+            onToggleSubMenus={onToggleSubMenus}
+            isShowingSubMenus
+            onToggleUsedAddresses={action('onToggleUsedAddresses')}
+            showUsed={boolean('showUsed', false)}
+          />
+          <WalletReceiveDialog
+            address={generateAddress()}
+            onCopyAddress={action('onCopyAddress')}
+            onDownloadPDF={action('onDownloadPDF')}
+            onSaveQRCodeImage={action('onSaveQRCodeImage')}
+            onClose={action('onClose')}
+            hwDeviceStatus={select(
+              'Address verification state',
+              {
+                Verify: HwDeviceStatuses.VERIFYING_ADDRESS,
+                Verified: HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
+                Errored: HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
+              },
+              HwDeviceStatuses.VERIFYING_ADDRESS
+            )}
+            isHardwareWallet
+            walletName="Ledger Nano S"
+            isAddressDerived={false}
+            isAddressChecked={false}
+            onChangeVerificationStatus={action('onChangeVerificationStatus')}
+            onSupportRequestClick={action('onSupportRequestClick')}
+            isTrezor={boolean('isTrezor', false)}
+          />
+        </VerticalFlexContainer>
+      );
+    }
+  )
   .add('Receive - random', () => {
     const isSidebarExpanded = boolean('isSidebarExpanded', false);
     const walletHasPassword = boolean('walletHasPassword', false);
@@ -46,41 +145,9 @@ storiesOf('Wallets|Receive', module)
           isSidebarExpanded={isSidebarExpanded}
           walletHasPassword={walletHasPassword}
           isSubmitting={isSubmitting}
+          showUsed={boolean('showUsed', false)}
+          onToggleUsedAddresses={action('onToggleUsedAddresses')}
         />
-      </VerticalFlexContainer>
-    );
-  })
-  .add('Receive - sequential', ({ locale }: { locale: string }) => {
-    const isIncentivizedTestnet = boolean('isIncentivizedTestnet', true);
-    const showDialog = boolean('showDialog', false);
-
-    return (
-      <VerticalFlexContainer>
-        <WalletReceiveSequential
-          walletAddresses={[
-            ...Array.from(Array(number('Addresses', 10))).map(() =>
-              generateAddress()
-            ),
-            ...Array.from(Array(number('Addresses (used)', 10))).map(() =>
-              generateAddress(true)
-            ),
-          ]}
-          onShareAddress={action('onShareAddress')}
-          onCopyAddress={action('onCopyAddress')}
-          isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
-          isIncentivizedTestnet={isIncentivizedTestnet}
-          currentLocale={locale}
-          onToggleSubMenus={onToggleSubMenus}
-          isShowingSubMenus
-        />
-        {showDialog && !isIncentivizedTestnet && (
-          <WalletReceiveDialog
-            address={generateAddress()}
-            onCopyAddress={action('onCopyAddress')}
-            onDownloadPDF={action('onDownloadPDF')}
-            onClose={action('onClose')}
-          />
-        )}
       </VerticalFlexContainer>
     );
   });

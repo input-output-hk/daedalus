@@ -6,12 +6,10 @@ import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import SVGInline from 'react-svg-inline';
-import { BigNumber } from 'bignumber.js';
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -19,6 +17,11 @@ import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
+import {
+  formattedNumber,
+  formattedCpuModel,
+  formattedSize,
+} from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -480,10 +483,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const {
       platform,
       platformVersion,
-      cpu,
+      cpu: cpuInOriginalFormat,
       ram,
-      availableDiskSpace,
+      availableDiskSpace: availableDiskSpaceInOriginalFormat,
     } = systemInfo;
+
+    const cpu = formattedCpuModel(cpuInOriginalFormat);
+    const availableDiskSpace = formattedSize(
+      availableDiskSpaceInOriginalFormat
+    );
 
     const {
       daedalusVersion,
@@ -549,12 +557,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getSectionRow('cardanoNodeStatus')}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
-              {getRow(
-                'cpu',
-                <Tooltip skin={TooltipSkin} tip={cpu}>
-                  {cpu}
-                </Tooltip>
-              )}
+              {getRow('cpu', <PopOver content={cpu}>{cpu}</PopOver>)}
               {getRow('ram', ram)}
               {getRow(
                 'availableDiskSpace',
@@ -597,9 +600,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     onCopy={onCopyStateDirectoryPath}
                   >
                     <div className={styles.stateDirectoryPath}>
-                      <Tooltip
-                        skin={TooltipSkin}
-                        tip={
+                      <PopOver
+                        maxWidth={400}
+                        content={
                           <div className={styles.tooltipLabelWrapper}>
                             <div>{daedalusStateDirectoryPath}</div>
                           </div>
@@ -609,7 +612,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                           {daedalusStateDirectoryPath}
                         </div>
                         <SVGInline svg={iconCopy} />
-                      </Tooltip>
+                      </PopOver>
                     </div>
                   </CopyToClipboard>
                 </Fragment>
@@ -645,16 +648,14 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('synced', isSynced)}
               {getRow(
                 'syncPercentage',
-                `${new BigNumber(
-                  parseFloat(syncPercentage).toFixed(2)
-                ).toFormat(2)}%`
+                `${formattedNumber(syncPercentage, 2)}%`
               )}
               {getRow(
                 'lastNetworkBlock',
                 <Fragment>
                   <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
                   {networkTip && networkTip.epoch ? (
-                    networkTip.epoch
+                    formattedNumber(networkTip.epoch)
                   ) : (
                     <SVGInline
                       svg={sandClockIcon}
@@ -663,7 +664,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   )}
                   <span>{intl.formatMessage(messages.slot)}:</span>{' '}
                   {networkTip && networkTip.slot ? (
-                    networkTip.slot
+                    formattedNumber(networkTip.slot)
                   ) : (
                     <SVGInline
                       svg={sandClockIcon}
@@ -677,7 +678,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <Fragment>
                   <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
                   {localTip && localTip.epoch ? (
-                    localTip.epoch
+                    formattedNumber(localTip.epoch)
                   ) : (
                     <SVGInline
                       svg={sandClockIcon}
@@ -686,7 +687,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   )}
                   <span>{intl.formatMessage(messages.slot)}:</span>{' '}
                   {localTip && localTip.slot ? (
-                    localTip.slot
+                    formattedNumber(localTip.slot)
                   ) : (
                     <SVGInline
                       svg={sandClockIcon}
@@ -725,9 +726,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   ) : (
                     <span className={localTimeDifferenceClasses}>
                       {isNTPServiceReachable
-                        ? `${new BigNumber(
-                            localTimeDifference || 0
-                          ).toFormat()} μs`
+                        ? `${formattedNumber(localTimeDifference || 0)} μs`
                         : intl.formatMessage(messages.serviceUnreachable)}
                     </span>
                   )}

@@ -27,17 +27,25 @@ export default class Settings extends Component<InjectedContainerProps> {
 
   render() {
     const { isFlight } = global;
-    const { actions, children } = this.props;
+    const { actions, stores, children } = this.props;
+    const { networkStatus, app, router } = stores;
+    const { isSynced } = networkStatus;
+    const { currentRoute } = app;
+    const { location } = router;
     const menu = (
       <SettingsMenu
+        isSyncing={!isSynced}
         isFlight={isFlight}
+        currentRoute={currentRoute}
         onItemClick={(route) => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
       />
     );
     return (
       <Layout>
-        <SettingsLayout menu={menu}>{children}</SettingsLayout>
+        <SettingsLayout menu={menu} activePage={location.pathname}>
+          {children}
+        </SettingsLayout>
       </Layout>
     );
   }

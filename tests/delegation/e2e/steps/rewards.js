@@ -43,10 +43,13 @@ Then(/^I click on the Export to CSV button$/, async function () {
     fileContent: exportedCSVContent,
   };
 
-  await this.client.execute(params => {
-    daedalus.actions.wallets.generateRewardsCsv.trigger({
-      rewards: params.fileContent,
-      filePath: params.filePath,
+  await this.client.execute(({
+    fileContent,
+    filePath
+  }) => {
+    daedalus.actions.wallets.generateCsv.trigger({
+      fileContent,
+      filePath,
     });
   }, data);
   this.exportedCSVPath = exportedCSVPath;

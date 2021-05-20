@@ -13,7 +13,8 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
     const { stores, actions } = this.props;
     const { appUpdate } = stores;
     const { environment, openExternalLink } = stores.app;
-    const { version, isLinux } = environment;
+    const { version, isLinux, isTestnet } = environment;
+    const { isFlight } = global;
     const {
       downloadProgress,
       isUpdateDownloaded,
@@ -52,6 +53,8 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
         isWaitingToQuitDaedalus={isWaitingToQuitDaedalus}
         installationProgress={installationProgress}
         isLinux={isLinux}
+        isFlight={isFlight}
+        isTestnet={isTestnet}
       />
     );
   }

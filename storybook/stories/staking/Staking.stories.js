@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number } from '@storybook/addon-knobs';
+import { withKnobs, date, number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
@@ -13,6 +13,7 @@ import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarC
 import StakingWithNavigation from '../../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../../source/renderer/app/components/staking/countdown/StakingCountdown';
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
+import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
 import ExperimentalDataOverlay from '../../../source/renderer/app/components/notifications/ExperimentalDataOverlay';
 
@@ -56,6 +57,7 @@ const pageNames = {
   'rewards-itn': 'Rewards - ITN',
   epochs: 'Epochs',
   info: 'Info',
+  'info-countdown': 'Info Countdown',
 };
 
 const decorator = (story, context) => {
@@ -227,6 +229,43 @@ storiesOf('Decentralization | Staking', module)
       id: 'info',
     }
   )
+  .add(
+    pageNames['info-countdown'],
+    () => {
+      const percentage = number('percentage', 98, {
+        range: true,
+        min: 0,
+        max: 100,
+        step: 1,
+      });
+      const epochNumber = number('epochNumber', 257);
+      const isFullyDecentralized = percentage === 100;
+      const epochDate = isFullyDecentralized
+        ? new Date().getTime() - 100000000
+        : new Date().getTime() + 100000000;
+      const epochStart = new Date(epochDate).toISOString();
+      return (
+        <StakingInfoCountdown
+          percentage={percentage}
+          onLearnMoreClick={action('onLearnMoreClick')}
+          epoch={{
+            epochNumber,
+            epochStart,
+          }}
+          onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
+          isAnimating={boolean('isAnimating', false)}
+          isFullyDecentralized={boolean('isFullyDecentralized', false)}
+          stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
+          onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
+          onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}
+        />
+      );
+    },
+    {
+      id: 'info-countdown',
+    }
+  )
+
   .add('Delegation Wizard', (props) => <StakingDelegationSteps {...props} />, {
     id: 'wizard',
   })
@@ -237,9 +276,18 @@ storiesOf('Decentralization | Staking', module)
       id: 'wizard',
     }
   )
-  .add('Undelegate Confirmation', StakingUndelegateConfirmationStory, {
-    id: 'undelegate-confirmation',
-  })
+  .add(
+    'Undelegate Confirmation',
+    (props) => (
+      <StakingUndelegateConfirmationStory
+        {...props}
+        isHardwareWallet={boolean('isHardwareWallet', false)}
+      />
+    ),
+    {
+      id: 'undelegate-confirmation',
+    }
+  )
 
   .add(
     'Undelegate Confirmation - unknownn stake pool',

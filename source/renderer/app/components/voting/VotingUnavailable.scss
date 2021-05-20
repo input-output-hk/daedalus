@@ -1,0 +1,40 @@
+@import './votingConfig';
+
+.component {
+  @extend %regularText;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+
+  h1 {
+    font-family: var(--font-medium);
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.38;
+    margin-top: 11px;
+    max-width: 500px;
+
+    .link {
+      font-family: var(--font-regular);
+      font-size: inherit;
+      word-break: keep-all;
+    }
+  }
+
+  b {
+    @extend %accentText;
+  }
+
+  .description {
+    margin-top: 15px;
+    max-width: 680px;
+  }
+}

@@ -1,0 +1,51 @@
+.component {
+  .label {
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 6px;
+  }
+
+  .description {
+    p:first-child {
+      margin-bottom: 10px;
+    }
+  }
+
+  p {
+    font-family: var(--font-light);
+    line-height: 1.38;
+    margin-bottom: 20px;
+  }
+
+  i {
+    opacity: 0.5;
+  }
+
+  .selection {
+    font-family: var(--font-regular);
+    padding: 17px 20px;
+  }
+
+  .decimalsDropdownLabel {
+    > span {
+      margin-left: 6px;
+    }
+  }
+
+  .warningIcon {
+    svg {
+      width: 12px;
+    }
+  }
+
+  .assetToken {
+    text-align: left;
+  }
+
+  :global {
+    .Dialog_subtitle {
+      margin: 0 auto;
+    }
+  }
+}

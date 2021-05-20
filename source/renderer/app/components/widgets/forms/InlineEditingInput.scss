@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/error-message';
+
 .component {
   margin-bottom: 20px;
   position: relative;
@@ -8,6 +10,12 @@
     color: var(--theme-input-text-color);
   }
 
+  &:hover {
+    .editButton {
+      opacity: 1;
+    }
+  }
+
   &.inactive {
     &:hover {
       input {
@@ -16,19 +24,126 @@
     }
   }
 
-  .button {
-    bottom: 14px;
-    color: var(--theme-label-button-color);
-    cursor: pointer;
-    font-family: var(--font-light);
-    font-size: 16px;
-    line-height: 1.38;
-    opacity: 0.5;
+  &.readOnly {
+    input:read-only {
+      background: var(--rp-input-bg-color-disabled);
+      border: none;
+    }
+    &:hover {
+      input {
+        cursor: text;
+      }
+    }
+  }
+
+  &.oneButton {
+    :global {
+      input {
+        padding-right: 49px;
+      }
+    }
+  }
+
+  &.twoButtons {
+    :global {
+      input {
+        padding-right: 88px;
+      }
+    }
+  }
+
+  .buttonsWrapper {
+    cursor: text;
+    height: 28px;
+    margin-right: 11px;
     position: absolute;
-    right: 22px;
-    text-transform: lowercase;
+    right: 1px;
+    top: 42px;
+  }
+
+  .button {
+    background-color: var(--theme-button-flat-background-color);
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+    &:hover {
+      background-color: var(--theme-button-flat-background-color-hover);
+    }
+    &:active {
+      background-color: var(--theme-button-flat-background-color-active);
+    }
+    .icon {
+      svg {
+        height: 12px;
+        position: relative;
+        top: 1px;
+        width: 12px;
+      }
+    }
+  }
+  .editButton {
+    opacity: 0;
+    transition: opacity 0.25s;
     &:hover {
       opacity: 1;
+    }
+    .icon {
+      svg path {
+        stroke: var(--theme-button-flat-text-color);
+      }
+    }
+  }
+  .cancelButton {
+    .icon {
+      svg {
+        height: 10px;
+        width: 10px;
+        g {
+          fill: var(--theme-button-flat-text-color);
+        }
+      }
+    }
+  }
+  .okButton {
+    background-color: var(--theme-button-primary-background-color);
+    margin-left: 11px;
+    &:hover {
+      background-color: var(--theme-button-primary-background-color-hover);
+    }
+    &:active {
+      background-color: var(--theme-button-primary-background-color-active);
+    }
+    .icon {
+      svg path {
+        stroke: var(--theme-button-primary-text-color);
+      }
+    }
+  }
+  .submittingButton {
+    &:hover {
+      background-color: var(--theme-button-flat-background-color);
+      cursor: default;
+    }
+    &:active {
+      background-color: var(--theme-button-flat-background-color);
+    }
+    .icon {
+      animation: spinner 1.5s linear;
+      animation-iteration-count: infinite;
+      display: inline-block;
+      svg g {
+        stroke: var(--theme-button-flat-text-color);
+      }
+    }
+  }
+
+  @keyframes spinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
     }
   }
 
@@ -55,4 +170,16 @@
     text-align: right;
     top: 5px;
   }
+
+  :global {
+    .SimpleFormField_label {
+      display: inline-block;
+    }
+  }
+}
+
+.errorMessage {
+  @include error-message;
+  margin-top: 20px;
+  text-align: center;
 }

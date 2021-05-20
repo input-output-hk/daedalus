@@ -2,10 +2,17 @@
 import Action from '../actions/lib/Action';
 
 export type NotificationId =
+  | 'copyPublicKey'
+  | 'copyAddress'
+  | 'copyAssetItem'
+  | 'copyStateDirectoryPath'
+  | 'downloadAddressPDFSuccess'
   | 'downloadLogsProgress'
   | 'downloadLogsSuccess'
-  | 'copyAddress'
-  | 'copyStateDirectoryPath';
+  | 'downloadQRCodeImageSuccess'
+  | 'downloadVotingPDFSuccess'
+  | 'downloadRewardsCSVSuccess'
+  | 'downloadTransactionsCSVSuccess';
 
 export type NotificationConfig = {
   id: NotificationId,

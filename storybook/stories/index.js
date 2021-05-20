@@ -10,9 +10,17 @@ import './nodes';
 
 // Staking
 import './staking/Staking.stories';
+import './staking/CountdownParty.stories';
+
+// Voting
+import './voting/Voting.stories';
 
 // Settings
 import './settings';
+
+// Assets
+import './assets/AssetToken.stories';
+import './assets/AssetSettingsDialog.stories';
 
 // News
 import './news/NewsFeed.stories';
@@ -27,3 +35,4 @@ import './navigation/SidebarWalletsMenu.stories';
 
 // Common
 import './common/Widgets.stories';
+import './common/ItemsDropdown.stories';

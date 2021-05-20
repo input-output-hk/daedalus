@@ -1,7 +1,13 @@
 // @flow
 import Action from './lib/Action';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
-import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
+import type {
+  TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../common/types/hardware-wallets.types';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
+import type { WalletSummaryAsset } from '../api/assets/types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -12,6 +18,7 @@ export type WalletImportFromFileParams = {
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
+  refreshWalletsDataSuccess: Action<any> = new Action();
   /* ----------  Create Wallet  ---------- */
   createWallet: Action<{
     name: string,
@@ -40,11 +47,7 @@ export default class WalletsActions {
   restoreWallet: Action<any> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string, isLegacy: boolean }> = new Action();
-  undelegateWallet: Action<{
-    walletId: string,
-    stakePoolId: string,
-    passphrase: string,
-  }> = new Action();
+  undelegateWallet: Action<QuitStakePoolRequest> = new Action();
   setUndelegateWalletSubmissionSuccess: Action<{
     result: boolean,
   }> = new Action();
@@ -52,21 +55,32 @@ export default class WalletsActions {
     receiver: string,
     amount: string,
     passphrase: string,
+    assets?: Array<WalletSummaryAsset>,
+    assetsAmounts?: Array<string>,
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: WalletExportTypeChoices,
   }> = new Action();
   generateCertificate: Action<{ filePath: string }> = new Action();
-  generateRewardsCsv: Action<{
+  generateCsv: Action<{
     filePath: string,
-    rewards: Array<CsvRecord>,
+    fileContent: CsvFileContent,
   }> = new Action();
   generateAddressPDF: Action<{
-    address: string,
     note: string,
+    address: string,
     filePath: string,
   }> = new Action();
+  generateAddressPDFSuccess: Action<{ walletAddress: string }> = new Action();
+  saveQRCodeImage: Action<{
+    address: string,
+    filePath: string,
+  }> = new Action();
+  saveQRCodeImageSuccess: Action<{ walletAddress: string }> = new Action();
+  getAccountPublicKey: Action<{ spendingPassword: string }> = new Action();
+  copyPublicKey: Action<{ publicKey: string }> = new Action();
   copyAddress: Action<{ address: string }> = new Action();
+  copyAssetItem: Action<{ assetItem: string, value: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   closeRewardsCsvGeneration: Action<any> = new Action();
@@ -75,6 +89,9 @@ export default class WalletsActions {
   finishRewardsCsv: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
+  setActiveAssetFingerprint: Action<{
+    fingerprint: ?string,
+  }> = new Action();
   transferFundsNextStep: Action<any> = new Action();
   transferFundsPrevStep: Action<any> = new Action();
   transferFundsSetSourceWalletId: Action<{
@@ -87,4 +104,9 @@ export default class WalletsActions {
   transferFundsClose: Action<any> = new Action();
   transferFundsCalculateFee: Action<{ sourceWalletId: string }> = new Action();
   transferFunds: Action<{ spendingPassword: string }> = new Action();
+  createHardwareWallet: Action<{
+    walletName: string,
+    extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
+    device: TransportDevice,
+  }> = new Action();
 }

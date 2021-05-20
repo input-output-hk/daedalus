@@ -1,6 +1,7 @@
 // @flow
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
+import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -11,22 +12,33 @@ import {
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
+  STAKE_POOLS_FETCH_TRACKER_INTERVAL,
+  STAKE_POOLS_FETCH_TRACKER_CYCLES,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
+  SMASH_SERVERS_LIST,
+  SMASH_SERVER_TYPES,
+  SMASH_SERVER_INVALID_TYPES,
+  CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
   QuitStakePoolRequest,
+  PoolMetadataSource,
 } from '../api/staking/types';
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
+import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import REWARDS from '../config/stakingRewards.dummy.json';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import type { RedeemItnRewardsStep } from '../types/stakingTypes';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
@@ -35,6 +47,9 @@ export default class StakingStore extends Store {
   @observable selectedDelegationWalletId = null;
   @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
+  @observable smashServerUrl: ?string = null;
+  @observable smashServerUrlError: ?LocalizableError = null;
+  @observable smashServerLoading: boolean = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
@@ -44,20 +59,31 @@ export default class StakingStore extends Store {
   @observable transactionFees: ?BigNumber = null;
   @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
-  @observable stakingSuccess: ?boolean = null;
+  @observable isCalculatingReedemFees: boolean = false;
+  @observable redeemSuccess: ?boolean = null;
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
+
+  /* ----------  Stake Pools Fetching Tracker  ---------- */
+  @observable isFetchingStakePools: boolean = false;
+  @observable numberOfStakePoolsFetched: number = 0;
+  @observable cyclesWithoutIncreasingStakePools: number = 0;
+  @observable stakingInfoWasOpen: boolean = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
+  stakePoolsFetchTrackerInterval: ?IntervalID = null;
 
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    const { staking: stakingActions } = this.actions;
+    const {
+      staking: stakingActions,
+      networkStatus: networkStatusActions,
+    } = this.actions;
 
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
@@ -69,7 +95,9 @@ export default class StakingStore extends Store {
     stakingActions.onConfigurationContinue.listen(
       this._onConfigurationContinue
     );
-    stakingActions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
+    stakingActions.onCalculateRedeemWalletFees.listen(
+      this._onCalculateRedeemWalletFees
+    );
     stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
     stakingActions.onResultContinue.listen(this._onResultContinue);
     stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
@@ -83,12 +111,20 @@ export default class StakingStore extends Store {
     stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
     stakingActions.updateDelegatingStake.listen(this._setStake);
     stakingActions.rankStakePools.listen(this._rankStakePools);
+    stakingActions.selectSmashServerUrl.listen(this._selectSmashServerUrl);
+    stakingActions.resetSmashServerError.listen(this._resetSmashServerError);
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
+    stakingActions.requestCSVFile.listen(this._requestCSVFile);
+    stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
+    networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
+
+    this._startStakePoolsFetchTracker();
+    this._getStakingInfoWasOpen();
   }
 
   // REQUESTS
@@ -101,7 +137,8 @@ export default class StakingStore extends Store {
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
-  @observable calculateDelegationFeeRequest: Request<BigNumber> = new Request(
+  @observable
+  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
     this.api.ada.calculateDelegationFee
   );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
@@ -111,8 +148,40 @@ export default class StakingStore extends Store {
   @observable requestRedeemItnRewardsRequest: Request<any> = new Request(
     this.api.ada.requestRedeemItnRewards
   );
+  @observable getSmashSettingsRequest: Request<any> = new Request(
+    this.api.ada.getSmashSettings
+  );
+  @observable
+  updateSmashSettingsRequest: Request<PoolMetadataSource> = new Request(
+    this.api.ada.updateSmashSettings
+  );
 
   // =================== PUBLIC API ==================== //
+
+  @action _getSmashSettingsRequest = async () => {
+    this.smashServerLoading = true;
+    let smashServerUrl: string = await this.getSmashSettingsRequest.execute();
+
+    const localSmashServer = await this.api.localStorage.getSmashServer();
+
+    // If the server wasn't set, sets it for IOHK
+    if (
+      !smashServerUrl ||
+      smashServerUrl === SMASH_SERVER_INVALID_TYPES.NONE ||
+      (smashServerUrl === SMASH_SERVER_TYPES.DIRECT &&
+        localSmashServer !== SMASH_SERVER_TYPES.DIRECT)
+    ) {
+      smashServerUrl = this.environment.isSelfnode
+        ? SMASH_SERVERS_LIST.direct.url
+        : SMASH_SERVERS_LIST.iohk.url;
+      await this.updateSmashSettingsRequest.execute(smashServerUrl);
+    }
+
+    runInAction(() => {
+      this.smashServerUrl = smashServerUrl;
+      this.smashServerLoading = false;
+    });
+  };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
@@ -127,18 +196,112 @@ export default class StakingStore extends Store {
     this.getStakePoolsData();
   };
 
+  @action _selectSmashServerUrl = async ({
+    smashServerUrl,
+  }: {
+    smashServerUrl: string,
+  }) => {
+    if (smashServerUrl && smashServerUrl !== this.smashServerUrl) {
+      try {
+        this.smashServerUrlError = null;
+        // Retrieves the API update
+        this.smashServerLoading = true;
+        await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        // Resets the Stake Pools list request
+        this.stakePoolsRequest.reset();
+        // Refreshes the Stake Pools list
+        this.getStakePoolsData();
+        // Starts the SPs fetch tracker
+        this._startStakePoolsFetchTracker();
+        // Updates the Smash Server URL
+        runInAction(() => {
+          this.smashServerUrl = smashServerUrl;
+          this.smashServerUrlError = null;
+          this.smashServerLoading = false;
+        });
+        // Update
+        await this.api.localStorage.setSmashServer(smashServerUrl);
+      } catch (error) {
+        runInAction(() => {
+          this.smashServerUrlError = error;
+          this.smashServerLoading = false;
+        });
+      }
+    }
+  };
+
+  @action _startStakePoolsFetchTracker = () => {
+    this._stopStakePoolsFetchTracker();
+    this.isFetchingStakePools = true;
+    this.stakePoolsFetchTrackerInterval = setInterval(
+      this._stakePoolsFetchTracker,
+      STAKE_POOLS_FETCH_TRACKER_INTERVAL
+    );
+    this.getStakePoolsData(true);
+  };
+
+  @action _getStakingInfoWasOpen = async () => {
+    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
+    runInAction(() => {
+      this.stakingInfoWasOpen = stakingInfoWasOpen;
+    });
+  };
+
+  @action _setStakingInfoWasOpen = () => {
+    this.stakingInfoWasOpen = true;
+    this.api.localStorage.setStakingInfoWasOpen();
+  };
+
+  @action _stakePoolsFetchTracker = () => {
+    const lastNumberOfStakePoolsFetched = this.numberOfStakePoolsFetched;
+    this.numberOfStakePoolsFetched = this.stakePools.length;
+    if (
+      lastNumberOfStakePoolsFetched === this.numberOfStakePoolsFetched &&
+      this.numberOfStakePoolsFetched > 0
+    ) {
+      this.cyclesWithoutIncreasingStakePools++;
+    } else {
+      this.cyclesWithoutIncreasingStakePools = 0;
+    }
+    if (
+      this.cyclesWithoutIncreasingStakePools >= STAKE_POOLS_FETCH_TRACKER_CYCLES
+    ) {
+      this._stopStakePoolsFetchTracker();
+    }
+  };
+
+  @action _stopStakePoolsFetchTracker = () => {
+    clearInterval(this.stakePoolsFetchTrackerInterval);
+    this.numberOfStakePoolsFetched = 0;
+    this.cyclesWithoutIncreasingStakePools = 0;
+    this.isFetchingStakePools = false;
+    this.getStakePoolsData();
+  };
+
+  @action _resetSmashServerError = () => {
+    this.smashServerUrlError = null;
+    this.smashServerLoading = false;
+  };
+
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
-    const { walletId, stakePoolId, passphrase } = request;
+    const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
 
     // Set join transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
-      const joinTransaction = await this.joinStakePoolRequest.execute({
-        walletId,
-        stakePoolId,
-        passphrase,
-      });
+      let joinTransaction;
+      if (isHardwareWallet) {
+        joinTransaction = await this.stores.hardwareWallets._sendMoney({
+          isDelegationTransaction: true,
+        });
+      } else {
+        joinTransaction = await this.joinStakePoolRequest.execute({
+          walletId,
+          stakePoolId,
+          passphrase,
+        });
+      }
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,
@@ -157,16 +320,24 @@ export default class StakingStore extends Store {
   };
 
   @action _quitStakePool = async (request: QuitStakePoolRequest) => {
-    const { walletId, passphrase } = request;
+    const { walletId, passphrase, isHardwareWallet } = request;
 
     // Set quit transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
-      const quitTransaction = await this.quitStakePoolRequest.execute({
-        walletId,
-        passphrase,
-      });
+      let quitTransaction;
+      if (isHardwareWallet) {
+        quitTransaction = await this.stores.hardwareWallets._sendMoney({
+          isDelegationTransaction: true,
+        });
+      } else {
+        quitTransaction = await this.quitStakePoolRequest.execute({
+          walletId,
+          passphrase,
+        });
+      }
+
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,
@@ -190,11 +361,11 @@ export default class StakingStore extends Store {
     walletId: string,
   }) => {
     const { transactionId, walletId } = request;
-    const recenttransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
       walletId
     ).result;
-    const recentTransactions = recenttransactionsResponse
-      ? recenttransactionsResponse.transactions
+    const recentTransactions = recentTransactionsResponse
+      ? recentTransactionsResponse.transactions
       : [];
 
     // Return stake pool transaction when state is not "PENDING"
@@ -216,6 +387,7 @@ export default class StakingStore extends Store {
       clearInterval(this.delegationCheckTimeInterval);
       this.delegationCheckTimeInterval = null;
     }
+    // this.stores.hardwareWallets._resetTransaction();
     this.stores.wallets.refreshWalletsData();
     this.isDelegationTransactionPending = false;
   };
@@ -224,9 +396,44 @@ export default class StakingStore extends Store {
     this.isStakingExperimentRead = true;
   };
 
+  @action _requestCSVFile = async ({
+    fileContent,
+    filenamePrefix: prefix,
+  }: {
+    fileContent: CsvFileContent,
+    filenamePrefix: string,
+  }) => {
+    const {
+      actions: { wallets },
+    } = this;
+    const fileName = generateFileNameWithTimestamp({
+      prefix,
+      extension: 'csv',
+      isUTC: true,
+    });
+    const { desktopDirectoryPath } = this.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, fileName);
+    const params = {
+      defaultPath,
+      filters: [
+        {
+          extensions: ['csv'],
+        },
+      ],
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
+
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
+
+    await wallets.generateCsv.trigger({ fileContent, filePath });
+
+    this.actions.staking.requestCSVFileSuccess.trigger();
+  };
+
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
-  ): ?BigNumber => {
+  ): Promise<?DelegationCalculateFeeResponse> => {
     const { walletId } = delegationFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
     this._delegationFeeCalculationWalletId = walletId;
@@ -242,7 +449,7 @@ export default class StakingStore extends Store {
     }
 
     try {
-      const delegationFee: BigNumber = await this.calculateDelegationFeeRequest.execute(
+      const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
         { ...delegationFeeRequest }
       ).promise;
 
@@ -266,6 +473,11 @@ export default class StakingStore extends Store {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
   }
 
+  @computed get maxDelegationFunds(): number {
+    const { desiredPoolNumber } = this.stores.networkStatus;
+    return Math.round(CIRCULATING_SUPPLY / desiredPoolNumber);
+  }
+
   @computed get stakePools(): Array<StakePool> {
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
@@ -277,7 +489,7 @@ export default class StakingStore extends Store {
         wallet.pendingDelegations && wallet.pendingDelegations.length > 0;
       let lastDelegatedStakePoolId = wallet.delegatedStakePoolId;
       if (hasPendingDelegations) {
-        lastDelegatedStakePoolId = wallet.lastDelegationStakePoolId;
+        lastDelegatedStakePoolId = wallet.lastDelegatedStakePoolId;
       }
       if (lastDelegatedStakePoolId) {
         const delegatingStakePoolExistInList = find(
@@ -320,7 +532,7 @@ export default class StakingStore extends Store {
     return isShelleyPending;
   }
 
-  @action getStakePoolsData = async () => {
+  @action getStakePoolsData = async (isSmash?: boolean) => {
     const {
       isConnected,
       isSynced,
@@ -338,16 +550,16 @@ export default class StakingStore extends Store {
         10
       );
       await this.stakePoolsRequest.execute(stakeInLovelace).promise;
-      this._resetPolling(false);
+      this._resetPolling(isSmash ? 'smash' : 'regular');
     } catch (error) {
-      this._resetPolling(true);
+      this._resetPolling('failed');
     }
     this._resetIsRanking();
   };
 
-  @action _resetPolling = (fetchFailed: boolean, kill?: boolean) => {
-    if (kill) {
-      this.fetchingStakePoolsFailed = fetchFailed;
+  @action _resetPolling = (type?: 'regular' | 'failed' | 'kill' | 'smash') => {
+    if (type === 'kill') {
+      this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);
         this.pollingStakePoolsInterval = null;
@@ -356,9 +568,7 @@ export default class StakingStore extends Store {
         clearInterval(this.refreshPolling);
         this.refreshPolling = null;
       }
-      return;
-    }
-    if (fetchFailed) {
+    } else if (type === 'failed') {
       this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);
@@ -376,12 +586,15 @@ export default class StakingStore extends Store {
         clearInterval(this.refreshPolling);
         this.refreshPolling = null;
       }
-      if (!this.pollingStakePoolsInterval) {
-        this.pollingStakePoolsInterval = setInterval(
-          this.getStakePoolsData,
-          STAKE_POOLS_INTERVAL
-        );
-      }
+      clearInterval(this.pollingStakePoolsInterval);
+      const isSmash = type === 'smash';
+      const interval = isSmash
+        ? STAKE_POOLS_FETCH_TRACKER_INTERVAL
+        : STAKE_POOLS_INTERVAL;
+      this.pollingStakePoolsInterval = setInterval(
+        () => this.getStakePoolsData(isSmash),
+        interval
+      );
     }
   };
 
@@ -414,7 +627,7 @@ export default class StakingStore extends Store {
 
       // Regular fetching way with faked response that throws error.
       if ((_pollingBlocked || !isConnected) && !this.refreshPolling) {
-        this._resetPolling(true);
+        this._resetPolling('failed');
         return;
       }
 
@@ -422,7 +635,7 @@ export default class StakingStore extends Store {
         throw new Error('Faked "Stake pools" fetch error');
       } catch (error) {
         if (!this.refreshPolling) {
-          this._resetPolling(true);
+          this._resetPolling('failed');
         }
       }
     }
@@ -488,12 +701,37 @@ export default class StakingStore extends Store {
     this.redeemStep = steps.RESULT;
   };
 
-  @action _onSelectRedeemWallet = async ({
+  @action _onCalculateRedeemWalletFees = async ({
     walletId,
+    recoveryPhrase,
   }: {
     walletId: string,
+    recoveryPhrase: Array<string>,
   }) => {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
+    this.redeemRecoveryPhrase = recoveryPhrase;
+    this.isCalculatingReedemFees = true;
+    try {
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        walletId
+      );
+      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
+        wallet: this.redeemWallet,
+        recoveryPhrase,
+        address: address.id,
+      });
+      runInAction(() => {
+        this.confirmationStepError = null;
+        this.transactionFees = transactionFees;
+        this.isCalculatingReedemFees = false;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.configurationStepError = error;
+        this.transactionFees = null;
+        this.isCalculatingReedemFees = false;
+      });
+    }
   };
 
   @action _onRedeemStart = () => {
@@ -502,37 +740,14 @@ export default class StakingStore extends Store {
     this.redeemStep = steps.CONFIGURATION;
   };
 
-  @action _onConfigurationContinue = async ({
-    recoveryPhrase,
-  }: {
-    recoveryPhrase: Array<string>,
-  }) => {
-    this.isSubmittingReedem = true;
-    const { redeemWallet } = this;
-    if (!redeemWallet) throw new Error('Redeem wallet required');
-    try {
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
-        redeemWallet.id
-      );
-      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
-        wallet: redeemWallet,
-        recoveryPhrase,
-        address: address.id,
-      });
-      runInAction(() => {
-        this.redeemRecoveryPhrase = recoveryPhrase;
-        this.transactionFees = transactionFees;
-        this.confirmationStepError = null;
-        this.redeemStep = steps.CONFIRMATION;
-        this.configurationStepError = null;
-        this.isSubmittingReedem = false;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.configurationStepError = error;
-        this.isSubmittingReedem = false;
-        this.redeemRecoveryPhrase = null;
-      });
+  @action _onConfigurationContinue = () => {
+    if (this.transactionFees && this.redeemRecoveryPhrase) {
+      this.redeemStep = steps.CONFIRMATION;
+      this.confirmationStepError = null;
+      this.configurationStepError = null;
+    } else {
+      this.redeemSuccess = false;
+      this.redeemStep = steps.RESULT;
     }
   };
 
@@ -560,7 +775,7 @@ export default class StakingStore extends Store {
       );
       runInAction(() => {
         this.redeemedRewards = redeemedRewards;
-        this.stakingSuccess = true;
+        this.redeemSuccess = true;
         this.redeemStep = steps.RESULT;
         this.confirmationStepError = null;
         this.isSubmittingReedem = false;
@@ -570,7 +785,7 @@ export default class StakingStore extends Store {
         this.confirmationStepError = error;
         this.isSubmittingReedem = false;
         if (error.id !== 'api.errors.IncorrectPasswordError') {
-          this.stakingSuccess = false;
+          this.redeemSuccess = false;
           this.redeemStep = steps.RESULT;
         }
       });
@@ -587,7 +802,8 @@ export default class StakingStore extends Store {
 
   @action _resetRedeemItnRewards = () => {
     this.isSubmittingReedem = false;
-    this.stakingSuccess = null;
+    this.isCalculatingReedemFees = false;
+    this.redeemSuccess = null;
     this.redeemWallet = null;
     this.transactionFees = null;
     this.redeemedRewards = null;
@@ -609,7 +825,7 @@ export default class StakingStore extends Store {
       this.getStakePoolsData();
     } else {
       this._resetIsRanking();
-      this._resetPolling(true, true);
+      this._resetPolling('kill');
     }
   };
 
@@ -635,10 +851,12 @@ export default class StakingStore extends Store {
       reward: rewards,
       syncState,
     } = inputWallet;
+    const { stakeAddresses } = this.stores.addresses;
     const { withdrawals } = this.stores.transactions;
-    const reward = rewards.add(withdrawals[walletId]);
+    const reward = rewards.plus(withdrawals[walletId]);
+    const rewardsAddress = stakeAddresses[walletId];
     const syncingProgress = get(syncState, 'progress.quantity', '');
-    return { wallet, reward, isRestoring, syncingProgress };
+    return { wallet, reward, isRestoring, syncingProgress, rewardsAddress };
   };
 
   getStakePoolById = (stakePoolId: string) =>

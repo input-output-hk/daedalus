@@ -1,9 +1,10 @@
 // @flow
-import React, { Component, Children, Fragment } from 'react';
+import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
+import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import { daedalusTheme } from '../../../source/renderer/app/themes/daedalus';
 import { themeOverrides } from '../../../source/renderer/app/themes/overrides';
 
@@ -24,14 +25,13 @@ export default class StoryDecorator extends Component<Props> {
       <ThemeProvider
         theme={daedalusTheme}
         skins={SimpleSkins}
+        variables={SimpleDefaults}
         themeOverrides={themeOverrides}
       >
-        <Fragment>
-          {Children.map(children, (child) => {
-            const childProps = child.type === 'div' ? {} : { propsForChildren };
-            return React.cloneElement(child, childProps);
-          })}
-        </Fragment>
+        {Children.map(children, (child) => {
+          const childProps = child.type === 'div' ? {} : { propsForChildren };
+          return React.cloneElement(child, childProps);
+        })}
       </ThemeProvider>
     );
   }

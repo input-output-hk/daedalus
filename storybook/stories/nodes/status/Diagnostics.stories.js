@@ -67,8 +67,8 @@ storiesOf('Nodes|Status', module)
         280719
       )}
       nodeConnectionError={null}
-      localTip={{ epoch: 123, slot: 13400 }}
-      networkTip={{ epoch: 123, slot: 13400 }}
+      localTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
+      networkTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}
       isCheckingSystemTime={boolean('isCheckingSystemTime', true)}
@@ -109,7 +109,7 @@ storiesOf('Nodes|Status', module)
         280719
       )}
       nodeConnectionError={null}
-      localTip={{ epoch: 123, slot: 13400 }}
+      localTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
       networkTip={null}
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}

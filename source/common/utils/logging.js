@@ -29,6 +29,15 @@ export const filterLogData = (data: Object): Object => {
     'recoveryPhrase',
     'passphrase',
     'password',
+    'votingKey',
+    'stakeKey',
+    'signature',
+    'accountPublicKey',
+    'extendedPublicKey',
+    'publicKeyHex',
+    'chainCodeHex',
+    'signedTransactionBlob',
+    'withdrawal',
   ];
   return omitDeep(data, ...sensitiveData);
 };

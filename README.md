@@ -43,8 +43,31 @@ Daedalus - Cryptocurrency Wallet
 #### Selfnode
 
 1. Run `yarn nix:selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn byron:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded Yoroi wallets by running `yarn yoroi:wallet:importer` script.
+2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
+3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
+   - Byron wallets: `yarn byron:wallet:importer`
+   - Shelley wallets: `yarn shelley:wallet:importer`
+   - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
+   - Yoroi Byron wallets: `yarn yoroi:wallet:importer`
+   - _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
+   - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
+
+   These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
+
+   List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
+
+**Notes:**
+- Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
+- Stake pool metadata is fetched directly by default (IOHK SMASH server option is not available).
+- Token metadata is fetched from a mock token metadata server which is automatically ran alongside the local cluster (there is no need to run it [manually](https://github.com/input-output-hk/daedalus#native-token-metadata-server))
+- Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
+
+| Parameter | Value
+| --- | ---
+| slotLength | 0.2 sec
+| epochLength | 50 slots
+| desiredPoolNumber | 3
+| minimumUtxoValue | 1 ADA
 
 #### Mainnet
 
@@ -84,6 +107,38 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:shelley_qa` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
+#### Native token metadata server
+
+Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
+
+It's also possible to use a mock server locally by running the following command in `nix-shell` prior to starting Daedalus:
+
+```
+$ mock-token-metadata-server --port 65432 ./utils/cardano/native-tokens/registry.json
+Mock metadata server running with url http://localhost:65432/
+```
+
+Then proceed to launch Daedalus and make sure to provide the mock token metadata server port:
+
+```
+$ MOCK_TOKEN_METADATA_SERVER_PORT=65432 yarn dev
+```
+
+This enables you to modify the metadata directly by modifying the registry file directly:
+
+```
+$ vi ./utils/cardano/native-tokens/registry.json        # ..or any other editor, if you prefer
+```
+
+Use the following command to check if the mock server is working correctly:
+
+```
+$ curl -i -H "Content-type: application/json" --data '{"subjects":["789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1"],"properties":["name","description","ticker","unit","logo"]}'
+http://localhost:65432/metadata/query
+```
+... and expect a "200 OK" response.
+
+
 ### Running Daedalus with Jormungandr
 
 #### ITN Selfnode
@@ -112,9 +167,10 @@ Daedalus - Cryptocurrency Wallet
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
 Dependencies are updated with the follow nix commands:
-- Update to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
-- Update to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
-- Update node to a specific tag: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-node -b tags/1.20.0"`
+- Update cardano-wallet to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
+- Update cardano-wallet to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
+- Update cardano-node to a specific tag: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-node -b tags/1.20.0"`
+- Update iohk-nix to the latest master: `nix-shell -A devops --arg nivOnly true --run  "niv update iohk-nix -b master"`
 
 #### Notes
 

@@ -12,15 +12,20 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import type {
+  GetTransactionFeeRequest,
   DeleteTransactionRequest,
   GetTransactionsResponse,
+  CreateExternalTransactionRequest,
   GetWithdrawalsResponse,
 } from '../api/transactions/types';
 import { isValidAmountInLovelaces } from '../utils/validations';
+import transactionsCsvGenerator from '../utils/transactionsCsvGenerator';
+import { i18nContext } from '../utils/i18nContext';
 import {
   generateFilterOptions,
   isTransactionInFilterRange,
 } from '../utils/transaction';
+import type { AssetItems } from '../api/assets/types';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
@@ -73,6 +78,7 @@ type TransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
+  assets?: AssetItems,
 };
 
 export default class TransactionsStore extends Store {
@@ -88,8 +94,17 @@ export default class TransactionsStore extends Store {
   deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
     this.api.ada.deleteTransaction
   );
+  @observable
+  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> = new Request(
+    this.api.ada.createExternalTransaction
+  );
 
   @observable _filterOptionsForWallets = {};
+
+  @observable
+  calculateTransactionFeeRequest: Request<GetTransactionFeeRequest> = new Request(
+    this.api.ada.calculateTransactionFee
+  );
 
   setup() {
     const {
@@ -98,6 +113,7 @@ export default class TransactionsStore extends Store {
     } = this.actions;
     transactionActions.filterTransactions.listen(this._updateFilterOptions);
     // transactionActions.loadMoreTransactions.listen(this._increaseSearchLimit);
+    transactionActions.requestCSVFile.listen(this._requestCSVFile);
     networkStatusActions.restartNode.listen(this._clearFilterOptions);
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
@@ -147,9 +163,14 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get allFiltered(): Array<WalletTransaction> {
-    return this.all.filter((transaction) =>
+    const { recentFiltered } = this;
+    const allFiltered = this.all.filter((transaction) =>
       isTransactionInFilterRange(this.filterOptions, transaction)
     );
+    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
+    return !allFiltered.length && recentFiltered.length
+      ? recentFiltered
+      : allFiltered;
   }
 
   @computed get defaultFilterOptions(): TransactionFilterOptionsType {
@@ -261,11 +282,14 @@ export default class TransactionsStore extends Store {
       );
     }
 
-    return this.api.ada.calculateTransactionFee({
+    const { amount, availableAmount, reward, isLegacy } = wallet;
+    this.calculateTransactionFeeRequest.reset();
+    return this.calculateTransactionFeeRequest.execute({
       ...transactionFeeRequest,
-      walletBalance: wallet.amount,
-      availableBalance: wallet.availableAmount,
-      isLegacy: wallet.isLegacy,
+      walletBalance: amount,
+      availableBalance: availableAmount.plus(reward),
+      rewardsBalance: reward,
+      isLegacy,
     });
   };
 
@@ -316,6 +340,41 @@ export default class TransactionsStore extends Store {
       ...emptyTransactionFilterOptions,
     };
     return true;
+  };
+
+  @action _requestCSVFile = async () => {
+    const {
+      stores: { profile },
+      allFiltered,
+      actions,
+      stores,
+    } = this;
+    const { isInternalAddress } = stores.addresses;
+    const { active } = this.stores.wallets;
+    const { desktopDirectoryPath } = profile;
+    const locale = profile.currentLocale;
+    const intl = i18nContext(locale);
+    const transactions = allFiltered;
+    const walletName = active ? active.name : '';
+    const { getAssetDetails } = this.stores.assets;
+    const success = await transactionsCsvGenerator({
+      desktopDirectoryPath,
+      intl,
+      transactions,
+      walletName,
+      getAssetDetails,
+      isInternalAddress,
+    });
+    if (success) actions.transactions.requestCSVFileSuccess.trigger();
+  };
+
+  @action _createExternalTransaction = async (
+    signedTransactionBlob: Buffer
+  ) => {
+    await this.createExternalTransactionRequest.execute({
+      signedTransactionBlob,
+    });
+    this.stores.wallets.refreshWalletsData();
   };
 
   _getTransactionsRecentRequest = (

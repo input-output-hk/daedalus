@@ -1,8 +1,9 @@
 // @flow
 import os from 'os';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, dialog, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
+import EventEmitter from 'events';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -37,6 +38,7 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
+import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 
 /* eslint-disable consistent-return */
@@ -49,17 +51,23 @@ const {
   isDev,
   isWatchMode,
   isBlankScreenFixActive,
+  isSelfnode,
   network,
   os: osName,
   version: daedalusVersion,
   nodeVersion: cardanoNodeVersion,
   apiVersion: cardanoWalletVersion,
+  keepLocalClusterRunning,
 } = environment;
 
 if (isBlankScreenFixActive) {
   // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
+
+// Increase maximum event listeners to avoid IPC channel stalling
+// (1/2) this line increases the limit for the main process
+EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 app.allowRendererProcessReuse = true;
 const safeExit = async () => {
@@ -201,14 +209,26 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });
+  buildAppMenus(mainWindow, cardanoNode, locale, {
+    isNavigationEnabled: false,
+  });
+
+  await enableApplicationMenuNavigationChannel.onReceive(
+    () =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isNavigationEnabled: true,
+        });
+        resolve();
+      })
+  );
 
   await rebuildApplicationMenu.onReceive(
     (data) =>
       new Promise((resolve) => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
-          isUpdateAvailable: data.isUpdateAvailable,
+          isNavigationEnabled: data.isNavigationEnabled,
         });
         mainWindow.updateTitle(locale);
         resolve();
@@ -231,6 +251,40 @@ const onAppReady = async () => {
   app.on('before-quit', async (event) => {
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
+
+    if (isSelfnode) {
+      if (keepLocalClusterRunning) {
+        logger.info(
+          'ipcMain: Keeping the local cluster running while exiting Daedalus',
+          {
+            keepLocalClusterRunning,
+          }
+        );
+        return safeExitWithCode(0);
+      }
+
+      const exitSelfnodeDialogOptions = {
+        buttons: ['Yes', 'No'],
+        type: 'warning',
+        title: 'Daedalus is about to close',
+        message: 'Do you want to keep the local cluster running?',
+        defaultId: 0,
+        cancelId: 1,
+        noLink: true,
+      };
+      const { response } = await dialog.showMessageBox(
+        mainWindow,
+        exitSelfnodeDialogOptions
+      );
+      if (response === 0) {
+        logger.info(
+          'ipcMain: Keeping the local cluster running while exiting Daedalus'
+        );
+        return safeExitWithCode(0);
+      }
+      logger.info('ipcMain: Exiting local cluster together with Daedalus');
+    }
+
     await safeExit();
   });
 };

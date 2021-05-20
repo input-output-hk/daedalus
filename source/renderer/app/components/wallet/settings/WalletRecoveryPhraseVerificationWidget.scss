@@ -93,16 +93,10 @@
       top: 4px;
       width: 14px;
     }
-
-    :global {
-      .SimpleBubble_bubble {
-        white-space: normal;
-        width: 344px;
-      }
-    }
   }
 }
 
 .paperWalletTooltip {
   line-height: 22px;
+  width: 600px;
 }

@@ -2,8 +2,12 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
+import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import StakingUnavailable from '../../components/staking/StakingUnavailable';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
 import ExperimentalDataOverlay from '../../components/notifications/ExperimentalDataOverlay';
+import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import UndelegateWalletConfirmationDialog from '../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -75,11 +79,30 @@ export default class Staking extends Component<Props> {
 
   render() {
     const {
-      stores: { app, staking },
+      stores: { app, staking, networkStatus, uiDialogs },
       children,
     } = this.props;
     const { isIncentivizedTestnet } = global;
+    const { isSynced, syncPercentage } = networkStatus;
     const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
+
+    const isDelegationWizardOpen = uiDialogs.isOpen(
+      DelegationSetupWizardDialog
+    );
+
+    const isUndelegationWizardOpen = uiDialogs.isOpen(
+      UndelegateWalletConfirmationDialog
+    );
+
+    if (!isSynced && !(isDelegationWizardOpen || isUndelegationWizardOpen)) {
+      return (
+        <MainLayout>
+          <VerticalFlexContainer>
+            <StakingUnavailable syncPercentage={syncPercentage} />
+          </VerticalFlexContainer>
+        </MainLayout>
+      );
+    }
 
     return (
       <MainLayout>

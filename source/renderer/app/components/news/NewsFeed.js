@@ -69,8 +69,11 @@ export default class NewsFeed extends Component<Props, State> {
   };
 
   scrollableDomElement: ?HTMLElement = null;
+  newsFeedRef = React.createRef<HTMLElement>();
+  newsFeedOpenedAt: number;
 
   componentDidMount() {
+    document.addEventListener('click', this.handleWindowClick);
     this.scrollableDomElement = document.querySelector(
       SCROLLABLE_DOM_ELEMENT_SELECTOR
     );
@@ -78,7 +81,14 @@ export default class NewsFeed extends Component<Props, State> {
     this.scrollableDomElement.addEventListener('scroll', this.handleOnScroll);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (!prevProps.isNewsFeedOpen && this.props.isNewsFeedOpen) {
+      this.newsFeedOpenedAt = Date.now();
+    }
+  }
+
   componentWillUnmount() {
+    document.removeEventListener('click', this.handleWindowClick);
     if (this.scrollableDomElement) {
       this.scrollableDomElement.removeEventListener(
         'scroll',
@@ -87,12 +97,32 @@ export default class NewsFeed extends Component<Props, State> {
     }
   }
 
+  handleWindowClick = (event: MouseEvent) => {
+    const newsFeedElement = this.newsFeedRef.current;
+    const clickedElement = event.target;
+    const { isNewsFeedOpen } = this.props;
+    // Detect clicks outside of the newsfeed container
+    if (
+      isNewsFeedOpen &&
+      newsFeedElement &&
+      clickedElement instanceof Node &&
+      !newsFeedElement.contains(clickedElement)
+    ) {
+      // This is necessary otherwise the UI click on the newsfeed bell icon
+      // would immediately close the newsfeed again
+      const msSinceNewsFeedOpened = Date.now() - this.newsFeedOpenedAt;
+      if (msSinceNewsFeedOpened > 100) {
+        this.props.onClose();
+      }
+    }
+  };
+
   handleOnScroll = () => {
     const { hasShadow: currentHasShadow } = this.state;
 
     if (this.scrollableDomElement) {
       const { scrollTop } = this.scrollableDomElement;
-      const hasShadow = scrollTop > 3;
+      const hasShadow = scrollTop > 0.5;
       if (currentHasShadow !== hasShadow) {
         this.setState({
           hasShadow,
@@ -134,16 +164,28 @@ export default class NewsFeed extends Component<Props, State> {
 
     const newsFeedHeaderStyles = classNames([
       styles.newsFeedHeader,
+      hasShadow && !hasUpdateItem ? styles.hasShadow : null,
+    ]);
+
+    const newsFeedContainerStyles = classNames([
+      styles.newsFeedContainer,
+      !hasUpdateItem ? styles.noUpdateItem : null,
       hasShadow ? styles.hasShadow : null,
     ]);
 
     const newsFeedListStyles = classNames([
       styles.newsFeedList,
       hasUpdateItem ? styles.hasUpdate : null,
+      hasShadow ? styles.hasShadow : null,
+    ]);
+
+    const newsFeedUpdateStyles = classNames([
+      styles.updateItem,
+      hasShadow ? styles.hasShadow : null,
     ]);
 
     return (
-      <div className={componentClasses}>
+      <div className={componentClasses} ref={this.newsFeedRef}>
         <div className={newsFeedHeaderStyles}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
@@ -157,9 +199,9 @@ export default class NewsFeed extends Component<Props, State> {
             <SVGInline svg={closeCrossThin} />
           </button>
         </div>
-        <div className={styles.newsFeedContainer}>
+        <div className={newsFeedContainerStyles}>
           {hasUpdateItem && (
-            <>
+            <div className={newsFeedUpdateStyles}>
               {
                 <UpdateItem
                   key={update.id}
@@ -174,14 +216,15 @@ export default class NewsFeed extends Component<Props, State> {
                   isUpdatePostponed={isUpdatePostponed}
                 />
               }
-              <hr className={styles.separator} />
-            </>
+            </div>
           )}
           {items.length > 0 && (
             <div className={newsFeedListStyles}>
+              {hasUpdateItem && <hr className={styles.separator} />}
               {items.map((newsItem) => (
                 <NewsItem
                   key={newsItem.id}
+                  hasUpdateItem={hasUpdateItem}
                   newsItem={newsItem}
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}

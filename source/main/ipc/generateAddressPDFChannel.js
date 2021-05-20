@@ -74,13 +74,13 @@ export const handleAddressPDFRequests = () => {
           const textColor = '#5e6066';
           const textColorRed = '#ea4c5b';
           const width = 640;
-          const height = 420 + noteHeight;
+          const height = 450 + noteHeight;
           const doc = new PDFDocument({
             size: [width, height],
             margins: {
               bottom: 20,
-              left: 30,
-              right: 30,
+              left: 20,
+              right: 20,
               top: 20,
             },
             info: {
@@ -115,30 +115,31 @@ export const handleAddressPDFRequests = () => {
           doc.moveDown();
 
           // Address
-          doc.font(fontBufferMono).fontSize(19).text(address, {
+          doc.font(fontBufferMono).fontSize(9).text(address, {
             align: 'center',
-            characterSpacing: 1.5,
           });
 
           if (note) {
             doc.moveDown();
             // Note title
-            doc.font(fontBufferRegular).fontSize(14).text(noteLabel);
+            doc.font(fontBufferRegular).fontSize(12).text(noteLabel);
 
             // Note
-            doc.font(fontBufferUnicode).text(note);
+            doc.font(fontBufferUnicode).fontSize(12).text(note);
           }
 
           doc.moveDown();
 
           // Footer
-          doc
-            .fontSize(12)
-            .font(isMainnet ? fontBufferRegular : fontBufferMedium)
-            .fillColor(isMainnet ? textColor : textColorRed)
-            .text(`${networkLabel} ${networkName}`, {
-              align: 'right',
-            });
+          if (!isMainnet) {
+            doc
+              .fontSize(12)
+              .font(fontBufferMedium)
+              .fillColor(textColorRed)
+              .text(`${networkLabel} ${networkName}`, {
+                align: 'right',
+              });
+          }
 
           // Write file to disk
           const writeStream = fs.createWriteStream(filePath);

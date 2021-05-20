@@ -7,14 +7,11 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarCategoryNetworkInfo from './SidebarCategoryNetworkInfo';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
-import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
+import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig';
 import { ROUTES } from '../../routes-config';
-import type {
-  SidebarHardwareWalletType,
-  SidebarWalletType,
-} from '../../types/sidebarTypes';
 import type { networkType } from '../../types/networkTypes';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
+import type { SidebarWalletType } from '../../types/sidebarTypes';
 
 type Props = {
   menus: SidebarMenus,
@@ -35,13 +32,6 @@ export type SidebarMenus = {
     activeWalletId: ?string,
     actions: {
       onWalletItemClick: Function,
-    },
-  },
-  hardwareWallets: ?{
-    items: Array<SidebarHardwareWalletType>,
-    activeWalletId: ?string,
-    actions: {
-      onHardwareWalletItemClick: Function,
     },
   },
 };
@@ -72,16 +62,6 @@ export default class Sidebar extends Component<Props> {
     });
     const walletsCategoryRoute = walletsCategory ? walletsCategory.route : null;
 
-    const hardwareWalletsCategory =
-      menus &&
-      menus.hardwareWallets &&
-      find(categories, {
-        name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,
-      });
-    const hardwareWalletsCategoryRoute = hardwareWalletsCategory
-      ? hardwareWalletsCategory.route
-      : null;
-
     if (
       menus &&
       menus.wallets &&
@@ -101,36 +81,6 @@ export default class Sidebar extends Component<Props> {
             id === (menus.wallets ? menus.wallets.activeWalletId : null)
           }
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
-          isIncentivizedTestnet={isIncentivizedTestnet}
-          isShelleyActivated={isShelleyActivated}
-          visible={isShowingSubMenus}
-        />
-      );
-    }
-
-    if (
-      menus &&
-      menus.hardwareWallets &&
-      menus.hardwareWallets.items &&
-      activeSidebarCategory === hardwareWalletsCategoryRoute
-    ) {
-      subMenu = (
-        <SidebarWalletsMenu
-          wallets={menus.hardwareWallets ? menus.hardwareWallets.items : []}
-          onAddWallet={onAddWallet}
-          onWalletItemClick={
-            menus.hardwareWallets && menus.hardwareWallets.actions
-              ? menus.hardwareWallets.actions.onHardwareWalletItemClick
-              : null
-          }
-          isActiveWallet={(id) =>
-            id ===
-            (menus.hardwareWallets
-              ? menus.hardwareWallets.activeWalletId
-              : null)
-          }
-          isHardwareWalletsMenu
-          isAddWalletButtonActive={pathname === ROUTES.HARDWARE_WALLETS.ADD}
           isIncentivizedTestnet={isIncentivizedTestnet}
           isShelleyActivated={isShelleyActivated}
           visible={isShowingSubMenus}

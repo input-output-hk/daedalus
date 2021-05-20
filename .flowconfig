@@ -4,6 +4,10 @@
 <PROJECT_ROOT>/node_modules/npm/.*
 <PROJECT_ROOT>/node_modules/oboe/.*
 <PROJECT_ROOT>/node_modules/jsonlint/.*
+<PROJECT_ROOT>/node_modules/hd-wallet/.*
+<PROJECT_ROOT>/node_modules/trezor-connect/.*
+<PROJECT_ROOT>/node_modules/trezor-link/.*
+<PROJECT_ROOT>/node_modules/protobufjs-old-fixed-webpack/.*
 <PROJECT_ROOT>/dist/.*
 <PROJECT_ROOT>/release/.*
 <PROJECT_ROOT>/git/.*

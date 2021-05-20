@@ -1,0 +1,43 @@
+.component {
+  align-items: center;
+  background: var(--theme-transactions-header-background-color);
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.25);
+  display: flex;
+  height: 53px;
+  justify-content: space-between;
+  margin-top: -53px;
+  padding: 0 40px;
+  position: relative;
+  transition: box-shadow 0.25s ease-out;
+  z-index: 1;
+  &.isScrolling {
+    box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.25);
+  }
+  .csvButtonContainer {
+    margin-right: 9px;
+    .csvButton {
+      padding: 0 12px !important;
+      svg g {
+        fill: var(--theme-button-flat-text-color);
+      }
+    }
+    .csvButtonDisabled {
+      opacity: 0.5;
+    }
+  }
+}
+.numberOfTransactions {
+  color: var(--theme-transactions-header-texct-color);
+  font-family: var(--font-regular);
+  line-height: 1.38;
+}
+.actions {
+  display: flex;
+}
+.downloadIcon {
+  svg {
+    height: 11px;
+    margin-left: 11px;
+    width: 11px;
+  }
+}

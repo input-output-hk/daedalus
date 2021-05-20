@@ -20,6 +20,7 @@ type Props = {
   expandWithoutTransition?: boolean,
   isNewsFeedOpen: boolean,
   currentDateFormat: string,
+  hasUpdateItem?: boolean,
 };
 
 type State = {
@@ -101,12 +102,18 @@ export default class NewsItem extends Component<Props, State> {
   };
 
   render() {
-    const { newsItem, expandWithoutTransition, currentDateFormat } = this.props;
+    const {
+      newsItem,
+      expandWithoutTransition,
+      currentDateFormat,
+      hasUpdateItem,
+    } = this.props;
     const componentClasses = classNames([
       styles.component,
       newsItem.type ? styles[newsItem.type] : null,
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
+      !hasUpdateItem ? styles.noUpdateItem : null,
     ]);
     const { url = '' } = newsItem.action;
     const title = this.generateTitleWithBadge(newsItem.title, newsItem.read);

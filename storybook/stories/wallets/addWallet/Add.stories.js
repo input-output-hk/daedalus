@@ -24,6 +24,7 @@ storiesOf('Wallets|Add Wallet', module)
         onCreate={() => {}}
         onRestore={() => {}}
         onImport={() => {}}
+        onConnect={() => {}}
         isMainnet={boolean('isMainnet', true)}
         isTestnet={boolean('isTestnet', false)}
         isProduction

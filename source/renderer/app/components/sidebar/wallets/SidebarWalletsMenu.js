@@ -5,14 +5,12 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { map } from 'lodash';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
 import SidebarWalletMenuItem from './SidebarWalletMenuItem';
-import type {
-  SidebarHardwareWalletType,
-  SidebarWalletType,
-} from '../../../types/sidebarTypes';
+import type { SidebarWalletType } from '../../../types/sidebarTypes';
 
 const messages = defineMessages({
   addAdaWallet: {
@@ -23,7 +21,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  wallets: Array<SidebarWalletType | SidebarHardwareWalletType>,
+  wallets: Array<SidebarWalletType>,
   isActiveWallet: Function,
   onAddWallet: Function,
   onWalletItemClick: Function,
@@ -31,7 +29,6 @@ type Props = {
   isAddWalletButtonActive: boolean,
   isIncentivizedTestnet: boolean,
   isShelleyActivated: boolean,
-  isHardwareWalletsMenu?: boolean,
 };
 
 @observer
@@ -54,7 +51,6 @@ export default class SidebarWalletsMenu extends Component<Props> {
       isAddWalletButtonActive,
       isIncentivizedTestnet,
       isShelleyActivated,
-      isHardwareWalletsMenu,
     } = this.props;
 
     const addWalletButtonStyles = classNames([
@@ -70,7 +66,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
             renderThumbVertical={this.renderThumb}
             hideTracksWhenNotNeeded
           >
-            {wallets.map((wallet) => (
+            {map(wallets, (wallet) => (
               <SidebarWalletMenuItem
                 title={wallet.title}
                 info={wallet.info}
@@ -84,8 +80,11 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 restoreProgress={wallet.restoreProgress}
                 isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}
-                isHardwareWalletsMenu={isHardwareWalletsMenu}
+                isHardwareWallet={wallet.isHardwareWallet}
                 hasNotification={wallet.hasNotification}
+                isHardwareWalletDisconnected={
+                  wallet.isHardwareWalletDisconnected
+                }
               />
             ))}
           </Scrollbars>

@@ -25,11 +25,10 @@ import qualified Data.Text                        as T
 import           Filesystem.Path                     (FilePath)
 import qualified Filesystem.Path.Rules            as FP
 
-import           Turtle                              (optional, (<|>), format, (%), s, Format, makeFormat)
+import           Turtle                              (format, (%), s, Format, makeFormat)
 import           Turtle.Options
 
 import           Universum                    hiding (FilePath, unlines, writeFile)
-import           GHC.Base                            (id)
 import           Types
 
 -- | Enum-instanced sum types as case-insensitive option values.

@@ -33,6 +33,7 @@ module.exports = {
   },
   externals: {
     'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
+    'trezor-connect': 'commonjs2 trezor-connect',
   },
   module: {
     rules: [
@@ -71,11 +72,15 @@ module.exports = {
           'process.env.NETWORK': JSON.stringify(
             process.env.NETWORK || 'development'
           ),
+          'process.env.MOCK_TOKEN_METADATA_SERVER_PORT':
+            process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0,
           'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
           'process.env.BUILD_NUMBER': JSON.stringify(
             process.env.BUILD_NUMBER || 'dev'
           ),
           'process.env.IS_WATCH_MODE': process.env.IS_WATCH_MODE === 'true',
+          'process.env.KEEP_LOCAL_CLUSTER_RUNNING':
+            process.env.KEEP_LOCAL_CLUSTER_RUNNING === 'true',
         },
         process.env.NODE_ENV === 'production'
           ? {

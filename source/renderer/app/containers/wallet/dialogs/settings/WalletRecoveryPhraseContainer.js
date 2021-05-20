@@ -35,6 +35,7 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
   render() {
     const { stores, actions } = this.props;
     const { active: activeWallet } = stores.wallets;
+
     if (!activeWallet) throw new Error('Active wallet required.');
     const {
       recoveryPhraseVerificationContinue,
@@ -59,6 +60,7 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
           onClose={onClose}
           expectedWordCount={expectedWordCount}
           openExternalLink={openExternalLink}
+          walletName={activeWallet.name}
         />
       )
     );

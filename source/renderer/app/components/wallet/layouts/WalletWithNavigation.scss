@@ -3,6 +3,11 @@
   flex: 1;
   flex-direction: column;
   overflow-y: overlay;
+  &.transactions {
+    .page {
+      overflow-y: hidden;
+    }
+  }
 }
 
 .navigation {

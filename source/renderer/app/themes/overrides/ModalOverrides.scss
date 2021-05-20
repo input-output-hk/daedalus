@@ -1,5 +1,8 @@
+@import '../mixins/overlay-backdrop';
+
 .overlay {
   z-index: 100;
+  @include overlay-backrop;
 }
 
 .modal {

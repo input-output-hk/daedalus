@@ -1,5 +1,6 @@
 // @flow
-import React, { Component } from 'react';
+import React, { createRef, Component } from 'react';
+import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
 import {
   defineMessages,
@@ -8,19 +9,15 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
-import { capitalize } from 'lodash';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './TooltipPool.scss';
-import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
-import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
@@ -33,23 +30,11 @@ import {
   formattedWalletAmount,
   toFixedUserFormat,
 } from '../../../utils/formatters';
-import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
 import {
-  THUMBNAIL_HEIGHT,
-  THUMBNAIL_OFFSET_WIDTH,
-  ARROW_WIDTH,
-  ARROW_HEIGHT,
-  ARROW_OFFSET,
-  TOOLTIP_DELTA,
-  LIST_VIEW_TOOLTIP_DELTA_TOP,
-  LIST_VIEW_ROW_HEIGHT,
-  TOOLTIP_MAX_HEIGHT,
-  TOOLTIP_WIDTH,
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
-  THUMBNAIL_WIDTH,
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
@@ -171,26 +156,19 @@ const messages = defineMessages({
 
 type Props = {
   stakePool: StakePool,
-  isVisible: boolean,
-  fromStakePool?: boolean,
   currentTheme: string,
-  onClick: Function,
-  onOpenExternalLink: Function,
-  onSelect?: Function,
+  onClose: () => void,
+  onOpenExternalLink: (string) => void,
+  onSelect?: () => void,
   showWithSelectButton?: boolean,
-  top: number,
-  left: number,
   color: string,
   containerClassName: string,
   numberOfRankedStakePools: number,
-  isListView: boolean,
+  isGridRewardsView?: boolean,
 };
 
 type State = {
-  tooltipPosition: 'top' | 'right' | 'bottom' | 'left',
   componentStyle: Object,
-  arrowStyle: Object,
-  colorBandStyle: Object,
   idCopyFeedback: boolean,
 };
 
@@ -200,271 +178,24 @@ export default class TooltipPool extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  tooltipClick: boolean = false;
-  containerWidth: number = 0;
-  containerHeight: number = 0;
   idCopyFeedbackTimeout: TimeoutID;
+  rootRef: ElementRef<*> = createRef();
 
   state = {
     componentStyle: {},
-    arrowStyle: {},
-    colorBandStyle: {},
-    tooltipPosition: 'right',
     idCopyFeedback: false,
   };
 
   componentDidMount() {
-    const { top, left, containerClassName } = this.props;
-    const container = document.querySelector(`.${containerClassName}`);
-
-    window.document.addEventListener('click', this.handleOutterClick);
     window.addEventListener('keydown', this.handleInputKeyDown);
-    if (container instanceof HTMLElement) {
-      this.containerWidth = container.offsetWidth;
-      this.containerHeight = container.offsetHeight;
-    }
-    this.getTooltipStyle(top, left);
   }
-
-  componentDidUpdate(prevProps: Props) {
-    const { isVisible: prevVisibility } = prevProps;
-    const { isVisible: currentVisibility, top, left } = this.props;
-    if (currentVisibility !== prevVisibility) {
-      this.getTooltipStyle(top, left);
-    }
-  }
-
   componentWillUnmount() {
-    window.document.removeEventListener('click', this.handleOutterClick);
     window.removeEventListener('keydown', this.handleInputKeyDown);
   }
-
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
-      this.props.onClick();
+      this.props.onClose();
     }
-  };
-
-  handleOutterClick = () => {
-    if (!this.tooltipClick) {
-      this.props.onClick();
-    } else {
-      this.tooltipClick = false;
-    }
-  };
-
-  handleInnerClick = () => {
-    this.tooltipClick = true;
-  };
-
-  getTooltipStyle = (top: number, originalLeft: number) => {
-    const { color } = this.props;
-
-    const left = originalLeft + THUMBNAIL_OFFSET_WIDTH;
-
-    const isTopHalf = top < this.containerHeight / 2;
-    const isLeftHalf = left < this.containerWidth - this.containerWidth / 2;
-
-    const tooltipPosition = this.getTooltipPosition(top, isLeftHalf);
-
-    const {
-      componentTop,
-      componentBottom,
-      componentLeft,
-      arrowTop,
-      arrowBottom,
-      arrowLeft,
-    } =
-      tooltipPosition === 'top' || tooltipPosition === 'bottom'
-        ? this.getTopBottomPosition(left)
-        : this.getLeftRightPosition(top, isTopHalf, left);
-
-    const componentStyle = this.getComponentStyle(
-      tooltipPosition,
-      componentTop,
-      componentBottom,
-      componentLeft
-    );
-    const arrowStyle = this.getArrowStyle(
-      tooltipPosition,
-      arrowTop,
-      arrowBottom,
-      arrowLeft
-    );
-    const colorBandStyle = !this.isGreyColor
-      ? {
-          background: color,
-        }
-      : {};
-
-    this.setState({
-      componentStyle,
-      arrowStyle,
-      colorBandStyle,
-      tooltipPosition,
-    });
-  };
-
-  getTopBottomPosition = (left: number) => {
-    const { fromStakePool, isListView } = this.props;
-    const paddingOffset = rangeMap(
-      left,
-      THUMBNAIL_OFFSET_WIDTH,
-      this.containerWidth - THUMBNAIL_OFFSET_WIDTH,
-      -(THUMBNAIL_OFFSET_WIDTH / 2),
-      THUMBNAIL_OFFSET_WIDTH / 2
-    );
-
-    const componentLeft = !fromStakePool
-      ? -((TOOLTIP_WIDTH * left) / this.containerWidth) +
-        THUMBNAIL_OFFSET_WIDTH +
-        paddingOffset
-      : -((TOOLTIP_WIDTH * left) / this.containerWidth) +
-        THUMBNAIL_OFFSET_WIDTH +
-        (left - THUMBNAIL_OFFSET_WIDTH - THUMBNAIL_WIDTH);
-    let componentTop = !fromStakePool
-      ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2
-      : THUMBNAIL_HEIGHT + ARROW_WIDTH / 2;
-    if (isListView) componentTop -= LIST_VIEW_ROW_HEIGHT;
-    let componentBottom = !fromStakePool
-      ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2
-      : THUMBNAIL_HEIGHT / 2;
-    if (isListView) componentBottom += ARROW_HEIGHT;
-
-    const arrowLeft = !fromStakePool
-      ? -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET
-      : THUMBNAIL_HEIGHT - ARROW_WIDTH - TOOLTIP_DELTA;
-    const arrowTop = -(ARROW_WIDTH / 2);
-    const arrowBottom = -(ARROW_WIDTH / 2);
-
-    return {
-      componentLeft,
-      componentTop,
-      componentBottom,
-      arrowLeft,
-      arrowTop,
-      arrowBottom,
-    };
-  };
-
-  getLeftRightPosition = (top: number, isTopHalf: boolean, left: number) => {
-    const { fromStakePool, isListView } = this.props;
-    const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
-    const componentLeft = fromStakePool
-      ? -((TOOLTIP_WIDTH * left) / this.containerWidth) +
-        THUMBNAIL_OFFSET_WIDTH +
-        (left - THUMBNAIL_OFFSET_WIDTH + ARROW_HEIGHT)
-      : THUMBNAIL_HEIGHT;
-    let componentTop = 'auto';
-    let componentBottom = 'auto';
-    let arrowTop = 'auto';
-    let arrowBottom = 'auto';
-
-    if (isTopHalf && !isListView) {
-      componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
-      arrowTop = -componentTop + ARROW_WIDTH / 2;
-    } else {
-      componentBottom = -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
-      arrowBottom = -componentBottom + ARROW_WIDTH / 2;
-      if (fromStakePool) arrowBottom -= TOOLTIP_DELTA;
-    }
-
-    const arrowLeft = -(ARROW_WIDTH / 2);
-
-    return {
-      componentTop,
-      componentBottom,
-      componentLeft,
-      arrowTop,
-      arrowBottom,
-      arrowLeft,
-    };
-  };
-
-  getTooltipPosition = (top: number, isLeftHalf: boolean) => {
-    const { isListView } = this.props;
-    const topDelta = isListView ? LIST_VIEW_TOOLTIP_DELTA_TOP : TOOLTIP_DELTA;
-    if (top <= topDelta) {
-      return 'bottom';
-    }
-    if (
-      TOOLTIP_DELTA >=
-      this.containerHeight - (top + (THUMBNAIL_HEIGHT - TOOLTIP_DELTA))
-    ) {
-      return 'top';
-    }
-    if (!isLeftHalf) {
-      return 'left';
-    }
-    return 'right';
-  };
-
-  getComponentStyle = (
-    tooltipPosition: string,
-    top: number | 'auto',
-    bottom: number | 'auto',
-    left: number,
-    right: number = left
-  ) => {
-    if (tooltipPosition === 'top') {
-      return {
-        bottom,
-        left,
-      };
-    }
-    if (tooltipPosition === 'right') {
-      return {
-        left,
-        top,
-        bottom,
-      };
-    }
-    if (tooltipPosition === 'bottom') {
-      return {
-        left,
-        top,
-      };
-    }
-    return {
-      right,
-      top,
-      bottom,
-    };
-  };
-
-  getArrowStyle = (
-    tooltipPosition: string,
-    top: number | 'auto',
-    bottom: number | 'auto',
-    left: number,
-    right: number = left
-  ) => {
-    if (tooltipPosition === 'top')
-      return {
-        bottom,
-        left,
-      };
-    if (tooltipPosition === 'right')
-      return {
-        left,
-        top,
-        bottom,
-      };
-    if (tooltipPosition === 'bottom') {
-      const borderStyle = !this.isGreyColor && {
-        borderBottomColor: this.props.color,
-      };
-      return {
-        ...borderStyle,
-        left,
-        top,
-      };
-    }
-    return {
-      right,
-      top,
-      bottom,
-    };
   };
 
   onCopyId = () => {
@@ -488,7 +219,12 @@ export default class TooltipPool extends Component<Props, State> {
   renderDescriptionFields = () => {
     const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
-    const { currentTheme, stakePool, numberOfRankedStakePools } = this.props;
+    const {
+      currentTheme,
+      stakePool,
+      numberOfRankedStakePools,
+      isGridRewardsView,
+    } = this.props;
     const {
       ranking,
       relativeStake,
@@ -538,7 +274,7 @@ export default class TooltipPool extends Component<Props, State> {
                   }),
                 }}
               >
-                {!potentialRewards.isZero() ? (
+                {potentialRewards.isZero && !potentialRewards.isZero() ? (
                   ranking
                 ) : (
                   <>
@@ -553,12 +289,13 @@ export default class TooltipPool extends Component<Props, State> {
               </div>
             )}
             {isIncentivizedTestnet && (
-              <Tooltip
-                className={styles.experimentalTooltip}
+              <PopOver
                 key="experimentalTooltip"
-                themeOverrides={experimentalTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+                content={
+                  <div className={styles.tooltipWithHTMLContent}>
+                    {intl.formatMessage(messages.experimentalTooltipLabel)}
+                  </div>
+                }
               >
                 <button className={styles.iconButton}>
                   <SVGInline
@@ -566,7 +303,7 @@ export default class TooltipPool extends Component<Props, State> {
                     className={styles.experimentalIcon}
                   />
                 </button>
-              </Tooltip>
+              </PopOver>
             )}
           </div>
         ),
@@ -640,9 +377,17 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            <span className={styles.defaultColorContent}>
-              {formattedWalletAmount(potentialRewards)}
-            </span>
+            {isGridRewardsView &&
+            potentialRewards.isZero &&
+            potentialRewards.isZero() ? (
+              <div className={styles.noDataDash}>
+                <SVGInline svg={noDataDashSmallImage} />
+              </div>
+            ) : (
+              <span className={styles.defaultColorContent}>
+                {formattedWalletAmount(potentialRewards)}
+              </span>
+            )}
           </div>
         ),
       },
@@ -653,26 +398,26 @@ export default class TooltipPool extends Component<Props, State> {
         {fields.map((field: { key: string, value: any }) => {
           const labelPart = (
             <div className={styles[`${field.key}Label`]}>
-              <Tooltip
-                key={field.key}
-                skin={TooltipSkin}
-                tip={
-                  <div className={styles.tooltipWithHTMLContent}>
-                    <FormattedHTMLMessage
-                      {...messages[`${field.key}Tooltip`]}
-                    />
-                  </div>
-                }
-              >
-                <div className={styles.labelContainer}>
-                  <div className={styles.fieldLabel}>
-                    {intl.formatMessage(messages[field.key])}
-                  </div>
+              <div className={styles.labelContainer}>
+                <div className={styles.fieldLabel}>
+                  {intl.formatMessage(messages[field.key])}
+                </div>
+                <PopOver
+                  offset={[0, 10]}
+                  key={field.key}
+                  content={
+                    <div className={styles.tooltipWithHTMLContent}>
+                      <FormattedHTMLMessage
+                        {...messages[`${field.key}Tooltip`]}
+                      />
+                    </div>
+                  }
+                >
                   <div className={styles.questionMark}>
                     <SVGInline svg={questionMarkIcon} />
                   </div>
-                </div>
-              </Tooltip>
+                </PopOver>
+              </div>
             </div>
           );
 
@@ -695,32 +440,14 @@ export default class TooltipPool extends Component<Props, State> {
     const { intl } = this.context;
     const {
       stakePool,
-      isVisible,
-      onClick,
+      onClose,
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
     } = this.props;
-    const {
-      componentStyle,
-      arrowStyle,
-      colorBandStyle,
-      tooltipPosition,
-      idCopyFeedback,
-    } = this.state;
+    const { componentStyle, idCopyFeedback } = this.state;
 
     const { id, name, description, ticker, homepage, retiring } = stakePool;
-
-    const componentClassnames = classnames([
-      styles.component,
-      isVisible ? styles.isVisible : null,
-    ]);
-
-    const arrowClassnames = classnames([
-      styles.arrow,
-      styles[`tooltipPosition${capitalize(tooltipPosition)}`],
-      this.isGreyColor ? styles.greyArrow : null,
-    ]);
 
     const retirementFromNow = retiring
       ? moment(retiring).locale(intl.locale).fromNow(true)
@@ -735,20 +462,28 @@ export default class TooltipPool extends Component<Props, State> {
       styles.colorBand,
       this.isGreyColor ? styles.greyColorBand : null,
     ]);
+    const colorBandStyle = this.isGreyColor
+      ? {}
+      : {
+          background: this.props.color,
+        };
 
     return (
       <div
-        className={componentClassnames}
-        onClick={this.handleInnerClick}
-        role="link"
-        aria-hidden
+        className={styles.component}
         style={componentStyle}
+        ref={this.rootRef}
       >
         <div className={colorBandClassnames} style={colorBandStyle} />
-        <div className={arrowClassnames} style={arrowStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
-          <button className={styles.closeButton} onClick={onClick}>
+          <button
+            className={styles.closeButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+          >
             <SVGInline svg={closeCross} />
           </button>
           <div className={styles.ticker}>{ticker}</div>
@@ -760,28 +495,29 @@ export default class TooltipPool extends Component<Props, State> {
               />
             </div>
           )}
-          <div
-            className={styles.id}
-            onMouseOut={this.onIdMouseOut}
-            onBlur={() => {}}
+          <PopOver
+            key="id"
+            content={
+              <div className={styles.tooltipWithHTMLContent}>
+                {intl.formatMessage(messages.copyIdTooltipLabel)}
+              </div>
+            }
           >
-            <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
-            <CopyToClipboard text={id} onCopy={this.onCopyId}>
-              <Tooltip
-                className={styles.idTooltip}
-                key="id"
-                themeOverrides={isTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.copyIdTooltipLabel)}
-              >
+            <div
+              className={styles.id}
+              onMouseOut={this.onIdMouseOut}
+              onBlur={() => {}}
+            >
+              <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
+              <CopyToClipboard text={id} onCopy={this.onCopyId}>
                 <div className={hoverContentClassnames}>
                   <p className={styles.hoverContentBackground}>
                     {id} <SVGInline svg={idCopyIcon} />
                   </p>
                 </div>
-              </Tooltip>
-            </CopyToClipboard>
-          </div>
+              </CopyToClipboard>
+            </div>
+          </PopOver>
           <div className={styles.description}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}
@@ -794,7 +530,7 @@ export default class TooltipPool extends Component<Props, State> {
         {onSelect && showWithSelectButton && (
           <Button
             label={intl.formatMessage(messages.delegateButton)}
-            onClick={onSelect}
+            onClick={() => onSelect && onSelect()}
             skin={ButtonSkin}
           />
         )}

@@ -15,12 +15,12 @@ export const buildAppMenus = async (
   cardanoNode: ?CardanoNode,
   locale: string,
   data: {
-    isUpdateAvailable: boolean,
+    isNavigationEnabled: boolean,
   }
 ) => {
-  const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
-  const { isUpdateAvailable } = data;
+  const { isNavigationEnabled } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
@@ -31,6 +31,10 @@ export const buildAppMenus = async (
 
   const openDaedalusDiagnosticsDialog = () => {
     if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
+  };
+
+  const openItnRewardsRedemptionDialog = () => {
+    if (mainWindow) showUiPartChannel.send(ITN_REWARDS_REDEMPTION, mainWindow);
   };
 
   const openSettingsPage = () => {
@@ -91,6 +95,7 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
+    openItnRewardsRedemptionDialog,
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
@@ -106,7 +111,7 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isUpdateAvailable
+        isNavigationEnabled
       )
     );
     Menu.setApplicationMenu(menu);
@@ -118,7 +123,7 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isUpdateAvailable
+        isNavigationEnabled
       )
     );
     mainWindow.setMenu(menu);

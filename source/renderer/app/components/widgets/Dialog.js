@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import classnames from 'classnames';
-import type { Node, Element } from 'react';
+import type { Node, Element, ElementRef } from 'react';
 import { Modal } from 'react-polymorph/lib/components/Modal';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -17,7 +17,7 @@ export type DialogActionItems = Array<DialogActionItem>;
 
 export type DialogActionItem = {
   className?: ?string,
-  label: string | Element<any>,
+  label: string | Node,
   primary?: boolean,
   disabled?: boolean,
   onClick?: Function,
@@ -34,12 +34,14 @@ export type DialogActionOptions = {
   direction?: ActionDirection,
 };
 
+export type DialogActions = DialogActionItems | DialogActionOptions;
+
 type Props = {
-  title?: string,
+  title?: string | Element<any>,
   subtitle?: string | Node,
   children?: Node,
   footer?: Node,
-  actions?: DialogActionItems | DialogActionOptions,
+  actions?: DialogActions,
   closeButton?: ?Element<any>,
   backButton?: Node,
   className?: string,
@@ -48,6 +50,7 @@ type Props = {
   closeOnOverlayClick?: boolean,
   primaryButtonAutoFocus?: boolean,
   fullSize?: boolean,
+  scrollWrapperRef?: ?ElementRef<*>,
 };
 
 const defaultActionOptions = {
@@ -71,6 +74,7 @@ export default class Dialog extends Component<Props> {
       primaryButtonAutoFocus,
       defaultThemeOverrides,
       fullSize,
+      scrollWrapperRef,
     } = this.props;
 
     const { items, direction } = Array.isArray(actions)
@@ -113,7 +117,16 @@ export default class Dialog extends Component<Props> {
             </div>
           )}
 
-          {children && <div className={styles.content}>{children}</div>}
+          {children && (
+            <div
+              className={styles.contentWrapper}
+              ref={(ref) => {
+                if (scrollWrapperRef) scrollWrapperRef.current = ref;
+              }}
+            >
+              <div className={styles.content}>{children}</div>
+            </div>
+          )}
           {footer && <div className={styles.footer}>{footer}</div>}
 
           {items && (

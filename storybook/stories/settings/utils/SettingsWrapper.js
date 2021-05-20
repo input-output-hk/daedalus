@@ -10,6 +10,7 @@ import SettingsMenu from '../../../../source/renderer/app/components/settings/me
 
 const pageNames = {
   '/settings/index': 'General',
+  '/settings/stake-pools': 'Stake Pools',
   '/settings/display': 'Themes',
   '/settings/terms-of-service': 'Terms of service',
   '/settings/support': 'Support',
@@ -22,6 +23,8 @@ export default (story: Object, context: Object) => {
   const menu = (
     <SettingsMenu
       isFlight={false}
+      isSyncing={false}
+      currentRoute=""
       onItemClick={linkTo(context.kind, (item) => pageNames[item])}
       isActiveItem={(item) => {
         const itemName = context.story
@@ -38,7 +41,9 @@ export default (story: Object, context: Object) => {
     <StoryDecorator>
       <StoryProvider>
         <StoryLayout activeSidebarCategory="/settings" {...context}>
-          <SettingsLayout menu={menu}>{storyWithKnobs}</SettingsLayout>
+          <SettingsLayout menu={menu} activePage="/settings">
+            {storyWithKnobs}
+          </SettingsLayout>
         </StoryLayout>
       </StoryProvider>
     </StoryDecorator>

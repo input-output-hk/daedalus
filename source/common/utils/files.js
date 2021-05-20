@@ -1,10 +1,12 @@
 // @flow
 import moment from 'moment';
+import sanitizeFilename from 'sanitize-filename';
 
 export const defaultProps = {
   prefix: 'logs',
   extension: 'zip',
   isUTC: true,
+  sanitize: true,
 };
 
 type Props = {
@@ -12,10 +14,11 @@ type Props = {
   extension?: string,
   date?: moment,
   isUTC?: boolean,
+  sanitize?: boolean,
 };
 
 export const generateFileNameWithTimestamp = (props?: Props = {}) => {
-  const { prefix, extension, isUTC } = {
+  const { prefix, extension, isUTC, sanitize } = {
     ...defaultProps,
     ...props,
   };
@@ -26,9 +29,11 @@ export const generateFileNameWithTimestamp = (props?: Props = {}) => {
       date = date.utc();
     z = 'Z';
   }
-  return `${prefix}-${`${date.format('YYYY-MM-DDTHHmmss.0SSS')}${z}`}${
+  let fileName = `${prefix}-${`${date.format('YYYY-MM-DDTHHmmss.0SSS')}${z}`}${
     extension ? '.' : ''
   }${extension}`;
+  if (sanitize) fileName = sanitizeFilename(fileName);
+  return fileName;
 };
 
 export const isFileNameWithTimestamp = (

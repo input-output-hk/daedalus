@@ -45,7 +45,8 @@ type KnownErrorType =
   | 'not_implemented'
   | 'wallet_not_responding'
   | 'address_already_exists'
-  | 'utxo_too_small';
+  | 'utxo_too_small'
+  | 'invalid_smash_server';
 
 type LoggingType = {
   msg?: string,

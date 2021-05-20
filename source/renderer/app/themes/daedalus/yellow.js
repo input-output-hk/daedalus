@@ -193,7 +193,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-big-button-background-color': '#ffffff',
     '--theme-dialog-big-button-border-color': '#e1dac6',
     '--theme-dialog-big-button-label-color': '#2d2d2d',
-    '--theme-dialog-big-button-description-color': '#2d2d2d',
+    '--theme-dialog-big-button-description-color': 'rgba(45, 45, 45, 0.6)',
     '--theme-dialog-set-wallet-password-background-color':
       'rgba(255, 185, 35, 0.96)',
     '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
@@ -258,12 +258,14 @@ export const YELLOW_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#ffffff',
-    '--theme-hardware-wallet-step-border-active-color': 'rgba(45, 45, 45, 0.5)',
-    '--theme-hardware-wallet-step-border-color': '#e1dac6',
-    '--theme-hardware-wallet-step-color': '#2d2d2d',
+    '--theme-hardware-wallet-status-background-color': '#ffffff',
+    '--theme-hardware-wallet-status-border-color': 'rgba(45, 45, 45, 0.3)',
+    '--theme-hardware-wallet-status-color': '#2d2d2d',
+    '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#2d2d2d',
     '--theme-hardware-wallet-message-color': '#2d2d2d',
+    '--theme-hardware-wallet-status-passphrase-label-color':
+      'rgba(45, 45, 45, 0.5)',
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(45, 45, 45, 0.6)',
@@ -273,7 +275,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#2d2d2d',
     '--theme-icon-add-wallet-from-sidebar-color': '#2d2d2d',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#2d2d2d',
-    '--theme-icon-add-wallet-dialog-big-button-color': '#2d2d2d',
+    '--theme-icon-add-wallet-dialog-big-button-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-icon-back-button-color': '#2d2d2d',
     '--theme-icon-close-button-color': '#2d2d2d',
     '--theme-icon-connecting-ada-api-logo-color': '#2d2d2d',
@@ -375,6 +377,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#eda70e',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-title-color': '#2d2d2d',
     '--theme-news-feed-icon-close-button-color': '#2d2d2d',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -491,6 +495,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#2d2d2d',
     '--theme-progress-bar-large-progress-stripe2': '#3f3e3e',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#2d2d2d',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#3f3e3e',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#000000',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#2d2d2d',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': 'transparent',
@@ -516,6 +525,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
+    '--rp-autocomplete-required-words-color': 'rgba(45, 45, 45, 0.5)',
+    '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
     '--rp-bubble-bg-color': '#fff',
@@ -598,6 +609,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-option-text-color': '#2d2d2d',
     '--rp-options-border-color': 'rgba(45, 45, 45, 0.7)',
     '--rp-options-shadow': 'none',
+    '--rp-option-search-highlight-background-color': 'rgba(125, 3, 146, 0.3)',
   },
   rpRadio: {
     '--rp-radio-border': '2px solid #2d2d2d',
@@ -690,6 +702,9 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 1)',
     '--theme-settings-theme-select-title-color': '#2d2d2d',
     '--theme-settings-theme-select-border-color': '#e1dac6',
+    '--theme-settings-undelegate-wallet-divider-border-color': '#e1dac6',
+    '--theme-settings-undelegate-wallet-deposit-amount-color': '#009900',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#fdcd68',
@@ -849,7 +864,6 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
     '--theme-staking-export-button-shadow-color': 'rgba(45, 45, 45, 0.18)',
     '--theme-staking-export-button-color': '#f8f7f3',
-    '--theme-staking-wallet-row-action-delegate-text-color': '#d6902f',
     '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
     '--theme-staking-wallet-row-ticker-background-color':
       'rgba(45, 45, 45, 0.07)',
@@ -910,6 +924,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '#e1dac6',
     '--theme-transactions-list-group-date-color': '#2d2d2d',
     '--theme-transactions-list-item-details-color': '#2d2d2d',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-state-ok-background-color': '#007600',
     '--theme-transactions-state-pending-background-color':
       'rgba(45, 45, 45, 0.5)',
@@ -923,6 +938,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.5)',
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
+    '--theme-transactions-icon-type-failed-background-color':
+      'rgba(236, 93, 107, 1)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
     '--theme-transactions-filter-button-shadow-color': 'rgba(45, 45, 45, 0.18)',
     '--theme-transactions-filter-button-color': '#f8f7f3',
@@ -943,6 +960,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#2d2d2d0d',
+    '--theme-transactions-header-background-color': '#f8f3ed',
+    '--theme-transactions-header-texct-color': '#2d2d2d80',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
@@ -959,6 +978,25 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': '#2d2d2d',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fff',
+  },
+  voting: {
+    '--theme-voting-font-color-accent': '#2d2d2d',
+    '--theme-voting-font-color-light': '#2d2d2db3',
+    '--theme-voting-font-color-regular': '#2d2d2d',
+    '--theme-voting-info-background-color': 'rgba(45, 45, 45, 0.1)',
+    '--theme-voting-info-font-color': '#2d2d2d',
+    '--theme-voting-registration-steps-activation-steps-indicator-color':
+      '#2d2d2d',
+    '--theme-voting-registration-steps-choose-wallet-error-message-color':
+      '#ea4c5b',
+    '--theme-voting-registration-steps-choose-wallet-error-message-light-color':
+      '#ea4c5bb3',
+    '--theme-voting-registration-steps-deposit-fees-amount-color': '#ea4c5b',
+    '--theme-voting-registration-steps-deposit-fees-label-color': '#2d2d2d',
+    '--theme-voting-registration-steps-description-color': '#2d2d2dcc',
+    '--theme-voting-registration-steps-description-highlighted-color':
+      '#2d2d2d',
+    '--theme-voting-separator-color': 'rgba(45, 45, 45, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color': 'rgba(45, 45, 45, .1)',
@@ -1056,6 +1094,14 @@ export const YELLOW_THEME_OUTPUT = {
   rpPopOver: {
     '--rp-pop-over-bg-color': 'rgba(45,45,45,0.9)',
     '--rp-pop-over-text-color': 'white',
+  },
+  widgets: {
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(45,45,45,0.1)',
+    '--theme-widgets-asset-token-text-color': '#2d2d2d',
+    '--theme-widgets-asset-token-background-color': '#ffffff',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-widgets-itemsDropdown-option-label-text-color': '#2d2d2d',
   },
 };
 

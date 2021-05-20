@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { BigNumber } from 'bignumber.js';
 import { get } from 'lodash';
 import DelegationStepsSuccessDialog from './DelegationStepsSuccessDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
@@ -12,6 +11,9 @@ import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePo
 import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
+
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 type Props = {
   activeStep: number,
@@ -33,12 +35,14 @@ type Props = {
   currentTheme: string,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
-  stakePoolJoinFee: ?BigNumber,
+  stakePoolJoinFee: ?DelegationCalculateFeeResponse,
   isSubmitting: boolean,
   error: ?LocalizableError,
   futureEpochStartTime: string,
   currentLocale: string,
   getStakePoolById: Function,
+  hwDeviceStatus: HwDeviceStatus,
+  isTrezor: boolean,
 };
 
 @observer
@@ -82,6 +86,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       isSubmitting,
       error,
       getStakePoolById,
+      hwDeviceStatus,
+      isTrezor,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -141,6 +147,9 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onBack={onBack}
             isSubmitting={isSubmitting}
             error={error}
+            hwDeviceStatus={hwDeviceStatus}
+            onExternalLinkClick={onOpenExternalLink}
+            isTrezor={isTrezor}
           />
         );
         break;

@@ -191,10 +191,7 @@ gulp.task(
 
 gulp.task('test:e2e:watch', gulp.series('build:watch', 'test:e2e:nodemon'));
 
-gulp.task(
-  'purge:translations',
-  shell.task('rimraf ./translations/messages/source')
-);
+gulp.task('purge:translations', shell.task('rimraf ./translations/messages'));
 
 gulp.task('electron:inspector', shell.task('yarn electron:inspector'));
 

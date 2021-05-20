@@ -15,6 +15,12 @@
   font-family: var(--font-semibold);
 }
 
+%accentBoldText {
+  @extend %baseTypography;
+  color: var(--theme-staking-font-color-accent);
+  font-family: var(--font-bold);
+}
+
 %regularText {
   @extend %baseTypography;
   color: var(--theme-staking-font-color-regular);

@@ -1,7 +1,7 @@
 @import '../stakingConfig';
 
 .component {
-  margin: 0 0 20px 20px;
+  margin: 20px 0 20px 20px;
 
   &.isLoading {
     align-items: center;
@@ -17,7 +17,23 @@
 
   .bodyTitle {
     @extend %regularLightColorText;
-    margin: 0 0 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 10px 0;
+    padding: 0 22px 0 20px;
+
+    .rightBodyTitle {
+      display: flex;
+      justify-content: space-between;
+      max-width: 332px;
+      width: 100%;
+
+      span {
+        display: flex;
+        justify-content: center;
+        width: 80px;
+      }
+    }
   }
 
   .mainContent {

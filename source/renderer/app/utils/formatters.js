@@ -5,17 +5,19 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
-import { momentLocales } from '../../../common/types/locales.types';
+import { DEFAULT_DECIMAL_PRECISION } from '../config/assetsConfig';
+import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
+import type { AssetMetadata } from '../api/assets/types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
   long: boolean = true
-) => {
+): string => {
   let formattedAmount = long
-    ? amount.toFormat(DECIMAL_PLACES_IN_ADA)
+    ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
     : shortNumber(amount);
   const { decimalSeparator } = BigNumber.config().FORMAT;
   if (!long && decimalSeparator !== '.') {
@@ -30,6 +32,33 @@ export const formattedWalletAmount = (
   return formattedAmount.toString();
 };
 
+export const formattedWalletCurrencyAmount = (
+  amount: BigNumber,
+  currencyRate: number,
+  decimalDigits?: ?number,
+  currencyCode?: ?string
+): string =>
+  `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
+    currencyCode || ''
+  }`;
+
+export const formattedTokenWalletAmount = (
+  amount: BigNumber,
+  metadata?: ?AssetMetadata,
+  decimals: ?number
+): string => {
+  const { ticker } = metadata || {};
+  const divider = parseInt(
+    getMultiplierFromDecimalPlaces(decimals || DEFAULT_DECIMAL_PRECISION),
+    10
+  );
+  let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
+  if (ticker) {
+    formattedAmount += ` ${ticker}`;
+  }
+  return formattedAmount;
+};
+
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03
 // M        Million             1.00E+06
@@ -41,36 +70,40 @@ export const shortNumber = (value: number | BigNumber): string => {
   let formattedAmount = '';
   if (amount.isZero()) {
     formattedAmount = '0';
-  } else if (amount.lessThan(1000)) {
-    formattedAmount = `${amount.round(
+  } else if (amount.isLessThan(1000)) {
+    formattedAmount = `${amount.decimalPlaces(
       DECIMAL_PLACES_IN_ADA,
       BigNumber.ROUND_DOWN
     )}`;
-  } else if (amount.lessThan(1000000)) {
+  } else if (amount.isLessThan(1000000)) {
     formattedAmount = `${amount
       .dividedBy(1000)
-      .round(1, BigNumber.ROUND_DOWN)}K`;
-  } else if (amount.lessThan(1000000000)) {
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}K`;
+  } else if (amount.isLessThan(1000000000)) {
     formattedAmount = `${amount
       .dividedBy(1000000)
-      .round(1, BigNumber.ROUND_DOWN)}M`;
-  } else if (amount.lessThan(1000000000000)) {
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}M`;
+  } else if (amount.isLessThan(1000000000000)) {
     formattedAmount = `${amount
       .dividedBy(1000000000)
-      .round(1, BigNumber.ROUND_DOWN)}B`;
-  } else if (amount.lessThan(1000000000000000)) {
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}B`;
+  } else if (amount.isLessThan(1000000000000000)) {
     formattedAmount = `${amount
       .dividedBy(1000000000000)
-      .round(1, BigNumber.ROUND_DOWN)}T`;
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}T`;
   } else {
     formattedAmount = `${amount
       .dividedBy(1000000000000000)
-      .round(1, BigNumber.ROUND_DOWN)}Q`;
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}Q`;
   }
   return formattedAmount;
 };
 
-export const formattedAmountToNaturalUnits = (amount: string): string => {
+export const formattedAmountToNaturalUnits = (amount: ?string): string => {
+  if (!amount) {
+    return '0';
+  }
+
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators
     .replace(/,/g, '') // removes all the comma separators
@@ -79,12 +112,12 @@ export const formattedAmountToNaturalUnits = (amount: string): string => {
   return cleanedAmount === '' ? '0' : cleanedAmount;
 };
 
-export const formattedAmountToBigNumber = (amount: string) => {
+export const formattedAmountToBigNumber = (amount: string): BigNumber => {
   const cleanedAmount = amount.replace(/,/g, '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
 
-export const toFixedUserFormat = (number: number, digits: number) => {
+export const toFixedUserFormat = (number: number, digits: number): string => {
   // This is necessary, because the BigNumber version we use
   // can't receive numbers with more than 15 digits
   const parsedNumber = parseFloat(number).toFixed(digits);
@@ -93,9 +126,6 @@ export const toFixedUserFormat = (number: number, digits: number) => {
 
 export const formattedAmountToLovelace = (amount: string): number =>
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
-
-export const formattedAdaAmountToLovelace = (adaAmount: number): number =>
-  adaAmount * LOVELACES_PER_ADA;
 
 export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
@@ -110,7 +140,7 @@ export const formattedBytesToSize = (bytes: number): string => {
     10
   );
   if (i === 0) return `${bytes} ${sizes[i]})`;
-  return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+  return `${formattedNumber(bytes / 1024 ** i, 1)} ${sizes[i]}`;
 };
 
 export type FormattedDownloadData = {
@@ -151,10 +181,87 @@ export const formattedDownloadData = (
   };
 };
 
-export const generateThousands = (value: number) => {
+export const generateThousands = (value: number): number => {
   if (value <= 1000) {
     return Math.round(value);
   }
 
   return Math.round(value / 1000) * 1000;
 };
+
+export const formattedArrayBufferToHexString = (
+  arrayBuffer: Uint8Array
+): string => {
+  const buff = new Uint8Array(arrayBuffer);
+  const byteToHex = [];
+  const hexOctets = [];
+
+  for (let n = 0; n <= 0xff; ++n) {
+    const hexOctet = `0${n.toString(16)}`.slice(-2);
+    byteToHex.push(hexOctet);
+  }
+
+  for (let i = 0; i < buff.length; ++i) {
+    hexOctets.push(byteToHex[buff[i]]);
+  }
+
+  return hexOctets.join('');
+};
+
+export const formattedNumber = (value: number | string, dp?: number): string =>
+  new BigNumber(value).toFormat(dp);
+
+export const formattedCpuModel = (model: string): string => {
+  const atCharPosition = model.indexOf('@');
+  const speedSection = model.substring(atCharPosition);
+  const speedNumbers = speedSection.match(/[\d,.]+/g);
+  const speedNumber = speedNumbers ? speedNumbers[0] : '';
+  const formattedSpeedNumber = formattedNumber(speedNumber, 2);
+  const formattedSpeedSection = speedSection.replace(
+    /[\d,.]+/,
+    formattedSpeedNumber
+  );
+  const formattedModel = `${model.substring(
+    0,
+    atCharPosition
+  )}${formattedSpeedSection}`;
+
+  return formattedModel;
+};
+
+export const formattedSize = (size: string): string => {
+  const sizeNumbers = size.match(/[\d,.]+/g);
+  const sizeNumber = sizeNumbers ? sizeNumbers[0] : '';
+  const formattedSizeNumber = formattedNumber(sizeNumber);
+  const formattedResult = size.replace(/[\d,.]+/, formattedSizeNumber);
+
+  return formattedResult;
+};
+
+export const formattedDateTime = (
+  dateTime: Date,
+  {
+    currentLocale,
+    currentDateFormat,
+    currentTimeFormat,
+  }: {
+    currentLocale: Locale,
+    currentDateFormat: string,
+    currentTimeFormat: string,
+  }
+) => {
+  moment.locale(momentLocales[currentLocale]);
+
+  const dateTimeMoment = moment(dateTime);
+  const dateFormatted = dateTimeMoment.format(currentDateFormat);
+  const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+
+  if (currentLocale === LOCALES.english) {
+    return `${dateFormatted}, ${timeFormatted}`;
+  }
+
+  return `${dateFormatted}${timeFormatted}`;
+};
+
+export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
+  '1'.padEnd(decimalPlaces + 1, '0');

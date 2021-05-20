@@ -1,0 +1,44 @@
+.component {
+  cursor: pointer;
+  font-size: 19px;
+  position: absolute;
+  right: 94px;
+  transform-origin: bottom left;
+  &.animate {
+    animation: animation 0.7s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
+    svg {
+      ellipse {
+        animation: animationEllipse 1s infinite;
+      }
+    }
+  }
+}
+.icon {
+  svg {
+    height: 32px;
+    width: 32px;
+  }
+}
+
+@keyframes animationEllipse {
+  0% {
+    opacity: 1;
+    transform: scale(0.7) translate(22px, 15px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) translate(-7px, -7px);
+  }
+}
+
+@keyframes animation {
+  0% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(10deg);
+  }
+}

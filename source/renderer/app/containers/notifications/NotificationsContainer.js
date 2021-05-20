@@ -10,7 +10,7 @@ import type {
   NotificationConfig,
   NotificationId,
 } from '../../types/notificationTypes';
-import type { NotificationMessageProps } from '../../components/notifications/Notification.js';
+import type { NotificationMessageProps } from '../../components/notifications/Notification';
 
 const ICONS = {
   successIcon,
@@ -30,12 +30,56 @@ const messages = defineMessages({
     description:
       'Notification for download logs in the Loading and Settings pages.',
   },
+  downloadRewardsCSVSuccess: {
+    id: 'notification.downloadRewardsCSVSuccess',
+    defaultMessage: '!!!CSV file successfully downloaded',
+    description: 'Notification for download Rewards CSV file.',
+  },
+  downloadTransactionsCSVSuccess: {
+    id: 'notification.downloadTransactionsCSVSuccess',
+    defaultMessage: '!!!CSV file successfully downloaded',
+    description: 'Notification for download Transactions CSV file.',
+  },
+  copyPublicKey: {
+    id: 'notification.copyPublicKey',
+    defaultMessage:
+      '!!!Public key: <strong>{publicKey}</strong> copied to clipboard',
+    description:
+      'Notification for the wallet public key copy success in the Wallet Settings page.',
+  },
   copyAddress: {
     id: 'notification.copyAddress',
     defaultMessage:
-      '!!!Address: <strong>{walletAddress}</strong> copied to clipboard',
+      '!!!Address: <strong>{address}</strong> copied to clipboard',
     description:
       'Notification for the wallet address copy success in the Wallet Receive page.',
+  },
+  copyAssetItem: {
+    id: 'notification.copyAssetItem',
+    defaultMessage:
+      '!!!{assetItem}: <strong>{value}</strong> copied to clipboard',
+    description:
+      'Notification for the wallet assetItem copy success in the Wallet Receive page.',
+  },
+  downloadAddressPDFSuccess: {
+    id: 'notification.downloadAddressPDFSuccess',
+    defaultMessage:
+      '!!!Address: <strong>{walletAddress}</strong> PDF successfully downloaded',
+    description:
+      'Notification for the wallet address PDF download success in the Wallet Receive page.',
+  },
+  downloadVotingPDFSuccess: {
+    id: 'notification.downloadVotingPDFSuccess',
+    defaultMessage: '!!!PDF successfully downloaded',
+    description:
+      'Notification for the wallet voting PDF download success in the Voting Registration dialog.',
+  },
+  downloadQRCodeImageSuccess: {
+    id: 'notification.downloadQRCodeImageSuccess',
+    defaultMessage:
+      '!!!Address: <strong>{walletAddress}</strong> QR code image successfully downloaded',
+    description:
+      'Notification for the wallet address PDF download success in the Wallet Receive page.',
   },
   copyStateDirectoryPath: {
     id: 'notification.copyStateDirectoryPath',
@@ -67,8 +111,43 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       actionToListenAndClose: this.props.actions.profile.downloadLogs,
     },
     {
+      id: 'downloadRewardsCSVSuccess',
+      actionToListenAndOpen: this.props.actions.staking.requestCSVFileSuccess,
+      actionToListenAndClose: this.props.actions.staking.requestCSVFile,
+    },
+    {
+      id: 'downloadTransactionsCSVSuccess',
+      actionToListenAndOpen: this.props.actions.transactions
+        .requestCSVFileSuccess,
+      actionToListenAndClose: this.props.actions.transactions.requestCSVFile,
+    },
+    {
+      id: 'copyPublicKey',
+      actionToListenAndOpen: this.props.actions.wallets.copyPublicKey,
+    },
+    {
       id: 'copyAddress',
       actionToListenAndOpen: this.props.actions.wallets.copyAddress,
+    },
+    {
+      id: 'copyAssetItem',
+      actionToListenAndOpen: this.props.actions.wallets.copyAssetItem,
+    },
+    {
+      id: 'downloadAddressPDFSuccess',
+      actionToListenAndOpen: this.props.actions.wallets
+        .generateAddressPDFSuccess,
+      actionToListenAndClose: this.props.actions.wallets.generateAddressPDF,
+    },
+    {
+      id: 'downloadVotingPDFSuccess',
+      actionToListenAndOpen: this.props.actions.voting.saveAsPDFSuccess,
+      actionToListenAndClose: this.props.actions.voting.saveAsPDF,
+    },
+    {
+      id: 'downloadQRCodeImageSuccess',
+      actionToListenAndOpen: this.props.actions.wallets.saveQRCodeImageSuccess,
+      actionToListenAndClose: this.props.actions.wallets.saveQRCodeImage,
     },
     {
       id: 'copyStateDirectoryPath',
@@ -105,7 +184,6 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     const { stores, actions } = this.props;
     const { closeNotification } = actions.notifications;
     const { activeNotifications } = stores.uiNotifications;
-    Object.keys(activeNotifications);
     return (
       <div>
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {

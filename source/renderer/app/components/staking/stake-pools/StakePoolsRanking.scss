@@ -14,18 +14,6 @@
     .selectWallet {
       :global {
         .noValueSelected {
-          &.enSelector {
-            .SimpleInput_customValueBlock {
-              width: 110px;
-            }
-          }
-
-          &.jaSelector {
-            .SimpleInput_customValueBlock {
-              width: 160px;
-            }
-          }
-
           .SelectOverrides_selectInput::after {
             bottom: -14.5px !important;
           }
@@ -41,10 +29,7 @@
           }
         }
       }
-
-      .walletSelector {
-        padding-right: 15px;
-
+      .walletSelectorContainer {
         :global {
           .SimpleInput_input {
             border: none;
@@ -59,6 +44,7 @@
             bottom: 7.5px;
             left: auto;
             right: 0;
+            top: 9px;
           }
 
           .SimpleInput_customValueBlock {
@@ -73,6 +59,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+
+            .WalletsDropdownLabel_labelSync,
+            .WalletsDropdownLabel_ticker {
+              display: none;
+            }
           }
 
           .SimpleSelect_selectInput {
@@ -85,15 +76,13 @@
 
             .SimpleOptions_option {
               padding: 8px 20px;
-
-              span {
-                display: block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              }
             }
           }
         }
+      }
+
+      .walletSelector {
+        padding-right: 15px;
 
         ::-webkit-input-placeholder {
           color: var(--theme-staking-font-color-regular);
@@ -138,33 +127,8 @@
     .slider {
       flex: 1;
 
-      :global {
-        .SimpleTooltip_bubble {
-          .SimpleBubble_bubble {
-            border-radius: 6px;
-            font-family: var(--font-regular);
-            font-size: 13px;
-            line-height: 1.15;
-          }
-        }
-
-        .Slider_minMark {
-          .SimpleTooltip_bubble {
-            .SimpleBubble_bubble {
-              left: -15px;
-              right: auto;
-            }
-          }
-        }
-
-        .Slider_maxMark {
-          .SimpleTooltip_bubble {
-            .SimpleBubble_bubble {
-              left: -50px;
-              right: auto;
-            }
-          }
-        }
+      span {
+        outline: none;
       }
     }
 
@@ -173,19 +137,6 @@
       line-height: 1.33;
       margin-bottom: 9px;
       text-align: right;
-
-      :global {
-        .SimpleTooltip_bubble {
-          .SimpleBubble_bubble {
-            border-radius: 6px;
-            font-family: var(--font-regular);
-            font-size: 13px;
-            left: auto;
-            line-height: 1.15;
-            right: -10px;
-          }
-        }
-      }
     }
 
     .outOfSliderRangeEnd {
@@ -204,5 +155,9 @@
 
   .col {
     @extend %regularText;
+
+    span {
+      outline: none;
+    }
   }
 }

@@ -1,31 +1,50 @@
 /* eslint-disable no-console */
 const axios = require('axios');
+const https = require('https');
+const fs = require('fs');
+const { sampleSize, shuffle } = require('lodash');
+const { itnShelleyMnemonics } = require('./mnemonics');
 
-const mnemonics = [
-  ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
-  ['blood', 'limit', 'pumpkin', 'fringe', 'order', 'trick', 'answer', 'festival', 'ethics', 'educate', 'luggage', 'dinner', 'record', 'fox', 'truth'],
-  ['bridge', 'joke', 'jeans', 'width', 'social', 'banner', 'visit', 'enlist', 'reason', 'hand', 'license', 'subway', 'butter', 'render', 'absent'],
-  ['bless', 'turkey', 'install', 'across', 'bronze', 'check', 'true', 'icon', 'treat', 'that', 'tuition', 'flush', 'panther', 'powder', 'ecology'],
-  ['trick', 'razor', 'bicycle', 'front', 'hollow', 'liberty', 'swift', 'coconut', 'pull', 'raccoon', 'level', 'woman', 'awful', 'sound', 'swarm'],
-];
-
-const walletNames = [
-  'Bob',
-  'Alice',
-  'Jane',
-  'Charles',
-  'Jason'
+const names = [
+  'Sabrina',
+  'Sarah',
+  'Scarlett',
+  'Sharon',
+  'Selena',
+  'Siena',
+  'Sofia',
+  'Sonia',
+  'Stella',
+  'Stephanie',
 ];
 
 const API_PORT = process.env.API_PORT || 8088;
+const IS_HTTPS = process.env.IS_HTTPS || false;
+const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
 async function main() {
+  const shuffledMnemonics = shuffle(itnShelleyMnemonics);
+  const shuffledNames = shuffle(names);
   try {
-    await Promise.all(mnemonics.map((mnemonic, index) => {
-      const name = walletNames[index];
-      const payload = generateImportPayload(mnemonic, name);
-      return axios.post(`http://localhost:${API_PORT}/v2/wallets`, payload);
-    }))
+    if (IS_HTTPS) {
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync('tls/client/client.pem'),
+        key: fs.readFileSync('tls/client/client.key'),
+        ca: fs.readFileSync('tls/client/ca.crt'),
+      });
+      const request = axios.create({ httpsAgent });
+      await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
+        const name = shuffledNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return request.post(`https://localhost:${API_PORT}/v2/wallets`, payload);
+      }));
+    } else {
+      await Promise.all(sampleSize(shuffledMnemonics, WALLET_COUNT).map((mnemonic, index) => {
+        const name = shuffledNames[index];
+        const payload = generateImportPayload(mnemonic, name);
+        return axios.post(`http://localhost:${API_PORT}/v2/wallets`, payload);
+      }));
+    }
   } catch (e) {
     console.log(e);
   }

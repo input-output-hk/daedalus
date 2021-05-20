@@ -2,6 +2,8 @@
 import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
+import type { Currency, LocalizedCurrency } from '../../types/currencyTypes';
+import type { AssetItems } from '../assets/types';
 
 export type Block = {
   slot_number: number,
@@ -38,6 +40,10 @@ export type AdaWallet = {
     total: WalletBalance,
     reward: WalletBalance,
   },
+  assets: {
+    available: AssetItems,
+    total: AssetItems,
+  },
   delegation: {
     active: WalletDelegation,
     next?: WalletNextDelegation,
@@ -49,6 +55,7 @@ export type AdaWallet = {
   state: WalletSyncState,
   discovery: Discovery,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type LegacyAdaWallet = {
@@ -171,6 +178,7 @@ export type UpdateSpendingPasswordRequest = {
 export type DeleteWalletRequest = {
   walletId: string,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type GetWalletUtxosRequest = {
@@ -196,6 +204,7 @@ export type UpdateWalletRequest = {
   walletId: string,
   name: string,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type ImportWalletFromKeyRequest = {
@@ -230,6 +239,19 @@ export type GetWalletRequest = {
   isLegacy: boolean,
 };
 
+export type GetWalletPublicKeyRequest = {
+  walletId: string,
+  role: string,
+  index: string,
+};
+
+export type GetAccountPublicKeyRequest = {
+  walletId: string,
+  index: string,
+  passphrase: string,
+  extended: boolean,
+};
+
 export type TransferFundsCalculateFeeRequest = {
   sourceWalletId: string,
 };
@@ -262,6 +284,14 @@ export type TransferFundsResponse = {
     quantity: number,
     unit: WalletUnits.LOVELACE,
   },
+  fee: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+  deposit: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
   inserted_at?: {
     time: Date,
     block: Block,
@@ -279,3 +309,12 @@ export type TransferFundsResponse = {
   outputs: Array<Output>,
   status: 'pending' | 'in_ledger',
 };
+
+export type CreateHardwareWalletRequest = {
+  walletName: string,
+  accountPublicKey: string,
+};
+
+export type GetCurrencyListResponse = Array<Currency>;
+export type GetCurrencyRateRequest = LocalizedCurrency;
+export type GetCurrencyRateResponse = number;

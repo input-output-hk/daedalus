@@ -24,28 +24,33 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
       result: ResultContainer,
     };
   }
+
   render() {
     const { stores, actions } = this.props;
     const { allWallets } = stores.wallets;
-    const { redeemStep, isSubmittingReedem } = stores.staking;
+    const {
+      redeemStep,
+      isSubmittingReedem,
+      isCalculatingReedemFees,
+    } = stores.staking;
     const { isSynced } = stores.networkStatus;
     const { onRedeemStart, closeRedeemDialog } = actions.staking;
 
     if (!redeemStep) return null;
-
-    if (!allWallets.length)
-      return <NoWalletsContainer onClose={closeRedeemDialog.trigger} />;
 
     if (!isSynced && redeemStep === REDEEM_ITN_REWARDS_STEPS.CONFIGURATION)
       return (
         <RedemptionUnavailableContainer onClose={closeRedeemDialog.trigger} />
       );
 
+    if (!allWallets.length)
+      return <NoWalletsContainer onClose={closeRedeemDialog.trigger} />;
+
     const CurrentContainer = this.containers[redeemStep];
 
     return (
       <>
-        {isSubmittingReedem && <LoadingOverlay />}
+        {(isSubmittingReedem || isCalculatingReedemFees) && <LoadingOverlay />}
         <CurrentContainer
           onBack={onRedeemStart.trigger}
           onClose={closeRedeemDialog.trigger}

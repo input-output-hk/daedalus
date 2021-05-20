@@ -24,13 +24,15 @@ export default class Root extends Component<Props> {
       networkStatus,
       profile,
       staking,
+      voting,
       uiDialogs,
       wallets,
     } = stores;
+    const { isVotingPage } = voting;
     const { isStakingPage, redeemStep } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { displayAppUpdateOverlay } = appUpdate;
-    const { hasLoadedWallets, isHardwareWalletRoute } = wallets;
+    const { hasLoadedWallets } = wallets;
     const {
       isConnected,
       isNodeStopping,
@@ -43,7 +45,7 @@ export default class Root extends Component<Props> {
 
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage || isHardwareWalletRoute) &&
+      (isStakingPage || isSettingsPage || isVotingPage) &&
       hasLoadedWallets &&
       isConnected;
 
@@ -61,7 +63,7 @@ export default class Root extends Component<Props> {
       return <SplashNetworkPage />;
     }
 
-    if (redeemStep !== null) {
+    if (!isNodeInStoppingSequence && redeemStep !== null) {
       return <RedeemItnRewardsContainer />;
     }
 

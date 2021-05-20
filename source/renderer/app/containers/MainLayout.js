@@ -7,6 +7,7 @@ import SidebarLayout from '../components/layout/SidebarLayout';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import InstructionsDialog from '../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import TransferFundsPage from './wallet/TransferFundsPage';
+import AssetSettingsDialogContainer from './assets/AssetSettingsDialogContainer';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
 
@@ -24,8 +25,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const { actions } = this.props;
     if (category === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
       actions.dialogs.open.trigger({ dialog: InstructionsDialog });
-    } else if (category === ROUTES.REDEEM_ITN_REWARDS) {
-      actions.staking.onRedeemStart.trigger();
     } else if (category === ROUTES.NETWORK_INFO) {
       actions.networkStatus.toggleSplash.trigger();
     } else {
@@ -47,7 +46,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const { isShelleyActivated } = networkStatus;
     const { currentTheme } = profile;
     const {
-      environment: { network, isDev },
+      environment: { network },
     } = app;
 
     const appWallets =
@@ -63,22 +62,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           }
         : null;
 
-    const hardwareWallets =
-      sidebar.hardwareWallets.length > 0
-        ? {
-            items: sidebar.hardwareWallets,
-            activeWalletId,
-            actions: {
-              onHardwareWalletItemClick: (walletId: string) => {
-                actions.sidebar.hardwareWalletSelected.trigger({ walletId });
-              },
-            },
-          }
-        : null;
-
     const sidebarMenus = {
       wallets: appWallets,
-      hardwareWallets: isDev ? hardwareWallets : null,
     };
 
     const sidebarComponent = (
@@ -112,6 +97,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             certificateStep={this.props.stores.wallets.certificateStep}
           />,
           <TransferFundsPage key="TransferFundsPage" />,
+          <AssetSettingsDialogContainer key="AssetSettingsDialogContainer" />,
         ]}
       >
         {this.props.children}

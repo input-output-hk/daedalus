@@ -1,117 +1,57 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
-import WalletTransactionsList, {
-  WalletTransactionsListScrollContext,
-} from '../../components/wallet/transactions/WalletTransactionsList';
-import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
-import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import FilterDialogContainer from './dialogs/FilterDialogContainer';
-import FilterDialog from '../../components/wallet/transactions/FilterDialog';
-import FilterButton from '../../components/wallet/transactions/FilterButton';
-import FilterResultInfo from '../../components/wallet/transactions/FilterResultInfo';
-import type { InjectedProps } from '../../types/injectedPropsType';
-import { formattedWalletAmount } from '../../utils/formatters';
-import { getNumberOfFilterDimensionsApplied } from '../../utils/transaction';
-import type { TransactionFilterOptionsType } from '../../stores/TransactionsStore';
+import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
-
-export const messages = defineMessages({
-  noTransactions: {
-    id: 'wallet.transactions.no.transactions',
-    defaultMessage: '!!!No transactions',
-    description: 'Message shown when wallet has no transactions yet.',
-  },
-});
+import { ellipsis } from '../../utils/strings';
+import type { InjectedProps } from '../../types/injectedPropsType';
+import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
-type State = {
-  isFilterButtonFaded: boolean,
-};
 
 @inject('stores', 'actions')
 @observer
-export default class WalletTransactionsPage extends Component<Props, State> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
-  state = {
-    isFilterButtonFaded: false,
-  };
-
-  componentDidMount() {
-    const { dialogs } = this.props.actions;
-    dialogs.closeActiveDialog.trigger();
-  }
-
-  openFilterDialog = () => {
-    const { dialogs } = this.props.actions;
-    const {
-      defaultFilterOptions,
-      populatedFilterOptions,
-    } = this.props.stores.transactions;
-    const { currentNumberFormat: numberFormat } = this.props.stores.profile;
-
-    this.setState({ isFilterButtonFaded: false });
-    dialogs.open.trigger({ dialog: FilterDialog });
-    dialogs.updateDataForActiveDialog.trigger({
-      data: {
-        defaultFilterOptions,
-        populatedFilterOptions,
-        numberFormat,
-      },
+export default class WalletTransactionsPage extends Component<Props> {
+  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+    const value = ellipsis(fullValue, 15, 15);
+    this.props.actions.wallets.copyAssetItem.trigger({
+      assetItem,
+      value,
     });
   };
 
-  onFilter = (filterProps: TransactionFilterOptionsType) => {
-    const {
-      transactions: transactionActions,
-      dialogs: dialogActions,
-    } = this.props.actions;
-    transactionActions.filterTransactions.trigger(filterProps);
-    dialogActions.closeActiveDialog.trigger();
-  };
-
-  setFilterButtonFaded = (isFilterButtonFaded: boolean) =>
-    this.setState({ isFilterButtonFaded });
-
   render() {
-    const { intl } = this.context;
     const { actions, stores } = this.props;
-    const { isFilterButtonFaded } = this.state;
-    const { app, uiDialogs, wallets, profile } = stores;
+    const { app, wallets, addresses, profile, assets } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
     } = app;
+    const { isInternalAddress } = addresses;
     const activeWallet = wallets.active;
     const {
+      allFiltered,
       filterOptions,
       searchRequest,
-      hasAny,
       totalAvailable,
-      allFiltered,
-      recentFiltered,
       deletePendingTransaction,
       deleteTransactionRequest,
-    } = stores.transactions;
-    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
+      defaultFilterOptions,
+      populatedFilterOptions,
+    } = this.props.stores.transactions;
+    const {
+      currentTimeFormat,
+      currentDateFormat,
+      currentLocale,
+      currentNumberFormat,
+    } = profile;
+    const { searchLimit = 0 } = filterOptions || {};
+    const { transactions: transactionActions } = this.props.actions;
+    const { filterTransactions, requestCSVFile } = transactionActions;
 
-    // Guard against potential null values
-    if (!filterOptions || !activeWallet) return null;
+    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
-    let walletTransactions = null;
-    const { searchLimit } = filterOptions;
-    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
-      filterOptions
-    );
-    const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-    const hasMoreToLoad = () =>
-      searchLimit !== null &&
-      searchLimit !== undefined &&
-      totalAvailable > searchLimit;
+    const { getAssetDetails } = assets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -122,61 +62,37 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         currentLocale
       );
 
-    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
-    const transactions =
-      recentFiltered.length && !allFiltered.length
-        ? recentFiltered
-        : allFiltered;
-
-    if (!hasAny && !activeWallet.isRestoring) {
-      walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
-    } else if (numberOfFilterDimensionsApplied > 0 && !transactions.length) {
-      walletTransactions = (
-        <FilterResultInfo filtered={0} total={totalAvailable} />
-      );
-    } else if (
-      searchRequest.isExecutingFirstTime ||
-      hasAny ||
-      activeWallet.isRestoring
-    ) {
-      walletTransactions = (
-        <WalletTransactionsList
-          transactions={transactions}
-          deletePendingTransaction={deletePendingTransaction}
-          isLoadingTransactions={searchRequest.isExecutingFirstTime}
-          isRestoreActive={activeWallet.isRestoring}
-          hasMoreToLoad={hasMoreToLoad()}
-          onLoadMore={actions.transactions.loadMoreTransactions.trigger}
-          walletId={activeWallet.id}
-          isDeletingTransaction={deleteTransactionRequest.isExecuting}
-          formattedWalletAmount={formattedWalletAmount}
-          onOpenExternalLink={openExternalLink}
-          getUrlByType={getUrlByType}
-          currentTimeFormat={currentTimeFormat}
-          currentDateFormat={currentDateFormat}
-          isRenderingAsVirtualList
-        />
-      );
-    }
+    const hasMoreToLoad = () =>
+      searchLimit !== null &&
+      searchLimit !== undefined &&
+      totalAvailable > searchLimit;
 
     return (
-      <WalletTransactionsListScrollContext.Provider
-        value={{ setFilterButtonFaded: this.setFilterButtonFaded }}
-      >
-        <VerticalFlexContainer>
-          {uiDialogs.isOpen(FilterDialog) && (
-            <FilterDialogContainer onFilter={this.onFilter} />
-          )}
-          {walletTransactions}
-        </VerticalFlexContainer>
-        {hasAny && (
-          <FilterButton
-            numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-            faded={isFilterButtonFaded}
-            onClick={this.openFilterDialog}
-          />
-        )}
-      </WalletTransactionsListScrollContext.Provider>
+      <WalletTransactions
+        activeWallet={activeWallet}
+        transactions={allFiltered}
+        filterOptions={filterOptions || {}}
+        defaultFilterOptions={defaultFilterOptions}
+        populatedFilterOptions={populatedFilterOptions}
+        deletePendingTransaction={deletePendingTransaction}
+        isLoadingTransactions={searchRequest.isExecutingFirstTime}
+        hasMoreToLoad={hasMoreToLoad()}
+        onLoadMore={actions.transactions.loadMoreTransactions.trigger}
+        isDeletingTransaction={deleteTransactionRequest.isExecuting}
+        onOpenExternalLink={openExternalLink}
+        getUrlByType={getUrlByType}
+        totalAvailable={totalAvailable}
+        currentLocale={currentLocale}
+        currentTimeFormat={currentTimeFormat}
+        currentNumberFormat={currentNumberFormat}
+        currentDateFormat={currentDateFormat}
+        onFilter={filterTransactions.trigger}
+        onRequestCSVFile={requestCSVFile.trigger}
+        hasAssetsEnabled={hasAssetsEnabled}
+        isInternalAddress={isInternalAddress}
+        getAssetDetails={getAssetDetails}
+        onCopyAssetItem={this.handleOnCopyAssetItem}
+      />
     );
   }
 }

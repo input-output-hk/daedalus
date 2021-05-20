@@ -80,12 +80,6 @@ const messages = defineMessages({
     description:
       'Label for continue button on the delegation setup "choose wallet" step dialog.',
   },
-  syncingWallet: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
-    defaultMessage: '!!!syncing',
-    description:
-      'Syncing wallet label on the delegation setup "choose wallet" step dialog.',
-  },
 });
 
 type Props = {
@@ -151,7 +145,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.equals(reward))
+      else if (!amount.isZero() && amount.isEqualTo(reward))
         errorMessage = messages.errorMinDelegationFundsRewardsOnly;
       // Wallet balance < min delegation funds
       else errorMessage = messages.errorMinDelegationFunds;
@@ -234,7 +228,6 @@ export default class DelegationStepsChooseWalletDialog extends Component<
               messages.selectWalletInputPlaceholder
             )}
             value={selectedWalletId}
-            syncingLabel={intl.formatMessage(messages.syncingWallet)}
             getStakePoolById={getStakePoolById}
           />
           {error}

@@ -35,6 +35,10 @@
       );
     }
   }
+
+  &.expired {
+    background: var(--theme-transactions-icon-type-failed-background-color);
+  }
 }
 
 .pendingTxnIconWrapper {

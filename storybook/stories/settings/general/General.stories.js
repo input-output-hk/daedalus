@@ -1,9 +1,10 @@
 // @flow
 import React from 'react';
 import { findKey } from 'lodash';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { withState } from '@dump247/storybook-state';
 import SettingsWrapper from '../utils/SettingsWrapper';
 import {
   DATE_ENGLISH_OPTIONS,
@@ -16,9 +17,15 @@ import { locales, themesIds } from '../../_support/config';
 
 // Screens
 import ProfileSettingsForm from '../../../../source/renderer/app/components/widgets/forms/ProfileSettingsForm';
+import StakePoolsSettings from '../../../../source/renderer/app/components/settings/categories/StakePoolsSettings';
 import DisplaySettings from '../../../../source/renderer/app/components/settings/categories/DisplaySettings';
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
+import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
+
+// Assets and helpers
+import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
+import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
@@ -45,6 +52,48 @@ storiesOf('Settings|General', module)
       currentLocale={LANGUAGE_OPTIONS[0].value}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       currentTimeFormat={TIME_OPTIONS[0].value}
+    />
+  ))
+  .add(
+    'Wallets',
+    withState(
+      {
+        currencySelected: {
+          id: 'uniswap-state-dollar',
+          code: 'usd',
+          name: 'unified Stable Dollar',
+        },
+      },
+      (store) => (
+        <WalletsSettings
+          currencySelected={store.state.currencySelected}
+          currencyRate={0.321}
+          currencyList={getLocalizedCurrenciesList(currenciesList, 'en-US')}
+          currencyIsActive
+          onSelectCurrency={(code) =>
+            store.set({ currencySelected: currenciesList[code] })
+          }
+          onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
+          onOpenExternalLink={action('onOpenExternalLink')}
+          hasSearch={boolean('hasSearch', true)}
+        />
+      )
+    )
+  )
+  .add('Stake Pools', () => (
+    <StakePoolsSettings
+      onSelectSmashServerUrl={action('onSelectSmashServerUrl')}
+      onResetSmashServerError={action('onResetSmashServerError')}
+      smashServerUrl="https://smash.cardano-mainnet.iohk.io"
+      onOpenExternalLink={action('onOpenExternalLink')}
+      isSyncing={boolean('isSyncing', false)}
+      syncPercentage={number('syncPercentage', 70, {
+        range: true,
+        min: 0,
+        max: 100,
+        step: 1,
+      })}
+      isLoading={boolean('isLoading', false)}
     />
   ))
   .add('Themes', () => (

@@ -3,6 +3,10 @@
   width: 100%;
   width: -webkit-calc(100% + 20px);
 
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+
   :global(.ReactVirtualized__Grid__innerScrollContainer) {
     overflow: visible !important;
   }
@@ -12,6 +16,7 @@
   overflow-x: hidden !important;
   padding-right: 2px;
   will-change: none !important;
+
   &:focus {
     outline: 0;
   }

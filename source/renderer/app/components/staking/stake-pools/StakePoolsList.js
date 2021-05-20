@@ -1,164 +1,155 @@
 // @flow
-import React, { Component } from 'react';
+import { times } from 'lodash-es/util';
 import { observer } from 'mobx-react';
-import { debounce } from 'lodash';
-import classNames from 'classnames';
+import React, { useEffect, useState } from 'react';
+import type { ElementRef } from 'react';
+import { AutoSizer, List, WindowScroller } from 'react-virtualized';
+import { hideAll } from 'tippy.js';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ThumbPool } from '../widgets/ThumbPool';
 
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
+const POOL_THUMB_SIZE = 80;
+const POOL_THUMB_GRID_GAP = 10;
 
-type Props = {
+/**
+ * Utility function to programmatically hide all pop overs
+ * This is used to hide the pool tooltips on scrolling the list
+ */
+function hideAllPopOvers() {
+  hideAll();
+}
+
+/**
+ * The StakePoolsList either renders a loading spinner when there are
+ * more than PRELOADER_THRESHOLD stake pools to be loaded (to increase
+ * initial rendering performance) or StakePoolTiles (if there are only
+ * a few stake pools OR if the simulated "preloading" is done)
+ */
+
+type StakePoolsListProps = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
   highlightOnHover?: boolean,
-  onSelect?: Function,
+  highlightWithDelay?: boolean,
+  onSelect?: (poolId: string) => void,
+  selectOnClick?: boolean,
   showWithSelectButton?: boolean,
-  showSelected?: boolean,
   containerClassName: string,
   numberOfRankedStakePools: number,
-  selectedPoolId?: ?number,
+  selectedPoolId?: ?string,
   disabledStakePoolId?: ?string,
-  /**
-   *
-   * If the parent component has more than one <StakePoolsList />
-   * these 3 props need to be passed, as it's the parent who will control
-   * which list is active and prevent multiple Tooltips to be displayed
-   *
-   */
-  listName?: string,
-  isListActive?: boolean,
-  setListActive?: Function,
+  isGridRewardsView?: boolean,
+  scrollElementRef?: ?ElementRef<*>,
 };
 
-type State = {
-  highlightedPoolId?: ?number,
-  isPreloading: boolean,
-};
-
-const initialState = {
-  highlightedPoolId: null,
-  isPreloading: true,
-};
-
-@observer
-export class StakePoolsList extends Component<Props, State> {
-  static defaultProps = {
-    isListActive: true,
-    showWithSelectButton: false,
-  };
-
-  constructor(props: Props) {
-    super(props);
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  state = { ...initialState };
-
-  // We need to track the mounted state in order to avoid calling
-  // setState promise handling code after the component was already unmounted:
-  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
-  _isMounted = false;
-
-  componentDidMount() {
-    this._isMounted = true;
-    setTimeout(() => {
-      if (this._isMounted) this.setState({ isPreloading: false });
-    }, 0);
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-    window.removeEventListener('resize', this.handleClose);
-  }
-
-  handleResize = () =>
-    debounce(this.handleClose, 200, { leading: true, trailing: false });
-
-  searchInput: ?HTMLElement = null;
-
-  getIsHighlighted = (id: string) =>
-    this.props.isListActive !== false && id === this.state.highlightedPoolId;
-
-  handleOpenThumbnail = (highlightedPoolId: number) => {
-    const { isListActive, setListActive, listName } = this.props;
-    if (isListActive === false && setListActive) setListActive(listName);
-    return this.setState({
-      highlightedPoolId,
-    });
-  };
-
-  handleClose = () => {
-    this.setState({
-      ...initialState,
-      isPreloading: false,
-    });
-  };
-
-  handleSelect = (stakePoolId: number) => {
-    const { onSelect } = this.props;
-    const selectedPoolId =
-      this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
-    if (onSelect) {
-      onSelect(selectedPoolId);
+export const StakePoolsList = observer((props: StakePoolsListProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    // Feature: Hide pool pop overs if the list scroll container is scrolled
+    // Note: do not use window here otherwise the pool description cannot be
+    // scrolled anymore because it closes the pop over immediately.
+    const scrollContainer = props.scrollElementRef
+      ? props.scrollElementRef.current
+      : null;
+    if (scrollContainer !== null) {
+      scrollContainer.addEventListener('scroll', hideAllPopOvers, true);
     }
-  };
-
-  render() {
-    const {
-      currentTheme,
-      highlightOnHover,
-      onOpenExternalLink,
-      showSelected,
-      showWithSelectButton,
-      stakePoolsList,
-      selectedPoolId,
-      containerClassName,
-      numberOfRankedStakePools,
-      disabledStakePoolId,
-      listName,
-    } = this.props;
-    const { isPreloading } = this.state;
-    const componentClasses = classNames([styles.component, listName]);
-
-    if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
-      return (
-        <div className={styles.preloadingBlockWrapper}>
-          <LoadingSpinner big />
-        </div>
-      );
-
+    setTimeout(() => setIsLoading(false));
+    return () => {
+      if (scrollContainer !== null) {
+        scrollContainer.removeEventListener('scroll', hideAllPopOvers);
+      }
+    };
+  });
+  if (props.stakePoolsList.length > PRELOADER_THRESHOLD && isLoading) {
     return (
-      <div className={componentClasses}>
-        {stakePoolsList.map((stakePool) => {
-          const isHighlighted = this.getIsHighlighted(stakePool.id);
-          const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
-
-          return (
-            <ThumbPool
-              stakePool={stakePool}
-              key={stakePool.id + stakePool.ranking}
-              onOpenExternalLink={onOpenExternalLink}
-              isHighlighted={isHighlighted}
-              onClose={this.handleClose}
-              onClick={!highlightOnHover && this.handleOpenThumbnail}
-              onHover={highlightOnHover && this.handleOpenThumbnail}
-              onSelect={this.handleSelect}
-              showWithSelectButton={showWithSelectButton}
-              currentTheme={currentTheme}
-              isSelected={isSelected}
-              showSelected={showSelected}
-              containerClassName={containerClassName}
-              numberOfRankedStakePools={numberOfRankedStakePools}
-              disabledStakePoolId={disabledStakePoolId}
-            />
-          );
-        })}
+      <div className={styles.preloadingBlockWrapper}>
+        <LoadingSpinner big />
       </div>
     );
   }
-}
+  const stakePoolsCount = props.stakePoolsList.length;
+
+  function rowRenderer(itemsPerRow, { index, key, style }) {
+    const startIndex = itemsPerRow * index;
+    const endIndex = startIndex + itemsPerRow;
+    const stakePools = props.stakePoolsList.slice(startIndex, endIndex);
+    const numberOfMissingRowItems = itemsPerRow - stakePools.length;
+    return (
+      <div key={key} style={style}>
+        <div className={styles.tiles}>
+          {stakePools.map((stakePool) => (
+            <ThumbPool
+              key={stakePool.id}
+              stakePool={stakePool}
+              onOpenExternalLink={props.onOpenExternalLink}
+              highlightOnHover={props.highlightOnHover}
+              highlightWithDelay={props.highlightWithDelay}
+              showWithSelectButton={props.showWithSelectButton}
+              onSelect={props.onSelect}
+              selectOnClick={props.selectOnClick}
+              isSelected={props.selectedPoolId === stakePool.id}
+              currentTheme={props.currentTheme}
+              containerClassName={props.containerClassName}
+              numberOfRankedStakePools={props.numberOfRankedStakePools}
+              disabledStakePoolId={props.disabledStakePoolId}
+              isGridRewardsView={props.isGridRewardsView}
+            />
+          ))}
+          {numberOfMissingRowItems > 0
+            ? times(numberOfMissingRowItems, () => (
+                <div className={styles.rowFillerItem} />
+              ))
+            : null}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <WindowScroller
+      scrollElement={
+        props.scrollElementRef ? props.scrollElementRef.current : window
+      }
+    >
+      {({ height, scrollTop, registerChild }) => (
+        <AutoSizer disableHeight>
+          {({ width }) => {
+            if (!stakePoolsCount || !width) {
+              return null;
+            }
+            const itemsPerRow = Math.floor(
+              width / (POOL_THUMB_SIZE + POOL_THUMB_GRID_GAP)
+            );
+            const rowCount = Math.ceil(stakePoolsCount / itemsPerRow);
+            return (
+              <div ref={(el) => registerChild(el)}>
+                <List
+                  autoHeight
+                  className={styles.list}
+                  width={width}
+                  height={height}
+                  scrollTop={scrollTop}
+                  rowHeight={POOL_THUMB_SIZE}
+                  rowCount={rowCount}
+                  rowRenderer={(args) => rowRenderer(itemsPerRow, args)}
+                  overscanRowCount={3}
+                />
+              </div>
+            );
+          }}
+        </AutoSizer>
+      )}
+    </WindowScroller>
+  );
+});
+
+StakePoolsList.defaultProps = {
+  showWithSelectButton: false,
+  highlightWithDelay: false,
+};
