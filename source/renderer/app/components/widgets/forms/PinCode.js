@@ -48,15 +48,14 @@ export default class PinCode extends Component<Props, State> {
     focusIsUpdated: false,
   };
 
-  hasInputNewValue = (inputNewValue: string, key: number) => {
+  valueHasChanged = (inputNewValue: string, key: number) => {
     const { value } = this.props;
-    const valueIsEmpty =
+    const emptyOrUnchangedValue =
       !value[key] || !inputNewValue;
     const valueHasChanged =
       inputNewValue &&
-      inputNewValue.length === 1 &&
       value[key] !== inputNewValue;
-    return valueIsEmpty || valueHasChanged;
+    return emptyOrUnchangedValue || valueHasChanged;
   };
 
   isInputValueSelected = (input: Field) => {
@@ -87,7 +86,7 @@ export default class PinCode extends Component<Props, State> {
       inputValue && !isNaN(inputValue)
         ? inputValue.toString()
         : '';
-    if (this.hasInputNewValue(inputNewValue, key)) {
+    if (this.valueHasChanged(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
         // Recheck if user pressed backspace and moved cursor to previous input field which has value
