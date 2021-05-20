@@ -50,11 +50,8 @@ export default class PinCode extends Component<Props, State> {
 
   valueHasChanged = (inputNewValue: string, key: number) => {
     const { value } = this.props;
-    const emptyOrUnchangedValue =
-      !value[key] || !inputNewValue;
-    const valueHasChanged =
-      inputNewValue &&
-      value[key] !== inputNewValue;
+    const emptyOrUnchangedValue = !value[key] || !inputNewValue;
+    const valueHasChanged = inputNewValue && value[key] !== inputNewValue;
     return emptyOrUnchangedValue || valueHasChanged;
   };
 
@@ -74,18 +71,19 @@ export default class PinCode extends Component<Props, State> {
     if (emptyFieldIndex > -1 && !this.fromBackspace) {
       inputFocusKey = emptyFieldIndex;
     } else if (this.isAddingNewValue) {
-      inputFocusKey = this.focusKey + 1
+      inputFocusKey = this.focusKey + 1;
     }
-    return disabled || (index > inputFocusKey  && !value[index] && (!value[inputFocusKey]));
+    return (
+      disabled ||
+      (index > inputFocusKey && !value[index] && !value[inputFocusKey])
+    );
   };
 
   onChange = (inputValue: ?number | ?string, key: number) => {
     const { value, onChange } = this.props;
     const { isBackSpace } = this.state;
     const inputNewValue =
-      inputValue && !isNaN(inputValue)
-        ? inputValue.toString()
-        : '';
+      inputValue && !isNaN(inputValue) ? inputValue.toString() : '';
     if (this.valueHasChanged(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
@@ -131,8 +129,7 @@ export default class PinCode extends Component<Props, State> {
       // Update focus key
       this.focusKey = key;
       // Recheck if user is adding or deleting value
-      this.isAddingNewValue =
-        inputValue && !isNaN(inputValue);
+      this.isAddingNewValue = inputValue && !isNaN(inputValue);
     }
   };
 
