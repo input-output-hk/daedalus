@@ -51,7 +51,10 @@ export default class PinCode extends Component<Props, State> {
   valueHasChanged = (inputNewValue: string, key: number) => {
     const { value } = this.props;
     const emptyOrUnchangedValue = !value[key] || !inputNewValue;
-    const valueHasChanged = inputNewValue && value[key] !== inputNewValue;
+    const valueHasChanged =
+      inputNewValue &&
+      inputNewValue.length === 1 &&
+      value[key] !== inputNewValue;
     return emptyOrUnchangedValue || valueHasChanged;
   };
 
@@ -233,7 +236,12 @@ export default class PinCode extends Component<Props, State> {
     const { value, onChange } = this.props;
     const { focusKeyChanged } = this.state;
     let focusKeyUpdated = false;
-    if (isBackSpace && fieldIsEmpty && !isEntrySelected) {
+    if (
+      isBackSpace &&
+      ((fieldIsEmpty && !isEntrySelected) ||
+        (!fieldIsEmpty &&
+          this.inputsRef[inputKey].inputElement.current.selectionStart === 0))
+    ) {
       if (onChange) {
         // Handle specific case when user pressed backspace and field is empty
         // or cursor pointer position was in front of the value
