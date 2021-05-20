@@ -69,16 +69,8 @@ export default class PinCode extends Component<Props, State> {
     value: Array<string>,
     disabled: boolean
   ) => {
-    return (
-      disabled ||
-      (index !== 0 &&
-        (!value ||
-          (!value.length && !value[index - 1] && value[index] && !!value[this.focusKey]) ||
-          (value.length &&
-            index > this.focusKey &&
-            !value[index] &&
-            !value[this.focusKey])))
-    );
+    const isDisabled = disabled || (index > this.focusKey && !value[index] && (!value[this.focusKey]));
+    return isDisabled;
   };
 
   onChange = (inputValue: ?number | ?string, key: number) => {
