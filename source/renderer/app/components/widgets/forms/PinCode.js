@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import type { Field } from 'mobx-react-form';
 import styles from './PinCode.scss';
+import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
 
 type Props = $Exact<{
   id: string,
@@ -31,14 +32,14 @@ type State = {
 
 export default class PinCode extends Component<Props, State> {
   static defaultProps = {
-    length: 4,
+    length: VOTING_REGISTRATION_PIN_CODE_LENGTH,
     disabled: false,
     value: [],
   };
 
   inputsRef = [];
   focusKey = 0;
-  add = false;
+  isAddingNewValue = false;
   fromBackspace = false;
 
   state = {
@@ -50,7 +51,7 @@ export default class PinCode extends Component<Props, State> {
   hasInputNewValue = (inputNewValue: string, key: number) => {
     const { value } = this.props;
     const valueIsEmpty =
-      !value[key] || value[key] === '' || inputNewValue === '';
+      !value[key] || !inputNewValue;
     const valueHasChanged =
       inputNewValue &&
       inputNewValue.length === 1 &&
@@ -83,7 +84,7 @@ export default class PinCode extends Component<Props, State> {
     const { value, onChange } = this.props;
     const { isBackSpace } = this.state;
     const inputNewValue =
-      inputValue !== null && inputValue !== undefined && !isNaN(inputValue)
+      inputValue && !isNaN(inputValue)
         ? inputValue.toString()
         : '';
     if (this.hasInputNewValue(inputNewValue, key)) {
@@ -131,8 +132,8 @@ export default class PinCode extends Component<Props, State> {
       // Update focus key
       this.focusKey = key;
       // Recheck if user is adding or deleting value
-      this.add =
-        inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
+      this.isAddingNewValue =
+        inputValue && !isNaN(inputValue);
     }
   };
 
@@ -141,9 +142,9 @@ export default class PinCode extends Component<Props, State> {
     const { isBackSpace, focusKeyChanged, focusIsUpdated } = this.state;
     const key = value.join('').length;
     const inputValue = value[key - 1];
-    this.add = this.fromBackspace
+    this.isAddingNewValue = this.fromBackspace
       ? false
-      : inputValue !== null && inputValue !== undefined && !isNaN(inputValue);
+      : inputValue && !isNaN(inputValue);
     // Find index of first empty input field element
     const emptyFieldIndex = value.findIndex((item) => item === '');
     // Update focus key index
@@ -165,7 +166,7 @@ export default class PinCode extends Component<Props, State> {
       if (emptyFieldIndex > -1 && !this.fromBackspace) {
         inputFocusKey = emptyFieldIndex;
       } else {
-        inputFocusKey = this.add ? focusKey + 1 : focusKey - 1;
+        inputFocusKey = this.isAddingNewValue ? focusKey + 1 : focusKey - 1;
       }
       // Grab current focused element reference
       const inputElementRef = this.inputsRef[inputFocusKey];
@@ -251,7 +252,7 @@ export default class PinCode extends Component<Props, State> {
         onChange(value, inputNewValue, inputKey);
       }
       this.focusKey = focusKeyChanged ? inputKey - 1 : inputKey;
-      this.add = false;
+      this.isAddingNewValue = false;
       this.fromBackspace = true;
     } else {
       this.focusKey = inputKey;
@@ -261,8 +262,8 @@ export default class PinCode extends Component<Props, State> {
 
   setFocusOnField = (inputFieldRef: {
     focus: ?Function,
-    props: ?Object,
-    inputElement: ?Object,
+    props: { value: string },
+    inputElement: { current: { selectionStart: number, selectionEnd: number } },
   }) => {
     const { focus, props, inputElement } = inputFieldRef;
     if (focus) focus();
@@ -276,7 +277,7 @@ export default class PinCode extends Component<Props, State> {
     nextInputField: Field,
     control: { blur?: Function, focus?: Function }
   ) => {
-    if (nextInputField && nextInputField.focus) {
+    if (nextInputField) {
       nextInputField.focus();
     }
     if (control && control.blur) {
