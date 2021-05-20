@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { filter, escapeRegExp } from 'lodash';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { intlShape } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ItemDropdownOption from './ItemDropdownOption';
