@@ -444,15 +444,11 @@ export const waitForActiveRestoreNotification = (client: Object, { isHidden }: {
 export const getWalletType = async function(_type?: string = '') {
   let type = _type ? _type.trim() : null;
   if (type === 'balance') return 'byron';
-
   if (!type) {
-    const isIncentivizedTestnetRequest = await this.client.execute(() => {
-      return daedalus.environment.isIncentivizedTestnet
-    });
-    type = isIncentivizedTestnetRequest.value ? 'shelley' : 'byron';
+    type = 'shelley';
   }
   return type;
-}
+};
 
 export const restoreWallet = async function(walletName: string, kind: string, subkind: string, recovery_phrase: string) {
   await this.client.executeAsync((done) => {

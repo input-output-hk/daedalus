@@ -1,4 +1,4 @@
-@e2e @shelley
+@e2e @skip
 Feature: Restore Hardware wallet
 
   Background:

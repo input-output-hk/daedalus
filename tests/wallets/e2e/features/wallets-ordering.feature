@@ -5,7 +5,6 @@ Feature: Wallets ordering
     Given I have completed the basic setup
     Given I have a "Balance Wallet" balance wallet
 
-  @shelley
   Scenario: "Daedalus Balance" wallet is shown on the bottom of the list below "Daedalus Rewards" wallet in order of creation
     And I have created the following wallets:
       | name     |
@@ -23,7 +22,6 @@ Feature: Wallets ordering
       | Wallet 5       |
       | Balance Wallet |
 
-  @byron
   Scenario: Wallets are shown in order of creation
     And I have created the following wallets:
       | name     |

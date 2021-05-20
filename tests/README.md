@@ -36,7 +36,7 @@ Make sure Daedalus is properly installed (see above).
 $ yarn test:unit
 ```
 
-### Unbound tests
+### Unbound unit tests
 
 Unbound tests run as long as you keep them running
 (never end except if an error occurs).
@@ -46,7 +46,7 @@ Example:
 generates and validates mnemonics as long as you keep it
 running (the number of executions is updated in the terminal)
 
-### Run end-to-end tests with Cardano self-node
+### Run end-to-end tests with Cardano "Selfnode"
 
 1. Make sure Daedalus is properly installed (see above).
 2. Make sure your state directory is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)

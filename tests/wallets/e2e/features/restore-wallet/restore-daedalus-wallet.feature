@@ -7,7 +7,6 @@ Feature: Restore Daedalus wallet
       | name        |
       | Test Wallet |
 
-  @shelley
   Scenario: Successfully restoring "Daedalus Balance" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -38,7 +37,6 @@ Feature: Restore Daedalus wallet
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet "Move testnet ada" action should be visible in the top bar notification
 
-  @shelley
   Scenario: Successfully restoring "Daedalus Balance" paper wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -66,7 +64,6 @@ Feature: Restore Daedalus wallet
     And "Balance" wallet badge should be visible in the wallet sidebar
     And "Balance" wallet notification should not be displayed in the wallet top bar
 
-  @byron
   Scenario: Successfully restoring "Daedalus Balance" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -95,7 +92,6 @@ Feature: Restore Daedalus wallet
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
 
-  @byron
   Scenario: Successfully restoring "Daedalus Balance" paper wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -121,7 +117,6 @@ Feature: Restore Daedalus wallet
     And I should have newly created "Daedalus paper wallet" wallet loaded
     And "Daedalus paper wallet" wallet should have "legacy_699c20fef5469d2cabadf5a778932d06ca3364e2" as id
 
-  @shelley
   Scenario: Successfully restoring "Daedalus Rewards" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar

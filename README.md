@@ -208,7 +208,7 @@ externals: ['bootstrap']
 ## Testing
 
 You can find more details regarding tests setup within
-[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
+[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/tests/README.md) README file.
 
 **Notes:** Be aware that only a single Daedalus instance can run per state directory.
 So you have to exit any development instances before running tests!

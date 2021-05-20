@@ -35,7 +35,6 @@ Feature: Wallet Settings - Recovery Phrase Verification
     When I click the close button
     Then I should not see any dialog
 
-  @shelley
   Scenario Outline: Recovery phrase verification for shelley wallets
     Given I have restored the "<name>" wallet of "<kind>" kind, "<subkind>" subkind and "<recovery_phrase>" recovery phrase
     And the last recovery phrase veryfication was done 200 days ago
@@ -55,7 +54,6 @@ Feature: Wallet Settings - Recovery Phrase Verification
       | Daedalus Shelley | Daedalus | Reward15Word | combine mouse cool skirt truck outer result speed fringe sugar there usage lucky wild tail              |
       | Yoroi Shelley    | Yoroi    | Reward15Word | defense brush fiscal cactus rotate trouble mean quantum shrug slight dignity corn immense first citizen |
 
-  @byron
   Scenario Outline: Recovery phrase verification for byron wallets
     Given I have restored the "<name>" wallet of "<kind>" kind, "<subkind>" subkind and "<recovery_phrase>" recovery phrase
     And the last recovery phrase veryfication was done 200 days ago

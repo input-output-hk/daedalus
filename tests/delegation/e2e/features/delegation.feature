@@ -1,4 +1,4 @@
-@e2e @shelley
+@e2e @wip
 Feature: Wallet Delegation
 
   Background:

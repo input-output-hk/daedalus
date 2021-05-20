@@ -95,19 +95,8 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
 // Skip / Execute test depending on node integration
 Before(async function(testCase) {
   const tags = getTagNames(testCase);
-  const isByronTest = includes(tags, '@byron');
-  const isShelleyTest = includes(tags, '@shelley');
-  const isByronTestWip = includes(tags, '@api-wip-byron');
-  const isShelleyTestWip = includes(tags, '@api-wip-shelley');
-  const isGlobalWip = includes(tags, '@wip');
-
-  // Check if ITN set globally
-  const isIncentivizedTestnet = await context.app.client.execute(() => global.isIncentivizedTestnet);
-  // Skip all Byron related tests or Shelley WIP
-  if (isIncentivizedTestnet.value && ((isByronTest && !isShelleyTest) || isShelleyTestWip)) return 'skipped';
-  // Skip all Shelley related tests or Byron WIP
-  if (!isIncentivizedTestnet.value && ((isShelleyTest && !isByronTest) || isByronTestWip)) return 'skipped';
-  if (isGlobalWip) return 'skipped';
+  const isWip = includes(tags, '@wip');
+  if (isWip) return 'skipped';
 });
 
 // Make the electron app accessible in each scenario context
