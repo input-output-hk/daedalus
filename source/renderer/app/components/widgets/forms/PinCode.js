@@ -71,9 +71,13 @@ export default class PinCode extends Component<Props, State> {
   ) => {
     return (
       disabled ||
-      (index !== 0 && (!value || !value[index - 1])) ||
-      (index > 1 && index <= 4 && !value[index - 2]) ||
-      (index === 3 && value[index - 3] === '')
+      (index !== 0 &&
+        (!value ||
+          (!value.length && !value[index - 1] && value[index] && !!value[this.focusKey]) ||
+          (value.length &&
+            index > this.focusKey &&
+            !value[index] &&
+            !value[this.focusKey])))
     );
   };
 
@@ -257,7 +261,11 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
-  setFocusOnField = (inputFieldRef: { focus: ?Function, props: ?Object, inputElement: ?Object }) => {
+  setFocusOnField = (inputFieldRef: {
+    focus: ?Function,
+    props: ?Object,
+    inputElement: ?Object,
+  }) => {
     const { focus, props, inputElement } = inputFieldRef;
     if (focus) focus();
     if (inputElement && props && props.value) {
