@@ -7,7 +7,7 @@ import type {
   TransactionState,
   TransactionWithdrawalType,
 } from '../api/transactions/types';
-import type { WalletAssetItems } from '../api/assets/types';
+import type { Tokens } from '../api/assets/types';
 import type { TransactionMetadata } from '../types/TransactionMetadata';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
@@ -32,7 +32,7 @@ export class WalletTransaction {
   @observable amount: BigNumber;
   @observable fee: BigNumber;
   @observable deposit: BigNumber;
-  @observable assets: WalletAssetItems;
+  @observable assets: Tokens;
   @observable date: ?Date;
   @observable description: string = '';
   @observable addresses: TransactionAddresses = {
@@ -54,7 +54,7 @@ export class WalletTransaction {
     fee: BigNumber,
     deposit: BigNumber,
     date: ?Date,
-    assets: WalletAssetItems,
+    assets: Tokens,
     description: string,
     addresses: TransactionAddresses,
     state: TransactionState,
