@@ -8,6 +8,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
+import globalMessages from '../../../i18n/global-messages';
 import type { LocalizedCurrency } from '../../../types/currencyTypes';
 
 const messages = defineMessages({
@@ -52,7 +53,6 @@ type Props = {
   onSelectCurrency: Function,
   onToggleCurrencyIsActive: Function,
   onOpenExternalLink: Function,
-  hasSearch: boolean,
 };
 
 @observer
@@ -70,7 +70,6 @@ export default class WalletSettings extends Component<Props> {
       onSelectCurrency,
       onToggleCurrencyIsActive,
       onOpenExternalLink,
-      hasSearch,
     } = this.props;
 
     const currencyOptions = map(currencyList, ({ code, name }) => ({
@@ -107,8 +106,11 @@ export default class WalletSettings extends Component<Props> {
               value={currencySelected ? currencySelected.code : null}
               options={currencyOptions}
               onChange={onSelectCurrency}
-              hasSearch={hasSearch}
               optionHeight={50}
+              noResultsMessage={intl.formatMessage(
+                globalMessages.searchNoResultsMessage
+              )}
+              hasSearch
             />
             <div className={styles.disclaimer}>
               <FormattedHTMLMessage

@@ -535,6 +535,151 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Fingerprint",
+        "description": "\"fingerprint\" item.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.item.fingerprint",
+        "start": {
+          "column": 19,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Policy Id",
+        "description": "\"policyId\" item.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.item.policyId",
+        "start": {
+          "column": 16,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Asset name",
+        "description": "\"assetName\" item.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.item.assetName",
+        "start": {
+          "column": 17,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Name",
+        "description": "\"name\" item.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.item.name",
+        "start": {
+          "column": 12,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Ticker",
+        "description": "\"ticker\" item.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.item.ticker",
+        "start": {
+          "column": 14,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Description",
+        "description": "\"description\" item.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.item.description",
+        "start": {
+          "column": 19,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Blank",
+        "description": "\"Blank\" item value.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.item.blank",
+        "start": {
+          "column": 9,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!You can configure the number of decimal places for this native token.",
+        "description": "Asset settings pop over content",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.assetToken.settings.cogPopOver",
+        "start": {
+          "column": 22,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.warning.available",
+        "start": {
+          "column": 35,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/assets/Asset.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 34,
+          "line": 70
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/assets/Asset.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Unformatted amount {amount}",
         "description": "Unformatted amount",
         "end": {
@@ -681,151 +826,6 @@
       }
     ],
     "path": "source/renderer/app/components/assets/AssetSettingsDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Fingerprint",
-        "description": "\"fingerprint\" item.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.item.fingerprint",
-        "start": {
-          "column": 19,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Policy Id",
-        "description": "\"policyId\" item.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.item.policyId",
-        "start": {
-          "column": 16,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Asset name",
-        "description": "\"assetName\" item.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.item.assetName",
-        "start": {
-          "column": 17,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Name",
-        "description": "\"name\" item.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.item.name",
-        "start": {
-          "column": 12,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Ticker",
-        "description": "\"ticker\" item.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.item.ticker",
-        "start": {
-          "column": 14,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Description",
-        "description": "\"description\" item.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.item.description",
-        "start": {
-          "column": 19,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Blank",
-        "description": "\"Blank\" item value.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.item.blank",
-        "start": {
-          "column": 9,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!You can configure the number of decimal places for this native token.",
-        "description": "Asset settings pop over content",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.assetToken.settings.cogPopOver",
-        "start": {
-          "column": 22,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
-        "description": "Asset settings recommended pop over content",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.warning.available",
-        "start": {
-          "column": 35,
-          "line": 63
-        }
-      },
-      {
-        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
-        "description": "Asset settings recommended pop over content",
-        "end": {
-          "column": 3,
-          "line": 74
-        },
-        "file": "source/renderer/app/components/assets/AssetToken.js",
-        "id": "assets.warning.notUsing",
-        "start": {
-          "column": 34,
-          "line": 69
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/assets/AssetToken.json"
   },
   {
     "descriptors": [
@@ -2991,13 +2991,13 @@
         "description": "titleLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.titleLabel",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -3005,13 +3005,13 @@
         "description": "currencyDescription for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.description",
         "start": {
           "column": 23,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -3019,13 +3019,13 @@
         "description": "currencySelectLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.selectLabel",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -3033,13 +3033,13 @@
         "description": "currencyDisclaimer for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.disclaimer",
         "start": {
           "column": 22,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -3047,13 +3047,13 @@
         "description": "currencyPoweredByLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.poweredBy.label",
         "start": {
           "column": 26,
-          "line": 40
+          "line": 41
         }
       }
     ],
@@ -17455,13 +17455,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 21
         }
       }
     ],
@@ -18321,6 +18321,20 @@
         "start": {
           "column": 34,
           "line": 326
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "Dropdown search \"No results\" message",
+        "end": {
+          "column": 3,
+          "line": 337
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.search.noResultsMessage",
+        "start": {
+          "column": 26,
+          "line": 333
         }
       }
     ],
