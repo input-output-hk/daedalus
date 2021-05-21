@@ -82,7 +82,7 @@ export default class PinCode extends Component<Props, State> {
     );
   };
 
-  onChange = (inputValue: ?number | ?string, key: number) => {
+  onChange = (inputValue: ?number, key: number) => {
     const { value, onChange } = this.props;
     const { isBackSpace } = this.state;
     const inputNewValue =
