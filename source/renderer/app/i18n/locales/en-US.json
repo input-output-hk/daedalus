@@ -486,6 +486,8 @@
   "staking.redeemItnRewards.step3.success.title": "Incentivized Testnet rewards redeemed!",
   "staking.rewards.actionViewInExplorer": "View in explorer",
   "staking.rewards.csvFilenamePrefix": "Rewards",
+  "staking.rewards.dialog.title": "Rewards details",
+  "staking.rewards.dialog.csv.label": "Export CSV",
   "staking.rewards.exportButtonLabel": "Export CSV",
   "staking.rewards.learnMore.ButtonLabel": "Learn more",
   "staking.rewards.learnMore.linkUrl": "https://iohk.zendesk.com/hc/en-us/articles/900000026583",

@@ -6,7 +6,6 @@ import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
@@ -17,7 +16,6 @@ import {
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
@@ -30,18 +28,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Earned delegation rewards',
     description:
       'Title "Earned delegation rewards" label on the staking rewards page.',
-  },
-  csvFilenamePrefix: {
-    id: 'staking.rewards.csvFilenamePrefix',
-    defaultMessage: '!!!Rewards',
-    description:
-      'Filename prefix for the "Export CSV" on the staking rewards page.',
-  },
-  exportButtonLabel: {
-    id: 'staking.rewards.exportButtonLabel',
-    defaultMessage: '!!!Export CSV',
-    description:
-      'Label for the "Export CSV" button on the staking rewards page.',
   },
   noRewards: {
     id: 'staking.rewards.no.rewards',
@@ -63,11 +49,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Rewards address',
     description: 'Table header "Rewards address" label on staking rewards page',
   },
-  tableHeaderDate: {
-    id: 'staking.rewards.tableHeader.date',
-    defaultMessage: '!!!Date',
-    description: 'Table header "Date" label in exported csv file',
-  },
   note: {
     id: 'staking.rewards.note',
     defaultMessage:
@@ -87,7 +68,8 @@ const messages = defineMessages({
 });
 
 const REWARD_FIELDS = {
-  WALLET_NAME: 'wallet',
+  WALLET_ID: 'walletId',
+  WALLET_NAME: 'walletName',
   IS_RESTORING: 'isRestoring',
   SYNCING_PROGRESS: 'syncingProgress',
   REWARD: 'reward',
@@ -104,10 +86,9 @@ const IS_EXPLORER_LINK_BUTTON_ENABLED = false;
 type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
-  isExporting: boolean,
-  onExportCsv: Function,
   onCopyAddress: Function,
   onOpenExternalLink: Function,
+  onOpenWalletRewards: Function,
 };
 
 type State = {
@@ -127,7 +108,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
 
   static defaultProps = {
     isLoading: false,
-    isExporting: false,
   };
 
   constructor(props: Props) {
@@ -138,39 +118,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       contentScrollTop: 0,
     };
   }
-
-  handleExportCsv = (
-    availableTableHeaders: Array<any>,
-    sortedRewards: Array<RewardForIncentivizedTestnet>
-  ) => {
-    const { onExportCsv } = this.props;
-    const { intl } = this.context;
-    const exportedHeader = [
-      ...availableTableHeaders.map((header) => header.title),
-      intl.formatMessage(messages.tableHeaderDate),
-    ];
-    const date = new Date().toISOString();
-    const exportedBody = sortedRewards.map((reward) => {
-      const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
-      const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
-        DECIMAL_PLACES_IN_ADA
-      );
-      const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
-      return [
-        rewardWallet,
-        rewardsAddress,
-        isRestoring ? '-' : rewardAmount,
-        date,
-      ];
-    });
-    const exportedContent = [exportedHeader, ...exportedBody];
-
-    onExportCsv({
-      fileContent: exportedContent,
-      filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
-    });
-  };
 
   getSortedRewards = (): Array<RewardForIncentivizedTestnet> => {
     const { rewards } = this.props;
@@ -188,8 +135,8 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             rewardsOrder === REWARD_ORDERS.ASCENDING
           );
           const walletNameCompareResult = stringComparator(
-            rewardA.wallet,
-            rewardB.wallet,
+            rewardA.walletName,
+            rewardB.walletName,
             rewardsOrder === REWARD_ORDERS.ASCENDING
           );
           const walletAddressCompareResult = stringComparator(
@@ -240,9 +187,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     const {
       rewards,
       isLoading,
-      isExporting,
       onCopyAddress,
       onOpenExternalLink,
+      onOpenWalletRewards,
     } = this.props;
     const { rewardsOrder, rewardsSortBy, contentScrollTop } = this.state;
     const { intl } = this.context;
@@ -265,19 +212,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         )} (${intl.formatMessage(globalMessages.unitAda)})`,
       },
     ];
-    const exportCsvButtonLabel = isExporting ? (
-      <div className={styles.exportingSpinnerWrapper}>
-        <LoadingSpinner />
-      </div>
-    ) : (
-      <>
-        <div className={styles.actionLabel}>
-          {intl.formatMessage(messages.exportButtonLabel)}
-        </div>
-        <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
-      </>
-    );
-    const exportCsvButtonClasses = classNames(['flat', styles.actionButton]);
     const explorerButtonClasses = classNames([
       'flat',
       styles.actionExplorerLink,
@@ -293,16 +227,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
           <div className={styles.title}>
             {intl.formatMessage(messages.title)}
           </div>
-          {!noRewards && (
-            <Button
-              className={exportCsvButtonClasses}
-              label={exportCsvButtonLabel}
-              onClick={() =>
-                this.handleExportCsv(availableTableHeaders, sortedRewards)
-              }
-              skin={ButtonSkin}
-            />
-          )}
         </div>
         <div
           className={styles.contentWrapper}
@@ -362,9 +286,11 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       reward,
                       REWARD_FIELDS.REWARDS_ADDRESS
                     );
+                    const onOpenWalletRewardsBind = () =>
+                      onOpenWalletRewards(reward);
 
                     return (
-                      <tr key={key}>
+                      <tr key={key} onClick={onOpenWalletRewardsBind}>
                         <td className={styles.rewardWallet}>{rewardWallet}</td>
                         <td className={styles.rewardsAddress}>
                           {rewardsAddress && (

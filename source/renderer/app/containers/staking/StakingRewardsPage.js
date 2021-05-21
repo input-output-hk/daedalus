@@ -1,10 +1,13 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
+import StakingRewardsDialog from '../../components/staking/rewards/StakingRewardsDialog';
 import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
+import StakingRewardsDialogContainer from './dialogs/StakingRewardsDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import type { RewardForIncentivizedTestnet } from '../../api/staking/types';
 import { ellipsis } from '../../utils/strings';
 import { getNetworkExplorerUrl } from '../../utils/network';
 
@@ -34,7 +37,15 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  onOpenExternalLink = (rewardsAddress: string) => {
+  handleOpenWalletRewards = (reward: RewardForIncentivizedTestnet) => {
+    const { updateDataForActiveDialog, open } = this.props.actions.dialogs;
+    open.trigger({ dialog: StakingRewardsDialog });
+    updateDataForActiveDialog.trigger({
+      data: { reward },
+    });
+  };
+
+  handleOpenExternalLink = (rewardsAddress: string) => {
     const { app } = this.props.stores;
     const {
       environment: { network, rawNetwork },
@@ -55,7 +66,7 @@ export default class StakingRewardsPage extends Component<Props> {
     const {
       staking: { rewards, rewardsForIncentivizedTestnet },
       networkStatus,
-      wallets,
+      uiDialogs,
     } = this.props.stores;
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const {
@@ -65,36 +76,38 @@ export default class StakingRewardsPage extends Component<Props> {
       isTestnet,
       isTest,
     } = networkStatus.environment;
-    const { requestCSVFile } = this.props.actions.staking;
 
-    if (
+    const stakingComponent =
       isMainnet ||
       isStaging ||
       isTestnet ||
       isIncentivizedTestnet ||
       isShelleyTestnet ||
       isSelfnode ||
-      isTest
-    ) {
-      return (
+      isTest ? (
         <StakingRewardsForIncentivizedTestnet
           rewards={rewardsForIncentivizedTestnet}
           isLoading={false}
-          isExporting={wallets.generatingRewardsCsvInProgress}
           onLearnMoreClick={this.handleLearnMoreClick}
-          onExportCsv={requestCSVFile.trigger}
           onCopyAddress={this.handleCopyAddress}
-          onOpenExternalLink={this.onOpenExternalLink}
+          onOpenExternalLink={this.handleOpenExternalLink}
+          onOpenWalletRewards={this.handleOpenWalletRewards}
+        />
+      ) : (
+        <StakingRewards
+          rewards={rewards}
+          isLoading={false}
+          onLearnMoreClick={this.handleLearnMoreClick}
         />
       );
-    }
 
     return (
-      <StakingRewards
-        rewards={rewards}
-        isLoading={false}
-        onLearnMoreClick={this.handleLearnMoreClick}
-      />
+      <Fragment>
+        {stakingComponent}
+        {uiDialogs.isOpen(StakingRewardsDialog) ? (
+          <StakingRewardsDialogContainer />
+        ) : null}
+      </Fragment>
     );
   }
 }

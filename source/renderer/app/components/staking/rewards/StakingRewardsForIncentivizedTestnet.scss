@@ -134,6 +134,14 @@
       background-color: var(--theme-staking-table-head-background-color);
     }
 
+    tbody {
+      tr {
+        cursor: pointer;
+        &:hover {
+        }
+      }
+    }
+
     tr,
     td,
     th {

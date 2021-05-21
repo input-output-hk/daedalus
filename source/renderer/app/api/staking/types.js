@@ -63,7 +63,8 @@ export type Reward = {
 
 export type RewardForIncentivizedTestnet = {
   date?: string,
-  wallet: string,
+  walletId: string,
+  walletName: string,
   reward: BigNumber,
   rewardsAddress: string,
   pool?: StakePool,

@@ -165,7 +165,6 @@ export default class AssetSettingsDialog extends Component<Props, State> {
         closeOnOverlayClick
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
-        className1={styles.dialog}
       >
         <div>
           <div className={styles.description}>
