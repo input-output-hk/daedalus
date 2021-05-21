@@ -1315,7 +1315,7 @@ export default class HardwareWalletsStore extends Store {
     return constructedAddress.address;
   };
 
-  formatAuxiliaryAdata = (txAuxiliaryData) => {
+  formatAuxiliaryData = (txAuxiliaryData) => {
     switch (txAuxiliaryData.type) {
       case 'CATALYST_VOTING':
         return {
@@ -1417,7 +1417,7 @@ export default class HardwareWalletsStore extends Store {
 
     // THIS SHOULD BE SENT TO LEDGER
     const formattedAuxiliaryData = txAux.auxiliaryData
-      ? this.formatAuxiliaryAdata(txAux.auxiliaryData)
+      ? this.formatAuxiliaryData(txAux.auxiliaryData)
       : null
 
     console.debug('>>> formattedAuxiliaryData: ', formattedAuxiliaryData);
@@ -1588,7 +1588,7 @@ export default class HardwareWalletsStore extends Store {
   }
 
   // Ledger - Shelley only
-  @action _signTransactionLedger = async (
+  /* @action _signTransactionLedger = async (
     walletId: string,
     devicePath: ?string
   ) => {
@@ -1723,45 +1723,45 @@ export default class HardwareWalletsStore extends Store {
     //   nonce: Uint64_str
     // }
 
-    let auxiliaryData = null;
-    let txMeta = null;
-    let metadataHash = null;
-    let unsignedAuxiliaryData = null;
-    if (this.isVotingRegistrationInitiated) {
-      auxiliaryData = {
-        type: 'catalyst_registration', // TxAuxiliaryDataType.CATALYST_REGISTRATION,
-        params: {
-          votingPublicKeyHex: '', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
-          stakingPath: str_to_path("1852'/1815'/0'/2/0"), // ValidBIP32Path
-          nonce: ttl, // 1454448, // TTL ???
-          rewardsDestination: {
-            type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110)
-            params: {
-              // spendingPath: str_to_path("1852'/1815'/0'/0/0"),
-              stakingPath: str_to_path("1852'/1815'/0'/2/0"),
-            }
-          }, // ShelleyAddressParams,
-        }
-      }
+    // let auxiliaryData = null;
+    // let txMeta = null;
+    // let metadataHash = null;
+    // let unsignedAuxiliaryData = null;
+    // if (this.isVotingRegistrationInitiated) {
+    //   auxiliaryData = {
+    //     type: 'catalyst_registration', // TxAuxiliaryDataType.CATALYST_REGISTRATION,
+    //     params: {
+    //       votingPublicKeyHex: '', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+    //       stakingPath: str_to_path("1852'/1815'/0'/2/0"), // ValidBIP32Path
+    //       nonce: ttl, // 1454448, // TTL ???
+    //       rewardsDestination: {
+    //         type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110)
+    //         params: {
+    //           // spendingPath: str_to_path("1852'/1815'/0'/0/0"),
+    //           stakingPath: str_to_path("1852'/1815'/0'/2/0"),
+    //         }
+    //       }, // ShelleyAddressParams,
+    //     }
+    //   }
+    //   // Typeof TxAuxiliaryData
+    //   // TODO - check formats
+    //   unsignedAuxiliaryData = {
+    //     votingPubKey: string,
+    //     stakePubKey: HexString,
+    //     nonce: BigInt,
+    //     rewardDestinationAddress: {
+    //       address: Address,
+    //       spendingPath: BIP32Path,
+    //       stakingPath: BIP32Path,
+    //     },
+    //   }
+    //   // txMeta = await prepareMeta(txAuxiliaryData)
+    //   // metadataHash: blake2b(encode(txMeta), 32).toString('hex'),
+    // }
 
-      // Typeof TxAuxiliaryData
-      // TODO - check formats
-      unsignedAuxiliaryData = {
-        votingPubKey: string,
-        stakePubKey: HexString,
-        nonce: BigInt,
-        rewardDestinationAddress: {
-          address: Address,
-          spendingPath: BIP32Path,
-          stakingPath: BIP32Path,
-        },
-      }
-      // txMeta = await prepareMeta(txAuxiliaryData)
-      // metadataHash: blake2b(encode(txMeta), 32).toString('hex'),
-    }
+    // console.debug('>>> auxiliaryData: ', auxiliaryData);
 
-    console.debug('>>> auxiliaryData: ', auxiliaryData);
-
+    const auxiliaryData = null;
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
         inputs: inputsData,
@@ -1787,17 +1787,17 @@ export default class HardwareWalletsStore extends Store {
       const unsignedTxWithdrawals =
         withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
 
-      console.debug('>>> Prepare TX Aux: ', {
-        txInputs: unsignedTxInputs,
-        txOutputs: unsignedTxOutputs,
-        fee,
-        ttl,
-        certificates: unsignedTxCerts,
-        withdrawals: unsignedTxWithdrawals,
-        validityIntervalStart: null,
-        txAuxiliaryData: unsignedAuxiliaryData,
-        metadataHash,
-      })
+      // console.debug('>>> Prepare TX Aux: ', {
+      //   txInputs: unsignedTxInputs,
+      //   txOutputs: unsignedTxOutputs,
+      //   fee,
+      //   ttl,
+      //   certificates: unsignedTxCerts,
+      //   withdrawals: unsignedTxWithdrawals,
+      //   validityIntervalStart: null,
+      //   txAuxiliaryData: unsignedAuxiliaryData,
+      //   metadataHash,
+      // })
 
       // Prepare unsigned transaction structure for serialzation
       const unsignedTx = prepareTxAux({
@@ -1807,9 +1807,9 @@ export default class HardwareWalletsStore extends Store {
         ttl,
         certificates: unsignedTxCerts,
         withdrawals: unsignedTxWithdrawals,
-        validityIntervalStart: null,
-        txAuxiliaryData: unsignedAuxiliaryData,
-        metadataHash,
+        // validityIntervalStart: null,
+        // txAuxiliaryData: unsignedAuxiliaryData,
+        // metadataHash,
       });
 
 
@@ -1825,7 +1825,217 @@ export default class HardwareWalletsStore extends Store {
       console.debug('>>> unsignedTx / txWitnesses: ', {unsignedTx, txWitnesses});
 
       // Prepare serialized transaction with unsigned data and signed witnesses
-      const txBody = await prepareBody(unsignedTx, txWitnesses, txMeta);
+      // const txBody = await prepareBody(unsignedTx, txWitnesses, txMeta);
+      const txBody = await prepareBody(unsignedTx, txWitnesses);
+
+      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+        this.txBody = txBody;
+        this.activeDevicePath = null;
+      });
+    } catch (error) {
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
+      throw error;
+    }
+  }; */
+
+  @action _signTransactionLedger = async (
+    walletId: string,
+    devicePath: ?string
+  ) => {
+    runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
+      this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
+    });
+    const { coinSelection } = this.txSignRequest;
+    const {
+      inputs,
+      outputs,
+      certificates,
+      fee: flatFee,
+      withdrawals,
+    } = coinSelection;
+    logger.debug('[HW-DEBUG] HWStore - sign transaction Ledger: ', {
+      walletId,
+    });
+
+    const hardwareWalletConnectionData = get(
+      this.hardwareWalletsConnectionData,
+      walletId
+    );
+
+    // Guard against potential null value
+    if (!hardwareWalletConnectionData)
+      throw new Error('Wallet not paired or Device not connected');
+
+    const publicKeyHex = get(hardwareWalletConnectionData, [
+      'extendedPublicKey',
+      'publicKeyHex',
+    ]);
+    const chainCodeHex = get(hardwareWalletConnectionData, [
+      'extendedPublicKey',
+      'chainCodeHex',
+    ]);
+    const xpubHex = `${publicKeyHex}${chainCodeHex}`;
+
+    const unsignedTxInputs = [];
+    const inputsData = map(inputs, (input) => {
+      const shelleyTxInput = ShelleyTxInputFromUtxo(input);
+      unsignedTxInputs.push(shelleyTxInput);
+      return prepareLedgerInput(input);
+    });
+
+    const unsignedTxOutputs = [];
+    const outputsData = [];
+    for (const output of outputs) {
+      const {
+        address_style: addressStyle,
+      } = await this.stores.addresses._inspectAddress({
+        addressId: output.address,
+      });
+      const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
+      unsignedTxOutputs.push(shelleyTxOutput);
+      const ledgerOutput = prepareLedgerOutput(output, addressStyle);
+      outputsData.push(ledgerOutput);
+    }
+
+    // Construct certificates
+    const unsignedTxCerts = [];
+    const _certificatesData = map(certificates, async (certificate) => {
+      const accountAddress = await this._getRewardAccountAddress(
+        walletId,
+        certificate.rewardAccountPath
+      );
+      const shelleyTxCert = ShelleyTxCert({
+        accountAddress,
+        pool: certificate.pool,
+        type: CERTIFICATE_TYPE[certificate.certificateType],
+      });
+      unsignedTxCerts.push(shelleyTxCert);
+      return prepareLedgerCertificate(certificate);
+    });
+    const certificatesData = await Promise.all(_certificatesData);
+
+    // Construct Withdrawals
+    const _withdrawalsData = map(withdrawals, async (withdrawal) =>
+      prepareLedgerWithdrawal(withdrawal)
+    );
+    const withdrawalsData = await Promise.all(_withdrawalsData);
+
+    const fee = formattedAmountToLovelace(flatFee.toString());
+    const ttl = this._getTtl();
+    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
+    const { isMainnet } = this.environment;
+
+
+    // TODO:: Use real Aux DATA
+    // const unsignedTxAuxiliaryData = null;
+    // const unsignedTxAuxiliaryData = {
+    //   nonce: "29443543", // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
+    //   rewardDestinationAddress: {
+    //     address: "stake1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdguw9cph",
+    //     // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
+    //     stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
+    //   }, // ShelleyAddressParams,
+    //   stakePubKey: "23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
+    //   type: "CATALYST_VOTING",
+    //   votingPubKey: '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+    // }
+    const unsignedTxAuxiliaryData = {
+      nonce: ttl.toString(), // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
+      rewardDestinationAddress: {
+        address: "stake1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdguw9cph",
+        // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
+        stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
+      }, // ShelleyAddressParams,
+      stakePubKey: "23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
+      type: "CATALYST_VOTING",
+      votingPubKey: '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+    }
+
+    const auxiliaryData = unsignedTxAuxiliaryData
+      ? this.formatAuxiliaryData(unsignedTxAuxiliaryData)
+      : null
+
+    console.debug('auxiliaryData: ', auxiliaryData);
+
+    try {
+      const signedTransaction = await signTransactionLedgerChannel.request({
+        inputs: inputsData,
+        outputs: outputsData,
+        fee: fee.toString(),
+        ttl: ttl.toString(),
+        validityIntervalStartStr: absoluteSlotNumber.toString(),
+        networkId: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        certificates: certificatesData,
+        withdrawals: withdrawalsData,
+        signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
+        auxiliaryData,
+        devicePath,
+      });
+
+      console.debug('>>> Signed TX: ', signedTransaction);
+
+      const unsignedTxWithdrawals =
+        withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
+
+      // Prepare unsigned transaction structure for serialzation
+      let txAuxData = {
+        txInputs: unsignedTxInputs,
+        txOutputs: unsignedTxOutputs,
+        fee,
+        ttl,
+        certificates: unsignedTxCerts,
+        withdrawals: unsignedTxWithdrawals,
+        // validityIntervalStart: null,
+        // txAuxiliaryData: unsignedAuxiliaryData,
+        // metadataHash,
+      }
+
+      let txAuxiliaryData = null;
+      if (unsignedTxAuxiliaryData) {
+        txAuxData = {
+          ...txAuxData,
+          txAuxiliaryData: unsignedTxAuxiliaryData,
+          txAuxiliaryDataHash: signedTransaction.auxiliaryDataSupplement.auxiliaryDataHashHex,
+        }
+        txAuxiliaryData = cborizeTxAuxiliaryVotingData(
+          unsignedTxAuxiliaryData,
+          signedTransaction.auxiliaryDataSupplement.catalystRegistrationSignatureHex
+        );
+      }
+
+      console.debug('>>> prepareTxAux start - data: ', {prepareTxAux})
+      const unsignedTx = prepareTxAux(txAuxData);
+
+      const signedWitnesses = await this._signWitnesses(
+        signedTransaction.witnesses,
+        xpubHex
+      );
+      const txWitnesses = new Map();
+      if (signedWitnesses.length > 0) {
+        txWitnesses.set(0, signedWitnesses);
+      }
+
+
+      console.debug('>>>> Prepare Body: ', {
+        unsignedTx,
+        txWitnesses,
+        txAuxiliaryData,
+      })
+
+      // Prepare serialized transaction with unsigned data and signed witnesses
+      // const txBody = await prepareBody(unsignedTx, txWitnesses, txMeta);
+      const txBody = await prepareBody(unsignedTx, txWitnesses, txAuxiliaryData);
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;

@@ -74,7 +74,6 @@ export type ShelleyTxAuxType = {
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
   withdrawals: ?ShelleyTxWithdrawalsType,
-  validityIntervalStart: ?ShelleyValidityIntervalStartType,
   encodeCBOR: Function,
 };
 
@@ -138,9 +137,9 @@ export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
 };
 
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
-  // const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
+  const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
   // TODO: change this
-  const policyIdMap = new Map<any, any>();
+  // const policyIdMap = new Map<any, any>();
 
   const tokenObject = groupTokensByPolicyId(assets);
 
@@ -305,17 +304,7 @@ export const ShelleyValidityIntervalStart = (validityIntervalStart: number) => {
   };
 };
 
-export const ShelleyTxAux = ({
-  inputs,
-  outputs,
-  fee,
-  ttl,
-  certs,
-  withdrawals,
-  auxiliaryData,
-  auxiliaryDataHash,
-  validityIntervalStart,
-}: {
+export const ShelleyTxAux = (
   inputs: Array<ShelleyTxInputType>,
   outputs: Array<ShelleyTxOutputType>,
   fee: ShelleyFeeType,
@@ -324,14 +313,14 @@ export const ShelleyTxAux = ({
   withdrawals: ?ShelleyTxWithdrawalsType,
   auxiliaryData: any, // TODO - add real type
   auxiliaryDataHash: string,
-  validityIntervalStart: ShelleyValidityIntervalStartType,
-}) => {
-  console.debug('>>> Prepare ShelleyTxAux: ', validityIntervalStart);
+  // validityIntervalStart: ShelleyValidityIntervalStartType
+) => {
+  // console.debug('>>> Prepare ShelleyTxAux: ', validityIntervalStart);
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
     return blake2b(
       encode(
-        ShelleyTxAux({
+        ShelleyTxAux(
           inputs,
           outputs,
           fee,
@@ -340,24 +329,24 @@ export const ShelleyTxAux = ({
           withdrawals,
           auxiliaryData,
           auxiliaryDataHash,
-          validityIntervalStart,
-        })
-      ),
-      32
+          // validityIntervalStart,
+        )
+      )
+      // 32
     ).toString('hex');
   }
 
   function encodeCBOR(encoder: any) {
-    const txBody = new Map();
-    txBody.set(0, inputs);
-    txBody.set(1, outputs);
-    txBody.set(2, fee);
-    txBody.set(3, ttl);
-    if (certs && certs.length) txBody.set(4, certs);
-    if (withdrawals) txBody.set(5, withdrawals);
-    if (auxiliaryDataHash) txBody.set(7, Buffer.from(auxiliaryDataHash, 'hex'))
-    if (validityIntervalStart !== null) txBody.set(8, validityIntervalStart)
-    return encoder.pushAny(txBody);
+    const txMap = new Map();
+    txMap.set(0, inputs);
+    txMap.set(1, outputs);
+    txMap.set(2, fee);
+    txMap.set(3, ttl);
+    if (certs && certs.length) txMap.set(4, certs);
+    if (withdrawals) txMap.set(5, withdrawals);
+    if (auxiliaryDataHash) txMap.set(7, Buffer.from(auxiliaryDataHash, 'hex'))
+    // if (validityIntervalStart !== null) txMap.set(8, validityIntervalStart)
+    return encoder.pushAny(txMap);
   }
 
   return {
@@ -370,7 +359,7 @@ export const ShelleyTxAux = ({
     withdrawals,
     auxiliaryData,
     auxiliaryDataHash,
-    validityIntervalStart,
+    // validityIntervalStart,
     encodeCBOR,
   };
 };
@@ -392,6 +381,7 @@ export const ShelleySignedTransactionStructured = (
     getId,
     witnesses,
     txAux,
+    txAuxiliaryData,
     encodeCBOR,
   };
 };
@@ -504,7 +494,6 @@ export type TxAuxiliaryData = {
   nonce: BigInt,
   rewardDestinationAddress: {
     address: Address,
-    spendingPath: BIP32Path,
     stakingPath: BIP32Path,
   },
 }
@@ -569,8 +558,8 @@ export const prepareTxAux = ({
   withdrawals,
   txAuxiliaryData,
   txAuxiliaryDataHash,
-  validityIntervalStart,
-  metadataHash,
+  // validityIntervalStart,
+  // metadataHash,
 }: {
   txInputs: Array<ShelleyTxInputType>,
   txOutputs: Array<ShelleyTxOutputType>,
@@ -580,47 +569,57 @@ export const prepareTxAux = ({
   ttl: number,
   certificates: Array<?Certificate>,
   withdrawals: ?ShelleyTxWithdrawalsType,
-  validityIntervalStart: ?number,
-  metadataHash: string
+  // validityIntervalStart: ?number,
+  // metadataHash: string
 }) => {
   const txFee = ShelleyFee(fee);
   const txTtl = ShelleyTtl(ttl);
   const txCerts = certificates;
   const txWithdrawals = withdrawals;
-  const txValidityIntervalStart = validityIntervalStart ? ShelleyValidityIntervalStart(validityIntervalStart) : null;
+  // const txValidityIntervalStart = validityIntervalStart ? ShelleyValidityIntervalStart(validityIntervalStart) : null;
 
-  let txAux = {
-    inputs: txInputs,
-    outputs: txOutputs,
-    fee: txFee,
-    ttl: txTtl,
-    certs: txCerts,
-    withdrawals: txWithdrawals,
-    auxiliaryData: txAuxiliaryData,
-    auxiliaryDataHash: txAuxiliaryDataHash,
-    validityIntervalStart: txValidityIntervalStart,
-  };
+  // let txAux = {
+  //   inputs: txInputs,
+  //   outputs: txOutputs,
+  //   fee: txFee,
+  //   ttl: txTtl,
+  //   certs: txCerts,
+  //   withdrawals: txWithdrawals,
+  //   auxiliaryData: txAuxiliaryData,
+  //   auxiliaryDataHash: txAuxiliaryDataHash,
+  //   validityIntervalStart: txValidityIntervalStart,
+  // };
 
-  if (metadataHash) {
-    txAux = {
-      ...txAux,
-      metadataHash,
-    }
-  }
-  console.debug('>>> prepareTxAux - TX AUX: ', txAux);
+  // if (metadataHash) {
+  //   txAux = {
+  //     ...txAux,
+  //     metadataHash,
+  //   }
+  // }
+  // console.debug('>>> prepareTxAux - TX AUX: ', txAux);
 
-  return ShelleyTxAux(txAux);
+  // return ShelleyTxAux(txAux);
+  return ShelleyTxAux(
+    txInputs,
+    txOutputs,
+    txFee,
+    txTtl,
+    txCerts,
+    txWithdrawals,
+    txAuxiliaryData,
+    txAuxiliaryDataHash,
+  );
 };
 
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
   txWitnesses: any, // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
-  txAuxiliaryData: any,
+  txAuxiliaryData: any
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,
     txWitnesses,
-    txAuxiliaryData // TODO: declare and improve ShelleySignedTransactionStructured with txMeta
+    txAuxiliaryData, // txAuxiliaryData // TODO: declare and improve ShelleySignedTransactionStructured with txMeta
   );
   return encode(signedTransactionStructure).toString('hex');
 };
