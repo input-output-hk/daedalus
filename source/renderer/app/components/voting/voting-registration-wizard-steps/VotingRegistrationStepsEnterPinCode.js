@@ -143,10 +143,11 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const pinCodeField = form.$('pinCode');
     const pinCodeFieldProps = pinCodeField.bind();
     const { pinValues } = this.state;
-    pinValues[key] = newValue;
+    const currentPinValues = pinValues;
+    currentPinValues[key] = newValue;
 
     this.setState({
-      pinValues,
+      pinValues: currentPinValues,
       selectedPinField: 'pinCode',
     });
     pinCodeFieldProps.onChange(values);
@@ -161,9 +162,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const repeatPinCodeField = form.$('repeatPinCode');
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
     const { repeatPinValues } = this.state;
-    repeatPinValues[key] = newValue;
+    const currentRepeatPinValues = repeatPinValues;
+    currentRepeatPinValues[key] = newValue;
     this.setState({
-      repeatPinValues,
+      repeatPinValues: currentRepeatPinValues,
       selectedPinField: 'repeatPinCode',
     });
     repeatPinCodeFieldProps.onChange(values);
