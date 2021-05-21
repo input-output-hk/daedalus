@@ -12,7 +12,7 @@ let
     homepage = https://github.com/electron/electron;
     license = licenses.mit;
     maintainers = with maintainers; [ travisbhartwell manveru ];
-    platforms = [ "x86_64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
+    platforms = [ "x86_64-darwin" "arm64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
   };
 
   linux = {
@@ -21,7 +21,7 @@ let
     src = {
       i686-linux = fetchurl {
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-ia32.zip";
-        sha256 = "0yv2f7yf6ingjysswpnpnvqsjkdkp2rd4laawhziifzbfjda4yws";
+        sha256 = "37405b3b27779ad417c3ae432d7f0d969c126c958a0ad8f2585c34fc8ee6c6e6";
       };
       x86_64-linux = fetchurl {
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
@@ -29,11 +29,11 @@ let
       };
       armv7l-linux = fetchurl {
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-armv7l.zip";
-        sha256 = "1v492qfdgnj3fks2hrfc9lmsx5a5xk957rvismlpc2mjkjrwx2dq";
+        sha256 = "2d41ef3ed6a215efe2c7d03d8055fcfda0079f09e9580e5bf70e8ac4a22b0898";
       };
       aarch64-linux = fetchurl {
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-arm64.zip";
-        sha256 = "18vpqif5grvhrkx6h64yzw1pf9013811gzq2qxaj8pzr6lck3irf";
+        sha256 = "22a85817ea2edbba2e17b35f6e3a8104b2165e070ea21a1f2fa3b40e8d7aecc9";
       };
     }.${stdenv.hostPlatform.system} or throwSystem;
 
@@ -63,10 +63,16 @@ let
   darwin = {
     inherit name version meta;
 
-    src = fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-x64.zip";
-      sha256 = "08n3xzgncb2hf645zn8b0rb1izq9pqh3726hf2g4nvrgfllivlg1";
-    };
+    src = {
+      x86_64-darwin = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-x64.zip";
+        sha256 = "b3f1e378f58e7c36b54451c5a3485adc370277827974e1eb0790b6965737c872";
+      };
+      arm64-darwin = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-arm64.zip";
+        sha256 = "22a85817ea2edbba2e17b35f6e3a8104b2165e070ea21a1f2fa3b40e8d7aecc9";
+      };
+    }.${stdenv.hostPlatform.system} or throwSystem;
 
     buildInputs = [ unzip ];
 

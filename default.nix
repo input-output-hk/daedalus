@@ -53,6 +53,7 @@ let
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
   ostable.x86_64-darwin = "macos64";
+  ostable.arm64-darwin = "macosM1";
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
     jormungandrLib = localLib.iohkNix.jormungandrLib;

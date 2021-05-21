@@ -8,6 +8,13 @@ steps:
     agents:
       queue: daedalus
       system: x86_64-darwin
+  - label: 'daedalus-arm64-darwin'
+    command: 'scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
+    env:
+      NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
+    agents:
+      queue: daedalus
+      system: arm64-darwin
   - label: 'daedalus-x86_64-linux-nix'
     command: 'scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
     agents:
