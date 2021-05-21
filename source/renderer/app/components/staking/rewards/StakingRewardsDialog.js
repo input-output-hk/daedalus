@@ -60,10 +60,10 @@ export default class StakingRewardsDialog extends Component<Props> {
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <p>
-          <strong>Rewards address</strong>
-        </p>
+        <div className={styles.label}>Rewards address</div>
         <p>{rewardsAddress}</p>
+        <div className={styles.label}>Date range</div>
+        <input value="..." />
       </Dialog>
     );
   }

@@ -1,4 +1,9 @@
 .component {
+  .label {
+    font-family: var(--font-medium);
+    line-height: 1.38;
+    margin-bottom: 6px;
+  }
   p {
     font-family: var(--font-light);
     line-height: 1.38;
