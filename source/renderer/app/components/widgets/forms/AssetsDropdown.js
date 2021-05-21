@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import ItemsDropdown from './ItemsDropdown';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
-import AssetToken from '../../assets/AssetToken';
+import type { AssetToken } from '../../../api/assets/types';
+import Asset from '../../assets/Asset';
 import styles from './AssetsDropdown.scss';
 
 /**
@@ -17,7 +17,7 @@ import styles from './AssetsDropdown.scss';
  *
  */
 type Props = {
-  assets?: Array<$Shape<WalletSummaryAsset>>,
+  assets?: Array<$Shape<AssetToken>>,
 };
 
 export const onSearchAssetsDropdown = (
@@ -50,11 +50,11 @@ export default class AssetsDropdown extends Component<Props> {
     const { assets = [] } = this.props;
     const props = omit(this.props, ['wallets', 'options']);
     const formattedOptions = assets.map((asset) => {
-      const { fingerprint: value, metadata, quantity, decimals } = asset;
+      const { uniqueId: value, metadata, quantity, decimals } = asset;
       const detail = formattedTokenWalletAmount(quantity, metadata, decimals);
       return {
         label: (
-          <AssetToken
+          <Asset
             asset={asset}
             className={styles.assetToken}
             hidePopOver

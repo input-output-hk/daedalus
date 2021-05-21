@@ -10,6 +10,8 @@ import AssetSettingsDialog from '../../../source/renderer/app/components/assets/
 const asset = {
   policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
   assetName: '6861707079636f696e',
+  uniqueId:
+    '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf389790866861707079636f696e',
   fingerprint: 'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8',
   quantity: new BigNumber(number('quantity', 1)),
   decimals: 0,
