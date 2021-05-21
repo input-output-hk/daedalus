@@ -44,6 +44,7 @@ export const createMainWindow = (locale: string) => {
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
+      contextIsolation: false, // TODO: change to ipc
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
       additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
