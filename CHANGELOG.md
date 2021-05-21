@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented detailed earned rewards history ([PR 2572](https://github.com/input-output-hk/daedalus/pull/2572))
 - Added address verification for "Trezor" hardware wallet devices ([PR 2558](https://github.com/input-output-hk/daedalus/pull/2558))
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
 
