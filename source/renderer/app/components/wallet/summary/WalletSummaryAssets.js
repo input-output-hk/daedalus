@@ -7,10 +7,10 @@ import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
-import AssetToken from '../../widgets/AssetToken';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import Asset from '../../assets/Asset';
+import AssetAmount from '../../assets/AssetAmount';
+import type { AssetToken } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { formattedTokenWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -32,16 +32,30 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  assets: Array<WalletSummaryAsset>,
+  assets: Array<AssetToken>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
+  onAssetSettings: Function,
   isLoadingAssets: boolean,
+  assetSettingsDialogWasOpened: boolean,
+};
+
+type State = {
+  anyAssetWasHovered: boolean,
 };
 
 @observer
-export default class WalletSummaryAssets extends Component<Props> {
+export default class WalletSummaryAssets extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    anyAssetWasHovered: false,
+  };
+
+  handleHoverAsset = () => {
+    this.setState({ anyAssetWasHovered: true });
   };
 
   render() {
@@ -50,8 +64,11 @@ export default class WalletSummaryAssets extends Component<Props> {
       assets,
       onOpenAssetSend,
       onCopyAssetItem,
+      onAssetSettings,
+      assetSettingsDialogWasOpened,
       isLoadingAssets,
     } = this.props;
+    const { anyAssetWasHovered } = this.state;
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -71,29 +88,36 @@ export default class WalletSummaryAssets extends Component<Props> {
           </div>
         ) : (
           <div className={styles.component}>
-            {assets.map((asset: WalletSummaryAsset) => (
+            {assets.map((asset: AssetToken, index: number) => (
               <BorderedBox
                 className={styles.assetsContainer}
-                key={asset.policyId + asset.assetName + asset.fingerprint}
+                key={asset.uniqueId}
+                onMouseEnter={this.handleHoverAsset}
               >
-                {asset.fingerprint && (
+                {asset.uniqueId && (
                   <div className={styles.assetsLeftContainer}>
-                    <AssetToken
+                    <Asset
                       asset={asset}
                       onCopyAssetItem={onCopyAssetItem}
                       metadataNameChars={get('name', asset.metadata, 0)}
+                      onClickSettings={() => onAssetSettings({ asset })}
+                      assetSettingsDialogWasOpened={
+                        index === 0 ? assetSettingsDialogWasOpened : null
+                      }
+                      anyAssetWasHovered={anyAssetWasHovered}
                     />
-                    <div className={styles.assetAmount}>
-                      {isRestoreActive
-                        ? '-'
-                        : formattedTokenWalletAmount(
-                            asset.quantity,
-                            asset.metadata
-                          )}
+                    <div>
+                      <AssetAmount
+                        amount={asset.quantity}
+                        metadata={asset.metadata}
+                        decimals={asset.decimals}
+                        isLoading={isRestoreActive}
+                        className={styles.assetAmount}
+                      />
                     </div>
                   </div>
                 )}
-                {asset.fingerprint && (
+                {asset.uniqueId && (
                   <div className={styles.assetRightContainer}>
                     <button
                       className={classNames([

@@ -1,0 +1,11 @@
+.component {
+  span {
+    user-select: text;
+    word-break: break-all;
+  }
+}
+.unformattedAmount {
+  em {
+    opacity: 0.7;
+  }
+}

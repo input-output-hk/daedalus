@@ -6,7 +6,7 @@ import Dialog from '../../widgets/Dialog';
 import styles from './TransferFundsStep1Dialog.scss';
 import Wallet from '../../../domains/Wallet';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
-import WalletsDropdownOption from '../../widgets/forms/WalletsDropdownOption';
+import ItemDropdownOption from '../../widgets/forms/ItemDropdownOption';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -91,15 +91,10 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           {intl.formatMessage(messages.sourceWallet)}
         </p>
         <div className={styles.sourceWallet}>
-          <WalletsDropdownOption
+          <ItemDropdownOption
             label={sourceWallet.name}
             detail={formattedWalletAmount(sourceWallet.amount)}
-            numberOfStakePools={numberOfStakePools}
-            delegatedStakePool={getStakePoolById(
-              sourceWallet.delegatedStakePoolId
-            )}
             selected
-            isHardwareWallet={sourceWallet.isHardwareWallet}
           />
         </div>
         <WalletsDropdown

@@ -108,14 +108,8 @@ const messages = defineMessages({
   },
 });
 
-const walletSelectorLanguageMap = {
-  'en-US': 'enSelector',
-  'ja-JP': 'jaSelector',
-};
-
 type Props = {
   wallets: Array<Wallet>,
-  currentLocale: string,
   onOpenExternalLink: Function,
   updateDelegatingStake: Function,
   rankStakePools: Function,
@@ -247,7 +241,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   generateInfo = () => {
     const { intl } = this.context;
-    const { wallets, currentLocale, selectedDelegationWalletId } = this.props;
+    const { wallets, selectedDelegationWalletId } = this.props;
     const allWalletsItem = {
       id: ALL_WALLETS_SELECTION_ID,
       name: intl.formatMessage(messages.rankingAllWallets),
@@ -257,8 +251,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const walletSelectorWallets = [allWalletsItem, ...filteredWallets];
     const walletSelectorClasses = classnames([
       styles.walletSelector,
-      walletSelectorLanguageMap[currentLocale],
       selectedDelegationWalletId === null ? 'noValueSelected' : null,
+    ]);
+    const walletSelectorContainerClasses = classnames([
+      styles.walletSelectorContainer,
+      styles.col,
     ]);
     const learnMoreUrl = intl.formatMessage(messages.rankingLearnMoreUrl);
 
@@ -283,6 +280,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     return {
       walletSelectorWallets,
       walletSelectorClasses,
+      walletSelectorContainerClasses,
       walletSelectionStart,
       walletSelectionEnd,
       learnMoreUrl,
@@ -308,6 +306,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const {
       walletSelectorWallets,
       walletSelectorClasses,
+      walletSelectorContainerClasses,
       walletSelectionStart,
       walletSelectionEnd,
       learnMoreUrl,
@@ -329,7 +328,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
             {getFilteredWallets(wallets).length > 0 ? (
               <div className={styles.row}>
                 <div className={styles.col}>{walletSelectionStart}</div>
-                <div className={styles.col}>
+                <div className={walletSelectorContainerClasses}>
                   <WalletsDropdown
                     className={walletSelectorClasses}
                     placeholder={intl.formatMessage(
@@ -338,13 +337,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
                     wallets={walletSelectorWallets}
                     onChange={this.onSelectedWalletChange}
                     disabled={isLoading || isRanking}
-                    value={selectedDelegationWalletId}
+                    value={selectedDelegationWalletId || '0'}
                     selectionRenderer={(option) => (
                       <button
                         className="customValue"
                         onClick={() => {
                           const selectionInput = document.querySelector(
-                            '.StakePoolsRanking_walletSelector .SimpleInput_input'
+                            '.StakePoolsRanking_walletSelectorContainer input'
                           );
                           if (selectionInput) {
                             selectionInput.click();

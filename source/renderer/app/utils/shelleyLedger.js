@@ -6,7 +6,7 @@ import {
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
-import { map, groupBy, sortBy } from 'lodash';
+import _ from 'lodash';
 import {
   derivationPathToLedgerPath,
   CERTIFICATE_TYPE,
@@ -125,15 +125,35 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
 };
 
 export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
-  const sortedAssets = sortBy(
-    assets,
-    (asset) => {
-      return asset.assetName.length;
-    },
-    ['asc'],
-    ['assetName', 'desc']
-  );
-  return groupBy(sortedAssets, 'policyId');
+  const compareStringsCanonically = (string1: string, string2: string) =>
+    string1.length - string2.length || string1.localeCompare(string2);
+
+  const groupedAssets = {};
+  _(assets)
+    .orderBy(['policyId', 'assetName'], ['asc', 'asc'])
+    .groupBy(({ policyId }) => policyId)
+    .mapValues((tokens) =>
+      tokens.map(({ assetName, quantity, policyId }) => ({
+        assetName,
+        quantity,
+        policyId,
+      }))
+    )
+    .map((tokens, policyId) => ({
+      policyId,
+      assets: tokens.sort((token1, token2) =>
+        compareStringsCanonically(token1.assetName, token2.assetName)
+      ),
+    }))
+    .sort((token1, token2) =>
+      compareStringsCanonically(token1.policyId, token2.policyId)
+    )
+    .value()
+    .map((sortedAssetsGroup) => {
+      groupedAssets[sortedAssetsGroup.policyId] = sortedAssetsGroup.assets;
+      return groupedAssets;
+    });
+  return groupedAssets;
 };
 
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
@@ -145,7 +165,7 @@ export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
 
   Object.entries(tokenObject).forEach(([policyId, tokens]) => {
     const assetMap = new Map<Buffer, number>();
-    map(tokens, (token) => {
+    _.map(tokens, (token) => {
       assetMap.set(Buffer.from(token.assetName, 'hex'), token.quantity);
     });
     policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
@@ -157,7 +177,7 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
   const tokenObjectEntries = Object.entries(tokenObject);
 
-  const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
+  const tokenBundle = _.map(tokenObjectEntries, ([policyId, tokens]) => {
     const tokensList = tokens.map(({ assetName, quantity }) => ({
       assetNameHex: assetName,
       amount: quantity.toString(),
@@ -167,7 +187,6 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
       tokens: tokensList,
     };
   });
-
   return tokenBundle;
 };
 
@@ -240,7 +259,7 @@ export const ShelleyTxWithdrawal = (
 ) => {
   function encodeCBOR(encoder: any) {
     const withdrawalMap = new Map();
-    map(withdrawals, (withdrawal) => {
+    _.map(withdrawals, (withdrawal) => {
       const rewardAccount = utils.bech32_decodeAddress(withdrawal.stakeAddress);
       const coin = withdrawal.amount.quantity;
       withdrawalMap.set(rewardAccount, coin);

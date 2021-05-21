@@ -26,6 +26,8 @@ import {
   GET_INIT_LEDGER_CONNECT_CHANNEL,
   DERIVE_XPUB_CHANNEL,
   RESET_ACTION_TREZOR_CHANNEL,
+  DERIVE_ADDRESS_CHANNEL,
+  SHOW_ADDRESS_CHANNEL,
 } from '../../common/ipc/api';
 
 import { logger } from '../utils/logging';
@@ -51,6 +53,10 @@ import type {
   resetTrezorActionMainResponse,
   deriveXpubRendererRequest,
   deriveXpubMainResponse,
+  deriveAddressRendererRequest,
+  deriveAddressMainResponse,
+  showAddressRendererRequest,
+  showAddressMainResponse,
 } from '../../common/ipc/api';
 
 const getHardwareWalletTransportChannel: MainIpcChannel<
@@ -102,6 +108,16 @@ const deriveXpubChannel: MainIpcChannel<
   deriveXpubRendererRequest,
   deriveXpubMainResponse
 > = new MainIpcChannel(DERIVE_XPUB_CHANNEL);
+
+const deriveAddressChannel: MainIpcChannel<
+  deriveAddressRendererRequest,
+  deriveAddressMainResponse
+> = new MainIpcChannel(DERIVE_ADDRESS_CHANNEL);
+
+const showAddressChannel: MainIpcChannel<
+  showAddressRendererRequest,
+  showAddressMainResponse
+> = new MainIpcChannel(SHOW_ADDRESS_CHANNEL);
 
 let devicesMemo = {};
 class EventObserver {
@@ -392,6 +408,116 @@ export const handleHardwareWalletRequests = async (
     try {
       const xpub = deriveChildXpub(parentXpub, lastIndex, derivationScheme);
       return utils.buf_to_hex(xpub);
+    } catch (e) {
+      throw e;
+    }
+  });
+
+  deriveAddressChannel.onRequest(async (params) => {
+    const {
+      addressType,
+      spendingPathStr,
+      stakingPathStr,
+      devicePath,
+      isTrezor,
+      networkId,
+      protocolMagic,
+    } = params;
+    const spendingPath = utils.str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr
+      ? utils.str_to_path(stakingPathStr)
+      : null;
+
+    try {
+      deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+      logger.info('[HW-DEBUG] DERIVE ADDRESS');
+      if (isTrezor) {
+        const result = await TrezorConnect.cardanoGetAddress({
+          device: {
+            path: devicePath,
+            showOnTrezor: true,
+          },
+          addressParameters: {
+            addressType,
+            path: `m/${spendingPathStr}`,
+            stakingPath: stakingPathStr ? `m/${stakingPathStr}` : null,
+          },
+          protocolMagic,
+          networkId,
+        });
+        return result.payload.address;
+      }
+
+      // Check if Ledger instantiated
+      if (!deviceConnection) {
+        throw new Error('Ledger device not connected');
+      }
+
+      const { addressHex } = await deviceConnection.deriveAddress({
+        network: {
+          networkId,
+          protocolMagic,
+        },
+        address: {
+          type: addressType,
+          params: {
+            spendingPath,
+            stakingPath,
+          },
+        },
+      });
+
+      const encodedAddress = utils.bech32_encodeAddress(
+        utils.hex_to_buf(addressHex)
+      );
+      return encodedAddress;
+    } catch (e) {
+      throw e;
+    }
+  });
+
+  showAddressChannel.onRequest(async (params) => {
+    const {
+      addressType,
+      spendingPathStr,
+      stakingPathStr,
+      devicePath,
+      isTrezor,
+      networkId,
+      protocolMagic,
+    } = params;
+    const spendingPath = utils.str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr
+      ? utils.str_to_path(stakingPathStr)
+      : null;
+
+    try {
+      deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+      logger.info('[HW-DEBUG] SHOW ADDRESS');
+
+      if (isTrezor) {
+        throw new Error('Address verification not supported on Trezor devices');
+      }
+
+      // Check if Ledger instantiated
+      if (!deviceConnection) {
+        throw new Error('Ledger device not connected');
+      }
+
+      await deviceConnection.showAddress({
+        network: {
+          networkId,
+          protocolMagic,
+        },
+        address: {
+          type: addressType,
+          params: {
+            spendingPath,
+            stakingPath,
+          },
+        },
+      });
+      return;
     } catch (e) {
       throw e;
     }

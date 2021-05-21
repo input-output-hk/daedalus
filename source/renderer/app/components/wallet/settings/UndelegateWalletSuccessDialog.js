@@ -93,6 +93,7 @@ export default class UndelegateWalletSuccessDialog extends Component<
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
