@@ -127,7 +127,7 @@ export default class PinCode extends Component<Props, State> {
       }
       if (onChange) {
         // Send new updated value to onChange event
-        onChange(newValue, inputNewValue, key);
+        onChange(newValue);
       }
       // Update focus key
       this.focusKey = key;
@@ -255,7 +255,7 @@ export default class PinCode extends Component<Props, State> {
         }
         this.setState({ isBackSpace, focusKeyChanged: focusKeyUpdated });
         // Call onChange function to validate new value in focused input field
-        onChange(value, inputNewValue, inputKey);
+        onChange(value);
       }
       this.focusKey = focusKeyChanged ? inputKey - 1 : inputKey;
       this.isAddingNewValue = false;

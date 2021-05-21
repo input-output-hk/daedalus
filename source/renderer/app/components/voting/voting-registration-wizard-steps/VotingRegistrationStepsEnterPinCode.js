@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { map } from 'lodash';
 import { observer } from 'mobx-react';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import PinCode from '../../widgets/forms/PinCode';
@@ -69,8 +68,6 @@ type Props = {
 
 type State = {
   selectedPinField: ?string,
-  pinValues: Array<string>,
-  repeatPinValues: Array<string>,
 };
 
 @observer
@@ -84,8 +81,6 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
 
   state = {
     selectedPinField: null,
-    pinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill('')),
-    repeatPinValues: map(Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill('')),
   };
 
   form = new ReactToolboxMobxForm(
@@ -138,34 +133,23 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }
   );
 
-  onChangePinCode = (values: Array<string>, newValue: string, key: number) => {
+  onChangePinCode = (values: Array<string>) => {
     const { form } = this;
     const pinCodeField = form.$('pinCode');
     const pinCodeFieldProps = pinCodeField.bind();
-    const { pinValues } = this.state;
-    const currentPinValues = pinValues;
-    currentPinValues[key] = newValue;
 
     this.setState({
-      pinValues: currentPinValues,
       selectedPinField: 'pinCode',
     });
     pinCodeFieldProps.onChange(values);
   };
 
-  onChangeRepeatPinCode = (
-    values: Array<string>,
-    newValue: string,
-    key: number
-  ) => {
+  onChangeRepeatPinCode = (values: Array<string>) => {
     const { form } = this;
     const repeatPinCodeField = form.$('repeatPinCode');
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
-    const { repeatPinValues } = this.state;
-    const currentRepeatPinValues = repeatPinValues;
-    currentRepeatPinValues[key] = newValue;
+
     this.setState({
-      repeatPinValues: currentRepeatPinValues,
       selectedPinField: 'repeatPinCode',
     });
     repeatPinCodeFieldProps.onChange(values);
@@ -228,17 +212,13 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             {...pinCodeFieldProps}
             label={enterPinCodeLabel}
             autoFocus
-            onChange={(values, newValue, key) =>
-              this.onChangePinCode(values, newValue, key)
-            }
+            onChange={(values) => this.onChangePinCode(values)}
             selectedPinField={selectedPinField}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
-            onChange={(values, newValue, key) =>
-              this.onChangeRepeatPinCode(values, newValue, key)
-            }
+            onChange={(values) => this.onChangeRepeatPinCode(values)}
             autoFocus={isRepeatPinCodeAutoFocused}
             disabled={!pinCodeField.isValid && !repeatPinCodeField.value.length}
             error={repeatPinCodeField.error}
