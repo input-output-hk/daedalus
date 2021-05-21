@@ -1,7 +1,8 @@
-{ stdenv, libXScrnSaver, makeWrapper, fetchurl, unzip, atomEnv, libuuid, at-spi2-atk, at_spi2_core }:
+{ stdenv, libXScrnSaver, makeWrapper, fetchurl, unzip, atomEnv, libuuid, at-spi2-atk, at_spi2_core, libxshmfence,
+  libdrm, libxkbcommon, mesa }:
 
 let
-  version = "4.0.0";
+  version = "12.0.9";
   name = "electron-${version}";
 
   throwSystem = throw "Unsupported system: ${stdenv.hostPlatform.system}";
@@ -24,7 +25,7 @@ let
       };
       x86_64-linux = fetchurl {
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-        sha256 = "1kh2jds7jra9f1vcn2z1193cxcyvfxkldim4b9ij7chj9xzxwgln";
+        sha256 = "3ab0a873f720d3bf56cce6ca1bf9d8b956843920798f659ca0829e4cc3126f6d";
       };
       armv7l-linux = fetchurl {
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-armv7l.zip";
@@ -51,7 +52,11 @@ let
         $out/lib/electron/electron
 
       wrapProgram $out/lib/electron/electron \
-        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libXScrnSaver ]}/libXss.so.1
+        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libXScrnSaver ]}/libXss.so.1 \
+        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libdrm ]}/libdrm.so.2 \
+        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libxkbcommon ]}/libxkbcommon.so.0 \
+        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ mesa ]}/libgbm.so.1 \
+        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libxshmfence ]}/libxshmfence.so.1
     '';
   };
 

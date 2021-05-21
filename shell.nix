@@ -65,7 +65,7 @@ let
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
       darwin.apple_sdk.frameworks.CoreServices
     ] else [
-      daedalusPkgs.electron9
+      daedalusPkgs.electron12
       winePackages.minimal
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
@@ -130,7 +130,7 @@ let
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/usb_bindings.node
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/HID.node
-        ln -svf ${daedalusPkgs.electron9}/bin/electron ./node_modules/electron/dist/electron
+        ln -svf ${daedalusPkgs.electron12}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       echo 'jq < $LAUNCHER_CONFIG'
