@@ -15149,10 +15149,10 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.0.tgz#912953633184f4abd277328e92b4cfa654598ac2"
-  integrity sha512-pjZD/Og3T20WVCBPqFXvMEXFDCSTc3+lKO9HWs43ZWuts6/hZf5qgtTGygodAV7bky601aucXD5nUCcW7VB+XA==
+react-polymorph@1.0.0-next.1:
+  version "1.0.0-next.1"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.0-next.1.tgz#99c8f90e7188d176288c94f425fbb7505b31918c"
+  integrity sha512-a0o54B1UU/uD2/gIDpdUMXizkQIyFLCM8kFKhjlZqae1vqZBD+Ehp9HgIE8u9WG6nTrOY9+1zes6tXJhdrJefg==
   dependencies:
     "@tippyjs/react" "4.2.1"
     create-react-context "0.2.2"
