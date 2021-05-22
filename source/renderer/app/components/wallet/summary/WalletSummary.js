@@ -6,7 +6,7 @@ import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryAssets from './WalletSummaryAssets';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import type { AssetToken } from '../../../api/assets/types';
 import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 
 type Props = {
@@ -21,7 +21,7 @@ type Props = {
   currencyRate: ?number,
   currencyLastFetched: ?Date,
   onCurrencySettingClick: Function,
-  assets: Array<WalletSummaryAsset>,
+  assets: Array<AssetToken>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
   onAssetSettings: Function,

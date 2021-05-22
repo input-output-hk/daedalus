@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 import type { Currency, LocalizedCurrency } from '../../types/currencyTypes';
-import type { AssetItems } from '../assets/types';
+import type { ApiTokens } from '../assets/types';
 
 export type Block = {
   slot_number: number,
@@ -41,8 +41,8 @@ export type AdaWallet = {
     reward: WalletBalance,
   },
   assets: {
-    available: AssetItems,
-    total: AssetItems,
+    available: ApiTokens,
+    total: ApiTokens,
   },
   delegation: {
     active: WalletDelegation,

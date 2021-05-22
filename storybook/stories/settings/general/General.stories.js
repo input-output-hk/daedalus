@@ -75,7 +75,6 @@ storiesOf('Settings|General', module)
           }
           onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
           onOpenExternalLink={action('onOpenExternalLink')}
-          hasSearch={boolean('hasSearch', true)}
         />
       )
     )

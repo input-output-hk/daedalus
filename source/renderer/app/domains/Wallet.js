@@ -10,7 +10,7 @@ import type {
   WalletPendingDelegations,
   Discovery,
 } from '../api/wallets/types';
-import type { WalletAssets } from '../api/assets/types';
+import type { WalletTokens } from '../api/assets/types';
 
 export const WalletDiscovery: {
   RANDOM: Discovery,
@@ -115,7 +115,7 @@ export type WalletProps = {
   amount: BigNumber,
   availableAmount: BigNumber,
   reward: BigNumber,
-  assets: WalletAssets,
+  assets: WalletTokens,
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
@@ -137,7 +137,7 @@ export default class Wallet {
   @observable amount: BigNumber;
   @observable availableAmount: BigNumber;
   @observable reward: BigNumber;
-  @observable assets: WalletAssets;
+  @observable assets: WalletTokens;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;

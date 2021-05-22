@@ -2,11 +2,13 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { filter, escapeRegExp } from 'lodash';
+import { intlShape } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ItemDropdownOption from './ItemDropdownOption';
 import type { ItemDropdown } from './ItemDropdownOption';
 import styles from './ItemsDropdown.scss';
+import globalMessages from '../../../i18n/global-messages';
 
 /**
  *
@@ -43,6 +45,10 @@ export const onSearchItemsDropdown = (
 };
 
 export default class ItemsDropdown extends Component<ItemDropdownProps> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   static defaultProps = {
     optionRenderer: (optionProps: ItemDropdown) => (
       <ItemDropdownOption {...optionProps} />
@@ -54,10 +60,18 @@ export default class ItemsDropdown extends Component<ItemDropdownProps> {
     skin: SelectSkin,
   };
   render() {
+    const { intl } = this.context;
     const { className } = this.props;
     const componentStyles = classnames([styles.component, className]);
     return (
-      <Select {...this.props} className={componentStyles} optionHeight={50} />
+      <Select
+        {...this.props}
+        className={componentStyles}
+        optionHeight={50}
+        noResultsMessage={intl.formatMessage(
+          globalMessages.searchNoResultsMessage
+        )}
+      />
     );
   }
 }
