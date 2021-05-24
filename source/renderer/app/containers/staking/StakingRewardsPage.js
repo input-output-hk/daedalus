@@ -4,12 +4,9 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsDialog from '../../components/staking/rewards/StakingRewardsDialog';
-import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import StakingRewardsDialogContainer from './dialogs/StakingRewardsDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { RewardForIncentivizedTestnet } from '../../api/staking/types';
-import { ellipsis } from '../../utils/strings';
-import { getNetworkExplorerUrl } from '../../utils/network';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -47,44 +44,18 @@ export default class StakingRewardsPage extends Component<Props> {
 
   render() {
     const {
-      staking: { rewards, rewardsForIncentivizedTestnet },
-      networkStatus,
+      staking: { rewardsForIncentivizedTestnet },
       uiDialogs,
     } = this.props.stores;
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
-    const {
-      isMainnet,
-      isSelfnode,
-      isStaging,
-      isTestnet,
-      isTest,
-    } = networkStatus.environment;
 
-    const stakingComponent =
-      isMainnet ||
-      isStaging ||
-      isTestnet ||
-      isIncentivizedTestnet ||
-      isShelleyTestnet ||
-      isSelfnode ||
-      isTest ? (
-        <StakingRewardsForIncentivizedTestnet
+    return (
+      <Fragment>
+        <StakingRewards
           rewards={rewardsForIncentivizedTestnet}
           isLoading={false}
           onLearnMoreClick={this.handleLearnMoreClick}
           onOpenWalletRewards={this.handleOpenWalletRewards}
         />
-      ) : (
-        <StakingRewards
-          rewards={rewards}
-          isLoading={false}
-          onLearnMoreClick={this.handleLearnMoreClick}
-        />
-      );
-
-    return (
-      <Fragment>
-        {stakingComponent}
         {uiDialogs.isOpen(StakingRewardsDialog) ? (
           <StakingRewardsDialogContainer />
         ) : null}

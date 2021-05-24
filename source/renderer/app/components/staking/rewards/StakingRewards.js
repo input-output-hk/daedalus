@@ -5,19 +5,18 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   bigNumberComparator,
   stringComparator,
-  dateComparator,
 } from '../../../utils/sortComparators';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import type { Reward } from '../../../api/staking/types';
-import styles from './StakingRewards.scss';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
+import styles from './StakingRewardsForIncentivizedTestnet.scss';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
@@ -26,26 +25,10 @@ const messages = defineMessages({
     description:
       'Title "Earned delegation rewards" label on the staking rewards page.',
   },
-  exportButtonLabel: {
-    id: 'staking.rewards.exportButtonLabel',
-    defaultMessage: '!!!Export CSV',
-    description:
-      'Label for the "Export CSV" button on the staking rewards page.',
-  },
   noRewards: {
     id: 'staking.rewards.no.rewards',
     defaultMessage: '!!!No rewards',
     description: '"No rewards" rewards label on staking rewards page.',
-  },
-  tableHeaderDate: {
-    id: 'staking.rewards.tableHeader.date',
-    defaultMessage: '!!!Date',
-    description: 'Table header "Date" label on staking rewards page',
-  },
-  tableHeaderPool: {
-    id: 'staking.rewards.tableHeader.pool',
-    defaultMessage: '!!!Stake pool',
-    description: 'Table header "Stake pool" label on staking rewards page',
   },
   tableHeaderWallet: {
     id: 'staking.rewards.tableHeader.wallet',
@@ -54,30 +37,34 @@ const messages = defineMessages({
   },
   tableHeaderReward: {
     id: 'staking.rewards.tableHeader.reward',
-    defaultMessage: '!!!Total rewards earned',
+    defaultMessage: '!!!Total rewards earned (ADA)',
     description: 'Table header "Reward" label on staking rewards page',
   },
-  learnMoreButtonLabel: {
-    id: 'staking.rewards.learnMore.ButtonLabel',
-    defaultMessage: '!!!Learn more',
-    description: 'Label for "Learn more" button on staking rewards page',
+  tableHeaderRewardsAddress: {
+    id: 'staking.rewards.tableHeader.rewardsAddress',
+    defaultMessage: '!!!Rewards address',
+    description: 'Table header "Rewards address" label on staking rewards page',
   },
   note: {
     id: 'staking.rewards.note',
     defaultMessage:
-      '!!!Rewards earned by delegating your stake are automatically collected into your reward account and added to your wallet balance.',
+      '!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>',
     description: 'Rewards description text on staking rewards page',
+  },
+  syncingTooltipLabel: {
+    id: 'staking.delegationCenter.syncingTooltipLabel',
+    defaultMessage: '!!!Syncing {syncingProgress}%',
+    description: 'unknown stake pool label on staking rewards page.',
   },
 });
 
 const REWARD_FIELDS = {
-  WALLET_NAME: 'wallet',
+  WALLET_ID: 'walletId',
+  WALLET_NAME: 'walletName',
   IS_RESTORING: 'isRestoring',
-  POOL: 'pool',
-  NAME: 'name',
-  TICKER: 'ticker',
+  SYNCING_PROGRESS: 'syncingProgress',
   REWARD: 'reward',
-  DATE: 'date',
+  REWARDS_ADDRESS: 'rewardsAddress',
 };
 
 const REWARD_ORDERS = {
@@ -86,9 +73,9 @@ const REWARD_ORDERS = {
 };
 
 type Props = {
-  rewards: Array<Reward>,
+  rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
-  onLearnMoreClick: Function,
+  onOpenWalletRewards: Function,
 };
 
 type State = {
@@ -98,7 +85,10 @@ type State = {
 };
 
 @observer
-export default class StakingRewards extends Component<Props, State> {
+export default class StakingRewardsForIncentivizedTestnet extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -111,62 +101,69 @@ export default class StakingRewards extends Component<Props, State> {
     super(props);
     this.state = {
       rewardsOrder: REWARD_ORDERS.DESCENDING,
-      rewardsSortBy: REWARD_FIELDS.DATE,
+      rewardsSortBy: REWARD_FIELDS.WALLET_NAME,
       contentScrollTop: 0,
     };
   }
 
-  getSortedRewards = (): Array<Reward> => {
+  getSortedRewards = (): Array<RewardForIncentivizedTestnet> => {
     const { rewards } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
-    return rewards.slice().sort((rewardA: Reward, rewardB: Reward) => {
-      const rewardCompareResult = bigNumberComparator(
-        rewardA.reward,
-        rewardB.reward,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-      const walletNameCompareResult = stringComparator(
-        rewardA.wallet,
-        rewardB.wallet,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-      const poolCompareResult = stringComparator(
-        rewardA.pool.name,
-        rewardB.pool.name,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-      const dateCompareResult = dateComparator(
-        rewardA.date,
-        rewardB.date,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
-        if (rewardCompareResult === 0) {
-          return walletNameCompareResult;
+    return rewards
+      .slice()
+      .sort(
+        (
+          rewardA: RewardForIncentivizedTestnet,
+          rewardB: RewardForIncentivizedTestnet
+        ) => {
+          const rewardCompareResult = bigNumberComparator(
+            rewardA.reward,
+            rewardB.reward,
+            rewardsOrder === REWARD_ORDERS.ASCENDING
+          );
+          const walletNameCompareResult = stringComparator(
+            rewardA.walletName,
+            rewardB.walletName,
+            rewardsOrder === REWARD_ORDERS.ASCENDING
+          );
+          const walletAddressCompareResult = stringComparator(
+            rewardA.rewardsAddress,
+            rewardB.rewardsAddress,
+            rewardsOrder === REWARD_ORDERS.ASCENDING
+          );
+          if (rewardsSortBy === REWARD_FIELDS.REWARD) {
+            if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
+              return walletNameCompareResult;
+            }
+            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+              return walletAddressCompareResult;
+            }
+            return rewardCompareResult;
+          }
+          if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
+            if (walletNameCompareResult === 0 && walletAddressCompareResult) {
+              return rewardCompareResult;
+            }
+            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+              return walletAddressCompareResult;
+            }
+            return walletNameCompareResult;
+          }
+          if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
+            if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
+              return walletNameCompareResult;
+            }
+            if (
+              walletAddressCompareResult === 0 &&
+              walletNameCompareResult === 0
+            ) {
+              return rewardCompareResult;
+            }
+            return walletAddressCompareResult;
+          }
+          return 0;
         }
-        return rewardCompareResult;
-      }
-      if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-        if (walletNameCompareResult === 0) {
-          return rewardCompareResult;
-        }
-        return walletNameCompareResult;
-      }
-      if (rewardsSortBy === REWARD_FIELDS.DATE) {
-        if (dateCompareResult === 0) {
-          return walletNameCompareResult;
-        }
-        return dateCompareResult;
-      }
-      if (rewardsSortBy === REWARD_FIELDS.POOL) {
-        if (poolCompareResult === 0) {
-          return walletNameCompareResult;
-        }
-        return poolCompareResult;
-      }
-
-      return 0;
-    });
+      );
   };
 
   handleContentScroll = (evt: SyntheticEvent<HTMLElement>) => {
@@ -174,7 +171,7 @@ export default class StakingRewards extends Component<Props, State> {
   };
 
   render() {
-    const { rewards, isLoading, onLearnMoreClick } = this.props;
+    const { rewards, isLoading, onOpenWalletRewards } = this.props;
     const { rewardsOrder, rewardsSortBy, contentScrollTop } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
@@ -182,20 +179,18 @@ export default class StakingRewards extends Component<Props, State> {
     const sortedRewards = showRewards ? this.getSortedRewards() : [];
     const availableTableHeaders = [
       {
-        name: REWARD_FIELDS.DATE,
-        title: intl.formatMessage(messages.tableHeaderDate),
-      },
-      {
-        name: REWARD_FIELDS.POOL,
-        title: intl.formatMessage(messages.tableHeaderPool),
-      },
-      {
         name: REWARD_FIELDS.WALLET_NAME,
         title: intl.formatMessage(messages.tableHeaderWallet),
       },
       {
+        name: REWARD_FIELDS.REWARDS_ADDRESS,
+        title: intl.formatMessage(messages.tableHeaderRewardsAddress),
+      },
+      {
         name: REWARD_FIELDS.REWARD,
-        title: intl.formatMessage(messages.tableHeaderReward),
+        title: `${intl.formatMessage(
+          messages.tableHeaderReward
+        )} (${intl.formatMessage(globalMessages.unitAda)})`,
       },
     ];
     const headerWrapperClasses = classNames([
@@ -209,11 +204,6 @@ export default class StakingRewards extends Component<Props, State> {
           <div className={styles.title}>
             {intl.formatMessage(messages.title)}
           </div>
-          {!noRewards && (
-            <div className={styles.actionLabel}>
-              {intl.formatMessage(messages.exportButtonLabel)}
-            </div>
-          )}
         </div>
         <div
           className={styles.contentWrapper}
@@ -226,7 +216,7 @@ export default class StakingRewards extends Component<Props, State> {
               </div>
             )}
 
-            {sortedRewards && (
+            {sortedRewards.length > 0 && (
               <table>
                 <thead>
                   <tr>
@@ -259,41 +249,46 @@ export default class StakingRewards extends Component<Props, State> {
                 </thead>
                 <tbody>
                   {map(sortedRewards, (reward, key) => {
-                    const rewardDate = get(reward, REWARD_FIELDS.DATE, '');
-                    const rewardPoolTicker = get(
-                      reward,
-                      [REWARD_FIELDS.POOL, REWARD_FIELDS.TICKER],
-                      ''
-                    );
-                    const rewardPoolName = get(
-                      reward,
-                      [REWARD_FIELDS.POOL, REWARD_FIELDS.NAME],
-                      ''
-                    );
-                    const rewardWallet = get(
-                      reward,
-                      REWARD_FIELDS.WALLET_NAME,
-                      ''
-                    );
+                    const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
                     const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
+                    const syncingProgress = get(
+                      reward,
+                      REWARD_FIELDS.SYNCING_PROGRESS
+                    );
                     const rewardAmount = get(
                       reward,
                       REWARD_FIELDS.REWARD
                     ).toFormat(DECIMAL_PLACES_IN_ADA);
+                    const rewardsAddress = get(
+                      reward,
+                      REWARD_FIELDS.REWARDS_ADDRESS
+                    );
+                    const onOpenWalletRewardsBind = () =>
+                      onOpenWalletRewards(reward);
 
                     return (
-                      <tr key={key}>
-                        <td>{rewardDate}</td>
-                        <td>
-                          <p>
-                            <span className={styles.stakePoolReference}>
-                              [{rewardPoolTicker}]
-                            </span>{' '}
-                            {rewardPoolName}
-                          </p>
+                      <tr key={key} onClick={onOpenWalletRewardsBind}>
+                        <td className={styles.rewardWallet}>{rewardWallet}</td>
+                        <td className={styles.rewardsAddress}>
+                          {rewardsAddress}
                         </td>
-                        <td>{rewardWallet}</td>
-                        <td>{isRestoring ? '-' : `${rewardAmount} ADA`}</td>
+                        <td className={styles.rewardAmount}>
+                          {isRestoring ? '-' : rewardAmount}
+                          {isRestoring && (
+                            <div className={styles.syncingProgress}>
+                              <PopOver
+                                content={intl.formatMessage(
+                                  messages.syncingTooltipLabel,
+                                  {
+                                    syncingProgress,
+                                  }
+                                )}
+                              >
+                                <LoadingSpinner medium />
+                              </PopOver>
+                            </div>
+                          )}
+                        </td>
                       </tr>
                     );
                   })}
@@ -308,15 +303,8 @@ export default class StakingRewards extends Component<Props, State> {
             )}
           </BorderedBox>
           <div className={styles.note}>
-            <div className={styles.asterisk}>*</div>
             <div className={styles.noteContent}>
               <FormattedHTMLMessage {...messages.note} />
-              <Link
-                className={styles.externalLink}
-                onClick={onLearnMoreClick}
-                label={intl.formatMessage(messages.learnMoreButtonLabel)}
-                skin={LinkSkin}
-              />
             </div>
           </div>
         </div>
