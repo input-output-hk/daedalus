@@ -15,7 +15,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
-import styles from './StakingRewardsForIncentivizedTestnet.scss';
+import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
@@ -85,10 +85,7 @@ type State = {
 };
 
 @observer
-export default class StakingRewardsForIncentivizedTestnet extends Component<
-  Props,
-  State
-> {
+export default class StakingRewards extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

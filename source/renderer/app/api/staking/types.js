@@ -70,6 +70,13 @@ export type RewardForIncentivizedTestnet = {
   pool?: StakePool,
 };
 
+export type RewardsHistoryItem = {
+  date?: string,
+  epoch: number,
+  pool?: StakePool,
+  reward: BigNumber,
+};
+
 export type EpochData = {
   pool: StakePool,
   slotsElected: Array<number>,

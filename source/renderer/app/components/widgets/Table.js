@@ -2,12 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import type { Node } from 'react';
-import SVGInline from 'react-svg-inline';
-import { get, map } from 'lodash';
+import { map, entries } from 'lodash';
 import classnames from 'classnames';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import LoadingSpinner from './LoadingSpinner';
-import sortIcon from '../../assets/images/ascending.inline.svg';
+// import LoadingSpinner from './LoadingSpinner';
+// import sortIcon from '../../assets/images/ascending.inline.svg';
 import styles from './Table.scss';
 
 type ColumnAccessor = string;
@@ -53,32 +51,40 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<Prop
     const componentStyles = classnames([styles.component, className]);
 
     return (
-      <table className={componentStyles}>
-        <thead>
-          <tr>
-            {map(columns, ({ acessor, Header }: ColumnItem) => {
-              return (
-                <th
-                  key={acessor}
-                  onClick={() => this.handleRewardsSort(acessor)}
-                >
-                  {Header}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {map(data, (item: DataItem, key) => {
-            console.log('item', item);
-            return (
+      !isLoading && (
+        <table className={componentStyles}>
+          <thead>
+            <tr>
+              {map(columns, ({ acessor, Header }: ColumnItem) => {
+                return (
+                  <th
+                    key={acessor}
+                    onClick={() => this.handleRewardsSort(acessor)}
+                  >
+                    {Header}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {map(data, (item: DataItem, key) => (
               <tr key={key} onClick={onClickRow}>
-                <td className={styles.rewardWallet}>Test</td>
+                {map(entries(item), ([columnKey, entry]) => (
+                  <td
+                    key={key + columnKey}
+                    role="presentation"
+                    className={styles.rewardWallet}
+                    onClick={onClickCell}
+                  >
+                    {entry}
+                  </td>
+                ))}
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      )
     );
   }
 }

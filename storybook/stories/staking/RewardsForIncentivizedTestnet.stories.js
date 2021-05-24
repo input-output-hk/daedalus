@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
 
 // Screens
-import StakingRewardsForIncentivizedTestnet from '../../../source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet';
+import StakingRewards from '../../../source/renderer/app/components/staking/rewards/StakingRewards';
 
 // Dummy data initialization
 import REWARDS from '../../../source/renderer/app/config/stakingRewards.dummy.json';
@@ -18,7 +18,7 @@ const rewards = map(REWARDS, (reward) => {
 });
 
 export const StakingRewardsForIncentivizedTestnetStory = () => (
-  <StakingRewardsForIncentivizedTestnet
+  <StakingRewards
     rewards={rewards}
     isLoading={false}
     isExporting={false}
@@ -26,5 +26,6 @@ export const StakingRewardsForIncentivizedTestnetStory = () => (
     onExportCsv={action('onExportCsv')}
     onCopyAddress={action('onCopyAddress')}
     onOpenExternalLink={action('onOpenExternalLink')}
+    onOpenWalletRewards={action('onOpenExternalLink')}
   />
 );

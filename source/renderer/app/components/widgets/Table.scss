@@ -82,10 +82,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       word-break: break-all;
-
-      .stakePoolReference {
-        font-family: var(--font-medium);
-      }
     }
 
     .syncingProgress {
@@ -125,19 +121,6 @@
       }
     }
 
-    .actionExplorerLink {
-      align-items: center;
-      border-radius: 3px;
-      display: flex;
-      height: 16px;
-      justify-content: center;
-      line-height: 16px;
-      margin-left: 15px;
-      padding: 3px 8px;
-      white-space: nowrap;
-      width: auto;
-    }
-
     .externalLink {
       font-size: 8px;
       font-weight: bold;
@@ -149,61 +132,6 @@
         -webkit-mask-size: 8px, 8px !important;
         mask-size: 8px, 8px !important;
         width: 8px !important;
-      }
-    }
-
-    &.rewardWallet {
-      max-width: 200px;
-      min-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    &.rewardAmount {
-      min-width: 250px;
-    }
-
-    &.rewardsAddress {
-      min-width: 100px;
-
-      > div {
-        align-items: center;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .addressContainer {
-        align-items: center;
-        display: flex;
-
-        .address {
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          width: 237px;
-
-          &:hover {
-            cursor: pointer;
-          }
-
-          @media screen and (min-width: 992px) {
-            width: 297px;
-          }
-          @media screen and (min-width: 1024px) {
-            width: 355px;
-          }
-          @media screen and (min-width: 1098px) {
-            width: auto;
-          }
-        }
-
-        &:hover {
-          .copyIcon {
-            opacity: 1;
-          }
-        }
       }
     }
   }
