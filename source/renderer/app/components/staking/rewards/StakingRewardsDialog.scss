@@ -9,4 +9,21 @@
     line-height: 1.38;
     margin-bottom: 20px;
   }
+  .table {
+    margin-top: 30px;
+    thead {
+      background: transparent;
+    }
+    th {
+      border: none;
+      font-size: 10px;
+      padding: 10px 18px;
+      text-transform: uppercase;
+    }
+    td {
+      border-width: 1px 0;
+      font-size: 12px;
+      padding: 10px 18px;
+    }
+  }
 }

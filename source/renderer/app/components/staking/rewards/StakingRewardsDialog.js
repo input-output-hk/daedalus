@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import { defineMessages, intlShape } from 'react-intl';
@@ -79,10 +79,10 @@ export default class StakingRewardsDialog extends Component<Props> {
 
     const getPoolRowItem = (pool: ?StakePool) =>
       pool ? (
-        <div>
-          <p>[{pool.ticker}]</p>
+        <Fragment>
+          <span>[{pool.ticker}]</span>
           {pool.name}
-        </div>
+        </Fragment>
       ) : null;
 
     const data =
