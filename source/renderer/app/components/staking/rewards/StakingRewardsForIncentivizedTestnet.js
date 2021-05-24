@@ -6,8 +6,6 @@ import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   bigNumberComparator,
@@ -19,8 +17,6 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
 import globalMessages from '../../../i18n/global-messages';
-import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({
   title: {
@@ -60,11 +56,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Syncing {syncingProgress}%',
     description: 'unknown stake pool label on staking rewards page.',
   },
-  actionViewInExplorer: {
-    id: 'staking.rewards.actionViewInExplorer',
-    defaultMessage: '!!!View in explorer',
-    description: 'View in explorer button label on staking rewards page.',
-  },
 });
 
 const REWARD_FIELDS = {
@@ -81,13 +72,9 @@ const REWARD_ORDERS = {
   DESCENDING: 'desc',
 };
 
-const IS_EXPLORER_LINK_BUTTON_ENABLED = false;
-
 type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
-  onCopyAddress: Function,
-  onOpenExternalLink: Function,
   onOpenWalletRewards: Function,
 };
 
@@ -184,13 +171,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
   };
 
   render() {
-    const {
-      rewards,
-      isLoading,
-      onCopyAddress,
-      onOpenExternalLink,
-      onOpenWalletRewards,
-    } = this.props;
+    const { rewards, isLoading, onOpenWalletRewards } = this.props;
     const { rewardsOrder, rewardsSortBy, contentScrollTop } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
@@ -212,10 +193,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         )} (${intl.formatMessage(globalMessages.unitAda)})`,
       },
     ];
-    const explorerButtonClasses = classNames([
-      'flat',
-      styles.actionExplorerLink,
-    ]);
     const headerWrapperClasses = classNames([
       styles.headerWrapper,
       contentScrollTop > 10 ? styles.headerWrapperWithShadow : null,
@@ -293,43 +270,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                       <tr key={key} onClick={onOpenWalletRewardsBind}>
                         <td className={styles.rewardWallet}>{rewardWallet}</td>
                         <td className={styles.rewardsAddress}>
-                          {rewardsAddress && (
-                            <div>
-                              <CopyToClipboard
-                                text={rewardsAddress}
-                                onCopy={() => onCopyAddress(rewardsAddress)}
-                              >
-                                <div className={styles.addressContainer}>
-                                  <span className={styles.address}>
-                                    {rewardsAddress}
-                                  </span>
-                                  <span className={styles.copyAddress}>
-                                    <SVGInline
-                                      svg={iconCopy}
-                                      className={styles.copyIcon}
-                                    />
-                                  </span>
-                                </div>
-                              </CopyToClipboard>
-                              {IS_EXPLORER_LINK_BUTTON_ENABLED && (
-                                <ButtonLink
-                                  className={explorerButtonClasses}
-                                  onClick={() =>
-                                    onOpenExternalLink(rewardsAddress)
-                                  }
-                                  skin={ButtonSkin}
-                                  label={intl.formatMessage(
-                                    messages.actionViewInExplorer
-                                  )}
-                                  linkProps={{
-                                    className: styles.externalLink,
-                                    hasIconBefore: false,
-                                    hasIconAfter: true,
-                                  }}
-                                />
-                              )}
-                            </div>
-                          )}
+                          {rewardsAddress}
                         </td>
                         <td className={styles.rewardAmount}>
                           {isRestoring ? '-' : rewardAmount}

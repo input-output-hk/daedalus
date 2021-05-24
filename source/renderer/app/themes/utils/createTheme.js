@@ -1095,6 +1095,9 @@ export const createDaedalusComponentsTheme = (
         background.primary.light
       ).alpha(0.7)}`,
       '--theme-staking-redeemItnRewards-icon-color': `${text.primary}`,
+      '--theme-staking-rewards-table-background-color-hover': `${chroma(
+        background.secondary.regular
+      ).alpha(0.1)}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,

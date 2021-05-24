@@ -484,7 +484,6 @@
   "staking.redeemItnRewards.step3.success.downloadPDFButtonLabel": "Download PDF certificate",
   "staking.redeemItnRewards.step3.success.openWalletButtonLabel": "Open the wallet",
   "staking.redeemItnRewards.step3.success.title": "Incentivized Testnet rewards redeemed!",
-  "staking.rewards.actionViewInExplorer": "View in explorer",
   "staking.rewards.csvFilenamePrefix": "Rewards",
   "staking.rewards.dialog.title": "Rewards details",
   "staking.rewards.dialog.csv.label": "Export CSV",

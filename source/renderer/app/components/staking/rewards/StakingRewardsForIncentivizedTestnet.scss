@@ -138,6 +138,9 @@
       tr {
         cursor: pointer;
         &:hover {
+          background-color: var(
+            --theme-staking-rewards-table-background-color-hover
+          );
         }
       }
     }

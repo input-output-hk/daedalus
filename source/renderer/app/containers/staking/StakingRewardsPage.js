@@ -45,23 +45,6 @@ export default class StakingRewardsPage extends Component<Props> {
     });
   };
 
-  handleOpenExternalLink = (rewardsAddress: string) => {
-    const { app } = this.props.stores;
-    const {
-      environment: { network, rawNetwork },
-    } = app;
-    const cardanoExplorerLink = `${getNetworkExplorerUrl(
-      network,
-      rawNetwork
-    )}/address/${rewardsAddress}`;
-    this.props.stores.app.openExternalLink(cardanoExplorerLink);
-  };
-
-  handleCopyAddress = (copiedAddress: string) => {
-    const address = ellipsis(copiedAddress, 15, 15);
-    this.props.actions.wallets.copyAddress.trigger({ address });
-  };
-
   render() {
     const {
       staking: { rewards, rewardsForIncentivizedTestnet },
@@ -89,8 +72,6 @@ export default class StakingRewardsPage extends Component<Props> {
           rewards={rewardsForIncentivizedTestnet}
           isLoading={false}
           onLearnMoreClick={this.handleLearnMoreClick}
-          onCopyAddress={this.handleCopyAddress}
-          onOpenExternalLink={this.handleOpenExternalLink}
           onOpenWalletRewards={this.handleOpenWalletRewards}
         />
       ) : (

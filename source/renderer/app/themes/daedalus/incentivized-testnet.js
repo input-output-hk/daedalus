@@ -875,6 +875,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-redeemItnRewards-attention-text-color': '#eb4a22',
     '--theme-staking-redeemItnRewards-description-text-color': '#414251b3',
     '--theme-staking-redeemItnRewards-icon-color': '#ffffff',
+    '--theme-staking-rewards-table-background-color-hover':
+      'rgba(255, 255, 255, 0.1)',
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',

@@ -882,6 +882,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-redeemItnRewards-description-text-color':
       'rgba(250, 251, 252, .7)',
     '--theme-staking-redeemItnRewards-icon-color': '#fafbfc',
+    '--theme-staking-rewards-table-background-color-hover':
+      'rgba(68, 91, 124, 0.1)',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
