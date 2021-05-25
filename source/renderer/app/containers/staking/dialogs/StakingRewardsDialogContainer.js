@@ -5,7 +5,7 @@ import StakingRewardsDialog from '../../../components/staking/rewards/StakingRew
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 // @REWARDS TODO
-import dummyData from '../../../config/rewardsHistory.dummy';
+import { rewardsHistory as dummyData } from '../../../config/rewardsHistory.dummy';
 
 type Props = InjectedProps;
 
