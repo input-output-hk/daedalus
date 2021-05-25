@@ -1,12 +1,12 @@
 .component {
-  border-style: hidden;
-  user-select: text;
-  width: 100%;
-
+  table {
+    border-style: hidden;
+    user-select: text;
+    width: 100%;
+  }
   thead {
     background-color: var(--theme-staking-table-head-background-color);
   }
-
   tbody {
     tr {
       cursor: pointer;
@@ -14,13 +14,11 @@
       }
     }
   }
-
   tr,
   td,
   th {
     border: 1px solid var(--theme-staking-table-border-color);
   }
-
   th {
     color: var(--theme-staking-font-color-regular);
     cursor: pointer;
@@ -83,55 +81,31 @@
       text-overflow: ellipsis;
       word-break: break-all;
     }
-
-    .syncingProgress {
-      position: absolute;
-      right: 10px;
+  }
+  &.sticky {
+    overflow: auto;
+    th {
+      background-color: var(--rp-modal-bg-color);
+      position: sticky;
       top: 0;
-
-      :global .LoadingSpinner_component.LoadingSpinner_medium {
-        margin: 10px auto !important;
-
-        .LoadingSpinner_icon svg path {
-          fill: var(--theme-loading-spinner-color);
-          opacity: 0.3;
-        }
+      z-index: 1;
+    }
+  }
+  &.compact {
+    table {
+      thead {
+        background: transparent;
       }
-    }
-
-    .copyAddress {
-      cursor: pointer;
-      display: flex;
-      white-space: nowrap;
-    }
-
-    .copyIcon {
-      cursor: pointer;
-      margin-left: 6px;
-      object-fit: contain;
-      opacity: 0;
-
-      & > svg {
-        height: 10px;
-        width: 8px;
-
-        path {
-          fill: var(--theme-icon-copy-address-color);
-        }
+      th {
+        border: none;
+        font-size: 10px;
+        padding: 10px 18px;
+        text-transform: uppercase;
       }
-    }
-
-    .externalLink {
-      font-size: 8px;
-      font-weight: bold;
-      line-height: 1.25;
-      text-transform: uppercase;
-
-      &:after {
-        height: 8px !important;
-        -webkit-mask-size: 8px, 8px !important;
-        mask-size: 8px, 8px !important;
-        width: 8px !important;
+      td {
+        border-width: 1px 0;
+        font-size: 12px;
+        padding: 10px 18px;
       }
     }
   }

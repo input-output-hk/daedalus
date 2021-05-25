@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -60,39 +61,36 @@ export default class StakingRewardsDialog extends Component<Props> {
 
     const tableColumns = [
       {
-        Header: 'Date',
-        acessor: 'date',
+        title: 'Date',
+        id: 'date',
+        render: (date: string) => moment(date).format(currentDateFormat),
       },
       {
-        Header: 'Epoch',
-        acessor: 'epoch',
+        title: 'Epoch',
+        id: 'epoch',
       },
       {
-        Header: 'Stake Pool',
-        acessor: 'pool',
+        title: 'Stake Pool',
+        id: 'pool',
+        sortValue: (pool: ?StakePool) =>
+          pool ? `${pool.ticker}${pool.name}` : null,
+        render: (pool: ?StakePool) =>
+          pool ? (
+            <Fragment>
+              <span>[{pool.ticker}]</span>
+              {pool.name}
+            </Fragment>
+          ) : null,
       },
       {
-        Header: 'Reward (ADA)',
-        acessor: 'reward',
+        title: 'Reward (ADA)',
+        id: 'reward',
+        dataType: 'bigNumber',
+        render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),
       },
     ];
 
-    const getPoolRowItem = (pool: ?StakePool) =>
-      pool ? (
-        <Fragment>
-          <span>[{pool.ticker}]</span>
-          {pool.name}
-        </Fragment>
-      ) : null;
-
-    const data =
-      rewardsHistory &&
-      rewardsHistory.map((rewardItem) => ({
-        date: moment(rewardItem.date).format(currentDateFormat),
-        epoch: rewardItem.epoch,
-        pool: getPoolRowItem(rewardItem.pool),
-        reward: rewardItem.reward.toFormat(2),
-      }));
+    console.log('rewardsHistory', rewardsHistory);
 
     return (
       <Dialog
@@ -107,25 +105,16 @@ export default class StakingRewardsDialog extends Component<Props> {
         <div className={styles.label}>Rewards address</div>
         <p>{rewardsAddress}</p>
         <div className={styles.label}>Date range</div>
-        <input value="..." />
-        <Table
-          columns={tableColumns}
-          data={data || []}
-          className={styles.table}
-          isLoading={!rewardsHistory}
-          onClickRow={(a, b, c) => {
-            console.log('onClickRow');
-            console.log('a', a);
-            console.log('b', b);
-            console.log('c', c);
-          }}
-          onClickCell={(a, b, c) => {
-            console.log('onClickCell');
-            console.log('a', a);
-            console.log('b', b);
-            console.log('c', c);
-          }}
-        />
+        {/* <input value="..." /> */}
+        {rewardsHistory && (
+          <Table
+            columns={tableColumns}
+            data={rewardsHistory}
+            className={styles.table}
+            maxHeight={265}
+            isCompact
+          />
+        )}
       </Dialog>
     );
   }

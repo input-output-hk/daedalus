@@ -34,6 +34,22 @@ export const stringComparator = (
   return 0;
 };
 
+export const numberComparator = (
+  numberA: number,
+  numberB: number,
+  isAscending: boolean = true
+): number => {
+  if (numberA < numberB) {
+    return isAscending ? -1 : 1;
+  }
+
+  if (numberA > numberB) {
+    return isAscending ? 1 : -1;
+  }
+
+  return 0;
+};
+
 export const dateComparator = (
   dateA: string,
   dateB: string,

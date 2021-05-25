@@ -15,7 +15,8 @@ export const generateId = (index: number) => {
 
 const ids = [...Array(100).fill()].map((x, index) => generateId(index));
 
-const generateDate = (index: number) => new Date(date.getTime() + index);
+const generateDate = (index: number) =>
+  new Date(date.getTime() - index * 1000000000);
 
 const generatePool = (index: number) => ({
   id: ids[index],
