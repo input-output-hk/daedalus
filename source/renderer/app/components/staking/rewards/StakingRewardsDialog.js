@@ -85,12 +85,10 @@ export default class StakingRewardsDialog extends Component<Props> {
       {
         title: 'Reward (ADA)',
         id: 'reward',
-        dataType: 'bigNumber',
+        type: 'bigNumber',
         render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),
       },
     ];
-
-    console.log('rewardsHistory', rewardsHistory);
 
     return (
       <Dialog
@@ -109,7 +107,7 @@ export default class StakingRewardsDialog extends Component<Props> {
         {rewardsHistory && (
           <Table
             columns={tableColumns}
-            data={rewardsHistory}
+            rows={rewardsHistory}
             className={styles.table}
             maxHeight={265}
             isCompact

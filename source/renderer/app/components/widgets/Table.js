@@ -19,14 +19,14 @@ export type TableColumn = {
   id: string,
   // Custom function for rendering a table cell
   render?: Function,
-  // If `dataType` is informed, the specific type will be used for sorting
-  dataType?: 'date' | 'node' | 'bigNumber',
+  // If `type` is informed, the specific type will be used for sorting
+  type?: 'date' | 'node' | 'bigNumber',
   // Custom function for rendering a sorting value
   sortValue?: Function,
 };
 
-export type DataItem = {
-  [key: string]: string | number | Node,
+export type TableRow = {
+  [key: string]: any,
 };
 
 const SORT_ORDERS = {
@@ -36,7 +36,7 @@ const SORT_ORDERS = {
 
 type Props = {
   columns: Array<TableColumn>,
-  data: Array<DataItem>,
+  rows: Array<TableRow>,
   className?: string,
   onClickRow?: Function,
   onClickCell?: Function,
@@ -52,10 +52,7 @@ type State = {
 };
 
 @observer
-export default class StakingdataForIncentivizedTestnet extends Component<
-  Props,
-  State
-> {
+export default class Table extends Component<Props, State> {
   static defaultProps = {
     enableSort: true,
   };
@@ -88,19 +85,19 @@ export default class StakingdataForIncentivizedTestnet extends Component<
   };
 
   getSortedData = (): Array<any> => {
-    const { data } = this.props;
+    const { rows } = this.props;
     const { sortOrder, sortBy } = this.state;
     const isAscending = sortOrder === SORT_ORDERS.ASCENDING;
     const columnsObj = this.getColumnsObj();
     const column = columnsObj[sortBy] || {};
-    const { sortValue, dataType } = column;
-    return data.slice().sort((dataA: any, dataB: any) => {
+    const { sortValue, type } = column;
+    return rows.slice().sort((dataA: any, dataB: any) => {
       const sortDataA = sortValue ? sortValue(dataA[sortBy]) : dataA[sortBy];
       const sortDataB = sortValue ? sortValue(dataB[sortBy]) : dataB[sortBy];
       let comparator = stringComparator;
-      if (dataType === 'date') {
+      if (type === 'date') {
         comparator = dateComparator;
-      } else if (dataType === 'bigNumber') {
+      } else if (type === 'bigNumber') {
         comparator = bigNumberComparator;
       } else if (typeof sortDataA === 'string') {
         comparator = stringComparator;
@@ -124,7 +121,7 @@ export default class StakingdataForIncentivizedTestnet extends Component<
   render() {
     const {
       columns,
-      data,
+      rows,
       className,
       onClickRow,
       onClickCell,
@@ -141,14 +138,14 @@ export default class StakingdataForIncentivizedTestnet extends Component<
       [styles.sticky]: !!maxHeight,
     });
 
-    const tableData = enableSort ? this.getSortedData() : data;
+    const tableData = enableSort ? this.getSortedData() : rows;
 
     return (
       <div className={componentStyles} style={{ maxHeight }}>
         <table>
           <thead>
             <tr>
-              {map(columns, ({ id, title, dataType }: TableColumn) => {
+              {map(columns, ({ id, title, type }: TableColumn) => {
                 const isSorted = id === sortBy;
                 const sortIconClasses = classnames([
                   styles.sortIcon,
@@ -158,7 +155,7 @@ export default class StakingdataForIncentivizedTestnet extends Component<
                 return (
                   <th key={id} onClick={() => this.handleSort(id)}>
                     {title}
-                    {dataType !== 'node' && (
+                    {type !== 'node' && (
                       <SVGInline svg={sortIcon} className={sortIconClasses} />
                     )}
                   </th>
@@ -167,7 +164,7 @@ export default class StakingdataForIncentivizedTestnet extends Component<
             </tr>
           </thead>
           <tbody>
-            {map(tableData, (item: DataItem, key) => (
+            {map(tableData, (item: TableRow, key) => (
               <tr key={key} onClick={onClickRow}>
                 {map(entries(item), ([columnKey, entry]) => {
                   const column = columnsObj[columnKey] || {};
