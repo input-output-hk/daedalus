@@ -1,8 +1,8 @@
 // @flow
 import hash from 'hash.js';
 import BigNumber from 'bignumber.js';
-import { map } from 'lodash';
-// import StakePool from '../domains/StakePool';
+import { map, random } from 'lodash';
+import { GetRewardHistoryRequest } from '../api/staking/types';
 
 const date = new Date();
 
@@ -41,10 +41,25 @@ const generateEpoch = (index: number) => 130 + index;
 
 const generateReward = (index: number) => new BigNumber(35 + index);
 
-export default (numberOfItems: ?number = 10) =>
+export const rewardsHistory = (numberOfItems: ?number = 10) =>
   map(Array(numberOfItems).fill(), (x, index) => ({
     date: generateDate(index),
     epoch: generateEpoch(index),
     pool: generatePool(index),
     reward: generateReward(index),
+  }));
+
+export const getRewardsApiHistoryDummyResponse = (
+  // eslint-disable-next-line
+  request: GetRewardHistoryRequest
+) =>
+  map(Array(10).fill(), (x, index) => ({
+    date: generateDate(index),
+    amount: random(100000000, 1000000000),
+    earnedIn: {
+      number: random(90, 99),
+    },
+    stakePool: {
+      id: 'REPLACE',
+    },
   }));

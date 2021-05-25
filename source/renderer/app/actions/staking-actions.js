@@ -34,4 +34,5 @@ export default class StakingActions {
   onResultContinue: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
   setStakingInfoWasOpen: Action<any> = new Action();
+  requestRewardsHistory: Action<any> = new Action();
 }

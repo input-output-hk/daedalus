@@ -157,3 +157,32 @@ export type CheckSmashServerHealthApiResponse = {
 };
 
 export type CheckSmashServerHealthResponse = boolean;
+
+export type GetRewardHistoryRequest = {
+  addresses: Array<string>,
+  limit?: number,
+  offset?: number,
+  order_by?: string,
+};
+
+export type RewardHistoryApi = {
+  address: string,
+  amount: string,
+  earnedIn: {
+    number: number,
+  },
+  stakePool: {
+    id: string,
+  },
+};
+
+export type GetRewardHistoryApiResponse = Array<RewardHistoryApi>;
+
+export type RewardHistoryItem = {
+  address: string,
+  amount: BigNumber,
+  earnedIn: number,
+  stakePoolId: string,
+};
+
+export type GetRewardHistoryResponse = Array<RewardHistoryItem>;
