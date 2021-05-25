@@ -330,4 +330,9 @@ export default defineMessages({
     description:
       'Info message displayed for features which are unavailable while Daedalus is syncing',
   },
+  searchNoResultsMessage: {
+    id: 'global.search.noResultsMessage',
+    defaultMessage: '!!!No results',
+    description: 'Dropdown search "No results" message',
+  },
 });
