@@ -78,7 +78,7 @@ let
   ];
   hack = writeShellScriptBin "node-gyp" ''
     echo gyp wrapper
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/8.2.2/
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/12.0.9/
   '';
 in
 yarn2nix.mkYarnPackage {
