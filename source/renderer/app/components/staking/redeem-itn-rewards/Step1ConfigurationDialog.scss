@@ -36,8 +36,6 @@
   }
 
   .walletsDropdown {
-    margin-bottom: 20px;
-
     &.disabled {
       opacity: 0.5;
       pointer-events: none;
@@ -83,16 +81,5 @@
         --theme-dialog-fullsize-field-background-color
       ) !important;
     }
-  }
-
-  .SimpleOptions_option.SimpleOptions_selectedOption
-    .WalletsDropdownOption_component
-    .WalletsDropdownOption_topRow
-    .WalletsDropdownOption_topRowSync {
-    display: none;
-  }
-
-  .WalletsDropdownOption_component {
-    width: 100% !important;
   }
 }

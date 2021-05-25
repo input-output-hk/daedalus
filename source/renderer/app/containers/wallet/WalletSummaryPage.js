@@ -13,8 +13,9 @@ import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { ellipsis } from '../../utils/strings';
+import { getAssetTokens } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { WalletSummaryAsset } from '../../api/assets/types';
+import type { AssetToken } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -49,16 +50,14 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = ({ fingerprint }: WalletSummaryAsset) => {
+  handleOpenAssetSend = ({ uniqueId }: AssetToken) => {
     const { stores } = this.props;
     const { wallets } = stores;
     const { active } = wallets;
     if (active) {
       const { id } = active;
       const { wallets: walletActions, router } = this.props.actions;
-      walletActions.setActiveAssetFingerprint.trigger({
-        fingerprint,
-      });
+      walletActions.setActiveAsset.trigger(uniqueId);
       router.goToRoute.trigger({
         route: ROUTES.WALLETS.PAGE,
         params: { id, page: 'send' },
@@ -76,10 +75,19 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { stores } = this.props;
-    const { app, wallets, addresses, transactions, profile, assets } = stores;
-    const { getAssetDetails } = assets;
+    const { stores, actions } = this.props;
+    const {
+      app,
+      wallets,
+      addresses,
+      transactions,
+      profile,
+      assets,
+      currency,
+    } = stores;
+    const { getAsset, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
+    const { onAssetSettingsOpen } = actions.assets;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -93,15 +101,9 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
-    const {
-      active: wallet,
-      currencyIsActive,
-      currencyIsAvailable,
-      currencyIsFetchingRate,
-      currencyLastFetched,
-      currencyRate,
-      currencySelected,
-    } = wallets;
+    const { active: wallet } = wallets;
+    const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
+
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
@@ -111,27 +113,10 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    // $FlowFixMe
-    const walletAssets: Array<WalletSummaryAsset> = wallet.assets.total
-      .map((rawAsset) => {
-        const { policyId, assetName } = rawAsset;
-        const assetDetails = getAssetDetails(policyId, assetName);
-        return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
-      })
-      .filter((asset) => asset != null)
-      .sort((asset1, asset2) => {
-        if (asset1 && asset2) {
-          if (asset1.fingerprint < asset2.fingerprint) {
-            return -1;
-          }
-          if (asset1.fingerprint > asset2.fingerprint) {
-            return 1;
-          }
-        }
-        return 0;
-      });
+    const walletTokens = wallet.assets.total;
+    const assetTokens = getAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = walletAssets.length;
+    const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
@@ -171,7 +156,7 @@ export default class WalletSummaryPage extends Component<Props> {
           currentDateFormat={currentDateFormat}
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
-          getAssetDetails={getAssetDetails}
+          getAsset={getAsset}
           onCopyAssetItem={this.handleOnCopyAssetItem}
         />
       );
@@ -189,16 +174,17 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isLoadingAssets={isLoadingAssets}
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
-          currencyIsActive={currencyIsActive}
-          currencyIsAvailable={currencyIsAvailable}
-          currencyIsFetchingRate={currencyIsFetchingRate}
-          currencyLastFetched={currencyLastFetched}
-          currencyRate={currencyRate}
-          currencySelected={currencySelected}
+          currencyIsActive={isActive}
+          currencyIsFetchingRate={isFetchingRate}
+          currencyLastFetched={lastFetched}
+          currencyRate={rate}
+          currencySelected={selected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
-          assets={walletAssets}
+          assets={assetTokens}
+          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           onOpenAssetSend={this.handleOpenAssetSend}
           onCopyAssetItem={this.handleOnCopyAssetItem}
+          onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
         />
         {walletTransactions}

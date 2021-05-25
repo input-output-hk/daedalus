@@ -18,6 +18,10 @@ import './voting/Voting.stories';
 // Settings
 import './settings';
 
+// Assets
+import './assets/Asset.stories';
+import './assets/AssetSettingsDialog.stories';
+
 // News
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';
@@ -31,3 +35,4 @@ import './navigation/SidebarWalletsMenu.stories';
 
 // Common
 import './common/Widgets.stories';
+import './common/ItemsDropdown.stories';
