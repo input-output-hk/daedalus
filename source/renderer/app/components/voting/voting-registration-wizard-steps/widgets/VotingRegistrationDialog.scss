@@ -4,8 +4,8 @@
   text-align: center;
 
   :global {
-    .Dialog_title {
-      margin-bottom: 0;
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-top: -8px;
     }
 
     .Dialog_subtitle {
@@ -14,7 +14,7 @@
   }
 
   .votingRegistrationStepsIndicatorWrapper {
-    margin: 4px auto 0;
+    margin: -20px auto 0;
     width: 450px;
 
     .stepIndicatorLabel {

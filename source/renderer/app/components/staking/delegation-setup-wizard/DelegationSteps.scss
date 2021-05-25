@@ -4,7 +4,6 @@
   :global {
     .Dialog_title {
       letter-spacing: 2px;
-      margin-bottom: 0;
     }
 
     .BackToTopButton_component {
@@ -13,7 +12,7 @@
   }
 
   .delegationStepsIndicatorWrapper {
-    margin: 4px auto;
+    margin: -20px auto 20px;
     width: 300px;
 
     .stepIndicatorLabel {
@@ -30,7 +29,6 @@
   .content {
     font-size: 16px;
     line-height: 1.38;
-    margin-top: 20px;
     text-align: left;
   }
 }

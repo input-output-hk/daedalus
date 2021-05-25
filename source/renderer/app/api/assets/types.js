@@ -1,19 +1,76 @@
 // @flow
 import BigNumber from 'bignumber.js';
 
-import Asset from '../../domains/Asset';
+import AssetDomain from '../../domains/Asset';
 
-export type SingleAsset = {
-  policy_id: string,
-  asset_name: string,
-  metadata?: ?AssetMetadata,
-};
-
+/**
+ *
+ * ASSET
+ * Fetched from the Assets API endpoint
+ * It's not attached to a particular wallet or transaction
+ * Therefore, it doesn't have `quantity` nor `address`
+ *
+ * Exclusive data: fingerprint, metadata
+ * Missing data: quantity, address
+ *
+ */
 export type ApiAsset = {
   policy_id: string,
   asset_name: string,
   fingerprint: string,
   metadata?: ?AssetMetadata,
+};
+export type ApiAssets = Array<ApiAsset>;
+export type Asset = {
+  assetName: string,
+  decimals: ?number,
+  fingerprint: string,
+  metadata?: ?AssetMetadata,
+  policyId: string,
+  recommendedDecimals: ?number,
+  uniqueId: string,
+};
+
+/**
+ *
+ * TOKEN
+ * Asset that is attached to a particular wallet and/or transaction
+ * It doesn't have the Asset details (fingerprint, metadata)
+ *
+ * Exclusive data: quantity, address
+ * Missing data: fingerprint, metadata
+ *
+ */
+export type ApiToken = {
+  policy_id: string,
+  asset_name: string,
+  quantity: number,
+  address?: ?string,
+};
+export type ApiTokens = Array<ApiToken>;
+export type Token = {
+  policyId: string,
+  assetName: string,
+  quantity: BigNumber,
+  address?: ?string,
+};
+export type Tokens = Array<Token>;
+export type WalletTokens = {
+  available: Tokens,
+  total: Tokens,
+};
+
+/**
+ *
+ * ASSET TOKEN
+ * Merged object from a Token and its relative Asset details
+ *
+ * It has all the data combined: quantity, address, fingerprint, metadata, etc.
+ *
+ */
+export type AssetToken = {
+  ...$Exact<Token>,
+  ...$Exact<Asset>,
 };
 
 export type AssetMetadata = {
@@ -21,52 +78,11 @@ export type AssetMetadata = {
   ticker: string,
   description: string,
   unit?: {
-    decimals: number,
+    decimals?: number,
     name: string,
   },
   url?: string,
   logo?: string,
-};
-
-export type AssetItem = {
-  policy_id: string,
-  asset_name: string,
-  quantity: number,
-};
-
-export type WalletAssetItem = {
-  policyId: string,
-  assetName: string,
-  quantity: BigNumber,
-  address?: ?string,
-};
-
-export type Assets = Array<SingleAsset>;
-
-export type AssetItems = Array<AssetItem>;
-
-export type WalletAssetItems = Array<WalletAssetItem>;
-
-export type WalletAssets = {
-  available: WalletAssetItems,
-  total: WalletAssetItems,
-};
-
-export type WalletSummaryAsset = {
-  policyId: string,
-  assetName: string,
-  fingerprint: string,
-  quantity: BigNumber,
-  metadata: ?AssetMetadata,
-};
-
-export type WalletTransactionAsset = {
-  policyId: string,
-  assetName: string,
-  quantity: BigNumber,
-  fingerprint: string,
-  metadata: ?AssetMetadata,
-  address?: ?string,
 };
 
 export type GetUnknownAssetRequest = {
@@ -79,6 +95,6 @@ export type GetAssetsRequest = {
 };
 
 export type GetAssetsResponse = {
-  assets: Array<Asset>,
+  assets: Array<AssetDomain>,
   total: number,
 };

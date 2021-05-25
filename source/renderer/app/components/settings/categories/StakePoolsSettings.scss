@@ -7,7 +7,7 @@
     .RadioSet_radiosContainer {
       flex-direction: column;
     }
-    .SimpleOptions_option em {
+    .SimpleOptions_option i {
       opacity: 0.5;
     }
   }
@@ -29,7 +29,7 @@
     list-style: decimal;
     margin-left: 20px;
   }
-  em {
+  i {
     color: var(--theme-delegation-steps-intro-link-color);
   }
   .link {
@@ -80,7 +80,7 @@
   line-height: var(--rp-input-line-height);
   padding: 14px 20px 0;
   position: relative;
-  em {
+  i {
     opacity: 0.5;
   }
 }

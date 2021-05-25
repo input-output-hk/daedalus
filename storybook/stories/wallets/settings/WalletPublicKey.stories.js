@@ -20,5 +20,6 @@ storiesOf('Wallets|Settings', module)
       onClose={action('onCancel')}
       hasReceivedWalletPublicKey={boolean('hasReceivedWalletPublicKey')}
       error={null}
+      walletName={'Test Wallet'}
     />
   ));

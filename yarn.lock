@@ -1023,16 +1023,22 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-2.2.0.tgz#ac19a3ee04fb90a71bf556679afdac4775206561"
+"@cardano-foundation/ledgerjs-hw-app-cardano@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-3.0.0.tgz#5faf169c9ce4aadfb1f4f26b7308dd031f151eed"
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
-    babel-polyfill "^6.26.0"
-    babel-runtime "^6.26.0"
+    "@types/ledgerhq__hw-transport" "^4.21.3"
     base-x "^3.0.5"
     bech32 "^1.1.4"
     node-int64 "^0.4.0"
+
+"@dump247/storybook-state@1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@dump247/storybook-state/-/storybook-state-1.6.1.tgz#ac805dbad22bba380ae4f74e741189ec6c68cd4a"
+  dependencies:
+    react "^16.6.0"
+    react-json-view "^1.13.3"
 
 "@electron/get@^1.0.1", "@electron/get@^1.6.0":
   version "1.12.2"
@@ -1290,8 +1296,8 @@
     read-package-json-fast "^1.1.3"
 
 "@popperjs/core@^2.8.3":
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.8.4.tgz#6f1744b0f69f507a433f42874cc3b2eb4b11b337"
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.9.2.tgz#adea7b6953cbb34651766b0548468e743c6a2353"
 
 "@reach/router@^1.2.1":
   version "1.3.4"
@@ -1883,6 +1889,12 @@
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
+
+"@types/ledgerhq__hw-transport@^4.21.3":
+  version "4.21.3"
+  resolved "https://registry.yarnpkg.com/@types/ledgerhq__hw-transport/-/ledgerhq__hw-transport-4.21.3.tgz#1e658da6b5d01ffab92f9660cf57121aecfa7e2c"
+  dependencies:
+    "@types/node" "*"
 
 "@types/lodash@^4.14.136":
   version "4.14.168"
@@ -3141,14 +3153,6 @@ babel-plugin-transform-undefined-to-void@^6.9.4:
   version "6.9.4"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-undefined-to-void/-/babel-plugin-transform-undefined-to-void-6.9.4.tgz#be241ca81404030678b748717322b89d0c8fe280"
 
-babel-polyfill@^6.26.0:
-  version "6.26.0"
-  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.26.0.tgz#379937abc67d7895970adc621f284cd966cf2153"
-  dependencies:
-    babel-runtime "^6.26.0"
-    core-js "^2.5.0"
-    regenerator-runtime "^0.10.5"
-
 babel-preset-jest@^20.0.3:
   version "20.0.3"
   resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-20.0.3.tgz#cbacaadecb5d689ca1e1de1360ebfc66862c178a"
@@ -3274,6 +3278,10 @@ base-x@3.0.8, base-x@^3.0.2, base-x@^3.0.5:
   resolved "https://registry.yarnpkg.com/base-x/-/base-x-3.0.8.tgz#1e1106c2537f0162e8b52474a557ebb09000018d"
   dependencies:
     safe-buffer "^5.0.1"
+
+base16@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/base16/-/base16-1.0.0.tgz#e297f60d7ec1014a7a971a39ebc8a98c0b681e70"
 
 base64-arraybuffer@0.1.4:
   version "0.1.4"
@@ -4725,12 +4733,6 @@ create-react-context@0.3.0, create-react-context@^0.3.0:
     gud "^1.0.0"
     warning "^4.0.3"
 
-create-react-ref@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/create-react-ref/-/create-react-ref-0.1.0.tgz#0aa42aae4e66d8b164207ac8c468c35ce7bbd8eb"
-  dependencies:
-    fbjs "^0.8.16"
-
 cross-env@7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-7.0.2.tgz#bd5ed31339a93a3418ac4f3ca9ca3403082ae5f9"
@@ -4742,6 +4744,12 @@ cross-env@^6.0.3:
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-6.0.3.tgz#4256b71e49b3a40637a0ce70768a6ef5c72ae941"
   dependencies:
     cross-spawn "^7.0.0"
+
+cross-fetch@^3.0.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.4.tgz#9723f3a3a247bf8b89039f3a380a9244e8fa2f39"
+  dependencies:
+    node-fetch "2.6.1"
 
 cross-fetch@^3.0.6:
   version "3.0.6"
@@ -6667,12 +6675,34 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fbjs@^0.8.0, fbjs@^0.8.16:
+fbemitter@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/fbemitter/-/fbemitter-3.0.0.tgz#00b2a1af5411254aab416cd75f9e6289bee4bff3"
+  dependencies:
+    fbjs "^3.0.0"
+
+fbjs-css-vars@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/fbjs-css-vars/-/fbjs-css-vars-1.0.2.tgz#216551136ae02fe255932c3ec8775f18e2c078b8"
+
+fbjs@^0.8.0:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   dependencies:
     core-js "^1.0.0"
     isomorphic-fetch "^2.1.1"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.18"
+
+fbjs@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-3.0.0.tgz#0907067fb3f57a78f45d95f1eacffcacd623c165"
+  dependencies:
+    cross-fetch "^3.0.4"
+    fbjs-css-vars "^1.0.0"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
     promise "^7.1.1"
@@ -6927,6 +6957,13 @@ flush-write-stream@^1.0.0, flush-write-stream@^1.0.2:
   dependencies:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
+
+flux@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/flux/-/flux-4.0.1.tgz#7843502b02841d4aaa534af0b373034a1f75ee5c"
+  dependencies:
+    fbemitter "^3.0.0"
+    fbjs "^3.0.0"
 
 focus-lock@^0.7.0:
   version "0.7.0"
@@ -9677,6 +9714,10 @@ lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
 
+lodash.curry@^4.0.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.curry/-/lodash.curry-4.1.1.tgz#248e36072ede906501d75966200a86dab8b23170"
+
 lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
@@ -9698,6 +9739,10 @@ lodash.escape@^3.0.0:
 lodash.flatten@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
+
+lodash.flow@^3.3.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.flow/-/lodash.flow-3.5.0.tgz#87bf40292b8cf83e4e8ce1a3ae4209e20071675a"
 
 lodash.get@^4.0.0, lodash.get@^4.4.2:
   version "4.4.2"
@@ -11772,7 +11817,15 @@ polished@^3.3.1:
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-popper.js@1.16.1, popper.js@^1.14.4, popper.js@^1.14.7:
+popper.js@1.16.1:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
+
+popper.js@^1.14.4:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
+
+popper.js@^1.14.7:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
 
@@ -12242,6 +12295,10 @@ pupa@^2.0.1:
   dependencies:
     escape-goat "^2.0.0"
 
+pure-color@^1.2.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/pure-color/-/pure-color-1.3.0.tgz#1fe064fb0ac851f0de61320a8bf796836422f33e"
+
 pushdata-bitcoin@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/pushdata-bitcoin/-/pushdata-bitcoin-1.0.1.tgz#15931d3cd967ade52206f523aa7331aef7d43af7"
@@ -12452,6 +12509,15 @@ react-animate-height@2.0.23:
     classnames "^2.2.5"
     prop-types "^15.6.1"
 
+react-base16-styling@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-base16-styling/-/react-base16-styling-0.6.0.tgz#ef2156d66cf4139695c8a167886cb69ea660792c"
+  dependencies:
+    base16 "^1.0.0"
+    lodash.curry "^4.0.1"
+    lodash.flow "^3.3.0"
+    pure-color "^1.2.0"
+
 react-clientside-effect@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.2.tgz#6212fb0e07b204e714581dd51992603d1accc837"
@@ -12628,6 +12694,15 @@ react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-i
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
 
+react-json-view@^1.13.3:
+  version "1.21.3"
+  resolved "https://registry.yarnpkg.com/react-json-view/-/react-json-view-1.21.3.tgz#f184209ee8f1bf374fb0c41b0813cff54549c475"
+  dependencies:
+    flux "^4.0.1"
+    react-base16-styling "^0.6.0"
+    react-lifecycles-compat "^3.0.4"
+    react-textarea-autosize "^8.3.2"
+
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
@@ -12660,13 +12735,12 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.8-rc.11:
-  version "0.9.8-rc.11"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.8-rc.11.tgz#52f09791fe6b7d70198c2251cdea4d8245bf3a2f"
+react-polymorph@1.0.0-next.1:
+  version "1.0.0-next.1"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.0-next.1.tgz#99c8f90e7188d176288c94f425fbb7505b31918c"
   dependencies:
     "@tippyjs/react" "4.2.1"
     create-react-context "0.2.2"
-    create-react-ref "0.1.0"
     fast-password-entropy "1.1.1"
     filter-react-dom-props "0.0.2"
     popper.js "1.16.1"
@@ -12801,6 +12875,14 @@ react-textarea-autosize@^7.1.0:
     "@babel/runtime" "^7.1.2"
     prop-types "^15.6.0"
 
+react-textarea-autosize@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-8.3.2.tgz#4f9374d357b0a6f6469956726722549124a1b2db"
+  dependencies:
+    "@babel/runtime" "^7.10.2"
+    use-composed-ref "^1.0.0"
+    use-latest "^1.0.0"
+
 react-transition-group@^2.5.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.9.0.tgz#df9cdb025796211151a436c69a8f3b97b5b07c8d"
@@ -12833,6 +12915,14 @@ react-virtualized@9.22.3:
 react@16.13.1, react@^16.8.3:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+
+react@^16.6.0:
+  version "16.14.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -13076,10 +13166,6 @@ regenerate@^1.4.0:
 regenerator-runtime@0.13.7, regenerator-runtime@^0.13.2, regenerator-runtime@^0.13.3, regenerator-runtime@^0.13.4:
   version "0.13.7"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
-
-regenerator-runtime@^0.10.5:
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.5.tgz#336c3efc1220adcedda2c9fab67b5a7955a33658"
 
 regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
   version "0.11.1"
@@ -15072,8 +15158,8 @@ tinycolor2@^1.4.1:
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
 
 tippy.js@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-6.3.0.tgz#1cabf492b3afb1a82cf28e5a62859f6aeb253688"
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-6.3.1.tgz#3788a007be7015eee0fd589a66b98fb3f8f10181"
   dependencies:
     "@popperjs/core" "^2.8.3"
 
@@ -15221,9 +15307,9 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
 
-trezor-connect@8.1.25-extended:
-  version "8.1.25-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.25-extended.tgz#a20d7e32c56b863d16d6783db4a6538f4bc31b51"
+trezor-connect@8.1.26-extended:
+  version "8.1.26-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.26-extended.tgz#837666ec93b2e371ed32e921f5795ea612751c71"
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
@@ -15297,6 +15383,10 @@ ts-custom-error@^3.1.1:
 ts-dedent@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ts-dedent/-/ts-dedent-1.2.0.tgz#6aa2229d837159bb6d635b6b233002423b91e0b0"
+
+ts-essentials@^2.0.3:
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-2.0.12.tgz#c9303f3d74f75fa7528c3d49b80e089ab09d8745"
 
 ts-pnp@^1.1.2:
   version "1.2.0"
@@ -15422,8 +15512,8 @@ typeforce@^1.11.3:
   resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.18.0.tgz#d7416a2c5845e085034d70fcc5b6cc4a90edbfdc"
 
 ua-parser-js@^0.7.18:
-  version "0.7.22"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.22.tgz#960df60a5f911ea8f1c818f3747b99c6e177eae3"
+  version "0.7.27"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.27.tgz#b54f8ce9eb6c7abf3584edeaf9a3d8b3bd92edba"
 
 uglify-js@3.4.x:
   version "3.4.10"
@@ -15754,6 +15844,22 @@ usb@^1.6.3:
 use-callback-ref@^1.2.1:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.4.tgz#d86d1577bfd0b955b6e04aaf5971025f406bea3c"
+
+use-composed-ref@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/use-composed-ref/-/use-composed-ref-1.1.0.tgz#9220e4e94a97b7b02d7d27eaeab0b37034438bbc"
+  dependencies:
+    ts-essentials "^2.0.3"
+
+use-isomorphic-layout-effect@^1.0.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.1.tgz#7bb6589170cd2987a152042f9084f9effb75c225"
+
+use-latest@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/use-latest/-/use-latest-1.2.0.tgz#a44f6572b8288e0972ec411bdd0840ada366f232"
+  dependencies:
+    use-isomorphic-layout-effect "^1.0.0"
 
 use-sidecar@^1.0.1:
   version "1.0.3"
@@ -16248,8 +16354,8 @@ whatwg-encoding@^1.0.1:
     iconv-lite "0.4.24"
 
 whatwg-fetch@>=0.10.0:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.4.1.tgz#e5f871572d6879663fa5674c8f833f15a8425ab3"
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
 
 whatwg-fetch@^3.5.0:
   version "3.6.0"

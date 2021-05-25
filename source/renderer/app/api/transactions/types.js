@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 import { WalletUnits } from '../../domains/Wallet';
 import type { DelegationAction } from '../../types/stakingTypes';
-import type { AssetItems } from '../assets/types';
+import type { ApiTokens } from '../assets/types';
 import type { TransactionMetadata } from '../../types/TransactionMetadata';
 
 export type TransactionAmount = {
@@ -60,7 +60,7 @@ export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
   address: string,
   amount?: TransactionAmount,
-  assets?: AssetItems,
+  assets?: ApiTokens,
   id: string,
   index: number,
 };
@@ -68,7 +68,7 @@ export type TransactionInputs = {
 export type TransactionOutputs = {
   address: string,
   amount: TransactionAmount,
-  assets?: AssetItems,
+  assets?: ApiTokens,
 };
 
 export type TransactionWithdrawals = {
@@ -114,7 +114,7 @@ export type GetTransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
-  assets?: AssetItems,
+  assets?: ApiTokens,
   walletBalance: BigNumber,
   availableBalance: BigNumber,
   rewardsBalance: BigNumber,
@@ -133,7 +133,7 @@ export type CreateTransactionRequest = {
   amount: number,
   passphrase: string,
   isLegacy: boolean,
-  assets?: AssetItems,
+  assets?: ApiTokens,
   withdrawal?: 'self' | Array<string>,
 };
 
@@ -171,7 +171,7 @@ export type GetTransactionFeeParams = {
 export type TransactionPaymentData = {
   address: string,
   amount: TransactionFeeAmount,
-  assets?: AssetItems,
+  assets?: ApiTokens,
 };
 
 export type TransactionFee = {
@@ -238,7 +238,7 @@ export type CoinSelectionsPaymentRequestType = {
   walletId: string,
   address: string,
   amount: number,
-  assets?: AssetItems,
+  assets?: ApiTokens,
 };
 
 export type CoinSelectionsRequest =

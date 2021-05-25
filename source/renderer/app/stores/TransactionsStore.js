@@ -28,7 +28,7 @@ import {
   generateFilterOptions,
   isTransactionInFilterRange,
 } from '../utils/transaction';
-import type { AssetItems } from '../api/assets/types';
+import type { ApiTokens } from '../api/assets/types';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
@@ -81,7 +81,7 @@ type TransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
-  assets?: AssetItems,
+  assets?: ApiTokens,
 };
 
 export default class TransactionsStore extends Store {
@@ -362,13 +362,13 @@ export default class TransactionsStore extends Store {
     const intl = i18nContext(locale);
     const transactions = allFiltered;
     const walletName = active ? active.name : '';
-    const { getAssetDetails } = this.stores.assets;
+    const { getAsset } = this.stores.assets;
     const success = await transactionsCsvGenerator({
       desktopDirectoryPath,
       intl,
       transactions,
       walletName,
-      getAssetDetails,
+      getAsset,
       isInternalAddress,
     });
     if (success) actions.transactions.requestCSVFileSuccess.trigger();
