@@ -34,11 +34,11 @@ let
   windowsElectronVersion = "12.0.9";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "3a69de7798f098fcd18b791295b69df0ba6e1f4b5ae710708ea42b549e78ea37";
+    sha256 = "3ae9f8f94002d91b57dbd531460e6ded3ac67415c391fe8568e20cd6149ac274";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "cdc2a54179bd29cd2b8ba5499c32c9ddef97c8bfe5358e10da1569a1c532b621";
+    sha256 = "2f815c39fa7a316568d08f0f5bbc54b90c29b8245c94744d2496549bd4ef0d80";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
@@ -52,8 +52,8 @@ let
     ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
   electron-gyp = fetchurl {
-    url = "https://www.electronjs.org/headers/v8.2.2/node-v8.2.2-headers.tar.gz";
-    sha256 = "sha256-7tzr4FojyIcciQ4Krj0WbnWPqDgNdaTGgEnw0mlI9KM=";
+    url = "https://www.electronjs.org/headers/v12.0.9/node-v12.0.9-headers.tar.gz";
+    sha256 = "c674452aa4f54ccaf32460251c8bdd262eb4d75b282e6d79ee5c3c25e7978cef";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -132,7 +132,7 @@ yarn2nix.mkYarnPackage {
 
     mkdir -pv $HOME/.electron-gyp/
     tar -xvf ${electron-gyp} -C $HOME/.electron-gyp
-    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/8.2.2/
+    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/12.0.9/
 
     ln -sv $HOME/.electron-gyp $HOME/.node-gyp
 
