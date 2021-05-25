@@ -17,7 +17,7 @@ export type DialogActionItems = Array<DialogActionItem>;
 
 export type DialogActionItem = {
   className?: ?string,
-  label: string | Element<any>,
+  label: string | Node,
   primary?: boolean,
   disabled?: boolean,
   onClick?: Function,
@@ -37,7 +37,7 @@ export type DialogActionOptions = {
 export type DialogActions = DialogActionItems | DialogActionOptions;
 
 type Props = {
-  title?: string,
+  title?: string | Element<any>,
   subtitle?: string | Node,
   children?: Node,
   footer?: Node,

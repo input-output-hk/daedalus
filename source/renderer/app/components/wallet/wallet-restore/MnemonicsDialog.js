@@ -115,7 +115,7 @@ export default class MnemonicsDialog extends Component<Props> {
       expectedWordCount,
     } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
-    const canSubmit = !recoveryPhraseField.error;
+    const canSubmit = recoveryPhraseField.isValid && !recoveryPhraseField.error;
     return (
       <WalletRestoreDialog
         stepNumber={1}

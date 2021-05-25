@@ -31,18 +31,12 @@ import {
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
 import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
-import {
-  CURRENCY_REQUEST_RATE_INTERVAL,
-  getLocalizedCurrency,
-  getLocalizedCurrenciesList,
-} from '../config/currencyConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
-import type { Currency, LocalizedCurrency } from '../types/currencyTypes.js';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -67,7 +61,7 @@ import {
   ITN_MAGIC,
   MAINNET_MAGIC,
 } from '../../../common/types/cardano-node.types';
-import type { WalletSummaryAsset } from '../api/assets/types';
+import type { AssetToken } from '../api/assets/types';
 
 /* eslint-disable consistent-return */
 
@@ -79,6 +73,8 @@ export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable undelegateWalletSubmissionSuccess: ?boolean = null;
+
+  @observable isAddressFromSameWallet: boolean = false;
 
   // REQUESTS
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
@@ -149,16 +145,6 @@ export default class WalletsStore extends Store {
   @observable activeValue: ?BigNumber = null;
   @observable activePublicKey: ?string = null;
 
-  /* ------------  Currencies  ----------- */
-  @observable currencyIsFetchingList: boolean = false;
-  @observable currencyIsFetchingRate: boolean = false;
-  @observable currencyIsAvailable: boolean = false;
-  @observable currencyIsActive: boolean = false;
-  @observable currencyList: Array<Currency> = [];
-  @observable currencySelected: ?Currency = null;
-  @observable currencyRate: ?number = null;
-  @observable currencyLastFetched: ?Date = null;
-
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
@@ -223,7 +209,6 @@ export default class WalletsStore extends Store {
     spendingPassword: '',
   };
   _pollingBlocked = false;
-  _getCurrencyRateInterval: ?IntervalID = null;
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
@@ -307,10 +292,6 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsCalculateFee.listen(
       this._transferFundsCalculateFee
     );
-    walletsActions.setCurrencySelected.listen(this._setCurrencySelected);
-    walletsActions.toggleCurrencyIsActive.listen(this._toggleCurrencyIsActive);
-
-    this.setupCurrency();
   }
 
   @action _getAccountPublicKey = async ({
@@ -339,91 +320,6 @@ export default class WalletsStore extends Store {
     } catch (error) {
       throw error;
     }
-  };
-
-  @action setupCurrency = async () => {
-    // CURRENCY_REQUEST_RATE_INTERVAL
-
-    // Check if the user has enabled currencies
-    // Otherwise applies the default config
-    const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
-
-    // Check if the user has already selected a currency
-    // Otherwise applies the default currency
-    const currencySelected = await this.api.localStorage.getCurrencySelected();
-
-    runInAction(() => {
-      this.currencyIsActive = currencyIsActive;
-      this.currencySelected = currencySelected;
-    });
-
-    clearInterval(this._getCurrencyRateInterval);
-    this._getCurrencyRateInterval = setInterval(
-      this.getCurrencyRate,
-      CURRENCY_REQUEST_RATE_INTERVAL
-    );
-
-    // Fetch the currency list and rate
-    this.getCurrencyList();
-    this.getCurrencyRate();
-  };
-
-  @action getCurrencyList = async () => {
-    this.currencyIsFetchingList = true;
-    const currencyList = await this.api.ada.getCurrencyList();
-    runInAction(() => {
-      this.currencyList = currencyList;
-      this.currencyIsFetchingList = false;
-    });
-  };
-
-  @action getCurrencyRate = async () => {
-    const { localizedCurrency } = this;
-    if (localizedCurrency && localizedCurrency.code) {
-      try {
-        this.currencyIsFetchingRate = true;
-        const currencyRate = await this.api.ada.getCurrencyRate(
-          localizedCurrency
-        );
-        runInAction(() => {
-          this.currencyIsFetchingRate = false;
-          this.currencyLastFetched = new Date();
-          if (currencyRate) {
-            this.currencyRate = currencyRate;
-            this.currencyIsAvailable = true;
-          } else {
-            throw new Error('Error fetching the Currency rate');
-          }
-        });
-      } catch (error) {
-        runInAction(() => {
-          this.currencyRate = null;
-          this.currencyIsAvailable = false;
-        });
-        clearInterval(this._getCurrencyRateInterval);
-      }
-    }
-  };
-
-  @action _setCurrencySelected = async ({
-    currencyCode,
-  }: {
-    currencyCode: string,
-  }) => {
-    const { currencyList } = this;
-    const currencySelected = currencyList.find(
-      ({ code }) => currencyCode === code
-    );
-    if (currencySelected) {
-      this.currencySelected = currencySelected;
-      this.getCurrencyRate();
-      await this.api.localStorage.setCurrencySelected(currencySelected);
-    }
-  };
-
-  @action _toggleCurrencyIsActive = () => {
-    this.currencyIsActive = !this.currencyIsActive;
-    this.api.localStorage.setCurrencyIsActive(this.currencyIsActive);
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
@@ -790,7 +686,7 @@ export default class WalletsStore extends Store {
     receiver: string,
     amount: string,
     passphrase: string,
-    assets?: Array<WalletSummaryAsset>,
+    assets?: Array<AssetToken>,
     assetsAmounts?: Array<string>,
   }) => {
     const assetsAmounts = assetsAmountsStr
@@ -1014,19 +910,6 @@ export default class WalletsStore extends Store {
     }
   }
 
-  @computed get localizedCurrencyList(): Array<LocalizedCurrency> {
-    const { currencyList, stores } = this;
-    const { currentLocale } = stores.profile;
-    return getLocalizedCurrenciesList(currencyList, currentLocale);
-  }
-
-  @computed get localizedCurrency(): ?LocalizedCurrency {
-    const { currencySelected, stores } = this;
-    const { currentLocale } = stores.profile;
-    if (!currencySelected) return null;
-    return getLocalizedCurrency(currencySelected, currentLocale);
-  }
-
   getWalletById = (id: string): ?Wallet => this.all.find((w) => w.id === id);
 
   getWalletByName = (name: string): ?Wallet =>
@@ -1115,6 +998,8 @@ export default class WalletsStore extends Store {
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
     let expectedNetworkTag: ?Array<?number> | ?number;
     let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
+    this.isAddressFromSameWallet = false;
+
     if (isMainnet) {
       expectedNetworkTag = MAINNET_MAGIC;
     } else if (isStaging) {
@@ -1136,6 +1021,14 @@ export default class WalletsStore extends Store {
       if (response === 'Invalid') {
         return false;
       }
+      runInAction('check if address is from the same wallet', () => {
+        const walletAddresses = this.stores.addresses.all
+          .slice()
+          .map((addr) => addr.id);
+        this.isAddressFromSameWallet = !!walletAddresses.filter(
+          (addr) => addr === address
+        ).length;
+      });
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
         ((Array.isArray(expectedNetworkTag) &&
@@ -1203,6 +1096,7 @@ export default class WalletsStore extends Store {
     this.walletsRequest.reset();
     this.stores.addresses.addressesRequests = [];
     this.stores.transactions.transactionsRequests = [];
+    this.isAddressFromSameWallet = false;
   };
 
   @action _importWalletFromFile = async (
@@ -1285,6 +1179,7 @@ export default class WalletsStore extends Store {
       matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))
     ) {
       this.sendMoneyRequest.reset();
+      this.isAddressFromSameWallet = false;
     }
   };
 

@@ -10,12 +10,7 @@
       }
     }
 
-    .WalletsDropdownOption_topRow
-      .WalletsDropdownOption_syncing
-      > div
-      .LoadingSpinner_icon
-      svg
-      path {
+    .WalletsDropdownLabel_syncing .LoadingSpinner_icon svg path {
       fill: var(
         --theme-delegation-steps-choose-wallet-custom-value-color
       ) !important;

@@ -18,6 +18,13 @@ export type LocalizedCurrency = {
   id?: string,
 };
 
+export type DeprecatedCurrency = {
+  symbol: string,
+  name: string,
+  decimalDigits?: number,
+  id?: string,
+};
+
 export type Request = HttpOptions | Function;
 
 export type RequestName = 'list' | 'rate';

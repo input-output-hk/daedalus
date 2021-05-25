@@ -6,7 +6,7 @@ import { withKnobs, select } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 // Assets and helpers
 import {
-  generateAsset,
+  generateAssetToken,
   generateHash,
   generatePolicyIdHash,
   generateWallet,
@@ -38,10 +38,11 @@ type Props = {
 };
 
 const assetDetails = {
-  '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c': generateAsset(
+  '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c': generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+    100,
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -54,10 +55,11 @@ const assetDetails = {
       logo: '',
     }
   ),
-  '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAsset(
+  '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
+    100,
     {
       name: 'TrueUSD',
       ticker: 'TUSD',
@@ -70,10 +72,11 @@ const assetDetails = {
       logo: '',
     }
   ),
-  '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAsset(
+  '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
+    100,
     {
       name: 'Tether',
       ticker: 'USDT',
@@ -86,10 +89,11 @@ const assetDetails = {
       logo: '',
     }
   ),
-  '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b': generateAsset(
+  '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b': generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
     'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
+    100,
     {
       name: 'USD Coin',
       ticker: 'USDC',
@@ -135,8 +139,8 @@ const assets = {
   ],
 };
 
-const getAssetDetails = (policyId: string, assetName: string): ?Asset =>
-  assetDetails[policyId + assetName];
+const getAsset = (policyId: string, assetName: string): ?Asset =>
+  assetDetails[`${policyId}${assetName}`];
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Transactions', module)
@@ -202,7 +206,7 @@ storiesOf('Wallets|Transactions', module)
         totalAvailable={totalAvailable}
         transactions={transactions}
         hasAssetsEnabled={false}
-        getAssetDetails={getAssetDetails}
+        getAsset={getAsset}
         onCopyAssetItem={() => {}}
       />
     );
@@ -244,7 +248,7 @@ storiesOf('Wallets|Transactions', module)
         totalAvailable={totalAvailable}
         transactions={transactions}
         hasAssetsEnabled={hasAssetsEnabled}
-        getAssetDetails={getAssetDetails}
+        getAsset={getAsset}
         onCopyAssetItem={() => {}}
       />
     );
