@@ -60,6 +60,7 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
           onClose={onClose}
           expectedWordCount={expectedWordCount}
           openExternalLink={openExternalLink}
+          walletName={activeWallet.name}
         />
       )
     );

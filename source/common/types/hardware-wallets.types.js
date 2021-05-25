@@ -118,12 +118,6 @@ export type TransportDevice = {
   firmwareVersion: ?string,
 };
 
-/* export type Certificate = {|
-  type: CertificateType,
-  path: BIP32Path,
-  poolKeyHashHex: ?string,
-|}; */
-
 export type Certificate = {
   address: string,
   type: string,
@@ -236,10 +230,11 @@ export type LedgerSignTransactionRequest = {
   protocolMagic: number,
   certificates: Array<?Certificate>,
   withdrawals: Array<?Withdrawal>,
-  metadataHashHex: ?string,
+  auxiliaryData: ?string,
   reset?: boolean,
   devicePath: ?string,
   validityIntervalStartStr?: string,
+  signingMode: string,
 };
 
 export type TrezorSignTransactionRequest = {

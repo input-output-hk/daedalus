@@ -9,27 +9,27 @@ import SVGInline from 'react-svg-inline';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import AmountInputSkin from '../skins/AmountInputSkin';
-import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import AssetsDropdown from '../../widgets/forms/AssetsDropdown';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { NumberFormat } from '../../../../../common/types/number.types';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import type { AssetToken } from '../../../api/assets/types';
 import styles from './AssetInput.scss';
 import messages from './messages';
 
 type Props = {
-  fingerprint: string,
+  uniqueId: string,
   index: number,
-  getAssetByFingerprint: Function,
-  availableAssets: Array<WalletSummaryAsset>,
+  getAssetByUniqueId: Function,
+  availableAssets: Array<AssetToken>,
   assetFields: {
-    [fingerprint: string]: Field,
+    [uniqueId: string]: Field,
   },
   assetsDropdown: {
-    [fingerprint: string]: Field,
+    [uniqueId: string]: Field,
   },
   addFocusableField: Function,
-  removeAssetButtonVisible: { [fingerprint: string]: boolean },
+  removeAssetButtonVisible: { [uniqueId: string]: boolean },
   showRemoveAssetButton: Function,
   hideRemoveAssetButton: Function,
   currentNumberFormat: NumberFormat,
@@ -37,6 +37,7 @@ type Props = {
   handleSubmitOnEnter: Function,
   clearAssetFieldValue: Function,
   onChangeAsset: Function,
+  autoFocus: boolean,
 };
 
 const INPUT_FIELD_PADDING_DELTA = 10;
@@ -76,9 +77,9 @@ export default class AssetInput extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      fingerprint,
+      uniqueId,
       index,
-      getAssetByFingerprint,
+      getAssetByUniqueId,
       availableAssets,
       assetFields,
       assetsDropdown,
@@ -91,30 +92,30 @@ export default class AssetInput extends Component<Props> {
       handleSubmitOnEnter,
       clearAssetFieldValue,
       onChangeAsset,
+      autoFocus,
     } = this.props;
-    const asset = getAssetByFingerprint(fingerprint);
+    const asset = getAssetByUniqueId(uniqueId);
     if (!asset) {
       return false;
     }
 
-    const { quantity, metadata } = asset;
+    const { quantity, metadata, decimals } = asset;
     const ticker = get(metadata, 'ticker', null);
-    const decimals = get(metadata, 'unit.decimals', 0);
     const sortedAssets = orderBy(
       [asset, ...availableAssets],
-      'fingerprint',
+      'uniqueId',
       'asc'
     );
-    const assetField = assetFields[fingerprint];
-    const assetsDropdownField = assetsDropdown[fingerprint];
+    const assetField = assetFields[uniqueId];
+    const assetsDropdownField = assetsDropdown[uniqueId];
     const inputFieldStyle = this.generateInputFieldStyle();
 
     return (
       <div
-        key={`receiver_asset_${fingerprint}`}
-        onMouseOver={() => showRemoveAssetButton(fingerprint)}
-        onMouseLeave={() => hideRemoveAssetButton(fingerprint)}
-        onMouseEnter={() => showRemoveAssetButton(fingerprint)}
+        key={`receiver_asset_${uniqueId}`}
+        onMouseOver={() => showRemoveAssetButton(uniqueId)}
+        onMouseLeave={() => hideRemoveAssetButton(uniqueId)}
+        onMouseEnter={() => showRemoveAssetButton(uniqueId)}
         onFocus={() => {
           // jsx-a11y/mouse-events-have-key-events
         }}
@@ -124,7 +125,7 @@ export default class AssetInput extends Component<Props> {
           <div className={styles.amountTokenTotal}>
             {intl.formatMessage(messages.ofLabel)}
             {` `}
-            {formattedTokenWalletAmount(quantity, metadata)}
+            {formattedTokenWalletAmount(quantity, metadata, decimals)}
           </div>
         )}
         <NumericInput
@@ -141,10 +142,10 @@ export default class AssetInput extends Component<Props> {
           label={
             <>
               {`${intl.formatMessage(messages.assetLabel)} #${index + 1}`}
-              {removeAssetButtonVisible[fingerprint] && (
+              {removeAssetButtonVisible[uniqueId] && (
                 <span
                   className={classNames([styles.removeAssetButton, 'flat'])}
-                  onClick={() => removeAssetRow(fingerprint)}
+                  onClick={() => removeAssetRow(uniqueId)}
                 >
                   {intl.formatMessage(messages.removeLabel)}
                 </span>
@@ -176,6 +177,7 @@ export default class AssetInput extends Component<Props> {
             handleSubmitOnEnter(evt);
           }}
           allowSigns={false}
+          autoFocus={autoFocus}
         />
         <div className={styles.rightContent} ref={this.rightContentRef}>
           {this.hasAssetValue(assetField) && (
@@ -198,20 +200,13 @@ export default class AssetInput extends Component<Props> {
             </div>
           )}
           <div className={styles.assetsDropdownWrapper}>
-            <WalletsDropdown
+            <AssetsDropdown
               className={styles.assetsDropdown}
               {...assetsDropdownField.bind()}
               assets={sortedAssets}
-              onChange={(newFingerprint) => {
-                if (newFingerprint !== fingerprint) {
-                  onChangeAsset(fingerprint, newFingerprint);
-                }
-              }}
-              syncingLabel={intl.formatMessage(messages.syncingWallet)}
-              hasAssetsEnabled
-              value={fingerprint}
-              getStakePoolById={() => {}}
-              errorPosition="bottom"
+              onChange={onChangeAsset}
+              value={uniqueId}
+              hasSearch
             />
           </div>
         </div>

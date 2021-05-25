@@ -414,6 +414,32 @@ export type DeriveXpubRendererRequestType = {
   derivationScheme: number,
 };
 
+export type StakingBlockchainPointer = {
+  blockIndex: number,
+  txIndex: number,
+  certificateIndex: number,
+};
+
+export type deriveAddressRendererRequestType = {
+  devicePath: ?string,
+  addressType: number,
+  networkId: number,
+  protocolMagic: number,
+  spendingPathStr: string,
+  stakingPathStr: ?string,
+  isTrezor: boolean,
+};
+
+export type showAddressRendererRequestType = {
+  devicePath: ?string,
+  addressType: number,
+  networkId: number,
+  protocolMagic: number,
+  spendingPathStr: string,
+  stakingPathStr: ?string,
+  isTrezor: boolean,
+};
+
 /**
  * Channel for introspecting an address
  */
@@ -477,3 +503,11 @@ export type deriveXpubMainResponse = string;
 export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
 export type resetTrezorActionRendererRequest = void;
 export type resetTrezorActionMainResponse = void;
+
+export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
+export type deriveAddressRendererRequest = deriveAddressRendererRequestType;
+export type deriveAddressMainResponse = string;
+
+export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
+export type showAddressRendererRequest = showAddressRendererRequestType;
+export type showAddressMainResponse = void;

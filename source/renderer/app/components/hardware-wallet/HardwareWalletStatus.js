@@ -134,11 +134,36 @@ const messages = defineMessages({
       '!!!https://support.ledger.com/hc/en-us/articles/360020095874-Cardano-ADA-',
     description: 'URL for the "Firmware Update"',
   },
+  verifying_address: {
+    id: 'wallet.hardware.deviceStatus.verifying_address',
+    defaultMessage: '!!!Verify address on your "{walletName}" device',
+    description: '"Verify receiving address on your Hardware Wallet device',
+  },
+  verifying_address_confirmation: {
+    id: 'wallet.hardware.deviceStatus.verifying_address_confirmation',
+    defaultMessage: '!!!Please answer the question below',
+    description: '"Confirm receiving address on your Hardware Wallet device',
+  },
+  verifying_address_failed: {
+    id: 'wallet.hardware.deviceStatus.verifying_address_failed',
+    defaultMessage: '!!!Address verification failed',
+    description: '"Address verification failed" device state',
+  },
+  verifying_address_aborted: {
+    id: 'wallet.hardware.deviceStatus.verifying_address_aborted',
+    defaultMessage: '!!!Verification was aborted by the user',
+    description: '"Address verification aborted" device state',
+  },
+  verifying_address_succeeded: {
+    id: 'wallet.hardware.deviceStatus.verifying_address_succeeded',
+    defaultMessage: '!!!Address verified',
+    description: '"Address verified" device state',
+  },
 });
 
 type Props = {
   hwDeviceStatus: HwDeviceStatus,
-  onExternalLinkClick: Function,
+  onExternalLinkClick?: Function,
   walletName?: string,
   isTrezor: boolean,
 };
@@ -186,11 +211,14 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
       hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP ||
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
 
     const isReady =
       hwDeviceStatus === HwDeviceStatuses.READY ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED;
 
     const hasErrored =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED ||
@@ -199,11 +227,14 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE ||
       hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
       hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_FAILED ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
 
     const hasPassphraseLabel =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS;
 
     const componentClasses = classnames([
       styles.component,
@@ -217,7 +248,7 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE;
     let instructionsLink;
     let label;
-    if (hasInstructionsLink) {
+    if (hasInstructionsLink && onExternalLinkClick) {
       // @TODO - add Ledger firmware update support article links
       instructionsLink = (
         <Link
@@ -235,7 +266,9 @@ export default class HardwareWalletStatus extends Component<Props, State> {
     } else if (
       walletName &&
       (hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
-        hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION)
+        hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
+        hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
+        hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION)
     ) {
       const message =
         hwDeviceStatus === HwDeviceStatuses.CONNECTING

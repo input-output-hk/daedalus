@@ -70,3 +70,6 @@ export const getLocalizedCurrency = (
   ...omit(rawCurrency, ['name']),
   name: rawCurrency.name[currentLocale] || rawCurrency.name[LOCALES.english],
 });
+
+export const getCurrencyFromCode = (code: string): Currency =>
+  currenciesList[code];

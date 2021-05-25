@@ -609,6 +609,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-option-text-color': '#2d2d2d',
     '--rp-options-border-color': 'rgba(45, 45, 45, 0.7)',
     '--rp-options-shadow': 'none',
+    '--rp-option-search-highlight-background-color': 'rgba(125, 3, 146, 0.3)',
   },
   rpRadio: {
     '--rp-radio-border': '2px solid #2d2d2d',
@@ -1100,6 +1101,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-widgets-asset-token-text-color': '#2d2d2d',
     '--theme-widgets-asset-token-background-color': '#ffffff',
     '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-widgets-itemsDropdown-option-label-text-color': '#2d2d2d',
   },
 };
 
