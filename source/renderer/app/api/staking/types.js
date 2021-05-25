@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 import StakePool from '../../domains/StakePool';
 import Wallet from '../../domains/Wallet';
+import type { GetRewardsForAddressesQueryVariables } from '../../types/cardano-graphql';
 
 export type DelegationAction =
   | 'changeDelegation'
@@ -157,3 +158,6 @@ export type CheckSmashServerHealthApiResponse = {
 };
 
 export type CheckSmashServerHealthResponse = boolean;
+
+export type GetRewardsHistoryRequest = GetRewardsForAddressesQueryVariables;
+export type GetRewardsHistoryResponse = any;

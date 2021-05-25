@@ -74,3 +74,11 @@ export const checkIsDevelopment = (network: string) => network === DEVELOPMENT;
 export const checkIsMacOS = (platform: string) => platform === MAC_OS;
 export const checkIsWindows = (platform: string) => platform === WINDOWS;
 export const checkIsLinux = (platform: string) => platform === LINUX;
+
+export function getGraphQlEndpointForNetwork(network: string): string {
+  switch (network) {
+    // TODO: add other networks when available
+    default:
+      return 'https://explorer.shelley-qa.dev.cardano.org/graphql';
+  }
+}

@@ -68,7 +68,9 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "yarn build:electron"
+    "postinstall": "yarn build:electron",
+    "graphql:generate-types": "graphql-codegen",
+    "graphql:link-schema": "ln -s ./node_modules/@cardano-graphql/client-ts/api/cardano-db-hasura/schema.graphql schema.graphql"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -86,7 +88,11 @@
     "@babel/preset-flow": "7.8.3",
     "@babel/preset-react": "7.0.0",
     "@babel/register": "7.0.0",
+    "@cardano-graphql/client-ts": "4.0.0",
     "@dump247/storybook-state": "1.6.1",
+    "@graphql-codegen/cli": "1.21.4",
+    "@graphql-codegen/flow": "1.19.0",
+    "@graphql-codegen/flow-operations": "1.18.8",
     "@storybook/addon-actions": "5.3.14",
     "@storybook/addon-knobs": "5.3.14",
     "@storybook/addon-links": "5.3.14",
@@ -203,6 +209,9 @@
     "fs-extra": "9.0.1",
     "glob": "7.1.6",
     "graceful-fs": "4.2.4",
+    "graphql": "15.5.0",
+    "graphql-request": "3.4.0",
+    "graphql-tag": "2.12.4",
     "gulp": "4.0.2",
     "history": "4.10.1",
     "humanize-duration": "3.23.1",

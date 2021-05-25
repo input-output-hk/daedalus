@@ -106,5 +106,7 @@ cardano-node
 utils/js-launcher/state
 
 # local development cluster
-
 state-cluster
+
+# GraphQL schema soft link
+schema.graphql

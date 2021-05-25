@@ -1,0 +1,11 @@
+{
+  "name": "Cardano GraphQL Schema",
+  "schemaPath": "./schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "mainnet": "https://explorer.cardano.org/graphql",
+      "testnet": "https://explorer.cardano-testnet.iohkdev.io/graphql",
+      "shelley-qa": "https://explorer.shelley-qa.dev.cardano.org/graphql"
+    }
+  }
+}

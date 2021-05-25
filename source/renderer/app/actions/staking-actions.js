@@ -1,4 +1,5 @@
 // @flow
+import type { GetRewardsForAddressesQueryVariables } from '../types/cardano-graphql';
 import Action from './lib/Action';
 import type {
   JoinStakePoolRequest,
@@ -34,4 +35,5 @@ export default class StakingActions {
   onResultContinue: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
   setStakingInfoWasOpen: Action<any> = new Action();
+  fetchRewardsHistory: Action<GetRewardsForAddressesQueryVariables> = new Action();
 }

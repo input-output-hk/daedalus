@@ -8,6 +8,7 @@
 <PROJECT_ROOT>/node_modules/trezor-connect/.*
 <PROJECT_ROOT>/node_modules/trezor-link/.*
 <PROJECT_ROOT>/node_modules/protobufjs-old-fixed-webpack/.*
+<PROJECT_ROOT>/node_modules/graphql/.*
 <PROJECT_ROOT>/dist/.*
 <PROJECT_ROOT>/release/.*
 <PROJECT_ROOT>/git/.*
@@ -25,3 +26,4 @@ flow/declarations/
 esproposal.decorators=ignore
 module.ignore_non_literal_requires=true
 module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/flow/mappers/CSSModule.js.flow'
+module.name_mapper.extension='graphql' -> '<PROJECT_ROOT>/flow/mappers/graphql.js.flow'

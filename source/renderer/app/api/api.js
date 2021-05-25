@@ -27,6 +27,7 @@ import { inspectAddress } from './addresses/requests/inspectAddress';
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
 import { getNetworkClock } from './network/requests/getNetworkClock';
 import { getNetworkParameters } from './network/requests/getNetworkParameters';
+import { getRewardsHistory } from './staking/requests/getRewardsHistory';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -214,6 +215,8 @@ import type {
   GetSmashSettingsApiResponse,
   CheckSmashServerHealthApiResponse,
   PoolMetadataSource,
+  GetRewardsHistoryRequest,
+  GetRewardsHistoryResponse,
 } from './staking/types';
 
 // Voting Types
@@ -683,6 +686,19 @@ export default class AdaApi {
       return { withdrawals };
     } catch (error) {
       logger.error('AdaApi::getWithdrawals error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getRewardsHistory = async (
+    request: GetRewardsHistoryRequest
+  ): Promise<GetRewardsHistoryResponse> => {
+    logger.info('AdaApi::getRewardsHistory called', { parameters: request });
+    try {
+      const rewards = await getRewardsHistory(request);
+      logger.info('AdaApi::getRewardsHistory success', { rewards });
+    } catch (error) {
+      logger.error('AdaApi::getRewardsHistory error', { error });
       throw new ApiError(error);
     }
   };

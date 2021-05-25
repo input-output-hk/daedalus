@@ -21,5 +21,6 @@
 # Ignore the following special folders and files
 source/renderer/app/i18n/locales/
 source/renderer/app/config/newsfeed-files/
+source/renderer/app/types/cardano-graphql.js
 tests/paper-wallets/e2e/documents/*
 tests/wallets/e2e/documents/*
