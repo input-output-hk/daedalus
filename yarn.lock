@@ -2999,8 +2999,8 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.4.tgz#f0ec25dbf2f0e4b18647313ac031134ca5b24b21"
 
 "@types/node@*":
-  version "15.6.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.6.0.tgz#f0ddca5a61e52627c9dcb771a6039d44694597bc"
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.6.1.tgz#32d43390d5c62c5b6ec486a9bc9c59544de39a08"
 
 "@types/node@11.11.6":
   version "11.11.6"
@@ -3011,8 +3011,8 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.13.tgz#e743bae112bd779ac9650f907197dd2caa7f0364"
 
 "@types/node@^14.6.2":
-  version "14.17.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.0.tgz#3ba770047723b3eeb8dc9fca02cce8a7fb6378da"
+  version "14.17.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.1.tgz#5e07e0cb2ff793aa7a1b41deae76221e6166049f"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -5047,13 +5047,6 @@ blake2b@2.1.3:
     blake2b-wasm "^1.1.0"
     nanoassert "^1.0.0"
 
-"blake2b@https://github.com/BitGo/blake2b#6268e6dd678661e0acc4359e9171b97eb1ebf8ac":
-  version "2.1.3"
-  resolved "https://github.com/BitGo/blake2b#6268e6dd678661e0acc4359e9171b97eb1ebf8ac"
-  dependencies:
-    blake2b-wasm "https://github.com/BitGo/blake2b-wasm#193cdb71656c1a6c7f89b05d0327bb9b758d071b"
-    nanoassert "^1.0.0"
-
 blakejs@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.1.0.tgz#69df92ef953aa88ca51a32df6ab1c54a155fc7a5"
@@ -5893,9 +5886,9 @@ cardano-crypto.js@5.3.6-rc.6:
     borc "^2.1.1"
     pbkdf2 "^3.0.17"
 
-cardano-js@0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.4.5.tgz#05ec21a5ac4a1e8898ee6080c2d65a656b59d4dd"
+cardano-js@0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.4.7.tgz#2267f5fd29a4ea4fc034c29af127c2a20f49ab1d"
   dependencies:
     bech32 "^1.1.3"
     bignumber.js "^9.0.0"
@@ -7975,8 +7968,8 @@ doctrine@^3.0.0:
     esutils "^2.0.2"
 
 dom-align@^1.7.0:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/dom-align/-/dom-align-1.12.1.tgz#aedbc2c312983b46ea6b7a4d636617336a490ee9"
+  version "1.12.2"
+  resolved "https://registry.yarnpkg.com/dom-align/-/dom-align-1.12.2.tgz#0f8164ebd0c9c21b0c790310493cd855892acd4b"
 
 dom-converter@^0.2:
   version "0.2.0"
@@ -8327,12 +8320,12 @@ electron-store@8.0.0:
     type-fest "^1.0.2"
 
 electron-to-chromium@^1.3.247:
-  version "1.3.735"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.735.tgz#fa1a8660f2790662291cb2136f0e446a444cdfdc"
+  version "1.3.738"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.738.tgz#aec24b091c82acbfabbdcce08076a703941d17ca"
 
 electron-to-chromium@^1.3.723:
-  version "1.3.735"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.735.tgz#fa1a8660f2790662291cb2136f0e446a444cdfdc"
+  version "1.3.738"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.738.tgz#aec24b091c82acbfabbdcce08076a703941d17ca"
 
 electron@12.0.9:
   version "12.0.9"
@@ -9590,8 +9583,8 @@ fault@^1.0.2:
     format "^0.2.0"
 
 faye-websocket@~0.11.1:
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.11.3.tgz#5c0e9a8968e8912c286639fde977a8b209f2508e"
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.11.4.tgz#7f0d9275cfdd86a1c963dc8b65fcc451edcbb1da"
   dependencies:
     websocket-driver ">=0.5.1"
 
@@ -11567,8 +11560,8 @@ iconv-lite@^0.4.24:
     safer-buffer ">= 2.1.2 < 3"
 
 iconv-lite@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.2.tgz#ce13d1875b0c3a674bd6a04b7f76b01b1b6ded01"
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.3.tgz#a52f80bf38da1952eb5c681790719871a1a72501"
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
@@ -15370,8 +15363,8 @@ normalize-url@1.9.1:
     sort-keys "^1.0.0"
 
 normalize-url@^4.1.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-4.5.0.tgz#453354087e6ca96957bd8f5baf753f5982142129"
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-4.5.1.tgz#0dd90cf1288ee1d1313b87081c9a5932ee48518a"
 
 now-and-later@^2.0.0:
   version "2.0.1"
@@ -17569,32 +17562,32 @@ rc-trigger@^5.0.0:
     rc-util "^5.5.0"
 
 rc-util@^5.0.0:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.0.tgz#ca7e428644c361ff32760497357f6859883b0111"
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.1.tgz#03e74955b5c46a58cbc6236e4d30dd462c755290"
   dependencies:
     "@babel/runtime" "^7.12.5"
     react-is "^16.12.0"
     shallowequal "^1.1.0"
 
 rc-util@^5.2.1:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.0.tgz#ca7e428644c361ff32760497357f6859883b0111"
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.1.tgz#03e74955b5c46a58cbc6236e4d30dd462c755290"
   dependencies:
     "@babel/runtime" "^7.12.5"
     react-is "^16.12.0"
     shallowequal "^1.1.0"
 
 rc-util@^5.3.0:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.0.tgz#ca7e428644c361ff32760497357f6859883b0111"
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.1.tgz#03e74955b5c46a58cbc6236e4d30dd462c755290"
   dependencies:
     "@babel/runtime" "^7.12.5"
     react-is "^16.12.0"
     shallowequal "^1.1.0"
 
 rc-util@^5.5.0:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.0.tgz#ca7e428644c361ff32760497357f6859883b0111"
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.13.1.tgz#03e74955b5c46a58cbc6236e4d30dd462c755290"
   dependencies:
     "@babel/runtime" "^7.12.5"
     react-is "^16.12.0"
