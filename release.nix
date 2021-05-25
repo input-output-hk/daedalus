@@ -10,7 +10,6 @@ let
   shellEnvs = {
     linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
     darwin = import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; };
-    darwinM1 = import ./shell.nix { system = "arm64-darwin"; autoStartBackend = true; };
   };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
@@ -20,7 +19,6 @@ let
       x86_64-linux = import ./. { target = "x86_64-linux"; };
       x86_64-windows = import ./. { target = "x86_64-windows"; };
       x86_64-darwin = import ./. { target = "x86_64-darwin"; };
-      arm64-darwin = import ./. { target = "arm64-darwin"; };
     };
   in
     table.${system};
@@ -32,7 +30,6 @@ let
   '';
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     daedalus.x86_64-linux = daedalus;
-    daedalus.arm64-linux = daedalus;
     # below line blows up hydra with 300 GB derivations on every commit
     #installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.wallet-version;
     #installer.x86_64-windows = (import ./. { inherit cluster; target = "x86_64-windows"; }).windows-installer;
@@ -62,11 +59,11 @@ in {
   };
 } // (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
 // (mapOverArches {
-  daedalus-installer = [ "x86_64-linux" "x86_64-darwin" "arm64-darwin" ];
-  yaml2json = [ "x86_64-linux" "x86_64-darwin" "arm64-darwin" ];
+  daedalus-installer = [ "x86_64-linux" "x86_64-darwin" ];
+  yaml2json = [ "x86_64-linux" "x86_64-darwin" ];
   bridgeTable = {
-    jormungandr = [ "x86_64-linux" "x86_64-darwin" "arm64-darwin" "x86_64-windows" ];
-    cardano = [ "x86_64-linux" "x86_64-darwin" "arm64-darwin" "x86_64-windows" ];
+    jormungandr = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+    cardano = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
   };
-  cardano-node = [ "x86_64-linux" "x86_64-darwin" "arm64-darwin" "x86_64-windows" ];
+  cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
 })
