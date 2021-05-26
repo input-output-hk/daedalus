@@ -20,7 +20,10 @@ import {
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
 import type { PathRoleIdentityType } from '../utils/hardwareWalletUtils';
-import type { GetTransactionRequest, VotingMetadataType } from '../api/transactions/types';
+import type {
+  GetTransactionRequest,
+  VotingMetadataType,
+} from '../api/transactions/types';
 
 export type VotingRegistrationKeyType = { bytes: Function, public: Function };
 
@@ -33,7 +36,7 @@ export type VotingDataType = {
   index: string,
   metadata: VotingMetadataType,
   absoluteSlotNumber: number,
-}
+};
 
 export default class VotingStore extends Store {
   @observable registrationStep: number = 1;
@@ -168,11 +171,7 @@ export default class VotingStore extends Store {
     this.qrCode = value;
   };
 
-  prepareVotingData = async ({
-    walletId,
-  }: {
-    walletId: string,
-  }) => {
+  prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
       const { stakeAddresses } = this.stores.addresses;
       const stakeAddress = stakeAddresses[walletId];
@@ -263,7 +262,7 @@ export default class VotingStore extends Store {
       walletId
     );
     const selectedWallet = this.stores.wallets.getWalletById(walletId);
-    const isHardwareWallet= get(selectedWallet, 'isHardwareWallet', false);
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
     const { absoluteSlotNumber } = this.stores.networkStatus;
 
     // Reset voting registration transaction state

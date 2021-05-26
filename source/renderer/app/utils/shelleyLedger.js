@@ -357,7 +357,7 @@ export const ShelleyTxAux = (
     txMap.set(3, ttl);
     if (certs && certs.length) txMap.set(4, certs);
     if (withdrawals) txMap.set(5, withdrawals);
-    if (auxiliaryDataHash) txMap.set(7, Buffer.from(auxiliaryDataHash, 'hex'))
+    if (auxiliaryDataHash) txMap.set(7, Buffer.from(auxiliaryDataHash, 'hex'));
     return encoder.pushAny(txMap);
   }
 
@@ -499,7 +499,9 @@ export const prepareLedgerOutput = (
   };
 };
 
-export const prepareLedgerAuxiliaryData = (txAuxiliaryData: TxAuxiliaryData) => {
+export const prepareLedgerAuxiliaryData = (
+  txAuxiliaryData: TxAuxiliaryData
+) => {
   const { votingPubKey, rewardDestinationAddress, type } = txAuxiliaryData;
   if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
     return {
@@ -515,13 +517,16 @@ export const prepareLedgerAuxiliaryData = (txAuxiliaryData: TxAuxiliaryData) => 
         },
         nonce: `${txAuxiliaryData.nonce}`,
       },
-    }
+    };
   }
   // Regular tx has no voting metadata
   return null;
 };
 
-export type CborizedVotingRegistrationMetadata = [Map<number, Map<number, Buffer | number>>, []]
+export type CborizedVotingRegistrationMetadata = [
+  Map<number, Map<number, Buffer | number>>,
+  []
+];
 
 export const cborizeTxVotingRegistration = ({
   votingPubKey,
@@ -537,8 +542,8 @@ export const cborizeTxVotingRegistration = ({
       [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
       [4, Number(nonce)],
     ]),
-  ]
-}
+  ];
+};
 
 export const cborizeTxAuxiliaryVotingData = (
   txAuxiliaryData: TxAuxiliaryData,
@@ -546,10 +551,13 @@ export const cborizeTxAuxiliaryVotingData = (
 ) => [
   new Map<number, Map<number, Buffer | number>>([
     cborizeTxVotingRegistration(txAuxiliaryData),
-    [61285, new Map<number, Buffer | number>([[1, Buffer.from(signatureHex, 'hex')]])],
+    [
+      61285,
+      new Map<number, Buffer | number>([[1, Buffer.from(signatureHex, 'hex')]]),
+    ],
   ]),
   [],
-]
+];
 
 export const prepareTxAux = ({
   txInputs,
@@ -583,19 +591,19 @@ export const prepareTxAux = ({
     txCerts,
     txWithdrawals,
     txAuxiliaryData,
-    txAuxiliaryDataHash,
+    txAuxiliaryDataHash
   );
 };
 
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
   txWitnesses: any, // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
-  txAuxiliaryData: ?CborizedVotingRegistrationMetadata,
+  txAuxiliaryData: ?CborizedVotingRegistrationMetadata
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,
     txWitnesses,
-    txAuxiliaryData,
+    txAuxiliaryData
   );
   return encode(signedTransactionStructure).toString('hex');
 };

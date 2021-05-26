@@ -302,11 +302,14 @@ export type VotingMetaKeyValuePairMap = {
 export type VotingMetaKeyType = 'string' | 'int' | 'bytes' | 'list' | 'map';
 
 export type VotingMetaKeyValuePair = {
-  [key: 'k' | 'v']: VotingMetaKeyValuePairString | VotingMetaKeyValuePairInt | VotingMetaKeyValuePairBytes,
-}
+  [key: 'k' | 'v']:
+    | VotingMetaKeyValuePairString
+    | VotingMetaKeyValuePairInt
+    | VotingMetaKeyValuePairBytes,
+};
 
 export type VotingMetaRegistrationType = {
-  [key: 'map']: Array<VotingMetaKeyValuePair>
+  [key: 'map']: Array<VotingMetaKeyValuePair>,
 };
 
 export type VotingMetadataType = {

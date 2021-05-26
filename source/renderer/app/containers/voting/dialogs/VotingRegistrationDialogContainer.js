@@ -159,7 +159,13 @@ export default class VotingRegistrationDialogContainer extends Component<
       transactionFee,
       transactionFeeError,
     } = this.state;
-    const { wallets, staking, voting, app, hardwareWallets } = this.props.stores;
+    const {
+      wallets,
+      staking,
+      voting,
+      app,
+      hardwareWallets,
+    } = this.props.stores;
     const { closeConfirmationDialog, saveAsPDF } = this.props.actions.voting;
     const { all } = wallets;
     const { stakePools, getStakePoolById } = staking;
@@ -236,7 +242,14 @@ export default class VotingRegistrationDialogContainer extends Component<
   }
 
   async _handleCalculateTransactionFee() {
-    const { transactions, addresses, app, wallets, hardwareWallets, voting } = this.props.stores;
+    const {
+      transactions,
+      addresses,
+      app,
+      wallets,
+      hardwareWallets,
+      voting,
+    } = this.props.stores;
     const { calculateTransactionFee } = transactions;
     const { getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;
@@ -254,16 +267,21 @@ export default class VotingRegistrationDialogContainer extends Component<
       const [address] = await getAddressesByWalletId(this.selectedWalletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
 
-      let fee
+      let fee;
       if (isHardwareWallet) {
-        const votingData = await prepareVotingData({ walletId: this.selectedWalletId});
+        const votingData = await prepareVotingData({
+          walletId: this.selectedWalletId,
+        });
         ({ fee } = await selectCoins({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
           metadata: votingData.metadata,
         }));
-        await initiateTransaction({ walletId: this.selectedWalletId, votingData });
+        await initiateTransaction({
+          walletId: this.selectedWalletId,
+          votingData,
+        });
       } else {
         ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,

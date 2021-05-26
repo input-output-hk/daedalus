@@ -70,7 +70,6 @@ import {
   getParamsFromPath,
 } from '../utils/hardwareWalletUtils';
 
-
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
   CoinSelectionsPaymentRequestType,
@@ -306,9 +305,15 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletDevices();
   };
 
-  _sendMoney = async (params?: { isDelegationTransaction?: boolean, isVotingRegistrationTransaction?: boolean }) => {
+  _sendMoney = async (params?: {
+    isDelegationTransaction?: boolean,
+    isVotingRegistrationTransaction?: boolean,
+  }) => {
     const isDelegationTransaction = get(params, 'isDelegationTransaction');
-    const isVotingRegistrationTransaction = get(params, 'isVotingRegistrationTransaction');
+    const isVotingRegistrationTransaction = get(
+      params,
+      'isVotingRegistrationTransaction'
+    );
     const wallet = this.stores.wallets.active;
 
     if (!wallet) {
@@ -1831,12 +1836,11 @@ export default class HardwareWalletsStore extends Store {
     const ttl = this._getTtl();
     const { isMainnet } = this.environment;
 
-
     let unsignedTxAuxiliaryData = null;
     if (this.votingData) {
       const { stakeAddress, stakeKey, votingKey, nonce } = this.votingData;
       unsignedTxAuxiliaryData = {
-        nonce,// unique increaseable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
+        nonce, // unique increaseable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
         rewardDestinationAddress: {
           address: stakeAddress,
           stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
@@ -1844,12 +1848,12 @@ export default class HardwareWalletsStore extends Store {
         stakePubKey: stakeKey,
         type: CATALYST_VOTING_REGISTRATION_TYPE,
         votingPubKey: votingKey,
-      }
+      };
     }
 
     const auxiliaryData = unsignedTxAuxiliaryData
       ? prepareLedgerAuxiliaryData(unsignedTxAuxiliaryData)
-      : null
+      : null;
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
@@ -1882,18 +1886,23 @@ export default class HardwareWalletsStore extends Store {
         ttl,
         certificates: unsignedTxCerts,
         withdrawals: unsignedTxWithdrawals,
-      }
+      };
 
       let txAuxiliaryData = null;
-      if (unsignedTxAuxiliaryData && signedTransaction.auxiliaryDataSupplement) {
+      if (
+        unsignedTxAuxiliaryData &&
+        signedTransaction.auxiliaryDataSupplement
+      ) {
         txAuxData = {
           ...txAuxData,
           txAuxiliaryData: unsignedTxAuxiliaryData,
-          txAuxiliaryDataHash: signedTransaction.auxiliaryDataSupplement.auxiliaryDataHashHex,
-        }
+          txAuxiliaryDataHash:
+            signedTransaction.auxiliaryDataSupplement.auxiliaryDataHashHex,
+        };
         txAuxiliaryData = cborizeTxAuxiliaryVotingData(
           unsignedTxAuxiliaryData,
-          signedTransaction.auxiliaryDataSupplement.catalystRegistrationSignatureHex
+          signedTransaction.auxiliaryDataSupplement
+            .catalystRegistrationSignatureHex
         );
       }
 
@@ -1909,7 +1918,11 @@ export default class HardwareWalletsStore extends Store {
       }
 
       // Prepare serialized transaction with unsigned data and signed witnesses
-      const txBody = await prepareBody(unsignedTx, txWitnesses, txAuxiliaryData);
+      const txBody = await prepareBody(
+        unsignedTx,
+        txWitnesses,
+        txAuxiliaryData
+      );
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
@@ -1927,7 +1940,10 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  initiateTransaction = async (params: { walletId: ?string, votingData?: VotingDataType }) => {
+  initiateTransaction = async (params: {
+    walletId: ?string,
+    votingData?: VotingDataType,
+  }) => {
     const { walletId, votingData } = params;
     runInAction('HardwareWalletsStore:: Initiate Transaction', () => {
       this.isTransactionInitiated = true;

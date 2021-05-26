@@ -249,7 +249,7 @@ export type LedgerSignTransactionRequest = {
   devicePath: ?string,
   validityIntervalStartStr?: ?string, // It is disabled for now
   signingMode: string,
-  auxiliaryData: ?LedgerAuxiliaryDataType
+  auxiliaryData: ?LedgerAuxiliaryDataType,
 };
 
 export type TrezorSignTransactionRequest = {
@@ -271,9 +271,9 @@ export type LedgerSignTransactionResponse = {
   witnesses: Array<Witness>,
   auxiliaryDataSupplement?: {
     catalystRegistrationSignatureHex: string,
-    auxiliaryDataHashHex: string;
-    type: 'catalyst_registration';
-  }
+    auxiliaryDataHashHex: string,
+    type: 'catalyst_registration',
+  },
 };
 
 export type TrezorSignTransactionResponse = {

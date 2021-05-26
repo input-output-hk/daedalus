@@ -130,19 +130,14 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       (wallet: Wallet) => wallet && wallet.id === selectedWalletId
     );
 
-    const { amount, reward, isLegacy, isRestoring } =
-      selectedWallet || {};
+    const { amount, reward, isLegacy, isRestoring } = selectedWallet || {};
 
     let errorMessage;
     if (
       selectedWallet &&
-      !isWalletAcceptable(
-        isLegacy,
-        isRestoring,
-        amount,
-        reward
-      )
-    ) { // TODO: HW Ledger Enabled, disable Trezor
+      !isWalletAcceptable(isLegacy, isRestoring, amount, reward)
+    ) {
+      // TODO: HW Ledger Enabled, disable Trezor
       // Wallet is a legacy wallet
       if (isLegacy) errorMessage = messages.errorLegacyWallet;
       // Wallet is restoring
