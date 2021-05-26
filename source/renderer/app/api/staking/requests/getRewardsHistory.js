@@ -1,5 +1,6 @@
 // @flow
 import { request } from 'graphql-request';
+import { print } from 'graphql/language/printer';
 import getRewardsForAddressesQuery from './graphql/getRewardsForAddresses.graphql';
 import type {
   GetRewardsForAddressesQuery,
@@ -11,7 +12,7 @@ export async function getRewardsHistory(
 ): Promise<GetRewardsForAddressesQuery> {
   return request(
     global.environment.cardanoGraphQlEndpoint,
-    getRewardsForAddressesQuery,
+    print(getRewardsForAddressesQuery),
     vars
   );
 }
