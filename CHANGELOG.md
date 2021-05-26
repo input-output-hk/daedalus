@@ -16,6 +16,7 @@ Changelog
 
 ### Chores
 
+- Updated wallet importer to extract private keys from 'WalletUserSecret' field ([PR 2445](https://github.com/input-output-hk/daedalus/pull/2445))
 - Changed the assets identifiers from fingerprint to policyId+name ([PR 2562](https://github.com/input-output-hk/daedalus/pull/2562))
 - Implemented the Items Dropdown component and simplified the Wallets and Assets Dropdowns ([PR 2540](https://github.com/input-output-hk/daedalus/pull/2540))
 - Included wallet names in dialog windows ([PR 2552](https://github.com/input-output-hk/daedalus/pull/2552))
