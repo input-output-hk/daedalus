@@ -81,6 +81,12 @@ export default class StakingStore extends Store {
     GetRewardsForAddressesQuery
   >(this.api.ada.getRewardsHistory);
 
+  @observable
+  rewardsHistoryRequestTemp = new GraphQLRequest<
+    GetRewardsForAddressesQueryVariables,
+    GetRewardsForAddressesQuery
+  >(this.api.ada.getRewardsHistoryTemp);
+
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
@@ -130,6 +136,9 @@ export default class StakingStore extends Store {
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     stakingActions.fetchRewardsHistory.listen(this._fetchRewardsHistory);
+    stakingActions.fetchRewardsHistoryTemp.listen(
+      this._fetchRewardsHistoryTemp
+    );
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
@@ -883,5 +892,15 @@ export default class StakingStore extends Store {
 
   _fetchRewardsHistory = (variables: GetRewardsForAddressesQueryVariables) => {
     this.rewardsHistoryRequest.execute(variables);
+  };
+
+  _fetchRewardsHistoryTemp = async (
+    variables: GetRewardsForAddressesQueryVariables
+  ) => {
+    console.log('variables', variables);
+    const rewardsHistory = await this.rewardsHistoryRequestTemp.execute(
+      variables
+    );
+    console.log('rewardsHistory', rewardsHistory);
   };
 }
