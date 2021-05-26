@@ -697,28 +697,14 @@ export default class AdaApi {
   getRewardsHistory = async (
     request: GetRewardsHistoryRequest
   ): Promise<GetRewardsHistoryResponse> => {
-    logger.info('AdaApi::getRewardsHistory called', { parameters: request });
+    logger.debug('AdaApi::getRewardsHistory called', { parameters: request });
     try {
-      const rewards = await getRewardsHistory(request);
-      logger.info('AdaApi::getRewardsHistory success', { rewards });
+      const result = await getRewardsHistory(request);
+      logger.debug('AdaApi::getRewardsHistory success', result);
+      return map(result.rewards, _createRewardsHistoryFromServerData);
     } catch (error) {
       logger.error('AdaApi::getRewardsHistory error', { error });
       throw new ApiError(error);
-    }
-  };
-
-  // @REWARDS TODO
-  getRewardsHistoryTemp = async (
-    data: GetRewardsHistoryRequest
-  ): Promise<GetRewardsHistoryResponse> => {
-    logger.debug('AdaApi::getRewardsHistory called');
-    try {
-      const request = await getRewardsApiHistoryDummyResponse(data);
-      logger.debug('AdaApi::getRewardsHistory success', { request });
-      return map(request, _createRewardsHistoryFromServerData);
-    } catch (error) {
-      logger.error('AdaApi::getRewardsHistory error', { error });
-      return [];
     }
   };
 

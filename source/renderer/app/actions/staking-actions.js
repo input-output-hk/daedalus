@@ -35,6 +35,5 @@ export default class StakingActions {
   onResultContinue: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
   setStakingInfoWasOpen: Action<any> = new Action();
-  fetchRewardsHistory: Action<GetRewardsForAddressesQueryVariables> = new Action();
-  fetchRewardsHistoryTemp: Action<GetRewardsForAddressesQueryVariables> = new Action();
+  fetchRewardsHistory: Action<{ address: string }> = new Action();
 }

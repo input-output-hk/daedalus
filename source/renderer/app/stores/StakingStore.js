@@ -80,19 +80,12 @@ export default class StakingStore extends Store {
   @observable rewardsHistory: {
     [key: string]: Array<RewardsHistoryItem>,
   } = {};
-  @observable isFetchingRewardsHistory: boolean = false;
 
   @observable
   rewardsHistoryRequest = new GraphQLRequest<
     GetRewardsForAddressesQueryVariables,
     GetRewardsForAddressesQuery
   >(this.api.ada.getRewardsHistory);
-
-  @observable
-  rewardsHistoryRequestTemp = new GraphQLRequest<
-    GetRewardsForAddressesQueryVariables,
-    GetRewardsForAddressesQuery
-  >(this.api.ada.getRewardsHistoryTemp);
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -143,9 +136,6 @@ export default class StakingStore extends Store {
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     stakingActions.fetchRewardsHistory.listen(this._fetchRewardsHistory);
-    stakingActions.fetchRewardsHistoryTemp.listen(
-      this._fetchRewardsHistoryTemp
-    );
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
@@ -555,6 +545,12 @@ export default class StakingStore extends Store {
     );
   }
 
+  @computed get isFetchingRewardsHistory() {
+    return this.rewardsHistoryRequest.isExecuting;
+  }
+
+  // ACTIONS
+
   @action showCountdown(): boolean {
     const { isShelleyPending } = this.stores.networkStatus;
     return isShelleyPending;
@@ -897,26 +893,17 @@ export default class StakingStore extends Store {
   getStakePoolById = (stakePoolId: string) =>
     this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
 
-  _fetchRewardsHistory = (variables: GetRewardsForAddressesQueryVariables) => {
-    this.rewardsHistoryRequest.execute(variables);
-  };
-
-  @action _fetchRewardsHistoryTemp = async (
-    variables: GetRewardsForAddressesQueryVariables
-  ) => {
-    this.isFetchingRewardsHistory = true;
+  _fetchRewardsHistory = async ({ address }: { address: string }) => {
     try {
-      const rewardsHistory = await this.rewardsHistoryRequestTemp.execute(
-        variables
-      );
+      const rewardsHistory = await this.rewardsHistoryRequest.execute({
+        addresses: address,
+      });
       runInAction(() => {
-        this.isFetchingRewardsHistory = false;
-        this.rewardsHistory = set({}, variables.addresses[0], rewardsHistory);
+        this.rewardsHistory[address] = rewardsHistory;
       });
     } catch (error) {
       runInAction(() => {
-        this.isFetchingRewardsHistory = false;
-        this.rewardsHistory = {};
+        this.rewardsHistory[address] = [];
       });
     }
   };

@@ -84,7 +84,7 @@ export default class StakingRewardsDialog extends Component<Props> {
       },
       {
         title: 'Reward (ADA)',
-        id: 'reward',
+        id: 'amount',
         type: 'bigNumber',
         render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),
       },
