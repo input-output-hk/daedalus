@@ -156,6 +156,90 @@ export default class VotingStore extends Store {
     this.qrCode = value;
   };
 
+  prepareVotingData = async ({
+    walletId,
+  }: {
+    walletId: string,
+  }) => {
+    try {
+      console.debug('>>> prepareVotingData - START: ', walletId)
+      const { stakeAddresses } = this.stores.addresses;
+      console.debug('>>> prepareVotingData - stakeAddresses: ', stakeAddresses)
+      const stakeAddress = stakeAddresses[walletId];
+      console.debug('>>> prepareVotingData - stakeAddress single: ', stakeAddress)
+      const stakeAddressHex = await this._getHexFromBech32(stakeAddress);
+      console.debug('>>> prepareVotingData - stakeAddressHex: ', stakeAddressHex)
+
+      await this._generateVotingRegistrationKey();
+      if (!this.votingRegistrationKey)
+        throw new Error('Failed to generate voting registration key.');
+      const votingKey = formattedArrayBufferToHexString(
+        this.votingRegistrationKey.public().bytes()
+      );
+
+      const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
+        walletId,
+        role: 'mutable_account',
+        index: '0',
+      });
+      const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
+      const { absoluteSlotNumber } = this.stores.networkStatus;
+      const metadata = {
+        [61284]: {
+          map: [
+            {
+              k: {
+                int: 1,
+              },
+              v: {
+                bytes: votingKey,
+              },
+            },
+            {
+              k: {
+                int: 2,
+              },
+              v: {
+                bytes: stakeKey,
+              },
+            },
+            {
+              k: {
+                int: 3,
+              },
+              v: {
+                bytes: stakeAddressHex,
+              },
+            },
+            {
+              k: {
+                int: 4,
+              },
+              v: {
+                int: absoluteSlotNumber,// absoluteSlotNumber,
+              },
+            },
+          ],
+        },
+      }
+
+      const votingData = {
+        stakeAddress,
+        stakeAddressHex,
+        votingKey,
+        stakeKey,
+        role: 'mutable_account',
+        index: '0',
+        metadata,
+        absoluteSlotNumber,
+      };
+      console.debug('>>> Prepared Voting data: ', votingData);
+      return votingData;
+    } catch (e) {
+      throw e;
+    }
+  };
+
   _sendTransaction = async ({
     amount,
     passphrase,
@@ -176,11 +260,12 @@ export default class VotingStore extends Store {
 
     if (isHardwareWallet) {
       // TODO: Init Voting Registration with Ledger
+      this.stores.hardwareWallets._sendMoney();
       return;
     }
 
     // TODO: Remove this once HW registration is implemented
-    return;
+    // return;
 
     const { absoluteSlotNumber } = this.stores.networkStatus;
 
@@ -194,39 +279,48 @@ export default class VotingStore extends Store {
     this.signMetadataRequest.reset();
 
     try {
-      const { stakeAddresses } = this.stores.addresses;
-      const stakeAddress = stakeAddresses[walletId];
-      const addressHex = await this._getHexFromBech32(stakeAddress);
+      // const { stakeAddresses } = this.stores.addresses;
+      // const stakeAddress = stakeAddresses[walletId];
+      // const addressHex = await this._getHexFromBech32(stakeAddress);
+      //
+      // await this._generateVotingRegistrationKey();
+      // if (!this.votingRegistrationKey)
+      //   throw new Error('Failed to generate voting registration key.');
+      // const votingKey = formattedArrayBufferToHexString(
+      //   this.votingRegistrationKey.public().bytes()
+      // );
+      //
+      // const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
+      //   walletId,
+      //   role: 'mutable_account',
+      //   index: '0',
+      // });
+      // const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
 
-      await this._generateVotingRegistrationKey();
-      if (!this.votingRegistrationKey)
-        throw new Error('Failed to generate voting registration key.');
-      const votingKey = formattedArrayBufferToHexString(
-        this.votingRegistrationKey.public().bytes()
-      );
-
-      const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
-        walletId,
-        role: 'mutable_account',
-        index: '0',
-      });
-      const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
+      const votingData = await this.prepareVotingData({ walletId });
+      const {
+        stakeAddressHex,
+        votingKey,
+        stakeKey,
+        role,
+        index,
+      } = votingData;
 
       const signature = await this.signMetadataRequest.execute({
-        addressHex,
+        addressHex: stakeAddressHex,
         walletId,
         passphrase,
         votingKey,
         stakeKey,
-        role: 'mutable_account',
-        index: '0',
+        role,
+        index,
         absoluteSlotNumber,
       });
 
       const transaction = await this.createVotingRegistrationTransactionRequest.execute(
         {
           address: address.id,
-          addressHex,
+          addressHex: stakeAddressHex,
           amount,
           passphrase,
           walletId,

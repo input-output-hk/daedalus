@@ -1,6 +1,7 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast, includes } from 'lodash';
+import BigNumber from 'bignumber.js';
 import semver from 'semver';
 import {
   TransactionSigningMode,
@@ -61,12 +62,14 @@ import {
   DeviceTypes,
   DeviceEvents,
 } from '../../../common/types/hardware-wallets.types';
-import { formattedAmountToLovelace } from '../utils/formatters';
+import { formattedAmountToLovelace, formattedArrayBufferToHexString } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
+import walletUtils from '../utils/walletUtils';
 import {
   CERTIFICATE_TYPE,
   getParamsFromPath,
 } from '../utils/hardwareWalletUtils';
+
 
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
@@ -198,7 +201,7 @@ export default class HardwareWalletsStore extends Store {
   @observable tempAddressToVerify: TempAddressToVerify = {};
   @observable isExportKeyAborted: boolean = false;
   @observable activeDelegationWalletId: ?string = null;
-  @observable isVotingRegistrationInitiated: boolean = false;
+  @observable votingMetadata: ?Object = null; // TODO - define proper type
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -386,7 +389,7 @@ export default class HardwareWalletsStore extends Store {
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
   selectCoins = async (params: CoinSelectionsPaymentRequestType) => {
-    const { walletId, address, amount, assets } = params;
+    const { walletId, address, amount, assets, metadata } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
@@ -402,6 +405,7 @@ export default class HardwareWalletsStore extends Store {
           amount,
           assets,
         },
+        metadata,
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
@@ -410,6 +414,7 @@ export default class HardwareWalletsStore extends Store {
       });
       return coinSelection;
     } catch (e) {
+      console.debug('>>> CS error: ', e)
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
         () => {
@@ -2267,6 +2272,11 @@ export default class HardwareWalletsStore extends Store {
     }
   }; */
 
+  _aa = () => {
+    const a = new BigNumber(0.175772);
+    console.debug('>>> aa: ', a)
+  }
+
   @action _signTransactionLedger = async (
     walletId: string,
     devicePath: ?string
@@ -2275,6 +2285,40 @@ export default class HardwareWalletsStore extends Store {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
     const { coinSelection } = this.txSignRequest;
+
+    console.debug('>>>> Coin Selection: ', JSON.stringify(coinSelection))
+
+    // TODO - remove FROM
+    // const coinSelection = {
+    //   fee: new BigNumber(0.175772),
+    //   withdrawals: [],
+    //   certificates: [],
+    //   validityIntervalStart: null,
+    //   inputs: [{
+    //     id: "34766009c441fed2b3a9483399bfb3e2a3dbb3445b3ec908d5dfff4fb8c1b15a",
+    //     index: 1,
+    //     address: "addr1q9dt0vjt5ufzvawg2qny6z3qjjdehacmf4u039eg95lfp8kss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6svmyk7e",
+    //     amount: {
+    //       quantity: 4296454,
+    //       unit: 'lovelace',
+    //     },
+    //     assets: [],
+    //     derivationPath: ["1852H", "1815H", "0H", "1", "127"]
+    //   }],
+    //   outputs: [{
+    //     address: "addr1qypq77cn4ugc2tzy5wsna2r6w6fffcc8ygatkz5hm79j2gxss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sztdpc2",
+    //     amount: {
+    //       quantity: 4120682,
+    //       unit: 'lovelace',
+    //     },
+    //     derivationPath: ["1852H", "1815H", "0H", "0", "0"],
+    //     assets: [],
+    //   }],
+    // }
+    // const ttl = 30297187;
+
+    // TODO - remove TO!!!
+
     const {
       inputs,
       outputs,
@@ -2282,6 +2326,7 @@ export default class HardwareWalletsStore extends Store {
       fee: flatFee,
       withdrawals,
     } = coinSelection;
+
     logger.debug('[HW-DEBUG] HWStore - sign transaction Ledger: ', {
       walletId,
     });
@@ -2358,7 +2403,7 @@ export default class HardwareWalletsStore extends Store {
     // TODO:: Use real Aux DATA
     // const unsignedTxAuxiliaryData = null;
     // const unsignedTxAuxiliaryData = {
-    //   nonce: "29443543", // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
+    //   nonce: "30297124", // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
     //   rewardDestinationAddress: {
     //     address: "stake1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdguw9cph",
     //     // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
@@ -2366,19 +2411,29 @@ export default class HardwareWalletsStore extends Store {
     //   }, // ShelleyAddressParams,
     //   stakePubKey: "23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
     //   type: "CATALYST_VOTING",
-    //   votingPubKey: '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+    //   votingPubKey: "62fdeac49f7bca00648dc55ecf7f70bad14e1f023cea84f52406d3a10fa5ce43", // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
     // }
-    const unsignedTxAuxiliaryData = {
-      nonce: ttl.toString(), // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
-      rewardDestinationAddress: {
-        address: "stake1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdguw9cph",
-        // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
-        stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
-      }, // ShelleyAddressParams,
-      stakePubKey: "23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
-      type: "CATALYST_VOTING",
-      votingPubKey: '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+
+    console.debug('>>> Do I have voting data?? ', this.votingMetadata);
+
+    let unsignedTxAuxiliaryData = null;
+    if (this.votingMetadata) {
+      const { stakeAddress, stakeKey, votingKey, absoluteSlotNumber: nonce } = this.votingMetadata;
+      console.debug('>>> Voting Data exist: ', { nonce });
+      unsignedTxAuxiliaryData = {
+        nonce,// absoluteSlotNumber.toString(), // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
+        rewardDestinationAddress: {
+          address: stakeAddress, // stake1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdguw9cph
+          // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
+          stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
+        }, // ShelleyAddressParams,
+        stakePubKey: stakeKey, //"23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
+        type: "CATALYST_VOTING",
+        votingPubKey: votingKey, // '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+      }
     }
+
+
 
     const auxiliaryData = unsignedTxAuxiliaryData
       ? this.formatAuxiliaryData(unsignedTxAuxiliaryData)
@@ -2392,7 +2447,7 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        validityIntervalStartStr: absoluteSlotNumber.toString(),
+        validityIntervalStartStr: null,
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
@@ -2437,8 +2492,9 @@ export default class HardwareWalletsStore extends Store {
         );
       }
 
-      console.debug('>>> prepareTxAux start - data: ', {prepareTxAux})
+      console.debug('>>> prepareTxAux start - data: ', {txAuxData})
       const unsignedTx = prepareTxAux(txAuxData);
+
 
       const signedWitnesses = await this._signWitnesses(
         signedTransaction.witnesses,
@@ -2460,6 +2516,8 @@ export default class HardwareWalletsStore extends Store {
       // const txBody = await prepareBody(unsignedTx, txWitnesses, txMeta);
       const txBody = await prepareBody(unsignedTx, txWitnesses, txAuxiliaryData);
 
+      console.debug('>>> TX Body')
+
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         this.txBody = txBody;
@@ -2476,8 +2534,14 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  initiateTransaction = async (params: { walletId: ?string, isVotingRegistration?: boolean }) => {
-    const { walletId, isVotingRegistration } = params;
+  // TODO: Isolate to utils.js
+  _getHexFromBech32 = async (key: string): Promise<string> => {
+    const { bech32_decode_to_bytes: decodeBech32ToBytes } = await walletUtils;
+    return formattedArrayBufferToHexString(decodeBech32ToBytes(key));
+  };
+
+  initiateTransaction = async (params: { walletId: ?string, votingMetadata?: boolean }) => {
+    const { walletId, votingMetadata } = params;
 
     console.debug('>>> INIT TX: ', params);
 
@@ -2485,7 +2549,7 @@ export default class HardwareWalletsStore extends Store {
       this.isTransactionInitiated = true;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       this.activeDelegationWalletId = walletId;
-      this.isVotingRegistrationInitiated = isVotingRegistration ? true : false; // TODO: Add to Reset
+      this.votingMetadata = votingMetadata || null; // TODO: Add to Reset
     });
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,

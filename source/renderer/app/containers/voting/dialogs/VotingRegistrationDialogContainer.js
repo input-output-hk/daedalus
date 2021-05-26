@@ -236,11 +236,12 @@ export default class VotingRegistrationDialogContainer extends Component<
   }
 
   async _handleCalculateTransactionFee() {
-    const { transactions, addresses, app, wallets, hardwareWallets } = this.props.stores;
+    const { transactions, addresses, app, wallets, hardwareWallets, voting } = this.props.stores;
     const { calculateTransactionFee } = transactions;
     const { getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;
     const { selectCoins, initiateTransaction } = hardwareWallets;
+    const { prepareVotingData } = voting;
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
     );
@@ -253,14 +254,32 @@ export default class VotingRegistrationDialogContainer extends Component<
       const [address] = await getAddressesByWalletId(this.selectedWalletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
 
+      console.debug('>>> CALC fee: ', {
+        isHardwareWallet,
+        selectedWalletId: this.selectedWalletId,
+        walletAddress: address,
+        amount,
+      });
+
       let fee
       if (isHardwareWallet) {
-        ({ fee } = await selectCoins({
+        const votingMetadata = await prepareVotingData({ walletId: this.selectedWalletId});
+        console.debug('>>> I have Voting data - calc fee by Select Coins')
+        const coinSelection = await selectCoins({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
-        }));
-        hardwareWallets.initiateTransaction({ walletId: this.selectedWalletId, isVotingRegistration: true });
+          metadata: votingMetadata.metadata,
+        });
+
+        console.debug('>>> coinSelection: ', coinSelection)
+
+        fee = coinSelection.fee;
+        console.debug('>>> CALC fee - coinSelection done: ', { fee });
+
+
+        console.debug('>>> CALC fee - votingMetadata done: ', { votingMetadata });
+        hardwareWallets.initiateTransaction({ walletId: this.selectedWalletId, votingMetadata });
       } else {
         ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,

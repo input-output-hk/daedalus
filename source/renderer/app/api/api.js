@@ -1022,6 +1022,7 @@ export default class AdaApi {
     rewardsBalance: BigNumber,
     payments?: CoinSelectionsPaymentRequestType,
     delegation?: CoinSelectionsDelegationRequestType,
+    metadata?: ?Object, // TODO - define type
   }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
@@ -1033,7 +1034,9 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       rewardsBalance,
+      metadata,
     } = request;
+    console.debug('>>> CALL Select Coins API')
     try {
       let data;
       if (delegation) {
@@ -1056,6 +1059,7 @@ export default class AdaApi {
             },
           ],
           withdrawal: TransactionWithdrawal,
+          metadata: metadata || null,
         };
       } else {
         throw new Error('Missing parameters!');
@@ -1064,6 +1068,8 @@ export default class AdaApi {
         walletId,
         data,
       });
+
+      console.debug('>>> API response: ', JSON.stringify(response))
 
       // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
       const outputs = concat(response.outputs, response.change);

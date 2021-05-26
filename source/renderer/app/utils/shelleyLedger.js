@@ -545,6 +545,7 @@ export const cborizeTxVotingRegistration = ({
     stakePubKey,
     rewardDestinationAddress,
     nonce,
+    decodedAddr: utils.bech32_decodeAddress(rewardDestinationAddress.address),
   })
   return [
     61284,
