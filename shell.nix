@@ -63,7 +63,7 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin" || pkgs.stdenv.hostPlatform.system == "arm64-darwin") then [
-      darwin.apple_sdk.frameworks.CoreServices
+      darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.AppKit
     ] else [
       daedalusPkgs.electron12
       winePackages.minimal
