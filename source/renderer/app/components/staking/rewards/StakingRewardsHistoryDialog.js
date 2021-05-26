@@ -10,7 +10,7 @@ import type {
   RewardForIncentivizedTestnet,
   RewardsHistoryItem,
 } from '../../../api/staking/types';
-import styles from './StakingRewardsDialog.scss';
+import styles from './StakingRewardsHistoryDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import Table from '../../widgets/Table';
 import StakePool from '../../../domains/StakePool';
@@ -38,7 +38,7 @@ type Props = {
 };
 
 @observer
-export default class StakingRewardsDialog extends Component<Props> {
+export default class StakingRewardsHistoryDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

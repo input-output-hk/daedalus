@@ -3,8 +3,8 @@ import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
-import StakingRewardsDialog from '../../components/staking/rewards/StakingRewardsDialog';
-import StakingRewardsDialogContainer from './dialogs/StakingRewardsDialogContainer';
+import StakingRewardsHistoryDialog from '../../components/staking/rewards/StakingRewardsHistoryDialog';
+import StakingRewardsHistoryDialogContainer from './dialogs/StakingRewardsHistoryDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { RewardForIncentivizedTestnet } from '../../api/staking/types';
 
@@ -36,7 +36,7 @@ export default class StakingRewardsPage extends Component<Props> {
 
   handleOpenWalletRewards = (reward: RewardForIncentivizedTestnet) => {
     const { updateDataForActiveDialog, open } = this.props.actions.dialogs;
-    open.trigger({ dialog: StakingRewardsDialog });
+    open.trigger({ dialog: StakingRewardsHistoryDialog });
     updateDataForActiveDialog.trigger({
       data: { reward },
     });
@@ -56,8 +56,8 @@ export default class StakingRewardsPage extends Component<Props> {
           onLearnMoreClick={this.handleLearnMoreClick}
           onOpenWalletRewards={this.handleOpenWalletRewards}
         />
-        {uiDialogs.isOpen(StakingRewardsDialog) ? (
-          <StakingRewardsDialogContainer />
+        {uiDialogs.isOpen(StakingRewardsHistoryDialog) ? (
+          <StakingRewardsHistoryDialogContainer />
         ) : null}
       </Fragment>
     );

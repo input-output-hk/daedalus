@@ -2,14 +2,14 @@
 import React, { Component } from 'react';
 import { toJS } from 'mobx';
 import { observer, inject } from 'mobx-react';
-import StakingRewardsDialog from '../../../components/staking/rewards/StakingRewardsDialog';
+import StakingRewardsHistoryDialog from '../../../components/staking/rewards/StakingRewardsHistoryDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakingRewardsDialogContainer extends Component<Props> {
+export default class StakingRewardsHistoryDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   componentDidMount() {
@@ -32,7 +32,7 @@ export default class StakingRewardsDialogContainer extends Component<Props> {
     const rewardsHistory = stores.staking.rewardsHistory[reward.rewardsAddress];
     if (!reward || !rewardsHistory) return null;
     return (
-      <StakingRewardsDialog
+      <StakingRewardsHistoryDialog
         reward={reward}
         rewardsHistory={toJS(rewardsHistory).map((r, index) => ({
           // TODO: implement date handling
