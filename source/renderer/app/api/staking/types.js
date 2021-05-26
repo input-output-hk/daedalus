@@ -71,13 +71,6 @@ export type RewardForIncentivizedTestnet = {
   pool?: StakePool,
 };
 
-export type RewardsHistoryItem = {
-  date?: string,
-  epoch: number,
-  pool?: StakePool,
-  reward: BigNumber,
-};
-
 export type EpochData = {
   pool: StakePool,
   slotsElected: Array<number>,
@@ -160,4 +153,23 @@ export type CheckSmashServerHealthApiResponse = {
 export type CheckSmashServerHealthResponse = boolean;
 
 export type GetRewardsHistoryRequest = GetRewardsForAddressesQueryVariables;
-export type GetRewardsHistoryResponse = any;
+
+export type GetRewardsHistoryApiResponse = {
+  address: string,
+  amount: string,
+  earnedIn: {
+    number: number,
+  },
+  stakePool: {
+    id: string,
+  },
+};
+
+export type RewardsHistoryItem = {
+  address: string,
+  amount: BigNumber,
+  earnedIn: number,
+  stakePoolId: string,
+};
+
+export type GetRewardsHistoryResponse = Array<RewardsHistoryItem>;

@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import type { Node } from 'react';
 import { map, entries, reduce } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';

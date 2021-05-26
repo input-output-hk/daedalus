@@ -216,6 +216,7 @@ import type {
   CheckSmashServerHealthApiResponse,
   PoolMetadataSource,
   GetRewardsHistoryRequest,
+  GetRewardsHistoryApiResponse,
   GetRewardsHistoryResponse,
 } from './staking/types';
 
@@ -244,6 +245,9 @@ import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
+
+// @REWARDS TODO
+import { getRewardsApiHistoryDummyResponse } from '../config/rewardsHistory.dummy';
 
 const { isIncentivizedTestnet } = global;
 
@@ -700,6 +704,21 @@ export default class AdaApi {
     } catch (error) {
       logger.error('AdaApi::getRewardsHistory error', { error });
       throw new ApiError(error);
+    }
+  };
+
+  // @REWARDS TODO
+  getRewardsHistoryTemp = async (
+    data: GetRewardsHistoryRequest
+  ): Promise<GetRewardsHistoryResponse> => {
+    logger.debug('AdaApi::getRewardsHistory called');
+    try {
+      const request = await getRewardsApiHistoryDummyResponse(data);
+      logger.debug('AdaApi::getRewardsHistory success', { request });
+      return map(request, _createRewardsHistoryFromServerData);
+    } catch (error) {
+      logger.error('AdaApi::getRewardsHistory error', { error });
+      return [];
     }
   };
 
@@ -2994,4 +3013,14 @@ const _createRedeemItnRewardsFromServerData = action(
       ? new BigNumber(quantity.toString()).dividedBy(LOVELACES_PER_ADA)
       : new BigNumber(quantity.toString());
   }
+);
+
+const _createRewardsHistoryFromServerData = action(
+  'AdaApi::_createRewardsHistoryFromServerData',
+  ({ address, amount, earnedIn, stakePool }: GetRewardsHistoryApiResponse) => ({
+    address,
+    amount: new BigNumber(amount),
+    earnedIn: earnedIn.number,
+    stakePoolId: stakePool.id,
+  })
 );

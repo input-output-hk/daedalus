@@ -13,5 +13,6 @@ export const StakingRewardsStory = () => (
     rewards={REWARDS}
     isLoading={false}
     onLearnMoreClick={action('onLearnMoreClick')}
+    onOpenWalletRewards={action('onOpenWalletRewards')}
   />
 );

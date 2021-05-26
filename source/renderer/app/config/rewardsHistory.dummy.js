@@ -2,7 +2,7 @@
 import hash from 'hash.js';
 import BigNumber from 'bignumber.js';
 import { map, random } from 'lodash';
-import { GetRewardHistoryRequest } from '../api/staking/types';
+import type { GetRewardsHistoryRequest } from '../api/staking/types';
 
 const date = new Date();
 
@@ -51,7 +51,7 @@ export const rewardsHistory = (numberOfItems: ?number = 10) =>
 
 export const getRewardsApiHistoryDummyResponse = (
   // eslint-disable-next-line
-  request: GetRewardHistoryRequest
+  request: GetRewardsHistoryRequest
 ) =>
   map(Array(10).fill(), (x, index) => ({
     date: generateDate(index),
