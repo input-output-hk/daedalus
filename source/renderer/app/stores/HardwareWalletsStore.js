@@ -50,6 +50,7 @@ import {
   ShelleyTxWithdrawal,
   cborizeTxAuxiliaryVotingData,
   prepareLedgerAuxiliaryData,
+  CATALYST_VOTING_REGISTRATION_TYPE,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
@@ -62,9 +63,8 @@ import {
   DeviceTypes,
   DeviceEvents,
 } from '../../../common/types/hardware-wallets.types';
-import { formattedAmountToLovelace, formattedArrayBufferToHexString } from '../utils/formatters';
+import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
-import walletUtils from '../utils/walletUtils';
 import {
   CERTIFICATE_TYPE,
   getParamsFromPath,
@@ -77,6 +77,7 @@ import type {
   CoinSelectionsDelegationRequestType,
   CreateExternalTransactionResponse,
   CoinSelectionsResponse,
+  VotingDataType,
 } from '../api/transactions/types';
 import type {
   HardwareWalletLocalData,
@@ -201,7 +202,7 @@ export default class HardwareWalletsStore extends Store {
   @observable tempAddressToVerify: TempAddressToVerify = {};
   @observable isExportKeyAborted: boolean = false;
   @observable activeDelegationWalletId: ?string = null;
-  @observable votingMetadata: ?Object = null; // TODO - define proper type
+  @observable votingData: ?VotingDataType = null;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -305,8 +306,9 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletDevices();
   };
 
-  _sendMoney = async (params?: { isDelegationTransaction: boolean }) => {
+  _sendMoney = async (params?: { isDelegationTransaction?: boolean, isVotingRegistrationTransaction?: boolean }) => {
     const isDelegationTransaction = get(params, 'isDelegationTransaction');
+    const isVotingRegistrationTransaction = get(params, 'isVotingRegistrationTransaction');
     const wallet = this.stores.wallets.active;
 
     if (!wallet) {
@@ -319,7 +321,7 @@ export default class HardwareWalletsStore extends Store {
       const transaction = await this.sendMoneyRequest.execute({
         signedTransactionBlob: this.txBody,
       });
-      if (!isDelegationTransaction) {
+      if (!isDelegationTransaction && !isVotingRegistrationTransaction) {
         // Start interval to check transaction state every second
         this.checkTransactionTimeInterval = setInterval(
           this.checkTransaction,
@@ -338,6 +340,7 @@ export default class HardwareWalletsStore extends Store {
         this.txBody = null;
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
+        this.votingData = null;
       });
       throw e;
     }
@@ -1830,18 +1833,17 @@ export default class HardwareWalletsStore extends Store {
 
 
     let unsignedTxAuxiliaryData = null;
-    if (this.votingMetadata) {
-      const { stakeAddress, stakeKey, votingKey, absoluteSlotNumber: nonce } = this.votingMetadata;
+    if (this.votingData) {
+      const { stakeAddress, stakeKey, votingKey, nonce } = this.votingData;
       unsignedTxAuxiliaryData = {
-        nonce,// absoluteSlotNumber.toString(), // uniq increaseable number e.g. current epoch number ( identifies uniq tx / vote registration )
+        nonce,// unique increaseable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
         rewardDestinationAddress: {
-          address: stakeAddress, // stake1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdguw9cph
-          // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
+          address: stakeAddress,
           stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
-        }, // ShelleyAddressParams,
-        stakePubKey: stakeKey, // "23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
-        type: "CATALYST_VOTING",
-        votingPubKey: votingKey, // '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
+        },
+        stakePubKey: stakeKey,
+        type: CATALYST_VOTING_REGISTRATION_TYPE,
+        votingPubKey: votingKey,
       }
     }
 
@@ -1883,7 +1885,7 @@ export default class HardwareWalletsStore extends Store {
       }
 
       let txAuxiliaryData = null;
-      if (unsignedTxAuxiliaryData) {
+      if (unsignedTxAuxiliaryData && signedTransaction.auxiliaryDataSupplement) {
         txAuxData = {
           ...txAuxData,
           txAuxiliaryData: unsignedTxAuxiliaryData,
@@ -1925,19 +1927,13 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  // TODO: Isolate to utils.js
-  _getHexFromBech32 = async (key: string): Promise<string> => {
-    const { bech32_decode_to_bytes: decodeBech32ToBytes } = await walletUtils;
-    return formattedArrayBufferToHexString(decodeBech32ToBytes(key));
-  };
-
-  initiateTransaction = async (params: { walletId: ?string, votingMetadata?: boolean }) => {
-    const { walletId, votingMetadata } = params;
+  initiateTransaction = async (params: { walletId: ?string, votingData?: VotingDataType }) => {
+    const { walletId, votingData } = params;
     runInAction('HardwareWalletsStore:: Initiate Transaction', () => {
       this.isTransactionInitiated = true;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       this.activeDelegationWalletId = walletId;
-      this.votingMetadata = votingMetadata || null; // TODO: Add to Reset
+      this.votingData = votingData || null;
     });
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,
@@ -2067,6 +2063,7 @@ export default class HardwareWalletsStore extends Store {
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
         this.activeDelegationWalletId = null;
+        this.votingData = null;
       });
     }
   };

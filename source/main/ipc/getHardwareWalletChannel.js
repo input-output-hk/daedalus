@@ -695,7 +695,6 @@ export const handleHardwareWalletRequests = async (
       withdrawals,
       auxiliaryData,
       devicePath,
-      // validityIntervalStart,
       signingMode,
     } = params;
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
@@ -721,7 +720,6 @@ export const handleHardwareWalletRequests = async (
           certificates,
           withdrawals,
           auxiliaryData,
-          // validityIntervalStart,
         },
       });
       return Promise.resolve(signedTransaction);

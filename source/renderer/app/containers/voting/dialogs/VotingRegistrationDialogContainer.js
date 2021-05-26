@@ -256,15 +256,14 @@ export default class VotingRegistrationDialogContainer extends Component<
 
       let fee
       if (isHardwareWallet) {
-        const votingMetadata = await prepareVotingData({ walletId: this.selectedWalletId});
-        const coinSelection = await selectCoins({
+        const votingData = await prepareVotingData({ walletId: this.selectedWalletId});
+        ({ fee } = await selectCoins({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
-          metadata: votingMetadata.metadata,
-        });
-        fee = coinSelection.fee;
-        await initiateTransaction({ walletId: this.selectedWalletId, votingMetadata });
+          metadata: votingData.metadata,
+        }));
+        await initiateTransaction({ walletId: this.selectedWalletId, votingData });
       } else {
         ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,

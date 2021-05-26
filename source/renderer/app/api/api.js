@@ -159,6 +159,7 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
+  VotingMetadataType,
 } from './transactions/types';
 
 // Wallets Types
@@ -1022,7 +1023,7 @@ export default class AdaApi {
     rewardsBalance: BigNumber,
     payments?: CoinSelectionsPaymentRequestType,
     delegation?: CoinSelectionsDelegationRequestType,
-    metadata?: ?Object, // TODO - define type
+    metadata?: VotingMetadataType, // TODO - define type
   }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
@@ -1167,6 +1168,7 @@ export default class AdaApi {
         fee: fee.dividedBy(LOVELACES_PER_ADA),
         deposits: deposits.dividedBy(LOVELACES_PER_ADA),
         depositsReclaimed: depositsReclaimed.dividedBy(LOVELACES_PER_ADA),
+        metadata: response.metadata || null,
       };
 
       logger.debug('AdaApi::selectCoins success', { extendedResponse });

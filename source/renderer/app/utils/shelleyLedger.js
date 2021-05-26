@@ -3,6 +3,7 @@ import {
   utils,
   TxOutputDestinationType,
   AddressType,
+  TxAuxiliaryDataType, // CHECK THIS
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
@@ -27,6 +28,8 @@ import type {
   Certificate,
 } from '../../../common/types/hardware-wallets.types';
 import type { AddressStyle } from '../api/addresses/types';
+
+export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
 
 export type ShelleyTxInputType = {
   coins: number,
@@ -55,11 +58,6 @@ export type ShelleyTtlType = {
   encodeCBOR: Function,
 };
 
-export type ShelleyValidityIntervalStartType = {
-  validityIntervalStart: number,
-  encodeCBOR: Function,
-};
-
 export type ShelleyTxWitnessType = {
   publicKey: string,
   signature: Buffer,
@@ -80,6 +78,19 @@ export type ShelleyTxAuxType = {
 export type ShelleyTxWithdrawalsType = {
   withdrawals: Array<CoinSelectionWithdrawal>,
   encodeCBOR: Function,
+};
+
+export type TxAuxiliaryData = {
+  nonce: number,
+  rewardDestinationAddress: RewardDestinationAddressType,
+  stakePubKey: string,
+  type: 'CATALYST_VOTING',
+  votingPubKey: string,
+};
+
+export type RewardDestinationAddressType = {
+  address: string, // type of "address.id"
+  stakingPath: BIP32Path,
 };
 
 // Constants
@@ -158,11 +169,7 @@ export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
 
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
   const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
-  // TODO: change this
-  // const policyIdMap = new Map<any, any>();
-
   const tokenObject = groupTokensByPolicyId(assets);
-
   Object.entries(tokenObject).forEach(([policyId, tokens]) => {
     const assetMap = new Map<Buffer, number>();
     _.map(tokens, (token) => {
@@ -313,16 +320,6 @@ export const ShelleyTtl = (ttl: number) => {
   };
 };
 
-export const ShelleyValidityIntervalStart = (validityIntervalStart: number) => {
-  function encodeCBOR(encoder: any) {
-    return encoder.pushAny(validityIntervalStart);
-  }
-  return {
-    validityIntervalStart,
-    encodeCBOR,
-  };
-};
-
 export const ShelleyTxAux = (
   inputs: Array<ShelleyTxInputType>,
   outputs: Array<ShelleyTxOutputType>,
@@ -330,8 +327,8 @@ export const ShelleyTxAux = (
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
   withdrawals: ?ShelleyTxWithdrawalsType,
-  auxiliaryData: any, // TODO - add real type
-  auxiliaryDataHash: string
+  auxiliaryData: ?TxAuxiliaryData,
+  auxiliaryDataHash: ?string
 ) => {
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
@@ -361,7 +358,6 @@ export const ShelleyTxAux = (
     if (certs && certs.length) txMap.set(4, certs);
     if (withdrawals) txMap.set(5, withdrawals);
     if (auxiliaryDataHash) txMap.set(7, Buffer.from(auxiliaryDataHash, 'hex'))
-    // if (validityIntervalStart !== null) txMap.set(8, validityIntervalStart)
     return encoder.pushAny(txMap);
   }
 
@@ -375,7 +371,6 @@ export const ShelleyTxAux = (
     withdrawals,
     auxiliaryData,
     auxiliaryDataHash,
-    // validityIntervalStart,
     encodeCBOR,
   };
 };
@@ -383,7 +378,7 @@ export const ShelleyTxAux = (
 export const ShelleySignedTransactionStructured = (
   txAux: ShelleyTxAuxType,
   witnesses: Map<number, ShelleyTxWitnessType>,
-  txAuxiliaryData: ?any // @TODO - TBD once meta introduced
+  txAuxiliaryData: ?CborizedVotingRegistrationMetadata
 ) => {
   function getId() {
     return txAux.getId();
@@ -504,48 +499,39 @@ export const prepareLedgerOutput = (
   };
 };
 
-// TODO: Add Proper types + CATALYST_VOTING type
-export const prepareLedgerAuxiliaryData = (txAuxiliaryData: any) => {
-  if (txAuxiliaryData.type === 'CATALYST_VOTING') {
+export const prepareLedgerAuxiliaryData = (txAuxiliaryData: TxAuxiliaryData) => {
+  const { votingPubKey, rewardDestinationAddress, type } = txAuxiliaryData;
+  if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
     return {
-      type: 'catalyst_registration', // LedgerTypes.TxAuxiliaryDataType.CATALYST_REGISTRATION,
+      type: TxAuxiliaryDataType.CATALYST_REGISTRATION,
       params: {
-        votingPublicKeyHex: txAuxiliaryData.votingPubKey,
-        stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
+        votingPublicKeyHex: votingPubKey,
+        stakingPath: rewardDestinationAddress.stakingPath,
         rewardsDestination: {
-          type: 14, // LedgerTypes.AddressType.REWARD,
+          type: AddressType.REWARD,
           params: {
-            stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
+            stakingPath: rewardDestinationAddress.stakingPath,
           },
         },
         nonce: `${txAuxiliaryData.nonce}`,
       },
     }
   }
+  // Regular tx has no voting metadata
   return null;
 };
 
-export type TxAuxiliaryData = {
-  votingPubKey: string,
-  stakePubKey: HexString,
-  nonce: BigInt,
-  rewardDestinationAddress: {
-    address: Address,
-    stakingPath: BIP32Path,
-  },
-}
-
-export type CborizedVotingRegistrationMetadata = [Map<number, Map<number, Buffer | BigInt>>, []]
+export type CborizedVotingRegistrationMetadata = [Map<number, Map<number, Buffer | number>>, []]
 
 export const cborizeTxVotingRegistration = ({
   votingPubKey,
   stakePubKey,
   rewardDestinationAddress,
   nonce,
-}) => {
+}: TxAuxiliaryData) => {
   return [
     61284,
-    new Map<number, Buffer | BigInt>([
+    new Map<number, Buffer | number>([
       [1, Buffer.from(votingPubKey, 'hex')],
       [2, Buffer.from(stakePubKey, 'hex')],
       [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
@@ -558,9 +544,9 @@ export const cborizeTxAuxiliaryVotingData = (
   txAuxiliaryData: TxAuxiliaryData,
   signatureHex: string
 ) => [
-  new Map<number, Map<number, Buffer | BigInt>>([
+  new Map<number, Map<number, Buffer | number>>([
     cborizeTxVotingRegistration(txAuxiliaryData),
-    [61285, new Map<number, Buffer>([[1, Buffer.from(signatureHex, 'hex')]])],
+    [61285, new Map<number, Buffer | number>([[1, Buffer.from(signatureHex, 'hex')]])],
   ]),
   [],
 ]
@@ -574,19 +560,15 @@ export const prepareTxAux = ({
   withdrawals,
   txAuxiliaryData,
   txAuxiliaryDataHash,
-  // validityIntervalStart,
-  // metadataHash,
 }: {
   txInputs: Array<ShelleyTxInputType>,
   txOutputs: Array<ShelleyTxOutputType>,
-  txAuxiliaryData: ?TxAuxiliaryData,
-  txAuxiliaryDataHash: ?string,
+  txAuxiliaryData?: TxAuxiliaryData,
+  txAuxiliaryDataHash?: string,
   fee: number,
   ttl: number,
   certificates: Array<?Certificate>,
   withdrawals: ?ShelleyTxWithdrawalsType,
-  // validityIntervalStart: ?number,
-  // metadataHash: string
 }) => {
   const txFee = ShelleyFee(fee);
   const txTtl = ShelleyTtl(ttl);
@@ -608,12 +590,12 @@ export const prepareTxAux = ({
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
   txWitnesses: any, // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
-  txAuxiliaryData: any
+  txAuxiliaryData: ?CborizedVotingRegistrationMetadata,
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,
     txWitnesses,
-    txAuxiliaryData, // txAuxiliaryData // TODO: declare and improve ShelleySignedTransactionStructured with txMeta
+    txAuxiliaryData,
   );
   return encode(signedTransactionStructure).toString('hex');
 };

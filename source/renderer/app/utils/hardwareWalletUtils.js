@@ -4,6 +4,9 @@ import { bech32 } from 'bech32';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 
+// Types
+export type PathRoleIdentityType = 'utxo_external' | 'utxo_internal' | 'mutable_account' | 'multisig_script';
+
 // Constants
 export const CERTIFICATE_TYPE = {
   register_reward_account: 0, // register_reward_account
