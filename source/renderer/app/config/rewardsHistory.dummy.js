@@ -3,6 +3,7 @@ import hash from 'hash.js';
 import BigNumber from 'bignumber.js';
 import { map, random } from 'lodash';
 import type { GetRewardsHistoryRequest } from '../api/staking/types';
+import stakePoolsId from './rewardsHistory.stakePoolsId.dummy.json';
 
 const date = new Date();
 
@@ -41,6 +42,8 @@ const generateEpoch = (index: number) => 130 + index;
 
 const generateReward = (index: number) => new BigNumber(35 + index);
 
+const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const rewardsHistory = (numberOfItems: ?number = 10) =>
   map(Array(numberOfItems).fill(), (x, index) => ({
     date: generateDate(index),
@@ -49,17 +52,20 @@ export const rewardsHistory = (numberOfItems: ?number = 10) =>
     reward: generateReward(index),
   }));
 
-export const getRewardsApiHistoryDummyResponse = (
+export const getRewardsApiHistoryDummyResponse = async (
   // eslint-disable-next-line
   request: GetRewardsHistoryRequest
-) =>
-  map(Array(10).fill(), (x, index) => ({
+) => {
+  await timeout(2000);
+  return map(Array(10).fill(), (x, index) => ({
+    address: generateId(index),
     date: generateDate(index),
     amount: random(100000000, 1000000000),
     earnedIn: {
       number: random(90, 99),
     },
     stakePool: {
-      id: 'REPLACE',
+      id: stakePoolsId[random(0, stakePoolsId.length - 1)],
     },
   }));
+};

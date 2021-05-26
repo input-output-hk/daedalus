@@ -650,22 +650,19 @@ export default class WalletSendForm extends Component<Props, State> {
     this.form.del(assetsDropdownFieldToDelete);
   };
 
-  onChangeAsset = (currentUniqueId: string, newUniqueId: string) => {
+  onChangeAsset = async (currentUniqueId: string, newUniqueId: string) => {
     if (currentUniqueId === newUniqueId) return;
     this.addAssetFields(newUniqueId);
     this.updateFormFields(false, newUniqueId);
-    let { selectedAssetUniqueIds } = this.state;
+    const { selectedAssetUniqueIds: oldSelectedAssetUniqueIds } = this.state;
+    const selectedAssetUniqueIds = [...oldSelectedAssetUniqueIds];
     const index = indexOf(selectedAssetUniqueIds, currentUniqueId);
     if (index > -1) {
-      selectedAssetUniqueIds = selectedAssetUniqueIds.splice(
-        index,
-        1,
-        newUniqueId
-      );
+      selectedAssetUniqueIds.splice(index, 1, newUniqueId);
     } else {
       selectedAssetUniqueIds.push(newUniqueId);
     }
-    this.setState({
+    await this.setState({
       selectedAssetUniqueIds,
     });
     this.removeAssetRow(currentUniqueId);

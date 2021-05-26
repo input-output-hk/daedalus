@@ -182,6 +182,7 @@
   "global.punctuation.dot": ".",
   "global.range.from": "from",
   "global.range.to": "to",
+  "global.search.noResultsMessage": "No results",
   "global.spendingPasswordLabel": "Spending Password",
   "global.spendingPasswordPlaceholder": "Password",
   "global.unit.ada": "ADA",

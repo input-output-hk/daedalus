@@ -2,7 +2,7 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get } from 'lodash';
+import { orderBy, find, map, get, set } from 'lodash';
 import type {
   GetRewardsForAddressesQuery,
   GetRewardsForAddressesQueryVariables,
@@ -33,6 +33,7 @@ import type {
   GetDelegationFeeRequest,
   DelegationCalculateFeeResponse,
   QuitStakePoolRequest,
+  RewardsHistoryItem,
   PoolMetadataSource,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
@@ -75,11 +76,23 @@ export default class StakingStore extends Store {
   @observable cyclesWithoutIncreasingStakePools: number = 0;
   @observable stakingInfoWasOpen: boolean = false;
 
+  /* ----------  Rewards History  ---------- */
+  @observable rewardsHistory: {
+    [key: string]: Array<RewardsHistoryItem>,
+  } = {};
+  @observable isFetchingRewardsHistory: boolean = false;
+
   @observable
   rewardsHistoryRequest = new GraphQLRequest<
     GetRewardsForAddressesQueryVariables,
     GetRewardsForAddressesQuery
   >(this.api.ada.getRewardsHistory);
+
+  @observable
+  rewardsHistoryRequestTemp = new GraphQLRequest<
+    GetRewardsForAddressesQueryVariables,
+    GetRewardsForAddressesQuery
+  >(this.api.ada.getRewardsHistoryTemp);
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -130,6 +143,9 @@ export default class StakingStore extends Store {
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     stakingActions.fetchRewardsHistory.listen(this._fetchRewardsHistory);
+    stakingActions.fetchRewardsHistoryTemp.listen(
+      this._fetchRewardsHistoryTemp
+    );
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
@@ -883,5 +899,25 @@ export default class StakingStore extends Store {
 
   _fetchRewardsHistory = (variables: GetRewardsForAddressesQueryVariables) => {
     this.rewardsHistoryRequest.execute(variables);
+  };
+
+  @action _fetchRewardsHistoryTemp = async (
+    variables: GetRewardsForAddressesQueryVariables
+  ) => {
+    this.isFetchingRewardsHistory = true;
+    try {
+      const rewardsHistory = await this.rewardsHistoryRequestTemp.execute(
+        variables
+      );
+      runInAction(() => {
+        this.isFetchingRewardsHistory = false;
+        this.rewardsHistory = set({}, variables.addresses[0], rewardsHistory);
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.isFetchingRewardsHistory = false;
+        this.rewardsHistory = {};
+      });
+    }
   };
 }
