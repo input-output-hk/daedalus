@@ -162,13 +162,9 @@ export default class VotingStore extends Store {
     walletId: string,
   }) => {
     try {
-      console.debug('>>> prepareVotingData - START: ', walletId)
       const { stakeAddresses } = this.stores.addresses;
-      console.debug('>>> prepareVotingData - stakeAddresses: ', stakeAddresses)
       const stakeAddress = stakeAddresses[walletId];
-      console.debug('>>> prepareVotingData - stakeAddress single: ', stakeAddress)
       const stakeAddressHex = await this._getHexFromBech32(stakeAddress);
-      console.debug('>>> prepareVotingData - stakeAddressHex: ', stakeAddressHex)
 
       await this._generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
@@ -233,7 +229,6 @@ export default class VotingStore extends Store {
         metadata,
         absoluteSlotNumber,
       };
-      console.debug('>>> Prepared Voting data: ', votingData);
       return votingData;
     } catch (e) {
       throw e;

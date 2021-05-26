@@ -254,31 +254,16 @@ export default class VotingRegistrationDialogContainer extends Component<
       const [address] = await getAddressesByWalletId(this.selectedWalletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
 
-      console.debug('>>> CALC fee: ', {
-        isHardwareWallet,
-        selectedWalletId: this.selectedWalletId,
-        walletAddress: address,
-        amount,
-      });
-
       let fee
       if (isHardwareWallet) {
         const votingMetadata = await prepareVotingData({ walletId: this.selectedWalletId});
-        console.debug('>>> I have Voting data - calc fee by Select Coins')
         const coinSelection = await selectCoins({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
           metadata: votingMetadata.metadata,
         });
-
-        console.debug('>>> coinSelection: ', coinSelection)
-
         fee = coinSelection.fee;
-        console.debug('>>> CALC fee - coinSelection done: ', { fee });
-
-
-        console.debug('>>> CALC fee - votingMetadata done: ', { votingMetadata });
         hardwareWallets.initiateTransaction({ walletId: this.selectedWalletId, votingMetadata });
       } else {
         ({ fee } = await calculateTransactionFee({

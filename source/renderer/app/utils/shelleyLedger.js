@@ -331,10 +331,8 @@ export const ShelleyTxAux = (
   certs: Array<?Certificate>,
   withdrawals: ?ShelleyTxWithdrawalsType,
   auxiliaryData: any, // TODO - add real type
-  auxiliaryDataHash: string,
-  // validityIntervalStart: ShelleyValidityIntervalStartType
+  auxiliaryDataHash: string
 ) => {
-  // console.debug('>>> Prepare ShelleyTxAux: ', validityIntervalStart);
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
     return blake2b(
@@ -347,8 +345,7 @@ export const ShelleyTxAux = (
           certs,
           withdrawals,
           auxiliaryData,
-          auxiliaryDataHash,
-          // validityIntervalStart,
+          auxiliaryDataHash
         )
       )
       // 32
@@ -519,34 +516,12 @@ export type TxAuxiliaryData = {
 
 export type CborizedVotingRegistrationMetadata = [Map<number, Map<number, Buffer | BigInt>>, []]
 
-// export const prepareMeta = async (
-//   auxiliaryData: TxAuxiliaryData
-// ): Promise<CborizedVotingRegistrationMetadata> => {
-//   const cborizedRegistrationData = cborizeTxVotingRegistration(auxiliaryData)
-//   const registrationDataHash = blake2b(encode(cborizedRegistrationData), 32).toString('hex')
-//   const stakingPath = auxiliaryData.rewardDestinationAddress.stakingPath
-//   const registrationDataWitness = await prepareShelleyWitness(registrationDataHash, stakingPath)
-//   const registrationDataSignature = registrationDataWitness.signature.toString('hex')
-//   const txAuxiliaryData = cborizeTxAuxiliaryVotingData(auxiliaryData, registrationDataSignature)
-//
-//   console.debug('>>> FIN - txAuxiliaryData: ', txAuxiliaryData);
-//
-//   return txAuxiliaryData
-// }
-
 export const cborizeTxVotingRegistration = ({
   votingPubKey,
   stakePubKey,
   rewardDestinationAddress,
   nonce,
 }) => {
-  console.debug('>>> PARAMS: ', {
-    votingPubKey,
-    stakePubKey,
-    rewardDestinationAddress,
-    nonce,
-    decodedAddr: utils.bech32_decodeAddress(rewardDestinationAddress.address),
-  })
   return [
     61284,
     new Map<number, Buffer | BigInt>([
@@ -596,29 +571,7 @@ export const prepareTxAux = ({
   const txTtl = ShelleyTtl(ttl);
   const txCerts = certificates;
   const txWithdrawals = withdrawals;
-  // const txValidityIntervalStart = validityIntervalStart ? ShelleyValidityIntervalStart(validityIntervalStart) : null;
 
-  // let txAux = {
-  //   inputs: txInputs,
-  //   outputs: txOutputs,
-  //   fee: txFee,
-  //   ttl: txTtl,
-  //   certs: txCerts,
-  //   withdrawals: txWithdrawals,
-  //   auxiliaryData: txAuxiliaryData,
-  //   auxiliaryDataHash: txAuxiliaryDataHash,
-  //   validityIntervalStart: txValidityIntervalStart,
-  // };
-
-  // if (metadataHash) {
-  //   txAux = {
-  //     ...txAux,
-  //     metadataHash,
-  //   }
-  // }
-  // console.debug('>>> prepareTxAux - TX AUX: ', txAux);
-
-  // return ShelleyTxAux(txAux);
   return ShelleyTxAux(
     txInputs,
     txOutputs,
