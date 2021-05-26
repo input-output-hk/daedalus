@@ -50,6 +50,7 @@ import {
   ShelleyTxCert,
   ShelleyTxWithdrawal,
   cborizeTxAuxiliaryVotingData,
+  prepareLedgerAuxiliaryData,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
@@ -1741,28 +1742,6 @@ export default class HardwareWalletsStore extends Store {
     return constructedAddress.address;
   };
 
-  formatAuxiliaryData = (txAuxiliaryData) => {
-    switch (txAuxiliaryData.type) {
-      case 'CATALYST_VOTING':
-        return {
-          type: 'catalyst_registration', // LedgerTypes.TxAuxiliaryDataType.CATALYST_REGISTRATION,
-          params: {
-            votingPublicKeyHex: txAuxiliaryData.votingPubKey,
-            stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
-            rewardsDestination: {
-              type: 14, // LedgerTypes.AddressType.REWARD,
-              params: {
-                stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
-              },
-            },
-            nonce: `${txAuxiliaryData.nonce}`,
-          },
-        }
-      default:
-        return null;
-    }
-  }
-
   @action _signTransactionLedger = async (
     walletId: string,
     devicePath: ?string
@@ -1869,7 +1848,7 @@ export default class HardwareWalletsStore extends Store {
     }
 
     const auxiliaryData = unsignedTxAuxiliaryData
-      ? this.formatAuxiliaryData(unsignedTxAuxiliaryData)
+      ? prepareLedgerAuxiliaryData(unsignedTxAuxiliaryData)
       : null
 
     try {

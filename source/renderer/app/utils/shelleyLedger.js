@@ -504,6 +504,27 @@ export const prepareLedgerOutput = (
   };
 };
 
+// TODO: Add Proper types + CATALYST_VOTING type
+export prepareLedgerAuxiliaryData = (txAuxiliaryData: any) => {
+  if (txAuxiliaryData.type === 'CATALYST_VOTING') {
+    return {
+      type: 'catalyst_registration', // LedgerTypes.TxAuxiliaryDataType.CATALYST_REGISTRATION,
+      params: {
+        votingPublicKeyHex: txAuxiliaryData.votingPubKey,
+        stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
+        rewardsDestination: {
+          type: 14, // LedgerTypes.AddressType.REWARD,
+          params: {
+            stakingPath: txAuxiliaryData.rewardDestinationAddress.stakingPath,
+          },
+        },
+        nonce: `${txAuxiliaryData.nonce}`,
+      },
+    }
+  }
+  return null;
+};
+
 export type TxAuxiliaryData = {
   votingPubKey: string,
   stakePubKey: HexString,
