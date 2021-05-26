@@ -505,7 +505,7 @@ export const prepareLedgerOutput = (
 };
 
 // TODO: Add Proper types + CATALYST_VOTING type
-export prepareLedgerAuxiliaryData = (txAuxiliaryData: any) => {
+export const prepareLedgerAuxiliaryData = (txAuxiliaryData: any) => {
   if (txAuxiliaryData.type === 'CATALYST_VOTING') {
     return {
       type: 'catalyst_registration', // LedgerTypes.TxAuxiliaryDataType.CATALYST_REGISTRATION,

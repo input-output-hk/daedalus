@@ -264,7 +264,7 @@ export default class VotingRegistrationDialogContainer extends Component<
           metadata: votingMetadata.metadata,
         });
         fee = coinSelection.fee;
-        hardwareWallets.initiateTransaction({ walletId: this.selectedWalletId, votingMetadata });
+        await initiateTransaction({ walletId: this.selectedWalletId, votingMetadata });
       } else {
         ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,

@@ -1,7 +1,6 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast, includes } from 'lodash';
-import BigNumber from 'bignumber.js';
 import semver from 'semver';
 import {
   TransactionSigningMode,
@@ -1827,7 +1826,6 @@ export default class HardwareWalletsStore extends Store {
 
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
-    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
     const { isMainnet } = this.environment;
 
 
@@ -1841,7 +1839,7 @@ export default class HardwareWalletsStore extends Store {
           // type: 0b1110, // Address BASE (0b0000) or REWARD: (0b1110) // What is type: 14 ???
           stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
         }, // ShelleyAddressParams,
-        stakePubKey: stakeKey, //"23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
+        stakePubKey: stakeKey, // "23e5c213d36c1d4fb14380747e961b79914b31475720a64f36c444a6dbe11624",
         type: "CATALYST_VOTING",
         votingPubKey: votingKey, // '69b3492d8f40ce5bbb12b4b389026327e0d38c91312c65d5eea2860c7df4e861', // 4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c
       }
