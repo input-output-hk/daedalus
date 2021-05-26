@@ -91,6 +91,8 @@ storiesOf('Voting|Voting Registration Wizard', module)
       selectedWalletId={WALLETS[0].id}
       isWalletAcceptable={action('isWalletAcceptable')}
       getStakePoolById={action('getStakePoolById')}
+      isHardwareWallet={boolean('isHardwareWallet', false)}
+      isTrezor={boolean('isTrezor', false)}
     />
   ))
 

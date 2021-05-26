@@ -95,6 +95,8 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
             getStakePoolById={getStakePoolById}
+            isTrezor={isTrezor}
+            isHardwareWallet={isHardwareWallet}
           />
         );
         break;
