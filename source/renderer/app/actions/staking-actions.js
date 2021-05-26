@@ -1,5 +1,4 @@
 // @flow
-import type { GetRewardsForAddressesQueryVariables } from '../types/cardano-graphql';
 import Action from './lib/Action';
 import type {
   JoinStakePoolRequest,

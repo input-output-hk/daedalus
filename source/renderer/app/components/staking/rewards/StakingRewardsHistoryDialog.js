@@ -14,6 +14,7 @@ import styles from './StakingRewardsHistoryDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import Table from '../../widgets/Table';
 import StakePool from '../../../domains/StakePool';
+import DatePicker from '../../widgets/forms/DatePicker';
 
 const messages = defineMessages({
   title: {
@@ -34,18 +35,43 @@ type Props = {
   reward: RewardForIncentivizedTestnet,
   rewardsHistory?: Array<RewardsHistoryItem>,
   currentDateFormat: string,
+  currentLocale: string,
   onClose: Function,
+  isFetchingRewardsHistory: boolean,
+};
+
+type State = {
+  isEditingDate: boolean,
+  startDate: Date,
+  endDate: ?Date,
 };
 
 @observer
-export default class StakingRewardsHistoryDialog extends Component<Props> {
+export default class StakingRewardsHistoryDialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    isEditingDate: false,
+    startDate: new Date(),
+    endDate: null,
+  };
+
   render() {
     const { intl } = this.context;
-    const { reward, onClose, rewardsHistory, currentDateFormat } = this.props;
+    const {
+      reward,
+      onClose,
+      rewardsHistory,
+      currentDateFormat,
+      currentLocale,
+      isFetchingRewardsHistory,
+    } = this.props;
+    const { isEditingDate, startDate, endDate } = this.state;
     const { walletName, rewardsAddress } = reward || {};
     const actions = [
       {
@@ -103,8 +129,35 @@ export default class StakingRewardsHistoryDialog extends Component<Props> {
         <div className={styles.label}>Rewards address</div>
         <p>{rewardsAddress}</p>
         <div className={styles.label}>Date range</div>
-        {/* <input value="..." /> */}
-        {rewardsHistory && (
+        <input
+          value={`${new Date(startDate).toISOString()} - ${
+            endDate ? new Date(endDate).toISOString() : ''
+          }`}
+        />
+        <button
+          style={{ color: 'white ' }}
+          onClick={() => this.setState({ isEditingDate: true })}
+        >
+          EDIT DATE RANGE
+        </button>
+        {isEditingDate && (
+          <DatePicker
+            startDate={startDate}
+            endDate={endDate}
+            onChange={({ startDate, endDate }) => {
+              const isEditingDate = startDate === endDate;
+              this.setState({
+                startDate,
+                endDate,
+                isEditingDate,
+              });
+            }}
+            currentLocale={currentLocale}
+            currentDateFormat={currentDateFormat}
+          />
+        )}
+        {isFetchingRewardsHistory && <div>LOADING</div>}
+        {!isFetchingRewardsHistory && rewardsHistory && (
           <Table
             columns={tableColumns}
             rows={rewardsHistory}

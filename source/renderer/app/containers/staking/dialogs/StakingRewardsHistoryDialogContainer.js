@@ -28,21 +28,30 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     const { stores, actions } = this.props;
     const { reward } = stores.uiDialogs.dataForActiveDialog;
     const { closeActiveDialog } = actions.dialogs;
-    const { currentDateFormat } = stores.profile;
-    const rewardsHistory = stores.staking.rewardsHistory[reward.rewardsAddress];
-    if (!reward || !rewardsHistory) return null;
-    return (
-      <StakingRewardsHistoryDialog
-        reward={reward}
-        rewardsHistory={toJS(rewardsHistory).map((r, index) => ({
+    const { currentDateFormat, currentLocale } = stores.profile;
+    const {
+      isFetchingRewardsHistory,
+      rewardsHistory: rewardsHistoryObject,
+    } = stores.staking;
+    const rewardsHistoryList = rewardsHistoryObject[reward.rewardsAddress];
+    const rewardsHistory = rewardsHistoryList
+      ? toJS(rewardsHistoryList).map((r, index) => ({
           // TODO: implement date handling
           date: new Date(Date.now() - index * 1000000000),
           epoch: r.earnedIn,
           pool: stores.staking.getStakePoolById(r.stakePoolId),
           amount: r.amount,
-        }))}
+        }))
+      : [];
+    if (!reward) return null;
+    return (
+      <StakingRewardsHistoryDialog
+        reward={reward}
+        rewardsHistory={rewardsHistory}
         currentDateFormat={currentDateFormat}
+        currentLocale={currentLocale}
         onClose={closeActiveDialog.trigger}
+        isFetchingRewardsHistory={isFetchingRewardsHistory}
       />
     );
   }
