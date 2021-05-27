@@ -9,4 +9,40 @@
     line-height: 1.38;
     margin-bottom: 20px;
   }
+  .rewardsAddress {
+    cursor: pointer;
+    .copyIconWrapper {
+      margin-left: 7px;
+      .copyIcon,
+      [data-tippy-root] {
+        transition: opacity 0.25s;
+        opacity: 0;
+      }
+      .copyIcon {
+        svg {
+          height: 16px;
+          width: 11px;
+          g {
+            fill: var(--theme-dialog-title-color);
+          }
+        }
+      }
+      &.visible {
+        .copyIcon {
+          opacity: 1;
+          svg {
+            path {
+              stroke: var(--theme-dialog-title-color);
+            }
+          }
+        }
+      }
+    }
+    &:hover {
+      .copyIcon,
+      [data-tippy-root] {
+        opacity: 1;
+      }
+    }
+  }
 }

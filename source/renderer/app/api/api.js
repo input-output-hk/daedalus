@@ -246,9 +246,6 @@ import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 
-// @REWARDS TODO
-import { getRewardsApiHistoryDummyResponse } from '../config/rewardsHistory.dummy';
-
 const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {

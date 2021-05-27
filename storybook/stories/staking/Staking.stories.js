@@ -18,11 +18,11 @@ import DelegationCenterNoWallets from '../../../source/renderer/app/components/s
 import ExperimentalDataOverlay from '../../../source/renderer/app/components/notifications/ExperimentalDataOverlay';
 
 import { StakePoolsStory } from './StakePools.stories';
-import { StakingRewardsStory } from './Rewards.stories';
-import { StakingRewardsForIncentivizedTestnetStory } from './RewardsForIncentivizedTestnet.stories';
+import { StakingRewardsStory } from './StakingRewards.stories';
 import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
+import { StakingRewardsHistoryStory } from './StakingRewardsHistoryDialog.stories';
 import {
   Step1ConfigurationDialogStory,
   Step2ConfirmationDialogStory,
@@ -54,7 +54,7 @@ const pageNames = {
   'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
-  'rewards-itn': 'Rewards - ITN',
+  rewardsHistory: 'Rewards History',
   epochs: 'Epochs',
   info: 'Info',
   'info-countdown': 'Info Countdown',
@@ -205,9 +205,8 @@ storiesOf('Decentralization | Staking', module)
   })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
-
-  .add(pageNames['rewards-itn'], StakingRewardsForIncentivizedTestnetStory, {
-    id: 'rewards-incentivized-testnet',
+  .add(pageNames.rewardsHistory, StakingRewardsHistoryStory, {
+    id: 'rewardsHistory',
   })
 
   .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })

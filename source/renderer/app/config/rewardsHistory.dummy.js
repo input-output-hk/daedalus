@@ -44,12 +44,12 @@ const generateReward = (index: number) => new BigNumber(35 + index);
 
 const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const rewardsHistory = (numberOfItems: ?number = 10) =>
+export const getRewardsHistory = (numberOfItems: ?number = 10) =>
   map(Array(numberOfItems).fill(), (x, index) => ({
     date: generateDate(index),
     epoch: generateEpoch(index),
     pool: generatePool(index),
-    reward: generateReward(index),
+    amount: generateReward(index),
   }));
 
 export const getRewardsApiHistoryDummyResponse = async (

@@ -52,6 +52,11 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
         currentLocale={currentLocale}
         onClose={closeActiveDialog.trigger}
         isFetchingRewardsHistory={isFetchingRewardsHistory}
+        onCopy={(a, b, c) => {
+          console.log('a', a);
+          console.log('b', b);
+          console.log('c', c);
+        }}
       />
     );
   }

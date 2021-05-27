@@ -1,5 +1,9 @@
 // @flow
 import React, { Component, Fragment } from 'react';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import classnames from 'classnames';
+import SVGInline from 'react-svg-inline';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
@@ -15,6 +19,9 @@ import globalMessages from '../../../i18n/global-messages';
 import Table from '../../widgets/Table';
 import StakePool from '../../../domains/StakePool';
 import DatePicker from '../../widgets/forms/DatePicker';
+import copyIcon from '../../../assets/images/copy-asset.inline.svg';
+import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
+import { ITEM_COPY_FEEDBACK } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   title: {
@@ -36,14 +43,16 @@ type Props = {
   rewardsHistory?: Array<RewardsHistoryItem>,
   currentDateFormat: string,
   currentLocale: string,
-  onClose: Function,
   isFetchingRewardsHistory: boolean,
+  onClose: Function,
+  onCopy: Function,
 };
 
 type State = {
   isEditingDate: boolean,
   startDate: Date,
   endDate: ?Date,
+  itemCopied: boolean,
 };
 
 @observer
@@ -55,24 +64,45 @@ export default class StakingRewardsHistoryDialog extends Component<
     intl: intlShape.isRequired,
   };
 
+  copyNotificationTimeout: TimeoutID;
+
   state = {
     isEditingDate: false,
     startDate: new Date(),
     endDate: null,
+    itemCopied: false,
+  };
+
+  handleCopy = () => {
+    const { onCopy, reward } = this.props;
+    const { rewardsAddress } = reward || {};
+    onCopy(rewardsAddress);
+    this.setState({
+      itemCopied: true,
+    });
+    clearTimeout(this.copyNotificationTimeout);
+    this.copyNotificationTimeout = setTimeout(() => {
+      this.setState({ itemCopied: false });
+    }, ITEM_COPY_FEEDBACK);
   };
 
   render() {
     const { intl } = this.context;
     const {
       reward,
-      onClose,
       rewardsHistory,
       currentDateFormat,
       currentLocale,
       isFetchingRewardsHistory,
+      onClose,
     } = this.props;
-    const { isEditingDate, startDate, endDate } = this.state;
+    const { isEditingDate, startDate, endDate, itemCopied } = this.state;
     const { walletName, rewardsAddress } = reward || {};
+    const icon = itemCopied ? copyCheckmarkIcon : copyIcon;
+    const copyIconWrapperStyles = classnames([
+      styles.copyIconWrapper,
+      itemCopied ? styles.visible : null,
+    ]);
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
@@ -116,9 +146,14 @@ export default class StakingRewardsHistoryDialog extends Component<
       },
     ];
 
+    const componentStyles = classnames([
+      styles.component,
+      'StakingRewardsHistoryDialog',
+    ]);
+
     return (
       <Dialog
-        className={styles.component}
+        className={componentStyles}
         title={intl.formatMessage(messages.title)}
         subtitle={walletName}
         actions={actions}
@@ -127,7 +162,22 @@ export default class StakingRewardsHistoryDialog extends Component<
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.label}>Rewards address</div>
-        <p>{rewardsAddress}</p>
+
+        <CopyToClipboard text={rewardsAddress} onCopy={this.handleCopy}>
+          <p className={styles.rewardsAddress}>
+            {rewardsAddress}
+            <span className={copyIconWrapperStyles}>
+              <PopOver
+                content={intl.formatMessage(globalMessages.copy)}
+                appendTo="parent"
+                visible
+              >
+                <SVGInline svg={icon} className={styles.copyIcon} />
+              </PopOver>
+            </span>
+          </p>
+        </CopyToClipboard>
+
         <div className={styles.label}>Date range</div>
         <input
           value={`${new Date(startDate).toISOString()} - ${
@@ -140,6 +190,7 @@ export default class StakingRewardsHistoryDialog extends Component<
         >
           EDIT DATE RANGE
         </button>
+
         {isEditingDate && (
           <DatePicker
             startDate={startDate}

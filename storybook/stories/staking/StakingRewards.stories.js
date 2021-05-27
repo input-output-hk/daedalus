@@ -17,7 +17,7 @@ const rewards = map(REWARDS, (reward) => {
   };
 });
 
-export const StakingRewardsForIncentivizedTestnetStory = () => (
+export const StakingRewardsStory = () => (
   <StakingRewards
     rewards={rewards}
     isLoading={false}

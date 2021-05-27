@@ -14,7 +14,7 @@ import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
 import {
-  ASSET_TOKEN_ID_COPY_FEEDBACK,
+  ITEM_COPY_FEEDBACK,
   ASSET_TOKEN_DISPLAY_DELAY,
 } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
@@ -185,7 +185,7 @@ export default class Asset extends Component<Props, State> {
       if (this._isMounted) {
         this.setState({ itemCopied: null });
       }
-    }, ASSET_TOKEN_ID_COPY_FEEDBACK);
+    }, ITEM_COPY_FEEDBACK);
   };
 
   renderPillContent() {
