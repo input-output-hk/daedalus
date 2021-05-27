@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { intlShape } from 'react-intl';
 import { map, isNaN } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -7,8 +8,13 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import type { Field } from 'mobx-react-form';
+import SVGInline from 'react-svg-inline';
+import { Button } from 'react-polymorph/lib/components/Button';
 import styles from './PinCode.scss';
 import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
+import revealKeyImage from '../../../assets/images/reveal-key.inline.svg';
+import hideKeyImage from '../../../assets/images/hide-key.inline.svg';
+import globalMessages from '../../../i18n/global-messages';
 
 type Props = $Exact<{
   id: string,
@@ -16,21 +22,29 @@ type Props = $Exact<{
   type: string,
   autoFocus: boolean,
   onChange?: Function,
+  onResetValues?: Function,
   label: string,
+  resetLabel: string,
   length: number,
   disabled: boolean,
   value: Array<string>,
   error: string | null,
   selectedPinField: ?string,
+  isResetButtonDisabled: boolean,
 }>;
 
 type State = {
   isBackSpace: boolean,
   focusKeyChanged: boolean,
   focusIsUpdated: boolean,
+  pinCodesHidden: boolean,
 };
 
 export default class PinCode extends Component<Props, State> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   static defaultProps = {
     length: VOTING_REGISTRATION_PIN_CODE_LENGTH,
     disabled: false,
@@ -46,6 +60,7 @@ export default class PinCode extends Component<Props, State> {
     isBackSpace: false,
     focusKeyChanged: false,
     focusIsUpdated: false,
+    pinCodesHidden: true,
   };
 
   valueHasChanged = (inputNewValue: string, key: number) => {
@@ -296,6 +311,16 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
+  togglePinCodeVisibility = () => {
+    this.setState((prevState) => ({
+      pinCodesHidden: !prevState.pinCodesHidden
+    }));
+  };
+
+  clearPinCodes = () => {
+
+  };
+
   generatePinCodeInput = () => {
     const {
       id,
@@ -307,6 +332,8 @@ export default class PinCode extends Component<Props, State> {
       value,
       disabled,
     } = this.props;
+
+    const { pinCodesHidden } = this.state;
 
     const pinCodeClasses = classNames([
       styles.pinCode,
@@ -330,7 +357,7 @@ export default class PinCode extends Component<Props, State> {
               }}
               id={id + index}
               name={name}
-              type={type}
+              type={pinCodesHidden ? type : 'text'}
               className={pinCodeClasses}
               label={null}
               key={index}
@@ -349,15 +376,59 @@ export default class PinCode extends Component<Props, State> {
   };
 
   render() {
-    const { label, error } = this.props;
+    const { label, resetLabel, error, isResetButtonDisabled, onResetValues, name } = this.props;
+
+    const { pinCodesHidden } = this.state;
+
+    const { intl } = this.context;
+
+    const toggleButtonTooltip = intl.formatMessage(
+      globalMessages[pinCodesHidden ? 'reveal' : 'hide']
+    );
+
+    const revealHidePinCodesStyles = classNames([
+      styles.pinCodeButton,
+      pinCodesHidden ? styles.revealButton : styles.hideButton,
+      'flat',
+    ]);
+
+    const clearPinCodesStyles = classNames([
+      styles.clearPinCodeButton,
+      'flat',
+    ]);
 
     const pinCode = this.generatePinCodeInput();
 
     return (
       <div className={styles.component} role="button">
-        <label htmlFor="firstName" className="SimpleFormField_label">
-          {label}
-        </label>
+        <div className={styles.labelContainer}>
+          <label htmlFor="firstName" className="SimpleFormField_label">
+            {label}
+          </label>
+          <div className={styles.buttonsContainer}>
+            <PopOver content={resetLabel}>
+              <Button
+                className={clearPinCodesStyles}
+                onClick={() => onResetValues(name)}
+                label={resetLabel}
+                disabled={isResetButtonDisabled}
+              />
+            </PopOver>
+            <PopOver content={toggleButtonTooltip}>
+              <Button
+                className={revealHidePinCodesStyles}
+                label={
+                  pinCodesHidden ? (
+                    <SVGInline svg={revealKeyImage} />
+                  ) : (
+                    <SVGInline svg={hideKeyImage} />
+                  )
+                }
+                onClick={this.togglePinCodeVisibility}
+              />
+            </PopOver>
+          </div>
+        </div>
         {error ? (
           <PopOver
             content={error}

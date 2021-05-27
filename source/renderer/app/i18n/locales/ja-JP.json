@@ -689,6 +689,7 @@
   "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode": "PINコードが一致しません",
   "voting.votingRegistration.enterPinCode.step.reminder": "<span>PINコードを忘れないでください。</span>PINを忘れると本登録で投票することができなくなり、登録手続きをやり直すことになります。",
   "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel": "PINコードを再入力してください",
+  "voting.votingRegistration.enterPinCode.step.resetPinCodes": "リセット",
   "voting.votingRegistration.pdf.author": "Daedalusウォレット",
   "voting.votingRegistration.pdf.filename": "有権者登録",
   "voting.votingRegistration.pdf.networkLabel": "Cardanoネットワーク：",

@@ -57,6 +57,11 @@ const messages = defineMessages({
     description:
       'Label for continue button on the voting registration "enter pin code" step.',
   },
+  resetPinCodes: {
+    id: 'voting.votingRegistration.enterPinCode.step.resetPinCodes',
+    defaultMessage: '!!!Reset',
+    description: 'Reset pin codes tooltip.',
+  },
 });
 
 type Props = {
@@ -133,6 +138,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }
   );
 
+  onResetValues = (type: string) => {
+    const { form } = this;
+    const pinCodeField = form.$(type);
+    pinCodeField.value = [];
+  };
+
   onChangePinCode = (values: Array<string>) => {
     const { form } = this;
     const pinCodeField = form.$('pinCode');
@@ -173,6 +184,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
+    const resetPinCodesLabel = intl.formatMessage(messages.resetPinCodes);
 
     const pinCodeField = form.$('pinCode');
     const repeatPinCodeField = form.$('repeatPinCode');
@@ -211,18 +223,24 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
           <PinCode
             {...pinCodeFieldProps}
             label={enterPinCodeLabel}
+            resetLabel={resetPinCodesLabel}
             autoFocus
             onChange={(values) => this.onChangePinCode(values)}
+            onResetValues={(type: string) => this.onResetValues(type)}
             selectedPinField={selectedPinField}
+            isResetButtonDisabled={!pinCodeField.value.length}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
+            resetLabel={resetPinCodesLabel}
             onChange={(values) => this.onChangeRepeatPinCode(values)}
+            onResetValues={(type: string) => this.onResetValues(type)}
             autoFocus={isRepeatPinCodeAutoFocused}
             disabled={!pinCodeField.isValid && !repeatPinCodeField.value.length}
             error={repeatPinCodeField.error}
             selectedPinField={selectedPinField}
+            isResetButtonDisabled={!repeatPinCodeField.value.length}
           />
         </div>
 
