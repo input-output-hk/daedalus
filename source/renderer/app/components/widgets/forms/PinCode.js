@@ -329,7 +329,15 @@ export default class PinCode extends Component<Props, State> {
   ) => {
     const { target } = event;
     if (!(target instanceof HTMLInputElement) || target.disabled) {
-      const fieldToFocus = this.inputsRef[this.focusKey];
+      const { value } = this.props;
+      const emptyFieldIndex = value.findIndex((item) => item === '');
+      let fieldKey = this.focusKey;
+      if (emptyFieldIndex > -1) {
+        fieldKey = emptyFieldIndex;
+      } else if (value.length < 4)  {
+        fieldKey = this.focusKey + 1;
+      }
+      const fieldToFocus = this.inputsRef[fieldKey];
       if (fieldToFocus) {
         this.enableField();
         setTimeout(() => {
