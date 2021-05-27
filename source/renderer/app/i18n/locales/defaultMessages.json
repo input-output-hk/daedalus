@@ -8311,13 +8311,13 @@
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.description",
         "start": {
           "column": 15,
-          "line": 19
+          "line": 18
         }
       },
       {
@@ -8325,13 +8325,13 @@
         "description": "Reminder on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.reminder",
         "start": {
           "column": 12,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -8339,13 +8339,13 @@
         "description": "Label for pin code input on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.enterPinCodeLabel",
         "start": {
           "column": 21,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -8353,13 +8353,13 @@
         "description": "Label for repeat pin code on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 42
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel",
         "start": {
           "column": 22,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -8367,13 +8367,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 47
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 43
         }
       },
       {
@@ -8381,13 +8381,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 53
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode",
         "start": {
           "column": 24,
-          "line": 49
+          "line": 48
         }
       },
       {
@@ -8395,13 +8395,27 @@
         "description": "Label for continue button on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 59
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 55
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Reset",
+        "description": "Reset pin codes tooltip.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.resetPinCodes",
+        "start": {
+          "column": 17,
+          "line": 60
         }
       }
     ],
