@@ -93,7 +93,8 @@ export default class PinCode extends Component<Props, State> {
     }
     return (
       disabled ||
-      (index > inputFocusKey && !value[index] && !value[inputFocusKey])
+      (index > inputFocusKey && !value[index] && !value[inputFocusKey]) ||
+      (index < inputFocusKey && !value[inputFocusKey])
     );
   };
 
