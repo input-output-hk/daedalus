@@ -156,7 +156,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
 
   handleTabKey = (type: string) => {
     this.setState( {
-      sectionToFocus: type === 'pinCode' ? 'repeatPinCode' : type,
+      sectionToFocus: type === 'pinCode' ? 'repeatPinCode' : 'pinCode',
     });
   };
 
