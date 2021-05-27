@@ -479,6 +479,7 @@ export default class PinCode extends Component<Props, State> {
                 }}
                 label={resetLabel}
                 disabled={isResetButtonDisabled}
+                tabIndex={-1}
               />
             </PopOver>
             <PopOver content={toggleButtonTooltip}>
@@ -499,6 +500,7 @@ export default class PinCode extends Component<Props, State> {
                     this.setFocusOnField(this.inputsRef[this.focusKey]);
                   }, 0);
                 }}
+                tabIndex={-1}
               />
             </PopOver>
           </div>
