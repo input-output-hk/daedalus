@@ -461,7 +461,14 @@ export default class PinCode extends Component<Props, State> {
                     <SVGInline svg={revealKeyImage} />
                   )
                 }
-                onClick={() => onShowHideValues()}
+                onClick={() => {
+                  if (onShowHideValues) {
+                    onShowHideValues();
+                  }
+                  setTimeout(() => {
+                    this.setFocusOnField(this.inputsRef[this.focusKey]);
+                  }, 0);
+                }}
               />
             </PopOver>
           </div>
