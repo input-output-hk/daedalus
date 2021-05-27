@@ -2991,13 +2991,13 @@
         "description": "titleLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.titleLabel",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -3005,13 +3005,13 @@
         "description": "currencyDescription for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.description",
         "start": {
           "column": 23,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -3019,13 +3019,13 @@
         "description": "currencySelectLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.selectLabel",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -3033,13 +3033,13 @@
         "description": "currencyDisclaimer for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.disclaimer",
         "start": {
           "column": 22,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -3047,13 +3047,13 @@
         "description": "currencyPoweredByLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.poweredBy.label",
         "start": {
           "column": 26,
-          "line": 40
+          "line": 41
         }
       }
     ],
@@ -18321,6 +18321,20 @@
         "start": {
           "column": 34,
           "line": 326
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "Dropdown search \"No results\" message",
+        "end": {
+          "column": 3,
+          "line": 337
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.search.noResultsMessage",
+        "start": {
+          "column": 26,
+          "line": 333
         }
       }
     ],
