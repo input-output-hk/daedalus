@@ -35,4 +35,9 @@ export default class StakingActions {
   closeRedeemDialog: Action<any> = new Action();
   setStakingInfoWasOpen: Action<any> = new Action();
   fetchRewardsHistory: Action<{ address: string }> = new Action();
+  requestRewardsHistoryCSVFile: Action<any> = new Action();
+  setRewardsHistoryDateRange: Action<{
+    dateFrom: Date,
+    dateTo: ?Date,
+  }> = new Action();
 }

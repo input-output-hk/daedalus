@@ -39,19 +39,21 @@ const messages = defineMessages({
 });
 
 type Props = {
-  reward: RewardForIncentivizedTestnet,
-  rewardsHistory?: Array<RewardsHistoryItem>,
   currentDateFormat: string,
   currentLocale: string,
   isFetchingRewardsHistory: boolean,
   onClose: Function,
-  onCopy: Function,
+  onCopy?: Function,
+  onExportCSV: Function,
+  onSetDateRange: Function,
+  reward: RewardForIncentivizedTestnet,
+  rewardsHistory?: Array<RewardsHistoryItem>,
+  startDate: Date,
+  endDate: ?Date,
 };
 
 type State = {
   isEditingDate: boolean,
-  startDate: Date,
-  endDate: ?Date,
   itemCopied: boolean,
 };
 
@@ -68,8 +70,6 @@ export default class StakingRewardsHistoryDialog extends Component<
 
   state = {
     isEditingDate: false,
-    startDate: new Date(),
-    endDate: null,
     itemCopied: false,
   };
 
@@ -89,14 +89,18 @@ export default class StakingRewardsHistoryDialog extends Component<
   render() {
     const { intl } = this.context;
     const {
-      reward,
-      rewardsHistory,
       currentDateFormat,
       currentLocale,
+      endDate,
       isFetchingRewardsHistory,
       onClose,
+      onExportCSV,
+      onSetDateRange,
+      reward,
+      rewardsHistory,
+      startDate,
     } = this.props;
-    const { isEditingDate, startDate, endDate, itemCopied } = this.state;
+    const { isEditingDate, itemCopied } = this.state;
     const { walletName, rewardsAddress } = reward || {};
     const icon = itemCopied ? copyCheckmarkIcon : copyIcon;
     const copyIconWrapperStyles = classnames([
@@ -111,7 +115,7 @@ export default class StakingRewardsHistoryDialog extends Component<
       {
         label: 'Export CSV',
         primary: true,
-        onClick: () => {},
+        onClick: onExportCSV,
       },
     ];
 
@@ -195,14 +199,7 @@ export default class StakingRewardsHistoryDialog extends Component<
           <DatePicker
             startDate={startDate}
             endDate={endDate}
-            onChange={({ startDate, endDate }) => {
-              const isEditingDate = startDate === endDate;
-              this.setState({
-                startDate,
-                endDate,
-                isEditingDate,
-              });
-            }}
+            onChange={onSetDateRange}
             currentLocale={currentLocale}
             currentDateFormat={currentDateFormat}
           />

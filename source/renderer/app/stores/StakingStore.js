@@ -77,6 +77,8 @@ export default class StakingStore extends Store {
   @observable stakingInfoWasOpen: boolean = false;
 
   /* ----------  Rewards History  ---------- */
+  @observable rewardsHistoryStartDate: Date = new Date();
+  @observable rewardsHistoryEndDate: ?Date = null;
   @observable rewardsHistory: {
     [key: string]: Array<RewardsHistoryItem>,
   } = {};
@@ -136,6 +138,12 @@ export default class StakingStore extends Store {
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     stakingActions.fetchRewardsHistory.listen(this._fetchRewardsHistory);
+    stakingActions.requestRewardsHistoryCSVFile.listen(
+      this._requestRewardsHistoryCSVFile
+    );
+    stakingActions.setRewardsHistoryDateRange.listen(
+      this._setRewardsHistoryDateRange
+    );
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
@@ -906,5 +914,20 @@ export default class StakingStore extends Store {
         this.rewardsHistory[address] = [];
       });
     }
+  };
+
+  _requestRewardsHistoryCSVFile = () => {
+    console.log('_requestRewardsHistoryCSVFile');
+  };
+
+  _setRewardsHistoryDateRange = ({
+    startDate,
+    endDate,
+  }: {
+    startDate: Date,
+    endDate: ?Date,
+  }) => {
+    this.rewardsHistoryStartDate = startDate;
+    this.rewardsHistoryEndDate = endDate;
   };
 }
