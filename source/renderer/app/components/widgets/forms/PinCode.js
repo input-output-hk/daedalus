@@ -99,15 +99,15 @@ export default class PinCode extends Component<Props, State> {
       inputFocusKey = 0;
     }
 
-    return (
-      disabled ||
-      (enableField && index === inputFocusKey - 1 && inputFocusKey > value.length - 1) ?
-        (this.focusKey !== inputFocusKey - 1) : (
-          (index > inputFocusKey && !value[index] && !value[inputFocusKey]) ||
-          (!(this.focusKey + 1 > value.length - 1) && (index < inputFocusKey - 1)) ||
-          ((index < inputFocusKey) && !value[inputFocusKey])
-        )
-    );
+    return disabled ||
+      (enableField &&
+        index === inputFocusKey - 1 &&
+        inputFocusKey > value.length - 1)
+      ? this.focusKey !== inputFocusKey - 1
+      : (index > inputFocusKey && !value[index] && !value[inputFocusKey]) ||
+          (!(this.focusKey + 1 > value.length - 1) &&
+            index < inputFocusKey - 1) ||
+          (index < inputFocusKey && !value[inputFocusKey]);
   };
 
   onChange = (inputValue: ?number, key: number) => {
@@ -140,7 +140,12 @@ export default class PinCode extends Component<Props, State> {
             const inputFieldRef = this.inputsRef[focusKey];
             if (inputFieldRef && inputFieldRef.inputElement) {
               this.setFocusOnField(inputFieldRef);
-              this.setState({ focusKeyChanged: false, focusIsUpdated: true, enableField: false, resetFields: false });
+              this.setState({
+                focusKeyChanged: false,
+                focusIsUpdated: true,
+                enableField: false,
+                resetFields: false,
+              });
             }
           }, 0);
         } else {
@@ -151,7 +156,7 @@ export default class PinCode extends Component<Props, State> {
             focusKeyChanged: false,
             focusIsUpdated: false,
             enableField: false,
-            resetFields: false
+            resetFields: false,
           });
         }
       }
@@ -283,7 +288,12 @@ export default class PinCode extends Component<Props, State> {
         } else {
           focusKeyUpdated = true;
         }
-        this.setState({ isBackSpace, focusKeyChanged: focusKeyUpdated, enableField: false, resetFields: false });
+        this.setState({
+          isBackSpace,
+          focusKeyChanged: focusKeyUpdated,
+          enableField: false,
+          resetFields: false,
+        });
         // Call onChange function to validate new value in focused input field
         onChange(value);
       }
@@ -296,11 +306,11 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
-  setFocusOnField = (inputFieldRef: {
-    focus: ?Function
-  }) => {
-    const { focus } = inputFieldRef;
-    if (focus) focus();
+  setFocusOnField = (inputFieldRef: { focus: ?Function } | null) => {
+    if (inputFieldRef) {
+      const { focus } = inputFieldRef;
+      if (focus) focus();
+    }
   };
 
   enableField = () => {
@@ -324,9 +334,7 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
-  handlePinCodeSectionClick = (
-    event: MouseEvent
-  ) => {
+  handlePinCodeSectionClick = (event: MouseEvent) => {
     const { target } = event;
     if (!(target instanceof HTMLInputElement) || target.disabled) {
       const { value } = this.props;
@@ -334,7 +342,7 @@ export default class PinCode extends Component<Props, State> {
       let fieldKey = this.focusKey;
       if (emptyFieldIndex > -1) {
         fieldKey = emptyFieldIndex;
-      } else if (value.length < 4)  {
+      } else if (value.length < 4) {
         fieldKey = this.focusKey + 1;
       }
       const fieldToFocus = this.inputsRef[fieldKey];
@@ -366,7 +374,10 @@ export default class PinCode extends Component<Props, State> {
     ]);
 
     return (
-      <div className={styles.pinCodeInput} onClick={this.handlePinCodeSectionClick}>
+      <div
+        className={styles.pinCodeInput}
+        onClick={this.handlePinCodeSectionClick}
+      >
         {map(Array(length).fill(), (action, index) => {
           return (
             <NumericInput
