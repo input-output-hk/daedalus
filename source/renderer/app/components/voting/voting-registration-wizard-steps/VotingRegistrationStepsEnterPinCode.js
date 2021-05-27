@@ -74,6 +74,7 @@ type Props = {
 type State = {
   selectedPinField: ?string,
   pinCodesVisible: boolean,
+  sectionToFocus: ?string,
 };
 
 @observer
@@ -88,6 +89,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
   state = {
     selectedPinField: null,
     pinCodesVisible: false,
+    sectionToFocus: null,
   };
 
   form = new ReactToolboxMobxForm(
@@ -152,6 +154,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }));
   };
 
+  handleTabKey = (type: string) => {
+    this.setState( {
+      sectionToFocus: type === 'pinCode' ? 'repeatPinCode' : type,
+    });
+  };
+
   onChangePinCode = (values: Array<string>) => {
     const { form } = this;
     const pinCodeField = form.$('pinCode');
@@ -187,7 +195,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
-    const { selectedPinField, pinCodesVisible } = this.state;
+    const { selectedPinField, pinCodesVisible, sectionToFocus } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
@@ -239,6 +247,8 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!pinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
+            onTabKey={() => this.handleTabKey('pinCode')}
+            sectionToFocus={sectionToFocus}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
@@ -248,11 +258,13 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
             autoFocus={isRepeatPinCodeAutoFocused}
-            disabled={!pinCodeField.isValid && !repeatPinCodeField.value.length}
+            disabled={!pinCodeField.isValid && !repeatPinCodeField.value.length && sectionToFocus !== 'repeatPinCode'}
             error={repeatPinCodeField.error}
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!repeatPinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
+            onTabKey={() => this.handleTabKey('repeatPinCode')}
+            sectionToFocus={sectionToFocus}
           />
         </div>
 
