@@ -40,6 +40,7 @@ type State = {
   focusKeyChanged: boolean,
   focusIsUpdated: boolean,
   enableField: boolean,
+  resetFields: boolean,
 };
 
 export default class PinCode extends Component<Props, State> {
@@ -63,6 +64,7 @@ export default class PinCode extends Component<Props, State> {
     focusKeyChanged: false,
     focusIsUpdated: false,
     enableField: false,
+    resetFields: false,
   };
 
   valueHasChanged = (inputNewValue: string, key: number) => {
@@ -86,14 +88,17 @@ export default class PinCode extends Component<Props, State> {
     value: Array<string>,
     disabled: boolean
   ) => {
-    const { enableField } = this.state;
+    const { enableField, resetFields } = this.state;
     let inputFocusKey = 0;
     const emptyFieldIndex = value.findIndex((item) => item === '');
     if (emptyFieldIndex > -1 && !this.fromBackspace) {
       inputFocusKey = emptyFieldIndex;
-    } else if (this.isAddingNewValue) {
+    } else if (this.isAddingNewValue && !resetFields) {
       inputFocusKey = this.focusKey + 1;
+    } else if (!enableField && resetFields) {
+      inputFocusKey = 0;
     }
+
     return (
       disabled ||
       (enableField && index === inputFocusKey - 1 && inputFocusKey > value.length - 1) ?
@@ -135,7 +140,7 @@ export default class PinCode extends Component<Props, State> {
             const inputFieldRef = this.inputsRef[focusKey];
             if (inputFieldRef && inputFieldRef.inputElement) {
               this.setFocusOnField(inputFieldRef);
-              this.setState({ focusKeyChanged: false, focusIsUpdated: true, enableField: false });
+              this.setState({ focusKeyChanged: false, focusIsUpdated: true, enableField: false, resetFields: false });
             }
           }, 0);
         } else {
@@ -145,7 +150,8 @@ export default class PinCode extends Component<Props, State> {
             isBackSpace: false,
             focusKeyChanged: false,
             focusIsUpdated: false,
-            enableField: false
+            enableField: false,
+            resetFields: false
           });
         }
       }
@@ -277,7 +283,7 @@ export default class PinCode extends Component<Props, State> {
         } else {
           focusKeyUpdated = true;
         }
-        this.setState({ isBackSpace, focusKeyChanged: focusKeyUpdated, enableField: false });
+        this.setState({ isBackSpace, focusKeyChanged: focusKeyUpdated, enableField: false, resetFields: false });
         // Call onChange function to validate new value in focused input field
         onChange(value);
       }
@@ -298,7 +304,7 @@ export default class PinCode extends Component<Props, State> {
   };
 
   enableField = () => {
-    this.setState({ enableField: true });
+    this.setState({ enableField: true, resetFields: false });
   };
 
   handleSeparatorInput = (
@@ -424,7 +430,15 @@ export default class PinCode extends Component<Props, State> {
             <PopOver content={resetLabel}>
               <Button
                 className={clearPinCodesStyles}
-                onClick={() => onResetValues(name)}
+                onClick={() => {
+                  if (onResetValues) {
+                    onResetValues(name);
+                  }
+                  this.setState({ resetFields: true });
+                  setTimeout(() => {
+                    this.setFocusOnField(this.inputsRef[0]);
+                  }, 0);
+                }}
                 label={resetLabel}
                 disabled={isResetButtonDisabled}
               />
