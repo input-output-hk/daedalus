@@ -437,7 +437,7 @@ export default class WalletSendForm extends Component<Props, State> {
         return {
           policy_id: policyId,
           asset_name: assetName,
-          quantity: quantity.toNumber(),
+          quantity, // BigNumber or number - prevent parsing to Number because of JS number length limitation
         };
       }),
       'quantity'

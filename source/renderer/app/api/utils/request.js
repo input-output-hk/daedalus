@@ -95,7 +95,7 @@ function typedRequest<Response>(
           'Content-Type': 'application/octet-stream',
         };
       } else {
-        requestBody = JSON.stringify(rawBodyParams);
+        requestBody = JSONBigInt.stringify(rawBodyParams);
         options.headers = {
           'Content-Length': getContentLength(requestBody),
           'Content-Type': 'application/json; charset=utf-8',
