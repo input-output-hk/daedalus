@@ -24,10 +24,7 @@ import type {
   FaultInjectionIpcResponse,
   TlsConfig,
 } from '../../common/types/cardano-node.types';
-import {
-  CardanoNodeStates,
-  CardanoNodeImplementationOptions,
-} from '../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
 import { launcherConfig } from '../config';
@@ -75,9 +72,6 @@ export type CardanoNodeConfig = {
   killTimeout: number, // Milliseconds to wait for cardano-node to be killed
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
   cluster: string,
-  block0Path: string,
-  block0Hash: string,
-  secretPath: string,
   configPath: string,
   syncTolerance: string,
   cliBin: string, // Path to cardano-cli executable
@@ -134,7 +128,7 @@ export class CardanoNode {
   _log: Logger;
 
   /**
-   * Log file stream for cardano-node / Jormungandr
+   * Log file stream for cardano-node
    * @private
    */
   _cardanoNodeLogFile: WriteStream;
@@ -293,9 +287,6 @@ export class CardanoNode {
       stateDir,
       cluster,
       tlsPath,
-      block0Path,
-      block0Hash,
-      secretPath,
       configPath,
       syncTolerance,
       cliBin,
@@ -380,9 +371,6 @@ export class CardanoNode {
             cluster,
             stateDir,
             tlsPath,
-            block0Path,
-            block0Hash,
-            secretPath,
             configPath,
             syncTolerance,
             nodeLogFile,
@@ -668,23 +656,21 @@ export class CardanoNode {
   _handleCardanoReplyPortMessage = (port: number) => {
     const { _actions } = this;
     const { tlsPath } = this._config;
-    this._tlsConfig =
-      nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR ||
-      environment.isSelfnode
-        ? {
-            ca: ('': any),
-            key: ('': any),
-            cert: ('': any),
-            hostname: 'localhost',
-            port,
-          }
-        : {
-            ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
-            key: _actions.readFileSync(`${tlsPath}/client/client.key`),
-            cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
-            hostname: 'localhost',
-            port,
-          };
+    this._tlsConfig = environment.isSelfnode
+      ? {
+          ca: ('': any),
+          key: ('': any),
+          cert: ('': any),
+          hostname: 'localhost',
+          port,
+        }
+      : {
+          ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
+          key: _actions.readFileSync(`${tlsPath}/client/client.key`),
+          cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
+          hostname: 'localhost',
+          port,
+        };
 
     if (this._state === CardanoNodeStates.STARTING) {
       this._changeToState(CardanoNodeStates.RUNNING);

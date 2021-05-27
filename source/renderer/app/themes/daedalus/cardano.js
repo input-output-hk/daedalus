@@ -902,11 +902,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-syncing-background-color8': 'rgba(250, 251, 252, 1)',
     '--theme-syncing-text-color': '#5e6066',
   },
-  syncingConnecting: {
-    '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#f69ab2',
-    '--theme-syncing-connecting-subTitle2-color': '#fafbfc',
-  },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#ffffff',
     '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',

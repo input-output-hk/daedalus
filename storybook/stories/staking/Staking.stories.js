@@ -6,7 +6,6 @@ import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
 import StoryDecorator from '../_support/StoryDecorator';
-import { isIncentivizedTestnetTheme } from '../_support/utils';
 
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 
@@ -19,7 +18,6 @@ import ExperimentalDataOverlay from '../../../source/renderer/app/components/not
 
 import { StakePoolsStory } from './StakePools.stories';
 import { StakingRewardsStory } from './Rewards.stories';
-import { StakingRewardsForIncentivizedTestnetStory } from './RewardsForIncentivizedTestnet.stories';
 import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
@@ -103,9 +101,6 @@ const decorator = (story, context) => {
                   isActiveNavItem={(item) => item === getItemFromContext()}
                   activeItem={getItemFromContext()}
                   onNavItemClick={() => {}}
-                  isIncentivizedTestnet={isIncentivizedTestnetTheme(
-                    context.currentTheme
-                  )}
                 >
                   {storyWithKnobs}
                 </StakingWithNavigation>,
@@ -206,7 +201,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
-  .add(pageNames['rewards-itn'], StakingRewardsForIncentivizedTestnetStory, {
+  .add(pageNames['rewards-itn'], StakingRewardsStory, {
     id: 'rewards-incentivized-testnet',
   })
 

@@ -908,11 +908,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-syncing-background-color8': 'rgba(11, 25, 38, 1)',
     '--theme-syncing-text-color': '#e9f4fe',
   },
-  syncingConnecting: {
-    '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#f69ab2',
-    '--theme-syncing-connecting-subTitle2-color': '#fafbfc',
-  },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
     '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',

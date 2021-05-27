@@ -893,11 +893,6 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-syncing-background-color8': 'rgba(18, 19, 38, 1)',
     '--theme-syncing-text-color': '#ffffff',
   },
-  syncingConnecting: {
-    '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#eb2256',
-    '--theme-syncing-connecting-subTitle2-color': '#eb2256',
-  },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#ffffff',
     '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',

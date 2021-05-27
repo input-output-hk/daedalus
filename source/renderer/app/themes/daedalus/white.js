@@ -894,11 +894,6 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-syncing-background-color8': 'rgba(255, 255, 255, 1)',
     '--theme-syncing-text-color': '#2d2d2d',
   },
-  syncingConnecting: {
-    '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#f69ab2',
-    '--theme-syncing-connecting-subTitle2-color': '#fafbfc',
-  },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
     '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',

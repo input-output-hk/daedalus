@@ -252,7 +252,7 @@ export default class DisplaySettings extends Component<Props> {
             </button>
           )}
 
-          {(isDev || global.isShelleyTestnet) && (
+          {isDev && (
             <button
               className={themeShelleyTestnetClasses}
               onClick={selectTheme.bind(this, {

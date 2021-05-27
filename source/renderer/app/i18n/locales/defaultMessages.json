@@ -1835,53 +1835,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Daedalus",
-        "description": "Daedalus",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
-        "id": "loading.screen.syncingConnectingTitle",
-        "start": {
-          "column": 9,
-          "line": 9
-        }
-      },
-      {
-        "defaultMessage": "!!!INCENTIVIZED TESTNET v1",
-        "description": "INCENTIVIZED TESTNET v1",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
-        "id": "loading.screen.syncingConnectingIncentivizedTestnet",
-        "start": {
-          "column": 23,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!Rewards",
-        "description": "Rewards",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
-        "id": "loading.screen.syncingConnectingRewards",
-        "start": {
-          "column": 16,
-          "line": 19
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Unable to sync - incorrect time",
         "description": "Title of Sync error overlay",
         "end": {
@@ -3428,198 +3381,6 @@
       }
     ],
     "path": "source/renderer/app/components/splash/SplashNetworkFlight.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Daedalus",
-        "description": "Daedalus",
-        "end": {
-          "column": 3,
-          "line": 12
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
-        "id": "static.splash.network.title",
-        "start": {
-          "column": 9,
-          "line": 8
-        }
-      },
-      {
-        "defaultMessage": "!!!INCENTIVIZED TESTNET v1",
-        "description": "INCENTIVIZED TESTNET v1",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
-        "id": "static.splash.network.itnVersionName",
-        "start": {
-          "column": 15,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Rewards",
-        "description": "Rewards",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
-        "id": "static.splash.network.itnNetworkName",
-        "start": {
-          "column": 15,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!This version of Daedalus has been created specifically for use with the Incentivized Testnet. It is not compatible with the Cardano mainnet. If you had ada in a mainnet Daedalus or Yoroi wallet at the time of the balance snapshot (12.00 UTC, November 29) you can use this version of Daedalus to restore those funds as testnet ada, for use exclusively on the Incentivized Testnet. The rewards earned for delegating stake and running stake pools on the Incentivized Testnet will be paid out in real ada at the end of the Incentivized Testnet program. Important: Please keep your Rewards wallet recovery phrase safe. You will need it to receive your ada rewards on the mainnet.",
-        "description": "This version of Daedalus has been created specifically for the balance check, the first stage in the roll-out of the Incentivized Testnet. It is not compatible with the Cardano mainnet. The balance check is a practice run for the official balance snapshot that is currently planned for later in November. This initial test will allow us to test core functionality, while enabling users to validate that the value of their mainnet ada balances is accurately captured ahead of the Incentivized Testnet.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
-        "id": "static.splash.network.itnDescription",
-        "start": {
-          "column": 18,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand",
-        "description": "I understand",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
-        "id": "static.splash.network.buttonLabel",
-        "start": {
-          "column": 15,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Learn more",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
-        "id": "static.splash.network.linkLabel",
-        "start": {
-          "column": 13,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!http://staking.cardano.org/",
-        "description": "\"Learn more\" link URL on the network splash screen",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkITN.js",
-        "id": "static.splash.network.itnLinkUrl",
-        "start": {
-          "column": 11,
-          "line": 40
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/splash/SplashNetworkITN.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Daedalus",
-        "description": "Daedalus",
-        "end": {
-          "column": 3,
-          "line": 11
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
-        "id": "static.splash.network.title",
-        "start": {
-          "column": 9,
-          "line": 7
-        }
-      },
-      {
-        "defaultMessage": "!!!SHELLEY TESTNET",
-        "description": "SHELLEY TESTNET",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
-        "id": "static.splash.network.stnVersionName",
-        "start": {
-          "column": 15,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!This version of Daedalus has been created to be used specifically with the Shelley testnet network.",
-        "description": "stnDescription on network splash screen",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
-        "id": "static.splash.network.stnDescription",
-        "start": {
-          "column": 18,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand",
-        "description": "I understand",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
-        "id": "static.splash.network.buttonLabel",
-        "start": {
-          "column": 15,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Learn more",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
-        "id": "static.splash.network.linkLabel",
-        "start": {
-          "column": 13,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!https://testnets.cardano.org/en/shelley/overview/",
-        "description": "\"Learn more\" link URL on the STN network splash screen",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
-        "id": "static.splash.network.stnLinkUrl",
-        "start": {
-          "column": 11,
-          "line": 33
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/splash/SplashNetworkSTN.json"
   },
   {
     "descriptors": [
@@ -5694,140 +5455,9 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.title",
-        "start": {
-          "column": 9,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Export CSV",
-        "description": "Label for the \"Export CSV\" button on the staking rewards page.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.exportButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!No rewards",
-        "description": "\"No rewards\" rewards label on staking rewards page.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.no.rewards",
-        "start": {
-          "column": 13,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Date",
-        "description": "Table header \"Date\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.date",
-        "start": {
-          "column": 19,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Stake pool",
-        "description": "Table header \"Stake pool\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.pool",
-        "start": {
-          "column": 19,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet",
-        "description": "Table header \"Wallet\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.wallet",
-        "start": {
-          "column": 21,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Total rewards earned",
-        "description": "Table header \"Reward\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.reward",
-        "start": {
-          "column": 21,
-          "line": 55
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Label for \"Learn more\" button on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.learnMore.ButtonLabel",
-        "start": {
-          "column": 24,
-          "line": 60
-        }
-      },
-      {
-        "defaultMessage": "!!!Rewards earned by delegating your stake are automatically collected into your reward account and added to your wallet balance.",
-        "description": "Rewards description text on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 70
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.note",
-        "start": {
-          "column": 8,
-          "line": 65
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/rewards/StakingRewards.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Earned delegation rewards",
-        "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
-        "end": {
-          "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
@@ -5841,7 +5471,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.csvFilenamePrefix",
         "start": {
           "column": 21,
@@ -5855,7 +5485,7 @@
           "column": 3,
           "line": 45
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
@@ -5869,7 +5499,7 @@
           "column": 3,
           "line": 50
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
@@ -5883,7 +5513,7 @@
           "column": 3,
           "line": 55
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
@@ -5897,7 +5527,7 @@
           "column": 3,
           "line": 60
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
@@ -5911,7 +5541,7 @@
           "column": 3,
           "line": 65
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.rewardsAddress",
         "start": {
           "column": 29,
@@ -5925,7 +5555,7 @@
           "column": 3,
           "line": 70
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
@@ -5939,7 +5569,7 @@
           "column": 3,
           "line": 76
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
@@ -5953,7 +5583,7 @@
           "column": 3,
           "line": 81
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
@@ -5967,7 +5597,7 @@
           "column": 3,
           "line": 86
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.actionViewInExplorer",
         "start": {
           "column": 24,
@@ -5975,7 +5605,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.json"
+    "path": "source/renderer/app/components/staking/rewards/StakingRewards.json"
   },
   {
     "descriptors": [
@@ -17202,13 +16832,13 @@
         "description": "\"Learn more\" link URL in the staking rewards page",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/containers/staking/StakingRewardsPage.js",
         "id": "staking.rewards.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 12
+          "line": 11
         }
       }
     ],
@@ -17848,31 +17478,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Testnet",
-        "description": "\"Shelley Testnet\" Cardano network",
+        "defaultMessage": "!!!Shelley QA",
+        "description": "\"Shelley QA\" Cardano network",
         "end": {
           "column": 3,
           "line": 215
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.shelley_testnet",
-        "start": {
-          "column": 27,
-          "line": 211
-        }
-      },
-      {
-        "defaultMessage": "!!!Shelley QA",
-        "description": "\"Shelley QA\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 220
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_qa",
         "start": {
           "column": 22,
-          "line": 216
+          "line": 211
         }
       },
       {
@@ -17880,41 +17496,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 225
+          "line": 220
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 221
-        }
-      },
-      {
-        "defaultMessage": "!!!Incentivized Testnet v1 - Rewards",
-        "description": "\"itn_rewards_v1\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 230
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_rewards_v1",
-        "start": {
-          "column": 26,
-          "line": 226
-        }
-      },
-      {
-        "defaultMessage": "!!!ITN Selfnode",
-        "description": "\"itn_selfnode\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 235
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.itn_selfnode",
-        "start": {
-          "column": 24,
-          "line": 231
+          "line": 216
         }
       },
       {
@@ -17922,41 +17510,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 240
+          "line": 225
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 236
-        }
-      },
-      {
-        "defaultMessage": "!!!QA",
-        "description": "\"qa\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 245
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.qa",
-        "start": {
-          "column": 14,
-          "line": 241
-        }
-      },
-      {
-        "defaultMessage": "!!!Nightly",
-        "description": "\"nightly\" Cardano network",
-        "end": {
-          "column": 3,
-          "line": 250
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.nightly",
-        "start": {
-          "column": 19,
-          "line": 246
+          "line": 221
         }
       },
       {
@@ -17964,13 +17524,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 255
+          "line": 230
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 251
+          "line": 226
         }
       },
       {
@@ -17978,13 +17538,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 260
+          "line": 235
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 256
+          "line": 231
         }
       },
       {
@@ -17992,13 +17552,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 265
+          "line": 240
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 261
+          "line": 236
         }
       },
       {
@@ -18006,13 +17566,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 270
+          "line": 245
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 266
+          "line": 241
         }
       },
       {
@@ -18020,13 +17580,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 275
+          "line": 250
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 271
+          "line": 246
         }
       },
       {
@@ -18034,13 +17594,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 280
+          "line": 255
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 276
+          "line": 251
         }
       },
       {
@@ -18048,13 +17608,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 285
+          "line": 260
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 281
+          "line": 256
         }
       },
       {
@@ -18062,13 +17622,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 290
+          "line": 265
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 286
+          "line": 261
         }
       },
       {
@@ -18076,13 +17636,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 295
+          "line": 270
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 291
+          "line": 266
         }
       },
       {
@@ -18090,13 +17650,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 300
+          "line": 275
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 296
+          "line": 271
         }
       },
       {
@@ -18104,13 +17664,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 305
+          "line": 280
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 301
+          "line": 276
         }
       },
       {
@@ -18118,13 +17678,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 310
+          "line": 285
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 306
+          "line": 281
         }
       },
       {
@@ -18132,13 +17692,13 @@
         "description": "Reveal label.",
         "end": {
           "column": 3,
-          "line": 315
+          "line": 290
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reveal",
         "start": {
           "column": 10,
-          "line": 311
+          "line": 286
         }
       },
       {
@@ -18146,13 +17706,13 @@
         "description": "Hide label.",
         "end": {
           "column": 3,
-          "line": 320
+          "line": 295
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.hide",
         "start": {
           "column": 8,
-          "line": 316
+          "line": 291
         }
       },
       {
@@ -18160,13 +17720,13 @@
         "description": "Copy label.",
         "end": {
           "column": 3,
-          "line": 325
+          "line": 300
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.copy",
         "start": {
           "column": 8,
-          "line": 321
+          "line": 296
         }
       },
       {
@@ -18174,13 +17734,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 332
+          "line": 307
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 326
+          "line": 301
         }
       },
       {
@@ -18188,13 +17748,13 @@
         "description": "Dropdown search \"No results\" message",
         "end": {
           "column": 3,
-          "line": 337
+          "line": 312
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.search.noResultsMessage",
         "start": {
           "column": 26,
-          "line": 333
+          "line": 308
         }
       }
     ],

@@ -1129,11 +1129,6 @@ export const createDaedalusComponentsTheme = (
       ).alpha(1)}`,
       '--theme-syncing-text-color': `${text.primary}`,
     },
-    syncingConnecting: {
-      '--theme-syncing-connecting-title-color': `${text.primary}`,
-      '--theme-syncing-connecting-subTitle1-color': `${text.secondary}`,
-      '--theme-syncing-connecting-subTitle2-color': `${text.primary}`,
-    },
     systemError: {
       '--theme-system-error-overlay-attention-icon-color': `${text.secondary}`,
       '--theme-system-error-overlay-background-color': `${error.regular}`,

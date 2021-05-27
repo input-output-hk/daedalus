@@ -13,7 +13,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { isIncentivizedTestnet, isFlight } = global;
     const {
       newsFeed,
       appUpdate,
@@ -39,7 +38,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       verificationProgress,
     } = networkStatus;
     const { displayAppUpdateNewsItem } = appUpdate;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
+    const { hasLoadedCurrentLocale } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = newsFeed.newsFeedData;
     const hasNotification = unread.length > 0;
@@ -48,7 +47,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       <SyncingConnecting
         cardanoNodeState={cardanoNodeState}
         hasBeenConnected={hasBeenConnected}
-        isFlight={isFlight}
         isConnected={isConnected}
         isSynced={isSynced}
         isConnecting={!isConnected}
@@ -61,14 +59,12 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         hasNotification={hasNotification}
         hasUpdate={displayAppUpdateNewsItem}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
-        hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={
           !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
         }
         isNodeResponding={isNodeResponding}
         isNodeSyncing={isNodeSyncing}
         isNodeTimeCorrect={isNodeTimeCorrect}
-        isIncentivizedTestnet={isIncentivizedTestnet}
         onIssueClick={this.handleIssueClick}
         onOpenExternalLink={this.handleOpenExternalLink}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}

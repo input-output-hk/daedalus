@@ -118,7 +118,6 @@ export default class Staking extends Component<Props> {
             isActiveNavItem={this.isActiveNavItem}
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
-            isIncentivizedTestnet={global.isIncentivizedTestnet}
           >
             {children}
           </StakingWithNavigation>

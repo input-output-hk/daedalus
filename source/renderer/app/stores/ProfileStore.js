@@ -162,18 +162,10 @@ export default class ProfileStore extends Store {
     return isRequestSet(this.getProfileLocaleRequest);
   }
 
-  @computed get isIncentivizedTestnetTheme(): boolean {
-    return this.currentTheme === THEMES.INCENTIVIZED_TESTNET;
-  }
-
   @computed get currentTheme(): string {
     // Default theme handling
     let systemValue;
-    if (global.isShelleyTestnet) {
-      systemValue = THEMES.SHELLEY_TESTNET;
-    } else if (global.isIncentivizedTestnet) {
-      systemValue = THEMES.INCENTIVIZED_TESTNET;
-    } else if (global.isFlight) {
+    if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
     } else {
       systemValue = this.environment.isMainnet

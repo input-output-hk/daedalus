@@ -23,7 +23,6 @@ import {
 } from '../config/stakingConfig';
 import type {
   Reward,
-  RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
   DelegationCalculateFeeResponse,
@@ -35,7 +34,6 @@ import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
-import REWARDS from '../config/stakingRewards.dummy.json';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
@@ -516,15 +514,8 @@ export default class StakingStore extends Store {
   }
 
   @computed get rewards(): Array<Reward> {
-    return REWARDS;
-  }
-
-  @computed
-  get rewardsForIncentivizedTestnet(): Array<RewardForIncentivizedTestnet> {
     const { wallets } = this.stores;
-    return wallets.allWallets.map(
-      this._transformWalletToRewardForIncentivizedTestnet
-    );
+    return wallets.allWallets.map(this._transformWalletToReward);
   }
 
   @action showCountdown(): boolean {
@@ -843,7 +834,7 @@ export default class StakingStore extends Store {
     });
   };
 
-  _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
+  _transformWalletToReward = (inputWallet: Wallet) => {
     const {
       id: walletId,
       name: wallet,

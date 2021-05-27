@@ -3,12 +3,6 @@ import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
-  DEVELOPMENT_EKG_URL,
-  STAGING_EKG_URL,
-  TESTNET_EKG_URL,
-  MAINNET_LATEST_VERSION_INFO_URL,
-  STAGING_LATEST_VERSION_INFO_URL,
-  TESTNET_LATEST_VERSION_INFO_URL,
   MAINNET_NEWS_URL,
   TESTNET_NEWS_URL,
   STAGING_NEWS_URL,
@@ -72,40 +66,6 @@ export const getNetworkExplorerUrlByType = (
   return `${getNetworkExplorerUrl(
     network
   )}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
-};
-
-export const getNetworkEkgUrl = (env: {
-  isDev: boolean,
-  isStaging: boolean,
-  isTestnet: boolean,
-}) => {
-  // sets default to development in case env.NETWORK is undefined
-  let ekgUrl = DEVELOPMENT_EKG_URL;
-  if (env.isDev) {
-    ekgUrl = DEVELOPMENT_EKG_URL;
-  }
-  if (env.isStaging) {
-    ekgUrl = STAGING_EKG_URL;
-  }
-  if (env.isTestnet) {
-    ekgUrl = TESTNET_EKG_URL;
-  }
-  return ekgUrl;
-};
-
-export const getLatestVersionInfoUrl = (network: string): string => {
-  // sets default to mainnet in case env.NETWORK is undefined
-  let latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL;
-  if (network === MAINNET) {
-    latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL;
-  }
-  if (network === STAGING) {
-    latestVersionInfoUrl = STAGING_LATEST_VERSION_INFO_URL;
-  }
-  if (network === TESTNET) {
-    latestVersionInfoUrl = TESTNET_LATEST_VERSION_INFO_URL;
-  }
-  return latestVersionInfoUrl;
 };
 
 export const getNewsURL = (network: string): string => {
