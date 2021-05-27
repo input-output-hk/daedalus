@@ -22,7 +22,7 @@ type Props = $Exact<{
   type: string,
   autoFocus: boolean,
   onChange?: Function,
-  onResetValues?: Function,
+  onResetValues: Function,
   label: string,
   resetLabel: string,
   length: number,
@@ -313,13 +313,11 @@ export default class PinCode extends Component<Props, State> {
 
   togglePinCodeVisibility = () => {
     this.setState((prevState) => ({
-      pinCodesHidden: !prevState.pinCodesHidden
+      pinCodesHidden: !prevState.pinCodesHidden,
     }));
   };
 
-  clearPinCodes = () => {
-
-  };
+  clearPinCodes = () => {};
 
   generatePinCodeInput = () => {
     const {
@@ -376,7 +374,14 @@ export default class PinCode extends Component<Props, State> {
   };
 
   render() {
-    const { label, resetLabel, error, isResetButtonDisabled, onResetValues, name } = this.props;
+    const {
+      label,
+      resetLabel,
+      error,
+      isResetButtonDisabled,
+      onResetValues,
+      name,
+    } = this.props;
 
     const { pinCodesHidden } = this.state;
 
@@ -392,10 +397,7 @@ export default class PinCode extends Component<Props, State> {
       'flat',
     ]);
 
-    const clearPinCodesStyles = classNames([
-      styles.clearPinCodeButton,
-      'flat',
-    ]);
+    const clearPinCodesStyles = classNames([styles.clearPinCodeButton, 'flat']);
 
     const pinCode = this.generatePinCodeInput();
 
