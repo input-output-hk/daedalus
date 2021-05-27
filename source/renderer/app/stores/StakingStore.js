@@ -920,7 +920,7 @@ export default class StakingStore extends Store {
     console.log('_requestRewardsHistoryCSVFile');
   };
 
-  _setRewardsHistoryDateRange = ({
+  @action _setRewardsHistoryDateRange = ({
     startDate,
     endDate,
   }: {

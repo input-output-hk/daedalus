@@ -76,7 +76,6 @@ export default class StakingRewardsHistoryDialog extends Component<
   handleCopy = () => {
     const { onCopy, reward } = this.props;
     const { rewardsAddress } = reward || {};
-    onCopy(rewardsAddress);
     this.setState({
       itemCopied: true,
     });
@@ -84,6 +83,7 @@ export default class StakingRewardsHistoryDialog extends Component<
     this.copyNotificationTimeout = setTimeout(() => {
       this.setState({ itemCopied: false });
     }, ITEM_COPY_FEEDBACK);
+    if (onCopy) onCopy(rewardsAddress);
   };
 
   render() {
