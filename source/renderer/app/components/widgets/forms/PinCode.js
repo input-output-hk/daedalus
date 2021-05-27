@@ -86,7 +86,7 @@ export default class PinCode extends Component<Props, State> {
     value: Array<string>,
     disabled: boolean
   ) => {
-    // const { enableField } = this.state;
+    const { enableField } = this.state;
     let inputFocusKey = 0;
     const emptyFieldIndex = value.findIndex((item) => item === '');
     if (emptyFieldIndex > -1 && !this.fromBackspace) {
@@ -96,9 +96,12 @@ export default class PinCode extends Component<Props, State> {
     }
     return (
       disabled ||
-      (index > inputFocusKey && !value[index] && !value[inputFocusKey]) ||
-      (!(this.focusKey + 1 > value.length - 1) && (index < inputFocusKey - 1)) ||
-      ((index < inputFocusKey) && !value[inputFocusKey]/* && (index !== inputFocusKey - 1 && enableField) */)
+      (enableField && index === inputFocusKey - 1 && inputFocusKey > value.length - 1) ?
+        (this.focusKey !== inputFocusKey - 1) : (
+          (index > inputFocusKey && !value[index] && !value[inputFocusKey]) ||
+          (!(this.focusKey + 1 > value.length - 1) && (index < inputFocusKey - 1)) ||
+          ((index < inputFocusKey) && !value[inputFocusKey])
+        )
     );
   };
 
@@ -288,16 +291,10 @@ export default class PinCode extends Component<Props, State> {
   };
 
   setFocusOnField = (inputFieldRef: {
-    focus: ?Function,
-    props: { value: string },
-    inputElement: { current: { selectionStart: number, selectionEnd: number } },
+    focus: ?Function
   }) => {
-    const { focus, props, inputElement } = inputFieldRef;
+    const { focus } = inputFieldRef;
     if (focus) focus();
-    if (inputElement && props.value) {
-      inputElement.current.selectionStart = 0;
-      inputElement.current.selectionEnd = 1;
-    }
   };
 
   enableField = () => {
@@ -329,7 +326,9 @@ export default class PinCode extends Component<Props, State> {
       const fieldToFocus = this.inputsRef[this.focusKey];
       if (fieldToFocus) {
         this.enableField();
-        this.setFocusOnField(fieldToFocus);
+        setTimeout(() => {
+          this.setFocusOnField(fieldToFocus);
+        }, 0);
       }
     }
   };
