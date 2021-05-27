@@ -3165,16 +3165,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Staging vx",
-        "description": "Label for staging network with version.",
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
+        "description": "Label for Daedalus Flight with version.",
         "end": {
           "column": 3,
           "line": 17
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.stagingLabel",
+        "id": "test.environment.daedalusFlightLabel",
         "start": {
-          "column": 11,
+          "column": 10,
           "line": 13
         }
       },
@@ -3193,16 +3193,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Testnet",
-        "description": "Label for shelley_testnet with version.",
+        "defaultMessage": "!!!Staging vx",
+        "description": "Label for staging network with version.",
         "end": {
           "column": 3,
           "line": 27
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.shelleyTestnetLabel",
+        "id": "test.environment.stagingLabel",
         "start": {
-          "column": 19,
+          "column": 11,
           "line": 23
         }
       },
@@ -3221,101 +3221,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for development with version.",
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
         "end": {
           "column": 3,
           "line": 37
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.developmentLabel",
+        "id": "test.environment.selfnodeLabel",
         "start": {
-          "column": 15,
+          "column": 12,
           "line": 33
         }
       },
       {
-        "defaultMessage": "!!!Nightly vx",
-        "description": "Label for nightly with version.",
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for development with version.",
         "end": {
           "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.nightlyLabel",
+        "id": "test.environment.developmentLabel",
         "start": {
-          "column": 11,
+          "column": 15,
           "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!QA vx",
-        "description": "Label for qa with version.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.qaLabel",
-        "start": {
-          "column": 6,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for selfnode with version.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.selfnodeLabel",
-        "start": {
-          "column": 12,
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for ITN selfnode with version.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.itnSelfnodeLabel",
-        "start": {
-          "column": 16,
-          "line": 53
-        }
-      },
-      {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for ITN Rewards V1 with version.",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.itnRewardsV1Label",
-        "start": {
-          "column": 18,
-          "line": 58
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
-        "description": "Label for Daedalus Flight with version.",
-        "end": {
-          "column": 3,
-          "line": 67
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
-        "id": "test.environment.daedalusFlightLabel",
-        "start": {
-          "column": 10,
-          "line": 63
         }
       }
     ],
@@ -16888,16 +16818,16 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Staging vx",
-        "description": "Label for staging network with version.",
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
+        "description": "Label for Daedalus Flight with version.",
         "end": {
           "column": 3,
           "line": 12
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.stagingLabel",
+        "id": "test.environment.daedalusFlightLabel",
         "start": {
-          "column": 11,
+          "column": 10,
           "line": 8
         }
       },
@@ -16916,16 +16846,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Testnet",
-        "description": "Label for shelley_testnet with version.",
+        "defaultMessage": "!!!Staging vx",
+        "description": "Label for staging network with version.",
         "end": {
           "column": 3,
           "line": 22
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.shelleyTestnetLabel",
+        "id": "test.environment.stagingLabel",
         "start": {
-          "column": 19,
+          "column": 11,
           "line": 18
         }
       },
@@ -16944,101 +16874,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for development with version.",
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
         "end": {
           "column": 3,
           "line": 32
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.developmentLabel",
+        "id": "test.environment.selfnodeLabel",
         "start": {
-          "column": 15,
+          "column": 12,
           "line": 28
         }
       },
       {
-        "defaultMessage": "!!!Nightly vx",
-        "description": "Label for nightly with version.",
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for development with version.",
         "end": {
           "column": 3,
           "line": 37
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.nightlyLabel",
+        "id": "test.environment.developmentLabel",
         "start": {
-          "column": 11,
+          "column": 15,
           "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!QA vx",
-        "description": "Label for qa with version.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.qaLabel",
-        "start": {
-          "column": 6,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for selfnode with version.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.selfnodeLabel",
-        "start": {
-          "column": 12,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for ITN selfnode with version.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.itnSelfnodeLabel",
-        "start": {
-          "column": 16,
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!!Development vx",
-        "description": "Label for ITN Rewards V1 with version.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.itnRewardsV1Label",
-        "start": {
-          "column": 18,
-          "line": 53
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
-        "description": "Label for Daedalus Flight with version.",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
-        "id": "test.environment.daedalusFlightLabel",
-        "start": {
-          "column": 10,
-          "line": 58
         }
       }
     ],
