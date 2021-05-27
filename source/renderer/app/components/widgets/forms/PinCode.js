@@ -23,6 +23,7 @@ type Props = $Exact<{
   autoFocus: boolean,
   onChange?: Function,
   onResetValues: Function,
+  onShowHideValues: Function,
   label: string,
   resetLabel: string,
   length: number,
@@ -31,13 +32,13 @@ type Props = $Exact<{
   error: string | null,
   selectedPinField: ?string,
   isResetButtonDisabled: boolean,
+  pinCodesVisible: boolean,
 }>;
 
 type State = {
   isBackSpace: boolean,
   focusKeyChanged: boolean,
   focusIsUpdated: boolean,
-  pinCodesHidden: boolean,
 };
 
 export default class PinCode extends Component<Props, State> {
@@ -60,7 +61,6 @@ export default class PinCode extends Component<Props, State> {
     isBackSpace: false,
     focusKeyChanged: false,
     focusIsUpdated: false,
-    pinCodesHidden: true,
   };
 
   valueHasChanged = (inputNewValue: string, key: number) => {
@@ -311,14 +311,6 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
-  togglePinCodeVisibility = () => {
-    this.setState((prevState) => ({
-      pinCodesHidden: !prevState.pinCodesHidden,
-    }));
-  };
-
-  clearPinCodes = () => {};
-
   generatePinCodeInput = () => {
     const {
       id,
@@ -329,9 +321,8 @@ export default class PinCode extends Component<Props, State> {
       error,
       value,
       disabled,
+      pinCodesVisible,
     } = this.props;
-
-    const { pinCodesHidden } = this.state;
 
     const pinCodeClasses = classNames([
       styles.pinCode,
@@ -355,7 +346,7 @@ export default class PinCode extends Component<Props, State> {
               }}
               id={id + index}
               name={name}
-              type={pinCodesHidden ? type : 'text'}
+              type={pinCodesVisible ? 'text' : type}
               className={pinCodeClasses}
               label={null}
               key={index}
@@ -381,19 +372,19 @@ export default class PinCode extends Component<Props, State> {
       isResetButtonDisabled,
       onResetValues,
       name,
+      onShowHideValues,
+      pinCodesVisible,
     } = this.props;
-
-    const { pinCodesHidden } = this.state;
 
     const { intl } = this.context;
 
     const toggleButtonTooltip = intl.formatMessage(
-      globalMessages[pinCodesHidden ? 'reveal' : 'hide']
+      globalMessages[pinCodesVisible ? 'hide' : 'reveal']
     );
 
     const revealHidePinCodesStyles = classNames([
       styles.pinCodeButton,
-      pinCodesHidden ? styles.revealButton : styles.hideButton,
+      pinCodesVisible ? styles.hideButton : styles.revealButton,
       'flat',
     ]);
 
@@ -420,13 +411,13 @@ export default class PinCode extends Component<Props, State> {
               <Button
                 className={revealHidePinCodesStyles}
                 label={
-                  pinCodesHidden ? (
-                    <SVGInline svg={revealKeyImage} />
-                  ) : (
+                  pinCodesVisible ? (
                     <SVGInline svg={hideKeyImage} />
+                  ) : (
+                    <SVGInline svg={revealKeyImage} />
                   )
                 }
-                onClick={this.togglePinCodeVisibility}
+                onClick={() => onShowHideValues()}
               />
             </PopOver>
           </div>

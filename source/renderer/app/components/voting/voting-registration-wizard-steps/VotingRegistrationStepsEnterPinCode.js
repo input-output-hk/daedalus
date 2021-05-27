@@ -73,6 +73,7 @@ type Props = {
 
 type State = {
   selectedPinField: ?string,
+  pinCodesVisible: boolean,
 };
 
 @observer
@@ -86,6 +87,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
 
   state = {
     selectedPinField: null,
+    pinCodesVisible: false,
   };
 
   form = new ReactToolboxMobxForm(
@@ -144,6 +146,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     pinCodeField.value = [];
   };
 
+  onShowHideValues = () => {
+    this.setState((prevState) => ({
+      pinCodesVisible: !prevState.pinCodesVisible,
+    }));
+  };
+
   onChangePinCode = (values: Array<string>) => {
     const { form } = this;
     const pinCodeField = form.$('pinCode');
@@ -179,7 +187,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
-    const { selectedPinField } = this.state;
+    const { selectedPinField, pinCodesVisible } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
@@ -227,8 +235,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             autoFocus
             onChange={(values) => this.onChangePinCode(values)}
             onResetValues={(type: string) => this.onResetValues(type)}
+            onShowHideValues={() => this.onShowHideValues()}
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!pinCodeField.value.length}
+            pinCodesVisible={pinCodesVisible}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
@@ -236,11 +246,13 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             resetLabel={resetPinCodesLabel}
             onChange={(values) => this.onChangeRepeatPinCode(values)}
             onResetValues={(type: string) => this.onResetValues(type)}
+            onShowHideValues={() => this.onShowHideValues()}
             autoFocus={isRepeatPinCodeAutoFocused}
             disabled={!pinCodeField.isValid && !repeatPinCodeField.value.length}
             error={repeatPinCodeField.error}
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!repeatPinCodeField.value.length}
+            pinCodesVisible={pinCodesVisible}
           />
         </div>
 
