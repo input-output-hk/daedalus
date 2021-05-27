@@ -57,8 +57,6 @@ import {
   TESTNET_MAGIC,
   SELFNODE_MAGIC,
   STAGING_MAGIC,
-  SHELLEY_TESTNET_NETWORK_ID,
-  ITN_MAGIC,
   MAINNET_MAGIC,
 } from '../../../common/types/cardano-node.types';
 import type { AssetToken } from '../api/assets/types';
@@ -994,23 +992,17 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = async (address: string) => {
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
     let expectedNetworkTag: ?Array<?number> | ?number;
-    let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
+    const validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
     this.isAddressFromSameWallet = false;
 
     if (isMainnet) {
       expectedNetworkTag = MAINNET_MAGIC;
     } else if (isStaging) {
       expectedNetworkTag = STAGING_MAGIC;
-    } else if (isIncentivizedTestnet) {
-      expectedNetworkTag = ITN_MAGIC;
-      validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {
       expectedNetworkTag = TESTNET_MAGIC;
-    } else if (isShelleyTestnet) {
-      expectedNetworkTag = SHELLEY_TESTNET_NETWORK_ID;
     } else if (isSelfnode) {
       expectedNetworkTag = SELFNODE_MAGIC;
     } else {

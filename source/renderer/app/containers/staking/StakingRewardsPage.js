@@ -37,11 +37,10 @@ export default class StakingRewardsPage extends Component<Props> {
   onOpenExternalLink = (rewardsAddress: string) => {
     const { app } = this.props.stores;
     const {
-      environment: { network, rawNetwork },
+      environment: { network },
     } = app;
     const cardanoExplorerLink = `${getNetworkExplorerUrl(
-      network,
-      rawNetwork
+      network
     )}/address/${rewardsAddress}`;
     this.props.stores.app.openExternalLink(cardanoExplorerLink);
   };

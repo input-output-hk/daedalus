@@ -138,31 +138,7 @@ http://localhost:65432/metadata/query
 ```
 ... and expect a "200 OK" response.
 
-
-### Running Daedalus with Jormungandr
-
-#### ITN Selfnode
-
-1. Run `yarn nix:itn_selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn itn:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn itn:byron:wallet:importer` script.
-
-#### ITN Rewards V1
-
-1. Run `yarn nix:itn` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### QA Testnet
-
-1. Run `yarn nix:qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### Nightly Testnet
-
-1. Run `yarn nix:nightly` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-### Updating upstream dependencies (cardano-wallet, cardano-node & Jormungandr)
+### Updating upstream dependencies (cardano-wallet, cardano-node, and iohk-nix)
 
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 

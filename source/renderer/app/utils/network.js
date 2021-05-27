@@ -3,10 +3,6 @@ import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
-  STN_EXPLORER_URL,
-  ITN_EXPLORER_URL,
-  ITN_QA_EXPLORER_URL,
-  ITN_NIGHTLY_EXPLORER_URL,
   DEVELOPMENT_EKG_URL,
   STAGING_EKG_URL,
   TESTNET_EKG_URL,
@@ -27,18 +23,9 @@ import {
   STAGING,
   TESTNET,
   DEVELOPMENT,
-  ITN_REWARDS_V1,
-  SHELLEY_TESTNET,
 } from '../../../common/types/environment.types';
-import {
-  checkIsIncentivizedTestnetQA,
-  checkIsIncentivizedTestnetNightly,
-} from '../../../common/utils/environmentCheckers';
 
-export const getNetworkExplorerUri = (
-  network: string,
-  rawNetwork: string
-): string => {
+export const getNetworkExplorerUri = (network: string): string => {
   if (network === MAINNET) {
     return MAINNET_EXPLORER_URL;
   }
@@ -48,34 +35,15 @@ export const getNetworkExplorerUri = (
   if (network === TESTNET) {
     return TESTNET_EXPLORER_URL;
   }
-  if (checkIsIncentivizedTestnetQA(rawNetwork)) {
-    return ITN_QA_EXPLORER_URL;
-  }
-  if (checkIsIncentivizedTestnetNightly(rawNetwork)) {
-    return ITN_NIGHTLY_EXPLORER_URL;
-  }
-  if (network === ITN_REWARDS_V1) {
-    return ITN_EXPLORER_URL;
-  }
-  if (network === SHELLEY_TESTNET) {
-    return STN_EXPLORER_URL;
-  }
   return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
 };
 
-export const getNetworkExplorerUrl = (
-  network: string,
-  rawNetwork: string
-): string => {
+export const getNetworkExplorerUrl = (network: string): string => {
   const protocol =
-    network === MAINNET ||
-    network === TESTNET ||
-    network === DEVELOPMENT ||
-    network === ITN_REWARDS_V1 ||
-    network === SHELLEY_TESTNET
+    network === MAINNET || network === TESTNET || network === DEVELOPMENT
       ? 'https://'
       : 'http://';
-  const uri = getNetworkExplorerUri(network, rawNetwork);
+  const uri = getNetworkExplorerUri(network);
   return `${protocol}${uri}`;
 };
 
@@ -83,19 +51,13 @@ export const getNetworkExplorerUrlByType = (
   type: 'tx' | 'address',
   param: string,
   network: string,
-  rawNetwork: string,
   currentLocale: string
 ): string => {
   let queryStringPrefix = '';
   let localePrefix = '';
   let typeValue = type;
 
-  if (
-    network === MAINNET ||
-    network === TESTNET ||
-    network === ITN_REWARDS_V1 ||
-    network === SHELLEY_TESTNET
-  ) {
+  if (network === MAINNET || network === TESTNET) {
     localePrefix = `/${currentLocale.substr(0, 2)}`;
     if (type === 'address') {
       queryStringPrefix = '?address=';
@@ -108,8 +70,7 @@ export const getNetworkExplorerUrlByType = (
   }
 
   return `${getNetworkExplorerUrl(
-    network,
-    rawNetwork
+    network
   )}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
 };
 
