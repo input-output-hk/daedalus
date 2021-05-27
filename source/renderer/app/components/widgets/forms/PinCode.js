@@ -96,10 +96,12 @@ export default class PinCode extends Component<Props, State> {
     const emptyFieldIndex = value.findIndex((item) => item === '');
     if (emptyFieldIndex > -1 && !this.fromBackspace) {
       inputFocusKey = emptyFieldIndex;
-    } else if (this.isAddingNewValue && !resetFields) {
+    } else if (this.isAddingNewValue && !resetFields && !sectionToFocus) {
       inputFocusKey = this.focusKey + 1;
     } else if (!enableField && resetFields) {
       inputFocusKey = 0;
+    } else if (sectionToFocus && sectionToFocus !== name) {
+      inputFocusKey = this.focusKey;
     }
     if (sectionToFocus && sectionToFocus !== name) {
       return true;
@@ -178,7 +180,13 @@ export default class PinCode extends Component<Props, State> {
   };
 
   componentDidUpdate() {
-    const { value, length, name, selectedPinField, sectionToFocus } = this.props;
+    const {
+      value,
+      length,
+      name,
+      selectedPinField,
+      sectionToFocus,
+    } = this.props;
     const { isBackSpace, focusKeyChanged, focusIsUpdated } = this.state;
     const key = value.join('').length;
     const inputValue = value[key - 1];
@@ -196,8 +204,8 @@ export default class PinCode extends Component<Props, State> {
         : this.focusKey;
     const focusKey = parseInt(this.focusKey, 10);
     if (
-      (name === sectionToFocus) ||
-      ((name === selectedPinField) &&
+      name === sectionToFocus ||
+      (name === selectedPinField &&
         ((!focusIsUpdated && key > 0 && key < length) ||
           emptyFieldIndex > -1 ||
           focusKeyChanged))
