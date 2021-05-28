@@ -56,6 +56,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Syncing {syncingProgress}%',
     description: 'unknown stake pool label on staking rewards page.',
   },
+  detailsButtonLabel: {
+    id: 'staking.rewards.detailsButton.label',
+    defaultMessage: '!!!Details',
+    description: 'Details Button label on staking rewards page.',
+  },
 });
 
 const REWARD_FIELDS = {
@@ -270,21 +275,30 @@ export default class StakingRewards extends Component<Props, State> {
                           {rewardsAddress}
                         </td>
                         <td className={styles.rewardAmount}>
-                          {isRestoring ? '-' : rewardAmount}
-                          {isRestoring && (
-                            <div className={styles.syncingProgress}>
-                              <PopOver
-                                content={intl.formatMessage(
-                                  messages.syncingTooltipLabel,
-                                  {
-                                    syncingProgress,
-                                  }
+                          <div>
+                            {isRestoring ? '-' : rewardAmount}
+                            {isRestoring && (
+                              <div className={styles.syncingProgress}>
+                                <PopOver
+                                  content={intl.formatMessage(
+                                    messages.syncingTooltipLabel,
+                                    {
+                                      syncingProgress,
+                                    }
+                                  )}
+                                >
+                                  <LoadingSpinner medium />
+                                </PopOver>
+                              </div>
+                            )}
+                            {!isRestoring && (
+                              <div className={styles.detailsButton}>
+                                {intl.formatMessage(
+                                  messages.detailsButtonLabel
                                 )}
-                              >
-                                <LoadingSpinner medium />
-                              </PopOver>
-                            </div>
-                          )}
+                              </div>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );

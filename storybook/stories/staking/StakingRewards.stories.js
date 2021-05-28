@@ -14,6 +14,7 @@ const rewards = map(REWARDS, (reward) => {
   return {
     ...reward,
     reward: new BigNumber(reward.reward),
+    walletName: reward.wallet,
   };
 });
 
