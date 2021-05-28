@@ -208,7 +208,9 @@ export default class StakingRewardsHistoryDialog extends Component<
           />
         )}
         {isFetchingRewardsHistory ? (
-          <LoadingSpinner big className={styles.loadingSpinner} />
+          <div className={styles.loadingSpinner}>
+            <LoadingSpinner big />
+          </div>
         ) : (
           <Table
             columns={tableColumns}
