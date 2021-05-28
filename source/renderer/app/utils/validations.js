@@ -88,7 +88,7 @@ export const isValidAssetAmountInNaturalUnits = (value: string) => {
   if (!isNumeric) return false;
   const numericValue = new BigNumber(value);
   const minValue = new BigNumber(1);
-  const maxValue = new BigNumber(18446744073709551615); // cardano-wallet max asset amount of 2^64 - 1
+  const maxValue = new BigNumber('18446744073709551615'); // cardano-wallet max asset amount of 2^64 - 1
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
 
