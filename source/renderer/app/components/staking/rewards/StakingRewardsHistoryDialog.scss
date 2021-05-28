@@ -45,4 +45,16 @@
       }
     }
   }
+  .dateRange {
+    margin-bottom: 20px;
+  }
+  :global {
+    .Dialog_content .LoadingSpinner_icon {
+      svg {
+        path {
+          fill: var(--theme-dialog-title-color) !important;
+        }
+      }
+    }
+  }
 }

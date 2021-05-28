@@ -22,6 +22,7 @@ import DatePicker from '../../widgets/forms/DatePicker';
 import copyIcon from '../../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { ITEM_COPY_FEEDBACK } from '../../../config/timingConfig';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   title: {
@@ -47,7 +48,7 @@ type Props = {
   onExportCSV: Function,
   onSetDateRange: Function,
   reward: RewardForIncentivizedTestnet,
-  rewardsHistory?: Array<RewardsHistoryItem>,
+  rewardsHistory: Array<RewardsHistoryItem>,
   startDate: Date,
   endDate: ?Date,
 };
@@ -183,17 +184,19 @@ export default class StakingRewardsHistoryDialog extends Component<
         </CopyToClipboard>
 
         <div className={styles.label}>Date range</div>
-        <input
-          value={`${new Date(startDate).toISOString()} - ${
-            endDate ? new Date(endDate).toISOString() : ''
-          }`}
-        />
-        <button
-          style={{ color: 'white ' }}
-          onClick={() => this.setState({ isEditingDate: true })}
-        >
-          EDIT DATE RANGE
-        </button>
+        <div className={styles.dateRange}>
+          <input
+            value={`${new Date(startDate).toISOString()} - ${
+              endDate ? new Date(endDate).toISOString() : ''
+            }`}
+          />
+          <button
+            style={{ color: 'white ' }}
+            onClick={() => this.setState({ isEditingDate: true })}
+          >
+            EDIT DATE RANGE
+          </button>
+        </div>
 
         {isEditingDate && (
           <DatePicker
@@ -204,8 +207,9 @@ export default class StakingRewardsHistoryDialog extends Component<
             currentDateFormat={currentDateFormat}
           />
         )}
-        {isFetchingRewardsHistory && <div>LOADING</div>}
-        {!isFetchingRewardsHistory && rewardsHistory && (
+        {isFetchingRewardsHistory ? (
+          <LoadingSpinner big className={styles.loadingSpinner} />
+        ) : (
           <Table
             columns={tableColumns}
             rows={rewardsHistory}
