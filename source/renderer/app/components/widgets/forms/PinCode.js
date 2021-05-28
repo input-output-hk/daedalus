@@ -120,53 +120,20 @@ export default class PinCode extends Component<Props, State> {
 
   onChange = (inputValue: ?number, key: number) => {
     const { value, onChange } = this.props;
-    const { isBackSpace } = this.state;
     const inputNewValue =
       inputValue && !isNaN(inputValue) ? inputValue.toString() : '';
     if (this.valueHasChanged(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
-        // Recheck if user pressed backspace and moved cursor to previous input field which has value
-        if (
-          isBackSpace &&
-          newValue[key] !== '' &&
-          inputNewValue === '' &&
-          this.focusKey !== key
-        ) {
-          // Set old value to field because it was previously deleted while shifting focus
-          newValue[key] = value[key];
-          // Calculate new field key for focus
-          const focusKey =
-            this.inputsRef[key] &&
-            this.inputsRef[key].inputElement.current.selectionStart === 0 &&
-            key > 2 &&
-            key < this.inputsRef.length
-              ? key - 1
-              : key;
-          // Delay focus to the same field while waiting for the validation to pass
-          setTimeout(() => {
-            const inputFieldRef = this.inputsRef[focusKey];
-            if (inputFieldRef && inputFieldRef.inputElement) {
-              this.setFocusOnField(inputFieldRef);
-              this.setState({
-                focusKeyChanged: false,
-                focusIsUpdated: true,
-                enableField: false,
-                resetFields: false,
-              });
-            }
-          }, 0);
-        } else {
-          // Set new value to input field when focus was not shifted to previous field
-          newValue[key] = inputNewValue;
-          this.setState({
-            isBackSpace: false,
-            focusKeyChanged: false,
-            focusIsUpdated: false,
-            enableField: false,
-            resetFields: false,
-          });
-        }
+        // Set new value to input field when focus was not shifted to previous field
+        newValue[key] = inputNewValue;
+        this.setState({
+          isBackSpace: false,
+          focusKeyChanged: false,
+          focusIsUpdated: false,
+          enableField: false,
+          resetFields: false
+        });
       }
       if (onChange) {
         // Send new updated value to onChange event
