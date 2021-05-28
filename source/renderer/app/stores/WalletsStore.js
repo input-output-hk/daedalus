@@ -690,7 +690,7 @@ export default class WalletsStore extends Store {
     assetsAmounts?: Array<string>,
   }) => {
     const assetsAmounts = assetsAmountsStr
-      ? assetsAmountsStr.map((assetAmount) => parseInt(assetAmount, 10))
+      ? assetsAmountsStr.map((assetAmount) => new BigNumber(assetAmount))
       : null;
     const formattedAssets =
       assets && assets.length
