@@ -1,8 +1,65 @@
 // @flow
 import React, { Component } from 'react';
+import { defineMessages, intlShape } from 'react-intl';
 import { DateRange } from 'react-date-range';
-import { intlShape } from 'react-intl';
+import { Select } from 'react-polymorph/lib/components/Select';
+import { Input } from 'react-polymorph/lib/components/Input';
 import styles from './DatePicker.scss';
+
+const messages = defineMessages({
+  dateRange: {
+    id: 'widgets.datePicker.dateRange',
+    defaultMessage: '!!!Time',
+    description: 'Date range of filter.',
+  },
+  selectTimeRange: {
+    id: 'widgets.datePicker.selectTimeRange',
+    defaultMessage: '!!!Select time range',
+    description: 'Select time range indication of filter.',
+  },
+  last7Days: {
+    id: 'widgets.datePicker.last7Days',
+    defaultMessage: '!!!Last 7 days',
+    description: 'Last 7 days range of filter.',
+  },
+  last30Days: {
+    id: 'widgets.datePicker.last30Days',
+    defaultMessage: '!!!Last 30 days',
+    description: 'Last 30 days range of filter.',
+  },
+  last90Days: {
+    id: 'widgets.datePicker.last90Days',
+    defaultMessage: '!!!Last 90 days',
+    description: 'Last 90 days range of filter.',
+  },
+  thisYear: {
+    id: 'widgets.datePicker.thisYear',
+    defaultMessage: '!!!This year',
+    description: 'This year date range of filter.',
+  },
+  custom: {
+    id: 'widgets.datePicker.custom',
+    defaultMessage: '!!!Custom',
+    description: 'Custom date range of filter.',
+  },
+});
+
+export type DateRangeType =
+  | ''
+  | 'last7Days'
+  | 'last30Days'
+  | 'last90Days'
+  | 'thisYear'
+  | 'custom';
+
+export const DateRangeTypes = {
+  ALL_TIME: 'allTime',
+  LAST_7_DAYS: 'last7Days',
+  LAST_30_DAYS: 'last30Days',
+  LAST_90_DAYS: 'last90Days',
+  THIS_YEAR: 'thisYear',
+  CUSTOM: 'custom',
+};
 
 type Props = {
   startDate: Date,
@@ -10,7 +67,11 @@ type Props = {
   onChange: Function,
   currentLocale: string,
   currentDateFormat: string,
-  // currenTheme: string,
+  initialSelectValue?: DateRangeType,
+};
+
+type State = {
+  selectValue: DateRangeType,
 };
 
 const locales = {
@@ -24,10 +85,22 @@ const dateFormats = {
   ['YYYY/MM/DD']: 'yyyy-MM-dd',
 };
 
-export default class DatePicker extends Component<Props> {
+export default class DatePicker extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  static defaultProps = {
+    initialSelectValue: 'custom',
+  };
+
+  constructor(props: Props) {
+    super(props);
+    const { initialSelectValue } = this.props;
+    this.state = {
+      selectValue: initialSelectValue,
+    };
+  }
 
   handleChange = (newState: {
     selection: { startDate: Date, endDate: Date },
@@ -40,8 +113,40 @@ export default class DatePicker extends Component<Props> {
     });
   };
 
+  get dateRangeOptions() {
+    const { formatMessage } = this.context.intl;
+    return [
+      {
+        label: 'All time',
+        value: DateRangeTypes.ALL_TIME,
+      },
+      {
+        label: formatMessage(messages.last7Days),
+        value: DateRangeTypes.LAST_7_DAYS,
+      },
+      {
+        label: formatMessage(messages.last30Days),
+        value: DateRangeTypes.LAST_30_DAYS,
+      },
+      {
+        label: formatMessage(messages.last90Days),
+        value: DateRangeTypes.LAST_90_DAYS,
+      },
+      {
+        label: formatMessage(messages.thisYear),
+        value: DateRangeTypes.THIS_YEAR,
+      },
+      {
+        label: formatMessage(messages.custom),
+        value: DateRangeTypes.CUSTOM,
+      },
+    ];
+  }
+
   render() {
+    const { intl } = this.context;
     const { startDate, endDate, currentLocale, currentDateFormat } = this.props;
+    const { selectValue } = this.state;
     const ranges = [
       {
         startDate,
@@ -51,6 +156,15 @@ export default class DatePicker extends Component<Props> {
     ];
     return (
       <div className={styles.component}>
+        <Select
+          options={this.dateRangeOptions}
+          value={selectValue}
+          className={styles.dropdown}
+          label={'Date rangez'}
+          onChange={(selectValue) => {
+            this.setState({ selectValue });
+          }}
+        />
         <DateRange
           onChange={this.handleChange}
           moveRangeOnFirstSelection={false}

@@ -28,7 +28,7 @@ export const StakingRewardsHistoryStory = () => {
       rewardsHistory={rewards}
       currentDateFormat="MM/DD/YYYY"
       currentLocale="en-US"
-      isFetchingRewardsHistory={boolean('isFetchingRewardsHistory', true)}
+      isFetchingRewardsHistory={boolean('isFetchingRewardsHistory', false)}
       onClose={action('onClose')}
       onCopy={action('onCopy')}
       onExportCSV={action('onExportCSV')}
