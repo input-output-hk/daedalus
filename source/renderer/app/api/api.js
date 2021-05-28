@@ -216,7 +216,6 @@ import type {
   CheckSmashServerHealthApiResponse,
   PoolMetadataSource,
   GetRewardsHistoryRequest,
-  GetRewardsHistoryApiResponse,
   GetRewardsHistoryResponse,
 } from './staking/types';
 
@@ -698,7 +697,7 @@ export default class AdaApi {
     try {
       const result = await getRewardsHistory(request);
       logger.debug('AdaApi::getRewardsHistory success', result);
-      return map(result.rewards, _createRewardsHistoryFromServerData);
+      return result.rewards;
     } catch (error) {
       logger.error('AdaApi::getRewardsHistory error', { error });
       throw new ApiError(error);
@@ -2996,14 +2995,4 @@ const _createRedeemItnRewardsFromServerData = action(
       ? new BigNumber(quantity.toString()).dividedBy(LOVELACES_PER_ADA)
       : new BigNumber(quantity.toString());
   }
-);
-
-const _createRewardsHistoryFromServerData = action(
-  'AdaApi::_createRewardsHistoryFromServerData',
-  ({ address, amount, earnedIn, stakePool }: GetRewardsHistoryApiResponse) => ({
-    address,
-    amount: new BigNumber(amount),
-    earnedIn: earnedIn.number,
-    stakePoolId: stakePool.id,
-  })
 );

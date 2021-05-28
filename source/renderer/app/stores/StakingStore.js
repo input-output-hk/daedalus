@@ -1,5 +1,5 @@
 // @flow
-import { computed, action, observable, runInAction } from 'mobx';
+import { computed, action, observable, runInAction, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
@@ -902,11 +902,20 @@ export default class StakingStore extends Store {
 
   _fetchRewardsHistory = async ({ address }: { address: string }) => {
     try {
-      const rewardsHistory = await this.rewardsHistoryRequest.execute({
+      await this.rewardsHistoryRequest.execute({
         addresses: address,
       });
+      const rewardsHistory = this.rewardsHistoryRequest.result;
       runInAction(() => {
-        this.rewardsHistory[address] = rewardsHistory;
+        this.rewardsHistory[address] = rewardsHistory
+          ? rewardsHistory.filter(Boolean).map((r, index) => ({
+              // TODO: implement date handling
+              date: new Date(Date.now() - index * 1000000000),
+              epoch: r.earnedIn.number,
+              pool: this.stores.staking.getStakePoolById(r.stakePool.id),
+              amount: new BigNumber(r.amount),
+            }))
+          : [];
       });
     } catch (error) {
       runInAction(() => {

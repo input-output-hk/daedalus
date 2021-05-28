@@ -2,7 +2,10 @@
 import BigNumber from 'bignumber.js';
 import StakePool from '../../domains/StakePool';
 import Wallet from '../../domains/Wallet';
-import type { GetRewardsForAddressesQueryVariables } from '../../types/cardano-graphql';
+import type {
+  GetRewardsForAddressesQuery,
+  GetRewardsForAddressesQueryVariables,
+} from '../../types/cardano-graphql';
 
 export type DelegationAction =
   | 'changeDelegation'
@@ -153,23 +156,14 @@ export type CheckSmashServerHealthApiResponse = {
 export type CheckSmashServerHealthResponse = boolean;
 
 export type GetRewardsHistoryRequest = GetRewardsForAddressesQueryVariables;
-
-export type GetRewardsHistoryApiResponse = {
-  address: string,
-  amount: string,
-  earnedIn: {
-    number: number,
-  },
-  stakePool: {
-    id: string,
-  },
-};
+export type GetRewardsHistoryResponse = $PropertyType<
+  GetRewardsForAddressesQuery,
+  'rewards'
+>;
 
 export type RewardsHistoryItem = {
-  address: string,
-  amount: BigNumber,
-  earnedIn: number,
-  stakePoolId: string,
+  date?: Date,
+  amount?: BigNumber,
+  epoch?: number,
+  pool?: StakePool,
 };
-
-export type GetRewardsHistoryResponse = Array<RewardsHistoryItem>;

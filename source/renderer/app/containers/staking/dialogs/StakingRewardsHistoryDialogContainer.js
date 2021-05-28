@@ -39,16 +39,7 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
       requestRewardsHistoryCSVFile,
       setRewardsHistoryDateRange,
     } = actions.staking;
-    const rewardsHistoryList = rewardsHistoryObject[reward.rewardsAddress];
-    const rewardsHistory = rewardsHistoryList
-      ? toJS(rewardsHistoryList).map((r, index) => ({
-          // TODO: implement date handling
-          date: new Date(Date.now() - index * 1000000000),
-          epoch: r.earnedIn,
-          pool: stores.staking.getStakePoolById(r.stakePoolId),
-          amount: r.amount,
-        }))
-      : [];
+    const rewardsHistory = rewardsHistoryObject[reward.rewardsAddress] || [];
     if (!reward) return null;
     return (
       <StakingRewardsHistoryDialog
@@ -59,7 +50,7 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
         onExportCSV={requestRewardsHistoryCSVFile.trigger}
         onSetDateRange={setRewardsHistoryDateRange.trigger}
         reward={reward}
-        rewardsHistory={rewardsHistory}
+        rewardsHistory={toJS(rewardsHistory)}
         startDate={rewardsHistoryStartDate}
         endDate={rewardsHistoryEndDate}
       />
