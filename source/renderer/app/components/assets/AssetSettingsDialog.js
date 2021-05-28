@@ -92,7 +92,9 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     const { decimals: savedDecimals, recommendedDecimals } = asset;
     const hasSavedDecimals = typeof savedDecimals === 'number';
     this.state = {
-      decimals: hasSavedDecimals ? savedDecimals : recommendedDecimals,
+      decimals: hasSavedDecimals
+        ? savedDecimals
+        : recommendedDecimals || DEFAULT_DECIMAL_PRECISION,
     };
   }
 
@@ -132,6 +134,8 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     const { onCancel, onSubmit, asset } = this.props;
     const { decimals: savedDecimals, recommendedDecimals } = asset;
     const { decimals } = this.state;
+    const hasSavedDecimals = typeof savedDecimals === 'number';
+    const hasRecommendedDecimals = typeof recommendedDecimals === 'number';
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
       value,
     }));
@@ -143,13 +147,14 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       {
         label: intl.formatMessage(globalMessages.save),
         primary: true,
-        disabled: decimals === savedDecimals,
+        disabled:
+          (hasSavedDecimals && decimals === savedDecimals) ||
+          (!hasSavedDecimals && decimals === DEFAULT_DECIMAL_PRECISION),
         onClick: () => onSubmit(asset, decimals),
       },
     ];
-    const hasSavedDecimals = typeof recommendedDecimals === 'number';
     const hasWarning =
-      hasSavedDecimals && savedDecimals !== recommendedDecimals;
+      hasRecommendedDecimals && savedDecimals !== recommendedDecimals;
     let warningPopOverMessage;
     if (hasWarning) {
       warningPopOverMessage = hasSavedDecimals
@@ -188,7 +193,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
           </p>
           <Select
             options={options}
-            value={decimals || DEFAULT_DECIMAL_PRECISION}
+            value={decimals}
             className={styles.decimalsDropdown}
             label={
               <span className={styles.decimalsDropdownLabel}>
