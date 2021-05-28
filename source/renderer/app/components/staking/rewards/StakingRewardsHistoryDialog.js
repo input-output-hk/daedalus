@@ -189,6 +189,7 @@ export default class StakingRewardsHistoryDialog extends Component<
             value={`${new Date(startDate).toISOString()} - ${
               endDate ? new Date(endDate).toISOString() : ''
             }`}
+            readOnly
           />
           <button
             style={{ color: 'white ' }}

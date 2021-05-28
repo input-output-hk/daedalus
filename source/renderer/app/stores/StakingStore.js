@@ -2,11 +2,19 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get, set } from 'lodash';
+import { orderBy, find, map, get } from 'lodash';
 import type {
-  GetRewardsForAddressesQuery,
-  GetRewardsForAddressesQueryVariables,
-} from '../types/cardano-graphql';
+  GetRewardsHistoryResponse,
+  Reward,
+  RewardForIncentivizedTestnet,
+  JoinStakePoolRequest,
+  GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
+  QuitStakePoolRequest,
+  RewardsHistoryItem,
+  PoolMetadataSource,
+} from '../api/staking/types';
+import type { GetRewardsForAddressesQueryVariables } from '../types/cardano-graphql';
 import { GraphQLRequest } from './lib/GraphQLRequest';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -26,16 +34,7 @@ import {
   SMASH_SERVER_INVALID_TYPES,
   CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
-import type {
-  Reward,
-  RewardForIncentivizedTestnet,
-  JoinStakePoolRequest,
-  GetDelegationFeeRequest,
-  DelegationCalculateFeeResponse,
-  QuitStakePoolRequest,
-  RewardsHistoryItem,
-  PoolMetadataSource,
-} from '../api/staking/types';
+
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -86,7 +85,7 @@ export default class StakingStore extends Store {
   @observable
   rewardsHistoryRequest = new GraphQLRequest<
     GetRewardsForAddressesQueryVariables,
-    GetRewardsForAddressesQuery
+    GetRewardsHistoryResponse
   >(this.api.ada.getRewardsHistory);
 
   pollingStakePoolsInterval: ?IntervalID = null;

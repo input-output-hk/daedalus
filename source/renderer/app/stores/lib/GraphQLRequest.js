@@ -9,24 +9,24 @@ export class GraphQLRequest<TVariables, TResult> {
   @observable isExecuting: boolean = false;
   @observable hasBeenExecutedAtLeastOnce: boolean = false;
   @observable error: Error | null = null;
-  @observable execution: Deferred<TResult | null> | null = null;
+  @observable execution: Deferred<TResult> | null = null;
 
-  _request: (variables: TVariables) => Promise<TResult | null>;
+  _request: (variables: TVariables) => Promise<TResult>;
 
   @computed get isExecutingTheFirstTime() {
     return this.isExecuting && !this.hasBeenExecutedAtLeastOnce;
   }
 
-  constructor(request: (variables: TVariables) => Promise<TResult | null>) {
+  constructor(request: (variables: TVariables) => Promise<TResult>) {
     this._request = request;
   }
 
-  @action async execute(variables: TVariables): Promise<TResult | null> {
+  @action async execute(variables: TVariables): Promise<TResult> {
     if (this.isExecuting && this.execution != null) {
       this.execution.reject(ABORT_ERROR);
     }
     this.isExecuting = true;
-    this.execution = new Deferred<TResult | null>((resolve, reject) => {
+    this.execution = new Deferred<TResult>((resolve, reject) => {
       this._request(variables).then(resolve).catch(reject);
     });
     try {
@@ -42,7 +42,7 @@ export class GraphQLRequest<TVariables, TResult> {
           this.result = null;
           this.error = null;
         });
-        return null;
+        throw error;
       }
       runInAction(() => {
         this.result = null;
