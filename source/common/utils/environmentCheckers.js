@@ -19,6 +19,7 @@ import {
   NIGHTLY,
   ITN_SELFNODE,
   networkPrettyNames,
+  SHELLEY_QA,
 } from '../types/environment.types';
 
 /* ==================================================================
@@ -77,8 +78,11 @@ export const checkIsLinux = (platform: string) => platform === LINUX;
 
 export function getGraphQlEndpointForNetwork(network: string): string {
   switch (network) {
-    // TODO: add other networks when available
-    default:
+    case TESTNET:
+      return 'https://explorer.cardano-testnet.iohkdev.io/graphql';
+    case SHELLEY_QA:
       return 'https://explorer.shelley-qa.dev.cardano.org/graphql';
+    default:
+      return 'https://explorer.cardano.org/graphql';
   }
 }
