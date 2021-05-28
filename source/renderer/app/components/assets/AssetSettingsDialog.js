@@ -89,9 +89,10 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { asset } = props;
-    const { decimals } = asset;
+    const { decimals: savedDecimals, recommendedDecimals } = asset;
+    const hasSavedDecimals = typeof savedDecimals === 'number';
     this.state = {
-      decimals,
+      decimals: hasSavedDecimals ? savedDecimals : recommendedDecimals,
     };
   }
 
@@ -129,7 +130,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { onCancel, onSubmit, asset } = this.props;
-    const { recommendedDecimals } = asset;
+    const { decimals: savedDecimals, recommendedDecimals } = asset;
     const { decimals } = this.state;
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
       value,
@@ -142,18 +143,18 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       {
         label: intl.formatMessage(globalMessages.save),
         primary: true,
+        disabled: decimals === savedDecimals,
         onClick: () => onSubmit(asset, decimals),
       },
     ];
+    const hasSavedDecimals = typeof recommendedDecimals === 'number';
     const hasWarning =
-      typeof recommendedDecimals === 'number' &&
-      decimals !== recommendedDecimals;
+      hasSavedDecimals && savedDecimals !== recommendedDecimals;
     let warningPopOverMessage;
     if (hasWarning) {
-      warningPopOverMessage =
-        typeof decimals === 'number'
-          ? messages.warningPopOverNotUsing
-          : messages.warningPopOverAvailable;
+      warningPopOverMessage = hasSavedDecimals
+        ? messages.warningPopOverNotUsing
+        : messages.warningPopOverAvailable;
     }
 
     return (
