@@ -244,7 +244,7 @@ export default class PinCode extends Component<Props, State> {
       this.handleSeparatorInput(nextInputField, control);
     }
     if (isTab && onTabKey) {
-      onTabKey();
+      // onTabKey();
     }
     this.handleBackspaceClick(
       inputNewValue,
