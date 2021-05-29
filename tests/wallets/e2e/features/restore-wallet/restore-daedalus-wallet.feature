@@ -7,7 +7,7 @@ Feature: Restore Daedalus wallet
       | name        |
       | Test Wallet |
 
-  Scenario: Successfully restoring "Daedalus Balance" wallet
+  Scenario: Successfully restoring "Daedalus Byron" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page
@@ -21,7 +21,7 @@ Feature: Restore Daedalus wallet
       | recoveryPhrase                                                                  |
       | prison census discover give sound behave hundred cave someone orchard just wild |
     And I click Check recovery phrase button
-    And I enter wallet name "Daedalus Balance wallet" in restore wallet dialog
+    And I enter wallet name "Daedalus Byron wallet" in restore wallet dialog
     And I enter wallet password in restore wallet dialog:
       | password   | repeatedPassword |
       | Secret1234 | Secret1234      |
@@ -29,15 +29,15 @@ Feature: Restore Daedalus wallet
     Then I should see a screen titled "Wallet Restored"
     And I click close
     Then I should not see the restore wallet dialog anymore
-    And I should have newly created "Daedalus Balance wallet" wallet loaded
-    And "Daedalus Balance wallet" wallet should have "legacy_6eb9a6862e5656b4a52fa6fae8eb3a3e8f7c2bd6" as id
-    And I should be on the "Daedalus Balance wallet" wallet "summary" screen
+    And I should have newly created "Daedalus Byron wallet" wallet loaded
+    And "Daedalus Byron wallet" wallet should have "legacy_6eb9a6862e5656b4a52fa6fae8eb3a3e8f7c2bd6" as id
+    And I should be on the "Daedalus Byron wallet" wallet "summary" screen
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
-    And "Balance" wallet badge should be visible in the wallet sidebar
-    And "Balance" wallet "Move testnet ada" action should be visible in the top bar notification
+    And "Byron" wallet badge should be visible in the wallet sidebar
+    And "Byron" wallet "Move testnet ada" action should be visible in the top bar notification
 
-  Scenario: Successfully restoring "Daedalus Balance" paper wallet
+  Scenario: Successfully restoring "Daedalus Byron" paper wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page
@@ -61,10 +61,10 @@ Feature: Restore Daedalus wallet
     Then I should not see the restore wallet dialog anymore
     And I should have newly created "Daedalus paper wallet" wallet loaded
     And "Daedalus paper wallet" wallet should have "legacy_699c20fef5469d2cabadf5a778932d06ca3364e2" as id
-    And "Balance" wallet badge should be visible in the wallet sidebar
-    And "Balance" wallet notification should not be displayed in the wallet top bar
+    And "Byron" wallet badge should be visible in the wallet sidebar
+    And "Byron" wallet notification should not be displayed in the wallet top bar
 
-  Scenario: Successfully restoring "Daedalus Balance" wallet
+  Scenario: Successfully restoring "Daedalus Byron" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page
@@ -78,7 +78,7 @@ Feature: Restore Daedalus wallet
       | recoveryPhrase                                                             |
       | tuna only march magic high twice flavor borrow hurt bullet awkward similar |
     And I click Check recovery phrase button
-    And I enter wallet name "Daedalus Balance wallet" in restore wallet dialog
+    And I enter wallet name "Daedalus Byron wallet" in restore wallet dialog
     And I enter wallet password in restore wallet dialog:
       | password   | repeatedPassword |
       | Secret1234 | Secret1234      |
@@ -86,13 +86,13 @@ Feature: Restore Daedalus wallet
     Then I should see a screen titled "Wallet Restored"
     And I click close
     Then I should not see the restore wallet dialog anymore
-    And I should have newly created "Daedalus Balance wallet" wallet loaded
-    And "Daedalus Balance wallet" wallet should have "legacy_8325d53f736d08a92ecb67e762c63a0318143986" as id
-    And I should be on the "Daedalus Balance wallet" wallet "summary" screen
+    And I should have newly created "Daedalus Byron wallet" wallet loaded
+    And "Daedalus Byron wallet" wallet should have "legacy_8325d53f736d08a92ecb67e762c63a0318143986" as id
+    And I should be on the "Daedalus Byron wallet" wallet "summary" screen
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
 
-  Scenario: Successfully restoring "Daedalus Balance" paper wallet
+  Scenario: Successfully restoring "Daedalus Byron" paper wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page
@@ -117,7 +117,7 @@ Feature: Restore Daedalus wallet
     And I should have newly created "Daedalus paper wallet" wallet loaded
     And "Daedalus paper wallet" wallet should have "legacy_699c20fef5469d2cabadf5a778932d06ca3364e2" as id
 
-  Scenario: Successfully restoring "Daedalus Rewards" wallet
+  Scenario: Successfully restoring "Daedalus Shelley" wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page
@@ -131,7 +131,7 @@ Feature: Restore Daedalus wallet
       | recoveryPhrase                                                                             |
       | combine mouse cool skirt truck outer result speed fringe sugar there usage lucky wild tail |
     And I click Check recovery phrase button
-    And I enter wallet name "Daedalus Rewards wallet" in restore wallet dialog
+    And I enter wallet name "Daedalus Shelley wallet" in restore wallet dialog
     And I enter wallet password in restore wallet dialog:
       | password  | repeatedPassword |
       | Secret1234 | Secret1234      |
@@ -139,10 +139,10 @@ Feature: Restore Daedalus wallet
     Then I should see a screen titled "Wallet Restored"
     And I click close
     Then I should not see the restore wallet dialog anymore
-    And I should have newly created "Daedalus Rewards wallet" wallet loaded
-    And "Daedalus Rewards wallet" wallet should have "c2ebd8b727cc760fe2f0fb3d06a8630ccc8c70f5" as id
+    And I should have newly created "Daedalus Shelley wallet" wallet loaded
+    And "Daedalus Shelley wallet" wallet should have "c2ebd8b727cc760fe2f0fb3d06a8630ccc8c70f5" as id
 
-  Scenario: Restoring "Daedalus Balance" wallet that already exists
+  Scenario: Restoring "Daedalus Byron" wallet that already exists
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
     And I see the add wallet page
@@ -156,7 +156,7 @@ Feature: Restore Daedalus wallet
       | recoveryPhrase                                                             |
       | tuna only march magic high twice flavor borrow hurt bullet awkward similar |
     And I click Check recovery phrase button
-    And I enter wallet name "Daedalus Balance wallet" in restore wallet dialog
+    And I enter wallet name "Daedalus Byron wallet" in restore wallet dialog
     And I enter wallet password in restore wallet dialog:
       | password   | repeatedPassword |
       | Secret1234 | Secret1234      |
@@ -164,9 +164,9 @@ Feature: Restore Daedalus wallet
     Then I should see a screen titled "Wallet Restored"
     And I click close
     Then I should not see the restore wallet dialog anymore
-    And I should have newly created "Daedalus Balance wallet" wallet loaded
-    And "Daedalus Balance wallet" wallet should have "legacy_8325d53f736d08a92ecb67e762c63a0318143986" as id
-    And I should be on the "Daedalus Balance wallet" wallet "summary" screen
+    And I should have newly created "Daedalus Byron wallet" wallet loaded
+    And "Daedalus Byron wallet" wallet should have "legacy_8325d53f736d08a92ecb67e762c63a0318143986" as id
+    And I should be on the "Daedalus Byron wallet" wallet "summary" screen
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
     And I click on the add wallet button in the sidebar
@@ -181,7 +181,7 @@ Feature: Restore Daedalus wallet
       | recoveryPhrase                                                             |
       | tuna only march magic high twice flavor borrow hurt bullet awkward similar |
     And I click Check recovery phrase button
-    And I enter wallet name "Daedalus Balance wallet" in restore wallet dialog
+    And I enter wallet name "Daedalus Byron wallet" in restore wallet dialog
     And I enter wallet password in restore wallet dialog:
       | password   | repeatedPassword |
       | Secret1234 | Secret1234      |

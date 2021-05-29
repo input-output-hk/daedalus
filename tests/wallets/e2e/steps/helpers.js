@@ -15,7 +15,7 @@ const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 const DEFAULT_LANGUAGE = 'en-US';
 
 let shelleyMnemonicsIndex = 0;
-export const noWalletsErrorMessage = `The balance wallet for funds transfering was already used and has no longer funds.
+export const noWalletsErrorMessage = `The byron wallet for funds transfering was already used and has no longer funds.
     Remove the "Daedalus Selfnode" directory and run \`nix:dev\` again.`;
 
 export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
@@ -40,14 +40,14 @@ export const restoreWalletWithFunds = async (client: Object, { walletName }: { w
 };
 
 const getMnemonicsIndex = async function(maxIndex: number) {
-  let index = await this.localStorage('GET', testStorageKeys.BALANCE_MNEMONICS_INDEX) || { value: 0 };
+  let index = await this.localStorage('GET', testStorageKeys.BYRON_MNEMONICS_INDEX) || { value: 0 };
   index = parseInt(index.value, 10);
   if (isNaN(index)) index = 0;
   const newIndex = (index < maxIndex)
     ? index + 1
     : 0;
   await this.localStorage('POST', {
-    key: testStorageKeys.BALANCE_MNEMONICS_INDEX,
+    key: testStorageKeys.BYRON_MNEMONICS_INDEX,
     value: String(newIndex),
   });
   return index;
@@ -442,7 +442,7 @@ export const waitForActiveRestoreNotification = (client: Object, { isHidden }: {
 
 export const getWalletType = async function(_type?: string = '') {
   let type = _type ? _type.trim() : null;
-  if (type === 'balance') return 'byron';
+  if (type === 'byron') return 'byron';
   if (!type) {
     type = 'shelley';
   }

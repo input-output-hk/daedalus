@@ -70,5 +70,5 @@ Feature: Wallet Settings - Recovery Phrase Verification
 
     Examples:
       | name           | kind     | subkind       | recovery_phrase                                                                                         |
-      | Daedalus Byron | Daedalus | Balance12Word | prison census discover give sound behave hundred cave someone orchard just wild                         |
-      | Yoroi Byron    | Yoroi    | Balance15Word | defense brush fiscal cactus rotate trouble mean quantum shrug slight dignity corn immense first citizen |
+      | Daedalus Byron | Daedalus | Byron12Word | prison census discover give sound behave hundred cave someone orchard just wild                         |
+      | Yoroi Byron    | Yoroi    | Byron15Word | defense brush fiscal cactus rotate trouble mean quantum shrug slight dignity corn immense first citizen |

@@ -17,12 +17,12 @@ Feature: Wallet Delegation
     And I am on the Delegation "delegation-center" screen
     Then I should see a "Loading stake pools" message until the Stake Pools are loaded
 
-  Scenario: "Create rewards wallet" notification when no Rewards wallets
+  Scenario: "Create Shelley wallet" notification when no Shelley wallets
     Given I am on the Delegation "delegation-center" screen
-    Then I should see a "Create rewards wallet" notification
+    Then I should see a "Create a Shelley wallet" notification
 
-  Scenario: Only Rewards wallets are listed on the "Delegation center" screen
-    Given I have the following balance wallets:
+  Scenario: Only Shelley wallets are listed on the "Delegation center" screen
+    Given I have the following byron wallets:
       | name            |
       | Legacy Wallet 1 |
       | Legacy Wallet 2 |
