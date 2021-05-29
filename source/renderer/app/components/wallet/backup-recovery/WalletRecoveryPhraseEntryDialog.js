@@ -84,29 +84,18 @@ const messages = defineMessages({
     description:
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },
-  termRewards: {
-    id:
-      'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards',
-    defaultMessage: `!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the Cardano mainnet.</strong>`,
-    description:
-      'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
-  },
 });
-
-const { isIncentivizedTestnet } = global;
 
 type Props = {
   enteredPhrase: Array<string>,
   isValid: boolean,
   isTermOfflineAccepted: boolean,
   isTermRecoveryAccepted: boolean,
-  isTermRewardsAccepted: boolean,
   isSubmitting: boolean,
   onUpdateVerificationPhrase: Function,
   canFinishBackup: boolean,
   onAcceptTermOffline: Function,
   onAcceptTermRecovery: Function,
-  onAcceptTermRewards: Function,
   onRestartBackup: Function,
   onCancelBackup: Function,
   onFinishBackup: Function,
@@ -158,11 +147,9 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       isValid,
       isTermOfflineAccepted,
       isTermRecoveryAccepted,
-      isTermRewardsAccepted,
       isSubmitting,
       onAcceptTermOffline,
       onAcceptTermRecovery,
-      onAcceptTermRewards,
       canFinishBackup,
       onRestartBackup,
       onCancelBackup,
@@ -256,23 +243,13 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
               </div>
               <div className={styles.checkbox}>
                 <Checkbox
-                  className={isIncentivizedTestnet ? '' : styles.isBold}
+                  className={styles.isBold}
                   label={intl.formatMessage(messages.termRecovery)}
                   onChange={onAcceptTermRecovery}
                   checked={isTermRecoveryAccepted}
                   skin={CheckboxSkin}
                 />
               </div>
-              {isIncentivizedTestnet && (
-                <div className={styles.checkbox}>
-                  <Checkbox
-                    label={<FormattedHTMLMessage {...messages.termRewards} />}
-                    onChange={onAcceptTermRewards}
-                    checked={isTermRewardsAccepted}
-                    skin={CheckboxSkin}
-                  />
-                </div>
-              )}
             </div>
           </>
         )}

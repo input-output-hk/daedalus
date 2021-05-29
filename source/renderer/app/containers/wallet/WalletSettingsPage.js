@@ -61,7 +61,6 @@ export default class WalletSettingsPage extends Component<Props> {
 
     const { isLegacy, isHardwareWallet } = activeWallet;
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
-
     const { actions } = this.props;
     const {
       environment: { isProduction },
@@ -79,20 +78,14 @@ export default class WalletSettingsPage extends Component<Props> {
       updateWalletField,
       recoveryPhraseVerificationContinue,
     } = actions.walletSettings;
-
     const {
       creationDate,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
     } = getWalletsRecoveryPhraseVerificationData(activeWallet.id);
-
     const locale = profile.currentLocale;
-    const { isIncentivizedTestnet } = global;
-
-    const shouldDisplayRecoveryPhrase =
-      ((!isIncentivizedTestnet && isLegacy) || !isLegacy) && !isHardwareWallet;
-
+    const shouldDisplayRecoveryPhrase = !isHardwareWallet;
     const wordCount = activeWallet.isRandom
       ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
       : WALLET_RECOVERY_PHRASE_WORD_COUNT;
@@ -122,7 +115,6 @@ export default class WalletSettingsPage extends Component<Props> {
           isSyncing={activeWallet.isSyncing}
           walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
-          isIncentivizedTestnet={isIncentivizedTestnet}
           isSubmitting={updateWalletRequest.isExecuting}
           isInvalid={
             updateWalletRequest.wasExecuted &&

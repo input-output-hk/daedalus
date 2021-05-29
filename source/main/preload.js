@@ -41,7 +41,6 @@ process.once('loaded', () => {
       error: (...args) => electronLog.error(...args),
       warn: (...args) => electronLog.warn(...args),
     },
-    isIncentivizedTestnet: false,
     isFlight,
     legacyStateDir,
     smashUrl,

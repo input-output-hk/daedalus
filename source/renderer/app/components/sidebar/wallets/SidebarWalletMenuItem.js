@@ -18,7 +18,6 @@ type Props = {
   className: string,
   onClick: Function,
   isRestoreActive?: boolean,
-  isIncentivizedTestnet: boolean,
   isShelleyActivated: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
@@ -38,7 +37,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       className,
       onClick,
       isRestoreActive,
-      isIncentivizedTestnet,
       isShelleyActivated,
       restoreProgress,
       isLegacy,
@@ -48,15 +46,14 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isHardwareWallet,
     } = this.props;
 
-    const showLegacyBadge =
-      isLegacy && (isIncentivizedTestnet || isShelleyActivated);
+    const showLegacyBadge = isLegacy && isShelleyActivated;
 
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
       showLegacyBadge ? styles.legacyItem : null,
       className,
-      !isIncentivizedTestnet && hasNotification ? styles.notification : null,
+      hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
     ]);
 

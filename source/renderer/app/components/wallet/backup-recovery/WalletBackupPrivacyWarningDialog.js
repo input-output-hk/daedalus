@@ -27,13 +27,6 @@ const messages = defineMessages({
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
-  recoveryPhraseInstructions3Itn: {
-    id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3.itn',
-    defaultMessage:
-      '!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working. You will also need this recovery phrase to receive your Incentivized Testnet ada rewards on the Cardano mainnet.</strong>',
-    description:
-      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
-  },
   recoveryPhraseInstructions3: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3',
     defaultMessage:
@@ -54,8 +47,6 @@ const messages = defineMessages({
       'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown',
   },
 });
-
-const { isIncentivizedTestnet } = global;
 
 type Props = {
   countdownRemaining: number,
@@ -123,13 +114,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         />
         <WalletRecoveryInstructions
           instructionsText={
-            isIncentivizedTestnet ? (
-              <FormattedHTMLMessage
-                {...messages.recoveryPhraseInstructions3Itn}
-              />
-            ) : (
-              <FormattedHTMLMessage {...messages.recoveryPhraseInstructions3} />
-            )
+            <FormattedHTMLMessage {...messages.recoveryPhraseInstructions3} />
           }
         />
         <div className={styles.checkbox}>

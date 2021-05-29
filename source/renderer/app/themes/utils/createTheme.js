@@ -514,24 +514,6 @@ export const createDaedalusComponentsTheme = (
     errors: {
       '--theme-color-error': `${error.regular}`,
     },
-    experimentalDataOverlay: {
-      '--theme-experimental-data-overlay-background-color': `${chroma(
-        background.secondary.regular
-      ).alpha(0.96)}`,
-      '--theme-experimental-data-overlay-button-background-color': `${background.secondary.dark}`,
-      '--theme-experimental-data-overlay-button-background-color-hover': `${text.secondary}`,
-      '--theme-experimental-data-overlay-button-border-color': `${text.secondary}`,
-      '--theme-experimental-data-overlay-button-text-color': `${text.secondary}`,
-      '--theme-experimental-data-overlay-button-text-color-hover': `${background.secondary.regular}`,
-      '--theme-experimental-data-overlay-description-background-color': `${chroma(
-        background.secondary.regular
-      ).alpha(0.96)}`,
-      '--theme-experimental-data-overlay-description-color': `${chroma(
-        text.secondary
-      ).alpha(0.7)}`,
-      '--theme-experimental-data-overlay-logo-fill-color': `${text.secondary}`,
-      '--theme-experimental-data-overlay-title-color': `${text.secondary}`,
-    },
     fonts: {
       '--font-ultralight': `${fonts.ultralight}`,
       '--font-thin': `${fonts.thin}`,
@@ -1002,10 +984,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-selected-ticker-color': `${text.secondary}`,
       '--theme-staking-stake-pool-ticker-color': `${text.primary}`,
       '--theme-staking-stake-pool-retirement-background-color': `${error.regular}`,
-      '--theme-staking-stake-pool-tooltip-experimental-icon-background-color': `${background.primary.regular}`,
-      '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color': `${chroma(
-        text.primary
-      ).alpha(0.8)}`,
       '--theme-staking-stake-pool-tooltip-border-color': `${border}`,
       '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-staking-stake-pool-tooltip-text-color': `${text.primary}`,
@@ -1026,7 +1004,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color': `${background.secondary.darkest}`,
       '--theme-staking-stake-pool-tooltip-delegate-button-text-color': `${text.secondary}`,
       '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color': `${text.secondary}`,
-      '--theme-staking-stake-pool-tooltip-experimental-icon-color': `${text.primary}`,
       '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
         'transparent',
       '--theme-staking-progress-label-light': `${text.secondary}`,

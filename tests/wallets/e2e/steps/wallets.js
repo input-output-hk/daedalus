@@ -82,13 +82,14 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   await proceedToScreen();
 });
 
-Given('I have {int} restored wallets', async function(numberOfWallets) {
+Given('I have {int} restored (balance )?wallets', async function(numberOfWallets, _type) {
+  const type = await getWalletType.call(this, _type);
+  const isLegacy = type === 'byron';
   const wallets = [...Array(numberOfWallets)].map((x, i) => ({
     name: `Wallet ${i + 1}`,
     password: 'Secret1234',
   }));
-  const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
-  await createWallets.call(this, wallets, { isLegacy: !isIncentivizedTestnet.value });
+  await createWallets.call(this, wallets, { isLegacy });
 });
 
 When(/^I have one wallet address$/, function() {

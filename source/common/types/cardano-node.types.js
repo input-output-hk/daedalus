@@ -7,15 +7,13 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
-export type CardanoNodeImplementations = 'cardano' | 'jormungandr' | 'selfnode';
+export type CardanoNodeImplementations = 'cardano' | 'selfnode';
 
 export const CardanoNodeImplementationOptions: {
   CARDANO: CardanoNodeImplementations,
-  JORMUNGANDR: CardanoNodeImplementations,
   SELFNODE: CardanoNodeImplementations,
 } = {
   CARDANO: 'cardano',
-  JORMUNGANDR: 'jormungandr',
   SELFNODE: 'selfnode',
 };
 
@@ -80,8 +78,6 @@ export type CardanoNodeStorageKeys = {
 export type CardanoNodeProcessNames =
   | 'cardano-node'
   | 'cardano-node.exe'
-  | 'jormungandr'
-  | 'jormungandr.exe'
   | 'local-cluster'
   | 'local-cluster.exe';
 
@@ -100,11 +96,6 @@ export const CardanoProcessNameOptions: {
     win32: 'cardano-node.exe',
     linux: 'cardano-node',
     darwin: 'cardano-node',
-  },
-  jormungandr: {
-    win32: 'jormungandr.exe',
-    linux: 'jormungandr',
-    darwin: 'jormungandr',
   },
   selfnode: {
     win32: 'local-cluster.exe',

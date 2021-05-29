@@ -41,7 +41,6 @@ import type { CsvFileContent } from '../../../common/types/csv-request.types';
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
-  @observable isStakingExperimentRead: boolean = false;
   @observable selectedDelegationWalletId = null;
   @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
@@ -388,10 +387,6 @@ export default class StakingStore extends Store {
     // this.stores.hardwareWallets._resetTransaction();
     this.stores.wallets.refreshWalletsData();
     this.isDelegationTransactionPending = false;
-  };
-
-  @action markStakingExperimentAsRead = () => {
-    this.isStakingExperimentRead = true;
   };
 
   @action _requestCSVFile = async ({

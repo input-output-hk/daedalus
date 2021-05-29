@@ -2013,53 +2013,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Experimental features",
-        "description": "Experimental features",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/notifications/ExperimentalDataOverlay.js",
-        "id": "experimentalData.overlay.title",
-        "start": {
-          "column": 9,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "<p>!!!The goal of the Incentivized Testnet is to test and improve the stake delegation features of the Shelley era, including new Daedalus features, before their release on the Cardano mainnet. Due to the nature of the testnet, some of these features may be unreliable or subject to change as they are iterated upon by the development team.</p><p>Any new Daedalus features which are considered experimental will be marked with a <span class=\"experimentalIcon\"></span> icon. Take care when using information solely from experimental features to make delegation decisions, as the data could be inaccurate. The <span class=\"experimentalIcon\"></span> icon will be removed when a feature is considered stable and reliable to use.</p>",
-        "description": "Experimental data description",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/notifications/ExperimentalDataOverlay.js",
-        "id": "experimentalData.overlay.description",
-        "start": {
-          "column": 15,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand",
-        "description": "Experimental data action",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/notifications/ExperimentalDataOverlay.js",
-        "id": "experimentalData.overlay.actionLabel",
-        "start": {
-          "column": 15,
-          "line": 23
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/notifications/ExperimentalDataOverlay.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Byron",
         "description": "Label \"Byron\" on the legacy badge.",
         "end": {
@@ -6306,13 +6259,13 @@
         "description": "\"Rank\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 41
+          "line": 40
         }
       },
       {
@@ -6320,13 +6273,13 @@
         "description": "\"Rank\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.rankingTooltip",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 45
         }
       },
       {
@@ -6334,13 +6287,13 @@
         "description": "\"Live stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -6348,13 +6301,13 @@
         "description": "\"Live stake\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStakeTooltip",
         "start": {
           "column": 24,
-          "line": 57
+          "line": 56
         }
       },
       {
@@ -6362,13 +6315,13 @@
         "description": "\"Pool margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 63
+          "line": 62
         }
       },
       {
@@ -6376,13 +6329,13 @@
         "description": "\"Pool margin\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMarginTooltip",
         "start": {
           "column": 23,
-          "line": 68
+          "line": 67
         }
       },
       {
@@ -6390,13 +6343,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 74
+          "line": 73
         }
       },
       {
@@ -6404,13 +6357,13 @@
         "description": "\"Cost per epoch\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpochTooltip",
         "start": {
           "column": 23,
-          "line": 79
+          "line": 78
         }
       },
       {
@@ -6418,13 +6371,13 @@
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 85
+          "line": 84
         }
       },
       {
@@ -6432,13 +6385,13 @@
         "description": "\"Blocks\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocksTooltip",
         "start": {
           "column": 25,
-          "line": 90
+          "line": 89
         }
       },
       {
@@ -6446,13 +6399,13 @@
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 99
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
           "column": 20,
-          "line": 96
+          "line": 95
         }
       },
       {
@@ -6460,13 +6413,13 @@
         "description": "\"Rewards\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 105
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
         "start": {
           "column": 27,
-          "line": 101
+          "line": 100
         }
       },
       {
@@ -6474,13 +6427,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 110
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 107
+          "line": 106
         }
       },
       {
@@ -6488,13 +6441,13 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 115
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 112
+          "line": 111
         }
       },
       {
@@ -6502,13 +6455,13 @@
         "description": "\"Saturation\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 121
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturationTooltip",
         "start": {
           "column": 21,
-          "line": 117
+          "line": 116
         }
       },
       {
@@ -6516,13 +6469,13 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 126
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
-          "line": 123
+          "line": 122
         }
       },
       {
@@ -6530,13 +6483,13 @@
         "description": "\"Pledge\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 132
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledgeTooltip",
         "start": {
           "column": 17,
-          "line": 128
+          "line": 127
         }
       },
       {
@@ -6544,27 +6497,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 138
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 134
-        }
-      },
-      {
-        "defaultMessage": "!!!Experimental feature, data may be inaccurate.",
-        "description": "Experimental tooltip label",
-        "end": {
-          "column": 3,
-          "line": 144
-        },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
-        "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
-        "start": {
-          "column": 28,
-          "line": 140
+          "line": 133
         }
       },
       {
@@ -6572,13 +6511,13 @@
         "description": "copyId tooltip label",
         "end": {
           "column": 3,
-          "line": 149
+          "line": 143
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
         "start": {
           "column": 22,
-          "line": 145
+          "line": 139
         }
       },
       {
@@ -6586,13 +6525,13 @@
         "description": "Data not available yet label",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 148
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
-          "line": 150
+          "line": 144
         }
       }
     ],
@@ -6710,20 +6649,6 @@
         "start": {
           "column": 18,
           "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!MacOS build 3769, with Cardano 1.0.4",
-        "description": "About page build information for ITN",
-        "end": {
-          "column": 3,
-          "line": 61
-        },
-        "file": "source/renderer/app/components/static/About.js",
-        "id": "static.about.buildInfoForITN",
-        "start": {
-          "column": 24,
-          "line": 57
         }
       }
     ],
@@ -8719,31 +8644,17 @@
         }
       },
       {
-        "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working. You will also need this recovery phrase to receive your Incentivized Testnet ada rewards on the Cardano mainnet.</strong>",
-        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
+        "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working.</strong>",
+        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase on ITN.",
         "end": {
           "column": 3,
           "line": 36
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
-        "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3.itn",
-        "start": {
-          "column": 34,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working.</strong>",
-        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase on ITN.",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3",
         "start": {
           "column": 31,
-          "line": 37
+          "line": 30
         }
       },
       {
@@ -8751,13 +8662,13 @@
         "description": "Label for button \"Continue\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
-          "line": 44
+          "line": 37
         }
       },
       {
@@ -8765,13 +8676,13 @@
         "description": "Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 42
         }
       }
     ],
@@ -8936,20 +8847,6 @@
         "start": {
           "column": 16,
           "line": 79
-        }
-      },
-      {
-        "defaultMessage": "!!!<strong>I understand that I will need the wallet recovery phrase of this wallet to receive my Incentivized Testnet ada rewards on the Cardano mainnet.</strong>",
-        "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
-        "end": {
-          "column": 3,
-          "line": 93
-        },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
-        "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
-        "start": {
-          "column": 15,
-          "line": 87
         }
       }
     ],
@@ -14898,13 +14795,13 @@
         "description": "Label for Close button on the wallet restore \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
         "id": "wallet.restore.dialog.step.success.dialog.close",
         "start": {
           "column": 20,
-          "line": 20
+          "line": 18
         }
       },
       {
@@ -14912,13 +14809,13 @@
         "description": "Description \"line 1\" on the wallet restore \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
         "id": "wallet.restore.dialog.step.success.dialog.description.line1",
         "start": {
           "column": 20,
-          "line": 26
+          "line": 24
         }
       },
       {
@@ -14926,13 +14823,13 @@
         "description": "Description \"line 2\" on the wallet restore \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
         "id": "wallet.restore.dialog.step.success.dialog.description.line2",
         "start": {
           "column": 20,
-          "line": 32
+          "line": 30
         }
       },
       {
@@ -14940,27 +14837,13 @@
         "description": "Description \"line 3\" on the wallet restore \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
         "id": "wallet.restore.dialog.step.success.dialog.description.line3",
         "start": {
           "column": 20,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.",
-        "description": "Description \"line 5\" on the wallet restore \"success\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/SuccessDialog.js",
-        "id": "wallet.restore.dialog.step.success.dialog.description.line4",
-        "start": {
-          "column": 20,
-          "line": 46
+          "line": 37
         }
       }
     ],
@@ -15458,24 +15341,10 @@
           "line": 31
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
-        "id": "wallet.add.dialog.create.description.itn",
-        "start": {
-          "column": 24,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Description for the \"Create a new wallet\" button on the wallet add dialog.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.create.description",
         "start": {
           "column": 21,
-          "line": 32
+          "line": 26
         }
       },
       {
@@ -15483,13 +15352,13 @@
         "description": "Label for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.join.label",
         "start": {
           "column": 13,
-          "line": 38
+          "line": 32
         }
       },
       {
@@ -15497,13 +15366,13 @@
         "description": "Description for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.join.description",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 37
         }
       },
       {
@@ -15511,13 +15380,13 @@
         "description": "Label for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.connect.label",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 42
         }
       },
       {
@@ -15525,13 +15394,13 @@
         "description": "Description for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.connect.description",
         "start": {
           "column": 22,
-          "line": 53
+          "line": 47
         }
       },
       {
@@ -15539,13 +15408,13 @@
         "description": "Label for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.label",
         "start": {
           "column": 16,
-          "line": 59
+          "line": 53
         }
       },
       {
@@ -15553,13 +15422,13 @@
         "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withCertificate.description",
         "start": {
           "column": 37,
-          "line": 64
+          "line": 58
         }
       },
       {
@@ -15567,13 +15436,13 @@
         "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withoutCertificate.description",
         "start": {
           "column": 40,
-          "line": 71
+          "line": 65
         }
       },
       {
@@ -15581,13 +15450,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 77
+          "line": 71
         }
       },
       {
@@ -15595,13 +15464,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 82
+          "line": 76
         }
       },
       {
@@ -15609,13 +15478,13 @@
         "description": "Restore notification message shown during async wallet restore on the wallet add screen.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restoreNotificationMessage",
         "start": {
           "column": 30,
-          "line": 89
+          "line": 83
         }
       },
       {
@@ -15623,13 +15492,13 @@
         "description": "\"Maximum number of wallets reached\" notification message shown on the wallet add screen if user has 50 wallets.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.maxNumberOfWalletsNotificationMessage",
         "start": {
           "column": 41,
-          "line": 96
+          "line": 90
         }
       }
     ],

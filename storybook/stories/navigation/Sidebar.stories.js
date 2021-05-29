@@ -10,10 +10,7 @@ import {
   STAGING,
 } from '../../../source/common/types/environment.types';
 import StoryDecorator from '../_support/StoryDecorator';
-import {
-  isIncentivizedTestnetTheme,
-  isShelleyTestnetTheme,
-} from '../_support/utils';
+import { isShelleyTestnetTheme } from '../_support/utils';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
@@ -127,7 +124,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -144,7 +140,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -162,7 +157,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -180,7 +174,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -197,7 +190,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -216,7 +208,6 @@ storiesOf('Navigation|Sidebar', module)
         pathname="/"
         currentTheme={props.currentTheme}
         network="testnet"
-        isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
         isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       />
     )
@@ -242,7 +233,6 @@ storiesOf('Navigation|Sidebar', module)
         },
         TESTNET
       )}
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ));

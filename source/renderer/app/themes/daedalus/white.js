@@ -226,22 +226,6 @@ export const WHITE_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
-  experimentalDataOverlay: {
-    '--theme-experimental-data-overlay-background-color': '#fffffff5',
-    '--theme-experimental-data-overlay-button-background-color':
-      'rgba(41, 181, 149, 0.1)',
-    '--theme-experimental-data-overlay-button-background-color-hover':
-      '#29b595',
-    '--theme-experimental-data-overlay-button-border-color': '#29b595',
-    '--theme-experimental-data-overlay-button-text-color': '#29b595',
-    '--theme-experimental-data-overlay-button-text-color-hover': '#fff',
-    '--theme-experimental-data-overlay-description-background-color':
-      'rgba(41, 181, 149, 0.1)',
-    '--theme-experimental-data-overlay-description-color':
-      'rgba(45, 45, 45, 0.7)',
-    '--theme-experimental-data-overlay-logo-fill-color': '#29b595',
-    '--theme-experimental-data-overlay-title-color': '#2d2d2d',
-  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
@@ -809,14 +793,9 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-clear-button-color': '#2d2d2d',
     '--theme-staking-stake-pools-search-clear-button-hover-background-color':
       'rgba(41, 181, 149, 0.05)',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
-      '#fff',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color':
-      'rgba(45, 45, 45, 0.8)',
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(45, 45, 45, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-id-background-color':
       'rgba(45, 45, 45, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',

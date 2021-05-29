@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js';
 import { expectTextInSelector, waitAndClick, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
-import { itnShelleyMnemonics, byronMnemonics, itnByronMnemonics } from '../../../../utils/api-importer/mnemonics';
+import { byronMnemonics, shelleyMnemonics } from '../../../../utils/api-importer/mnemonics';
 import { testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus } from '../../../types';
@@ -14,13 +14,13 @@ const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 const DEFAULT_LANGUAGE = 'en-US';
 
-let itnShelleyMnemonicsIndex = 0;
+let shelleyMnemonicsIndex = 0;
 export const noWalletsErrorMessage = `The balance wallet for funds transfering was already used and has no longer funds.
     Remove the "Daedalus Selfnode" directory and run \`nix:dev\` again.`;
 
 export const restoreWalletWithFunds = async (client: Object, { walletName }: { walletName: string }) => {
-  const recoveryPhrase = itnShelleyMnemonics[itnShelleyMnemonicsIndex++];
-  if (itnShelleyMnemonicsIndex === itnShelleyMnemonics.length) itnShelleyMnemonicsIndex = 0;
+  const recoveryPhrase = shelleyMnemonics[shelleyMnemonicsIndex++];
+  if (shelleyMnemonicsIndex === shelleyMnemonics.length) shelleyMnemonicsIndex = 0;
   client.executeAsync((name, recoveryPhrase, done) => {
 
     daedalus.api.ada
@@ -67,8 +67,7 @@ export const restoreLegacyWallet = async (
 ) => {
   let recoveryPhrase;
   if (hasFunds) {
-    const isIncentivizedTestnetRequest = await client.execute(() => global.isIncentivizedTestnet);
-    const mnemonics = isIncentivizedTestnetRequest.value ? itnByronMnemonics : byronMnemonics;
+    const mnemonics = byronMnemonics;
     const mnemonicsIndex = await getMnemonicsIndex.call(client, (mnemonics.length - 1));
     recoveryPhrase = mnemonics[mnemonicsIndex];
   } else {
