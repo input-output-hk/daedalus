@@ -117,7 +117,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
 import { currencyConfig } from '../config/currencyConfig';
-import { ASSETS_PREDEFINED_DECIMALS } from '../config/assetsConfig';
 
 // Addresses Types
 import type {
@@ -236,6 +235,7 @@ import type {
   GetAssetsRequest,
   GetAssetsResponse,
   ApiAsset,
+  StoredAssetMetadata,
 } from './assets/types';
 import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
@@ -244,6 +244,10 @@ import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 
 export default class AdaApi {
   config: RequestConfig;
+
+  // We need to preserve all asset metadata during single runtime in order
+  // to avoid losing it in case of Token Metadata Registry server unvailability
+  storedAssetMetadata: StoredAssetMetadata = {};
 
   constructor(isTest: boolean, config: RequestConfig) {
     this.setRequestConfig(config);
@@ -643,7 +647,8 @@ export default class AdaApi {
       const assets = response.map((asset) =>
         _createAssetFromServerData(
           asset,
-          assetsLocaldata[asset.policy_id + asset.asset_name] || {}
+          assetsLocaldata[asset.policy_id + asset.asset_name] || {},
+          this.storedAssetMetadata
         )
       );
       return new Promise((resolve) =>
@@ -2840,7 +2845,11 @@ const _createTransactionFromServerData = action(
 
 const _createAssetFromServerData = action(
   'AdaApi::_createAssetFromServerData',
-  (data: ApiAsset, localData: AssetLocalData) => {
+  (
+    data: ApiAsset,
+    localData: AssetLocalData,
+    storedAssetMetadata: StoredAssetMetadata
+  ) => {
     const {
       policy_id: policyId,
       asset_name: assetName,
@@ -2848,14 +2857,18 @@ const _createAssetFromServerData = action(
       metadata,
     } = data;
     const uniqueId = `${policyId}${assetName}`;
+    const storedMetadata = storedAssetMetadata[uniqueId];
     const { decimals } = localData;
-    const recommendedDecimals =
-      ASSETS_PREDEFINED_DECIMALS[`${policyId}${assetName}`];
+    const { decimals: recommendedDecimals = null } =
+      metadata || storedMetadata || {};
+    if (metadata) {
+      storedAssetMetadata[uniqueId] = metadata;
+    }
     return new Asset({
       policyId,
       assetName,
       fingerprint,
-      metadata,
+      metadata: metadata || storedMetadata,
       decimals,
       recommendedDecimals,
       uniqueId,
