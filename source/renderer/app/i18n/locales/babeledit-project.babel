@@ -23507,7 +23507,7 @@
                 </translations>
             </concept_node>
             <concept_node>
-                <name>wallet.backup.privacy.warning.dialog..button.labelContinue</name>
+                <name>wallet.backup.privacy.warning.dialog.button.labelContinue</name>
                 <definition_loaded>false</definition_loaded>
                 <description></description>
                 <comment></comment>

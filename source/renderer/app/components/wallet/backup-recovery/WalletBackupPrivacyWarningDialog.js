@@ -32,10 +32,10 @@ const messages = defineMessages({
     defaultMessage:
       '!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working.</strong>',
     description:
-      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase on ITN.',
+      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   buttonLabelContinue: {
-    id: 'wallet.backup.privacy.warning.dialog..button.labelContinue', // TODO: fix translation key path 'dialog..button'
+    id: 'wallet.backup.privacy.warning.dialog.button.labelContinue',
     defaultMessage: '!!!Continue',
     description: 'Label for button "Continue" on wallet backup dialog',
   },

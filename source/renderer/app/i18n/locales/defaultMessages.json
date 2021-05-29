@@ -8645,7 +8645,7 @@
       },
       {
         "defaultMessage": "!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working.</strong>",
-        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase on ITN.",
+        "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
           "line": 36
@@ -8665,7 +8665,7 @@
           "line": 41
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
-        "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
+        "id": "wallet.backup.privacy.warning.dialog.button.labelContinue",
         "start": {
           "column": 23,
           "line": 37
