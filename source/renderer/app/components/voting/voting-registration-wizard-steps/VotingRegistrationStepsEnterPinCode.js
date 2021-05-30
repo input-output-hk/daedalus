@@ -75,6 +75,7 @@ type State = {
   selectedPinField: ?string,
   pinCodesVisible: boolean,
   sectionToFocus: ?string,
+  isTabClicked: boolean,
 };
 
 @observer
@@ -90,6 +91,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     selectedPinField: null,
     pinCodesVisible: false,
     sectionToFocus: null,
+    isTabClicked: false,
   };
 
   form = new ReactToolboxMobxForm(
@@ -160,24 +162,26 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     });
   };
 
-  onChangePinCode = (values: Array<string>) => {
+  onChangePinCode = (values: Array<string>, isTab?: boolean) => {
     const { form } = this;
     const pinCodeField = form.$('pinCode');
     const pinCodeFieldProps = pinCodeField.bind();
 
     this.setState({
       selectedPinField: 'pinCode',
+      isTabClicked: !!isTab,
     });
     pinCodeFieldProps.onChange(values);
   };
 
-  onChangeRepeatPinCode = (values: Array<string>) => {
+  onChangeRepeatPinCode = (values: Array<string>, isTab?: boolean) => {
     const { form } = this;
     const repeatPinCodeField = form.$('repeatPinCode');
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
 
     this.setState({
       selectedPinField: 'repeatPinCode',
+      isTabClicked: !!isTab,
     });
     repeatPinCodeFieldProps.onChange(values);
   };
@@ -195,7 +199,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
-    const { selectedPinField, pinCodesVisible, sectionToFocus } = this.state;
+    const { selectedPinField, pinCodesVisible, sectionToFocus, isTabClicked } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
@@ -241,7 +245,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             label={enterPinCodeLabel}
             resetLabel={resetPinCodesLabel}
             autoFocus
-            onChange={(values) => this.onChangePinCode(values)}
+            onChange={(values, isTab) => this.onChangePinCode(values, isTab)}
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
             selectedPinField={selectedPinField}
@@ -249,12 +253,13 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             pinCodesVisible={pinCodesVisible}
             onTabKey={() => this.handleTabKey('pinCode')}
             sectionToFocus={sectionToFocus}
+            isTabClicked={isTabClicked}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
             resetLabel={resetPinCodesLabel}
-            onChange={(values) => this.onChangeRepeatPinCode(values)}
+            onChange={(values, isTab) => this.onChangeRepeatPinCode(values, isTab)}
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
             autoFocus={isRepeatPinCodeAutoFocused}
@@ -269,6 +274,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             pinCodesVisible={pinCodesVisible}
             onTabKey={() => this.handleTabKey('repeatPinCode')}
             sectionToFocus={sectionToFocus}
+            isTabClicked={isTabClicked}
           />
         </div>
 
