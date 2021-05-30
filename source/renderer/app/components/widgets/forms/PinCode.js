@@ -93,7 +93,14 @@ export default class PinCode extends Component<Props, State> {
     value: Array<string>,
     disabled: boolean
   ) => {
-    const { enableField, resetFields, focusIsUpdated, focusKeyChanged, isBackSpace, fromTab } = this.state;
+    const {
+      enableField,
+      resetFields,
+      focusIsUpdated,
+      focusKeyChanged,
+      isBackSpace,
+      fromTab,
+    } = this.state;
     const { sectionToFocus, name, isTabClicked } = this.props;
     let inputFocusKey = 0;
     const emptyFieldIndex = value.findIndex((item) => item === '');
@@ -101,18 +108,35 @@ export default class PinCode extends Component<Props, State> {
       inputFocusKey = emptyFieldIndex;
     } else if (fromTab || isTabClicked) {
       inputFocusKey = this.focusKey;
-    } else if (this.isAddingNewValue && !resetFields && !sectionToFocus && !focusIsUpdated) {
+    } else if (
+      this.isAddingNewValue &&
+      !resetFields &&
+      !sectionToFocus &&
+      !focusIsUpdated
+    ) {
       inputFocusKey = this.focusKey + 1;
     } else if (!enableField && resetFields) {
       inputFocusKey = 0;
-    } else if ((sectionToFocus && sectionToFocus !== name) || (isBackSpace && !focusKeyChanged && sectionToFocus && sectionToFocus === name)) {
+    } else if (
+      (sectionToFocus && sectionToFocus !== name) ||
+      (isBackSpace &&
+        !focusKeyChanged &&
+        sectionToFocus &&
+        sectionToFocus === name)
+    ) {
       inputFocusKey = this.focusKey;
-    } else if ((focusIsUpdated && isBackSpace) || (focusKeyChanged && isBackSpace && !focusIsUpdated)) {
+    } else if (
+      (focusIsUpdated && isBackSpace) ||
+      (focusKeyChanged && isBackSpace && !focusIsUpdated)
+    ) {
       inputFocusKey = this.focusKey - 1;
     } else if (sectionToFocus && sectionToFocus === name && focusKeyChanged) {
       inputFocusKey = this.focusKey;
     }
-    if ((sectionToFocus && sectionToFocus !== name) || (isTabClicked && index !== inputFocusKey)) {
+    if (
+      (sectionToFocus && sectionToFocus !== name) ||
+      (isTabClicked && index !== inputFocusKey)
+    ) {
       return true;
     }
 
@@ -125,8 +149,8 @@ export default class PinCode extends Component<Props, State> {
           (!(this.focusKey + 1 > value.length - 1) &&
             index < inputFocusKey - 1) ||
           (index < inputFocusKey && !value[inputFocusKey]) ||
-      (index !== inputFocusKey && focusIsUpdated && isBackSpace) ||
-      (index !== inputFocusKey && focusKeyChanged && isBackSpace)
+          (index !== inputFocusKey && focusIsUpdated && isBackSpace) ||
+          (index !== inputFocusKey && focusKeyChanged && isBackSpace);
   };
 
   onChange = (inputValue: ?number, key: number, isTab?: boolean) => {
@@ -261,7 +285,9 @@ export default class PinCode extends Component<Props, State> {
             inputElementRef.focus();
           }, 0);
         } else if (isBackSpace && focusKeyChanged && name === sectionToFocus) {
-          const indexToFocus = this.isAddingNewValue ? focusKey + 1 : focusKey - 1;
+          const indexToFocus = this.isAddingNewValue
+            ? focusKey + 1
+            : focusKey - 1;
           const inputElRef = this.inputsRef[indexToFocus];
           setTimeout(() => {
             this.setFocusOnField(inputElRef);
@@ -371,11 +397,15 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
-  setFocusOnField = (inputFieldRef: {
-    focus: ?Function,
-    props: { value: string },
-    inputElement: { current: { selectionStart: number, selectionEnd: number } },
-  } | null) => {
+  setFocusOnField = (
+    inputFieldRef: {
+      focus: ?Function,
+      props: { value: string },
+      inputElement: {
+        current: { selectionStart: number, selectionEnd: number },
+      },
+    } | null
+  ) => {
     if (inputFieldRef) {
       const { focus, props, inputElement } = inputFieldRef;
       if (focus) focus();

@@ -199,7 +199,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
-    const { selectedPinField, pinCodesVisible, sectionToFocus, isTabClicked } = this.state;
+    const {
+      selectedPinField,
+      pinCodesVisible,
+      sectionToFocus,
+      isTabClicked,
+    } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
@@ -259,7 +264,9 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
             resetLabel={resetPinCodesLabel}
-            onChange={(values, isTab) => this.onChangeRepeatPinCode(values, isTab)}
+            onChange={(values, isTab) =>
+              this.onChangeRepeatPinCode(values, isTab)
+            }
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
             autoFocus={isRepeatPinCodeAutoFocused}
