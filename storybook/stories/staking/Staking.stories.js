@@ -50,7 +50,6 @@ const pageNames = {
   'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
-  'rewards-itn': 'Rewards - ITN',
   epochs: 'Epochs',
   info: 'Info',
   'info-countdown': 'Info Countdown',
@@ -169,10 +168,6 @@ storiesOf('Decentralization | Staking', module)
   })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
-
-  .add(pageNames['rewards-itn'], StakingRewardsStory, {
-    id: 'rewards-incentivized-testnet',
-  })
 
   .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 
