@@ -16,6 +16,7 @@
 
       &.SimpleInput_disabled {
         border-color: transparent;
+        color: var(--rp-input-text-color);
       }
     }
   }
