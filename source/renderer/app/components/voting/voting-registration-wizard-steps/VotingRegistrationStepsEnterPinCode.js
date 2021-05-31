@@ -221,7 +221,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const emptyRepeatFieldIndex = repeatPinCodeField.value.findIndex((item) => !item);
     const hasError =
       repeatPinCodeField.value.length === pinCodeFieldsLength
-      && emptyRepeatFieldIndex > -1 &&
+      && emptyRepeatFieldIndex === -1 &&
       repeatPinCodeField.error;
 
     const actions = [

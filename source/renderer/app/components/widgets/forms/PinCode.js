@@ -254,6 +254,13 @@ export default class PinCode extends Component<Props, State> {
     }
   };
 
+  componentDidMount() {
+    const { name } = this.props;
+    if (name === 'pinCode') {
+      this.setFocusOnField(this.inputsRef[this.focusKey]);
+    }
+  }
+
   componentDidUpdate() {
     const {
       value,
