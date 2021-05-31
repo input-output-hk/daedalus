@@ -32,6 +32,7 @@ export const DefaultSyncingConnectingStory = () => (
     isNodeStopped={boolean('isNodeStopped', false)}
     isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
     hasLoadedCurrentLocale={boolean('hasLoadedCurrentLocale', true)}
+    hasLoadedCurrentTheme={boolean('hasLoadedCurrentTheme', true)}
     isCheckingSystemTime={boolean('isCheckingSystemTime', false)}
     isNodeResponding={boolean('isNodeResponding', false)}
     isNodeSubscribed={boolean('isNodeSubscribed', false)}
@@ -70,6 +71,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     isNodeStopped={false}
     isTlsCertInvalid={false}
     hasLoadedCurrentLocale
+    hasLoadedCurrentTheme
     isCheckingSystemTime={false}
     isNodeResponding
     isNodeSubscribed={false}
@@ -107,6 +109,7 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
     isNodeStopped={false}
     isTlsCertInvalid={false}
     hasLoadedCurrentLocale
+    hasLoadedCurrentTheme
     isCheckingSystemTime={false}
     isNodeResponding
     isNodeSubscribed

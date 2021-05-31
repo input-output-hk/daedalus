@@ -876,14 +876,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   syncing: {
     '--theme-syncing-background-color': '#0b1926',
-    '--theme-syncing-background-color1': 'rgba(11, 25, 38, 1)',
-    '--theme-syncing-background-color2': 'rgba(11, 25, 38, 0.91)',
-    '--theme-syncing-background-color3': 'rgba(11, 25, 38, 0.31)',
-    '--theme-syncing-background-color4': 'rgba(11, 25, 38, 0)',
-    '--theme-syncing-background-color5': 'rgba(11, 25, 38, 0)',
-    '--theme-syncing-background-color6': 'rgba(11, 25, 38, 0.31)',
-    '--theme-syncing-background-color7': 'rgba(11, 25, 38, 0.91)',
-    '--theme-syncing-background-color8': 'rgba(11, 25, 38, 1)',
     '--theme-syncing-text-color': '#e9f4fe',
   },
   systemError: {

@@ -1,0 +1,22 @@
+.component {
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  transition: background-color 500ms;
+  width: 100%;
+  z-index: 1000;
+
+  &.isLoadingTheme {
+    background-color: transparent;
+  }
+
+  &.isConnecting {
+    background-color: var(--theme-connecting-background-color);
+  }
+
+  &.isSyncing {
+    background-color: var(--theme-syncing-background-color);
+  }
+}

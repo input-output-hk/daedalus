@@ -1080,30 +1080,6 @@ export const createDaedalusComponentsTheme = (
     },
     syncing: {
       '--theme-syncing-background-color': `${background.primary.regular}`,
-      '--theme-syncing-background-color1': `${chroma(
-        background.primary.regular
-      ).alpha(1)}`,
-      '--theme-syncing-background-color2': `${chroma(
-        background.primary.regular
-      ).alpha(0.91)}`,
-      '--theme-syncing-background-color3': `${chroma(
-        background.primary.regular
-      ).alpha(0.31)}`,
-      '--theme-syncing-background-color4': `${chroma(
-        background.primary.regular
-      ).alpha(0)}`,
-      '--theme-syncing-background-color5': `${chroma(
-        background.primary.regular
-      ).alpha(0)}`,
-      '--theme-syncing-background-color6': `${chroma(
-        background.primary.regular
-      ).alpha(0.31)}`,
-      '--theme-syncing-background-color7': `${chroma(
-        background.primary.regular
-      ).alpha(0.91)}`,
-      '--theme-syncing-background-color8': `${chroma(
-        background.primary.regular
-      ).alpha(1)}`,
       '--theme-syncing-text-color': `${text.primary}`,
     },
     systemError: {

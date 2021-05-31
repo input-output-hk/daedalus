@@ -38,7 +38,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       verificationProgress,
     } = networkStatus;
     const { displayAppUpdateNewsItem } = appUpdate;
-    const { hasLoadedCurrentLocale } = profile;
+    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = newsFeed.newsFeedData;
     const hasNotification = unread.length > 0;
@@ -59,6 +59,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         hasNotification={hasNotification}
         hasUpdate={displayAppUpdateNewsItem}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
+        hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={
           !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
         }

@@ -863,14 +863,6 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   syncing: {
     '--theme-syncing-background-color': '#121326',
-    '--theme-syncing-background-color1': 'rgba(18, 19, 38, 1)',
-    '--theme-syncing-background-color2': 'rgba(18, 19, 38, 0.91)',
-    '--theme-syncing-background-color3': 'rgba(18, 19, 38, 0.31)',
-    '--theme-syncing-background-color4': 'rgba(18, 19, 38, 0)',
-    '--theme-syncing-background-color5': 'rgba(18, 19, 38, 0)',
-    '--theme-syncing-background-color6': 'rgba(18, 19, 38, 0.31)',
-    '--theme-syncing-background-color7': 'rgba(18, 19, 38, 0.91)',
-    '--theme-syncing-background-color8': 'rgba(18, 19, 38, 1)',
     '--theme-syncing-text-color': '#ffffff',
   },
   systemError: {

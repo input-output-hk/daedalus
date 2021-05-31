@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import StatusIcons from './StatusIcons';
 import ReportIssue from './ReportIssue';
 import LogosDisplay from './LogosDisplay';
+import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnecting.scss';
@@ -32,6 +33,7 @@ type Props = {
   isNodeStopped: boolean,
   isTlsCertInvalid: boolean,
   hasLoadedCurrentLocale: boolean,
+  hasLoadedCurrentTheme: boolean,
   hasNotification: boolean,
   hasUpdate: boolean,
   isCheckingSystemTime: boolean,
@@ -142,6 +144,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isConnecting,
       isSyncing,
       hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
       hasNotification,
       hasUpdate,
       onIssueClick,
@@ -170,6 +173,11 @@ export default class SyncingConnecting extends Component<Props, State> {
 
     return (
       <div className={styles.component}>
+        <SyncingConnectingBackground
+          hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          isConnecting={isConnecting}
+          isSyncing={isSyncing}
+        />
         <div className={styles.content}>
           {this.showReportIssue && (
             <ReportIssue
