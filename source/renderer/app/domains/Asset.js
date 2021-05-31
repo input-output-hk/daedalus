@@ -13,14 +13,12 @@ export default class Asset {
   @observable recommendedDecimals: ?number;
 
   constructor(props: AssetProps) {
-    const { policyId, assetName } = props;
-    const uniqueId = `${policyId}${assetName}`;
+    const { uniqueId } = props;
     Object.assign(this, props, { uniqueId });
   }
 
   @action update(props: $Shape<AssetProps>) {
-    const { policyId, assetName } = props;
-    const uniqueId = `${policyId}${assetName}`;
+    const { uniqueId } = props;
     Object.assign(
       this,
       pick(props, [
