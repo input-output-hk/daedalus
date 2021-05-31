@@ -216,6 +216,14 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const pinCodeFieldProps = pinCodeField.bind();
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
 
+    const pinCodeFieldsLength = VOTING_REGISTRATION_PIN_CODE_LENGTH;
+
+    const emptyRepeatFieldIndex = repeatPinCodeField.value.findIndex((item) => !item);
+    const hasError =
+      repeatPinCodeField.value.length === pinCodeFieldsLength
+      && emptyRepeatFieldIndex > -1 &&
+      repeatPinCodeField.error;
+
     const actions = [
       {
         label: buttonLabel,
@@ -271,7 +279,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
             autoFocus={isRepeatPinCodeAutoFocused}
-            error={repeatPinCodeField.error}
+            error={hasError}
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!repeatPinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
