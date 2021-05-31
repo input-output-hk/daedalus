@@ -28,7 +28,8 @@ import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shar
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
-import DatePicker from '../../../source/renderer/app/components/widgets/forms/DatePicker';
+import DateRange from '../../../source/renderer/app/components/widgets/forms/DateRange';
+import Dialog from '../../../source/renderer/app/components/widgets/Dialog';
 
 import {
   LANGUAGE_OPTIONS,
@@ -220,7 +221,7 @@ storiesOf('Common|Widgets', module)
   ))
 
   .add(
-    'DatePicker',
+    'DateRange',
     withState(
       {
         startDate: new Date(),
@@ -228,29 +229,34 @@ storiesOf('Common|Widgets', module)
       },
       (store) => {
         const currentLocale = select(
-          LANGUAGE_OPTIONS[0].value,
+          'currentLocale',
           LANGUAGE_OPTIONS.reduce((obj, language) => {
             obj[language.value] = language.value;
             return obj;
-          }, {})
+          }, {}),
+          LANGUAGE_OPTIONS[0].value
         );
         const currentDateFormat = select(
-          DATE_ENGLISH_OPTIONS[0].value,
+          'currentDateFormat',
           DATE_ENGLISH_OPTIONS.reduce((obj, opt) => {
             obj[opt.value] = opt.value;
             return obj;
-          }, {})
+          }, {}),
+          DATE_ENGLISH_OPTIONS[0].value
         );
         const { startDate, endDate } = store.state;
         return (
-          <DatePicker
-            startDate={startDate}
-            endDate={endDate}
-            onChange={(newState) => store.set(newState)}
-            currenTheme="ligh-blue"
-            currentLocale={currentLocale}
-            currentDateFormat={currentDateFormat}
-          />
+          <Dialog>
+            <DateRange
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(newState) => store.set(newState)}
+              currenTheme="ligh-blue"
+              currentLocale={currentLocale}
+              currentDateFormat={currentDateFormat}
+              label="Date range"
+            />
+          </Dialog>
         );
       }
     )

@@ -1,0 +1,122 @@
+@import 'DateRange_react-date-range.scss';
+
+$border-radius: 2px;
+$leftBorder: $border-radius 0 0 $border-radius !important;
+$rightBorder: 0 $border-radius $border-radius 0 !important;
+
+.component {
+  .dropdown {
+    margin-bottom: 10px;
+  }
+  .inputs {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    .inputFrom,
+    .inputTo {
+      width: 50%;
+    }
+    .inputFrom {
+      margin-right: 10px;
+    }
+    .inputTo {
+      margin-left: 10px;
+    }
+    .inputContent {
+      color: var(--rp-input-text-color);
+      font-family: var(--font-regular);
+      line-height: 1.38;
+      padding: var(--rp-input-padding);
+      span {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .calendar {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+
+    @extend .react-date-range_core;
+    @extend .react-date-range_theme;
+    * {
+      font-family: var(--font-regular);
+    }
+    :global {
+      .rdrCalendarWrapper {
+        background: var(--rp-input-bg-color);
+        border-radius: 4px;
+        box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+      }
+      .rdrDateDisplay {
+        display: none;
+      }
+      .rdrDay:not(.rdrDayPassive) {
+        .rdrStartEdge,
+        .rdrInRange,
+        .rdrEndEdge {
+          background-color: var(--theme-button-flat-background-color);
+          border-radius: 0px;
+          ~ .rdrDayNumber {
+            span {
+              color: var(--rp-select-input-text-color) !important;
+            }
+          }
+        }
+      }
+
+      .rdrDayNumber span {
+        color: var(--rp-select-input-text-color);
+        font-size: 14px !important;
+      }
+      .rdrDayPassive .rdrDayNumber span {
+        color: var(--rp-select-input-text-color);
+        opacity: 0.3;
+      }
+      .DatePicker_calendar .rdrWeekDay {
+        font-size: 12px;
+      }
+      .rdrDayStartPreview,
+      .rdrDayInPreview,
+      .rdrDayEndPreview {
+        border-radius: 0px;
+        border-color: var(--theme-button-flat-text-color);
+      }
+      .rdrStartEdge,
+      .rdrDayStartPreview {
+        border-radius: $leftBorder;
+      }
+      .rdrEndEdge,
+      .rdrDayEndPreview {
+        border-radius: $rightBorder;
+      }
+      .rdrDayStartPreview.rdrDayEndPreview {
+        border-radius: $border-radius !important;
+      }
+      .rdrDayStartOfWeek {
+        .rdrInRange,
+        .rdrDayInPreview {
+          border-radius: $leftBorder;
+        }
+      }
+      .rdrDayEndOfWeek {
+        .rdrInRange,
+        .rdrDayInPreview {
+          border-radius: $rightBorder;
+        }
+      }
+      .rdrDayToday .rdrDayNumber span:after {
+        background-color: var(--theme-button-flat-text-color);
+      }
+      .rdrDayPassive {
+        // opacity: 0.3;
+      }
+      .rdrMonthAndYearPickers select {
+        color: var(--rp-select-input-text-color);
+        font-family: var(--font-semibold);
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ import styles from './StakingRewardsHistoryDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import Table from '../../widgets/Table';
 import StakePool from '../../../domains/StakePool';
-import DatePicker from '../../widgets/forms/DatePicker';
+import DateRange from '../../widgets/forms/DateRange';
 import copyIcon from '../../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { ITEM_COPY_FEEDBACK } from '../../../config/timingConfig';
@@ -200,7 +200,7 @@ export default class StakingRewardsHistoryDialog extends Component<
         </div>
 
         {isEditingDate && (
-          <DatePicker
+          <DateRange
             startDate={startDate}
             endDate={endDate}
             onChange={onSetDateRange}
