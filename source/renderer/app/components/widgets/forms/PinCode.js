@@ -155,12 +155,15 @@ export default class PinCode extends Component<Props, State> {
       return true;
     }
 
-    if (enableField) {
+    if (enableField && !isTabClicked) {
       if (index === inputFocusKey - 1 && inputFocusKey > value.length - 1) {
         return this.focusKey !== inputFocusKey - 1;
       }
-      if (index !== inputFocusKey && value.length === this.inputsRef.length) {
+      if (index !== this.focusKey && emptyFieldIndex === -1) {
         return true;
+      }
+      if (index === this.focusKey && emptyFieldIndex === -1) {
+        return false;
       }
     }
 
@@ -170,7 +173,15 @@ export default class PinCode extends Component<Props, State> {
       (!(this.focusKey + 1 > value.length - 1) && index < inputFocusKey - 1) ||
       (index < inputFocusKey && !value[inputFocusKey]) ||
       (index !== inputFocusKey && focusIsUpdated && isBackSpace) ||
-      (index !== inputFocusKey && focusKeyChanged && isBackSpace)
+      (index !== inputFocusKey && focusKeyChanged && isBackSpace) ||
+      (index === inputFocusKey &&
+        !focusKeyChanged &&
+        !focusIsUpdated &&
+        enableField &&
+        !isBackSpace &&
+        fromTab &&
+        isTabClicked &&
+        name !== sectionToFocus)
     );
   };
 
@@ -250,13 +261,14 @@ export default class PinCode extends Component<Props, State> {
       name,
       selectedPinField,
       sectionToFocus,
+      isTabClicked,
     } = this.props;
     const { isBackSpace, focusKeyChanged, focusIsUpdated } = this.state;
     const key = value.join('').length;
     const inputValue = value[key - 1];
     this.isAddingNewValue = this.fromBackspace
       ? false
-      : inputValue && !isNaN(inputValue);
+      : inputValue && !isNaN(inputValue) && !isTabClicked;
     // Find index of first empty input field element
     const emptyFieldIndex = value.findIndex((item) => item === '');
     // Update focus key index
@@ -300,7 +312,7 @@ export default class PinCode extends Component<Props, State> {
           this.setFocusOnField(inputElementRef);
         } else if (!isBackSpace && name !== sectionToFocus) {
           // If new value was added to already empty field, just re-focus to the same field
-          inputElementRef.focus();
+          this.setFocusOnField(inputElementRef);
         } else if (name === sectionToFocus && !focusKeyChanged) {
           setTimeout(() => {
             this.setFocusOnField(inputElementRef);

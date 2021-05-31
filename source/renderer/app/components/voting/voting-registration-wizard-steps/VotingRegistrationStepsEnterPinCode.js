@@ -259,6 +259,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onTabKey={() => this.handleTabKey('pinCode')}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
+            disabled={!isTabClicked && form.isValid}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
@@ -270,11 +271,6 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
             autoFocus={isRepeatPinCodeAutoFocused}
-            disabled={
-              !pinCodeField.isValid &&
-              !repeatPinCodeField.value.length &&
-              sectionToFocus !== 'repeatPinCode'
-            }
             error={repeatPinCodeField.error}
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!repeatPinCodeField.value.length}
@@ -282,6 +278,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onTabKey={() => this.handleTabKey('repeatPinCode')}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
+            disabled={
+              (!isTabClicked && form.isValid) ||
+              (!pinCodeField.isValid &&
+                !repeatPinCodeField.value.length &&
+                sectionToFocus !== 'repeatPinCode')
+            }
           />
         </div>
 
