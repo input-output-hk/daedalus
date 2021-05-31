@@ -5,6 +5,7 @@ import { DateRange } from 'react-date-range';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Input } from 'react-polymorph/lib/components/Input';
 import styles from './DatePicker.scss';
+import TinyInput from './TinyInput';
 
 const messages = defineMessages({
   dateRange: {
@@ -143,6 +144,17 @@ export default class DatePicker extends Component<Props, State> {
     ];
   }
 
+  inputSelectionRenderer = (a, b, c) => {
+    console.log('a', a);
+    console.log('b', b);
+    console.log('c', c);
+    return 'INPUT CUSTOM VALUE';
+  };
+
+  //   (input: 'from' | 'to') => {
+  //
+  //   }
+
   render() {
     const { intl } = this.context;
     const { startDate, endDate, currentLocale, currentDateFormat } = this.props;
@@ -165,15 +177,35 @@ export default class DatePicker extends Component<Props, State> {
             this.setState({ selectValue });
           }}
         />
-        <div className={styles.calendar}>
-          <DateRange
-            onChange={this.handleChange}
-            moveRangeOnFirstSelection={false}
-            ranges={ranges}
-            locale1={locales[currentLocale]}
-            dateDisplayFormat={dateFormats[currentDateFormat]}
-          />
-        </div>
+        <TinyInput
+          innerLabelPrefix="from"
+          innerValue="01/01/2021"
+          value="01/01/2021"
+          onChange={(v) => console.log(v)}
+          autoFocus={false}
+          onSubmit={(a, b, c) => {
+            console.log('SUBMIT ---');
+            console.log('a', a);
+            console.log('b', b);
+            console.log('c', c);
+          }}
+          onFocus={() => console.log('onFocus')}
+          onBlur={() => console.log('onBlur')}
+          onClick={() => console.log('onClick')}
+          useReadMode
+          readOnly
+        />
+        {selectValue === DateRangeTypes.CUSTOM && (
+          <div className={styles.calendar}>
+            <DateRange
+              onChange={this.handleChange}
+              moveRangeOnFirstSelection={false}
+              ranges={ranges}
+              locale1={locales[currentLocale]}
+              dateDisplayFormat={dateFormats[currentDateFormat]}
+            />
+          </div>
+        )}
       </div>
     );
   }
