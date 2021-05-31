@@ -9,7 +9,7 @@ import styles from './DatePicker.scss';
 const messages = defineMessages({
   dateRange: {
     id: 'widgets.datePicker.dateRange',
-    defaultMessage: '!!!Time',
+    defaultMessage: '!!!Date range',
     description: 'Date range of filter.',
   },
   selectTimeRange: {
@@ -165,13 +165,15 @@ export default class DatePicker extends Component<Props, State> {
             this.setState({ selectValue });
           }}
         />
-        <DateRange
-          onChange={this.handleChange}
-          moveRangeOnFirstSelection={false}
-          ranges={ranges}
-          locale1={locales[currentLocale]}
-          dateDisplayFormat={dateFormats[currentDateFormat]}
-        />
+        <div className={styles.calendar}>
+          <DateRange
+            onChange={this.handleChange}
+            moveRangeOnFirstSelection={false}
+            ranges={ranges}
+            locale1={locales[currentLocale]}
+            dateDisplayFormat={dateFormats[currentDateFormat]}
+          />
+        </div>
       </div>
     );
   }

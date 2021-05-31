@@ -1225,6 +1225,14 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName} amount",
   "wallet.transferFunds.dialog2.title": "Transfer funds",
   "wallet.transferFunds.dialog2.total.label": "Total",
+  "widgets.datePicker.custom": "Custom",
+  "widgets.datePicker.dateRange": "Date range",
+  "widgets.datePicker.last30Days": "Last 30 days",
+  "widgets.datePicker.last7Days": "Last 7 days",
+  "widgets.datePicker.last90Days": "Last 90 days",
+  "widgets.datePicker.resetFilter": "Reset Filter",
+  "widgets.datePicker.selectTimeRange": "Select time range",
+  "widgets.datePicker.thisYear": "This year",
   "widgets.itemsDropdown.syncingLabel": "Syncing",
   "widgets.itemsDropdown.syncingLabelProgress": "Syncing {syncingProgress}%"
 }
