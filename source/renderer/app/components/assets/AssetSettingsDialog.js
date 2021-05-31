@@ -89,9 +89,12 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { asset } = props;
-    const { decimals } = asset;
+    const { decimals: savedDecimals, recommendedDecimals } = asset;
+    const hasSavedDecimals = typeof savedDecimals === 'number';
     this.state = {
-      decimals,
+      decimals: hasSavedDecimals
+        ? savedDecimals
+        : recommendedDecimals || DEFAULT_DECIMAL_PRECISION,
     };
   }
 
@@ -129,8 +132,10 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { onCancel, onSubmit, asset } = this.props;
-    const { recommendedDecimals } = asset;
+    const { decimals: savedDecimals, recommendedDecimals } = asset;
     const { decimals } = this.state;
+    const hasSavedDecimals = typeof savedDecimals === 'number';
+    const hasRecommendedDecimals = typeof recommendedDecimals === 'number';
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
       value,
     }));
@@ -142,18 +147,19 @@ export default class AssetSettingsDialog extends Component<Props, State> {
       {
         label: intl.formatMessage(globalMessages.save),
         primary: true,
+        disabled:
+          (hasSavedDecimals && decimals === savedDecimals) ||
+          (!hasSavedDecimals && decimals === DEFAULT_DECIMAL_PRECISION),
         onClick: () => onSubmit(asset, decimals),
       },
     ];
     const hasWarning =
-      typeof recommendedDecimals === 'number' &&
-      decimals !== recommendedDecimals;
+      hasRecommendedDecimals && savedDecimals !== recommendedDecimals;
     let warningPopOverMessage;
     if (hasWarning) {
-      warningPopOverMessage =
-        typeof decimals === 'number'
-          ? messages.warningPopOverNotUsing
-          : messages.warningPopOverAvailable;
+      warningPopOverMessage = hasSavedDecimals
+        ? messages.warningPopOverNotUsing
+        : messages.warningPopOverAvailable;
     }
 
     return (
@@ -187,7 +193,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
           </p>
           <Select
             options={options}
-            value={decimals || DEFAULT_DECIMAL_PRECISION}
+            value={decimals}
             className={styles.decimalsDropdown}
             label={
               <span className={styles.decimalsDropdownLabel}>

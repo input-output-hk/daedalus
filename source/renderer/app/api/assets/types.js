@@ -77,12 +77,13 @@ export type AssetMetadata = {
   name: string,
   ticker: string,
   description: string,
-  unit?: {
-    decimals?: number,
-    name: string,
-  },
+  decimals?: number, // [0 .. 255]
   url?: string,
   logo?: string,
+};
+
+export type StoredAssetMetadata = {
+  [uniqueId: string]: AssetMetadata,
 };
 
 export type GetUnknownAssetRequest = {
