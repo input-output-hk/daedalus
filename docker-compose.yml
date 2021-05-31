@@ -1,6 +1,0 @@
-version: '3.7'
-services:
-  cardano-sl-cluster:
-    image: inputoutput/cardano-sl:1.3.0-demo-cluster
-    ports:
-      - 3100:3100 # Relay node
