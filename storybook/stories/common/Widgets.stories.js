@@ -256,6 +256,7 @@ storiesOf('Common|Widgets', module)
               currentDateFormat={currentDateFormat}
               label="Date range"
             />
+            <div style={{ height: 400 }} />
           </Dialog>
         );
       }
