@@ -164,13 +164,13 @@ export default class PinCode extends Component<Props, State> {
       if (inputFocusKey === 3 && index === inputFocusKey) {
         return false;
       }
-      if (index === inputFocusKey - 1 && inputFocusKey > value.length - 1) {
+      if (index > 2 && index === inputFocusKey - 1 && inputFocusKey > value.length - 1) {
         return this.focusKey !== inputFocusKey - 1;
       }
-      if (index !== this.focusKey && emptyFieldIndex === -1) {
+      if (index > 2 && index !== this.focusKey && emptyFieldIndex === -1) {
         return true;
       }
-      if (index === this.focusKey && emptyFieldIndex === -1) {
+      if (index > 2 && index === this.focusKey && emptyFieldIndex === -1) {
         return false;
       }
     }
@@ -497,7 +497,7 @@ export default class PinCode extends Component<Props, State> {
       let fieldKey = this.focusKey;
       if (emptyFieldIndex > -1) {
         fieldKey = emptyFieldIndex;
-      } else if (value.length < 4) {
+      } else if (value.length && value.length < 4) {
         fieldKey = this.focusKey + 1;
       }
       const fieldToFocus = this.inputsRef[fieldKey];
