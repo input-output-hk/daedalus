@@ -5895,7 +5895,7 @@
         "description": "TexportCsvLabel on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.csv.label",
@@ -5909,13 +5909,13 @@
         "description": "\"Rewards address\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.rewardsAddress",
         "start": {
           "column": 18,
-          "line": 39
+          "line": 38
         }
       }
     ],
