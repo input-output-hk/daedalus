@@ -28,7 +28,8 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     const { stores, actions } = this.props;
     const { reward } = stores.uiDialogs.dataForActiveDialog;
     const { closeActiveDialog } = actions.dialogs;
-    const { currentDateFormat } = stores.profile;
+    const { currentDateFormat, currentTheme } = stores.profile;
+    const { openExternalLink } = stores.app;
     const {
       isFetchingRewardsHistory,
       rewardsHistory: rewardsHistoryObject,
@@ -42,9 +43,11 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     return (
       <StakingRewardsHistoryDialog
         currentDateFormat={currentDateFormat}
+        currentTheme={currentTheme}
         isFetchingRewardsHistory={isFetchingRewardsHistory}
         onClose={closeActiveDialog.trigger}
         onExportCSV={requestRewardsHistoryCSVFile.trigger}
+        onOpenExternalLink={openExternalLink}
         onSetDateRange={setRewardsHistoryDateRange.trigger}
         reward={reward}
         rewardsHistory={toJS(rewardsHistory)}

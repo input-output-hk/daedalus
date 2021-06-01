@@ -82,8 +82,10 @@ type Props = {
   currentLocale: string,
   currentDateFormat: string,
   initialSelectValue?: DateRangeType,
-  initialDateFrom?: ?Date,
-  initialDateTo?: ?Date,
+  // TODO:
+  // initialDateFrom?: ?Date,
+  // initialDateTo?: ?Date,
+  // maxDateRange:
   label?: string,
 };
 

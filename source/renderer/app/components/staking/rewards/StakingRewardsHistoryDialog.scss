@@ -45,11 +45,16 @@
       }
     }
   }
-  .dateRange {
-    margin-bottom: 20px;
-  }
   .loadingSpinner {
     margin-bottom: 30px;
+  }
+  .table {
+    td {
+      font-family: var(--font-regular);
+    }
+  }
+  .stakePoolTicker {
+    color: var(--theme-staking-stake-pool-tooltip-link-color);
   }
   :global {
     .Dialog_content .LoadingSpinner_icon {

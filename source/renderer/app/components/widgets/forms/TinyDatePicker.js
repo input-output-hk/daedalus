@@ -98,7 +98,6 @@ export default class TinyDatePicker extends Component<Props> {
       error,
       ...rest
     } = this.props;
-    console.log('this.props', this.props);
     const componentClassNames = classNames([
       styles.component,
       pickerPanelPosition === 'left' ? styles.pickerPanelOnLeft : null,

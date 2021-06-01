@@ -161,7 +161,7 @@ type Props = {
   onOpenExternalLink: (string) => void,
   onSelect?: () => void,
   showWithSelectButton?: boolean,
-  color: string,
+  color?: string,
   containerClassName: string,
   numberOfRankedStakePools: number,
   isGridRewardsView?: boolean,
@@ -213,7 +213,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   get isGreyColor() {
-    return !IS_RANKING_DATA_AVAILABLE;
+    return !IS_RANKING_DATA_AVAILABLE || !this.props.color;
   }
 
   renderDescriptionFields = () => {

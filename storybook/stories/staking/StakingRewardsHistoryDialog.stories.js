@@ -33,6 +33,8 @@ export const StakingRewardsHistoryStory = () => {
       onCopy={action('onCopy')}
       onExportCSV={action('onExportCSV')}
       onSetDateRange={(newDateRange) => setDateRange(newDateRange)}
+      currenTheme="light-blue"
+      onOpenExternalLink={action('onOpenExternalLink')}
     />
   );
 };

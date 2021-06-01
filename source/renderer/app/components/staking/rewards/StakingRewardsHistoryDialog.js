@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -15,6 +15,7 @@ import type {
   RewardsHistoryItem,
 } from '../../../api/staking/types';
 import styles from './StakingRewardsHistoryDialog.scss';
+import { PoolPopOver } from '../widgets/PoolPopOver';
 import globalMessages from '../../../i18n/global-messages';
 import Table from '../../widgets/Table';
 import StakePool from '../../../domains/StakePool';
@@ -44,10 +45,12 @@ const messages = defineMessages({
 
 type Props = {
   currentDateFormat: string,
+  currentTheme: string,
   isFetchingRewardsHistory: boolean,
   onClose: Function,
   onCopy?: Function,
   onExportCSV: Function,
+  onOpenExternalLink: Function,
   reward: RewardForIncentivizedTestnet,
   rewardsHistory: Array<RewardsHistoryItem>,
 };
@@ -88,9 +91,11 @@ export default class StakingRewardsHistoryDialog extends Component<
     const { intl } = this.context;
     const {
       currentDateFormat,
+      currentTheme,
       isFetchingRewardsHistory,
       onClose,
       onExportCSV,
+      onOpenExternalLink,
       reward,
       rewardsHistory,
     } = this.props;
@@ -130,10 +135,17 @@ export default class StakingRewardsHistoryDialog extends Component<
           pool ? `${pool.ticker}${pool.name}` : null,
         render: (pool: ?StakePool) =>
           pool ? (
-            <Fragment>
-              <span>[{pool.ticker}]</span>
+            <PoolPopOver
+              containerClassName="StakingRewardsHistoryDialog_table"
+              currentTheme={currentTheme}
+              numberOfRankedStakePools={0}
+              onOpenExternalLink={onOpenExternalLink}
+              openOnHover
+              stakePool={pool}
+            >
+              <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
               {pool.name}
-            </Fragment>
+            </PoolPopOver>
           ) : null,
       },
       {

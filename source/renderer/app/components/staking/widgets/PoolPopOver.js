@@ -18,7 +18,7 @@ import styles from './PoolPopOver.scss';
 
 export function PoolPopOver(props: {
   children: Node,
-  color: string,
+  color?: string,
   currentTheme: string,
   onOpen?: (poolId: string) => void,
   onClose?: () => void,

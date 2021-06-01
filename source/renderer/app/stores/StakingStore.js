@@ -140,9 +140,6 @@ export default class StakingStore extends Store {
     stakingActions.requestRewardsHistoryCSVFile.listen(
       this._requestRewardsHistoryCSVFile
     );
-    stakingActions.setRewardsHistoryDateRange.listen(
-      this._setRewardsHistoryDateRange
-    );
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
