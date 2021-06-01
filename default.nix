@@ -326,7 +326,7 @@ let
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
-    electron12 = pkgs.callPackage ./installers/nix/electron.nix {};
+    electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {
       runFlow = self.callPackage ./tests/flow.nix {};

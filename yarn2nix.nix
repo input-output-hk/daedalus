@@ -31,14 +31,14 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "12.0.9";
+  windowsElectronVersion = "13.0.1";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "3ae9f8f94002d91b57dbd531460e6ded3ac67415c391fe8568e20cd6149ac274";
+    sha256 = "e97a7ed8d07a42c0f18b35831c82932143c4d2bf2cc19ed90a2eefabd6bebfad";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "2f815c39fa7a316568d08f0f5bbc54b90c29b8245c94744d2496549bd4ef0d80";
+    sha256 = "b91d9421037eb222cec5424be59a0503487d9dbf772d7bb327d86c3f1f71c8c7";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out
@@ -52,8 +52,8 @@ let
     ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
   electron-gyp = fetchurl {
-    url = "https://www.electronjs.org/headers/v12.0.9/node-v12.0.9-headers.tar.gz";
-    sha256 = "c674452aa4f54ccaf32460251c8bdd262eb4d75b282e6d79ee5c3c25e7978cef";
+    url = "https://www.electronjs.org/headers/v13.0.1/node-v13.0.1-headers.tar.gz";
+    sha256 = "5d5ad0fcc6c9aadf22ebff5d3218760755883d99e90dbf443c1f6f94cc55b445";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -78,7 +78,7 @@ let
   ];
   hack = writeShellScriptBin "node-gyp" ''
     echo gyp wrapper
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/12.0.9/
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
   '';
 in
 yarn2nix.mkYarnPackage {
@@ -132,7 +132,7 @@ yarn2nix.mkYarnPackage {
 
     mkdir -pv $HOME/.electron-gyp/
     tar -xvf ${electron-gyp} -C $HOME/.electron-gyp
-    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/12.0.9/
+    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/13.0.1/
 
     ln -sv $HOME/.electron-gyp $HOME/.node-gyp
 
