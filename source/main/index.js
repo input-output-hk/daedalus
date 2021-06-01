@@ -132,8 +132,8 @@ const onAppReady = async () => {
   // We need DAEDALUS_INSTALL_DIRECTORY in PATH in order for the
   // cardano-launcher to find cardano-wallet and cardano-node executables
   process.env.PATH = [
-    process.env.DAEDALUS_INSTALL_DIRECTORY,
     process.env.PATH,
+    process.env.DAEDALUS_INSTALL_DIRECTORY,
   ].join(path.delimiter);
 
   ensureXDGDataIsSet();
