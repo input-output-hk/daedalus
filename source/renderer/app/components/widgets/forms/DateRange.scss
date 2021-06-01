@@ -38,6 +38,7 @@ $rightBorder: 0 $border-radius $border-radius 0 !important;
     justify-content: center;
     position: absolute;
     width: 100%;
+    z-index: 10;
 
     @extend .react-date-range_core;
     @extend .react-date-range_theme;

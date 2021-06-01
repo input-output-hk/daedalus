@@ -18,7 +18,6 @@ import styles from './StakingRewardsHistoryDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import Table from '../../widgets/Table';
 import StakePool from '../../../domains/StakePool';
-import DateRange from '../../widgets/forms/DateRange';
 import copyIcon from '../../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { ITEM_COPY_FEEDBACK } from '../../../config/timingConfig';
@@ -26,35 +25,34 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   title: {
-    id: 'staking.rewards.dialog.title',
+    id: 'staking.rewardsHistory.dialog.title',
     defaultMessage: '!!!Rewards details',
     description:
-      'Title "Earned delegation rewards" label on the staking rewards page.',
+      'Title "Earned delegation rewards" label on the rewards history dialog.',
   },
   exportCsvLabel: {
-    id: 'staking.rewards.dialog.csv.label',
+    id: 'staking.rewardsHistory.dialog.csv.label',
     defaultMessage: '!!!Export CSV',
-    description:
-      'Title "Earned delegation rewards" label on the staking rewards page.',
+    description: 'TexportCsvLabel on the rewards history dialog.',
+  },
+  rewardsAddress: {
+    id: 'staking.rewardsHistory.dialog.rewardsAddress',
+    defaultMessage: '!!!Rewards address',
+    description: '"Rewards address" label on the rewards history dialog.',
   },
 });
 
 type Props = {
   currentDateFormat: string,
-  currentLocale: string,
   isFetchingRewardsHistory: boolean,
   onClose: Function,
   onCopy?: Function,
   onExportCSV: Function,
-  onSetDateRange: Function,
   reward: RewardForIncentivizedTestnet,
   rewardsHistory: Array<RewardsHistoryItem>,
-  startDate: Date,
-  endDate: ?Date,
 };
 
 type State = {
-  isEditingDate: boolean,
   itemCopied: boolean,
 };
 
@@ -70,7 +68,6 @@ export default class StakingRewardsHistoryDialog extends Component<
   copyNotificationTimeout: TimeoutID;
 
   state = {
-    isEditingDate: false,
     itemCopied: false,
   };
 
@@ -91,17 +88,13 @@ export default class StakingRewardsHistoryDialog extends Component<
     const { intl } = this.context;
     const {
       currentDateFormat,
-      currentLocale,
-      endDate,
       isFetchingRewardsHistory,
       onClose,
       onExportCSV,
-      onSetDateRange,
       reward,
       rewardsHistory,
-      startDate,
     } = this.props;
-    const { isEditingDate, itemCopied } = this.state;
+    const { itemCopied } = this.state;
     const { walletName, rewardsAddress } = reward || {};
     const icon = itemCopied ? copyCheckmarkIcon : copyIcon;
     const copyIconWrapperStyles = classnames([
@@ -166,7 +159,9 @@ export default class StakingRewardsHistoryDialog extends Component<
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <div className={styles.label}>Rewards address</div>
+        <div className={styles.label}>
+          {intl.formatMessage(messages.rewardsAddress)}
+        </div>
 
         <CopyToClipboard text={rewardsAddress} onCopy={this.handleCopy}>
           <p className={styles.rewardsAddress}>
@@ -183,31 +178,6 @@ export default class StakingRewardsHistoryDialog extends Component<
           </p>
         </CopyToClipboard>
 
-        <div className={styles.label}>Date range</div>
-        <div className={styles.dateRange}>
-          <input
-            value={`${new Date(startDate).toISOString()} - ${
-              endDate ? new Date(endDate).toISOString() : ''
-            }`}
-            readOnly
-          />
-          <button
-            style={{ color: 'white ' }}
-            onClick={() => this.setState({ isEditingDate: true })}
-          >
-            EDIT DATE RANGE
-          </button>
-        </div>
-
-        {isEditingDate && (
-          <DateRange
-            startDate={startDate}
-            endDate={endDate}
-            onChange={onSetDateRange}
-            currentLocale={currentLocale}
-            currentDateFormat={currentDateFormat}
-          />
-        )}
         {isFetchingRewardsHistory ? (
           <div className={styles.loadingSpinner}>
             <LoadingSpinner big />

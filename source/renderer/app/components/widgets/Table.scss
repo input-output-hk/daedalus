@@ -7,13 +7,6 @@
   thead {
     background-color: var(--theme-staking-table-head-background-color);
   }
-  tbody {
-    tr {
-      cursor: pointer;
-      &:hover {
-      }
-    }
-  }
   tr,
   td,
   th {
@@ -27,6 +20,7 @@
     line-height: 1.14;
     padding: 14px 20px;
     text-align: left;
+    user-select: none;
 
     &:hover {
       & > .sortIcon {

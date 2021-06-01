@@ -5764,27 +5764,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Export CSV",
-        "description": "Label for the \"Export CSV\" button on the staking rewards page.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.exportButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 29
+          "line": 22
         }
       },
       {
@@ -5792,41 +5778,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Date",
-        "description": "Table header \"Date\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.date",
-        "start": {
-          "column": 19,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Stake pool",
-        "description": "Table header \"Stake pool\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.pool",
-        "start": {
-          "column": 19,
-          "line": 45
+          "line": 28
         }
       },
       {
@@ -5834,55 +5792,83 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 50
+          "line": 33
         }
       },
       {
-        "defaultMessage": "!!!Total rewards earned",
+        "defaultMessage": "!!!Total rewards earned (ADA)",
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 55
+          "line": 38
         }
       },
       {
-        "defaultMessage": "!!!Learn more",
-        "description": "Label for \"Learn more\" button on staking rewards page",
+        "defaultMessage": "!!!Rewards address",
+        "description": "Table header \"Rewards address\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.learnMore.ButtonLabel",
+        "id": "staking.rewards.tableHeader.rewardsAddress",
         "start": {
-          "column": 24,
-          "line": 60
+          "column": 29,
+          "line": 43
         }
       },
       {
-        "defaultMessage": "!!!Rewards earned by delegating your stake are automatically collected into your reward account and added to your wallet balance.",
+        "defaultMessage": "!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>",
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 65
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Syncing {syncingProgress}%",
+        "description": "unknown stake pool label on staking rewards page.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
+        "id": "staking.delegationCenter.syncingTooltipLabel",
+        "start": {
+          "column": 23,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Details",
+        "description": "Details Button label on staking rewards page.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
+        "id": "staking.rewards.detailsButton.label",
+        "start": {
+          "column": 22,
+          "line": 59
         }
       }
     ],
@@ -5891,161 +5877,49 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Earned delegation rewards",
-        "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
+        "defaultMessage": "!!!Rewards details",
+        "description": "Title \"Earned delegation rewards\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 32
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.title",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.title",
         "start": {
           "column": 9,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Rewards",
-        "description": "Filename prefix for the \"Export CSV\" on the staking rewards page.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.csvFilenamePrefix",
-        "start": {
-          "column": 21,
-          "line": 34
+          "line": 27
         }
       },
       {
         "defaultMessage": "!!!Export CSV",
-        "description": "Label for the \"Export CSV\" button on the staking rewards page.",
+        "description": "TexportCsvLabel on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 38
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.exportButtonLabel",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.csv.label",
         "start": {
-          "column": 21,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!No rewards",
-        "description": "\"No rewards\" rewards label on staking rewards page.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.no.rewards",
-        "start": {
-          "column": 13,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet",
-        "description": "Table header \"Wallet\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.tableHeader.wallet",
-        "start": {
-          "column": 21,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!Total rewards earned (ADA)",
-        "description": "Table header \"Reward\" label on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 60
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.tableHeader.reward",
-        "start": {
-          "column": 21,
-          "line": 56
+          "column": 18,
+          "line": 33
         }
       },
       {
         "defaultMessage": "!!!Rewards address",
-        "description": "Table header \"Rewards address\" label on staking rewards page",
+        "description": "\"Rewards address\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 44
         },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.tableHeader.rewardsAddress",
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.rewardsAddress",
         "start": {
-          "column": 29,
-          "line": 61
-        }
-      },
-      {
-        "defaultMessage": "!!!Date",
-        "description": "Table header \"Date\" label in exported csv file",
-        "end": {
-          "column": 3,
-          "line": 70
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.tableHeader.date",
-        "start": {
-          "column": 19,
-          "line": 66
-        }
-      },
-      {
-        "defaultMessage": "!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>",
-        "description": "Rewards description text on staking rewards page",
-        "end": {
-          "column": 3,
-          "line": 76
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.note",
-        "start": {
-          "column": 8,
-          "line": 71
-        }
-      },
-      {
-        "defaultMessage": "!!!Syncing {syncingProgress}%",
-        "description": "unknown stake pool label on staking rewards page.",
-        "end": {
-          "column": 3,
-          "line": 81
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.delegationCenter.syncingTooltipLabel",
-        "start": {
-          "column": 23,
-          "line": 77
-        }
-      },
-      {
-        "defaultMessage": "!!!View in explorer",
-        "description": "View in explorer button label on staking rewards page.",
-        "end": {
-          "column": 3,
-          "line": 86
-        },
-        "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
-        "id": "staking.rewards.actionViewInExplorer",
-        "start": {
-          "column": 24,
-          "line": 82
+          "column": 18,
+          "line": 39
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.json"
+    "path": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.json"
   },
   {
     "descriptors": [

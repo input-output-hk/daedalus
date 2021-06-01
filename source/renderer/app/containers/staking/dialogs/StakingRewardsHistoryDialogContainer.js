@@ -28,12 +28,10 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     const { stores, actions } = this.props;
     const { reward } = stores.uiDialogs.dataForActiveDialog;
     const { closeActiveDialog } = actions.dialogs;
-    const { currentDateFormat, currentLocale } = stores.profile;
+    const { currentDateFormat } = stores.profile;
     const {
       isFetchingRewardsHistory,
       rewardsHistory: rewardsHistoryObject,
-      rewardsHistoryStartDate,
-      rewardsHistoryEndDate,
     } = stores.staking;
     const {
       requestRewardsHistoryCSVFile,
@@ -44,15 +42,12 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     return (
       <StakingRewardsHistoryDialog
         currentDateFormat={currentDateFormat}
-        currentLocale={currentLocale}
         isFetchingRewardsHistory={isFetchingRewardsHistory}
         onClose={closeActiveDialog.trigger}
         onExportCSV={requestRewardsHistoryCSVFile.trigger}
         onSetDateRange={setRewardsHistoryDateRange.trigger}
         reward={reward}
         rewardsHistory={toJS(rewardsHistory)}
-        startDate={rewardsHistoryStartDate}
-        endDate={rewardsHistoryEndDate}
       />
     );
   }
