@@ -141,11 +141,12 @@ eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Ver
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib\" $LOG"
 
 # Sign native electron bindings and supplementary binaries
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/usb_bindings.node\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/HID.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-76/keccak.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-*/keccak.node\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node\" $LOG"
 
