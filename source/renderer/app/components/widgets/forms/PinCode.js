@@ -361,6 +361,8 @@ export default class PinCode extends Component<Props, State> {
     const isBackSpace = key === 'Backspace';
     // Recheck if input value is tab value
     const isTab = key === 'Tab';
+    // Recheck if input value is left arrow key
+    const isArrowKey = key === 'ArrowLeft' || key === 'ArrowUp' || key === 'ArrowDown';
     // Get input field new value
     const inputNewValue = this.inputsRef[inputKey]
       ? this.inputsRef[inputKey].props.value
@@ -375,7 +377,7 @@ export default class PinCode extends Component<Props, State> {
       ? this.inputsRef[inputKey].inputElement.current.selectionEnd
       : 0;
     const isEntrySelected = selectionStart !== selectionEnd;
-    if (isSeparator) {
+    if (isSeparator || isArrowKey) {
       this.handleSeparatorInput(nextInputField, control);
     }
 
