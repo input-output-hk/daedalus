@@ -117,10 +117,12 @@ KEYCHAIN="$2"
 REL_PATH="$3"
 XML_PATH="$4"
 ABS_PATH="$(pwd)/$REL_PATH"
-SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign \"$SIGN_ID\""
+TS="$(date +%Y-%m-%d_%H-%M-%S)"
+function sign_cmd() {
+  codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$1" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
+}
 VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
 ENTITLEMENT_CMD="codesign -d --entitlements :-"
-TS="$(date +%Y-%m-%d_%H-%M-%S)"
 LOG="2>&1 | tee -a /tmp/codesign-output-${TS}.txt"
 
 # Remove symlinks pointing outside of the project build folder:
@@ -132,26 +134,26 @@ eval "security find-identity -v -p codesigning \"$KEYCHAIN\" $LOG"
 eval "security list-keychains -d user -s \"$KEYCHAIN\" $LOG"
 
 # Sign framework executables not signed by the deep sign command:
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Resources/crashpad_handler\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libnode.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libffmpeg.dylib\" $LOG"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Resources/crashpad_handler"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libnode.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libffmpeg.dylib"
 
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libEGL.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib\" $LOG"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libEGL.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib"
 
 # Sign native electron bindings and supplementary binaries
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/usb_bindings.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/HID.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-*/keccak.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node\" $LOG"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*"/keccak.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
 
 # Sign the whole component deeply
-eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
+sign_cmd "$ABS_PATH"
 
 # Verify the signing
 eval "$VERIFY_CMD \"$ABS_PATH\" $LOG"
