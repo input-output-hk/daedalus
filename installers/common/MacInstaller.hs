@@ -81,8 +81,7 @@ main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oB
   let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
       opkg = oOutputDir </> pkg
 
-  print "appRoot:"
-  print (tt appRoot)
+  print $ "appRoot:" <> (tt appRoot)
 
   case mCodeSigningConfig of
     Just codeSigningConfig -> codeSignComponent codeSigningConfig appRoot
@@ -230,59 +229,61 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     externalYarn :: [FilePath]
     externalYarn =
       [ "@babel"
-      , "regenerator-runtime"
-      , "node-fetch"
       , "@trezor"
-      , "runtypes"
-      , "parse-uri"
-      , "randombytes"
-      , "safe-buffer"
+      , "base-x"
+      , "base64-js"
+      , "bchaddrjs"
+      , "big-integer"
+      , "bigi"
+      , "bignumber.js"
       , "bip66"
-      , "pushdata-bitcoin"
       , "bitcoin-ops"
+      , "blake2b"
+      , "blake2b-wasm"
+      , "bs58"
+      , "bs58check"
+      , "bytebuffer-old-fixed-webpack"
+      , "call-bind"
+      , "cashaddrjs"
+      , "create-hash"
+      , "create-hmac"
+      , "cross-fetch"
+      , "define-properties"
+      , "ecurve"
+      , "es-abstract"
+      , "function-bind"
+      , "get-intrinsic"
+      , "has"
+      , "has-symbols"
+      , "hd-wallet"
+      , "ieee754"
+      , "inherits"
+      , "int64-buffer"
+      , "js-chain-libs-node"
+      , "json-stable-stringify"
+      , "keccak"
+      , "long"
+      , "merkle-lib"
+      , "ms"
+      , "nanoassert"
+      , "node-fetch"
+      , "object-keys"
+      , "object.values"
+      , "parse-uri"
+      , "protobufjs-old-fixed-webpack"
+      , "pushdata-bitcoin"
+      , "queue"
+      , "randombytes"
+      , "regenerator-runtime"
+      , "runtypes"
+      , "safe-buffer"
+      , "semver-compare"
+      , "tiny-worker"
+      , "trezor-connect"
+      , "trezor-link"
       , "typeforce"
       , "varuint-bitcoin"
-      , "bigi"
-      , "create-hash"
-      , "merkle-lib"
-      , "blake2b"
-      , "nanoassert"
-      , "blake2b-wasm"
-      , "bs58check"
-      , "bs58"
-      , "base-x"
-      , "create-hmac"
-      , "ecurve"
       , "wif"
-      , "ms"
-      , "keccak"
-      , "trezor-link"
-      , "semver-compare"
-      , "protobufjs-old-fixed-webpack"
-      , "bytebuffer-old-fixed-webpack"
-      , "long"
-      , "object.values"
-      , "define-properties"
-      , "object-keys"
-      , "has"
-      , "function-bind"
-      , "es-abstract"
-      , "has-symbols"
-      , "json-stable-stringify"
-      , "tiny-worker"
-      , "hd-wallet"
-      , "cashaddrjs"
-      , "big-integer"
-      , "queue"
-      , "inherits"
-      , "bchaddrjs"
-      , "cross-fetch"
-      , "trezor-connect"
-      , "js-chain-libs-node"
-      , "bignumber.js"
-      , "int64-buffer"
-      , "call-bind"
-      , "get-intrinsic"
       ]
   mapM_ (\lib -> do
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
@@ -310,7 +311,9 @@ getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath} = do
-  let dir     = appRoot </> "Contents/MacOS"
+  let
+      dir :: FilePath
+      dir     = appRoot </> "Contents/MacOS"
       dataDir = appRoot </> "Contents/Resources"
       maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dataDir </> name)) maybePath
 
@@ -343,6 +346,13 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
 
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet", dir </> "cardano-node", dir </> "cardano-cli", dir </> "cardano-address" ]
+      let
+        sortaMove :: FilePath -> IO ()
+        sortaMove filename = do
+          mv (appRoot </> "Contents/Resources/app/build" </> filename) (dir</>filename)
+          symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
+      mapM_ sortaMove [ "usb_bindings.node" ]
+      void $ chain (encodeString dir) [ tt $ dir </> "usb_bindings.node" ]
     Jormungandr bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)
