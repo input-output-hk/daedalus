@@ -129,7 +129,7 @@ export default class PinCode extends Component<Props, State> {
       inputFocusKey = this.focusKey;
     } else if (
       (focusIsUpdated && isBackSpace) ||
-      (focusKeyChanged && isBackSpace && !focusIsUpdated)
+      (focusKeyChanged && isBackSpace && !focusIsUpdated && !enableField)
     ) {
       inputFocusKey = this.focusKey - 1;
     } else if (sectionToFocus && sectionToFocus === name && focusKeyChanged) {
@@ -146,6 +146,8 @@ export default class PinCode extends Component<Props, State> {
     ) {
       this.forceFieldDisable = true;
       inputFocusKey = this.focusKey;
+    } else if (enableField && emptyFieldIndex === 0) {
+      inputFocusKey = emptyFieldIndex;
     }
 
     if (
@@ -156,6 +158,12 @@ export default class PinCode extends Component<Props, State> {
     }
 
     if (enableField && !isTabClicked) {
+      if (inputFocusKey === 3 && index < inputFocusKey) {
+        return true;
+      }
+      if (inputFocusKey === 3 && index === inputFocusKey) {
+        return false;
+      }
       if (index === inputFocusKey - 1 && inputFocusKey > value.length - 1) {
         return this.focusKey !== inputFocusKey - 1;
       }
@@ -291,13 +299,16 @@ export default class PinCode extends Component<Props, State> {
       (name === selectedPinField &&
         ((!focusIsUpdated && key > 0 && key < length) ||
           emptyFieldIndex > -1 ||
-          focusKeyChanged))
+          focusKeyChanged)) ||
+      (name !== selectedPinField && emptyFieldIndex === -1 && this.focusKey === 0)
     ) {
       let inputFocusKey = 0;
       // Calculate new input focus key based on a action - delete/add of field value
       if (emptyFieldIndex > -1 && !this.fromBackspace) {
         inputFocusKey = emptyFieldIndex;
       } else if (name === sectionToFocus) {
+        inputFocusKey = focusKey;
+      } else if (focusKey === 0 && emptyFieldIndex === -1 && !sectionToFocus && name === 'repeatPinCode' && selectedPinField === 'pinCode') {
         inputFocusKey = focusKey;
       } else {
         inputFocusKey = this.isAddingNewValue ? focusKey + 1 : focusKey - 1;
@@ -449,6 +460,7 @@ export default class PinCode extends Component<Props, State> {
     if (inputFieldRef) {
       const { focus, props, inputElement } = inputFieldRef;
       if (focus) focus();
+      console.log("Focus el: ", inputElement.current);
       if (inputElement && props.value) {
         inputElement.current.selectionStart = 1;
         inputElement.current.selectionEnd = 1;
