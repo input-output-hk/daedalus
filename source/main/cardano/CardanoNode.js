@@ -384,9 +384,11 @@ export class CardanoNode {
 
           _log.info('Starting cardano-node now...');
 
-          // await promisedCondition(() => node.connected, startupTimeout);
+          _log.info(`Current working directory is: ${process.cwd()}`, {
+            cwd: process.cwd(),
+          });
 
-          _log.info('Current working directory is: ' + process.cwd());
+          // await promisedCondition(() => node.connected, startupTimeout);
 
           node
             .start()

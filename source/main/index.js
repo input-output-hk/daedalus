@@ -129,7 +129,9 @@ const onAppReady = async () => {
 
   logger.info('Updating System-info.json file', { ...systemInfo.data });
 
-  logger.info(`Current working directory is ${cwd}`, { cwd: process.cwd() });
+  logger.info(`Current working directory is: ${process.cwd()}`, {
+    cwd: process.cwd(),
+  });
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
