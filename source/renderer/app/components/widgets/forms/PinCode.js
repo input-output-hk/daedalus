@@ -206,7 +206,11 @@ export default class PinCode extends Component<Props, State> {
       if (inputFocusKey === 3 && index === inputFocusKey) {
         return false;
       }
-      if (index > 2 && index === inputFocusKey - 1 && inputFocusKey > value.length - 1) {
+      if (
+        index > 2 &&
+        index === inputFocusKey - 1 &&
+        inputFocusKey > value.length - 1
+      ) {
         return this.focusKey !== inputFocusKey - 1;
       }
       if (index > 2 && index !== this.focusKey && emptyFieldIndex === -1) {
