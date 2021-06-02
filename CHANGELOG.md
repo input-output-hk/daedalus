@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 4.1.0-FC1
+## 4.1.0
 
 ### Features
 
