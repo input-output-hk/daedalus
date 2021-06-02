@@ -50,6 +50,7 @@ let
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
+    export XCURSOR_PATH="/usr/share/icons"
     exec ${daedalus-bridge}/bin/cardano-launcher \
       --config ${if sandboxed then "/nix/var/nix/profiles/profile-${linuxClusterBinName}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';
