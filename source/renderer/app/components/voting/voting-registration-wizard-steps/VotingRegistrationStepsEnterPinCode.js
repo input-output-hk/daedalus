@@ -144,6 +144,14 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }
   );
 
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleWindowTabKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleWindowTabKeyDown);
+  }
+
   onResetValues = (type: string) => {
     const { form } = this;
     const pinCodeField = form.$(type);
@@ -158,8 +166,14 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
 
   handleTabKey = (type: string) => {
     this.setState({
-      sectionToFocus: type === 'pinCode' ? 'repeatPinCode' : 'pinCode',
+      sectionToFocus: type,
     });
+  };
+
+  handleWindowTabKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Tab' && event.target.nodeName === 'BUTTON') {
+      this.handleTabKey('pinCode');
+    }
   };
 
   onChangePinCode = (values: Array<string>, isTab?: boolean) => {
@@ -218,10 +232,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
 
     const pinCodeFieldsLength = VOTING_REGISTRATION_PIN_CODE_LENGTH;
 
-    const emptyRepeatFieldIndex = repeatPinCodeField.value.findIndex((item) => !item);
+    const emptyRepeatFieldIndex = repeatPinCodeField.value.findIndex(
+      (item) => !item
+    );
     const hasError =
-      repeatPinCodeField.value.length === pinCodeFieldsLength
-      && emptyRepeatFieldIndex === -1 &&
+      repeatPinCodeField.value.length === pinCodeFieldsLength &&
+      emptyRepeatFieldIndex === -1 &&
       repeatPinCodeField.error;
 
     const actions = [
@@ -264,7 +280,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!pinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
-            onTabKey={() => this.handleTabKey('pinCode')}
+            onTabKey={() => this.handleTabKey('repeatPinCode')}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
             disabled={!isTabClicked && form.isValid}
@@ -283,7 +299,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!repeatPinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
-            onTabKey={() => this.handleTabKey('repeatPinCode')}
+            onTabKey={() => this.handleTabKey('continueButton')}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
             disabled={

@@ -13,6 +13,7 @@
       padding: 10px 10px;
       text-align: center;
       width: 50px;
+      user-select: none;
 
       &.SimpleInput_disabled {
         border-color: transparent;

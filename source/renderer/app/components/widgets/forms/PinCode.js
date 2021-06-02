@@ -151,27 +151,51 @@ export default class PinCode extends Component<Props, State> {
     }
 
     if (
-      (!enableField && sectionToFocus && sectionToFocus !== name) ||
-      ((isTabClicked || this.forceFieldDisable) && index !== inputFocusKey)
+      !enableField && sectionToFocus &&
+      sectionToFocus === name &&
+      index === 3 &&
+      index === inputFocusKey
     ) {
-      return true;
-    }
-
-    if (enableField && !isTabClicked) {
       if (inputFocusKey === 3 && index < inputFocusKey) {
         return true;
       }
-      if (inputFocusKey === 3 && index === inputFocusKey) {
+      if (
+        inputFocusKey === 3 &&
+        index === inputFocusKey &&
+        sectionToFocus === name
+      ) {
         return false;
       }
-      if (index > 2 && index === inputFocusKey - 1 && inputFocusKey > value.length - 1) {
-        return this.focusKey !== inputFocusKey - 1;
-      }
-      if (index > 2 && index !== this.focusKey && emptyFieldIndex === -1) {
+      if (
+        inputFocusKey === 3 &&
+        index === inputFocusKey &&
+        sectionToFocus !== name
+      ) {
         return true;
       }
-      if (index > 2 && index === this.focusKey && emptyFieldIndex === -1) {
+    }
+
+    if (
+      (!enableField && sectionToFocus && sectionToFocus !== name) ||
+      ((isTabClicked || this.forceFieldDisable) && index !== inputFocusKey) ||
+      (enableField && !isTabClicked)
+    ) {
+      if (inputFocusKey === 3 && index < inputFocusKey) {
+        return true;
+      }
+      if (
+        inputFocusKey === 3 &&
+        index === inputFocusKey &&
+        sectionToFocus === name
+      ) {
         return false;
+      }
+      if (
+        inputFocusKey === 3 &&
+        index === inputFocusKey &&
+        sectionToFocus !== name
+      ) {
+        return true;
       }
     }
 
@@ -300,7 +324,9 @@ export default class PinCode extends Component<Props, State> {
         ((!focusIsUpdated && key > 0 && key < length) ||
           emptyFieldIndex > -1 ||
           focusKeyChanged)) ||
-      (name !== selectedPinField && emptyFieldIndex === -1 && this.focusKey === 0)
+      (name !== selectedPinField &&
+        emptyFieldIndex === -1 &&
+        this.focusKey === 0)
     ) {
       let inputFocusKey = 0;
       // Calculate new input focus key based on a action - delete/add of field value
@@ -308,7 +334,13 @@ export default class PinCode extends Component<Props, State> {
         inputFocusKey = emptyFieldIndex;
       } else if (name === sectionToFocus) {
         inputFocusKey = focusKey;
-      } else if (focusKey === 0 && emptyFieldIndex === -1 && !sectionToFocus && name === 'repeatPinCode' && selectedPinField === 'pinCode') {
+      } else if (
+        focusKey === 0 &&
+        emptyFieldIndex === -1 &&
+        !sectionToFocus &&
+        name === 'repeatPinCode' &&
+        selectedPinField === 'pinCode'
+      ) {
         inputFocusKey = focusKey;
       } else {
         inputFocusKey = this.isAddingNewValue ? focusKey + 1 : focusKey - 1;
@@ -362,7 +394,8 @@ export default class PinCode extends Component<Props, State> {
     // Recheck if input value is tab value
     const isTab = key === 'Tab';
     // Recheck if input value is left arrow key
-    const isArrowKey = key === 'ArrowLeft' || key === 'ArrowUp' || key === 'ArrowDown';
+    const isArrowKey =
+      key === 'ArrowLeft' || key === 'ArrowUp' || key === 'ArrowDown';
     // Get input field new value
     const inputNewValue = this.inputsRef[inputKey]
       ? this.inputsRef[inputKey].props.value
@@ -462,7 +495,6 @@ export default class PinCode extends Component<Props, State> {
     if (inputFieldRef) {
       const { focus, props, inputElement } = inputFieldRef;
       if (focus) focus();
-      console.log("Focus el: ", inputElement.current);
       if (inputElement && props.value) {
         inputElement.current.selectionStart = 1;
         inputElement.current.selectionEnd = 1;
