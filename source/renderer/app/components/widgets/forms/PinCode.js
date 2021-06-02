@@ -178,8 +178,7 @@ export default class PinCode extends Component<Props, State> {
 
     if (
       (!enableField && sectionToFocus && sectionToFocus !== name) ||
-      ((isTabClicked || this.forceFieldDisable) && index !== inputFocusKey) ||
-      (enableField && !isTabClicked)
+      ((isTabClicked || this.forceFieldDisable) && index !== inputFocusKey)
     ) {
       if (inputFocusKey === 3 && index < inputFocusKey) {
         return true;
@@ -197,6 +196,24 @@ export default class PinCode extends Component<Props, State> {
         sectionToFocus !== name
       ) {
         return true;
+      }
+    }
+
+    if (enableField && !isTabClicked) {
+      if (inputFocusKey === 3 && index < inputFocusKey) {
+        return true;
+      }
+      if (inputFocusKey === 3 && index === inputFocusKey) {
+        return false;
+      }
+      if (index > 2 && index === inputFocusKey - 1 && inputFocusKey > value.length - 1) {
+        return this.focusKey !== inputFocusKey - 1;
+      }
+      if (index > 2 && index !== this.focusKey && emptyFieldIndex === -1) {
+        return true;
+      }
+      if (index > 2 && index === this.focusKey && emptyFieldIndex === -1) {
+        return false;
       }
     }
 
