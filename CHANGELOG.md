@@ -5,6 +5,12 @@ Changelog
 
 ### Features
 
+- Enabled Catalyst voting registration on Mainnet and Flight builds
+
+## 4.1.0-FC1
+
+### Features
+
 - Integrated cardano-wallet Api native tokens decimal places value ([PR 2577](https://github.com/input-output-hk/daedalus/pull/2577))
 - Added address verification for "Trezor" hardware wallet devices ([PR 2558](https://github.com/input-output-hk/daedalus/pull/2558))
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
