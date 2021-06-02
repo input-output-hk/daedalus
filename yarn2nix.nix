@@ -36,20 +36,10 @@ let
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
     sha256 = "e97a7ed8d07a42c0f18b35831c82932143c4d2bf2cc19ed90a2eefabd6bebfad";
   };
-  checksums = fetchurl {
-    url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "b91d9421037eb222cec5424be59a0503487d9dbf772d7bb327d86c3f1f71c8c7";
-  };
   electron-cache = runCommand "electron-cache" {} ''
-    mkdir $out
-    # old style
-    ln -s ${windowsElectron} $out/electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${checksums} $out/SHASUMS256.txt-${windowsElectronVersion}
-    # new style
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
+    # newer style
+    mkdir -p $out/1b59b9d597244fba44a70d503e66a7c53bd89d9f254d93edc3be03fd366152ac/
+    ln -sv ${windowsElectron} $out/1b59b9d597244fba44a70d503e66a7c53bd89d9f254d93edc3be03fd366152ac/electron-v${windowsElectronVersion}-win32-x64.zip
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v13.0.1/node-v13.0.1-headers.tar.gz";
