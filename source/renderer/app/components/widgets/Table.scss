@@ -57,7 +57,7 @@
 
   td {
     color: var(--theme-staking-font-color-regular);
-    font-family: var(--font-light);
+    font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.3;
     padding: 14px 20px;
@@ -77,12 +77,32 @@
     }
   }
   &.sticky {
-    overflow: auto;
+    position: relative;
+    .content {
+      overflow-y: scroll;
+      position: relative;
+    }
     th {
       background-color: var(--rp-modal-bg-color);
       position: sticky;
       top: 0;
       z-index: 1;
+    }
+    &:before,
+    &:after {
+      content: '';
+      height: 10px;
+      position: absolute;
+      width: calc(100% - 20px);
+      z-index: 9;
+    }
+    &:before {
+      box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.25) inset;
+      top: 32px;
+    }
+    &:after {
+      bottom: 0;
+      box-shadow: 0 -10px 10px -10px rgba(0, 0, 0, 0.25) inset;
     }
   }
   &.compact {

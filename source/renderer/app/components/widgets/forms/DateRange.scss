@@ -82,8 +82,8 @@ $rightBorder: 0 $border-radius $border-radius 0 !important;
       .rdrDayStartPreview,
       .rdrDayInPreview,
       .rdrDayEndPreview {
-        border-radius: 0px;
         border-color: var(--theme-button-flat-text-color);
+        border-radius: 0px;
       }
       .rdrStartEdge,
       .rdrDayStartPreview {

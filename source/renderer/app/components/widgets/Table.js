@@ -140,51 +140,53 @@ export default class Table extends Component<Props, State> {
     const tableData = enableSort ? this.getSortedData() : rows;
 
     return (
-      <div className={componentStyles} style={{ maxHeight }}>
-        <table>
-          <thead>
-            <tr>
-              {map(columns, ({ id, title, type }: TableColumn) => {
-                const isSorted = id === sortBy;
-                const sortIconClasses = classnames([
-                  styles.sortIcon,
-                  isSorted ? styles.sorted : null,
-                  isSorted && sortOrder === 'asc' ? styles.ascending : null,
-                ]);
-                return (
-                  <th key={id} onClick={() => this.handleSort(id)}>
-                    {title}
-                    {type !== 'node' && (
-                      <SVGInline svg={sortIcon} className={sortIconClasses} />
-                    )}
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {map(tableData, (item: TableRow, key) => (
-              <tr key={key} onClick={onClickRow}>
-                {map(entries(item), ([columnKey, entry]) => {
-                  const column = columnsObj[columnKey] || {};
-                  const renderedEntry = column.render
-                    ? column.render(entry)
-                    : entry;
+      <div className={componentStyles}>
+        <div className={styles.content} style={{ maxHeight }}>
+          <table>
+            <thead>
+              <tr>
+                {map(columns, ({ id, title, type }: TableColumn) => {
+                  const isSorted = id === sortBy;
+                  const sortIconClasses = classnames([
+                    styles.sortIcon,
+                    isSorted ? styles.sorted : null,
+                    isSorted && sortOrder === 'asc' ? styles.ascending : null,
+                  ]);
                   return (
-                    <td
-                      key={key + columnKey}
-                      role="presentation"
-                      className={styles.rewardWallet}
-                      onClick={onClickCell}
-                    >
-                      {renderedEntry}
-                    </td>
+                    <th key={id} onClick={() => this.handleSort(id)}>
+                      {title}
+                      {type !== 'node' && (
+                        <SVGInline svg={sortIcon} className={sortIconClasses} />
+                      )}
+                    </th>
                   );
                 })}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {map(tableData, (item: TableRow, key) => (
+                <tr key={key} onClick={onClickRow}>
+                  {map(entries(item), ([columnKey, entry]) => {
+                    const column = columnsObj[columnKey] || {};
+                    const renderedEntry = column.render
+                      ? column.render(entry)
+                      : entry;
+                    return (
+                      <td
+                        key={key + columnKey}
+                        role="presentation"
+                        className={styles.rewardWallet}
+                        onClick={onClickCell}
+                      >
+                        {renderedEntry}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }

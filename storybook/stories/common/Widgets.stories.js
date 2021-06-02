@@ -251,7 +251,7 @@ storiesOf('Common|Widgets', module)
               startDate={startDate}
               endDate={endDate}
               onChange={(newState) => store.set(newState)}
-              currenTheme="ligh-blue"
+              currentTheme="ligh-blue"
               currentLocale={currentLocale}
               currentDateFormat={currentDateFormat}
               label="Date range"

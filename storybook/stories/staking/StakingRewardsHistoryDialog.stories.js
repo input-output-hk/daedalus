@@ -1,7 +1,7 @@
 // @flow
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 
 // Screens
 import StakingRewardsHistoryDialog from '../../../source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog';
@@ -9,12 +9,14 @@ import StakingRewardsHistoryDialog from '../../../source/renderer/app/components
 // Dummy data initialization
 import { getRewardsHistory } from '../../../source/renderer/app/config/rewardsHistory.dummy';
 
-const rewards = getRewardsHistory(10);
-
 const now = new Date();
 
 export const StakingRewardsHistoryStory = () => {
   const [dateRange, setDateRange] = useState({ startDate: now, endDate: null });
+  const noi = number('Number of itemzz', 10);
+  console.log('noi', noi);
+  const rewards = getRewardsHistory(noi);
+  console.log('rewards', rewards);
   return (
     <StakingRewardsHistoryDialog
       startDate={dateRange.startDate}
@@ -33,7 +35,7 @@ export const StakingRewardsHistoryStory = () => {
       onCopy={action('onCopy')}
       onExportCSV={action('onExportCSV')}
       onSetDateRange={(newDateRange) => setDateRange(newDateRange)}
-      currenTheme="light-blue"
+      currentTheme="light-blue"
       onOpenExternalLink={action('onOpenExternalLink')}
     />
   );
