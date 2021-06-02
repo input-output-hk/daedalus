@@ -170,7 +170,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     });
   };
 
-  handleWindowTabKeyDown = (event: { key: string, target: { nodeName: string } }) => {
+  handleWindowTabKeyDown = (event: {
+    key: string,
+    target: { nodeName: string },
+  }) => {
     const { key, target } = event;
     const { nodeName } = target;
     if (key === 'Tab' && nodeName === 'BUTTON') {
