@@ -151,7 +151,8 @@ export default class PinCode extends Component<Props, State> {
     }
 
     if (
-      !enableField && sectionToFocus &&
+      !enableField &&
+      sectionToFocus &&
       sectionToFocus === name &&
       index === 3 &&
       index === inputFocusKey
