@@ -170,8 +170,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     });
   };
 
-  handleWindowTabKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Tab' && event.target.nodeName === 'BUTTON') {
+  handleWindowTabKeyDown = (event: { key: string, target: { nodeName: string } }) => {
+    const { key, target } = event;
+    const { nodeName } = target;
+    if (key === 'Tab' && nodeName === 'BUTTON') {
       this.handleTabKey('pinCode');
     }
   };
