@@ -905,9 +905,7 @@ export default class StakingStore extends Store {
       const rewardsHistory = this.rewardsHistoryRequest.result;
       runInAction(() => {
         this.rewardsHistory[address] = rewardsHistory
-          ? rewardsHistory.filter(Boolean).map((r, index) => ({
-              // TODO: implement date handling
-              date: new Date(Date.now() - index * 1000000000),
+          ? rewardsHistory.filter(Boolean).map((r) => ({
               epoch: r.earnedIn.number,
               pool: this.stores.staking.getStakePoolById(r.stakePool.id),
               amount: new BigNumber(r.amount),

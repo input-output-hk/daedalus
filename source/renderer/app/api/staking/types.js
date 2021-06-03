@@ -162,7 +162,6 @@ export type GetRewardsHistoryResponse = $PropertyType<
 >;
 
 export type RewardsHistoryItem = {
-  date?: Date,
   amount?: BigNumber,
   epoch?: number,
   pool?: StakePool,

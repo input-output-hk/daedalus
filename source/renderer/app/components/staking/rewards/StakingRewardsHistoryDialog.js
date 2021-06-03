@@ -90,7 +90,6 @@ export default class StakingRewardsHistoryDialog extends Component<
   render() {
     const { intl } = this.context;
     const {
-      currentDateFormat,
       currentTheme,
       isFetchingRewardsHistory,
       onClose,
@@ -119,11 +118,6 @@ export default class StakingRewardsHistoryDialog extends Component<
     ];
 
     const tableColumns = [
-      {
-        title: 'Date',
-        id: 'date',
-        render: (date: string) => moment(date).format(currentDateFormat),
-      },
       {
         title: 'Epoch',
         id: 'epoch',
