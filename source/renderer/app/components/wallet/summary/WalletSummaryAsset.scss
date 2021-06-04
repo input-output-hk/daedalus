@@ -1,0 +1,27 @@
+.component {
+  border-bottom: 1px solid rgba(94, 96, 102, 0.15);
+  padding: 7px 12px;
+  &.isExpanded {
+    background-color: var(--theme-button-flat-background-color-hover);
+    .content {
+      display: block;
+    }
+  }
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  .assetAmount {
+    color: #5e6066;
+    font-family: var(--font-regular);
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    line-height: 1.33;
+    margin: 3px 0;
+    white-space: nowrap;
+  }
+}
+.content {
+  display: none;
+  margin: 20px 0 15px;
+}

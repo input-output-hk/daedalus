@@ -4,9 +4,10 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { get } from 'lodash';
-import styles from './WalletSummaryAssets.scss';
+import styles from './WalletSummaryAsset.scss';
 import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
+import AssetContent from '../../assets/AssetContent';
 import type { AssetToken } from '../../../api/assets/types';
 
 const messages = defineMessages({
@@ -51,6 +52,12 @@ export default class WalletSummaryAsset extends Component<Props, State> {
     isExpanded: false,
   };
 
+  toggleIsExpanded = () => {
+    this.setState((prevState) => ({
+      isExpanded: !prevState.isExpanded,
+    }));
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -68,26 +75,34 @@ export default class WalletSummaryAsset extends Component<Props, State> {
     });
     return (
       <div className={componentStyles}>
-        <div className={styles.assetsLeftContainer}>
+        <div className={styles.header} onClick={this.toggleIsExpanded}>
           <Asset
             asset={asset}
             onCopyAssetItem={onCopyAssetItem}
             metadataNameChars={get('name', asset.metadata, 0)}
-            onClickSettings={() => onAssetSettings({ asset })}
             assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
             anyAssetWasHovered={anyAssetWasHovered}
+            // @TOKEN TODO
+            // hidePopOver
+            hidePopOver={false}
           />
+          <AssetAmount
+            amount={asset.quantity}
+            metadata={asset.metadata}
+            decimals={asset.decimals}
+            isLoading={isLoading}
+            className={styles.assetAmount}
+          />
+        </div>
+        <div className={styles.content}>
           <div>
-            <AssetAmount
-              amount={asset.quantity}
-              metadata={asset.metadata}
-              decimals={asset.decimals}
-              isLoading={isLoading}
-              className={styles.assetAmount}
+            <AssetContent
+              asset={asset}
+              onCopyAssetItem={onCopyAssetItem}
+              highlightFingerprint={false}
             />
           </div>
-        </div>
-        <div className={styles.assetRightContainer}>
+          <button onClick={() => onAssetSettings({ asset })}>Settings</button>
           <button
             className={classNames([
               'primary',

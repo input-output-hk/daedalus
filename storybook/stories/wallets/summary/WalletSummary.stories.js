@@ -208,7 +208,7 @@ storiesOf('Wallets|Summary', module)
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         assetSettingsDialogWasOpened={boolean(
           'assetSettingsDialogWasOpened',
-          false
+          true
         )}
         onExternalLinkClick={action('onExternalLinkClick')}
       />

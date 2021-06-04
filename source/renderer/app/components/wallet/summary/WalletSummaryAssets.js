@@ -1,15 +1,12 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { get } from 'lodash';
 import classNames from 'classnames';
-import BorderedBox from '../../widgets/BorderedBox';
 import { Button } from 'react-polymorph/lib/components/Button';
+import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
-import Asset from '../../assets/Asset';
-import AssetAmount from '../../assets/AssetAmount';
 import type { AssetToken } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import WalletSummaryAsset from './WalletSummaryAsset';

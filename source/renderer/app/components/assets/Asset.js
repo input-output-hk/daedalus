@@ -4,19 +4,14 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './Asset.scss';
-import { ellipsis, hexToString } from '../../utils/strings';
+import { ellipsis } from '../../utils/strings';
+import AssetContent from './AssetContent';
 
-import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
-import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
-import {
-  ASSET_TOKEN_ID_COPY_FEEDBACK,
-  ASSET_TOKEN_DISPLAY_DELAY,
-} from '../../config/timingConfig';
+import { ASSET_TOKEN_DISPLAY_DELAY } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
 
 const messages = defineMessages({
@@ -91,7 +86,6 @@ type Props = {
 
 type State = {
   isPillPopOverVisible: boolean,
-  itemCopied: ?string,
   isHoveringSettingsIcon: boolean,
 };
 
@@ -106,7 +100,6 @@ export default class Asset extends Component<Props, State> {
 
   state = {
     isPillPopOverVisible: false,
-    itemCopied: null,
     isHoveringSettingsIcon: false,
   };
 
@@ -172,22 +165,6 @@ export default class Asset extends Component<Props, State> {
     return false;
   }
 
-  handleCopyItem = (itemCopied: string, assetItem: string, value: string) => {
-    const { onCopyAssetItem } = this.props;
-    if (onCopyAssetItem) {
-      onCopyAssetItem(assetItem, value);
-    }
-    clearTimeout(this.copyNotificationTimeout);
-    this.setState({
-      itemCopied,
-    });
-    this.copyNotificationTimeout = setTimeout(() => {
-      if (this._isMounted) {
-        this.setState({ itemCopied: null });
-      }
-    }, ASSET_TOKEN_ID_COPY_FEEDBACK);
-  };
-
   renderPillContent() {
     const { asset, metadataNameChars, small } = this.props;
     const { fingerprint, metadata } = asset;
@@ -210,111 +187,22 @@ export default class Asset extends Component<Props, State> {
     );
   }
 
-  renderAssetItem = (assetId: string, assetItem: string, value: string) => {
-    const { itemCopied } = this.state;
-    const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
-    const iconClassnames = classnames([
-      styles.copyIcon,
-      itemCopied === assetId ? styles.copiedIcon : null,
-    ]);
-    const onCopy = () => {
-      this.handleCopyItem(assetId, assetItem, value);
-    };
-    return (
-      <CopyToClipboard text={value} onCopy={onCopy}>
-        <div className={styles.assetItem}>
-          <div className={styles.value}>
-            {value}
-            <SVGInline svg={icon} className={iconClassnames} />
-          </div>
-          {assetId === 'assetName' && (
-            <div className={styles.assetASCIIName}>
-              (ASCII: {hexToString(value)})
-            </div>
-          )}
-        </div>
-      </CopyToClipboard>
-    );
-  };
-
-  renderPillPopOverContent() {
-    const { intl } = this.context;
-    const { asset } = this.props;
-    const { fingerprint, policyId, assetName, metadata } = asset;
-    const { name, ticker, description } = metadata || {};
-    const item = this.renderAssetItem;
-    return (
-      <div className={styles.popOverContent}>
-        <div className={styles.fingerprint}>
-          {item(
-            'fingerprint',
-            intl.formatMessage(messages.fingerprintItem),
-            fingerprint
-          )}
-        </div>
-        <dl>
-          {ticker && (
-            <F>
-              <dt>{intl.formatMessage(messages.tickerItem)}</dt>
-              <dd>
-                {item(
-                  'ticker',
-                  intl.formatMessage(messages.tickerItem),
-                  ticker
-                )}
-              </dd>
-            </F>
-          )}
-          {name && (
-            <F>
-              <dt>{intl.formatMessage(messages.nameItem)}</dt>
-              <dd>
-                {item('name', intl.formatMessage(messages.nameItem), name)}
-              </dd>
-            </F>
-          )}
-          {description && (
-            <F>
-              <dt>{intl.formatMessage(messages.descriptionItem)}</dt>
-              <dd>
-                {item(
-                  'description',
-                  intl.formatMessage(messages.descriptionItem),
-                  description
-                )}
-              </dd>
-            </F>
-          )}
-          <dt>{intl.formatMessage(messages.policyIdItem)}</dt>
-          <dd>
-            {item(
-              'policyId',
-              intl.formatMessage(messages.policyIdItem),
-              policyId
-            )}
-          </dd>
-          <dt>{intl.formatMessage(messages.assetNameItem)}</dt>
-          <dd>
-            {assetName ? (
-              item(
-                'assetName',
-                intl.formatMessage(messages.assetNameItem),
-                assetName
-              )
-            ) : (
-              <span className={styles.blankValue}>
-                {intl.formatMessage(messages.blank)}
-              </span>
-            )}
-          </dd>
-        </dl>
-      </div>
-    );
-  }
-
   renderPillPopOverContainer = () => {
+    const {
+      asset,
+      onCopyAssetItem,
+      assetSettingsDialogWasOpened,
+      anyAssetWasHovered,
+    } = this.props;
     const pillContent = this.renderPillContent();
-    const popOverContent = this.renderPillPopOverContent();
+    const popOverContent = (
+      <AssetContent
+        asset={asset}
+        onCopyAssetItem={onCopyAssetItem}
+        assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+        anyAssetWasHovered={anyAssetWasHovered}
+      />
+    );
     const { isPillPopOverVisible } = this.state;
     return (
       <div
