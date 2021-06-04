@@ -508,20 +508,20 @@ export default class WalletReceiveDialog extends Component<Props, State> {
               </div>
             </div>
           )}
-          {!isHardwareWallet ||
-            (selectedVerificationStatus ===
-              AddressVerificationCheckStatuses.VALID && (
-              <TextArea
-                className={styles.noteInput}
-                skin={TextAreaSkin}
-                autoResize={false}
-                rows={3}
-                maxLength={201}
-                {...noteInputField.bind({
-                  onChange: this.handleChange(noteInputField),
-                })}
-              />
-            ))}
+          {(!isHardwareWallet ||
+            selectedVerificationStatus ===
+              AddressVerificationCheckStatuses.VALID) && (
+            <TextArea
+              className={styles.noteInput}
+              skin={TextAreaSkin}
+              autoResize={false}
+              rows={3}
+              maxLength={201}
+              {...noteInputField.bind({
+                onChange: this.handleChange(noteInputField),
+              })}
+            />
+          )}
         </div>
       </Dialog>
     );
