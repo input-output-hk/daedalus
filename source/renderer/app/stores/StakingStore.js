@@ -3,6 +3,7 @@ import { computed, action, observable, runInAction, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
+import { isValidRewardsHistoryItem } from '../api/staking/types';
 import type {
   GetRewardsHistoryResponse,
   Reward,
@@ -905,11 +906,17 @@ export default class StakingStore extends Store {
       const rewardsHistory = this.rewardsHistoryRequest.result;
       runInAction(() => {
         this.rewardsHistory[address] = rewardsHistory
-          ? rewardsHistory.filter(Boolean).map((r) => ({
-              epoch: r.earnedIn.number,
-              pool: this.stores.staking.getStakePoolById(r.stakePool.id),
-              amount: new BigNumber(r.amount),
-            }))
+          ? rewardsHistory.filter(Boolean).map((r) => {
+              const pool = this.stores.staking.getStakePoolById(r.stakePool.id);
+              if (!pool) {
+                throw new Error(`Could not find stake pool ${r.stakePool.id}`);
+              }
+              return {
+                pool,
+                epoch: r.earnedIn.number,
+                amount: new BigNumber(r.amount),
+              };
+            })
           : [];
       });
     } catch (error) {
@@ -919,8 +926,25 @@ export default class StakingStore extends Store {
     }
   };
 
-  _requestRewardsHistoryCSVFile = () => {
-    console.log('_requestRewardsHistoryCSVFile');
+  _requestRewardsHistoryCSVFile = ({
+    rewardsAddress,
+  }: {
+    rewardsAddress: string,
+  }) => {
+    const rewards = this.rewardsHistory[rewardsAddress];
+    if (rewards) {
+      this.actions.staking.requestCSVFile.trigger({
+        fileContent: [
+          ['epoch', 'pool', 'amount'],
+          ...rewards.map((r) => [
+            r.epoch.toString(),
+            r.pool.ticker,
+            r.amount.toFixed(2),
+          ]),
+        ],
+        filenamePrefix: 'daedalus-staking-rewards',
+      });
+    }
   };
 
   @action _setRewardsHistoryDateRange = ({

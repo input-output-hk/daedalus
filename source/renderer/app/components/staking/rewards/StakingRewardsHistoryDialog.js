@@ -113,7 +113,7 @@ export default class StakingRewardsHistoryDialog extends Component<
       {
         label: 'Export CSV',
         primary: true,
-        onClick: onExportCSV,
+        onClick: () => onExportCSV({ rewardsAddress }),
         disabled: isFetchingRewardsHistory,
       },
     ];
