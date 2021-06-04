@@ -1,7 +1,12 @@
 .component {
   display: inline-flex;
-  min-width: 0;
   width: 100%;
+}
+
+.popOverContainer {
+  display: inline-flex;
+  min-width: 0;
+  text-transform: initial;
 
   > span {
     min-width: 0;
@@ -14,7 +19,7 @@
   }
 }
 
-.content {
+.pill {
   display: flex;
   height: 22px;
   min-width: 0;
@@ -49,7 +54,7 @@
   display: none;
 }
 
-.tooltipContent {
+.popOverContent {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -101,7 +106,7 @@
     max-height: 48px;
     overflow-y: auto;
     padding-right: 20px;
-    width: calc(100% - 77px);
+    width: calc(100% - 87px);
 
     &::-webkit-scrollbar-button {
       display: none;
@@ -174,6 +179,45 @@
 
     svg {
       margin-top: 1px;
+    }
+  }
+}
+
+.settingsButton {
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  z-index: 1;
+  &:hover {
+    .settingsIcon {
+      opacity: 1;
+    }
+  }
+  .settingsIcon,
+  .warningIcon {
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  > span {
+    display: inline-flex;
+    margin-left: 6px;
+  }
+  .settingsIcon {
+    svg {
+      height: 10px;
+      width: 10px;
+      > g > g {
+        fill: var(--theme-widgets-asset-token-text-color);
+      }
+    }
+  }
+  .warningIcon {
+    margin-top: -1px;
+    svg {
+      height: 9px;
+      width: 11px;
     }
   }
 }

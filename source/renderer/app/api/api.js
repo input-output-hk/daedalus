@@ -100,6 +100,7 @@ import {
   generateAdditionalMnemonics,
 } from './utils/mnemonics';
 import { filterLogData } from '../../../common/utils/logging';
+import { derivationPathToAddressPath } from '../utils/hardwareWalletUtils';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
@@ -234,7 +235,9 @@ import type {
   GetAssetsRequest,
   GetAssetsResponse,
   ApiAsset,
+  StoredAssetMetadata,
 } from './assets/types';
+import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
@@ -243,6 +246,10 @@ const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
+
+  // We need to preserve all asset metadata during single runtime in order
+  // to avoid losing it in case of Token Metadata Registry server unvailability
+  storedAssetMetadata: StoredAssetMetadata = {};
 
   constructor(isTest: boolean, config: RequestConfig) {
     this.setRequestConfig(config);
@@ -255,12 +262,21 @@ export default class AdaApi {
 
   getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
+    const {
+      getHardwareWalletLocalData,
+      getHardwareWalletsLocalData,
+    } = global.daedalus.api.localStorage;
     try {
       const wallets: AdaWallets = await getWallets(this.config);
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
-      logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
+      const hwLocalData = await getHardwareWalletsLocalData();
+      logger.debug('AdaApi::getWallets success', {
+        wallets,
+        legacyWallets,
+        hwLocalData: filterLogData(hwLocalData),
+      });
       map(legacyWallets, (legacyAdaWallet) => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
@@ -281,9 +297,6 @@ export default class AdaApi {
       return await Promise.all(
         wallets.map(async (wallet) => {
           const { id } = wallet;
-          const {
-            getHardwareWalletLocalData,
-          } = global.daedalus.api.localStorage;
           const walletData = await getHardwareWalletLocalData(id);
           return _createWalletFromServerData({
             ...wallet,
@@ -629,7 +642,17 @@ export default class AdaApi {
       logger.debug('AdaApi::getAssets success', {
         assets: response,
       });
-      const assets = response.map((asset) => _createAssetFromServerData(asset));
+      const assetsLocaldata = await global.daedalus.api.localStorage.getAssetsLocalData();
+      logger.debug('AdaApi::getAssetsLocalData success', {
+        assetsLocaldata,
+      });
+      const assets = response.map((asset) =>
+        _createAssetFromServerData(
+          asset,
+          assetsLocaldata[asset.policy_id + asset.asset_name] || {},
+          this.storedAssetMetadata
+        )
+      );
       return new Promise((resolve) =>
         resolve({ assets, total: response.length })
       );
@@ -2730,10 +2753,11 @@ const _createWalletFromServerData = action(
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
   (address: Address) => {
-    const { id, state } = address;
+    const { id, state, derivation_path: derivationPath } = address;
     return new WalletAddress({
       id,
       used: state === 'used',
+      spendingPath: derivationPathToAddressPath(derivationPath), // E.g. "1852'/1815'/0'/0/19",
     });
   }
 );
@@ -2825,18 +2849,33 @@ const _createTransactionFromServerData = action(
 
 const _createAssetFromServerData = action(
   'AdaApi::_createAssetFromServerData',
-  (data: ApiAsset) => {
+  (
+    data: ApiAsset,
+    localData: AssetLocalData,
+    storedAssetMetadata: StoredAssetMetadata
+  ) => {
     const {
       policy_id: policyId,
       asset_name: assetName,
       fingerprint,
       metadata,
     } = data;
+    const uniqueId = `${policyId}${assetName}`;
+    const storedMetadata = storedAssetMetadata[uniqueId];
+    const { decimals } = localData;
+    const { decimals: recommendedDecimals = null } =
+      metadata || storedMetadata || {};
+    if (metadata) {
+      storedAssetMetadata[uniqueId] = metadata;
+    }
     return new Asset({
       policyId,
       assetName,
       fingerprint,
-      metadata,
+      metadata: metadata || storedMetadata,
+      decimals,
+      recommendedDecimals,
+      uniqueId,
     });
   }
 );

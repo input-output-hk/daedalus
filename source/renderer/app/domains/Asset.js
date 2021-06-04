@@ -1,33 +1,35 @@
 // @flow
-import { omit, pick } from 'lodash';
+import { pick } from 'lodash';
 import { observable, action } from 'mobx';
-import { IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED } from '../config/walletsConfig';
-import type { AssetMetadata } from '../api/assets/types';
-
-export type AssetProps = {
-  policyId: string,
-  assetName: string,
-  fingerprint: string,
-  metadata?: ?AssetMetadata,
-};
+import type { Asset as AssetProps, AssetMetadata } from '../api/assets/types';
 
 export default class Asset {
   @observable policyId: string = '';
   @observable assetName: string = '';
+  @observable uniqueId: string = '';
   @observable fingerprint: string = '';
   @observable metadata: ?AssetMetadata;
+  @observable decimals: ?number;
+  @observable recommendedDecimals: ?number;
 
-  constructor(data: AssetProps) {
-    const metadata = !IS_WALLET_ASSETS_AMOUNT_FORMATTING_ENABLED
-      ? omit(data.metadata, 'unit')
-      : data.metadata;
-    Object.assign(this, data, { metadata });
+  constructor(props: AssetProps) {
+    const { uniqueId } = props;
+    Object.assign(this, props, { uniqueId });
   }
 
-  @action update(other: Asset) {
+  @action update(props: $Shape<AssetProps>) {
+    const { uniqueId } = props;
     Object.assign(
       this,
-      pick(other, ['policyId', 'assetName', 'fingerprint', 'metadata'])
+      pick(props, [
+        'policyId',
+        'assetName',
+        'fingerprint',
+        'metadata',
+        'decimals',
+        'recommendedDecimals',
+      ]),
+      { uniqueId }
     );
   }
 }

@@ -126,12 +126,6 @@ const messages = defineMessages({
     description:
       'Error message shown when invalid recovery phrase was entered.',
   },
-  syncingWallet: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
-    defaultMessage: '!!!syncing',
-    description:
-      'Syncing wallet label on the delegation setup "choose wallet" step dialog.',
-  },
 });
 
 type Props = {
@@ -378,7 +372,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               placeholder={intl.formatMessage(
                 messages.selectWalletInputPlaceholder
               )}
-              syncingLabel={intl.formatMessage(messages.syncingWallet)}
               value={walletId}
               getStakePoolById={() => {}}
               errorPosition="bottom"
