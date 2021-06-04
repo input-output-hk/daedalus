@@ -3,9 +3,19 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed notes field visibility for software wallets on Share Wallet Address dialog ([PR 2582](https://github.com/input-output-hk/daedalus/pull/2582))
+
 ### Chores
 
 - Removed Jormungandr integration and legacy clusters ([PR 2579](https://github.com/input-output-hk/daedalus/pull/2579))
+
+## 4.1.0
+
+### Features
+
+- Enabled Catalyst voting registration on Mainnet and Flight builds
 
 ## 4.1.0-FC1
 
