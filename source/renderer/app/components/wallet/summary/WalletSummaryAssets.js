@@ -5,12 +5,14 @@ import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
+import { Button } from 'react-polymorph/lib/components/Button';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
 import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
 import type { AssetToken } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import WalletSummaryAsset from './WalletSummaryAsset';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -42,6 +44,7 @@ type Props = {
 
 type State = {
   anyAssetWasHovered: boolean,
+  isSearchOpen: boolean,
 };
 
 @observer
@@ -52,10 +55,17 @@ export default class WalletSummaryAssets extends Component<Props, State> {
 
   state = {
     anyAssetWasHovered: false,
+    isSearchOpen: false,
   };
 
   handleHoverAsset = () => {
     this.setState({ anyAssetWasHovered: true });
+  };
+
+  toggleSearch = () => {
+    this.setState((prevState) => ({
+      isSearchOpen: !prevState.isSearchOpen,
+    }));
   };
 
   render() {
@@ -68,74 +78,52 @@ export default class WalletSummaryAssets extends Component<Props, State> {
       assetSettingsDialogWasOpened,
       isLoadingAssets,
     } = this.props;
-    const { anyAssetWasHovered } = this.state;
+    const { anyAssetWasHovered, isSearchOpen } = this.state;
     const { intl } = this.context;
+
+    const searchButtonStyles = classNames([styles.searchButton, 'flat']);
 
     const isRestoreActive = wallet.isRestoring;
     const numberOfAssets = assets && assets.length ? assets.length : 0;
 
+    if (isLoadingAssets) {
+      return (
+        <div className={styles.syncingWrapper}>
+          <LoadingSpinner big />
+        </div>
+      );
+    }
+
     return (
-      <Fragment>
-        {!isLoadingAssets && (
-          <div className={styles.numberOfAssets}>
+      <div className={styles.component}>
+        <div className={styles.header}>
+          <div className={styles.title}>
             {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
           </div>
+          <Button
+            className={searchButtonStyles}
+            onClick={this.toggleSearch}
+            label={isSearchOpen ? 'HIDE SEARCH' : 'SHOW SEARCH'}
+          />
+        </div>
+        {isSearchOpen && (
+          <BorderedBox className={styles.search}>SEARCH</BorderedBox>
         )}
-        {/* eslint-disable-next-line no-nested-ternary */}
-        {isLoadingAssets ? (
-          <div className={styles.syncingWrapper}>
-            <LoadingSpinner big />
-          </div>
-        ) : (
-          <div className={styles.component}>
-            {assets.map((asset: AssetToken, index: number) => (
-              <BorderedBox
-                className={styles.assetsContainer}
-                key={asset.uniqueId}
-                onMouseEnter={this.handleHoverAsset}
-              >
-                {asset.uniqueId && (
-                  <div className={styles.assetsLeftContainer}>
-                    <Asset
-                      asset={asset}
-                      onCopyAssetItem={onCopyAssetItem}
-                      metadataNameChars={get('name', asset.metadata, 0)}
-                      onClickSettings={() => onAssetSettings({ asset })}
-                      assetSettingsDialogWasOpened={
-                        index === 0 ? assetSettingsDialogWasOpened : null
-                      }
-                      anyAssetWasHovered={anyAssetWasHovered}
-                    />
-                    <div>
-                      <AssetAmount
-                        amount={asset.quantity}
-                        metadata={asset.metadata}
-                        decimals={asset.decimals}
-                        isLoading={isRestoreActive}
-                        className={styles.assetAmount}
-                      />
-                    </div>
-                  </div>
-                )}
-                {asset.uniqueId && (
-                  <div className={styles.assetRightContainer}>
-                    <button
-                      className={classNames([
-                        'primary',
-                        styles.assetSendButton,
-                        asset.quantity.isZero() ? styles.disabled : null,
-                      ])}
-                      onClick={() => onOpenAssetSend(asset)}
-                    >
-                      {intl.formatMessage(messages.tokenSendButton)}
-                    </button>
-                  </div>
-                )}
-              </BorderedBox>
-            ))}
-          </div>
-        )}
-      </Fragment>
+        <BorderedBox>
+          {assets.map((asset) => (
+            <WalletSummaryAsset
+              key={asset.uniqueId}
+              asset={asset}
+              onOpenAssetSend={onOpenAssetSend}
+              onCopyAssetItem={onCopyAssetItem}
+              onAssetSettings={onAssetSettings}
+              anyAssetWasHovered={anyAssetWasHovered}
+              assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+              isLoading={isRestoreActive}
+            />
+          ))}
+        </BorderedBox>
+      </div>
     );
   }
 }
