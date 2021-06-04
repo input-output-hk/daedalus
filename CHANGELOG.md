@@ -11,6 +11,7 @@ Changelog
 
 ### Features
 
+- Implemented the new expandable Token view. ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589))
 - Enabled Catalyst voting registration on Mainnet and Flight builds
 
 ## 4.1.0-FC1
