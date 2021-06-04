@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 4.1.0
+
+### Features
+
+- Enabled Catalyst voting registration on Mainnet and Flight builds
+
 ## 4.1.0-FC1
 
 ### Features
