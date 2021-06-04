@@ -186,7 +186,6 @@
 .settingsButton {
   cursor: pointer;
   display: flex;
-  margin-top: 2px;
   position: relative;
   z-index: 1;
   &:hover {
@@ -215,6 +214,7 @@
     }
   }
   .warningIcon {
+    margin-top: -1px;
     svg {
       height: 9px;
       width: 11px;
