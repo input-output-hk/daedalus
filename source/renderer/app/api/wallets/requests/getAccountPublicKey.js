@@ -14,5 +14,5 @@ export const getAccountPublicKey = (
       ...config,
     },
     {},
-    { passphrase, extended }
+    { passphrase, format: extended ? 'extended' : 'non_extended' }
   );
