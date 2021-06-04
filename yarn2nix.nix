@@ -31,10 +31,10 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "13.0.1";
+  windowsElectronVersion = "13.1.0";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "e97a7ed8d07a42c0f18b35831c82932143c4d2bf2cc19ed90a2eefabd6bebfad";
+    sha256 = "dea5e784471828dedb294801f0d35a11459b2a940b6b60ed80c2c19eccd4d8f2";
   };
   electron-cache = runCommand "electron-cache" {} ''
     # newer style
@@ -42,8 +42,8 @@ let
     ln -sv ${windowsElectron} $out/1b59b9d597244fba44a70d503e66a7c53bd89d9f254d93edc3be03fd366152ac/electron-v${windowsElectronVersion}-win32-x64.zip
   '';
   electron-gyp = fetchurl {
-    url = "https://www.electronjs.org/headers/v13.0.1/node-v13.0.1-headers.tar.gz";
-    sha256 = "5d5ad0fcc6c9aadf22ebff5d3218760755883d99e90dbf443c1f6f94cc55b445";
+    url = "https://www.electronjs.org/headers/v13.1.0/node-v13.1.0-headers.tar.gz";
+    sha256 = "eb80aa2631401d9646d9eb70bfcfc8cb47408bf2ac1baedcaaf324afb7529ac0";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
