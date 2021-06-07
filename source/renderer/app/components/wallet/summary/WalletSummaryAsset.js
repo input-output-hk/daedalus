@@ -82,9 +82,7 @@ export default class WalletSummaryAsset extends Component<Props, State> {
             metadataNameChars={get('name', asset.metadata, 0)}
             assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
             anyAssetWasHovered={anyAssetWasHovered}
-            // @TOKEN TODO
-            // hidePopOver
-            hidePopOver={false}
+            hidePopOver={isExpanded}
           />
           <AssetAmount
             amount={asset.quantity}
@@ -95,24 +93,32 @@ export default class WalletSummaryAsset extends Component<Props, State> {
           />
         </div>
         <div className={styles.content}>
-          <div>
-            <AssetContent
-              asset={asset}
-              onCopyAssetItem={onCopyAssetItem}
-              highlightFingerprint={false}
-            />
+          <AssetContent
+            asset={asset}
+            onCopyAssetItem={onCopyAssetItem}
+            highlightFingerprint={false}
+          />
+          <div className={styles.footer}>
+            <dl>
+              <dt>Amount</dt>
+              <dd>123</dd>
+            </dl>
+            <div className={styles.footerButtons}>
+              <button onClick={() => onAssetSettings({ asset })}>
+                Settings
+              </button>
+              <button
+                className={classNames([
+                  'primary',
+                  styles.assetSendButton,
+                  asset.quantity.isZero() ? styles.disabled : null,
+                ])}
+                onClick={() => onOpenAssetSend(asset)}
+              >
+                {intl.formatMessage(messages.tokenSendButton)}
+              </button>
+            </div>
           </div>
-          <button onClick={() => onAssetSettings({ asset })}>Settings</button>
-          <button
-            className={classNames([
-              'primary',
-              styles.assetSendButton,
-              asset.quantity.isZero() ? styles.disabled : null,
-            ])}
-            onClick={() => onOpenAssetSend(asset)}
-          >
-            {intl.formatMessage(messages.tokenSendButton)}
-          </button>
         </div>
       </div>
     );

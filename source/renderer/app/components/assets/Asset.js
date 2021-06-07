@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment as F } from 'react';
+import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -201,6 +201,7 @@ export default class Asset extends Component<Props, State> {
         onCopyAssetItem={onCopyAssetItem}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         anyAssetWasHovered={anyAssetWasHovered}
+        className={styles.popOverContent}
       />
     );
     const { isPillPopOverVisible } = this.state;

@@ -25,3 +25,35 @@
   display: none;
   margin: 20px 0 15px;
 }
+.footer {
+  padding-top: 20px;
+  border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+
+  dl {
+    line-height: 1;
+    padding-left: 8px;
+  }
+
+  dt {
+    display: inline-block;
+    font-family: var(--font-medium);
+    font-size: 12px;
+    line-height: 1.33;
+    text-align: right;
+    white-space: nowrap;
+    width: 67px;
+  }
+
+  dd {
+    display: inline-flex;
+    font-family: var(--font-light);
+    font-size: 12px;
+    line-height: 16px;
+    margin-left: 10px;
+    max-height: 48px;
+    overflow-y: auto;
+  }
+}

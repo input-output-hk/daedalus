@@ -1,16 +1,13 @@
 .component {
   align-items: center;
+  color: var(--theme-widgets-asset-token-text-color);
   display: flex;
   flex-direction: column;
-  margin: 0 -12px;
-  padding: 9px 0;
   user-select: text;
-  background-color: pink;
 
   dl {
     line-height: 1;
-    margin: 0;
-    padding: 0 0 0 20px;
+    padding-left: 8px;
     width: 100%;
   }
 
@@ -30,25 +27,25 @@
     font-family: var(--font-light);
     font-size: 12px;
     line-height: 16px;
-    margin: 10px -20px 0 10px;
+    margin-left: 10px;
     max-height: 48px;
     overflow-y: auto;
-    padding-right: 20px;
     width: calc(100% - 87px);
 
-    &::-webkit-scrollbar-button {
-      display: none;
+    &:not(:first-of-type) {
+      margin-top: 10px;
     }
-
-    &::-webkit-scrollbar-track {
-      margin-bottom: -8px;
-      margin-top: -8px;
-    }
-
     &:hover {
       .copyIcon {
         opacity: 1;
       }
+    }
+    &::-webkit-scrollbar-button {
+      display: none;
+    }
+    &::-webkit-scrollbar-track {
+      margin-bottom: -8px;
+      margin-top: -8px;
     }
   }
 }

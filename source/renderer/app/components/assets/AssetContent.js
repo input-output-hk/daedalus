@@ -73,6 +73,7 @@ type Props = {
   asset: AssetProps,
   onCopyAssetItem?: Function,
   highlightFingerprint?: boolean,
+  className?: string,
 };
 
 type State = {
@@ -154,12 +155,13 @@ export default class AssetContent extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { asset, highlightFingerprint } = this.props;
+    const { asset, highlightFingerprint, className } = this.props;
     const { fingerprint, policyId, assetName, metadata } = asset;
     const { name, ticker, description } = metadata || {};
     const item = this.renderAssetItem;
+    const componentStyles = classnames([styles.component, className]);
     return (
-      <div className={styles.component}>
+      <div className={componentStyles}>
         {highlightFingerprint && (
           <div className={styles.fingerprint}>
             {item(
