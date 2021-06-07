@@ -266,10 +266,16 @@ export default class StakingRewards extends Component<Props, State> {
                       REWARD_FIELDS.REWARDS_ADDRESS
                     );
                     const onOpenWalletRewardsBind = () =>
-                      onOpenWalletRewards(reward);
+                      !isRestoring ? onOpenWalletRewards(reward) : null;
+
+                    const trClassName = !isRestoring ? styles.hasLink : null;
 
                     return (
-                      <tr key={key} onClick={onOpenWalletRewardsBind}>
+                      <tr
+                        key={key}
+                        onClick={onOpenWalletRewardsBind}
+                        className={trClassName}
+                      >
                         <td className={styles.rewardWallet}>{rewardWallet}</td>
                         <td className={styles.rewardsAddress}>
                           {rewardsAddress}

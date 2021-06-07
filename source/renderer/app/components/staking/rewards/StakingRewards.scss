@@ -137,14 +137,16 @@
     tbody {
       tr {
         background-color: transparent;
-        cursor: pointer;
         transition: background-color 0.1s;
-        &:hover {
-          background-color: var(
-            --theme-staking-rewards-table-background-color-hover
-          );
-          .detailsButton {
-            opacity: 1;
+        &.hasLink {
+          cursor: pointer;
+          &:hover {
+            background-color: var(
+              --theme-staking-rewards-table-background-color-hover
+            );
+            .detailsButton {
+              opacity: 1;
+            }
           }
         }
       }
