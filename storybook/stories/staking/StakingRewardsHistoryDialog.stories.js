@@ -1,7 +1,7 @@
 // @flow
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 
 // Screens
 import StakingRewardsHistoryDialog from '../../../source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog';
@@ -13,10 +13,7 @@ const now = new Date();
 
 export const StakingRewardsHistoryStory = () => {
   const [dateRange, setDateRange] = useState({ startDate: now, endDate: null });
-  const noi = number('Number of itemzz', 10);
-  console.log('noi', noi);
-  const rewards = getRewardsHistory(noi);
-  console.log('rewards', rewards);
+  const rewards = getRewardsHistory(10);
   return (
     <StakingRewardsHistoryDialog
       startDate={dateRange.startDate}

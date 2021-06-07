@@ -265,10 +265,13 @@ export default class StakingRewards extends Component<Props, State> {
                       reward,
                       REWARD_FIELDS.REWARDS_ADDRESS
                     );
+                    const isZero = get(reward, REWARD_FIELDS.REWARD).isZero();
+                    const hasLink = !isRestoring && !isZero;
+                    console.log('->', 0, isZero);
                     const onOpenWalletRewardsBind = () =>
-                      !isRestoring ? onOpenWalletRewards(reward) : null;
+                      hasLink ? onOpenWalletRewards(reward) : null;
 
-                    const trClassName = !isRestoring ? styles.hasLink : null;
+                    const trClassName = hasLink ? styles.hasLink : null;
 
                     return (
                       <tr
@@ -297,7 +300,7 @@ export default class StakingRewards extends Component<Props, State> {
                                 </PopOver>
                               </div>
                             )}
-                            {!isRestoring && (
+                            {hasLink && (
                               <div className={styles.detailsButton}>
                                 {intl.formatMessage(
                                   messages.detailsButtonLabel
