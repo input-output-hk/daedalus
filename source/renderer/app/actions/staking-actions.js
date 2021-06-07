@@ -37,6 +37,7 @@ export default class StakingActions {
   fetchRewardsHistory: Action<{ address: string }> = new Action();
   requestRewardsHistoryCSVFile: Action<{
     rewardsAddress: string,
+    walletName: string,
   }> = new Action();
   setRewardsHistoryDateRange: Action<{
     dateFrom: Date,
