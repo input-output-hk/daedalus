@@ -41,6 +41,7 @@
     .NavButton_component {
       cursor: default;
     }
+
     .SimpleBubble_root:not(.SimpleBubble_transparent) {
       .SimpleBubble_bubble {
         border: none;
@@ -67,7 +68,7 @@
 
             &.SimpleOptions_highlightedOption:hover {
               background-color: var(
-                --theme-nav-dropdown-item-background-color-hover
+                  --theme-nav-dropdown-item-background-color-hover
               );
             }
           }
@@ -79,10 +80,12 @@
         }
       }
     }
+
     .OptionsOverrides_options {
       margin-top: 0;
     }
   }
+
   &:hover {
     :global {
       .NavButton_normal .NavButton_container {

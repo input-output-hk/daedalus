@@ -7,8 +7,10 @@
 
   .learnMoreButton {
     margin-top: 30px;
+
     .externalLinkIcon {
       color: var(--theme-staking-info-learn-more-icon-color);
+
       &:before {
         background-color: var(--theme-staking-info-learn-more-icon-color);
         vertical-align: sub;
@@ -67,11 +69,11 @@
 .progress {
   align-items: center;
   background: repeating-linear-gradient(
-    -63deg,
-    var(--theme-staking-progress-stripe-dark-1-background-color),
-    var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
-    var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
-    var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+      -63deg,
+      var(--theme-staking-progress-stripe-dark-1-background-color),
+      var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 20px
   );
   border-radius: 5px;
   display: flex;
@@ -93,6 +95,7 @@
 :global {
   #root {
     position: relative;
+
     canvas {
       position: absolute;
       top: 0;
