@@ -32,14 +32,16 @@ let
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
   windowsElectronVersion = "13.1.0";
+  electronPath = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}";
   windowsElectron = fetchurl {
-    url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
+    url = "${electronPath}/electron-v${windowsElectronVersion}-win32-x64.zip";
     sha256 = "dea5e784471828dedb294801f0d35a11459b2a940b6b60ed80c2c19eccd4d8f2";
   };
+  electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
     # newer style
-    mkdir -p $out/1b59b9d597244fba44a70d503e66a7c53bd89d9f254d93edc3be03fd366152ac/
-    ln -sv ${windowsElectron} $out/1b59b9d597244fba44a70d503e66a7c53bd89d9f254d93edc3be03fd366152ac/electron-v${windowsElectronVersion}-win32-x64.zip
+    mkdir -p $out/${electronPathHash}/
+    ln -sv ${windowsElectron} $out/${electronPathHash}/electron-v${windowsElectronVersion}-win32-x64.zip
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v13.1.0/node-v13.1.0-headers.tar.gz";
