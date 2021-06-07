@@ -1,9 +1,8 @@
 // @flow
-import { computed, action, observable, runInAction, toJS } from 'mobx';
+import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
-import { isValidRewardsHistoryItem } from '../api/staking/types';
 import type {
   GetRewardsHistoryResponse,
   Reward,
@@ -928,8 +927,10 @@ export default class StakingStore extends Store {
 
   _requestRewardsHistoryCSVFile = ({
     rewardsAddress,
+    walletName,
   }: {
     rewardsAddress: string,
+    walletName: string,
   }) => {
     const rewards = this.rewardsHistory[rewardsAddress];
     if (rewards) {
@@ -942,7 +943,7 @@ export default class StakingStore extends Store {
             r.amount.toFixed(2),
           ]),
         ],
-        filenamePrefix: 'daedalus-staking-rewards',
+        filenamePrefix: `Rewards-${walletName}`,
       });
     }
   };
