@@ -1118,6 +1118,7 @@
   "wallet.summary.assets.tokenSendButton": "Send",
   "wallet.summary.assets.tokensTitle": "Tokens",
   "wallet.summary.assets.unknownLabel": "Unknown",
+  "wallet.summary.assets.amountLabel": "Amount",
   "wallet.summary.currency.isFetchingRate": "fetching conversion rates",
   "wallet.summary.currency.lastFetched": "converted {fetchedTimeAgo}",
   "wallet.summary.currency.title": "Converts as",

@@ -1118,6 +1118,7 @@
   "wallet.summary.assets.tokenSendButton": "送金",
   "wallet.summary.assets.tokensTitle": "トークン",
   "wallet.summary.assets.unknownLabel": "不明",
+  "wallet.summary.assets.amountLabel": "金額",
   "wallet.summary.currency.isFetchingRate": "フェッチ時の換金レート",
   "wallet.summary.currency.lastFetched": "換金済み：{fetchedTimeAgo}",
   "wallet.summary.currency.title": "換金通貨：",

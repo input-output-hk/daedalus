@@ -1,6 +1,5 @@
 .component {
   border-bottom: 1px solid rgba(94, 96, 102, 0.15);
-  padding: 7px 12px;
   &.isExpanded {
     background-color: var(--theme-button-flat-background-color-hover);
     .content {
@@ -11,6 +10,9 @@
 .header {
   display: flex;
   justify-content: space-between;
+  padding: 7px 42px 7px 12px;
+  cursor: pointer;
+  position: relative;
   .assetAmount {
     color: #5e6066;
     font-family: var(--font-regular);
@@ -21,16 +23,47 @@
     white-space: nowrap;
   }
 }
+.arrow {
+  bottom: 10px;
+  display: none;
+  height: 20px;
+  opacity: 0.3;
+  position: absolute;
+  right: 12px;
+  text-align: center;
+  width: 12px;
+  z-index: 1;
+
+  > svg {
+    height: 7px;
+    width: 12px;
+
+    path {
+      stroke: var(--theme-transactions-arrow-stroke-color);
+    }
+  }
+
+  &.isExpanded {
+    display: block;
+    transform: rotate(180deg);
+    opacity: 0.1;
+  }
+  .header:hover & {
+    display: block;
+    opacity: 0.3;
+  }
+}
 .content {
   display: none;
-  margin: 20px 0 15px;
+  margin: 13px 12px 15px;
 }
 .footer {
-  padding-top: 20px;
   border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
-  margin-top: 20px;
+  color: var(--theme-widgets-asset-token-text-color);
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
 
   dl {
     line-height: 1;
