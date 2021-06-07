@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
-import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -41,7 +40,6 @@ const messages = defineMessages({
 });
 
 type Props = {
-  currentDateFormat: string,
   currentTheme: string,
   isFetchingRewardsHistory: boolean,
   onClose: Function,
