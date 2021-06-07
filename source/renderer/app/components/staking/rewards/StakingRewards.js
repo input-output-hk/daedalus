@@ -14,7 +14,7 @@ import {
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
+import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -78,7 +78,7 @@ const REWARD_ORDERS = {
 };
 
 type Props = {
-  rewards: Array<RewardForIncentivizedTestnet>,
+  rewards: Array<Reward>,
   isLoading: boolean,
   onOpenWalletRewards: Function,
 };
@@ -108,64 +108,54 @@ export default class StakingRewards extends Component<Props, State> {
     };
   }
 
-  getSortedRewards = (): Array<RewardForIncentivizedTestnet> => {
+  getSortedRewards = (): Array<Reward> => {
     const { rewards } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
-    return rewards
-      .slice()
-      .sort(
-        (
-          rewardA: RewardForIncentivizedTestnet,
-          rewardB: RewardForIncentivizedTestnet
-        ) => {
-          const rewardCompareResult = bigNumberComparator(
-            rewardA.reward,
-            rewardB.reward,
-            rewardsOrder === REWARD_ORDERS.ASCENDING
-          );
-          const walletNameCompareResult = stringComparator(
-            rewardA.walletName,
-            rewardB.walletName,
-            rewardsOrder === REWARD_ORDERS.ASCENDING
-          );
-          const walletAddressCompareResult = stringComparator(
-            rewardA.rewardsAddress,
-            rewardB.rewardsAddress,
-            rewardsOrder === REWARD_ORDERS.ASCENDING
-          );
-          if (rewardsSortBy === REWARD_FIELDS.REWARD) {
-            if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
-              return walletNameCompareResult;
-            }
-            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
-              return walletAddressCompareResult;
-            }
-            return rewardCompareResult;
-          }
-          if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-            if (walletNameCompareResult === 0 && walletAddressCompareResult) {
-              return rewardCompareResult;
-            }
-            if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
-              return walletAddressCompareResult;
-            }
-            return walletNameCompareResult;
-          }
-          if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
-            if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
-              return walletNameCompareResult;
-            }
-            if (
-              walletAddressCompareResult === 0 &&
-              walletNameCompareResult === 0
-            ) {
-              return rewardCompareResult;
-            }
-            return walletAddressCompareResult;
-          }
-          return 0;
-        }
+    return rewards.slice().sort((rewardA: Reward, rewardB: Reward) => {
+      const rewardCompareResult = bigNumberComparator(
+        rewardA.reward,
+        rewardB.reward,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
       );
+      const walletNameCompareResult = stringComparator(
+        rewardA.walletName,
+        rewardB.walletName,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      const walletAddressCompareResult = stringComparator(
+        rewardA.rewardsAddress,
+        rewardB.rewardsAddress,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
+        if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
+          return walletNameCompareResult;
+        }
+        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+          return walletAddressCompareResult;
+        }
+        return rewardCompareResult;
+      }
+      if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
+        if (walletNameCompareResult === 0 && walletAddressCompareResult) {
+          return rewardCompareResult;
+        }
+        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+          return walletAddressCompareResult;
+        }
+        return walletNameCompareResult;
+      }
+      if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
+        if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
+          return walletNameCompareResult;
+        }
+        if (walletAddressCompareResult === 0 && walletNameCompareResult === 0) {
+          return rewardCompareResult;
+        }
+        return walletAddressCompareResult;
+      }
+      return 0;
+    });
   };
 
   handleContentScroll = (evt: SyntheticEvent<HTMLElement>) => {
@@ -265,13 +255,10 @@ export default class StakingRewards extends Component<Props, State> {
                       reward,
                       REWARD_FIELDS.REWARDS_ADDRESS
                     );
-                    const isZero = get(reward, REWARD_FIELDS.REWARD).isZero();
-                    const hasLink = !isRestoring && !isZero;
-                    console.log('->', 0, isZero);
                     const onOpenWalletRewardsBind = () =>
-                      hasLink ? onOpenWalletRewards(reward) : null;
+                      !isRestoring ? onOpenWalletRewards(reward) : null;
 
-                    const trClassName = hasLink ? styles.hasLink : null;
+                    const trClassName = !isRestoring ? styles.hasLink : null;
 
                     return (
                       <tr
@@ -300,7 +287,7 @@ export default class StakingRewards extends Component<Props, State> {
                                 </PopOver>
                               </div>
                             )}
-                            {hasLink && (
+                            {!isRestoring && (
                               <div className={styles.detailsButton}>
                                 {intl.formatMessage(
                                   messages.detailsButtonLabel

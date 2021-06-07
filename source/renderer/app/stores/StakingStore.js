@@ -6,7 +6,6 @@ import { orderBy, find, map, get } from 'lodash';
 import type {
   GetRewardsHistoryResponse,
   Reward,
-  RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
   DelegationCalculateFeeResponse,
@@ -40,7 +39,6 @@ import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
-import REWARDS from '../config/stakingRewards.dummy.json';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
@@ -537,16 +535,41 @@ export default class StakingStore extends Store {
     return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
   }
 
-  @computed get rewards(): Array<Reward> {
-    return REWARDS;
-  }
-
   @computed
-  get rewardsForIncentivizedTestnet(): Array<RewardForIncentivizedTestnet> {
-    const { wallets } = this.stores;
-    return wallets.allWallets.map(
-      this._transformWalletToRewardForIncentivizedTestnet
-    );
+  get rewards(): Array<Reward> {
+    const { wallets, transactions, addresses } = this.stores;
+    const { withdrawals } = transactions;
+    const { stakeAddresses } = addresses;
+    return wallets.allWallets
+      .filter((inputWallet: Wallet) => {
+        const { id: walletId, reward, isRestoring } = inputWallet;
+        if (isRestoring) {
+          return true;
+        }
+        const withdrawal = withdrawals[walletId];
+        const total = reward.plus(withdrawal);
+        return !total.isZero();
+      })
+      .map((inputWallet: Wallet) => {
+        const {
+          id: walletId,
+          name: walletName,
+          isRestoring,
+          reward: rewards,
+          syncState,
+        } = inputWallet;
+        const reward = rewards.plus(withdrawals[walletId]);
+        const rewardsAddress = stakeAddresses[walletId];
+        const syncingProgress = get(syncState, 'progress.quantity', '');
+        return {
+          walletId,
+          walletName,
+          reward,
+          isRestoring,
+          syncingProgress,
+          rewardsAddress,
+        };
+      });
   }
 
   @computed get isFetchingRewardsHistory() {
@@ -869,29 +892,6 @@ export default class StakingStore extends Store {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.DELEGATION_CENTER,
     });
-  };
-
-  _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
-    const {
-      id: walletId,
-      name: walletName,
-      isRestoring,
-      reward: rewards,
-      syncState,
-    } = inputWallet;
-    const { stakeAddresses } = this.stores.addresses;
-    const { withdrawals } = this.stores.transactions;
-    const reward = rewards.plus(withdrawals[walletId]);
-    const rewardsAddress = stakeAddresses[walletId];
-    const syncingProgress = get(syncState, 'progress.quantity', '');
-    return {
-      walletId,
-      walletName,
-      reward,
-      isRestoring,
-      syncingProgress,
-      rewardsAddress,
-    };
   };
 
   getStakePoolById = (stakePoolId: string) =>

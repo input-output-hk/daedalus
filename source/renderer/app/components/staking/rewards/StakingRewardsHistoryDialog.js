@@ -10,10 +10,7 @@ import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import type {
-  RewardForIncentivizedTestnet,
-  RewardsHistoryItem,
-} from '../../../api/staking/types';
+import type { Reward, RewardsHistoryItem } from '../../../api/staking/types';
 import styles from './StakingRewardsHistoryDialog.scss';
 import { PoolPopOver } from '../widgets/PoolPopOver';
 import globalMessages from '../../../i18n/global-messages';
@@ -51,7 +48,7 @@ type Props = {
   onCopy?: Function,
   onExportCSV: Function,
   onOpenExternalLink: Function,
-  reward: RewardForIncentivizedTestnet,
+  reward: Reward,
   rewardsHistory: Array<RewardsHistoryItem>,
 };
 

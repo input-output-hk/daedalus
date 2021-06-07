@@ -6,7 +6,7 @@ import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsHistoryDialog from '../../components/staking/rewards/StakingRewardsHistoryDialog';
 import StakingRewardsHistoryDialogContainer from './dialogs/StakingRewardsHistoryDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { RewardForIncentivizedTestnet } from '../../api/staking/types';
+import type { Reward } from '../../api/staking/types';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -34,7 +34,7 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  handleOpenWalletRewards = (reward: RewardForIncentivizedTestnet) => {
+  handleOpenWalletRewards = (reward: Reward) => {
     const { updateDataForActiveDialog, open } = this.props.actions.dialogs;
     open.trigger({ dialog: StakingRewardsHistoryDialog });
     updateDataForActiveDialog.trigger({
@@ -44,14 +44,14 @@ export default class StakingRewardsPage extends Component<Props> {
 
   render() {
     const {
-      staking: { rewardsForIncentivizedTestnet },
+      staking: { rewards },
       uiDialogs,
     } = this.props.stores;
 
     return (
       <Fragment>
         <StakingRewards
-          rewards={rewardsForIncentivizedTestnet}
+          rewards={rewards}
           isLoading={false}
           onLearnMoreClick={this.handleLearnMoreClick}
           onOpenWalletRewards={this.handleOpenWalletRewards}
