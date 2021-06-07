@@ -302,7 +302,7 @@
           display: flex;
           justify-content: space-between;
         }
-        min-width: 250px;
+        min-width: 240px;
         .detailsButton {
           background-color: var(
             --theme-staking-rewards-table-background-color-hover
@@ -317,6 +317,13 @@
 
       &.rewardsAddress {
         min-width: 100px;
+        word-wrap: break-word;
+        @media (max-width: 1120px) {
+          max-width: 420px;
+        }
+        @media (max-width: 1024px) {
+          max-width: 300px;
+        }
 
         > div {
           align-items: center;
