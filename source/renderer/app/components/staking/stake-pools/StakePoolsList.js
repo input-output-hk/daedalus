@@ -102,8 +102,8 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             />
           ))}
           {numberOfMissingRowItems > 0
-            ? times(numberOfMissingRowItems, () => (
-                <div className={styles.rowFillerItem} />
+            ? times(numberOfMissingRowItems, (i) => (
+                <div key={`${key}-${i}`} className={styles.rowFillerItem} />
               ))
             : null}
         </div>
