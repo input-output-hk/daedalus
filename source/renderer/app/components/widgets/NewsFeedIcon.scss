@@ -7,7 +7,9 @@
     @extend .dot;
 
     &:after {
-      background: var(--theme-news-feed-icon-red-dot-background-color) !important;
+      background: var(
+        --theme-news-feed-icon-red-dot-background-color
+      ) !important;
     }
   }
 
