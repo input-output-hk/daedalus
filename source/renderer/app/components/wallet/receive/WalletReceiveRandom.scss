@@ -76,7 +76,9 @@
           white-space: nowrap;
           width: 100%;
           &.spinning {
-            @include loading-spinner('../../../assets/images/spinner-light.svg');
+            @include loading-spinner(
+              '../../../assets/images/spinner-light.svg'
+            );
           }
         }
 
@@ -84,7 +86,9 @@
           max-width: 310px;
           width: calc(50% - 10px);
           &.spinning {
-            @include loading-spinner('../../../assets/images/spinner-light.svg');
+            @include loading-spinner(
+              '../../../assets/images/spinner-light.svg'
+            );
           }
         }
 

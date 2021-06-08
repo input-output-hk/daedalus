@@ -2,7 +2,7 @@
   :global {
     .attention {
       color: var(
-          --theme-button-attention-delete-text-color-disabled
+        --theme-button-attention-delete-text-color-disabled
       ) !important;
 
       &:not([disabled]) {
@@ -15,7 +15,7 @@
         svg {
           path {
             fill: var(
-                --theme-button-attention-delete-text-color-disabled
+              --theme-button-attention-delete-text-color-disabled
             ) !important;
           }
         }
