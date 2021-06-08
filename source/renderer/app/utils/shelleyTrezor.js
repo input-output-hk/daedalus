@@ -1,6 +1,6 @@
 // @flow
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
-import _ from 'lodash';
+import { map } from 'lodash';
 import {
   derivationPathToString,
   CERTIFICATE_TYPE,
@@ -76,7 +76,7 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
   const tokenObjectEntries = Object.entries(tokenObject);
 
-  const tokenBundle = _.map(tokenObjectEntries, ([policyId, tokens]) => {
+  const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
     const tokenAmounts = tokens.map(({ assetName, quantity }) => ({
       assetNameBytes: assetName,
       amount: quantity.toString(),
