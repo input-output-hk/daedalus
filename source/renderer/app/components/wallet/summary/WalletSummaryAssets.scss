@@ -118,6 +118,15 @@
   }
 }
 
+.noResults {
+  font-size: 12px;
+  line-height: 1.33;
+  font-family: var(--font-regular);
+  color: var(--theme-bordered-box-text-color);
+  letter-spacing: 0.4px;
+  margin: 0 12px;
+}
+
 .assetsColumns {
   display: flex;
   justify-content: space-between;

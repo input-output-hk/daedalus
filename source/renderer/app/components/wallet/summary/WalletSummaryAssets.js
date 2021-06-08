@@ -103,6 +103,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     const searchButtonStyles = classNames([styles.searchButton, 'flat']);
     const isRestoreActive = wallet.isRestoring;
     const numberOfAssets = assets && assets.length ? assets.length : 0;
+    const noResults = !assets.length && searchValue.length >= 3;
 
     if (isLoadingAssets) {
       return (
@@ -131,13 +132,16 @@ export default class WalletSummaryAssets extends Component<Props, State> {
               className={styles.spendingPassword}
               onChange={this.setSearchValue}
               value={searchValue}
+              placeholder="Filter token list"
             />
-            <button
-              className={classNames([styles.clearButton, 'flat'])}
-              onClick={() => this.setSearchValue('')}
-            >
-              <SVGInline svg={crossIcon} />
-            </button>
+            {searchValue.length > 0 && (
+              <button
+                className={classNames([styles.clearButton, 'flat'])}
+                onClick={() => this.setSearchValue('')}
+              >
+                <SVGInline svg={crossIcon} />
+              </button>
+            )}
           </div>
         )}
         <BorderedBox>
@@ -145,18 +149,22 @@ export default class WalletSummaryAssets extends Component<Props, State> {
             <span>Token</span>
             <span>Amount</span>
           </div>
-          {assets.map((asset) => (
-            <WalletSummaryAsset
-              key={asset.uniqueId}
-              asset={asset}
-              onOpenAssetSend={onOpenAssetSend}
-              onCopyAssetItem={onCopyAssetItem}
-              onAssetSettings={onAssetSettings}
-              anyAssetWasHovered={anyAssetWasHovered}
-              assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-              isLoading={isRestoreActive}
-            />
-          ))}
+          {noResults && (
+            <p className={styles.noResults}>No results matching your query</p>
+          )}
+          {!noResults &&
+            assets.map((asset) => (
+              <WalletSummaryAsset
+                key={asset.uniqueId}
+                asset={asset}
+                onOpenAssetSend={onOpenAssetSend}
+                onCopyAssetItem={onCopyAssetItem}
+                onAssetSettings={onAssetSettings}
+                anyAssetWasHovered={anyAssetWasHovered}
+                assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+                isLoading={isRestoreActive}
+              />
+            ))}
         </BorderedBox>
       </div>
     );
