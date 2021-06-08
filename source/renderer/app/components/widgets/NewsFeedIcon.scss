@@ -3,30 +3,15 @@
   right: 29px;
   top: 20px;
 
-  .dot {
-    &:after {
-      background: var(--theme-news-feed-icon-green-dot-background-color);
-      border-radius: 12.5px;
-      content: '';
-      display: block;
-      height: 8px;
-      pointer-events: none;
-      position: absolute;
-      right: 7px;
-      top: 7px;
-      width: 8px;
-    }
-  }
-
-  .notificationDot {
+  &.notificationDot {
     @extend .dot;
 
     &:after {
-      background: var(--theme-news-feed-icon-red-dot-background-color);
+      background: var(--theme-news-feed-icon-red-dot-background-color) !important;
     }
   }
 
-  .updateDot {
+  &.updateDot {
     @extend .dot;
   }
 
@@ -55,5 +40,20 @@
         --theme-news-feed-icon-toggle-hover-background-color
       );
     }
+  }
+}
+
+.dot {
+  &:after {
+    background: var(--theme-news-feed-icon-green-dot-background-color);
+    border-radius: 12.5px;
+    content: '';
+    display: block;
+    height: 8px;
+    pointer-events: none;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    width: 8px;
   }
 }
