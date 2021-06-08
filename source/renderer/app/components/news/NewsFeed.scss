@@ -71,7 +71,7 @@
 
         &:hover {
           background-color: var(
-              --theme-news-feed-icon-close-hover-background-color
+            --theme-news-feed-icon-close-hover-background-color
           );
         }
       }
@@ -123,13 +123,13 @@
     :global {
       *::-webkit-scrollbar-thumb {
         background-color: var(
-            --theme-splash-network-scrollbar-thumb-background
+          --theme-splash-network-scrollbar-thumb-background
         );
         min-height: 150px;
 
         &:hover {
           background-color: var(
-              --theme-splash-network-scrollbar-thumb-background-hover
+            --theme-splash-network-scrollbar-thumb-background-hover
           );
         }
       }

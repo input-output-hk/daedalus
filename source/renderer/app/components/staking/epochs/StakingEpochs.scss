@@ -34,10 +34,10 @@
       }
 
       .SimpleOptions_options.SimpleOptions_firstOptionHighlighted:not(.SimpleOptions_openUpward)
-      [data-bubble-arrow]:after {
+        [data-bubble-arrow]:after {
         border-bottom-color: var(
-            --rp-bubble-arrow-bg-color,
-            #fafbfc
+          --rp-bubble-arrow-bg-color,
+          #fafbfc
         ) !important;
       }
     }
@@ -78,11 +78,11 @@
 
   .progress {
     background: repeating-linear-gradient(
-        -63deg,
-        var(--theme-staking-progress-stripe-dark-1-background-color),
-        var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
-        var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
-        var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+      -63deg,
+      var(--theme-staking-progress-stripe-dark-1-background-color),
+      var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 20px
     );
     border-radius: 5px;
     height: 100%;

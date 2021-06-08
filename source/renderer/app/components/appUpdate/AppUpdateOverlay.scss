@@ -30,14 +30,14 @@
 
     &::-webkit-scrollbar-thumb {
       background-color: var(
-          --theme-news-overlay-update-content-scroll-background-color
+        --theme-news-overlay-update-content-scroll-background-color
       );
       outline: none;
       width: 4px;
 
       &:hover {
         background-color: var(
-            --theme-news-overlay-update-content-scroll-hover-background-color
+          --theme-news-overlay-update-content-scroll-hover-background-color
         );
       }
     }
@@ -153,7 +153,7 @@
 
     .button {
       background-color: var(
-          --theme-news-overlay-update-button-background-color
+        --theme-news-overlay-update-button-background-color
       );
       border: 1px solid var(--theme-news-overlay-update-button-text-color);
       color: var(--theme-news-overlay-update-button-text-color);
@@ -215,7 +215,9 @@
 
     :global {
       .SimpleLoadingSpinner_root {
-        border-color: var(--theme-news-overlay-update-button-text-color) var(--theme-news-overlay-update-button-text-color) transparent transparent;
+        border-color: var(--theme-news-overlay-update-button-text-color)
+          var(--theme-news-overlay-update-button-text-color) transparent
+          transparent;
       }
     }
   }
@@ -240,7 +242,7 @@
 
     &:hover {
       background-color: var(
-          --theme-news-overlay-update-content-background-color
+        --theme-news-overlay-update-content-background-color
       );
       opacity: 0.8;
     }

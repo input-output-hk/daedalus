@@ -51,7 +51,9 @@
     }
 
     &:hover {
-      background-color: var(--theme-news-feed-icon-toggle-hover-background-color);
+      background-color: var(
+        --theme-news-feed-icon-toggle-hover-background-color
+      );
     }
   }
 }
