@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
@@ -124,19 +125,20 @@ export default class WalletSummaryAsset extends Component<Props, State> {
               </dd>
             </dl>
             <div className={styles.footerButtons}>
-              <button onClick={() => onAssetSettings({ asset })}>
-                Settings
-              </button>
-              <button
+              <Button
+                className={classNames(['flat', styles.button])}
+                label={'Settings'}
+                onClick={() => onAssetSettings({ asset })}
+              />
+              <Button
                 className={classNames([
                   'primary',
-                  styles.assetSendButton,
+                  styles.button,
                   asset.quantity.isZero() ? styles.disabled : null,
                 ])}
                 onClick={() => onOpenAssetSend(asset)}
-              >
-                {intl.formatMessage(messages.tokenSendButton)}
-              </button>
+                label={intl.formatMessage(messages.tokenSendButton)}
+              />
             </div>
           </div>
         </div>

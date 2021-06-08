@@ -20,7 +20,6 @@
 }
 
 .component {
-  /* background-color: pink; */
   padding: 20px;
 
   .assetsLeftContainer {
@@ -83,6 +82,20 @@
 .search {
   padding: 10px;
   margin-bottom: 20px;
+}
+
+.assetsColumns {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 42px 10px 12px;
+  span {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-semibold);
+    font-size: 10px;
+    line-height: 2;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
 }
 
 .assetAmount {

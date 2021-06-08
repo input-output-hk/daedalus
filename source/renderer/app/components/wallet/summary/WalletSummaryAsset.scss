@@ -25,37 +25,34 @@
 }
 .arrow {
   bottom: 10px;
-  display: none;
-  height: 20px;
+  height: 22px;
   opacity: 0.3;
   position: absolute;
   right: 12px;
   text-align: center;
   width: 12px;
   z-index: 1;
+  top: 7px;
 
   > svg {
     height: 7px;
     width: 12px;
+    margin-top: 8px;
 
     path {
       stroke: var(--theme-transactions-arrow-stroke-color);
     }
   }
-
-  &.isExpanded {
-    display: block;
-    transform: rotate(180deg);
-    opacity: 0.1;
-  }
   .header:hover & {
-    display: block;
-    opacity: 0.3;
+    opacity: 0.5;
+  }
+  &.isExpanded {
+    transform: rotate(180deg);
   }
 }
 .content {
   display: none;
-  margin: 13px 12px 15px;
+  margin: 13px 12px 20px;
 }
 .footer {
   border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
@@ -67,7 +64,8 @@
 
   dl {
     line-height: 1;
-    padding-left: 8px;
+    padding: 9px 0 0 8px;
+    width: calc(100% - 264px);
   }
 
   dt {
@@ -86,7 +84,19 @@
     font-size: 12px;
     line-height: 16px;
     margin-left: 10px;
-    max-height: 48px;
-    overflow-y: auto;
+    background: lightblue;
+    width: calc(100% - 74px);
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+  }
+
+  .footerButtons {
+    white-space: nowrap;
+    .button {
+      height: 36px;
+      margin-left: 12px;
+      width: 120px;
+    }
   }
 }

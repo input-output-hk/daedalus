@@ -107,6 +107,10 @@ export default class WalletSummaryAssets extends Component<Props, State> {
           <BorderedBox className={styles.search}>SEARCH</BorderedBox>
         )}
         <BorderedBox>
+          <div className={styles.assetsColumns}>
+            <span>Token</span>
+            <span>Amount</span>
+          </div>
           {assets.map((asset) => (
             <WalletSummaryAsset
               key={asset.uniqueId}
