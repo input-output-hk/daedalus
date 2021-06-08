@@ -118,6 +118,17 @@ export default class WalletSummaryAssets extends Component<Props, State> {
         <div className={styles.header}>
           <div className={styles.title}>
             {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
+            {!!searchValue.length && (
+              <>
+                &nbsp;-&nbsp;
+                <button
+                  className={styles.searchValue}
+                  onClick={() => this.setSearchValue('')}
+                >
+                  {searchValue} <SVGInline svg={crossIcon} />
+                </button>
+              </>
+            )}
           </div>
           <Button
             className={searchButtonStyles}
@@ -134,7 +145,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
               value={searchValue}
               placeholder="Filter token list"
             />
-            {searchValue.length > 0 && (
+            {!!searchValue.length && (
               <button
                 className={classNames([styles.clearButton, 'flat'])}
                 onClick={() => this.setSearchValue('')}

@@ -64,10 +64,19 @@
   margin-bottom: 10px;
   padding: 0 20px;
   .title {
-    color: var(--theme-transactions-list-group-date-color);
+    color: var(--rp-input-placeholder-color);
     font-family: var(--font-regular);
     font-size: 16px;
-    opacity: 0.5;
+  }
+  .searchValue {
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--theme-bordered-box-text-color);
+    svg {
+      width: 6px;
+      opacity: 0.5;
+    }
   }
   .searchButton {
     border-radius: 4px;
