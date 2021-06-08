@@ -80,8 +80,42 @@
 }
 
 .search {
-  padding: 10px;
   margin-bottom: 20px;
+  position: relative;
+  .searchIcon {
+    position: absolute;
+    z-index: 1;
+    top: 17px;
+    left: 20px;
+    svg {
+      height: 15px;
+      width: 15px;
+    }
+  }
+  input {
+    border-radius: 4px;
+    padding: 13px 58px 13px 54px;
+  }
+  .clearButton {
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    position: absolute;
+    right: 12px;
+    top: 11px;
+    width: 28px;
+    z-index: 1;
+    &:hover {
+      opacity: 0.8;
+    }
+    svg {
+      height: 8px;
+      width: 8px;
+      polygon {
+        fill: var(--theme-bordered-box-text-color);
+      }
+    }
+  }
 }
 
 .assetsColumns {

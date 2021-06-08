@@ -4,12 +4,17 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import SVGInline from 'react-svg-inline';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import WalletSummaryAsset from './WalletSummaryAsset';
+import { onSearchAssetsDropdown } from '../../widgets/forms/AssetsDropdown';
+import searchIcon from '../../../assets/images/search.inline.svg';
+import crossIcon from '../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -42,6 +47,7 @@ type Props = {
 type State = {
   anyAssetWasHovered: boolean,
   isSearchOpen: boolean,
+  searchValue: string,
 };
 
 @observer
@@ -53,6 +59,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
   state = {
     anyAssetWasHovered: false,
     isSearchOpen: false,
+    searchValue: '',
   };
 
   handleHoverAsset = () => {
@@ -65,21 +72,35 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     }));
   };
 
+  get filteredAssets() {
+    const { searchValue } = this.state;
+    const { assets } = this.props;
+    return onSearchAssetsDropdown(
+      searchValue,
+      assets.map((asset) => ({ asset }))
+    );
+  }
+
+  setSearchValue = (searchValue: string) => {
+    this.setState({
+      searchValue,
+    });
+  };
+
   render() {
     const {
       wallet,
-      assets,
       onOpenAssetSend,
       onCopyAssetItem,
       onAssetSettings,
       assetSettingsDialogWasOpened,
       isLoadingAssets,
     } = this.props;
-    const { anyAssetWasHovered, isSearchOpen } = this.state;
+    const { anyAssetWasHovered, isSearchOpen, searchValue } = this.state;
     const { intl } = this.context;
-
+    const { filteredAssets } = this;
+    const assets = filteredAssets.map(({ asset }) => asset);
     const searchButtonStyles = classNames([styles.searchButton, 'flat']);
-
     const isRestoreActive = wallet.isRestoring;
     const numberOfAssets = assets && assets.length ? assets.length : 0;
 
@@ -104,7 +125,20 @@ export default class WalletSummaryAssets extends Component<Props, State> {
           />
         </div>
         {isSearchOpen && (
-          <BorderedBox className={styles.search}>SEARCH</BorderedBox>
+          <div className={styles.search}>
+            <SVGInline svg={searchIcon} className={styles.searchIcon} />
+            <Input
+              className={styles.spendingPassword}
+              onChange={this.setSearchValue}
+              value={searchValue}
+            />
+            <button
+              className={classNames([styles.clearButton, 'flat'])}
+              onClick={() => this.setSearchValue('')}
+            >
+              <SVGInline svg={crossIcon} />
+            </button>
+          </div>
         )}
         <BorderedBox>
           <div className={styles.assetsColumns}>
