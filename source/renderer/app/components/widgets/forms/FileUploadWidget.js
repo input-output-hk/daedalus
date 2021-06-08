@@ -15,10 +15,19 @@ type Props = {
   acceptedFileTypes: Array<string>,
 };
 
+type openDialogChannelFilterType = {
+  name: string,
+  extensions: string[],
+};
+type openDialogChannelType = {
+  defaultPath: string,
+  filters: openDialogChannelFilterType[],
+};
+
 @observer
 export default class FileUploadWidget extends Component<Props> {
   onOpen = async () => {
-    const params = {
+    const params: openDialogChannelType = {
       filters: [
         {
           name: 'file-upload',

@@ -10,6 +10,16 @@ import { generateFileNameWithTimestamp } from '../../../../../../common/utils/fi
 
 type Props = InjectedDialogContainerProps;
 
+type pdfType = 'pdf';
+type saveDialogChannelFilterType = {
+  name: string,
+  extensions: pdfType[],
+};
+type saveDialogChannelType = {
+  defaultPath: string,
+  filters: saveDialogChannelFilterType[],
+};
+
 @inject('stores', 'actions')
 @observer
 export default class InstructionsDialogContainer extends Component<Props> {
@@ -37,8 +47,8 @@ export default class InstructionsDialogContainer extends Component<Props> {
       isUTC: false,
     });
     const { desktopDirectoryPath } = this.props.stores.profile;
-    const defaultPath = path.join(desktopDirectoryPath, `${name}.pdf`);
-    const params = {
+    const defaultPath: string = path.join(desktopDirectoryPath, `${name}.pdf`);
+    const params: saveDialogChannelType = {
       defaultPath,
       filters: [
         {

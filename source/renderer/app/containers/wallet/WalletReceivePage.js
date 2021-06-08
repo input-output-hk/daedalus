@@ -95,7 +95,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.props.actions.walletSettings.toggleShowUsedAddresses.trigger();
   };
 
-  getAddressAndFilepath = async (fileExtension?: string = 'pdf') => {
+  getAddressAndFilepath = async (fileExtension: ?string = 'pdf') => {
     const { addressToShare } = this.state;
     const { activeWallet } = this;
     const { intl } = this.context;

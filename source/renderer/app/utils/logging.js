@@ -33,15 +33,7 @@ const logToLevel = (level: LoggingLevel) => (
     formatContext({ ...messageContext, level }),
     {
       message,
-      // The algorithm used to serialize objects sent over IPC on electron v9+
-      // does not support sending Functions, Promises, WeakMaps, WeakSets,
-      // or objects containing any such values.
-      // https://github.com/electron/electron/blob/main/docs/breaking-changes.md#behavior-changed-values-sent-over-ipc-are-now-serialized-with-structured-clone-algorithm
-      data: ((dataVal: ?Object) =>
-        !!dataVal &&
-        typeof dataVal === 'object' &&
-        typeof dataVal !== 'function' &&
-        JSON.parse(JSON.stringify(dataVal)))(data),
+      data,
       environmentData,
     },
   ];

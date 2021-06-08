@@ -1,5 +1,5 @@
 // @flow
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, computed, observable, runInAction, toJS } from 'mobx';
 import path from 'path';
 import { orderBy } from 'lodash';
 import Store from './lib/Store';
@@ -262,7 +262,7 @@ export default class WalletMigrationStore extends Store {
     logger.debug(
       `WalletMigrationStore: Exported ${this.exportedWalletsCount} wallets`,
       {
-        exportedWalletsData: this.exportedWalletsData,
+        exportedWalletsData: toJS(this.exportedWalletsData),
         exportErrors: this.exportErrors,
       }
     );
@@ -368,7 +368,7 @@ export default class WalletMigrationStore extends Store {
     );
     try {
       await generateWalletMigrationReportChannel.send(
-        walletMigrationReportData
+        toJS(walletMigrationReportData)
       );
       logger.debug('WalletMigrationStore: Generated wallet migration report');
     } catch (error) {
@@ -511,11 +511,11 @@ export default class WalletMigrationStore extends Store {
   }
 
   @computed get exportedWalletsData(): Array<ExportedWalletData> {
-    return this.exportedWallets.map((wallet) => ({
+    return this.exportedWallets.map((wallet: ExportedWalletData) => ({
       id: wallet.id,
       name: wallet.name,
       hasPassword: !wallet.isEmptyPassphrase,
-      import: wallet.import,
+      import: toJS(wallet.import),
     }));
   }
 
