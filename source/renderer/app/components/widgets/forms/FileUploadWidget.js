@@ -6,6 +6,7 @@ import path from 'path';
 import { showOpenDialogChannel } from '../../../ipc/show-file-dialog-channels';
 import attachIcon from '../../../assets/images/attach-ic.inline.svg';
 import styles from './FileUploadWidget.scss';
+import type { FileDialogRequestParams } from '../../../../../common/types/file-dialog.types';
 
 type Props = {
   label: string,
@@ -15,19 +16,10 @@ type Props = {
   acceptedFileTypes: Array<string>,
 };
 
-type openDialogChannelFilterType = {
-  name: string,
-  extensions: string[],
-};
-type openDialogChannelType = {
-  defaultPath: string,
-  filters: openDialogChannelFilterType[],
-};
-
 @observer
 export default class FileUploadWidget extends Component<Props> {
   onOpen = async () => {
-    const params: openDialogChannelType = {
+    const params: FileDialogRequestParams = {
       filters: [
         {
           name: 'file-upload',

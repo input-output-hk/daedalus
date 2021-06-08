@@ -7,18 +7,9 @@ import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../../common/utils/files';
+import type { FileDialogRequestParams } from '../../../../../../common/types/file-dialog.types';
 
 type Props = InjectedDialogContainerProps;
-
-type pdfType = 'pdf';
-type saveDialogChannelFilterType = {
-  name: string,
-  extensions: pdfType[],
-};
-type saveDialogChannelType = {
-  defaultPath: string,
-  filters: saveDialogChannelFilterType[],
-};
 
 @inject('stores', 'actions')
 @observer
@@ -48,7 +39,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
     });
     const { desktopDirectoryPath } = this.props.stores.profile;
     const defaultPath: string = path.join(desktopDirectoryPath, `${name}.pdf`);
-    const params: saveDialogChannelType = {
+    const params: FileDialogRequestParams = {
       defaultPath,
       filters: [
         {

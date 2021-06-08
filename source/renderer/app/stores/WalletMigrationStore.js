@@ -511,7 +511,7 @@ export default class WalletMigrationStore extends Store {
   }
 
   @computed get exportedWalletsData(): Array<ExportedWalletData> {
-    return this.exportedWallets.map((wallet: ExportedWalletData) => ({
+    return this.exportedWallets.map((wallet) => ({
       id: wallet.id,
       name: wallet.name,
       hasPassword: !wallet.isEmptyPassphrase,
