@@ -68,7 +68,7 @@ export type LogSystemInfoParams = {
 export type StateSnapshotLogParams = {
   systemInfo: SystemInfo,
   coreInfo: CoreSystemInfo,
-  cardanoNodeState: CardanoNodeState | any,
+  cardanoNodeState: CardanoNodeState,
   currentLocale: string,
   isConnected: boolean,
   isDev: boolean,
