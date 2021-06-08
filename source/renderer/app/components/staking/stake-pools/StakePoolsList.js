@@ -114,7 +114,9 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
   return (
     <WindowScroller
       scrollElement={
-        props.scrollElementRef ? props.scrollElementRef.current : window
+        props.scrollElementRef && props.scrollElementRef.current
+          ? props.scrollElementRef.current
+          : window
       }
     >
       {({ height, scrollTop, registerChild }) => (
