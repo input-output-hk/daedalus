@@ -27,6 +27,21 @@ const messages = defineMessages({
     description:
       'Title "Earned delegation rewards" label on the rewards history dialog.',
   },
+  columnEpoch: {
+    id: 'staking.rewardsHistory.dialog.column.epoch',
+    defaultMessage: '!!!Epoch',
+    description: 'Transactions CSV column - Epoch',
+  },
+  columnStakePool: {
+    id: 'staking.rewardsHistory.dialog.column.stakePool',
+    defaultMessage: '!!!Stake pool',
+    description: 'Transactions CSV column - Pool',
+  },
+  columnAmount: {
+    id: 'staking.rewardsHistory.dialog.column.amount',
+    defaultMessage: '!!!Amount',
+    description: 'Transactions CSV column - Amount',
+  },
   exportCsvLabel: {
     id: 'staking.rewardsHistory.dialog.csv.label',
     defaultMessage: '!!!Export CSV',
@@ -106,7 +121,7 @@ export default class StakingRewardsHistoryDialog extends Component<
         onClick: onClose,
       },
       {
-        label: 'Export CSV',
+        label: intl.formatMessage(messages.exportCsvLabel),
         primary: true,
         onClick: () => onExportCSV({ rewardsAddress, walletName }),
         disabled: isFetchingRewardsHistory,
@@ -115,11 +130,11 @@ export default class StakingRewardsHistoryDialog extends Component<
 
     const tableColumns = [
       {
-        title: 'Epoch',
+        title: intl.formatMessage(messages.columnEpoch),
         id: 'epoch',
       },
       {
-        title: 'Stake Pool',
+        title: intl.formatMessage(messages.columnStakePool),
         id: 'pool',
         sortValue: (pool: ?StakePool) =>
           pool ? `${pool.ticker}${pool.name}` : null,
@@ -139,7 +154,7 @@ export default class StakingRewardsHistoryDialog extends Component<
           ) : null,
       },
       {
-        title: 'Reward (ADA)',
+        title: intl.formatMessage(messages.columnAmount),
         id: 'amount',
         type: 'bigNumber',
         render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),

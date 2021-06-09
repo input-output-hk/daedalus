@@ -5881,13 +5881,55 @@
         "description": "Title \"Earned delegation rewards\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.title",
         "start": {
           "column": 9,
-          "line": 27
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Epoch",
+        "description": "Transactions CSV column - Epoch",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.column.epoch",
+        "start": {
+          "column": 15,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pool",
+        "description": "Transactions CSV column - Pool",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.column.stakePool",
+        "start": {
+          "column": 19,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Transactions CSV column - Amount",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.column.amount",
+        "start": {
+          "column": 16,
+          "line": 40
         }
       },
       {
@@ -5895,13 +5937,13 @@
         "description": "TexportCsvLabel on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.csv.label",
         "start": {
           "column": 18,
-          "line": 33
+          "line": 45
         }
       },
       {
@@ -5909,13 +5951,13 @@
         "description": "\"Rewards address\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.rewardsAddress",
         "start": {
           "column": 18,
-          "line": 38
+          "line": 50
         }
       }
     ],
@@ -18363,6 +18405,67 @@
       }
     ],
     "path": "source/renderer/app/utils/paperWalletPdfGenerator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Epoch",
+        "description": "Transactions CSV column - Epoch",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/utils/rewardsCsvGenerator.js",
+        "id": "staking.rewardsHistory.csv.column.epoch",
+        "start": {
+          "column": 15,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pool",
+        "description": "Transactions CSV column - Pool",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/utils/rewardsCsvGenerator.js",
+        "id": "staking.rewardsHistory.csv.column.stakePool",
+        "start": {
+          "column": 19,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Transactions CSV column - Amount",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/utils/rewardsCsvGenerator.js",
+        "id": "staking.rewardsHistory.csv.column.amount",
+        "start": {
+          "column": 16,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards",
+        "description": "Rewards history CSV \"Rewards\" filename",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/utils/rewardsCsvGenerator.js",
+        "id": "staking.rewardsHistory.csv.filenamePrefix",
+        "start": {
+          "column": 18,
+          "line": 25
+        }
+      }
+    ],
+    "path": "source/renderer/app/utils/rewardsCsvGenerator.json"
   },
   {
     "descriptors": [
