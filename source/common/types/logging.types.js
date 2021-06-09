@@ -91,7 +91,7 @@ export type ExportedWalletData = {
   hasPassword: boolean,
   import?: {
     status: WalletImportStatus,
-    error: ?LocalizableError,
+    error?: string,
   },
 };
 
@@ -108,7 +108,7 @@ export type WalletMigrationReportData = {
   restoredWalletsData: Array<RestoredWalletData>,
   restoredWalletsCount: number,
   restorationErrors: Array<{
-    error: LocalizableError,
+    error: string,
     wallet: ExportedWalletData,
   }>,
   finalMigrationStatus: WalletMigrationStatus,

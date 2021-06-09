@@ -65,7 +65,7 @@ export default class WalletMigrationStore extends Store {
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
   @observable restorationErrors: Array<{
-    error: LocalizableError,
+    error: string,
     wallet: ExportedWalletData,
   }> = [];
 
@@ -196,12 +196,12 @@ export default class WalletMigrationStore extends Store {
   @action _updateWalletImportStatus = (
     index: number,
     status: WalletImportStatus,
-    error?: LocalizableError
+    error?: string
   ) => {
     const wallet = this.getExportedWalletByIndex(index);
     if (wallet) {
       wallet.import.status = status;
-      wallet.import.error = error || null;
+      if (error) wallet.import.error = error;
     }
   };
 
@@ -333,15 +333,17 @@ export default class WalletMigrationStore extends Store {
         this.restoredWallets.push(restoredWallet);
       });
     } catch (error) {
+      const errorStr =
+        error.defaultMessage || error.message || error.toString();
       runInAction('update restorationErrors', () => {
         const { name, isEmptyPassphrase } = exportedWallet;
         this._updateWalletImportStatus(
           index,
           WalletImportStatuses.ERRORED,
-          error
+          errorStr
         );
         this.restorationErrors.push({
-          error,
+          error: errorStr,
           wallet: { id, name, hasPassword: !isEmptyPassphrase },
         });
       });

@@ -39,7 +39,7 @@ export type ExportedByronWallet = {
   hasName: boolean,
   import: {
     status: WalletImportStatus,
-    error: ?LocalizableError,
+    error: string,
   },
   index: number,
 };
