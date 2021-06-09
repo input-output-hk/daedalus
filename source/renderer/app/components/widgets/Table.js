@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { map, entries, reduce } from 'lodash';
+import { map, reduce } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import sortIcon from '../../assets/images/ascending.inline.svg';
@@ -130,8 +130,6 @@ export default class Table extends Component<Props, State> {
     } = this.props;
     const { sortOrder, sortBy } = this.state;
 
-    const columnsObj = this.getColumnsObj();
-
     const componentStyles = classnames(styles.component, className, {
       [styles.compact]: isCompact,
       [styles.sticky]: !!maxHeight,
@@ -166,19 +164,18 @@ export default class Table extends Component<Props, State> {
             <tbody>
               {map(tableData, (item: TableRow, key) => (
                 <tr key={key} onClick={onClickRow}>
-                  {map(entries(item), ([columnKey, entry]) => {
-                    const column = columnsObj[columnKey] || {};
-                    const renderedEntry = column.render
-                      ? column.render(entry)
-                      : entry;
+                  {map(columns, (column: TableColumn) => {
+                    const { id: columnId, render } = column;
+                    const rawValue = item[columnId];
+                    const renderedValue = render ? render(rawValue) : rawValue;
                     return (
                       <td
-                        key={key + columnKey}
+                        key={key + columnId}
                         role="presentation"
                         className={styles.rewardWallet}
                         onClick={onClickCell}
                       >
-                        {renderedEntry}
+                        {renderedValue}
                       </td>
                     );
                   })}
