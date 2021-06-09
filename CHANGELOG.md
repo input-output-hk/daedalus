@@ -5,9 +5,8 @@ Changelog
 
 ### Features
 
+- Added voting registration with Trezor ([PR 2596](https://github.com/input-output-hk/daedalus/pull/2596))
 - Added voting registration with Ledger ([PR 2535](https://github.com/input-output-hk/daedalus/pull/2535))
-- Added address verification for "Trezor" hardware wallet devices ([PR 2558](https://github.com/input-output-hk/daedalus/pull/2558))
-- Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
 
 ### Fixes
 
