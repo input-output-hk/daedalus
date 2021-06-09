@@ -182,6 +182,7 @@
   "global.punctuation.dot": "。",
   "global.range.from": "開始",
   "global.range.to": "終了",
+  "global.search.noResultsMessage": "検索結果はありません",
   "global.spendingPasswordLabel": "送金時パスワード",
   "global.spendingPasswordPlaceholder": "パスワード",
   "global.unit.ada": "ADA",
