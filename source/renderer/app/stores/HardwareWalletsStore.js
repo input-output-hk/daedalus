@@ -1633,8 +1633,6 @@ export default class HardwareWalletsStore extends Store {
       });
     }
 
-    console.debug('>>> auxiliaryData: ', auxiliaryData);
-
     const recognizedDevice = find(
       this.hardwareWalletDevices,
       (hardwareWalletDevice) => hardwareWalletDevice.paired === walletId
