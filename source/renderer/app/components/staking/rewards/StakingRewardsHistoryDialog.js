@@ -117,7 +117,7 @@ export default class StakingRewardsHistoryDialog extends Component<
     ]);
     const actions = [
       {
-        label: intl.formatMessage(globalMessages.cancel),
+        label: intl.formatMessage(globalMessages.close),
         onClick: onClose,
       },
       {
