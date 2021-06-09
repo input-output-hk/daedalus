@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Fixed Trezor transaction native tokens grouping issue ([PR 2594](https://github.com/input-output-hk/daedalus/pull/2594))
 - Fixed notes field visibility for software wallets on Share Wallet Address dialog ([PR 2582](https://github.com/input-output-hk/daedalus/pull/2582))
 
 ## 4.1.0
