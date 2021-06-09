@@ -5,7 +5,6 @@ import { orderBy } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
-import LocalizableError from '../i18n/LocalizableError';
 import { exportWalletsChannel } from '../ipc/cardano.ipc';
 import { showOpenDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigrationReportChannel';

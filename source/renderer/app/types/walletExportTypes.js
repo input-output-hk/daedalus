@@ -1,5 +1,4 @@
 // @flow
-import LocalizableError from '../i18n/LocalizableError';
 
 export type WalletExportTypeChoices = 'full' | 'readOnly' | 'paperWallet';
 
