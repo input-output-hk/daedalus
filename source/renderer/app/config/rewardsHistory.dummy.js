@@ -46,7 +46,7 @@ const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const getRewardsHistory = (numberOfItems: ?number = 10) =>
   map(Array(numberOfItems).fill(), (x, index) => ({
-    date: generateDate(index),
+    // date: generateDate(index),
     epoch: generateEpoch(index),
     pool: generatePool(index),
     amount: generateReward(index),
