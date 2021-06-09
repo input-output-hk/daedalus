@@ -125,6 +125,13 @@ const onAppReady = async () => {
     startTime,
   });
 
+  // We need DAEDALUS_INSTALL_DIRECTORY in PATH in order for the
+  // cardano-launcher to find cardano-wallet and cardano-node executables
+  process.env.PATH = [
+    process.env.PATH,
+    process.env.DAEDALUS_INSTALL_DIRECTORY,
+  ].join(path.delimiter);
+
   logger.info(`Daedalus is starting at ${startTime}`, { startTime });
 
   logger.info('Updating System-info.json file', { ...systemInfo.data });
