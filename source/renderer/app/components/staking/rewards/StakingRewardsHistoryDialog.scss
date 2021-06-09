@@ -37,6 +37,11 @@
           }
         }
       }
+      :global {
+        .SimplePopOver_root {
+          white-space: nowrap;
+        }
+      }
     }
     &:hover {
       .copyIcon,
