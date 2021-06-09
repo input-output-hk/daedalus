@@ -72,7 +72,7 @@ const rewardsCsvGenerator = async ({
   rewards.forEach(({ epoch, pool, amount }: RewardsHistoryItem) => {
     const valueEpoch = epoch.toString();
     const valuePool = pool.ticker;
-    const valueAmount = amount.toFixed(2);
+    const valueAmount = amount.toFormat(6);
     const values = [valueEpoch, valuePool, valueAmount];
     fileContent.push(values);
   });
