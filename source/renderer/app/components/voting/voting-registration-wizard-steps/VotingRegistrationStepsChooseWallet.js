@@ -83,8 +83,6 @@ type Props = {
   selectedWalletId: ?string,
   isWalletAcceptable: Function,
   getStakePoolById: Function,
-  isHardwareWallet: boolean,
-  isTrezor: boolean,
 };
 
 type State = {
@@ -124,8 +122,6 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       isWalletAcceptable,
       numberOfStakePools,
       getStakePoolById,
-      isHardwareWallet,
-      isTrezor,
     } = this.props;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
@@ -143,9 +139,6 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
     ) {
       // Wallet is a legacy wallet
       if (isLegacy) errorMessage = messages.errorLegacyWallet;
-      // Wallet is a hardware wallet (Trezor device type)
-      else if (isHardwareWallet && isTrezor)
-        errorMessage = messages.errorHardwareWallet;
       // Wallet is restoring
       else if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet only has Reward balance

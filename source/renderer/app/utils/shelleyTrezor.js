@@ -63,6 +63,28 @@ export const prepareTrezorWithdrawal = (
     amount: withdrawal.amount.quantity.toString(),
   };
 };
+export type TrezorVotingDataType = {
+  votingKey: string,
+  derivationPath: string,
+  nonce: string,
+};
+
+export const prepareTrezorAuxiliaryData = ({
+  votingKey,
+  derivationPath,
+  nonce,
+}: TrezorVotingDataType) => ({
+  catalystRegistrationParameters: {
+    votingPublicKey: votingKey,
+    stakingPath: "m/1852'/1815'/0'/2/0",
+    rewardAddressParameters: {
+      addressType: 0, // BASE address
+      path: derivationPath, // e.g. "m/1852'/1815'/0'/0/0",
+      stakingPath: "m/1852'/1815'/0'/2/0",
+    },
+    nonce,
+  },
+});
 
 // Helper Methods
 

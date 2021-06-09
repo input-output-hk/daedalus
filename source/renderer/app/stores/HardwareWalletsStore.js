@@ -57,6 +57,7 @@ import {
   prepareTrezorOutput,
   prepareTrezorCertificate,
   prepareTrezorWithdrawal,
+  prepareTrezorAuxiliaryData,
 } from '../utils/shelleyTrezor';
 import {
   DeviceModels,
@@ -1620,6 +1621,20 @@ export default class HardwareWalletsStore extends Store {
       prepareTrezorCertificate(certificate)
     );
 
+    let auxiliaryData = null;
+    if (this.votingData) {
+      const { votingKey, nonce } = this.votingData;
+      // Voting has only one input
+      const derivationPath = get(inputsData, [0, 'path'], null);
+      auxiliaryData = prepareTrezorAuxiliaryData({
+        votingKey,
+        nonce: nonce.toString(),
+        derivationPath,
+      });
+    }
+
+    console.debug('>>> auxiliaryData: ', auxiliaryData);
+
     const recognizedDevice = find(
       this.hardwareWalletDevices,
       (hardwareWalletDevice) => hardwareWalletDevice.paired === walletId
@@ -1683,6 +1698,7 @@ export default class HardwareWalletsStore extends Store {
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         devicePath: recognizedDevicePath,
+        auxiliaryData,
       });
 
       if (!signedTransaction.success) {
