@@ -1,8 +1,10 @@
 // @flow
-import { map, join, takeRight } from 'lodash';
+import _ from 'lodash';
 import { bech32 } from 'bech32';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { HARDENED } from '../config/hardwareWalletsConfig';
+
+import type { CoinSelectionAssetsType } from '../api/transactions/types';
 
 // Constants
 export const CERTIFICATE_TYPE = {
@@ -32,7 +34,7 @@ export const KEY_PREFIXES = {
 // [1852H, 1815H, 0H] => m/1852'/1815'/0'
 export const derivationPathToString = (derivationPath: Array<string>) => {
   let constructedPath = 'm';
-  map(derivationPath, (chunk) => {
+  _.map(derivationPath, (chunk) => {
     constructedPath = `${constructedPath}/${chunk.replace('H', "'")}`;
   });
   return constructedPath;
@@ -47,15 +49,15 @@ export const derivationPathToAddressPath = (derivationPath: Array<string>) => {
 
 // [1852H, 1815H, 0H] => [2147485500, 2147485463, 2147483648]
 export const derivationPathToLedgerPath = (derivationPath: Array<string>) => {
-  const transformedPath = map(derivationPath, (chunk) =>
+  const transformedPath = _.map(derivationPath, (chunk) =>
     chunk.replace('H', "'")
   );
-  const constructedPath = join(transformedPath, '/');
+  const constructedPath = _.join(transformedPath, '/');
   return utils.str_to_path(constructedPath);
 };
 
 export const getParamsFromPath = (derivationPath: Array<string>) => {
-  const pathParams = takeRight(derivationPath, 2);
+  const pathParams = _.takeRight(derivationPath, 2);
   return {
     role: pathParams[0],
     index: pathParams[1],
@@ -65,7 +67,7 @@ export const getParamsFromPath = (derivationPath: Array<string>) => {
 
 // [2147485500, 2147485463, 2147483648] => 1852'/1815'/0'
 export const hardenedPathToString = (hardendedPath: Array<number>) => {
-  const path = map(hardendedPath, (chunk) => `${chunk - HARDENED}H`);
+  const path = _.map(hardendedPath, (chunk) => `${chunk - HARDENED}H`);
   return derivationPathToString(path).replace('m/', '');
 };
 
@@ -73,7 +75,7 @@ export const hardenedPathToString = (hardendedPath: Array<number>) => {
 export const hardenedPathToDerivationPath = (hardendedPath: Array<number>) => {
   const derivationPath = [];
   const constructedDerivationPath = ['m'];
-  map(hardendedPath, (chunk, index) => {
+  _.map(hardendedPath, (chunk, index) => {
     let pathChunk = chunk.toString();
     let constructedPathChunk = chunk.toString();
     if (index <= 2) {
@@ -101,4 +103,36 @@ export const bech32EncodePublicKey = (data: Buffer): string => {
 export const bech32DecodePublicKey = (data: string): Buffer => {
   const { words } = bech32.decode(data, 1000);
   return Buffer.from(bech32.fromWords(words));
+};
+
+export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
+  const compareStringsCanonically = (string1: string, string2: string) =>
+    string1.length - string2.length || string1.localeCompare(string2);
+
+  const groupedAssets = {};
+  _(assets)
+    .orderBy(['policyId', 'assetName'], ['asc', 'asc'])
+    .groupBy(({ policyId }) => policyId)
+    .mapValues((tokens) =>
+      tokens.map(({ assetName, quantity, policyId }) => ({
+        assetName,
+        quantity,
+        policyId,
+      }))
+    )
+    .map((tokens, policyId) => ({
+      policyId,
+      assets: tokens.sort((token1, token2) =>
+        compareStringsCanonically(token1.assetName, token2.assetName)
+      ),
+    }))
+    .sort((token1, token2) =>
+      compareStringsCanonically(token1.policyId, token2.policyId)
+    )
+    .value()
+    .map((sortedAssetsGroup) => {
+      groupedAssets[sortedAssetsGroup.policyId] = sortedAssetsGroup.assets;
+      return groupedAssets;
+    });
+  return groupedAssets;
 };
