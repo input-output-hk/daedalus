@@ -1,7 +1,6 @@
 // @flow
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
 import type {
   GetRewardsHistoryResponse,
@@ -33,15 +32,13 @@ import {
   SMASH_SERVER_INVALID_TYPES,
   CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
-
+import { i18nContext } from '../utils/i18nContext';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
-import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
-import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import rewardsCsvGenerator from '../utils/rewardsCsvGenerator';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
-import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
@@ -132,7 +129,6 @@ export default class StakingStore extends Store {
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
-    stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     stakingActions.fetchRewardsHistory.listen(this._fetchRewardsHistory);
     stakingActions.requestRewardsHistoryCSVFile.listen(
@@ -414,41 +410,6 @@ export default class StakingStore extends Store {
 
   @action markStakingExperimentAsRead = () => {
     this.isStakingExperimentRead = true;
-  };
-
-  @action _requestCSVFile = async ({
-    fileContent,
-    filenamePrefix: prefix,
-  }: {
-    fileContent: CsvFileContent,
-    filenamePrefix: string,
-  }) => {
-    const {
-      actions: { wallets },
-    } = this;
-    const fileName = generateFileNameWithTimestamp({
-      prefix,
-      extension: 'csv',
-      isUTC: true,
-    });
-    const { desktopDirectoryPath } = this.stores.profile;
-    const defaultPath = path.join(desktopDirectoryPath, fileName);
-    const params = {
-      defaultPath,
-      filters: [
-        {
-          extensions: ['csv'],
-        },
-      ],
-    };
-    const { filePath } = await showSaveDialogChannel.send(params);
-
-    // if cancel button is clicked or path is empty
-    if (!filePath) return;
-
-    await wallets.generateCsv.trigger({ fileContent, filePath });
-
-    this.actions.staking.requestCSVFileSuccess.trigger();
   };
 
   calculateDelegationFee = async (
@@ -925,26 +886,29 @@ export default class StakingStore extends Store {
     }
   };
 
-  _requestRewardsHistoryCSVFile = ({
+  _requestRewardsHistoryCSVFile = async ({
     rewardsAddress,
     walletName,
   }: {
     rewardsAddress: string,
     walletName: string,
   }) => {
+    const {
+      stores: { profile },
+    } = this;
+    const { desktopDirectoryPath } = profile;
+    const locale = profile.currentLocale;
+    const intl = i18nContext(locale);
+
     const rewards = this.rewardsHistory[rewardsAddress];
     if (rewards) {
-      this.actions.staking.requestCSVFile.trigger({
-        fileContent: [
-          ['epoch', 'pool', 'amount'],
-          ...rewards.map((r) => [
-            r.epoch.toString(),
-            r.pool.ticker,
-            r.amount.toFixed(2),
-          ]),
-        ],
-        filenamePrefix: `Rewards-${walletName}`,
+      const success = await rewardsCsvGenerator({
+        desktopDirectoryPath,
+        intl,
+        rewards,
+        walletName,
       });
+      if (success) this.actions.staking.requestCSVFileSuccess.trigger();
     }
   };
 
