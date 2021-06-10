@@ -66,6 +66,9 @@
     line-height: 1;
     padding: 9px 0 0 8px;
     width: calc(100% - 264px);
+
+    min-height: 100px;
+    background: lightcoral;
   }
 
   dt {
@@ -84,14 +87,14 @@
     font-size: 12px;
     line-height: 16px;
     margin-left: 10px;
-    background: lightblue;
-    width: calc(100% - 74px);
+    width: calc(100% - 100px);
     word-wrap: break-word;
     word-break: break-all;
     white-space: normal;
   }
 
   .footerButtons {
+    margin: auto 0;
     white-space: nowrap;
     .button {
       height: 36px;
