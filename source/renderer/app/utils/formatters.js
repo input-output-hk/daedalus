@@ -45,14 +45,17 @@ export const formattedWalletCurrencyAmount = (
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata,
-  decimals: ?number
+  decimals: ?number,
+  isShort?: boolean
 ): string => {
   const { ticker } = metadata || {};
   const divider = parseInt(
     getMultiplierFromDecimalPlaces(decimals || DEFAULT_DECIMAL_PRECISION),
     10
   );
-  let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
+  let formattedAmount = isShort
+    ? shortNumber(amount)
+    : amount.dividedBy(divider).toFormat(decimals);
   if (ticker) {
     formattedAmount += ` ${ticker}`;
   }

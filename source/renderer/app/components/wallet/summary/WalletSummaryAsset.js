@@ -101,6 +101,7 @@ export default class WalletSummaryAsset extends Component<Props, State> {
             decimals={asset.decimals}
             isLoading={isLoading}
             className={styles.assetAmount}
+            isShort
           />
           <SVGInline svg={arrow} className={arrowStyles} />
         </div>
