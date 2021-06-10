@@ -13,6 +13,7 @@
           background-color: var(--theme-transactions-filter-modal-bg-color);
         }
       }
+
       .SimpleOptions_option:not(.SimpleOptions_highlightedOption) {
         background-color: var(--theme-transactions-filter-modal-bg-color);
       }
@@ -201,6 +202,7 @@
               width: 6px;
             }
           }
+
           .DialogCloseButton_disabled {
             svg {
               height: 6px;
@@ -209,8 +211,10 @@
           }
         }
       }
+
       .body {
         justify-content: space-between;
+
         :global {
           .TinyInput_component .SimpleFormField_label {
             color: var(--rp-input-placeholder-color);
@@ -220,6 +224,7 @@
             top: 7px;
           }
         }
+
         .fromDateInput {
           :global {
             .TinyInput_component .SimpleInput_input {
@@ -270,6 +275,7 @@
             top: 7px;
           }
         }
+
         .amountRangeInput {
           margin-bottom: 6px;
 
@@ -284,6 +290,7 @@
             }
           }
         }
+
         .fromAmountInput {
           :global {
             .TinyInput_component .SimpleInput_input {
@@ -299,6 +306,7 @@
             }
           }
         }
+
         .toAmountInput {
           :global {
             .TinyInput_component .SimpleInput_input {
