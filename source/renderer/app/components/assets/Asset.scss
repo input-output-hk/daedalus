@@ -1,20 +1,20 @@
 .component {
   display: inline-flex;
   width: 100%;
-}
 
-.popOverContainer {
-  display: inline-flex;
-  min-width: 0;
-  text-transform: initial;
-
-  > span {
+  .popOverContainer {
+    display: inline-flex;
     min-width: 0;
-  }
+    text-transform: initial;
 
-  :global {
-    [data-tippy-root] {
-      pointer-events: all !important;
+    > span {
+      min-width: 0;
+    }
+
+    :global {
+      [data-tippy-root] {
+        pointer-events: all !important;
+      }
     }
   }
 }

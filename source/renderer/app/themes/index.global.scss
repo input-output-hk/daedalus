@@ -254,6 +254,16 @@ body,
   width: 100%;
 }
 
+#root {
+  position: relative;
+
+  canvas {
+    position: absolute;
+    top: 0;
+    z-index: 9;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
