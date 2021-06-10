@@ -32,6 +32,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Unknown',
     description: 'Unknown label on Wallet summary assets page',
   },
+  hideSearchButtonLabel: {
+    id: 'wallet.summary.assets.search.button.label.hide',
+    defaultMessage: '!!!Hide search',
+    description: 'Hide search label on Wallet summary assets page',
+  },
+  showSearchButtonLabel: {
+    id: 'wallet.summary.assets.search.button.label.show',
+    defaultMessage: '!!!Show search',
+    description: 'Show search label on Wallet summary assets page',
+  },
+  searchInputPlaceholder: {
+    id: 'wallet.summary.assets.search.input.placeholder',
+    defaultMessage: '!!!Filter token list',
+    description: 'Search placeholder on Wallet summary assets page',
+  },
 });
 
 type Props = {
@@ -113,6 +128,10 @@ export default class WalletSummaryAssets extends Component<Props, State> {
       );
     }
 
+    const searchButtonLabel = isSearchOpen
+      ? intl.formatMessage(messages.hideSearchButtonLabel)
+      : intl.formatMessage(messages.showSearchButtonLabel);
+
     return (
       <div className={styles.component}>
         <div className={styles.header}>
@@ -133,7 +152,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
           <Button
             className={searchButtonStyles}
             onClick={this.toggleSearch}
-            label={isSearchOpen ? 'HIDE SEARCH' : 'SHOW SEARCH'}
+            label={searchButtonLabel}
           />
         </div>
         {isSearchOpen && (
@@ -143,7 +162,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
               className={styles.spendingPassword}
               onChange={this.setSearchValue}
               value={searchValue}
-              placeholder="Filter token list"
+              placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
             />
             {!!searchValue.length && (
               <button
