@@ -102,8 +102,8 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             />
           ))}
           {numberOfMissingRowItems > 0
-            ? times(numberOfMissingRowItems, () => (
-                <div className={styles.rowFillerItem} />
+            ? times(numberOfMissingRowItems, (i) => (
+                <div key={`${key}-${i}`} className={styles.rowFillerItem} />
               ))
             : null}
         </div>
@@ -114,7 +114,9 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
   return (
     <WindowScroller
       scrollElement={
-        props.scrollElementRef ? props.scrollElementRef.current : window
+        props.scrollElementRef && props.scrollElementRef.current
+          ? props.scrollElementRef.current
+          : window
       }
     >
       {({ height, scrollTop, registerChild }) => (

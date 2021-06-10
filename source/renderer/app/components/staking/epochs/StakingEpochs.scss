@@ -21,6 +21,7 @@
     input {
       border: 0;
     }
+
     :global {
       .SimpleOptions_options {
         top: 230px !important;
@@ -138,18 +139,22 @@
       & > .sortIcon {
         margin-left: 6px;
         visibility: hidden;
+
         & > svg {
           height: 7.5px;
           width: 7px;
+
           & > path {
             fill: var(--theme-staking-font-color-regular);
           }
         }
+
         &.ascending {
           & > svg {
             transform: rotateX(150deg);
           }
         }
+
         &.sorted {
           opacity: 1;
           visibility: visible;

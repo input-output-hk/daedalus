@@ -10,7 +10,6 @@
   right: 0;
   top: 0;
   z-index: 9999;
-  @include overlay-backrop;
 
   &::-webkit-scrollbar-button {
     height: 21px;
