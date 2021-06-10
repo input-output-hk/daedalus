@@ -14,20 +14,10 @@ import type { AssetToken } from '../../../api/assets/types';
 import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
 
 const messages = defineMessages({
-  tokensTitle: {
-    id: 'wallet.summary.asset.tokensTitle',
-    defaultMessage: '!!!Tokens',
-    description: 'Number of tokens title on Wallet summary assets page',
-  },
   tokenSendButton: {
     id: 'wallet.summary.asset.tokenSendButton',
     defaultMessage: '!!!Send',
     description: 'Send button on Wallet summary assets page',
-  },
-  unknownLabel: {
-    id: 'wallet.summary.asset.unknownLabel',
-    defaultMessage: '!!!Unknown',
-    description: 'Unknown label on Wallet summary assets page',
   },
   amountLabel: {
     id: 'wallet.summary.asset.amountLabel',

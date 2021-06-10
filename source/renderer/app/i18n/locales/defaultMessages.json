@@ -13157,45 +13157,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Tokens",
-        "description": "Number of tokens title on Wallet summary assets page",
+        "defaultMessage": "!!!Send",
+        "description": "Send button on Wallet summary assets page",
         "end": {
           "column": 3,
           "line": 21
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
-        "id": "wallet.summary.asset.tokensTitle",
-        "start": {
-          "column": 15,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Send",
-        "description": "Send button on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
         "id": "wallet.summary.asset.tokenSendButton",
         "start": {
           "column": 19,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Unknown",
-        "description": "Unknown label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
-        "id": "wallet.summary.asset.unknownLabel",
-        "start": {
-          "column": 16,
-          "line": 27
+          "line": 17
         }
       },
       {
@@ -13203,13 +13175,13 @@
         "description": "Amount label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
         "id": "wallet.summary.asset.amountLabel",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 22
         }
       },
       {
@@ -13217,13 +13189,13 @@
         "description": "Settings label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
         "id": "wallet.summary.asset.settings.button.label",
         "start": {
           "column": 23,
-          "line": 37
+          "line": 27
         }
       }
     ],
