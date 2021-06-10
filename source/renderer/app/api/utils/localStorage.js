@@ -3,6 +3,7 @@
 /* eslint-disable consistent-return */
 
 import { includes, without, get } from 'lodash';
+import { toJS } from 'mobx';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import {
@@ -258,7 +259,7 @@ export default class LocalStorageApi {
       updatedWalletData,
       unmutableData
     );
-    await LocalStorageApi.set(keys.WALLETS, walletData, walletId);
+    await LocalStorageApi.set(keys.WALLETS, toJS(walletData), walletId);
     return walletData;
   };
 
@@ -403,7 +404,11 @@ export default class LocalStorageApi {
       data,
       unmutableData
     );
-    await LocalStorageApi.set(keys.HARDWARE_WALLETS, walletData, walletId);
+    await LocalStorageApi.set(
+      keys.HARDWARE_WALLETS,
+      toJS(walletData),
+      walletId
+    );
     return walletData;
   };
 
@@ -442,7 +447,7 @@ export default class LocalStorageApi {
     );
     await LocalStorageApi.set(
       keys.HARDWARE_WALLET_DEVICES,
-      deviceData,
+      toJS(deviceData),
       deviceId
     );
     return deviceData;
@@ -450,7 +455,8 @@ export default class LocalStorageApi {
 
   overrideHardwareWalletDevices = async (
     data: HardwareWalletDevicesType
-  ): Promise<void> => LocalStorageApi.set(keys.HARDWARE_WALLET_DEVICES, data);
+  ): Promise<void> =>
+    LocalStorageApi.set(keys.HARDWARE_WALLET_DEVICES, toJS(data));
 
   unsetHardwareWalletDevice = (deviceId: string): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);

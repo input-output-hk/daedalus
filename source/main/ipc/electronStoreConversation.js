@@ -15,7 +15,7 @@ const store = new ElectronStore();
 // MainIpcChannel<Incoming, Outgoing>
 export const electronStoreConversation: MainIpcConversation<
   ElectronStoreMessage,
-  any
+  ElectronStoreMessage
 > = new MainIpcConversation(ELECTRON_STORE_CHANNEL);
 
 const getNetworkKey = (key: string) => `${environment.network}-${key}`;
