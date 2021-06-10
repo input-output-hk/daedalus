@@ -44,7 +44,7 @@ const messages = defineMessages({
   },
   searchInputPlaceholder: {
     id: 'wallet.summary.assets.search.input.placeholder',
-    defaultMessage: '!!!Filter token list',
+    defaultMessage: '!!!Search tokens',
     description: 'Search placeholder on Wallet summary assets page',
   },
 });
