@@ -1,5 +1,5 @@
 // @flow
-import { computed, action, observable, runInAction } from 'mobx';
+import { computed, action, observable, runInAction, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { orderBy, find, map, get } from 'lodash';
 import type {
@@ -861,9 +861,9 @@ export default class StakingStore extends Store {
   _fetchRewardsHistory = async ({ address }: { address: string }) => {
     try {
       await this.rewardsHistoryRequest.execute({
-        addresses: address,
+        addresses: [address],
       });
-      const rewardsHistory = this.rewardsHistoryRequest.result;
+      const rewardsHistory = toJS(this.rewardsHistoryRequest.result);
       runInAction(() => {
         this.rewardsHistory[address] = rewardsHistory
           ? rewardsHistory.filter(Boolean).map((r) => {
