@@ -77,14 +77,24 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     searchValue: '',
   };
 
+  searchInput: Input;
+
   handleHoverAsset = () => {
     this.setState({ anyAssetWasHovered: true });
   };
 
   toggleSearch = () => {
-    this.setState((prevState) => ({
-      isSearchOpen: !prevState.isSearchOpen,
-    }));
+    const { isSearchOpen } = this.state;
+    this.setState(
+      {
+        isSearchOpen: !isSearchOpen,
+      },
+      () => {
+        if (!isSearchOpen && this.searchInput && this.searchInput.focus) {
+          this.searchInput.focus();
+        }
+      }
+    );
   };
 
   get filteredAssets() {
@@ -137,15 +147,18 @@ export default class WalletSummaryAssets extends Component<Props, State> {
         <div className={styles.header}>
           <div className={styles.title}>
             {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
-            {!!searchValue.length && (
+            {!!searchValue.length && !isSearchOpen && (
               <>
                 &nbsp;-&nbsp;
-                <button
-                  className={styles.searchValue}
+                <div className={styles.searchValue} onClick={this.toggleSearch}>
+                  {searchValue}
+                </div>
+                <div
+                  className={styles.clearSearchValue}
                   onClick={() => this.setSearchValue('')}
                 >
-                  {searchValue} <SVGInline svg={crossIcon} />
-                </button>
+                  <SVGInline svg={crossIcon} />
+                </div>
               </>
             )}
           </div>
@@ -163,6 +176,9 @@ export default class WalletSummaryAssets extends Component<Props, State> {
               onChange={this.setSearchValue}
               value={searchValue}
               placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
+              ref={(input) => {
+                this.searchInput = input;
+              }}
             />
             {!!searchValue.length && (
               <button

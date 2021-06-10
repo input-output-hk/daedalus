@@ -15,24 +15,29 @@ import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
 
 const messages = defineMessages({
   tokensTitle: {
-    id: 'wallet.summary.assets.tokensTitle',
+    id: 'wallet.summary.asset.tokensTitle',
     defaultMessage: '!!!Tokens',
     description: 'Number of tokens title on Wallet summary assets page',
   },
   tokenSendButton: {
-    id: 'wallet.summary.assets.tokenSendButton',
+    id: 'wallet.summary.asset.tokenSendButton',
     defaultMessage: '!!!Send',
     description: 'Send button on Wallet summary assets page',
   },
   unknownLabel: {
-    id: 'wallet.summary.assets.unknownLabel',
+    id: 'wallet.summary.asset.unknownLabel',
     defaultMessage: '!!!Unknown',
     description: 'Unknown label on Wallet summary assets page',
   },
   amountLabel: {
-    id: 'wallet.summary.assets.amountLabel',
+    id: 'wallet.summary.asset.amountLabel',
     defaultMessage: '!!!Amount',
     description: 'Amount label on Wallet summary assets page',
+  },
+  settingsButtonLabel: {
+    id: 'wallet.summary.asset.settings.button.label',
+    defaultMessage: '!!!Settings',
+    description: 'Settings label on Wallet summary assets page',
   },
 });
 
@@ -128,7 +133,7 @@ export default class WalletSummaryAsset extends Component<Props, State> {
             <div className={styles.footerButtons}>
               <Button
                 className={classNames(['flat', styles.button])}
-                label={'Settings'}
+                label={intl.formatMessage(messages.settingsButtonLabel)}
                 onClick={() => onAssetSettings({ asset })}
               />
               <Button

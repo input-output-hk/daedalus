@@ -67,15 +67,41 @@
     color: var(--rp-input-placeholder-color);
     font-family: var(--font-regular);
     font-size: 16px;
+    line-height: 1.38;
+    max-width: calc(100% - 110px);
+    white-space: nowrap;
   }
   .searchValue {
+    color: var(--theme-bordered-box-text-color);
+    cursor: pointer;
     display: inline-block;
     font-size: 16px;
+    line-height: 1.38;
+    margin-right: 5px;
+    max-width: calc(100% - 100px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+  .clearSearchValue {
+    display: inline-block;
     cursor: pointer;
-    color: var(--theme-bordered-box-text-color);
+    padding: 0 2px;
+    span {
+      height: 8px;
+      display: inline-block;
+    }
     svg {
       width: 6px;
       opacity: 0.5;
+      display: block;
+      height: 6px;
+    }
+    &:hover {
+      svg {
+        opacity: 1;
+      }
     }
   }
   .searchButton {
@@ -84,6 +110,7 @@
     height: auto;
     line-height: 1.2;
     padding: 4px 8px;
+    text-transform: uppercase;
     width: auto;
   }
 }
