@@ -6,37 +6,37 @@
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 20px;
-}
 
-.centeredBox {
-  background-color: var(--theme-bordered-box-background-color);
-  border: var(--theme-bordered-box-border);
-  border-radius: 4px;
-  padding: 30px 30px 20px;
-}
+  .centeredBox {
+    background-color: var(--theme-bordered-box-background-color);
+    border: var(--theme-bordered-box-border);
+    border-radius: 4px;
+    padding: 30px 30px 20px;
 
-.submitButton,
-.submitButtonSpinning {
-  display: block !important;
-  margin: 0 auto;
-}
+    .checkbox {
+      margin-bottom: 30px;
+      padding-top: 10px;
 
-.submitButtonSpinning {
-  box-shadow: none !important;
-  @include loading-spinner('../../../assets/images/spinner-light.svg');
-}
+      :global .SimpleCheckbox_label {
+        font-family: var(--font-regular);
+      }
+    }
 
-.error {
-  @include error-message;
-  margin-bottom: 1rem;
-  text-align: center;
-}
+    .error {
+      @include error-message;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
 
-.checkbox {
-  margin-bottom: 30px;
-  padding-top: 10px;
+    .submitButton,
+    .submitButtonSpinning {
+      display: block !important;
+      margin: 0 auto;
+    }
 
-  :global .SimpleCheckbox_label {
-    font-family: var(--font-regular);
+    .submitButtonSpinning {
+      box-shadow: none !important;
+      @include loading-spinner('../../../assets/images/spinner-light.svg');
+    }
   }
 }

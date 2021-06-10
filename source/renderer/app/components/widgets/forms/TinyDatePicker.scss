@@ -79,20 +79,20 @@
       }
     }
   }
-}
 
-.pickerPanelOnLeft {
-  :global {
-    .rdtPicker {
-      left: 0;
+  &.pickerPanelOnLeft {
+    :global {
+      .rdtPicker {
+        left: 0;
+      }
     }
   }
-}
 
-.pickerPanelOnRight {
-  :global {
-    .rdtPicker {
-      right: 0;
+  &.pickerPanelOnRight {
+    :global {
+      .rdtPicker {
+        right: 0;
+      }
     }
   }
 }
