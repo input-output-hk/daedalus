@@ -257,7 +257,7 @@
     "validator": "13.1.17"
   },
   "optionalDependencies": {
-    "@ledgerhq/hw-transport-node-hid": "5.26.0"
+    "@ledgerhq/hw-transport-node-hid": "6.0.1-typescript.0"
   },
   "devEngines": {
     "node": ">=14.17.0",
