@@ -13274,7 +13274,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Filter token list",
+        "defaultMessage": "!!!Search tokens",
         "description": "Search placeholder on Wallet summary assets page",
         "end": {
           "column": 3,
