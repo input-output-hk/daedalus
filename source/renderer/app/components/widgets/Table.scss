@@ -81,6 +81,12 @@
     .content {
       overflow-y: scroll;
       position: relative;
+      &::-webkit-scrollbar-track {
+        margin: 22px 0 -8px;
+      }
+      &::-webkit-scrollbar-button {
+        display: none;
+      }
     }
     th {
       background-color: var(--rp-modal-bg-color);
