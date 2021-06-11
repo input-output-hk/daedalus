@@ -27,6 +27,7 @@
     padding: 12px 20px;
     width: 608px;
     word-break: break-word;
+
     &::-webkit-scrollbar-thumb {
       background-color: var(
         --theme-news-overlay-update-content-scroll-background-color
@@ -106,6 +107,7 @@
     line-height: 1.38;
     margin-bottom: 16px;
     text-align: center;
+
     b {
       color: var(--theme-app-update-overlay-text-color);
     }
@@ -118,23 +120,29 @@
   .actions {
     text-align: center;
     width: 540px;
+
     .checkbox {
       margin-bottom: 30px;
+
       &.disabled {
         opacity: 0.4;
       }
+
       :global {
         .SimpleCheckbox_check {
           border: 2px solid var(--theme-news-overlay-update-button-text-color);
         }
+
         .SimpleCheckbox_checked {
           background: var(--theme-news-overlay-update-button-text-color);
           border: none;
+
           &:after {
             border-color: var(--theme-news-overlay-update-background-color);
             margin: -3px 0 0;
           }
         }
+
         .SimpleCheckbox_label {
           color: var(--theme-app-update-overlay-text-color);
           font-family: var(--font-regular);
@@ -142,6 +150,7 @@
         }
       }
     }
+
     .button {
       background-color: var(
         --theme-news-overlay-update-button-background-color
@@ -151,49 +160,59 @@
       cursor: pointer;
       display: block;
       margin: 0 auto 20px;
+
       &:not(.disabled):hover {
         background-color: var(--theme-news-overlay-update-button-text-color);
         color: var(--theme-news-overlay-update-button-hover-text-color);
+
         .externalLinkIcon {
           svg path {
             stroke: var(--theme-news-overlay-update-button-hover-text-color);
           }
         }
       }
+
       &.disabled {
         cursor: default;
         opacity: 0.4;
         text-decoration: none;
       }
+
       .externalLinkIcon {
         @include link(--theme-news-overlay-update-button-text-color);
         border-bottom: none;
         margin-right: 10px;
         vertical-align: baseline;
         width: 15px;
+
         svg {
           margin-left: 0;
           vertical-align: sub;
           width: 15px;
+
           g {
             stroke-width: 2px;
           }
         }
       }
     }
+
     .postponeLink {
       border-bottom-color: var(--theme-app-update-overlay-text-color);
       color: var(--theme-app-update-overlay-text-color);
+
       &.disabled {
         border-bottom-color: transparent;
         cursor: default;
         opacity: 0.4;
       }
+
       &.noLink {
         border-bottom-color: transparent;
         cursor: default;
       }
     }
+
     :global {
       .SimpleLoadingSpinner_root {
         border-color: var(--theme-news-overlay-update-button-text-color)
@@ -220,6 +239,7 @@
     top: 10px;
     width: 44px;
     z-index: 999;
+
     &:hover {
       background-color: var(
         --theme-news-overlay-update-content-background-color

@@ -25,14 +25,14 @@
   :global(.ReactVirtualized__Grid__innerScrollContainer) {
     overflow: visible !important;
   }
-}
 
-.list {
-  overflow-y: scroll;
-  padding-top: 8px;
-  will-change: none !important;
+  .list {
+    overflow-y: scroll;
+    padding-top: 8px;
+    will-change: none !important;
 
-  &:focus {
-    outline: 0;
+    &:focus {
+      outline: 0;
+    }
   }
 }
