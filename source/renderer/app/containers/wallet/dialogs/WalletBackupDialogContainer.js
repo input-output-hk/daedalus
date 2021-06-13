@@ -29,7 +29,6 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       countdownRemaining,
       isTermOfflineAccepted,
       isTermRecoveryAccepted,
-      isTermRewardsAccepted,
       isPrivacyNoticeAccepted,
       currentStep,
       recoveryPhrase,
@@ -39,22 +38,15 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       updateWalletBackupVerificationPhrase,
       acceptWalletBackupTermOffline,
       acceptWalletBackupTermRecovery,
-      acceptWalletBackupTermRewards,
       restartWalletBackup,
       finishWalletBackup,
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup,
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
+    const canFinishBackup =
+      isRecoveryPhraseValid && isTermOfflineAccepted && isTermRecoveryAccepted;
 
-    const canFinishBackup = global.isIncentivizedTestnet
-      ? isRecoveryPhraseValid &&
-        isTermOfflineAccepted &&
-        isTermRecoveryAccepted &&
-        isTermRewardsAccepted
-      : isRecoveryPhraseValid &&
-        isTermOfflineAccepted &&
-        isTermRecoveryAccepted;
     return (
       <WalletBackupDialog
         // Global props for all dialogs
@@ -74,12 +66,10 @@ export default class WalletBackupDialogContainer extends Component<Props> {
         enteredPhrase={enteredPhrase}
         canFinishBackup={canFinishBackup}
         isTermRecoveryAccepted={isTermRecoveryAccepted}
-        isTermRewardsAccepted={isTermRewardsAccepted}
         isValid={isRecoveryPhraseValid}
         isSubmitting={createWalletRequest.isExecuting}
         onAcceptTermOffline={acceptWalletBackupTermOffline.trigger}
         onAcceptTermRecovery={acceptWalletBackupTermRecovery.trigger}
-        onAcceptTermRewards={acceptWalletBackupTermRewards.trigger}
         onUpdateVerificationPhrase={
           updateWalletBackupVerificationPhrase.trigger
         }

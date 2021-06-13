@@ -62,7 +62,6 @@ export default class DelegationCenterPage extends Component<Props, State> {
   };
 
   render() {
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { stores } = this.props;
     const { app, uiDialogs, staking, wallets, networkStatus, profile } = stores;
     const { stakePools, getStakePoolById, fetchingStakePoolsFailed } = staking;
@@ -108,10 +107,7 @@ export default class DelegationCenterPage extends Component<Props, State> {
           isLoading={
             !isSynced || fetchingStakePoolsFailed || !stakePools.length
           }
-          isEpochsInfoAvailable={
-            (isIncentivizedTestnet && !isShelleyTestnet) ||
-            isEpochsInfoAvailable
-          }
+          isEpochsInfoAvailable={isEpochsInfoAvailable}
           currentLocale={currentLocale}
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}

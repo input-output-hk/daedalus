@@ -76,7 +76,7 @@ export default class SettingsMenu extends Component<Props> {
             active={isActiveItem(ROUTES.SETTINGS.STAKE_POOLS)}
             className="stakePools"
           />
-          {!isFlight && !global.isShelleyTestnet && (
+          {!isFlight && (
             <SettingsMenuItem
               label={intl.formatMessage(messages.display)}
               onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}

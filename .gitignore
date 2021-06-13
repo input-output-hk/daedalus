@@ -100,7 +100,9 @@ cardano-wallet-http-bridge
 jcli
 /jormungandr
 cardano-http-bridge
+cardano-cli
 cardano-node
+cardano-wallet
 
 # JS Launcher
 utils/js-launcher/state

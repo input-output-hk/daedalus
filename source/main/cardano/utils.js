@@ -88,10 +88,7 @@ export const deriveProcessNames = (
       isSelfnode
         ? CardanoNodeImplementationOptions.SELFNODE
         : nodeImplementation
-    ][platform] ||
-    (nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR
-      ? 'jormungandr'
-      : 'cardano-node'),
+    ][platform] || 'cardano-node',
 });
 
 export const createSelfnodeConfig = async (

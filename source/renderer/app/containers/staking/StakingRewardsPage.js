@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
-import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { ellipsis } from '../../utils/strings';
 import { getNetworkExplorerUrl } from '../../utils/network';
@@ -37,11 +36,10 @@ export default class StakingRewardsPage extends Component<Props> {
   onOpenExternalLink = (rewardsAddress: string) => {
     const { app } = this.props.stores;
     const {
-      environment: { network, rawNetwork },
+      environment: { network },
     } = app;
     const cardanoExplorerLink = `${getNetworkExplorerUrl(
-      network,
-      rawNetwork
+      network
     )}/address/${rewardsAddress}`;
     this.props.stores.app.openExternalLink(cardanoExplorerLink);
   };
@@ -53,47 +51,20 @@ export default class StakingRewardsPage extends Component<Props> {
 
   render() {
     const {
-      staking: { rewards, rewardsForIncentivizedTestnet },
-      networkStatus,
+      staking: { rewards },
       wallets,
     } = this.props.stores;
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
-    const {
-      isMainnet,
-      isSelfnode,
-      isStaging,
-      isTestnet,
-      isTest,
-    } = networkStatus.environment;
     const { requestCSVFile } = this.props.actions.staking;
-
-    if (
-      isMainnet ||
-      isStaging ||
-      isTestnet ||
-      isIncentivizedTestnet ||
-      isShelleyTestnet ||
-      isSelfnode ||
-      isTest
-    ) {
-      return (
-        <StakingRewardsForIncentivizedTestnet
-          rewards={rewardsForIncentivizedTestnet}
-          isLoading={false}
-          isExporting={wallets.generatingRewardsCsvInProgress}
-          onLearnMoreClick={this.handleLearnMoreClick}
-          onExportCsv={requestCSVFile.trigger}
-          onCopyAddress={this.handleCopyAddress}
-          onOpenExternalLink={this.onOpenExternalLink}
-        />
-      );
-    }
 
     return (
       <StakingRewards
         rewards={rewards}
         isLoading={false}
+        isExporting={wallets.generatingRewardsCsvInProgress}
         onLearnMoreClick={this.handleLearnMoreClick}
+        onExportCsv={requestCSVFile.trigger}
+        onCopyAddress={this.handleCopyAddress}
+        onOpenExternalLink={this.onOpenExternalLink}
       />
     );
   }
