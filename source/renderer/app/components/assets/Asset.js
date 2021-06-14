@@ -78,6 +78,7 @@ type Props = {
   onClickSettings?: Function,
   assetSettingsDialogWasOpened?: ?boolean,
   anyAssetWasHovered?: ?boolean,
+  fullFingerprint?: ?boolean,
   className?: string,
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
@@ -166,7 +167,7 @@ export default class Asset extends Component<Props, State> {
   }
 
   renderPillContent() {
-    const { asset, metadataNameChars, small } = this.props;
+    const { asset, metadataNameChars, small, fullFingerprint } = this.props;
     const { fingerprint, metadata } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
@@ -176,7 +177,7 @@ export default class Asset extends Component<Props, State> {
     return (
       <div className={contentStyles}>
         <div className={styles.fingerprint}>
-          {ellipsis(fingerprint || '', 9, 4)}
+          {fullFingerprint ? fingerprint : ellipsis(fingerprint || '', 9, 4)}
         </div>
         {name && (
           <div className={styles.metadataName}>
