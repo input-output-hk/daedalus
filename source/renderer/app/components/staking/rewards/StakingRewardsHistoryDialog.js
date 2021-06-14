@@ -58,11 +58,11 @@ type Props = {
   currentTheme: string,
   isFetchingRewardsHistory: boolean,
   onClose: Function,
-  onCopy?: Function,
   onExportCSV: Function,
   onOpenExternalLink: Function,
   reward: Reward,
   rewardsHistory: Array<RewardsHistoryItem>,
+  onCopyAddress: Function,
 };
 
 type State = {
@@ -85,7 +85,7 @@ export default class StakingRewardsHistoryDialog extends Component<
   };
 
   handleCopy = () => {
-    const { onCopy, reward } = this.props;
+    const { onCopyAddress, reward } = this.props;
     const { rewardsAddress } = reward || {};
     this.setState({
       itemCopied: true,
@@ -94,7 +94,7 @@ export default class StakingRewardsHistoryDialog extends Component<
     this.copyNotificationTimeout = setTimeout(() => {
       this.setState({ itemCopied: false });
     }, ITEM_COPY_FEEDBACK);
-    if (onCopy) onCopy(rewardsAddress);
+    onCopyAddress(rewardsAddress);
   };
 
   render() {

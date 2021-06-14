@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { toJS } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import StakingRewardsHistoryDialog from '../../../components/staking/rewards/StakingRewardsHistoryDialog';
+import { ellipsis } from '../../../utils/strings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -24,6 +25,11 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     });
   }
 
+  handleCopyAddress = (copiedAddress: string) => {
+    const address = ellipsis(copiedAddress, 15, 15);
+    this.props.actions.wallets.copyAddress.trigger({ address });
+  };
+
   render() {
     const { stores, actions } = this.props;
     const { reward } = stores.uiDialogs.dataForActiveDialog;
@@ -34,10 +40,7 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
       isFetchingRewardsHistory,
       rewardsHistory: rewardsHistoryObject,
     } = stores.staking;
-    const {
-      requestRewardsHistoryCSVFile,
-      setRewardsHistoryDateRange,
-    } = actions.staking;
+    const { requestRewardsHistoryCSVFile } = actions.staking;
     const rewardsHistory = rewardsHistoryObject[reward.rewardsAddress] || [];
     if (!reward) return null;
     return (
@@ -48,9 +51,9 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
         onClose={closeActiveDialog.trigger}
         onExportCSV={requestRewardsHistoryCSVFile.trigger}
         onOpenExternalLink={openExternalLink}
-        onSetDateRange={setRewardsHistoryDateRange.trigger}
         reward={reward}
         rewardsHistory={toJS(rewardsHistory)}
+        onCopyAddress={this.handleCopyAddress}
       />
     );
   }
