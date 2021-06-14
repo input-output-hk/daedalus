@@ -47,6 +47,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Search tokens',
     description: 'Search placeholder on Wallet summary assets page',
   },
+  headerToken: {
+    id: 'wallet.summary.assets.header.token',
+    defaultMessage: '!!!Token',
+    description: 'Token header on Wallet summary assets page',
+  },
+  headerAmount: {
+    id: 'wallet.summary.assets.header.amount',
+    defaultMessage: '!!!Amount',
+    description: 'Amount header on Wallet summary assets page',
+  },
+  noResults: {
+    id: 'wallet.summary.assets.search.noResults',
+    defaultMessage: '!!!No results matching your query',
+    description: 'No results on Wallet summary assets page',
+  },
 });
 
 type Props = {
@@ -97,6 +112,12 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     );
   };
 
+  setSearchValue = (searchValue: string) => {
+    this.setState({
+      searchValue,
+    });
+  };
+
   get filteredAssets() {
     const { searchValue } = this.state;
     const { assets } = this.props;
@@ -106,13 +127,12 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     );
   }
 
-  setSearchValue = (searchValue: string) => {
-    this.setState({
-      searchValue,
-    });
-  };
+  get assets() {
+    const { filteredAssets } = this;
+    return filteredAssets.map(({ asset }) => asset);
+  }
 
-  render() {
+  renderContent = () => {
     const {
       wallet,
       onOpenAssetSend,
@@ -121,13 +141,10 @@ export default class WalletSummaryAssets extends Component<Props, State> {
       assetSettingsDialogWasOpened,
       isLoadingAssets,
     } = this.props;
-    const { anyAssetWasHovered, isSearchOpen, searchValue } = this.state;
     const { intl } = this.context;
-    const { filteredAssets } = this;
-    const assets = filteredAssets.map(({ asset }) => asset);
-    const searchButtonStyles = classNames([styles.searchButton, 'flat']);
+    const { assets } = this;
+    const { anyAssetWasHovered, searchValue } = this.state;
     const isRestoreActive = wallet.isRestoring;
-    const numberOfAssets = assets && assets.length ? assets.length : 0;
     const noResults = !assets.length && searchValue.length >= 3;
 
     if (isLoadingAssets) {
@@ -138,79 +155,110 @@ export default class WalletSummaryAssets extends Component<Props, State> {
       );
     }
 
+    if (noResults) {
+      return (
+        <p className={styles.noResults}>
+          {intl.formatMessage(messages.noResults)}
+        </p>
+      );
+    }
+
+    return assets.map((asset) => (
+      <WalletSummaryAsset
+        key={asset.uniqueId}
+        asset={asset}
+        onOpenAssetSend={onOpenAssetSend}
+        onCopyAssetItem={onCopyAssetItem}
+        onAssetSettings={onAssetSettings}
+        anyAssetWasHovered={anyAssetWasHovered}
+        assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+        isLoading={isRestoreActive}
+      />
+    ));
+  };
+
+  renderHeader = () => {
+    const { isLoadingAssets } = this.props;
+    const { isSearchOpen, searchValue } = this.state;
+    const { intl } = this.context;
+    const { assets } = this;
+    const searchButtonStyles = classNames([styles.searchButton, 'flat']);
+    const numberOfAssets = !isLoadingAssets && !!assets && `(${assets.length})`;
+
     const searchButtonLabel = isSearchOpen
       ? intl.formatMessage(messages.hideSearchButtonLabel)
       : intl.formatMessage(messages.showSearchButtonLabel);
 
     return (
-      <div className={styles.component}>
-        <div className={styles.header}>
-          <div className={styles.title}>
-            {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
-            {!!searchValue.length && !isSearchOpen && (
-              <>
-                &nbsp;-&nbsp;
-                <div className={styles.searchValue} onClick={this.toggleSearch}>
-                  {searchValue}
-                </div>
-                <div
-                  className={styles.clearSearchValue}
-                  onClick={() => this.setSearchValue('')}
-                >
-                  <SVGInline svg={crossIcon} />
-                </div>
-              </>
-            )}
-          </div>
-          <Button
-            className={searchButtonStyles}
-            onClick={this.toggleSearch}
-            label={searchButtonLabel}
-          />
-        </div>
-        {isSearchOpen && (
-          <div className={styles.search}>
-            <SVGInline svg={searchIcon} className={styles.searchIcon} />
-            <Input
-              className={styles.spendingPassword}
-              onChange={this.setSearchValue}
-              value={searchValue}
-              placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
-              ref={(input) => {
-                this.searchInput = input;
-              }}
-            />
-            {!!searchValue.length && (
-              <button
-                className={classNames([styles.clearButton, 'flat'])}
+      <div className={styles.header}>
+        <div className={styles.title}>
+          {intl.formatMessage(messages.tokensTitle)} {numberOfAssets}
+          {!!searchValue.length && !isSearchOpen && (
+            <>
+              &nbsp;-&nbsp;
+              <div className={styles.searchValue} onClick={this.toggleSearch}>
+                {searchValue}
+              </div>
+              <div
+                className={styles.clearSearchValue}
                 onClick={() => this.setSearchValue('')}
               >
                 <SVGInline svg={crossIcon} />
-              </button>
-            )}
-          </div>
+              </div>
+            </>
+          )}
+        </div>
+        <Button
+          className={searchButtonStyles}
+          onClick={this.toggleSearch}
+          label={searchButtonLabel}
+          disabled={isLoadingAssets}
+        />
+      </div>
+    );
+  };
+
+  renderSearch = () => {
+    const { isSearchOpen, searchValue } = this.state;
+    const { intl } = this.context;
+
+    if (!isSearchOpen) return null;
+    return (
+      <div className={styles.search}>
+        <SVGInline svg={searchIcon} className={styles.searchIcon} />
+        <Input
+          className={styles.spendingPassword}
+          onChange={this.setSearchValue}
+          value={searchValue}
+          placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
+          ref={(input) => {
+            this.searchInput = input;
+          }}
+        />
+        {!!searchValue.length && (
+          <button
+            className={classNames([styles.clearButton, 'flat'])}
+            onClick={() => this.setSearchValue('')}
+          >
+            <SVGInline svg={crossIcon} />
+          </button>
         )}
+      </div>
+    );
+  };
+
+  render() {
+    const { intl } = this.context;
+    return (
+      <div className={styles.component}>
+        {this.renderHeader()}
+        {this.renderSearch()}
         <BorderedBox>
           <div className={styles.assetsColumns}>
-            <span>Token</span>
-            <span>Amount</span>
+            <span>{intl.formatMessage(messages.headerToken)}</span>
+            <span>{intl.formatMessage(messages.headerAmount)}</span>
           </div>
-          {noResults && (
-            <p className={styles.noResults}>No results matching your query</p>
-          )}
-          {!noResults &&
-            assets.map((asset) => (
-              <WalletSummaryAsset
-                key={asset.uniqueId}
-                asset={asset}
-                onOpenAssetSend={onOpenAssetSend}
-                onCopyAssetItem={onCopyAssetItem}
-                onAssetSettings={onAssetSettings}
-                anyAssetWasHovered={anyAssetWasHovered}
-                assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-                isLoading={isRestoreActive}
-              />
-            ))}
+          {this.renderContent()}
         </BorderedBox>
       </div>
     );
