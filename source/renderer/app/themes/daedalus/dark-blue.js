@@ -241,23 +241,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
-  experimentalDataOverlay: {
-    '--theme-experimental-data-overlay-background-color':
-      'rgba(38, 51, 69, 0.96)',
-    '--theme-experimental-data-overlay-button-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-experimental-data-overlay-button-background-color-hover':
-      '#e9f4fe',
-    '--theme-experimental-data-overlay-button-border-color': '#e9f4fe',
-    '--theme-experimental-data-overlay-button-text-color': '#e9f4fe',
-    '--theme-experimental-data-overlay-button-text-color-hover': '#263345',
-    '--theme-experimental-data-overlay-description-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-experimental-data-overlay-description-color':
-      'rgba(233, 244, 254, 0.7)',
-    '--theme-experimental-data-overlay-logo-fill-color': '#e9f4fe',
-    '--theme-experimental-data-overlay-title-color': '#e9f4fe',
-  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
@@ -824,14 +807,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-clear-button-hover-background-color':
       'rgba(233, 244, 254, 0.05)',
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
-      'rgba(83, 99, 112, 0.98)',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color':
-      'rgba(233, 244, 254, 0.8)',
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(233, 244, 254, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-id-background-color':
       'rgba(255, 255, 255, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
@@ -898,20 +876,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   syncing: {
     '--theme-syncing-background-color': '#0b1926',
-    '--theme-syncing-background-color1': 'rgba(11, 25, 38, 1)',
-    '--theme-syncing-background-color2': 'rgba(11, 25, 38, 0.91)',
-    '--theme-syncing-background-color3': 'rgba(11, 25, 38, 0.31)',
-    '--theme-syncing-background-color4': 'rgba(11, 25, 38, 0)',
-    '--theme-syncing-background-color5': 'rgba(11, 25, 38, 0)',
-    '--theme-syncing-background-color6': 'rgba(11, 25, 38, 0.31)',
-    '--theme-syncing-background-color7': 'rgba(11, 25, 38, 0.91)',
-    '--theme-syncing-background-color8': 'rgba(11, 25, 38, 1)',
     '--theme-syncing-text-color': '#e9f4fe',
-  },
-  syncingConnecting: {
-    '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#f69ab2',
-    '--theme-syncing-connecting-subTitle2-color': '#fafbfc',
   },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#fafbfc',

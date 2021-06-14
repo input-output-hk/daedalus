@@ -82,7 +82,6 @@ export default class WalletNavigation extends Component<Props> {
       hasNotification,
     } = this.props;
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = global;
     const items: Array<NavButtonProps | NavDropdownProps> = [
       {
         id: WALLET_NAV_IDS.SUMMARY,
@@ -107,10 +106,7 @@ export default class WalletNavigation extends Component<Props> {
       {
         id: WALLET_NAV_IDS.SETTINGS,
         type: 'dropdown',
-        label:
-          isLegacy && isIncentivizedTestnet
-            ? intl.formatMessage(messages.settings)
-            : intl.formatMessage(messages.more),
+        label: intl.formatMessage(messages.more),
         icon: settingsIcon,
         hasNotification,
         options: [
@@ -134,7 +130,6 @@ export default class WalletNavigation extends Component<Props> {
         activeItem={activeItem}
         isActiveNavItem={isActiveNavItem}
         onNavItemClick={onNavItemClick}
-        isLegacy={isLegacy}
         items={items}
       />
     );

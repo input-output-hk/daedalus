@@ -242,8 +242,6 @@ import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 
-const { isIncentivizedTestnet } = global;
-
 export default class AdaApi {
   config: RequestConfig;
 
@@ -404,13 +402,13 @@ export default class AdaApi {
 
     try {
       let response = [];
-      if (isLegacy && !isIncentivizedTestnet) {
+      if (isLegacy) {
         response = await getByronWalletAddresses(
           this.config,
           walletId,
           queryParams
         );
-      } else if (!isLegacy) {
+      } else {
         response = await getAddresses(this.config, walletId, queryParams);
         response.reverse();
       }
@@ -1575,15 +1573,13 @@ export default class AdaApi {
         type
       );
 
-      if (!isIncentivizedTestnet) {
-        // Generate address for the newly restored Byron wallet
-        const { id: walletId } = legacyWallet;
-        const address: Address = await createByronWalletAddress(this.config, {
-          passphrase: spendingPassword,
-          walletId,
-        });
-        logger.debug('AdaApi::createAddress (Byron) success', { address });
-      }
+      // Generate address for the newly restored Byron wallet
+      const { id: walletId } = legacyWallet;
+      const address: Address = await createByronWalletAddress(this.config, {
+        passphrase: spendingPassword,
+        walletId,
+      });
+      logger.debug('AdaApi::createAddress (Byron) success', { address });
 
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
@@ -1892,7 +1888,7 @@ export default class AdaApi {
           newPassword,
         });
 
-        if (!isIncentivizedTestnet && !oldPassword) {
+        if (!oldPassword) {
           // Generate address for the Byron wallet for which password was set for the 1st time
           const address: Address = await createByronWalletAddress(this.config, {
             passphrase: newPassword,

@@ -17,7 +17,7 @@ import type { Daedalus } from '../../../types';
 declare var daedalus: Daedalus;
 
 // Create shelley or byron wallets
-Given(/^I have (created )?the following (balance )?wallets:$/, async function(mode, _type, table) {
+Given(/^I have (created )?the following (byron )?wallets:$/, async function(mode, _type, table) {
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
   const sequentially = mode === 'created ';
@@ -40,7 +40,7 @@ Given(/^I have restored the "([^"]*)" wallet of "([^"]*)" kind, "([^"]*)" subkin
 });
 
 // Create a single wallet with funds
-Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(walletName, _type) {
+Given(/^I have a "([^"]*)" (byron )?wallet with funds$/, async function(walletName, _type) {
   const type = await getWalletType.call(this, _type);
   if (type === 'shelley') {
     await restoreWalletWithFunds(this.client, { walletName });
@@ -51,7 +51,7 @@ Given(/^I have a "([^"]*)" (balance )?wallet with funds$/, async function(wallet
 });
 
 // Create a single wallet with no funds
-Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type) {
+Given(/^I have a "([^"]*)" (byron )?wallet$/, async function(walletName, _type) {
   const type = await getWalletType.call(this, _type);
   const isLegacy = type === 'byron';
   if (!isLegacy) {
@@ -62,7 +62,7 @@ Given(/^I have a "([^"]*)" (balance )?wallet$/, async function(walletName, _type
   await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
-Given(/^I have a "([^"]*)" balance wallet for transfering funds$/, async function(walletName) {
+Given(/^I have a "([^"]*)" byron wallet for transfering funds$/, async function(walletName) {
   await restoreLegacyWallet(this.client, { walletName, hasFunds: true, transferFunds: true });
   await waitUntilWalletIsLoaded.call(this, walletName);
 });
@@ -82,13 +82,14 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   await proceedToScreen();
 });
 
-Given('I have {int} restored wallets', async function(numberOfWallets) {
+Given('I have {int} restored (byron )?wallets', async function(numberOfWallets, _type) {
+  const type = await getWalletType.call(this, _type);
+  const isLegacy = type === 'byron';
   const wallets = [...Array(numberOfWallets)].map((x, i) => ({
     name: `Wallet ${i + 1}`,
     password: 'Secret1234',
   }));
-  const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
-  await createWallets.call(this, wallets, { isLegacy: !isIncentivizedTestnet.value });
+  await createWallets.call(this, wallets, { isLegacy });
 });
 
 When(/^I have one wallet address$/, function() {
@@ -167,18 +168,18 @@ Then(
     const expectedData = table.hashes()[0];
     const receiverWallet = await getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {
-      const receiverWalletBalance = await this.waitAndGetText(
+      const receiverWalletByron = await this.waitAndGetText(
         `.SidebarWalletsMenu_wallets .Wallet_${
           receiverWallet.id
         } .SidebarWalletMenuItem_info`
       );
-      return receiverWalletBalance === `${expectedData.balance} ADA`;
+      return receiverWalletByron === `${expectedData.balance} ADA`;
     }, 60000);
   }
 );
 
 Then(
-  /^"Balance" wallet badge should be visible in the wallet sidebar$/,
+  /^"Byron" wallet badge should be visible in the wallet sidebar$/,
   async function() {
     return this.client.waitForVisible('.SidebarWalletMenuItem_active .LegacyBadge_component');
   }

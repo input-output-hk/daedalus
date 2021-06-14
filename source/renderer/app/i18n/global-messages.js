@@ -208,11 +208,6 @@ export default defineMessages({
     defaultMessage: '!!!Testnet',
     description: '"testnet" Cardano network',
   },
-  network_shelley_testnet: {
-    id: 'environment.network.shelley_testnet',
-    defaultMessage: '!!!Shelley Testnet',
-    description: '"Shelley Testnet" Cardano network',
-  },
   network_shelley_qa: {
     id: 'environment.network.shelley_qa',
     defaultMessage: '!!!Shelley QA',
@@ -223,30 +218,10 @@ export default defineMessages({
     defaultMessage: '!!!Development',
     description: '"development" Cardano network',
   },
-  network_itn_rewards_v1: {
-    id: 'environment.network.itn_rewards_v1',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
-    description: '"itn_rewards_v1" Cardano network',
-  },
-  network_itn_selfnode: {
-    id: 'environment.network.itn_selfnode',
-    defaultMessage: '!!!ITN Selfnode',
-    description: '"itn_selfnode" Cardano network',
-  },
   network_selfnode: {
     id: 'environment.network.selfnode',
     defaultMessage: '!!!Selfnode',
     description: '"selfnode" Cardano network',
-  },
-  network_qa: {
-    id: 'environment.network.qa',
-    defaultMessage: '!!!QA',
-    description: '"qa" Cardano network',
-  },
-  network_nightly: {
-    id: 'environment.network.nightly',
-    defaultMessage: '!!!Nightly',
-    description: '"nightly" Cardano network',
   },
   years: {
     id: 'global.duration.years',
