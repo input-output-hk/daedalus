@@ -1,5 +1,7 @@
 .component {
-  border-bottom: 1px solid rgba(94, 96, 102, 0.15);
+  &:not(:last-of-type) {
+    border-bottom: 1px solid rgba(94, 96, 102, 0.15);
+  }
   &.isExpanded {
     background-color: var(--theme-button-flat-background-color-hover);
     .content {
@@ -40,7 +42,7 @@
     margin-top: 8px;
 
     path {
-      stroke: var(--theme-transactions-arrow-stroke-color);
+      fill: var(--theme-transactions-arrow-stroke-color);
     }
   }
   .header:hover & {
