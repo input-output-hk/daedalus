@@ -23,9 +23,7 @@ const onToggleSubMenus = {
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
   .add('Receive - sequential', ({ locale }: { locale: string }) => {
-    const isIncentivizedTestnet = boolean('isIncentivizedTestnet', false);
     const showDialog = boolean('showDialog', false);
-
     return (
       <VerticalFlexContainer>
         <WalletReceiveSequential
@@ -40,7 +38,6 @@ storiesOf('Wallets|Receive', module)
           onShareAddress={action('onShareAddress')}
           onCopyAddress={action('onCopyAddress')}
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
-          isIncentivizedTestnet={isIncentivizedTestnet}
           currentLocale={locale}
           showUsed={boolean('showUsed', false)}
           onToggleUsedAddresses={action('onToggleUsedAddresses')}
@@ -70,8 +67,6 @@ storiesOf('Wallets|Receive', module)
   .add(
     'Receive - sequential with address verification',
     ({ locale }: { locale: string }) => {
-      const isIncentivizedTestnet = boolean('isIncentivizedTestnet', false);
-
       return (
         <VerticalFlexContainer>
           <WalletReceiveSequential
@@ -86,7 +81,6 @@ storiesOf('Wallets|Receive', module)
             onShareAddress={action('onShareAddress')}
             onCopyAddress={action('onCopyAddress')}
             isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
-            isIncentivizedTestnet={isIncentivizedTestnet}
             currentLocale={locale}
             onToggleSubMenus={onToggleSubMenus}
             isShowingSubMenus
@@ -124,7 +118,6 @@ storiesOf('Wallets|Receive', module)
     const isSidebarExpanded = boolean('isSidebarExpanded', false);
     const walletHasPassword = boolean('walletHasPassword', false);
     const isSubmitting = boolean('isSubmitting', false);
-
     const walletAddress = generateAddress();
     return (
       <VerticalFlexContainer>

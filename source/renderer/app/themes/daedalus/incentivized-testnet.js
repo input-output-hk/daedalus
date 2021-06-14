@@ -227,21 +227,6 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
-  experimentalDataOverlay: {
-    '--theme-experimental-data-overlay-background-color': '#36374df5',
-    '--theme-experimental-data-overlay-logo-fill-color': '#fff',
-    '--theme-experimental-data-overlay-title-color': '#fff',
-    '--theme-experimental-data-overlay-description-background-color':
-      'rgba(255, 255, 255, 0.1)',
-    '--theme-experimental-data-overlay-description-color':
-      'rgba(255, 255, 255, 0.7)',
-    '--theme-experimental-data-overlay-button-background-color':
-      'rgba(255, 255, 255, 0.1)',
-    '--theme-experimental-data-overlay-button-background-color-hover': '#fff',
-    '--theme-experimental-data-overlay-button-border-color': '#fff',
-    '--theme-experimental-data-overlay-button-text-color': '#fff',
-    '--theme-experimental-data-overlay-button-text-color-hover': '#2a2b3c',
-  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
@@ -806,14 +791,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-clear-button-color': '#ffffff',
     '--theme-staking-stake-pools-search-clear-button-hover-background-color':
       'rgba(255, 255, 255, 0.05)',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
-      'rgba(42, 43, 60, 0.98)',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color':
-      'rgba(255, 255, 255, 0.8)',
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(255, 255, 255, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#ffffff',
     ' --theme-staking-stake-pool-tooltip-id-background-color': '#3b3b4b',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
@@ -885,20 +865,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   syncing: {
     '--theme-syncing-background-color': '#121326',
-    '--theme-syncing-background-color1': 'rgba(18, 19, 38, 1)',
-    '--theme-syncing-background-color2': 'rgba(18, 19, 38, 0.91)',
-    '--theme-syncing-background-color3': 'rgba(18, 19, 38, 0.31)',
-    '--theme-syncing-background-color4': 'rgba(18, 19, 38, 0)',
-    '--theme-syncing-background-color5': 'rgba(18, 19, 38, 0)',
-    '--theme-syncing-background-color6': 'rgba(18, 19, 38, 0.31)',
-    '--theme-syncing-background-color7': 'rgba(18, 19, 38, 0.91)',
-    '--theme-syncing-background-color8': 'rgba(18, 19, 38, 1)',
     '--theme-syncing-text-color': '#ffffff',
-  },
-  syncingConnecting: {
-    '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#eb2256',
-    '--theme-syncing-connecting-subTitle2-color': '#eb2256',
   },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#ffffff',

@@ -1,10 +1,10 @@
 // @flow
-const { isTest, isIncentivizedTestnet } = global.environment;
+const { isTest } = global.environment;
 
 // All configuration values for timeouts / intervals should go here
 export const MAX_ALLOWED_STALL_DURATION = isTest
   ? 12 * 1000 // 12 seconds (isTest = true) | unit: milliseconds
-  : (isIncentivizedTestnet ? 60 : 7) * 60 * 1000; // 7 minutes / 60 minutes (isIncentivizedTestnet = true) | unit: milliseconds
+  : 7 * 60 * 1000; // 7 minutes | unit: milliseconds
 export const REPORT_ISSUE_TIME_TRIGGER = isTest ? 12 : 20 * 60; // 20 minutes | unit: seconds
 export const NOTIFICATION_DEFAULT_DURATION = 10 * 1000; // 10 seconds / unit: milliseconds
 export const ADDRESS_COPY_NOTIFICATION_SMALL_DURATION = 3; // unit: seconds

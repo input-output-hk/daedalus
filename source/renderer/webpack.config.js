@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 
-// Process env flags from buildkite and appveyor
+// Process env flags from buildkite
 const isTestEnv = process.env.NODE_ENV === 'test';
 const isCi = process.env.CI && process.env.CI !== '';
 

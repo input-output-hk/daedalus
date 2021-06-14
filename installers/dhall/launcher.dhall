@@ -5,7 +5,7 @@
 , logsPrefix     = os.nodeArgs.logsPrefix
 , tlsPath        = os.nodeArgs.tlsPath
 , x509ToolPath   = os.x509ToolPath
-, nodeImplementation = "jormungandr"
+, nodeImplementation = "cardano"
 , nodeArgs =
     [
     ] : List Text

@@ -15,7 +15,6 @@ type Props = {
   isTermOfflineAccepted: boolean,
   canFinishBackup: boolean,
   isTermRecoveryAccepted: boolean,
-  isTermRewardsAccepted: boolean,
   isValid: boolean,
   isSubmitting: boolean,
   recoveryPhrase: string,
@@ -26,7 +25,6 @@ type Props = {
   onStartWalletBackup: Function,
   onAcceptTermOffline: Function,
   onAcceptTermRecovery: Function,
-  onAcceptTermRewards: Function,
   onUpdateVerificationPhrase: Function,
   onFinishBackup: Function,
   onRestartBackup: Function,
@@ -49,12 +47,10 @@ export default class WalletBackupDialog extends Component<Props> {
       enteredPhrase,
       canFinishBackup,
       isTermRecoveryAccepted,
-      isTermRewardsAccepted,
       isValid,
       isSubmitting,
       onAcceptTermOffline,
       onAcceptTermRecovery,
-      onAcceptTermRewards,
       onUpdateVerificationPhrase,
       onFinishBackup,
       onRestartBackup,
@@ -89,12 +85,10 @@ export default class WalletBackupDialog extends Component<Props> {
           enteredPhrase={enteredPhrase}
           canFinishBackup={canFinishBackup}
           isTermRecoveryAccepted={isTermRecoveryAccepted}
-          isTermRewardsAccepted={isTermRewardsAccepted}
           isValid={isValid}
           isSubmitting={isSubmitting}
           onAcceptTermOffline={onAcceptTermOffline}
           onAcceptTermRecovery={onAcceptTermRecovery}
-          onAcceptTermRewards={onAcceptTermRewards}
           onUpdateVerificationPhrase={onUpdateVerificationPhrase}
           onCancelBackup={onCancelBackup}
           onFinishBackup={onFinishBackup}

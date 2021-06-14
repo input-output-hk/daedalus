@@ -228,23 +228,6 @@ export const YELLOW_THEME_OUTPUT = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
-  experimentalDataOverlay: {
-    '--theme-experimental-data-overlay-background-color':
-      'rgba(255, 185, 35, 0.96)',
-    '--theme-experimental-data-overlay-button-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-experimental-data-overlay-button-background-color-hover':
-      '#2d2d2d',
-    '--theme-experimental-data-overlay-button-border-color': '#2d2d2d',
-    '--theme-experimental-data-overlay-button-text-color': '#2d2d2d',
-    '--theme-experimental-data-overlay-button-text-color-hover': '#fff',
-    '--theme-experimental-data-overlay-description-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-experimental-data-overlay-description-color':
-      'rgba(45, 45, 45, 0.7)',
-    '--theme-experimental-data-overlay-logo-fill-color': '#2d2d2d',
-    '--theme-experimental-data-overlay-title-color': '#2d2d2d',
-  },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
     '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
@@ -808,14 +791,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-stake-pools-search-clear-button-color': '#2d2d2d',
     '--theme-staking-stake-pools-search-clear-button-hover-background-color':
       'rgba(45, 45, 45, 0.05)',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-background-color':
-      '#fff',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-lines-color':
-      'rgba(45, 45, 45, 0.8)',
     '--theme-staking-stake-pool-tooltip-neutral-background-color':
       'rgba(45, 45, 45, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',
-    '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-id-background-color':
       'rgba(45, 45, 45, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
@@ -884,20 +862,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   syncing: {
     '--theme-syncing-background-color': '#ffffff',
-    '--theme-syncing-background-color1': 'rgba(255, 255, 255, 1)',
-    '--theme-syncing-background-color2': 'rgba(255, 255, 255, 0.91)',
-    '--theme-syncing-background-color3': 'rgba(255, 255, 255, 0.31)',
-    '--theme-syncing-background-color4': 'rgba(255, 255, 255, 0)',
-    '--theme-syncing-background-color5': 'rgba(255, 255, 255, 0)',
-    '--theme-syncing-background-color6': 'rgba(255, 255, 255, 0.31)',
-    '--theme-syncing-background-color7': 'rgba(255, 255, 255, 0.91)',
-    '--theme-syncing-background-color8': 'rgba(255, 255, 255, 1)',
     '--theme-syncing-text-color': '#2d2d2d',
-  },
-  syncingConnecting: {
-    '--theme-syncing-connecting-title-color': '#fafbfc',
-    '--theme-syncing-connecting-subTitle1-color': '#f69ab2',
-    '--theme-syncing-connecting-subTitle2-color': '#fafbfc',
   },
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#fafbfc',

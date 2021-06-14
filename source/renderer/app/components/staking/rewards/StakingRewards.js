@@ -61,6 +61,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Details',
     description: 'Details Button label on staking rewards page.',
   },
+  actionViewInExplorer: {
+    id: 'staking.rewards.actionViewInExplorer',
+    defaultMessage: '!!!View in explorer',
+    description: 'View in explorer button label on staking rewards page.',
+  },
 });
 
 const REWARD_FIELDS = {
@@ -97,6 +102,7 @@ export default class StakingRewards extends Component<Props, State> {
 
   static defaultProps = {
     isLoading: false,
+    isExporting: false,
   };
 
   constructor(props: Props) {

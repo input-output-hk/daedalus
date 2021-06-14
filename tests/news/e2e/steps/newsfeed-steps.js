@@ -167,11 +167,11 @@ Then('I should see the newsfeed icon', async function() {
 });
 
 Then('the newsfeed icon is highlighted', async function() {
-  await this.client.waitForVisible('.NewsFeedIcon_withDot');
+  await this.client.waitForVisible('.NewsFeedIcon_notificationDot');
 });
 
 Then('the newsfeed icon is not highlighted', async function() {
-  await this.client.waitForVisible('.NewsFeedIcon_withDot', null, true);
+  await this.client.waitForVisible('.NewsFeedIcon_notificationDot', null, true);
 });
 
 Then('the newsfeed is open', async function() {

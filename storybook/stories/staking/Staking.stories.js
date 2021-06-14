@@ -6,7 +6,6 @@ import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
 import StoryDecorator from '../_support/StoryDecorator';
-import { isIncentivizedTestnetTheme } from '../_support/utils';
 
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 
@@ -15,7 +14,6 @@ import StakingCountdown from '../../../source/renderer/app/components/staking/co
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
 import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
-import ExperimentalDataOverlay from '../../../source/renderer/app/components/notifications/ExperimentalDataOverlay';
 
 import { StakePoolsStory } from './StakePools.stories';
 import { StakingRewardsStory } from './StakingRewards.stories';
@@ -49,7 +47,6 @@ const startDateTimeKnob = (name, defaultValue) => {
 const pageNames = {
   countdown: 'Decentralization Countdown',
   'delegation-center': 'Delegation Center',
-  'delegation-center-experiment': 'Delegation Center - experimental feature',
   'stake-pools': 'Pools Index',
   'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
@@ -77,39 +74,18 @@ const decorator = (story, context) => {
       <StoryProvider>
         <StoryLayout activeSidebarCategory={activeSidebarCategory} {...context}>
           {context.parameters.id === 'countdown' ||
-          context.parameters.id === 'wizard'
-            ? [
-                context.parameters.experiment ? (
-                  <ExperimentalDataOverlay
-                    key="experimentalDataOverlay"
-                    onClose={action('onCloseExperimentalDataOverlay')}
-                  />
-                ) : (
-                  <div />
-                ),
-                storyWithKnobs,
-              ]
-            : [
-                context.parameters.experiment ? (
-                  <ExperimentalDataOverlay
-                    key="experimentalDataOverlay"
-                    onClose={action('onCloseExperimentalDataOverlay')}
-                  />
-                ) : (
-                  <div />
-                ),
-                <StakingWithNavigation
-                  key="stakingWithNavigation"
-                  isActiveNavItem={(item) => item === getItemFromContext()}
-                  activeItem={getItemFromContext()}
-                  onNavItemClick={() => {}}
-                  isIncentivizedTestnet={isIncentivizedTestnetTheme(
-                    context.currentTheme
-                  )}
-                >
-                  {storyWithKnobs}
-                </StakingWithNavigation>,
-              ]}
+          context.parameters.id === 'wizard' ? (
+            storyWithKnobs
+          ) : (
+            <StakingWithNavigation
+              key="stakingWithNavigation"
+              isActiveNavItem={(item) => item === getItemFromContext()}
+              activeItem={getItemFromContext()}
+              onNavItemClick={() => {}}
+            >
+              {storyWithKnobs}
+            </StakingWithNavigation>
+          )}
         </StoryLayout>
       </StoryProvider>
     </StoryDecorator>
@@ -145,17 +121,6 @@ storiesOf('Decentralization | Staking', module)
     ),
     {
       id: 'delegation-center',
-    }
-  )
-
-  .add(
-    pageNames['delegation-center-experiment'],
-    (props) => (
-      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
-    ),
-    {
-      id: 'delegation-center',
-      experiment: true,
     }
   )
 

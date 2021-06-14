@@ -43,7 +43,6 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
-  @observable isStakingExperimentRead: boolean = false;
   @observable selectedDelegationWalletId = null;
   @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;

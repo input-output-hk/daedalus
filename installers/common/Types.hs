@@ -50,17 +50,11 @@ data OS
   deriving (Bounded, Enum, Eq, Read, Show)
 
 data Cluster
-  = Nightly
-  | ITN_Rewards_v1
-  | QA
-  | Selfnode
-  | ITN_Selfnode
+  = Selfnode
   | Mainnet
   | Mainnet_Flight
   | Staging
   | Shelley_QA
-  | Shelley_Testnet
-  | Shelley_Testnet_v6
   | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
 
@@ -68,7 +62,6 @@ data Cluster
 --
 data Backend
   = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
-  | Jormungandr FilePath -- ^ Rust node with haskell wallet
   deriving (Eq, Show)
 
 data SigningResult
@@ -107,17 +100,11 @@ tt = format fp
 -- | Value of the NETWORK variable used by the npm build.
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
-clusterNetwork Nightly = "nightly"
-clusterNetwork ITN_Rewards_v1 = "itn_rewards_v1"
-clusterNetwork QA = "qa"
-clusterNetwork ITN_Selfnode = "itn_selfnode"
 clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
 clusterNetwork Mainnet_Flight = "mainnet_flight"
 clusterNetwork Staging = "staging"
 clusterNetwork Shelley_QA = "shelley_qa"
-clusterNetwork Shelley_Testnet = "shelley_testnet"
-clusterNetwork Shelley_Testnet_v6 = "shelley_testnet_v6"
 clusterNetwork Testnet = "testnet"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
@@ -127,7 +114,6 @@ packageFileName _os cluster ver backend _backendVer build = fromText name <.> ex
     parts = ["daedalus", fromVer ver, lshowText cluster] ++ build'
     _backend' = case backend of
                  Cardano _ -> "cardano-wallet"
-                 Jormungandr _ -> "jormungandr-wallet"
     ext = case _os of
             Win64   -> "exe"
             Macos64 -> "pkg"
@@ -158,9 +144,6 @@ data InstallerConfig = InstallerConfig {
     , spacedName :: Text
     , macPackageName :: Text
     , dataDir :: Text
-    , hasBlock0 :: Bool
-    , genesisPath :: Maybe Text
-    , secretPath :: Maybe Text
     , configPath :: Maybe Text
     } deriving (Generic, Show)
 

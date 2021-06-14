@@ -1,8 +1,0 @@
-skip_bootstrap: true
-p2p:
-  trusted_peers: []
-  topics_of_interest:
-    messages: low
-    blocks: normal
-  # Listen on localhost, on any free port. Only suitable for self node.
-  public_address: "/ip4/127.0.0.1/tcp/0"
