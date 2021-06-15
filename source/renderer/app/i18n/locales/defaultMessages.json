@@ -12743,6 +12743,48 @@
           "column": 26,
           "line": 45
         }
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token header on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
+        "id": "wallet.summary.assets.header.token",
+        "start": {
+          "column": 15,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount header on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
+        "id": "wallet.summary.assets.header.amount",
+        "start": {
+          "column": 16,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!No results matching your query",
+        "description": "No results on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
+        "id": "wallet.summary.assets.search.noResults",
+        "start": {
+          "column": 13,
+          "line": 60
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.json"
