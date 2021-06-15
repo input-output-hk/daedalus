@@ -67,6 +67,9 @@ export default class StakingStore extends Store {
   @observable cyclesWithoutIncreasingStakePools: number = 0;
   @observable stakingInfoWasOpen: boolean = false;
 
+  /* ---------- Testing Params -------------- */
+  @observable desirabilitiesSorting: 'asc' | 'desc' = 'desc';
+
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
@@ -472,7 +475,50 @@ export default class StakingStore extends Store {
   }
 
   @computed get stakePools(): Array<StakePool> {
-    return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
+    const desirabilities = require('../config/stakePoolsDesirabilities.json');
+    // !!! HOW TO ENCODE DATA!!!
+    // See src/cardano.h in https://github.com/vacuumlabs/ledger-app-cardano-shelley
+    // const POOL_KEY_HASH_LENGTH = 28;
+    // const constructedDesirabilities = {};
+    // map(desirabilities, (value, key) => {
+    //   // const stakePoolKeyHex = '00000036d515e12e18cd3c88c74f09a67984c2c279a5296aa96efe89'
+    //   const stakePoolKeyBuffer = Buffer.from(key, 'hex');
+    //   const data5bit = bech32.toWords(stakePoolKeyBuffer);
+    //   const stakePoolId = bech32.encode(
+    //     'pool',
+    //     data5bit,
+    //     150
+    //   );
+    //   constructedDesirabilities[stakePoolId] = {
+    //     desirabilityScore: value.desirabilityScore,
+    //     hitRateEstimate: value.hitRateEstimate,
+    //   }
+    // })
+
+    const loadedStakePools = this.stakePoolsRequest.result || [];
+    const extendedStakePools = map(loadedStakePools, (stakePool) => {
+      const matchedData = desirabilities[stakePool.id];
+      return {
+        ...stakePool,
+        desirabilityScore:
+          matchedData && matchedData.desirabilityScore
+            ? matchedData.desirabilityScore
+            : '',
+      };
+    });
+
+    const orderedStakePools = orderBy(
+      extendedStakePools,
+      'desirabilityScore',
+      this.desirabilitiesSorting
+    );
+
+    const orderedAndRankedStakePools = map(orderedStakePools, (value, key) => ({
+      ...value,
+      ranking: key + 1,
+    }));
+
+    return orderedAndRankedStakePools;
   }
 
   @computed get recentStakePools(): Array<StakePool> {
@@ -718,6 +764,13 @@ export default class StakingStore extends Store {
         this.isCalculatingReedemFees = false;
       });
     }
+  };
+
+  // daedalus.stores.staking._setDesirabilitiesSorting('asc' || 'desc')
+  @action _setDesirabilitiesSorting = (sorting: 'asc' | 'desc') => {
+    runInAction(() => {
+      this.desirabilitiesSorting = sorting;
+    });
   };
 
   @action _onRedeemStart = () => {
