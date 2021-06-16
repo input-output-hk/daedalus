@@ -109,3 +109,5 @@ utils/js-launcher/state
 
 state-cluster
 Release
+/cardano-cli
+/cardano-wallet

@@ -1,7 +1,8 @@
 // @flow
-import { action, observable, computed, toJS, runInAction } from 'mobx';
+import { action, observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { includes, camelCase } from 'lodash';
+import { toJS } from '../../../common/utils/helper';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';

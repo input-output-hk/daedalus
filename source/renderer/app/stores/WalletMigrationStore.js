@@ -1,5 +1,5 @@
 // @flow
-import { action, computed, observable, runInAction, toJS } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import path from 'path';
 import { orderBy } from 'lodash';
 import Store from './lib/Store';
@@ -12,6 +12,7 @@ import { logger } from '../utils/logging';
 import { getRawWalletId } from '../api/utils';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { ExportWalletsMainResponse } from '../../../common/ipc/api';
+import { toJS } from '../../../common/utils/helper';
 import type {
   WalletMigrationReportData,
   ExportedWalletData,

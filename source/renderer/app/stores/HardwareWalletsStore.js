@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, runInAction, computed, toJS } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast, includes } from 'lodash';
 import semver from 'semver';
 import {
@@ -10,6 +10,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
+import { toJS } from '../../../common/utils/helper';
 import {
   HW_SHELLEY_CONFIG,
   SHELLEY_PURPOSE_INDEX,

@@ -3,7 +3,7 @@
 /* eslint-disable consistent-return */
 
 import { includes, without, get } from 'lodash';
-import { toJS } from 'mobx';
+import { toJS } from '../../../../common/utils/helper';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import {
@@ -104,7 +104,7 @@ export default class LocalStorageApi {
     await electronStoreConversation.request({
       type: types.SET,
       key,
-      data,
+      data: JSON.parse(JSON.stringify(data)),
       id,
     });
   };
@@ -456,7 +456,10 @@ export default class LocalStorageApi {
   overrideHardwareWalletDevices = async (
     data: HardwareWalletDevicesType
   ): Promise<void> =>
-    LocalStorageApi.set(keys.HARDWARE_WALLET_DEVICES, toJS(data));
+    LocalStorageApi.set(
+      keys.HARDWARE_WALLET_DEVICES,
+      JSON.parse(JSON.stringify(data))
+    );
 
   unsetHardwareWalletDevice = (deviceId: string): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);
