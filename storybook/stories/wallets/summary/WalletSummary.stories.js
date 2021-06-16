@@ -235,7 +235,7 @@ storiesOf('Wallets|Summary', module)
               'First Asset'
             ),
             metadata: {
-              name: text('Metadata - name', '', 'First Asset'),
+              name: text('Metadata - name', 'FIRST', 'First Asset'),
               ticker: text('Metadata - ticker', '', 'First Asset'),
               description: text('Metadata - description', '', 'First Asset'),
             },

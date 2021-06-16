@@ -167,13 +167,24 @@ export default class Asset extends Component<Props, State> {
   }
 
   renderPillContent() {
+    const { intl } = this.context;
     const { asset, metadataNameChars, small, fullFingerprint } = this.props;
-    const { fingerprint, metadata } = asset;
+    const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.pill,
       small ? styles.small : null,
     ]);
+    const hasWarning =
+      typeof recommendedDecimals === 'number' &&
+      decimals !== recommendedDecimals;
+    let warningPopOverMessage;
+    if (hasWarning) {
+      warningPopOverMessage =
+        typeof decimals === 'number'
+          ? messages.settingsWarningPopOverNotUsing
+          : messages.settingsWarningPopOverAvailable;
+    }
     return (
       <div className={contentStyles}>
         <div className={styles.fingerprint}>
@@ -182,6 +193,18 @@ export default class Asset extends Component<Props, State> {
         {name && (
           <div className={styles.metadataName}>
             {metadataNameChars ? ellipsis(name, metadataNameChars) : name}
+          </div>
+        )}
+        {hasWarning && (
+          <div className={styles.warningIconWrapper}>
+            <PopOver
+              content={intl.formatMessage(warningPopOverMessage, {
+                recommendedDecimals,
+              })}
+              className={styles.warningIconWrapper}
+            >
+              <SVGInline className={styles.warningIcon} svg={warningIcon} />
+            </PopOver>
           </div>
         )}
       </div>

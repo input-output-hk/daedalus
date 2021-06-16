@@ -31,6 +31,17 @@
   height: 22px;
   min-width: 0;
   position: relative;
+  .warningIconWrapper {
+    margin: 2px 0 0 6px;
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
+    }
+    svg {
+      height: 9px;
+      width: 11px;
+    }
+  }
 }
 
 .fingerprint {
