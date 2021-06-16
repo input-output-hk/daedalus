@@ -96,7 +96,6 @@ export default class WalletSummaryAsset extends Component<Props, State> {
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           anyAssetWasHovered={anyAssetWasHovered}
           hidePopOver
-          fullFingerprint
         />
         <AssetAmount
           amount={asset.quantity}

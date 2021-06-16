@@ -4,6 +4,7 @@
   }
   &.isExpanded {
     background-color: var(--theme-button-flat-background-color-hover);
+    padding-bottom: 20px;
     .content {
       display: block;
     }
@@ -16,13 +17,19 @@
   cursor: pointer;
   position: relative;
   .assetAmount {
-    color: #5e6066;
+    color: var(--theme-widgets-asset-token-text-color);
     font-family: var(--font-regular);
     font-size: 12px;
     letter-spacing: 0.4px;
     line-height: 1.33;
     margin: 3px 0;
     white-space: nowrap;
+  }
+  .leftContent {
+    max-width: 75%;
+  }
+  .rightContent {
+    max-width: 25%;
   }
 }
 .arrow {
@@ -54,7 +61,7 @@
 }
 .content {
   display: none;
-  margin: 13px 12px 20px;
+  margin: 13px 12px 0;
 }
 .footer {
   border-top: 1px solid var(--theme-wallet-settings-section-separator-color);

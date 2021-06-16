@@ -19,7 +19,7 @@
     line-height: 1.33;
     text-align: right;
     white-space: nowrap;
-    width: 67px;
+    width: 120px;
   }
 
   dd {
@@ -30,7 +30,7 @@
     margin-left: 10px;
     max-height: 48px;
     overflow-y: auto;
-    width: calc(100% - 87px);
+    width: calc(100% - 140px);
 
     &:not(:first-of-type) {
       margin-top: 10px;
