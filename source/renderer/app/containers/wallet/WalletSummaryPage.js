@@ -114,7 +114,27 @@ export default class WalletSummaryPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const assetTokens = getAssetTokens(walletTokens, getAsset)
+      /* TODO REMOVE - Begin */
+      .map((asset) => {
+        let recommendedDecimals;
+        let decimals;
+        const { name } = asset.metadata || {};
+        if (name === 'GoodCoin') {
+          recommendedDecimals = 1;
+          decimals = 2;
+        }
+        if (name === 'BadCoin') {
+          recommendedDecimals = 1;
+          // decimals = 2
+        }
+        return {
+          ...asset,
+          decimals,
+          recommendedDecimals,
+        };
+      });
+    /* TODO REMOVE - End */
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
