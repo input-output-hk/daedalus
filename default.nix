@@ -1,9 +1,5 @@
-let
-  itn_clusters = [ "itn_rewards_v1"  "qa" "nightly" "itn_selfnode" ];
-  getDefaultBackend = cluster: if (builtins.elem cluster itn_clusters) then "jormungandr" else "cardano";
-in
 { target ? builtins.currentSystem
-, nodeImplementation ? (getDefaultBackend cluster)
+, nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
@@ -55,7 +51,6 @@ let
   ostable.x86_64-darwin = "macos64";
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
-    jormungandrLib = localLib.iohkNix.jormungandrLib;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
@@ -76,7 +71,6 @@ let
 
     sources = localLib.sources;
     bridgeTable = {
-      jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
       cardano = self.callPackage ./nix/cardano-bridge.nix {
         cardano-wallet = self.cardano-wallet.cardano-wallet;
         cardanoWalletPkgs = self.cardano-wallet.pkgs;
@@ -123,17 +117,11 @@ let
     nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
-      inherit (self) jormungandrLib;
       inherit devShell topologyOverride configOverride genesisOverride;
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
       runCommandNative = pkgsNative.runCommand;
-    };
-
-    itnClustersFile = writeTextFile {
-      name = "itn-clusters";
-      text = concatStringsSep " " itn_clusters;
     };
 
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
@@ -207,7 +195,7 @@ let
     '';
 
     nsisFiles = let
-      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}";
+      nodeImplementation' = "${nodeImplementation}";
     in pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''

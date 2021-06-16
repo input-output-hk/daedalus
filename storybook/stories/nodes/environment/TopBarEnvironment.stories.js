@@ -37,7 +37,7 @@ const topBarTestEnv = (currentTheme) => (
   </TopBar>
 );
 
-const topBarItnEnv = (currentTheme) => (
+const topBarStagingEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
@@ -46,7 +46,7 @@ const topBarItnEnv = (currentTheme) => (
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
     isFullyDecentralized={boolean('isFullyDecentralized', false)}
   >
-    <WalletTestEnvironmentLabel network="itn_rewards_v1" />
+    <WalletTestEnvironmentLabel network="staging" />
     <NodeSyncStatusIcon
       isSynced
       syncPercentage={100}
@@ -89,9 +89,9 @@ storiesOf('Nodes|Environment', module)
       sidebar={<noscript />}
     />
   ))
-  .add('Incentivized Testnet', (props: { currentTheme: string }) => (
+  .add('Staging', (props: { currentTheme: string }) => (
     <SidebarLayout
-      topbar={topBarItnEnv(props.currentTheme)}
+      topbar={topBarStagingEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
   ))

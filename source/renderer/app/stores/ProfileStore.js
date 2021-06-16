@@ -163,18 +163,10 @@ export default class ProfileStore extends Store {
     return isRequestSet(this.getProfileLocaleRequest);
   }
 
-  @computed get isIncentivizedTestnetTheme(): boolean {
-    return this.currentTheme === THEMES.INCENTIVIZED_TESTNET;
-  }
-
   @computed get currentTheme(): string {
     // Default theme handling
     let systemValue;
-    if (global.isShelleyTestnet) {
-      systemValue = THEMES.SHELLEY_TESTNET;
-    } else if (global.isIncentivizedTestnet) {
-      systemValue = THEMES.INCENTIVIZED_TESTNET;
-    } else if (global.isFlight) {
+    if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
     } else {
       systemValue = this.environment.isMainnet
@@ -376,8 +368,8 @@ export default class ProfileStore extends Store {
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
-      if (!this.stores.wallets.hasAnyWallets || global.isIncentivizedTestnet) {
-        // There are no wallets to migrate or it's Incentivized Testnet:
+      if (!this.stores.wallets.hasAnyWallets) {
+        // There are no wallets to migrate:
         // set the data layer migration acceptance to true
         // in order to prevent future data migration checks
         this._acceptDataLayerMigration();
@@ -560,7 +552,6 @@ export default class ProfileStore extends Store {
         isStaging,
         isSynced,
         isTestnet,
-        isIncentivizedTestnet: global.isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
         localTip: localTip

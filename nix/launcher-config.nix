@@ -1,7 +1,6 @@
 { backend ? "cardano"
 , network ? "staging"
 , os ? "linux"
-, jormungandrLib ? (import ../. {}).jormungandrLib
 , cardanoLib
 , runCommand
 , lib
@@ -26,11 +25,6 @@ let
       cardanoEnv = cardanoLib.environments.mainnet;
       cluster = "mainnet";
       networkName = "mainnet";
-    };
-    shelley_testnet_v6 = {
-      cardanoEnv = cardanoLib.environments.mainnet_candidate_4;
-      cluster = "shelley_testnet";
-      networkName = "shelley_testnet";
     };
   };
   dirSep = if os == "windows" then "\\" else "/";
@@ -67,24 +61,17 @@ let
     cardanoEnv = if __hasAttr network clusterOverrides
                  then clusterOverrides.${network}.cardanoEnv
                  else cardanoLib.environments.${network};
-    jormungandrEnv = jormungandrLib.environments.${network};
-  in if (backend == "cardano") then cardanoEnv else jormungandrEnv;
+  in cardanoEnv;
   kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
 
   installDirectorySuffix = let
     supportedNetworks = {
       mainnet = "Mainnet";
       mainnet_flight = "Flight";
-      qa = "QA";
       selfnode = "Selfnode";
       local = "Local";
-      itn_selfnode = "Selfnode - ITN";
-      nightly = "Nightly";
-      itn_rewards_v1 = "- Rewards v1";
       staging = "Staging";
       testnet = "Testnet";
-      shelley_testnet = "Shelley Testnet";
-      shelley_testnet_v6 = "Shelley Testnet v6";
       shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
@@ -267,7 +254,6 @@ let
       inherit spacedName iconPath;
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
-      hasBlock0 = false;
       installerWinBinaries = [
         "cardano-launcher.exe"
         "cardano-node.exe"
@@ -282,71 +268,5 @@ let
     configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
   };
 
-  mkConfigJormungandr = let
-    jormungandrConfig = builtins.toJSON (jormungandrLib.mkConfig (envCfg // {
-      trustedPeers = envCfg.daedalusPeers or envCfg.trustedPeers;
-    }));
-    nodeBin = mkBinPath "jormungandr";
-    walletBin = mkBinPath "cardano-wallet-jormungandr";
-    cliBin = mkBinPath "jcli";
-    hasBlock0 = (network == "itn_selfnode") || envCfg ? block0bin;
-    nodeConfigFiles = let
-    in runCommand "node-cfg-files" {
-      buildInputs = [ cardano-wallet-native.jormungandr-cli ];
-      jormungandrConfig = if network == "itn_selfnode" then null else jormungandrConfig;
-      passAsFile = [ "jormungandrConfig" ];
-    } ''
-      mkdir $out
-      ${if (network == "itn_selfnode") then ''
-        cp ${../utils/jormungandr/selfnode/config.yaml} $out/config.yaml
-        cp ${../utils/jormungandr/selfnode/secret.yaml} $out/secret.yaml
-        cp ${../utils/jormungandr/selfnode/genesis.yaml} $out/genesis.yaml
-        jcli genesis encode --input $out/genesis.yaml --output $out/block-0.bin
-      '' else ''
-        cp $jormungandrConfigPath $out/config.yaml
-        ${lib.optionalString hasBlock0 ''
-          cp ${envCfg.block0bin} $out/block-0.bin
-          jcli genesis hash --input $out/block-0.bin > $out/genesis-hash
-        ''}
-      ''}
-    '';
-
-    secretPath = mkConfigPath nodeConfigFiles "secret.yaml";
-    configPath = mkConfigPath nodeConfigFiles "config.yaml";
-    block0Path = if hasBlock0 then mkConfigPath nodeConfigFiles "block-0.bin" else "";
-    genesisPath = mkConfigPath nodeConfigFiles "genesis.yaml";
-    launcherConfig = defaultLauncherConfig // {
-      inherit
-        nodeBin
-        walletBin
-        cliBin
-        network
-        block0Path
-        secretPath
-        configPath;
-      block0Hash = let
-        selfnodeHash = builtins.replaceStrings ["\n"] [""] (builtins.readFile (runCommandNative "selfnode-block0.hash" { buildInputs = [ cardano-wallet-native.jormungandr-cli ]; } ''
-          jcli genesis hash --input ${nodeConfigFiles}/block-0.bin > $out
-        ''));
-      in if network == "itn_selfnode" then selfnodeHash else jormungandrLib.environments.${network}.genesisHash;
-      syncTolerance = if (network == "itn_selfnode") then "600s" else jormungandrLib.environments.${network}.syncTolerance;
-    };
-    installerConfig = {
-      installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
-      inherit spacedName iconPath dataDir hasBlock0;
-      installerWinBinaries = [ "cardano-launcher.exe" "jormungandr.exe" "cardano-wallet-jormungandr.exe" ];
-      macPackageName = "Daedalus${network}";
-      configPath = "${nodeConfigFiles}/config.yaml";
-    } // (lib.optionalAttrs hasBlock0 {
-      block0 = "${nodeConfigFiles}/block-0.bin";
-    }) // (lib.optionalAttrs (network == "itn_selfnode") {
-      genesisPath = "${nodeConfigFiles}/genesis.yaml";
-      secretPath = "${nodeConfigFiles}/secret.yaml";
-    });
-  in {
-    inherit launcherConfig installerConfig nodeConfigFiles;
-    configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
-  };
-  configs.jormungandr = mkConfigJormungandr;
   configs.cardano = mkConfigCardano;
 in configs.${backend}

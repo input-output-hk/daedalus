@@ -3,7 +3,6 @@
 , rawapp, daedalus-bridge, daedalus-installer
 , sandboxed ? false
 , nodeImplementation
-, jormungandrLib
 , launcherConfigs
 , linuxClusterBinName
 , gsettings-desktop-schemas

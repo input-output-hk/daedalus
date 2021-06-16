@@ -66,7 +66,7 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
-const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
+const { isFlight } = global;
 
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
@@ -90,8 +90,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSplashShown =
-    isIncentivizedTestnet || isShelleyTestnet || isFlight; // Visibility of splash screen
+  @observable isSplashShown = isFlight; // Visibility of splash screen
   @observable isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
 
   @observable hasBeenConnected = false;

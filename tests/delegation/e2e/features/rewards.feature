@@ -1,10 +1,9 @@
-@e2e shelley
+@e2e @wip
 Feature: Rewards
 
   Background:
     Given I have completed the basic setup
     And I am on the Delegation Center screen
-    And I mark experimental feature as read
 
   Scenario: Rewards are correctly loaded
     Given I have a "Test Wallet" wallet with funds

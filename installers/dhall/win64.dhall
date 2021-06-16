@@ -18,10 +18,10 @@ in
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodeBin             = "\${DAEDALUS_INSTALL_DIRECTORY}\\jormungandr.exe"
-  , walletBin           = "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-wallet-jormungandr.exe"
+  , nodeBin             = "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-node.exe"
+  , walletBin           = "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-wallet.exe"
   , daedalusBin         = "\${DAEDALUS_INSTALL_DIRECTORY}\\${installDir}.exe"
-  , cliPath             = "\${DAEDALUS_INSTALL_DIRECTORY}\\jcli.exe"
+  , cliPath             = "\${DAEDALUS_INSTALL_DIRECTORY}\\cardano-cli.exe"
   , nodeLogConfig       = None Text
   , nodeLogPath         = None Text
 
