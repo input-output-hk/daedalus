@@ -183,7 +183,6 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
     Cardano     _ -> common
-    Jormungandr _ -> common
   where
     common = do
       tmp <- fromString <$> (liftIO $ getEnv "TMP")
@@ -306,7 +305,6 @@ npmPackage DarwinConfig{dcAppName} = do
 
 getBackendVersion :: Backend -> IO Text
 getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
-getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{} = do
@@ -314,7 +312,6 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       dir :: FilePath
       dir     = appRoot </> "Contents/MacOS"
       dataDir = appRoot </> "Contents/Resources"
-      maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dataDir </> name)) maybePath
 
   echo "Preparing files ..."
   let
