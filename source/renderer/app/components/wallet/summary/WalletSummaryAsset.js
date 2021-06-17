@@ -95,6 +95,7 @@ export default class WalletSummaryAsset extends Component<Props, State> {
           metadataNameChars={get('name', asset.metadata, 0)}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           anyAssetWasHovered={anyAssetWasHovered}
+          className={styles.asset}
           hidePopOver
         />
         <AssetAmount

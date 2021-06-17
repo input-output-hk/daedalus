@@ -16,6 +16,9 @@
   padding: 7px 42px 7px 12px;
   cursor: pointer;
   position: relative;
+  .asset {
+    max-width: calc(100% - 70px);
+  }
   .assetAmount {
     color: var(--theme-widgets-asset-token-text-color);
     font-family: var(--font-regular);
@@ -23,14 +26,17 @@
     letter-spacing: 0.4px;
     line-height: 1.33;
     margin: 3px 0;
+    max-width: 60px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .leftContent {
-    max-width: 75%;
-  }
-  .rightContent {
-    max-width: 25%;
-  }
+}
+.leftContent {
+  max-width: 75%;
+}
+.rightContent {
+  max-width: 25%;
 }
 .arrow {
   bottom: 10px;
