@@ -1,8 +1,8 @@
 // @flow
-import React, { Component, Fragment as F } from 'react';
+import React, { useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './AssetContent.scss';
@@ -74,67 +74,44 @@ type Props = {
   onCopyAssetItem?: Function,
   highlightFingerprint?: boolean,
   className?: string,
+  intl: intlShape.isRequired,
 };
 
-type State = {
-  itemCopied: ?string,
-};
+type ItemCopied = ?string;
 
-@observer
-export default class AssetContent extends Component<Props, State> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
+const AssetContent = observer((props: Props) => {
+  const [itemCopied, setItemCopied] = useState<ItemCopied>(null);
 
-  static defaultProps = {
-    highlightFingerprint: true,
-  };
+  let copyNotificationTimeout: TimeoutID;
 
-  copyNotificationTimeout: TimeoutID;
-  displayDelayTimeout: TimeoutID;
-
-  state = {
-    itemCopied: null,
-  };
-
-  // We need to track the mounted state in order to avoid calling
-  // setState promise handling code after the component was already unmounted:
-  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
-  _isMounted = false;
-
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  handleCopyItem = (itemCopied: string, assetItem: string, value: string) => {
-    const { onCopyAssetItem } = this.props;
+  const handleCopyItem = (
+    newItemCopied: string,
+    assetItem: string,
+    value: string
+  ) => {
+    const { onCopyAssetItem } = props;
     if (onCopyAssetItem) {
       onCopyAssetItem(assetItem, value);
     }
-    clearTimeout(this.copyNotificationTimeout);
-    this.setState({
-      itemCopied,
-    });
-    this.copyNotificationTimeout = setTimeout(() => {
-      if (this._isMounted) {
-        this.setState({ itemCopied: null });
-      }
+    clearTimeout(copyNotificationTimeout);
+    setItemCopied(newItemCopied);
+    copyNotificationTimeout = setTimeout(() => {
+      setItemCopied(null);
     }, ASSET_TOKEN_ID_COPY_FEEDBACK);
   };
 
-  renderAssetItem = (assetId: string, assetItem: string, value: string) => {
-    const { itemCopied } = this.state;
+  const renderAssetItem = (
+    assetId: string,
+    assetItem: string,
+    value: string
+  ) => {
     const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
     const iconClassnames = classnames([
       styles.copyIcon,
       itemCopied === assetId ? styles.copiedIcon : null,
     ]);
     const onCopy = () => {
-      this.handleCopyItem(assetId, assetItem, value);
+      handleCopyItem(assetId, assetItem, value);
     };
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
@@ -153,93 +130,95 @@ export default class AssetContent extends Component<Props, State> {
     );
   };
 
-  render() {
-    const { intl } = this.context;
-    const { asset, highlightFingerprint, className } = this.props;
-    const { fingerprint, policyId, assetName, metadata } = asset;
-    const { name, ticker, description } = metadata || {};
-    const item = this.renderAssetItem;
-    const componentStyles = classnames([styles.component, className]);
-    return (
-      <div className={componentStyles}>
-        {highlightFingerprint && (
-          <div className={styles.fingerprint}>
-            {item(
-              'fingerprint',
-              intl.formatMessage(messages.fingerprintItem),
-              fingerprint
-            )}
-          </div>
+  const { asset, highlightFingerprint, className, intl } = props;
+  const { fingerprint, policyId, assetName, metadata } = asset;
+  const { name, ticker, description } = metadata || {};
+  const componentStyles = classnames([styles.component, className]);
+  return (
+    <div className={componentStyles}>
+      {highlightFingerprint && (
+        <div className={styles.fingerprint}>
+          {renderAssetItem(
+            'fingerprint',
+            intl.formatMessage(messages.fingerprintItem),
+            fingerprint
+          )}
+        </div>
+      )}
+      <dl>
+        {!highlightFingerprint && (
+          <>
+            <dt>{intl.formatMessage(messages.fingerprintItem)}</dt>
+            <dd>
+              {renderAssetItem(
+                'fingerprint',
+                intl.formatMessage(messages.fingerprintItem),
+                fingerprint
+              )}
+            </dd>
+          </>
         )}
-        <dl>
-          {!highlightFingerprint && (
-            <F>
-              <dt>{intl.formatMessage(messages.fingerprintItem)}</dt>
-              <dd>
-                {item(
-                  'fingerprint',
-                  intl.formatMessage(messages.fingerprintItem),
-                  fingerprint
-                )}
-              </dd>
-            </F>
+        {ticker && (
+          <>
+            <dt>{intl.formatMessage(messages.tickerItem)}</dt>
+            <dd>
+              {renderAssetItem(
+                'ticker',
+                intl.formatMessage(messages.tickerItem),
+                ticker
+              )}
+            </dd>
+          </>
+        )}
+        {name && (
+          <>
+            <dt>{intl.formatMessage(messages.nameItem)}</dt>
+            <dd>
+              {renderAssetItem(
+                'name',
+                intl.formatMessage(messages.nameItem),
+                name
+              )}
+            </dd>
+          </>
+        )}
+        {description && (
+          <>
+            <dt>{intl.formatMessage(messages.descriptionItem)}</dt>
+            <dd>
+              {renderAssetItem(
+                'description',
+                intl.formatMessage(messages.descriptionItem),
+                description
+              )}
+            </dd>
+          </>
+        )}
+        <dt>{intl.formatMessage(messages.policyIdItem)}</dt>
+        <dd>
+          {renderAssetItem(
+            'policyId',
+            intl.formatMessage(messages.policyIdItem),
+            policyId
           )}
-          {ticker && (
-            <F>
-              <dt>{intl.formatMessage(messages.tickerItem)}</dt>
-              <dd>
-                {item(
-                  'ticker',
-                  intl.formatMessage(messages.tickerItem),
-                  ticker
-                )}
-              </dd>
-            </F>
+        </dd>
+        <dt>{intl.formatMessage(messages.assetNameItem)}</dt>
+        <dd>
+          {assetName ? (
+            renderAssetItem(
+              'assetName',
+              intl.formatMessage(messages.assetNameItem),
+              assetName
+            )
+          ) : (
+            <span className={styles.blankValue}>
+              {intl.formatMessage(messages.blank)}
+            </span>
           )}
-          {name && (
-            <F>
-              <dt>{intl.formatMessage(messages.nameItem)}</dt>
-              <dd>
-                {item('name', intl.formatMessage(messages.nameItem), name)}
-              </dd>
-            </F>
-          )}
-          {description && (
-            <F>
-              <dt>{intl.formatMessage(messages.descriptionItem)}</dt>
-              <dd>
-                {item(
-                  'description',
-                  intl.formatMessage(messages.descriptionItem),
-                  description
-                )}
-              </dd>
-            </F>
-          )}
-          <dt>{intl.formatMessage(messages.policyIdItem)}</dt>
-          <dd>
-            {item(
-              'policyId',
-              intl.formatMessage(messages.policyIdItem),
-              policyId
-            )}
-          </dd>
-          <dt>{intl.formatMessage(messages.assetNameItem)}</dt>
-          <dd>
-            {assetName ? (
-              item(
-                'assetName',
-                intl.formatMessage(messages.assetNameItem),
-                assetName
-              )
-            ) : (
-              <span className={styles.blankValue}>
-                {intl.formatMessage(messages.blank)}
-              </span>
-            )}
-          </dd>
-        </dl>
-      </div>
-    );
-  }
-}
+        </dd>
+      </dl>
+    </div>
+  );
+});
+
+export default injectIntl(AssetContent);
