@@ -65,7 +65,7 @@ const WalletSummaryAsset = observer((props: Props) => {
     setIsExpanded(!isExpanded);
   };
 
-  const renderHeader = () => {
+  const header = () => {
     const {
       asset,
       onCopyAssetItem,
@@ -100,7 +100,7 @@ const WalletSummaryAsset = observer((props: Props) => {
     );
   };
 
-  const renderFooter = () => {
+  const footer = () => {
     const { asset, isLoading, intl } = props;
     return (
       <div className={styles.footer}>
@@ -117,12 +117,12 @@ const WalletSummaryAsset = observer((props: Props) => {
             />
           </dd>
         </dl>
-        {renderFooterButtons()}
+        {buttons()}
       </div>
     );
   };
 
-  const renderFooterButtons = () => {
+  const buttons = () => {
     const { asset, onOpenAssetSend, onAssetSettings, intl } = props;
     const { recommendedDecimals, decimals } = asset;
     const hasWarning =
@@ -183,14 +183,14 @@ const WalletSummaryAsset = observer((props: Props) => {
   });
   return (
     <div className={componentStyles}>
-      {renderHeader()}
+      {header()}
       <div className={styles.content}>
         <AssetContent
           asset={asset}
           onCopyAssetItem={onCopyAssetItem}
           highlightFingerprint={false}
         />
-        {renderFooter()}
+        {footer()}
       </div>
     </div>
   );
