@@ -1,7 +1,7 @@
 // @flow
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
@@ -53,42 +53,31 @@ type Props = {
   anyAssetWasHovered: boolean,
   isLoading: boolean,
   assetSettingsDialogWasOpened: boolean,
+  intl: intlShape.isRequired,
 };
 
-type State = {
-  isExpanded: boolean,
-};
+type IsExpanded = boolean;
 
-@observer
-export default class WalletSummaryAsset extends Component<Props, State> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
+const WalletSummaryAsset = observer((props: Props) => {
+  const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
+
+  const toggleIsExpanded = () => {
+    setIsExpanded(!isExpanded);
   };
 
-  state = {
-    isExpanded: false,
-  };
-
-  toggleIsExpanded = () => {
-    this.setState((prevState) => ({
-      isExpanded: !prevState.isExpanded,
-    }));
-  };
-
-  renderHeader = () => {
+  const renderHeader = () => {
     const {
       asset,
       onCopyAssetItem,
       isLoading,
       anyAssetWasHovered,
       assetSettingsDialogWasOpened,
-    } = this.props;
-    const { isExpanded } = this.state;
+    } = props;
     const arrowStyles = classNames(styles.arrow, {
       [styles.isExpanded]: isExpanded,
     });
     return (
-      <div className={styles.header} onClick={this.toggleIsExpanded}>
+      <div className={styles.header} onClick={toggleIsExpanded}>
         <Asset
           asset={asset}
           onCopyAssetItem={onCopyAssetItem}
@@ -111,9 +100,8 @@ export default class WalletSummaryAsset extends Component<Props, State> {
     );
   };
 
-  renderFooter = () => {
-    const { intl } = this.context;
-    const { asset, isLoading } = this.props;
+  const renderFooter = () => {
+    const { asset, isLoading, intl } = props;
     return (
       <div className={styles.footer}>
         <dl>
@@ -129,14 +117,13 @@ export default class WalletSummaryAsset extends Component<Props, State> {
             />
           </dd>
         </dl>
-        {this.renderFooterButtons()}
+        {renderFooterButtons()}
       </div>
     );
   };
 
-  renderFooterButtons = () => {
-    const { intl } = this.context;
-    const { asset, onOpenAssetSend, onAssetSettings } = this.props;
+  const renderFooterButtons = () => {
+    const { asset, onOpenAssetSend, onAssetSettings, intl } = props;
     const { recommendedDecimals, decimals } = asset;
     const hasWarning =
       typeof recommendedDecimals === 'number' &&
@@ -190,24 +177,23 @@ export default class WalletSummaryAsset extends Component<Props, State> {
     );
   };
 
-  render() {
-    const { asset, onCopyAssetItem } = this.props;
-    const { isExpanded } = this.state;
-    const componentStyles = classNames(styles.component, {
-      [styles.isExpanded]: isExpanded,
-    });
-    return (
-      <div className={componentStyles}>
-        {this.renderHeader()}
-        <div className={styles.content}>
-          <AssetContent
-            asset={asset}
-            onCopyAssetItem={onCopyAssetItem}
-            highlightFingerprint={false}
-          />
-          {this.renderFooter()}
-        </div>
+  const { asset, onCopyAssetItem } = props;
+  const componentStyles = classNames(styles.component, {
+    [styles.isExpanded]: isExpanded,
+  });
+  return (
+    <div className={componentStyles}>
+      {renderHeader()}
+      <div className={styles.content}>
+        <AssetContent
+          asset={asset}
+          onCopyAssetItem={onCopyAssetItem}
+          highlightFingerprint={false}
+        />
+        {renderFooter()}
       </div>
-    );
-  }
-}
+    </div>
+  );
+});
+
+export default injectIntl(WalletSummaryAsset);
