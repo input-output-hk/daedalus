@@ -76,6 +76,8 @@ type State = {
   pinCodesVisible: boolean,
   sectionToFocus: ?string,
   isTabClicked: boolean,
+  pinFieldDisabledStates: Array<boolean>,
+  repeatPinFieldDisabledStates: Array<boolean>,
 };
 
 @observer
@@ -92,6 +94,8 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     pinCodesVisible: false,
     sectionToFocus: null,
     isTabClicked: false,
+    pinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill(true).map((item, index) => index !== 0),
+    repeatPinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill(true).map((item, index) => index !== 0),
   };
 
   form = new ReactToolboxMobxForm(
@@ -164,6 +168,26 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }));
   };
 
+  onUpdatePinFieldDisabledStates = (prevFieldIndex: number, nextFieldIndex: number) => {
+    const { pinFieldDisabledStates } = this.state;
+    const disabledStates = [...pinFieldDisabledStates];
+    disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
+    disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    this.setState({
+      pinFieldDisabledStates: disabledStates,
+    });
+  };
+
+  onUpdateRepeatPinFieldDisabledStates = (prevFieldIndex: number, nextFieldIndex: number) => {
+    const { repeatPinFieldDisabledStates } = this.state;
+    const disabledStates = [...repeatPinFieldDisabledStates];
+    disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
+    disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    this.setState({
+      repeatPinFieldDisabledStates: disabledStates,
+    });
+  };
+
   handleTabKey = (type: string) => {
     this.setState({
       sectionToFocus: type,
@@ -223,6 +247,8 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
       pinCodesVisible,
       sectionToFocus,
       isTabClicked,
+      pinFieldDisabledStates,
+      repeatPinFieldDisabledStates,
     } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
@@ -282,6 +308,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onChange={(values, isTab) => this.onChangePinCode(values, isTab)}
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
+            onUpdateFieldDisabledStates={(prevFieldIndex: number, nextFieldIndex: number) => this.onUpdatePinFieldDisabledStates(prevFieldIndex, nextFieldIndex)}
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!pinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
@@ -289,6 +316,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
             disabled={!isTabClicked && form.isValid}
+            pinFieldDisabledStates={pinFieldDisabledStates}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
@@ -299,6 +327,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             }
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
+            onUpdateFieldDisabledStates={(prevFieldIndex: number, nextFieldIndex: number) => this.onUpdateRepeatPinFieldDisabledStates(prevFieldIndex, nextFieldIndex)}
             autoFocus={isRepeatPinCodeAutoFocused}
             error={hasError}
             selectedPinField={selectedPinField}
@@ -313,6 +342,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
                 !repeatPinCodeField.value.length &&
                 sectionToFocus !== 'repeatPinCode')
             }
+            repeatPinFieldDisabledStates={repeatPinFieldDisabledStates}
           />
         </div>
 

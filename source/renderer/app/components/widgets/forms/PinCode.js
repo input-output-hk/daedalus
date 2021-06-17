@@ -24,6 +24,7 @@ type Props = $Exact<{
   onChange?: Function,
   onResetValues: Function,
   onShowHideValues: Function,
+  onUpdateFieldDisabledStates: Function,
   label: string,
   resetLabel: string,
   length: number,
@@ -36,6 +37,8 @@ type Props = $Exact<{
   onTabKey: Function,
   sectionToFocus: ?string,
   isTabClicked: boolean,
+  pinFieldDisabledStates: Array<boolean>,
+  repeatPinFieldDisabledStates: Array<boolean>,
 }>;
 
 type State = {
@@ -240,10 +243,11 @@ export default class PinCode extends Component<Props, State> {
   };
 
   onChange = (inputValue: ?number, key: number, isTab?: boolean) => {
-    const { value, onChange } = this.props;
+    const { value, onChange, onUpdateFieldDisabledStates } = this.props;
     const { isBackSpace } = this.state;
     const inputNewValue =
       inputValue && !isNaN(inputValue) ? inputValue.toString() : '';
+    // debugger;
     if (this.valueHasChanged(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
@@ -301,6 +305,10 @@ export default class PinCode extends Component<Props, State> {
       this.focusKey = key;
       // Recheck if user is adding or deleting value
       this.isAddingNewValue = inputValue && !isNaN(inputValue);
+      if (onUpdateFieldDisabledStates) {
+        // debugger;
+        onUpdateFieldDisabledStates(key, this.isAddingNewValue ? key + 1 : key - 1);
+      }
     } else if (isTab && inputValue === value[key]) {
       this.setState({
         fromTab: true,
@@ -325,6 +333,7 @@ export default class PinCode extends Component<Props, State> {
       isTabClicked,
     } = this.props;
     const { isBackSpace, focusKeyChanged, focusIsUpdated } = this.state;
+    // debugger;
     const key = value.join('').length;
     const inputValue = value[key - 1];
     this.isAddingNewValue = this.fromBackspace
@@ -577,12 +586,16 @@ export default class PinCode extends Component<Props, State> {
       value,
       disabled,
       pinCodesVisible,
+      pinFieldDisabledStates,
+      repeatPinFieldDisabledStates,
     } = this.props;
 
     const pinCodeClasses = classNames([
       styles.pinCode,
       error ? styles.error : null,
     ]);
+
+    const disabledStates = name === 'pinCode' ? pinFieldDisabledStates : repeatPinFieldDisabledStates;
 
     return (
       <div
@@ -614,7 +627,7 @@ export default class PinCode extends Component<Props, State> {
               value={value ? value[index] : undefined}
               autoFocus={autoFocus && index === 0}
               allowSigns={false}
-              disabled={this.isInputFieldDisabled(index, value, disabled)}
+              disabled={disabled || disabledStates[index]}
             />
           );
         })}
