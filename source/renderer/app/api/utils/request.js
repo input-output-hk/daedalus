@@ -20,7 +20,7 @@ export type RequestOptions = {
 
 const ALLOWED_ERROR_EXCEPTION_PATHS = [];
 
-const { isIncentivizedTestnet, isSelfnode } = global.environment;
+const { isSelfnode } = global.environment;
 
 const agent = new global.https.Agent({
   maxCachedSessions: 256, // Default: 100 | 0 - Disable TLS session caching
@@ -119,10 +119,9 @@ function typedRequest<Response>(
       'minVersion',
       'maxVersion',
     ]);
-    const httpsRequest =
-      isIncentivizedTestnet || isSelfnode
-        ? global.http.request(httpOnlyOptions)
-        : global.https.request(options);
+    const httpsRequest = isSelfnode
+      ? global.http.request(httpOnlyOptions)
+      : global.https.request(options);
 
     if (hasRequestBody) {
       if (isOctetStreamRequest) {

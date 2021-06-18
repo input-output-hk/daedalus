@@ -6,7 +6,6 @@ import StatusIcons from './StatusIcons';
 import ReportIssue from './ReportIssue';
 import LogosDisplay from './LogosDisplay';
 import SyncingConnectingBackground from './SyncingConnectingBackground';
-import SyncingConnectingTitle from './SyncingConnectingTitle';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnecting.scss';
@@ -25,7 +24,6 @@ type Props = {
   verificationProgress: number,
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
-  isFlight: boolean,
   isConnected: boolean,
   isSynced: boolean,
   isConnecting: boolean,
@@ -44,7 +42,6 @@ type Props = {
   isNodeTimeCorrect: boolean,
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
-  isIncentivizedTestnet: boolean,
   isVerifyingBlockchain: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
@@ -122,11 +119,9 @@ export default class SyncingConnecting extends Component<Props, State> {
 
   get showReportIssue() {
     const {
-      isFlight,
       isConnected,
       isSyncProgressStalling,
       cardanoNodeState,
-      isIncentivizedTestnet,
       forceConnectivityIssue,
       isVerifyingBlockchain,
     } = this.props;
@@ -138,10 +133,6 @@ export default class SyncingConnecting extends Component<Props, State> {
         (!isConnected &&
           (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
             cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
-
-    if (isFlight || isIncentivizedTestnet || global.isShelleyTestnet) {
-      return canReportConnectingIssue;
-    }
     return canReportConnectingIssue;
   }
 
@@ -160,7 +151,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       onOpenExternalLink,
       onDownloadLogs,
       disableDownloadLogs,
-      isIncentivizedTestnet,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -185,7 +175,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       <div className={styles.component}>
         <SyncingConnectingBackground
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
-          isIncentivizedTestnet={isIncentivizedTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
         />
@@ -207,7 +196,6 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          {isIncentivizedTestnet && <SyncingConnectingTitle />}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}

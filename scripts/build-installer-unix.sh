@@ -137,10 +137,6 @@ function checkItnCluster() {
 # Build/get cardano bridge which is used by make-installer
 echo '~~~ Prebuilding cardano bridge'
 CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
-echo '~~~ Prebuilding jormungandr bridge'
-JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
-
-itnClusters="$(< "$(nix-build --no-out-link -A itnClustersFile)")"
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
@@ -155,14 +151,9 @@ pushd installers
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
 
-          if [ "$(checkItnCluster "${cluster}" "${itnClusters}")" == "1" ]; then
-            echo "Cluster type: jormungandr"
-            BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
-          else
-            echo "Cluster type: cardano"
-            CARDANO_BRIDGE="$(nix-build ../. --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano --argstr cluster "${cluster}")"
-            BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
-          fi
+          echo "Cluster type: cardano"
+          CARDANO_BRIDGE="$(nix-build ../. --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano --argstr cluster "${cluster}")"
+          BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
 
           INSTALLER_CMD=("make-installer"
                          "${test_installer}"

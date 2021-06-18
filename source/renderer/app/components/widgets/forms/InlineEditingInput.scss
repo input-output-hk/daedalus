@@ -29,6 +29,7 @@
       background: var(--rp-input-bg-color-disabled);
       border: none;
     }
+
     &:hover {
       input {
         cursor: text;
@@ -67,12 +68,15 @@
     cursor: pointer;
     height: 28px;
     width: 28px;
+
     &:hover {
       background-color: var(--theme-button-flat-background-color-hover);
     }
+
     &:active {
       background-color: var(--theme-button-flat-background-color-active);
     }
+
     .icon {
       svg {
         height: 12px;
@@ -82,56 +86,69 @@
       }
     }
   }
+
   .editButton {
     opacity: 0;
     transition: opacity 0.25s;
+
     &:hover {
       opacity: 1;
     }
+
     .icon {
       svg path {
         stroke: var(--theme-button-flat-text-color);
       }
     }
   }
+
   .cancelButton {
     .icon {
       svg {
         height: 10px;
         width: 10px;
+
         g {
           fill: var(--theme-button-flat-text-color);
         }
       }
     }
   }
+
   .okButton {
     background-color: var(--theme-button-primary-background-color);
     margin-left: 11px;
+
     &:hover {
       background-color: var(--theme-button-primary-background-color-hover);
     }
+
     &:active {
       background-color: var(--theme-button-primary-background-color-active);
     }
+
     .icon {
       svg path {
         stroke: var(--theme-button-primary-text-color);
       }
     }
   }
+
   .submittingButton {
     &:hover {
       background-color: var(--theme-button-flat-background-color);
       cursor: default;
     }
+
     &:active {
       background-color: var(--theme-button-flat-background-color);
     }
+
     .icon {
       animation: spinner 1.5s linear;
       animation-iteration-count: infinite;
       display: inline-block;
+
       svg g {
         stroke: var(--theme-button-flat-text-color);
       }

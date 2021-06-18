@@ -133,7 +133,6 @@ type Props = {
   updateDataForActiveDialogAction: Function,
   onDelegateClick: Function,
   nameValidator: Function,
-  isIncentivizedTestnet: boolean,
   isLegacy: boolean,
   changeSpendingPasswordDialog: Node,
   walletPublicKeyDialogContainer: Node,
@@ -361,7 +360,6 @@ export default class WalletSettings extends Component<Props, State> {
       onCancel,
       onVerifyRecoveryPhrase,
       nameValidator,
-      isIncentivizedTestnet,
       isLegacy,
       changeSpendingPasswordDialog,
       recoveryPhraseVerificationDate,
@@ -377,15 +375,6 @@ export default class WalletSettings extends Component<Props, State> {
 
     // Set Japanese locale to moment. Default is en-US
     moment.locale(momentLocales[locale]);
-
-    if (isLegacy && isIncentivizedTestnet) {
-      return (
-        <div className={styles.component}>
-          {this.renderWalletPublicKeyBox()}
-          {this.renderDeleteWalletBox()}
-        </div>
-      );
-    }
 
     const passwordMessage = isSpendingPasswordSet
       ? intl.formatMessage(messages.passwordLastUpdated, {

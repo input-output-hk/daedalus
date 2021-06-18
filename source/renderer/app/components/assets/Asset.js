@@ -404,9 +404,9 @@ export default class Asset extends Component<Props, State> {
       : this.renderPillPopOverContainer();
     const settingsContent = this.renderSettingsContent();
 
-    const componenClassnames = classnames([styles.component, className]);
+    const componentClassnames = classnames([styles.component, className]);
     return (
-      <div className={componenClassnames}>
+      <div className={componentClassnames}>
         {content}
         {settingsContent}
       </div>

@@ -102,8 +102,7 @@ export default class WalletSettingsStore extends Store {
         });
         const hasNotification =
           recoveryPhraseVerificationStatus ===
-            RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION &&
-          !global.isIncentivizedTestnet;
+          RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION;
         obj[id] = {
           id,
           recoveryPhraseVerificationDate,

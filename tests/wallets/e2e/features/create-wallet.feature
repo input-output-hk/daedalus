@@ -1,4 +1,4 @@
-@e2e
+@e2e @wip
 Feature: Create a wallet
 
   Background:
@@ -14,8 +14,8 @@ Feature: Create a wallet
     And I click on the create wallet button on the add wallet page
     And I see the create wallet dialog
     And I submit the create wallet with spending password dialog with the following inputs:
-      | walletName | password  | repeatedPassword |
-      | New wallet | Secret1234 | Secret1234      |
+      | walletName | password   | repeatedPassword |
+      | New wallet | Secret1234 | Secret1234       |
     And I see the create wallet privacy dialog
     And I click on "Please make sure nobody looks your screen" checkbox
     And I submit the create wallet privacy dialog

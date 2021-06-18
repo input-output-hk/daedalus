@@ -11,7 +11,6 @@ type Props = {
   activeItem: string,
   onNavItemClick: Function,
   isActiveNavItem: Function,
-  isIncentivizedTestnet: boolean,
 };
 
 type ContextValue = {
@@ -32,7 +31,6 @@ export default class StakingWithNavigation extends Component<Props> {
       onNavItemClick,
       activeItem,
       isActiveNavItem,
-      isIncentivizedTestnet,
     } = this.props;
     const componentStyles = classnames([styles.component, styles[activeItem]]);
 
@@ -46,7 +44,6 @@ export default class StakingWithNavigation extends Component<Props> {
               isActiveNavItem={isActiveNavItem}
               onNavItemClick={onNavItemClick}
               activeItem={activeItem}
-              isIncentivizedTestnet={isIncentivizedTestnet}
             />
           </div>
           <div

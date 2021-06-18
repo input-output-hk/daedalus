@@ -1,6 +1,0 @@
-version: "{build}"
-
-build: off
-
-test_script:
-- ps: echo "No Longer Used, windows binaries cross compiled in hydra"

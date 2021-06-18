@@ -7,36 +7,34 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
-export type CardanoNodeImplementations = 'cardano' | 'jormungandr' | 'selfnode';
+export type CardanoNodeImplementations = 'cardano' | 'selfnode';
 
 export const CardanoNodeImplementationOptions: {
   CARDANO: CardanoNodeImplementations,
-  JORMUNGANDR: CardanoNodeImplementations,
   SELFNODE: CardanoNodeImplementations,
 } = {
   CARDANO: 'cardano',
-  JORMUNGANDR: 'jormungandr',
   SELFNODE: 'selfnode',
 };
 
 export type NetworkNames =
   | 'mainnet'
-  | 'staging'
   | 'testnet'
-  | 'development'
-  | 'itn_rewards_v1'
+  | 'staging'
+  | 'shelley_qa'
   | 'selfnode'
+  | 'development'
   | string;
 
 export type PlatformNames = 'win32' | 'linux' | 'darwin' | string;
 
 export const NetworkNameOptions = {
   mainnet: 'mainnet',
-  staging: 'staging',
   testnet: 'testnet',
-  development: 'development',
-  itn_rewards_v1: 'itn_rewards_v1',
+  staging: 'staging',
+  shelley_qa: 'shelley_qa',
   selfnode: 'selfnode',
+  development: 'development',
 };
 
 export type CardanoNodeState =
@@ -66,11 +64,11 @@ export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
 
 export type CardanoPidOptions =
   | 'mainnet-PREVIOUS-CARDANO-PID'
-  | 'staging-PREVIOUS-CARDANO-PID'
   | 'testnet-PREVIOUS-CARDANO-PID'
-  | 'development-PREVIOUS-CARDANO-PID'
-  | 'itn_rewards_v1-PREVIOUS-CARDANO-PID'
+  | 'staging-PREVIOUS-CARDANO-PID'
+  | 'shelley_qa-PREVIOUS-CARDANO-PID'
   | 'selfnode-PREVIOUS-CARDANO-PID'
+  | 'development-PREVIOUS-CARDANO-PID'
   | string;
 
 export type CardanoNodeStorageKeys = {
@@ -80,8 +78,6 @@ export type CardanoNodeStorageKeys = {
 export type CardanoNodeProcessNames =
   | 'cardano-node'
   | 'cardano-node.exe'
-  | 'jormungandr'
-  | 'jormungandr.exe'
   | 'local-cluster'
   | 'local-cluster.exe';
 
@@ -100,11 +96,6 @@ export const CardanoProcessNameOptions: {
     win32: 'cardano-node.exe',
     linux: 'cardano-node',
     darwin: 'cardano-node',
-  },
-  jormungandr: {
-    win32: 'jormungandr.exe',
-    linux: 'jormungandr',
-    darwin: 'jormungandr',
   },
   selfnode: {
     win32: 'local-cluster.exe',
@@ -152,12 +143,6 @@ export const MAINNET_MAGIC = [1, null];
 
 // Cardano Byron Testnet network magic
 export const TESTNET_MAGIC = [1097911063, 0];
-
-// Cardano Byron Testnet network magic
-export const ITN_MAGIC = 1;
-
-// Cardano Mainnet Candidate during the Shelley HF
-export const SHELLEY_TESTNET_NETWORK_ID = [1, 0, null];
 
 // Cardano Staging network magic
 export const STAGING_MAGIC = [633343913, 1];

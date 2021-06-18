@@ -6,7 +6,14 @@ Changelog
 ### Fixes
 
 - Fixed asset amount validation ([PR 2472](https://github.com/input-output-hk/daedalus/pull/2472))
+- Fixed incorrect global instances in scss files ([PR 2593](https://github.com/input-output-hk/daedalus/pull/2593))
+- Fixed "shelley-qa" network issue on "Delegation" wizard ([PR 2595](https://github.com/input-output-hk/daedalus/pull/2595))
+- Fixed Trezor transaction native tokens grouping issue ([PR 2594](https://github.com/input-output-hk/daedalus/pull/2594))
 - Fixed notes field visibility for software wallets on Share Wallet Address dialog ([PR 2582](https://github.com/input-output-hk/daedalus/pull/2582))
+
+### Chores
+
+- Removed Jormungandr integration and legacy clusters ([PR 2579](https://github.com/input-output-hk/daedalus/pull/2579))
 
 ## 4.1.0
 

@@ -18,114 +18,114 @@
   &:hover {
     background-color: var(--theme-sidebar-menu-item-background-color-hover);
   }
-}
 
-.legacyItem {
-  .title {
-    padding-right: 50px;
+  &.legacyItem {
+    .title {
+      padding-right: 50px;
+    }
+
+    .meta {
+      :global {
+        .ProgressBar_component {
+          width: 156px;
+        }
+      }
+    }
+  }
+
+  &.notResponding {
+    .meta {
+      opacity: 0.5;
+    }
+  }
+
+  &.notification {
+    &:after {
+      background: var(--theme-button-attention-background-color);
+      border-radius: 50%;
+      content: '';
+      display: block;
+      height: 8px;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-8px);
+      width: 8px;
+    }
+  }
+
+  &.active {
+    background-color: var(--theme-sidebar-menu-item-background-color-active);
+
+    &:hover {
+      background-color: var(--theme-sidebar-menu-item-background-color-active);
+      cursor: default;
+    }
   }
 
   .meta {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    text-align: left;
+    width: 100%;
+
     :global {
       .ProgressBar_component {
-        width: 156px;
+        left: 0;
+        margin-top: 6.5px;
+        position: absolute;
+        right: 0;
+        top: 100%;
       }
     }
-  }
-}
 
-.notResponding {
-  .meta {
-    opacity: 0.5;
-  }
-}
+    .topContainer {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
 
-.active {
-  background-color: var(--theme-sidebar-menu-item-background-color-active);
-
-  &:hover {
-    background-color: var(--theme-sidebar-menu-item-background-color-active);
-    cursor: default;
-  }
-}
-
-.meta {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  text-align: left;
-  width: 100%;
-
-  :global {
-    .ProgressBar_component {
-      left: 0;
-      margin-top: 6.5px;
-      position: absolute;
-      right: 0;
-      top: 100%;
-    }
-  }
-}
-
-.topContainer {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-
-  .title {
-    color: var(--theme-sidebar-menu-item-wallet-name-color);
-    font-family: var(--font-regular);
-    font-size: 18px;
-    line-height: 1.5em;
-    margin-top: -5.5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .hardwareWalletsIconWrapper {
-    flex: 1;
-    margin-top: -5.5px;
-
-    .hardwareWalletsIcon {
-      svg {
-        height: 14px;
-        margin-left: 6px;
-        width: 14px;
-
-        path {
-          fill: var(--theme-sidebar-menu-item-wallet-name-color);
-        }
+      .title {
+        color: var(--theme-sidebar-menu-item-wallet-name-color);
+        font-family: var(--font-regular);
+        font-size: 18px;
+        line-height: 1.5em;
+        margin-top: -5.5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
-      &.disconnected {
-        svg {
-          opacity: 0.3;
+      .hardwareWalletsIconWrapper {
+        flex: 1;
+        margin-top: -5.5px;
+
+        .hardwareWalletsIcon {
+          svg {
+            height: 14px;
+            margin-left: 6px;
+            width: 14px;
+
+            path {
+              fill: var(--theme-sidebar-menu-item-wallet-name-color);
+            }
+          }
+
+          &.disconnected {
+            svg {
+              opacity: 0.3;
+            }
+          }
         }
       }
     }
-  }
-}
 
-.info {
-  color: var(--theme-sidebar-menu-item-wallet-info-color);
-  font-family: var(--font-light);
-  font-size: 14px;
-  letter-spacing: 1px;
-  opacity: 0.7;
-}
-
-.notification {
-  &:after {
-    background: var(--theme-button-attention-background-color);
-    border-radius: 50%;
-    content: '';
-    display: block;
-    height: 8px;
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-8px);
-    width: 8px;
+    .info {
+      color: var(--theme-sidebar-menu-item-wallet-info-color);
+      font-family: var(--font-light);
+      font-size: 14px;
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
   }
 }
