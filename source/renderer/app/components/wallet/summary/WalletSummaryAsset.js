@@ -86,6 +86,7 @@ const WalletSummaryAsset = observer((props: Props) => {
           anyAssetWasHovered={anyAssetWasHovered}
           className={styles.asset}
           hidePopOver
+          fullFingerprint
         />
         <AssetAmount
           amount={asset.quantity}
