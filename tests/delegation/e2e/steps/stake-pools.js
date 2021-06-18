@@ -93,11 +93,6 @@ When(/^I click "confirm" button/, function () {
   return this.waitAndClick(DIALOG_CONFIRM_SELECTOR);
 });
 
-When(/^I mark experimental feature as read/, async function () {
-  await this.client.waitForVisible('.ExperimentalDataOverlay_component');
-  return this.waitAndClick('.ExperimentalDataOverlay_actionButton');
-});
-
 Then(/^I should see stake pool tooltip with order number "([^"]*)"/, async function (rankNumber) {
   const stakePoolRankingText = await this.waitAndGetText(STAKE_POOL_TOOLTIP_RANKING_SELECTOR);
   const stakePoolRanking = Array.isArray(stakePoolRankingText) ? stakePoolRankingText[0] : stakePoolRankingText;

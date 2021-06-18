@@ -7,12 +7,10 @@ import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import styles from './SuccessDialog.scss';
 import type {
   WalletDaedalusKind,
-  WalletKind,
   WalletYoroiKind,
 } from '../../../types/walletRestoreTypes';
 import {
   WALLET_DAEDALUS_KINDS,
-  WALLET_KINDS,
   WALLET_YOROI_KINDS,
 } from '../../../config/walletRestoreConfig';
 
@@ -43,18 +41,10 @@ const messages = defineMessages({
     description:
       'Description "line 3" on the wallet restore "success" step dialog.',
   },
-  descriptionLine4: {
-    id: 'wallet.restore.dialog.step.success.dialog.description.line4',
-    defaultMessage:
-      '!!!To participate in the Incentivized Testnet, the mainnet wallet you are restoring must have had funds at the time of the balance snapshot at 12.00 UTC, November 29, 2019. If you are sure that you used the correct wallet recovery phrase, then please check that you had funds in your mainnet wallet at this time.',
-    description:
-      'Description "line 5" on the wallet restore "success" step dialog.',
-  },
 });
 
 type Props = {
   onClose: Function,
-  walletKind: ?WalletKind,
   walletKindDaedalus: ?WalletDaedalusKind,
   walletKindYoroi: ?WalletYoroiKind,
 };
@@ -65,16 +55,9 @@ export default class SuccessDialog extends Component<Props> {
   };
 
   render() {
-    const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
-    const {
-      onClose,
-      walletKind,
-      walletKindDaedalus,
-      walletKindYoroi,
-    } = this.props;
+    const { onClose, walletKindDaedalus, walletKindYoroi } = this.props;
 
-    const isHardwareWallet = walletKind === WALLET_KINDS.HARDWARE;
     const isDaedalusBalanceWallet =
       walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_12_WORD ||
       walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_27_WORD;
@@ -111,14 +94,6 @@ export default class SuccessDialog extends Component<Props> {
               <FormattedHTMLMessage {...messages.descriptionLine3} />
             </div>
           )}
-          {(isDaedalusBalanceWallet ||
-            isYoroiBalanceWallet ||
-            isHardwareWallet) &&
-            isIncentivizedTestnet && (
-              <div className={styles.description5}>
-                <FormattedHTMLMessage {...messages.descriptionLine4} />
-              </div>
-            )}
         </div>
       </WalletRestoreDialog>
     );

@@ -5,7 +5,6 @@ import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import {
-  isIncentivizedTestnetTheme,
   generateWallet,
   generateHash,
   generatePolicyIdHash,
@@ -133,8 +132,8 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-export default (props: { currentTheme: string, locale: Locale }) => {
-  const { currentTheme, locale } = props;
+export default (props: { locale: Locale }) => {
+  const { locale } = props;
 
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
@@ -167,7 +166,6 @@ export default (props: { currentTheme: string, locale: Locale }) => {
 
   return (
     <WalletSettings
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
       isLegacy={boolean('isLegacy', false)}
       isDialogOpen={(dialog) => {
         if (dialog === ChangeSpendingPasswordDialog) {

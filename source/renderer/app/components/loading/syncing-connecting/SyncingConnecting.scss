@@ -12,6 +12,20 @@
     width: 100%;
     z-index: 2000;
   }
+
+  :global {
+    .connectingScreen {
+      span svg path {
+        stroke: var(--theme-news-feed-icon-color-connecting-screen);
+      }
+    }
+
+    .syncingScreen {
+      span svg path {
+        stroke: var(--theme-news-feed-icon-color-syncing-screen);
+      }
+    }
+  }
 }
 
 .component,

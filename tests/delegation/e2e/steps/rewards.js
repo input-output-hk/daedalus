@@ -13,9 +13,9 @@ const exportedCSVPath = path.resolve(
 );
 const exportedCSVContent = [['Wallet', 'Reward', 'Date'], ['Test Wallet', '1,000,000.000000 ADA', moment().format('YYYY-MM-DDTHHmmss.0SSS')]];
 const REWARDS_TAB_BUTTON = '.rewards.NavButton_component.NavButton_normal';
-const REWARDS_PAGE = '.StakingRewardsForIncentivizedTestnet_component';
-const NO_REWARDS_SELECTOR = '.StakingRewardsForIncentivizedTestnet_component .StakingRewardsForIncentivizedTestnet_noRewardsLabel';
-const REWARDS_LIST_SELECTOR = '.StakingRewardsForIncentivizedTestnet_component .BorderedBox_component table';
+const REWARDS_PAGE = '.StakingRewards_component';
+const NO_REWARDS_SELECTOR = '.StakingRewards_component .StakingRewards_noRewardsLabel';
+const REWARDS_LIST_SELECTOR = '.StakingRewards_component .BorderedBox_component table';
 
 When(/^I click on rewards tab button$/, async function () {
   return this.waitAndClick(REWARDS_TAB_BUTTON);

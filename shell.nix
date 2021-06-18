@@ -87,8 +87,8 @@ let
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
-    NODE_EXE = if nodeImplementation == "jormungandr" then "cardano-wallet-jormungandr" else "cardano-wallet-http-bridge";
-    CLI_EXE = if nodeImplementation == "jormungandr" then "jcli" else "";
+    NODE_EXE = "cardano-wallet";
+    CLI_EXE = "cardano-cli";
     NODE_IMPLEMENTATION = nodeImplementation;
     shellHook = let
       secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
@@ -108,9 +108,9 @@ let
 
       # These links will only occur to binaries that exist for the
       # specific build config
-      ln -svf $(type -P jormungandr)
-      ln -svf $(type -P cardano-wallet-jormungandr)
-      ln -svf $(type -P jcli)
+      ln -svf $(type -P cardano-node)
+      ln -svf $(type -P cardano-wallet)
+      ln -svf $(type -P cardano-cli)
       mkdir -p Release/
       ln -sv $PWD/node_modules/usb/build/Release/usb_bindings.node Release/
       ln -sv $PWD/node_modules/node-hid/build/Release/HID.node Release/
