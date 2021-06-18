@@ -6,29 +6,9 @@ import { ipcRenderer } from 'electron';
 import electronLog from 'electron-log-daedalus';
 import EventEmitter from 'events';
 import { environment } from './environment';
-import {
-  buildLabel,
-  cluster,
-  legacyStateDir,
-  nodeImplementation,
-  isFlight,
-  smashUrl,
-} from './config';
-import {
-  SHELLEY_LOCAL,
-  SHELLEY_TESTNET,
-  SHELLEY_QA,
-} from '../common/types/environment.types';
-import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
+import { buildLabel, legacyStateDir, isFlight, smashUrl } from './config';
 
 const _process = process;
-const _isShelleyTestnet =
-  nodeImplementation === CardanoNodeImplementationOptions.CARDANO &&
-  (cluster === SHELLEY_LOCAL ||
-    cluster === SHELLEY_TESTNET ||
-    cluster === SHELLEY_QA);
-const _isIncentivizedTestnet =
-  nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR;
 
 // Increase maximum event listeners to avoid IPC channel stalling
 // (2/2) this line increases the limit for the renderer process
@@ -61,8 +41,6 @@ process.once('loaded', () => {
       error: (...args) => electronLog.error(...args),
       warn: (...args) => electronLog.warn(...args),
     },
-    isShelleyTestnet: _isShelleyTestnet,
-    isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
     legacyStateDir,
     smashUrl,

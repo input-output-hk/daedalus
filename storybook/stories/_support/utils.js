@@ -251,8 +251,5 @@ export const promise = (returnValue: any): (() => Promise<any>) => () =>
     }, 2000);
   });
 
-export const isIncentivizedTestnetTheme = (currentTheme: string) =>
-  currentTheme === 'incentivized-testnet';
-
 export const isShelleyTestnetTheme = (currentTheme: string) =>
   currentTheme === 'shelley-testnet';

@@ -1,4 +1,4 @@
-@e2e
+@e2e @wip
 Feature: Wallet Settings
 
   Background:

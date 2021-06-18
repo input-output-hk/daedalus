@@ -53,29 +53,6 @@ $tooltip-width: 280px;
     }
   }
 
-  .experimentalIcon {
-    padding: 0;
-
-    svg {
-      height: 14.5px;
-      width: 10px;
-
-      g {
-        path:nth-child(1) {
-          fill: var(
-            --theme-staking-stake-pool-tooltip-experimental-icon-background-color
-          );
-        }
-
-        path:nth-child(2) {
-          fill: var(
-            --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
-          );
-        }
-      }
-    }
-  }
-
   .iconButton {
     cursor: pointer;
   }

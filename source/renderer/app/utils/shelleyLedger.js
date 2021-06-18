@@ -11,6 +11,7 @@ import _ from 'lodash';
 import {
   derivationPathToLedgerPath,
   CERTIFICATE_TYPE,
+  groupTokensByPolicyId,
 } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { AddressStyles } from '../domains/WalletAddress';
@@ -133,38 +134,6 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
     outputNo,
     encodeCBOR,
   };
-};
-
-export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
-  const compareStringsCanonically = (string1: string, string2: string) =>
-    string1.length - string2.length || string1.localeCompare(string2);
-
-  const groupedAssets = {};
-  _(assets)
-    .orderBy(['policyId', 'assetName'], ['asc', 'asc'])
-    .groupBy(({ policyId }) => policyId)
-    .mapValues((tokens) =>
-      tokens.map(({ assetName, quantity, policyId }) => ({
-        assetName,
-        quantity,
-        policyId,
-      }))
-    )
-    .map((tokens, policyId) => ({
-      policyId,
-      assets: tokens.sort((token1, token2) =>
-        compareStringsCanonically(token1.assetName, token2.assetName)
-      ),
-    }))
-    .sort((token1, token2) =>
-      compareStringsCanonically(token1.policyId, token2.policyId)
-    )
-    .value()
-    .map((sortedAssetsGroup) => {
-      groupedAssets[sortedAssetsGroup.policyId] = sortedAssetsGroup.assets;
-      return groupedAssets;
-    });
-  return groupedAssets;
 };
 
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
