@@ -136,7 +136,10 @@ export default class StakingStore extends Store {
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
-    this.registerReactions([this._pollOnSync]);
+    this.registerReactions([
+      this._pollOnSync,
+      this._updateRewardsHistoryOnRequestChange,
+    ]);
 
     this._startStakePoolsFetchTracker();
     this._getStakingInfoWasOpen();
@@ -407,10 +410,6 @@ export default class StakingStore extends Store {
     this.isDelegationTransactionPending = false;
   };
 
-  @action markStakingExperimentAsRead = () => {
-    this.isStakingExperimentRead = true;
-  };
-
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
   ): Promise<?DelegationCalculateFeeResponse> => {
@@ -592,6 +591,7 @@ export default class StakingStore extends Store {
         );
       }
     } else {
+      // regular / smash
       this.fetchingStakePoolsFailed = false;
       if (this.refreshPolling) {
         clearInterval(this.refreshPolling);
@@ -858,31 +858,39 @@ export default class StakingStore extends Store {
     this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
 
   _fetchRewardsHistory = async ({ address }: { address: string }) => {
+    const addresses: Array<string> = [address];
     try {
       await this.rewardsHistoryRequest.execute({
-        addresses: [address],
-      });
-      const rewardsHistory = toJS(this.rewardsHistoryRequest.result);
-      runInAction(() => {
-        this.rewardsHistory[address] = rewardsHistory
-          ? rewardsHistory.filter(Boolean).map((r) => {
-              const pool = this.stores.staking.getStakePoolById(r.stakePool.id);
-              if (!pool) {
-                throw new Error(`Could not find stake pool ${r.stakePool.id}`);
-              }
-              return {
-                pool,
-                epoch: r.earnedIn.number,
-                amount: new BigNumber(r.amount),
-              };
-            })
-          : [];
+        addresses,
       });
     } catch (error) {
       runInAction(() => {
         this.rewardsHistory[address] = [];
       });
     }
+  };
+
+  _updateRewardsHistoryOnRequestChange = () => {
+    const { result } = this.rewardsHistoryRequest;
+    const { stakePools } = this.stores.staking;
+
+    // Only continue if rewards history & stake pools data is available
+    if (result == null || stakePools.length === 0) return;
+
+    const rewardsHistory = toJS(result);
+    const { address } = rewardsHistory[0];
+    runInAction(() => {
+      this.rewardsHistory[address] = rewardsHistory
+        ? rewardsHistory.filter(Boolean).map((r) => {
+            const pool = stakePools.find((p) => p.id === r.stakePool.id);
+            return {
+              pool,
+              epoch: r.earnedIn.number,
+              amount: new BigNumber(r.amount),
+            };
+          })
+        : [];
+    });
   };
 
   _requestRewardsHistoryCSVFile = async ({
