@@ -73,9 +73,13 @@ const WalletSummaryAsset = observer((props: Props) => {
       anyAssetWasHovered,
       assetSettingsDialogWasOpened,
     } = props;
+    const { decimals, recommendedDecimals } = asset;
     const arrowStyles = classNames(styles.arrow, {
       [styles.isExpanded]: isExpanded,
     });
+    const hasWarning =
+      typeof recommendedDecimals === 'number' &&
+      decimals !== recommendedDecimals;
     return (
       <div className={styles.header} onClick={toggleIsExpanded}>
         <Asset
@@ -87,6 +91,7 @@ const WalletSummaryAsset = observer((props: Props) => {
           className={styles.asset}
           hidePopOver
           fullFingerprint
+          hasWarning={hasWarning}
         />
         <AssetAmount
           amount={asset.quantity}

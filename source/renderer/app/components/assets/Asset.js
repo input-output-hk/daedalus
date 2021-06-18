@@ -79,6 +79,7 @@ type Props = {
   assetSettingsDialogWasOpened?: ?boolean,
   anyAssetWasHovered?: ?boolean,
   fullFingerprint?: ?boolean,
+  hasWarning?: ?boolean,
   className?: string,
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
@@ -168,16 +169,19 @@ export default class Asset extends Component<Props, State> {
 
   renderPillContent() {
     const { intl } = this.context;
-    const { asset, metadataNameChars, small, fullFingerprint } = this.props;
+    const {
+      asset,
+      metadataNameChars,
+      small,
+      fullFingerprint,
+      hasWarning,
+    } = this.props;
     const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.pill,
       small ? styles.small : null,
     ]);
-    const hasWarning =
-      typeof recommendedDecimals === 'number' &&
-      decimals !== recommendedDecimals;
     let warningPopOverMessage;
     if (hasWarning) {
       warningPopOverMessage =
@@ -263,7 +267,7 @@ export default class Asset extends Component<Props, State> {
 
   renderSettingsContent = () => {
     const { intl } = this.context;
-    const { asset, onClickSettings } = this.props;
+    const { asset, onClickSettings, hasWarning } = this.props;
     if (!onClickSettings) return null;
     const {
       isSettingsPopOverVisible,
@@ -272,9 +276,6 @@ export default class Asset extends Component<Props, State> {
     } = this;
     const onClickSettingsBind = () => onClickSettings && onClickSettings(asset);
     const { decimals, recommendedDecimals } = asset;
-    const hasWarning =
-      typeof recommendedDecimals === 'number' &&
-      decimals !== recommendedDecimals;
     let warningPopOverMessage;
     if (hasWarning) {
       warningPopOverMessage =
