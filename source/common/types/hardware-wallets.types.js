@@ -185,7 +185,6 @@ export type TrezorAuxiliaryDataType = {
     rewardAddressParameters: {
       addressType: number,
       path: string,
-      stakingPath: string,
     },
     nonce: string,
   },

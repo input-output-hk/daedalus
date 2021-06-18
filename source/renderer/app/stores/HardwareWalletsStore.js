@@ -1624,12 +1624,9 @@ export default class HardwareWalletsStore extends Store {
     let auxiliaryData = null;
     if (this.votingData) {
       const { votingKey, nonce } = this.votingData;
-      // Voting has only one input
-      const derivationPath = get(inputsData, [0, 'path'], null);
       auxiliaryData = prepareTrezorAuxiliaryData({
         votingKey,
         nonce: nonce.toString(),
-        derivationPath,
       });
     }
 
