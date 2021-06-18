@@ -104,7 +104,7 @@ export default class LocalStorageApi {
     await electronStoreConversation.request({
       type: types.SET,
       key,
-      data: JSON.parse(JSON.stringify(data)),
+      data: toJS(data),
       id,
     });
   };
@@ -456,10 +456,7 @@ export default class LocalStorageApi {
   overrideHardwareWalletDevices = async (
     data: HardwareWalletDevicesType
   ): Promise<void> =>
-    LocalStorageApi.set(
-      keys.HARDWARE_WALLET_DEVICES,
-      JSON.parse(JSON.stringify(data))
-    );
+    LocalStorageApi.set(keys.HARDWARE_WALLET_DEVICES, toJS(data));
 
   unsetHardwareWalletDevice = (deviceId: string): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);

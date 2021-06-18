@@ -10,6 +10,9 @@ export const safeExitWithCode = (exitCode: number) => {
   // https://nodejs.org/api/stream.html#stream_writable_end_chunk_encoding_callback
   file.stream.end('', 'utf8', () => {
     app.releaseSingleInstanceLock();
+    // Acording the official doc, relaunch should be called before exit
+    // https://www.electronjs.org/docs/api/app#apprelaunchoptions
+    app.relaunch();
     app.exit(exitCode);
   });
 };
