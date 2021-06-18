@@ -307,7 +307,10 @@ export default class PinCode extends Component<Props, State> {
       this.isAddingNewValue = inputValue && !isNaN(inputValue);
       if (onUpdateFieldDisabledStates) {
         // debugger;
-        onUpdateFieldDisabledStates(key, this.isAddingNewValue ? key + 1 : key - 1);
+        onUpdateFieldDisabledStates(
+          key,
+          this.isAddingNewValue ? key + 1 : key - 1
+        );
       }
     } else if (isTab && inputValue === value[key]) {
       this.setState({
@@ -595,7 +598,10 @@ export default class PinCode extends Component<Props, State> {
       error ? styles.error : null,
     ]);
 
-    const disabledStates = name === 'pinCode' ? pinFieldDisabledStates : repeatPinFieldDisabledStates;
+    const disabledStates =
+      name === 'pinCode'
+        ? pinFieldDisabledStates
+        : repeatPinFieldDisabledStates;
 
     return (
       <div

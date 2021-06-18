@@ -94,8 +94,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     pinCodesVisible: false,
     sectionToFocus: null,
     isTabClicked: false,
-    pinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill(true).map((item, index) => index !== 0),
-    repeatPinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH).fill(true).map((item, index) => index !== 0),
+    pinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH)
+      .fill(true)
+      .map((item, index) => index !== 0),
+    repeatPinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH)
+      .fill(true)
+      .map((item, index) => index !== 0),
   };
 
   form = new ReactToolboxMobxForm(
@@ -168,7 +172,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     }));
   };
 
-  onUpdatePinFieldDisabledStates = (prevFieldIndex: number, nextFieldIndex: number) => {
+  onUpdatePinFieldDisabledStates = (
+    prevFieldIndex: number,
+    nextFieldIndex: number
+  ) => {
     const { pinFieldDisabledStates } = this.state;
     const disabledStates = [...pinFieldDisabledStates];
     disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
@@ -178,7 +185,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     });
   };
 
-  onUpdateRepeatPinFieldDisabledStates = (prevFieldIndex: number, nextFieldIndex: number) => {
+  onUpdateRepeatPinFieldDisabledStates = (
+    prevFieldIndex: number,
+    nextFieldIndex: number
+  ) => {
     const { repeatPinFieldDisabledStates } = this.state;
     const disabledStates = [...repeatPinFieldDisabledStates];
     disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
@@ -308,7 +318,15 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onChange={(values, isTab) => this.onChangePinCode(values, isTab)}
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
-            onUpdateFieldDisabledStates={(prevFieldIndex: number, nextFieldIndex: number) => this.onUpdatePinFieldDisabledStates(prevFieldIndex, nextFieldIndex)}
+            onUpdateFieldDisabledStates={(
+              prevFieldIndex: number,
+              nextFieldIndex: number
+            ) =>
+              this.onUpdatePinFieldDisabledStates(
+                prevFieldIndex,
+                nextFieldIndex
+              )
+            }
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!pinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
@@ -327,7 +345,15 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             }
             onResetValues={(type: string) => this.onResetValues(type)}
             onShowHideValues={() => this.onShowHideValues()}
-            onUpdateFieldDisabledStates={(prevFieldIndex: number, nextFieldIndex: number) => this.onUpdateRepeatPinFieldDisabledStates(prevFieldIndex, nextFieldIndex)}
+            onUpdateFieldDisabledStates={(
+              prevFieldIndex: number,
+              nextFieldIndex: number
+            ) =>
+              this.onUpdateRepeatPinFieldDisabledStates(
+                prevFieldIndex,
+                nextFieldIndex
+              )
+            }
             autoFocus={isRepeatPinCodeAutoFocused}
             error={hasError}
             selectedPinField={selectedPinField}
