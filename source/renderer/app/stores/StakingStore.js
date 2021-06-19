@@ -874,8 +874,8 @@ export default class StakingStore extends Store {
     const { result } = this.rewardsHistoryRequest;
     const { stakePools } = this.stores.staking;
 
-    // Only continue if rewards history & stake pools data is available
-    if (result == null || stakePools.length === 0) return;
+    // Only continue if rewards history data is available
+    if (result == null) return;
 
     const rewardsHistory = toJS(result);
     const { address } = rewardsHistory[0];
