@@ -12,6 +12,7 @@ export class GraphQLRequest<TVariables, TResult> {
   @observable execution: Deferred<TResult> | null = null;
 
   _request: (variables: TVariables) => Promise<TResult>;
+  _wasRejectedForReExecution: boolean = false;
 
   @computed get isExecutingTheFirstTime() {
     return this.isExecuting && !this.hasBeenExecutedAtLeastOnce;
@@ -21,39 +22,41 @@ export class GraphQLRequest<TVariables, TResult> {
     this._request = request;
   }
 
-  @action async execute(variables: TVariables): Promise<TResult> {
+  @action async execute(variables: TVariables): Promise<TResult | null> {
     if (this.isExecuting && this.execution != null) {
+      this._wasRejectedForReExecution = true;
       this.execution.reject(ABORT_ERROR);
     }
-    this.isExecuting = true;
     this.execution = new Deferred<TResult>((resolve, reject) => {
       this._request(variables).then(resolve).catch(reject);
     });
     try {
+      this.isExecuting = true;
       const result = await this.execution;
       runInAction(() => {
         this.result = result;
         this.error = null;
+        this.isExecuting = false;
+        this.hasBeenExecutedAtLeastOnce = true;
+        this._wasRejectedForReExecution = false;
       });
       return result;
     } catch (error) {
-      if (error === ABORT_ERROR) {
-        runInAction(() => {
-          this.result = null;
-          this.error = null;
-        });
-        throw error;
-      }
       runInAction(() => {
-        this.result = null;
-        this.error = error;
-      });
-      throw error;
-    } finally {
-      runInAction(() => {
+        if (this._wasRejectedForReExecution) {
+          this._wasRejectedForReExecution = false;
+          return null;
+        }
         this.isExecuting = false;
-        this.hasBeenExecutedAtLeastOnce = true;
+        this.result = null;
+        if (error === ABORT_ERROR) {
+          this.error = null;
+        } else {
+          this.error = error;
+          this.hasBeenExecutedAtLeastOnce = true;
+        }
       });
+      return null;
     }
   }
 }
