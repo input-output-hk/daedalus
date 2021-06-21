@@ -73,7 +73,7 @@ const rewardsCsvGenerator = async ({
     const { epoch, pool, amount } = reward;
     const valueEpoch = epoch.toString();
     const valuePool = pool ? pool.ticker : '';
-    if (pool) {
+    if (!pool) {
       console.log('NO REWARD POOL: ', reward);
     }
     const valueAmount = amount.toFormat(6);
