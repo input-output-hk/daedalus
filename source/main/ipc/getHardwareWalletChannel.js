@@ -530,16 +530,23 @@ export const handleHardwareWalletRequests = async (
     const { path } = request;
     try {
       if (!path || !devicesMemo[path]) {
-        logger.info('[HW-DEBUG] Device not instantiated!');
+        console.log('[HW-DEBUG] Device not instantiated!', {
+          path,
+          devicesMemo,
+        });
         // eslint-disable-next-line
         throw { code: 'DEVICE_NOT_CONNECTED' };
       }
-      logger.info('[HW-DEBUG] GET CARDANO APP');
+      console.log(`[HW-DEBUG] GET CARDANO APP path:${path}`);
       deviceConnection = devicesMemo[path].AdaConnection;
       const { version } = await deviceConnection.getVersion();
-      logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion');
+      console.log(
+        `[HW-DEBUG] getCardanoAdaAppChannel:: appVersion: ${version}`
+      );
       const { serial } = await deviceConnection.getSerial();
-      logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial');
+      console.log(
+        `[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial: ${serial}`
+      );
       const { minor, major, patch } = version;
       return Promise.resolve({
         minor,
@@ -556,12 +563,14 @@ export const handleHardwareWalletRequests = async (
       //  errorMessage.toLowerCase().includes('cannot open device with path') ||
       //  errorMessage.toLowerCase().includes('cannot write to hid device') ||
       //  errorMessage.toLowerCase().includes('cannot write to closed device');
-      logger.info('[HW-DEBUG] ERROR in Cardano App', {
+      console.log('[HW-DEBUG] ERROR in Cardano App', {
         path,
         errorName,
         errorMessage,
         isDisconnectError,
         isDeviceDisconnected,
+        devicesMemo,
+        deviceConnection,
       });
       if (path && !isDeviceDisconnected && isDisconnectError) {
         // $FlowFixMe
