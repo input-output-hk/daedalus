@@ -217,6 +217,7 @@ storiesOf('Wallets|Summary', module)
           false,
           'Header'
         )}
+        currentLocale="en-US"
         currencyIsFetchingRate={currencyIsFetchingRate}
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}

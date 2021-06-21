@@ -85,12 +85,12 @@
     white-space: nowrap;
   }
   .clearSearchValue {
-    display: inline-block;
     cursor: pointer;
+    display: inline-block;
     padding: 0 2px;
     span {
-      height: 8px;
       display: inline-block;
+      height: 8px;
     }
     svg {
       display: block;
@@ -132,10 +132,10 @@
   margin-bottom: 20px;
   position: relative;
   .searchIcon {
-    position: absolute;
-    z-index: 1;
-    top: 17px;
     left: 20px;
+    position: absolute;
+    top: 17px;
+    z-index: 1;
     svg {
       height: 15px;
       width: 15px;
@@ -168,11 +168,11 @@
 }
 
 .noResults {
-  font-size: 12px;
-  line-height: 1.33;
-  font-family: var(--font-regular);
   color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 12px;
   letter-spacing: 0.4px;
+  line-height: 1.33;
   margin: 0 12px;
 }
 
@@ -184,8 +184,8 @@
     color: var(--theme-bordered-box-text-color);
     font-family: var(--font-semibold);
     font-size: 10px;
-    line-height: 2;
     letter-spacing: 1px;
+    line-height: 2;
     text-transform: uppercase;
   }
 }

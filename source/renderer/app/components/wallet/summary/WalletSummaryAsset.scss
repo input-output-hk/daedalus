@@ -14,10 +14,10 @@
   }
 }
 .header {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   padding: 7px 42px 7px 12px;
-  cursor: pointer;
   position: relative;
   .asset {
     max-width: calc(100% - 90px);
@@ -30,9 +30,9 @@
     line-height: 1.33;
     margin: 3px 0;
     max-width: 80px;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 .leftContent {
@@ -48,14 +48,14 @@
   position: absolute;
   right: 12px;
   text-align: center;
+  top: 7px;
   width: 12px;
   z-index: 1;
-  top: 7px;
 
   > svg {
     height: 7px;
-    width: 12px;
     margin-top: 7px;
+    width: 12px;
 
     path {
       fill: var(--theme-widgets-asset-token-text-color);
@@ -102,10 +102,10 @@
     font-size: 12px;
     line-height: 16px;
     margin-left: 10px;
-    width: calc(100% - 100px);
-    word-wrap: break-word;
-    word-break: break-all;
     white-space: normal;
+    width: calc(100% - 100px);
+    word-break: break-all;
+    word-wrap: break-word;
   }
 
   .footerButtons {
