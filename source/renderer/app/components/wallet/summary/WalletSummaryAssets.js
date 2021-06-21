@@ -93,10 +93,25 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     searchValue: '',
   };
 
+  componentDidUpdate(prevProps: Props) {
+    const { wallet } = this.props;
+    if (prevProps.wallet.id !== wallet.id) {
+      this.setSearchValue('');
+      this.focusInputField();
+    }
+  }
+
   searchInput: Input;
 
   handleHoverAsset = () => {
     this.setState({ anyAssetWasHovered: true });
+  };
+
+  focusInputField = () => {
+    const { isSearchOpen } = this.state;
+    if (isSearchOpen && this.searchInput && this.searchInput.focus) {
+      this.searchInput.focus();
+    }
   };
 
   toggleSearch = () => {
@@ -106,9 +121,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
         isSearchOpen: !isSearchOpen,
       },
       () => {
-        if (!isSearchOpen && this.searchInput && this.searchInput.focus) {
-          this.searchInput.focus();
-        }
+        this.focusInputField();
       }
     );
   };
