@@ -122,7 +122,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     const { searchValue } = this.state;
     const { assets } = this.props;
     return onSearchAssetsDropdown(
-      searchValue,
+      searchValue.trim(),
       assets.map((asset) => ({ asset }))
     );
   }
@@ -145,7 +145,8 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     const { assets } = this;
     const { anyAssetWasHovered, searchValue } = this.state;
     const isRestoreActive = wallet.isRestoring;
-    const noResults = !assets.length && searchValue.length >= 3;
+    const noResults =
+      !assets.length && searchValue && searchValue.trim().length >= 3;
 
     if (isLoadingAssets) {
       return (
