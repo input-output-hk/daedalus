@@ -133,7 +133,11 @@ const AssetContent = observer((props: Props) => {
   const { asset, highlightFingerprint, className, intl } = props;
   const { fingerprint, policyId, assetName, metadata } = asset;
   const { name, ticker, description } = metadata || {};
-  const componentStyles = classnames([styles.component, className]);
+  const componentStyles = classnames([
+    styles.component,
+    className,
+    highlightFingerprint ? styles.highlightFingerprint : null,
+  ]);
   return (
     <div className={componentStyles}>
       {highlightFingerprint && (

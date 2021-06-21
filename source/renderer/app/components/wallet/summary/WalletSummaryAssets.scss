@@ -89,14 +89,14 @@
     cursor: pointer;
     padding: 0 2px;
     span {
-      height: 7px;
+      height: 8px;
       display: inline-block;
     }
     svg {
       display: block;
-      height: 6px;
+      height: 7px;
       opacity: 0.5;
-      width: 6px;
+      width: 7px;
     }
     &:hover {
       svg {
@@ -108,6 +108,7 @@
     border-radius: 4px;
     font-size: 10px;
     height: auto;
+    letter-spacing: 0.5px;
     line-height: 1.2;
     padding: 4px 8px;
     text-transform: uppercase;

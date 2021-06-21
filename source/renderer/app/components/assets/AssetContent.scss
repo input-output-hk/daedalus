@@ -48,6 +48,16 @@
       margin-top: -8px;
     }
   }
+
+  &.highlightFingerprint {
+    dt {
+      width: 67px;
+    }
+
+    dd {
+      width: calc(100% - 87px);
+    }
+  }
 }
 
 .fingerprint {

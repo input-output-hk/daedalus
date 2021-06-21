@@ -189,11 +189,14 @@ export default class WalletSummaryAssets extends Component<Props, State> {
       ? intl.formatMessage(messages.hideSearchButtonLabel)
       : intl.formatMessage(messages.showSearchButtonLabel);
 
+    const hasSearch =
+      !!searchValue && !!searchValue.trim().length && !isSearchOpen;
+
     return (
       <div className={styles.header}>
         <div className={styles.title}>
           {intl.formatMessage(messages.tokensTitle)} {numberOfAssets}
-          {!!searchValue.length && !isSearchOpen && (
+          {hasSearch && (
             <>
               &nbsp;-&nbsp;
               <div className={styles.searchValue} onClick={this.toggleSearch}>

@@ -230,6 +230,7 @@ export default class Asset extends Component<Props, State> {
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         anyAssetWasHovered={anyAssetWasHovered}
         className={styles.popOverContent}
+        highlightFingerprint
       />
     );
     const { isPillPopOverVisible } = this.state;

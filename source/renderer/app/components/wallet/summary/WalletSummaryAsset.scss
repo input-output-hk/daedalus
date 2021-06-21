@@ -5,6 +5,9 @@
   &.isExpanded {
     background-color: var(--theme-button-flat-background-color-hover);
     padding-bottom: 20px;
+    .header {
+      background-color: var(--theme-button-flat-background-color-hover);
+    }
     .content {
       display: block;
     }
@@ -52,10 +55,10 @@
   > svg {
     height: 7px;
     width: 12px;
-    margin-top: 8px;
+    margin-top: 7px;
 
     path {
-      fill: var(--theme-transactions-arrow-stroke-color);
+      fill: var(--theme-widgets-asset-token-text-color);
     }
   }
   .header:hover & {
