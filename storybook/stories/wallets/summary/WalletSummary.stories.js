@@ -156,7 +156,7 @@ const walletAssets = assets.total.map((assetTotal) => {
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
-  .add('Wallet Summary', () => {
+  .add('Wallet Summary', ({ locale }: { locale: string }) => {
     const currencyState = select(
       'Currency state',
       {
@@ -217,7 +217,7 @@ storiesOf('Wallets|Summary', module)
           false,
           'Header'
         )}
-        currentLocale="en-US"
+        currentLocale={locale}
         currencyIsFetchingRate={currencyIsFetchingRate}
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
