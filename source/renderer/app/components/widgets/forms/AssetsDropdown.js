@@ -25,6 +25,9 @@ export const onSearchAssetsDropdown = (
   options: Array<any>
 ) => {
   return filter(options, ({ asset }) => {
+    if (searchValue.length < 3) {
+      return true;
+    }
     const { policyId, assetName, fingerprint, metadata } = asset;
     const { name, ticker, description } = metadata || {};
     const checkList = [
