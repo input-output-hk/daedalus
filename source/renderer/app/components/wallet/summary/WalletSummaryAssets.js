@@ -70,6 +70,7 @@ type Props = {
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
   onAssetSettings: Function,
+  currentLocale: string,
   isLoadingAssets: boolean,
   assetSettingsDialogWasOpened: boolean,
 };
@@ -179,7 +180,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
   };
 
   renderHeader = () => {
-    const { isLoadingAssets } = this.props;
+    const { isLoadingAssets, currentLocale } = this.props;
     const { isSearchOpen, searchValue } = this.state;
     const { intl } = this.context;
     const { assets } = this;
@@ -193,8 +194,10 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     const hasSearch =
       !!searchValue && !!searchValue.trim().length && !isSearchOpen;
 
+    const headerStyles = classNames([styles.header, styles[currentLocale]]);
+
     return (
-      <div className={styles.header}>
+      <div className={headerStyles}>
         <div className={styles.title}>
           {intl.formatMessage(messages.tokensTitle)} {numberOfAssets}
           {hasSearch && (

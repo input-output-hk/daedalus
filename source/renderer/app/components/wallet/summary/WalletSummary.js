@@ -15,6 +15,7 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
+  currentLocale: string,
   currencyIsFetchingRate: boolean,
   currencyIsActive: boolean,
   currencySelected: ?Currency,
@@ -39,6 +40,7 @@ export default class WalletSummary extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
+      currentLocale,
       currencyIsActive,
       currencyIsFetchingRate,
       currencyLastFetched,
@@ -90,6 +92,7 @@ export default class WalletSummary extends Component<Props> {
                 onCopyAssetItem={onCopyAssetItem}
                 onAssetSettings={onAssetSettings}
                 assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+                currentLocale={currentLocale}
               />
             ) : (
               <WalletSummaryNoTokens

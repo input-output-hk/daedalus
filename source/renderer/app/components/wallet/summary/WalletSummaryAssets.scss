@@ -118,6 +118,14 @@
       box-shadow: inset 0 0 0 2px var(--theme-button-flat-outline-color) !important;
     }
   }
+  &.ja-JP {
+    .title {
+      max-width: calc(100% - 132px);
+    }
+    .searchValue {
+      max-width: calc(100% - 133px);
+    }
+  }
 }
 
 .search {
