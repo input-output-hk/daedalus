@@ -20,7 +20,7 @@
   cursor: pointer;
   position: relative;
   .asset {
-    max-width: calc(100% - 70px);
+    max-width: calc(100% - 90px);
   }
   .assetAmount {
     color: var(--theme-widgets-asset-token-text-color);
@@ -29,7 +29,7 @@
     letter-spacing: 0.4px;
     line-height: 1.33;
     margin: 3px 0;
-    max-width: 60px;
+    max-width: 80px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
