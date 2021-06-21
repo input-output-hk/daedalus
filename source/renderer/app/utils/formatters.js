@@ -45,14 +45,39 @@ export const formattedWalletCurrencyAmount = (
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: ?AssetMetadata,
-  decimals: ?number
+  decimals: ?number,
+  isShort?: boolean
 ): string => {
   const { ticker } = metadata || {};
+  const decimalPrecision = decimals || DEFAULT_DECIMAL_PRECISION;
   const divider = parseInt(
-    getMultiplierFromDecimalPlaces(decimals || DEFAULT_DECIMAL_PRECISION),
+    getMultiplierFromDecimalPlaces(decimalPrecision),
     10
   );
-  let formattedAmount = amount.dividedBy(divider).toFormat(decimals);
+  let formattedAmount = amount.dividedBy(divider);
+  if (isShort) {
+    if (formattedAmount.isGreaterThanOrEqualTo(1000)) {
+      /*
+       * Short formatting for >= 1000
+       * E.G.: 1,000,000 prints '1M'
+       */
+      formattedAmount = shortNumber(formattedAmount);
+    } else if (formattedAmount.isLessThan(0.01)) {
+      /*
+       * Short formatting for < 0.01
+       * E.G.: 0.000009 prints '< 0.01'
+       */
+      formattedAmount = '< 0.01';
+    } else {
+      /*
+       * Short formatting for < 1000 & > 0.01
+       * E.G.: 0.999999 prints '0.99'
+       */
+      formattedAmount = toFixedWithoutRounding(formattedAmount.toFormat(), 2);
+    }
+  } else {
+    formattedAmount = formattedAmount.toFormat(decimals);
+  }
   if (ticker) {
     formattedAmount += ` ${ticker}`;
   }
@@ -206,6 +231,15 @@ export const formattedArrayBufferToHexString = (
   }
 
   return hexOctets.join('');
+};
+
+export const toFixedWithoutRounding = (
+  num: number | string,
+  fixed: number
+): string => {
+  const re = new RegExp(`^-?\\d+(?:.\\d{0,${fixed || -1}})?`);
+  const results = num.toString().match(re);
+  return results && results.length ? results[0].toString() : '0';
 };
 
 export const formattedNumber = (value: number | string, dp?: number): string =>
