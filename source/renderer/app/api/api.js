@@ -41,6 +41,8 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
+import { createAccountPublicKey } from './transactions/requests/createAccountPublicKey';
+import type { CreateAccountPublicKeyParams } from './transactions/requests/createAccountPublicKey';
 
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
@@ -1268,6 +1270,24 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::getPublicKey error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  createAccountPublicKey = async (
+    request: CreateAccountPublicKeyParams
+  ): Promise<string> | null => {
+    logger.debug('AdaApi::createAccountPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const response = await createAccountPublicKey(this.config, request);
+      logger.debug('AdaApi::createAccountPublicKey success', {
+        transaction: response,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::createAccountPublicKey error', { error });
       throw new ApiError(error);
     }
   };
