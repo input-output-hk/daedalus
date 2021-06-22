@@ -23,6 +23,7 @@ type Props = {
   onOpenWalletKeyDialog: Function,
   t: Function,
   messages: Object,
+  description?: string,
 };
 
 const GenericPublicKeyField = observer((props: Props) => {
@@ -42,8 +43,7 @@ const GenericPublicKeyField = observer((props: Props) => {
     []
   );
 
-  const { publicKey, onShowQRCode, locale, t, messages } = props;
-  const label = t(messages.publicKey);
+  const { publicKey, onShowQRCode, locale, t, messages, description } = props;
   const fieldStyles = classnames([
     styles.field,
     publicKeyHidden || !publicKey ? styles.valueHidden : styles.valueShown,
@@ -69,42 +69,46 @@ const GenericPublicKeyField = observer((props: Props) => {
 
   return (
     <div className={styles.component}>
-      <Input
-        className={fieldStyles}
-        type="text"
-        label={label}
-        value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
-        readOnly
-        skin={GenericPublicKeyFieldSkin}
-        tooltip={t(globalMessages.copy)}
-        valueVisible={!publicKeyHidden}
-        onCopyValue={handleCopyPublicKey}
-      />
-      <div className={styles.addons}>
-        {!publicKeyHidden && (
-          <div className={styles.imageButtonContainer}>
-            <PopOver content={t(messages.showQRCode)}>
-              <Button
-                className={qrCodeButtonStyles}
-                onClick={onShowQRCode}
-                label={<SVGInline svg={qrCodeImage} />}
-              />
-            </PopOver>
-          </div>
-        )}
-        <PopOver content={toggleButtonTooltip}>
-          <Button
-            className={revealHideButtonStyles}
-            label={
-              publicKeyHidden ? (
-                <SVGInline svg={revealKeyImage} />
-              ) : (
-                <SVGInline svg={hideKeyImage} />
-              )
-            }
-            onClick={togglePublicKeyVisibility}
-          />
-        </PopOver>
+      <div className={styles.title}>{t(messages.publicKey)}</div>
+      {!!description && <div className={styles.contentBox}>{description}</div>}
+      <div className={styles.inputBox}>
+        <Input
+          className={fieldStyles}
+          type="text"
+          label={!description ? t(messages.publicKey) : null}
+          value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
+          readOnly
+          skin={GenericPublicKeyFieldSkin}
+          tooltip={t(globalMessages.copy)}
+          valueVisible={!publicKeyHidden}
+          onCopyValue={handleCopyPublicKey}
+        />
+        <div className={styles.addons}>
+          {!publicKeyHidden && (
+            <div className={styles.imageButtonContainer}>
+              <PopOver content={t(messages.showQRCode)}>
+                <Button
+                  className={qrCodeButtonStyles}
+                  onClick={onShowQRCode}
+                  label={<SVGInline svg={qrCodeImage} />}
+                />
+              </PopOver>
+            </div>
+          )}
+          <PopOver content={toggleButtonTooltip}>
+            <Button
+              className={revealHideButtonStyles}
+              label={
+                publicKeyHidden ? (
+                  <SVGInline svg={revealKeyImage} />
+                ) : (
+                  <SVGInline svg={hideKeyImage} />
+                )
+              }
+              onClick={togglePublicKeyVisibility}
+            />
+          </PopOver>
+        </div>
       </div>
     </div>
   );

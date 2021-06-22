@@ -15,8 +15,8 @@ export const messages = defineMessages({
     defaultMessage: '!!!ICO public key',
     description: 'Wallet public key label.',
   },
-  publicKeyHeader: {
-    id: 'wallet.settings.ICOPublicKey.header',
+  publicKeyDescription: {
+    id: 'wallet.settings.ICOPublicKey.description',
     defaultMessage:
       "!!!Your wallet's ICO public key enables participation in the initial coin offering presales.",
     description: 'ICO public key header on the wallet settings page.',
@@ -60,9 +60,9 @@ export const ICOPublicKeyBox = (props: Props) => {
   return (
     <>
       <BorderedBox className={styles.walletPublicKeyBox}>
-        <span>{t(messages.deleteWalletHeader)}</span>
         <GenericPublicKeyField
           publicKey={publicKey || ''}
+          description={t(messages.publicKeyDescription)}
           locale={locale}
           onCopyPublicKey={onCopyWalletPublicKey}
           onShowQRCode={() =>
