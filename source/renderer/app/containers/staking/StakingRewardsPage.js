@@ -44,7 +44,7 @@ export default class StakingRewardsPage extends Component<Props> {
 
   render() {
     const {
-      staking: { rewards, isFetchingStakePools },
+      staking: { rewards, isLoadingStakePools },
       uiDialogs,
     } = this.props.stores;
 
@@ -52,7 +52,7 @@ export default class StakingRewardsPage extends Component<Props> {
       <Fragment>
         <StakingRewards
           rewards={rewards}
-          isLoading={isFetchingStakePools}
+          isLoading={isLoadingStakePools}
           onLearnMoreClick={this.handleLearnMoreClick}
           onOpenWalletRewards={this.handleOpenWalletRewards}
         />
