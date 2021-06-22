@@ -75,7 +75,6 @@ const GenericPublicKeyField = observer((props: Props) => {
         <Input
           className={fieldStyles}
           type="text"
-          label={!description ? t(messages.publicKey) : null}
           value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
           readOnly
           skin={GenericPublicKeyFieldSkin}

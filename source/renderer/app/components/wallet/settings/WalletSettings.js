@@ -1,6 +1,6 @@
 // @flow
-import React, { Component } from 'react';
 import type { Node } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
@@ -13,9 +13,6 @@ import { WalletDelegationStatuses } from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
-import WalletPublicKeyField from './WalletPublicKeyField';
-import WalletPublicKeyDialog from './WalletPublicKeyDialog';
-import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import UndelegateWalletButton from './UndelegateWalletButton';
 import DelegateWalletButton from './DelegateWalletButton';
 import DeleteWalletButton from './DeleteWalletButton';
@@ -25,10 +22,10 @@ import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
-import { momentLocales } from '../../../../../common/types/locales.types';
-
 import type { Locale } from '../../../../../common/types/locales.types';
+import { momentLocales } from '../../../../../common/types/locales.types';
 import { ICOPublicKeyBox } from './ICOPublicKeyBox';
+import { WalletPublicKeyBox } from './WalletPublicKeyBox';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -188,47 +185,6 @@ export default class WalletSettings extends Component<Props, State> {
 
   unblockForm = () => {
     this.setState({ isFormBlocked: false });
-  };
-
-  renderWalletPublicKeyBox = () => {
-    const {
-      walletPublicKey,
-      locale,
-      onCopyWalletPublicKey,
-      openDialogAction,
-      isDialogOpen,
-      walletPublicKeyDialogContainer,
-      walletPublicKeyQRCodeDialogContainer,
-      isLegacy,
-    } = this.props;
-
-    if (!IS_WALLET_PUBLIC_KEY_SHARING_ENABLED || isLegacy) {
-      return null;
-    }
-
-    return (
-      <>
-        <BorderedBox className={styles.walletPublicKeyBox}>
-          <WalletPublicKeyField
-            walletPublicKey={walletPublicKey || ''}
-            locale={locale}
-            onCopyWalletPublicKey={onCopyWalletPublicKey}
-            onShowQRCode={() =>
-              openDialogAction({ dialog: WalletPublicKeyQRCodeDialog })
-            }
-            onOpenWalletKeyDialog={() =>
-              openDialogAction({ dialog: WalletPublicKeyDialog })
-            }
-          />
-        </BorderedBox>
-        {isDialogOpen(WalletPublicKeyDialog)
-          ? walletPublicKeyDialogContainer
-          : false}
-        {isDialogOpen(WalletPublicKeyQRCodeDialog)
-          ? walletPublicKeyQRCodeDialogContainer
-          : false}
-      </>
-    );
   };
 
   onUndelegateWalletClick = async () => {
@@ -443,20 +399,37 @@ export default class WalletSettings extends Component<Props, State> {
           ? changeSpendingPasswordDialog
           : false}
 
-        {this.renderWalletPublicKeyBox()}
         {IS_WALLET_PUBLIC_KEY_SHARING_ENABLED && !isLegacy && (
-          <ICOPublicKeyBox
-            publicKey={this.props.walletPublicKey}
-            locale={this.props.locale}
-            onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
-            openDialogAction={this.props.openDialogAction}
-            isDialogOpen={this.props.isDialogOpen}
-            publicKeyDialogContainer={this.props.walletPublicKeyDialogContainer}
-            publicKeyQRCodeDialogContainer={
-              this.props.walletPublicKeyQRCodeDialogContainer
-            }
-            t={(string: string) => intl.formatMessage(string)}
-          />
+          <>
+            <WalletPublicKeyBox
+              publicKey={this.props.walletPublicKey}
+              locale={this.props.locale}
+              onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
+              openDialogAction={this.props.openDialogAction}
+              isDialogOpen={this.props.isDialogOpen}
+              publicKeyDialogContainer={
+                this.props.walletPublicKeyDialogContainer
+              }
+              publicKeyQRCodeDialogContainer={
+                this.props.walletPublicKeyQRCodeDialogContainer
+              }
+              t={(string: string) => intl.formatMessage(string)}
+            />
+            <ICOPublicKeyBox
+              publicKey={this.props.walletPublicKey}
+              locale={this.props.locale}
+              onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
+              openDialogAction={this.props.openDialogAction}
+              isDialogOpen={this.props.isDialogOpen}
+              publicKeyDialogContainer={
+                this.props.walletPublicKeyDialogContainer
+              }
+              publicKeyQRCodeDialogContainer={
+                this.props.walletPublicKeyQRCodeDialogContainer
+              }
+              t={(string: string) => intl.formatMessage(string)}
+            />
+          </>
         )}
         {this.renderUndelegateWalletBox()}
         {this.renderDeleteWalletBox()}
