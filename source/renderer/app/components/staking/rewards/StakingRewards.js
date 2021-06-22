@@ -17,6 +17,7 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
+import Ellipsis from '../../widgets/Ellipsis';
 
 const messages = defineMessages({
   title: {
@@ -274,7 +275,7 @@ export default class StakingRewards extends Component<Props, State> {
                       >
                         <td className={styles.rewardWallet}>{rewardWallet}</td>
                         <td className={styles.rewardsAddress}>
-                          {rewardsAddress}
+                          <Ellipsis string={rewardsAddress} />
                         </td>
                         <td className={styles.rewardAmount}>
                           <div>

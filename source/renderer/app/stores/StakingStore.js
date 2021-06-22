@@ -444,6 +444,12 @@ export default class StakingStore extends Store {
 
   // GETTERS
 
+  @computed get isLoadingStakePools(): boolean {
+    const { fetchingStakePoolsFailed, stores } = this;
+    const { isSynced } = stores.networkStatus;
+    return !isSynced || fetchingStakePoolsFailed;
+  }
+
   @computed get currentRoute(): string {
     return this.stores.router.location.pathname;
   }

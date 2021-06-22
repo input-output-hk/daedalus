@@ -1,0 +1,12 @@
+.component {
+  display: flex;
+  min-width: 0;
+}
+.initText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.endText {
+  flex-shrink: 0;
+}

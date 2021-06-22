@@ -205,7 +205,7 @@
       font-family: var(--font-light);
       font-size: 14px;
       line-height: 1.3;
-      padding: 14px 20px;
+      padding: 12.5px 20px;
       position: relative;
       text-align: left;
       -webkit-user-select: none;
@@ -308,9 +308,14 @@
             --theme-staking-rewards-table-background-color-hover
           );
           border-radius: 3px;
+          font-family: var(--font-bold);
+          font-size: 8px;
+          height: 16px;
           line-height: 1.25;
+          margin-top: 1px;
           opacity: 0;
           padding: 3px 8px;
+          text-transform: uppercase;
           transition: opacity 0.1s;
         }
       }
@@ -318,6 +323,10 @@
       &.rewardsAddress {
         min-width: 100px;
         word-wrap: break-word;
+        // white-space: nowrap;
+        // text-overflow: ellipsis;
+        // overflow: hidden;
+
         @media (max-width: 1120px) {
           max-width: 420px;
         }
