@@ -28,6 +28,7 @@ import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerifi
 import { momentLocales } from '../../../../../common/types/locales.types';
 
 import type { Locale } from '../../../../../common/types/locales.types';
+import { ICOPublicKeyBox } from './ICOPublicKeyBox';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -443,6 +444,20 @@ export default class WalletSettings extends Component<Props, State> {
           : false}
 
         {this.renderWalletPublicKeyBox()}
+        {IS_WALLET_PUBLIC_KEY_SHARING_ENABLED && !isLegacy && (
+          <ICOPublicKeyBox
+            publicKey={this.props.walletPublicKey}
+            locale={this.props.locale}
+            onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
+            openDialogAction={this.props.openDialogAction}
+            isDialogOpen={this.props.isDialogOpen}
+            publicKeyDialogContainer={this.props.walletPublicKeyDialogContainer}
+            publicKeyQRCodeDialogContainer={
+              this.props.walletPublicKeyQRCodeDialogContainer
+            }
+            t={(string: string) => intl.formatMessage(string)}
+          />
+        )}
         {this.renderUndelegateWalletBox()}
         {this.renderDeleteWalletBox()}
       </div>
