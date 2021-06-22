@@ -45,7 +45,7 @@ export class GraphQLRequest<TVariables, TResult> {
       runInAction(() => {
         if (this._wasRejectedForReExecution) {
           this._wasRejectedForReExecution = false;
-          return null;
+          return;
         }
         this.isExecuting = false;
         this.result = null;

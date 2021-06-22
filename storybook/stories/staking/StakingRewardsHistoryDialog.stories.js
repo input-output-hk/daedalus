@@ -39,7 +39,7 @@ export const StakingRewardsHistoryStory = ({
       currentLocale={locale}
       isFetchingRewardsHistory={boolean('isFetchingRewardsHistory', false)}
       onClose={action('onClose')}
-      onCopy={action('onCopy')}
+      onCopyAddress={action('onCopy')}
       onExportCSV={action('onExportCSV')}
       onSetDateRange={(newDateRange) => setDateRange(newDateRange)}
       currentTheme={currentTheme}
