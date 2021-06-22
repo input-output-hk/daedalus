@@ -10,7 +10,7 @@ import { FormField } from 'react-polymorph/lib/components/FormField';
 import type { InputProps } from 'react-polymorph/lib/components/Input';
 import { pickDOMProps } from 'react-polymorph/lib/utils/props';
 import copyImage from '../../../assets/images/copy.inline.svg';
-import styles from './WalletPublicKeyField.scss';
+import styles from './GenericPublicKeyField.scss';
 
 type Props = InputProps & {
   inputRef: ElementRef<'input'>,

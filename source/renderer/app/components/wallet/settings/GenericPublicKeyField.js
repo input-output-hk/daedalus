@@ -1,6 +1,6 @@
 // @flow
 import React, { useCallback, useState } from 'react';
-import { Observer } from 'mobx-react'; // 6.x or mobx-react-lite@1.4.0
+import { observer } from 'mobx-react'; // 6.x or mobx-react-lite@1.4.0
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -25,19 +25,15 @@ type Props = {
   messages: Object,
 };
 
-const GenericPublicKeyField = (props: Props) => {
+const GenericPublicKeyField = observer((props: Props) => {
   const [publicKeyHidden, setPublicKeyHidden] = useState<boolean>(true);
-
-  const toggleReceivingKey = useCallback(() => {
-    setPublicKeyHidden((prevCheck: boolean) => !prevCheck);
-  });
 
   const togglePublicKeyVisibility = useCallback(() => {
     const { publicKey, onOpenWalletKeyDialog } = props;
     if (!publicKey) {
       onOpenWalletKeyDialog();
     } else {
-      toggleReceivingKey();
+      setPublicKeyHidden((prevCheck: boolean) => !prevCheck);
     }
   });
 
@@ -72,48 +68,46 @@ const GenericPublicKeyField = (props: Props) => {
   ]);
 
   return (
-    <Observer>
-      <div className={styles.component}>
-        <Input
-          className={fieldStyles}
-          type="text"
-          label={label}
-          value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
-          readOnly
-          skin={GenericPublicKeyFieldSkin}
-          tooltip={t(globalMessages.copy)}
-          valueVisible={!publicKeyHidden}
-          onCopyValue={handleCopyPublicKey}
-        />
-        <div className={styles.addons}>
-          {!publicKeyHidden && (
-            <div className={styles.imageButtonContainer}>
-              <PopOver content={t(messages.showQRCode)}>
-                <Button
-                  className={qrCodeButtonStyles}
-                  onClick={onShowQRCode}
-                  label={<SVGInline svg={qrCodeImage} />}
-                />
-              </PopOver>
-            </div>
-          )}
-          <PopOver content={toggleButtonTooltip}>
-            <Button
-              className={revealHideButtonStyles}
-              label={
-                publicKeyHidden ? (
-                  <SVGInline svg={revealKeyImage} />
-                ) : (
-                  <SVGInline svg={hideKeyImage} />
-                )
-              }
-              onClick={togglePublicKeyVisibility}
-            />
-          </PopOver>
-        </div>
+    <div className={styles.component}>
+      <Input
+        className={fieldStyles}
+        type="text"
+        label={label}
+        value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
+        readOnly
+        skin={GenericPublicKeyFieldSkin}
+        tooltip={t(globalMessages.copy)}
+        valueVisible={!publicKeyHidden}
+        onCopyValue={handleCopyPublicKey}
+      />
+      <div className={styles.addons}>
+        {!publicKeyHidden && (
+          <div className={styles.imageButtonContainer}>
+            <PopOver content={t(messages.showQRCode)}>
+              <Button
+                className={qrCodeButtonStyles}
+                onClick={onShowQRCode}
+                label={<SVGInline svg={qrCodeImage} />}
+              />
+            </PopOver>
+          </div>
+        )}
+        <PopOver content={toggleButtonTooltip}>
+          <Button
+            className={revealHideButtonStyles}
+            label={
+              publicKeyHidden ? (
+                <SVGInline svg={revealKeyImage} />
+              ) : (
+                <SVGInline svg={hideKeyImage} />
+              )
+            }
+            onClick={togglePublicKeyVisibility}
+          />
+        </PopOver>
       </div>
-    </Observer>
+    </div>
   );
-};
+});
 
 export default GenericPublicKeyField;

@@ -12,14 +12,20 @@ import GenericPublicKeyField from './GenericPublicKeyField';
 export const messages = defineMessages({
   publicKey: {
     id: 'wallet.settings.ICOPublicKey',
-    defaultMessage: '!!!Wallet public key',
+    defaultMessage: '!!!ICO public key',
     description: 'Wallet public key label.',
+  },
+  publicKeyHeader: {
+    id: 'wallet.settings.ICOPublicKey.header',
+    defaultMessage:
+      "!!!Your wallet's ICO public key enables participation in the initial coin offering presales.",
+    description: 'ICO public key header on the wallet settings page.',
   },
   publicKeyShowInstruction: {
     id: 'wallet.settings.ICOPublicKeyShowInstruction',
     defaultMessage:
-      '!!!Click Reveal on the right-hand side to display the public key of the wallet.',
-    description: 'Wallet public key show instruction.',
+      '!!!Click the icon on the right to view your ICO public key.',
+    description: 'ICO public key show instruction.',
   },
   showQRCode: {
     id: 'wallet.settings.showQRCode',
@@ -54,6 +60,7 @@ export const ICOPublicKeyBox = (props: Props) => {
   return (
     <>
       <BorderedBox className={styles.walletPublicKeyBox}>
+        <span>{t(messages.deleteWalletHeader)}</span>
         <GenericPublicKeyField
           publicKey={publicKey || ''}
           locale={locale}
