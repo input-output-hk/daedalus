@@ -31,6 +31,16 @@ import {
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
 import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
+import { introspectAddressChannel } from '../ipc/introspect-address';
+import { saveQRCodeImageChannel } from '../ipc/saveQRCodeImageChannel';
+import {
+  TESTNET_MAGIC,
+  SELFNODE_MAGIC,
+  STAGING_MAGIC,
+  MAINNET_MAGIC,
+} from '../../../common/types/cardano-node.types';
+import type { AddressStyle } from '../../../common/types/address-introspection.types';
+import type { AssetToken } from '../api/assets/types';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -50,16 +60,6 @@ import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
-import { introspectAddressChannel } from '../ipc/introspect-address';
-import { saveQRCodeImageChannel } from '../ipc/saveQRCodeImageChannel';
-import type { AddressStyle } from '../../../common/types/address-introspection.types';
-import {
-  TESTNET_MAGIC,
-  SELFNODE_MAGIC,
-  STAGING_MAGIC,
-  MAINNET_MAGIC,
-} from '../../../common/types/cardano-node.types';
-import type { AssetToken } from '../api/assets/types';
 
 /* eslint-disable consistent-return */
 
@@ -80,6 +80,9 @@ export default class WalletsStore extends Store {
   );
   @observable accountPublicKeyRequest: Request<string> = new Request(
     this.api.ada.getAccountPublicKey
+  );
+  @observable icoPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getICOPublicKey
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -142,7 +145,7 @@ export default class WalletsStore extends Store {
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
   @observable activePublicKey: ?string = null;
-
+  @observable icoPublicKey: ?string = null;
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
@@ -228,6 +231,8 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletAbort.listen(this._createWalletAbort);
     walletsActions.createWalletClose.listen(this._createWalletClose);
     walletsActions.createHardwareWallet.listen(this._createHardwareWallet);
+    walletsActions.createHardwareWallet.listen(this._createHardwareWallet);
+
     // ---
     // Restore Wallet Actions ---
     walletsActions.restoreWallet.listen(this._restore);
@@ -254,6 +259,7 @@ export default class WalletsStore extends Store {
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
     walletsActions.getAccountPublicKey.listen(this._getAccountPublicKey);
+    walletsActions.getICOPublicKey.listen(this._getICOPublicKey);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
@@ -314,6 +320,37 @@ export default class WalletsStore extends Store {
       }).promise;
       runInAction('update account public key', () => {
         this.activePublicKey = accountPublicKey;
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  @action _getICOPublicKey = async ({
+    spendingPassword: passphrase,
+  }: {
+    spendingPassword: string,
+  }) => {
+    if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+      return;
+    }
+
+    const walletId = this.active.id;
+    const index = '0H';
+    const extended = true;
+    const purpose = '1852H';
+    try {
+      const icoPublicKey = await this.icoPublicKeyRequest.execute({
+        walletId,
+        index,
+        data: {
+          passphrase,
+          extended,
+          purpose,
+        },
+      }).promise;
+      runInAction('update ICO public key', () => {
+        this.icoPublicKey = icoPublicKey;
       });
     } catch (error) {
       throw error;

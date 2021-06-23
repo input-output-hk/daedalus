@@ -11286,7 +11286,7 @@
           "line": 17
         },
         "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyBox.js",
-        "id": "wallet.settings.ICOPublicKey",
+        "id": "wallet.settings.icoPublicKey",
         "start": {
           "column": 13,
           "line": 13
@@ -11300,7 +11300,7 @@
           "line": 23
         },
         "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyBox.js",
-        "id": "wallet.settings.ICOPublicKey.description",
+        "id": "wallet.settings.icoPublicKey.description",
         "start": {
           "column": 24,
           "line": 18
@@ -11314,7 +11314,7 @@
           "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyBox.js",
-        "id": "wallet.settings.ICOPublicKeyShowInstruction",
+        "id": "wallet.settings.icoPublicKeyShowInstruction",
         "start": {
           "column": 28,
           "line": 24

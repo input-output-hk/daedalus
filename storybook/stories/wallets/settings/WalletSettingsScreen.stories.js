@@ -28,6 +28,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
+import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
 
 /* eslint-disable react/display-name  */
 
@@ -36,6 +37,7 @@ const changePasswordId = 'Change Password';
 const undelegateWalletId = 'Undelegate Wallet';
 const deleteWalletId = 'Delete Wallet';
 const walletPublicKeyId = 'Wallet Public Key';
+const ICOPublicKeyId = 'ICO Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
@@ -209,6 +211,7 @@ export default (props: { locale: Locale }) => {
       isRestoring={false}
       isSyncing={false}
       walletPublicKey={walletPublicKeyId}
+      icoPublicKey={ICOPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(
         'isSpendingPasswordSet',
@@ -248,6 +251,15 @@ export default (props: { locale: Locale }) => {
           error={null}
           walletName={'Test Wallet'}
           hasReceivedWalletPublicKey
+        />
+      }
+      icoPublicKeyDialogContainer={
+        <ICOPublicKeyDialog
+          onRevealPublicKey={action('onRevealICOPublicKey')}
+          onClose={action('onCancel')}
+          hasReceivedICOPublicKey
+          error={null}
+          walletName={'ICO Test Wallet'}
         />
       }
       walletPublicKeyQRCodeDialogContainer={

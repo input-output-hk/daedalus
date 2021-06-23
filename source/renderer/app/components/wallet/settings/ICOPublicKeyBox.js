@@ -11,18 +11,18 @@ import GenericPublicKeyField from './GenericPublicKeyField';
 
 export const messages = defineMessages({
   publicKey: {
-    id: 'wallet.settings.ICOPublicKey',
+    id: 'wallet.settings.icoPublicKey',
     defaultMessage: '!!!ICO public key',
     description: 'Wallet public key label.',
   },
   publicKeyDescription: {
-    id: 'wallet.settings.ICOPublicKey.description',
+    id: 'wallet.settings.icoPublicKey.description',
     defaultMessage:
       "!!!Your wallet's ICO public key enables participation in the initial coin offering presales.",
     description: 'ICO public key header on the wallet settings page.',
   },
   publicKeyShowInstruction: {
-    id: 'wallet.settings.ICOPublicKeyShowInstruction',
+    id: 'wallet.settings.icoPublicKeyShowInstruction',
     defaultMessage:
       '!!!Click the icon on the right to view your ICO public key.',
     description: 'ICO public key show instruction.',

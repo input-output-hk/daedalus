@@ -3,7 +3,7 @@ import type { RequestConfig } from '../../common/types';
 import type { Transaction } from '../types';
 import { request } from '../../utils/request';
 
-export type CreateAccountPublicKeyParams = {
+export type ICOPublicKeyParams = {
   walletId: string,
   index: string,
   data: {
@@ -13,9 +13,9 @@ export type CreateAccountPublicKeyParams = {
   },
 };
 
-export const createAccountPublicKey = (
+export const getICOPublicKey = (
   config: RequestConfig,
-  { walletId, index, data }: CreateAccountPublicKeyParams
+  { walletId, index, data }: ICOPublicKeyParams
 ): Promise<Transaction> =>
   request(
     {

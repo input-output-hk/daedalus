@@ -41,8 +41,8 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
-import { createAccountPublicKey } from './transactions/requests/createAccountPublicKey';
-import type { CreateAccountPublicKeyParams } from './transactions/requests/createAccountPublicKey';
+import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
+import type { ICOPublicKeyParams } from './transactions/requests/getICOPublicKey';
 
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
@@ -1274,20 +1274,20 @@ export default class AdaApi {
     }
   };
 
-  createAccountPublicKey = async (
-    request: CreateAccountPublicKeyParams
+  getICOPublicKey = async (
+    request: ICOPublicKeyParams
   ): Promise<string> | null => {
-    logger.debug('AdaApi::createAccountPublicKey called', {
+    logger.debug('AdaApi::getICOPublicKey called', {
       parameters: filterLogData(request),
     });
     try {
-      const response = await createAccountPublicKey(this.config, request);
-      logger.debug('AdaApi::createAccountPublicKey success', {
+      const response = await getICOPublicKey(this.config, request);
+      logger.debug('AdaApi::getICOPublicKey success', {
         transaction: response,
       });
       return response;
     } catch (error) {
-      logger.error('AdaApi::createAccountPublicKey error', { error });
+      logger.error('AdaApi::getICOPublicKey error', { error });
       throw new ApiError(error);
     }
   };

@@ -117,6 +117,7 @@ type Props = {
   isRestoring: boolean,
   isSyncing: boolean,
   walletPublicKey: ?string,
+  icoPublicKey: ?string,
   creationDate: Date,
   spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
@@ -134,6 +135,7 @@ type Props = {
   isLegacy: boolean,
   changeSpendingPasswordDialog: Node,
   walletPublicKeyDialogContainer: Node,
+  icoPublicKeyDialogContainer: Node,
   walletPublicKeyQRCodeDialogContainer: Node,
   undelegateWalletDialogContainer: Node,
   deleteWalletDialogContainer: Node,
@@ -416,14 +418,12 @@ export default class WalletSettings extends Component<Props, State> {
               t={(string: string) => intl.formatMessage(string)}
             />
             <ICOPublicKeyBox
-              publicKey={this.props.walletPublicKey}
+              publicKey={this.props.icoPublicKey}
               locale={this.props.locale}
               onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
               openDialogAction={this.props.openDialogAction}
               isDialogOpen={this.props.isDialogOpen}
-              publicKeyDialogContainer={
-                this.props.walletPublicKeyDialogContainer
-              }
+              publicKeyDialogContainer={this.props.icoPublicKeyDialogContainer}
               publicKeyQRCodeDialogContainer={
                 this.props.walletPublicKeyQRCodeDialogContainer
               }

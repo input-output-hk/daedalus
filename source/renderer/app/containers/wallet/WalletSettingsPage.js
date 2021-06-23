@@ -7,7 +7,7 @@ import { isValidWalletName } from '../../utils/validations';
 import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
-import WalletPublicKeyDialogContainer from './dialogs/settings/WalletPublicKeyDialogContainer';
+import PublicKeyDialogContainer from './dialogs/settings/PublicKeyDialogContainer';
 import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
 import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
@@ -54,6 +54,7 @@ export default class WalletSettingsPage extends Component<Props> {
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
+      icoPublicKey,
     } = wallets;
     // Guard against potential null values
     if (!activeWallet)
@@ -114,6 +115,7 @@ export default class WalletSettingsPage extends Component<Props> {
           isRestoring={activeWallet.isRestoring}
           isSyncing={activeWallet.isSyncing}
           walletPublicKey={activeWalletPublicKey}
+          icoPublicKey={icoPublicKey}
           creationDate={creationDate}
           isSubmitting={updateWalletRequest.isExecuting}
           isInvalid={
@@ -139,7 +141,8 @@ export default class WalletSettingsPage extends Component<Props> {
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
           }
-          walletPublicKeyDialogContainer={<WalletPublicKeyDialogContainer />}
+          walletPublicKeyDialogContainer={<PublicKeyDialogContainer />}
+          icoPublicKeyDialogContainer={<PublicKeyDialogContainer isICO />}
           walletPublicKeyQRCodeDialogContainer={
             <WalletPublicKeyQRCodeDialogContainer />
           }
