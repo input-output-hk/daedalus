@@ -8,7 +8,7 @@ type Props = {
   minCharsEnd?: number,
 };
 
-const Ellipsis = observer(({ string, minCharsEnd = 10 }: Props) => {
+const Ellipsis = observer(({ string = '', minCharsEnd = 10 }: Props) => {
   const splitPosition = string.length - minCharsEnd;
   const initText = string.substr(0, splitPosition);
   const endText = string.substr(splitPosition);

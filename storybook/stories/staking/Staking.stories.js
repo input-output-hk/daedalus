@@ -82,6 +82,7 @@ const decorator = (story, context) => {
               isActiveNavItem={(item) => item === getItemFromContext()}
               activeItem={getItemFromContext()}
               onNavItemClick={() => {}}
+              isLoading={false}
             >
               {storyWithKnobs}
             </StakingWithNavigation>

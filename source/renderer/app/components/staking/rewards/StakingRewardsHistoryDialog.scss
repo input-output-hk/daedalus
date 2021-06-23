@@ -57,6 +57,11 @@
     td {
       font-family: var(--font-regular);
     }
+    :global {
+      td.pool {
+        max-width: 300px;
+      }
+    }
   }
   .stakePoolTicker {
     color: var(--theme-staking-stake-pool-tooltip-link-color);

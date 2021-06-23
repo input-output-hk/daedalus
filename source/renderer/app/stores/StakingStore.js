@@ -888,9 +888,10 @@ export default class StakingStore extends Store {
     runInAction(() => {
       this.rewardsHistory[address] = rewardsHistory
         ? rewardsHistory.filter(Boolean).map((r) => {
-            const pool = stakePools.find((p) => p.id === r.stakePool.id);
+            const stakePoolId = r.stakePool.id;
+            const stakePool = stakePools.find((p) => p.id === stakePoolId);
             return {
-              pool,
+              pool: stakePool || { id: stakePoolId },
               epoch: r.earnedIn.number,
               amount: new BigNumber(r.amount),
             };

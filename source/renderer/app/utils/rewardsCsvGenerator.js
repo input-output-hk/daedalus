@@ -12,9 +12,19 @@ const messages = defineMessages({
     defaultMessage: '!!!Epoch',
     description: 'Transactions CSV column - Epoch',
   },
-  columnStakePool: {
-    id: 'staking.rewardsHistory.csv.column.stakePool',
-    defaultMessage: '!!!Stake pool',
+  columnStakePoolId: {
+    id: 'staking.rewardsHistory.csv.column.stakePoolId',
+    defaultMessage: 'Pool ID',
+    description: 'Transactions CSV column - Pool',
+  },
+  columnStakePoolTicker: {
+    id: 'staking.rewardsHistory.csv.column.stakePoolTicker',
+    defaultMessage: 'Pool ticker',
+    description: 'Transactions CSV column - Pool',
+  },
+  columnStakePoolName: {
+    id: 'staking.rewardsHistory.csv.column.stakePoolName',
+    defaultMessage: '!!!Pool name',
     description: 'Transactions CSV column - Pool',
   },
   columnAmount: {
@@ -64,20 +74,27 @@ const rewardsCsvGenerator = async ({
 
   const columns = [
     intl.formatMessage(messages.columnEpoch),
-    intl.formatMessage(messages.columnStakePool),
     intl.formatMessage(messages.columnAmount),
+    intl.formatMessage(messages.columnStakePoolId),
+    intl.formatMessage(messages.columnStakePoolTicker),
+    intl.formatMessage(messages.columnStakePoolName),
   ];
 
   const fileContent = [columns];
   rewards.forEach((reward: RewardsHistoryItem) => {
     const { epoch, pool, amount } = reward;
     const valueEpoch = epoch.toString();
-    const valuePool = pool ? pool.ticker : '';
-    if (!pool) {
-      console.log('NO REWARD POOL: ', reward);
-    }
+    const valuePoolId = pool ? pool.id : '';
+    const valuePoolTicker = pool ? pool.ticker : '';
+    const valuePoolName = pool ? pool.name : '';
     const valueAmount = amount.toFormat(6);
-    const values = [valueEpoch, valuePool, valueAmount];
+    const values = [
+      valueEpoch,
+      valueAmount,
+      valuePoolId,
+      valuePoolTicker,
+      valuePoolName,
+    ];
     fileContent.push(values);
   });
 

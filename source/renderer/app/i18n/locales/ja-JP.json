@@ -491,6 +491,7 @@
   "staking.rewardsHistory.dialog.column.stakePool": "ステークプール",
   "staking.rewardsHistory.dialog.csv.label": "CSV形式でエキスポートする",
   "staking.rewardsHistory.dialog.rewardsAddress": "報酬アドレス",
+  "staking.rewardsHistory.dialog.unknownStakePoolTooltip": "!!!This Stake Pool could not be found",
   "staking.rewardsHistory.dialog.title": "報酬の詳細",
   "staking.stakePools.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.learnMore": "もっと知る",

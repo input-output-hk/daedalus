@@ -28,7 +28,9 @@ export type TableRow = {
   [key: string]: any,
 };
 
-const SORT_ORDERS = {
+type SortDirection = 'asc' | 'desc';
+
+const SORT_DIRECTIONS = {
   ASCENDING: 'asc',
   DESCENDING: 'desc',
 };
@@ -40,13 +42,14 @@ type Props = {
   onClickRow?: Function,
   onClickCell?: Function,
   enableSort?: boolean,
-  sortBy?: string,
   maxHeight?: number,
   isCompact?: boolean,
+  initialSortBy?: string,
+  initialSortDirection?: SortDirection,
 };
 
 type State = {
-  sortOrder: string,
+  sortDirection: string,
   sortBy: string,
 };
 
@@ -58,35 +61,39 @@ export default class Table extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    const { columns, sortBy: sortByProp } = props;
-    const sortBy = sortByProp || columns[0].id;
+    const { columns, initialSortBy, initialSortDirection } = props;
+    const sortBy = initialSortBy || columns[0].id;
+    const sortDirection = initialSortDirection || SORT_DIRECTIONS.DESCENDING;
     this.state = {
-      sortOrder: SORT_ORDERS.DESCENDING,
+      sortDirection,
       sortBy,
     };
   }
 
   handleSort = (newSortBy: string) => {
-    const { sortOrder, sortBy } = this.state;
-    let newsortOrder;
+    const { sortDirection, sortBy } = this.state;
+    let newsortDirection;
     if (sortBy === newSortBy) {
-      // on same sort change order
-      newsortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+      // on same sort change direction
+      newsortDirection =
+        sortDirection === SORT_DIRECTIONS.ASCENDING
+          ? SORT_DIRECTIONS.DESCENDING
+          : SORT_DIRECTIONS.ASCENDING;
     } else {
-      // on new sort instance, order by initial value 'descending'
-      newsortOrder = 'desc';
+      // on new sort instance, direction by initial value 'descending'
+      newsortDirection = SORT_DIRECTIONS.DESCENDING;
     }
 
     this.setState({
       sortBy: newSortBy,
-      sortOrder: newsortOrder,
+      sortDirection: newsortDirection,
     });
   };
 
   getSortedData = (): Array<any> => {
     const { rows } = this.props;
-    const { sortOrder, sortBy } = this.state;
-    const isAscending = sortOrder === SORT_ORDERS.ASCENDING;
+    const { sortDirection, sortBy } = this.state;
+    const isAscending = sortDirection === SORT_DIRECTIONS.ASCENDING;
     const columnsObj = this.getColumnsObj();
     const column = columnsObj[sortBy] || {};
     const { sortValue, type } = column;
@@ -128,7 +135,7 @@ export default class Table extends Component<Props, State> {
       isCompact,
       enableSort,
     } = this.props;
-    const { sortOrder, sortBy } = this.state;
+    const { sortDirection, sortBy } = this.state;
 
     const componentStyles = classnames(styles.component, className, {
       [styles.compact]: isCompact,
@@ -148,7 +155,9 @@ export default class Table extends Component<Props, State> {
                   const sortIconClasses = classnames([
                     styles.sortIcon,
                     isSorted ? styles.sorted : null,
-                    isSorted && sortOrder === 'asc' ? styles.ascending : null,
+                    isSorted && sortDirection === 'asc'
+                      ? styles.ascending
+                      : null,
                   ]);
                   return (
                     <th key={id} onClick={() => this.handleSort(id)}>
@@ -172,7 +181,7 @@ export default class Table extends Component<Props, State> {
                       <td
                         key={key + columnId}
                         role="presentation"
-                        className={styles.rewardWallet}
+                        className={columnId}
                         onClick={onClickCell}
                       >
                         {renderedValue}

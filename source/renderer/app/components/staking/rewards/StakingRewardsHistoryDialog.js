@@ -19,6 +19,7 @@ import copyIcon from '../../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { ITEM_COPY_FEEDBACK } from '../../../config/timingConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import Ellipsis from '../../widgets/Ellipsis';
 
 const messages = defineMessages({
   title: {
@@ -51,6 +52,11 @@ const messages = defineMessages({
     id: 'staking.rewardsHistory.dialog.rewardsAddress',
     defaultMessage: '!!!Rewards address',
     description: '"Rewards address" label on the rewards history dialog.',
+  },
+  unknownStakePoolTooltip: {
+    id: 'staking.rewardsHistory.dialog.unknownStakePoolTooltip',
+    defaultMessage: '!!!This Stake Pool could not be found.',
+    description: '"Unknown Stake Pool" tooltip on the rewards history dialog.',
   },
 });
 
@@ -97,14 +103,39 @@ export default class StakingRewardsHistoryDialog extends Component<
     onCopyAddress(rewardsAddress);
   };
 
+  renderStakePool = (pool: StakePool) => {
+    const { currentTheme, onOpenExternalLink } = this.props;
+    return (
+      <PoolPopOver
+        containerClassName="StakingRewardsHistoryDialog_table"
+        currentTheme={currentTheme}
+        numberOfRankedStakePools={0}
+        onOpenExternalLink={onOpenExternalLink}
+        openOnHover
+        stakePool={pool}
+      >
+        <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
+        {pool.name}
+      </PoolPopOver>
+    );
+  };
+
+  renderStakePoolId = (poolID: string) => (
+    <PopOver
+      content={this.context.intl.formatMessage(
+        messages.unknownStakePoolTooltip
+      )}
+    >
+      <Ellipsis string={poolID} />
+    </PopOver>
+  );
+
   render() {
     const { intl } = this.context;
     const {
-      currentTheme,
       isFetchingRewardsHistory,
       onClose,
       onExportCSV,
-      onOpenExternalLink,
       reward,
       rewardsHistory,
     } = this.props;
@@ -138,20 +169,10 @@ export default class StakingRewardsHistoryDialog extends Component<
         id: 'pool',
         sortValue: (pool: ?StakePool) =>
           pool ? `${pool.ticker}${pool.name}` : null,
-        render: (pool: ?StakePool) =>
-          pool ? (
-            <PoolPopOver
-              containerClassName="StakingRewardsHistoryDialog_table"
-              currentTheme={currentTheme}
-              numberOfRankedStakePools={0}
-              onOpenExternalLink={onOpenExternalLink}
-              openOnHover
-              stakePool={pool}
-            >
-              <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
-              {pool.name}
-            </PoolPopOver>
-          ) : null,
+        render: (pool: $Shape<StakePool>) =>
+          pool.name
+            ? this.renderStakePool(pool)
+            : this.renderStakePoolId(pool.id),
       },
       {
         title: intl.formatMessage(messages.columnAmount),
@@ -172,7 +193,6 @@ export default class StakingRewardsHistoryDialog extends Component<
         title={intl.formatMessage(messages.title)}
         subtitle={walletName}
         actions={actions}
-        closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
@@ -206,6 +226,7 @@ export default class StakingRewardsHistoryDialog extends Component<
             className={styles.table}
             maxHeight={265}
             isCompact
+            initialSortDirection="asc"
           />
         )}
       </Dialog>
