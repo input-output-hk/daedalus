@@ -145,6 +145,7 @@ export default class StakingRewardsHistoryDialog extends Component<
     const copyIconWrapperStyles = classnames([
       styles.copyIconWrapper,
       itemCopied ? styles.visible : null,
+      itemCopied ? styles.itemCopied : null,
     ]);
     const actions = [
       {
@@ -206,6 +207,7 @@ export default class StakingRewardsHistoryDialog extends Component<
             <span className={copyIconWrapperStyles}>
               <PopOver
                 content={intl.formatMessage(globalMessages.copy)}
+                className={styles.copyPopOver}
                 appendTo="parent"
                 visible
               >

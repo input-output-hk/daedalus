@@ -20,8 +20,7 @@
       }
       .copyIcon {
         svg {
-          height: 16px;
-          width: 11px;
+          width: 9px;
           g {
             fill: var(--theme-dialog-title-color);
           }
@@ -37,9 +36,24 @@
           }
         }
       }
+      &.itemCopied {
+        svg {
+          transform: translateY(-1px);
+        }
+      }
       :global {
         .SimplePopOver_root {
           white-space: nowrap;
+        }
+      }
+      .copyPopOver {
+        :global {
+          .tippy-content {
+            height: 24px;
+            font-size: 13px;
+            line-height: 1.15;
+            padding: 4px 16px;
+          }
         }
       }
     }
