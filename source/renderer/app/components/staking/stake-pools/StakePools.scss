@@ -7,20 +7,6 @@
   flex-direction: column;
   margin: 0 0 20px 20px;
 
-  &.isLoading {
-    align-items: center;
-    display: flex;
-    flex: 1;
-    justify-content: center;
-
-    .loadingBlockWrapper {
-      p {
-        margin-bottom: 20px;
-        opacity: 0.5;
-      }
-    }
-  }
-
   .listTitle {
     width: initial;
   }

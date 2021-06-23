@@ -3,14 +3,12 @@ import React, { Component, Fragment } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classnames from 'classnames';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsTable } from './StakePoolsTable';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
@@ -23,6 +21,7 @@ import {
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
+import LoadingStakePools from '../widgets/LoadingStakePools';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -49,12 +48,6 @@ const messages = defineMessages({
     id: 'staking.stakePools.listTitleStakePools',
     defaultMessage: '!!!({pools})',
     description: '"listTitleStakePools" for the Stake Pools page.',
-  },
-  loadingStakePoolsMessage: {
-    id: 'staking.stakePools.loadingStakePoolsMessage',
-    defaultMessage: '!!!Loading stake pools',
-    description:
-      'Loading stake pool message for the Delegation center body section.',
   },
   moderatedBy: {
     id: 'staking.stakePools.moderatedBy',
@@ -111,8 +104,6 @@ const initialState = {
 
 @observer
 export default class StakePools extends Component<Props, State> {
-  loadingSpinner: ?LoadingSpinner;
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -206,20 +197,6 @@ export default class StakePools extends Component<Props, State> {
     const listTitleSearchMessage =
       !!search.trim().length && intl.formatMessage(messages.listTitleSearch);
 
-    const loadingSpinner = (
-      <LoadingSpinner
-        big
-        ref={(component) => {
-          this.loadingSpinner = component;
-        }}
-      />
-    );
-
-    const componentClasses = classnames([
-      styles.component,
-      isLoading ? styles.isLoading : null,
-    ]);
-
     const smashServer = smashServerUrl
       ? getSmashServerNameFromUrl(smashServerUrl)
       : null;
@@ -242,141 +219,130 @@ export default class StakePools extends Component<Props, State> {
       </button>
     );
 
+    if (isLoading) {
+      return <LoadingStakePools />;
+    }
+
     return (
-      <div className={componentClasses}>
-        {isLoading ? (
-          <div className={styles.loadingBlockWrapper}>
-            <p>{intl.formatMessage(messages.loadingStakePoolsMessage)}</p>
-            {loadingSpinner}
-          </div>
-        ) : (
+      <div className={styles.component}>
+        <BackToTopButton
+          scrollableElementClassName="StakingWithNavigation_page"
+          scrollTopToActivate={isListView ? 400 : 340}
+          buttonTopPosition={isListView ? 184 : 144}
+          isForceHidden={isTableHeaderHovered}
+        />
+        <StakePoolsRanking
+          wallets={wallets}
+          onOpenExternalLink={onOpenExternalLink}
+          updateDelegatingStake={updateDelegatingStake}
+          rankStakePools={rankStakePools}
+          selectedDelegationWalletId={selectedDelegationWalletId}
+          stake={stake}
+          isLoading={isLoading}
+          isRanking={isRanking}
+          numberOfStakePools={stakePoolsList.length}
+          getStakePoolById={getStakePoolById}
+          maxDelegationFunds={maxDelegationFunds}
+          maxDelegationFundsLog={Math.log(maxDelegationFunds)}
+        />
+        <StakePoolsSearch
+          search={search}
+          onSearch={this.handleSearch}
+          onClearSearch={this.handleClearSearch}
+          onGridView={this.handleGridView}
+          onGridRewardsView={this.handleGridRewardsView}
+          onListView={this.handleListView}
+          isListView={isListView}
+          isGridView={isGridView}
+          isGridRewardsView={isGridRewardsView}
+          smashServer={smashServer}
+        />
+        {stakePoolsDelegatingList.length > 0 && (
           <Fragment>
-            <BackToTopButton
-              scrollableElementClassName="StakingWithNavigation_page"
-              scrollTopToActivate={isListView ? 400 : 340}
-              buttonTopPosition={isListView ? 184 : 144}
-              isForceHidden={isTableHeaderHovered}
-            />
-            <StakePoolsRanking
-              wallets={wallets}
-              onOpenExternalLink={onOpenExternalLink}
-              updateDelegatingStake={updateDelegatingStake}
-              rankStakePools={rankStakePools}
-              selectedDelegationWalletId={selectedDelegationWalletId}
-              stake={stake}
-              isLoading={isLoading}
-              isRanking={isRanking}
-              numberOfStakePools={stakePoolsList.length}
-              getStakePoolById={getStakePoolById}
-              maxDelegationFunds={maxDelegationFunds}
-              maxDelegationFundsLog={Math.log(maxDelegationFunds)}
-            />
-            <StakePoolsSearch
-              search={search}
-              onSearch={this.handleSearch}
-              onClearSearch={this.handleClearSearch}
-              onGridView={this.handleGridView}
-              onGridRewardsView={this.handleGridRewardsView}
-              onListView={this.handleListView}
-              isListView={isListView}
-              isGridView={isGridView}
-              isGridRewardsView={isGridRewardsView}
-              smashServer={smashServer}
-            />
-            {stakePoolsDelegatingList.length > 0 && (
-              <Fragment>
-                <h2 className={styles.listTitle}>
-                  <span className={styles.leftContent}>
-                    <span>
-                      {intl.formatMessage(messages.delegatingListTitle)}
-                    </span>
-                  </span>
-                </h2>
-                <StakingPageScrollContext.Consumer>
-                  {(stakePoolsScrollContext) => (
-                    <StakePoolsList
-                      stakePoolsList={stakePoolsDelegatingList}
-                      onOpenExternalLink={onOpenExternalLink}
-                      currentTheme={currentTheme}
-                      containerClassName="StakingWithNavigation_page"
-                      onSelect={this.onDelegate}
-                      numberOfRankedStakePools={numberOfRankedStakePools}
-                      isGridRewardsView={isGridRewardsView}
-                      showWithSelectButton
-                      scrollElementRef={
-                        stakePoolsScrollContext.scrollElementRef
-                      }
-                    />
-                  )}
-                </StakingPageScrollContext.Consumer>
-              </Fragment>
-            )}
-            {isListView && (
-              <Fragment>
-                <h2>
-                  <span className={styles.leftContent}>
-                    <span>
-                      {intl.formatMessage(listTitleMessage)}
-                      {listTitleSearchMessage}
-                      {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: formattedNumber(filteredStakePoolsList.length),
-                      })}
-                    </span>
-                    {tinyLoadingSpinner}
-                  </span>
-                  {smashSettings}
-                </h2>
-                <StakePoolsTable
-                  listName={SELECTED_INDEX_TABLE}
-                  currentLocale={currentLocale}
-                  stakePoolsList={filteredStakePoolsList}
+            <h2 className={styles.listTitle}>
+              <span className={styles.leftContent}>
+                <span>{intl.formatMessage(messages.delegatingListTitle)}</span>
+              </span>
+            </h2>
+            <StakingPageScrollContext.Consumer>
+              {(stakePoolsScrollContext) => (
+                <StakePoolsList
+                  stakePoolsList={stakePoolsDelegatingList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
-                  isListActive={selectedList === SELECTED_INDEX_TABLE}
-                  setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}
+                  isGridRewardsView={isGridRewardsView}
                   showWithSelectButton
-                  onTableHeaderMouseEnter={this.handleTableHeaderMouseEnter}
-                  onTableHeaderMouseLeave={this.handleTableHeaderMouseLeave}
+                  scrollElementRef={stakePoolsScrollContext.scrollElementRef}
                 />
-              </Fragment>
-            )}
-            {(isGridView || isGridRewardsView) && (
-              <Fragment>
-                <h2>
-                  <span className={styles.leftContent}>
-                    <span>
-                      {intl.formatMessage(listTitleMessage)}
-                      {listTitleSearchMessage}
-                      {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: formattedNumber(filteredStakePoolsList.length),
-                      })}
-                    </span>
-                    {tinyLoadingSpinner}
-                  </span>
-                  {smashSettings}
-                </h2>
-                <StakingPageScrollContext.Consumer>
-                  {(stakePoolsScrollContext) => (
-                    <StakePoolsList
-                      showWithSelectButton
-                      stakePoolsList={filteredStakePoolsList}
-                      onOpenExternalLink={onOpenExternalLink}
-                      currentTheme={currentTheme}
-                      containerClassName="StakingWithNavigation_page"
-                      onSelect={this.onDelegate}
-                      numberOfRankedStakePools={numberOfRankedStakePools}
-                      isGridRewardsView={isGridRewardsView}
-                      scrollElementRef={
-                        stakePoolsScrollContext.scrollElementRef
-                      }
-                    />
-                  )}
-                </StakingPageScrollContext.Consumer>
-              </Fragment>
-            )}
+              )}
+            </StakingPageScrollContext.Consumer>
+          </Fragment>
+        )}
+        {isListView && (
+          <Fragment>
+            <h2>
+              <span className={styles.leftContent}>
+                <span>
+                  {intl.formatMessage(listTitleMessage)}
+                  {listTitleSearchMessage}
+                  {intl.formatMessage(messages.listTitleStakePools, {
+                    pools: formattedNumber(filteredStakePoolsList.length),
+                  })}
+                </span>
+                {tinyLoadingSpinner}
+              </span>
+              {smashSettings}
+            </h2>
+            <StakePoolsTable
+              listName={SELECTED_INDEX_TABLE}
+              currentLocale={currentLocale}
+              stakePoolsList={filteredStakePoolsList}
+              onOpenExternalLink={onOpenExternalLink}
+              currentTheme={currentTheme}
+              isListActive={selectedList === SELECTED_INDEX_TABLE}
+              setListActive={this.handleSetListActive}
+              containerClassName="StakingWithNavigation_page"
+              onSelect={this.onDelegate}
+              numberOfRankedStakePools={numberOfRankedStakePools}
+              showWithSelectButton
+              onTableHeaderMouseEnter={this.handleTableHeaderMouseEnter}
+              onTableHeaderMouseLeave={this.handleTableHeaderMouseLeave}
+            />
+          </Fragment>
+        )}
+        {(isGridView || isGridRewardsView) && (
+          <Fragment>
+            <h2>
+              <span className={styles.leftContent}>
+                <span>
+                  {intl.formatMessage(listTitleMessage)}
+                  {listTitleSearchMessage}
+                  {intl.formatMessage(messages.listTitleStakePools, {
+                    pools: formattedNumber(filteredStakePoolsList.length),
+                  })}
+                </span>
+                {tinyLoadingSpinner}
+              </span>
+              {smashSettings}
+            </h2>
+            <StakingPageScrollContext.Consumer>
+              {(stakePoolsScrollContext) => (
+                <StakePoolsList
+                  showWithSelectButton
+                  stakePoolsList={filteredStakePoolsList}
+                  onOpenExternalLink={onOpenExternalLink}
+                  currentTheme={currentTheme}
+                  containerClassName="StakingWithNavigation_page"
+                  onSelect={this.onDelegate}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
+                  isGridRewardsView={isGridRewardsView}
+                  scrollElementRef={stakePoolsScrollContext.scrollElementRef}
+                />
+              )}
+            </StakingPageScrollContext.Consumer>
           </Fragment>
         )}
       </div>

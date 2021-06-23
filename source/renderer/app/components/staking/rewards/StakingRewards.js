@@ -18,6 +18,7 @@ import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 import Ellipsis from '../../widgets/Ellipsis';
+import LoadingStakePools from '../widgets/LoadingStakePools';
 
 const messages = defineMessages({
   title: {
@@ -197,6 +198,10 @@ export default class StakingRewards extends Component<Props, State> {
       contentScrollTop > 10 ? styles.headerWrapperWithShadow : null,
     ]);
 
+    if (isLoading) {
+      return <LoadingStakePools />;
+    }
+
     return (
       <div className={styles.component}>
         <div className={headerWrapperClasses}>
@@ -308,12 +313,6 @@ export default class StakingRewards extends Component<Props, State> {
                   })}
                 </tbody>
               </table>
-            )}
-
-            {isLoading && (
-              <div className={styles.loadingSpinnerWrapper}>
-                <LoadingSpinner />
-              </div>
             )}
           </BorderedBox>
           <div className={styles.note}>
