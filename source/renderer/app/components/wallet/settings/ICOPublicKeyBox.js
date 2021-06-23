@@ -5,7 +5,7 @@ import { defineMessages } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
 import PublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
-import PublicKeyDialog from './WalletPublicKeyDialog';
+import ICOPublicKeyDialog from './ICOPublicKeyDialog';
 import type { Locale } from '../../../../../common/types/locales.types';
 import GenericPublicKeyField from './GenericPublicKeyField';
 
@@ -69,13 +69,13 @@ export const ICOPublicKeyBox = (props: Props) => {
             openDialogAction({ dialog: PublicKeyQRCodeDialog })
           }
           onOpenWalletKeyDialog={() =>
-            openDialogAction({ dialog: PublicKeyDialog })
+            openDialogAction({ dialog: ICOPublicKeyDialog })
           }
           t={t}
           messages={messages}
         />
       </BorderedBox>
-      {isDialogOpen(PublicKeyDialog) ? publicKeyDialogContainer : false}
+      {isDialogOpen(ICOPublicKeyDialog) ? publicKeyDialogContainer : false}
       {isDialogOpen(PublicKeyQRCodeDialog)
         ? publicKeyQRCodeDialogContainer
         : false}

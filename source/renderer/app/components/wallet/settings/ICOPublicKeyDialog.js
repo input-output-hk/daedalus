@@ -37,7 +37,6 @@ type Props = {
   onClose: Function,
   error: ?LocalizableError,
   hasReceivedICOPublicKey: boolean,
-  walletName: string,
 };
 
 @observer
@@ -104,7 +103,7 @@ export default class ICOPublicKeyDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, error, walletName } = this.props;
+    const { onClose, error } = this.props;
     const { form } = this;
     const spendingPasswordField = form.$('spendingPassword');
     const actions = [
@@ -118,7 +117,6 @@ export default class ICOPublicKeyDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
-        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}

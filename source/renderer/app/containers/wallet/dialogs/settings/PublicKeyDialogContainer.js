@@ -37,7 +37,6 @@ export default class PublicKeyDialogContainer extends Component<Props> {
         onClose={this.handleClose}
         hasReceivedICOPublicKey={!!icoPublicKeyRequest}
         error={accountPublicKeyRequest.error}
-        walletName={activeWallet.name}
       />
     ) : (
       <WalletPublicKeyDialog
