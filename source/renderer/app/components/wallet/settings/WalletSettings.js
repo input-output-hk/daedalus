@@ -6,6 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
 import {
+  IS_ICO_PUBLIC_KEY_SHARING_ENABLED,
   IS_WALLET_PUBLIC_KEY_SHARING_ENABLED,
   IS_WALLET_UNDELEGATION_ENABLED,
 } from '../../../config/walletsConfig';
@@ -416,7 +417,7 @@ export default class WalletSettings extends Component<Props, State> {
             t={(string: string) => intl.formatMessage(string)}
           />
         )}
-        {IS_WALLET_PUBLIC_KEY_SHARING_ENABLED &&
+        {IS_ICO_PUBLIC_KEY_SHARING_ENABLED &&
           !isLegacy &&
           !isHardwareWallet && (
             <ICOPublicKeyBox
