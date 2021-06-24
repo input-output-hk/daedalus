@@ -71,6 +71,7 @@ export default class Table extends Component<Props, State> {
   }
 
   handleSort = (newSortBy: string) => {
+    const { initialSortDirection } = this.props;
     const { sortDirection, sortBy } = this.state;
     let newsortDirection;
     if (sortBy === newSortBy) {
@@ -81,7 +82,7 @@ export default class Table extends Component<Props, State> {
           : SORT_DIRECTIONS.ASCENDING;
     } else {
       // on new sort instance, direction by initial value 'descending'
-      newsortDirection = SORT_DIRECTIONS.DESCENDING;
+      newsortDirection = initialSortDirection || SORT_DIRECTIONS.DESCENDING;
     }
 
     this.setState({

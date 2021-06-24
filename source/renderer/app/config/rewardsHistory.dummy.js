@@ -1,6 +1,7 @@
 // @flow
 import hash from 'hash.js';
 import BigNumber from 'bignumber.js';
+import faker from 'faker';
 import { map, random } from 'lodash';
 import type { GetRewardsHistoryRequest } from '../api/staking/types';
 import stakePoolsId from './rewardsHistory.stakePoolsId.dummy.json';
@@ -8,10 +9,12 @@ import stakePoolsId from './rewardsHistory.stakePoolsId.dummy.json';
 const date = new Date();
 
 export const generateId = (index: number) => {
-  return hash
+  const id = hash
     .sha224()
     .update(date.getTime() + index)
     .digest('hex');
+  const randomNumber = parseInt(Math.random() * 19, 10);
+  return `${id}${randomNumber}`;
 };
 
 const ids = [...Array(100).fill()].map((x, index) => generateId(index));
@@ -31,7 +34,7 @@ const generatePool = (index: number) => ({
   cost: new BigNumber(index),
   pledge: new BigNumber(index),
   isCharity: false,
-  name: `Stake Pool ${index}`,
+  name: faker.company.companyName(),
   profitMargin: 100,
   ranking: index,
   retiring: null,

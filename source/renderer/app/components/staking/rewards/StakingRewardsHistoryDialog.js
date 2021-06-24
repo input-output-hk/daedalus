@@ -168,8 +168,8 @@ export default class StakingRewardsHistoryDialog extends Component<
       {
         title: intl.formatMessage(messages.columnStakePool),
         id: 'pool',
-        sortValue: (pool: ?StakePool) =>
-          pool ? `${pool.ticker}${pool.name}` : null,
+        sortValue: (pool: StakePool) =>
+          pool.ticker ? `${pool.ticker}${pool.name}` : pool.id,
         render: (pool: $Shape<StakePool>) =>
           pool.name
             ? this.renderStakePool(pool)

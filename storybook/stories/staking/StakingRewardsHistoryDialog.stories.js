@@ -19,7 +19,16 @@ export const StakingRewardsHistoryStory = ({
   locale: string,
 }) => {
   const [dateRange, setDateRange] = useState({ startDate: now, endDate: null });
-  const rewards = getRewardsHistory(10);
+  let rewards = getRewardsHistory(10);
+  const onlyIds = boolean("Show only ID's");
+  if (onlyIds) {
+    rewards = rewards.map((rew) => ({
+      ...rew,
+      pool: {
+        id: rew.pool.id,
+      },
+    }));
+  }
   const reward = {
     date: now.toString(),
     walletId: '1',
