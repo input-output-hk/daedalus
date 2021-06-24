@@ -8,7 +8,7 @@ import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
 import PublicKeyDialogContainer from './dialogs/settings/PublicKeyDialogContainer';
-import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
+import PublicKeyQRCodeDialogContainer from './dialogs/settings/PublicKeyQRCodeDialogContainer';
 import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
@@ -144,7 +144,10 @@ export default class WalletSettingsPage extends Component<Props> {
           walletPublicKeyDialogContainer={<PublicKeyDialogContainer />}
           icoPublicKeyDialogContainer={<PublicKeyDialogContainer isICO />}
           walletPublicKeyQRCodeDialogContainer={
-            <WalletPublicKeyQRCodeDialogContainer />
+            <PublicKeyQRCodeDialogContainer />
+          }
+          icoPublicKeyQRCodeDialogContainer={
+            <PublicKeyQRCodeDialogContainer isICO />
           }
           undelegateWalletDialogContainer={
             <UndelegateWalletDialogContainer

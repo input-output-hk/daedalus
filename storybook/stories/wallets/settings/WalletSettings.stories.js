@@ -10,7 +10,7 @@ import WalletSettingsScreen from './WalletSettingsScreen.stories.js';
 import './WalletDelete.stories';
 import './WalletRecoveryPhraseVerification.stories';
 import './WalletPublicKey.stories';
-import './WalletPublicKeyQRCode.stories';
+import './PublicKeyQRCode.stories';
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Settings', module)

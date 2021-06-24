@@ -137,6 +137,7 @@ type Props = {
   walletPublicKeyDialogContainer: Node,
   icoPublicKeyDialogContainer: Node,
   walletPublicKeyQRCodeDialogContainer: Node,
+  icoPublicKeyQRCodeDialogContainer: Node,
   undelegateWalletDialogContainer: Node,
   deleteWalletDialogContainer: Node,
   shouldDisplayRecoveryPhrase: boolean,
@@ -426,7 +427,7 @@ export default class WalletSettings extends Component<Props, State> {
               isDialogOpen={this.props.isDialogOpen}
               publicKeyDialogContainer={this.props.icoPublicKeyDialogContainer}
               publicKeyQRCodeDialogContainer={
-                this.props.walletPublicKeyQRCodeDialogContainer
+                this.props.icoPublicKeyQRCodeDialogContainer
               }
               t={(string: string) => intl.formatMessage(string)}
             />

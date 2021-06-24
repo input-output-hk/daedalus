@@ -1,38 +1,32 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
 import QRCode from 'qrcode.react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import styles from './WalletPublicKeyQRCodeDialog.scss';
+import styles from './PublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 
-const messages = defineMessages({
-  dialogTitle: {
-    id: 'wallet.settings.walletPublicKey',
-    defaultMessage: '!!!Wallet Public Key',
-    description: 'Title for the "Wallet Public Key QR Code" dialog.',
-  },
-  copyPublicKeyLabel: {
-    id: 'wallet.settings.copyPublicKey',
-    defaultMessage: '!!!Copy public key',
-    description: 'Copy public key label.',
-  },
-});
+export type $npm$ReactIntl$MessageDescriptor = {
+  id: string,
+  description?: string,
+  defaultMessage?: string,
+};
 
 type Props = {
   walletName: string,
   walletPublicKey: string,
   onCopyWalletPublicKey: Function,
   onClose: Function,
+  messages: { [string]: $npm$ReactIntl$MessageDescriptor },
 };
 
 @observer
-export default class WalletPublicKeyQRCodeDialog extends Component<Props> {
+export default class PublicKeyQRCodeDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -44,6 +38,7 @@ export default class WalletPublicKeyQRCodeDialog extends Component<Props> {
       walletPublicKey,
       onCopyWalletPublicKey,
       onClose,
+      messages,
     } = this.props;
     const actions = [
       {

@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import { defineMessages } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
-import PublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
+import PublicKeyQRCodeDialog from './PublicKeyQRCodeDialog';
 import ICOPublicKeyDialog from './ICOPublicKeyDialog';
 import type { Locale } from '../../../../../common/types/locales.types';
 import GenericPublicKeyField from './GenericPublicKeyField';

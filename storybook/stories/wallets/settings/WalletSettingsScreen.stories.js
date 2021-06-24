@@ -4,6 +4,7 @@ import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import { defineMessages } from 'react-intl';
 import {
   generateWallet,
   generateHash,
@@ -15,7 +16,7 @@ import type { Locale } from '../../../../source/common/types/locales.types';
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/PublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
@@ -29,6 +30,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
+import type { $npm$ReactIntl$MessageDescriptor } from '../../../../source/renderer/app/components/wallet/settings/PublicKeyQRCodeDialog';
 
 /* eslint-disable react/display-name  */
 
@@ -37,7 +39,7 @@ const changePasswordId = 'Change Password';
 const undelegateWalletId = 'Undelegate Wallet';
 const deleteWalletId = 'Delete Wallet';
 const walletPublicKeyId = 'Wallet Public Key';
-const ICOPublicKeyId = 'ICO Public Key';
+const icoPublicKeyId = 'ICO Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
@@ -166,6 +168,36 @@ export default (props: { locale: Locale }) => {
     undelegateWalletId
   );
 
+  const walletMessages: {
+    [string]: $npm$ReactIntl$MessageDescriptor,
+  } = defineMessages({
+    dialogTitle: {
+      id: 'wallet.settings.walletPublicKey',
+      defaultMessage: '!!!Wallet Public Key',
+      description: 'Title for the "Wallet Public Key QR Code" dialog.',
+    },
+    copyPublicKeyLabel: {
+      id: 'wallet.settings.copyPublicKey',
+      defaultMessage: '!!!Copy public key',
+      description: 'Copy public key label.',
+    },
+  });
+
+  const icoMessages: {
+    [string]: $npm$ReactIntl$MessageDescriptor,
+  } = defineMessages({
+    dialogTitle: {
+      id: 'wallet.settings.icoPublicKey',
+      defaultMessage: '!!!ICO Public Key',
+      description: 'Title for the "ICO Public Key QR Code" dialog.',
+    },
+    copyPublicKeyLabel: {
+      id: 'wallet.settings.copyPublicKey',
+      defaultMessage: '!!!Copy public key',
+      description: 'Copy public key label.',
+    },
+  });
+
   return (
     <WalletSettings
       isLegacy={boolean('isLegacy', false)}
@@ -211,7 +243,7 @@ export default (props: { locale: Locale }) => {
       isRestoring={false}
       isSyncing={false}
       walletPublicKey={walletPublicKeyId}
-      icoPublicKey={ICOPublicKeyId}
+      icoPublicKey={icoPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(
         'isSpendingPasswordSet',
@@ -263,15 +295,29 @@ export default (props: { locale: Locale }) => {
         />
       }
       walletPublicKeyQRCodeDialogContainer={
-        <WalletPublicKeyQRCodeDialog
+        <PublicKeyQRCodeDialog
           walletName={text(
-            'WalletPublicKeyQRCodeDialog: Wallet Name',
+            'PublicKeyQRCodeDialog: Wallet Name',
             'Wallet',
             walletPublicKeyId
           )}
           walletPublicKey={walletPublicKeyId}
           onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
           onClose={action('Wallet Public Key QR Code - onClose')}
+          messages={walletMessages}
+        />
+      }
+      icoPublicKeyQRCodeDialogContainer={
+        <PublicKeyQRCodeDialog
+          walletName={text(
+            'PublicKeyQRCodeDialog: Wallet Name',
+            'Wallet',
+            walletPublicKeyId
+          )}
+          walletPublicKey={icoPublicKeyId}
+          onCopyWalletPublicKey={action('ICO Public Key QR Code - copy')}
+          onClose={action('ICO Public Key QR Code - onClose')}
+          messages={icoMessages}
         />
       }
       undelegateWalletDialogContainer={
