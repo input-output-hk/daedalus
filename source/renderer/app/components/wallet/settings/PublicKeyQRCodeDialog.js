@@ -5,6 +5,7 @@ import { intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
 import QRCode from 'qrcode.react';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
@@ -23,6 +24,7 @@ type Props = {
   onCopyWalletPublicKey: Function,
   onClose: Function,
   messages: { [string]: $npm$ReactIntl$MessageDescriptor },
+  derivationPath: string,
 };
 
 @observer
@@ -39,6 +41,7 @@ export default class PublicKeyQRCodeDialog extends Component<Props> {
       onCopyWalletPublicKey,
       onClose,
       messages,
+      derivationPath,
     } = this.props;
     const actions = [
       {
@@ -76,6 +79,12 @@ export default class PublicKeyQRCodeDialog extends Component<Props> {
             size={192}
           />
         </div>
+        <div className={styles.addressPathsWrapper}>
+          <PopOver content={intl.formatMessage(messages.derivationPathTooltip)}>
+            <div className={styles.spendingPath}>{derivationPath}</div>
+          </PopOver>
+        </div>
+
         <div className={styles.walletPublicKey}>{walletPublicKey}</div>
         <CopyToClipboard text={walletPublicKey} onCopy={onCopyWalletPublicKey}>
           <span className={styles.copyPublicKey}>

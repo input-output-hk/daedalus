@@ -19,6 +19,24 @@
     word-wrap: break-word;
   }
 
+  .addressPathsWrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+
+    .spendingPath {
+      color: var(--theme-dialog-text-color);
+      font-family: var(--font-medium);
+      font-size: 12px;
+      line-height: 1.83;
+      padding: 0 15px;
+
+      b {
+        font-family: var(--font-bold);
+      }
+    }
+  }
+
   .copyPublicKey {
     display: block;
     opacity: 0.5;

@@ -31,6 +31,10 @@ import {
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
 import type { $npm$ReactIntl$MessageDescriptor } from '../../../../source/renderer/app/components/wallet/settings/PublicKeyQRCodeDialog';
+import {
+  ICO_PUBLIC_KEY_DERIVATION_PATH,
+  WALLET_PUBLIC_KEY_DERIVATION_PATH,
+} from '../../../../source/renderer/app/config/walletsConfig';
 
 /* eslint-disable react/display-name  */
 
@@ -305,6 +309,7 @@ export default (props: { locale: Locale }) => {
           onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
           onClose={action('Wallet Public Key QR Code - onClose')}
           messages={walletMessages}
+          derivationPath={WALLET_PUBLIC_KEY_DERIVATION_PATH}
         />
       }
       icoPublicKeyQRCodeDialogContainer={
@@ -318,6 +323,7 @@ export default (props: { locale: Locale }) => {
           onCopyWalletPublicKey={action('ICO Public Key QR Code - copy')}
           onClose={action('ICO Public Key QR Code - onClose')}
           messages={icoMessages}
+          derivationPath={ICO_PUBLIC_KEY_DERIVATION_PATH}
         />
       }
       undelegateWalletDialogContainer={

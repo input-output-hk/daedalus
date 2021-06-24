@@ -5,7 +5,11 @@ import { defineMessages } from 'react-intl';
 import PublicKeyQRCodeDialog from '../../../../components/wallet/settings/PublicKeyQRCodeDialog';
 import type { $npm$ReactIntl$MessageDescriptor } from '../../../../components/wallet/settings/PublicKeyQRCodeDialog';
 import { ellipsis } from '../../../../utils/strings';
-import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../../../config/walletsConfig';
+import {
+  ICO_PUBLIC_KEY_DERIVATION_PATH,
+  WALLET_PUBLIC_KEY_DERIVATION_PATH,
+  WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
+} from '../../../../config/walletsConfig';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 
 const walletMessages: {
@@ -21,6 +25,11 @@ const walletMessages: {
     defaultMessage: '!!!Copy public key',
     description: 'Copy public key label.',
   },
+  derivationPathTooltip: {
+    id: 'wallet.settings.dialog.derivationPathTooltip',
+    defaultMessage: '!!!Derivation path',
+    description: 'Tooltip for the derivation path',
+  },
 });
 
 const icoMessages: {
@@ -35,6 +44,11 @@ const icoMessages: {
     id: 'wallet.settings.copyPublicKey',
     defaultMessage: '!!!Copy public key',
     description: 'Copy public key label.',
+  },
+  derivationPathTooltip: {
+    id: 'wallet.settings.dialog.derivationPathTooltip',
+    defaultMessage: '!!!Derivation path',
+    description: 'Tooltip for the derivation path',
   },
 });
 
@@ -91,6 +105,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
             actions.dialogs.closeActiveDialog.trigger();
           }}
           messages={icoMessages}
+          derivationPath={ICO_PUBLIC_KEY_DERIVATION_PATH}
         />
       );
     }
@@ -104,6 +119,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
             actions.dialogs.closeActiveDialog.trigger();
           }}
           messages={walletMessages}
+          derivationPath={WALLET_PUBLIC_KEY_DERIVATION_PATH}
         />
       );
     }
