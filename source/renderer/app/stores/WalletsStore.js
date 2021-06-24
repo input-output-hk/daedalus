@@ -337,7 +337,7 @@ export default class WalletsStore extends Store {
 
     const walletId = this.active.id;
     const index = '0H';
-    const extended = true;
+    const format = 'extended';
     const purpose = '1852H';
     try {
       const icoPublicKey = await this.icoPublicKeyRequest.execute({
@@ -345,7 +345,7 @@ export default class WalletsStore extends Store {
         index,
         data: {
           passphrase,
-          extended,
+          format,
           purpose,
         },
       }).promise;

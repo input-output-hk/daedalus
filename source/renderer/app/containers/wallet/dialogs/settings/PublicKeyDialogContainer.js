@@ -27,6 +27,7 @@ export default class PublicKeyDialogContainer extends Component<Props> {
       accountPublicKeyRequest,
       activePublicKey,
       icoPublicKeyRequest,
+      icoPublicKey,
       active: activeWallet,
     } = stores.wallets;
 
@@ -35,8 +36,8 @@ export default class PublicKeyDialogContainer extends Component<Props> {
       <ICOPublicKeyDialog
         onRevealPublicKey={getICOPublicKey.trigger}
         onClose={this.handleClose}
-        hasReceivedICOPublicKey={!!icoPublicKeyRequest}
-        error={accountPublicKeyRequest.error}
+        hasReceivedICOPublicKey={!!icoPublicKey}
+        error={icoPublicKeyRequest.error}
       />
     ) : (
       <WalletPublicKeyDialog

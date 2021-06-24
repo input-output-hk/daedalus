@@ -402,21 +402,22 @@ export default class WalletSettings extends Component<Props, State> {
           : false}
 
         {IS_WALLET_PUBLIC_KEY_SHARING_ENABLED && !isLegacy && (
-          <>
-            <WalletPublicKeyBox
-              publicKey={this.props.walletPublicKey}
-              locale={this.props.locale}
-              onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
-              openDialogAction={this.props.openDialogAction}
-              isDialogOpen={this.props.isDialogOpen}
-              publicKeyDialogContainer={
-                this.props.walletPublicKeyDialogContainer
-              }
-              publicKeyQRCodeDialogContainer={
-                this.props.walletPublicKeyQRCodeDialogContainer
-              }
-              t={(string: string) => intl.formatMessage(string)}
-            />
+          <WalletPublicKeyBox
+            publicKey={this.props.walletPublicKey}
+            locale={this.props.locale}
+            onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
+            openDialogAction={this.props.openDialogAction}
+            isDialogOpen={this.props.isDialogOpen}
+            publicKeyDialogContainer={this.props.walletPublicKeyDialogContainer}
+            publicKeyQRCodeDialogContainer={
+              this.props.walletPublicKeyQRCodeDialogContainer
+            }
+            t={(string: string) => intl.formatMessage(string)}
+          />
+        )}
+        {IS_WALLET_PUBLIC_KEY_SHARING_ENABLED &&
+          !isLegacy &&
+          !isHardwareWallet && (
             <ICOPublicKeyBox
               publicKey={this.props.icoPublicKey}
               locale={this.props.locale}
@@ -429,8 +430,7 @@ export default class WalletSettings extends Component<Props, State> {
               }
               t={(string: string) => intl.formatMessage(string)}
             />
-          </>
-        )}
+          )}
         {this.renderUndelegateWalletBox()}
         {this.renderDeleteWalletBox()}
       </div>
