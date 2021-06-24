@@ -155,6 +155,7 @@
   "global.labels.change": "変更",
   "global.labels.close": "閉じる",
   "global.labels.copy": "コピーする",
+  "global.labels.copied": "コピーされました",
   "global.labels.create": "作成",
   "global.labels.filter": "フィルター",
   "global.labels.hide": "非表示にする",

@@ -188,6 +188,10 @@ export default class StakingRewardsHistoryDialog extends Component<
       'StakingRewardsHistoryDialog',
     ]);
 
+    const copyMessage = itemCopied
+      ? globalMessages.copied
+      : globalMessages.copy;
+
     return (
       <Dialog
         className={componentStyles}
@@ -206,7 +210,7 @@ export default class StakingRewardsHistoryDialog extends Component<
             {rewardsAddress}
             <span className={copyIconWrapperStyles}>
               <PopOver
-                content={intl.formatMessage(globalMessages.copy)}
+                content={intl.formatMessage(copyMessage)}
                 className={styles.copyPopOver}
                 appendTo="parent"
                 visible

@@ -155,6 +155,7 @@
   "global.labels.change": "Change",
   "global.labels.close": "Close",
   "global.labels.copy": "Copy",
+  "global.labels.copied": "Copied",
   "global.labels.create": "Create",
   "global.labels.filter": "Filter",
   "global.labels.hide": "Hide",

@@ -298,6 +298,11 @@ export default defineMessages({
     defaultMessage: '!!!Copy',
     description: 'Copy label.',
   },
+  copied: {
+    id: 'global.labels.copied',
+    defaultMessage: '!!!Copied',
+    description: 'Copied label.',
+  },
   featureUnavailableWhileSyncing: {
     id: 'global.info.featureUnavailableWhileSyncing',
     defaultMessage:
