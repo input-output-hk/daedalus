@@ -14,17 +14,17 @@ const messages = defineMessages({
   },
   columnStakePoolId: {
     id: 'staking.rewardsHistory.csv.column.stakePoolId',
-    defaultMessage: 'Pool ID',
+    defaultMessage: '!!!Stake Pool ID',
     description: 'Transactions CSV column - Pool',
   },
   columnStakePoolTicker: {
     id: 'staking.rewardsHistory.csv.column.stakePoolTicker',
-    defaultMessage: 'Pool ticker',
+    defaultMessage: '!!!Stake Pool ticker',
     description: 'Transactions CSV column - Pool',
   },
   columnStakePoolName: {
     id: 'staking.rewardsHistory.csv.column.stakePoolName',
-    defaultMessage: '!!!Pool name',
+    defaultMessage: '!!!Stake Pool name',
     description: 'Transactions CSV column - Pool',
   },
   columnAmount: {

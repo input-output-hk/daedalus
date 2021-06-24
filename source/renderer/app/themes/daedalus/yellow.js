@@ -854,6 +854,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-redeemItnRewards-icon-color': '#2d2d2d',
     '--theme-staking-rewards-table-background-color-hover':
       'rgba(45, 45, 45, 0.1)',
+    '--theme-staking-table-background-color-transparent': 'rgba(0, 0, 0, 0)',
+    '--theme-staking-table-background-color': '#ffffff',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',

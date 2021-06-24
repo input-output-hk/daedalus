@@ -853,6 +853,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-staking-redeemItnRewards-icon-color': '#ffffff',
     '--theme-staking-rewards-table-background-color-hover':
       'rgba(255, 255, 255, 0.1)',
+    '--theme-staking-table-background-color-transparent': 'rgba(0, 0, 0, 0)',
+    '--theme-staking-table-background-color': '#1e1f31',
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
