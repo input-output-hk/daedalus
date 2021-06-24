@@ -12,6 +12,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { isValidSpendingPassword } from '../../../utils/validations';
 
 const messages = defineMessages({
   title: {
@@ -66,15 +67,12 @@ export default class ICOPublicKeyDialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
-              if (field.value === '') {
-                return [
-                  false,
-                  this.context.intl.formatMessage(
-                    globalMessages.fieldIsRequired
-                  ),
-                ];
-              }
-              return [true];
+              return [
+                isValidSpendingPassword(field.value),
+                this.context.intl.formatMessage(
+                  globalMessages.invalidSpendingPassword
+                ),
+              ];
             },
           ],
         },
