@@ -55,7 +55,8 @@ const messages = defineMessages({
   },
   unknownStakePoolTooltip: {
     id: 'staking.rewardsHistory.dialog.unknownStakePoolTooltip',
-    defaultMessage: '!!!This Stake Pool could not be found.',
+    defaultMessage:
+      '!!!Stake pool details are unavailable for this stake pool ID.',
     description: '"Unknown Stake Pool" tooltip on the rewards history dialog.',
   },
 });

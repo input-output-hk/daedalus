@@ -325,9 +325,6 @@
       &.rewardsAddress {
         min-width: 100px;
         word-wrap: break-word;
-        // white-space: nowrap;
-        // text-overflow: ellipsis;
-        // overflow: hidden;
 
         @media (max-width: 1120px) {
           max-width: 420px;

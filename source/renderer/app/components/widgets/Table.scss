@@ -87,34 +87,36 @@
       &::-webkit-scrollbar-button {
         display: none;
       }
-
-      background:
-        // Shadow covers
-        linear-gradient(
-          var(--theme-staking-table-background-color) 30%,
-          var(--theme-staking-table-background-color-transparent)
+      background: var(--rp-modal-bg-color) no-repeat;
+      background-image: radial-gradient(
+          farthest-side at 50% 0,
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0)
         ),
-        linear-gradient(
-            var(--theme-staking-table-background-color-transparent),
-            var(--theme-staking-table-background-color) 70%
-          )
-          0 100%,
-        // Shadows
         radial-gradient(
-            farthest-side at 50% 0,
-            rgba(0, 0, 0, 0.2),
-            rgba(0, 0, 0, 0)
-          ),
-        radial-gradient(
-            farthest-side at 50% 100%,
-            rgba(0, 0, 0, 0.2),
-            rgba(0, 0, 0, 0)
-          )
-          0 100%;
-      background-repeat: no-repeat;
-      background-color: var(--theme-staking-table-background-color);
-      background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
-      background-attachment: local, local, scroll, scroll;
+          farthest-side at 50% 100%,
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0)
+        );
+      background-position: 0 30px, 0 100%;
+      background-size: 100% 10px;
+      &:before,
+      &:after {
+        content: '';
+        position: relative;
+        display: block;
+        height: 10px;
+        background: var(--rp-modal-bg-color);
+      }
+      &:before {
+        top: 30px;
+      }
+      &:after {
+        margin-bottom: -10px;
+      }
+    }
+    table {
+      margin-top: -10px;
     }
     th {
       background-color: var(--rp-modal-bg-color);
@@ -122,23 +124,6 @@
       top: 0;
       z-index: 1;
     }
-    // &:before,
-    // &:after {
-    //   content: '';
-    //   height: 10px;
-    //   position: absolute;
-    //   width: calc(100% - 20px);
-    //   z-index: 9;
-    // }
-    // &:before {
-    //   box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.25) inset;
-    //   /* box-shadow: 0 6px 11px -3px rgba(0, 0, 0, 0.25); */
-    //   top: 32px;
-    // }
-    // &:after {
-    //   bottom: 0;
-    //   box-shadow: 0 -10px 10px -10px rgba(0, 0, 0, 0.25) inset;
-    // }
   }
   &.compact {
     table {

@@ -494,7 +494,7 @@
   "staking.rewardsHistory.dialog.column.stakePool": "Stake pool",
   "staking.rewardsHistory.dialog.csv.label": "Export CSV",
   "staking.rewardsHistory.dialog.rewardsAddress": "Rewards address",
-  "staking.rewardsHistory.dialog.unknownStakePoolTooltip": "This Stake Pool could not be found",
+  "staking.rewardsHistory.dialog.unknownStakePoolTooltip": "Stake pool details are unavailable for this stake pool ID.",
   "staking.rewardsHistory.dialog.title": "Rewards details",
   "staking.stakePools.delegatingListTitle": "Staking pools you are delegating to",
   "staking.stakePools.learnMore": "Learn more",
