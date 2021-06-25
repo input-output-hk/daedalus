@@ -164,8 +164,10 @@
       font-family: var(--font-semibold);
       font-size: 14px;
       line-height: 1.14;
+      max-height: 43px;
       padding: 14px 20px;
       text-align: left;
+      white-space: nowrap;
 
       &:hover {
         & > .sortIcon {
