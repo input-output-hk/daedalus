@@ -59,19 +59,20 @@ type Props = InjectedProps;
 export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  handleCopyWalletPublicKey = () => {
+  handleCopyWalletPublicKey = (isICO: boolean = false) => {
     const { actions, stores } = this.props;
     const { wallets: walletsAction } = actions;
     const { wallets: walletsStore } = stores;
-    const { activePublicKey } = walletsStore;
+    const { activePublicKey, icoPublicKey } = walletsStore;
 
-    if (!activePublicKey)
+    if ((!activePublicKey && !isICO) || (!icoPublicKey && isICO))
       throw new Error(
         'Active wallet public key required for PublicKeyQRCodeDialogContainer.'
       );
 
     const publicKey = ellipsis(
-      activePublicKey,
+      // $FlowFixMe Flow cannot detect the previous condition. Hopefully this is solved using Typescript
+      isICO ? icoPublicKey : activePublicKey,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
@@ -100,7 +101,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
         <PublicKeyQRCodeDialog
           walletName={activeWallet.name}
           walletPublicKey={icoPublicKey}
-          onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          onCopyWalletPublicKey={() => this.handleCopyWalletPublicKey(true)}
           onClose={() => {
             actions.dialogs.closeActiveDialog.trigger();
           }}
@@ -114,7 +115,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
         <PublicKeyQRCodeDialog
           walletName={activeWallet.name}
           walletPublicKey={activePublicKey}
-          onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          onCopyWalletPublicKey={() => this.handleCopyWalletPublicKey()}
           onClose={() => {
             actions.dialogs.closeActiveDialog.trigger();
           }}
