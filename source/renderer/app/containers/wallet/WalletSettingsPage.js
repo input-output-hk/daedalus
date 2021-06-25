@@ -36,6 +36,16 @@ export default class WalletSettingsPage extends Component<Props> {
     wallets.copyPublicKey.trigger({ publicKey });
   };
 
+  handleCopyICOPublicKey = (icoPublicKey: string) => {
+    const { wallets } = this.props.actions;
+    const publicKey = ellipsis(
+      icoPublicKey,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
+    );
+    wallets.copyPublicKey.trigger({ publicKey });
+  };
+
   handleDelegateClick = () => {
     const { goToRoute } = this.props.actions.router;
     goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
@@ -132,6 +142,7 @@ export default class WalletSettingsPage extends Component<Props> {
           onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          onCopyICOPublicKey={this.handleCopyICOPublicKey}
           updateDataForActiveDialogAction={
             actions.dialogs.updateDataForActiveDialog.trigger
           }

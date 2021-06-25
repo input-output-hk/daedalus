@@ -1009,7 +1009,7 @@
   "wallet.settings.icoPublicKeyDialog.button": "Reveal ICO public key",
   "wallet.settings.icoPublicKeyDialog.description": "Please enter your spending password to reveal your ICO public key.",
   "wallet.settings.icoPublicKeyDialog.title": "Reveal ICO public key",
-  "wallet.settings.icoPublicKeyShowInstruction": "Click the icon on the right to view your ICO public key.",
+  "wallet.settings.icoPublicKeyShowInstruction": "Click the icon on the right to view your ICO public key",
   "wallet.settings.name.label": "Name",
   "wallet.settings.password": "Password",
   "wallet.settings.passwordLastUpdated": "Last updated {lastUpdated}",

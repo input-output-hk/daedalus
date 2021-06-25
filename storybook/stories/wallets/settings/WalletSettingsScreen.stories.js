@@ -389,6 +389,7 @@ export default (props: { locale: Locale }) => {
       }
       onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
       onCopyWalletPublicKey={() => null}
+      onCopyICOPublicKey={() => null}
       updateDataForActiveDialogAction={() => null}
       onDelegateClick={() => null}
       getWalletPublicKey={() => null}
