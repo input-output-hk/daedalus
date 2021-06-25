@@ -1185,6 +1185,7 @@ export default class WalletsStore extends Store {
             }
           } else {
             this.activePublicKey = null;
+            this.icoPublicKey = null;
           }
         }
       } else if (hasActiveWalletBeenUpdated) {
@@ -1198,6 +1199,7 @@ export default class WalletsStore extends Store {
     this.active = null;
     this.activeValue = null;
     this.activePublicKey = null;
+    this.icoPublicKey = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 
