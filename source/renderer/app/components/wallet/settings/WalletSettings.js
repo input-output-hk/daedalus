@@ -130,6 +130,7 @@ type Props = {
   onCancel: Function,
   onVerifyRecoveryPhrase: Function,
   onCopyWalletPublicKey: Function,
+  onCopyICOPublicKey: Function,
   updateDataForActiveDialogAction: Function,
   onDelegateClick: Function,
   nameValidator: Function,
@@ -423,7 +424,7 @@ export default class WalletSettings extends Component<Props, State> {
             <ICOPublicKeyBox
               publicKey={this.props.icoPublicKey}
               locale={this.props.locale}
-              onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
+              onCopyWalletPublicKey={this.props.onCopyICOPublicKey}
               openDialogAction={this.props.openDialogAction}
               isDialogOpen={this.props.isDialogOpen}
               publicKeyDialogContainer={this.props.icoPublicKeyDialogContainer}
