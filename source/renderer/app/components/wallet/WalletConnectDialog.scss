@@ -101,17 +101,17 @@
       margin-top: 27px;
       text-align: center;
     }
-  }
 
-  :global {
-    .LoadingSpinner_component {
-      height: 24px;
-      margin: 0 !important;
-      width: 24px;
+    :global {
+      .LoadingSpinner_component {
+        height: 24px;
+        margin: 0 !important;
+        width: 24px;
 
-      .LoadingSpinner_icon svg path {
-        fill: var(--theme-hardware-wallet-message-color) !important;
-        opacity: 0.5;
+        .LoadingSpinner_icon svg path {
+          fill: var(--theme-hardware-wallet-message-color) !important;
+          opacity: 0.5;
+        }
       }
     }
   }

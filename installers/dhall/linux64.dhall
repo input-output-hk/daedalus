@@ -15,10 +15,10 @@ in
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodeBin             = "jormungandr"
-  , walletBin           = "cardano-wallet-jormungandr"
+  , nodeBin             = "cardano-node"
+  , walletBin           = "cardano-wallet"
   , daedalusBin         = "daedalus-frontend"
-  , cliPath             = "jcli"
+  , cliPath             = "cardano-cli"
   , nodeLogConfig       = None Text
   , nodeLogPath         = None Text
   , walletLogging       = False

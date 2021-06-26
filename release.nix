@@ -62,7 +62,6 @@ in {
   daedalus-installer = [ "x86_64-linux" "x86_64-darwin" ];
   yaml2json = [ "x86_64-linux" "x86_64-darwin" ];
   bridgeTable = {
-    jormungandr = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
     cardano = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
   };
   cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];

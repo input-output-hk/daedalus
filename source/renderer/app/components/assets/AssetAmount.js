@@ -23,6 +23,7 @@ type Props = {
   decimals: ?number,
   isLoading?: boolean,
   className?: string,
+  isShort?: boolean,
 };
 
 @observer
@@ -32,11 +33,18 @@ export default class AssetAmount extends Component<Props> {
   };
 
   render() {
-    const { amount, metadata, decimals, isLoading, className } = this.props;
+    const {
+      amount,
+      metadata,
+      decimals,
+      isLoading,
+      className,
+      isShort,
+    } = this.props;
     if (isLoading) return '-';
     const componentStyles = classnames([styles.component, className]);
     const content = !isLoading
-      ? formattedTokenWalletAmount(amount, metadata, decimals)
+      ? formattedTokenWalletAmount(amount, metadata, decimals, isShort)
       : '-';
     return (
       <div className={componentStyles}>

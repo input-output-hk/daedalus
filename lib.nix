@@ -1,4 +1,4 @@
-{ nodeImplementation ? "jormungandr" }:
+{ nodeImplementation ? "cardano" }:
 
 let
   sources = import ./nix/sources.nix;
@@ -24,7 +24,6 @@ let
       # Filter out nix-build result symlinks
       (type == "symlink" && lib.hasPrefix "result" baseName)
     );
-  rustPkgs = iohkNix.rust-packages.pkgs;
   isDaedalus = name: false;
   pkgs = iohkNix.pkgs;
   lib = pkgs.lib;

@@ -2,7 +2,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { storiesOf } from '@storybook/react';
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, number, select, text } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
@@ -156,7 +156,7 @@ const walletAssets = assets.total.map((assetTotal) => {
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
-  .add('Wallet Summary', () => {
+  .add('Wallet Summary', ({ locale }: { locale: string }) => {
     const currencyState = select(
       'Currency state',
       {
@@ -164,7 +164,8 @@ storiesOf('Wallets|Summary', module)
         'Fetching rate': 'loading',
         'Disabled or unavailable': 'off',
       },
-      'fetched'
+      'fetched',
+      'Currency'
     );
 
     let currencyIsFetchingRate = false;
@@ -178,29 +179,70 @@ storiesOf('Wallets|Summary', module)
       currencyIsActive = false;
     }
 
-    const currencySelected = select('currencySelected', currenciesList, {
-      id: 'uniswap-state-dollar',
-      symbol: 'usd',
-      name: 'unified Stable Dollar',
-    });
+    const currencySelected = select(
+      'currencySelected',
+      currenciesList,
+      {
+        id: 'uniswap-state-dollar',
+        symbol: 'usd',
+        name: 'unified Stable Dollar',
+      },
+      'Currency'
+    );
+
+    const [firstAsset] = walletAssets;
 
     return (
       <WalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}
-        numberOfTransactions={number('Number of transactions', 100)}
+        numberOfTransactions={number(
+          'Number of transactions',
+          100,
+          {},
+          'Header'
+        )}
         numberOfRecentTransactions={number(
           'Number of Recent transactions',
-          100
+          100,
+          {},
+          'Header'
         )}
-        numberOfPendingTransactions={number('Number of transactions', 3)}
-        isLoadingTransactions={boolean('isLoadingTransactions', false)}
+        numberOfPendingTransactions={number(
+          'Number of pending transactions',
+          0,
+          'Header'
+        )}
+        isLoadingTransactions={boolean(
+          'isLoadingTransactions',
+          false,
+          'Header'
+        )}
+        currentLocale={locale}
         currencyIsFetchingRate={currencyIsFetchingRate}
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
         currencyRate={0.321}
         currencyLastFetched={currencyLastFetched}
         onCurrencySettingClick={action('onCurrencySettingClick')}
-        assets={walletAssets}
+        assets={[
+          {
+            ...firstAsset,
+            quantity: new BigNumber(number('quantity', 100, {}, 'First Asset')),
+            decimals: number('decimals', 0, {}, 'First Asset'),
+            recommendedDecimals: number(
+              'recommendedDecimals',
+              0,
+              {},
+              'First Asset'
+            ),
+            metadata: {
+              name: text('Metadata - name', 'FIRST', 'First Asset'),
+              ticker: text('Metadata - ticker', '', 'First Asset'),
+              description: text('Metadata - description', '', 'First Asset'),
+            },
+          },
+          ...walletAssets.slice(1),
+        ]}
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
@@ -208,7 +250,7 @@ storiesOf('Wallets|Summary', module)
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         assetSettingsDialogWasOpened={boolean(
           'assetSettingsDialogWasOpened',
-          false
+          true
         )}
         onExternalLinkClick={action('onExternalLinkClick')}
       />
