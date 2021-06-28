@@ -35,6 +35,7 @@ const PublicKeyField = (props: Props) => {
     intl,
     messages,
     description,
+    onCopyPublicKey,
   } = props;
 
   const [publicKeyHidden, setPublicKeyHidden] = useState<boolean>(!publicKey);
@@ -51,10 +52,9 @@ const PublicKeyField = (props: Props) => {
     setPublicKeyHidden(!publicKey);
   }, [publicKey]);
 
-  const handleCopyPublicKey = useCallback(
-    () => props.onCopyPublicKey(props.publicKey),
-    []
-  );
+  const handleCopyPublicKey = useCallback(() => onCopyPublicKey(publicKey), [
+    publicKey,
+  ]);
 
   const fieldStyles = classnames([
     styles.field,

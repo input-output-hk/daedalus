@@ -432,7 +432,7 @@ export default class WalletSettings extends Component<Props, State> {
             <ICOPublicKeyBox
               publicKey={this.props.icoPublicKey}
               locale={this.props.locale}
-              onCopyWalletPublicKey={this.props.onCopyICOPublicKey}
+              onCopyICOPublicKey={this.props.onCopyICOPublicKey}
               openDialogAction={this.props.openDialogAction}
             />
             {isDialogOpen(ICOPublicKeyDialog) && icoPublicKeyDialogContainer}

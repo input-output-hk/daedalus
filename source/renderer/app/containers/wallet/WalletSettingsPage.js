@@ -33,7 +33,7 @@ export default class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-    wallets.copyPublicKey.trigger({ publicKey });
+    wallets.copyWalletPublicKey.trigger({ publicKey });
   };
 
   handleCopyICOPublicKey = (icoPublicKey: string) => {
@@ -43,7 +43,7 @@ export default class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-    wallets.copyPublicKey.trigger({ publicKey });
+    wallets.copyICOPublicKey.trigger({ publicKey });
   };
 
   handleDelegateClick = () => {

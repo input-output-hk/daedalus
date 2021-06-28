@@ -22,7 +22,7 @@ const walletMessages: {
     description: 'Title for the "Wallet Public Key QR Code" dialog.',
   },
   copyPublicKeyLabel: {
-    id: 'wallet.settings.copyPublicKey',
+    id: 'wallet.settings.copyWalletPublicKey',
     defaultMessage: '!!!Copy public key',
     description: 'Copy public key label.',
   },
@@ -42,9 +42,9 @@ const icoMessages: {
     description: 'Title for the "ICO Public Key QR Code" dialog.',
   },
   copyPublicKeyLabel: {
-    id: 'wallet.settings.copyPublicKey',
-    defaultMessage: '!!!Copy public key',
-    description: 'Copy public key label.',
+    id: 'wallet.settings.copyICOPublicKey',
+    defaultMessage: '!!!Copy ICO public key',
+    description: 'Copy ICO public key label.',
   },
   derivationPathTooltip: {
     id: 'wallet.settings.dialog.derivationPathTooltip',
@@ -78,7 +78,8 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
 
-    walletsAction.copyPublicKey.trigger({ publicKey });
+    if (isICO) walletsAction.copyICOPublicKey.trigger({ publicKey });
+    else walletsAction.copyWalletPublicKey.trigger({ publicKey });
   };
 
   render() {

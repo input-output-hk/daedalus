@@ -11489,13 +11489,13 @@
         "description": "Title \"Choose a stake pool\" on the reveal Wallet Id dialog.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyDialog.js",
         "id": "wallet.settings.icoPublicKeyDialog.title",
         "start": {
           "column": 9,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -11503,13 +11503,13 @@
         "description": "Description on the reveal Wallet Id dialog.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyDialog.js",
         "id": "wallet.settings.icoPublicKeyDialog.description",
         "start": {
           "column": 15,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -11517,13 +11517,13 @@
         "description": "Description on the reveal ICO Id dialog.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyDialog.js",
         "id": "wallet.settings.icoPublicKeyDialog.button",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 29
         }
       }
     ],

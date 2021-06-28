@@ -14,5 +14,5 @@ export const getICOPublicKey = (
       ...config,
     },
     {},
-    data
+    { ...data }
   );

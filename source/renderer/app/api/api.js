@@ -1283,7 +1283,7 @@ export default class AdaApi {
     try {
       const response = await getICOPublicKey(this.config, request);
       logger.debug('AdaApi::getICOPublicKey success', {
-        transaction: response,
+        icoPublicKey: response,
       });
       return response;
     } catch (error) {

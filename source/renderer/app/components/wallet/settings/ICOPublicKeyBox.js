@@ -36,7 +36,7 @@ export const messages = defineMessages({
 type Props = {
   publicKey: ?string,
   locale: Locale,
-  onCopyWalletPublicKey: Function,
+  onCopyICOPublicKey: Function,
   openDialogAction: Function,
   intl: intlShape.isRequired,
 };
@@ -45,7 +45,7 @@ const ICOPublicKeyBox = (props: Props) => {
   const {
     publicKey,
     locale,
-    onCopyWalletPublicKey,
+    onCopyICOPublicKey,
     openDialogAction,
     intl,
   } = props;
@@ -57,7 +57,7 @@ const ICOPublicKeyBox = (props: Props) => {
           publicKey={publicKey || ''}
           description={intl.formatMessage(messages.publicKeyDescription)}
           locale={locale}
-          onCopyPublicKey={onCopyWalletPublicKey}
+          onCopyPublicKey={onCopyICOPublicKey}
           onShowQRCode={() =>
             openDialogAction({ dialog: PublicKeyQRCodeDialog })
           }
