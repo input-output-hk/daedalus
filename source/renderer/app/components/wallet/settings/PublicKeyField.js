@@ -1,6 +1,5 @@
 // @flow
-import React, { useCallback } from 'react';
-import { observer } from 'mobx-react'; // 6.x or mobx-react-lite@1.4.0
+import React, { useCallback, useState, useEffect } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -27,7 +26,7 @@ type Props = {
   description?: string,
 };
 
-const PublicKeyField = observer((props: Props) => {
+const PublicKeyField = (props: Props) => {
   const {
     publicKey,
     onOpenWalletKeyDialog,
@@ -38,13 +37,19 @@ const PublicKeyField = observer((props: Props) => {
     description,
   } = props;
 
-  const publicKeyHidden = !publicKey;
+  const [publicKeyHidden, setPublicKeyHidden] = useState<boolean>(!publicKey);
 
   const togglePublicKeyVisibility = useCallback(() => {
     if (!publicKey) {
       onOpenWalletKeyDialog();
+    } else {
+      setPublicKeyHidden((prevCheck: boolean) => !prevCheck);
     }
   });
+
+  useEffect(() => {
+    setPublicKeyHidden(!publicKey);
+  }, [publicKey]);
 
   const handleCopyPublicKey = useCallback(
     () => props.onCopyPublicKey(props.publicKey),
@@ -122,6 +127,6 @@ const PublicKeyField = observer((props: Props) => {
       </div>
     </div>
   );
-});
+};
 
 export default injectIntl(PublicKeyField);

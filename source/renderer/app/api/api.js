@@ -1288,7 +1288,11 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::getICOPublicKey error', { error });
-      throw new ApiError(error);
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
