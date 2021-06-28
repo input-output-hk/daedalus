@@ -12,6 +12,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
+import { handleCustomProtocol } from './utils/handleCustomProtocol';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
@@ -239,6 +240,38 @@ const onAppReady = async () => {
         resolve();
       })
   );
+
+  if (process.platform === 'win32') {
+    logger.info('[Custom-Protocol] Set Win32 protocol params');
+    // Set the path of electron.exe and your app.
+    // These two additional parameters are only available on windows.
+    logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
+      execPath: process.execPath,
+      argv: process.argv,
+    });
+    app.setAsDefaultProtocolClient('cardano', process.execPath, [
+      process.argv[1],
+    ]);
+  } else {
+    // This will catch clicks on links such as <a href="cardano://abc=1">Open in daedalus</a>
+    logger.info('[Custom-Protocol] Set Mac / Linux protocol params');
+    app.setAsDefaultProtocolClient('cardano');
+  }
+
+  app.on('open-url', (event, url) => {
+    logger.info('[Custom-Protocol] Open', {
+      event,
+      url,
+    });
+    event.preventDefault();
+    mainWindow.focus();
+    try {
+      handleCustomProtocol(url, mainWindow);
+    } catch (error) {
+      logger.info('[Custom-Protocol] Open handler error: ', error);
+      throw error;
+    }
+  });
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows

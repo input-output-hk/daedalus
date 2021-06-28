@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented custom browser protocol to launch Daedalus ([PR 2605](https://github.com/input-output-hk/daedalus/pull/2605))
+
 ### Fixes
 
 - Fixed incorrect global instances in scss files ([PR 2593](https://github.com/input-output-hk/daedalus/pull/2593))

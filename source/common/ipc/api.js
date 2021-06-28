@@ -455,6 +455,13 @@ export type GetBlockReplayProgressRendererRequest = void;
 export type GetBlockReplayProgressMainResponse = number;
 
 /**
+ * Channel for handling custom electron protocol
+ */
+export const GET_CUSTOM_PROTOCOL_CHANNEL = 'GetCustomProtocolChannel';
+export type GetCustomProtocolMainRequest = string;
+export type GetCustomProtocolRendererResponse = Object;
+
+/**
  * Channels for connecting / interacting with Hardware Wallet devices
  */
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
