@@ -5,6 +5,7 @@ import faker from 'faker';
 import { map, random } from 'lodash';
 import type { GetRewardsHistoryRequest } from '../api/staking/types';
 import stakePoolsId from './rewardsHistory.stakePoolsId.dummy.json';
+import { LOVELACES_PER_ADA } from './numbersConfig';
 
 const date = new Date();
 
@@ -43,7 +44,8 @@ const generatePool = (index: number) => ({
 
 const generateEpoch = (index: number) => 130 + index;
 
-const generateReward = (index: number) => new BigNumber(35 + index);
+const generateReward = (index: number) =>
+  new BigNumber(35 + index).dividedBy(LOVELACES_PER_ADA);
 
 const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

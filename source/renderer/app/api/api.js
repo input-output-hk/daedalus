@@ -700,7 +700,7 @@ export default class AdaApi {
     try {
       const result = await getRewardsHistory(request);
       logger.debug('AdaApi::getRewardsHistory success', result);
-      return result.rewards;
+      return result.rewards.map(_createRewardsHistoryFromServerData);
     } catch (error) {
       logger.error('AdaApi::getRewardsHistory error', { error });
       throw new ApiError(error);
@@ -2993,6 +2993,17 @@ const _createStakePoolFromServerData = action(
       retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
     });
+  }
+);
+
+const _createRewardsHistoryFromServerData = action(
+  'AdaApi::_createRewardsHistoryFromServerData',
+  ({ address, amount: rawAmount, earnedIn, stakePool }) => {
+    const amount = new BigNumber(rawAmount.toString()).dividedBy(
+      LOVELACES_PER_ADA
+    );
+    const epoch = earnedIn.number;
+    return { address, amount, epoch, stakePool };
   }
 );
 
