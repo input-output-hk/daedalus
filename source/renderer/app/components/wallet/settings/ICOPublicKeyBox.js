@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
-import { defineMessages } from 'react-intl';
+import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
 import PublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import ICOPublicKeyDialog from './ICOPublicKeyDialog';
 import type { Locale } from '../../../../../common/types/locales.types';
-import GenericPublicKeyField from './PublicKeyField';
+import PublicKeyField from './PublicKeyField';
 
 export const messages = defineMessages({
   publicKey: {
@@ -38,10 +38,10 @@ type Props = {
   locale: Locale,
   onCopyWalletPublicKey: Function,
   openDialogAction: Function,
-  intl: Function,
+  intl: intlShape.isRequired,
 };
 
-export const ICOPublicKeyBox = (props: Props) => {
+const ICOPublicKeyBox = (props: Props) => {
   const {
     publicKey,
     locale,
@@ -53,7 +53,7 @@ export const ICOPublicKeyBox = (props: Props) => {
   return (
     <>
       <BorderedBox className={styles.walletPublicKeyBox}>
-        <GenericPublicKeyField
+        <PublicKeyField
           publicKey={publicKey || ''}
           description={intl(messages.publicKeyDescription)}
           locale={locale}
@@ -64,10 +64,11 @@ export const ICOPublicKeyBox = (props: Props) => {
           onOpenWalletKeyDialog={() =>
             openDialogAction({ dialog: ICOPublicKeyDialog })
           }
-          intl={intl}
           messages={messages}
         />
       </BorderedBox>
     </>
   );
 };
+
+export default injectIntl(ICOPublicKeyBox);

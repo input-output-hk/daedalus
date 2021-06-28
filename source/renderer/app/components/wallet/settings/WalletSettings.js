@@ -25,8 +25,8 @@ import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { momentLocales } from '../../../../../common/types/locales.types';
-import { ICOPublicKeyBox } from './ICOPublicKeyBox';
-import { WalletPublicKeyBox } from './WalletPublicKeyBox';
+import ICOPublicKeyBox from './ICOPublicKeyBox';
+import WalletPublicKeyBox from './WalletPublicKeyBox';
 import ICOPublicKeyDialog from './ICOPublicKeyDialog';
 import ICOPublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from './WalletPublicKeyDialog';
@@ -313,6 +313,7 @@ export default class WalletSettings extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
+
     const {
       walletName,
       creationDate,
@@ -419,7 +420,6 @@ export default class WalletSettings extends Component<Props, State> {
               locale={this.props.locale}
               onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
               openDialogAction={this.props.openDialogAction}
-              intl={(string: string) => intl.formatMessage(string)}
             />
             {isDialogOpen(WalletPublicKeyDialog) &&
               walletPublicKeyDialogContainer}
@@ -435,7 +435,6 @@ export default class WalletSettings extends Component<Props, State> {
               locale={this.props.locale}
               onCopyWalletPublicKey={this.props.onCopyICOPublicKey}
               openDialogAction={this.props.openDialogAction}
-              intl={(string: string) => intl.formatMessage(string)}
             />
             {isDialogOpen(ICOPublicKeyDialog) && icoPublicKeyDialogContainer}
             {isDialogOpen(ICOPublicKeyQRCodeDialog) &&

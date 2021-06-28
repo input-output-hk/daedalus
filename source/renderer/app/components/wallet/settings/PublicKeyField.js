@@ -6,7 +6,8 @@ import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import GenericPublicKeyFieldSkin from './PublicKeyFieldSkin';
+import { injectIntl, intlShape } from 'react-intl';
+import PublicKeyFieldSkin from './PublicKeyFieldSkin';
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
 import revealKeyImage from '../../../assets/images/reveal-key.inline.svg';
 import hideKeyImage from '../../../assets/images/hide-key.inline.svg';
@@ -21,12 +22,12 @@ type Props = {
   onCopyPublicKey: Function,
   onShowQRCode: Function,
   onOpenWalletKeyDialog: Function,
-  intl: Function,
+  intl: intlShape.isRequired,
   messages: Object,
   description?: string,
 };
 
-const GenericPublicKeyField = observer((props: Props) => {
+const PublicKeyField = observer((props: Props) => {
   const [publicKeyHidden, setPublicKeyHidden] = useState<boolean>(true);
 
   const togglePublicKeyVisibility = useCallback(() => {
@@ -84,7 +85,7 @@ const GenericPublicKeyField = observer((props: Props) => {
           type="text"
           value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
           readOnly
-          skin={GenericPublicKeyFieldSkin}
+          skin={PublicKeyFieldSkin}
           tooltip={intl(globalMessages.copy)}
           valueVisible={!publicKeyHidden}
           onCopyValue={handleCopyPublicKey}
@@ -120,4 +121,4 @@ const GenericPublicKeyField = observer((props: Props) => {
   );
 });
 
-export default GenericPublicKeyField;
+export default injectIntl(PublicKeyField);
