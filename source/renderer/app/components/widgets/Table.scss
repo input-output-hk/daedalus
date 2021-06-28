@@ -87,42 +87,31 @@
       &::-webkit-scrollbar-button {
         display: none;
       }
-      background: var(--rp-modal-bg-color) no-repeat;
-      background-image: radial-gradient(
-          farthest-side at 50% 0,
-          rgba(0, 0, 0, 0.2),
-          rgba(0, 0, 0, 0)
-        ),
-        radial-gradient(
-          farthest-side at 50% 100%,
-          rgba(0, 0, 0, 0.2),
-          rgba(0, 0, 0, 0)
-        );
-      background-position: 0 30px, 0 100%;
-      background-size: 100% 10px;
-      &:before,
-      &:after {
-        content: '';
-        position: relative;
-        display: block;
-        height: 10px;
-        background: var(--rp-modal-bg-color);
-      }
-      &:before {
-        top: 30px;
-      }
-      &:after {
-        margin-bottom: -10px;
-      }
     }
-    table {
-      margin-top: -10px;
+    tr:first-child {
+      border: none;
     }
     th {
       background-color: var(--rp-modal-bg-color);
       position: sticky;
       top: 0;
       z-index: 1;
+    }
+    &:before,
+    &:after {
+      content: '';
+      height: 30px;
+      position: absolute;
+      width: calc(100% - 20px);
+      z-index: 9;
+    }
+    &:before {
+      box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.25);
+      top: 0;
+    }
+    &:after {
+      bottom: -30px;
+      box-shadow: 0 -10px 10px -10px rgba(0, 0, 0, 0.25);
     }
   }
   &.compact {
@@ -137,7 +126,7 @@
         text-transform: uppercase;
       }
       td {
-        border-width: 1px 0;
+        border: none;
         font-size: 12px;
         padding: 10px 18px;
       }

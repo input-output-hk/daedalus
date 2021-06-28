@@ -107,17 +107,20 @@ export default class StakingRewardsHistoryDialog extends Component<
   renderStakePool = (pool: StakePool) => {
     const { currentTheme, onOpenExternalLink } = this.props;
     return (
-      <PoolPopOver
-        containerClassName="StakingRewardsHistoryDialog_table"
-        currentTheme={currentTheme}
-        numberOfRankedStakePools={0}
-        onOpenExternalLink={onOpenExternalLink}
-        openOnHover
-        stakePool={pool}
-      >
-        <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
+      <div>
+        <PoolPopOver
+          containerClassName="StakingRewardsHistoryDialog_table"
+          currentTheme={currentTheme}
+          numberOfRankedStakePools={0}
+          onOpenExternalLink={onOpenExternalLink}
+          openOnHover
+          stakePool={pool}
+        >
+          <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
+        </PoolPopOver>
+        &nbsp;
         {pool.name}
-      </PoolPopOver>
+      </div>
     );
   };
 
