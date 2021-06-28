@@ -161,7 +161,11 @@ export default class Table extends Component<Props, State> {
                       : null,
                   ]);
                   return (
-                    <th key={id} onClick={() => this.handleSort(id)}>
+                    <th
+                      className={id}
+                      key={id}
+                      onClick={() => this.handleSort(id)}
+                    >
                       {title}
                       {type !== 'node' && (
                         <SVGInline svg={sortIcon} className={sortIconClasses} />

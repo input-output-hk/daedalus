@@ -180,7 +180,7 @@ export default class StakingRewardsHistoryDialog extends Component<
         title: intl.formatMessage(messages.columnAmount),
         id: 'amount',
         type: 'bigNumber',
-        render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),
+        render: (rewardAmount: BigNumber) => <p>{rewardAmount.toFormat(6)}</p>,
       },
     ];
 

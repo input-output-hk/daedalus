@@ -72,8 +72,24 @@
       font-family: var(--font-regular);
     }
     :global {
+      th.epoch {
+        width: 100px;
+      }
+      th.amount {
+        text-align: right;
+        width: 100px;
+        width: 150px;
+      }
       td.pool {
+        width: calc(100%-400px);
+      }
+      td.amount {
         max-width: 300px;
+        text-align: right;
+        p {
+          margin: 0;
+          padding-right: 13px;
+        }
       }
     }
   }
