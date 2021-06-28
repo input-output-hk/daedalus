@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented custom browser protocol to launch Daedalus ([PR 2605](https://github.com/input-output-hk/daedalus/pull/2605))
+- Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
 
 ### Fixes
 
