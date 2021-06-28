@@ -138,10 +138,14 @@ export default class Table extends Component<Props, State> {
     } = this.props;
     const { sortDirection, sortBy } = this.state;
 
-    const componentStyles = classnames(styles.component, className, {
-      [styles.compact]: isCompact,
-      [styles.sticky]: !!maxHeight,
-    });
+    const componentStyles = classnames(
+      styles.component,
+      {
+        [styles.compact]: isCompact,
+        [styles.sticky]: !!maxHeight,
+      },
+      className
+    );
 
     const tableData = enableSort ? this.getSortedData() : rows;
 
