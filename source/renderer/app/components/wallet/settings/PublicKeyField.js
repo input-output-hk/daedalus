@@ -6,14 +6,14 @@ import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import GenericPublicKeyFieldSkin from './GenericPublicKeyFieldSkin';
+import GenericPublicKeyFieldSkin from './PublicKeyFieldSkin';
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
 import revealKeyImage from '../../../assets/images/reveal-key.inline.svg';
 import hideKeyImage from '../../../assets/images/hide-key.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { LOCALES } from '../../../../../common/types/locales.types';
-import styles from './GenericPublicKeyField.scss';
+import styles from './PublicKeyField.scss';
 
 type Props = {
   publicKey: string,
@@ -21,7 +21,7 @@ type Props = {
   onCopyPublicKey: Function,
   onShowQRCode: Function,
   onOpenWalletKeyDialog: Function,
-  t: Function,
+  intl: Function,
   messages: Object,
   description?: string,
 };
@@ -43,15 +43,22 @@ const GenericPublicKeyField = observer((props: Props) => {
     []
   );
 
-  const { publicKey, onShowQRCode, locale, t, messages, description } = props;
+  const {
+    publicKey,
+    onShowQRCode,
+    locale,
+    intl,
+    messages,
+    description,
+  } = props;
   const fieldStyles = classnames([
     styles.field,
     publicKeyHidden || !publicKey ? styles.valueHidden : styles.valueShown,
     locale === LOCALES.japanese ? styles.withBigToggleButton : null,
   ]);
-  const hiddenValuePlaceholder = t(messages.publicKeyShowInstruction);
+  const hiddenValuePlaceholder = intl(messages.publicKeyShowInstruction);
 
-  const toggleButtonTooltip = t(
+  const toggleButtonTooltip = intl(
     globalMessages[publicKeyHidden ? 'reveal' : 'hide']
   );
 
@@ -69,7 +76,7 @@ const GenericPublicKeyField = observer((props: Props) => {
 
   return (
     <div className={styles.component}>
-      <div className={styles.title}>{t(messages.publicKey)}</div>
+      <div className={styles.title}>{intl(messages.publicKey)}</div>
       {!!description && <div className={styles.contentBox}>{description}</div>}
       <div className={styles.inputBox}>
         <Input
@@ -78,14 +85,14 @@ const GenericPublicKeyField = observer((props: Props) => {
           value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
           readOnly
           skin={GenericPublicKeyFieldSkin}
-          tooltip={t(globalMessages.copy)}
+          tooltip={intl(globalMessages.copy)}
           valueVisible={!publicKeyHidden}
           onCopyValue={handleCopyPublicKey}
         />
         <div className={styles.addons}>
           {!publicKeyHidden && (
             <div className={styles.imageButtonContainer}>
-              <PopOver content={t(messages.showQRCode)}>
+              <PopOver content={intl(messages.showQRCode)}>
                 <Button
                   className={qrCodeButtonStyles}
                   onClick={onShowQRCode}

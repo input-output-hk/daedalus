@@ -27,6 +27,10 @@ import type { Locale } from '../../../../../common/types/locales.types';
 import { momentLocales } from '../../../../../common/types/locales.types';
 import { ICOPublicKeyBox } from './ICOPublicKeyBox';
 import { WalletPublicKeyBox } from './WalletPublicKeyBox';
+import ICOPublicKeyDialog from './ICOPublicKeyDialog';
+import ICOPublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
+import WalletPublicKeyDialog from './WalletPublicKeyDialog';
+import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -332,6 +336,10 @@ export default class WalletSettings extends Component<Props, State> {
       isHardwareWallet,
       shouldDisplayRecoveryPhrase,
       wordCount,
+      walletPublicKeyDialogContainer,
+      walletPublicKeyQRCodeDialogContainer,
+      icoPublicKeyDialogContainer,
+      icoPublicKeyQRCodeDialogContainer,
     } = this.props;
     const { isFormBlocked } = this.state;
 
@@ -405,35 +413,36 @@ export default class WalletSettings extends Component<Props, State> {
           : false}
 
         {IS_WALLET_PUBLIC_KEY_SHARING_ENABLED && !isLegacy && (
-          <WalletPublicKeyBox
-            publicKey={this.props.walletPublicKey}
-            locale={this.props.locale}
-            onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
-            openDialogAction={this.props.openDialogAction}
-            isDialogOpen={this.props.isDialogOpen}
-            publicKeyDialogContainer={this.props.walletPublicKeyDialogContainer}
-            publicKeyQRCodeDialogContainer={
-              this.props.walletPublicKeyQRCodeDialogContainer
-            }
-            t={(string: string) => intl.formatMessage(string)}
-          />
+          <>
+            <WalletPublicKeyBox
+              publicKey={this.props.walletPublicKey}
+              locale={this.props.locale}
+              onCopyWalletPublicKey={this.props.onCopyWalletPublicKey}
+              openDialogAction={this.props.openDialogAction}
+              intl={(string: string) => intl.formatMessage(string)}
+            />
+            {isDialogOpen(WalletPublicKeyDialog) &&
+              walletPublicKeyDialogContainer}
+            {isDialogOpen(WalletPublicKeyQRCodeDialog) &&
+              walletPublicKeyQRCodeDialogContainer}
+          </>
         )}
-        {IS_ICO_PUBLIC_KEY_SHARING_ENABLED &&
-          !isLegacy &&
-          !isHardwareWallet && (
+
+        {IS_ICO_PUBLIC_KEY_SHARING_ENABLED && !isLegacy && !isHardwareWallet && (
+          <>
             <ICOPublicKeyBox
               publicKey={this.props.icoPublicKey}
               locale={this.props.locale}
               onCopyWalletPublicKey={this.props.onCopyICOPublicKey}
               openDialogAction={this.props.openDialogAction}
-              isDialogOpen={this.props.isDialogOpen}
-              publicKeyDialogContainer={this.props.icoPublicKeyDialogContainer}
-              publicKeyQRCodeDialogContainer={
-                this.props.icoPublicKeyQRCodeDialogContainer
-              }
-              t={(string: string) => intl.formatMessage(string)}
+              intl={(string: string) => intl.formatMessage(string)}
             />
-          )}
+            {isDialogOpen(ICOPublicKeyDialog) && icoPublicKeyDialogContainer}
+            {isDialogOpen(ICOPublicKeyQRCodeDialog) &&
+              icoPublicKeyQRCodeDialogContainer}
+          </>
+        )}
+
         {this.renderUndelegateWalletBox()}
         {this.renderDeleteWalletBox()}
       </div>

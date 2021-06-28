@@ -6,3 +6,9 @@ export type RequestConfig = $Exact<{
   cert: Uint8Array,
   key: Uint8Array,
 }>;
+
+export type MessageDescriptor = {
+  id: string,
+  description?: string,
+  defaultMessage?: string,
+};

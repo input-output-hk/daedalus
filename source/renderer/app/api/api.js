@@ -42,7 +42,6 @@ import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
 import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
-import type { ICOPublicKeyParams } from './transactions/requests/getICOPublicKey';
 
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
@@ -160,6 +159,7 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
+  ICOPublicKeyParams,
 } from './transactions/types';
 
 // Wallets Types

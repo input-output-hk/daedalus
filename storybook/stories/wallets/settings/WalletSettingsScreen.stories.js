@@ -16,7 +16,7 @@ import type { Locale } from '../../../../source/common/types/locales.types';
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/PublicKeyQRCodeDialog';
+import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
@@ -30,11 +30,12 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
-import type { $npm$ReactIntl$MessageDescriptor } from '../../../../source/renderer/app/components/wallet/settings/PublicKeyQRCodeDialog';
+
 import {
   ICO_PUBLIC_KEY_DERIVATION_PATH,
   WALLET_PUBLIC_KEY_DERIVATION_PATH,
 } from '../../../../source/renderer/app/config/walletsConfig';
+import type { MessageDescriptor } from '../../../../source/renderer/app/api/common/types';
 
 /* eslint-disable react/display-name  */
 
@@ -173,7 +174,7 @@ export default (props: { locale: Locale }) => {
   );
 
   const walletMessages: {
-    [string]: $npm$ReactIntl$MessageDescriptor,
+    [string]: MessageDescriptor,
   } = defineMessages({
     dialogTitle: {
       id: 'wallet.settings.walletPublicKey',
@@ -188,7 +189,7 @@ export default (props: { locale: Locale }) => {
   });
 
   const icoMessages: {
-    [string]: $npm$ReactIntl$MessageDescriptor,
+    [string]: MessageDescriptor,
   } = defineMessages({
     dialogTitle: {
       id: 'wallet.settings.icoPublicKey',

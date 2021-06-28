@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
-import PublicKeyQRCodeDialog from '../../../../components/wallet/settings/PublicKeyQRCodeDialog';
-import type { $npm$ReactIntl$MessageDescriptor } from '../../../../components/wallet/settings/PublicKeyQRCodeDialog';
+import WalletPublicKeyQRCodeDialog from '../../../../components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import ICOPublicKeyQRCodeDialog from '../../../../components/wallet/settings/ICOPublicKeyQRCodeDialog';
 import { ellipsis } from '../../../../utils/strings';
 import {
   ICO_PUBLIC_KEY_DERIVATION_PATH,
@@ -11,9 +11,10 @@ import {
   WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
 } from '../../../../config/walletsConfig';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
+import type { MessageDescriptor } from '../../../../api/common/types';
 
 const walletMessages: {
-  [string]: $npm$ReactIntl$MessageDescriptor,
+  [string]: MessageDescriptor,
 } = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.walletPublicKey',
@@ -33,7 +34,7 @@ const walletMessages: {
 });
 
 const icoMessages: {
-  [string]: $npm$ReactIntl$MessageDescriptor,
+  [string]: MessageDescriptor,
 } = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.icoPublicKey',
@@ -98,7 +99,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
 
     if (isICO && !!icoPublicKey) {
       return (
-        <PublicKeyQRCodeDialog
+        <ICOPublicKeyQRCodeDialog
           walletName={activeWallet.name}
           walletPublicKey={icoPublicKey}
           onCopyWalletPublicKey={() => this.handleCopyWalletPublicKey(true)}
@@ -112,7 +113,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
     }
     if (!isICO && !!activePublicKey) {
       return (
-        <PublicKeyQRCodeDialog
+        <WalletPublicKeyQRCodeDialog
           walletName={activeWallet.name}
           walletPublicKey={activePublicKey}
           onCopyWalletPublicKey={() => this.handleCopyWalletPublicKey()}

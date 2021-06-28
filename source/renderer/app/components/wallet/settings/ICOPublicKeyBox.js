@@ -1,13 +1,12 @@
 // @flow
 import React from 'react';
-import type { Node } from 'react';
 import { defineMessages } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
-import PublicKeyQRCodeDialog from './PublicKeyQRCodeDialog';
+import PublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import ICOPublicKeyDialog from './ICOPublicKeyDialog';
 import type { Locale } from '../../../../../common/types/locales.types';
-import GenericPublicKeyField from './GenericPublicKeyField';
+import GenericPublicKeyField from './PublicKeyField';
 
 export const messages = defineMessages({
   publicKey: {
@@ -39,10 +38,7 @@ type Props = {
   locale: Locale,
   onCopyWalletPublicKey: Function,
   openDialogAction: Function,
-  isDialogOpen: Function,
-  publicKeyDialogContainer: Node,
-  publicKeyQRCodeDialogContainer: Node,
-  t: Function,
+  intl: Function,
 };
 
 export const ICOPublicKeyBox = (props: Props) => {
@@ -51,10 +47,7 @@ export const ICOPublicKeyBox = (props: Props) => {
     locale,
     onCopyWalletPublicKey,
     openDialogAction,
-    isDialogOpen,
-    publicKeyDialogContainer,
-    publicKeyQRCodeDialogContainer,
-    t,
+    intl,
   } = props;
 
   return (
@@ -62,7 +55,7 @@ export const ICOPublicKeyBox = (props: Props) => {
       <BorderedBox className={styles.walletPublicKeyBox}>
         <GenericPublicKeyField
           publicKey={publicKey || ''}
-          description={t(messages.publicKeyDescription)}
+          description={intl(messages.publicKeyDescription)}
           locale={locale}
           onCopyPublicKey={onCopyWalletPublicKey}
           onShowQRCode={() =>
@@ -71,14 +64,10 @@ export const ICOPublicKeyBox = (props: Props) => {
           onOpenWalletKeyDialog={() =>
             openDialogAction({ dialog: ICOPublicKeyDialog })
           }
-          t={t}
+          intl={intl}
           messages={messages}
         />
       </BorderedBox>
-      {isDialogOpen(ICOPublicKeyDialog) ? publicKeyDialogContainer : false}
-      {isDialogOpen(PublicKeyQRCodeDialog)
-        ? publicKeyQRCodeDialogContainer
-        : false}
     </>
   );
 };

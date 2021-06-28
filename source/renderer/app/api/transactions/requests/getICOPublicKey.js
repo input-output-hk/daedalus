@@ -1,17 +1,7 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { Transaction } from '../types';
+import type { ICOPublicKeyParams, Transaction } from '../types';
 import { request } from '../../utils/request';
-
-export type ICOPublicKeyParams = {
-  walletId: string,
-  index: string,
-  data: {
-    passphrase: string,
-    format: 'extended' | 'non_extended',
-    purpose: string,
-  },
-};
 
 export const getICOPublicKey = (
   config: RequestConfig,

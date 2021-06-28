@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import styles from './WalletPublicKeyDialog.scss';
+import styles from './PublicKeyDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';

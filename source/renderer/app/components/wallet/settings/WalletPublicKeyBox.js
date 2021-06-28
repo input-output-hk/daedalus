@@ -1,13 +1,12 @@
 // @flow
 import React from 'react';
-import type { Node } from 'react';
 import { defineMessages } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
-import PublicKeyQRCodeDialog from './PublicKeyQRCodeDialog';
+import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import PublicKeyDialog from './WalletPublicKeyDialog';
 import type { Locale } from '../../../../../common/types/locales.types';
-import GenericPublicKeyField from './GenericPublicKeyField';
+import GenericPublicKeyField from './PublicKeyField';
 
 export const messages = defineMessages({
   publicKey: {
@@ -33,10 +32,7 @@ type Props = {
   locale: Locale,
   onCopyWalletPublicKey: Function,
   openDialogAction: Function,
-  isDialogOpen: Function,
-  publicKeyDialogContainer: Node,
-  publicKeyQRCodeDialogContainer: Node,
-  t: Function,
+  intl: Function,
 };
 
 export const WalletPublicKeyBox = (props: Props) => {
@@ -45,10 +41,7 @@ export const WalletPublicKeyBox = (props: Props) => {
     locale,
     onCopyWalletPublicKey,
     openDialogAction,
-    isDialogOpen,
-    publicKeyDialogContainer,
-    publicKeyQRCodeDialogContainer,
-    t,
+    intl,
   } = props;
 
   return (
@@ -59,19 +52,15 @@ export const WalletPublicKeyBox = (props: Props) => {
           locale={locale}
           onCopyPublicKey={onCopyWalletPublicKey}
           onShowQRCode={() =>
-            openDialogAction({ dialog: PublicKeyQRCodeDialog })
+            openDialogAction({ dialog: WalletPublicKeyQRCodeDialog })
           }
           onOpenWalletKeyDialog={() =>
             openDialogAction({ dialog: PublicKeyDialog })
           }
-          t={t}
+          intl={intl}
           messages={messages}
         />
       </BorderedBox>
-      {isDialogOpen(PublicKeyDialog) ? publicKeyDialogContainer : false}
-      {isDialogOpen(PublicKeyQRCodeDialog)
-        ? publicKeyQRCodeDialogContainer
-        : false}
     </>
   );
 };
