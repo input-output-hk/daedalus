@@ -96,7 +96,7 @@ export default class WalletSendPage extends Component<Props> {
       assets: assetsStore,
     } = stores;
     const { isValidAddress, isAddressFromSameWallet } = wallets;
-    const { validateAmount } = transactions;
+    const { validateAmount, validateAssetAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const { all: allAssets, activeAsset, getAsset } = assetsStore;
@@ -140,6 +140,7 @@ export default class WalletSendPage extends Component<Props> {
         }
         walletAmount={wallet.amount}
         validateAmount={validateAmount}
+        validateAssetAmount={validateAssetAmount}
         addressValidator={isValidAddress}
         assets={assetTokens}
         hasAssets={hasAssetsEnabled && hasRawAssets}
