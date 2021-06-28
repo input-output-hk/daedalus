@@ -55,7 +55,7 @@ const ICOPublicKeyBox = (props: Props) => {
       <BorderedBox className={styles.walletPublicKeyBox}>
         <PublicKeyField
           publicKey={publicKey || ''}
-          description={intl(messages.publicKeyDescription)}
+          description={intl.formatMessage(messages.publicKeyDescription)}
           locale={locale}
           onCopyPublicKey={onCopyWalletPublicKey}
           onShowQRCode={() =>

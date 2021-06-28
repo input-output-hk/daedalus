@@ -1,5 +1,5 @@
 // @flow
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { observer } from 'mobx-react'; // 6.x or mobx-react-lite@1.4.0
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -28,14 +28,21 @@ type Props = {
 };
 
 const PublicKeyField = observer((props: Props) => {
-  const [publicKeyHidden, setPublicKeyHidden] = useState<boolean>(true);
+  const {
+    publicKey,
+    onOpenWalletKeyDialog,
+    onShowQRCode,
+    locale,
+    intl,
+    messages,
+    description,
+  } = props;
+
+  const publicKeyHidden = !publicKey;
 
   const togglePublicKeyVisibility = useCallback(() => {
-    const { publicKey, onOpenWalletKeyDialog } = props;
     if (!publicKey) {
       onOpenWalletKeyDialog();
-    } else {
-      setPublicKeyHidden((prevCheck: boolean) => !prevCheck);
     }
   });
 
@@ -44,22 +51,16 @@ const PublicKeyField = observer((props: Props) => {
     []
   );
 
-  const {
-    publicKey,
-    onShowQRCode,
-    locale,
-    intl,
-    messages,
-    description,
-  } = props;
   const fieldStyles = classnames([
     styles.field,
     publicKeyHidden || !publicKey ? styles.valueHidden : styles.valueShown,
     locale === LOCALES.japanese ? styles.withBigToggleButton : null,
   ]);
-  const hiddenValuePlaceholder = intl(messages.publicKeyShowInstruction);
+  const hiddenValuePlaceholder = intl.formatMessage(
+    messages.publicKeyShowInstruction
+  );
 
-  const toggleButtonTooltip = intl(
+  const toggleButtonTooltip = intl.formatMessage(
     globalMessages[publicKeyHidden ? 'reveal' : 'hide']
   );
 
@@ -77,7 +78,9 @@ const PublicKeyField = observer((props: Props) => {
 
   return (
     <div className={styles.component}>
-      <div className={styles.title}>{intl(messages.publicKey)}</div>
+      <div className={styles.title}>
+        {intl.formatMessage(messages.publicKey)}
+      </div>
       {!!description && <div className={styles.contentBox}>{description}</div>}
       <div className={styles.inputBox}>
         <Input
@@ -86,14 +89,14 @@ const PublicKeyField = observer((props: Props) => {
           value={publicKeyHidden ? hiddenValuePlaceholder : publicKey}
           readOnly
           skin={PublicKeyFieldSkin}
-          tooltip={intl(globalMessages.copy)}
+          tooltip={intl.formatMessage(globalMessages.copy)}
           valueVisible={!publicKeyHidden}
           onCopyValue={handleCopyPublicKey}
         />
         <div className={styles.addons}>
           {!publicKeyHidden && (
             <div className={styles.imageButtonContainer}>
-              <PopOver content={intl(messages.showQRCode)}>
+              <PopOver content={intl.formatMessage(messages.showQRCode)}>
                 <Button
                   className={qrCodeButtonStyles}
                   onClick={onShowQRCode}

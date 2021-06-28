@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
 import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';

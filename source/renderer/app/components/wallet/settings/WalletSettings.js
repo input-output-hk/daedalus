@@ -313,7 +313,6 @@ export default class WalletSettings extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-
     const {
       walletName,
       creationDate,
