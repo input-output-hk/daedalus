@@ -247,7 +247,6 @@ export default class PinCode extends Component<Props, State> {
     const { isBackSpace } = this.state;
     const inputNewValue =
       inputValue && !isNaN(inputValue) ? inputValue.toString() : '';
-    // debugger;
     if (this.valueHasChanged(inputNewValue, key)) {
       const newValue = value;
       if (!isNaN(inputValue)) {
@@ -306,10 +305,11 @@ export default class PinCode extends Component<Props, State> {
       // Recheck if user is adding or deleting value
       this.isAddingNewValue = inputValue && !isNaN(inputValue);
       if (onUpdateFieldDisabledStates) {
-        // debugger;
+        const nextKeyForward = key + 1 <= value.length ? key + 1 : null;
+        const nextKeyBackward = key - 1 >= 0 ? key - 1 : null;
         onUpdateFieldDisabledStates(
           key,
-          this.isAddingNewValue ? key + 1 : key - 1
+          this.isAddingNewValue ? nextKeyForward : nextKeyBackward
         );
       }
     } else if (isTab && inputValue === value[key]) {
@@ -336,7 +336,6 @@ export default class PinCode extends Component<Props, State> {
       isTabClicked,
     } = this.props;
     const { isBackSpace, focusKeyChanged, focusIsUpdated } = this.state;
-    // debugger;
     const key = value.join('').length;
     const inputValue = value[key - 1];
     this.isAddingNewValue = this.fromBackspace

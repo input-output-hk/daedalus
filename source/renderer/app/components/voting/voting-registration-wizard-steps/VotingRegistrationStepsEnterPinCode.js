@@ -164,6 +164,11 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const { form } = this;
     const pinCodeField = form.$(type);
     pinCodeField.value = [];
+    if (type === 'pinCode') {
+      this.onUpdatePinFieldDisabledStates(null, 0);
+    } else {
+      this.onUpdateRepeatPinFieldDisabledStates(null, 0);
+    }
   };
 
   onShowHideValues = () => {
@@ -173,26 +178,36 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
   };
 
   onUpdatePinFieldDisabledStates = (
-    prevFieldIndex: number,
+    prevFieldIndex: number | null,
     nextFieldIndex: number
   ) => {
     const { pinFieldDisabledStates } = this.state;
     const disabledStates = [...pinFieldDisabledStates];
-    disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
-    disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    const fieldsLength = VOTING_REGISTRATION_PIN_CODE_LENGTH;
+    if (prevFieldIndex !== null && prevFieldIndex >= 0) {
+      disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
+    }
+    if (nextFieldIndex !== null && nextFieldIndex >= 0 && nextFieldIndex < fieldsLength) {
+      disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    }
     this.setState({
       pinFieldDisabledStates: disabledStates,
     });
   };
 
   onUpdateRepeatPinFieldDisabledStates = (
-    prevFieldIndex: number,
+    prevFieldIndex: number | null,
     nextFieldIndex: number
   ) => {
     const { repeatPinFieldDisabledStates } = this.state;
     const disabledStates = [...repeatPinFieldDisabledStates];
-    disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
-    disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    const fieldsLength = VOTING_REGISTRATION_PIN_CODE_LENGTH;
+    if (prevFieldIndex !== null && prevFieldIndex >= 0) {
+      disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
+    }
+    if (nextFieldIndex !== null && nextFieldIndex >= 0 && nextFieldIndex < fieldsLength) {
+      disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    }
     this.setState({
       repeatPinFieldDisabledStates: disabledStates,
     });
