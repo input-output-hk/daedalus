@@ -48,9 +48,15 @@ const PublicKeyField = (props: Props) => {
     }
   });
 
+  // This is called when the publicKey is set
   useEffect(() => {
     setPublicKeyHidden(!publicKey);
   }, [publicKey]);
+
+  // This is called when the component is mounted the first time
+  useEffect(() => {
+    setPublicKeyHidden(true);
+  }, []);
 
   const handleCopyPublicKey = useCallback(() => onCopyPublicKey(publicKey), [
     publicKey,

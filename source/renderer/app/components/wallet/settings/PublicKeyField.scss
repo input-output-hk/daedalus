@@ -133,8 +133,9 @@
   .copyButton {
     :global {
       .SVGInline {
-        height: 14px;
-        width: 12px;
+        height: 18px;
+        margin-top: 2px;
+        width: 14px;
       }
     }
   }
@@ -142,7 +143,8 @@
   .qrCodeButton {
     :global {
       .SVGInline {
-        height: 14px;
+        height: 18px;
+        margin-top: 2px;
         width: 14px;
       }
     }
@@ -152,6 +154,7 @@
     :global {
       .SVGInline {
         height: 18px;
+        margin-bottom: 2px;
         width: 14px;
       }
     }
@@ -178,7 +181,7 @@
   .hideButton {
     :global {
       .SVGInline {
-        height: 16px;
+        height: 18px;
         width: 14px;
       }
     }
