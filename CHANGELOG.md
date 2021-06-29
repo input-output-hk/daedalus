@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Enabled Fund5 voting registration ([PR 2608](https://github.com/input-output-hk/daedalus/pull/2608))
 - Updated Fund5 registaration start date ([PR 2607](https://github.com/input-output-hk/daedalus/pull/2607))
 - Removed Jormungandr integration and legacy clusters ([PR 2579](https://github.com/input-output-hk/daedalus/pull/2579))
 
