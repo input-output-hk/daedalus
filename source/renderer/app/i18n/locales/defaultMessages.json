@@ -16848,10 +16848,24 @@
           "line": 49
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
-        "id": "notification.copyPublicKey",
+        "id": "notification.copyWalletPublicKey",
         "start": {
-          "column": 17,
+          "column": 23,
           "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!ICO Public key: <strong>{publicKey}</strong> copied to clipboard",
+        "description": "Notification for the ICO public key copy success in the Wallet Settings page.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyICOPublicKey",
+        "start": {
+          "column": 20,
+          "line": 50
         }
       },
       {
@@ -16859,13 +16873,13 @@
         "description": "Notification for the wallet address copy success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 63
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyAddress",
         "start": {
           "column": 15,
-          "line": 50
+          "line": 57
         }
       },
       {
@@ -16873,13 +16887,13 @@
         "description": "Notification for the wallet assetItem copy success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 70
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyAssetItem",
         "start": {
           "column": 17,
-          "line": 57
+          "line": 64
         }
       },
       {
@@ -16887,13 +16901,13 @@
         "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 77
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadAddressPDFSuccess",
         "start": {
           "column": 29,
-          "line": 64
+          "line": 71
         }
       },
       {
@@ -16901,13 +16915,13 @@
         "description": "Notification for the wallet voting PDF download success in the Voting Registration dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 83
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadVotingPDFSuccess",
         "start": {
           "column": 28,
-          "line": 71
+          "line": 78
         }
       },
       {
@@ -16915,13 +16929,13 @@
         "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 90
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadQRCodeImageSuccess",
         "start": {
           "column": 30,
-          "line": 77
+          "line": 84
         }
       },
       {
@@ -16929,13 +16943,13 @@
         "description": "Notification for the state directory copy success in the Diagnostics page.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 96
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyStateDirectoryPath",
         "start": {
           "column": 26,
-          "line": 84
+          "line": 91
         }
       }
     ],
@@ -17188,13 +17202,13 @@
         "description": "Copy public key label.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 28
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/PublicKeyQRCodeDialogContainer.js",
-        "id": "wallet.settings.copyPublicKey",
+        "id": "wallet.settings.copyWalletPublicKey",
         "start": {
           "column": 22,
-          "line": 44
+          "line": 24
         }
       },
       {
@@ -17223,6 +17237,20 @@
         "start": {
           "column": 15,
           "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy ICO public key",
+        "description": "Copy ICO public key label.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/PublicKeyQRCodeDialogContainer.js",
+        "id": "wallet.settings.copyICOPublicKey",
+        "start": {
+          "column": 22,
+          "line": 44
         }
       }
     ],
