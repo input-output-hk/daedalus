@@ -17,5 +17,5 @@ export const VOTING_REGISTRATION_CAST_END_DATE = new Date(
   'Jun 25, 2021, 11:00 UTC'
 );
 export const VOTING_REGISTRATION_NEW_START_DATE = new Date(
-  'Jul 5, 2021, 16:00 UTC'
+  'Jul 8, 2021, 16:00 UTC'
 );
