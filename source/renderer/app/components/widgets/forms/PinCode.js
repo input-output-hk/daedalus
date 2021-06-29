@@ -167,6 +167,9 @@ export default class PinCode extends Component<Props, State> {
       selectedPinField,
       sectionToFocus,
       isTabClicked,
+      onUpdateFieldDisabledStates,
+      pinFieldDisabledStates,
+      repeatPinFieldDisabledStates,
     } = this.props;
     const { isBackSpace, focusKeyChanged, focusIsUpdated } = this.state;
     const key = value.join('').length;
@@ -230,6 +233,14 @@ export default class PinCode extends Component<Props, State> {
           // If new value was added to already empty field, just re-focus to the same field
           this.setFocusOnField(inputElementRef);
         } else if (name === sectionToFocus && !focusKeyChanged) {
+          const pinCodeEnabledFields = pinFieldDisabledStates ? pinFieldDisabledStates.filter(item => !item).length : 0;
+          const repeatPinCodeEnabledFields = repeatPinFieldDisabledStates ? repeatPinFieldDisabledStates.filter(item => !item).length : 0;
+          if ((!pinCodeEnabledFields && !repeatPinCodeEnabledFields) && onUpdateFieldDisabledStates) {
+            onUpdateFieldDisabledStates(
+              inputFocusKey,
+              null
+            );
+          }
           setTimeout(() => {
             this.setFocusOnField(inputElementRef);
           }, 0);

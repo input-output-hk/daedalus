@@ -213,9 +213,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     });
   };
 
-  handleTabKey = (type: string) => {
+  handleTabKey = (type: string, tabClicked?: boolean) => {
     this.setState({
       sectionToFocus: type,
+      isTabClicked: !!tabClicked
     });
   };
 
@@ -226,7 +227,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const { key, target } = event;
     const { nodeName } = target;
     if (key === 'Tab' && nodeName === 'BUTTON') {
-      this.handleTabKey('pinCode');
+      this.handleTabKey('pinCode', true);
     }
   };
 
@@ -348,7 +349,9 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onTabKey={() => this.handleTabKey('repeatPinCode')}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
-            disabled={!isTabClicked && form.isValid}
+            disabled={(!isTabClicked && form.isValid) || (pinCodeField.isValid &&
+              repeatPinCodeField.value.length &&
+              sectionToFocus === 'repeatPinCode')}
             pinFieldDisabledStates={pinFieldDisabledStates}
           />
           <PinCode
