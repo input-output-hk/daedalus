@@ -8,6 +8,10 @@
 
 Daedalus - Cryptocurrency Wallet
 
+<p align="center">
+  <img src="Cardano-daedalusV0.14.0-mitchell_tesla.gif" alt="demo" />
+</p>
+
 ## Installation
 
 ### Yarn
