@@ -12632,13 +12632,13 @@
         "description": "Send button on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
         "id": "wallet.summary.asset.tokenSendButton",
         "start": {
           "column": 19,
-          "line": 17
+          "line": 19
         }
       },
       {
@@ -12646,13 +12646,13 @@
         "description": "Amount label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
         "id": "wallet.summary.asset.amountLabel",
         "start": {
           "column": 15,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -12660,13 +12660,41 @@
         "description": "Settings label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
         "id": "wallet.summary.asset.settings.button.label",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
+        "id": "assets.warning.available",
+        "start": {
+          "column": 35,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 34,
+          "line": 40
         }
       }
     ],

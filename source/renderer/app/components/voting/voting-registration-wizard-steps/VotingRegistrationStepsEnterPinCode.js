@@ -187,7 +187,11 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     if (prevFieldIndex !== null && prevFieldIndex >= 0) {
       disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
     }
-    if (nextFieldIndex !== null && nextFieldIndex >= 0 && nextFieldIndex < fieldsLength) {
+    if (
+      nextFieldIndex !== null &&
+      nextFieldIndex >= 0 &&
+      nextFieldIndex < fieldsLength
+    ) {
       disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
     }
     this.setState({
@@ -205,7 +209,11 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     if (prevFieldIndex !== null && prevFieldIndex >= 0) {
       disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
     }
-    if (nextFieldIndex !== null && nextFieldIndex >= 0 && nextFieldIndex < fieldsLength) {
+    if (
+      nextFieldIndex !== null &&
+      nextFieldIndex >= 0 &&
+      nextFieldIndex < fieldsLength
+    ) {
       disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
     }
     this.setState({
@@ -216,19 +224,23 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
   handleTabKey = (type: string, tabClicked?: boolean) => {
     this.setState({
       sectionToFocus: type,
-      isTabClicked: !!tabClicked
+      isTabClicked: !!tabClicked,
     });
   };
 
   handleWindowTabKeyDown = (event: {
     key: string,
-    target: { nodeName: string },
+    target: { nodeName: string, name: string },
   }) => {
     const { key, target } = event;
     const { nodeName, name } = target;
     if (key === 'Tab' && nodeName === 'BUTTON') {
       this.handleTabKey('pinCode', true);
-    } else if (key === 'Tab' && nodeName === 'INPUT' && name === 'repeatPinCode') {
+    } else if (
+      key === 'Tab' &&
+      nodeName === 'INPUT' &&
+      name === 'repeatPinCode'
+    ) {
       this.handleTabKey('continueButton', true);
     }
   };
@@ -351,9 +363,13 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onTabKey={() => this.handleTabKey('repeatPinCode', true)}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
-            disabled={(!isTabClicked && form.isValid) || (pinCodeField.isValid &&
-              repeatPinCodeField.value.length &&
-              (sectionToFocus === 'repeatPinCode' || sectionToFocus === 'continueButton'))}
+            disabled={
+              (!isTabClicked && form.isValid) ||
+              (pinCodeField.isValid &&
+                repeatPinCodeField.value.length &&
+                (sectionToFocus === 'repeatPinCode' ||
+                  sectionToFocus === 'continueButton'))
+            }
             pinFieldDisabledStates={pinFieldDisabledStates}
           />
           <PinCode
@@ -393,7 +409,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
               (!pinCodeField.isValid &&
                 !repeatPinCodeField.value.length &&
                 sectionToFocus !== 'repeatPinCode') ||
-              (sectionToFocus === 'continueButton')
+              sectionToFocus === 'continueButton'
             }
             repeatPinFieldDisabledStates={repeatPinFieldDisabledStates}
           />

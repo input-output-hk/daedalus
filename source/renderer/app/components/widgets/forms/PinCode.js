@@ -141,7 +141,8 @@ export default class PinCode extends Component<Props, State> {
       this.focusKey = key;
       // Recheck if user is adding or deleting value
       this.isAddingNewValue = inputValue && !isNaN(inputValue);
-      const shouldUpdateFieldDisabledStates = inputNewValue !== '' &&  newValue[key] === inputNewValue;
+      const shouldUpdateFieldDisabledStates =
+        inputNewValue !== '' && newValue[key] === inputNewValue;
       if (onUpdateFieldDisabledStates && shouldUpdateFieldDisabledStates) {
         const nextKeyForward = key + 1 <= value.length ? key + 1 : null;
         const nextKeyBackward = key - 1 >= 0 ? key - 1 : null;
@@ -197,7 +198,7 @@ export default class PinCode extends Component<Props, State> {
       (name !== selectedPinField &&
         emptyFieldIndex === -1 &&
         this.focusKey === 0) ||
-      (sectionToFocus === 'continueButton')
+      sectionToFocus === 'continueButton'
     ) {
       let inputFocusKey = 0;
       // Calculate new input focus key based on a action - delete/add of field value
@@ -231,17 +232,26 @@ export default class PinCode extends Component<Props, State> {
           emptyFieldIndex !== inputFocusKey
         ) {
           this.setFocusOnField(inputElementRef);
-        } else if (!isBackSpace && name !== sectionToFocus && sectionToFocus !== 'continueButton') {
+        } else if (
+          !isBackSpace &&
+          name !== sectionToFocus &&
+          sectionToFocus !== 'continueButton'
+        ) {
           // If new value was added to already empty field, just re-focus to the same field
           this.setFocusOnField(inputElementRef);
         } else if (name === sectionToFocus && !focusKeyChanged) {
-          const pinCodeEnabledFields = pinFieldDisabledStates ? pinFieldDisabledStates.filter(item => !item).length : 0;
-          const repeatPinCodeEnabledFields = repeatPinFieldDisabledStates ? repeatPinFieldDisabledStates.filter(item => !item).length : 0;
-          if ((!pinCodeEnabledFields && !repeatPinCodeEnabledFields) && onUpdateFieldDisabledStates) {
-            onUpdateFieldDisabledStates(
-              inputFocusKey,
-              null
-            );
+          const pinCodeEnabledFields = pinFieldDisabledStates
+            ? pinFieldDisabledStates.filter((item) => !item).length
+            : 0;
+          const repeatPinCodeEnabledFields = repeatPinFieldDisabledStates
+            ? repeatPinFieldDisabledStates.filter((item) => !item).length
+            : 0;
+          if (
+            !pinCodeEnabledFields &&
+            !repeatPinCodeEnabledFields &&
+            onUpdateFieldDisabledStates
+          ) {
+            onUpdateFieldDisabledStates(inputFocusKey, null);
           }
           setTimeout(() => {
             this.setFocusOnField(inputElementRef);
@@ -317,7 +327,12 @@ export default class PinCode extends Component<Props, State> {
     isEntrySelected: boolean,
     isTab: boolean
   ) => {
-    const { value, onChange, onTabKey, onUpdateFieldDisabledStates } = this.props;
+    const {
+      value,
+      onChange,
+      onTabKey,
+      onUpdateFieldDisabledStates,
+    } = this.props;
     const { focusKeyChanged } = this.state;
     const inputElRef = this.inputsRef[inputKey];
     let focusKeyUpdated = false;
@@ -347,10 +362,13 @@ export default class PinCode extends Component<Props, State> {
       this.focusKey = focusKeyChanged ? inputKey - 1 : inputKey;
       this.isAddingNewValue = false;
       this.fromBackspace = true;
-      const shouldUpdateFieldDisabledStates = !inputNewValue && !value[inputKey] && inputKey > 0;
+      const shouldUpdateFieldDisabledStates =
+        !inputNewValue && !value[inputKey] && inputKey > 0;
       if (onUpdateFieldDisabledStates && shouldUpdateFieldDisabledStates) {
-        const nextKeyForward = this.focusKey + 1 <= value.length ? this.focusKey + 1 : null;
-        const nextKeyBackward = this.focusKey - 1 >= 0 ? this.focusKey - 1 : null;
+        const nextKeyForward =
+          this.focusKey + 1 <= value.length ? this.focusKey + 1 : null;
+        const nextKeyBackward =
+          this.focusKey - 1 >= 0 ? this.focusKey - 1 : null;
         onUpdateFieldDisabledStates(
           this.focusKey,
           this.isAddingNewValue ? nextKeyForward : nextKeyBackward
