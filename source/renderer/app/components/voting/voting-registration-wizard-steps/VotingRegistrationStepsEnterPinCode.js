@@ -225,9 +225,11 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     target: { nodeName: string },
   }) => {
     const { key, target } = event;
-    const { nodeName } = target;
+    const { nodeName, name } = target;
     if (key === 'Tab' && nodeName === 'BUTTON') {
       this.handleTabKey('pinCode', true);
+    } else if (key === 'Tab' && nodeName === 'INPUT' && name === 'repeatPinCode') {
+      this.handleTabKey('continueButton', true);
     }
   };
 
@@ -346,12 +348,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!pinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
-            onTabKey={() => this.handleTabKey('repeatPinCode')}
+            onTabKey={() => this.handleTabKey('repeatPinCode', true)}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
             disabled={(!isTabClicked && form.isValid) || (pinCodeField.isValid &&
               repeatPinCodeField.value.length &&
-              sectionToFocus === 'repeatPinCode')}
+              (sectionToFocus === 'repeatPinCode' || sectionToFocus === 'continueButton'))}
             pinFieldDisabledStates={pinFieldDisabledStates}
           />
           <PinCode
@@ -377,14 +379,21 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!repeatPinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
-            onTabKey={() => this.handleTabKey('continueButton')}
+            onTabKey={() => this.handleTabKey('continueButton', true)}
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
             disabled={
               (!isTabClicked && form.isValid) ||
+              (isTabClicked &&
+                sectionToFocus === 'pinCode' &&
+                repeatPinCodeField.isValid) ||
+              (!isTabClicked &&
+                sectionToFocus === 'pinCode' &&
+                !repeatPinCodeField.isValid) ||
               (!pinCodeField.isValid &&
                 !repeatPinCodeField.value.length &&
-                sectionToFocus !== 'repeatPinCode')
+                sectionToFocus !== 'repeatPinCode') ||
+              (sectionToFocus === 'continueButton')
             }
             repeatPinFieldDisabledStates={repeatPinFieldDisabledStates}
           />

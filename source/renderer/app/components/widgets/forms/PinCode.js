@@ -196,7 +196,8 @@ export default class PinCode extends Component<Props, State> {
           focusKeyChanged)) ||
       (name !== selectedPinField &&
         emptyFieldIndex === -1 &&
-        this.focusKey === 0)
+        this.focusKey === 0) ||
+      (sectionToFocus === 'continueButton')
     ) {
       let inputFocusKey = 0;
       // Calculate new input focus key based on a action - delete/add of field value
@@ -230,7 +231,7 @@ export default class PinCode extends Component<Props, State> {
           emptyFieldIndex !== inputFocusKey
         ) {
           this.setFocusOnField(inputElementRef);
-        } else if (!isBackSpace && name !== sectionToFocus) {
+        } else if (!isBackSpace && name !== sectionToFocus && sectionToFocus !== 'continueButton') {
           // If new value was added to already empty field, just re-focus to the same field
           this.setFocusOnField(inputElementRef);
         } else if (name === sectionToFocus && !focusKeyChanged) {
