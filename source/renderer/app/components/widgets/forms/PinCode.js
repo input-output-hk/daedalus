@@ -141,7 +141,8 @@ export default class PinCode extends Component<Props, State> {
       this.focusKey = key;
       // Recheck if user is adding or deleting value
       this.isAddingNewValue = inputValue && !isNaN(inputValue);
-      if (onUpdateFieldDisabledStates) {
+      const shouldUpdateFieldDisabledStates = inputNewValue !== '' &&  newValue[key] === inputNewValue;
+      if (onUpdateFieldDisabledStates && shouldUpdateFieldDisabledStates) {
         const nextKeyForward = key + 1 <= value.length ? key + 1 : null;
         const nextKeyBackward = key - 1 >= 0 ? key - 1 : null;
         onUpdateFieldDisabledStates(
@@ -295,14 +296,16 @@ export default class PinCode extends Component<Props, State> {
       onTabKey();
     }
 
-    this.handleBackspaceClick(
-      inputNewValue,
-      isBackSpace,
-      fieldIsEmpty,
-      inputKey,
-      isEntrySelected,
-      isTab
-    );
+    if (isBackSpace) {
+      this.handleBackspaceClick(
+        inputNewValue,
+        isBackSpace,
+        fieldIsEmpty,
+        inputKey,
+        isEntrySelected,
+        isTab
+      );
+    }
   };
 
   handleBackspaceClick = (
@@ -313,7 +316,7 @@ export default class PinCode extends Component<Props, State> {
     isEntrySelected: boolean,
     isTab: boolean
   ) => {
-    const { value, onChange, onTabKey } = this.props;
+    const { value, onChange, onTabKey, onUpdateFieldDisabledStates } = this.props;
     const { focusKeyChanged } = this.state;
     const inputElRef = this.inputsRef[inputKey];
     let focusKeyUpdated = false;
@@ -343,6 +346,15 @@ export default class PinCode extends Component<Props, State> {
       this.focusKey = focusKeyChanged ? inputKey - 1 : inputKey;
       this.isAddingNewValue = false;
       this.fromBackspace = true;
+      const shouldUpdateFieldDisabledStates = !inputNewValue && !value[inputKey] && inputKey > 0;
+      if (onUpdateFieldDisabledStates && shouldUpdateFieldDisabledStates) {
+        const nextKeyForward = this.focusKey + 1 <= value.length ? this.focusKey + 1 : null;
+        const nextKeyBackward = this.focusKey - 1 >= 0 ? this.focusKey - 1 : null;
+        onUpdateFieldDisabledStates(
+          this.focusKey,
+          this.isAddingNewValue ? nextKeyForward : nextKeyBackward
+        );
+      }
     } else {
       this.focusKey = inputKey;
       this.fromBackspace = false;

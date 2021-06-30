@@ -8,13 +8,13 @@ export const VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT = 1; // 1 ADA | unit: AD
 export const VOTING_REGISTRATION_PIN_CODE_LENGTH = 4;
 export const VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS = isDev ? 2 : 10;
 export const VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL = 1000; // 1 second | unit: milliseconds
-export const VOTING_REGISTRATION_END_DATE = new Date('Jun 19, 2021, 11:00 UTC');
+export const VOTING_REGISTRATION_END_DATE = new Date('Jul 30, 2021, 11:00 UTC');
 export const VOTING_REGISTRATION_END_CHECK_INTERVAL = 3000; // 3 seconds | unit: milliseconds
 export const VOTING_REGISTRATION_CAST_START_DATE = new Date(
-  'Jun 20, 2021, 11:00 UTC'
+  'Jun 29, 2021, 11:00 UTC'
 );
 export const VOTING_REGISTRATION_CAST_END_DATE = new Date(
-  'Jun 30, 2021, 19:00 UTC'
+  'Jul 30, 2021, 19:00 UTC'
 );
 export const VOTING_REGISTRATION_NEW_START_DATE = new Date(
   'Jul 5, 2021, 16:00 UTC'
