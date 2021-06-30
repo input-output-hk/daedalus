@@ -169,17 +169,6 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
     <true/>
     <key>com.apple.security.cs.allow-dyld-environment-variables</key>
     <true/>
-    <key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-        <key>CFBundleURLName</key>
-        <string>Cardano Custom Protocol</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>cardano</string>
-        </array>
-      </dict>
-    </array>
   </dict>
 </plist>|]
 
