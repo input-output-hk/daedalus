@@ -97,21 +97,14 @@
       top: 0;
       z-index: 1;
     }
-    &:before,
-    &:after {
+    &:before {
+      box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.25);
       content: '';
       height: 30px;
       position: absolute;
+      top: 0;
       width: calc(100% - 20px);
       z-index: 0;
-    }
-    &:before {
-      box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.25);
-      top: 0;
-    }
-    &:after {
-      bottom: -30px;
-      box-shadow: 0 -10px 10px -10px rgba(0, 0, 0, 0.25);
     }
   }
   &.compact {
