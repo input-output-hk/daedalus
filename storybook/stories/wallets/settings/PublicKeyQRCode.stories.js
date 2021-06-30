@@ -6,12 +6,12 @@ import { storiesOf } from '@storybook/react';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Components
-import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 
 storiesOf('Wallets|Settings', module)
   .addDecorator(WalletsWrapper)
   .add('Public Key - QR Code', (props) => (
-    <WalletPublicKeyQRCodeDialog
+    <PublicKeyQRCodeDialog
       {...props}
       walletName="Wallet Public Key"
       walletPublicKey="Wallet Public Key"
