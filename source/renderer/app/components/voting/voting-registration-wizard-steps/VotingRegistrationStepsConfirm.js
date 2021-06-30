@@ -120,7 +120,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
             className: styles.buttonConfirmStyles,
             label: buttonLabel,
             onClick: onConfirm,
-            // disabled: !isTransactionConfirmed,
+            disabled: !isTransactionConfirmed,
             primary: true,
           },
     ];
