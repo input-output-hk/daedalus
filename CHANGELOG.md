@@ -9,6 +9,7 @@ Changelog
 - Integrated cardano-wallet Api native tokens decimal places value ([PR 2577](https://github.com/input-output-hk/daedalus/pull/2577))
 - Added address verification for "Trezor" hardware wallet devices ([PR 2558](https://github.com/input-output-hk/daedalus/pull/2558))
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
+- Implemented the expandable token view ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589))
 
 ### Fixes
 
@@ -20,13 +21,14 @@ Changelog
 
 ### Chores
 
+- Disabled Fund5 voting registration ([PR 2608](https://github.com/input-output-hk/daedalus/pull/2608))
+- Updated Fund5 registaration start date ([PR 2607](https://github.com/input-output-hk/daedalus/pull/2607))
 - Removed Jormungandr integration and legacy clusters ([PR 2579](https://github.com/input-output-hk/daedalus/pull/2579))
 
 ## 4.1.0
 
 ### Features
 
-- Implemented the new expandable Token view. ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589))
 - Enabled Catalyst voting registration on Mainnet and Flight builds
 
 ## 4.1.0-FC1
