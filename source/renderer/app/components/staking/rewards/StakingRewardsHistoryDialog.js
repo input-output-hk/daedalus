@@ -134,6 +134,57 @@ export default class StakingRewardsHistoryDialog extends Component<
     </PopOver>
   );
 
+  renderContent = () => {
+    const { intl } = this.context;
+    const { isFetchingRewardsHistory, rewardsHistory } = this.props;
+
+    const tableColumns = [
+      {
+        title: intl.formatMessage(messages.columnEpoch),
+        id: 'epoch',
+      },
+      {
+        title: intl.formatMessage(messages.columnStakePool),
+        id: 'pool',
+        sortValue: (pool: StakePool) =>
+          pool.ticker ? `${pool.ticker}${pool.name}` : pool.id,
+        render: (pool: $Shape<StakePool>) =>
+          pool.name
+            ? this.renderStakePool(pool)
+            : this.renderStakePoolId(pool.id),
+      },
+      {
+        title: intl.formatMessage(messages.columnAmount),
+        id: 'amount',
+        type: 'bigNumber',
+        render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),
+      },
+    ];
+
+    if (isFetchingRewardsHistory) {
+      return (
+        <div className={styles.loadingSpinner}>
+          <LoadingSpinner big />
+        </div>
+      );
+    }
+
+    if (!rewardsHistory.length) {
+      return <div className={styles.noData}>Failed to fetch data</div>;
+    }
+
+    return (
+      <Table
+        columns={tableColumns}
+        rows={rewardsHistory}
+        className={styles.table}
+        maxHeight={265}
+        isCompact
+        initialSortDirection="asc"
+      />
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -160,30 +211,7 @@ export default class StakingRewardsHistoryDialog extends Component<
         label: intl.formatMessage(messages.exportCsvLabel),
         primary: true,
         onClick: () => onExportCSV({ rewardsAddress, walletName }),
-        disabled: isFetchingRewardsHistory,
-      },
-    ];
-
-    const tableColumns = [
-      {
-        title: intl.formatMessage(messages.columnEpoch),
-        id: 'epoch',
-      },
-      {
-        title: intl.formatMessage(messages.columnStakePool),
-        id: 'pool',
-        sortValue: (pool: StakePool) =>
-          pool.ticker ? `${pool.ticker}${pool.name}` : pool.id,
-        render: (pool: $Shape<StakePool>) =>
-          pool.name
-            ? this.renderStakePool(pool)
-            : this.renderStakePoolId(pool.id),
-      },
-      {
-        title: intl.formatMessage(messages.columnAmount),
-        id: 'amount',
-        type: 'bigNumber',
-        render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),
+        disabled: isFetchingRewardsHistory || !rewardsHistory.length,
       },
     ];
 
@@ -225,20 +253,7 @@ export default class StakingRewardsHistoryDialog extends Component<
           </p>
         </CopyToClipboard>
 
-        {isFetchingRewardsHistory ? (
-          <div className={styles.loadingSpinner}>
-            <LoadingSpinner big />
-          </div>
-        ) : (
-          <Table
-            columns={tableColumns}
-            rows={rewardsHistory}
-            className={styles.table}
-            maxHeight={265}
-            isCompact
-            initialSortDirection="asc"
-          />
-        )}
+        {this.renderContent()}
       </Dialog>
     );
   }
