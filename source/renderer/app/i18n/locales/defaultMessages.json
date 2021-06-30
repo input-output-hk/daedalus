@@ -8241,11 +8241,11 @@
         }
       },
       {
-        "defaultMessage": "!!!https://cardano.ideascale.com/a/index",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763",
         "description": "Learn more\" link URL on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learntMoreLinkUrl",
