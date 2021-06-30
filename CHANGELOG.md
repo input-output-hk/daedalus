@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented sharing ICO public key ([PR 2604](https://github.com/input-output-hk/daedalus/pull/2604))
+- Implemented sharing multi-signature public key ([PR 2604](https://github.com/input-output-hk/daedalus/pull/2604))
 - Implemented the expandable token view ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589))
 
 ### Fixes
