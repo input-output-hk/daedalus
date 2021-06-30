@@ -31,8 +31,9 @@ import ICOPublicKeyDialog from './ICOPublicKeyDialog';
 import ICOPublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from './WalletPublicKeyDialog';
 import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-export const messages = defineMessages({
+export const messages: { [string]: ReactIntlMessage } = defineMessages({
   assuranceLevelLabel: {
     id: 'wallet.settings.assurance',
     defaultMessage: '!!!Transaction assurance security level',

@@ -14,6 +14,7 @@ import globalMessages from '../../../i18n/global-messages';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { LOCALES } from '../../../../../common/types/locales.types';
 import styles from './PublicKeyField.scss';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
 type Props = {
   publicKey: string,
@@ -22,7 +23,7 @@ type Props = {
   onShowQRCode: Function,
   onOpenWalletKeyDialog: Function,
   intl: intlShape.isRequired,
-  messages: Object,
+  messages: { [string]: ReactIntlMessage },
   description?: string,
 };
 

@@ -13,8 +13,9 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { isValidSpendingPassword } from '../../../utils/validations';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-const messages = defineMessages({
+const messages: { [string]: ReactIntlMessage } = defineMessages({
   title: {
     id: 'wallet.settings.icoPublicKeyDialog.title',
     defaultMessage: '!!!Reveal ICO public key',

@@ -7,8 +7,9 @@ import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import PublicKeyDialog from './WalletPublicKeyDialog';
 import type { Locale } from '../../../../../common/types/locales.types';
 import PublicKeyField from './PublicKeyField';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-export const messages = defineMessages({
+export const messages: { [string]: ReactIntlMessage } = defineMessages({
   publicKey: {
     id: 'wallet.settings.walletPublicKey',
     defaultMessage: '!!!Wallet public key',

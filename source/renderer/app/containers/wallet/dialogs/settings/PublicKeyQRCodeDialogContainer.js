@@ -11,10 +11,10 @@ import {
   WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
 } from '../../../../config/walletsConfig';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
-import type { MessageDescriptor } from '../../../../api/common/types';
+import type { ReactIntlMessage } from '../../../../types/i18nTypes';
 
 const walletMessages: {
-  [string]: MessageDescriptor,
+  [string]: ReactIntlMessage,
 } = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.walletPublicKey',
@@ -34,7 +34,7 @@ const walletMessages: {
 });
 
 const icoMessages: {
-  [string]: MessageDescriptor,
+  [string]: ReactIntlMessage,
 } = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.icoPublicKey',

@@ -5,10 +5,11 @@ import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
 import PublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import ICOPublicKeyDialog from './ICOPublicKeyDialog';
-import type { Locale } from '../../../../../common/types/locales.types';
 import PublicKeyField from './PublicKeyField';
+import type { Locale } from '../../../../../common/types/locales.types';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-export const messages = defineMessages({
+export const messages: { [string]: ReactIntlMessage } = defineMessages({
   publicKey: {
     id: 'wallet.settings.icoPublicKey',
     defaultMessage: '!!!ICO public key',

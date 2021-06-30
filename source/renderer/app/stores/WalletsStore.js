@@ -231,7 +231,6 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletAbort.listen(this._createWalletAbort);
     walletsActions.createWalletClose.listen(this._createWalletClose);
     walletsActions.createHardwareWallet.listen(this._createHardwareWallet);
-    walletsActions.createHardwareWallet.listen(this._createHardwareWallet);
 
     // ---
     // Restore Wallet Actions ---

@@ -1274,9 +1274,7 @@ export default class AdaApi {
     }
   };
 
-  getICOPublicKey = async (
-    request: ICOPublicKeyParams
-  ): Promise<string> | null => {
+  getICOPublicKey = async (request: ICOPublicKeyParams): Promise<string> => {
     logger.debug('AdaApi::getICOPublicKey called', {
       parameters: filterLogData(request),
     });

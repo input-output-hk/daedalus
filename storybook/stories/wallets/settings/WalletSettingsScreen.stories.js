@@ -35,7 +35,7 @@ import {
   ICO_PUBLIC_KEY_DERIVATION_PATH,
   WALLET_PUBLIC_KEY_DERIVATION_PATH,
 } from '../../../../source/renderer/app/config/walletsConfig';
-import type { MessageDescriptor } from '../../../../source/renderer/app/api/common/types';
+import type { ReactIntlMessage } from '../../../../source/renderer/app/types/i18nTypes';
 
 /* eslint-disable react/display-name  */
 
@@ -174,7 +174,7 @@ export default (props: { locale: Locale }) => {
   );
 
   const walletMessages: {
-    [string]: MessageDescriptor,
+    [string]: ReactIntlMessage,
   } = defineMessages({
     dialogTitle: {
       id: 'wallet.settings.walletPublicKey',
@@ -189,7 +189,7 @@ export default (props: { locale: Locale }) => {
   });
 
   const icoMessages: {
-    [string]: MessageDescriptor,
+    [string]: ReactIntlMessage,
   } = defineMessages({
     dialogTitle: {
       id: 'wallet.settings.icoPublicKey',
