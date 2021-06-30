@@ -1,9 +1,45 @@
 .component {
-  height: 82px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   position: relative;
   width: 100%;
 
+  .title {
+    color: var(--theme-input-label-color);
+    font-family: var(--font-medium);
+    font-size: 16px;
+  }
+
+  .description {
+    margin-bottom: 14px;
+  }
+
+  .contentBox {
+    align-items: center;
+    color: var(--theme-bordered-box-text-color);
+    display: flex;
+    flex-direction: row;
+    font-family: var(--font-light);
+    justify-content: space-between;
+    line-height: 1.38;
+    padding-top: 14px;
+
+    p:first-child {
+      margin-bottom: 15px;
+    }
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .inputBox {
+    position: relative;
+    width: 100%;
+  }
+
   .field {
+    margin-top: 13px;
     &.valueHidden {
       :global {
         .SimpleFormField_label {
@@ -62,7 +98,7 @@
             position: absolute;
             text-overflow: ellipsis;
             top: 11px;
-            width: calc(100% - 171px);
+            width: calc(100% - 150px);
           }
         }
       }
@@ -98,6 +134,7 @@
     :global {
       .SVGInline {
         height: 14px;
+        margin-bottom: 2px;
         width: 12px;
       }
     }
@@ -106,7 +143,8 @@
   .qrCodeButton {
     :global {
       .SVGInline {
-        height: 14px;
+        height: 18px;
+        margin-top: 2px;
         width: 14px;
       }
     }
@@ -116,15 +154,34 @@
     :global {
       .SVGInline {
         height: 18px;
+        margin-bottom: 2px;
         width: 14px;
       }
+    }
+  }
+
+  .contentBox {
+    align-items: center;
+    color: var(--theme-bordered-box-text-color);
+    display: flex;
+    flex-direction: row;
+    font-family: var(--font-light);
+    justify-content: space-between;
+    line-height: 1.38;
+    padding-top: 14px;
+
+    p:first-child {
+      margin-bottom: 15px;
+    }
+    p:last-child {
+      margin-bottom: 0;
     }
   }
 
   .hideButton {
     :global {
       .SVGInline {
-        height: 16px;
+        height: 18px;
         width: 14px;
       }
     }
@@ -135,7 +192,7 @@
     display: flex;
     position: absolute;
     right: 10px;
-    top: 43px;
+    top: 24px;
 
     .imageButtonContainer {
       margin-right: 10px;
