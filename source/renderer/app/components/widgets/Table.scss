@@ -78,6 +78,7 @@
   }
   &.sticky {
     position: relative;
+    margin-right: -20px;
     .content {
       overflow-y: scroll;
       position: relative;
