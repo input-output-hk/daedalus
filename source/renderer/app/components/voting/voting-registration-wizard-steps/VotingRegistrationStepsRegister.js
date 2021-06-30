@@ -58,7 +58,8 @@ const messages = defineMessages({
   },
   learntMoreLinkUrl: {
     id: 'voting.votingRegistration.register.step.learntMoreLinkUrl',
-    defaultMessage: '!!!https://cardano.ideascale.com/a/index',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763',
     description: 'Learn more" link URL on the "sign" step.',
   },
 });

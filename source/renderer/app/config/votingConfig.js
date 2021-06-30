@@ -1,9 +1,9 @@
 // @flow
 const { isDev } = global.environment;
 
-export const IS_VOTING_REGISTRATION_AVAILABLE = true;
+export const IS_VOTING_REGISTRATION_AVAILABLE = false;
 export const VOTING_FUND_NUMBER = 5;
-export const VOTING_REGISTRATION_MIN_WALLET_FUNDS = 450; // 450 ADA | unit: ADA
+export const VOTING_REGISTRATION_MIN_WALLET_FUNDS = 500; // 500 ADA | unit: ADA
 export const VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT = 1; // 1 ADA | unit: ADA
 export const VOTING_REGISTRATION_PIN_CODE_LENGTH = 4;
 export const VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS = isDev ? 2 : 10;

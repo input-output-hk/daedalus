@@ -77,7 +77,7 @@ const messages = defineMessages({
   learnMoreLinkUrlForEndedRegistration: {
     id: 'voting.info.learnMoreLinkUrlForEndedRegistration',
     defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/900004448046',
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763',
     description: 'Learn more link url for ended registration',
   },
   bottomContentTitle: {
