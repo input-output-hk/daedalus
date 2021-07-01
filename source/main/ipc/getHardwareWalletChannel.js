@@ -307,6 +307,12 @@ export const handleHardwareWalletRequests = async (
         let hw;
         let lastConnectedPath;
 
+        logger.info(
+          `[HW-DEBUG] getHardwareWalletTransportChannel::transportList=${JSON.stringify(
+            transportList
+          )}`
+        );
+
         // $FlowFixMe
         if (transportList && !transportList.length) {
           // Establish connection with last device
@@ -315,7 +321,19 @@ export const handleHardwareWalletRequests = async (
             hw = await TransportNodeHid.create();
             transportList = await TransportNodeHid.list();
             lastConnectedPath = last(transportList);
+            logger.info(
+              `[HW-DEBUG] getHardwareWalletTransportChannel::lastConnectedPath=${JSON.stringify(
+                lastConnectedPath
+              )}`
+            );
+
             const deviceList = getDevices();
+            logger.info(
+              `[HW-DEBUG] getHardwareWalletTransportChannel::deviceList=${JSON.stringify(
+                deviceList
+              )}`
+            );
+
             const device = find(deviceList, ['path', lastConnectedPath]);
             logger.info('[HW-DEBUG] INIT NEW transport - DONE');
 

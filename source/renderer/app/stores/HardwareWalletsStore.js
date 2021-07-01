@@ -203,6 +203,7 @@ export default class HardwareWalletsStore extends Store {
   checkTransactionTimeInterval: ?IntervalID = null;
 
   setup() {
+    logger.debug('[HW-DEBUG] HWStore - setup');
     const { hardwareWallets: hardwareWalletsActions } = this.actions;
     hardwareWalletsActions.sendMoney.listen(this._sendMoney);
     hardwareWalletsActions.refreshHardwareWalletsLocalData.listen(
@@ -226,8 +227,11 @@ export default class HardwareWalletsStore extends Store {
   };
 
   initLedger = async () => {
+    logger.debug(
+      `[HW-DEBUG] HWStore - initLedger() | isHardwareWalletSupportEnabled=${isHardwareWalletSupportEnabled} isLedgerEnabled=${isLedgerEnabled}`
+    );
     if (isHardwareWalletSupportEnabled && isLedgerEnabled) {
-      logger.debug('[HW-DEBUG] HWStore - HW STORE ACTIVE');
+      logger.debug('[HW-DEBUG] HWStore - start ledger');
       await this.hardwareWalletDevicesRequest.execute();
       const storedDevices = this.hardwareWalletDevicesRequest.result;
       logger.debug('[HW-DEBUG] HWStore - storedDevices fetched');
