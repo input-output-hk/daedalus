@@ -10,7 +10,7 @@ export const safeExitWithCode = (exitCode: number) => {
   // https://nodejs.org/api/stream.html#stream_writable_end_chunk_encoding_callback
   file.stream.end('', 'utf8', () => {
     app.releaseSingleInstanceLock();
-    (exitCode === 21 || exitCode === 22) && app.relaunch();
-    app.exit(exitCode);
+    if (exitCode === 21 || exitCode === 22) app.relaunch();
+    else app.exit(exitCode);
   });
 };

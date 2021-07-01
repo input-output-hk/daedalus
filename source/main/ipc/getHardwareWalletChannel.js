@@ -128,8 +128,12 @@ class EventObserver {
   }
   next = async (event) => {
     const transportList = await TransportNodeHid.list();
-    logger.info('[HW-DEBUG] Ledger NEXT: ', transportList);
     const connectionChanged = event.type === 'add' || event.type === 'remove';
+    logger.info('[HW-DEBUG] Ledger NEXT: ', {
+      transportList,
+      connectionChanged,
+    });
+
     if (connectionChanged) {
       logger.info('[HW-DEBUG] Ledger NEXT - connection changed');
       const device = get(event, 'device', {});
@@ -530,21 +534,19 @@ export const handleHardwareWalletRequests = async (
     const { path } = request;
     try {
       if (!path || !devicesMemo[path]) {
-        console.log('[HW-DEBUG] Device not instantiated!', {
+        logger.info('[HW-DEBUG] Device not instantiated!', {
           path,
           devicesMemo,
         });
         // eslint-disable-next-line
         throw { code: 'DEVICE_NOT_CONNECTED' };
       }
-      console.log(`[HW-DEBUG] GET CARDANO APP path:${path}`);
+      logger.info(`[HW-DEBUG] GET CARDANO APP path:${path}`);
       deviceConnection = devicesMemo[path].AdaConnection;
       const { version } = await deviceConnection.getVersion();
-      console.log(
-        `[HW-DEBUG] getCardanoAdaAppChannel:: appVersion: ${version}`
-      );
+      logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion');
       const { serial } = await deviceConnection.getSerial();
-      console.log(
+      logger.info(
         `[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial: ${serial}`
       );
       const { minor, major, patch } = version;
@@ -563,14 +565,12 @@ export const handleHardwareWalletRequests = async (
       //  errorMessage.toLowerCase().includes('cannot open device with path') ||
       //  errorMessage.toLowerCase().includes('cannot write to hid device') ||
       //  errorMessage.toLowerCase().includes('cannot write to closed device');
-      console.log('[HW-DEBUG] ERROR in Cardano App', {
+      logger.info('[HW-DEBUG] ERROR in Cardano App', {
         path,
         errorName,
         errorMessage,
         isDisconnectError,
         isDeviceDisconnected,
-        devicesMemo,
-        deviceConnection,
       });
       if (path && !isDeviceDisconnected && isDisconnectError) {
         // $FlowFixMe

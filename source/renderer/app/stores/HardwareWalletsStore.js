@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, runInAction, computed } from 'mobx';
+import { observable, action, runInAction, computed, trace } from 'mobx';
 import { get, map, find, findLast, includes } from 'lodash';
 import semver from 'semver';
 import {
@@ -456,12 +456,18 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action establishHardwareWalletConnection = async () => {
+    trace(true);
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
     const { hardwareWalletDevices, hardwareWalletsConnectionData } = this;
+    logger.debug('[HW-DEBUG] HWStore - establishHardwareWalletConnection', {
+      hardwareWalletDevices: toJS(hardwareWalletDevices),
+      hardwareWalletsConnectionData: toJS(hardwareWalletsConnectionData),
+      activeDelegationWalletId: toJS(this.activeDelegationWalletId),
+      isTransactionInitiated: toJS(this.isTransactionInitiated),
+    });
 
-    logger.debug('[HW-DEBUG] HWStore - establishHardwareWalletConnection');
     try {
       // Check if active wallet exist - this means that hw exist but we need to check if relevant device connected to it
       let recognizedPairedHardwareWallet;
