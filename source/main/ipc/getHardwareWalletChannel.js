@@ -264,8 +264,8 @@ export const handleHardwareWalletRequests = async (
 
   getHardwareWalletTransportChannel.onRequest(
     async (request: HardwareWalletTransportDeviceRequest) => {
-      logger.info('[HW-DEBUG] getHardwareWalletTransportChannel');
       const { isTrezor, devicePath } = request;
+      logger.info('[HW-DEBUG] getHardwareWalletTransportChannel', devicePath);
       // Connected Trezor device info
       let deviceFeatures;
       if (isTrezor) {
