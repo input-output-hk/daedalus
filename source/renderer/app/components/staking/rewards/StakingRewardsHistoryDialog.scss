@@ -68,6 +68,9 @@
     margin-bottom: 30px;
   }
   .table {
+    tr:last-child td {
+      padding-bottom: 0;
+    }
     td {
       font-family: var(--font-regular);
     }
