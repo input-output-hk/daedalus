@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, runInAction, computed, trace } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast, includes } from 'lodash';
 import semver from 'semver';
 import {
@@ -456,7 +456,6 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action establishHardwareWalletConnection = async () => {
-    trace(true);
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
