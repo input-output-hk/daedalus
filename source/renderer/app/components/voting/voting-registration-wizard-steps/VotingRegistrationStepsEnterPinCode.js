@@ -160,14 +160,14 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     window.removeEventListener('keydown', this.handleWindowTabKeyDown);
   }
 
-  onResetValues = (type: string) => {
+  onResetValues = (type: string, focusKey: number) => {
     const { form } = this;
     const pinCodeField = form.$(type);
     pinCodeField.value = [];
     if (type === 'pinCode') {
-      this.onUpdatePinFieldDisabledStates(null, 0);
+      this.onUpdatePinFieldDisabledStates(focusKey || null, 0);
     } else {
-      this.onUpdateRepeatPinFieldDisabledStates(null, 0);
+      this.onUpdateRepeatPinFieldDisabledStates(focusKey || null, 0);
     }
   };
 
@@ -346,7 +346,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             resetLabel={resetPinCodesLabel}
             autoFocus
             onChange={(values, isTab) => this.onChangePinCode(values, isTab)}
-            onResetValues={(type: string) => this.onResetValues(type)}
+            onResetValues={(type: string, focusKey: number) => this.onResetValues(type, focusKey)}
             onShowHideValues={() => this.onShowHideValues()}
             onUpdateFieldDisabledStates={(
               prevFieldIndex: number,

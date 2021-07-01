@@ -544,7 +544,7 @@ export default class PinCode extends Component<Props, State> {
                 className={clearPinCodesStyles}
                 onClick={() => {
                   if (onResetValues) {
-                    onResetValues(name);
+                    onResetValues(name, this.focusKey);
                   }
                   setTimeout(() => {
                     this.setFocusOnField(this.inputsRef[0]);
