@@ -1,12 +1,18 @@
 // @flow
 import React, { Component } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Link } from 'react-polymorph/lib/components/Link';
 import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
-import { defineMessages, intlShape } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import type { Reward, RewardsHistoryItem } from '../../../api/staking/types';
@@ -59,6 +65,27 @@ const messages = defineMessages({
       '!!!Stake pool details are unavailable for this stake pool ID.',
     description: '"Unknown Stake Pool" tooltip on the rewards history dialog.',
   },
+  noDataTitle: {
+    id: 'staking.rewardsHistory.dialog.noData.title',
+    defaultMessage: '!!!Rewards details cannot be displayed at this time.',
+    description: '"No Data" on the rewards history dialog.',
+  },
+  noDataDescription: {
+    id: 'staking.rewardsHistory.dialog.noData.description',
+    defaultMessage:
+      '!!!Please try again later. If this issue persists, please {link}.',
+    description: '"No Data" on the rewards history dialog.',
+  },
+  noDataLinkLabel: {
+    id: 'staking.rewardsHistory.dialog.noData.linkLabel',
+    defaultMessage: '!!!submit a support request',
+    description: '"No Data Link Url" on the rewards history dialog.',
+  },
+  noDataLinkUrl: {
+    id: 'staking.rewardsHistory.dialog.noData.linkUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
+    description: '"No Data Link Url" on the rewards history dialog.',
+  },
 });
 
 type Props = {
@@ -67,6 +94,7 @@ type Props = {
   onClose: Function,
   onExportCSV: Function,
   onOpenExternalLink: Function,
+  onNoDataClick: Function,
   reward: Reward,
   rewardsHistory: Array<RewardsHistoryItem>,
   onCopyAddress: Function,
@@ -134,6 +162,29 @@ export default class StakingRewardsHistoryDialog extends Component<
     </PopOver>
   );
 
+  renderNoDataContent = () => {
+    const { intl } = this.context;
+    const { onNoDataClick } = this.props;
+    const onClickNoDataLink = () =>
+      onNoDataClick(intl.formatMessage(messages.noDataLinkUrl));
+    const noDataLink = (
+      <Link
+        className={styles.link}
+        onClick={onClickNoDataLink}
+        label={intl.formatMessage(messages.noDataLinkLabel)}
+      />
+    );
+    return (
+      <div className={styles.noData}>
+        <p>{intl.formatMessage(messages.noDataTitle)}</p>
+        <FormattedMessage
+          {...messages.noDataDescription}
+          values={{ link: noDataLink }}
+        />
+      </div>
+    );
+  };
+
   renderContent = () => {
     const { intl } = this.context;
     const { isFetchingRewardsHistory, rewardsHistory } = this.props;
@@ -170,7 +221,7 @@ export default class StakingRewardsHistoryDialog extends Component<
     }
 
     if (!rewardsHistory.length) {
-      return <div className={styles.noData}>Failed to fetch data</div>;
+      return this.renderNoDataContent();
     }
 
     return (
@@ -232,6 +283,7 @@ export default class StakingRewardsHistoryDialog extends Component<
         actions={actions}
         onClose={onClose}
         closeButton={<DialogCloseButton />}
+        closeOnOverlayClick={false}
       >
         <div className={styles.label}>
           {intl.formatMessage(messages.rewardsAddress)}

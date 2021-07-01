@@ -5684,13 +5684,13 @@
         "description": "Title \"Earned delegation rewards\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.title",
         "start": {
           "column": 9,
-          "line": 25
+          "line": 31
         }
       },
       {
@@ -5698,13 +5698,13 @@
         "description": "Transactions CSV column - Epoch",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.column.epoch",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 37
         }
       },
       {
@@ -5712,13 +5712,13 @@
         "description": "Transactions CSV column - Pool",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.column.stakePool",
         "start": {
           "column": 19,
-          "line": 36
+          "line": 42
         }
       },
       {
@@ -5726,13 +5726,13 @@
         "description": "Transactions CSV column - Amount",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.column.amount",
         "start": {
           "column": 16,
-          "line": 41
+          "line": 47
         }
       },
       {
@@ -5740,13 +5740,13 @@
         "description": "TexportCsvLabel on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.csv.label",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 52
         }
       },
       {
@@ -5754,13 +5754,13 @@
         "description": "\"Rewards address\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.rewardsAddress",
         "start": {
           "column": 18,
-          "line": 51
+          "line": 57
         }
       },
       {
@@ -5768,13 +5768,69 @@
         "description": "\"Unknown Stake Pool\" tooltip on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.unknownStakePoolTooltip",
         "start": {
           "column": 27,
-          "line": 56
+          "line": 62
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards details cannot be displayed at this time.",
+        "description": "\"No Data\" on the rewards history dialog.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.noData.title",
+        "start": {
+          "column": 15,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Please try again later. If this issue persists, please {link}.",
+        "description": "\"No Data\" on the rewards history dialog.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.noData.description",
+        "start": {
+          "column": 21,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!submit a support request",
+        "description": "\"No Data Link Url\" on the rewards history dialog.",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.noData.linkLabel",
+        "start": {
+          "column": 19,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "\"No Data Link Url\" on the rewards history dialog.",
+        "end": {
+          "column": 3,
+          "line": 88
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.noData.linkUrl",
+        "start": {
+          "column": 17,
+          "line": 84
         }
       }
     ],

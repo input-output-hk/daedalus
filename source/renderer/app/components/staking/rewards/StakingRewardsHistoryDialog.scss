@@ -4,7 +4,7 @@
     line-height: 1.38;
     margin-bottom: 6px;
   }
-  p {
+  .rewardsAddress {
     font-family: var(--font-light);
     line-height: 1.38;
     margin-bottom: 20px;
@@ -103,9 +103,18 @@
     }
   }
   .noData {
-    color: var(--theme-color-error);
-    font-family: var(--font-regular);
     font-size: 16px;
     line-height: 1.38;
+    p:first-child {
+      color: var(--theme-color-error);
+      font-family: var(--font-regular);
+    }
+    span {
+      font-family: var(--font-light);
+      font-size: 16px;
+      > span {
+        font-family: var(--font-regular);
+      }
+    }
   }
 }

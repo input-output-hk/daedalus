@@ -1,7 +1,7 @@
 // @flow
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 
 // Screens
 import StakingRewardsHistoryDialog from '../../../source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog';
@@ -19,25 +19,40 @@ export const StakingRewardsHistoryStory = ({
   locale: string,
 }) => {
   const [dateRange, setDateRange] = useState({ startDate: now, endDate: null });
-  let rewards = getRewardsHistory(10);
-  const onlyIds = boolean("Show only ID's");
-  if (onlyIds) {
-    rewards = rewards.map((rew) => ({
-      ...rew,
-      pool: {
-        id: rew.pool.id,
-      },
-    }));
+  const rewardsResults = getRewardsHistory(10);
+  const rewardsIdsOnly = rewardsResults.map((rew) => ({
+    ...rew,
+    pool: {
+      id: rew.pool.id,
+    },
+  }));
+  let rewards = rewardsResults;
+
+  const rewardsSelect = select(
+    'Results',
+    {
+      Regular: 'regular',
+      'Ids only': 'idsOnly',
+      'No results': 'noData',
+    },
+    'Regular'
+  );
+  if (rewardsSelect === 'idsOnly') {
+    rewards = rewardsIdsOnly;
+  } else if (rewardsSelect === 'noData') {
+    rewards = [];
   }
+
   const reward = {
     date: now.toString(),
     walletId: '1',
     walletName: 'Wallet name',
-    reward: rewards[0].amount,
+    reward: rewardsResults[0].amount,
     rewardsAddress:
       'stake_test1upqaj6kvt9w69uraqtdfsv2q7l4000k5n5y4r26hnkzenmsel3qv9',
-    pool: rewards[0].pool,
+    pool: rewardsResults[0].pool,
   };
+
   return (
     <StakingRewardsHistoryDialog
       startDate={dateRange.startDate}
@@ -53,6 +68,7 @@ export const StakingRewardsHistoryStory = ({
       onSetDateRange={(newDateRange) => setDateRange(newDateRange)}
       currentTheme={currentTheme}
       onOpenExternalLink={action('onOpenExternalLink')}
+      onNoDataClick={action('onNoDataClick')}
     />
   );
 };

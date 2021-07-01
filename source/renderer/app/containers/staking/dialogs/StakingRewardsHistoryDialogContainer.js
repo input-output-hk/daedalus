@@ -5,6 +5,7 @@ import { observer, inject } from 'mobx-react';
 import StakingRewardsHistoryDialog from '../../../components/staking/rewards/StakingRewardsHistoryDialog';
 import { ellipsis } from '../../../utils/strings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { generateSupportRequestLink } from '../../../../../common/utils/reporting';
 
 type Props = InjectedProps;
 
@@ -30,6 +31,18 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     this.props.actions.wallets.copyAddress.trigger({ address });
   };
 
+  handleNoDataClick = async (url: string) => {
+    const { profile, app } = this.props.stores;
+    const { currentLocale } = profile;
+    const { environment, openExternalLink } = app;
+    const supportUrl = generateSupportRequestLink(
+      url,
+      environment,
+      currentLocale
+    );
+    openExternalLink(supportUrl);
+  };
+
   render() {
     const { stores, actions } = this.props;
     const { reward } = stores.uiDialogs.dataForActiveDialog;
@@ -51,6 +64,7 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
         onClose={closeActiveDialog.trigger}
         onExportCSV={requestRewardsHistoryCSVFile.trigger}
         onOpenExternalLink={openExternalLink}
+        onNoDataClick={this.handleNoDataClick}
         reward={reward}
         rewardsHistory={toJS(rewardsHistory)}
         onCopyAddress={this.handleCopyAddress}
