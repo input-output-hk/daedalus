@@ -379,7 +379,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onChange={(values, isTab) =>
               this.onChangeRepeatPinCode(values, isTab)
             }
-            onResetValues={(type: string) => this.onResetValues(type)}
+            onResetValues={(type: string, focusKey: number) => this.onResetValues(type, focusKey)}
             onShowHideValues={() => this.onShowHideValues()}
             onUpdateFieldDisabledStates={(
               prevFieldIndex: number,
