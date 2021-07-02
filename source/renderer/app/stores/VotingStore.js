@@ -279,6 +279,7 @@ export default class VotingStore extends Store {
       if (isHardwareWallet) {
         transaction = await this.stores.hardwareWallets._sendMoney({
           isVotingRegistrationTransaction: true,
+          selectedWalletId: selectedWallet.id,
         });
       } else {
         const votingData = await this.prepareVotingData({ walletId });
@@ -319,7 +320,7 @@ export default class VotingStore extends Store {
       this._startTransactionPolling();
       this._nextRegistrationStep();
     } catch (error) {
-      if (error.code === 'wrong_encryption_passphrase') {
+      if (error.code === 'wrong_encryption_passphrase' || error.code === 'created_invalid_transaction') {
         // In case of a invalid spending password we stay on the same screen
         this._setIsTransactionPending(false);
       } else {

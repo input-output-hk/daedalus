@@ -1067,10 +1067,17 @@ export default class AdaApi {
       } else {
         throw new Error('Missing parameters!');
       }
+
+      // eslint-disable-next-line
+      console.debug('>>> CoinSelection REQ: ', JSON.stringify({ walletId, data }));
+
       const response = await selectCoins(this.config, {
         walletId,
         data,
       });
+
+      // eslint-disable-next-line
+      console.debug('>>> CoinSelection RESPONSE: ', JSON.stringify(response));
 
       // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
       const outputs = concat(response.outputs, response.change);

@@ -130,12 +130,14 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
   );
 
   submit = () => {
-    this.form.submit({
+    const { spendingPassword } = this.form.values();
+    this.props.onConfirm(spendingPassword);
+    /* this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
         this.props.onConfirm(spendingPassword);
       },
-    });
+    }); */
   };
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);

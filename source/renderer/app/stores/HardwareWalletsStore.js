@@ -308,15 +308,18 @@ export default class HardwareWalletsStore extends Store {
   _sendMoney = async (params?: {
     isDelegationTransaction?: boolean,
     isVotingRegistrationTransaction?: boolean,
+    selectedWalletId?: string,
   }) => {
     const isDelegationTransaction = get(params, 'isDelegationTransaction');
     const isVotingRegistrationTransaction = get(
       params,
       'isVotingRegistrationTransaction'
     );
-    const wallet = this.stores.wallets.active;
 
-    if (!wallet) {
+    const activeWalletId = get(this.stores.wallets, ['active', 'id']);
+    const selectedWalletId = get(params, 'selectedWalletId');
+    const walletId = selectedWalletId || activeWalletId;
+    if (!walletId) {
       throw new Error('Active wallet required before sending.');
     }
 
@@ -331,7 +334,7 @@ export default class HardwareWalletsStore extends Store {
         this.checkTransactionTimeInterval = setInterval(
           this.checkTransaction,
           1000,
-          { transactionId: transaction.id, walletId: wallet.id }
+          { transactionId: transaction.id, walletId }
         );
       } else {
         this.setTransactionPendingState(false);
@@ -1875,6 +1878,9 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       });
 
+      // eslint-disable-next-line
+      console.debug('>>> Resonse from Ledger: ', JSON.stringify(signedTransaction));
+
       const unsignedTxWithdrawals =
         withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
 
@@ -1923,6 +1929,9 @@ export default class HardwareWalletsStore extends Store {
         txWitnesses,
         txAuxiliaryData
       );
+
+      // eslint-disable-next-line
+      console.debug('>>> Signed transaction BLOB: ', txBody);
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
