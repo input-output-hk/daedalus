@@ -38,7 +38,7 @@ const messages = defineMessages({
   },
   tableHeaderReward: {
     id: 'staking.rewards.tableHeader.reward',
-    defaultMessage: '!!!Total rewards earned (ADA)',
+    defaultMessage: '!!!Total (ADA)',
     description: 'Table header "Reward" label on staking rewards page',
   },
   tableHeaderRewardsAddress: {
@@ -191,7 +191,6 @@ export default class StakingRewards extends Component<Props, State> {
         title: `${intl.formatMessage(
           messages.tableHeaderReward
         )} (${intl.formatMessage(globalMessages.unitAda)})`,
-        shortTitle: 'Total (ADA)',
       },
       {
         name: REWARD_FIELDS.ACTIONS,
@@ -280,6 +279,10 @@ export default class StakingRewards extends Component<Props, State> {
                       !isRestoring ? onOpenWalletRewards(reward) : null;
 
                     const trClassName = !isRestoring ? styles.hasLink : null;
+                    const detailsButtonStyles = classNames([
+                      styles.actionButton,
+                      styles.detailsButton,
+                    ]);
 
                     return (
                       <tr
@@ -296,7 +299,7 @@ export default class StakingRewards extends Component<Props, State> {
                         </td>
                         <td className={styles.actions}>
                           {!isRestoring && (
-                            <div className={styles.actionButton}>
+                            <div className={detailsButtonStyles}>
                               {intl.formatMessage(messages.detailsButtonLabel)}
                             </div>
                           )}

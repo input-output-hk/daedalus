@@ -144,6 +144,15 @@
             background-color: var(
               --theme-staking-rewards-table-background-color-hover
             );
+            .detailsButton {
+              background-color: var(--theme-button-primary-background-color);
+              color: var(--theme-button-primary-text-color);
+              &:hover {
+                background-color: var(
+                  --theme-button-primary-background-color-hover
+                );
+              }
+            }
           }
         }
       }
@@ -198,25 +207,6 @@
           visibility: visible;
         }
       }
-
-      .headerShortTitle {
-        display: none;
-      }
-
-      @media (max-width: 1200px) {
-        .headerLongTitle {
-          display: none;
-        }
-        .headerShortTitle {
-          display: block;
-        }
-      }
-      // @media (max-width: 1120px) {
-      //   max-width: 420px;
-      // }
-      // @media (max-width: 1024px) {
-      //   max-width: 300px;
-      // }
     }
 
     td {

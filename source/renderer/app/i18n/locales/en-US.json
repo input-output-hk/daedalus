@@ -481,7 +481,7 @@
   "staking.rewards.learnMore.linkUrl": "!!!https://staking.cardano.org/",
   "staking.rewards.no.rewards": "No rewards",
   "staking.rewards.note": "Rewards earned by delegating your stake are automatically collected into your reward account and added to your wallet balance.",
-  "staking.rewards.tableHeader.reward": "Total rewards earned",
+  "staking.rewards.tableHeader.reward": "Total",
   "staking.rewards.tableHeader.rewardsAddress": "Rewards address",
   "staking.rewards.tableHeader.wallet": "Wallet",
   "staking.rewards.title": "Earned delegation rewards",
