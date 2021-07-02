@@ -1,10 +1,7 @@
 // @flow
 import { BrowserWindow } from 'electron';
 import { environment } from '../environment';
-import {
-  MIN_WINDOW_CONTENT_WIDTH,
-  MIN_WINDOW_CONTENT_HEIGHT,
-} from '../config';
+import { MIN_WINDOW_CONTENT_WIDTH, MIN_WINDOW_CONTENT_HEIGHT } from '../config';
 
 type getContentMinimumSizeResponse = {
   minWindowsWidth: number,

@@ -10,7 +10,6 @@ interface Rectangle {
 
 interface Window {
   getBounds(): Rectangle;
-  getNormalBounds(): Rectangle;
   on(event: string, handler: Function): void;
 }
 
