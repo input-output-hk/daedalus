@@ -36,7 +36,7 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const createMainWindow = (locale: string, windowBounds: Rectangle) => {
+export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
