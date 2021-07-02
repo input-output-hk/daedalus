@@ -214,6 +214,14 @@ export default class PinCode extends Component<Props, State> {
         selectedPinField === 'pinCode'
       ) {
         inputFocusKey = focusKey;
+      } else if (
+        focusKey >= 0 &&
+        emptyFieldIndex >= 0 &&
+        !sectionToFocus &&
+        name === 'repeatPinCode' &&
+        name === 'pinCode'
+      ) {
+        inputFocusKey = emptyFieldIndex;
       } else {
         inputFocusKey = this.isAddingNewValue ? focusKey + 1 : focusKey - 1;
       }
