@@ -89,6 +89,9 @@
         display: none;
       }
     }
+    table {
+      min-height: 100px;
+    }
     tr:first-child {
       border: none;
     }

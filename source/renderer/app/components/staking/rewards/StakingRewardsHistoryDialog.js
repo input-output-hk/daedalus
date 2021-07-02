@@ -7,12 +7,7 @@ import SVGInline from 'react-svg-inline';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
-import {
-  defineMessages,
-  intlShape,
-  FormattedHTMLMessage,
-  FormattedMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import type { Reward, RewardsHistoryItem } from '../../../api/staking/types';
