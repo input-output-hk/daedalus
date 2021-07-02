@@ -12,6 +12,7 @@ Changelog
 
 ### Features
 
+- Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
 - Implemented sharing multi-signature public key ([PR 2604](https://github.com/input-output-hk/daedalus/pull/2604))
 - Implemented the expandable token view ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589), [PR 2609](https://github.com/input-output-hk/daedalus/pull/2609))
 
