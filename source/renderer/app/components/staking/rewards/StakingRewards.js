@@ -5,14 +5,13 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   bigNumberComparator,
   stringComparator,
 } from '../../../utils/sortComparators';
 import BorderedBox from '../../widgets/BorderedBox';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
+import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
@@ -75,8 +74,9 @@ const REWARD_FIELDS = {
   WALLET_NAME: 'walletName',
   IS_RESTORING: 'isRestoring',
   SYNCING_PROGRESS: 'syncingProgress',
-  REWARD: 'reward',
+  REWARD_AMOUNT: 'reward',
   REWARDS_ADDRESS: 'rewardsAddress',
+  ACTIONS: 'actions',
 };
 
 const REWARD_ORDERS = {
@@ -135,7 +135,7 @@ export default class StakingRewards extends Component<Props, State> {
         rewardB.rewardsAddress,
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
-      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
+      if (rewardsSortBy === REWARD_FIELDS.REWARD_AMOUNT) {
         if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
           return walletNameCompareResult;
         }
@@ -187,10 +187,15 @@ export default class StakingRewards extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderRewardsAddress),
       },
       {
-        name: REWARD_FIELDS.REWARD,
+        name: REWARD_FIELDS.REWARD_AMOUNT,
         title: `${intl.formatMessage(
           messages.tableHeaderReward
         )} (${intl.formatMessage(globalMessages.unitAda)})`,
+        shortTitle: 'Total (ADA)',
+      },
+      {
+        name: REWARD_FIELDS.ACTIONS,
+        title: '',
       },
     ];
     const headerWrapperClasses = classNames([
@@ -226,12 +231,15 @@ export default class StakingRewards extends Component<Props, State> {
                   <tr>
                     {map(availableTableHeaders, (tableHeader) => {
                       const isSorted = tableHeader.name === rewardsSortBy;
+                      const hideSorting =
+                        tableHeader.name === REWARD_FIELDS.ACTIONS;
                       const sortIconClasses = classNames([
                         styles.sortIcon,
                         isSorted ? styles.sorted : null,
                         isSorted && rewardsOrder === 'asc'
                           ? styles.ascending
                           : null,
+                        hideSorting ? styles.hideSorting : null,
                       ]);
 
                       return (
@@ -240,6 +248,7 @@ export default class StakingRewards extends Component<Props, State> {
                           onClick={() =>
                             this.handleRewardsSort(tableHeader.name)
                           }
+                          className={styles[tableHeader.name]}
                         >
                           {tableHeader.title}
                           <SVGInline
@@ -261,7 +270,7 @@ export default class StakingRewards extends Component<Props, State> {
                     );
                     const rewardAmount = get(
                       reward,
-                      REWARD_FIELDS.REWARD
+                      REWARD_FIELDS.REWARD_AMOUNT
                     ).toFormat(DECIMAL_PLACES_IN_ADA);
                     const rewardsAddress = get(
                       reward,
@@ -283,30 +292,30 @@ export default class StakingRewards extends Component<Props, State> {
                           <Ellipsis string={rewardsAddress} />
                         </td>
                         <td className={styles.rewardAmount}>
-                          <div>
-                            {isRestoring ? '-' : rewardAmount}
-                            {isRestoring && (
-                              <div className={styles.syncingProgress}>
-                                <PopOver
-                                  content={intl.formatMessage(
-                                    messages.syncingTooltipLabel,
-                                    {
-                                      syncingProgress,
-                                    }
-                                  )}
-                                >
-                                  <LoadingSpinner medium />
-                                </PopOver>
-                              </div>
-                            )}
-                            {!isRestoring && (
-                              <div className={styles.detailsButton}>
+                          {isRestoring ? '-' : rewardAmount}
+                        </td>
+                        <td className={styles.actions}>
+                          {!isRestoring && (
+                            <div className={styles.actionButton}>
+                              {intl.formatMessage(messages.detailsButtonLabel)}
+                            </div>
+                          )}
+                          {isRestoring && (
+                            <div className={styles.syncingProgress}>
+                              <div className={styles.actionButton}>
+                                <SVGInline
+                                  svg={tinySpinnerIcon}
+                                  className={styles.syncingProgressIcon}
+                                />
                                 {intl.formatMessage(
-                                  messages.detailsButtonLabel
+                                  messages.syncingTooltipLabel,
+                                  {
+                                    syncingProgress,
+                                  }
                                 )}
                               </div>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     );

@@ -144,9 +144,6 @@
             background-color: var(
               --theme-staking-rewards-table-background-color-hover
             );
-            .detailsButton {
-              opacity: 1;
-            }
           }
         }
       }
@@ -168,14 +165,15 @@
       padding: 14px 20px;
       text-align: left;
       white-space: nowrap;
-
+      &.actions {
+        cursor: default;
+      }
       &:hover {
-        & > .sortIcon {
+        & > .sortIcon:not(.hideSorting) {
           opacity: 0.5;
           visibility: visible;
         }
       }
-
       & > .sortIcon {
         margin-left: 6px;
         visibility: hidden;
@@ -200,6 +198,25 @@
           visibility: visible;
         }
       }
+
+      .headerShortTitle {
+        display: none;
+      }
+
+      @media (max-width: 1200px) {
+        .headerLongTitle {
+          display: none;
+        }
+        .headerShortTitle {
+          display: block;
+        }
+      }
+      // @media (max-width: 1120px) {
+      //   max-width: 420px;
+      // }
+      // @media (max-width: 1024px) {
+      //   max-width: 300px;
+      // }
     }
 
     td {
@@ -228,16 +245,16 @@
       }
 
       .syncingProgress {
-        position: absolute;
-        right: 10px;
-        top: 0;
-
-        :global .LoadingSpinner_component.LoadingSpinner_medium {
-          margin: 10px auto !important;
-
-          .LoadingSpinner_icon svg path {
-            fill: var(--theme-loading-spinner-color);
-            opacity: 0.3;
+        opacity: 0.5;
+        .actionButton {
+          svg {
+            width: 6px;
+            height: 6px;
+            animation: rotating-spinner 1.2s linear infinite;
+            display: block;
+            circle {
+              stroke: var(--theme-staking-font-color-regular);
+            }
           }
         }
       }
@@ -300,32 +317,35 @@
       }
 
       &.rewardAmount {
-        > div {
-          display: flex;
-          justify-content: space-between;
-        }
-        min-width: 240px;
-        .detailsButton {
+        // min-width: 100px;
+        text-align: right;
+      }
+      &.actions {
+        width: 10px;
+        .actionButton {
           background-color: var(
             --theme-staking-rewards-table-background-color-hover
           );
           border-radius: 3px;
+          display: inline-block;
           font-family: var(--font-bold);
           font-size: 8px;
           height: 16px;
           line-height: 1.25;
           margin-top: 1px;
-          opacity: 0;
           padding: 3px 8px;
           text-transform: uppercase;
           transition: opacity 0.1s;
+          white-space: nowrap;
         }
       }
-
       &.rewardsAddress {
         min-width: 100px;
         word-wrap: break-word;
 
+        @media (max-width: 1200px) {
+          max-width: 420px;
+        }
         @media (max-width: 1120px) {
           max-width: 420px;
         }
@@ -372,6 +392,14 @@
           }
         }
       }
+    }
+  }
+  @keyframes rotating-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }
