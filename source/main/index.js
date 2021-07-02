@@ -1,9 +1,10 @@
 // @flow
 import os from 'os';
 import path from 'path';
-import { app, dialog, BrowserWindow, shell } from 'electron';
+import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
+import Store from 'electron-store';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -40,6 +41,10 @@ import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
+import {
+  restoreSavedWindowBounds,
+  saveWindowBoundsOnSizeAndPositionChange,
+} from './windows/windowBounds';
 
 /* eslint-disable consistent-return */
 
@@ -104,6 +109,10 @@ const onAppReady = async () => {
     environment.version,
     path.join(pubLogsFolderPath, 'Daedalus-versions.json')
   );
+  // TODO: we should only use this store instance on main process
+  // There are several other places that store instances are created
+  // unnecessarily (it doesn't appear to be a big issue though)
+  const store = new Store();
 
   const cpu = os.cpus();
   const platformVersion = os.release();
@@ -145,8 +154,11 @@ const onAppReady = async () => {
 
   // Detect locale
   let locale = getLocale(network);
-
-  mainWindow = createMainWindow(locale);
+  mainWindow = createMainWindow(
+    locale,
+    restoreSavedWindowBounds(screen, store)
+  );
+  saveWindowBoundsOnSizeAndPositionChange(mainWindow, store);
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
