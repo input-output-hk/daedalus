@@ -548,6 +548,8 @@ export default class PinCode extends Component<Props, State> {
       isResetButtonDisabled,
       onResetValues,
       name,
+      value,
+      length,
       onShowHideValues,
       pinCodesVisible,
     } = this.props;
@@ -580,7 +582,8 @@ export default class PinCode extends Component<Props, State> {
                 className={clearPinCodesStyles}
                 onClick={() => {
                   if (onResetValues) {
-                    onResetValues(name, this.focusKey);
+                    const focusKey = value.length === length ? 0 : value.length;
+                    onResetValues(name, focusKey);
                   }
                   setTimeout(() => {
                     this.setFocusOnField(this.inputsRef[0]);
