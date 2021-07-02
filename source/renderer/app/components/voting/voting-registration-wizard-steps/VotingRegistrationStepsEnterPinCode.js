@@ -325,6 +325,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
       !repeatPinCodeField.isValid &&
       !repeatPinCodeField.value.length;
 
+    const pinCodeActive = !!pinFieldDisabledStates.filter((item) => !item)
+      .length;
+    const repeatPinCodeActive = !!repeatPinFieldDisabledStates.filter(
+      (item) => !item
+    ).length;
+
     return (
       <VotingRegistrationDialog
         onClose={() => {
@@ -346,7 +352,9 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             resetLabel={resetPinCodesLabel}
             autoFocus
             onChange={(values, isTab) => this.onChangePinCode(values, isTab)}
-            onResetValues={(type: string, focusKey: number) => this.onResetValues(type, focusKey)}
+            onResetValues={(type: string, focusKey: number) =>
+              this.onResetValues(type, focusKey)
+            }
             onShowHideValues={() => this.onShowHideValues()}
             onUpdateFieldDisabledStates={(
               prevFieldIndex: number,
@@ -364,7 +372,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
             disabled={
-              (!isTabClicked && form.isValid) ||
+              (!isTabClicked && form.isValid && !pinCodeActive) ||
               (pinCodeField.isValid &&
                 repeatPinCodeField.value.length &&
                 (sectionToFocus === 'repeatPinCode' ||
@@ -379,7 +387,9 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             onChange={(values, isTab) =>
               this.onChangeRepeatPinCode(values, isTab)
             }
-            onResetValues={(type: string, focusKey: number) => this.onResetValues(type, focusKey)}
+            onResetValues={(type: string, focusKey: number) =>
+              this.onResetValues(type, focusKey)
+            }
             onShowHideValues={() => this.onShowHideValues()}
             onUpdateFieldDisabledStates={(
               prevFieldIndex: number,
@@ -399,7 +409,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
             sectionToFocus={sectionToFocus}
             isTabClicked={isTabClicked}
             disabled={
-              (!isTabClicked && form.isValid) ||
+              (!isTabClicked && form.isValid && !repeatPinCodeActive) ||
               (isTabClicked &&
                 sectionToFocus === 'pinCode' &&
                 repeatPinCodeField.isValid) ||

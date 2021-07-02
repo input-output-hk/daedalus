@@ -424,19 +424,55 @@ export default class PinCode extends Component<Props, State> {
   handlePinCodeSectionClick = (event: MouseEvent) => {
     const { target } = event;
     if (!(target instanceof HTMLInputElement) || target.disabled) {
-      const { value } = this.props;
-      const emptyFieldIndex = value.findIndex((item) => item === '');
-      let fieldKey = this.focusKey;
-      if (emptyFieldIndex > -1) {
-        fieldKey = emptyFieldIndex;
-      } else if (value.length && value.length < 4) {
-        fieldKey = this.focusKey + 1;
-      }
-      const fieldToFocus = this.inputsRef[fieldKey];
-      if (fieldToFocus) {
-        setTimeout(() => {
-          this.setFocusOnField(fieldToFocus);
-        }, 0);
+      const {
+        value,
+        onUpdateFieldDisabledStates,
+        length,
+        pinFieldDisabledStates,
+        repeatPinFieldDisabledStates,
+      } = this.props;
+      const fieldStates =
+        pinFieldDisabledStates || repeatPinFieldDisabledStates;
+      const activeField = fieldStates
+        .map((item, index) => {
+          return { value: item, index };
+        })
+        .find((item) => !item.value);
+      const fieldKey = activeField ? activeField.index : null;
+      const hasAvailableField = value.filter((item) => item).length < length;
+      const allDisabledStates =
+        !fieldKey && !hasAvailableField && value.length === length;
+      let fieldToFocusIndex = null;
+      if (activeField || allDisabledStates) {
+        if (onUpdateFieldDisabledStates) {
+          let currentIndex = null;
+          let nextIndex = null;
+          if (allDisabledStates && !activeField) {
+            currentIndex = length - 1;
+            nextIndex = null;
+            fieldToFocusIndex = length - 1;
+          } else if (!allDisabledStates && activeField) {
+            currentIndex =
+              (hasAvailableField && fieldKey === value.length) ||
+              (!hasAvailableField && fieldKey === length - 1)
+                ? null
+                : fieldKey;
+            nextIndex =
+              hasAvailableField && fieldKey !== value.length
+                ? value.length
+                : null;
+            fieldToFocusIndex = hasAvailableField ? fieldKey + 1 : fieldKey;
+          }
+          onUpdateFieldDisabledStates(currentIndex, nextIndex);
+        }
+        if (fieldToFocusIndex) {
+          const fieldToFocus = this.inputsRef[fieldToFocusIndex];
+          if (fieldToFocus) {
+            setTimeout(() => {
+              this.setFocusOnField(fieldToFocus);
+            }, 500);
+          }
+        }
       }
     }
   };
