@@ -167,7 +167,12 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     if (type === 'pinCode') {
       this.onUpdatePinFieldDisabledStates(focusKey || null, 0, false, true);
     } else {
-      this.onUpdateRepeatPinFieldDisabledStates(focusKey || null, 0, false, true);
+      this.onUpdateRepeatPinFieldDisabledStates(
+        focusKey || null,
+        0,
+        false,
+        true
+      );
     }
   };
 
@@ -387,16 +392,15 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
                   null,
                   null,
                   resetOtherFields
-                )
+                );
               }
               if (updateOtherFields && !repeatPinCodeActive) {
                 this.onUpdateRepeatPinFieldDisabledStates(
                   null,
                   repeatPinCodeField.value.length
-                )
+                );
               }
-            }
-            }
+            }}
             selectedPinField={selectedPinField}
             isResetButtonDisabled={!pinCodeField.value.length}
             pinCodesVisible={pinCodesVisible}
@@ -438,16 +442,15 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
                   null,
                   null,
                   resetOtherFields
-                )
+                );
               }
               if (updateOtherFields && !pinCodeActive) {
                 this.onUpdatePinFieldDisabledStates(
                   null,
                   repeatPinCodeField.value.length
-                )
+                );
               }
-            }
-            }
+            }}
             autoFocus={isRepeatPinCodeAutoFocused}
             error={hasError}
             selectedPinField={selectedPinField}
@@ -466,11 +469,13 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
                 !repeatPinCodeField.isValid) ||
               (!pinCodeField.isValid &&
                 !repeatPinCodeField.value.length &&
-                sectionToFocus !== 'repeatPinCode' && pinCodeActive) ||
+                sectionToFocus !== 'repeatPinCode' &&
+                pinCodeActive) ||
               (pinCodeField.isValid &&
                 !repeatPinCodeField.value.length &&
-                selectedPinField !== 'repeatPinCode' && !repeatPinCodeActive) ||
-              (sectionToFocus === 'continueButton')
+                selectedPinField !== 'repeatPinCode' &&
+                !repeatPinCodeActive) ||
+              sectionToFocus === 'continueButton'
             }
             repeatPinFieldDisabledStates={repeatPinFieldDisabledStates}
           />
