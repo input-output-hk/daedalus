@@ -16,6 +16,7 @@ const rewards = map(REWARDS, (reward, index) => {
     reward: new BigNumber(reward.reward),
     walletName: reward.wallet,
     isRestoring: index === 1,
+    syncingProgress: index === 1 ? 40 : 100,
   };
 });
 

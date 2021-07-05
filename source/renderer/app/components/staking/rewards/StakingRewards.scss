@@ -171,11 +171,14 @@
       font-size: 14px;
       line-height: 1.14;
       max-height: 43px;
-      padding: 14px 20px;
+      padding: 14px 7px 14px 20px;
       text-align: left;
       white-space: nowrap;
       &.actions {
         cursor: default;
+      }
+      &.reward {
+        text-align: right;
       }
       &:hover {
         & > .sortIcon:not(.hideSorting) {
@@ -237,13 +240,17 @@
       .syncingProgress {
         opacity: 0.5;
         .actionButton {
-          svg {
-            width: 6px;
-            height: 6px;
-            animation: rotating-spinner 1.2s linear infinite;
-            display: block;
-            circle {
-              stroke: var(--theme-staking-font-color-regular);
+          .syncingProgressIcon {
+            display: inline-block;
+            margin-right: 4px;
+            svg {
+              width: 6px;
+              height: 6px;
+              animation: rotating-spinner 1.2s linear infinite;
+              display: block;
+              circle {
+                stroke: var(--theme-staking-font-color-regular);
+              }
             }
           }
         }
