@@ -62,14 +62,6 @@ function getCenteredRectInBounds(
   };
 }
 
-export function saveWindowBounds(
-  window: Window,
-  store: Store,
-  storeKey: string = windowBoundsDefaultStoreKey
-): void {
-  store.set(storeKey, window.getBounds());
-}
-
 /**
  * Fetches the saved window bounds from provided store and
  * applies our business rules regarding window management.
@@ -102,7 +94,7 @@ export function saveWindowBoundsOnSizeAndPositionChange(
   debounceWait: number = 1000
 ) {
   const saveWindowBoundsSoon = debounce(
-    () => saveWindowBounds(window, store, storeKey),
+    () => store.set(storeKey, window.getBounds()),
     debounceWait
   );
   window.on('resize', saveWindowBoundsSoon);
