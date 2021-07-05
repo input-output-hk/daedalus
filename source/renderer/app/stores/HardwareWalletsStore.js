@@ -128,6 +128,39 @@ export const AddressVerificationCheckStatuses: {
 const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
 const DEFAULT_HW_NAME = 'Hardware Wallet';
 
+const useCardanoAppInterval = (
+  getCardanoAdaApp: any,
+  interval: number,
+  path: ?string,
+  address: ?string,
+  addressVerification: ?WalletAddress
+) =>
+  setInterval(
+    (devicePath, txWalletId, verificationAddress): any => {
+      try {
+        return getCardanoAdaApp({
+          path: devicePath,
+          walletId: txWalletId,
+          address: verificationAddress,
+        });
+      } catch (error) {
+        console.debug('TCL: Details =>', {
+          interval,
+          path,
+          address,
+          addressVerification,
+        });
+        console.debug('TCL: Error =>', { error });
+
+        return null;
+      }
+    },
+    interval,
+    path,
+    address,
+    addressVerification
+  );
+
 export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
     this.api.ada.selectCoins
@@ -545,13 +578,8 @@ export default class HardwareWalletsStore extends Store {
                 this.unfinishedWalletAddressVerification
               );
             } else {
-              this.cardanoAdaAppPollingInterval = setInterval(
-                (devicePath, txWalletId, verificationAddress) =>
-                  this.getCardanoAdaApp({
-                    path: devicePath,
-                    walletId: txWalletId,
-                    address: verificationAddress,
-                  }),
+              this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
+                this.getCardanoAdaApp,
                 CARDANO_ADA_APP_POLLING_INTERVAL,
                 recognizedPairedHardwareWallet.path,
                 activeWalletId,
@@ -599,13 +627,8 @@ export default class HardwareWalletsStore extends Store {
                 this.unfinishedWalletAddressVerification
               );
             } else {
-              this.cardanoAdaAppPollingInterval = setInterval(
-                (devicePath, txWalletId, verificationAddress) =>
-                  this.getCardanoAdaApp({
-                    path: devicePath,
-                    walletId: txWalletId,
-                    address: verificationAddress,
-                  }),
+              this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
+                this.getCardanoAdaApp,
                 CARDANO_ADA_APP_POLLING_INTERVAL,
                 lastDeviceTransport.path,
                 activeWalletId,
@@ -723,8 +746,9 @@ export default class HardwareWalletsStore extends Store {
             '[HW-DEBUG] HWStore - getCardanoAdaApp - from  establishHardwareWalletConnection'
           );
           this.stopCardanoAdaAppFetchPoller();
-          this.cardanoAdaAppPollingInterval = setInterval(
-            (path) => this.getCardanoAdaApp({ path }),
+
+          this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
+            this.getCardanoAdaApp,
             CARDANO_ADA_APP_POLLING_INTERVAL,
             devicePath
           );
