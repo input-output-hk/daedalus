@@ -86,7 +86,7 @@ export default class PinCode extends Component<Props, State> {
   };
 
   onChange = (inputValue: ?number, key: number) => {
-    const { value, onChange, onUpdateFieldDisabledStates } = this.props;
+    const { value, onChange, onUpdateFieldDisabledStates, length } = this.props;
     const { isBackSpace } = this.state;
     const inputNewValue =
       inputValue && !isNaN(inputValue) ? inputValue.toString() : '';
@@ -148,7 +148,9 @@ export default class PinCode extends Component<Props, State> {
         const nextKeyBackward = key - 1 >= 0 ? key - 1 : null;
         onUpdateFieldDisabledStates(
           key,
-          this.isAddingNewValue ? nextKeyForward : nextKeyBackward
+          this.isAddingNewValue ? nextKeyForward : nextKeyBackward,
+          false,
+          ((key === length - 1) && (nextKeyForward >= length))
         );
       }
     }
@@ -180,7 +182,7 @@ export default class PinCode extends Component<Props, State> {
       ? false
       : inputValue && !isNaN(inputValue) && !isTabClicked;
     // Find index of first empty input field element
-    const emptyFieldIndex = value.findIndex((item) => item === '');
+    const emptyFieldIndex = value.length ? value.findIndex((item) => item === '') : 0;
     // Update focus key index
     this.focusKey =
       emptyFieldIndex !== undefined &&
@@ -196,7 +198,7 @@ export default class PinCode extends Component<Props, State> {
           emptyFieldIndex > -1 ||
           focusKeyChanged)) ||
       (name !== selectedPinField &&
-        emptyFieldIndex === -1 &&
+        (emptyFieldIndex === -1 || emptyFieldIndex === 0) &&
         this.focusKey === 0) ||
       sectionToFocus === 'continueButton'
     ) {
@@ -455,7 +457,7 @@ export default class PinCode extends Component<Props, State> {
         if (onUpdateFieldDisabledStates) {
           let currentIndex = null;
           let nextIndex = null;
-          if (allDisabledStates && !activeField) {
+          if ((allDisabledStates && !activeField)) {
             currentIndex = length - 1;
             nextIndex = null;
             fieldToFocusIndex = length - 1;
@@ -469,9 +471,9 @@ export default class PinCode extends Component<Props, State> {
               hasAvailableField && fieldKey !== value.length
                 ? value.length
                 : null;
-            fieldToFocusIndex = hasAvailableField ? fieldKey + 1 : fieldKey;
+            fieldToFocusIndex = (hasAvailableField && fieldKey <= this.focusKey) ? fieldKey + 1 : fieldKey;
           }
-          onUpdateFieldDisabledStates(currentIndex, nextIndex);
+          onUpdateFieldDisabledStates(currentIndex, nextIndex, !pinFieldDisabledStates ? 'pinCode' : 'repeatPinCode');
         }
         if (fieldToFocusIndex) {
           const fieldToFocus = this.inputsRef[fieldToFocusIndex];
@@ -590,7 +592,7 @@ export default class PinCode extends Component<Props, State> {
                 className={clearPinCodesStyles}
                 onClick={() => {
                   if (onResetValues) {
-                    const focusKey = value.length === length ? 0 : value.length;
+                    const focusKey = value.length === length ? value.length - 1 : value.length;
                     onResetValues(name, focusKey);
                   }
                   setTimeout(() => {
