@@ -201,6 +201,7 @@ export default class HardwareWalletsStore extends Store {
   @observable tempAddressToVerify: TempAddressToVerify = {};
   @observable isExportKeyAborted: boolean = false;
   @observable activeDelegationWalletId: ?string = null;
+  @observable activeVotingWalletId: ?string = null;
   @observable votingData: ?VotingDataType = null;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
@@ -514,9 +515,17 @@ export default class HardwareWalletsStore extends Store {
       let relatedConnectionData;
 
       let activeWalletId;
-      if (this.activeDelegationWalletId && this.isTransactionInitiated) {
+      if (
+        (this.activeDelegationWalletId || this.activeVotingWalletId) &&
+        this.isTransactionInitiated
+      ) {
         // Active wallet can be different that wallet we want to delegate
-        activeWalletId = this.activeDelegationWalletId;
+        if (this.activeDelegationWalletId) {
+          activeWalletId = this.activeDelegationWalletId;
+        }
+        if (this.activeVotingWalletId) {
+          activeWalletId = this.activeVotingWalletId;
+        }
       } else {
         // For regular tx we are using active wallet
         activeWalletId = get(this.stores.wallets, ['active', 'id']);
@@ -1983,6 +1992,7 @@ export default class HardwareWalletsStore extends Store {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       this.activeDelegationWalletId = walletId;
       this.votingData = votingData || null;
+      this.activeVotingWalletId = walletId;
     });
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,
@@ -2112,6 +2122,7 @@ export default class HardwareWalletsStore extends Store {
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
         this.activeDelegationWalletId = null;
+        this.activeVotingWalletId = null;
         this.votingData = null;
       });
     }
