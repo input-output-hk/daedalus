@@ -27,7 +27,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.register.step.description',
     defaultMessage:
-      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund4 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
+      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund5 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
     description: 'Description on the voting registration "sign" step.',
   },
   continueButtonLabel: {
@@ -63,7 +63,8 @@ const messages = defineMessages({
   },
   learntMoreLinkUrl: {
     id: 'voting.votingRegistration.register.step.learntMoreLinkUrl',
-    defaultMessage: '!!!https://cardano.ideascale.com/a/index',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763',
     description: 'Learn more" link URL on the "sign" step.',
   },
 });

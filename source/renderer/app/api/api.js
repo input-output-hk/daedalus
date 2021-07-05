@@ -41,6 +41,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
+import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
 
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
@@ -159,6 +160,7 @@ import type {
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
   VotingMetadataType,
+  ICOPublicKeyParams,
 } from './transactions/types';
 
 // Wallets Types
@@ -1067,17 +1069,10 @@ export default class AdaApi {
       } else {
         throw new Error('Missing parameters!');
       }
-
-      // eslint-disable-next-line
-      console.debug('>>> CoinSelection REQ: ', JSON.stringify({ walletId, data }));
-
       const response = await selectCoins(this.config, {
         walletId,
         data,
       });
-
-      // eslint-disable-next-line
-      console.debug('>>> CoinSelection RESPONSE: ', JSON.stringify(response));
 
       // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
       const outputs = concat(response.outputs, response.change);
@@ -1281,6 +1276,26 @@ export default class AdaApi {
     } catch (error) {
       logger.error('AdaApi::getPublicKey error', { error });
       throw new ApiError(error);
+    }
+  };
+
+  getICOPublicKey = async (request: ICOPublicKeyParams): Promise<string> => {
+    logger.debug('AdaApi::getICOPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const response = await getICOPublicKey(this.config, request);
+      logger.debug('AdaApi::getICOPublicKey success', {
+        icoPublicKey: response,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getICOPublicKey error', { error });
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 
