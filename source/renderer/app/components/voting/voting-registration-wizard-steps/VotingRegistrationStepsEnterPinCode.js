@@ -184,7 +184,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
 
   onUpdatePinFieldDisabledStates = (
     prevFieldIndex: number | null,
-    nextFieldIndex: number,
+    nextFieldIndex: number | null,
     resetOtherFields?: boolean,
     fromReset?: boolean
   ) => {
@@ -214,7 +214,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
 
   onUpdateRepeatPinFieldDisabledStates = (
     prevFieldIndex: number | null,
-    nextFieldIndex: number,
+    nextFieldIndex: number | null,
     resetOtherFields?: boolean,
     fromReset?: boolean
   ) => {

@@ -150,7 +150,7 @@ export default class PinCode extends Component<Props, State> {
           key,
           this.isAddingNewValue ? nextKeyForward : nextKeyBackward,
           false,
-          key === length - 1 && nextKeyForward >= length
+          key === length - 1 && nextKeyForward && nextKeyForward >= length
         );
       }
     }
@@ -474,7 +474,7 @@ export default class PinCode extends Component<Props, State> {
                 ? value.length
                 : null;
             fieldToFocusIndex =
-              hasAvailableField && fieldKey <= this.focusKey
+              hasAvailableField && fieldKey && fieldKey <= this.focusKey
                 ? fieldKey + 1
                 : fieldKey;
           }
