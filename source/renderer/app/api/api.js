@@ -41,6 +41,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
+import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
 
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
@@ -158,6 +159,7 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
+  ICOPublicKeyParams,
 } from './transactions/types';
 
 // Wallets Types
@@ -241,8 +243,6 @@ import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
-
-const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -404,13 +404,13 @@ export default class AdaApi {
 
     try {
       let response = [];
-      if (isLegacy && !isIncentivizedTestnet) {
+      if (isLegacy) {
         response = await getByronWalletAddresses(
           this.config,
           walletId,
           queryParams
         );
-      } else if (!isLegacy) {
+      } else {
         response = await getAddresses(this.config, walletId, queryParams);
         response.reverse();
       }
@@ -1274,6 +1274,26 @@ export default class AdaApi {
     }
   };
 
+  getICOPublicKey = async (request: ICOPublicKeyParams): Promise<string> => {
+    logger.debug('AdaApi::getICOPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const response = await getICOPublicKey(this.config, request);
+      logger.debug('AdaApi::getICOPublicKey success', {
+        icoPublicKey: response,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getICOPublicKey error', { error });
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
+    }
+  };
+
   constructAddress = async (
     request: any // @TODO
   ): Promise<any> => {
@@ -1575,15 +1595,13 @@ export default class AdaApi {
         type
       );
 
-      if (!isIncentivizedTestnet) {
-        // Generate address for the newly restored Byron wallet
-        const { id: walletId } = legacyWallet;
-        const address: Address = await createByronWalletAddress(this.config, {
-          passphrase: spendingPassword,
-          walletId,
-        });
-        logger.debug('AdaApi::createAddress (Byron) success', { address });
-      }
+      // Generate address for the newly restored Byron wallet
+      const { id: walletId } = legacyWallet;
+      const address: Address = await createByronWalletAddress(this.config, {
+        passphrase: spendingPassword,
+        walletId,
+      });
+      logger.debug('AdaApi::createAddress (Byron) success', { address });
 
       const extraLegacyWalletProps = {
         address_pool_gap: 0, // Not needed for legacy wallets
@@ -1892,7 +1910,7 @@ export default class AdaApi {
           newPassword,
         });
 
-        if (!isIncentivizedTestnet && !oldPassword) {
+        if (!oldPassword) {
           // Generate address for the Byron wallet for which password was set for the 1st time
           const address: Address = await createByronWalletAddress(this.config, {
             passphrase: newPassword,

@@ -4,8 +4,8 @@ import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import { defineMessages } from 'react-intl';
 import {
-  isIncentivizedTestnetTheme,
   generateWallet,
   generateHash,
   generatePolicyIdHash,
@@ -16,7 +16,7 @@ import type { Locale } from '../../../../source/common/types/locales.types';
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
@@ -29,6 +29,13 @@ import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
+import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
+
+import {
+  ICO_PUBLIC_KEY_DERIVATION_PATH,
+  WALLET_PUBLIC_KEY_DERIVATION_PATH,
+} from '../../../../source/renderer/app/config/walletsConfig';
+import type { ReactIntlMessage } from '../../../../source/renderer/app/types/i18nTypes';
 
 /* eslint-disable react/display-name  */
 
@@ -37,6 +44,7 @@ const changePasswordId = 'Change Password';
 const undelegateWalletId = 'Undelegate Wallet';
 const deleteWalletId = 'Delete Wallet';
 const walletPublicKeyId = 'Wallet Public Key';
+const icoPublicKeyId = 'ICO Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
@@ -133,8 +141,8 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-export default (props: { currentTheme: string, locale: Locale }) => {
-  const { currentTheme, locale } = props;
+export default (props: { locale: Locale }) => {
+  const { locale } = props;
 
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
@@ -165,9 +173,38 @@ export default (props: { currentTheme: string, locale: Locale }) => {
     undelegateWalletId
   );
 
+  const walletMessages: {
+    [string]: ReactIntlMessage,
+  } = defineMessages({
+    dialogTitle: {
+      id: 'wallet.settings.walletPublicKey',
+      defaultMessage: '!!!Wallet Public Key',
+      description: 'Title for the "Wallet Public Key QR Code" dialog.',
+    },
+    copyPublicKeyLabel: {
+      id: 'wallet.settings.copyPublicKey',
+      defaultMessage: '!!!Copy public key',
+      description: 'Copy public key label.',
+    },
+  });
+
+  const icoMessages: {
+    [string]: ReactIntlMessage,
+  } = defineMessages({
+    dialogTitle: {
+      id: 'wallet.settings.icoPublicKey',
+      defaultMessage: '!!!ICO Public Key',
+      description: 'Title for the "ICO Public Key QR Code" dialog.',
+    },
+    copyPublicKeyLabel: {
+      id: 'wallet.settings.copyPublicKey',
+      defaultMessage: '!!!Copy public key',
+      description: 'Copy public key label.',
+    },
+  });
+
   return (
     <WalletSettings
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
       isLegacy={boolean('isLegacy', false)}
       isDialogOpen={(dialog) => {
         if (dialog === ChangeSpendingPasswordDialog) {
@@ -211,6 +248,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       isRestoring={false}
       isSyncing={false}
       walletPublicKey={walletPublicKeyId}
+      icoPublicKey={icoPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(
         'isSpendingPasswordSet',
@@ -252,16 +290,41 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           hasReceivedWalletPublicKey
         />
       }
+      icoPublicKeyDialogContainer={
+        <ICOPublicKeyDialog
+          onRevealPublicKey={action('onRevealICOPublicKey')}
+          onClose={action('onCancel')}
+          hasReceivedICOPublicKey
+          error={null}
+          walletName={'ICO Test Wallet'}
+        />
+      }
       walletPublicKeyQRCodeDialogContainer={
-        <WalletPublicKeyQRCodeDialog
+        <PublicKeyQRCodeDialog
           walletName={text(
-            'WalletPublicKeyQRCodeDialog: Wallet Name',
+            'PublicKeyQRCodeDialog: Wallet Name',
             'Wallet',
             walletPublicKeyId
           )}
           walletPublicKey={walletPublicKeyId}
           onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
           onClose={action('Wallet Public Key QR Code - onClose')}
+          messages={walletMessages}
+          derivationPath={WALLET_PUBLIC_KEY_DERIVATION_PATH}
+        />
+      }
+      icoPublicKeyQRCodeDialogContainer={
+        <PublicKeyQRCodeDialog
+          walletName={text(
+            'PublicKeyQRCodeDialog: Wallet Name',
+            'Wallet',
+            walletPublicKeyId
+          )}
+          walletPublicKey={icoPublicKeyId}
+          onCopyWalletPublicKey={action('ICO Public Key QR Code - copy')}
+          onClose={action('ICO Public Key QR Code - onClose')}
+          messages={icoMessages}
+          derivationPath={ICO_PUBLIC_KEY_DERIVATION_PATH}
         />
       }
       undelegateWalletDialogContainer={
@@ -327,6 +390,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       }
       onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
       onCopyWalletPublicKey={() => null}
+      onCopyICOPublicKey={() => null}
       updateDataForActiveDialogAction={() => null}
       onDelegateClick={() => null}
       getWalletPublicKey={() => null}

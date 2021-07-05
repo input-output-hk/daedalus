@@ -4,7 +4,6 @@
 
 # Daedalus
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
-[![Windows build status](https://ci.appveyor.com/api/projects/status/github/input-output-hk/daedalus?branch=master&svg=true)](https://ci.appveyor.com/project/input-output/daedalus)
 [![Release](https://img.shields.io/github/release/input-output-hk/daedalus.svg)](https://github.com/input-output-hk/daedalus/releases)
 
 Daedalus - Cryptocurrency Wallet
@@ -93,20 +92,7 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Shelley Local
-
-1. Run `nix-shell -A devops` from `daedalus`.
-2. Run `start-cluster` to launch the cluster (run `stop-cluster` to stop it).
-3. Run `yarn nix:shelley_local` from `daedalus` in a separate Terminal window.
-4. Run `yarn dev` from the subsequent `nix-shell`
-5. Once Daedalus has started, and has gotten past the loading screen, run `yarn shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets.
-
-#### Shelley Testnet
-
-1. Run `yarn nix:shelley_testnet` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### Shelley QA Testnet
+#### Shelley QA
 
 1. Run `yarn nix:shelley_qa` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
@@ -142,31 +128,7 @@ http://localhost:65432/metadata/query
 ```
 ... and expect a "200 OK" response.
 
-
-### Running Daedalus with Jormungandr
-
-#### ITN Selfnode
-
-1. Run `yarn nix:itn_selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn itn:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn itn:byron:wallet:importer` script.
-
-#### ITN Rewards V1
-
-1. Run `yarn nix:itn` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### QA Testnet
-
-1. Run `yarn nix:qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### Nightly Testnet
-
-1. Run `yarn nix:nightly` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-### Updating upstream dependencies (cardano-wallet, cardano-node & Jormungandr)
+### Updating upstream dependencies (cardano-wallet, cardano-node, and iohk-nix)
 
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
@@ -212,7 +174,7 @@ externals: ['bootstrap']
 ## Testing
 
 You can find more details regarding tests setup within
-[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
+[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/tests/README.md) README file.
 
 **Notes:** Be aware that only a single Daedalus instance can run per state directory.
 So you have to exit any development instances before running tests!

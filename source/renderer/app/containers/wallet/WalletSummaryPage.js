@@ -90,7 +90,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const { onAssetSettingsOpen } = actions.assets;
     const {
       openExternalLink,
-      environment: { network, rawNetwork },
+      environment: { network },
     } = app;
     const {
       hasAny,
@@ -121,13 +121,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
-      getNetworkExplorerUrlByType(
-        type,
-        param,
-        network,
-        rawNetwork,
-        currentLocale
-      );
+      getNetworkExplorerUrlByType(type, param, network, currentLocale);
 
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
@@ -174,6 +168,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isLoadingAssets={isLoadingAssets}
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
+          currentLocale={currentLocale}
           currencyIsActive={isActive}
           currencyIsFetchingRate={isFetchingRate}
           currencyLastFetched={lastFetched}

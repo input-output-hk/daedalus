@@ -15,7 +15,6 @@ export default class WalletBackupStore extends Store {
   @observable isEntering = false;
   @observable isTermOfflineAccepted = false;
   @observable isTermRecoveryAccepted = false;
-  @observable isTermRewardsAccepted = false;
   @observable countdownRemaining = 0;
 
   countdownTimerInterval: ?IntervalID = null;
@@ -37,7 +36,6 @@ export default class WalletBackupStore extends Store {
     a.acceptWalletBackupTermRecovery.listen(
       this._acceptWalletBackupTermRecovery
     );
-    a.acceptWalletBackupTermRewards.listen(this._acceptWalletBackupTermRewards);
     a.restartWalletBackup.listen(this._restartWalletBackup);
     a.cancelWalletBackup.listen(this._cancelWalletBackup);
     a.finishWalletBackup.listen(this._finishWalletBackup);
@@ -56,7 +54,6 @@ export default class WalletBackupStore extends Store {
     this.isEntering = false;
     this.isTermOfflineAccepted = false;
     this.isTermRecoveryAccepted = false;
-    this.isTermRewardsAccepted = false;
     this.countdownRemaining = this.environment.isTest ? 0 : 10;
     if (this.countdownTimerInterval) clearInterval(this.countdownTimerInterval);
     this.countdownTimerInterval = setInterval(() => {
@@ -104,10 +101,6 @@ export default class WalletBackupStore extends Store {
 
   @action _acceptWalletBackupTermRecovery = () => {
     this.isTermRecoveryAccepted = true;
-  };
-
-  @action _acceptWalletBackupTermRewards = () => {
-    this.isTermRewardsAccepted = true;
   };
 
   @action _restartWalletBackup = () => {

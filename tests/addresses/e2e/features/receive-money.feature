@@ -1,4 +1,4 @@
-@e2e
+@e2e @wip
 Feature: Receive money
 
   Background:
@@ -8,7 +8,6 @@ Feature: Receive money
       | name          |
       | Target Wallet |
 
-  @shelley
   Scenario: Hide/show "Shelley" wallet used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
     And I have made the following transactions:
@@ -18,7 +17,6 @@ Feature: Receive money
     When I click the ShowUsed switch
     Then I should not see any used addresses
 
-  @byron
   Scenario: Hide/show "Byron" wallet used addresses
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
@@ -31,7 +29,6 @@ Feature: Receive money
     When I click the ShowUsed switch
     Then I should see 1 addresses
 
-  @byron
   Scenario: Check if wallet address belongs to active wallet
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
@@ -44,7 +41,6 @@ Feature: Receive money
     And I am on the "Test Wallet" wallet "receive" screen
     Then The active address belongs to "Test Wallet" wallet
 
-  @byron
   Scenario: Byron Wallet addresses ordering
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "Secret1234"
@@ -56,7 +52,6 @@ Feature: Receive money
       | generatedAddress-3 |
     And The active address should be the newest one
 
-  @byron
   Scenario: Generate "Byron" wallet address with wrong passphrase
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "wrong1234"
@@ -65,7 +60,6 @@ Feature: Receive money
       | message                           |
       | api.errors.IncorrectPasswordError |
 
-  @byron
   Scenario: Generate "Byron" wallet address with too short passphrase
     Given I am on the "Target Wallet" wallet "receive" screen
     And I enter wallet password in generate address input field "wrong"

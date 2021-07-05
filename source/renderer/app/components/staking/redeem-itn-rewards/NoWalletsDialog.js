@@ -54,9 +54,11 @@ export default class NoWalletsDialog extends Component<Props> {
         closeOnOverlayClick={false}
         fullSize
       >
-        <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
-        <div className={styles.description}>
-          {intl.formatMessage(messages.description)}
+        <div className={styles.component}>
+          <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
+          <div className={styles.description}>
+            {intl.formatMessage(messages.description)}
+          </div>
         </div>
       </Dialog>
     );
