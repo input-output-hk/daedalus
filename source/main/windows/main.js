@@ -41,6 +41,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     show: false,
     width: 1150,
     height: 870,
+    ...windowBounds,
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
