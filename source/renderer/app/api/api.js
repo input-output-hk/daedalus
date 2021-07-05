@@ -1028,7 +1028,7 @@ export default class AdaApi {
     rewardsBalance: BigNumber,
     payments?: CoinSelectionsPaymentRequestType,
     delegation?: CoinSelectionsDelegationRequestType,
-    metadata?: VotingMetadataType, // TODO - define type
+    metadata?: VotingMetadataType,
   }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),

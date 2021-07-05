@@ -329,12 +329,16 @@ export default class HardwareWalletsStore extends Store {
       const transaction = await this.sendMoneyRequest.execute({
         signedTransactionBlob: this.txBody,
       });
-      if (!isDelegationTransaction && !isVotingRegistrationTransaction) {
+      if (!isDelegationTransaction) {
         // Start interval to check transaction state every second
         this.checkTransactionTimeInterval = setInterval(
           this.checkTransaction,
           1000,
-          { transactionId: transaction.id, walletId }
+          {
+            transactionId: transaction.id,
+            walletId,
+            isVotingRegistrationTransaction,
+          }
         );
       } else {
         this.setTransactionPendingState(false);
@@ -358,8 +362,13 @@ export default class HardwareWalletsStore extends Store {
   @action checkTransaction = (request: {
     transactionId: string,
     walletId: string,
+    isVotingRegistrationTransaction: boolean,
   }) => {
-    const { transactionId, walletId } = request;
+    const {
+      transactionId,
+      walletId,
+      isVotingRegistrationTransaction,
+    } = request;
     const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
       walletId
     ).result;
@@ -367,16 +376,37 @@ export default class HardwareWalletsStore extends Store {
       ? recentTransactionsResponse.transactions
       : [];
 
-    // Return transaction when state is not "PENDING"
-    const targetTransaction = find(
-      recentTransactions,
-      (transaction) =>
-        transaction.id === transactionId &&
-        transaction.state === TransactionStates.OK
-    );
+    let targetTransaction;
+    if (isVotingRegistrationTransaction) {
+      // Return transaction when state is not "PENDING"
+      targetTransaction = find(
+        recentTransactions,
+        (transaction) => transaction.id === transactionId
+      );
+      if (targetTransaction) {
+        // Reset Poller
+        if (this.checkTransactionTimeInterval) {
+          clearInterval(this.checkTransactionTimeInterval);
+          this.checkTransactionTimeInterval = null;
+        }
+        // Reset pending transaction
+        this.setTransactionPendingState(false);
+        // Start voting poller and go to the next step
+        this.stores.voting._startTransactionPolling();
+        this.stores.voting._nextRegistrationStep();
+      }
+    } else {
+      // Return transaction when state is not "PENDING"
+      targetTransaction = find(
+        recentTransactions,
+        (transaction) =>
+          transaction.id === transactionId &&
+          transaction.state === TransactionStates.OK
+      );
 
-    if (targetTransaction) {
-      this.resetStakePoolTransactionChecker(walletId);
+      if (targetTransaction) {
+        this.resetStakePoolTransactionChecker(walletId);
+      }
     }
   };
 
@@ -1878,9 +1908,6 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       });
 
-      // eslint-disable-next-line
-      console.debug('>>> Resonse from Ledger: ', JSON.stringify(signedTransaction));
-
       const unsignedTxWithdrawals =
         withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
 
@@ -1929,9 +1956,6 @@ export default class HardwareWalletsStore extends Store {
         txWitnesses,
         txAuxiliaryData
       );
-
-      // eslint-disable-next-line
-      console.debug('>>> Signed transaction BLOB: ', txBody);
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;

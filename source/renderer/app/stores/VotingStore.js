@@ -235,7 +235,8 @@ export default class VotingStore extends Store {
                 int: 1,
               },
               v: {
-                bytes: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+                bytes:
+                  '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
               },
             },
           ],
@@ -263,7 +264,7 @@ export default class VotingStore extends Store {
     passphrase,
   }: {
     amount: number,
-    passphrase: string,
+    passphrase: ?string,
   }) => {
     const walletId = this.selectedWalletId;
     if (!walletId)
@@ -291,7 +292,7 @@ export default class VotingStore extends Store {
       if (isHardwareWallet) {
         transaction = await this.stores.hardwareWallets._sendMoney({
           isVotingRegistrationTransaction: true,
-          selectedWalletId: selectedWallet.id,
+          selectedWalletId: walletId,
         });
       } else {
         const votingData = await this.prepareVotingData({ walletId });
@@ -328,11 +329,14 @@ export default class VotingStore extends Store {
           }
         );
       }
+
       this._setTransactionId(transaction.id);
-      this._startTransactionPolling();
-      this._nextRegistrationStep();
+      if (!isHardwareWallet) {
+        this._startTransactionPolling();
+        this._nextRegistrationStep();
+      }
     } catch (error) {
-      if (error.code === 'wrong_encryption_passphrase' || error.code === 'created_invalid_transaction') {
+      if (error.code === 'wrong_encryption_passphrase') {
         // In case of a invalid spending password we stay on the same screen
         this._setIsTransactionPending(false);
       } else {

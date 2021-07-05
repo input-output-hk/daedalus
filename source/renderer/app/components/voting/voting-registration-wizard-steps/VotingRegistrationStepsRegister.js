@@ -133,12 +133,6 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
   submit = () => {
     const { spendingPassword } = this.form.values();
     this.props.onConfirm(spendingPassword);
-    /* this.form.submit({
-      onSuccess: (form) => {
-        const { spendingPassword } = form.values();
-        this.props.onConfirm(spendingPassword);
-      },
-    }); */
   };
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
@@ -184,9 +178,7 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
 
     return (
       <VotingRegistrationDialog
-        onClose={() => {
-          onClose();
-        }}
+        onClose={!isSubmitting ? onClose : () => {}}
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
