@@ -78,7 +78,9 @@ export default class WalletsActions {
   }> = new Action();
   saveQRCodeImageSuccess: Action<{ walletAddress: string }> = new Action();
   getAccountPublicKey: Action<{ spendingPassword: string }> = new Action();
-  copyPublicKey: Action<{ publicKey: string }> = new Action();
+  getICOPublicKey: Action<{ spendingPassword: string }> = new Action();
+  copyWalletPublicKey: Action<{ publicKey: string }> = new Action();
+  copyICOPublicKey: Action<{ publicKey: string }> = new Action();
   copyAddress: Action<{ address: string }> = new Action();
   copyAssetItem: Action<{ assetItem: string, value: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();

@@ -41,6 +41,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
+import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
 
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
@@ -158,6 +159,7 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
+  ICOPublicKeyParams,
 } from './transactions/types';
 
 // Wallets Types
@@ -1269,6 +1271,26 @@ export default class AdaApi {
     } catch (error) {
       logger.error('AdaApi::getPublicKey error', { error });
       throw new ApiError(error);
+    }
+  };
+
+  getICOPublicKey = async (request: ICOPublicKeyParams): Promise<string> => {
+    logger.debug('AdaApi::getICOPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const response = await getICOPublicKey(this.config, request);
+      logger.debug('AdaApi::getICOPublicKey success', {
+        icoPublicKey: response,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getICOPublicKey error', { error });
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 

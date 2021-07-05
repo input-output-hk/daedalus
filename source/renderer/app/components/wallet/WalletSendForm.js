@@ -50,6 +50,7 @@ type Props = {
   calculateTransactionFee: Function,
   walletAmount: BigNumber,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
+  validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   addressValidator: Function,
   assets: Array<AssetToken>,
   hasAssets: boolean,
@@ -436,7 +437,7 @@ export default class WalletSendForm extends Component<Props, State> {
         return {
           policy_id: policyId,
           asset_name: assetName,
-          quantity: quantity.toNumber(),
+          quantity, // BigNumber or number - prevent parsing a BigNumber to Number (Integer) because of JS number length limitation
         };
       }),
       'quantity'
@@ -608,7 +609,7 @@ export default class WalletSendForm extends Component<Props, State> {
           ];
         }
         const amountValue = value.toString();
-        const isValidAmount = await this.props.validateAmount(
+        const isValidAmount = await this.props.validateAssetAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
         const asset = this.getAssetByUniqueId(uniqueId);

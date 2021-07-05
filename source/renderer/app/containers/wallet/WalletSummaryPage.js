@@ -168,6 +168,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isLoadingAssets={isLoadingAssets}
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
+          currentLocale={currentLocale}
           currencyIsActive={isActive}
           currencyIsFetchingRate={isFetchingRate}
           currencyLastFetched={lastFetched}
