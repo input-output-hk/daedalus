@@ -33,6 +33,10 @@ export const RECOVERY_PHRASE_WORD_COUNT_OPTIONS = {
 
 export const WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH = 15;
 export const IS_WALLET_PUBLIC_KEY_SHARING_ENABLED = true;
+export const IS_ICO_PUBLIC_KEY_SHARING_ENABLED = true;
+
+export const WALLET_PUBLIC_KEY_DERIVATION_PATH = "M/1852'/1815'/0'";
+export const ICO_PUBLIC_KEY_DERIVATION_PATH = "M/1854'/1815'/0'";
 
 // Automatic wallet migration from pre Daedalus 1.0.0 versions has been disabled
 export const IS_AUTOMATIC_WALLET_MIGRATION_ENABLED = false;

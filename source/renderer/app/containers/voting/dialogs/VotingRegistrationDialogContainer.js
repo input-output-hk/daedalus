@@ -122,6 +122,7 @@ export default class VotingRegistrationDialogContainer extends Component<
 
   handleRestart = () => {
     this.props.actions.voting.resetRegistration.trigger();
+    this.props.stores.hardwareWallets.sendMoneyRequest.reset();
   };
 
   handleContinue = () => {
@@ -143,7 +144,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     this.props.actions.voting.generateQrCode.trigger(code);
   };
 
-  handleSendTransaction = (spendingPassword: string) => {
+  handleSendTransaction = (spendingPassword: ?string) => {
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
     );
@@ -181,7 +182,12 @@ export default class VotingRegistrationDialogContainer extends Component<
       qrCode,
     } = voting;
     const { openExternalLink } = app;
-    const { hwDeviceStatus, checkIsTrezorByWalletId } = hardwareWallets;
+    const {
+      hwDeviceStatus,
+      checkIsTrezorByWalletId,
+      sendMoneyRequest,
+      isTransactionPending: isHwTransactionPending,
+    } = hardwareWallets;
 
     const selectedWallet = find(
       all,
@@ -216,14 +222,17 @@ export default class VotingRegistrationDialogContainer extends Component<
           transactionFeeError={transactionFeeError}
           qrCode={qrCode}
           onDownloadPDF={saveAsPDF.trigger}
-          isTransactionPending={isTransactionPending}
+          isTransactionPending={
+            isTransactionPending || (isHardwareWallet && isHwTransactionPending)
+          }
           isTransactionConfirmed={isTransactionConfirmed}
           transactionConfirmations={transactionConfirmations}
           hwDeviceStatus={hwDeviceStatus}
           transactionError={
             getWalletPublicKeyRequest.error ||
             createVotingRegistrationTransactionRequest.error ||
-            signMetadataRequest.error
+            signMetadataRequest.error ||
+            (isHardwareWallet && sendMoneyRequest.error)
           }
           onExternalLinkClick={openExternalLink}
           isTrezor={isTrezor}
@@ -268,8 +277,9 @@ export default class VotingRegistrationDialogContainer extends Component<
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
 
       let fee;
+      let votingData;
       if (isHardwareWallet) {
-        const votingData = await prepareVotingData({
+        votingData = await prepareVotingData({
           walletId: this.selectedWalletId,
         });
         ({ fee } = await selectCoins({
@@ -278,10 +288,6 @@ export default class VotingRegistrationDialogContainer extends Component<
           amount,
           metadata: votingData.metadata,
         }));
-        await initiateTransaction({
-          walletId: this.selectedWalletId,
-          votingData,
-        });
       } else {
         ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,
@@ -289,11 +295,16 @@ export default class VotingRegistrationDialogContainer extends Component<
           amount,
         }));
       }
-
       if (this._isMounted) {
         this.setState({
           transactionFee: fee,
           transactionFeeError: null,
+        });
+      }
+      if (isHardwareWallet) {
+        await initiateTransaction({
+          walletId: this.selectedWalletId,
+          votingData,
         });
       }
     } catch (error) {

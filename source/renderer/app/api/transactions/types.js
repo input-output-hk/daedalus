@@ -274,6 +274,16 @@ export type GetWithdrawalsResponse = {
   withdrawals: BigNumber,
 };
 
+export type ICOPublicKeyParams = {
+  walletId: string,
+  index: string,
+  data: {
+    passphrase: string,
+    format: 'extended' | 'non_extended',
+    purpose: string,
+  },
+};
+
 export type CoinSelectionAssetsType = Array<Asset>;
 
 export type VotingMetaIndexType = 61284 | 61285;
