@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
+import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -17,6 +18,10 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './VotingRegistrationStepsRegister.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+
+import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({
   description: {
@@ -72,6 +77,10 @@ type Props = {
   transactionFee: ?BigNumber,
   transactionFeeError?: string | Node | null,
   transactionError?: ?LocalizableError,
+  hwDeviceStatus: HwDeviceStatus,
+  selectedWallet: ?Wallet,
+  isTrezor: boolean,
+  isHardwareWallet: boolean,
   isSubmitting: boolean,
   onConfirm: Function,
   onClose: Function,
@@ -122,12 +131,8 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
   );
 
   submit = () => {
-    this.form.submit({
-      onSuccess: (form) => {
-        const { spendingPassword } = form.values();
-        this.props.onConfirm(spendingPassword);
-      },
-    });
+    const { spendingPassword } = this.form.values();
+    this.props.onConfirm(spendingPassword);
   };
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
@@ -145,10 +150,15 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
       onBack,
       stepsList,
       activeStep,
+      hwDeviceStatus,
+      selectedWallet,
+      isTrezor,
+      isHardwareWallet,
     } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);
+    const selectedWalletName = get(selectedWallet, 'name', '');
 
     const actions = [
       {
@@ -156,16 +166,19 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
         label: buttonLabel,
         onClick: this.submit,
         disabled:
-          !spendingPasswordField.isValid || !transactionFee || isSubmitting,
+          (!isHardwareWallet && !spendingPasswordField.isValid) ||
+          (isHardwareWallet &&
+            hwDeviceStatus !==
+              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
+          isSubmitting ||
+          !transactionFee,
         primary: true,
       },
     ];
 
     return (
       <VotingRegistrationDialog
-        onClose={() => {
-          onClose();
-        }}
+        onClose={!isSubmitting ? onClose : () => {}}
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
@@ -205,13 +218,24 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
           </p>
         </div>
 
-        <Input
-          {...spendingPasswordField.bind()}
-          autoFocus
-          skin={InputSkin}
-          error={spendingPasswordField.error}
-          onKeyPress={this.handleSubmitOnEnter}
-        />
+        {isHardwareWallet ? (
+          <div className={styles.hardwareWalletStatusWrapper}>
+            <HardwareWalletStatus
+              hwDeviceStatus={hwDeviceStatus}
+              walletName={selectedWalletName}
+              isTrezor={isTrezor}
+              onExternalLinkClick={onExternalLinkClick}
+            />
+          </div>
+        ) : (
+          <Input
+            {...spendingPasswordField.bind()}
+            autoFocus
+            skin={InputSkin}
+            error={spendingPasswordField.error}
+            onKeyPress={this.handleSubmitOnEnter}
+          />
+        )}
 
         {transactionFeeError ? (
           <div className={styles.errorMessage}>
