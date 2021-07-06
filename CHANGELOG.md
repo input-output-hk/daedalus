@@ -9,6 +9,7 @@ Changelog
 
 ### Features
 
+- Added voting registration with Trezor ([PR 2615](https://github.com/input-output-hk/daedalus/pull/2615))
 - Added voting registration with Ledger ([PR 2538](https://github.com/input-output-hk/daedalus/pull/2538))
 
 ## 4.2.0-FC1
