@@ -1,12 +1,17 @@
 Changelog
 =========
 
-## 4.2.0-FC1
+## vNext
 
 ### Features
 
 - Added voting registration with Trezor ([PR 2596](https://github.com/input-output-hk/daedalus/pull/2596))
-- Added voting registration with Ledger ([PR 2535](https://github.com/input-output-hk/daedalus/pull/2535))
+- Added voting registration with Ledger ([PR 2538](https://github.com/input-output-hk/daedalus/pull/2538))
+
+## 4.2.0-FC1
+
+### Features
+
 - Implemented sharing multi-signature public key ([PR 2604](https://github.com/input-output-hk/daedalus/pull/2604))
 - Implemented the expandable token view ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589), [PR 2609](https://github.com/input-output-hk/daedalus/pull/2609))
 
