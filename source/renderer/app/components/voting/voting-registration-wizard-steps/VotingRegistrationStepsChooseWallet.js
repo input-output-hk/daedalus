@@ -50,13 +50,6 @@ const messages = defineMessages({
     description:
       'Byron wallet error message on the voting registration "choose wallet" step.',
   },
-  errorHardwareWallet: {
-    id: 'voting.votingRegistration.chooseWallet.step.errorHardwareWallet',
-    defaultMessage:
-      '!!!This wallet cannot be registered for voting as it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>',
-    description:
-      'Hardware wallet error message on the voting registration "choose wallet" step.',
-  },
   errorRestoringWallet: {
     id: 'voting.votingRegistration.chooseWallet.step.errorRestoringWallet',
     defaultMessage:
