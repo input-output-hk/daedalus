@@ -174,6 +174,7 @@
       padding: 14px 7px 14px 20px;
       text-align: left;
       white-space: nowrap;
+      user-select: none;
       &.actions {
         cursor: default;
       }
@@ -181,7 +182,7 @@
         text-align: right;
       }
       &:hover {
-        & > .sortIcon:not(.hideSorting) {
+        & > .sortIcon:not(.hideSorting):not(.sorted) {
           opacity: 0.5;
           visibility: visible;
         }

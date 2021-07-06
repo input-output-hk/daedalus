@@ -245,7 +245,9 @@ export default class StakingRewards extends Component<Props, State> {
                         <th
                           key={tableHeader.name}
                           onClick={() =>
-                            this.handleRewardsSort(tableHeader.name)
+                            !hideSorting
+                              ? this.handleRewardsSort(tableHeader.name)
+                              : null
                           }
                           className={styles[tableHeader.name]}
                         >
