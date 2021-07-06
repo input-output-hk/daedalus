@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Chores
+
+- Update electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
+
 ### Features
 
 - Added voting registration with Ledger ([PR 2538](https://github.com/input-output-hk/daedalus/pull/2538))
@@ -413,7 +417,6 @@ Changelog
 
 ### Chores
 
-- Update electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 - Updated `cardano-launcher` to version `0.20201014.0` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
 - Updated `cardano-wallet` to version `2020-10-13` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
 - Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
