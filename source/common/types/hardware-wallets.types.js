@@ -163,6 +163,21 @@ export type LedgerSignTransactionOutputsType =
   | []
   | Array<LedgerOutputTypeAddress | LedgerOutputTypeChange>;
 
+export type LedgerAuxiliaryDataType = {
+  type: string,
+  params: {
+    votingPublicKeyHex: string,
+    stakingPath: BIP32Path,
+    rewardsDestination: {
+      type: number,
+      params: {
+        stakingPath: BIP32Path,
+      },
+    },
+    nonce: string,
+  },
+};
+
 export type TrezorSignTransactionInputType = {
   path: string,
   prev_hash: number,
@@ -230,11 +245,11 @@ export type LedgerSignTransactionRequest = {
   protocolMagic: number,
   certificates: Array<?Certificate>,
   withdrawals: Array<?Withdrawal>,
-  auxiliaryData: ?string,
   reset?: boolean,
   devicePath: ?string,
-  validityIntervalStartStr?: string,
+  validityIntervalStartStr?: ?string, // It is disabled for now
   signingMode: string,
+  auxiliaryData: ?LedgerAuxiliaryDataType,
 };
 
 export type TrezorSignTransactionRequest = {
@@ -254,6 +269,11 @@ export type TrezorSignTransactionRequest = {
 export type LedgerSignTransactionResponse = {
   txHashHex: string,
   witnesses: Array<Witness>,
+  auxiliaryDataSupplement?: {
+    catalystRegistrationSignatureHex: string,
+    auxiliaryDataHashHex: string,
+    type: 'catalyst_registration',
+  },
 };
 
 export type TrezorSignTransactionResponse = {
