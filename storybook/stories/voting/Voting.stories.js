@@ -25,6 +25,7 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
+import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 
 const assets = {
   available: [
@@ -90,6 +91,8 @@ storiesOf('Voting|Voting Registration Wizard', module)
       selectedWalletId={WALLETS[0].id}
       isWalletAcceptable={action('isWalletAcceptable')}
       getStakePoolById={action('getStakePoolById')}
+      isHardwareWallet={boolean('isHardwareWallet', false)}
+      isTrezor={boolean('isTrezor', false)}
     />
   ))
 
@@ -110,6 +113,10 @@ storiesOf('Voting|Voting Registration Wizard', module)
       isSubmitting={boolean('isSubmitting')}
       onConfirm={action('onConfirm')}
       onExternalLinkClick={action('onExternalLinkClick')}
+      hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+      isHardwareWallet={boolean('isHardwareWallet', false)}
+      isTrezor={boolean('isTrezor', false)}
+      selectedWallet={WALLETS[0]}
     />
   ))
 

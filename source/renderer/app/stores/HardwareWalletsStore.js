@@ -48,6 +48,9 @@ import {
   ShelleyTxOutput,
   ShelleyTxCert,
   ShelleyTxWithdrawal,
+  cborizeTxAuxiliaryVotingData,
+  prepareLedgerAuxiliaryData,
+  CATALYST_VOTING_REGISTRATION_TYPE,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
@@ -73,6 +76,7 @@ import type {
   CoinSelectionsDelegationRequestType,
   CreateExternalTransactionResponse,
   CoinSelectionsResponse,
+  VotingDataType,
 } from '../api/transactions/types';
 import type {
   HardwareWalletLocalData,
@@ -197,6 +201,8 @@ export default class HardwareWalletsStore extends Store {
   @observable tempAddressToVerify: TempAddressToVerify = {};
   @observable isExportKeyAborted: boolean = false;
   @observable activeDelegationWalletId: ?string = null;
+  @observable activeVotingWalletId: ?string = null;
+  @observable votingData: ?VotingDataType = null;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -300,11 +306,21 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletDevices();
   };
 
-  _sendMoney = async (params?: { isDelegationTransaction: boolean }) => {
+  _sendMoney = async (params?: {
+    isDelegationTransaction?: boolean,
+    isVotingRegistrationTransaction?: boolean,
+    selectedWalletId?: string,
+  }) => {
     const isDelegationTransaction = get(params, 'isDelegationTransaction');
-    const wallet = this.stores.wallets.active;
+    const isVotingRegistrationTransaction = get(
+      params,
+      'isVotingRegistrationTransaction'
+    );
 
-    if (!wallet) {
+    const activeWalletId = get(this.stores.wallets, ['active', 'id']);
+    const selectedWalletId = get(params, 'selectedWalletId');
+    const walletId = selectedWalletId || activeWalletId;
+    if (!walletId) {
       throw new Error('Active wallet required before sending.');
     }
 
@@ -319,7 +335,11 @@ export default class HardwareWalletsStore extends Store {
         this.checkTransactionTimeInterval = setInterval(
           this.checkTransaction,
           1000,
-          { transactionId: transaction.id, walletId: wallet.id }
+          {
+            transactionId: transaction.id,
+            walletId,
+            isVotingRegistrationTransaction,
+          }
         );
       } else {
         this.setTransactionPendingState(false);
@@ -333,6 +353,7 @@ export default class HardwareWalletsStore extends Store {
         this.txBody = null;
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
+        this.votingData = null;
       });
       throw e;
     }
@@ -342,8 +363,13 @@ export default class HardwareWalletsStore extends Store {
   @action checkTransaction = (request: {
     transactionId: string,
     walletId: string,
+    isVotingRegistrationTransaction: boolean,
   }) => {
-    const { transactionId, walletId } = request;
+    const {
+      transactionId,
+      walletId,
+      isVotingRegistrationTransaction,
+    } = request;
     const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
       walletId
     ).result;
@@ -351,16 +377,37 @@ export default class HardwareWalletsStore extends Store {
       ? recentTransactionsResponse.transactions
       : [];
 
-    // Return transaction when state is not "PENDING"
-    const targetTransaction = find(
-      recentTransactions,
-      (transaction) =>
-        transaction.id === transactionId &&
-        transaction.state === TransactionStates.OK
-    );
+    let targetTransaction;
+    if (isVotingRegistrationTransaction) {
+      // Return transaction when state is not "PENDING"
+      targetTransaction = find(
+        recentTransactions,
+        (transaction) => transaction.id === transactionId
+      );
+      if (targetTransaction) {
+        // Reset Poller
+        if (this.checkTransactionTimeInterval) {
+          clearInterval(this.checkTransactionTimeInterval);
+          this.checkTransactionTimeInterval = null;
+        }
+        // Reset pending transaction
+        this.setTransactionPendingState(false);
+        // Start voting poller and go to the next step
+        this.stores.voting._startTransactionPolling();
+        this.stores.voting._nextRegistrationStep();
+      }
+    } else {
+      // Return transaction when state is not "PENDING"
+      targetTransaction = find(
+        recentTransactions,
+        (transaction) =>
+          transaction.id === transactionId &&
+          transaction.state === TransactionStates.OK
+      );
 
-    if (targetTransaction) {
-      this.resetStakePoolTransactionChecker(walletId);
+      if (targetTransaction) {
+        this.resetStakePoolTransactionChecker(walletId);
+      }
     }
   };
 
@@ -384,7 +431,7 @@ export default class HardwareWalletsStore extends Store {
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
   selectCoins = async (params: CoinSelectionsPaymentRequestType) => {
-    const { walletId, address, amount, assets } = params;
+    const { walletId, address, amount, assets, metadata } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
@@ -400,6 +447,7 @@ export default class HardwareWalletsStore extends Store {
           amount,
           assets,
         },
+        metadata,
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
@@ -467,9 +515,17 @@ export default class HardwareWalletsStore extends Store {
       let relatedConnectionData;
 
       let activeWalletId;
-      if (this.activeDelegationWalletId && this.isTransactionInitiated) {
+      if (
+        (this.activeDelegationWalletId || this.activeVotingWalletId) &&
+        this.isTransactionInitiated
+      ) {
         // Active wallet can be different that wallet we want to delegate
-        activeWalletId = this.activeDelegationWalletId;
+        if (this.activeDelegationWalletId) {
+          activeWalletId = this.activeDelegationWalletId;
+        }
+        if (this.activeVotingWalletId) {
+          activeWalletId = this.activeVotingWalletId;
+        }
       } else {
         // For regular tx we are using active wallet
         activeWalletId = get(this.stores.wallets, ['active', 'id']);
@@ -1735,7 +1791,6 @@ export default class HardwareWalletsStore extends Store {
     return constructedAddress.address;
   };
 
-  // Ledger - Shelley only
   @action _signTransactionLedger = async (
     walletId: string,
     devicePath: ?string
@@ -1751,6 +1806,7 @@ export default class HardwareWalletsStore extends Store {
       fee: flatFee,
       withdrawals,
     } = coinSelection;
+
     logger.debug('[HW-DEBUG] HWStore - sign transaction Ledger: ', {
       walletId,
     });
@@ -1820,9 +1876,26 @@ export default class HardwareWalletsStore extends Store {
 
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
-    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
-    const auxiliaryData = null;
     const { isMainnet } = this.environment;
+
+    let unsignedTxAuxiliaryData = null;
+    if (this.votingData) {
+      const { stakeAddress, stakeKey, votingKey, nonce } = this.votingData;
+      unsignedTxAuxiliaryData = {
+        nonce, // unique increaseable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
+        rewardDestinationAddress: {
+          address: stakeAddress,
+          stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
+        },
+        stakePubKey: stakeKey,
+        type: CATALYST_VOTING_REGISTRATION_TYPE,
+        votingPubKey: votingKey,
+      };
+    }
+
+    const auxiliaryData = unsignedTxAuxiliaryData
+      ? prepareLedgerAuxiliaryData(unsignedTxAuxiliaryData)
+      : null;
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
@@ -1830,7 +1903,7 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        validityIntervalStartStr: absoluteSlotNumber.toString(),
+        validityIntervalStartStr: null,
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
@@ -1848,14 +1921,34 @@ export default class HardwareWalletsStore extends Store {
         withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
 
       // Prepare unsigned transaction structure for serialzation
-      const unsignedTx = prepareTxAux({
+      let txAuxData = {
         txInputs: unsignedTxInputs,
         txOutputs: unsignedTxOutputs,
         fee,
         ttl,
         certificates: unsignedTxCerts,
         withdrawals: unsignedTxWithdrawals,
-      });
+      };
+
+      let txAuxiliaryData = null;
+      if (
+        unsignedTxAuxiliaryData &&
+        signedTransaction.auxiliaryDataSupplement
+      ) {
+        txAuxData = {
+          ...txAuxData,
+          txAuxiliaryData: unsignedTxAuxiliaryData,
+          txAuxiliaryDataHash:
+            signedTransaction.auxiliaryDataSupplement.auxiliaryDataHashHex,
+        };
+        txAuxiliaryData = cborizeTxAuxiliaryVotingData(
+          unsignedTxAuxiliaryData,
+          signedTransaction.auxiliaryDataSupplement
+            .catalystRegistrationSignatureHex
+        );
+      }
+
+      const unsignedTx = prepareTxAux(txAuxData);
 
       const signedWitnesses = await this._signWitnesses(
         signedTransaction.witnesses,
@@ -1867,7 +1960,11 @@ export default class HardwareWalletsStore extends Store {
       }
 
       // Prepare serialized transaction with unsigned data and signed witnesses
-      const txBody = await prepareBody(unsignedTx, txWitnesses);
+      const txBody = await prepareBody(
+        unsignedTx,
+        txWitnesses,
+        txAuxiliaryData
+      );
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
@@ -1885,12 +1982,17 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  initiateTransaction = async (params: { walletId: ?string }) => {
-    const { walletId } = params;
+  initiateTransaction = async (params: {
+    walletId: ?string,
+    votingData?: VotingDataType,
+  }) => {
+    const { walletId, votingData } = params;
     runInAction('HardwareWalletsStore:: Initiate Transaction', () => {
       this.isTransactionInitiated = true;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       this.activeDelegationWalletId = walletId;
+      this.votingData = votingData || null;
+      this.activeVotingWalletId = walletId;
     });
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,
@@ -2020,6 +2122,8 @@ export default class HardwareWalletsStore extends Store {
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
         this.activeDelegationWalletId = null;
+        this.activeVotingWalletId = null;
+        this.votingData = null;
       });
     }
   };

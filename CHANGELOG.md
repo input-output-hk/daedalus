@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added voting registration with Ledger ([PR 2538](https://github.com/input-output-hk/daedalus/pull/2538))
+
 ## 4.2.0-FC1
 
 ### Features

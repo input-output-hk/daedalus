@@ -13,6 +13,8 @@ import StakePool from '../../domains/StakePool';
 import LocalizableError from '../../i18n/LocalizableError';
 import Wallet from '../../domains/Wallet';
 
+import type { HwDeviceStatus } from '../../domains/Wallet';
+
 type Props = {
   stepsList: Array<string>,
   activeStep: number,
@@ -35,9 +37,12 @@ type Props = {
   isTransactionConfirmed: boolean,
   transactionConfirmations: number,
   transactionError: ?LocalizableError,
+  isTrezor: boolean,
+  isHardwareWallet: boolean,
   onDownloadPDF: Function,
   onRestart: Function,
   onExternalLinkClick: Function,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer
@@ -68,6 +73,9 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
       onExternalLinkClick,
       onClose,
       onBack,
+      hwDeviceStatus,
+      isTrezor,
+      isHardwareWallet,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -87,6 +95,8 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
             getStakePoolById={getStakePoolById}
+            isTrezor={isTrezor}
+            isHardwareWallet={isHardwareWallet}
           />
         );
         break;
@@ -103,6 +113,10 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             onConfirm={onSubmit}
             onBack={onBack}
             onExternalLinkClick={onExternalLinkClick}
+            hwDeviceStatus={hwDeviceStatus}
+            selectedWallet={selectedWallet}
+            isTrezor={isTrezor}
+            isHardwareWallet={isHardwareWallet}
           />
         );
         break;
