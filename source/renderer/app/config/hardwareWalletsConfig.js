@@ -74,7 +74,7 @@ export const AddressTypeNibbles = {
 // https://github.com/cardano-foundation/ledgerjs-hw-app-cardano/blob/master/CHANGELOG.md
 export const MINIMAL_CARDANO_APP_VERSION = '2.3.2';
 export const MINIMAL_LEDGER_FIRMWARE_VERSION = '2.0.0';
-export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.6';
+export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.4.0';
 
 export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
