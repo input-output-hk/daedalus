@@ -148,13 +148,14 @@ const useCardanoAppInterval = (
           address: verificationAddress,
         });
       } catch (error) {
-        console.debug('TCL: Details =>', {
+        // TODO: Remove this logs
+        logger.debug('TCL: Details =>', {
           interval,
           path,
           address,
           addressVerification,
         });
-        console.debug('TCL: Error =>', { error });
+        logger.debug('TCL: Error =>', { error });
 
         return null;
       }
