@@ -94,6 +94,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     pinCodesVisible: false,
     sectionToFocus: null,
     isTabClicked: false,
+    validationChecked: false,
     pinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH)
       .fill(true)
       .map((item, index) => index !== 0),
@@ -134,6 +135,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
               const pinCode = form.$('pinCode').value
                 ? form.$('pinCode').value.join('')
                 : '';
+              const repeatPinCodeField = form.$('repeatPinCode');
+              this.setState({
+                validationChecked: repeatPinCodeField.value.join('').length === VOTING_REGISTRATION_PIN_CODE_LENGTH,
+              });
               return [
                 isValidRepeatPinCode(pinCode, value),
                 this.context.intl.formatMessage(messages.invalidRepeatPinCode),
@@ -310,6 +315,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
       isTabClicked,
       pinFieldDisabledStates,
       repeatPinFieldDisabledStates,
+      validationChecked,
     } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
@@ -330,6 +336,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<
     const hasError =
       repeatPinCodeField.value.length === pinCodeFieldsLength &&
       emptyRepeatFieldIndex === -1 &&
+      validationChecked &&
       repeatPinCodeField.error;
 
     const actions = [
