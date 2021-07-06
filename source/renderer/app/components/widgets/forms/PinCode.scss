@@ -7,6 +7,9 @@
     }
 
     .SimpleInput_input {
+      background-color: var(--rp-input-bg-color-disabled);
+      border-color: transparent;
+      color: var(--rp-input-text-color);
       font-family: var(--font-regular);
       font-size: 14px;
       height: 50px;
@@ -15,9 +18,9 @@
       user-select: none;
       width: 50px;
 
-      &.SimpleInput_disabled {
-        border-color: transparent;
-        color: var(--rp-input-text-color);
+      &:focus {
+        background-color: var(--theme-input-background-color);
+        border-color: var(--rp-input-border-color-focus);
       }
     }
   }
