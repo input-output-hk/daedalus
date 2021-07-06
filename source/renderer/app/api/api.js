@@ -159,6 +159,7 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
+  VotingMetadataType,
   ICOPublicKeyParams,
 } from './transactions/types';
 
@@ -1027,6 +1028,7 @@ export default class AdaApi {
     rewardsBalance: BigNumber,
     payments?: CoinSelectionsPaymentRequestType,
     delegation?: CoinSelectionsDelegationRequestType,
+    metadata?: VotingMetadataType,
   }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
@@ -1038,6 +1040,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       rewardsBalance,
+      metadata,
     } = request;
     try {
       let data;
@@ -1061,6 +1064,7 @@ export default class AdaApi {
             },
           ],
           withdrawal: TransactionWithdrawal,
+          metadata: metadata || null,
         };
       } else {
         throw new Error('Missing parameters!');
@@ -1169,6 +1173,7 @@ export default class AdaApi {
         fee: fee.dividedBy(LOVELACES_PER_ADA),
         deposits: deposits.dividedBy(LOVELACES_PER_ADA),
         depositsReclaimed: depositsReclaimed.dividedBy(LOVELACES_PER_ADA),
+        metadata: response.metadata || null,
       };
 
       logger.debug('AdaApi::selectCoins success', { extendedResponse });

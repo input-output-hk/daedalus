@@ -5,6 +5,7 @@ import type {
   TransactionPaymentData,
   CoinSelectionAmount,
   TransactionWithdrawalType,
+  VotingMetadataType,
 } from '../types';
 import type { DelegationAction } from '../../../types/stakingTypes';
 import { request } from '../../utils/request';
@@ -12,6 +13,7 @@ import { request } from '../../utils/request';
 export type PaymentsType = {
   payments: Array<TransactionPaymentData>,
   withdrawal?: TransactionWithdrawalType,
+  metadata?: VotingMetadataType,
 };
 
 export type DelegationType = {
@@ -60,6 +62,7 @@ export type SelectCoinsResponseType = {
     quantity: number,
     unit: WalletUnits.LOVELACE,
   }>,
+  metadata?: string,
 };
 
 export const selectCoins = (

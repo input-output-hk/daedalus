@@ -5,7 +5,7 @@ export default class VotingActions {
   selectWallet: Action<string> = new Action();
   sendTransaction: Action<{
     amount: number,
-    passphrase: string,
+    passphrase: ?string,
   }> = new Action();
   generateQrCode: Action<number> = new Action();
   saveAsPDF: Action<any> = new Action();

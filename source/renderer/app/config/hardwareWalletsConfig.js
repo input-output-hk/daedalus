@@ -70,10 +70,10 @@ export const AddressTypeNibbles = {
   REWARD: 0b1110,
 };
 
-// JS Library supports Cardano APP version down to 2.0.4
-// https://github.com/vacuumlabs/ledgerjs-cardano-shelley/blob/develop/CHANGELOG.md#220---february-8th-2020
-export const MINIMAL_CARDANO_APP_VERSION = '2.2.0';
-export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
+// MINIMAL_CARDANO_APP_VERSION v2.3.2 - Catalyst Voting support with LedgerJs 3.1.0 version
+// https://github.com/cardano-foundation/ledgerjs-hw-app-cardano/blob/master/CHANGELOG.md
+export const MINIMAL_CARDANO_APP_VERSION = '2.3.2';
+export const MINIMAL_LEDGER_FIRMWARE_VERSION = '2.0.0';
 export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.6';
 
 export const isTrezorEnabled = true;
