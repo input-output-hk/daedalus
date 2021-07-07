@@ -8,14 +8,13 @@ const os = require('os');
 const packager = require('electron-packager');
 const del = require('del');
 const {exec} = require('child_process');
-const { register } = require( 'trace-unhandled' );
+const pkg = require('../package.json');
+
 /**
  * First two values are node path and current script path
  * https://nodejs.org/docs/latest/api/process.html#process_process_argv
  */
 const argv = require('minimist')(process.argv.slice(2));
-
-const pkg = require('../package.json');
 
 const appName = argv.name || argv.n || pkg.productName;
 const shouldUseAsar = argv.asar || argv.a || false;
@@ -67,7 +66,7 @@ async function startPack() {
 
   try {
     const paths = await del('release');
-    console.log('TCL: paths ==>', paths);
+
     // Start the packing process
     if (shouldBuildAll) {
       // build for all platforms
@@ -80,7 +79,6 @@ async function startPack() {
         });
       });
     } else if (argv.win64) {
-      console.log('TCL: win64 ==>');
       pack('win32', 'x64', log('win32', 'x64'));
     } else {
       // build for current platform only
@@ -120,9 +118,8 @@ function pack(plat, arch, cb) {
     'app-version': pkg.version || DEFAULT_OPTS.version,
     out: `release/${plat}-${arch}`,
   });
-  console.log('TCL: packager opts ==>', opts);
-  register(packager(opts, cb));
-  console.log('TCL: END packager');
+
+  packager(opts, cb);
 }
 
 /**
