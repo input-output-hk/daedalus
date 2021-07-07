@@ -2,12 +2,12 @@
   .description,
   .reminder {
     color: var(--theme-voting-registration-steps-description-color);
+    font-family: var(--font-light);
   }
 
   .reminder {
     span > span {
       font-family: var(--font-medium);
-      font-weight: bold;
     }
   }
 
