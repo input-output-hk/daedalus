@@ -4,6 +4,7 @@ const webpackStream = require('webpack-stream');
 const shell = require('gulp-shell');
 const electronConnect = require('electron-connect');
 const flowRemoveTypes = require('gulp-flow-remove-types');
+const { register } = require('trace-unhandled');
 const mainWebpackConfig = require('./source/main/webpack.config');
 const rendererWebpackConfig = require('./source/renderer/webpack.config');
 
@@ -39,9 +40,11 @@ const createElectronServer = (env, args = []) => {
 };
 
 const buildMain = () => () =>
-  mainInputSource()
-    .pipe(webpackStream(mainWebpackConfig, webpack))
-    .pipe(mainOutputDestination());
+  register(
+    mainInputSource()
+      .pipe(webpackStream(mainWebpackConfig, webpack))
+      .pipe(mainOutputDestination())
+  );
 
 const buildMainWatch = () => (done) =>
   mainInputSource()
@@ -55,9 +58,11 @@ const buildMainWatch = () => (done) =>
     .pipe(mainOutputDestination());
 
 const buildRenderer = () => () =>
-  rendererInputSource()
-    .pipe(webpackStream(rendererWebpackConfig, webpack))
-    .pipe(rendererOutputDestination());
+  register(
+    rendererInputSource()
+      .pipe(webpackStream(rendererWebpackConfig, webpack))
+      .pipe(rendererOutputDestination())
+  );
 
 const buildRendererWatch = () => (done) =>
   rendererInputSource()
