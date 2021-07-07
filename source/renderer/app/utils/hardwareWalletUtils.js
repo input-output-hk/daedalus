@@ -4,7 +4,14 @@ import { bech32 } from 'bech32';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 
+// Types
 import type { CoinSelectionAssetsType } from '../api/transactions/types';
+
+export type PathRoleIdentityType =
+  | 'utxo_external'
+  | 'utxo_internal'
+  | 'mutable_account'
+  | 'multisig_script';
 
 // Constants
 export const CERTIFICATE_TYPE = {

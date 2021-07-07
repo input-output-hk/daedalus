@@ -167,7 +167,7 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
-    "@cardano-foundation/ledgerjs-hw-app-cardano": "3.0.0",
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "3.1.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
@@ -244,7 +244,7 @@
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
     "tcp-port-used": "1.0.1",
-    "trezor-connect": "8.1.26-extended",
+    "trezor-connect": "8.1.27-extended",
     "unorm": "1.6.0",
     "validator": "13.1.17"
   },
