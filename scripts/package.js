@@ -8,6 +8,7 @@ const os = require('os');
 const packager = require('electron-packager');
 const del = require('del');
 const {exec} = require('child_process');
+const { register } = require( 'trace-unhandled' );
 /**
  * First two values are node path and current script path
  * https://nodejs.org/docs/latest/api/process.html#process_process_argv
@@ -120,14 +121,8 @@ function pack(plat, arch, cb) {
     out: `release/${plat}-${arch}`,
   });
   console.log('TCL: packager opts ==>', opts);
-  try {
-    console.log('TCL: packager callback ==>', cb);
-    packager(opts, cb);
-  } catch (error) {
-    console.log('TCL: packager ERROR ==>', error);
-  }
+  register(packager(opts, cb));
   console.log('TCL: END packager');
-
 }
 
 /**
