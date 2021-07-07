@@ -14110,7 +14110,6 @@ ripple-lib@1.8.2:
   resolved "https://registry.yarnpkg.com/ripple-lib/-/ripple-lib-1.8.2.tgz#d36dafcb64a913a5dab8a2f66a3b0727baaa9347"
   dependencies:
     "@types/lodash" "^4.14.136"
-    "@types/ws" "^7.2.0"
     bignumber.js "^9.0.0"
     https-proxy-agent "^5.0.0"
     jsonschema "1.2.2"
