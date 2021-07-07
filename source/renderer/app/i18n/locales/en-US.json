@@ -635,7 +635,6 @@
   "voting.unavailable.paragraph2": "Join our {link1} and {link2} Telegram channels for the latest updates (English language only).",
   "voting.votingRegistration.chooseWallet.step.continueButtonLabel": "Continue",
   "voting.votingRegistration.chooseWallet.step.description": "You can only use one wallet when registering. To maximize rewards and voting power, choose the wallet with the largest balance.",
-  "voting.votingRegistration.chooseWallet.step.errorHardwareWallet": "This wallet cannot be registered for voting as it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>",
   "voting.votingRegistration.chooseWallet.step.errorLegacyWallet": "This wallet cannot be registered for voting as it is a legacy Byron wallet.",
   "voting.votingRegistration.chooseWallet.step.errorMinVotingFunds": "This wallet does not contain the minimum required amount of <span>{minVotingRegistrationFunds} ADA</span>. Please select a different wallet with <span>a minimum balance of {minVotingRegistrationFunds} ADA</span>.",
   "voting.votingRegistration.chooseWallet.step.errorMinVotingFundsRewardsOnly": "This wallet cannot be registered for voting as it contains rewards balance only.",
