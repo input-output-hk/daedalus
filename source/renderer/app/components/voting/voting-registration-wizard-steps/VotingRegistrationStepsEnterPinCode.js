@@ -78,6 +78,7 @@ type State = {
   isTabClicked: boolean,
   pinFieldDisabledStates: Array<boolean>,
   repeatPinFieldDisabledStates: Array<boolean>,
+  validationChecked: boolean,
 };
 
 @observer
