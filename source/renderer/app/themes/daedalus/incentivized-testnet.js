@@ -886,6 +886,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-topbar-wallet-name-color': '#ffffff',
     '--theme-topbar-wallet-info-color': '#ffffff',
     '--theme-topbar-logo-color': '#ffffff',
+    '--theme-topbar-no-connection-warning-color': '#f2a218',
   },
   transactions: {
     '--theme-transactions-arrow-stroke-color': '#ffffff',

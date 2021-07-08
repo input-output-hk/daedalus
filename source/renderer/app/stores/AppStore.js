@@ -23,6 +23,7 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
+  @observable isOffline: boolean = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
+import NodeConnectionIcon from '../components/widgets/NodeConnectionIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
@@ -47,6 +48,7 @@ export default class TopBarContainer extends Component<Props> {
       currentRoute,
       environment: { isMainnet, network },
       openExternalLink,
+      isOffline,
     } = app;
     const walletRoutesMatch = matchRoute(
       `${ROUTES.WALLETS.ROOT}/:id(*page)`,
@@ -61,6 +63,15 @@ export default class TopBarContainer extends Component<Props> {
     const testnetLabel = !isMainnet ? (
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
+    const nodeIcon = !isOffline ? (
+      <NodeSyncStatusIcon
+        isSynced={isSynced}
+        syncPercentage={syncPercentage}
+        hasTadaIcon={shouldShowDecentralizationCountdown}
+      />
+    ) : (
+      <NodeConnectionIcon hasTadaIcon={shouldShowDecentralizationCountdown} />
+    );
 
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({
@@ -96,11 +107,7 @@ export default class TopBarContainer extends Component<Props> {
         isShelleyActivated={isShelleyActivated}
       >
         {testnetLabel}
-        <NodeSyncStatusIcon
-          isSynced={isSynced}
-          syncPercentage={syncPercentage}
-          hasTadaIcon={shouldShowDecentralizationCountdown}
-        />
+        {nodeIcon}
         {shouldShowDecentralizationCountdown && (
           <TadaButton
             onClick={onClickTadaButton}
