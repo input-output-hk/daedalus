@@ -159,6 +159,7 @@ type Props = {
   containerClassName: string,
   numberOfRankedStakePools: number,
   isGridRewardsView?: boolean,
+  hideRanking?: boolean,
 };
 
 type State = {
@@ -217,6 +218,7 @@ export default class TooltipPool extends Component<Props, State> {
       stakePool,
       numberOfRankedStakePools,
       isGridRewardsView,
+      hideRanking,
     } = this.props;
     const {
       ranking,
@@ -369,6 +371,10 @@ export default class TooltipPool extends Component<Props, State> {
       },
     ];
 
+    if (hideRanking) {
+      fields.splice(1, 1);
+    }
+
     return (
       <div className={styles.table}>
         {fields.map((field: { key: string, value: any }) => {
@@ -420,6 +426,7 @@ export default class TooltipPool extends Component<Props, State> {
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
+      hideRanking,
     } = this.props;
     const { componentStyle, idCopyFeedback } = this.state;
 
@@ -437,6 +444,7 @@ export default class TooltipPool extends Component<Props, State> {
     const colorBandClassnames = classnames([
       styles.colorBand,
       this.isGreyColor ? styles.greyColorBand : null,
+      hideRanking ? styles.hideColorBand : null,
     ]);
     const colorBandStyle = this.isGreyColor
       ? {}

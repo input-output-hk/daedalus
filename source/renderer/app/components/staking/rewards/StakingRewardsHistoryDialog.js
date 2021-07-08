@@ -138,6 +138,7 @@ export default class StakingRewardsHistoryDialog extends Component<
           onOpenExternalLink={onOpenExternalLink}
           openOnHover
           stakePool={pool}
+          hideRanking
         >
           <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
         </PoolPopOver>
