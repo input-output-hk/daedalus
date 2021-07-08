@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 4.2.0-FC2
+## 4.2.0
 
 ### Features
 
