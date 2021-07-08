@@ -178,6 +178,18 @@ export type LedgerAuxiliaryDataType = {
   },
 };
 
+export type TrezorAuxiliaryDataType = {
+  catalystRegistrationParameters: {
+    votingPublicKey: string,
+    stakingPath: string | Array<number>,
+    rewardAddressParameters: {
+      addressType: number,
+      path: string,
+    },
+    nonce: string,
+  },
+};
+
 export type TrezorSignTransactionInputType = {
   path: string,
   prev_hash: number,
@@ -264,6 +276,7 @@ export type TrezorSignTransactionRequest = {
   reset?: boolean,
   devicePath: string,
   validityIntervalStartStr?: string,
+  auxiliaryData: ?TrezorAuxiliaryDataType,
 };
 
 export type LedgerSignTransactionResponse = {

@@ -651,7 +651,6 @@
   "voting.unavailable.paragraph2": "!最新情報は、{link1}やTelegramの{link2}でチェックしてください（英語のみ）。",
   "voting.votingRegistration.chooseWallet.step.continueButtonLabel": "続ける",
   "voting.votingRegistration.chooseWallet.step.description": "投票に使用できるウォレットは1つだけです。報酬と議決権を最大にするには、残高の一番大きなウォレットを選択してください。",
-  "voting.votingRegistration.chooseWallet.step.errorHardwareWallet": "このウォレットはハードウェアウォレットであるため、有権者登録に使用できません。<span>ハードウェアウォレットは今後サポートされる予定です。</span>",
   "voting.votingRegistration.chooseWallet.step.errorLegacyWallet": "このウォレットはByronレガシーウォレットであるため、有権者登録に使用できません。",
   "voting.votingRegistration.chooseWallet.step.errorMinVotingFunds": "このウォレットには必要最低額<span>{minVotingRegistrationFunds} ADA</span>が入っていません。必要最低額<span>{minVotingRegistrationFunds} ADA</span>が入った別のウォレットを選択してください。",
   "voting.votingRegistration.chooseWallet.step.errorMinVotingFundsRewardsOnly": "このウォレットに含まれているのは報酬残高のみであり、投票用には使用できません。",
