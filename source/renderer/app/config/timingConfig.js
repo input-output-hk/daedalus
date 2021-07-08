@@ -23,3 +23,4 @@ export const STAKE_POOL_ID_COPY_FEEDBACK = 3000; // 1.5 second | unit: milliseco
 export const ASSET_TOKEN_ID_COPY_FEEDBACK = 3 * 1000; // 3 seconds | unit: milliseconds
 export const ASSET_TOKEN_DISPLAY_DELAY = 250; // .25 second | unit: milliseconds
 export const DECENTRALIZATION_LEVEL_POLLING_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
+export const HANDLE_INTERNET_CONNECTION_INTERVAL = 30 * 1000; // 30 seconds | unit: milliseconds

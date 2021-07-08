@@ -14,6 +14,7 @@ import {
 } from '../ipc/control-ui-parts';
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { HANDLE_INTERNET_CONNECTION_INTERVAL } from '../config/timingConfig';
 import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
 
@@ -23,7 +24,9 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
-  @observable isOffline: boolean = false;
+  @observable isOffline: boolean = !navigator.onLine;
+
+  handleInternetConnectionTimeout: TimeoutID;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -53,6 +56,9 @@ export default class AppStore extends Store {
 
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
+
+    window.addEventListener('online', this._onChangeInternetConnection);
+    window.addEventListener('offline', this._onChangeInternetConnection);
   }
 
   @computed get currentRoute(): string {
@@ -184,5 +190,18 @@ export default class AppStore extends Store {
 
   @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
+  };
+
+  _onChangeInternetConnection = () => {
+    clearTimeout(this.handleInternetConnectionTimeout);
+    const handleInternetConnection = () => {
+      runInAction('update internet connection status', () => {
+        this.isOffline = !navigator.onLine;
+      });
+    };
+    this.handleInternetConnectionTimeout = setTimeout(
+      handleInternetConnection,
+      HANDLE_INTERNET_CONNECTION_INTERVAL
+    );
   };
 }
