@@ -1,5 +1,10 @@
 // @flow
 import { debounce } from 'lodash-es/function';
+import {
+  STORAGE_KEYS,
+  STORAGE_TYPES,
+} from '../../common/config/electron-store.config';
+import type { StoreMessage } from '../../common/types/electron-store.types';
 
 interface Rectangle {
   x: number;
@@ -22,12 +27,19 @@ interface Screen {
   workArea: Rectangle;
 }
 
-interface Store {
-  set: (key: string, value: Rectangle) => void;
-  get: (key: string) => ?Rectangle;
-}
+type SendStoreRequest = (request: StoreMessage) => mixed;
 
-const windowBoundsDefaultStoreKey = 'windowBounds';
+const windowBoundsDefaultStoreKey = 'WINDOW_BOUNDS';
+
+function maybeRectangle(data: any): ?Rectangle {
+  return data != null &&
+    typeof data.x === 'number' &&
+    typeof data.y === 'number' &&
+    typeof data.width === 'number' &&
+    typeof data.height === 'number'
+    ? (data: Rectangle)
+    : null;
+}
 
 function getRightEdge(rect: Rectangle) {
   return rect.x + rect.width;
@@ -68,11 +80,16 @@ function getCenteredRectInBounds(
  */
 export function restoreSavedWindowBounds(
   screen: Screen,
-  store: Store,
-  storeKey: string = windowBoundsDefaultStoreKey
+  sendStoreRequest: SendStoreRequest
 ): ?Rectangle {
-  const savedBounds = store.get(storeKey);
+  const savedBounds = maybeRectangle(
+    sendStoreRequest({
+      type: STORAGE_TYPES.GET,
+      key: STORAGE_KEYS.WINDOW_BOUNDS,
+    })
+  );
   if (!savedBounds) return null;
+
   const closestDisplay = screen.getDisplayMatching(savedBounds);
   const displayBounds = closestDisplay.workArea;
   if (isWithinBounds(savedBounds, displayBounds)) {
@@ -89,12 +106,16 @@ export function restoreSavedWindowBounds(
 
 export function saveWindowBoundsOnSizeAndPositionChange(
   window: Window,
-  store: Store,
-  storeKey: string = windowBoundsDefaultStoreKey,
+  sendStoreRequest: SendStoreRequest,
   debounceWait: number = 1000
 ) {
   const saveWindowBoundsSoon = debounce(
-    () => store.set(storeKey, window.getBounds()),
+    () =>
+      sendStoreRequest({
+        type: STORAGE_TYPES.SET,
+        key: STORAGE_KEYS.WINDOW_BOUNDS,
+        data: window.getBounds(),
+      }),
     debounceWait
   );
   window.on('resize', saveWindowBoundsSoon);

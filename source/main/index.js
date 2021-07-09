@@ -4,7 +4,7 @@ import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
-import Store from 'electron-store';
+import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -109,10 +109,6 @@ const onAppReady = async () => {
     environment.version,
     path.join(pubLogsFolderPath, 'Daedalus-versions.json')
   );
-  // TODO: we should only use this store instance on main process
-  // There are several other places that store instances are created
-  // unnecessarily (it doesn't appear to be a big issue though)
-  const store = new Store();
 
   const cpu = os.cpus();
   const platformVersion = os.release();
@@ -156,9 +152,9 @@ const onAppReady = async () => {
   let locale = getLocale(network);
   mainWindow = createMainWindow(
     locale,
-    restoreSavedWindowBounds(screen, store)
+    restoreSavedWindowBounds(screen, requestElectronStore)
   );
-  saveWindowBoundsOnSizeAndPositionChange(mainWindow, store);
+  saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,

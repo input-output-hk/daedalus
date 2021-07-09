@@ -25,7 +25,8 @@ export type StorageKey =
   | 'USER-NUMBER-FORMAT'
   | 'USER-TIME-FORMAT'
   | 'WALLET-MIGRATION-STATUS'
-  | 'WALLETS';
+  | 'WALLETS'
+  | 'WINDOW_BOUNDS';
 
 export type StoreMessage = {
   type: StorageType,
