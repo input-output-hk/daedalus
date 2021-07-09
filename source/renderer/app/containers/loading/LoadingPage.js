@@ -13,9 +13,14 @@ export default class LoadingPage extends Component<InjectedProps> {
   static defaultProps = { stores: null, actions: null };
 
   get activeOverlay() {
+    if (this.isOffline) return <div>NO CONNECTION</div>;
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;
     return null;
+  }
+
+  get isOffline() {
+    return this.props.stores.networkStatus.isOffline;
   }
 
   get isNotEnoughDiskSpace() {

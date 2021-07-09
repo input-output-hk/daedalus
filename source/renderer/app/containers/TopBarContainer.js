@@ -37,6 +37,7 @@ export default class TopBarContainer extends Component<Props> {
       isShelleyActivated,
       epochToFullyDecentralized,
       isFullyDecentralized,
+      isOffline,
     } = networkStatus;
     const { stakingInfoWasOpen } = staking;
     const shouldShowDecentralizationTopbarTadaAnimation =
@@ -48,7 +49,6 @@ export default class TopBarContainer extends Component<Props> {
       currentRoute,
       environment: { isMainnet, network },
       openExternalLink,
-      isOffline,
     } = app;
     const walletRoutesMatch = matchRoute(
       `${ROUTES.WALLETS.ROOT}/:id(*page)`,
