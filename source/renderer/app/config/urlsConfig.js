@@ -5,25 +5,6 @@ export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
 export const STAGING_EXPLORER_URL = 'explorer.staging.cardano.org';
 export const TESTNET_EXPLORER_URL = 'explorer.cardano-testnet.iohkdev.io';
 
-// STN
-export const STN_EXPLORER_URL = 'explorer.mainnet-candidate-4.dev.cardano.org';
-
-// ITN
-export const ITN_EXPLORER_URL = 'shelleyexplorer.cardano.org';
-export const ITN_QA_EXPLORER_URL = 'shelley-testnet-explorer-qa.netlify.com';
-export const ITN_NIGHTLY_EXPLORER_URL =
-  'shelley-testnet-explorer-nightly.netlify.com';
-
-export const DEVELOPMENT_EKG_URL = 'http://localhost:8085';
-export const STAGING_EKG_URL = 'http://localhost:8082';
-export const TESTNET_EKG_URL = 'http://localhost:8081';
-
-export const MAINNET_LATEST_VERSION_INFO_URL =
-  's3-ap-northeast-1.amazonaws.com';
-export const TESTNET_LATEST_VERSION_INFO_URL =
-  'updates-cardano-testnet.s3.amazonaws.com';
-export const STAGING_LATEST_VERSION_INFO_URL = 'update-awstest.iohkdev.io';
-
 export const DEVELOPMENT_NEWS_URL = 'newsfeed.daedalus.io';
 export const MAINNET_NEWS_URL = 'newsfeed.daedalus.io';
 export const TESTNET_NEWS_URL = 'newsfeed.daedalus.io';
@@ -38,13 +19,6 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
-  STN_EXPLORER_URL,
-  ITN_EXPLORER_URL,
-  ITN_QA_EXPLORER_URL,
-  ITN_NIGHTLY_EXPLORER_URL,
-  MAINNET_LATEST_VERSION_INFO_URL,
-  TESTNET_LATEST_VERSION_INFO_URL,
-  STAGING_LATEST_VERSION_INFO_URL,
   DEVELOPMENT_NEWS_URL,
   MAINNET_NEWS_URL,
   TESTNET_NEWS_URL,

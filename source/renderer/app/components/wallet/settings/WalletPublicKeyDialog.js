@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import styles from './WalletPublicKeyDialog.scss';
+import styles from './PublicKeyDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
@@ -12,8 +12,9 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-const messages = defineMessages({
+const messages: { [string]: ReactIntlMessage } = defineMessages({
   title: {
     id: 'wallet.settings.walletPublicKeyDialog.title',
     defaultMessage: '!!!Reveal wallet public key',

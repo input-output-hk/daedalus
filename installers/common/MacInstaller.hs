@@ -183,7 +183,6 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
     Cardano     _ -> common
-    Jormungandr _ -> common
   where
     common = do
       tmp <- fromString <$> (liftIO $ getEnv "TMP")
@@ -306,13 +305,11 @@ npmPackage DarwinConfig{dcAppName} = do
 
 getBackendVersion :: Backend -> IO Text
 getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
-getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
-makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath} = do
+makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{} = do
   let dir     = appRoot </> "Contents/MacOS"
       dataDir = appRoot </> "Contents/Resources"
-      maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dataDir </> name)) maybePath
 
   echo "Preparing files ..."
   let
@@ -343,32 +340,6 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
 
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet", dir </> "cardano-node", dir </> "cardano-cli", dir </> "cardano-address" ]
-    Jormungandr bridge -> do
-      common bridge
-      -- Executables (from daedalus-bridge)
-      forM_ ["cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
-        cp (bridge </> "bin" </> f) (dir </> f)
-
-      -- Config files (from launcherConfig.configFiles)
-      cp "config.yaml" (dataDir </> "config.yaml")
-
-      when hasBlock0 $
-        cp "block-0.bin" (dataDir </> "block-0.bin")
-
-      mapM_ maybeCopyToResources [ (genesisPath,"genesis.yaml"), (secretPath,"secret.yaml") ]
-
-      -- Genesis (from daedalus-bridge)
-      --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
-      --when (null genesisFiles) $
-      --  error "Cardano package carries no genesis files."
-      --procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
-
-      procs "chmod" ["-R", "+w", tt dir] empty
-
-      rmtree $ dataDir </> "app/installers"
-
-      -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-jormungandr", dir </> "jormungandr" ]
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
