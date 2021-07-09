@@ -90,6 +90,11 @@ type State = {
   isTransactionFeeCalculated: boolean,
 };
 
+const getTransactionFeeCalculated = (
+  adaAmount: BigNumber,
+  transactionFee: BigNumber
+): BigNumber => adaAmount.plus(transactionFee);
+
 @observer
 export default class WalletSendForm extends Component<Props, State> {
   static contextTypes = {
@@ -898,12 +903,8 @@ export default class WalletSendForm extends Component<Props, State> {
     const adaAmount = new BigNumber(adaAmountField.value || 0);
 
     let fees = null;
-    let total = null;
     if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = adaAmount
-        .plus(transactionFee)
-        .toFormat(currencyMaxFractionalDigits);
     }
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -976,11 +977,13 @@ export default class WalletSendForm extends Component<Props, State> {
             assetsAmounts={this.selectedAssetsAmounts}
             amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
-            totalAmount={total}
+            walletAmount={this.props?.walletAmount}
+            totalAmount={getTransactionFeeCalculated(adaAmount, transactionFee)}
             transactionFee={fees}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
+            currencyMaxFractionalDigits={currencyMaxFractionalDigits}
           />
         ) : null}
       </div>

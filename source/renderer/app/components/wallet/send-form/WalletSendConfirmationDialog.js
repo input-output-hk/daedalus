@@ -7,6 +7,7 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { intlShape, FormattedHTMLMessage, injectIntl } from 'react-intl';
 import type { Element } from 'react';
+import BigNumber from 'bignumber.js';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -16,14 +17,13 @@ import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendConfirmationDialog.messages';
-
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-import { messages } from './WalletSendAssetsConfirmationDialog';
 
 type Props = {
   amount: string,
   receiver: string,
-  totalAmount: ?string,
+  walletAmount: BigNumber,
+  totalAmount: BigNumber,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -39,6 +39,7 @@ type Props = {
   onExternalLinkClick: Function,
   walletName: string,
   isTrezor: boolean,
+  currencyMaxFractionalDigits: number,
 };
 
 type InputField = {
@@ -50,6 +51,13 @@ type CheckboxField = {
   value?: boolean,
   error?: string,
 };
+const MINIMUM_BALANCE_FOR_REWARD: number = 2;
+
+const isWalletEmptyWitoutRewards = (
+  totalAmount: BigNumber,
+  available: BigNumber
+): boolean =>
+  totalAmount.isGreaterThan(available.minus(MINIMUM_BALANCE_FOR_REWARD));
 
 const WalletSendConfirmationDialog = (props: Props) => {
   const [areTermsAccepted, setAreTermsAccepted] = useState<boolean>(false);
@@ -63,6 +71,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
 
   const {
     onCancel,
+    walletAmount,
     amount,
     amountToNaturalUnits,
     error,
@@ -80,6 +89,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
     walletName,
     intl,
     isHardwareWallet,
+    currencyMaxFractionalDigits,
   } = props;
 
   useEffect(() => {
@@ -236,7 +246,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
             {intl.formatMessage(getMessages().totalLabel)}
           </div>
           <div className={styles.totalAmount}>
-            {totalAmount}
+            {totalAmount.toFormat(currencyMaxFractionalDigits)}
             <span className={styles.currencyCode}>&nbsp;{currencyUnit}</span>
           </div>
         </div>
@@ -257,12 +267,14 @@ const WalletSendConfirmationDialog = (props: Props) => {
           </div>
         )}
         <Observer>{() => renderConfirmationElement()}</Observer>
-        <div className={styles.flightCandidateWarning}>
-          <FormattedHTMLMessage
-            {...getMessages().emptyingWarning}
-            tagName="p"
-          />
-        </div>
+        {isWalletEmptyWitoutRewards(totalAmount, walletAmount) && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...getMessages().emptyingWarning}
+              tagName="p"
+            />
+          </div>
+        )}
       </div>
       {!!error && getErrorMessage()}
     </Dialog>

@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import type BigNumber from 'bignumber.js';
 import { ellipsis } from '../../../utils/strings';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
@@ -16,13 +17,15 @@ type Props = {
   receiver: string,
   assets: Array<AssetToken>,
   assetsAmounts: Array<string>,
-  totalAmount: ?string,
+  walletAmount: BigNumber,
+  totalAmount: BigNumber,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   currencyUnit: string,
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
+  currencyMaxFractionalDigits: number,
 };
 
 @inject('actions', 'stores')
@@ -58,6 +61,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
   render() {
     const {
       actions,
+      walletAmount,
       amount,
       assets,
       assetsAmounts,
@@ -69,6 +73,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       currencyUnit,
       hwDeviceStatus,
       isHardwareWallet,
+      currencyMaxFractionalDigits,
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
@@ -101,6 +106,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             amount={amount}
             sender={activeWallet.id}
             receiver={receiver}
+            walletAmount={walletAmount}
             totalAmount={totalAmount}
             assets={assets}
             assetsAmounts={assetsAmounts}
@@ -123,11 +129,13 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             walletName={activeWallet.name}
             onCopyAssetItem={this.handleOnCopyAssetItem}
             isTrezor={isTrezor}
+            currencyMaxFractionalDigits={currencyMaxFractionalDigits}
           />
         ) : (
           <WalletSendConfirmationDialog
             amount={amount}
             receiver={receiver}
+            walletAmount={walletAmount}
             totalAmount={totalAmount}
             transactionFee={transactionFee}
             amountToNaturalUnits={amountToNaturalUnits}
@@ -147,6 +155,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             onInitiateTransaction={this.handleInitiateTransaction}
             walletName={activeWallet.name}
             isTrezor={isTrezor}
+            currencyMaxFractionalDigits={currencyMaxFractionalDigits}
           />
         )}
       </>
