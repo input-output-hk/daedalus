@@ -940,6 +940,7 @@
   "wallet.send.confirmationDialog.amountLabel": "金額",
   "wallet.send.confirmationDialog.assetLabel": "トークン",
   "wallet.send.confirmationDialog.back": "戻る",
+  "wallet.send.confirmationDialog.emptyingWarning": "<b>警告：</b>このトランザクションにより、ウォレットの残高は2ADA未満となります。今後ステーキング報酬を使用するためには、ウォレット残高が常時2ADA以上である必要があります。",
   "wallet.send.confirmationDialog.feesLabel": "トランザクション手数料",
   "wallet.send.confirmationDialog.flightCandidateCheckboxLabel": "このトランザクションの一環として実際のADAが送金されること、またこのアクションは取消しできないことを理解しました。",
   "wallet.send.confirmationDialog.flightCandidateWarning": "<b>警告：</b>Daedalus Flight候補版はCardanoメインネットに接続されています。このトランザクションを確認すると、実際のADAがこのウォレットから送金されます。",

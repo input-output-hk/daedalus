@@ -77,6 +77,13 @@ export const getMessages = () => {
       description:
         'Label for password error in the wallet send confirmation dialog.',
     },
+    emptyingWarning: {
+      id: 'wallet.send.confirmationDialog.emptyingWarning',
+      defaultMessage:
+        "!!!Warning: This transaction will reduce your wallet's balance to less than 2 ada. Your wallet's balance should always be over 2 ada to spend future staking rewards.",
+      description:
+        "Warning: This transaction will reduce your wallet's balance",
+    },
   });
   messages.fieldIsRequired = globalMessages.fieldIsRequired;
   return messages;

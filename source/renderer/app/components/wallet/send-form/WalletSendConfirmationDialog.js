@@ -18,6 +18,7 @@ import { HwDeviceStatuses } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendConfirmationDialog.messages';
 
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+import { messages } from './WalletSendAssetsConfirmationDialog';
 
 type Props = {
   amount: string,
@@ -256,8 +257,13 @@ const WalletSendConfirmationDialog = (props: Props) => {
           </div>
         )}
         <Observer>{() => renderConfirmationElement()}</Observer>
+        <div className={styles.flightCandidateWarning}>
+          <FormattedHTMLMessage
+            {...getMessages().emptyingWarning}
+            tagName="p"
+          />
+        </div>
       </div>
-
       {!!error && getErrorMessage()}
     </Dialog>
   );
