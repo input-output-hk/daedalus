@@ -125,18 +125,56 @@ export default class Table extends Component<Props, State> {
       {}
     );
 
-  render() {
-    const {
-      columns,
-      rows,
-      className,
-      onClickRow,
-      onClickCell,
-      maxHeight,
-      isCompact,
-      enableSort,
-    } = this.props;
+  renderColumns = () => {
+    const { columns } = this.props;
     const { sortDirection, sortBy } = this.state;
+    return map(columns, ({ id, title, type }: TableColumn) => {
+      const isSorted = id === sortBy;
+      const sortIconClasses = classnames([
+        styles.sortIcon,
+        isSorted ? styles.sorted : null,
+        isSorted && sortDirection === 'asc' ? styles.ascending : null,
+      ]);
+      return (
+        <th className={id} key={id} onClick={() => this.handleSort(id)}>
+          {title}
+          {type !== 'node' && (
+            <SVGInline svg={sortIcon} className={sortIconClasses} />
+          )}
+        </th>
+      );
+    });
+  };
+
+  renderRows = () => {
+    const { rows, columns, onClickRow, enableSort } = this.props;
+    const tableData = enableSort ? this.getSortedData() : rows;
+    return map(tableData, (item: TableRow, key) => (
+      <tr key={key} onClick={onClickRow}>
+        {map(columns, (column) => this.renderRow(column, item, key))}
+      </tr>
+    ));
+  };
+
+  renderRow = (column: TableColumn, row: TableRow, key: number) => {
+    const { onClickCell } = this.props;
+    const { id: columnId, render } = column;
+    const rawValue = row[columnId];
+    const renderedValue = render ? render(rawValue) : rawValue;
+    return (
+      <td
+        key={key + columnId}
+        role="presentation"
+        className={columnId}
+        onClick={onClickCell}
+      >
+        {renderedValue}
+      </td>
+    );
+  };
+
+  render() {
+    const { className, maxHeight, isCompact } = this.props;
 
     const componentStyles = classnames(
       styles.component,
@@ -147,59 +185,17 @@ export default class Table extends Component<Props, State> {
       className
     );
 
-    const tableData = enableSort ? this.getSortedData() : rows;
+    const columns = this.renderColumns();
+    const rows = this.renderRows();
 
     return (
       <div className={componentStyles}>
         <div className={styles.content} style={{ maxHeight }}>
           <table>
             <thead>
-              <tr>
-                {map(columns, ({ id, title, type }: TableColumn) => {
-                  const isSorted = id === sortBy;
-                  const sortIconClasses = classnames([
-                    styles.sortIcon,
-                    isSorted ? styles.sorted : null,
-                    isSorted && sortDirection === 'asc'
-                      ? styles.ascending
-                      : null,
-                  ]);
-                  return (
-                    <th
-                      className={id}
-                      key={id}
-                      onClick={() => this.handleSort(id)}
-                    >
-                      {title}
-                      {type !== 'node' && (
-                        <SVGInline svg={sortIcon} className={sortIconClasses} />
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
+              <tr>{columns}</tr>
             </thead>
-            <tbody>
-              {map(tableData, (item: TableRow, key) => (
-                <tr key={key} onClick={onClickRow}>
-                  {map(columns, (column: TableColumn) => {
-                    const { id: columnId, render } = column;
-                    const rawValue = item[columnId];
-                    const renderedValue = render ? render(rawValue) : rawValue;
-                    return (
-                      <td
-                        key={key + columnId}
-                        role="presentation"
-                        className={columnId}
-                        onClick={onClickCell}
-                      >
-                        {renderedValue}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
+            <tbody>{rows}</tbody>
           </table>
         </div>
       </div>
