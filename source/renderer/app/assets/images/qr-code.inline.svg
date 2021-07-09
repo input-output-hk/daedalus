@@ -1,3 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <path fill="#5E6066" fill-rule="evenodd" d="M24 16v4h-7v-3h-2v7h-2V13h6v3h3v-3h2v3zm-7 6h2v2h-2v-2zm4 0h2v2h-2v-2zM2 2v7h7V2H2zM0 0h11v11H0V0zm2 15v7h7v-7H2zm-2-2h11v11H0V13zM15 2v7h7V2h-7zm-2-2h11v11H13V0zM4 4h3v3H4V4zm0 13h3v3H4v-3zM17 4h3v3h-3V4z"/>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="wallet-public-key" transform="translate(-1560.000000, -364.000000)" fill="#5E6066">
+      <g id="amount" transform="translate(60.000000, 264.000000)">
+        <g id="input" transform="translate(0.000000, 17.000000)">
+          <g id="qr" transform="translate(1486.000000, 69.000000)">
+            <g transform="translate(14.000000, 14.000000)" id="Combined-Shape">
+              <path d="M13,15 L13,28 L0,28 L0,15 L13,15 Z M24,15 L24,19 L27,19 L27,22 L21,22 L21,18 L18,18 L18,28 L15,28 L15,15 L24,15 Z M27,25 L27,28 L21,28 L21,25 L27,25 Z M10,18 L3,18 L3,25 L10,25 L10,18 Z M8,20 L8,23 L5,23 L5,20 L8,20 Z M13,0 L13,13 L0,13 L0,0 L13,0 Z M28,0 L28,13 L15,13 L15,0 L28,0 Z M10,3 L3,3 L3,10 L10,10 L10,3 Z M25,3 L18,3 L18,10 L25,10 L25,3 Z M8,5 L8,8 L5,8 L5,5 L8,5 Z M23,5 L23,8 L20,8 L20,5 L23,5 Z"></path>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
 </svg>

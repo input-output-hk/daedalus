@@ -18,7 +18,6 @@ type Props = {
   description: Node,
   buttonLabel: string,
   linkLabel: boolean | string,
-  isIncentivizedTestnetTheme?: boolean,
   backgroundImage?: string,
 };
 
@@ -33,14 +32,13 @@ export default class SplashNetwork extends Component<Props> {
       description,
       buttonLabel,
       linkLabel,
-      isIncentivizedTestnetTheme,
       backgroundImage,
     } = this.props;
 
     return (
       <div className={styles.component}>
         <div className={styles.backgroundContainer}>
-          {isIncentivizedTestnetTheme && backgroundImage && (
+          {backgroundImage && (
             <>
               <div className={styles.backgroundOverlay} />
               <SVGInline

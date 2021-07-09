@@ -129,7 +129,7 @@ parseVersion ver =
         _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} Options{oBackend} clusterName = do
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirectory,spacedName} Options{oBackend} clusterName = do
     tempDir <- getTempDir
     let fullVersion = T.unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
@@ -191,10 +191,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 case oBackend of
-                  Jormungandr _ -> do
-                    file [] "jormungandr.exe"
-                    file [] "cardano-wallet-jormungandr.exe"
-                    file [] "config.yaml"
                   Cardano _ -> do
                     file [] "cardano-node.exe"
                     file [] "cardano-wallet.exe"
@@ -218,11 +214,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 --file [] "configuration.yaml"
                 --file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
-                when hasBlock0 $
-                  file [] "block-0.bin"
-                when (clusterName == ITN_Selfnode) $ do
-                  file [] "genesis.yaml"
-                  file [] "secret.yaml"
                 file [Recursive] "dlls\\"
                 file [Recursive] "..\\release\\win32-x64\\$SpacedName-win32-x64\\"
 
