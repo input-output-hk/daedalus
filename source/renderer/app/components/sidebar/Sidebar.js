@@ -22,7 +22,6 @@ type Props = {
   network: networkType,
   onActivateCategory: Function,
   onAddWallet: Function,
-  isIncentivizedTestnet: boolean,
   isShelleyActivated: boolean,
 };
 
@@ -50,7 +49,6 @@ export default class Sidebar extends Component<Props> {
       pathname,
       isShowingSubMenus,
       onAddWallet,
-      isIncentivizedTestnet,
       isShelleyActivated,
       onActivateCategory,
     } = this.props;
@@ -81,7 +79,6 @@ export default class Sidebar extends Component<Props> {
             id === (menus.wallets ? menus.wallets.activeWalletId : null)
           }
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
-          isIncentivizedTestnet={isIncentivizedTestnet}
           isShelleyActivated={isShelleyActivated}
           visible={isShowingSubMenus}
         />

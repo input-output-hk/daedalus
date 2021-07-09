@@ -15,8 +15,7 @@ Given(
       name: `Wallet ${i + 1}`,
       password: 'Secret1234',
     }));
-    const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
-    await createWallets.call(this, wallets, { isLegacy: !isIncentivizedTestnet.value });
+    await createWallets.call(this, wallets);
   }
 );
 

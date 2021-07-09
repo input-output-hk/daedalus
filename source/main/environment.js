@@ -8,8 +8,6 @@ import {
   OS_NAMES,
   MAINNET,
   MAINNET_FLIGHT,
-  SHELLEY_TESTNET,
-  SHELLEY_TESTNET_V6,
 } from '../common/types/environment.types';
 import {
   evaluateNetwork,
@@ -21,10 +19,6 @@ import {
   checkIsTestnet,
   checkIsSelfnode,
   checkIsDevelopment,
-  checkIsIncentivizedTestnet,
-  checkIsIncentivizedTestnetQA,
-  checkIsIncentivizedTestnetNightly,
-  checkIsIncentivizedTestnetSelfnode,
   checkIsMacOS,
   checkIsWindows,
   checkIsLinux,
@@ -36,11 +30,8 @@ import {
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-let RAW_NETWORK =
+const RAW_NETWORK =
   process.env.NETWORK === MAINNET_FLIGHT ? MAINNET : process.env.NETWORK || '';
-if (process.env.NETWORK === SHELLEY_TESTNET_V6) {
-  RAW_NETWORK = SHELLEY_TESTNET;
-}
 const NETWORK = evaluateNetwork(process.env.NETWORK);
 const isDev = checkIsDev(CURRENT_NODE_ENV);
 const isTest = checkIsTest(CURRENT_NODE_ENV);
@@ -49,19 +40,11 @@ const isMainnet = checkIsMainnet(NETWORK);
 const isStaging = checkIsStaging(NETWORK);
 const isTestnet = checkIsTestnet(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
-const isIncentivizedTestnet = checkIsIncentivizedTestnet(NETWORK);
-const isIncentivizedTestnetQA = checkIsIncentivizedTestnetQA(RAW_NETWORK);
-const isIncentivizedTestnetNightly = checkIsIncentivizedTestnetNightly(
-  RAW_NETWORK
-);
-const isIncentivizedTestnetSelfnode = checkIsIncentivizedTestnetSelfnode(
-  RAW_NETWORK
-);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const NODE_VERSION = '1.26.2'; // TODO: pick up this value from process.env
+const NODE_VERSION = '1.27.0'; // TODO: pick up this value from process.env
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -98,10 +81,6 @@ export const environment: Environment = Object.assign(
     isStaging,
     isTestnet,
     isSelfnode,
-    isIncentivizedTestnet,
-    isIncentivizedTestnetQA,
-    isIncentivizedTestnetNightly,
-    isIncentivizedTestnetSelfnode,
     isDevelopment,
     isWatchMode,
     build: BUILD,

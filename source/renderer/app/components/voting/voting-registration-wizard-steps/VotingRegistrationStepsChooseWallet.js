@@ -50,13 +50,6 @@ const messages = defineMessages({
     description:
       'Byron wallet error message on the voting registration "choose wallet" step.',
   },
-  errorHardwareWallet: {
-    id: 'voting.votingRegistration.chooseWallet.step.errorHardwareWallet',
-    defaultMessage:
-      '!!!This wallet cannot be registered for voting as it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>',
-    description:
-      'Hardware wallet error message on the voting registration "choose wallet" step.',
-  },
   errorRestoringWallet: {
     id: 'voting.votingRegistration.chooseWallet.step.errorRestoringWallet',
     defaultMessage:
@@ -130,24 +123,15 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       (wallet: Wallet) => wallet && wallet.id === selectedWalletId
     );
 
-    const { amount, reward, isLegacy, isHardwareWallet, isRestoring } =
-      selectedWallet || {};
+    const { amount, reward, isLegacy, isRestoring } = selectedWallet || {};
 
     let errorMessage;
     if (
       selectedWallet &&
-      !isWalletAcceptable(
-        isLegacy,
-        isHardwareWallet,
-        isRestoring,
-        amount,
-        reward
-      )
+      !isWalletAcceptable(isLegacy, isRestoring, amount, reward)
     ) {
       // Wallet is a legacy wallet
       if (isLegacy) errorMessage = messages.errorLegacyWallet;
-      // Wallet is a hardware wallet
-      else if (isHardwareWallet) errorMessage = messages.errorHardwareWallet;
       // Wallet is restoring
       else if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet only has Reward balance

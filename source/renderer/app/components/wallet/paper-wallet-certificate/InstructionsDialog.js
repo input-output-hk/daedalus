@@ -142,7 +142,6 @@ export default class InstructionsDialog extends Component<Props> {
       inProgress,
       onOpenExternalLink,
       network,
-      rawNetwork,
       error,
     } = this.props;
     const dialogClasses = classnames([styles.component, 'instructionsDialog']);
@@ -162,7 +161,7 @@ export default class InstructionsDialog extends Component<Props> {
     ];
 
     const openNetworkExplorer = () =>
-      onOpenExternalLink(getNetworkExplorerUrl(network, rawNetwork));
+      onOpenExternalLink(getNetworkExplorerUrl(network));
 
     const cardanoExplorerLink = (
       <Link

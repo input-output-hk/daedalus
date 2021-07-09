@@ -1,4 +1,4 @@
-@e2e @shelley
+@e2e @wip
 Feature: Wallet Pending Delegations
 
   Scenario: Pending delegations
@@ -19,7 +19,6 @@ Feature: Wallet Pending Delegations
       | Test Wallet 9  |
       | Test Wallet 10 |
     And I am on the Delegation "delegation-center" screen
-    And I mark experimental feature as read
     Given the wallets have the following pending delegations:
       | DELEGATION_SCENARIO                   |
       | undelegated                           |

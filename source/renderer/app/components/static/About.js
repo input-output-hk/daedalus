@@ -54,11 +54,6 @@ const messages = defineMessages({
     defaultMessage: '!!!MacOS build 3769, with Cardano 1.0.4',
     description: 'About page build information',
   },
-  aboutBuildInfoForITN: {
-    id: 'static.about.buildInfoForITN',
-    defaultMessage: '!!!MacOS build 3769, with Cardano 1.0.4',
-    description: 'About page build information for ITN',
-  },
 });
 
 type Props = {
@@ -87,8 +82,6 @@ export default class About extends Component<Props> {
       version,
       onClose,
     } = this.props;
-    const { isIncentivizedTestnet } = global;
-
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
     const apiHeadline = intl.formatMessage(
@@ -112,28 +105,16 @@ export default class About extends Component<Props> {
               <span className={styles.daedalusVersion}>{version}</span>
             </div>
             <div className={styles.daedalusBuildInfo}>
-              {isIncentivizedTestnet ? (
-                <FormattedHTMLMessage
-                  {...messages.aboutBuildInfoForITN}
-                  values={{
-                    platform: os,
-                    build,
-                    apiName,
-                    apiVersion,
-                  }}
-                />
-              ) : (
-                <FormattedHTMLMessage
-                  {...messages.aboutBuildInfo}
-                  values={{
-                    platform: os,
-                    build,
-                    apiName,
-                    apiVersion,
-                    nodeVersion,
-                  }}
-                />
-              )}
+              <FormattedHTMLMessage
+                {...messages.aboutBuildInfo}
+                values={{
+                  platform: os,
+                  build,
+                  apiName,
+                  apiVersion,
+                  nodeVersion,
+                }}
+              />
             </div>
           </div>
 
