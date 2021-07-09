@@ -89,6 +89,9 @@
       &::-webkit-scrollbar-button {
         display: none;
       }
+      &::-webkit-scrollbar-thumb {
+        min-height: 70px;
+      }
     }
     table {
       min-height: 60px;
