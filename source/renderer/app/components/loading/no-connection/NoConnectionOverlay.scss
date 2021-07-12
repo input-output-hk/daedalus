@@ -1,0 +1,23 @@
+.component {
+  align-items: center;
+  background: var(--theme-connecting-background-color);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+  svg {
+    height: 102px;
+    margin-bottom: 30px;
+    width: 130px;
+  }
+  h3 {
+    color: var(--theme-app-update-overlay-text-color);
+    margin-bottom: 16px;
+  }
+  p {
+    color: var(--theme-app-update-overlay-opacity-text-color);
+    margin-bottom: 30px;
+  }
+}

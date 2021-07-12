@@ -106,9 +106,8 @@ export default class NetworkStatusStore extends Store {
   @observable decentralizationProgress: number = 0; // percentage
   @observable desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
 
-  @observable isOffline: boolean = true;
-  @observable isOfflineOnLoad: boolean = true;
-  // @observable isOffline: boolean = !navigator.onLine;
+  @observable isOfflineOnLoad: boolean = !navigator.onLine;
+  @observable isOffline: boolean = !navigator.onLine;
 
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(

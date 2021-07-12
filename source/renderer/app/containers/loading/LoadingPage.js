@@ -5,6 +5,7 @@ import CenteredLayout from '../../components/layout/CenteredLayout';
 import NoDiskSpaceErrorPage from './NoDiskSpaceErrorPage';
 import SystemTimeErrorPage from './SystemTimeErrorPage';
 import SyncingConnectingPage from './SyncingConnectingPage';
+import NoConnectionPage from './NoConnectionPage';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -13,7 +14,7 @@ export default class LoadingPage extends Component<InjectedProps> {
   static defaultProps = { stores: null, actions: null };
 
   get activeOverlay() {
-    if (this.isOffline) return <div>NO CONNECTION</div>;
+    if (this.isOffline) return <NoConnectionPage />;
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;
     return null;

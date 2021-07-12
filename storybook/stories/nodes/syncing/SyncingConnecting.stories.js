@@ -1,11 +1,12 @@
 // @flow
 import React from 'react';
-import { boolean, radios } from '@storybook/addon-knobs';
+import { boolean, radios, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
+import NoConnectionOverlay from '../../../../source/renderer/app/components/loading/no-connection/NoConnectionOverlay';
 
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
@@ -125,3 +126,5 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
     showNewsFeedIcon
   />
 );
+
+export const NoConnectionOverlayStory = () => <NoConnectionOverlay />;
