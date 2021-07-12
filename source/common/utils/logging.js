@@ -72,14 +72,14 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
   const at = loggerMessage.date.toISOString();
   const [context, messageData] = loggerMessage.data;
   const { level } = loggerMessage;
-  const { message: msg, data = {}, environmentData } = messageData;
+  const { message: msg, environmentData } = messageData;
   const { network, os, platformVersion, version } = environmentData;
 
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env: `${network}:${os}:${platformVersion}`,
     ns: ['daedalus', `v${version}`, `*${network}*`],
-    data,
+    ...(!!messageData.data && { data: messageData.data }),
     msg,
     pid: '',
     sev: level,

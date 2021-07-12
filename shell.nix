@@ -62,10 +62,10 @@ let
       libusb
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
-    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
-      darwin.apple_sdk.frameworks.CoreServices
+    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin" || pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
+      darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.AppKit
     ] else [
-      daedalusPkgs.electron8
+      daedalusPkgs.electron
       winePackages.minimal
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
@@ -114,6 +114,7 @@ let
       mkdir -p Release/
       ln -sv $PWD/node_modules/usb/build/Release/usb_bindings.node Release/
       ln -sv $PWD/node_modules/node-hid/build/Release/HID.node Release/
+      ln -sv $PWD/node_modules/node-hid/build/Release/HID_hidraw.node Release/
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
@@ -130,7 +131,7 @@ let
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/usb_bindings.node
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/HID.node
-        ln -svf ${daedalusPkgs.electron8}/bin/electron ./node_modules/electron/dist/electron
+        ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       echo 'jq < $LAUNCHER_CONFIG'

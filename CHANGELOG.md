@@ -3,6 +3,10 @@ Changelog
 
 ## 4.2.0
 
+### Chores
+
+- Update electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
+
 ### Features
 
 - Added voting registration with Trezor ([PR 2615](https://github.com/input-output-hk/daedalus/pull/2615))
