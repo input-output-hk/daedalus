@@ -23,6 +23,7 @@ import WalletSendConfirmationDialog from '../../../../source/renderer/app/compon
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
+import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 
 const allAssets = [
   generateAssetToken(
@@ -363,8 +364,10 @@ storiesOf('Wallets|Send', module)
         walletName={
           generateWallet('TrueUSD', '15119903750165', walletTokens).name
         }
+        walletAmount={new BigNumber(100)}
         onCopyAssetItem={() => {}}
         isTrezor={boolean('isTrezor', false)}
+        currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
       />
     </div>
   ))

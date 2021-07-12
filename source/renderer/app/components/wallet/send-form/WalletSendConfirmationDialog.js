@@ -18,6 +18,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendConfirmationDialog.messages';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+import { isWalletEmptyWitoutRewards } from '../../../utils/walletUtils';
 
 type Props = {
   amount: string,
@@ -51,13 +52,6 @@ type CheckboxField = {
   value?: boolean,
   error?: string,
 };
-const MINIMUM_BALANCE_FOR_REWARD: number = 2;
-
-const isWalletEmptyWitoutRewards = (
-  totalAmount: BigNumber,
-  available: BigNumber
-): boolean =>
-  totalAmount.isGreaterThan(available.minus(MINIMUM_BALANCE_FOR_REWARD));
 
 const WalletSendConfirmationDialog = (props: Props) => {
   const [areTermsAccepted, setAreTermsAccepted] = useState<boolean>(false);
@@ -198,6 +192,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
       );
       return <p className={styles.error}>{errorElement}</p>;
     }
+    return null;
   });
 
   return (
@@ -267,7 +262,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
           </div>
         )}
         <Observer>{() => renderConfirmationElement()}</Observer>
-        {isWalletEmptyWitoutRewards(totalAmount, walletAmount) && (
+        {!isFlight && isWalletEmptyWitoutRewards(totalAmount, walletAmount) && (
           <div className={styles.flightCandidateWarning}>
             <FormattedHTMLMessage
               {...getMessages().emptyingWarning}

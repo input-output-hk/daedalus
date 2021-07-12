@@ -9,12 +9,11 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendAssetsConfirmationDialog.scss';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
@@ -28,119 +27,16 @@ import { HwDeviceStatuses } from '../../../domains/Wallet';
 import Asset from '../../assets/Asset';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
+import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
+import { isWalletEmptyWitoutRewards } from '../../../utils/walletUtils';
 
 const SHOW_TOTAL_AMOUNT = false;
 
-export const messages = defineMessages({
-  dialogTitle: {
-    id: 'wallet.send.confirmationDialog.title',
-    defaultMessage: '!!!Confirm transaction',
-    description: 'Title for the "Confirm transaction" dialog.',
-  },
-  passphraseLabel: {
-    id: 'wallet.send.confirmationDialog.passphraseLabel',
-    defaultMessage: '!!!Spending password',
-    description:
-      'Label for the "Spending password" input in the wallet send confirmation dialog.',
-  },
-  addressToLabel: {
-    id: 'wallet.send.confirmationDialog.addressToLabel',
-    defaultMessage: '!!!To',
-    description: 'Label for the "To" in the wallet send confirmation dialog.',
-  },
-  amountLabel: {
-    id: 'wallet.send.confirmationDialog.amountLabel',
-    defaultMessage: '!!!Amount',
-    description:
-      'Label for the "Amount" in the wallet send confirmation dialog.',
-  },
-  assetLabel: {
-    id: 'wallet.send.confirmationDialog.assetLabel',
-    defaultMessage: '!!!Token',
-    description: 'Token',
-  },
-  feesLabel: {
-    id: 'wallet.send.confirmationDialog.feesLabel',
-    defaultMessage: '!!!Transaction fee',
-    description: 'Label for the "Fees" in the wallet send confirmation dialog.',
-  },
-  totalLabel: {
-    id: 'wallet.send.confirmationDialog.totalLabel',
-    defaultMessage: '!!!Total',
-    description:
-      'Label for the "Total" in the wallet send confirmation dialog.',
-  },
-  receiverLabel: {
-    id: 'wallet.send.confirmationDialog.receiver.label',
-    defaultMessage: '!!!Receiver',
-    description:
-      'Label for the "Receiver" in the wallet send confirmation dialog.',
-  },
-  passphraseFieldPlaceholder: {
-    id: 'wallet.send.confirmationDialog.passphraseFieldPlaceholder',
-    defaultMessage: '!!!Type your spending password',
-    description:
-      'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
-  },
-  flightCandidateWarning: {
-    id: 'wallet.send.confirmationDialog.flightCandidateWarning',
-    defaultMessage:
-      '!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.',
-    description:
-      'Text for the "Flight candidate" warning in the wallet send confirmation dialog.',
-  },
-  flightCandidateCheckboxLabel: {
-    id: 'wallet.send.confirmationDialog.flightCandidateCheckboxLabel',
-    defaultMessage:
-      '!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.',
-    description:
-      'Label for the "Flight candidate" warning checkbox in the wallet send confirmation dialog.',
-  },
-  sendButtonLabel: {
-    id: 'wallet.send.confirmationDialog.submit',
-    defaultMessage: '!!!Send',
-    description:
-      'Label for the send button in the wallet send confirmation dialog.',
-  },
-  backButtonLabel: {
-    id: 'wallet.send.confirmationDialog.back',
-    defaultMessage: '!!!Back',
-    description:
-      'Label for the back button in the wallet send confirmation dialog.',
-  },
-  passwordErrorMessage: {
-    id: 'wallet.send.confirmationDialog.passwordError',
-    defaultMessage: '!!!Incorrect spending password.',
-    description:
-      'Label for password error in the wallet send confirmation dialog.',
-  },
-  unformattedAmountLabel: {
-    id: 'wallet.send.confirmationDialog.unformattedAmountLabel',
-    defaultMessage: '!!!unformatted amount',
-    description: 'Label for "unformated amount"',
-  },
-  unformattedAmountMessageForSoftwareWallets: {
-    id:
-      'wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets',
-    defaultMessage:
-      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
-    description: 'Message for "unformated amount"',
-  },
-  unformattedAmountMessageForHardwareWallets: {
-    id:
-      'wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets',
-    defaultMessage:
-      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
-    description: 'Message for "unformated amount"',
-  },
-});
-
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
   amount: string,
-  totalAmount: ?string,
   receiver: string,
+  walletAmount: BigNumber,
+  totalAmount: BigNumber,
   assets: Array<AssetToken>,
   assetsAmounts: Array<string>,
   transactionFee: ?string,
@@ -159,6 +55,7 @@ type Props = {
   onCopyAssetItem: Function,
   currencyUnit: string,
   isTrezor: boolean,
+  currencyMaxFractionalDigits: number,
 };
 
 type State = {
@@ -196,9 +93,9 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       fields: {
         passphrase: {
           type: 'password',
-          label: this.context.intl.formatMessage(messages.passphraseLabel),
+          label: this.context.intl.formatMessage(getMessages().passphraseLabel),
           placeholder: this.context.intl.formatMessage(
-            messages.passphraseFieldPlaceholder
+            getMessages().passphraseFieldPlaceholder
           ),
           value: '',
           validators: [
@@ -207,7 +104,9 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
               if (field.value === '') {
                 return [
                   false,
-                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                  this.context.intl.formatMessage(
+                    getMessages().fieldIsRequired
+                  ),
                 ];
               }
               return [true];
@@ -217,7 +116,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         flightCandidateCheckbox: {
           type: 'checkbox',
           label: this.context.intl.formatMessage(
-            messages.flightCandidateCheckboxLabel
+            getMessages().flightCandidateCheckboxLabel
           ),
         },
       },
@@ -266,6 +165,8 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     const {
       hwDeviceStatus,
       isFlight,
+      totalAmount,
+      walletAmount,
       onExternalLinkClick,
       walletName,
       isTrezor,
@@ -285,15 +186,25 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         );
       }
       return (
-        <Input
-          type="password"
-          className={styles.passphrase}
-          {...passphraseField.bind()}
-          error={passphraseField.error}
-          skin={InputSkin}
-          onKeyPress={this.handleSubmitOnEnter}
-          autoFocus
-        />
+        <>
+          <Input
+            type="password"
+            className={styles.passphrase}
+            {...passphraseField.bind()}
+            error={passphraseField.error}
+            skin={InputSkin}
+            onKeyPress={this.handleSubmitOnEnter}
+            autoFocus
+          />
+          {isWalletEmptyWitoutRewards(totalAmount, walletAmount) && (
+            <div className={styles.flightCandidateWarning}>
+              <FormattedHTMLMessage
+                {...getMessages().emptyingWarning}
+                tagName="p"
+              />
+            </div>
+          )}
+        </>
       );
     }
     return null;
@@ -346,17 +257,18 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       onCopyAssetItem,
       currencyUnit,
       walletName,
+      currencyMaxFractionalDigits,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
-      intl.formatMessage(messages.sendButtonLabel)
+      intl.formatMessage(getMessages().sendButtonLabel)
     ) : (
       <LoadingSpinner />
     );
 
     const actions = [
       {
-        label: intl.formatMessage(messages.backButtonLabel),
+        label: intl.formatMessage(getMessages().backButtonLabel),
         onClick: !isSubmitting ? onCancel : () => {},
       },
       {
@@ -393,7 +305,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
     return (
       <Dialog
-        title={intl.formatMessage(messages.dialogTitle)}
+        title={intl.formatMessage(getMessages().dialogTitle)}
         subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
@@ -406,7 +318,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           <div className={styles.addressToLabelWrapper}>
             <div className={styles.receiverRow}>
               <div className={styles.receiverRowItem}>
-                <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
+                <h2>{intl.formatMessage(getMessages().receiverLabel)}</h2>
                 <div className={styles.receiverRowItemAddresses}>
                   <p className={styles.addressTo}>{receiver}</p>
                   <div className={styles.assetsWrapper}>
@@ -438,7 +350,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                           <div className={styles.assetsContainer}>
                             <h3>
                               <span>
-                                {intl.formatMessage(messages.assetLabel)}
+                                {intl.formatMessage(getMessages().assetLabel)}
                                 &nbsp;#{assetIndex + 1}
                               </span>
                               <Asset
@@ -455,13 +367,13 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                             <div className={styles.unformattedAmountLine} />
                             <div className={styles.unformattedAmountLabel}>
                               {intl.formatMessage(
-                                messages.unformattedAmountLabel
+                                getMessages().unformattedAmountLabel
                               )}
                               <PopOver
                                 content={
                                   <div className="UnformattedAmountTooltip">
                                     <FormattedHTMLMessage
-                                      {...messages[
+                                      {...getMessages()[
                                         isHardwareWallet
                                           ? 'unformattedAmountMessageForHardwareWallets'
                                           : 'unformattedAmountMessageForSoftwareWallets'
@@ -496,7 +408,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
               <div className={styles.adaAmountFeesWrapper}>
                 <div className={styles.adaAmountWrapper}>
                   <div className={styles.adaAmountLabel}>
-                    {intl.formatMessage(messages.amountLabel)}
+                    {intl.formatMessage(getMessages().amountLabel)}
                   </div>
                   <div className={styles.adaAmount}>
                     {amount}
@@ -508,7 +420,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
                 <div className={styles.feesWrapper}>
                   <div className={styles.feesLabel}>
-                    {intl.formatMessage(messages.feesLabel)}
+                    {intl.formatMessage(getMessages().feesLabel)}
                   </div>
                   <div className={styles.fees}>
                     +{transactionFee}
@@ -521,10 +433,10 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
               <div className={styles.totalAmountWrapper}>
                 <div className={styles.totalAmountLabel}>
-                  {intl.formatMessage(messages.totalLabel)}
+                  {intl.formatMessage(getMessages().totalLabel)}
                 </div>
                 <div className={styles.totalAmount}>
-                  {totalAmount}
+                  {totalAmount.toFormat(currencyMaxFractionalDigits)}
                   <span className={styles.currencyCode}>
                     &nbsp;{currencyUnit}
                   </span>
@@ -534,7 +446,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           ) : (
             <div className={styles.feesWrapper}>
               <div className={styles.feesLabel}>
-                {intl.formatMessage(messages.feesLabel)}
+                {intl.formatMessage(getMessages().feesLabel)}
               </div>
               <div className={styles.fees}>
                 +{transactionFee}
@@ -548,7 +460,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           {isFlight && (
             <div className={styles.flightCandidateWarning}>
               <FormattedHTMLMessage
-                {...messages.flightCandidateWarning}
+                {...getMessages().flightCandidateWarning}
                 tagName="p"
               />
               <Checkbox
