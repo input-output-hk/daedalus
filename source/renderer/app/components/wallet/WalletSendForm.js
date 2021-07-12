@@ -977,7 +977,6 @@ export default class WalletSendForm extends Component<Props, State> {
             assetsAmounts={this.selectedAssetsAmounts}
             amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
-            walletAmount={this.props?.walletAmount}
             totalAmount={getTransactionFeeCalculated(adaAmount, transactionFee)}
             transactionFee={fees}
             hwDeviceStatus={hwDeviceStatus}

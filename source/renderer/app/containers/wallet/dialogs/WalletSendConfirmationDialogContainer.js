@@ -17,7 +17,6 @@ type Props = {
   receiver: string,
   assets: Array<AssetToken>,
   assetsAmounts: Array<string>,
-  walletAmount: BigNumber,
   totalAmount: BigNumber,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -61,7 +60,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
   render() {
     const {
       actions,
-      walletAmount,
       amount,
       assets,
       assetsAmounts,
@@ -106,7 +104,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             amount={amount}
             sender={activeWallet.id}
             receiver={receiver}
-            walletAmount={walletAmount}
+            wallet={activeWallet}
             totalAmount={totalAmount}
             assets={assets}
             assetsAmounts={assetsAmounts}
@@ -126,7 +124,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
-            walletName={activeWallet.name}
             onCopyAssetItem={this.handleOnCopyAssetItem}
             isTrezor={isTrezor}
             currencyMaxFractionalDigits={currencyMaxFractionalDigits}
@@ -135,7 +132,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
           <WalletSendConfirmationDialog
             amount={amount}
             receiver={receiver}
-            walletAmount={walletAmount}
+            wallet={activeWallet}
             totalAmount={totalAmount}
             transactionFee={transactionFee}
             amountToNaturalUnits={amountToNaturalUnits}
@@ -153,7 +150,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
-            walletName={activeWallet.name}
             isTrezor={isTrezor}
             currencyMaxFractionalDigits={currencyMaxFractionalDigits}
           />

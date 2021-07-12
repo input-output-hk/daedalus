@@ -23,7 +23,7 @@ import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { HwDeviceStatuses } from '../../../domains/Wallet';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import Asset from '../../assets/Asset';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
@@ -35,7 +35,7 @@ const SHOW_TOTAL_AMOUNT = false;
 type Props = {
   amount: string,
   receiver: string,
-  walletAmount: BigNumber,
+  wallet: Wallet,
   totalAmount: BigNumber,
   assets: Array<AssetToken>,
   assetsAmounts: Array<string>,
@@ -50,7 +50,6 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
-  walletName: string,
   onExternalLinkClick: Function,
   onCopyAssetItem: Function,
   currencyUnit: string,
@@ -166,9 +165,8 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       hwDeviceStatus,
       isFlight,
       totalAmount,
-      walletAmount,
       onExternalLinkClick,
-      walletName,
+      wallet,
       isTrezor,
     } = this.props;
 
@@ -178,7 +176,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           <div className={styles.hardwareWalletStatusWrapper}>
             <HardwareWalletStatus
               hwDeviceStatus={hwDeviceStatus}
-              walletName={walletName}
+              walletName={wallet?.name}
               isTrezor={isTrezor}
               onExternalLinkClick={onExternalLinkClick}
             />
@@ -196,14 +194,15 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             onKeyPress={this.handleSubmitOnEnter}
             autoFocus
           />
-          {isWalletEmptyWitoutRewards(totalAmount, walletAmount) && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage
-                {...getMessages().emptyingWarning}
-                tagName="p"
-              />
-            </div>
-          )}
+          {wallet?.isDelegating &&
+            isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) && (
+              <div className={styles.flightCandidateWarning}>
+                <FormattedHTMLMessage
+                  {...getMessages().emptyingWarning}
+                  tagName="p"
+                />
+              </div>
+            )}
         </>
       );
     }
@@ -256,7 +255,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       isHardwareWallet,
       onCopyAssetItem,
       currencyUnit,
-      walletName,
+      wallet,
       currencyMaxFractionalDigits,
     } = this.props;
 
@@ -306,7 +305,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     return (
       <Dialog
         title={intl.formatMessage(getMessages().dialogTitle)}
-        subtitle={walletName}
+        subtitle={wallet?.name}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus

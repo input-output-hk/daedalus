@@ -15,7 +15,7 @@ import styles from './WalletSendConfirmationDialog.scss';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { HwDeviceStatuses } from '../../../domains/Wallet';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendConfirmationDialog.messages';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import { isWalletEmptyWitoutRewards } from '../../../utils/walletUtils';
@@ -23,7 +23,7 @@ import { isWalletEmptyWitoutRewards } from '../../../utils/walletUtils';
 type Props = {
   amount: string,
   receiver: string,
-  walletAmount: BigNumber,
+  wallet: Wallet,
   totalAmount: BigNumber,
   transactionFee: ?string,
   onSubmit: Function,
@@ -38,7 +38,6 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isFlight: boolean,
   onExternalLinkClick: Function,
-  walletName: string,
   isTrezor: boolean,
   currencyMaxFractionalDigits: number,
 };
@@ -65,7 +64,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
 
   const {
     onCancel,
-    walletAmount,
+    wallet,
     amount,
     amountToNaturalUnits,
     error,
@@ -80,7 +79,6 @@ const WalletSendConfirmationDialog = (props: Props) => {
     onInitiateTransaction,
     onSubmit,
     hwDeviceStatus,
-    walletName,
     intl,
     isHardwareWallet,
     currencyMaxFractionalDigits,
@@ -105,7 +103,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
         <div className={styles.hardwareWalletStatusWrapper}>
           <HardwareWalletStatus
             hwDeviceStatus={hwDeviceStatus}
-            walletName={walletName}
+            walletName={wallet?.name}
             isTrezor={isTrezor}
             onExternalLinkClick={onExternalLinkClick}
           />
@@ -198,7 +196,7 @@ const WalletSendConfirmationDialog = (props: Props) => {
   return (
     <Dialog
       title={intl.formatMessage(getMessages().dialogTitle)}
-      subtitle={walletName}
+      subtitle={wallet?.name}
       actions={actions}
       closeOnOverlayClick
       primaryButtonAutoFocus
@@ -262,14 +260,16 @@ const WalletSendConfirmationDialog = (props: Props) => {
           </div>
         )}
         <Observer>{() => renderConfirmationElement()}</Observer>
-        {!isFlight && isWalletEmptyWitoutRewards(totalAmount, walletAmount) && (
-          <div className={styles.flightCandidateWarning}>
-            <FormattedHTMLMessage
-              {...getMessages().emptyingWarning}
-              tagName="p"
-            />
-          </div>
-        )}
+        {!isFlight &&
+          wallet?.isDelegating &&
+          isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) && (
+            <div className={styles.flightCandidateWarning}>
+              <FormattedHTMLMessage
+                {...getMessages().emptyingWarning}
+                tagName="p"
+              />
+            </div>
+          )}
       </div>
       {!!error && getErrorMessage()}
     </Dialog>
