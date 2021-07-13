@@ -879,6 +879,7 @@ export default class StakingStore extends Store {
   _updateRewardsHistoryOnRequestChange = () => {
     const { result } = this.rewardsHistoryRequest;
     const { stakePools } = this.stores.staking;
+    const { epochNumber } = this.stores.networkStatus.nextEpoch || {};
 
     // Only continue if rewards history data is available
     if (result == null || !result.length) return;
@@ -887,17 +888,20 @@ export default class StakingStore extends Store {
     const { address } = rewardsHistory[0];
     runInAction(() => {
       this.rewardsHistory[address] = rewardsHistory
-        ? rewardsHistory.filter(Boolean).map(({ amount, epoch, stakePool }) => {
-            const poolId = stakePool.id;
-            const pool = stakePools.find((p) => p.id === poolId) || {
-              id: poolId,
-            };
-            return {
-              pool,
-              epoch,
-              amount,
-            };
-          })
+        ? rewardsHistory
+            .filter(({ epoch }) => !epochNumber || epoch < epochNumber - 2)
+            .filter(Boolean)
+            .map(({ amount, epoch, stakePool }) => {
+              const poolId = stakePool.id;
+              const pool = stakePools.find((p) => p.id === poolId) || {
+                id: poolId,
+              };
+              return {
+                pool,
+                epoch,
+                amount,
+              };
+            })
         : [];
     });
   };
