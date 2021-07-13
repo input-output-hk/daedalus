@@ -24,8 +24,6 @@ type Props = {
   intl: intlShape.isRequired,
 };
 
-type ItemCopied = ?string;
-
 const NoConnectionOverlay = observer((props: Props) => {
   const { intl } = props;
 
