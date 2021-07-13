@@ -199,8 +199,9 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  handleSubmitOnEnter = (event) => {
-    if (event.key === 'Enter') this.handleOnSubmit();
+  handleSubmitOnEnter = (event: KeyboardEvent): void => {
+    if (event.target instanceof HTMLInputElement && event.key === 'Enter')
+      this.handleOnSubmit();
   };
 
   handleOnSubmit = () => {
