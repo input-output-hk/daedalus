@@ -10692,253 +10692,10 @@
         "defaultMessage": "!!!Confirm transaction",
         "description": "Title for the \"Confirm transaction\" dialog.",
         "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.title",
-        "start": {
-          "column": 15,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.passphraseLabel",
-        "start": {
-          "column": 19,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!To",
-        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.addressToLabel",
-        "start": {
-          "column": 18,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.amountLabel",
-        "start": {
-          "column": 15,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token",
-        "end": {
-          "column": 3,
-          "line": 61
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.assetLabel",
-        "start": {
-          "column": 14,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction fee",
-        "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.feesLabel",
-        "start": {
-          "column": 13,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!Total",
-        "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 72
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.totalLabel",
-        "start": {
-          "column": 14,
-          "line": 67
-        }
-      },
-      {
-        "defaultMessage": "!!!Receiver",
-        "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.receiver.label",
-        "start": {
-          "column": 17,
-          "line": 73
-        }
-      },
-      {
-        "defaultMessage": "!!!Type your spending password",
-        "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 84
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
-        "start": {
-          "column": 30,
-          "line": 79
-        }
-      },
-      {
-        "defaultMessage": "!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.",
-        "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 91
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.flightCandidateWarning",
-        "start": {
-          "column": 26,
-          "line": 85
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
-        "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 98
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
-        "start": {
-          "column": 32,
-          "line": 92
-        }
-      },
-      {
-        "defaultMessage": "!!!Send",
-        "description": "Label for the send button in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 104
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.submit",
-        "start": {
-          "column": 19,
-          "line": 99
-        }
-      },
-      {
-        "defaultMessage": "!!!Back",
-        "description": "Label for the back button in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 110
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.back",
-        "start": {
-          "column": 19,
-          "line": 105
-        }
-      },
-      {
-        "defaultMessage": "!!!Incorrect spending password.",
-        "description": "Label for password error in the wallet send confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 116
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.passwordError",
-        "start": {
-          "column": 24,
-          "line": 111
-        }
-      },
-      {
-        "defaultMessage": "!!!unformatted amount",
-        "description": "Label for \"unformated amount\"",
-        "end": {
-          "column": 3,
-          "line": 121
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.unformattedAmountLabel",
-        "start": {
-          "column": 26,
-          "line": 117
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "Message for \"unformated amount\"",
-        "end": {
-          "column": 3,
-          "line": 128
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
-        "start": {
-          "column": 46,
-          "line": 122
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "Message for \"unformated amount\"",
-        "end": {
-          "column": 3,
-          "line": 135
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
-        "start": {
-          "column": 46,
-          "line": 129
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Confirm transaction",
-        "description": "Title for the \"Confirm transaction\" dialog.",
-        "end": {
           "column": 5,
           "line": 12
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.title",
         "start": {
           "column": 17,
@@ -10952,7 +10709,7 @@
           "column": 5,
           "line": 18
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.passphraseLabel",
         "start": {
           "column": 21,
@@ -10966,7 +10723,7 @@
           "column": 5,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 20,
@@ -10980,7 +10737,7 @@
           "column": 5,
           "line": 29
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 17,
@@ -10988,17 +10745,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Fees",
+        "defaultMessage": "!!!Token",
+        "description": "Token",
+        "end": {
+          "column": 5,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
+        "id": "wallet.send.confirmationDialog.assetLabel",
+        "start": {
+          "column": 16,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 35
+          "line": 40
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 15,
-          "line": 30
+          "line": 35
         }
       },
       {
@@ -11006,13 +10777,27 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 41
+          "line": 46
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 16,
-          "line": 36
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiver",
+        "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 5,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
+        "id": "wallet.send.confirmationDialog.receiver.label",
+        "start": {
+          "column": 19,
+          "line": 47
         }
       },
       {
@@ -11020,13 +10805,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 47
+          "line": 58
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
         "start": {
           "column": 32,
-          "line": 42
+          "line": 53
         }
       },
       {
@@ -11034,13 +10819,13 @@
         "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 54
+          "line": 65
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.flightCandidateWarning",
         "start": {
           "column": 28,
-          "line": 48
+          "line": 59
         }
       },
       {
@@ -11048,13 +10833,13 @@
         "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 61
+          "line": 72
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
         "start": {
           "column": 34,
-          "line": 55
+          "line": 66
         }
       },
       {
@@ -11062,13 +10847,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 67
+          "line": 78
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 21,
-          "line": 62
+          "line": 73
         }
       },
       {
@@ -11076,13 +10861,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 73
+          "line": 84
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 21,
-          "line": 68
+          "line": 79
         }
       },
       {
@@ -11090,13 +10875,55 @@
         "description": "Label for password error in the wallet send confirmation dialog.",
         "end": {
           "column": 5,
-          "line": 79
+          "line": 90
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.passwordError",
         "start": {
           "column": 26,
-          "line": 74
+          "line": 85
+        }
+      },
+      {
+        "defaultMessage": "!!!unformatted amount",
+        "description": "Label for \"unformated amount\"",
+        "end": {
+          "column": 5,
+          "line": 95
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
+        "id": "wallet.send.confirmationDialog.unformattedAmountLabel",
+        "start": {
+          "column": 28,
+          "line": 91
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
+        "description": "Message for \"unformated amount\"",
+        "end": {
+          "column": 5,
+          "line": 102
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
+        "start": {
+          "column": 48,
+          "line": 96
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
+        "description": "Message for \"unformated amount\"",
+        "end": {
+          "column": 5,
+          "line": 109
+        },
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
+        "start": {
+          "column": 48,
+          "line": 103
         }
       },
       {
@@ -11104,17 +10931,17 @@
         "description": "Warning: This transaction will reduce your wallet's balance",
         "end": {
           "column": 5,
-          "line": 85
+          "line": 116
         },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.js",
+        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.js",
         "id": "wallet.send.confirmationDialog.emptyingWarning",
         "start": {
           "column": 21,
-          "line": 80
+          "line": 110
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.json"
+    "path": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.json"
   },
   {
     "descriptors": [
