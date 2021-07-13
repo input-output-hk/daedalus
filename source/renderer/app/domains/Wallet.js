@@ -215,10 +215,6 @@ export default class Wallet {
     return this.discovery !== WalletDiscovery.RANDOM;
   }
 
-  @computed get isDelegating(): boolean {
-    return !!this.delegatedStakePoolId;
-  }
-
   @computed get restorationProgress(): number {
     return get(this, 'syncState.progress.quantity', 0);
   }

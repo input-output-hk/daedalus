@@ -50,7 +50,6 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
-  onExternalLinkClick: Function,
   onCopyAssetItem: Function,
   currencyUnit: string,
   isTrezor: boolean,
@@ -194,15 +193,14 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             onKeyPress={this.handleSubmitOnEnter}
             autoFocus
           />
-          {wallet?.isDelegating &&
-            isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) && (
-              <div className={styles.flightCandidateWarning}>
-                <FormattedHTMLMessage
-                  {...getMessages().emptyingWarning}
-                  tagName="p"
-                />
-              </div>
-            )}
+          {isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) && (
+            <div className={styles.flightCandidateWarning}>
+              <FormattedHTMLMessage
+                {...getMessages().emptyingWarning}
+                tagName="p"
+              />
+            </div>
+          )}
         </>
       );
     }

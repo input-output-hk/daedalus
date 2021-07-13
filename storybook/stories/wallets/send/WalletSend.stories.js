@@ -378,31 +378,41 @@ storiesOf('Wallets|Send', module)
       </div>
     );
   })
-  .add('Wallet Send Confirmation Dialog With No Assets', () => (
-    <div>
-      <WalletSendConfirmationDialog
-        amount="20.000000"
-        totalAmount="21.000000"
-        currencyUnit="ADA"
-        sender={
-          generateWallet('Wallet name', '45119903750165', walletTokens).id
-        }
-        receiver={generateHash()}
-        transactionFee="1.000000"
-        amountToNaturalUnits={formattedAmountToNaturalUnits}
-        onSubmit={() => null}
-        isSubmitting={false}
-        error={null}
-        isFlight={false}
-        onCancel={() => null}
-        onExternalLinkClick={() => null}
-        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-        isHardwareWallet={boolean('isHardwareWallet', false)}
-        onInitiateTransaction={() => null}
-        walletName={
-          generateWallet('TrueUSD', '15119903750165', walletTokens).name
-        }
-        isTrezor={boolean('isTrezor', false)}
-      />
-    </div>
-  ));
+  .add('Wallet Send Confirmation Dialog With No Assets', () => {
+    // $FlowFixMe[prop-missing]
+    const wallet: Wallet = {
+      name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
+      amount: new BigNumber(100),
+      isDelegating: true,
+    };
+    return (
+      <div>
+        <WalletSendConfirmationDialog
+          amount="20.000000"
+          totalAmount="21.000000"
+          wallet={wallet}
+          currencyUnit="ADA"
+          sender={
+            generateWallet('Wallet name', '45119903750165', walletTokens).id
+          }
+          receiver={generateHash()}
+          transactionFee="1.000000"
+          amountToNaturalUnits={formattedAmountToNaturalUnits}
+          onSubmit={() => null}
+          isSubmitting={false}
+          error={null}
+          isFlight={false}
+          onCancel={() => null}
+          onExternalLinkClick={() => null}
+          hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+          isHardwareWallet={boolean('isHardwareWallet', false)}
+          onInitiateTransaction={() => null}
+          walletName={
+            generateWallet('TrueUSD', '15119903750165', walletTokens).name
+          }
+          isTrezor={boolean('isTrezor', false)}
+          currencyMaxFractionalDigits={1}
+        />
+      </div>
+    );
+  });
