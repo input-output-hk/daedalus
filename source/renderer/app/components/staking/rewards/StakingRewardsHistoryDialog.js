@@ -12,6 +12,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import type { Reward, RewardsHistoryItem } from '../../../api/staking/types';
 import styles from './StakingRewardsHistoryDialog.scss';
+import { PoolPopOver } from '../widgets/PoolPopOver';
 import globalMessages from '../../../i18n/global-messages';
 import Table from '../../widgets/Table';
 import StakePool from '../../../domains/StakePool';
@@ -127,9 +128,20 @@ export default class StakingRewardsHistoryDialog extends Component<
   };
 
   renderStakePool = (pool: StakePool) => {
+    const { currentTheme, onOpenExternalLink } = this.props;
     return (
       <div>
-        <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
+        <PoolPopOver
+          containerClassName="StakingRewardsHistoryDialog_table"
+          currentTheme={currentTheme}
+          numberOfRankedStakePools={0}
+          onOpenExternalLink={onOpenExternalLink}
+          openOnHover
+          stakePool={pool}
+          hideRanking
+        >
+          <span className={styles.stakePoolTicker}>[{pool.ticker}] </span>
+        </PoolPopOver>
         &nbsp;
         {pool.name}
       </div>
