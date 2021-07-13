@@ -110,7 +110,7 @@ export default class StakingRewards extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      rewardsOrder: REWARD_ORDERS.DESCENDING,
+      rewardsOrder: REWARD_ORDERS.ASCENDING,
       rewardsSortBy: REWARD_FIELDS.WALLET_NAME,
       contentScrollTop: 0,
     };
