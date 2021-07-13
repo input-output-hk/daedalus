@@ -131,7 +131,7 @@ export default class WalletSendConfirmationDialog extends Component<
 
   renderConfirmationElement = (
     isHardwareWallet: boolean
-  ): React.Node | null => {
+  ): React$Element<*> | null => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
