@@ -157,7 +157,9 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
 
-  renderConfirmationElement = (isHardwareWallet: boolean) => {
+  renderConfirmationElement = (
+    isHardwareWallet: boolean
+  ): React.Node | null => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
@@ -169,9 +171,19 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       isTrezor,
     } = this.props;
 
+    let returnJSX = null;
     if (!isFlight || (isFlight && areTermsAccepted)) {
-      if (isHardwareWallet) {
-        return (
+      const walletWarning = (
+        <div className={styles.flightCandidateWarning}>
+          <FormattedHTMLMessage
+            {...getMessages().emptyingWarning}
+            tagName="p"
+          />
+        </div>
+      );
+
+      returnJSX = isHardwareWallet ? (
+        <>
           <div className={styles.hardwareWalletStatusWrapper}>
             <HardwareWalletStatus
               hwDeviceStatus={hwDeviceStatus}
@@ -180,9 +192,10 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>
-        );
-      }
-      return (
+          {isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) &&
+            walletWarning}
+        </>
+      ) : (
         <>
           <Input
             type="password"
@@ -193,18 +206,12 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             onKeyPress={this.handleSubmitOnEnter}
             autoFocus
           />
-          {isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage
-                {...getMessages().emptyingWarning}
-                tagName="p"
-              />
-            </div>
-          )}
+          {isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) &&
+            walletWarning}
         </>
       );
     }
-    return null;
+    return returnJSX;
   };
 
   onCheckboxClick = (areTermsAccepted: boolean) => {
