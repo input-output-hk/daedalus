@@ -49,6 +49,8 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     const { closeActiveDialog } = actions.dialogs;
     const { currentDateFormat, currentTheme } = stores.profile;
     const { openExternalLink } = stores.app;
+    const { epochNumber } = stores.networkStatus.nextEpoch || {};
+    const lastEpoch = (epochNumber || 0) - 2;
     const {
       isFetchingRewardsHistory,
       rewardsHistory: rewardsHistoryObject,
@@ -56,6 +58,8 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
     const { requestRewardsHistoryCSVFile } = actions.staking;
     const rewardsHistory = rewardsHistoryObject[reward.rewardsAddress] || [];
     if (!reward) return null;
+    console.log('rewardsHistory', rewardsHistory);
+    console.log('reward', reward);
     return (
       <StakingRewardsHistoryDialog
         currentDateFormat={currentDateFormat}
@@ -68,6 +72,7 @@ export default class StakingRewardsHistoryDialogContainer extends Component<Prop
         reward={reward}
         rewardsHistory={toJS(rewardsHistory)}
         onCopyAddress={this.handleCopyAddress}
+        lastEpoch={lastEpoch}
       />
     );
   }

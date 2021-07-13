@@ -879,7 +879,7 @@ export default class StakingStore extends Store {
   _updateRewardsHistoryOnRequestChange = () => {
     const { result } = this.rewardsHistoryRequest;
     const { stakePools } = this.stores.staking;
-    const { epochNumber } = this.stores.networkStatus.nextEpoch || {};
+    // const { epochNumber } = this.stores.networkStatus.nextEpoch || {};
 
     // Only continue if rewards history data is available
     if (result == null || !result.length) return;
@@ -889,7 +889,14 @@ export default class StakingStore extends Store {
     runInAction(() => {
       this.rewardsHistory[address] = rewardsHistory
         ? rewardsHistory
-            .filter(({ epoch }) => !epochNumber || epoch < epochNumber - 2)
+            // .filter((item) => {
+            //   const { epoch } = item;
+            //   const pass = !epochNumber || epoch < epochNumber - 2;
+            //   if (!pass) {
+            //     console.log('FILTERED OUT', item);
+            //   }
+            //   return pass;
+            // })
             .filter(Boolean)
             .map(({ amount, epoch, stakePool }) => {
               const poolId = stakePool.id;
