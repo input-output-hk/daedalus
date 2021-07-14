@@ -985,7 +985,7 @@ export default class WalletSendForm extends Component<Props, State> {
             formattedTotalAmount={getTransactionTotalAmount(
               adaAmount,
               transactionFee
-            ).toFormat(currencyMaxFractionalDigits)}
+            )?.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
       </div>

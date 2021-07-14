@@ -137,49 +137,35 @@ export default class WalletSendConfirmationDialog extends Component<
     const {
       hwDeviceStatus,
       isFlight,
-      totalAmount,
       onExternalLinkClick,
       wallet,
       isTrezor,
     } = this.props;
 
-    let returnJSX;
     if (!isFlight || (isFlight && areTermsAccepted)) {
-      const walletWarning = (
-        <div className={styles.flightCandidateWarning}>
-          <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
-        </div>
-      );
       const { name } = wallet;
-
-      returnJSX = isHardwareWallet ? (
-        <>
-          <div className={styles.hardwareWalletStatusWrapper}>
-            <HardwareWalletStatus
-              hwDeviceStatus={hwDeviceStatus}
-              walletName={name}
-              isTrezor={isTrezor}
-              onExternalLinkClick={onExternalLinkClick}
-            />
-          </div>
-          {shouldShowEmptyWalletWarning(totalAmount, wallet) && walletWarning}
-        </>
-      ) : (
-        <>
-          <Input
-            type="password"
-            className={styles.passphrase}
-            {...passphraseField.bind()}
-            error={passphraseField.error}
-            skin={InputSkin}
-            onKeyPress={this.handleSubmitOnEnter}
-            autoFocus
+      return isHardwareWallet ? (
+        <div className={styles.hardwareWalletStatusWrapper}>
+          <HardwareWalletStatus
+            hwDeviceStatus={hwDeviceStatus}
+            walletName={name}
+            isTrezor={isTrezor}
+            onExternalLinkClick={onExternalLinkClick}
           />
-          {shouldShowEmptyWalletWarning(totalAmount, wallet) && walletWarning}
-        </>
+        </div>
+      ) : (
+        <Input
+          type="password"
+          className={styles.passphrase}
+          {...passphraseField.bind()}
+          error={passphraseField.error}
+          skin={InputSkin}
+          onKeyPress={this.handleSubmitOnEnter}
+          autoFocus
+        />
       );
     }
-    return returnJSX;
+    return null;
   };
 
   onCheckboxClick = (areTermsAccepted: boolean) => {
@@ -210,6 +196,7 @@ export default class WalletSendConfirmationDialog extends Component<
       isHardwareWallet,
       wallet,
       formattedTotalAmount,
+      totalAmount,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -251,6 +238,11 @@ export default class WalletSendConfirmationDialog extends Component<
     }
 
     const { name } = wallet;
+    const walletWarning = (
+      <div className={styles.flightCandidateWarning}>
+        <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
+      </div>
+    );
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
@@ -322,10 +314,9 @@ export default class WalletSendConfirmationDialog extends Component<
               />
             </div>
           )}
-
           {this.renderConfirmationElement(isHardwareWallet)}
+          {shouldShowEmptyWalletWarning(totalAmount, wallet) && walletWarning}
         </div>
-
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
     );

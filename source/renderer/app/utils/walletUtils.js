@@ -22,7 +22,7 @@ export const shouldShowEmptyWalletWarning = (
 ): boolean => {
   const { amount, isLegacy, isDelegating } = wallet;
   const isNotDelegatingAndZeroBalance =
-    isDelegating && !amount.isGreaterThan(0);
+    isDelegating && !amount?.isGreaterThan(0);
   return (
     !isNotDelegatingAndZeroBalance &&
     !isLegacy &&
