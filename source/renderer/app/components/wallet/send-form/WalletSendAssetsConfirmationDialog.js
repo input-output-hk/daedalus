@@ -28,7 +28,7 @@ import Asset from '../../assets/Asset';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
-import { isWalletRewardsWithdrawalPossible } from '../../../utils/walletUtils';
+import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 
 const SHOW_TOTAL_AMOUNT = false;
 
@@ -178,7 +178,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
         </div>
       );
-      const { name, amount } = wallet;
+      const { name, isLegacy } = wallet;
       returnJSX = isHardwareWallet ? (
         <>
           <div className={styles.hardwareWalletStatusWrapper}>
@@ -189,7 +189,8 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>
-          {isWalletRewardsWithdrawalPossible(totalAmount, amount) &&
+          {!isLegacy &&
+            shouldShowEmptyWalletWarning(totalAmount, wallet) &&
             walletWarning}
         </>
       ) : (
@@ -203,7 +204,8 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             onKeyPress={this.handleSubmitOnEnter}
             autoFocus
           />
-          {isWalletRewardsWithdrawalPossible(totalAmount, amount) &&
+          {!isLegacy &&
+            shouldShowEmptyWalletWarning(totalAmount, wallet) &&
             walletWarning}
         </>
       );

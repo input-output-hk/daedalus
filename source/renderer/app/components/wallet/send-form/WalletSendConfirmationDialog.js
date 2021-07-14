@@ -21,7 +21,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
-import { isWalletRewardsWithdrawalPossible } from '../../../utils/walletUtils';
+import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 
 type Props = {
   amount: string,
@@ -131,7 +131,7 @@ export default class WalletSendConfirmationDialog extends Component<
 
   renderConfirmationElement = (
     isHardwareWallet: boolean
-  ): React$Element<*> | null => {
+  ): ?React$Element<*> => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
@@ -143,14 +143,15 @@ export default class WalletSendConfirmationDialog extends Component<
       isTrezor,
     } = this.props;
 
-    let returnJSX = null;
+    let returnJSX;
     if (!isFlight || (isFlight && areTermsAccepted)) {
       const walletWarning = (
         <div className={styles.flightCandidateWarning}>
           <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
         </div>
       );
-      const { name, amount } = wallet;
+      const { name } = wallet;
+
       returnJSX = isHardwareWallet ? (
         <>
           <div className={styles.hardwareWalletStatusWrapper}>
@@ -161,8 +162,7 @@ export default class WalletSendConfirmationDialog extends Component<
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>
-          {isWalletRewardsWithdrawalPossible(totalAmount, amount) &&
-            walletWarning}
+          {shouldShowEmptyWalletWarning(totalAmount, wallet) && walletWarning}
         </>
       ) : (
         <>
@@ -175,8 +175,7 @@ export default class WalletSendConfirmationDialog extends Component<
             onKeyPress={this.handleSubmitOnEnter}
             autoFocus
           />
-          {isWalletRewardsWithdrawalPossible(totalAmount, amount) &&
-            walletWarning}
+          {shouldShowEmptyWalletWarning(totalAmount, wallet) && walletWarning}
         </>
       );
     }
