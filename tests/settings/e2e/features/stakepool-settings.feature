@@ -28,6 +28,7 @@ Feature: Stake-pool server settings
     Then Stake-pool custom input box error message is displayed
     And I delete values in smash server custom url input box
     And I enter invalid server "https://www.google.ie" containing https
+    And I click on Daedalus logo to change focus
     And I click the stake-pool custom server input box submit button
     Then I see the "This url is not a valid SMASH server" error message displayed
 
