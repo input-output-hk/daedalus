@@ -23,7 +23,7 @@ type Props = {
   intl: intlShape.isRequired,
 };
 
-const WalletPublicKeyQRCodeDialog = observer((props: Props) => {
+const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
   const {
     walletName,
     walletPublicKey,
@@ -90,4 +90,4 @@ const WalletPublicKeyQRCodeDialog = observer((props: Props) => {
   );
 });
 
-export default injectIntl(WalletPublicKeyQRCodeDialog);
+export default injectIntl(ICOPublicKeyQRCodeDialog);
