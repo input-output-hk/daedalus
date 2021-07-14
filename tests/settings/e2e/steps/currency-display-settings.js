@@ -18,7 +18,7 @@ Then(/^I should see "([^"]*)" displayed beside wallet balance$/, function(ticker
   return this.client.waitForVisible(`//*[@class="WalletSummaryCurrency_currencyRate" and text()="${ticker}"]`);
 });
 
-When(/^I toggle the button (on|off) to change if I want to see my ada balance in other currencys$/, function(switchStatus) {
+When(/^I toggle the button (on|off) to change if I want to see my ada balance in other currency's$/, function(switchStatus) {
   let selector = DISPLAY_BALANCE_OTHER_CURRENCYS_TOGGLE_STATUS_ON;
   if(switchStatus === 'on'){
     selector = DISPLAY_BALANCE_OTHER_CURRENCYS_TOGGLE_STATUS_OFF;
@@ -34,7 +34,7 @@ Then(/^the currency selection box is (hidden|visible)$/, function(state) {
   return this.client.waitForVisible(SELECT_CURRENCY_DROPDOWN, null, invisibility);
 });
 
-Then(/^The wallet summary screen (does|does not) show ada balance in other currencys placeholder$/, function(switchstatus) {
+Then(/^The wallet summary screen (does|does not) show ada balance in other currency's placeholder$/, function(switchstatus) {
   let invisible = true;
   if (switchstatus === 'does') {
     invisible = false;

@@ -27,7 +27,7 @@ When(/^I click on Daedalus logo to change focus$/, function() {
   return this.waitAndClick(DAEDALUS_TOP_BAR_LOGO);
 });
 
-Then(/^"([^"]*)" is visible on stakepool screen above stake-pool list and is clickable$/, function(serverUrl) {
+Then(/^"([^"]*)" is visible on stake-pool screen above stake-pool list and is clickable$/, function(serverUrl) {
   return this.waitAndClick('//*[@class="StakePools_smashSettings"]//span[text()="Moderated by '+ serverUrl + '"]');
 });
 
@@ -67,7 +67,7 @@ When(/^I delete values in smash server custom url input box$/, function() {
   return this.waitAndClick(STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON);
 });
 
-When(/^I click the stake-pool custom server inputbox submit button$/, function() {
+When(/^I click the stake-pool custom server input box submit button$/, function() {
   return this.waitAndClick(STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_SUBMIT_BUTTON);
 });
 
