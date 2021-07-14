@@ -262,7 +262,7 @@
   },
   "resolutions": {
     "**/**/marked": "^0.7.0",
-    "**/**/minimatch": "3.0.2",
+    "**/**/minimatch": "^3.0.2",
     "**/**/unicode-properties": "1.1.0",
     "**/**/handlebars": "4.5.3",
     "**/**/minimist": "^1.2.2",
