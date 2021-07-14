@@ -15,11 +15,6 @@ import type {
 export async function getRewardsHistory(
   vars: GetRewardsForAddressesQueryVariables
 ): Promise<GetRewardsForAddressesQuery> {
-  console.log('getRewardsForAddressesQuery', getRewardsForAddressesQuery);
-  console.log(
-    'global.environment.cardanoGraphQlEndpoint',
-    global.environment.cardanoGraphQlEndpoint
-  );
   return request(
     global.environment.cardanoGraphQlEndpoint,
     print(getRewardsForAddressesQuery),

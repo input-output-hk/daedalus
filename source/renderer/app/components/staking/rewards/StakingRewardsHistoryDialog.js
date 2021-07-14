@@ -93,9 +93,6 @@ type Props = {
   reward: Reward,
   rewardsHistory: Array<RewardsHistoryItem>,
   onCopyAddress: Function,
-
-  // TEMP
-  lastEpoch: number,
 };
 
 type State = {
@@ -265,28 +262,6 @@ export default class StakingRewardsHistoryDialog extends Component<
       },
     ];
 
-    const total1 = reward.reward;
-    console.log('total1', total1.toFormat(6));
-    const total2 = rewardsHistory.reduce((total, item) => {
-      total = total.plus(item.amount);
-      return total;
-    }, new BigNumber(0));
-    console.log('total2', total2.toFormat(6));
-
-    window.BigNumberz = BigNumber;
-    const difference = total2.minus(total1);
-    let foundItem;
-
-    if (!total1.isEqualTo(total2)) {
-      console.log('difference', difference.toFormat(6));
-      foundItem = rewardsHistory.reduce((found, item) => {
-        if (item.amount.isEqualTo(difference)) {
-          return item;
-        }
-        return found;
-      }, null);
-    }
-
     const componentStyles = classnames([
       styles.component,
       'StakingRewardsHistoryDialog',
@@ -306,24 +281,10 @@ export default class StakingRewardsHistoryDialog extends Component<
         closeButton={<DialogCloseButton />}
         closeOnOverlayClick={false}
       >
-        <div className={styles.label}>DEBUG</div>
-
-        <ul>
-          <li>Total from withdraw: {total1.toFormat(6)}</li>
-          <li>Total from history: {total2.toFormat(6)}</li>
-          {!total1.isEqualTo(total2) && (
-            <>
-              <li>Differentce: {difference.toFormat(6)}</li>
-              {foundItem && <li>Item epoch: {foundItem.epoch}</li>}
-            </>
-          )}
-        </ul>
-
-        {/*
-
         <div className={styles.label}>
           {intl.formatMessage(messages.rewardsAddress)}
         </div>
+
         <CopyToClipboard text={rewardsAddress} onCopy={this.handleCopy}>
           <p className={styles.rewardsAddress}>
             {rewardsAddress}
@@ -338,7 +299,7 @@ export default class StakingRewardsHistoryDialog extends Component<
               </PopOver>
             </span>
           </p>
-        </CopyToClipboard> */}
+        </CopyToClipboard>
 
         {this.renderContent()}
       </Dialog>
