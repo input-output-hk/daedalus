@@ -29,9 +29,6 @@ When(/^I click on Daedalus logo to change focus$/, function() {
 
 Then(/^"([^"]*)" is visible on stakepool screen above stake-pool list and is clickable$/, function(serverUrl) {
   return this.waitAndClick('//*[@class="StakePools_smashSettings"]//span[text()="Moderated by '+ serverUrl + '"]');
-
-  // old element const MODERATED_BY_IOHK_DEVIO_HEADER_LINK = '//*[@class="StakePools_smashSettings"]//span[text()="Moderated by https://smash.cardano-testnet.iohkdev.io/"]';
-  // return this.client.waitForVisible(`//*[@class="WalletSummaryCurrency_currencyRate" and text()="${ticker}"]`);
 });
 
 Then(/^I am brought back to the stake-pool server settings screen$/, function() {
@@ -47,10 +44,6 @@ When(/^I open stake pool server dropdown$/, function() {
 });
 
 Then(/^The smash server input textBox is visible$/, function() {
-  const millisecondsToWait = 25000;
-  setTimeout(function() {
-  }, millisecondsToWait);
-
   return this.client.waitForVisible(SMASH_SERVER_URL_INPUT_BOX);
 });
 
