@@ -30,3 +30,4 @@ Feature: Stake-pool server settings
     And I enter invalid server "https://www.google.ie" containing https
     And I click the stake-pool custom server input box submit button
     Then I see the "This url is not a valid SMASH server" error message displayed
+

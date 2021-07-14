@@ -23,7 +23,7 @@ When(/^custom server is the default option$/, function() {
 });
 
 When(/^I click on Daedalus logo to change focus$/, function() {
-  // This step was necessary as sometimes if the focus is on text in the textbox the submit button could not recieve the click and i got a "Element is not clickable at point error"
+  // This step was necessary as when the error message for this box is displayed the submit button could not receive the click and i got a "Element is not clickable at point error"
   return this.waitAndClick(DAEDALUS_TOP_BAR_LOGO);
 });
 
