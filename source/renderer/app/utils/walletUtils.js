@@ -19,7 +19,7 @@ const isWalletRewardsWithdrawalPossible = (
 export const shouldShowEmptyWalletWarning = (
   totalAmount: BigNumber,
   wallet: Wallet
-) => {
+): boolean => {
   const { amount, isLegacy, isDelegating } = wallet;
   const isNotDelegatingAndZeroBalance =
     isDelegating && !amount.isGreaterThan(0);

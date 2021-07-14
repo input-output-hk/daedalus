@@ -982,9 +982,10 @@ export default class WalletSendForm extends Component<Props, State> {
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
-            formattedTotalAmount={adaAmount.toFormat(
-              getTransactionTotalAmount(adaAmount, transactionFee)
-            )}
+            formattedTotalAmount={getTransactionTotalAmount(
+              adaAmount,
+              transactionFee
+            ).toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
       </div>
