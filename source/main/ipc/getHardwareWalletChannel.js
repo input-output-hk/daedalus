@@ -590,7 +590,7 @@ export const handleHardwareWalletRequests = async (
       const errorName = error.name || 'UknownErrorName';
       const errorMessage = error.message || 'UknownErrorMessage';
       const isDeviceDisconnected = errorCode === 'DEVICE_NOT_CONNECTED';
-      const isDisconnectError = errorName === 'DisconnectedDevice';
+      const isDisconnectError = errorName === 'DisconnectedDevice' || errorMessage === 'Cannot write to hid device';
       //  errorMessage.toLowerCase().includes('cannot open device with path') ||
       //  errorMessage.toLowerCase().includes('cannot write to hid device') ||
       //  errorMessage.toLowerCase().includes('cannot write to closed device');
