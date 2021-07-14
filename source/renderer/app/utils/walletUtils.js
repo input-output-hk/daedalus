@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 // $FlowFixMe TODO: fix this in flowconfig
 export default import('@iohk-jormungandr/wallet-js').then((modules) => modules);
 
+// Minimal ada balance for withdrawing rewards
 const MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS: number = 10;
 
 export const isWalletRewardsWithdrawalPossible = (

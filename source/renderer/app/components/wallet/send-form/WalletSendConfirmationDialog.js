@@ -150,18 +150,18 @@ export default class WalletSendConfirmationDialog extends Component<
           <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
         </div>
       );
-
+      const { name, amount } = wallet;
       returnJSX = isHardwareWallet ? (
         <>
           <div className={styles.hardwareWalletStatusWrapper}>
             <HardwareWalletStatus
               hwDeviceStatus={hwDeviceStatus}
-              walletName={wallet?.name}
+              walletName={name}
               isTrezor={isTrezor}
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>
-          {isWalletRewardsWithdrawalPossible(totalAmount, wallet?.amount) &&
+          {isWalletRewardsWithdrawalPossible(totalAmount, amount) &&
             walletWarning}
         </>
       ) : (
@@ -175,7 +175,7 @@ export default class WalletSendConfirmationDialog extends Component<
             onKeyPress={this.handleSubmitOnEnter}
             autoFocus
           />
-          {isWalletRewardsWithdrawalPossible(totalAmount, wallet?.amount) &&
+          {isWalletRewardsWithdrawalPossible(totalAmount, amount) &&
             walletWarning}
         </>
       );
@@ -251,10 +251,11 @@ export default class WalletSendConfirmationDialog extends Component<
       );
     }
 
+    const { name } = wallet;
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
-        subtitle={wallet?.name}
+        subtitle={name}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
