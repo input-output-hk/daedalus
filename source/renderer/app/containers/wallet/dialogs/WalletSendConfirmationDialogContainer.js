@@ -24,7 +24,7 @@ type Props = {
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
-  currencyMaxFractionalDigits: number,
+  formattedTotalAmount: string,
 };
 
 @inject('actions', 'stores')
@@ -71,7 +71,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       currencyUnit,
       hwDeviceStatus,
       isHardwareWallet,
-      currencyMaxFractionalDigits,
+      formattedTotalAmount,
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
@@ -126,7 +126,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             onInitiateTransaction={this.handleInitiateTransaction}
             onCopyAssetItem={this.handleOnCopyAssetItem}
             isTrezor={isTrezor}
-            currencyMaxFractionalDigits={currencyMaxFractionalDigits}
+            formattedTotalAmount={formattedTotalAmount}
           />
         ) : (
           <WalletSendConfirmationDialog
@@ -151,7 +151,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
             isTrezor={isTrezor}
-            currencyMaxFractionalDigits={currencyMaxFractionalDigits}
+            formattedTotalAmount={formattedTotalAmount}
           />
         )}
       </>

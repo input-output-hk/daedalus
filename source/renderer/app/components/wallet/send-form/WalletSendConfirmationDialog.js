@@ -21,7 +21,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
-import { isWalletEmptyWitoutRewards } from '../../../utils/walletUtils';
+import { isWalletRewardsWithdrawalPossible } from '../../../utils/walletUtils';
 
 type Props = {
   amount: string,
@@ -41,12 +41,14 @@ type Props = {
   onInitiateTransaction: Function,
   onExternalLinkClick: Function,
   isTrezor: boolean,
-  currencyMaxFractionalDigits: number,
+  formattedTotalAmount: string,
 };
 
 type State = {
   areTermsAccepted: boolean,
 };
+
+const messages = getMessages();
 
 @observer
 export default class WalletSendConfirmationDialog extends Component<
@@ -66,9 +68,9 @@ export default class WalletSendConfirmationDialog extends Component<
       fields: {
         passphrase: {
           type: 'password',
-          label: this.context.intl.formatMessage(getMessages().passphraseLabel),
+          label: this.context.intl.formatMessage(messages.passphraseLabel),
           placeholder: this.context.intl.formatMessage(
-            getMessages().passphraseFieldPlaceholder
+            messages.passphraseFieldPlaceholder
           ),
           value: '',
           validators: [
@@ -77,9 +79,7 @@ export default class WalletSendConfirmationDialog extends Component<
               if (field.value === '') {
                 return [
                   false,
-                  this.context.intl.formatMessage(
-                    getMessages().fieldIsRequired
-                  ),
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
               return [true];
@@ -89,7 +89,7 @@ export default class WalletSendConfirmationDialog extends Component<
         flightCandidateCheckbox: {
           type: 'checkbox',
           label: this.context.intl.formatMessage(
-            getMessages().flightCandidateCheckboxLabel
+            messages.flightCandidateCheckboxLabel
           ),
         },
       },
@@ -147,10 +147,7 @@ export default class WalletSendConfirmationDialog extends Component<
     if (!isFlight || (isFlight && areTermsAccepted)) {
       const walletWarning = (
         <div className={styles.flightCandidateWarning}>
-          <FormattedHTMLMessage
-            {...getMessages().emptyingWarning}
-            tagName="p"
-          />
+          <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
         </div>
       );
 
@@ -164,7 +161,7 @@ export default class WalletSendConfirmationDialog extends Component<
               onExternalLinkClick={onExternalLinkClick}
             />
           </div>
-          {isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) &&
+          {isWalletRewardsWithdrawalPossible(totalAmount, wallet?.amount) &&
             walletWarning}
         </>
       ) : (
@@ -178,7 +175,7 @@ export default class WalletSendConfirmationDialog extends Component<
             onKeyPress={this.handleSubmitOnEnter}
             autoFocus
           />
-          {isWalletEmptyWitoutRewards(totalAmount, wallet?.amount) &&
+          {isWalletRewardsWithdrawalPossible(totalAmount, wallet?.amount) &&
             walletWarning}
         </>
       );
@@ -204,7 +201,6 @@ export default class WalletSendConfirmationDialog extends Component<
       onCancel,
       amount,
       receiver,
-      totalAmount,
       transactionFee,
       isSubmitting,
       isFlight,
@@ -214,18 +210,18 @@ export default class WalletSendConfirmationDialog extends Component<
       hwDeviceStatus,
       isHardwareWallet,
       wallet,
-      currencyMaxFractionalDigits,
+      formattedTotalAmount,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
-      intl.formatMessage(getMessages().sendButtonLabel)
+      intl.formatMessage(messages.sendButtonLabel)
     ) : (
       <LoadingSpinner />
     );
 
     const actions = [
       {
-        label: intl.formatMessage(getMessages().backButtonLabel),
+        label: intl.formatMessage(messages.backButtonLabel),
         onClick: !isSubmitting ? onCancel : () => {},
       },
       {
@@ -257,7 +253,7 @@ export default class WalletSendConfirmationDialog extends Component<
 
     return (
       <Dialog
-        title={intl.formatMessage(getMessages().dialogTitle)}
+        title={intl.formatMessage(messages.dialogTitle)}
         subtitle={wallet?.name}
         actions={actions}
         closeOnOverlayClick
@@ -269,7 +265,7 @@ export default class WalletSendConfirmationDialog extends Component<
         <div className={styles.passphraseFields}>
           <div className={styles.addressToLabelWrapper}>
             <div className={styles.addressToLabel}>
-              {intl.formatMessage(getMessages().addressToLabel)}
+              {intl.formatMessage(messages.addressToLabel)}
             </div>
             <div className={styles.addressTo}>{receiver}</div>
           </div>
@@ -277,7 +273,7 @@ export default class WalletSendConfirmationDialog extends Component<
           <div className={styles.amountFeesWrapper}>
             <div className={styles.amountWrapper}>
               <div className={styles.amountLabel}>
-                {intl.formatMessage(getMessages().amountLabel)}
+                {intl.formatMessage(messages.amountLabel)}
               </div>
               <div className={styles.amount}>
                 {amount}
@@ -289,7 +285,7 @@ export default class WalletSendConfirmationDialog extends Component<
 
             <div className={styles.feesWrapper}>
               <div className={styles.feesLabel}>
-                {intl.formatMessage(getMessages().feesLabel)}
+                {intl.formatMessage(messages.feesLabel)}
               </div>
               <div className={styles.fees}>
                 +{transactionFee}
@@ -302,10 +298,10 @@ export default class WalletSendConfirmationDialog extends Component<
 
           <div className={styles.totalAmountWrapper}>
             <div className={styles.totalAmountLabel}>
-              {intl.formatMessage(getMessages().totalLabel)}
+              {intl.formatMessage(messages.totalLabel)}
             </div>
             <div className={styles.totalAmount}>
-              {totalAmount.toFormat(currencyMaxFractionalDigits)}
+              {formattedTotalAmount}
               <span className={styles.currencyCode}>&nbsp;{currencyUnit}</span>
             </div>
           </div>
@@ -313,7 +309,7 @@ export default class WalletSendConfirmationDialog extends Component<
           {isFlight && (
             <div className={styles.flightCandidateWarning}>
               <FormattedHTMLMessage
-                {...getMessages().flightCandidateWarning}
+                {...messages.flightCandidateWarning}
                 tagName="p"
               />
               <Checkbox

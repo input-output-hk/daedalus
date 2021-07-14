@@ -25,7 +25,6 @@ import WalletSendConfirmationDialog from '../../../../source/renderer/app/compon
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
-import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 
 const allAssets = [
   generateAssetToken(
@@ -373,7 +372,7 @@ storiesOf('Wallets|Send', module)
           onInitiateTransaction={() => null}
           onCopyAssetItem={() => {}}
           isTrezor={boolean('isTrezor', false)}
-          currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
+          formattedTotalAmount="21.000000"
         />
       </div>
     );
@@ -411,7 +410,7 @@ storiesOf('Wallets|Send', module)
             generateWallet('TrueUSD', '15119903750165', walletTokens).name
           }
           isTrezor={boolean('isTrezor', false)}
-          currencyMaxFractionalDigits={1}
+          formattedTotalAmount="21.000000"
         />
       </div>
     );

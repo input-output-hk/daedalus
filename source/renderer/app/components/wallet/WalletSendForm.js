@@ -90,7 +90,7 @@ type State = {
   isTransactionFeeCalculated: boolean,
 };
 
-const getTransactionFeeCalculated = (
+const getTransactionTotalAmount = (
   adaAmount: BigNumber,
   transactionFee: BigNumber
 ): BigNumber => adaAmount.plus(transactionFee);
@@ -977,12 +977,14 @@ export default class WalletSendForm extends Component<Props, State> {
             assetsAmounts={this.selectedAssetsAmounts}
             amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
-            totalAmount={getTransactionFeeCalculated(adaAmount, transactionFee)}
+            totalAmount={getTransactionTotalAmount(adaAmount, transactionFee)}
             transactionFee={fees}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
-            currencyMaxFractionalDigits={currencyMaxFractionalDigits}
+            formattedTotalAmount={adaAmount.toFormat(
+              getTransactionTotalAmount(adaAmount, transactionFee)
+            )}
           />
         ) : null}
       </div>
