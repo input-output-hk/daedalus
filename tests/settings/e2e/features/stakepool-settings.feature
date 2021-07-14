@@ -16,7 +16,7 @@ Feature: Stake-pool server settings
     And I click the stake-pool custom server inputbox submit button
     And I see the your changes have been saved success message
     And I am on the Delegation "stake-pools" screen
-    Then "https://smash.cardano-testnet.iohkdev.io/" is visible on stake-pool screen above stake-pool list and is clickable
+    Then "https://smash.cardano-testnet.iohkdev.io/" is visible on stakepool screen above stake-pool list and is clickable
     And I am brought back to the stake-pool server settings screen
 
   Scenario: Verify stake-pool custom server textbox is visible and error message verification
