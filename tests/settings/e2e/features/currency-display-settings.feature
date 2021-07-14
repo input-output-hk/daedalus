@@ -19,7 +19,6 @@ Feature: Wallet currency display settings
       | Litecoin  | LTC    |
       | Stellar   | XLM    |
 
-
   Scenario: User hits toggle button to show/not show ada wallet balance in other currencys
     Given I am on the General Settings "wallets" screen
     When I toggle the button off to change if I want to see my ada balance in other currencys
