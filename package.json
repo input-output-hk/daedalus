@@ -170,7 +170,7 @@
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "3.1.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
-    "@ledgerhq/hw-transport-node-hid": "6.0.1",
+    "@ledgerhq/hw-transport-node-hid": "6.0.1-typescript.0",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
     "bignumber.js": "9.0.1",
@@ -263,9 +263,9 @@
   "resolutions": {
     "**/**/marked": "^0.7.0",
     "**/**/minimatch": "^3.0.2",
-    "**/**/unicode-properties": "1.2.2",
     "**/**/handlebars": "4.5.3",
     "**/**/minimist": "^1.2.2",
+    "**/**/unicode-properties": "1.1.0",
     "**/**/acorn": "^6.4.1",
     "**/**/elliptic": "^6.5.3",
     "**/**/bl": "^4.0.3",

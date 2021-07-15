@@ -1189,7 +1189,7 @@
     "@ledgerhq/logs" "^5.26.0"
     rxjs "^6.6.3"
 
-"@ledgerhq/devices@^6.0.1", "@ledgerhq/devices@^6.1.0":
+"@ledgerhq/devices@^6.0.1-typescript.0", "@ledgerhq/devices@^6.1.0":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-6.1.0.tgz#54963409011c0bb83e2cc3d4d55ad9b905e296ff"
   dependencies:
@@ -1202,11 +1202,11 @@
   version "5.26.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.26.0.tgz#a2d3da356e8053817b6517a94eff876ca1d0c972"
 
-"@ledgerhq/errors@^6.0.1", "@ledgerhq/errors@^6.0.2":
+"@ledgerhq/errors@^6.0.1-typescript.0", "@ledgerhq/errors@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.0.2.tgz#7c88d16620db08c96de6a2636440db1c0e541da1"
 
-"@ledgerhq/hw-transport-node-hid-noevents@^6.0.1":
+"@ledgerhq/hw-transport-node-hid-noevents@^6.0.1-typescript.0":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid-noevents/-/hw-transport-node-hid-noevents-6.1.0.tgz#b894dbe07234eb2a7a6751b1a298d00758b91731"
   dependencies:
@@ -1216,15 +1216,15 @@
     "@ledgerhq/logs" "^6.0.2"
     node-hid "2.1.1"
 
-"@ledgerhq/hw-transport-node-hid@6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid/-/hw-transport-node-hid-6.0.1.tgz#a1463157b2d5966c6b6dbb14313ed81b28398ec7"
+"@ledgerhq/hw-transport-node-hid@6.0.1-typescript.0":
+  version "6.0.1-typescript.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid/-/hw-transport-node-hid-6.0.1-typescript.0.tgz#6ae4ce00d91691a2128de05ae548d57b68db6e06"
   dependencies:
-    "@ledgerhq/devices" "^6.0.1"
-    "@ledgerhq/errors" "^6.0.1"
-    "@ledgerhq/hw-transport" "^6.0.1"
-    "@ledgerhq/hw-transport-node-hid-noevents" "^6.0.1"
-    "@ledgerhq/logs" "^6.0.1"
+    "@ledgerhq/devices" "^6.0.1-typescript.0"
+    "@ledgerhq/errors" "^6.0.1-typescript.0"
+    "@ledgerhq/hw-transport" "^6.0.1-typescript.0"
+    "@ledgerhq/hw-transport-node-hid-noevents" "^6.0.1-typescript.0"
+    "@ledgerhq/logs" "^6.0.1-typescript.0"
     lodash "^4.17.21"
     node-hid "2.1.1"
     usb "^1.7.0"
@@ -1237,7 +1237,7 @@
     "@ledgerhq/errors" "^5.26.0"
     events "^3.2.0"
 
-"@ledgerhq/hw-transport@^6.0.1", "@ledgerhq/hw-transport@^6.1.0":
+"@ledgerhq/hw-transport@^6.0.1-typescript.0", "@ledgerhq/hw-transport@^6.1.0":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.1.0.tgz#b50151c6199e9ad6d3ab9e447532a22170c9f3b7"
   dependencies:
@@ -1249,7 +1249,7 @@
   version "5.26.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.26.0.tgz#171bd471265259663520abb02a0eed80e949e3a1"
 
-"@ledgerhq/logs@^6.0.1", "@ledgerhq/logs@^6.0.2":
+"@ledgerhq/logs@^6.0.1-typescript.0", "@ledgerhq/logs@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.0.2.tgz#a6063ed99461c0d2c36a48de89ed0283f13cb908"
 
@@ -3471,10 +3471,6 @@ base64-js@^1.0.2, base64-js@^1.1.2, base64-js@^1.2.3:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.1.tgz#58ece8cb75dd07e71ed08c736abc5fac4dbf8df1"
 
-base64-js@^1.3.0:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
-
 base64-js@^1.3.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
@@ -3593,24 +3589,11 @@ blake2b-wasm@^1.1.0:
   dependencies:
     nanoassert "^1.0.0"
 
-"blake2b-wasm@https://github.com/BitGo/blake2b-wasm#193cdb71656c1a6c7f89b05d0327bb9b758d071b":
-  version "2.0.0"
-  resolved "https://github.com/BitGo/blake2b-wasm#193cdb71656c1a6c7f89b05d0327bb9b758d071b"
-  dependencies:
-    nanoassert "^1.0.0"
-
 blake2b@2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/blake2b/-/blake2b-2.1.3.tgz#f5388be424768e7c6327025dad0c3c6d83351bca"
   dependencies:
     blake2b-wasm "^1.1.0"
-    nanoassert "^1.0.0"
-
-"blake2b@https://github.com/BitGo/blake2b#6268e6dd678661e0acc4359e9171b97eb1ebf8ac":
-  version "2.1.3"
-  resolved "https://github.com/BitGo/blake2b#6268e6dd678661e0acc4359e9171b97eb1ebf8ac"
-  dependencies:
-    blake2b-wasm "https://github.com/BitGo/blake2b-wasm#193cdb71656c1a6c7f89b05d0327bb9b758d071b"
     nanoassert "^1.0.0"
 
 blakejs@1.1.0, blakejs@^1.1.0:
@@ -3714,6 +3697,15 @@ braces@^1.8.2, braces@^2.3.1, braces@^2.3.2, braces@^3.0.1, braces@~3.0.2:
     to-regex "^3.0.1"
 
 brfs@^1.3.0:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/brfs/-/brfs-1.6.1.tgz#b78ce2336d818e25eea04a0947cba6d4fb8849c3"
+  dependencies:
+    quote-stream "^1.0.1"
+    resolve "^1.1.5"
+    static-module "^2.2.0"
+    through2 "^2.0.0"
+
+brfs@^1.4.0:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/brfs/-/brfs-1.6.1.tgz#b78ce2336d818e25eea04a0947cba6d4fb8849c3"
   dependencies:
@@ -16154,19 +16146,19 @@ unicode-match-property-value-ecmascript@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/unicode-match-property-value-ecmascript/-/unicode-match-property-value-ecmascript-1.2.0.tgz#0d91f600eeeb3096aa962b1d6fc88876e64ea531"
 
-unicode-properties@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/unicode-properties/-/unicode-properties-1.2.2.tgz#8ea79db656166f9c2eca157b0fd06c415dcf5b01"
+unicode-properties@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/unicode-properties/-/unicode-properties-1.1.0.tgz#7a96eef49f75682ea69d2315eec9ac43ffdf00c1"
   dependencies:
-    base64-js "^1.3.0"
-    unicode-trie "^1.0.0"
+    brfs "^1.4.0"
+    unicode-trie "^0.3.0"
 
 unicode-properties@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/unicode-properties/-/unicode-properties-1.2.2.tgz#8ea79db656166f9c2eca157b0fd06c415dcf5b01"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/unicode-properties/-/unicode-properties-1.1.0.tgz#7a96eef49f75682ea69d2315eec9ac43ffdf00c1"
   dependencies:
-    base64-js "^1.3.0"
-    unicode-trie "^1.0.0"
+    brfs "^1.4.0"
+    unicode-trie "^0.3.0"
 
 unicode-property-aliases-ecmascript@^1.0.4:
   version "1.1.0"
@@ -16175,13 +16167,6 @@ unicode-property-aliases-ecmascript@^1.0.4:
 unicode-trie@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/unicode-trie/-/unicode-trie-0.3.1.tgz#d671dddd89101a08bac37b6a5161010602052085"
-  dependencies:
-    pako "^0.2.5"
-    tiny-inflate "^1.0.0"
-
-unicode-trie@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/unicode-trie/-/unicode-trie-1.0.0.tgz#f649afdca127135edb55ca0ad7c8c60656d92ad1"
   dependencies:
     pako "^0.2.5"
     tiny-inflate "^1.0.0"
