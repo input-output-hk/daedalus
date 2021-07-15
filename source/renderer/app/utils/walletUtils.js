@@ -11,6 +11,8 @@ const isWalletRewardsWithdrawalPossible = (
   transactionAmount: BigNumber,
   walletBalance: BigNumber
 ): boolean =>
+  !!transactionAmount &&
+  !!walletBalance &&
   transactionAmount.isGreaterThan(
     walletBalance.minus(MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS)
   );
