@@ -18,14 +18,16 @@ const messages = defineMessages({
 
 type Props = {
   hasTadaIcon?: boolean,
+  isConnecting: boolean,
   intl: intlShape.isRequired,
 };
 
 const NodeConnectionIcon = observer((props: Props) => {
-  const { hasTadaIcon, intl } = props;
+  const { hasTadaIcon, isConnecting, intl } = props;
   const componentClasses = classNames([
     styles.component,
     hasTadaIcon ? styles.hasTadaIcon : null,
+    isConnecting ? styles.isConnecting : null,
   ]);
   return (
     <div className={componentClasses}>
