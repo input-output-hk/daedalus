@@ -2198,12 +2198,9 @@ export default class HardwareWalletsStore extends Store {
     });
 
     if (specificError) {
-      runInAction(
-        'HardwareWalletsStore:: Set Specific error',
-        () => {
-          this.specificError = specificError;
-        }
-      );
+      runInAction('HardwareWalletsStore:: Set Specific error', () => {
+        this.specificError = specificError;
+      });
       return;
     }
 
