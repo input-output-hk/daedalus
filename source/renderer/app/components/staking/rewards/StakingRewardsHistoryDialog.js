@@ -270,32 +270,6 @@ export default class StakingRewardsHistoryDialog extends Component<
       itemCopied ? styles.itemCopied : null,
     ]);
 
-    // console.log('reward', reward);
-    console.log('rewardsHistory', rewardsHistory);
-
-    const total1 = reward.reward;
-    // console.log('total1', total1.toFormat(6));
-    const total2 = rewardsHistory.reduce((total, item) => {
-      total = total.plus(item.amount);
-      return total;
-    }, new BigNumber(0));
-    // console.log('total2', total2.toFormat(6));
-
-    window.BigNumberz = BigNumber;
-    const difference = total2.minus(total1);
-    let foundItem;
-
-    if (!total1.isEqualTo(total2)) {
-      console.log('difference', difference.toFormat(6));
-      foundItem = rewardsHistory.reduce((found, item) => {
-        if (item.amount.isEqualTo(difference)) {
-          return item;
-        }
-        return found;
-      }, null);
-      console.log('foundItem', foundItem);
-    }
-
     const actions = [
       {
         label: intl.formatMessage(globalMessages.close),
