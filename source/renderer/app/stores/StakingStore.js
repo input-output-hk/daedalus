@@ -895,8 +895,7 @@ export default class StakingStore extends Store {
               const pool = stakePools.find((p) => p.id === poolId) || {
                 id: poolId,
               };
-              // const isUnpaid = !!epochNumber && epoch >= epochNumber - 2;
-              const isUnpaid = index === rewardsHistory.length - 1;
+              const isUnpaid = !!epochNumber && epoch >= epochNumber - 2;
               return {
                 pool,
                 epoch,

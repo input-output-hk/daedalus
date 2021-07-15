@@ -49,12 +49,17 @@ const generateReward = (index: number) =>
 
 const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const getRewardsHistory = (numberOfItems: ?number = 10) =>
+export const getRewardsHistory = (
+  numberOfItems: number = 10,
+  isLastItemUnpaid?: boolean = true
+) =>
   map(Array(numberOfItems).fill(), (x, index) => ({
-    // date: generateDate(index),
     epoch: generateEpoch(index),
     pool: generatePool(index),
     amount: generateReward(index),
+    isUnpaid: isLastItemUnpaid
+      ? numberOfItems > 1 && index + 1 === numberOfItems
+      : false,
   }));
 
 export const getRewardsApiHistoryDummyResponse = async (
