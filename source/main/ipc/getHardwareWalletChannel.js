@@ -435,6 +435,9 @@ export const handleHardwareWalletRequests = async (
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
+      logger.info('[HW-DEBUG] OBSERVER FAILURE: ', {
+        e
+      });
     }
   });
 
