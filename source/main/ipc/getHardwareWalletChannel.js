@@ -435,9 +435,19 @@ export const handleHardwareWalletRequests = async (
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
-      logger.info('[HW-DEBUG] OBSERVER FAILURE: ', {
-        e
-      });
+      getHardwareWalletConnectionChannel.send(
+        {
+          disconnected: false,
+          deviceType: 'ledger',
+          deviceId: null, // 123456ABCDEF
+          deviceModel: 'nanoS', // e.g. T
+          deviceName: 'some label', // e.g. Test Name
+          path: null,
+          specificError: e,
+        },
+        // $FlowFixMe
+        mainWindow
+      );
     }
   });
 

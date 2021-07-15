@@ -239,6 +239,7 @@ export default class HardwareWalletsStore extends Store {
   @observable activeDelegationWalletId: ?string = null;
   @observable activeVotingWalletId: ?string = null;
   @observable votingData: ?VotingDataType = null;
+  @observable specificError: ?any = null;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -2190,10 +2191,21 @@ export default class HardwareWalletsStore extends Store {
       path,
       error,
       eventType,
+      specificError,
     } = params;
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
+
+    if (specificError) {
+      runInAction(
+        'HardwareWalletsStore:: Set Specific error',
+        () => {
+          this.specificError = specificError;
+        }
+      );
+      return;
+    }
 
     // Handle Trezor Bridge instance checker
     if (error && deviceType === DeviceTypes.TREZOR) {
