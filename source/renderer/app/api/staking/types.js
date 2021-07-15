@@ -158,4 +158,5 @@ export type RewardsHistoryItem = {
   amount: BigNumber,
   epoch: number,
   pool: $Shape<StakePool>,
+  isUnpaid: boolean,
 };

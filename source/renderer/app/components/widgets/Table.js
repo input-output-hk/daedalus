@@ -46,6 +46,7 @@ type Props = {
   isCompact?: boolean,
   initialSortBy?: string,
   initialSortDirection?: SortDirection,
+  rowClassname?: Function,
 };
 
 type State = {
@@ -147,10 +148,14 @@ export default class Table extends Component<Props, State> {
   };
 
   renderRows = () => {
-    const { rows, columns, onClickRow, enableSort } = this.props;
+    const { rows, columns, onClickRow, enableSort, rowClassname } = this.props;
     const tableData = enableSort ? this.getSortedData() : rows;
     return map(tableData, (item: TableRow, key) => (
-      <tr key={key} onClick={onClickRow}>
+      <tr
+        className={rowClassname ? rowClassname(item) : null}
+        key={key}
+        onClick={onClickRow}
+      >
         {map(columns, (column) => this.renderRow(column, item, key))}
       </tr>
     ));
@@ -160,7 +165,7 @@ export default class Table extends Component<Props, State> {
     const { onClickCell } = this.props;
     const { id: columnId, render } = column;
     const rawValue = row[columnId];
-    const renderedValue = render ? render(rawValue) : rawValue;
+    const renderedValue = render ? render(rawValue, row) : rawValue;
     return (
       <td
         key={key + columnId}

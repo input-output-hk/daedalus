@@ -74,6 +74,27 @@
     td {
       font-family: var(--font-regular);
     }
+    tr {
+      &:hover {
+        .unpaidPopover {
+          display: block;
+        }
+      }
+    }
+    .unpaidRow {
+      :global {
+        .epoch,
+        .pool,
+        .amount > span {
+          opacity: 0.5;
+        }
+        .amount {
+          .tippy-content {
+            white-space: nowrap;
+          }
+        }
+      }
+    }
     :global {
       th.amount {
         text-align: right;
@@ -89,6 +110,9 @@
         padding: 0 13px 0 0px;
       }
     }
+  }
+  .unpaidPopover {
+    display: none;
   }
   .stakePoolTicker {
     color: var(--theme-staking-stake-pool-tooltip-link-color);

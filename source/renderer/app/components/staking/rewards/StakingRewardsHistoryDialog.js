@@ -81,6 +81,11 @@ const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
     description: '"No Data Link Url" on the rewards history dialog.',
   },
+  unpaidEpoch: {
+    id: 'staking.rewardsHistory.dialog.unpaidEpoch',
+    defaultMessage: '!!!This item was not paid yet',
+    description: '"Unpaid Epoch" on the rewards history dialog.',
+  },
 });
 
 type Props = {
@@ -204,7 +209,19 @@ export default class StakingRewardsHistoryDialog extends Component<
         title: intl.formatMessage(messages.columnAmount),
         id: 'amount',
         type: 'bigNumber',
-        render: (rewardAmount: BigNumber) => rewardAmount.toFormat(6),
+        render: (rewardAmount: BigNumber, { isUnpaid }: RewardsHistoryItem) =>
+          isUnpaid ? (
+            <PopOver
+              content={intl.formatMessage(messages.unpaidEpoch)}
+              className={styles.unpaidPopover}
+              appendTo="parent"
+              visible
+            >
+              {rewardAmount.toFormat(6)}
+            </PopOver>
+          ) : (
+            rewardAmount.toFormat(6)
+          ),
       },
     ];
 
@@ -228,6 +245,9 @@ export default class StakingRewardsHistoryDialog extends Component<
         maxHeight={265}
         isCompact
         initialSortDirection="asc"
+        rowClassname={({ isUnpaid }: RewardsHistoryItem) =>
+          isUnpaid ? styles.unpaidRow : null
+        }
       />
     );
   };
@@ -249,6 +269,33 @@ export default class StakingRewardsHistoryDialog extends Component<
       itemCopied ? styles.visible : null,
       itemCopied ? styles.itemCopied : null,
     ]);
+
+    // console.log('reward', reward);
+    console.log('rewardsHistory', rewardsHistory);
+
+    const total1 = reward.reward;
+    // console.log('total1', total1.toFormat(6));
+    const total2 = rewardsHistory.reduce((total, item) => {
+      total = total.plus(item.amount);
+      return total;
+    }, new BigNumber(0));
+    // console.log('total2', total2.toFormat(6));
+
+    window.BigNumberz = BigNumber;
+    const difference = total2.minus(total1);
+    let foundItem;
+
+    if (!total1.isEqualTo(total2)) {
+      console.log('difference', difference.toFormat(6));
+      foundItem = rewardsHistory.reduce((found, item) => {
+        if (item.amount.isEqualTo(difference)) {
+          return item;
+        }
+        return found;
+      }, null);
+      console.log('foundItem', foundItem);
+    }
+
     const actions = [
       {
         label: intl.formatMessage(globalMessages.close),

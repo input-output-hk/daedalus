@@ -889,17 +889,19 @@ export default class StakingStore extends Store {
     runInAction(() => {
       this.rewardsHistory[address] = rewardsHistory
         ? rewardsHistory
-            .filter(({ epoch }) => !epochNumber || epoch < epochNumber - 2)
             .filter(Boolean)
-            .map(({ amount, epoch, stakePool }) => {
+            .map(({ amount, epoch, stakePool }, index) => {
               const poolId = stakePool.id;
               const pool = stakePools.find((p) => p.id === poolId) || {
                 id: poolId,
               };
+              // const isUnpaid = !!epochNumber && epoch >= epochNumber - 2;
+              const isUnpaid = index === rewardsHistory.length - 1;
               return {
                 pool,
                 epoch,
                 amount,
+                isUnpaid,
               };
             })
         : [];
