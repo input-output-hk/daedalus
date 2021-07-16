@@ -8019,6 +8019,20 @@
           "column": 23,
           "line": 54
         }
+      },
+      {
+        "defaultMessage": "!!!Reset",
+        "description": "Reset pin codes tooltip.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.resetPinCodes",
+        "start": {
+          "column": 17,
+          "line": 60
+        }
       }
     ],
     "path": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.json"

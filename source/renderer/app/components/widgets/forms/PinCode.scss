@@ -7,12 +7,91 @@
     }
 
     .SimpleInput_input {
+      background-color: var(--rp-input-bg-color-disabled);
+      border-color: transparent;
+      color: var(--rp-input-text-color);
       font-family: var(--font-regular);
       font-size: 14px;
       height: 50px;
       padding: 10px 10px;
       text-align: center;
+      user-select: none;
       width: 50px;
+
+      &:focus {
+        background-color: var(--theme-input-background-color);
+        border-color: var(--rp-input-border-color-focus);
+      }
+    }
+  }
+
+  .labelContainer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    .buttonsContainer {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 10px;
+    }
+  }
+
+  .clearPinCodeButton {
+    align-items: center;
+    border-radius: 3px;
+    display: flex;
+    font-family: var(--font-semibold);
+    font-size: 10px;
+    height: 20px;
+    justify-content: center;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    margin-right: 10px;
+    text-transform: uppercase;
+    width: 50px;
+  }
+
+  .pinCodeButton {
+    align-items: center;
+    border-radius: 3px;
+    display: flex;
+    height: 20px;
+    justify-content: center;
+    width: 20px;
+
+    &:focus {
+      box-shadow: none !important;
+    }
+
+    :global {
+      .SVGInline {
+        svg {
+          g g,
+          path {
+            fill: var(--theme-button-flat-text-color);
+          }
+        }
+      }
+    }
+  }
+
+  .revealButton {
+    :global {
+      .SVGInline {
+        height: 21px;
+        width: 12px;
+      }
+    }
+  }
+
+  .hideButton {
+    :global {
+      .SVGInline {
+        height: 18px;
+        width: 12px;
+      }
     }
   }
 
