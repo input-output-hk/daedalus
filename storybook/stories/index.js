@@ -29,6 +29,7 @@ import './news/AlertsOverlay.stories';
 import './news/AppUpdateOverlay.stories';
 
 // Navigation
+import './navigation/TopBar.stories';
 import './navigation/Sidebar.stories';
 import './navigation/SidebarCategory.stories';
 import './navigation/SidebarWalletsMenu.stories';

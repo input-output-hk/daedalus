@@ -891,6 +891,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-topbar-wallet-name-color': '#fafbfc',
     '--theme-topbar-wallet-info-color': '#fafbfc',
     '--theme-topbar-logo-color': 'rgb(250, 251, 252)',
+    '--theme-topbar-no-connection-warning-color': '#f2a218',
   },
   transactions: {
     '--theme-transactions-list-background-color': '#fafbfc',

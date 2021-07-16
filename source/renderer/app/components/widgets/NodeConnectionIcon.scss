@@ -1,0 +1,26 @@
+.component {
+  overflow: visible;
+  position: absolute;
+  right: 100px;
+
+  &.hasTadaIcon {
+    right: 162px;
+  }
+  :global {
+    .SimplePopOver_root.PopOverOverrides_root {
+      background-color: var(--theme-topbar-no-connection-warning-color);
+      .tippy-arrow {
+        &:before {
+          background-color: var(--theme-topbar-no-connection-warning-color);
+        }
+      }
+    }
+  }
+}
+.icon {
+  position: relative;
+  svg {
+    height: 22px;
+    width: 22px;
+  }
+}
