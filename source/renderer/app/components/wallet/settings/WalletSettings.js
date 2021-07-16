@@ -10,7 +10,6 @@ import {
   IS_WALLET_PUBLIC_KEY_SHARING_ENABLED,
   IS_WALLET_UNDELEGATION_ENABLED,
 } from '../../../config/walletsConfig';
-import { WalletDelegationStatuses } from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
@@ -122,6 +121,7 @@ type Props = {
   lastDelegationStakePoolStatus: ?string,
   isRestoring: boolean,
   isSyncing: boolean,
+  isDelegating: boolean,
   walletPublicKey: ?string,
   icoPublicKey: ?string,
   creationDate: Date,
@@ -215,8 +215,7 @@ export default class WalletSettings extends Component<Props, State> {
   renderUndelegateWalletBox = () => {
     const { intl } = this.context;
     const {
-      delegationStakePoolStatus,
-      lastDelegationStakePoolStatus,
+      isDelegating,
       isRestoring,
       isSyncing,
       isLegacy,
@@ -224,9 +223,6 @@ export default class WalletSettings extends Component<Props, State> {
       onDelegateClick,
       undelegateWalletDialogContainer,
     } = this.props;
-    const isDelegating = lastDelegationStakePoolStatus
-      ? lastDelegationStakePoolStatus === WalletDelegationStatuses.DELEGATING
-      : delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
 
     /// @TODO: Once undelegation for rewarded wallet works fine with api, remove reward checking and config
     if (!IS_WALLET_UNDELEGATION_ENABLED || isLegacy) {

@@ -406,6 +406,7 @@ export default (props: { locale: Locale }) => {
       wordCount={number('wordCount', 12)}
       shouldDisplayRecoveryPhrase={boolean('shouldDisplayRecoveryPhrase', true)}
       isHardwareWallet={false}
+      isDelegating={false}
     />
   );
 };

@@ -706,7 +706,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
+      this.isAddressFromSameWallet() ? styles.sameReceiverInput : null,
     ]);
 
     const minAdaRequiredTooltip = selectedAssetUniqueIds.length
@@ -897,13 +897,11 @@ export default class WalletSendForm extends Component<Props, State> {
     const adaAmountField = form.$('adaAmount');
     const adaAmount = new BigNumber(adaAmountField.value || 0);
 
-    let fees = null;
-    let total = null;
+    let fees = '0';
+    let total = adaAmount;
     if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = adaAmount
-        .plus(transactionFee)
-        .toFormat(currencyMaxFractionalDigits);
+      total = adaAmount.plus(transactionFee);
     }
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -981,6 +979,7 @@ export default class WalletSendForm extends Component<Props, State> {
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
+            formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
       </div>

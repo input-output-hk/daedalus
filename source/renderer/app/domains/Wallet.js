@@ -211,6 +211,13 @@ export default class Wallet {
     return this.discovery === WalletDiscovery.RANDOM;
   }
 
+  @computed get isDelegating(): boolean {
+    return this.lastDelegationStakePoolStatus
+      ? this.lastDelegationStakePoolStatus ===
+          WalletDelegationStatuses.DELEGATING
+      : this.delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
+  }
+
   @computed get isSequential(): boolean {
     return this.discovery !== WalletDiscovery.RANDOM;
   }
