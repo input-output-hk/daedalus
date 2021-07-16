@@ -310,5 +310,4 @@ export type HardwareWalletConnectionRequest = {
     },
   },
   eventType?: DeviceEvent,
-  specificError?: any,
 };
