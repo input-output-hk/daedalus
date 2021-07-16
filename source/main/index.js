@@ -45,11 +45,14 @@ import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrat
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 
+const platform = os.platform();
+
 /* eslint-disable consistent-return */
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
+let forceQuit = false;
 
 const {
   isDev,
@@ -218,8 +221,22 @@ const onAppReady = async () => {
     logger.info(
       'mainWindow received <close> event. Safe exiting Daedalus now.'
     );
-    event.preventDefault();
-    await safeExit();
+
+    if (platform === 'darwin' && forceQuit) {
+      mainWindow = null;
+    } else {
+      event.preventDefault();
+      app.hide();
+      await safeExit();
+    }
+  });
+
+  app.on('before-quit', (event) => {
+    if (!forceQuit) {
+      event.preventDefault();
+      forceQuit = true;
+      app.quit();
+    }
   });
 
   buildAppMenus(mainWindow, cardanoNode, locale, {
