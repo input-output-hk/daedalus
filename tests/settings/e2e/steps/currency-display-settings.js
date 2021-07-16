@@ -27,17 +27,11 @@ When(/^I toggle the button (on|off) to change if I want to see my ada balance in
 });
 
 Then(/^the currency selection box is (hidden|visible)$/, function(state) {
-  let invisibility = false;
-  if (state === 'hidden') {
-    invisibility = true;
-  }
+  const invisibility:boolean = state !== 'visible'
   return this.client.waitForVisible(SELECT_CURRENCY_DROPDOWN, null, invisibility);
 });
 
-Then(/^The wallet summary screen (does|does not) show ada balance in other currency's placeholder$/, function(switchstatus) {
-  let invisible = true;
-  if (switchstatus === 'does') {
-    invisible = false;
-  }
+Then(/^The wallet summary screen (does|does not) show ada balance in other currency's placeholder$/, function(status) {
+  const invisible:boolean = status !== 'does'
   return this.client.waitForVisible(CONVERTED_CURRENCY_WALLET_DISPLAY_GENERAL, null, invisible);
 });
