@@ -238,11 +238,6 @@ export default class WalletSendConfirmationDialog extends Component<
     }
 
     const { name } = wallet;
-    const walletWarning = (
-      <div className={styles.flightCandidateWarning}>
-        <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
-      </div>
-    );
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
@@ -315,7 +310,11 @@ export default class WalletSendConfirmationDialog extends Component<
             </div>
           )}
           {this.renderConfirmationElement(isHardwareWallet)}
-          {shouldShowEmptyWalletWarning(totalAmount, wallet) && walletWarning}
+          {shouldShowEmptyWalletWarning(totalAmount, wallet) && (
+            <div className={styles.flightCandidateWarning}>
+              <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
+            </div>
+          )}
         </div>
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
