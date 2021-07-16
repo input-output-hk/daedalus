@@ -1,9 +1,15 @@
 // @flow
+export type FilterType = {
+  name?: string,
+  extensions: string[],
+};
+
 export type FileDialogRequestParams = {
+  name?: string,
   title?: string,
   defaultPath?: string,
   buttonLabel?: string,
-  filters?: Array<any>,
+  filters?: Array<FilterType>,
   properties?: Array<string>,
   message?: string,
   nameFieldLabel?: string,

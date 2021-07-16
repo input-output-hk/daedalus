@@ -175,7 +175,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
 
     // For other OS we launch the installer file after the app was closed
     app.on('quit', () => {
-      shell.openItem(filePath);
+      shell.openPath(filePath);
     });
     app.quit();
     return response(true, functionPrefix);

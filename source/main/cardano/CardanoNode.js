@@ -599,7 +599,7 @@ export class CardanoNode {
    * @param request
    * @returns {Promise<void>}
    */
-  setFault = async (request: FaultInjectionIpcRequest) => {
+  setFault = async (request: FaultInjectionIpcRequest): Promise<void> => {
     if (!this._node) return;
     const fault = request[0];
     const isEnabled = request[1];

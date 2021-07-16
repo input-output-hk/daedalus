@@ -23,11 +23,11 @@ export const getContentLength = (content: string) =>
 // legacy wallet ID utils
 const LEGACY_WALLET_ID_PREFIX = 'legacy_';
 
-export const getLegacyWalletId = (rawWalletId: string) =>
+export const getLegacyWalletId = (rawWalletId: string): string =>
   `${LEGACY_WALLET_ID_PREFIX}${rawWalletId}`;
 
-export const getRawWalletId = (legacyWalletId: string) =>
+export const getRawWalletId = (legacyWalletId: string): string =>
   legacyWalletId.replace(LEGACY_WALLET_ID_PREFIX, '');
 
-export const isLegacyWalletId = (walletId: string) =>
+export const isLegacyWalletId = (walletId: string): boolean =>
   walletId.startsWith(LEGACY_WALLET_ID_PREFIX);

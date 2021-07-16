@@ -18,7 +18,10 @@ import type {
   CardanoStatus,
   TlsConfig,
 } from '../../common/types/cardano-node.types';
-import type { ExportWalletsRendererRequest } from '../../common/ipc/api';
+import type {
+  ExportWalletsRendererRequest,
+  CardanoFaultInjectionRendererRequest,
+} from '../../common/ipc/api';
 import {
   cardanoAwaitUpdateChannel,
   cardanoFaultInjectionChannel,
@@ -174,13 +177,15 @@ export const setupCardanoNode = (
     return cardanoNode.restart(true); // forced restart
   });
 
-  cardanoFaultInjectionChannel.onReceive((fault) => {
-    logger.info(
-      'ipcMain: Received request to inject a fault into cardano node',
-      { fault }
-    );
-    return cardanoNode.setFault(fault);
-  });
+  cardanoFaultInjectionChannel.onReceive(
+    (fault: CardanoFaultInjectionRendererRequest) => {
+      logger.info(
+        'ipcMain: Received request to inject a fault into cardano node',
+        { fault }
+      );
+      return cardanoNode.setFault(fault);
+    }
+  );
 
   exportWalletsChannel.onRequest(
     ({ exportSourcePath, locale }: ExportWalletsRendererRequest) => {

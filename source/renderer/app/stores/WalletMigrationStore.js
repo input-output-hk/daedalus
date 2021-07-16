@@ -5,7 +5,6 @@ import { orderBy } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
-import LocalizableError from '../i18n/LocalizableError';
 import { exportWalletsChannel } from '../ipc/cardano.ipc';
 import { showOpenDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateWalletMigrationReportChannel } from '../ipc/generateWalletMigrationReportChannel';
@@ -13,6 +12,7 @@ import { logger } from '../utils/logging';
 import { getRawWalletId } from '../api/utils';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { ExportWalletsMainResponse } from '../../../common/ipc/api';
+import { toJS } from '../../../common/utils/helper';
 import type {
   WalletMigrationReportData,
   ExportedWalletData,
@@ -65,7 +65,7 @@ export default class WalletMigrationStore extends Store {
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
   @observable restorationErrors: Array<{
-    error: LocalizableError,
+    error: string,
     wallet: ExportedWalletData,
   }> = [];
 
@@ -196,12 +196,12 @@ export default class WalletMigrationStore extends Store {
   @action _updateWalletImportStatus = (
     index: number,
     status: WalletImportStatus,
-    error?: LocalizableError
+    error?: string
   ) => {
     const wallet = this.getExportedWalletByIndex(index);
     if (wallet) {
       wallet.import.status = status;
-      wallet.import.error = error || null;
+      if (error) wallet.import.error = error;
     }
   };
 
@@ -262,7 +262,7 @@ export default class WalletMigrationStore extends Store {
     logger.debug(
       `WalletMigrationStore: Exported ${this.exportedWalletsCount} wallets`,
       {
-        exportedWalletsData: this.exportedWalletsData,
+        exportedWalletsData: toJS(this.exportedWalletsData),
         exportErrors: this.exportErrors,
       }
     );
@@ -333,15 +333,17 @@ export default class WalletMigrationStore extends Store {
         this.restoredWallets.push(restoredWallet);
       });
     } catch (error) {
+      const errorStr =
+        error.defaultMessage || error.message || error.toString();
       runInAction('update restorationErrors', () => {
         const { name, isEmptyPassphrase } = exportedWallet;
         this._updateWalletImportStatus(
           index,
           WalletImportStatuses.ERRORED,
-          error
+          errorStr
         );
         this.restorationErrors.push({
-          error,
+          error: errorStr,
           wallet: { id, name, hasPassword: !isEmptyPassphrase },
         });
       });
@@ -368,7 +370,7 @@ export default class WalletMigrationStore extends Store {
     );
     try {
       await generateWalletMigrationReportChannel.send(
-        walletMigrationReportData
+        toJS(walletMigrationReportData)
       );
       logger.debug('WalletMigrationStore: Generated wallet migration report');
     } catch (error) {
@@ -515,7 +517,7 @@ export default class WalletMigrationStore extends Store {
       id: wallet.id,
       name: wallet.name,
       hasPassword: !wallet.isEmptyPassphrase,
-      import: wallet.import,
+      import: toJS(wallet.import),
     }));
   }
 

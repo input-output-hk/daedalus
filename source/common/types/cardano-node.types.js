@@ -47,6 +47,7 @@ export type CardanoNodeState =
   | 'updated'
   | 'crashed'
   | 'errored'
+  | 'unknown'
   | 'unrecoverable';
 
 export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {

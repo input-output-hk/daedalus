@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Update electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
+
 ## 4.2.0
 
 ### Features

@@ -1,5 +1,4 @@
 // @flow
-import LocalizableError from '../i18n/LocalizableError';
 
 export type WalletExportTypeChoices = 'full' | 'readOnly' | 'paperWallet';
 
@@ -39,7 +38,7 @@ export type ExportedByronWallet = {
   hasName: boolean,
   import: {
     status: WalletImportStatus,
-    error: ?LocalizableError,
+    error: string,
   },
   index: number,
 };

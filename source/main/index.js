@@ -35,17 +35,24 @@ import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathCha
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
+import type {
+  GenerateWalletMigrationReportRendererRequest,
+  SetStateSnapshotLogMainResponse,
+} from '../common/ipc/api';
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 
+const platform = os.platform();
+
 /* eslint-disable consistent-return */
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
+let forceQuit = false;
 
 const {
   isDev,
@@ -188,13 +195,17 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  setStateSnapshotLogChannel.onReceive((data) => {
-    return Promise.resolve(logStateSnapshot(data));
-  });
+  setStateSnapshotLogChannel.onReceive(
+    (data: SetStateSnapshotLogMainResponse) => {
+      return Promise.resolve(logStateSnapshot(data));
+    }
+  );
 
-  generateWalletMigrationReportChannel.onReceive((data) => {
-    return Promise.resolve(generateWalletMigrationReport(data));
-  });
+  generateWalletMigrationReportChannel.onReceive(
+    (data: GenerateWalletMigrationReportRendererRequest) => {
+      return Promise.resolve(generateWalletMigrationReport(data));
+    }
+  );
 
   getStateDirectoryPathChannel.onRequest(() =>
     Promise.resolve(stateDirectoryPath)
@@ -210,8 +221,22 @@ const onAppReady = async () => {
     logger.info(
       'mainWindow received <close> event. Safe exiting Daedalus now.'
     );
-    event.preventDefault();
-    await safeExit();
+
+    if (platform === 'darwin' && forceQuit) {
+      mainWindow = null;
+    } else {
+      event.preventDefault();
+      app.hide();
+      await safeExit();
+    }
+  });
+
+  app.on('before-quit', (event) => {
+    if (!forceQuit) {
+      event.preventDefault();
+      forceQuit = true;
+      app.quit();
+    }
   });
 
   buildAppMenus(mainWindow, cardanoNode, locale, {

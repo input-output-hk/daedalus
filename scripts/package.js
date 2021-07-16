@@ -7,7 +7,7 @@
 const os = require('os');
 const packager = require('electron-packager');
 const del = require('del');
-const exec = require('child_process').exec;
+const {exec} = require('child_process');
 const pkg = require('../package.json');
 
 /**

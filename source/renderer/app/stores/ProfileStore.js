@@ -1,7 +1,8 @@
 // @flow
-import { action, observable, computed, toJS, runInAction } from 'mobx';
+import { action, observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { includes, camelCase } from 'lodash';
+import { toJS } from '../../../common/utils/helper';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';
@@ -553,8 +554,12 @@ export default class ProfileStore extends Store {
         isTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
-        localTip,
-        networkTip,
+        localTip: localTip
+          ? { epoch: localTip.epoch, slot: localTip.slot }
+          : localTip,
+        networkTip: networkTip
+          ? { epoch: networkTip.epoch, slot: networkTip.slot }
+          : networkTip,
       };
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
