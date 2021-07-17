@@ -1,0 +1,22 @@
+query getRewardsForAddresses (
+  $addresses: [StakeAddress!]!
+  $limit: Int
+  $offset: Int
+  $order_by: [Reward_order_by!]
+) {
+  rewards(
+    limit: $limit
+    offset: $offset
+    order_by: $order_by
+    where: { address: { _in: $addresses }}
+  ) {
+    address
+    amount
+    earnedIn {
+      number
+    }
+    stakePool {
+      id
+    }
+  }
+}

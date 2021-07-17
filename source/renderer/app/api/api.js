@@ -27,6 +27,7 @@ import { inspectAddress } from './addresses/requests/inspectAddress';
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
 import { getNetworkClock } from './network/requests/getNetworkClock';
 import { getNetworkParameters } from './network/requests/getNetworkParameters';
+import { getRewardsHistory } from './staking/requests/getRewardsHistory';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -216,6 +217,8 @@ import type {
   GetSmashSettingsApiResponse,
   CheckSmashServerHealthApiResponse,
   PoolMetadataSource,
+  GetRewardsHistoryRequest,
+  GetRewardsHistoryResponse,
 } from './staking/types';
 
 // Voting Types
@@ -689,6 +692,20 @@ export default class AdaApi {
       return { withdrawals };
     } catch (error) {
       logger.error('AdaApi::getWithdrawals error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getRewardsHistory = async (
+    request: GetRewardsHistoryRequest
+  ): Promise<GetRewardsHistoryResponse> => {
+    logger.debug('AdaApi::getRewardsHistory called', { parameters: request });
+    try {
+      const result = await getRewardsHistory(request);
+      logger.debug('AdaApi::getRewardsHistory success', result);
+      return result.rewards.map(_createRewardsHistoryFromServerData);
+    } catch (error) {
+      logger.error('AdaApi::getRewardsHistory error', { error });
       throw new ApiError(error);
     }
   };
@@ -3003,6 +3020,17 @@ const _createStakePoolFromServerData = action(
       retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
     });
+  }
+);
+
+const _createRewardsHistoryFromServerData = action(
+  'AdaApi::_createRewardsHistoryFromServerData',
+  ({ address, amount: rawAmount, earnedIn, stakePool }) => {
+    const amount = new BigNumber(rawAmount.toString()).dividedBy(
+      LOVELACES_PER_ADA
+    );
+    const epoch = earnedIn.number;
+    return { address, amount, epoch, stakePool };
   }
 );
 

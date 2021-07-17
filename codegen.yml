@@ -1,0 +1,8 @@
+overwrite: true
+schema: node_modules/@cardano-graphql/client-ts/api/cardano-db-hasura/schema.graphql
+documents: source/**/*.graphql
+generates:
+  source/renderer/app/types/cardano-graphql.js:
+    plugins:
+      - flow
+      - flow-operations

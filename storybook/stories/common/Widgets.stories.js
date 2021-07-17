@@ -4,7 +4,15 @@ import { defineMessages, IntlProvider } from 'react-intl';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, number, text, date } from '@storybook/addon-knobs';
+import {
+  withKnobs,
+  boolean,
+  number,
+  text,
+  date,
+  select,
+} from '@storybook/addon-knobs';
+import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import StoryLayout from '../_support/StoryLayout';
@@ -20,6 +28,13 @@ import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shar
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
+import DateRange from '../../../source/renderer/app/components/widgets/forms/DateRange';
+import Dialog from '../../../source/renderer/app/components/widgets/Dialog';
+
+import {
+  LANGUAGE_OPTIONS,
+  DATE_ENGLISH_OPTIONS,
+} from '../../../source/renderer/app/config/profileConfig';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -203,4 +218,47 @@ storiesOf('Common|Widgets', module)
       <NormalSwitch onChange={action('onChange')} />
       <NormalSwitch onChange={action('onChange')} checked />
     </div>
-  ));
+  ))
+
+  .add(
+    'DateRange',
+    withState(
+      {
+        startDate: new Date(),
+        endDate: null,
+      },
+      (store) => {
+        const currentLocale = select(
+          'currentLocale',
+          LANGUAGE_OPTIONS.reduce((obj, language) => {
+            obj[language.value] = language.value;
+            return obj;
+          }, {}),
+          LANGUAGE_OPTIONS[0].value
+        );
+        const currentDateFormat = select(
+          'currentDateFormat',
+          DATE_ENGLISH_OPTIONS.reduce((obj, opt) => {
+            obj[opt.value] = opt.value;
+            return obj;
+          }, {}),
+          DATE_ENGLISH_OPTIONS[0].value
+        );
+        const { startDate, endDate } = store.state;
+        return (
+          <Dialog>
+            <DateRange
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(newState) => store.set(newState)}
+              currentTheme="ligh-blue"
+              currentLocale={currentLocale}
+              currentDateFormat={currentDateFormat}
+              label="Date range"
+            />
+            <div style={{ height: 400 }} />
+          </Dialog>
+        );
+      }
+    )
+  );

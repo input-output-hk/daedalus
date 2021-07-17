@@ -46,32 +46,25 @@ export default class StakePoolsListPage extends Component<Props> {
   };
 
   render() {
-    const {
-      uiDialogs,
-      staking,
-      app,
-      networkStatus,
-      profile,
-      wallets,
-    } = this.props.stores;
+    const { uiDialogs, staking, app, profile, wallets } = this.props.stores;
     const { currentTheme, currentLocale } = profile;
-    const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
       stakePools,
       selectedDelegationWalletId,
       stake,
-      fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
       smashServerUrl,
       maxDelegationFunds,
       isFetchingStakePools,
+      isLoadingStakePools,
     } = staking;
     const { all } = wallets;
-    const isLoading = !isSynced || fetchingStakePoolsFailed;
     const isRanking =
-      !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
+      !isLoadingStakePools &&
+      staking.isRanking &&
+      stakePoolsRequest.isExecuting;
 
     return (
       <Fragment>
@@ -87,7 +80,7 @@ export default class StakePoolsListPage extends Component<Props> {
           selectedDelegationWalletId={selectedDelegationWalletId}
           stake={stake}
           onDelegate={this.handleDelegate}
-          isLoading={isLoading}
+          isLoading={isLoadingStakePools}
           isFetching={isFetchingStakePools}
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}

@@ -1,8 +1,8 @@
 [
   {
     "date": "15.01.2019",
-    "wallet": "Main Wallet",
-    "reward": 0.2,
+    "wallet": "Wallet with no rewards",
+    "reward": 0,
     "rewardsAddress": "stake1u8v3renevakp4w3rgfd7629qz8ynzpd96chfh2eddytsvwg069gh4",
     "pool": {
       "id": "a476343dd1dd57d680656224886ad9c11b5c44f6331bf029e9008a702713eda4",

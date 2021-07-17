@@ -1,11 +1,12 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
+import StakingRewardsHistoryDialog from '../../components/staking/rewards/StakingRewardsHistoryDialog';
+import StakingRewardsHistoryDialogContainer from './dialogs/StakingRewardsHistoryDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { ellipsis } from '../../utils/strings';
-import { getNetworkExplorerUrl } from '../../utils/network';
+import type { Reward } from '../../api/staking/types';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -33,39 +34,32 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  onOpenExternalLink = (rewardsAddress: string) => {
-    const { app } = this.props.stores;
-    const {
-      environment: { network },
-    } = app;
-    const cardanoExplorerLink = `${getNetworkExplorerUrl(
-      network
-    )}/address/${rewardsAddress}`;
-    this.props.stores.app.openExternalLink(cardanoExplorerLink);
-  };
-
-  handleCopyAddress = (copiedAddress: string) => {
-    const address = ellipsis(copiedAddress, 15, 15);
-    this.props.actions.wallets.copyAddress.trigger({ address });
+  handleOpenWalletRewards = (reward: Reward) => {
+    const { updateDataForActiveDialog, open } = this.props.actions.dialogs;
+    open.trigger({ dialog: StakingRewardsHistoryDialog });
+    updateDataForActiveDialog.trigger({
+      data: { reward },
+    });
   };
 
   render() {
     const {
-      staking: { rewards },
-      wallets,
+      staking: { rewards, isLoadingStakePools },
+      uiDialogs,
     } = this.props.stores;
-    const { requestCSVFile } = this.props.actions.staking;
 
     return (
-      <StakingRewards
-        rewards={rewards}
-        isLoading={false}
-        isExporting={wallets.generatingRewardsCsvInProgress}
-        onLearnMoreClick={this.handleLearnMoreClick}
-        onExportCsv={requestCSVFile.trigger}
-        onCopyAddress={this.handleCopyAddress}
-        onOpenExternalLink={this.onOpenExternalLink}
-      />
+      <Fragment>
+        <StakingRewards
+          rewards={rewards}
+          isLoading={isLoadingStakePools}
+          onLearnMoreClick={this.handleLearnMoreClick}
+          onOpenWalletRewards={this.handleOpenWalletRewards}
+        />
+        {uiDialogs.isOpen(StakingRewardsHistoryDialog) ? (
+          <StakingRewardsHistoryDialogContainer />
+        ) : null}
+      </Fragment>
     );
   }
 }

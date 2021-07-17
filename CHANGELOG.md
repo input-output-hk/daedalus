@@ -17,6 +17,10 @@ Changelog
 
 ### Features
 
+- Implemented detailed earned rewards history ([PR 2572](https://github.com/input-output-hk/daedalus/pull/2572))
+- Integrated cardano-wallet Api native tokens decimal places value ([PR 2577](https://github.com/input-output-hk/daedalus/pull/2577))
+- Added address verification for "Trezor" hardware wallet devices ([PR 2558](https://github.com/input-output-hk/daedalus/pull/2558))
+- Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
 - Implemented sharing multi-signature public key ([PR 2604](https://github.com/input-output-hk/daedalus/pull/2604))
 - Implemented the expandable token view ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589), [PR 2609](https://github.com/input-output-hk/daedalus/pull/2609))
 
