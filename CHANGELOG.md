@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+- Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
+
 ## 4.2.0
 
 ### Features
