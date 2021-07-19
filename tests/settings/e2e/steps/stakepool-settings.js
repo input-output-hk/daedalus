@@ -1,10 +1,8 @@
-import { When, Then,} from 'cucumber';
+import { When, Then } from 'cucumber';
 
-const CHANGES_SAVED_SUCCESS_MESSAGE = '//*[@class="StakePoolsSettings_savingResultLabel"]';
 const CUSTOM_SERVER_DROPDOWN_OPTION = '//*[@class="SimpleInput_customValueWrapper"]//*[@value="Custom server"]';
 const DAEDALUS_TOP_BAR_LOGO = '//*[@class="TopBar_topBar TopBar_withoutWallet"]';
 const IS_ERROR_MESSAGE_ACTIVATED = '//*[@class="SimpleInput_input SimpleInput_errored"]';
-const NONE_FETCH_DATA_DIRECTLY_OPTION = '//*[@class="SimpleInput_customValueWrapper"]//*[@value="None - fetch the data directly"]';
 const NOT_A_VALID_SMASH_SERVER_ERROR_MESSAGE_ACTIVATED = '//*[@class="InlineEditingInput_errorMessage" and text()="This URL is not a valid SMASH server"]';
 const OFF_CHAIN_METADATA_SERVER_SMASH_LABEL = '//*[contains(text(), "Off-chain metadata server (SMASH)")]';
 const SMASH_SERVER_URL_INPUT_BOX = '//*[@label="SMASH server URL"]';
@@ -14,15 +12,11 @@ const STAKE_POOL_SERVER_DROPDOWN = '//*[@class="SimpleFormField_inputWrapper"]';
 const STAKE_POOL_SERVER_DROPDOWN_CUSTOM_OPTION = '//*[@class="ScrollbarsCustom-Content"]//span[text()="Custom server"]';
 const STAKE_POOLS_SUBMENU_SETTINGS = '//*[@class="SettingsMenu_component"]//button[text()="Stake pools"]';
 
-When(/^none fetch the data directly is the default option$/, function() {
-  return this.waitAndClick(NONE_FETCH_DATA_DIRECTLY_OPTION);
-});
-
 When(/^custom server is the default option$/, function() {
   return this.waitAndClick(CUSTOM_SERVER_DROPDOWN_OPTION);
 });
 
-When(/^I click on Daedalus logo to change focus$/, function() {
+When(/^I clicked outside of the input-box to change focus$/, function() {
   // This step was necessary as when the error message for this box is displayed the submit button could not receive the click and i got a "Element is not clickable at point error"
   return this.waitAndClick(DAEDALUS_TOP_BAR_LOGO);
 });
@@ -79,6 +73,6 @@ When(/^I click on stakepool subtab$/, function() {
   return this.waitAndClick(STAKE_POOLS_SUBMENU_SETTINGS);
 });
 
-Then(/^I see the your changes have been saved success message$/, function() {
-  return this.client.waitForVisible(CHANGES_SAVED_SUCCESS_MESSAGE);
+Then(/^I see the "([^"]*)" success message$/, function(message) {
+  return this.client.waitForVisible('//*[@class="StakePoolsSettings_savingResultLabel" and text()="'+ message + '"]');
 });

@@ -1,4 +1,4 @@
-@e2e @watch
+@e2e
 Feature: Stake-pool server settings
 
   Background:
@@ -12,9 +12,9 @@ Feature: Stake-pool server settings
     When custom server is the default option
     And The smash server input textBox is visible
     And I enter custom server "https://smash.cardano-testnet.iohkdev.io/" as the custom server option
-    And I click on Daedalus logo to change focus
+    And I clicked outside of the input-box to change focus
     And I click the stake-pool custom server input box submit button
-    And I see the your changes have been saved success message
+    And I see the "Your changes have been saved" success message
     And I am on the Delegation "stake-pools" screen
     Then "https://smash.cardano-testnet.iohkdev.io/" is visible on stake-pool screen above stake-pool list and is clickable
     And I am brought back to the stake-pool server settings screen
@@ -28,7 +28,7 @@ Feature: Stake-pool server settings
     Then Stake-pool custom input box error message is displayed
     And I delete values in smash server custom url input box
     And I enter invalid server "https://www.google.ie" containing https
-    And I click on Daedalus logo to change focus
+    And I clicked outside of the input-box to change focus
     And I click the stake-pool custom server input box submit button
     Then I see the "This url is not a valid SMASH server" error message displayed
 

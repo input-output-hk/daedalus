@@ -1,9 +1,8 @@
-// @flow
-import { When, Then} from 'cucumber';
+import { When, Then } from 'cucumber';
 
 const CONVERTED_CURRENCY_WALLET_DISPLAY_GENERAL = '//*[@class="WalletSummaryCurrency_currencyRate"]';
-const DISPLAY_BALANCE_OTHER_CURRENCYS_TOGGLE_STATUS_OFF = '//*[@class="SimpleSwitch_switch SwitchOverrides_switch"]';
-const DISPLAY_BALANCE_OTHER_CURRENCYS_TOGGLE_STATUS_ON = '//*[@class="NormalSwitch_component SimpleSwitch_root SwitchOverrides_root SimpleSwitch_checked SwitchOverrides_checked"]';
+const DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_OFF = '//*[@class="SimpleSwitch_switch SwitchOverrides_switch"]';
+const DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_ON = '//*[@class="NormalSwitch_component SimpleSwitch_root SwitchOverrides_root SimpleSwitch_checked SwitchOverrides_checked"]';
 const SELECT_CURRENCY_DROPDOWN = '//*[@label="Select currency"]';
 
 When(/^I open currency selection dropdown$/, function() {
@@ -19,9 +18,9 @@ Then(/^I should see "([^"]*)" displayed beside wallet balance$/, function(ticker
 });
 
 When(/^I toggle the button (on|off) to change if I want to see my ada balance in other currency's$/, function(switchStatus) {
-  let selector = DISPLAY_BALANCE_OTHER_CURRENCYS_TOGGLE_STATUS_ON;
+  let selector = DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_ON;
   if(switchStatus === 'on'){
-    selector = DISPLAY_BALANCE_OTHER_CURRENCYS_TOGGLE_STATUS_OFF;
+    selector = DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_OFF;
   }
   return this.waitAndClick(selector);
 });
