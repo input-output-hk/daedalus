@@ -12,6 +12,9 @@ import './nodes';
 import './staking/Staking.stories';
 import './staking/CountdownParty.stories';
 
+// dApps
+import './dapps/TransactionRequest.stories';
+
 // Voting
 import './voting/Voting.stories';
 
