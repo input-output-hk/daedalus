@@ -5,7 +5,9 @@ import Datetime from 'react-datetime';
 import { intlShape } from 'react-intl';
 import classNames from 'classnames';
 import moment from 'moment';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import globalMessages from '../../../i18n/global-messages';
+import TinyButton from './TinyButton';
 import TinyInput from './TinyInput';
 import styles from './TinyDatePicker.scss';
 
@@ -43,44 +45,6 @@ export default class TinyDatePicker extends Component<Props> {
     locale: 'en-us',
   };
 
-  selfRef: any;
-  resetButtonContainer: any;
-  resetButton: any;
-
-  constructor(props: Props) {
-    super(props);
-
-    this.selfRef = createRef();
-    this.resetButtonContainer = document.createElement('div');
-    this.resetButton = document.createElement('button');
-
-    this.resetButton.className = 'flat SimpleButton_root ButtonOverrides_root';
-    this.resetButton.onclick = props.onReset;
-    this.resetButtonContainer.className = 'reset TinyButton_component';
-    this.resetButtonContainer.appendChild(this.resetButton);
-  }
-
-  ensureResetButtonExistence = () => {
-    const containerDOMElement = this.selfRef ? this.selfRef.current : null;
-
-    this.resetButton.innerText = this.context.intl.formatMessage(
-      globalMessages.reset
-    );
-
-    if (containerDOMElement) {
-      setTimeout(() => {
-        const monthsPanel = containerDOMElement.querySelector('.rdtMonths');
-        const daysPanel = containerDOMElement.querySelector('.rdtDays');
-        if (monthsPanel && !monthsPanel.lastChild.classList.contains('reset')) {
-          monthsPanel.appendChild(this.resetButtonContainer);
-        }
-        if (daysPanel && !daysPanel.lastChild.classList.contains('reset')) {
-          daysPanel.appendChild(this.resetButtonContainer);
-        }
-      }, 0);
-    }
-  };
-
   render() {
     const {
       onReset, // eslint-disable-line
@@ -98,65 +62,69 @@ export default class TinyDatePicker extends Component<Props> {
       error,
       ...rest
     } = this.props;
-    const componentClassNames = classNames([
-      styles.component,
-      pickerPanelPosition === 'left' ? styles.pickerPanelOnLeft : null,
-      pickerPanelPosition === 'right' ? styles.pickerPanelOnRight : null,
-    ]);
 
     /* eslint-disable */
     return (
-      <div className={componentClassNames} ref={this.selfRef}>
-        <Datetime
-          dateFormat={dateFormat}
-          timeFormat={false}
-          value={value ? moment(value).toDate() : null}
-          onViewModeChange={this.ensureResetButtonExistence}
-          isValidDate={isValidDate}
-          onChange={(selectedDate) => {
-            if (typeof selectedDate === 'string') {
-              if (!selectedDate) {
-                onChange && onChange(selectedDate);
-              }
-            } else {
-              onChange && onChange(selectedDate.format('YYYY-MM-DD'));
+      <PopOver
+        arrow={false}
+        interactive
+        duration={0}
+        trigger="click"
+        placement="bottom"
+        content={
+          <div className={styles.datePicker}>
+            <Datetime
+              open
+              input={false}
+              dateFormat={dateFormat}
+              timeFormat={false}
+              value={value ? moment(value).toDate() : null}
+              isValidDate={isValidDate}
+              onChange={(selectedDate) => {
+                if (typeof selectedDate === 'string') {
+                  if (!selectedDate) {
+                    onChange && onChange(selectedDate);
+                  }
+                } else {
+                  onChange && onChange(selectedDate.format('YYYY-MM-DD'));
+                }
+              }}
+              {...rest}
+            />
+            <TinyButton
+              containerClassName={styles.resetButton}
+              onClick={onReset}
+              label={this.context.intl.formatMessage(globalMessages.reset)}
+              disabled={value == null || value === ''}
+            />
+          </div>
+        }
+      >
+        <TinyInput
+          autoFocus={false}
+          label={label}
+          placeholder={placeholder}
+          onChange={(value, evt) => console.log(evt)}
+          onInput={(evt) => {
+            const inputDate = moment(evt.target.value, dateFormat);
+            if (
+              !inputDate.isValid() ||
+              (isValidDate && !isValidDate(inputDate))
+            ) {
+              evt.target.value = '';
             }
+            // if (props.onInput) {
+            //   props.onInput(evt);
+            // }
           }}
-          renderInput={(props) => (
-            <>
-              <TinyInput
-                {...props}
-                label={label}
-                placeholder={placeholder}
-                onChange={(value, evt) => props.onChange(evt)}
-                onFocus={(...args) => {
-                  props.onFocus(...args);
-                  this.ensureResetButtonExistence();
-                }}
-                onInput={(evt) => {
-                  const inputDate = moment(evt.target.value, dateFormat);
-                  if (
-                    !inputDate.isValid() ||
-                    (isValidDate && !isValidDate(inputDate))
-                  ) {
-                    evt.target.value = '';
-                  }
-                  if (props.onInput) {
-                    props.onInput(evt);
-                  }
-                }}
-                value={value ? moment(value).format(dateFormat) : ''}
-                disablePaste={disablePaste}
-                innerLabelPrefix={innerLabelPrefix}
-                innerValue={innerValue}
-                useReadMode={useReadMode}
-                error={error}
-              />
-            </>
-          )}
-          {...rest}
+          value={value ? moment(value).format(dateFormat) : ''}
+          disablePaste={disablePaste}
+          innerLabelPrefix={innerLabelPrefix}
+          innerValue={innerValue}
+          useReadMode={useReadMode}
+          error={error}
         />
-      </div>
+      </PopOver>
     );
     /* eslint-enable */
   }
