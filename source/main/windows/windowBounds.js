@@ -29,8 +29,6 @@ interface Screen {
 
 type SendStoreRequest = (request: StoreMessage) => mixed;
 
-const windowBoundsDefaultStoreKey = 'WINDOW_BOUNDS';
-
 function maybeRectangle(data: any): ?Rectangle {
   return data != null &&
     typeof data.x === 'number' &&

@@ -1,9 +1,8 @@
 // @flow
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import type { Element } from 'react';
 import Datetime from 'react-datetime';
 import { intlShape } from 'react-intl';
-import classNames from 'classnames';
 import moment from 'moment';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import globalMessages from '../../../i18n/global-messages';
