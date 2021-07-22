@@ -1,7 +1,6 @@
 // @flow
 import React, { useState } from 'react';
 import classnames from 'classnames';
-import { differenceWith } from 'lodash';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './DappTransactionRequest.scss';
@@ -26,17 +25,26 @@ const messages = defineMessages({
 type Props = {
   intl: intlShape.isRequired,
   onClose: Function,
+  onSelectWallet: Function,
   onSubmit: Function,
+  selectedWallet: ?Wallet,
   triggedFrom: string,
   wallets: Array<Wallet>,
 };
 
-type SelectedWallets = Array<Wallet>;
+// type SelectedWallet = ?Wallet;
 
 const DappTransactionRequest = observer((props: Props) => {
-  const [selectedWallets, setSelectedWallets] = useState<SelectedWallets>([]);
-  console.log('selectedWallets', selectedWallets);
-  const { intl, onClose, onSubmit, triggedFrom, wallets } = props;
+  // const [selectedWallet, setSelectedWallet] = useState<SelectedWallet>(null);
+  const {
+    intl,
+    onClose,
+    onSelectWallet,
+    onSubmit,
+    selectedWallet,
+    triggedFrom,
+    wallets,
+  } = props;
   const actions = [
     {
       label: intl.formatMessage(globalMessages.cancel),
@@ -50,35 +58,7 @@ const DappTransactionRequest = observer((props: Props) => {
   ];
   const componentStyles = classnames([styles.component]);
 
-  const onSelectWallet = (walletId) => {
-    const wallet = wallets.find(({ id }) => walletId === id);
-    console.log('wallet', wallet);
-    if (wallet) {
-      setSelectedWallets([...selectedWallets, wallet]);
-    }
-  };
-
-  const filteredWallets = differenceWith(
-    wallets,
-    selectedWallets,
-    (wallet, selectedWallet) => wallet.id === selectedWallet.id
-  );
-
-  const getWalletDropdown = (index: number) => {
-    const wallet = selectedWallets[index];
-    const walletsList = [...filteredWallets];
-    if (wallet) walletsList.unshift(wallet);
-    return (
-      <WalletsDropdown
-        getStakePoolById={() => {}}
-        numberOfStakePools={100}
-        wallets={walletsList}
-        onChange={onSelectWallet}
-        placeholder="!!!Select a wallet"
-        value={wallet ? wallet.id : null}
-      />
-    );
-  };
+  const walletsOptions = wallets;
 
   return (
     <Dialog
@@ -87,9 +67,14 @@ const DappTransactionRequest = observer((props: Props) => {
       subtitle={intl.formatMessage(messages.subtitle, { triggedFrom })}
       actions={actions}
     >
-      {getWalletDropdown(0)}
-      {!!selectedWallets.length &&
-        selectedWallets.map((x, index) => getWalletDropdown(index + 1))}
+      <WalletsDropdown
+        getStakePoolById={() => {}}
+        numberOfStakePools={100}
+        wallets={walletsOptions}
+        onChange={onSelectWallet}
+        placeholder="!!!Select a wallet"
+        value={selectedWallet ? selectedWallet.id : null}
+      />
     </Dialog>
   );
 });
