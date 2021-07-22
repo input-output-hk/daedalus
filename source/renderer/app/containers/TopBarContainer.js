@@ -30,8 +30,8 @@ export default class TopBarContainer extends Component<Props> {
       appUpdate,
     } = stores;
     const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
-    const hasTadaIconAnimation = false;
-    const hasTadaIcon = false;
+    const HAS_TADA_ICON_ANIMATION = false;
+    const HAS_TADA_ICON = false;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
@@ -89,12 +89,12 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
-          hasTadaIcon={hasTadaIcon}
+          hasTadaIcon={HAS_TADA_ICON}
         />
-        {hasTadaIcon && (
+        {HAS_TADA_ICON && (
           <TadaButton
             onClick={onClickTadaButton}
-            shouldAnimate={hasTadaIconAnimation}
+            shouldAnimate={HAS_TADA_ICON_ANIMATION}
           />
         )}
         <NewsFeedIcon
