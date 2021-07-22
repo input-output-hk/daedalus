@@ -91,15 +91,15 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const WINDOW_WIDTH = 1150;
-export const WINDOW_HEIGHT = 870;
+export const DEFAULT_WINDOW_WIDTH = 1150;
+export const DEFAULT_WINDOW_HEIGHT = 870;
 export const MIN_WINDOW_CONTENT_WIDTH = 905;
-export const MIN_WINDOW_CONTENT_HEIGHT = 700;
+export const MIN_WINDOW_CONTENT_HEIGHT = 564;
 
 export const windowOptions: WindowOptionsType = {
   show: false,
-  width: WINDOW_WIDTH,
-  height: WINDOW_HEIGHT,
+  width: DEFAULT_WINDOW_WIDTH,
+  height: DEFAULT_WINDOW_HEIGHT,
   webPreferences: {
     nodeIntegration: isTest,
     webviewTag: false,

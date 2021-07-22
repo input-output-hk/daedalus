@@ -1,12 +1,7 @@
 // @flow
 import { BrowserWindow } from 'electron';
 import { environment } from '../environment';
-import {
-  MIN_WINDOW_CONTENT_WIDTH,
-  MIN_WINDOW_CONTENT_HEIGHT,
-  WINDOW_WIDTH,
-  WINDOW_HEIGHT,
-} from '../config';
+import { MIN_WINDOW_CONTENT_WIDTH, MIN_WINDOW_CONTENT_HEIGHT } from '../config';
 
 type getContentMinimumSizeResponse = {
   minWindowsWidth: number,
@@ -40,9 +35,6 @@ export const getContentMinimumSize = (
   }
   const minWindowsWidth = MIN_WINDOW_CONTENT_WIDTH + paddingWidth;
   const minWindowsHeight = MIN_WINDOW_CONTENT_HEIGHT + paddingHeight;
-
-  // Set back the window size to the desired dimensions
-  window.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
   return {
     minWindowsWidth,
