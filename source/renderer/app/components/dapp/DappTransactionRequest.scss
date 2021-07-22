@@ -1,2 +1,17 @@
 .component {
+  .label {
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 10px;
+  }
+  .address {
+    font-family: var(--font-light);
+    line-height: 1.38;
+    margin-bottom: 5px;
+    margin-top: 6px;
+    user-select: text;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
 }
