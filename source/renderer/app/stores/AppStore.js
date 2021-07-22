@@ -9,6 +9,7 @@ import { ROUTES } from '../routes-config';
 import { DIALOGS, PAGES, NOTIFICATIONS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
+import { introspectAddressChannel } from '../ipc/introspect-address';
 import {
   toggleUiPartChannel,
   showUiPartChannel,
@@ -29,8 +30,6 @@ export default class AppStore extends Store {
   @observable customProtocolParameters: ?Object = null;
 
   setup() {
-    getCustomProtocolChannel.onReceive(this._handleCustomProtocol);
-
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
 
@@ -58,7 +57,41 @@ export default class AppStore extends Store {
 
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
+    getCustomProtocolChannel.onReceive(this._handleCustomProtocol);
+
+    // ============== MOBX REACTIONS ==============
+    this.registerReactions([this._processCustomProtocolParams]);
   }
+
+    // Handle url query data and switch to proper route
+  _processCustomProtocolParams = () => {
+    // Note: For now we are processing only BASIC tx
+    const { appUpdate, wallets,networkStatus } = this.stores;
+    const { displayAppUpdateOverlay } = appUpdate;
+    const { hasLoadedWallets } = wallets;
+    const {
+      isConnected,
+      isNotEnoughDiskSpace,
+      isSystemTimeCorrect,
+    } = networkStatus;
+
+    if (
+      isConnected &&
+      hasLoadedWallets &&
+      !isNotEnoughDiskSpace &&
+      isSystemTimeCorrect &&
+      !displayAppUpdateOverlay &&
+      this.customProtocolParameters
+    ) {
+      if (wallets.hasAnyWallets) {
+        const activeWallet = wallets.active || wallets.all[0];
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.WALLETS.SEND,
+          params: { id: activeWallet.id },
+        });
+      }
+    }
+  };
 
   @computed get currentRoute(): string {
     const { location } = this.stores.router;
@@ -148,25 +181,73 @@ export default class AppStore extends Store {
     });
   };
 
+  // Parse custom URL and store query params
   @action _handleCustomProtocol = async (url: string) => {
-    // Parse URL and store query params
-    // e.g. cardano://addr=Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe&amount=5000000
-    const parsedParamsData = {};
-    const queryParams = url.split('cardano://');
-    const parsedQueryParams = queryParams[1].split('&');
-    map(parsedQueryParams, (queryParam) => {
-      const queryParamPair = queryParam.split('=');
-      const key = queryParamPair[0];
-      const value = queryParamPair[1];
-      parsedParamsData[key] = value;
-    });
+    /* Cardano custom protocol specification (Grammar)
+     * https://github.com/cardano-foundation/CIPs/blob/master/CIP-0013/CIP-0013.md
 
-    if (this.stores.wallets.hasAnyWallets) {
-      this.customProtocolParameters = parsedParamsData;
-      // TODO: Handle url query data and switch to proper route
-      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ROOT });
+      1. cardanourn = "web+cardano:" (paymentref | stakepoolref)
+
+      paymentref = cardanoaddress [ "?" amountparam ]
+      cardanoaddress = *(base58 | bech32)
+      amountparam = "amount=" *digit [ "." *digit ]
+      Example:
+      web+cardano:Ae2tdPwUPEZ76BjmWDTS7poTekAvNqBjgfthF92pSLSDVpRVnLP7meaFhVd
+      web+cardano:Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe?amount=5.000000
+
+
+      2. stakepoolref = "//stake?" stakepool
+
+      stakepool = poolhexid | poolticker
+      poolhexid = 56HEXDIG
+      poolticker = 3*5UNICODE
+      Example:
+      web+cardano://stake?c94e6fe1123bf111b77b57994bcd836af8ba2b3aa72cfcefbec2d3d4
+      web+cardano://stake?COSD
+    **/
+
+    const queryParams = url.split('cardano:')[1].replace('//', '')
+    const actionAndDataParams = queryParams.split('?');
+    const actionParam = actionAndDataParams[0];
+    const dataParams = actionAndDataParams[1];
+    let isAddress;
+    try {
+      await introspectAddressChannel.send({ input: actionParam });
+      isAddress = true;
+    } catch (e) {
+      isAddress = false;
+    }
+    if (isAddress && actionParam && dataParams) {
+      // For now MVP we are handling just basic tx
+      // e.g. web+cardano:Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe?amount=5.000000
+      const parsedQueryParams = dataParams.split('&');
+      let parsedParamsData = {};
+      map(parsedQueryParams, (queryParam) => {
+        const queryParamPair = queryParam.split('=');
+        const key = queryParamPair[0];
+        const value = queryParamPair[1];
+        parsedParamsData[key] = value;
+      });
+      if (isAddress) {
+        parsedParamsData = {
+          ...parsedParamsData,
+          address: actionParam,
+        }
+      }
+      if (this.stores.wallets.hasAnyWallets) {
+        runInAction('Store custom protocol data', () => {
+          this.customProtocolParameters = {
+            action: isAddress ? 'address' : actionParam, // e.g address / statke /...
+            data: parsedParamsData,
+          };
+        });
+      }
     }
   };
+
+  @action resetCustomProptocolParams = () => {
+    this.customProtocolParameters = null;
+  }
 
   @action _updateRouteLocation = (options: {
     route: string,

@@ -101,6 +101,7 @@ export default class WalletSendPage extends Component<Props> {
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const { all: allAssets, activeAsset, getAsset } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
+    const { customProtocolParameters, resetCustomProptocolParams } = app;
 
     const selectedAsset = activeAsset
       ? this.getAssetByUniqueId(activeAsset, allAssets)
@@ -156,6 +157,8 @@ export default class WalletSendPage extends Component<Props> {
         onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
         isAddressFromSameWallet={isAddressFromSameWallet}
+        customProtocolParameters={customProtocolParameters}
+        resetCustomProptocolParams={resetCustomProptocolParams}
       />
     );
   }

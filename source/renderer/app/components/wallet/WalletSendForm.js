@@ -63,6 +63,8 @@ type Props = {
   onUnsetActiveAsset: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
+  customProtocolParameters: any, // TBD once all custom protocol parameters are declared
+  resetCustomProptocolParams: Function,
 };
 
 type State = {
@@ -135,11 +137,17 @@ export default class WalletSendForm extends Component<Props, State> {
         }
       });
     }
+    this.prefillFormWithParams();
+  }
+
+  componentDidUpdate() {
+    this.prefillFormWithParams();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
     this.props.onUnsetActiveAsset();
+    this.props.resetCustomProptocolParams();
   }
 
   getCurrentNumberFormat() {
@@ -174,6 +182,17 @@ export default class WalletSendForm extends Component<Props, State> {
   get hasAvailableAssets(): boolean {
     return this.availableAssets.length > 0;
   }
+
+  prefillFormWithParams = () => {
+    const address = get(this.props, ['customProtocolParameters', 'data', 'address']);
+    const amount = get(this.props, ['customProtocolParameters', 'data', 'amount']);
+    if (address && amount) {
+      const receiverField = this.form.$('receiver');
+      receiverField.value = address;
+      const adaAmountField = this.form.$('adaAmount');
+      adaAmountField.value = amount;
+    }
+  };
 
   getAssetByUniqueId = (uniqueId: string): ?AssetToken => {
     const { assets: allAssets } = this.props;
