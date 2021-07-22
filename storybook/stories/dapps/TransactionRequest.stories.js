@@ -81,13 +81,18 @@ storiesOf('dApps|TransactionRequest', module)
           'triggedFrom',
           {
             safari: 'safari',
-            shrome: 'chrome',
+            chrome: 'chrome',
           },
           'safari'
         )}
         wallets={WALLETS_V2}
-        assets={allAssets}
+        assets={allAssets.slice(0, 2)}
         feesAmount={new BigNumber(number('feesAmount', 100))}
+        additionalData={{
+          appName: 'daedalus',
+          action: 'convert',
+          state: 'true',
+        }}
       />
     ))
   );

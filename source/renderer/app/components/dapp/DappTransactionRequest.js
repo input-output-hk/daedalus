@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
@@ -23,10 +23,37 @@ const messages = defineMessages({
     defaultMessage: '!!!triggered from {triggedFrom}',
     description: '"subtitle" in the dApp transaction request dialog',
   },
+  fromWalletLabel: {
+    id: 'dapp.transaction.request.fromWalletLabel',
+    defaultMessage: '!!!From wallet',
+    description: '"fromWalletLabel" in the dApp transaction request dialog',
+  },
+  receiverLabel: {
+    id: 'dapp.transaction.request.receiver.label',
+    defaultMessage: '!!!Receiver',
+    description: '"receiver" in the dApp transaction request dialog',
+  },
+  walletsDropdownPlaceholder: {
+    id: 'dapp.transaction.request.walletsDropdown.placeholder',
+    defaultMessage: '!!!Select a wallet',
+    description:
+      '"walletsDropdownPlaceholder" in the dApp transaction request dialog',
+  },
+  additionalDataLabel: {
+    id: 'dapp.transaction.request.additionalData.label',
+    defaultMessage: '!!!Addicional data',
+    description: '"additionalDataLabel" in the dApp transaction request dialog',
+  },
+  metaDataLabel: {
+    id: 'dapp.transaction.request.metaData.label',
+    defaultMessage: '!!!Meta data',
+    description: '"metaDataLabel" in the dApp transaction request dialog',
+  },
 });
 
 type Props = {
   address: string,
+  additionalData: Object,
   assets: Array<AssetToken>,
   feesAmount?: BigNumber,
   intl: intlShape.isRequired,
@@ -38,12 +65,10 @@ type Props = {
   wallets: Array<Wallet>,
 };
 
-// type SelectedWallet = ?Wallet;
-
 const DappTransactionRequest = observer((props: Props) => {
-  // const [selectedWallet, setSelectedWallet] = useState<SelectedWallet>(null);
   const {
     address,
+    additionalData,
     assets,
     feesAmount,
     intl,
@@ -76,17 +101,38 @@ const DappTransactionRequest = observer((props: Props) => {
       subtitle={intl.formatMessage(messages.subtitle, { triggedFrom })}
       actions={actions}
     >
-      <p className={styles.label}>!!!From wallet</p>
+      <p className={styles.label}>
+        {intl.formatMessage(messages.fromWalletLabel)}
+      </p>
       <WalletsDropdown
+        className={styles.walletsDropdown}
         getStakePoolById={() => {}}
         numberOfStakePools={100}
-        wallets={walletsOptions}
         onChange={onSelectWallet}
-        placeholder="!!!Select a wallet"
+        placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
         value={selectedWallet ? selectedWallet.id : null}
+        wallets={walletsOptions}
       />
+      <hr />
+      <p className={styles.label}>
+        {intl.formatMessage(messages.receiverLabel)}
+      </p>
       <p className={styles.address}>{address}</p>
-      <AssetsTransactionConfirmation assets={assets} feesAmount={feesAmount} />
+      <AssetsTransactionConfirmation
+        assets={assets}
+        feesAmount={feesAmount}
+        className={styles.assetsTransaction}
+      />
+      <p className={styles.label}>
+        {intl.formatMessage(messages.additionalDataLabel)}
+      </p>
+      <div className={styles.additionalData}>
+        <pre>{JSON.stringify(additionalData)}</pre>
+      </div>
+      <p className={styles.label}>
+        {intl.formatMessage(messages.metaDataLabel)}
+      </p>
+      <div className={styles.metaData}>Meta data content</div>
     </Dialog>
   );
 });

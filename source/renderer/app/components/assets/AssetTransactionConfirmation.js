@@ -7,7 +7,6 @@ import {
   injectIntl,
   FormattedHTMLMessage,
 } from 'react-intl';
-import BigNumber from 'bignumber.js';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';

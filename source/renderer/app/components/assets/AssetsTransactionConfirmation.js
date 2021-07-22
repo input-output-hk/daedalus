@@ -13,6 +13,7 @@ import AssetAmount from './AssetAmount';
 
 type Props = {
   assets: Array<AssetToken>,
+  className?: string,
   feesAmount?: BigNumber,
   feesUnit?: string,
   intl: intlShape.isRequired,
@@ -21,11 +22,12 @@ type Props = {
 const AssetsTransactionConfirmation = observer((props: Props) => {
   const {
     assets,
+    className,
     feesAmount,
     intl,
     feesUnit = intl.formatMessage(globalMessages.unitAda),
   } = props;
-  const componentStyles = classnames([styles.component]);
+  const componentStyles = classnames([styles.component, className]);
   return (
     <div className={componentStyles}>
       <div className={styles.fees}>

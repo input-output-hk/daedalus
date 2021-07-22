@@ -14,4 +14,15 @@
     word-break: break-all;
     word-wrap: break-word;
   }
+  .walletsDropdown {
+  }
+  .assetsTransaction {
+    margin-bottom: 25px;
+  }
+  hr {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid var(--theme-transactions-list-item-details-color);
+    opacity: 0.3;
+  }
 }
