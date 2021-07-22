@@ -11,7 +11,7 @@ Feature: Stake-pool server settings
     Given I am on the General Settings "stake-pools" screen
     When custom server is the default option
     And The smash server input textBox is visible
-    And I enter custom server "https://smash.cardano-testnet.iohkdev.io/" as the custom server option
+    And And I enter a custom server URL as custom server option
     And I clicked outside of the input-box to change focus
     And I click the stake-pool custom server input box submit button
     And I see the "Your changes have been saved" success message

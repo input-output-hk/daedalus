@@ -41,8 +41,9 @@ Then(/^The smash server input textBox is visible$/, function() {
   return this.client.waitForVisible(SMASH_SERVER_URL_INPUT_BOX);
 });
 
-When(/^I enter custom server "([^"]*)" as the custom server option$/, function(customServer) {
-  this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, customServer);
+When(/^And I enter a custom server URL as custom server option$/, function() {
+  const server = "https://smash.cardano-testnet.iohkdev.io/"
+  this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, server);
 });
 
 When(/^I enter invalid url "([^"]*)" in to the custom server input-box$/, function(invalidUrl) {
