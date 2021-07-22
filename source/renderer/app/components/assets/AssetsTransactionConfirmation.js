@@ -1,34 +1,37 @@
 // @flow
 import React from 'react';
 import classnames from 'classnames';
-import { defineMessages, intlShape, injectIntl } from 'react-intl';
+import { intlShape, injectIntl } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import styles from './AssetsTransactionConfirmation.scss';
 import AssetTransactionConfirmation from './AssetTransactionConfirmation';
 import type { AssetToken } from '../../api/assets/types';
-
-const messages = defineMessages({
-  title: {
-    id: 'ID.TITLE',
-    defaultMessage: 'CONTENT',
-    description: '"" item on.',
-  },
-});
+import globalMessages from '../../i18n/global-messages';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import AssetAmount from './AssetAmount';
 
 type Props = {
-  intl: intlShape.isRequired,
   assets: Array<AssetToken>,
   feesAmount?: BigNumber,
   feesUnit?: string,
+  intl: intlShape.isRequired,
 };
 
 const AssetsTransactionConfirmation = observer((props: Props) => {
-  const { assets, intl } = props;
+  const {
+    assets,
+    feesAmount,
+    intl,
+    feesUnit = intl.formatMessage(globalMessages.unitAda),
+  } = props;
   const componentStyles = classnames([styles.component]);
   return (
     <div className={componentStyles}>
-      {intl.formatMessage(messages.title)}
+      <div className={styles.fees}>
+        <p>{feesUnit}</p>
+        <AssetAmount amount={feesAmount} decimals={DECIMAL_PLACES_IN_ADA} />
+      </div>
       {assets.map((asset, index) => (
         <AssetTransactionConfirmation
           key={asset.uniqueId}

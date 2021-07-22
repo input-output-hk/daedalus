@@ -17,22 +17,30 @@ import type { AssetToken } from '../../api/assets/types';
 import Asset from './Asset';
 
 const messages = defineMessages({
-  title: {
-    id: 'asset.transactionConfirmation.title',
-    defaultMessage: 'Token {index}',
-    description: '"title" item on AssetTransactionConfirmation.',
+  assetLabel: {
+    id: 'asset.transactionConfirmation.assetLabel',
+    defaultMessage: '!!!Token #{index}',
+    description: '"assetLabel" item on AssetTransactionConfirmation.',
+  },
+  unformattedAmountLabel: {
+    id: 'asset.transactionConfirmation.unformattedAmountLabel',
+    defaultMessage: '!!!unformatted amount',
+    description:
+      '"unformattedAmountLabel" item on AssetTransactionConfirmation.',
   },
   unformattedAmountMessageForHardwareWallets: {
     id:
       'asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets',
-    defaultMessage: '!!!unformattedAmountMessageForHardwareWallets',
+    defaultMessage:
+      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
     description:
       '"unformattedAmountMessageForHardwareWallets" item on AssetTransactionConfirmation.',
   },
   unformattedAmountMessageForSoftwareWallets: {
     id:
       'asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets',
-    defaultMessage: '!!!unformattedAmountMessageForSoftwareWallets',
+    defaultMessage:
+      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
     description:
       '"unformattedAmountMessageForSoftwareWallets" item on AssetTransactionConfirmation.',
   },
@@ -55,10 +63,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
     <div className={componentStyles}>
       <div className={styles.assetsContainer}>
         <h3>
-          <span>
-            {/* intl.formatMessage(messages.assetLabel) */}
-            assetLabel &nbsp;#{index + 1}
-          </span>
+          <span>{intl.formatMessage(messages.assetLabel, { index })}</span>
           <Asset
             asset={asset}
             onCopyAssetItem={onCopyAssetItem}
@@ -72,7 +77,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
       <div className={styles.assetsContainer}>
         <div className={styles.unformattedAmountLine} />
         <div className={styles.unformattedAmountLabel}>
-          {/* intl.formatMessage(messages.unformattedAmountLabel) */}
+          {intl.formatMessage(messages.unformattedAmountLabel)}
           <PopOver
             content={
               <div className="UnformattedAmountTooltip">

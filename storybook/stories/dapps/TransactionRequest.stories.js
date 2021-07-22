@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, select } from '@storybook/addon-knobs';
+import { withKnobs, select, number } from '@storybook/addon-knobs';
 import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../_support/StoryDecorator';
 import DappTransactionRequest from '../../../source/renderer/app/components/dapp/DappTransactionRequest';
@@ -87,6 +87,7 @@ storiesOf('dApps|TransactionRequest', module)
         )}
         wallets={WALLETS_V2}
         assets={allAssets}
+        feesAmount={new BigNumber(number('feesAmount', 100))}
       />
     ))
   );
