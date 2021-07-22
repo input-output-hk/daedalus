@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
+
 ### Fixes
 - Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
 

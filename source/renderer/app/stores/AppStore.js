@@ -1,6 +1,7 @@
 // @flow
 import { observable, computed, action, runInAction } from 'mobx';
 import path from 'path';
+import { map } from 'lodash';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
@@ -13,6 +14,7 @@ import {
   showUiPartChannel,
 } from '../ipc/control-ui-parts';
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
+import { getCustomProtocolChannel } from '../ipc/getCustomProtocolChannel';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
@@ -23,8 +25,12 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
+  // TODO: define all possible query params Daedalus can receive from external source
+  @observable customProtocolParameters: ?Object = null;
 
   setup() {
+    getCustomProtocolChannel.onReceive(this._handleCustomProtocol);
+
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
 
@@ -140,6 +146,26 @@ export default class AppStore extends Store {
     runInAction('get gpu status', () => {
       this.gpuStatus = gpuStatus;
     });
+  };
+
+  @action _handleCustomProtocol = async (url: string) => {
+    // Parse URL and store query params
+    // e.g. cardano://addr=Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe&amount=5000000
+    const parsedParamsData = {};
+    const queryParams = url.split('cardano://');
+    const parsedQueryParams = queryParams[1].split('&');
+    map(parsedQueryParams, (queryParam) => {
+      const queryParamPair = queryParam.split('=');
+      const key = queryParamPair[0];
+      const value = queryParamPair[1];
+      parsedParamsData[key] = value;
+    });
+
+    if (this.stores.wallets.hasAnyWallets) {
+      this.customProtocolParameters = parsedParamsData;
+      // TODO: Handle url query data and switch to proper route
+      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ROOT });
+    }
   };
 
   @action _updateRouteLocation = (options: {
