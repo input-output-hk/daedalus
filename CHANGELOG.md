@@ -8,7 +8,25 @@ Changelog
 - Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
 
 ### Fixes
+- Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
 
+## 4.2.0
+
+### Features
+
+- Added voting registration with Trezor ([PR 2615](https://github.com/input-output-hk/daedalus/pull/2615))
+- Added voting registration with Ledger ([PR 2538](https://github.com/input-output-hk/daedalus/pull/2538))
+
+## 4.2.0-FC1
+
+### Features
+
+- Implemented sharing multi-signature public key ([PR 2604](https://github.com/input-output-hk/daedalus/pull/2604))
+- Implemented the expandable token view ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589), [PR 2609](https://github.com/input-output-hk/daedalus/pull/2609))
+
+### Fixes
+
+- Fixed asset amount validation ([PR 2472](https://github.com/input-output-hk/daedalus/pull/2472))
 - Fixed incorrect global instances in scss files ([PR 2593](https://github.com/input-output-hk/daedalus/pull/2593))
 - Fixed "shelley-qa" network issue on "Delegation" wizard ([PR 2595](https://github.com/input-output-hk/daedalus/pull/2595))
 - Fixed Trezor transaction native tokens grouping issue ([PR 2594](https://github.com/input-output-hk/daedalus/pull/2594))
@@ -16,13 +34,14 @@ Changelog
 
 ### Chores
 
+- Disabled Fund5 voting registration ([PR 2608](https://github.com/input-output-hk/daedalus/pull/2608))
+- Updated Fund5 registaration start date ([PR 2607](https://github.com/input-output-hk/daedalus/pull/2607))
 - Removed Jormungandr integration and legacy clusters ([PR 2579](https://github.com/input-output-hk/daedalus/pull/2579))
 
 ## 4.1.0
 
 ### Features
 
-- Implemented the new expandable Token view. ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589))
 - Enabled Catalyst voting registration on Mainnet and Flight builds
 
 ## 4.1.0-FC1

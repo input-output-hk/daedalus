@@ -41,6 +41,7 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
+import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
 
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
@@ -158,6 +159,8 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
+  VotingMetadataType,
+  ICOPublicKeyParams,
 } from './transactions/types';
 
 // Wallets Types
@@ -1025,6 +1028,7 @@ export default class AdaApi {
     rewardsBalance: BigNumber,
     payments?: CoinSelectionsPaymentRequestType,
     delegation?: CoinSelectionsDelegationRequestType,
+    metadata?: VotingMetadataType,
   }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
@@ -1036,6 +1040,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       rewardsBalance,
+      metadata,
     } = request;
     try {
       let data;
@@ -1059,6 +1064,7 @@ export default class AdaApi {
             },
           ],
           withdrawal: TransactionWithdrawal,
+          metadata: metadata || null,
         };
       } else {
         throw new Error('Missing parameters!');
@@ -1167,6 +1173,7 @@ export default class AdaApi {
         fee: fee.dividedBy(LOVELACES_PER_ADA),
         deposits: deposits.dividedBy(LOVELACES_PER_ADA),
         depositsReclaimed: depositsReclaimed.dividedBy(LOVELACES_PER_ADA),
+        metadata: response.metadata || null,
       };
 
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
@@ -1269,6 +1276,26 @@ export default class AdaApi {
     } catch (error) {
       logger.error('AdaApi::getPublicKey error', { error });
       throw new ApiError(error);
+    }
+  };
+
+  getICOPublicKey = async (request: ICOPublicKeyParams): Promise<string> => {
+    logger.debug('AdaApi::getICOPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const response = await getICOPublicKey(this.config, request);
+      logger.debug('AdaApi::getICOPublicKey success', {
+        icoPublicKey: response,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getICOPublicKey error', { error });
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .result();
     }
   };
 

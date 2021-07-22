@@ -23,7 +23,6 @@ import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
 import { messages as apiErrorMessages } from '../../api/errors';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import { submitOnEnter } from '../../utils/form';
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
@@ -50,6 +49,7 @@ type Props = {
   calculateTransactionFee: Function,
   walletAmount: BigNumber,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
+  validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>,
   addressValidator: Function,
   assets: Array<AssetToken>,
   hasAssets: boolean,
@@ -199,7 +199,10 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
+  handleSubmitOnEnter = (event: KeyboardEvent): void => {
+    if (event.target instanceof HTMLInputElement && event.key === 'Enter')
+      this.handleOnSubmit();
+  };
 
   handleOnSubmit = () => {
     if (this.isDisabled()) {
@@ -436,7 +439,7 @@ export default class WalletSendForm extends Component<Props, State> {
         return {
           policy_id: policyId,
           asset_name: assetName,
-          quantity: quantity.toNumber(),
+          quantity, // BigNumber or number - prevent parsing a BigNumber to Number (Integer) because of JS number length limitation
         };
       }),
       'quantity'
@@ -608,7 +611,7 @@ export default class WalletSendForm extends Component<Props, State> {
           ];
         }
         const amountValue = value.toString();
-        const isValidAmount = await this.props.validateAmount(
+        const isValidAmount = await this.props.validateAssetAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
         const asset = this.getAssetByUniqueId(uniqueId);

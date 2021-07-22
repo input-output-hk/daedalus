@@ -6,6 +6,7 @@ import type { ActionsMap } from '../actions/index';
 export type InjectedProps = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
+  isICO?: boolean,
 };
 
 export type InjectedStoresProps = {

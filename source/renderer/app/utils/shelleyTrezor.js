@@ -70,6 +70,25 @@ export const prepareTrezorWithdrawal = (
     amount: withdrawal.amount.quantity.toString(),
   };
 };
+export type TrezorVotingDataType = {
+  votingKey: string,
+  nonce: string,
+};
+
+export const prepareTrezorAuxiliaryData = ({
+  votingKey,
+  nonce,
+}: TrezorVotingDataType) => ({
+  catalystRegistrationParameters: {
+    votingPublicKey: votingKey,
+    stakingPath: "m/1852'/1815'/0'/2/0",
+    rewardAddressParameters: {
+      addressType: 14, // REWARDS address
+      path: "m/1852'/1815'/0'/2/0",
+    },
+    nonce,
+  },
+});
 
 // Helper Methods
 export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {

@@ -12,24 +12,25 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { isValidSpendingPassword } from '../../../utils/validations';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
 const messages: { [string]: ReactIntlMessage } = defineMessages({
   title: {
-    id: 'wallet.settings.walletPublicKeyDialog.title',
-    defaultMessage: '!!!Reveal wallet public key',
+    id: 'wallet.settings.icoPublicKeyDialog.title',
+    defaultMessage: '!!!Reveal ICO public key',
     description: 'Title "Choose a stake pool" on the reveal Wallet Id dialog.',
   },
   description: {
-    id: 'wallet.settings.walletPublicKeyDialog.description',
+    id: 'wallet.settings.icoPublicKeyDialog.description',
     defaultMessage:
-      '!!!Please enter your spending password to reveal your wallet’s public key.',
+      '!!!Please enter your spending password to reveal your ICO’s public key.',
     description: 'Description on the reveal Wallet Id dialog.',
   },
   buttonLabel: {
-    id: 'wallet.settings.walletPublicKeyDialog.button',
-    defaultMessage: '!!!Reveal wallet public key',
-    description: 'Description on the reveal Wallet Id dialog.',
+    id: 'wallet.settings.icoPublicKeyDialog.button',
+    defaultMessage: '!!!Reveal ICO public key',
+    description: 'Description on the reveal ICO Id dialog.',
   },
 });
 
@@ -37,19 +38,19 @@ type Props = {
   onRevealPublicKey: Function,
   onClose: Function,
   error: ?LocalizableError,
-  hasReceivedWalletPublicKey: boolean,
+  hasReceivedICOPublicKey: boolean,
   walletName: string,
 };
 
 @observer
-export default class WalletPublicKeyDialog extends Component<Props> {
+export default class ICOPublicKeyDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   componentDidUpdate() {
-    const { hasReceivedWalletPublicKey, onClose } = this.props;
-    if (hasReceivedWalletPublicKey) {
+    const { hasReceivedICOPublicKey, onClose } = this.props;
+    if (hasReceivedICOPublicKey) {
       onClose();
     }
   }
@@ -70,7 +71,7 @@ export default class WalletPublicKeyDialog extends Component<Props> {
             ({ field }) => {
               if (field.value === '') {
                 return [
-                  false,
+                  isValidSpendingPassword(field.value),
                   this.context.intl.formatMessage(
                     globalMessages.fieldIsRequired
                   ),

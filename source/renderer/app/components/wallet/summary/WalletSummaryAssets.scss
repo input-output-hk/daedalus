@@ -68,8 +68,8 @@
     font-family: var(--font-regular);
     font-size: 16px;
     line-height: 1.38;
-    max-width: calc(100% - 110px);
     white-space: nowrap;
+    width: calc(100% - 110px);
   }
   .searchValue {
     color: var(--theme-bordered-box-text-color);
