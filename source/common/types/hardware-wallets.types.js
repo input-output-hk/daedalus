@@ -289,11 +289,29 @@ export type LedgerSignTransactionResponse = {
   },
 };
 
+export type TrezorWitness = {|
+  type: number,
+  pubKey: string,
+  signature: string,
+  chainCode: ?string,
+|};
+
+export type TrezorSerializedTxPayload = {|
+  serializedTx: string,
+|};
+
+export type TrezorRawTxPayload = {
+  witnesses: Array<TrezorWitness>,
+  auxiliaryDataSupplement?: {
+    type: number,
+    auxiliaryDataHash: string,
+    catalystSignature: string,
+  },
+};
+
 export type TrezorSignTransactionResponse = {
   success: boolean,
-  payload: {
-    serializedTx: string,
-  },
+  payload: TrezorSerializedTxPayload | TrezorRawTxPayload,
 };
 
 export type HardwareWalletConnectionRequest = {
