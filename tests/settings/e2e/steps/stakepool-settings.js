@@ -45,12 +45,12 @@ When(/^I enter custom server "([^"]*)" as the custom server option$/, function(c
   this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, customServer);
 });
 
-When(/^I enter invalid url "([^"]*)" without https$/, function(invalidUrl) {
+When(/^I enter invalid url "([^"]*)" in to the custom server input-box$/, function(invalidUrl) {
   this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, invalidUrl);
 });
 
-Then(/^Stake-pool custom input box error message is displayed$/, function() {
-  return this.client.waitForVisible(IS_ERROR_MESSAGE_ACTIVATED);
+Then(/^Stake-pool custom input box error message "([^"]*)" is displayed$/, function(message) {
+  return this.client.waitForVisible('//div[contains(text(), "'+ message +'")]');
 });
 
 When(/^I enter invalid server "([^"]*)" containing https$/, function(value) {
