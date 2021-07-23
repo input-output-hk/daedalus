@@ -51,6 +51,7 @@ type Props = {
   index: number,
   intl: intlShape.isRequired,
   isHardwareWallet: boolean,
+  tokenIsMissing?: boolean,
 };
 
 const onCopyAssetItem = () => {};
@@ -59,7 +60,6 @@ const AssetTransactionConfirmation = observer((props: Props) => {
   const { index, asset, intl, isHardwareWallet } = props;
   const { quantity, metadata, decimals } = asset;
   const amount = formattedTokenWalletAmount(quantity, metadata, decimals);
-  console.log('amount', amount);
   const componentStyles = classnames([styles.component]);
   return (
     <div className={componentStyles}>
