@@ -29,6 +29,7 @@ import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
+import { hasTokenLeftAfterTransaction } from '../../../utils/assets';
 
 const SHOW_TOTAL_AMOUNT = false;
 
@@ -207,8 +208,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
   getAssetAmount = (index: number) => {
     const { assetsAmounts } = this.state;
-    const asset = get(assetsAmounts, index, 0);
-    return asset;
+    return get(assetsAmounts, index, 0);
   };
 
   getFormattedAssetAmount = (
@@ -302,173 +302,166 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
-        <div className={styles.passphraseFields}>
-          <div className={styles.addressToLabelWrapper}>
-            <div className={styles.receiverRow}>
-              <div className={styles.receiverRowItem}>
-                <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
-                <div className={styles.receiverRowItemAddresses}>
-                  <p className={styles.addressTo}>{receiver}</p>
-                  <div className={styles.assetsWrapper}>
-                    <div
-                      className={styles.assetsSeparator}
-                      style={{
-                        height: `${assetsSeparatorCalculatedHeight}px`,
-                        top: `${assetsSeparatorCalculatedHeight + 5}px`,
-                        marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`,
-                      }}
-                    />
-                    <div className={styles.assetsContainer}>
-                      <h3>
-                        <span>{currencyUnit}</span>
-                      </h3>
-                      <div className={styles.amountFeesWrapper}>
-                        <div className={styles.amount}>
-                          {amount} {currencyUnit}
-                        </div>
+        {shouldShowEmptyWalletWarning(
+          totalAmount,
+          wallet,
+          assets.length > 0 &&
+            hasTokenLeftAfterTransaction(assets, this.state.assetsAmounts)
+        ) && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
+          </div>
+        )}
+
+        <div className={styles.addressToLabelWrapper}>
+          <div className={styles.receiverRow}>
+            <div className={styles.receiverRowItem}>
+              <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
+              <div className={styles.receiverRowItemAddresses}>
+                <p className={styles.addressTo}>{receiver}</p>
+                <div className={styles.assetsWrapper}>
+                  <div
+                    className={styles.assetsSeparator}
+                    style={{
+                      height: `${assetsSeparatorCalculatedHeight}px`,
+                      top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                      marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`,
+                    }}
+                  />
+                  <div className={styles.assetsContainer}>
+                    <h3>
+                      <span>{currencyUnit}</span>
+                    </h3>
+                    <div className={styles.amountFeesWrapper}>
+                      <div className={styles.amount}>
+                        {amount} {currencyUnit}
                       </div>
                     </div>
-                    {assets.map((asset, assetIndex) => {
-                      const assetAmount = this.getFormattedAssetAmount(
-                        asset,
-                        assetIndex
-                      );
-                      return (
-                        <Fragment key={asset.uniqueId}>
-                          <div className={styles.assetsContainer}>
-                            <h3>
-                              <span>
-                                {intl.formatMessage(messages.assetLabel)}
-                                &nbsp;#{assetIndex + 1}
-                              </span>
-                              <Asset
-                                asset={asset}
-                                onCopyAssetItem={onCopyAssetItem}
-                                className={styles.assetToken}
-                              />
-                            </h3>
-                            <div className={styles.amountFeesWrapper}>
-                              <div className={styles.amount}>{assetAmount}</div>
-                            </div>
-                          </div>
-                          <div className={styles.assetsContainer}>
-                            <div className={styles.unformattedAmountLine} />
-                            <div className={styles.unformattedAmountLabel}>
-                              {intl.formatMessage(
-                                messages.unformattedAmountLabel
-                              )}
-                              <PopOver
-                                content={
-                                  <div className="UnformattedAmountTooltip">
-                                    <FormattedHTMLMessage
-                                      {...getMessages()[
-                                        isHardwareWallet
-                                          ? 'unformattedAmountMessageForHardwareWallets'
-                                          : 'unformattedAmountMessageForSoftwareWallets'
-                                      ]}
-                                      tagName="div"
-                                    />
-                                  </div>
-                                }
-                                key="tooltip"
-                              >
-                                <div className={styles.questionMark}>
-                                  <SVGInline svg={questionMarkIcon} />
-                                </div>
-                              </PopOver>
-                              {':'}
-                            </div>
-                            <div className={styles.unformattedAmount}>
-                              {this.getAssetAmount(assetIndex)}
-                            </div>
-                          </div>
-                        </Fragment>
-                      );
-                    })}
                   </div>
+                  {assets.map((asset, assetIndex) => {
+                    const assetAmount = this.getFormattedAssetAmount(
+                      asset,
+                      assetIndex
+                    );
+                    return (
+                      <Fragment key={asset.uniqueId}>
+                        <div className={styles.assetsContainer}>
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetIndex + 1}
+                            </span>
+                            <Asset
+                              asset={asset}
+                              onCopyAssetItem={onCopyAssetItem}
+                              className={styles.assetToken}
+                            />
+                          </h3>
+                          <div className={styles.amountFeesWrapper}>
+                            <div className={styles.amount}>{assetAmount}</div>
+                          </div>
+                        </div>
+                        <div className={styles.assetsContainer}>
+                          <div className={styles.unformattedAmountLine} />
+                          <div className={styles.unformattedAmountLabel}>
+                            {intl.formatMessage(
+                              messages.unformattedAmountLabel
+                            )}
+                            <PopOver
+                              content={
+                                <div className="UnformattedAmountTooltip">
+                                  <FormattedHTMLMessage
+                                    {...getMessages()[
+                                      isHardwareWallet
+                                        ? 'unformattedAmountMessageForHardwareWallets'
+                                        : 'unformattedAmountMessageForSoftwareWallets'
+                                    ]}
+                                    tagName="div"
+                                  />
+                                </div>
+                              }
+                              key="tooltip"
+                            >
+                              <div className={styles.questionMark}>
+                                <SVGInline svg={questionMarkIcon} />
+                              </div>
+                            </PopOver>
+                            {':'}
+                          </div>
+                          <div className={styles.unformattedAmount}>
+                            {this.getAssetAmount(assetIndex)}
+                          </div>
+                        </div>
+                      </Fragment>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </div>
-
-          {SHOW_TOTAL_AMOUNT ? (
-            <>
-              <div className={styles.adaAmountFeesWrapper}>
-                <div className={styles.adaAmountWrapper}>
-                  <div className={styles.adaAmountLabel}>
-                    {intl.formatMessage(messages.amountLabel)}
-                  </div>
-                  <div className={styles.adaAmount}>
-                    {amount}
-                    <span className={styles.currencyCode}>
-                      &nbsp;{currencyUnit}
-                    </span>
-                  </div>
-                </div>
-
-                <div className={styles.feesWrapper}>
-                  <div className={styles.feesLabel}>
-                    {intl.formatMessage(messages.feesLabel)}
-                  </div>
-                  <div className={styles.fees}>
-                    +{transactionFee}
-                    <span className={styles.currencyCode}>
-                      &nbsp;{currencyUnit}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.totalAmountWrapper}>
-                <div className={styles.totalAmountLabel}>
-                  {intl.formatMessage(messages.totalLabel)}
-                </div>
-                <div className={styles.totalAmount}>
-                  {formattedTotalAmount}
-                  <span className={styles.currencyCode}>
-                    &nbsp;{currencyUnit}
-                  </span>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className={styles.feesWrapper}>
-              <div className={styles.feesLabel}>
-                {intl.formatMessage(messages.feesLabel)}
-              </div>
-              <div className={styles.fees}>
-                +{transactionFee}
-                <span className={styles.currencyCode}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {isFlight && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage
-                {...messages.flightCandidateWarning}
-                tagName="p"
-              />
-              <Checkbox
-                {...flightCandidateCheckboxField.bind()}
-                error={flightCandidateCheckboxField.error}
-                skin={CheckboxSkin}
-                disabled={areTermsAccepted}
-                onChange={this.onCheckboxClick}
-                checked={areTermsAccepted}
-              />
-            </div>
-          )}
-          {this.renderConfirmationElement(isHardwareWallet)}
-          {shouldShowEmptyWalletWarning(totalAmount, wallet) && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
-            </div>
-          )}
         </div>
 
+        {SHOW_TOTAL_AMOUNT ? (
+          <>
+            <div className={styles.adaAmountFeesWrapper}>
+              <div className={styles.adaAmountWrapper}>
+                <div className={styles.adaAmountLabel}>
+                  {intl.formatMessage(messages.amountLabel)}
+                </div>
+                <div className={styles.adaAmount}>
+                  {amount}
+                  <span>&nbsp;{currencyUnit}</span>
+                </div>
+              </div>
+
+              <div className={styles.feesWrapper}>
+                <div className={styles.feesLabel}>
+                  {intl.formatMessage(messages.feesLabel)}
+                </div>
+                <div className={styles.fees}>
+                  +{transactionFee}
+                  <span>&nbsp;{currencyUnit}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.totalAmountLabel}>
+              {intl.formatMessage(messages.totalLabel)}
+            </div>
+            <div className={styles.totalAmount}>
+              {formattedTotalAmount}
+              <span>&nbsp;{currencyUnit}</span>
+            </div>
+          </>
+        ) : (
+          <div className={styles.feesWrapper}>
+            <div className={styles.feesLabel}>
+              {intl.formatMessage(messages.feesLabel)}
+            </div>
+            <div className={styles.fees}>
+              +{transactionFee}
+              <span>&nbsp;{currencyUnit}</span>
+            </div>
+          </div>
+        )}
+
+        {isFlight && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...messages.flightCandidateWarning}
+              tagName="p"
+            />
+            <Checkbox
+              {...flightCandidateCheckboxField.bind()}
+              error={flightCandidateCheckboxField.error}
+              skin={CheckboxSkin}
+              disabled={areTermsAccepted}
+              onChange={this.onCheckboxClick}
+              checked={areTermsAccepted}
+            />
+          </div>
+        )}
+        {this.renderConfirmationElement(isHardwareWallet)}
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
     );

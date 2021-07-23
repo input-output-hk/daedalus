@@ -5,7 +5,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { intlShape, FormattedHTMLMessage } from 'react-intl';
+import { FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -18,8 +18,8 @@ import { submitOnEnter } from '../../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 
@@ -249,73 +249,65 @@ export default class WalletSendConfirmationDialog extends Component<
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
-        <div className={styles.passphraseFields}>
-          <div className={styles.addressToLabelWrapper}>
-            <div className={styles.addressToLabel}>
-              {intl.formatMessage(messages.addressToLabel)}
-            </div>
-            <div className={styles.addressTo}>{receiver}</div>
+        {shouldShowEmptyWalletWarning(totalAmount, wallet, false) && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
           </div>
-
-          <div className={styles.amountFeesWrapper}>
-            <div className={styles.amountWrapper}>
-              <div className={styles.amountLabel}>
-                {intl.formatMessage(messages.amountLabel)}
-              </div>
-              <div className={styles.amount}>
-                {amount}
-                <span className={styles.currencyCode}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.feesWrapper}>
-              <div className={styles.feesLabel}>
-                {intl.formatMessage(messages.feesLabel)}
-              </div>
-              <div className={styles.fees}>
-                +{transactionFee}
-                <span className={styles.currencyCode}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
+        )}
+        <div className={styles.addressToLabelWrapper}>
+          <div className={styles.addressToLabel}>
+            {intl.formatMessage(messages.addressToLabel)}
           </div>
-
-          <div className={styles.totalAmountWrapper}>
-            <div className={styles.totalAmountLabel}>
-              {intl.formatMessage(messages.totalLabel)}
-            </div>
-            <div className={styles.totalAmount}>
-              {formattedTotalAmount}
-              <span className={styles.currencyCode}>&nbsp;{currencyUnit}</span>
-            </div>
-          </div>
-
-          {isFlight && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage
-                {...messages.flightCandidateWarning}
-                tagName="p"
-              />
-              <Checkbox
-                {...flightCandidateCheckboxField.bind()}
-                error={flightCandidateCheckboxField.error}
-                skin={CheckboxSkin}
-                disabled={areTermsAccepted}
-                onChange={this.onCheckboxClick}
-                checked={areTermsAccepted}
-              />
-            </div>
-          )}
-          {this.renderConfirmationElement(isHardwareWallet)}
-          {shouldShowEmptyWalletWarning(totalAmount, wallet) && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
-            </div>
-          )}
+          <div className={styles.addressTo}>{receiver}</div>
         </div>
+
+        <div className={styles.amountFeesWrapper}>
+          <div className={styles.amountWrapper}>
+            <div className={styles.amountLabel}>
+              {intl.formatMessage(messages.amountLabel)}
+            </div>
+            <div className={styles.amount}>
+              {amount}
+              <span>&nbsp;{currencyUnit}</span>
+            </div>
+          </div>
+
+          <div className={styles.feesWrapper}>
+            <div className={styles.feesLabel}>
+              {intl.formatMessage(messages.feesLabel)}
+            </div>
+            <div className={styles.fees}>
+              +{transactionFee}
+              <span>&nbsp;{currencyUnit}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.totalAmountLabel}>
+          {intl.formatMessage(messages.totalLabel)}
+        </div>
+        <div className={styles.totalAmount}>
+          {formattedTotalAmount}
+          <span>&nbsp;{currencyUnit}</span>
+        </div>
+
+        {isFlight && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...messages.flightCandidateWarning}
+              tagName="p"
+            />
+            <Checkbox
+              {...flightCandidateCheckboxField.bind()}
+              error={flightCandidateCheckboxField.error}
+              skin={CheckboxSkin}
+              disabled={areTermsAccepted}
+              onChange={this.onCheckboxClick}
+              checked={areTermsAccepted}
+            />
+          </div>
+        )}
+        {this.renderConfirmationElement(isHardwareWallet)}
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
     );

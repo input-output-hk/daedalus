@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
@@ -34,7 +35,7 @@ export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
     getAsset(policyId, assetName) || {};
-  const txAsset = {
+  return {
     policyId,
     assetName,
     quantity,
@@ -45,7 +46,6 @@ export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
     recommendedDecimals,
     uniqueId,
   };
-  return txAsset;
 };
 
 /**
@@ -75,3 +75,12 @@ export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
   }
   return 0;
 };
+
+export const hasTokenLeftAfterTransaction = (
+  allAssets: AssetToken[],
+  assetsAmounts: string[]
+): boolean =>
+  !!allAssets.find(
+    (asset, assetIndex) =>
+      !BigNumber(assetsAmounts[assetIndex]).isEqualTo(asset.quantity)
+  );

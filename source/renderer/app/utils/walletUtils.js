@@ -7,27 +7,30 @@ export default import('@iohk-jormungandr/wallet-js').then((modules) => modules);
 
 const MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS: number = 10; // 1 ADA | unit: ADA
 
-const isWalletRewardsWithdrawalPossible = (
+export const isWalletRewardsWithdrawalPossible = (
   transactionAmount: BigNumber,
   walletBalance: BigNumber
 ): boolean =>
   !!transactionAmount &&
   !!walletBalance &&
-  transactionAmount.isGreaterThan(
-    walletBalance.minus(MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS)
-  );
+  transactionAmount
+    .plus(MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS)
+    .isLessThanOrEqualTo(walletBalance);
 
 // For more details check acceptance tests https://github.com/input-output-hk/daedalus/pull/2617
 export const shouldShowEmptyWalletWarning = (
-  totalAmount: BigNumber,
-  wallet: Wallet
+  totalAmountToSpend: BigNumber,
+  wallet: Wallet,
+  hasAssets: boolean = false
 ): boolean => {
-  const { amount, isLegacy, isDelegating } = wallet;
-  const isNotDelegatingAndZeroBalance =
-    !isDelegating && amount.minus(totalAmount).isZero();
+  const { amount: walletBalance, isLegacy, isDelegating } = wallet;
+  const hasZeroBalanceAndIsNotDelegating =
+    !isDelegating &&
+    walletBalance.minus(totalAmountToSpend).isZero() &&
+    !hasAssets;
   return (
-    !isNotDelegatingAndZeroBalance &&
+    !hasZeroBalanceAndIsNotDelegating &&
     !isLegacy &&
-    isWalletRewardsWithdrawalPossible(totalAmount, amount)
+    !isWalletRewardsWithdrawalPossible(totalAmountToSpend, walletBalance)
   );
 };
