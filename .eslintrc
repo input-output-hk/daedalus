@@ -12,12 +12,14 @@
     "prettier",
     "prettier/babel",
     "prettier/flowtype",
-    "prettier/react"
+    "prettier/react",
+    "plugin:jest/recommended"
   ],
   "env": {
     "browser": true,
     "mocha": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "rules": {
     "class-methods-use-this": 0,
@@ -77,7 +79,8 @@
     "flowtype",
     "import",
     "promise",
-    "react"
+    "react",
+    "jest"
   ],
   "globals": {
     "API": true,
