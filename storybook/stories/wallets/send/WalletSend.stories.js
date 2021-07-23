@@ -211,6 +211,8 @@ storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send - No Assets', () => (
     <WalletSendForm
+      customProtocolParameters={null}
+      resetCustomProptocolParams={action('resetCustomProptocolParams')}
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -236,6 +238,8 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
     <WalletSendForm
+      customProtocolParameters={null}
+      resetCustomProptocolParams={action('resetCustomProptocolParams')}
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -261,6 +265,8 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
     <WalletSendForm
+      customProtocolParameters={null}
+      resetCustomProptocolParams={action('resetCustomProptocolParams')}
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -286,6 +292,8 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
     <WalletSendForm
+      customProtocolParameters={null}
+      resetCustomProptocolParams={action('resetCustomProptocolParams')}
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -311,6 +319,8 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - With Assets', () => (
     <WalletSendForm
+      customProtocolParameters={null}
+      resetCustomProptocolParams={action('resetCustomProptocolParams')}
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}

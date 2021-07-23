@@ -63,8 +63,8 @@ type Props = {
   onUnsetActiveAsset: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
-  customProtocolParameters: any, // TBD once all custom protocol parameters are declared
-  resetCustomProptocolParams: Function,
+  customProtocolParameters: ?any, // TBD once all custom protocol parameters are declared
+  resetCustomProptocolParams: ?Function,
 };
 
 type State = {
@@ -145,9 +145,16 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   componentWillUnmount() {
+    const {
+      onUnsetActiveAsset,
+      customProtocolParameters,
+      resetCustomProptocolParams,
+    } = this.props;
     this._isMounted = false;
-    this.props.onUnsetActiveAsset();
-    this.props.resetCustomProptocolParams();
+    onUnsetActiveAsset();
+    if (customProtocolParameters && resetCustomProptocolParams) {
+      resetCustomProptocolParams();
+    }
   }
 
   getCurrentNumberFormat() {
@@ -184,8 +191,16 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   prefillFormWithParams = () => {
-    const address = get(this.props, ['customProtocolParameters', 'data', 'address']);
-    const amount = get(this.props, ['customProtocolParameters', 'data', 'amount']);
+    const address = get(this.props, [
+      'customProtocolParameters',
+      'data',
+      'address',
+    ]);
+    const amount = get(this.props, [
+      'customProtocolParameters',
+      'data',
+      'amount',
+    ]);
     if (address && amount) {
       const receiverField = this.form.$('receiver');
       receiverField.value = address;

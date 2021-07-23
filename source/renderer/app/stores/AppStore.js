@@ -63,10 +63,10 @@ export default class AppStore extends Store {
     this.registerReactions([this._processCustomProtocolParams]);
   }
 
-    // Handle url query data and switch to proper route
+  // Handle url query data and switch to proper route (react on specific case)
   _processCustomProtocolParams = () => {
     // Note: For now we are processing only BASIC tx
-    const { appUpdate, wallets,networkStatus } = this.stores;
+    const { appUpdate, wallets, networkStatus } = this.stores;
     const { displayAppUpdateOverlay } = appUpdate;
     const { hasLoadedWallets } = wallets;
     const {
@@ -181,32 +181,31 @@ export default class AppStore extends Store {
     });
   };
 
-  // Parse custom URL and store query params
   @action _handleCustomProtocol = async (url: string) => {
-    /* Cardano custom protocol specification (Grammar)
-     * https://github.com/cardano-foundation/CIPs/blob/master/CIP-0013/CIP-0013.md
+    /**
+     *  Cardano custom protocol specification (Grammar)
+     *  https://github.com/cardano-foundation/CIPs/blob/master/CIP-0013/CIP-0013.md
+     *
+     *  1. cardanourn = "web+cardano:" (paymentref | stakepoolref)
+     *
+     *  paymentref = cardanoaddress [ "?" amountparam ]
+     *  cardanoaddress = *(base58 | bech32)
+     *  amountparam = "amount=" *digit [ "." *digit ]
+     *  Example:
+     *  web+cardano:Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe?amount=5.000000
+     *
+     *
+     *  2. stakepoolref = "//stake?" stakepool
+     *
+     *  stakepool = poolhexid | poolticker
+     *  poolhexid = 56HEXDIG
+     *  poolticker = 3*5UNICODE
+     *  Example:
+     *  web+cardano://stake?c94e6fe1123bf111b77b57994bcd836af8ba2b3aa72cfcefbec2d3d4
+     *  web+cardano://stake?COSD
+     */
 
-      1. cardanourn = "web+cardano:" (paymentref | stakepoolref)
-
-      paymentref = cardanoaddress [ "?" amountparam ]
-      cardanoaddress = *(base58 | bech32)
-      amountparam = "amount=" *digit [ "." *digit ]
-      Example:
-      web+cardano:Ae2tdPwUPEZ76BjmWDTS7poTekAvNqBjgfthF92pSLSDVpRVnLP7meaFhVd
-      web+cardano:Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe?amount=5.000000
-
-
-      2. stakepoolref = "//stake?" stakepool
-
-      stakepool = poolhexid | poolticker
-      poolhexid = 56HEXDIG
-      poolticker = 3*5UNICODE
-      Example:
-      web+cardano://stake?c94e6fe1123bf111b77b57994bcd836af8ba2b3aa72cfcefbec2d3d4
-      web+cardano://stake?COSD
-    **/
-
-    const queryParams = url.split('cardano:')[1].replace('//', '')
+    const queryParams = url.split('cardano:')[1].replace('//', '');
     const actionAndDataParams = queryParams.split('?');
     const actionParam = actionAndDataParams[0];
     const dataParams = actionAndDataParams[1];
@@ -218,7 +217,7 @@ export default class AppStore extends Store {
       isAddress = false;
     }
     if (isAddress && actionParam && dataParams) {
-      // For now MVP we are handling just basic tx
+      // For now (MVP) we are handling just basic tx
       // e.g. web+cardano:Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe?amount=5.000000
       const parsedQueryParams = dataParams.split('&');
       let parsedParamsData = {};
@@ -232,7 +231,7 @@ export default class AppStore extends Store {
         parsedParamsData = {
           ...parsedParamsData,
           address: actionParam,
-        }
+        };
       }
       if (this.stores.wallets.hasAnyWallets) {
         runInAction('Store custom protocol data', () => {
@@ -247,7 +246,7 @@ export default class AppStore extends Store {
 
   @action resetCustomProptocolParams = () => {
     this.customProtocolParameters = null;
-  }
+  };
 
   @action _updateRouteLocation = (options: {
     route: string,
