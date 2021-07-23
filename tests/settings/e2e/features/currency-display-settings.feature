@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Wallet currency display settings
 
   Background:

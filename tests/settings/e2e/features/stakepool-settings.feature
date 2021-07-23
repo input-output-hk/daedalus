@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Stake-pool server settings
 
   Background:
@@ -16,7 +16,7 @@ Feature: Stake-pool server settings
     And I click the stake-pool custom server input box submit button
     And I see the "Your changes have been saved" success message
     And I am on the Delegation "stake-pools" screen
-    Then "https://smash.cardano-testnet.iohkdev.io/" is visible on stake-pool screen above stake-pool list and is clickable
+    Then The custom server I chose earlier is visible on stake-pool screen above stake-pool list and is clickable
     And I am brought back to the stake-pool server settings screen
 
   Scenario: Verify stake-pool custom server text box is visible and error message verification
