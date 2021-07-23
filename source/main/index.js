@@ -242,20 +242,16 @@ const onAppReady = async () => {
   );
 
   if (process.platform === 'win32') {
-    logger.info('[Custom-Protocol] Set Win32 protocol params');
-    // Set the path of electron.exe and your app.
-    // These two additional parameters are only available on windows.
-    logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
+    logger.info('[Custom-Protocol] Set Windows protocol params: ', {
       execPath: process.execPath,
       argv: process.argv,
     });
-    app.setAsDefaultProtocolClient('cardano', process.execPath, [
+    app.setAsDefaultProtocolClient('web+cardano', process.execPath, [
       process.argv[1],
     ]);
   } else {
-    // This will catch clicks on links such as <a href="cardano://abc=1">Open in daedalus</a>
     logger.info('[Custom-Protocol] Set Mac / Linux protocol params');
-    app.setAsDefaultProtocolClient('cardano');
+    app.setAsDefaultProtocolClient('web+cardano');
   }
 
   app.on('open-url', (event, url) => {

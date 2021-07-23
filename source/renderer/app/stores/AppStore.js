@@ -192,7 +192,7 @@ export default class AppStore extends Store {
      *  cardanoaddress = *(base58 | bech32)
      *  amountparam = "amount=" *digit [ "." *digit ]
      *  Example:
-     *  web+cardano:Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe?amount=5.000000
+     *  web+cardano:addr_test1qrakn4h9wkq96rx2eyfhn7mydpf285pg80dma203sr3qmulqqapc66zkutqnm0zk55gvs2drll6nune7eh24ax7ld3yqy53sf0?amount=5.000000
      *
      *
      *  2. stakepoolref = "//stake?" stakepool
@@ -205,7 +205,7 @@ export default class AppStore extends Store {
      *  web+cardano://stake?COSD
      */
 
-    const queryParams = url.split('cardano:')[1].replace('//', '');
+    const queryParams = url.split('web+cardano:')[1].replace('//', '');
     const actionAndDataParams = queryParams.split('?');
     const actionParam = actionAndDataParams[0];
     const dataParams = actionAndDataParams[1];
@@ -218,7 +218,7 @@ export default class AppStore extends Store {
     }
     if (isAddress && actionParam && dataParams) {
       // For now (MVP) we are handling just basic tx
-      // e.g. web+cardano:Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe?amount=5.000000
+      // e.g. web+cardano:addr_test1qrakn4h9wkq96rx2eyfhn7mydpf285pg80dma203sr3qmulqqapc66zkutqnm0zk55gvs2drll6nune7eh24ax7ld3yqy53sf0?amount=5.000000
       const parsedQueryParams = dataParams.split('&');
       let parsedParamsData = {};
       map(parsedQueryParams, (queryParam) => {

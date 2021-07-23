@@ -15,7 +15,7 @@
         <string>Cardano</string>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>cardano</string>
+          <string>web+cardano</string>
         </array>
       </dict>
     </array>
