@@ -1,4 +1,5 @@
 .component {
+  margin-bottom: 25px;
   padding-left: 14px;
   position: relative;
 
@@ -9,9 +10,32 @@
     content: '';
     display: block;
     height: calc(100% - 42px);
+
     left: 0;
     opacity: 0.3;
     position: absolute;
     width: 6px;
+  }
+  .fees {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    p {
+      font-family: var(--font-light);
+    }
+    .amount {
+      align-items: center;
+      background-color: var(--theme-staking-stake-pool-grey-bg-color);
+      border-radius: 3px;
+      display: flex;
+      flex-direction: row;
+      font-family: var(--font-bold);
+      font-size: 11px;
+      height: 21px;
+      justify-content: flex-end;
+      line-height: 1.36;
+      max-width: 250px;
+      padding: 3px 9px;
+    }
   }
 }

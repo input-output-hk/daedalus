@@ -14,6 +14,7 @@ import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
 import styles from './AssetTransactionConfirmation.scss';
 import type { AssetToken } from '../../api/assets/types';
 import Asset from './Asset';
+import { formattedTokenWalletAmount } from '../../utils/formatters';
 
 const messages = defineMessages({
   assetLabel: {
@@ -46,7 +47,6 @@ const messages = defineMessages({
 });
 
 type Props = {
-  amount: string,
   asset: AssetToken,
   index: number,
   intl: intlShape.isRequired,
@@ -56,7 +56,10 @@ type Props = {
 const onCopyAssetItem = () => {};
 
 const AssetTransactionConfirmation = observer((props: Props) => {
-  const { index, asset, intl, amount, isHardwareWallet } = props;
+  const { index, asset, intl, isHardwareWallet } = props;
+  const { quantity, metadata, decimals } = asset;
+  const amount = formattedTokenWalletAmount(quantity, metadata, decimals);
+  console.log('amount', amount);
   const componentStyles = classnames([styles.component]);
   return (
     <div className={componentStyles}>

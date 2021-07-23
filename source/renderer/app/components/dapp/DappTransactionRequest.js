@@ -118,11 +118,7 @@ const DappTransactionRequest = observer((props: Props) => {
         {intl.formatMessage(messages.receiverLabel)}
       </p>
       <p className={styles.address}>{address}</p>
-      <AssetsTransactionConfirmation
-        assets={assets}
-        feesAmount={feesAmount}
-        className={styles.assetsTransaction}
-      />
+      <AssetsTransactionConfirmation assets={assets} feesAmount={feesAmount} />
       <p className={styles.label}>
         {intl.formatMessage(messages.additionalDataLabel)}
       </p>

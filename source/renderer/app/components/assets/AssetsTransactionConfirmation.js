@@ -8,8 +8,7 @@ import styles from './AssetsTransactionConfirmation.scss';
 import AssetTransactionConfirmation from './AssetTransactionConfirmation';
 import type { AssetToken } from '../../api/assets/types';
 import globalMessages from '../../i18n/global-messages';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
-import AssetAmount from './AssetAmount';
+import { formattedWalletAmount } from '../../utils/formatters';
 
 type Props = {
   assets: Array<AssetToken>,
@@ -32,12 +31,13 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
     <div className={componentStyles}>
       <div className={styles.fees}>
         <p>{feesUnit}</p>
-        <AssetAmount amount={feesAmount} decimals={DECIMAL_PLACES_IN_ADA} />
+        <div className={styles.amount}>
+          {formattedWalletAmount(feesAmount, false)}
+        </div>
       </div>
       {assets.map((asset, index) => (
         <AssetTransactionConfirmation
           key={asset.uniqueId}
-          amount="1.000000"
           index={index}
           isHardwareWallet={false}
           asset={asset}

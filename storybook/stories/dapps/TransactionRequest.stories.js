@@ -2,6 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import BigNumber from 'bignumber.js';
+import { random } from 'lodash';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select, number } from '@storybook/addon-knobs';
 import { withState } from '@dump247/storybook-state';
@@ -15,19 +16,19 @@ const allAssets = [
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234',
-    100
+    random(1, 200)
   ),
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
-    100
+    random(1, 200)
   ),
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z3456',
-    100,
+    random(1, 200),
     {
       name: 'USD Coin',
       ticker: 'USDC',
@@ -44,7 +45,7 @@ const allAssets = [
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z4567',
-    100,
+    random(1, 200),
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -86,7 +87,7 @@ storiesOf('dApps|TransactionRequest', module)
           'safari'
         )}
         wallets={WALLETS_V2}
-        assets={allAssets.slice(0, 2)}
+        assets={allAssets}
         feesAmount={new BigNumber(number('feesAmount', 100))}
         additionalData={{
           appName: 'daedalus',
