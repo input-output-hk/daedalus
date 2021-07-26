@@ -66,6 +66,7 @@ export default class TinyDatePicker extends Component<Props> {
     return (
       <PopOver
         interactive
+        arrow={false}
         placement="auto"
         duration={0}
         trigger="click"
