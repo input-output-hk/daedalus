@@ -357,7 +357,8 @@ storiesOf('Wallets|Send', module)
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }
           receiver={generateHash()}
-          assets={confirmationTokens}
+          selectedAssets={confirmationTokens}
+          allAvailableTokens={confirmationTokens}
           assetsAmounts={confirmationTokensAmounts}
           transactionFee="1.000000"
           amountToNaturalUnits={formattedAmountToNaturalUnits}

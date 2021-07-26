@@ -1,5 +1,5 @@
 // @flow
-import BigNumber from 'bignumber.js';
+import find from 'lodash/find';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
@@ -77,10 +77,25 @@ export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
 };
 
 export const hasTokenLeftAfterTransaction = (
-  allAssets: AssetToken[],
-  assetsAmounts: string[]
-): boolean =>
-  !!allAssets.find(
-    (asset, assetIndex) =>
-      !BigNumber(assetsAmounts[assetIndex]).isEqualTo(asset.quantity)
-  );
+  availableAssets: AssetToken[],
+  selectedAssetsState?: any
+): boolean => {
+  if (
+    !!selectedAssetsState &&
+    selectedAssetsState.length &&
+    selectedAssetsState.length > 0 &&
+    !!availableAssets &&
+    availableAssets?.length &&
+    availableAssets?.length > 0
+  ) {
+    if (selectedAssetsState.length !== availableAssets.length) {
+      return true;
+    }
+    return !!find(
+      selectedAssetsState,
+      (selectedAsset, index) =>
+        !availableAssets[index]?.quantity?.isEqualTo(selectedAsset)
+    );
+  }
+  return false;
+};

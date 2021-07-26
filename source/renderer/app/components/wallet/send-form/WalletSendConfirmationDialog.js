@@ -22,12 +22,14 @@ import type { HwDeviceStatus } from '../../../domains/Wallet';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
+import type { AssetToken } from '../../../api/assets/types';
 
 type Props = {
   amount: string,
   receiver: string,
   wallet: Wallet,
   totalAmount: BigNumber,
+  allAvailableTokens?: Array<AssetToken>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -184,6 +186,7 @@ export default class WalletSendConfirmationDialog extends Component<
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
+      allAvailableTokens,
       amount,
       receiver,
       transactionFee,
@@ -249,7 +252,11 @@ export default class WalletSendConfirmationDialog extends Component<
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
-        {shouldShowEmptyWalletWarning(totalAmount, wallet, false) && (
+        {shouldShowEmptyWalletWarning(
+          totalAmount,
+          wallet,
+          !!allAvailableTokens?.length && allAvailableTokens.length > 0
+        ) && (
           <div className={styles.flightCandidateWarning}>
             <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
           </div>

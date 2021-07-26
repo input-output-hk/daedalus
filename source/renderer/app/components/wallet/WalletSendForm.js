@@ -898,7 +898,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const adaAmount = new BigNumber(adaAmountField.value || 0);
 
     let fees = '0';
-    let total = adaAmount;
+    let total: BigNumber = adaAmount;
     if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
       total = adaAmount.plus(transactionFee);
@@ -970,7 +970,7 @@ export default class WalletSendForm extends Component<Props, State> {
           <WalletSendConfirmationDialogContainer
             currencyUnit={currencyUnit}
             receiver={receiver}
-            assets={this.selectedAssets}
+            selectedAssets={this.selectedAssets}
             assetsAmounts={this.selectedAssetsAmounts}
             amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
