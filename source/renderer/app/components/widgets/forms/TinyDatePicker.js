@@ -65,11 +65,10 @@ export default class TinyDatePicker extends Component<Props> {
     /* eslint-disable */
     return (
       <PopOver
-        arrow={false}
         interactive
+        placement="auto"
         duration={0}
         trigger="click"
-        placement="bottom"
         content={
           <div className={styles.datePicker}>
             <Datetime
