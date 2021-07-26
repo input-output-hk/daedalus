@@ -24,7 +24,7 @@ type Props = $Exact<{
   dateFormat: string,
   disablePaste?: boolean,
   value: string,
-  label?: string,
+  label?: string | Element<any>,
   placeholder?: string,
   innerLabelPrefix: string,
   innerValue: string | Element<any>,
@@ -46,7 +46,7 @@ export default class TinyDatePicker extends Component<Props> {
 
   render() {
     const {
-      onReset, // eslint-disable-line
+      onReset,
       onChange,
       isValidDate,
       dateFormat,
@@ -101,30 +101,16 @@ export default class TinyDatePicker extends Component<Props> {
       >
         <TinyInput
           autoFocus={false}
+          value={value ? moment(value).format(dateFormat) : ''}
           label={label}
           placeholder={placeholder}
-          onChange={(value, evt) => console.log(evt)}
-          onInput={(evt) => {
-            const inputDate = moment(evt.target.value, dateFormat);
-            if (
-              !inputDate.isValid() ||
-              (isValidDate && !isValidDate(inputDate))
-            ) {
-              evt.target.value = '';
-            }
-            // if (props.onInput) {
-            //   props.onInput(evt);
-            // }
-          }}
-          value={value ? moment(value).format(dateFormat) : ''}
-          disablePaste={disablePaste}
           innerLabelPrefix={innerLabelPrefix}
-          innerValue={innerValue}
+          onChange={(value, evt) => console.log(evt)}
           useReadMode={useReadMode}
+          innerValue={innerValue}
           error={error}
         />
       </PopOver>
     );
-    /* eslint-enable */
   }
 }
