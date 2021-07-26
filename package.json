@@ -261,6 +261,12 @@
       "pre-push": "yarn check:all"
     }
   },
+  "protocols": {
+    "name": "web+cardano-protocol",
+    "schemes": [
+      "web+cardano"
+    ]
+  },
   "resolutions": {
     "**/**/marked": "^0.7.0",
     "**/**/minimatch": "^3.0.2",
