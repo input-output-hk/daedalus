@@ -92,9 +92,12 @@
     text-align: center;
   }
 
+  .flightCandidateWarning {
+    margin-top: 20px;
+  }
+
   .flightCandidateWarning,
   .emptyingWarning {
-    margin-top: 20px;
     p {
       color: var(--theme-send-confirmation-dialog-send-values-color);
       font-family: var(--font-regular);
