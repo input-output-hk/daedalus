@@ -79,31 +79,36 @@ export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
 /**
  * Check if after the transactions your wallet has some assets left
  *
- * @param availableAssets Collection of assets in your wallet
- * @param selectedAssetsState Selected assets to be send in the transaction
+ * @param allAvailableTokens Collection of assets in your wallet
+ * @param initialSelectedAssets Collection of assets initially preselected
+ * @param selectedAssets Selected assets to be send in the transaction
  * @returns {boolean}
  */
 export const hasTokensLeftAfterTransaction = (
-  availableAssets: AssetToken[],
-  selectedAssetsState?: any
+  allAvailableTokens: AssetToken[],
+  initialSelectedAssets: AssetToken[],
+  selectedAssets?: string[]
 ): boolean => {
   if (
-    !!selectedAssetsState &&
-    selectedAssetsState.length &&
-    selectedAssetsState.length > 0 &&
-    !!availableAssets &&
-    availableAssets?.length &&
-    availableAssets?.length > 0
+    !!selectedAssets &&
+    selectedAssets.length &&
+    selectedAssets.length > 0 &&
+    !!initialSelectedAssets &&
+    initialSelectedAssets?.length &&
+    initialSelectedAssets?.length > 0
   ) {
     // If there is a minimal difference between the assets selected and the
     // ones available in your wallet means you left assets in your wallet
-    if (selectedAssetsState.length !== availableAssets.length) {
+    if (
+      initialSelectedAssets.length < allAvailableTokens.length ||
+      selectedAssets.length < initialSelectedAssets.length
+    ) {
       return true;
     }
     return !!find(
-      selectedAssetsState,
+      selectedAssets,
       (selectedAsset, index) =>
-        !availableAssets[index]?.quantity?.isEqualTo(selectedAsset)
+        !initialSelectedAssets[index]?.quantity?.isEqualTo(selectedAsset)
     );
   }
   return false;
