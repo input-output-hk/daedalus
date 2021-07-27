@@ -29,7 +29,7 @@ import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
-import { hasTokenLeftAfterTransaction } from '../../../utils/assets';
+import { hasTokensLeftAfterTransaction } from '../../../utils/assets';
 
 const SHOW_TOTAL_AMOUNT = false;
 
@@ -146,7 +146,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
-          selectedAssets,
+          assets: selectedAssets,
           assetsAmounts,
         };
         this.props.onSubmit(transactionData);
@@ -309,7 +309,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           wallet,
           !!allAvailableTokens?.length &&
             allAvailableTokens.length > 0 &&
-            hasTokenLeftAfterTransaction(selectedAssets, assetsAmounts)
+            hasTokensLeftAfterTransaction(selectedAssets, assetsAmounts)
         ) && (
           <div className={styles.flightCandidateWarning}>
             <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
@@ -374,7 +374,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                               content={
                                 <div className="UnformattedAmountTooltip">
                                   <FormattedHTMLMessage
-                                    {...getMessages()[
+                                    {...messages[
                                       isHardwareWallet
                                         ? 'unformattedAmountMessageForHardwareWallets'
                                         : 'unformattedAmountMessageForSoftwareWallets'
