@@ -311,7 +311,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             allAvailableTokens.length > 0 &&
             hasTokensLeftAfterTransaction(selectedAssets, assetsAmounts)
         ) && (
-          <div className={styles.flightCandidateWarning}>
+          <div className={styles.warning}>
             <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
           </div>
         )}
