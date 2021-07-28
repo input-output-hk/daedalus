@@ -24,12 +24,14 @@ export const shouldShowEmptyWalletWarning = (
   hasAssets: boolean = false
 ): boolean => {
   const { amount: walletBalance, isLegacy, isDelegating } = wallet;
-  const hasZeroBalanceAndIsNotDelegating =
+  const willRemainZeroAdaAndZeroAssetsAndNotDelegating =
     !isDelegating &&
     walletBalance.minus(totalAmountToSpend).isZero() &&
     !hasAssets;
+
+  if (willRemainZeroAdaAndZeroAssetsAndNotDelegating) return false;
+
   return (
-    !hasZeroBalanceAndIsNotDelegating &&
     !isLegacy &&
     !isWalletRewardsWithdrawalPossible(totalAmountToSpend, walletBalance)
   );

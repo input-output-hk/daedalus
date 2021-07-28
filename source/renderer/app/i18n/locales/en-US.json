@@ -940,7 +940,7 @@
   "wallet.send.confirmationDialog.amountLabel": "Amount",
   "wallet.send.confirmationDialog.assetLabel": "Token",
   "wallet.send.confirmationDialog.back": "Back",
-  "wallet.send.confirmationDialog.emptyingWarning": "<b>Warning:</b> This transaction will reduce your wallet's balance to less than 10 ada. We recommend keeping a minimum of 10 ada to spend staking rewards and send native tokens, as these actions require ada.",
+  "wallet.send.confirmationDialog.emptyingWarning": "<b>Warning:</b> This transaction will reduce your wallet's balance to less than 10 ADA. We recommend keeping a minimum of 10 ADA to spend staking rewards and send native tokens, as these actions require ada.",
   "wallet.send.confirmationDialog.feesLabel": "Transaction fee",
   "wallet.send.confirmationDialog.flightCandidateCheckboxLabel": "I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
   "wallet.send.confirmationDialog.flightCandidateWarning": "<b>Warning:</b> flight candidate versions of Daedalus are connected to the Cardano mainnet. If you confirm this transaction, real ada will be transferred out of this wallet.",

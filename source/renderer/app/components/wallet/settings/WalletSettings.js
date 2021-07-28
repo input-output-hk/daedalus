@@ -117,8 +117,6 @@ export const messages: { [string]: ReactIntlMessage } = defineMessages({
 type Props = {
   walletId: string,
   walletName: string,
-  delegationStakePoolStatus: ?string,
-  lastDelegationStakePoolStatus: ?string,
   isRestoring: boolean,
   isSyncing: boolean,
   isDelegating: boolean,

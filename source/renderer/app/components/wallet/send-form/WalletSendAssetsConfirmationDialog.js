@@ -29,7 +29,7 @@ import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
-import { hasTokenLeftAfterTransaction } from '../../../utils/assets';
+import { hasTokensLeftAfterTransaction } from '../../../utils/assets';
 
 const SHOW_TOTAL_AMOUNT = false;
 
@@ -38,7 +38,8 @@ type Props = {
   receiver: string,
   wallet: Wallet,
   totalAmount: BigNumber,
-  assets: Array<AssetToken>,
+  selectedAssets: Array<AssetToken>,
+  allAvailableTokens: Array<AssetToken>,
   assetsAmounts: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
@@ -58,7 +59,7 @@ type Props = {
 };
 
 type State = {
-  assets: Array<AssetToken>,
+  selectedAssets: Array<AssetToken>,
   assetsAmounts: Array<string>,
   areTermsAccepted: boolean,
 };
@@ -75,18 +76,18 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   state = {
-    assets: [],
+    selectedAssets: [],
     assetsAmounts: [],
     areTermsAccepted: false,
   };
 
   componentDidMount() {
-    // We need to keep initial list of assets and their amounts as a state
+    // We need to keep initial list of selectedAssets and their amounts as a state
     // value to avoid losing them after the transaction is confirmed
     // (this affects only hardware wallets for which we close the dialog
     // after transaction has been confirmed)
-    const { assets, assetsAmounts } = this.props;
-    this.setState({ assets, assetsAmounts });
+    const { selectedAssets, assetsAmounts } = this.props;
+    this.setState({ selectedAssets, assetsAmounts });
   }
 
   form = new ReactToolboxMobxForm(
@@ -132,7 +133,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { assets, assetsAmounts } = this.state;
+        const { selectedAssets, assetsAmounts } = this.state;
         const {
           receiver,
           amount,
@@ -145,7 +146,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
-          assets,
+          assets: selectedAssets,
           assetsAmounts,
         };
         this.props.onSubmit(transactionData);
@@ -226,11 +227,12 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { assets, areTermsAccepted } = this.state;
+    const { selectedAssets, areTermsAccepted, assetsAmounts } = this.state;
     const passphraseField = form.$('passphrase');
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
+      allAvailableTokens,
       amount,
       receiver,
       transactionFee,
@@ -273,8 +275,8 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     ];
 
     const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight = assets.length
-      ? assetsSeparatorBasicHeight * assets.length * 2 - 18
+    const assetsSeparatorCalculatedHeight = selectedAssets.length
+      ? assetsSeparatorBasicHeight * selectedAssets.length * 2 - 18
       : assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -305,10 +307,15 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         {shouldShowEmptyWalletWarning(
           totalAmount,
           wallet,
-          assets.length > 0 &&
-            hasTokenLeftAfterTransaction(assets, this.state.assetsAmounts)
+          !!allAvailableTokens?.length &&
+            allAvailableTokens.length > 0 &&
+            hasTokensLeftAfterTransaction(
+              allAvailableTokens,
+              selectedAssets,
+              assetsAmounts
+            )
         ) && (
-          <div className={styles.flightCandidateWarning}>
+          <div className={styles.warning}>
             <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
           </div>
         )}
@@ -338,7 +345,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                       </div>
                     </div>
                   </div>
-                  {assets.map((asset, assetIndex) => {
+                  {selectedAssets.map((asset, assetIndex) => {
                     const assetAmount = this.getFormattedAssetAmount(
                       asset,
                       assetIndex
@@ -371,7 +378,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                               content={
                                 <div className="UnformattedAmountTooltip">
                                   <FormattedHTMLMessage
-                                    {...getMessages()[
+                                    {...messages[
                                       isHardwareWallet
                                         ? 'unformattedAmountMessageForHardwareWallets'
                                         : 'unformattedAmountMessageForSoftwareWallets'
