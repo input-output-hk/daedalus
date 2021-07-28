@@ -246,12 +246,12 @@ const onAppReady = async () => {
       execPath: process.execPath,
       argv: process.argv,
     });
-    app.setAsDefaultProtocolClient('web+cardano', process.execPath, [
+    app.setAsDefaultProtocolClient('cardano', process.execPath, [
       process.argv[1],
     ]);
   } else {
     logger.info('[Custom-Protocol] Set Mac / Linux protocol params');
-    app.setAsDefaultProtocolClient('web+cardano');
+    app.setAsDefaultProtocolClient('cardano');
   }
 
   app.on('open-url', (event, url) => {
