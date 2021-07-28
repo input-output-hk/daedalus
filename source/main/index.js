@@ -2,6 +2,7 @@
 import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, shell } from 'electron';
+import childProcess from 'child_process';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
 import { logger } from './utils/logging';
@@ -246,12 +247,15 @@ const onAppReady = async () => {
       execPath: process.execPath,
       argv: process.argv,
     });
-    app.setAsDefaultProtocolClient('cardano', process.execPath, [
+    app.setAsDefaultProtocolClient('web+cardano', process.execPath, [
       process.argv[1],
     ]);
   } else {
     logger.info('[Custom-Protocol] Set Mac / Linux protocol params');
-    app.setAsDefaultProtocolClient('cardano');
+    app.setAsDefaultProtocolClient('web+cardano');
+    childProcess.exec(
+      'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
+    );
   }
 
   app.on('open-url', (event, url) => {

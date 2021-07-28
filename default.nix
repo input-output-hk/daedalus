@@ -385,6 +385,7 @@ let
       cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
+        -e "MimeType=x-scheme-handler/web-cardano;" \
         > "''${XDG_DATA_HOME}/applications/Daedalus-${self.linuxClusterBinName}.desktop"
     '';
     xdg-open = pkgs.writeScriptBin "xdg-open" ''
