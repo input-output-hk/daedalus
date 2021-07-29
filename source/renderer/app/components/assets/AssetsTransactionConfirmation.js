@@ -6,9 +6,11 @@ import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import styles from './AssetsTransactionConfirmation.scss';
 import AssetTransactionConfirmation from './AssetTransactionConfirmation';
-import type { AssetToken } from '../../api/assets/types';
+import Wallet from '../../domains/Wallet';
 import globalMessages from '../../i18n/global-messages';
 import { formattedWalletAmount } from '../../utils/formatters';
+import type { AssetToken } from '../../api/assets/types';
+import { isTokenMissingInWallet } from '../../utils/assets';
 
 type Props = {
   assets: Array<AssetToken>,
@@ -16,6 +18,7 @@ type Props = {
   feesAmount?: BigNumber,
   feesUnit?: string,
   intl: intlShape.isRequired,
+  wallet?: ?Wallet,
 };
 
 const AssetsTransactionConfirmation = observer((props: Props) => {
@@ -25,6 +28,7 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
     feesAmount,
     intl,
     feesUnit = intl.formatMessage(globalMessages.unitAda),
+    wallet,
   } = props;
   const componentStyles = classnames([styles.component, className]);
   return (
@@ -41,6 +45,7 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
           index={index}
           isHardwareWallet={false}
           asset={asset}
+          tokenIsMissing={isTokenMissingInWallet(wallet, asset)}
         />
       ))}
     </div>

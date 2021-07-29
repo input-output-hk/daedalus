@@ -1,5 +1,6 @@
 // @flow
 import find from 'lodash/find';
+import Wallet from '../domains/Wallet';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
@@ -112,4 +113,13 @@ export const hasTokensLeftAfterTransaction = (
     );
   }
   return false;
+};
+
+export const isTokenMissingInWallet = (wallet?: ?Wallet, token?: Token) => {
+  if (!wallet || !token) {
+    return false;
+  }
+  const { available } = wallet.assets;
+  const { uniqueId } = token;
+  return !available.find((walletToken) => walletToken.uniqueId === uniqueId);
 };

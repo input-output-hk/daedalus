@@ -57,7 +57,7 @@ type Props = {
 const onCopyAssetItem = () => {};
 
 const AssetTransactionConfirmation = observer((props: Props) => {
-  const { index, asset, intl, isHardwareWallet } = props;
+  const { index, asset, intl, isHardwareWallet, tokenIsMissing } = props;
   const { quantity, metadata, decimals } = asset;
   const amount = formattedTokenWalletAmount(quantity, metadata, decimals);
   const componentStyles = classnames([styles.component]);
@@ -65,7 +65,10 @@ const AssetTransactionConfirmation = observer((props: Props) => {
     <div className={componentStyles}>
       <div className={styles.assetsContainer}>
         <h3>
-          <span>{intl.formatMessage(messages.assetLabel, { index })}</span>
+          <span>
+            {intl.formatMessage(messages.assetLabel, { index })}{' '}
+            {tokenIsMissing ? 'MISSING' : ''}
+          </span>
           <Asset
             asset={asset}
             onCopyAssetItem={onCopyAssetItem}

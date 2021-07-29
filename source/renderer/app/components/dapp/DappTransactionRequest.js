@@ -2,6 +2,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
+import { Select } from 'react-polymorph/lib/components/Select';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './DappTransactionRequest.scss';
@@ -57,6 +58,7 @@ type Props = {
   assets: Array<AssetToken>,
   feesAmount?: BigNumber,
   intl: intlShape.isRequired,
+  onAddWallet: Function,
   onClose: Function,
   onSelectWallet: Function,
   onSubmit: Function,
@@ -73,6 +75,7 @@ const DappTransactionRequest = observer((props: Props) => {
     feesAmount,
     intl,
     onClose,
+    onAddWallet,
     onSelectWallet,
     onSubmit,
     selectedWallet,
@@ -92,8 +95,6 @@ const DappTransactionRequest = observer((props: Props) => {
   ];
   const componentStyles = classnames([styles.component]);
 
-  const walletsOptions = wallets;
-
   return (
     <Dialog
       className={componentStyles}
@@ -104,21 +105,33 @@ const DappTransactionRequest = observer((props: Props) => {
       <p className={styles.label}>
         {intl.formatMessage(messages.fromWalletLabel)}
       </p>
-      <WalletsDropdown
-        className={styles.walletsDropdown}
-        getStakePoolById={() => {}}
-        numberOfStakePools={100}
-        onChange={onSelectWallet}
-        placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
-        value={selectedWallet ? selectedWallet.id : null}
-        wallets={walletsOptions}
-      />
+      {wallets.length ? (
+        <WalletsDropdown
+          className={styles.walletsDropdown}
+          getStakePoolById={() => {}}
+          numberOfStakePools={100}
+          onChange={onSelectWallet}
+          placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
+          value={selectedWallet ? selectedWallet.id : null}
+          wallets={wallets}
+        />
+      ) : (
+        <Select
+          onChange={onAddWallet}
+          options={[{ label: '!!!+ Add a wallet', value: '' }]}
+        />
+      )}
+
       <hr />
       <p className={styles.label}>
         {intl.formatMessage(messages.receiverLabel)}
       </p>
       <p className={styles.address}>{address}</p>
-      <AssetsTransactionConfirmation assets={assets} feesAmount={feesAmount} />
+      <AssetsTransactionConfirmation
+        assets={assets}
+        feesAmount={feesAmount}
+        wallet={selectedWallet}
+      />
       <p className={styles.label}>
         {intl.formatMessage(messages.additionalDataLabel)}
       </p>

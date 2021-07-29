@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, select, number } from '@storybook/addon-knobs';
+import { withKnobs, select, number, boolean } from '@storybook/addon-knobs';
 import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../_support/StoryDecorator';
 import DappTransactionRequest from '../../../source/renderer/app/components/dapp/DappTransactionRequest';
@@ -46,20 +46,33 @@ storiesOf('dApps|TransactionRequest', module)
     'Request',
     withState({ selectedWallet: null }, (store) => {
       const { selectedWallet } = store.state;
-      const wallets = WALLETS_V2.forEach((wallet, index) => ({
-        ...wallet,
-        assets: index === 0 ? allAssets.slice(0) : allAssets,
-        name: index === 0 ? `${wallet.name} - Missing token` : wallet.name,
-      }));
+      const wallets = boolean('Has wallets?', true)
+        ? WALLETS_V2.map((wallet, index) => {
+            let assetsList = allAssets;
+            let { name } = wallet;
+            if (index === 0) {
+              assetsList = assetsList.slice(0, 1);
+              name = `${wallet.name} - Missing token`;
+            }
+            const assets = {
+              total: assetsList,
+              available: assetsList,
+            };
+            return {
+              ...wallet,
+              assets,
+              name,
+            };
+          })
+        : [];
       return (
         <DappTransactionRequest
           address="addr1zCqrhsvWEPg886YEtnjN3vLXhFBHsc6j7oZ3pXzuwgZquGUT4fuztk43fHZnBhQKMnojvyxhFBHsc6j7oZ3pXzuwgZq"
+          onAddWallet={action('onAddWallet')}
           onClose={action('onClose')}
           onSubmit={action('onSubmit')}
           onSelectWallet={(walletId) => {
-            const newSelectedWallet = WALLETS_V2.find(
-              ({ id }) => id === walletId
-            );
+            const newSelectedWallet = wallets.find(({ id }) => id === walletId);
             store.set({ selectedWallet: newSelectedWallet });
           }}
           selectedWallet={selectedWallet}
