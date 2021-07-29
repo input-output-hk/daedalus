@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Stake-pool server settings
 
   Background:
@@ -25,7 +25,7 @@ Feature: Stake-pool server settings
     And I select custom server option
     Then The smash server input textBox is visible
     And I enter invalid url "www.test" in to the custom server input-box
-    Then Stake-pool custom input box error message "The URL should start with" is displayed
+    Then Stake-pool custom input box error message "https://" is displayed
     And I delete values in smash server custom url input box
     And I enter invalid url "https://test.com/path" in to the custom server input-box
     Then Stake-pool custom input box error message "protocol and hostname" is displayed
