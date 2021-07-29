@@ -1,16 +1,20 @@
 import BigNumber from 'bignumber.js';
 import { isWalletRewardsWithdrawalPossible, shouldShowEmptyWalletWarning } from '../source/renderer/app/utils/walletUtils';
 
-// As a user using a shelly wallet when sending ADA and the balance after the transactions remains < 10 ADA, the following Warning message is displayed in the send confirmation dialog
+// As a user using a shelly wallet when sending ADA and the balance
+// after the transactions remains < 10 ADA, the following Warning message
+// is displayed in the send confirmation dialog
 
-describe('Wallet helper functions', () => {
-  it('Function isWalletRewardsWithdrawalPossible returns false in case the balance after transaction is lower than MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS', () => {
+describe('Function shouldShowEmptyWalletWarning returns:', () => {
+  it('<false> in case the balance after transaction is lower than ' +
+    'MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS', () => {
     const transactionAmount = new BigNumber(100);
     const walletBalance = new BigNumber(101);
     expect(isWalletRewardsWithdrawalPossible(transactionAmount, walletBalance)).toBe(false);
   });
 
-  it('Function isWalletRewardsWithdrawalPossible returns true in case the balance after transaction is higher than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS', () => {
+  it('<true> in case the balance after transaction is higher than ' +
+    'MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS', () => {
     const transactionAmount = new BigNumber(100);
     const walletBalance = new BigNumber(110);
     expect(isWalletRewardsWithdrawalPossible(transactionAmount, walletBalance)).toBe(true);
@@ -23,7 +27,7 @@ describe('Wallet helper functions', () => {
   // remain balance after transaction is 0 ADA.
 
 
-  it('Function shouldShowEmptyWalletWarning returns true in case of: ' +
+  it('<true> in case of: ' +
     'remain balance less than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS ' +
     'is not Legacy ' +
     'is delegating ' +
@@ -38,7 +42,7 @@ describe('Wallet helper functions', () => {
     expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
   });
 
-  it('Function shouldShowEmptyWalletWarning returns false in case of: ' +
+  it('<false> in case of: ' +
     'remain balance less than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS ' +
     'is legacy ' +
     'is delegating ' +
@@ -52,7 +56,7 @@ describe('Wallet helper functions', () => {
     expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(false);
   });
 
-  it('Function shouldShowEmptyWalletWarning returns true in case of: ' +
+  it('<true> in case of: ' +
     'remain balance less than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS ' +
     'is not legacy ' +
     'is not delegating ' +
@@ -66,7 +70,7 @@ describe('Wallet helper functions', () => {
       expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
     });
 
-  it('Function shouldShowEmptyWalletWarning returns false in case of: ' +
+  it('<false> in case of: ' +
     'remain balance far more than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS ' +
     'is not Legacy ' +
     'is delegating ' +
@@ -81,7 +85,7 @@ describe('Wallet helper functions', () => {
       expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(false);
     });
 
-  it('Function shouldShowEmptyWalletWarning returns true in case of: ' +
+  it('<true> in case of: ' +
     'remain balance less than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS ' +
     'is not Legacy ' +
     'is delegating ' +
