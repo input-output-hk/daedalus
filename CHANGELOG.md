@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+- Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
+
+### Features
+- Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
+
+### Chores
+
+- Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
+
 ## 4.2.0
 
 ### Features
