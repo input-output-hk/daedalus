@@ -13,6 +13,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14.17.3"
+          node-version: "12.x"
       - run: yarn install
       - run: yarn test:jest
