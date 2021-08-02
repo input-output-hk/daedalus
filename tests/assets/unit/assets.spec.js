@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { hasTokensLeftAfterTransaction } from '../source/renderer/app/utils/assets';
+import { hasTokensLeftAfterTransaction } from '../../../source/renderer/app/utils/assets';
 
 const allAvailableTokens = [{
   policyId: '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7',

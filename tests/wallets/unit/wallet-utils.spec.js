@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { isWalletRewardsWithdrawalPossible, shouldShowEmptyWalletWarning } from '../source/renderer/app/utils/walletUtils';
+import { isWalletRewardsWithdrawalPossible, shouldShowEmptyWalletWarning } from '../../../source/renderer/app/utils/walletUtils';
 
 // As a user using a shelly wallet when sending ADA and the balance
 // after the transactions remains < 10 ADA, the following Warning message
