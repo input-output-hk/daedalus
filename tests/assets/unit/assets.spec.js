@@ -4,7 +4,7 @@ import { hasTokensLeftAfterTransaction } from '../../../source/renderer/app/util
 const allAvailableTokens = [{
   policyId: '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7',
   assetName: '',
-  quantity: new BigNumber(6),
+  quantity: BigNumber(6),
   fingerprint: 'asset1cvmyrfrc7lpht2hcjwr9lulzyyjv27uxh3kcz0',
   metadata: {
     url: 'https://developers.cardano.org/',
@@ -17,7 +17,7 @@ const allAvailableTokens = [{
 }, {
   policyId: '94d4cdbcffb09ebd4780d94f932a657dc4852530fa8013df66c72d4c',
   assetName: '676f6f64636f696e',
-  quantity: new BigNumber(1),
+  quantity: BigNumber(1),
 
   fingerprint: 'asset13x2a44r5cp3kuys2x7sgz5062r6q9hl8htkpup',
   metadata: {
@@ -30,7 +30,7 @@ const allAvailableTokens = [{
 }, {
   policyId: '789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1',
   assetName: '',
-  quantity: new BigNumber(2),
+  quantity: BigNumber(2),
   fingerprint: 'asset1656gm7zkherdvxkn52mhaxkkw343qtkqgv0h8c',
   metadata: {
     url: 'https://sad.io',
@@ -45,7 +45,7 @@ const allAvailableTokens = [{
 const initialSelectedAssets = [{
   policyId: '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7',
   assetName: '',
-  quantity: new BigNumber(6),
+  quantity: BigNumber(6),
   fingerprint: 'asset1cvmyrfrc7lpht2hcjwr9lulzyyjv27uxh3kcz0',
   metadata: {
     url: 'https://developers.cardano.org/',
