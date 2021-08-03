@@ -60,19 +60,22 @@ const AssetTransactionConfirmation = observer((props: Props) => {
   const { index, asset, intl, isHardwareWallet, tokenIsMissing } = props;
   const { quantity, metadata, decimals } = asset;
   const amount = formattedTokenWalletAmount(quantity, metadata, decimals);
-  const componentStyles = classnames([styles.component]);
-  return (
-    <div className={componentStyles}>
+  const componentStyles = classnames(styles.component, {
+    [styles.missing]: tokenIsMissing,
+  });
+
+  const content = (
+    <>
       <div className={styles.assetsContainer}>
         <h3>
-          <span>
+          <span className={styles.assetLabel}>
             {intl.formatMessage(messages.assetLabel, { index })}{' '}
-            {tokenIsMissing ? 'MISSING' : ''}
           </span>
           <Asset
             asset={asset}
             onCopyAssetItem={onCopyAssetItem}
             className={styles.assetToken}
+            error={tokenIsMissing}
           />
         </h3>
         <div className={styles.amountFeesWrapper}>
@@ -96,7 +99,6 @@ const AssetTransactionConfirmation = observer((props: Props) => {
                 />
               </div>
             }
-            key="tooltip"
           >
             <div className={styles.questionMark}>
               <SVGInline svg={questionMarkIcon} />
@@ -106,8 +108,19 @@ const AssetTransactionConfirmation = observer((props: Props) => {
         </div>
         <div className={styles.unformattedAmount}>{amount}</div>
       </div>
-    </div>
+    </>
   );
+
+  if (tokenIsMissing)
+    return (
+      <div className={componentStyles}>
+        <PopOver content="TOKEN IS MISSING" appendTo="parent">
+          {content}
+        </PopOver>
+      </div>
+    );
+
+  return <div className={componentStyles}>{content}</div>;
 });
 
 export default injectIntl(AssetTransactionConfirmation);

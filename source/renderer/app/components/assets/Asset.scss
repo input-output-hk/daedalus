@@ -42,6 +42,11 @@
       width: 11px;
     }
   }
+  &.error {
+    .fingerprint {
+      background-color: var(--theme-background-color-error);
+    }
+  }
 }
 
 .fingerprint {

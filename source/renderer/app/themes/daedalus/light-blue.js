@@ -236,6 +236,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
+    '--theme-background-color-error': 'rgba(234, 76, 91, .1)',
+    '--theme-background-color-dark-error': 'rgba(234, 76, 91, .3)',
   },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
