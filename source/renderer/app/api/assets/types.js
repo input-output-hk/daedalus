@@ -53,7 +53,9 @@ export type Token = {
   assetName: string,
   quantity: BigNumber,
   address?: ?string,
+  uniqueId?: string,
 };
+
 export type Tokens = Array<Token>;
 export type WalletTokens = {
   available: Tokens,
