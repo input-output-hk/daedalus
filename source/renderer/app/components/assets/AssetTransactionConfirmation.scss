@@ -17,6 +17,14 @@
       fill: var(--theme-background-color-dark-error);
       opacity: 1;
     }
+    > [data-tippy-root] {
+      :global {
+        .tippy-box,
+        .tippy-arrow:before {
+          background-color: var(--theme-color-error) !important;
+        }
+      }
+    }
   }
 
   :global {

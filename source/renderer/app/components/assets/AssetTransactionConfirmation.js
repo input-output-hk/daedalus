@@ -44,6 +44,11 @@ const messages = defineMessages({
     description:
       '"unformattedAmountMessageForSoftwareWallets" item on AssetTransactionConfirmation.',
   },
+  missingToken: {
+    id: 'asset.transactionConfirmation.missingToken',
+    defaultMessage: '!!!There is no such token in this wallet',
+    description: '"missingToken" item on AssetTransactionConfirmation.',
+  },
 });
 
 type Props = {
@@ -114,7 +119,10 @@ const AssetTransactionConfirmation = observer((props: Props) => {
   if (tokenIsMissing)
     return (
       <div className={componentStyles}>
-        <PopOver content="TOKEN IS MISSING" appendTo="parent">
+        <PopOver
+          content={intl.formatMessage(messages.missingToken)}
+          appendTo="parent"
+        >
           {content}
         </PopOver>
       </div>

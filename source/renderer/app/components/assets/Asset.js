@@ -224,6 +224,7 @@ export default class Asset extends Component<Props, State> {
       onCopyAssetItem,
       assetSettingsDialogWasOpened,
       anyAssetWasHovered,
+      error,
     } = this.props;
     const pillContent = this.renderPillContent();
     const popOverContent = (
@@ -234,6 +235,7 @@ export default class Asset extends Component<Props, State> {
         anyAssetWasHovered={anyAssetWasHovered}
         className={styles.popOverContent}
         highlightFingerprint
+        error={error}
       />
     );
     const { isPillPopOverVisible } = this.state;
@@ -257,7 +259,7 @@ export default class Asset extends Component<Props, State> {
           }}
           contentClassName={styles.popOver}
           content={popOverContent}
-          visible={isPillPopOverVisible}
+          visible1={isPillPopOverVisible}
           appendTo="parent"
           maxWidth={376}
           allowHTML
