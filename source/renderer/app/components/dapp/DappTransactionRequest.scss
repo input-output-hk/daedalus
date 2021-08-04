@@ -14,7 +14,12 @@
     word-break: break-all;
     word-wrap: break-word;
   }
-  .walletsDropdown {
+  .addWalletSelect {
+    :global {
+      .SimpleOptions_option {
+        line-height: 18px;
+      }
+    }
   }
   hr {
     margin: 20px 0;

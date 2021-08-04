@@ -3,6 +3,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
+import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './DappTransactionRequest.scss';
@@ -39,6 +40,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Select a wallet',
     description:
       '"walletsDropdownPlaceholder" in the dApp transaction request dialog',
+  },
+  addWalletLabel: {
+    id: 'dapp.transaction.request.walletsDropdown.addWalletLabel',
+    defaultMessage: '!!!Add a wallet',
+    description: '"addWalletLabel" in the dApp transaction request dialog',
   },
   additionalDataLabel: {
     id: 'dapp.transaction.request.additionalData.label',
@@ -118,7 +124,16 @@ const DappTransactionRequest = observer((props: Props) => {
       ) : (
         <Select
           onChange={onAddWallet}
-          options={[{ label: '!!!+ Add a wallet', value: '' }]}
+          placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
+          value=""
+          options={[
+            {
+              label: intl.formatMessage(messages.addWalletLabel),
+              value: 'add-wallet',
+            },
+          ]}
+          skin={SelectSkin}
+          className={styles.addWalletSelect}
         />
       )}
 

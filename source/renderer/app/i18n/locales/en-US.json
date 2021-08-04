@@ -133,6 +133,7 @@
   "dapp.transaction.request.receiver.label": "Receiver",
   "dapp.transaction.request.subtitle": "triggered from {triggedFrom}",
   "dapp.transaction.request.title": "Transaction request",
+  "dapp.transaction.request.walletsDropdown.addWalletLabel": "+ Add a wallet",
   "dapp.transaction.request.walletsDropdown.placeholder": "Select a wallet",
   "environment.apiName.cardano": "Cardano",
   "environment.currency.ada": "Ada",

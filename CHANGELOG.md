@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
 - Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
 - Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
 
