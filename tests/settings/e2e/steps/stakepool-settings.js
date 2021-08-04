@@ -16,11 +16,6 @@ When(/^custom server is the default option$/, function() {
   return this.waitAndClick(CUSTOM_SERVER_DROPDOWN_OPTION);
 });
 
-When(/^I clicked outside of the input-box to change focus$/, function() {
-  // This step was necessary as when the error message for this box is displayed the submit button could not receive the click and i got a "Element is not clickable at point error"
-  return this.waitAndClick(DAEDALUS_TOP_BAR_LOGO);
-});
-
 Then(/^The custom server I chose earlier is visible on stake-pool screen above stake-pool list and is clickable$/, function() {
   return this.waitAndClick(`//*[@class="StakePools_smashSettings"]//span[text()="Moderated by ${SERVER_URL}"]`);
 });
@@ -61,7 +56,9 @@ When(/^I delete values in smash server custom url input box$/, function() {
   return this.waitAndClick(STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON);
 });
 
-When(/^I click the stake-pool custom server input box submit button$/, function() {
+When(/^I focus the stake-pool custom server input box submit button and then click it$/, function() {
+  // This step is necessary as otherwise the error message receives the click
+  this.client.waitAndClick(DAEDALUS_TOP_BAR_LOGO);
   return this.waitAndClick(STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_SUBMIT_BUTTON);
 });
 

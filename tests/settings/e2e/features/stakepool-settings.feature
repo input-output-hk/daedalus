@@ -31,6 +31,5 @@ Feature: Stake-pool server settings
     Then Stake-pool custom input box error message "protocol and hostname" is displayed
     And I delete values in smash server custom url input box
     And I enter invalid server "https://www.google.ie" containing https
-    And I clicked outside of the input-box to change focus
-    And I click the stake-pool custom server input box submit button
+    And I focus the stake-pool custom server input box submit button and then click it
     Then I see the "This url is not a valid SMASH server" error message displayed
