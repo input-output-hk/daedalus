@@ -4,6 +4,7 @@ const CUSTOM_SERVER_DROPDOWN_OPTION = '//*[@class="SimpleInput_customValueWrappe
 const DAEDALUS_TOP_BAR_LOGO = '//*[@class="TopBar_topBar TopBar_withoutWallet"]';
 const NOT_A_VALID_SMASH_SERVER_ERROR_MESSAGE_ACTIVATED = '//*[@class="InlineEditingInput_errorMessage" and text()="This URL is not a valid SMASH server"]';
 const OFF_CHAIN_METADATA_SERVER_SMASH_LABEL = '//*[contains(text(), "Off-chain metadata server (SMASH)")]';
+const SERVER_URL = "https://smash.cardano-testnet.iohkdev.io/";
 const SMASH_SERVER_URL_INPUT_BOX = '//*[@label="SMASH server URL"]';
 const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_SUBMIT_BUTTON = '//*[@class="InlineEditingInput_button InlineEditingInput_okButton SimpleButton_root ButtonOverrides_root"]';
 const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON = '//*[@class="InlineEditingInput_button InlineEditingInput_cancelButton SimpleButton_root ButtonOverrides_root"]';
@@ -21,8 +22,7 @@ When(/^I clicked outside of the input-box to change focus$/, function() {
 });
 
 Then(/^The custom server I chose earlier is visible on stake-pool screen above stake-pool list and is clickable$/, function() {
-  const serverUrl = "https://smash.cardano-testnet.iohkdev.io/";
-  return this.waitAndClick(`//*[@class="StakePools_smashSettings"]//span[text()="Moderated by ${serverUrl}"]`);
+  return this.waitAndClick(`//*[@class="StakePools_smashSettings"]//span[text()="Moderated by ${SERVER_URL}"]`);
 });
 
 Then(/^I am brought back to the stake-pool server settings screen$/, function() {
@@ -42,8 +42,7 @@ Then(/^The smash server input textBox is visible$/, function() {
 });
 
 When(/^And I enter a custom server URL as custom server option$/, function() {
-  const server = "https://smash.cardano-testnet.iohkdev.io/"
-  this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, server);
+  this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, SERVER_URL);
 });
 
 When(/^I enter invalid url "([^"]*)" in to the custom server input-box$/, function(invalidUrl) {
