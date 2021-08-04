@@ -352,7 +352,7 @@ storiesOf('Wallets|Send', module)
           currencyUnit="Ada"
           amount="20.000000"
           wallet={wallet}
-          totalAmount="21.000000"
+          totalAmount={new BigNumber(21.0)}
           sender={
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }

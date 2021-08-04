@@ -3,7 +3,7 @@
     font-family: var(--font-medium);
     font-size: 16px;
     line-height: 1.38;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .address {
     font-family: var(--font-light);
@@ -26,5 +26,30 @@
     border: 0;
     border-top: 1px solid var(--theme-transactions-list-item-details-color);
     opacity: 0.3;
+  }
+  .transactionFee {
+    font-family: var(--font-regular);
+    color: var(--theme-send-confirmation-dialog-send-values-color);
+    margin-bottom: 20px;
+  }
+  .additionalData,
+  .metadata {
+    margin-bottom: 20px;
+    pre {
+      font-family: var(--font-light);
+      line-height: 1.38;
+    }
+  }
+  .toggleButton {
+    background-color: var(--theme-staking-stake-pool-grey-bg-color);
+    border-radius: 4px;
+    color: var(--theme-label-button-color);
+    font-family: var(--font-medium);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    margin-left: 10px;
+    padding: 4px 8px;
+    text-transform: uppercase;
   }
 }

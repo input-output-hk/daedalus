@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
@@ -12,6 +12,8 @@ import globalMessages from '../../i18n/global-messages';
 import Wallet from '../../domains/Wallet';
 import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import AssetsTransactionConfirmation from '../assets/AssetsTransactionConfirmation';
+import { formattedWalletAmount } from '../../utils/formatters';
+import { smarQuotes } from '../../utils/strings';
 import type { AssetToken } from '../../api/assets/types';
 
 const messages = defineMessages({
@@ -46,6 +48,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Add a wallet',
     description: '"addWalletLabel" in the dApp transaction request dialog',
   },
+  transactionFeeLabel: {
+    id: 'dapp.transaction.request.transactionFee.label',
+    defaultMessage: '!!!Transaction fee',
+    description: '"transactionFeeLabel" in the dApp transaction request dialog',
+  },
   additionalDataLabel: {
     id: 'dapp.transaction.request.additionalData.label',
     defaultMessage: '!!!Addicional data',
@@ -60,31 +67,43 @@ const messages = defineMessages({
 
 type Props = {
   address: string,
-  additionalData: Object,
+  additionalData?: Object,
   assets: Array<AssetToken>,
   feesAmount?: BigNumber,
   intl: intlShape.isRequired,
+  metadata?: Object,
   onAddWallet: Function,
   onClose: Function,
   onSelectWallet: Function,
   onSubmit: Function,
   selectedWallet: ?Wallet,
+  transactionFee: BigNumber,
   triggedFrom: string,
   wallets: Array<Wallet>,
 };
 
 const DappTransactionRequest = observer((props: Props) => {
+  const [isAdditionalDataVisible, toggleAdditionalData] = useState<boolean>(
+    false
+  );
+  const [isMetadataVisible, toggleMetadata] = useState<boolean>(false);
+  const getToggleLabel = (isVisible: boolean) =>
+    isVisible
+      ? intl.formatMessage(globalMessages.hide)
+      : intl.formatMessage(globalMessages.show);
   const {
     address,
     additionalData,
     assets,
     feesAmount,
     intl,
+    metadata,
     onClose,
     onAddWallet,
     onSelectWallet,
     onSubmit,
     selectedWallet,
+    transactionFee,
     triggedFrom,
     wallets,
   } = props;
@@ -148,15 +167,39 @@ const DappTransactionRequest = observer((props: Props) => {
         wallet={selectedWallet}
       />
       <p className={styles.label}>
-        {intl.formatMessage(messages.additionalDataLabel)}
+        {intl.formatMessage(messages.transactionFeeLabel)}
       </p>
-      <div className={styles.additionalData}>
-        <pre>{JSON.stringify(additionalData)}</pre>
+      <div className={styles.transactionFee}>
+        {formattedWalletAmount(transactionFee)}
       </div>
       <p className={styles.label}>
-        {intl.formatMessage(messages.metaDataLabel)}
+        {intl.formatMessage(messages.additionalDataLabel)}
+        <button
+          className={styles.toggleButton}
+          onClick={() => toggleAdditionalData(!isAdditionalDataVisible)}
+        >
+          {getToggleLabel(isAdditionalDataVisible)}
+        </button>
       </p>
-      <div className={styles.metaData}>Meta data content</div>
+      {isAdditionalDataVisible && (
+        <div className={styles.additionalData}>
+          <pre>{smarQuotes(JSON.stringify(additionalData, null, 2))}</pre>
+        </div>
+      )}
+      <p className={styles.label}>
+        {intl.formatMessage(messages.metaDataLabel)}
+        <button
+          className={styles.toggleButton}
+          onClick={() => toggleMetadata(!isMetadataVisible)}
+        >
+          {getToggleLabel(isMetadataVisible)}
+        </button>
+      </p>
+      {isMetadataVisible && (
+        <div className={styles.metadata}>
+          <pre>{smarQuotes(JSON.stringify(metadata, null, 2))}</pre>
+        </div>
+      )}
     </Dialog>
   );
 });
