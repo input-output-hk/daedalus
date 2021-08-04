@@ -18,10 +18,9 @@ Then(/^I should see "([^"]*)" displayed beside wallet balance$/, function(ticker
 });
 
 When(/^I toggle the button (on|off) to change if I want to see my ada balance in other currency's$/, function(switchStatus) {
-  let selector = DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_ON;
-  if(switchStatus === 'on'){
-    selector = DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_OFF;
-  }
+  const selector = switchStatus === 'on'
+    ? DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_OFF
+    : DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_ON;
   return this.waitAndClick(selector);
 });
 
