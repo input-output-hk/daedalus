@@ -56,9 +56,9 @@ When(/^I delete values in smash server custom url input box$/, function() {
   return this.waitAndClick(STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON);
 });
 
-When(/^I focus the stake-pool custom server input box submit button and then click it$/, function() {
+When(/^I focus the stake-pool custom server input box submit button and then click it$/, async function() {
   // This step is necessary as otherwise the error message receives the click
-  this.waitAndClick(DAEDALUS_TOP_BAR_LOGO);
+  await this.waitAndClick(DAEDALUS_TOP_BAR_LOGO);
   return this.waitAndClick(STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_SUBMIT_BUTTON);
 });
 

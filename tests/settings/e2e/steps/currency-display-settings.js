@@ -1,3 +1,4 @@
+// @flow
 import { When, Then } from 'cucumber';
 
 const CONVERTED_CURRENCY_WALLET_DISPLAY_GENERAL = '//*[@class="WalletSummaryCurrency_currencyRate"]';
@@ -6,11 +7,11 @@ const DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_ON = '//*[@class="NormalSwitc
 const SELECT_CURRENCY_DROPDOWN = '//*[@label="Select currency"]';
 
 When(/^I open currency selection dropdown$/, function() {
-  return this.waitAndClick(SELECT_CURRENCY_DROPDOWN);
+  return this.client.click(SELECT_CURRENCY_DROPDOWN);
 });
 
 When(/^I select "([^"]*)" as the selected displayed currency$/, function(currency) {
-  return this.waitAndClick(`//*[contains(text(), "${currency}")]`);
+  return this.client.click(`//*[contains(text(), "${currency}")]`);
 });
 
 Then(/^I should see "([^"]*)" displayed beside wallet balance$/, function(ticker) {
