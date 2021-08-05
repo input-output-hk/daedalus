@@ -12,8 +12,7 @@ Feature: Stake-pool server settings
     When custom server is the default option
     And The smash server input textBox is visible
     And And I enter a custom server URL as custom server option
-    And I clicked outside of the input-box to change focus
-    And I click the stake-pool custom server input box submit button
+    And I focus the stake-pool custom server input box submit button and then click it
     And I see the "Your changes have been saved" success message
     And I am on the Delegation "stake-pools" screen
     Then The custom server I chose earlier is visible on stake-pool screen above stake-pool list and is clickable
