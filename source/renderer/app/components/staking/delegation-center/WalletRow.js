@@ -84,7 +84,6 @@ type Props = {
   numberOfStakePools: number,
   numberOfRankedStakePools: number,
   onDelegate: Function,
-  onUndelegate: Function,
   getStakePoolById: Function,
   nextEpochNumber: number,
   futureEpochNumber: number,
@@ -220,7 +219,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       numberOfRankedStakePools,
       getStakePoolById,
       onDelegate,
-      onUndelegate,
       nextEpochNumber,
       futureEpochNumber,
       currentTheme,
@@ -230,12 +228,8 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     } = this.props;
     const { highlightedPoolId } = this.state;
 
-    // @TODO - remove once quit stake pool delegation is connected with rewards balance
-    const isUndelegateBlocked = true;
-
     const syncingProgress = get(syncState, 'progress.quantity', '');
     const notDelegatedText = intl.formatMessage(messages.notDelegated);
-    const removeDelegationText = intl.formatMessage(messages.removeDelegation);
     const delegateText = intl.formatMessage(messages.delegate);
     const redelegateText = intl.formatMessage(messages.redelegate);
 
@@ -456,16 +450,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                 ) : (
                   <div className={styles.nonDelegatedText}>
                     {notDelegatedText}
-                  </div>
-                )}
-                {futurePendingDelegatedStakePoolId && !isUndelegateBlocked && (
-                  <div
-                    className={actionButtonStyles}
-                    role="presentation"
-                    onClick={onUndelegate}
-                    key="undelegate"
-                  >
-                    {removeDelegationText}
                   </div>
                 )}
                 <div
