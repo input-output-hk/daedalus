@@ -24,24 +24,40 @@
   hr {
     margin: 20px 0;
     border: 0;
-    border-top: 1px solid var(--theme-transactions-list-item-details-color);
+    border-top: 1px solid var(--theme-dapp-transaction-request-separator);
     opacity: 0.3;
   }
   .transactionFee {
     font-family: var(--font-regular);
-    color: var(--theme-send-confirmation-dialog-send-values-color);
+    color: var(--theme-dapp-transaction-request-fees-text-color);
     margin-bottom: 20px;
   }
   .additionalData,
   .metadata {
     margin-bottom: 20px;
     pre {
-      font-family: var(--font-light);
+      background-color: var(
+        --theme-dapp-transaction-request-code-background-color
+      );
+      font-family: var(--font-mono);
+      font-size: 14px;
       line-height: 1.38;
+      max-height: 250px;
+      overflow: auto;
+      padding: 9px 12px;
+      user-select: text;
+      &::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: red;
+      }
     }
   }
   .toggleButton {
-    background-color: var(--theme-staking-stake-pool-grey-bg-color);
+    background-color: var(
+      --theme-dapp-transaction-request-toggle-button-background-color
+    );
     border-radius: 4px;
     color: var(--theme-label-button-color);
     font-family: var(--font-medium);

@@ -1093,6 +1093,14 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
     '--theme-widgets-itemsDropdown-option-label-text-color': '#e9f4fe',
   },
+  dapps: {
+    '--theme-dapp-transaction-request-separator': '#e9f4fe',
+    '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
+    '--theme-dapp-transaction-request-toggle-button-background-color':
+      'rgba(233, 244, 254, 0.1)',
+    '--theme-dapp-transaction-request-code-background-color':
+      'rgba(233, 244, 254, 0.05)',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {

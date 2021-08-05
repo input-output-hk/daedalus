@@ -114,6 +114,14 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-connecting-background-color8': 'rgba(28, 62, 101, 1)',
     '--theme-connecting-text-color': '#fff',
   },
+  dapps: {
+    '--theme-dapp-transaction-request-separator': '#5e6066',
+    '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
+    '--theme-dapp-transaction-request-toggle-button-background-color':
+      'rgba(94, 96, 102, 0.1)',
+    '--theme-dapp-transaction-request-code-background-color':
+      'rgba(94, 96, 102, 0.05)',
+  },
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#243E62',
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
