@@ -349,14 +349,14 @@ let
       cat /etc/resolv.conf > etc/resolv.conf
 
       if [ "x$DEBUG_SHELL" == x ]; then
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 daedalus
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 daedalus "$@"
       else
         exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 bash
       fi
     '';
     desktopItem = pkgs.makeDesktopItem {
       name = "Daedalus-${self.linuxClusterBinName}";
-      exec = "INSERT_PATH_HERE";
+      exec = "INSERT_PATH_HERE %u";
       desktopName = "Daedalus ${self.linuxClusterBinName}";
       genericName = "Crypto-Currency Wallet";
       categories = "Application;Network;";
@@ -387,6 +387,7 @@ let
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
         > "''${XDG_DATA_HOME}/applications/Daedalus-${self.linuxClusterBinName}.desktop"
+      echo -n "xdg-mime default Daedalus-${self.linuxClusterBinName}.desktop x-scheme-handler/web-cardano" > /escape-hatch
     '';
     xdg-open = pkgs.writeScriptBin "xdg-open" ''
       #!${pkgs.stdenv.shell}

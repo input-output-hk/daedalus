@@ -50,7 +50,8 @@ let
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
     exec ${daedalus-bridge}/bin/cardano-launcher \
-      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${linuxClusterBinName}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
+      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${linuxClusterBinName}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"} \
+      -- "$@"
   '';
   wrappedConfig = runCommand "launcher-config" {} ''
     mkdir -pv $out/etc/

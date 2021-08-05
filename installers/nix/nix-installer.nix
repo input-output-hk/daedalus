@@ -7,7 +7,7 @@ let
   installerBundle = nix-bundle.nix-bootstrap {
     target = "${installer}";
     run = "/bin/installer";
-    nixUserChrootFlags = "-c -m /home:/home -p HOME";
+    nixUserChrootFlags = "-c -m /home:/home -p HOME -e";
     rmStyle = "-rm_";
     shared = false;
   };
