@@ -1,23 +1,22 @@
+diff --git a/node_modules/usb/bin/darwin-x64-89/usb.node b/node_modules/usb/bin/darwin-x64-89/usb.node
+new file mode 100755
+index 0000000..bb2ff3e
+Binary files /dev/null and b/node_modules/usb/bin/darwin-x64-89/usb.node differ
 diff --git a/node_modules/usb/binding.gyp b/node_modules/usb/binding.gyp
-index c926142..e2eba7d 100644
+index c926142..9b5112c 100644
 --- a/node_modules/usb/binding.gyp
 +++ b/node_modules/usb/binding.gyp
-@@ -10,7 +10,8 @@
+@@ -10,7 +10,7 @@
        'cflags_cc!': [ '-fno-exceptions' ],
        'xcode_settings': { 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
          'CLANG_CXX_LIBRARY': 'libc++',
 -        'MACOSX_DEPLOYMENT_TARGET': '10.7',
 +        'MACOSX_DEPLOYMENT_TARGET': '10.10',
-+        'CLANG_CXX_LANGUAGE_STANDARD': 'c++14',
        },
        'msvs_settings': {
          'VCCLCompilerTool': { 'ExceptionHandling': 1 },
-@@ -49,10 +50,10 @@
-           }],
-           ['OS=="mac"', {
-             'xcode_settings': {
--              'OTHER_CFLAGS': [ '-std=c++1y', '-stdlib=libc++' ],
-+              'OTHER_CFLAGS': [ '-std=c++14', '-stdlib=libc++' ],
+@@ -52,7 +52,7 @@
+               'OTHER_CFLAGS': [ '-std=c++1y', '-stdlib=libc++' ],
                'OTHER_LDFLAGS': [ '-framework', 'CoreFoundation', '-framework', 'IOKit' ],
                'SDKROOT': 'macosx',
 -              'MACOSX_DEPLOYMENT_TARGET': '10.7',
@@ -25,3 +24,1957 @@ index c926142..e2eba7d 100644
              },
            }],
            ['OS=="win"', {
+diff --git a/node_modules/usb/build/Makefile b/node_modules/usb/build/Makefile
+new file mode 100644
+index 0000000..38b438b
+--- /dev/null
++++ b/node_modules/usb/build/Makefile
+@@ -0,0 +1,347 @@
++# We borrow heavily from the kernel build setup, though we are simpler since
++# we don't have Kconfig tweaking settings on us.
++
++# The implicit make rules have it looking for RCS files, among other things.
++# We instead explicitly write all the rules we care about.
++# It's even quicker (saves ~200ms) to pass -r on the command line.
++MAKEFLAGS=-r
++
++# The source directory tree.
++srcdir := ..
++abs_srcdir := $(abspath $(srcdir))
++
++# The name of the builddir.
++builddir_name ?= .
++
++# The V=1 flag on command line makes us verbosely print command lines.
++ifdef V
++  quiet=
++else
++  quiet=quiet_
++endif
++
++# Specify BUILDTYPE=Release on the command line for a release build.
++BUILDTYPE ?= Release
++
++# Directory all our build output goes into.
++# Note that this must be two directories beneath src/ for unit tests to pass,
++# as they reach into the src/ directory for data with relative paths.
++builddir ?= $(builddir_name)/$(BUILDTYPE)
++abs_builddir := $(abspath $(builddir))
++depsdir := $(builddir)/.deps
++
++# Object output directory.
++obj := $(builddir)/obj
++abs_obj := $(abspath $(obj))
++
++# We build up a list of every single one of the targets so we can slurp in the
++# generated dependency rule Makefiles in one pass.
++all_deps :=
++
++
++
++CC.target ?= clang
++CFLAGS.target ?= $(CPPFLAGS) $(CFLAGS)
++CXX.target ?= clang++
++CXXFLAGS.target ?= $(CPPFLAGS) $(CXXFLAGS)
++LINK.target ?= $(LINK)
++LDFLAGS.target ?= $(LDFLAGS)
++AR.target ?= $(AR)
++
++# C++ apps need to be linked with g++.
++LINK ?= $(CXX.target)
++
++# TODO(evan): move all cross-compilation logic to gyp-time so we don't need
++# to replicate this environment fallback in make as well.
++CC.host ?= clang
++CFLAGS.host ?= $(CPPFLAGS_host) $(CFLAGS_host)
++CXX.host ?= clang++
++CXXFLAGS.host ?= $(CPPFLAGS_host) $(CXXFLAGS_host)
++LINK.host ?= $(CXX.host)
++LDFLAGS.host ?=
++AR.host ?= ar
++
++# Define a dir function that can handle spaces.
++# http://www.gnu.org/software/make/manual/make.html#Syntax-of-Functions
++# "leading spaces cannot appear in the text of the first argument as written.
++# These characters can be put into the argument value by variable substitution."
++empty :=
++space := $(empty) $(empty)
++
++# http://stackoverflow.com/questions/1189781/using-make-dir-or-notdir-on-a-path-with-spaces
++replace_spaces = $(subst $(space),?,$1)
++unreplace_spaces = $(subst ?,$(space),$1)
++dirx = $(call unreplace_spaces,$(dir $(call replace_spaces,$1)))
++
++# Flags to make gcc output dependency info.  Note that you need to be
++# careful here to use the flags that ccache and distcc can understand.
++# We write to a dep file on the side first and then rename at the end
++# so we can't end up with a broken dep file.
++depfile = $(depsdir)/$(call replace_spaces,$@).d
++DEPFLAGS = -MMD -MF $(depfile).raw
++
++# We have to fixup the deps output in a few ways.
++# (1) the file output should mention the proper .o file.
++# ccache or distcc lose the path to the target, so we convert a rule of
++# the form:
++#   foobar.o: DEP1 DEP2
++# into
++#   path/to/foobar.o: DEP1 DEP2
++# (2) we want missing files not to cause us to fail to build.
++# We want to rewrite
++#   foobar.o: DEP1 DEP2 \
++#               DEP3
++# to
++#   DEP1:
++#   DEP2:
++#   DEP3:
++# so if the files are missing, they're just considered phony rules.
++# We have to do some pretty insane escaping to get those backslashes
++# and dollar signs past make, the shell, and sed at the same time.
++# Doesn't work with spaces, but that's fine: .d files have spaces in
++# their names replaced with other characters.
++define fixup_dep
++# The depfile may not exist if the input file didn't have any #includes.
++touch $(depfile).raw
++# Fixup path as in (1).
++sed -e "s|^$(notdir $@)|$@|" $(depfile).raw >> $(depfile)
++# Add extra rules as in (2).
++# We remove slashes and replace spaces with new lines;
++# remove blank lines;
++# delete the first line and append a colon to the remaining lines.
++sed -e 's|\\||' -e 'y| |\n|' $(depfile).raw |\
++  grep -v '^$$'                             |\
++  sed -e 1d -e 's|$$|:|'                     \
++    >> $(depfile)
++rm $(depfile).raw
++endef
++
++# Command definitions:
++# - cmd_foo is the actual command to run;
++# - quiet_cmd_foo is the brief-output summary of the command.
++
++quiet_cmd_cc = CC($(TOOLSET)) $@
++cmd_cc = $(CC.$(TOOLSET)) $(GYP_CFLAGS) $(DEPFLAGS) $(CFLAGS.$(TOOLSET)) -c -o $@ $<
++
++quiet_cmd_cxx = CXX($(TOOLSET)) $@
++cmd_cxx = $(CXX.$(TOOLSET)) $(GYP_CXXFLAGS) $(DEPFLAGS) $(CXXFLAGS.$(TOOLSET)) -c -o $@ $<
++
++quiet_cmd_objc = CXX($(TOOLSET)) $@
++cmd_objc = $(CC.$(TOOLSET)) $(GYP_OBJCFLAGS) $(DEPFLAGS) -c -o $@ $<
++
++quiet_cmd_objcxx = CXX($(TOOLSET)) $@
++cmd_objcxx = $(CXX.$(TOOLSET)) $(GYP_OBJCXXFLAGS) $(DEPFLAGS) -c -o $@ $<
++
++# Commands for precompiled header files.
++quiet_cmd_pch_c = CXX($(TOOLSET)) $@
++cmd_pch_c = $(CC.$(TOOLSET)) $(GYP_PCH_CFLAGS) $(DEPFLAGS) $(CXXFLAGS.$(TOOLSET)) -c -o $@ $<
++quiet_cmd_pch_cc = CXX($(TOOLSET)) $@
++cmd_pch_cc = $(CC.$(TOOLSET)) $(GYP_PCH_CXXFLAGS) $(DEPFLAGS) $(CXXFLAGS.$(TOOLSET)) -c -o $@ $<
++quiet_cmd_pch_m = CXX($(TOOLSET)) $@
++cmd_pch_m = $(CC.$(TOOLSET)) $(GYP_PCH_OBJCFLAGS) $(DEPFLAGS) -c -o $@ $<
++quiet_cmd_pch_mm = CXX($(TOOLSET)) $@
++cmd_pch_mm = $(CC.$(TOOLSET)) $(GYP_PCH_OBJCXXFLAGS) $(DEPFLAGS) -c -o $@ $<
++
++# gyp-mac-tool is written next to the root Makefile by gyp.
++# Use $(4) for the command, since $(2) and $(3) are used as flag by do_cmd
++# already.
++quiet_cmd_mac_tool = MACTOOL $(4) $<
++cmd_mac_tool = ./gyp-mac-tool $(4) $< "$@"
++
++quiet_cmd_mac_package_framework = PACKAGE FRAMEWORK $@
++cmd_mac_package_framework = ./gyp-mac-tool package-framework "$@" $(4)
++
++quiet_cmd_infoplist = INFOPLIST $@
++cmd_infoplist = $(CC.$(TOOLSET)) -E -P -Wno-trigraphs -x c $(INFOPLIST_DEFINES) "$<" -o "$@"
++
++quiet_cmd_touch = TOUCH $@
++cmd_touch = touch $@
++
++quiet_cmd_copy = COPY $@
++# send stderr to /dev/null to ignore messages when linking directories.
++cmd_copy = rm -rf "$@" && cp -af "$<" "$@"
++
++quiet_cmd_alink = LIBTOOL-STATIC $@
++cmd_alink = rm -f $@ && ./gyp-mac-tool filter-libtool libtool $(GYP_LIBTOOLFLAGS) -static -o $@ $(filter %.o,$^)
++
++quiet_cmd_link = LINK($(TOOLSET)) $@
++cmd_link = $(LINK.$(TOOLSET)) $(GYP_LDFLAGS) $(LDFLAGS.$(TOOLSET)) -o "$@" $(LD_INPUTS) $(LIBS)
++
++quiet_cmd_solink = SOLINK($(TOOLSET)) $@
++cmd_solink = $(LINK.$(TOOLSET)) -shared $(GYP_LDFLAGS) $(LDFLAGS.$(TOOLSET)) -o "$@" $(LD_INPUTS) $(LIBS)
++
++quiet_cmd_solink_module = SOLINK_MODULE($(TOOLSET)) $@
++cmd_solink_module = $(LINK.$(TOOLSET)) -bundle $(GYP_LDFLAGS) $(LDFLAGS.$(TOOLSET)) -o $@ $(filter-out FORCE_DO_CMD, $^) $(LIBS)
++
++
++# Define an escape_quotes function to escape single quotes.
++# This allows us to handle quotes properly as long as we always use
++# use single quotes and escape_quotes.
++escape_quotes = $(subst ','\'',$(1))
++# This comment is here just to include a ' to unconfuse syntax highlighting.
++# Define an escape_vars function to escape '$' variable syntax.
++# This allows us to read/write command lines with shell variables (e.g.
++# $LD_LIBRARY_PATH), without triggering make substitution.
++escape_vars = $(subst $$,$$$$,$(1))
++# Helper that expands to a shell command to echo a string exactly as it is in
++# make. This uses printf instead of echo because printf's behaviour with respect
++# to escape sequences is more portable than echo's across different shells
++# (e.g., dash, bash).
++exact_echo = printf '%s\n' '$(call escape_quotes,$(1))'
++
++# Helper to compare the command we're about to run against the command
++# we logged the last time we ran the command.  Produces an empty
++# string (false) when the commands match.
++# Tricky point: Make has no string-equality test function.
++# The kernel uses the following, but it seems like it would have false
++# positives, where one string reordered its arguments.
++#   arg_check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) \
++#                       $(filter-out $(cmd_$@), $(cmd_$(1))))
++# We instead substitute each for the empty string into the other, and
++# say they're equal if both substitutions produce the empty string.
++# .d files contain ? instead of spaces, take that into account.
++command_changed = $(or $(subst $(cmd_$(1)),,$(cmd_$(call replace_spaces,$@))),\
++                       $(subst $(cmd_$(call replace_spaces,$@)),,$(cmd_$(1))))
++
++# Helper that is non-empty when a prerequisite changes.
++# Normally make does this implicitly, but we force rules to always run
++# so we can check their command lines.
++#   $? -- new prerequisites
++#   $| -- order-only dependencies
++prereq_changed = $(filter-out FORCE_DO_CMD,$(filter-out $|,$?))
++
++# Helper that executes all postbuilds until one fails.
++define do_postbuilds
++  @E=0;\
++  for p in $(POSTBUILDS); do\
++    eval $$p;\
++    E=$$?;\
++    if [ $$E -ne 0 ]; then\
++      break;\
++    fi;\
++  done;\
++  if [ $$E -ne 0 ]; then\
++    rm -rf "$@";\
++    exit $$E;\
++  fi
++endef
++
++# do_cmd: run a command via the above cmd_foo names, if necessary.
++# Should always run for a given target to handle command-line changes.
++# Second argument, if non-zero, makes it do asm/C/C++ dependency munging.
++# Third argument, if non-zero, makes it do POSTBUILDS processing.
++# Note: We intentionally do NOT call dirx for depfile, since it contains ? for
++# spaces already and dirx strips the ? characters.
++define do_cmd
++$(if $(or $(command_changed),$(prereq_changed)),
++  @$(call exact_echo,  $($(quiet)cmd_$(1)))
++  @mkdir -p "$(call dirx,$@)" "$(dir $(depfile))"
++  $(if $(findstring flock,$(word 2,$(cmd_$1))),
++    @$(cmd_$(1))
++    @echo "  $(quiet_cmd_$(1)): Finished",
++    @$(cmd_$(1))
++  )
++  @$(call exact_echo,$(call escape_vars,cmd_$(call replace_spaces,$@) := $(cmd_$(1)))) > $(depfile)
++  @$(if $(2),$(fixup_dep))
++  $(if $(and $(3), $(POSTBUILDS)),
++    $(call do_postbuilds)
++  )
++)
++endef
++
++# Declare the "all" target first so it is the default,
++# even though we don't have the deps yet.
++.PHONY: all
++all:
++
++# make looks for ways to re-generate included makefiles, but in our case, we
++# don't have a direct way. Explicitly telling make that it has nothing to do
++# for them makes it go faster.
++%.d: ;
++
++# Use FORCE_DO_CMD to force a target to run.  Should be coupled with
++# do_cmd.
++.PHONY: FORCE_DO_CMD
++FORCE_DO_CMD:
++
++TOOLSET := target
++# Suffix rules, putting all outputs into $(obj).
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.c FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.cc FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.cpp FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.cxx FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.m FORCE_DO_CMD
++	@$(call do_cmd,objc,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.mm FORCE_DO_CMD
++	@$(call do_cmd,objcxx,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.s FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.S FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++
++# Try building from generated source, too.
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.c FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.cc FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.cpp FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.cxx FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.m FORCE_DO_CMD
++	@$(call do_cmd,objc,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.mm FORCE_DO_CMD
++	@$(call do_cmd,objcxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.s FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.S FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++
++$(obj).$(TOOLSET)/%.o: $(obj)/%.c FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.cc FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.cpp FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.cxx FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.m FORCE_DO_CMD
++	@$(call do_cmd,objc,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.mm FORCE_DO_CMD
++	@$(call do_cmd,objcxx,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.s FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.S FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++
++
++ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
++    $(findstring $(join ^,$(prefix)),\
++                 $(join ^,libusb.target.mk)))),)
++  include libusb.target.mk
++endif
++ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
++    $(findstring $(join ^,$(prefix)),\
++                 $(join ^,usb_bindings.target.mk)))),)
++  include usb_bindings.target.mk
++endif
++
++quiet_cmd_regen_makefile = ACTION Regenerating $@
++cmd_regen_makefile = cd $(srcdir); /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/Users/daniel/.electron-gyp/13.1.0" "-Dnode_gyp_dir=/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp" "-Dnode_lib_file=/Users/daniel/.electron-gyp/13.1.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/usb" "-Dnode_engine=v8" "--depth=." "-Goutput_dir=." "--generator-output=build" -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/usb/build/config.gypi -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp/addon.gypi -I/Users/daniel/.electron-gyp/13.1.0/include/node/common.gypi "--toplevel-dir=." binding.gyp
++Makefile: $(srcdir)/../../../../../.electron-gyp/13.1.0/include/node/common.gypi $(srcdir)/libusb.gypi $(srcdir)/binding.gyp $(srcdir)/build/config.gypi $(srcdir)/../electron-rebuild/node_modules/node-gyp/addon.gypi
++	$(call do_cmd,regen_makefile)
++
++# "all" is a concatenation of the "all" targets from all the included
++# sub-makefiles. This is just here to clarify.
++all:
++
++# Add in dependency-tracking rules.  $(all_deps) is the list of every single
++# target in our tree. Only consider the ones with .d (dependency) info:
++d_files := $(wildcard $(foreach f,$(all_deps),$(depsdir)/$(f).d))
++ifneq ($(d_files),)
++  include $(d_files)
++endif
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d
+new file mode 100644
+index 0000000..4e38018
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d
+@@ -0,0 +1,15 @@
++cmd_Release/obj.target/libusb/libusb/libusb/core.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/core.o ../libusb/libusb/core.c
++Release/obj.target/libusb/libusb/libusb/core.o: ../libusb/libusb/core.c \
++  ../libusb_config/config.h ../libusb/libusb/libusbi.h \
++  ../libusb/libusb/libusb.h ../libusb/libusb/version.h \
++  ../libusb/libusb/version_nano.h ../libusb/libusb/os/threads_posix.h \
++  ../libusb/libusb/os/poll_posix.h ../libusb/libusb/hotplug.h
++../libusb/libusb/core.c:
++../libusb_config/config.h:
++../libusb/libusb/libusbi.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
++../libusb/libusb/hotplug.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d
+new file mode 100644
+index 0000000..c329ab4
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d
+@@ -0,0 +1,14 @@
++cmd_Release/obj.target/libusb/libusb/libusb/descriptor.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/descriptor.o ../libusb/libusb/descriptor.c
++Release/obj.target/libusb/libusb/libusb/descriptor.o: \
++  ../libusb/libusb/descriptor.c ../libusb/libusb/libusbi.h \
++  ../libusb_config/config.h ../libusb/libusb/libusb.h \
++  ../libusb/libusb/version.h ../libusb/libusb/version_nano.h \
++  ../libusb/libusb/os/threads_posix.h ../libusb/libusb/os/poll_posix.h
++../libusb/libusb/descriptor.c:
++../libusb/libusb/libusbi.h:
++../libusb_config/config.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d
+new file mode 100644
+index 0000000..fe535d2
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d
+@@ -0,0 +1,16 @@
++cmd_Release/obj.target/libusb/libusb/libusb/hotplug.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/hotplug.o ../libusb/libusb/hotplug.c
++Release/obj.target/libusb/libusb/libusb/hotplug.o: \
++  ../libusb/libusb/hotplug.c ../libusb_config/config.h \
++  ../libusb/libusb/libusbi.h ../libusb/libusb/libusb.h \
++  ../libusb/libusb/version.h ../libusb/libusb/version_nano.h \
++  ../libusb/libusb/os/threads_posix.h ../libusb/libusb/os/poll_posix.h \
++  ../libusb/libusb/hotplug.h
++../libusb/libusb/hotplug.c:
++../libusb_config/config.h:
++../libusb/libusb/libusbi.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
++../libusb/libusb/hotplug.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d
+new file mode 100644
+index 0000000..dd945f0
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d
+@@ -0,0 +1,15 @@
++cmd_Release/obj.target/libusb/libusb/libusb/io.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/io.o ../libusb/libusb/io.c
++Release/obj.target/libusb/libusb/libusb/io.o: ../libusb/libusb/io.c \
++  ../libusb_config/config.h ../libusb/libusb/libusbi.h \
++  ../libusb/libusb/libusb.h ../libusb/libusb/version.h \
++  ../libusb/libusb/version_nano.h ../libusb/libusb/os/threads_posix.h \
++  ../libusb/libusb/os/poll_posix.h ../libusb/libusb/hotplug.h
++../libusb/libusb/io.c:
++../libusb_config/config.h:
++../libusb/libusb/libusbi.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
++../libusb/libusb/hotplug.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d
+new file mode 100644
+index 0000000..7dd7894
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d
+@@ -0,0 +1,16 @@
++cmd_Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o ../libusb/libusb/os/darwin_usb.c
++Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o: \
++  ../libusb/libusb/os/darwin_usb.c ../libusb_config/config.h \
++  ../libusb/libusb/os/darwin_usb.h ../libusb/libusb/libusbi.h \
++  ../libusb/libusb/libusb.h ../libusb/libusb/version.h \
++  ../libusb/libusb/version_nano.h ../libusb/libusb/os/threads_posix.h \
++  ../libusb/libusb/os/poll_posix.h
++../libusb/libusb/os/darwin_usb.c:
++../libusb_config/config.h:
++../libusb/libusb/os/darwin_usb.h:
++../libusb/libusb/libusbi.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d
+new file mode 100644
+index 0000000..d21096c
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d
+@@ -0,0 +1,14 @@
++cmd_Release/obj.target/libusb/libusb/libusb/os/poll_posix.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/os/poll_posix.o ../libusb/libusb/os/poll_posix.c
++Release/obj.target/libusb/libusb/libusb/os/poll_posix.o: \
++  ../libusb/libusb/os/poll_posix.c ../libusb/libusb/libusbi.h \
++  ../libusb_config/config.h ../libusb/libusb/libusb.h \
++  ../libusb/libusb/version.h ../libusb/libusb/version_nano.h \
++  ../libusb/libusb/os/threads_posix.h ../libusb/libusb/os/poll_posix.h
++../libusb/libusb/os/poll_posix.c:
++../libusb/libusb/libusbi.h:
++../libusb_config/config.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d
+new file mode 100644
+index 0000000..4f00fe0
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d
+@@ -0,0 +1,6 @@
++cmd_Release/obj.target/libusb/libusb/libusb/os/threads_posix.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/os/threads_posix.o ../libusb/libusb/os/threads_posix.c
++Release/obj.target/libusb/libusb/libusb/os/threads_posix.o: \
++  ../libusb/libusb/os/threads_posix.c \
++  ../libusb/libusb/os/threads_posix.h
++../libusb/libusb/os/threads_posix.c:
++../libusb/libusb/os/threads_posix.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d
+new file mode 100644
+index 0000000..7a274af
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d
+@@ -0,0 +1,14 @@
++cmd_Release/obj.target/libusb/libusb/libusb/strerror.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/strerror.o ../libusb/libusb/strerror.c
++Release/obj.target/libusb/libusb/libusb/strerror.o: \
++  ../libusb/libusb/strerror.c ../libusb_config/config.h \
++  ../libusb/libusb/libusb.h ../libusb/libusb/libusbi.h \
++  ../libusb/libusb/version.h ../libusb/libusb/version_nano.h \
++  ../libusb/libusb/os/threads_posix.h ../libusb/libusb/os/poll_posix.h
++../libusb/libusb/strerror.c:
++../libusb_config/config.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/libusbi.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d
+new file mode 100644
+index 0000000..28f909b
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d
+@@ -0,0 +1,14 @@
++cmd_Release/obj.target/libusb/libusb/libusb/sync.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/sync.o ../libusb/libusb/sync.c
++Release/obj.target/libusb/libusb/libusb/sync.o: ../libusb/libusb/sync.c \
++  ../libusb_config/config.h ../libusb/libusb/libusbi.h \
++  ../libusb/libusb/libusb.h ../libusb/libusb/version.h \
++  ../libusb/libusb/version_nano.h ../libusb/libusb/os/threads_posix.h \
++  ../libusb/libusb/os/poll_posix.h
++../libusb/libusb/sync.c:
++../libusb_config/config.h:
++../libusb/libusb/libusbi.h:
++../libusb/libusb/libusb.h:
++../libusb/libusb/version.h:
++../libusb/libusb/version_nano.h:
++../libusb/libusb/os/threads_posix.h:
++../libusb/libusb/os/poll_posix.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/device.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/device.o.d
+new file mode 100644
+index 0000000..5c393e3
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/device.o.d
+@@ -0,0 +1,41 @@
++cmd_Release/obj.target/usb_bindings/src/device.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -O3 -gdwarf-2 -mmacosx-version-min=10.10 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/device.o.d.raw   -c -o Release/obj.target/usb_bindings/src/device.o ../src/device.cc
++Release/obj.target/usb_bindings/src/device.o: ../src/device.cc \
++  ../src/node_usb.h ../libusb/libusb/libusb.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api_types.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api_types.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.deprecated.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_buffer.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/cppgc/common.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8config.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-internal.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-version.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-platform.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_version.h \
++  ../src/helpers.h ../src/uv_async_queue.h
++../src/device.cc:
++../src/node_usb.h:
++../libusb/libusb/libusb.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api_types.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api_types.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.deprecated.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_buffer.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/cppgc/common.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8config.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-internal.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-version.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-platform.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_version.h:
++../src/helpers.h:
++../src/uv_async_queue.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d
+new file mode 100644
+index 0000000..c66e6d3
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d
+@@ -0,0 +1,41 @@
++cmd_Release/obj.target/usb_bindings/src/node_usb.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -O3 -gdwarf-2 -mmacosx-version-min=10.10 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d.raw   -c -o Release/obj.target/usb_bindings/src/node_usb.o ../src/node_usb.cc
++Release/obj.target/usb_bindings/src/node_usb.o: ../src/node_usb.cc \
++  ../src/node_usb.h ../libusb/libusb/libusb.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api_types.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api_types.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.deprecated.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_buffer.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/cppgc/common.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8config.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-internal.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-version.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-platform.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_version.h \
++  ../src/helpers.h ../src/uv_async_queue.h
++../src/node_usb.cc:
++../src/node_usb.h:
++../libusb/libusb/libusb.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api_types.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api_types.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.deprecated.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_buffer.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/cppgc/common.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8config.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-internal.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-version.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-platform.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_version.h:
++../src/helpers.h:
++../src/uv_async_queue.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d
+new file mode 100644
+index 0000000..3f6b45b
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d
+@@ -0,0 +1,41 @@
++cmd_Release/obj.target/usb_bindings/src/transfer.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -O3 -gdwarf-2 -mmacosx-version-min=10.10 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d.raw   -c -o Release/obj.target/usb_bindings/src/transfer.o ../src/transfer.cc
++Release/obj.target/usb_bindings/src/transfer.o: ../src/transfer.cc \
++  ../src/node_usb.h ../libusb/libusb/libusb.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api_types.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api_types.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.h \
++  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.deprecated.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_buffer.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/cppgc/common.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8config.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-internal.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-version.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-platform.h \
++  /nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_version.h \
++  ../src/helpers.h ../src/uv_async_queue.h
++../src/transfer.cc:
++../src/node_usb.h:
++../libusb/libusb/libusb.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/js_native_api_types.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_api_types.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.h:
++/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi-inl.deprecated.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_buffer.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/cppgc/common.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8config.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-internal.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-version.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/v8-platform.h:
++/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4/include/node/node_version.h:
++../src/helpers.h:
++../src/uv_async_queue.h:
+diff --git a/node_modules/usb/build/Release/.deps/Release/usb.a.d b/node_modules/usb/build/Release/.deps/Release/usb.a.d
+new file mode 100644
+index 0000000..852a88f
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/usb.a.d
+@@ -0,0 +1 @@
++cmd_Release/usb.a := rm -f Release/usb.a && ./gyp-mac-tool filter-libtool libtool  -static -o Release/usb.a Release/obj.target/libusb/libusb/libusb/core.o Release/obj.target/libusb/libusb/libusb/descriptor.o Release/obj.target/libusb/libusb/libusb/hotplug.o Release/obj.target/libusb/libusb/libusb/io.o Release/obj.target/libusb/libusb/libusb/strerror.o Release/obj.target/libusb/libusb/libusb/sync.o Release/obj.target/libusb/libusb/libusb/os/poll_posix.o Release/obj.target/libusb/libusb/libusb/os/threads_posix.o Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o
+diff --git a/node_modules/usb/build/Release/.deps/Release/usb_bindings.node.d b/node_modules/usb/build/Release/.deps/Release/usb_bindings.node.d
+new file mode 100644
+index 0000000..874dc77
+--- /dev/null
++++ b/node_modules/usb/build/Release/.deps/Release/usb_bindings.node.d
+@@ -0,0 +1 @@
++cmd_Release/usb_bindings.node := clang++ -bundle -framework CoreFoundation -framework IOKit -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.10 -arch x86_64 -L./Release -stdlib=libc++  -o Release/usb_bindings.node Release/obj.target/usb_bindings/src/node_usb.o Release/obj.target/usb_bindings/src/device.o Release/obj.target/usb_bindings/src/transfer.o Release/usb.a
+diff --git a/node_modules/usb/build/Release/.forge-meta b/node_modules/usb/build/Release/.forge-meta
+new file mode 100644
+index 0000000..651c3ef
+--- /dev/null
++++ b/node_modules/usb/build/Release/.forge-meta
+@@ -0,0 +1 @@
++x64--89
+\ No newline at end of file
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/core.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/core.o
+new file mode 100644
+index 0000000..1166b7b
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/core.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/descriptor.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/descriptor.o
+new file mode 100644
+index 0000000..fd81d62
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/descriptor.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/hotplug.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/hotplug.o
+new file mode 100644
+index 0000000..25a53ef
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/hotplug.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/io.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/io.o
+new file mode 100644
+index 0000000..c8f4bf7
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/io.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o
+new file mode 100644
+index 0000000..0ecdd6d
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o
+new file mode 100644
+index 0000000..a3d44cc
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o
+new file mode 100644
+index 0000000..feb4668
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/strerror.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/strerror.o
+new file mode 100644
+index 0000000..617cc0e
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/strerror.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/sync.o b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/sync.o
+new file mode 100644
+index 0000000..460fb4a
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/sync.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/usb_bindings/src/device.o b/node_modules/usb/build/Release/obj.target/usb_bindings/src/device.o
+new file mode 100644
+index 0000000..aa4578d
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/usb_bindings/src/device.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/usb_bindings/src/node_usb.o b/node_modules/usb/build/Release/obj.target/usb_bindings/src/node_usb.o
+new file mode 100644
+index 0000000..3fc46b2
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/usb_bindings/src/node_usb.o differ
+diff --git a/node_modules/usb/build/Release/obj.target/usb_bindings/src/transfer.o b/node_modules/usb/build/Release/obj.target/usb_bindings/src/transfer.o
+new file mode 100644
+index 0000000..5bc864c
+Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/usb_bindings/src/transfer.o differ
+diff --git a/node_modules/usb/build/Release/usb.a b/node_modules/usb/build/Release/usb.a
+new file mode 100644
+index 0000000..1ad4c11
+Binary files /dev/null and b/node_modules/usb/build/Release/usb.a differ
+diff --git a/node_modules/usb/build/Release/usb_bindings.node b/node_modules/usb/build/Release/usb_bindings.node
+index cbb68e6..bb2ff3e 100755
+Binary files a/node_modules/usb/build/Release/usb_bindings.node and b/node_modules/usb/build/Release/usb_bindings.node differ
+diff --git a/node_modules/usb/build/binding.Makefile b/node_modules/usb/build/binding.Makefile
+new file mode 100644
+index 0000000..5cbb253
+--- /dev/null
++++ b/node_modules/usb/build/binding.Makefile
+@@ -0,0 +1,6 @@
++# This file is generated by gyp; do not edit.
++
++export builddir_name ?= ./build/.
++.PHONY: all
++all:
++	$(MAKE) usb_bindings
+diff --git a/node_modules/usb/build/config.gypi b/node_modules/usb/build/config.gypi
+new file mode 100644
+index 0000000..7418cfc
+--- /dev/null
++++ b/node_modules/usb/build/config.gypi
+@@ -0,0 +1,97 @@
++# Do not edit. File was generated by node-gyp's "configure" step
++{
++  "target_defaults": {
++    "cflags": [],
++    "default_configuration": "Release",
++    "defines": [],
++    "include_dirs": [],
++    "libraries": []
++  },
++  "variables": {
++    "asan": 0,
++    "build_v8_with_gn": "false",
++    "coverage": "false",
++    "dcheck_always_on": 0,
++    "debug_nghttp2": "false",
++    "debug_node": "false",
++    "enable_lto": "false",
++    "enable_pgo_generate": "false",
++    "enable_pgo_use": "false",
++    "error_on_warn": "false",
++    "force_dynamic_crt": 0,
++    "host_arch": "x64",
++    "icu_gyp_path": "tools/icu/icu-system.gyp",
++    "icu_small": "false",
++    "icu_ver_major": "67",
++    "is_debug": 0,
++    "llvm_version": "7.1",
++    "napi_build_version": "7",
++    "node_byteorder": "little",
++    "node_debug_lib": "false",
++    "node_enable_d8": "false",
++    "node_install_npm": "true",
++    "node_module_version": 83,
++    "node_no_browser_globals": "false",
++    "node_prefix": "/nix/store/5wn6drpgcasamml8q2rch5lcisp7aw4m-nodejs-14.15.4",
++    "node_release_urlbase": "",
++    "node_shared": "false",
++    "node_shared_brotli": "false",
++    "node_shared_cares": "false",
++    "node_shared_http_parser": "false",
++    "node_shared_libuv": "true",
++    "node_shared_nghttp2": "false",
++    "node_shared_openssl": "true",
++    "node_shared_zlib": "true",
++    "node_tag": "",
++    "node_target_type": "executable",
++    "node_use_bundled_v8": "true",
++    "node_use_dtrace": "false",
++    "node_use_etw": "false",
++    "node_use_node_code_cache": "true",
++    "node_use_node_snapshot": "true",
++    "node_use_openssl": "true",
++    "node_use_v8_platform": "true",
++    "node_with_ltcg": "false",
++    "node_without_node_options": "false",
++    "openssl_fips": "",
++    "openssl_is_fips": "false",
++    "ossfuzz": "false",
++    "shlib_suffix": "83.dylib",
++    "target_arch": "x64",
++    "v8_enable_31bit_smis_on_64bit_arch": 0,
++    "v8_enable_gdbjit": 0,
++    "v8_enable_i18n_support": 1,
++    "v8_enable_inspector": 1,
++    "v8_enable_lite_mode": 0,
++    "v8_enable_object_print": 1,
++    "v8_enable_pointer_compression": 0,
++    "v8_no_strict_aliasing": 1,
++    "v8_optimized_debug": 1,
++    "v8_promise_internal_field_count": 1,
++    "v8_random_seed": 0,
++    "v8_trace_maps": 0,
++    "v8_use_siphash": 1,
++    "want_separate_host_toolset": 0,
++    "nodedir": "/Users/daniel/.electron-gyp/13.1.0",
++    "standalone_static_library": 1,
++    "target": "13.1.0",
++    "build_from_source": "true",
++    "runtime": "electron",
++    "version_git_tag": "true",
++    "init_license": "MIT",
++    "registry": "https://registry.npmjs.org/",
++    "version_commit_hooks": "true",
++    "bin_links": "true",
++    "wrap_output": "",
++    "save_prefix": "^",
++    "strict_ssl": "true",
++    "version_git_message": "v%s",
++    "disturl": "https://www.electronjs.org/headers",
++    "ignore_scripts": "",
++    "version_git_sign": "",
++    "user_agent": "yarn/1.22.10 npm/? node/v14.15.4 darwin x64",
++    "ignore_optional": "",
++    "init_version": "1.0.0",
++    "version_tag_prefix": "v"
++  }
++}
+diff --git a/node_modules/usb/build/gyp-mac-tool b/node_modules/usb/build/gyp-mac-tool
+new file mode 100755
+index 0000000..033b4e5
+--- /dev/null
++++ b/node_modules/usb/build/gyp-mac-tool
+@@ -0,0 +1,615 @@
++#!/usr/bin/env python
++# Generated by gyp. Do not edit.
++# Copyright (c) 2012 Google Inc. All rights reserved.
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++
++"""Utility functions to perform Xcode-style build steps.
++
++These functions are executed via gyp-mac-tool when using the Makefile generator.
++"""
++
++from __future__ import print_function
++
++import fcntl
++import fnmatch
++import glob
++import json
++import os
++import plistlib
++import re
++import shutil
++import string
++import subprocess
++import sys
++import tempfile
++
++PY3 = bytes != str
++
++
++def main(args):
++  executor = MacTool()
++  exit_code = executor.Dispatch(args)
++  if exit_code is not None:
++    sys.exit(exit_code)
++
++
++class MacTool(object):
++  """This class performs all the Mac tooling steps. The methods can either be
++  executed directly, or dispatched from an argument list."""
++
++  def Dispatch(self, args):
++    """Dispatches a string command to a method."""
++    if len(args) < 1:
++      raise Exception("Not enough arguments")
++
++    method = "Exec%s" % self._CommandifyName(args[0])
++    return getattr(self, method)(*args[1:])
++
++  def _CommandifyName(self, name_string):
++    """Transforms a tool name like copy-info-plist to CopyInfoPlist"""
++    return name_string.title().replace('-', '')
++
++  def ExecCopyBundleResource(self, source, dest, convert_to_binary):
++    """Copies a resource file to the bundle/Resources directory, performing any
++    necessary compilation on each resource."""
++    extension = os.path.splitext(source)[1].lower()
++    if os.path.isdir(source):
++      # Copy tree.
++      # TODO(thakis): This copies file attributes like mtime, while the
++      # single-file branch below doesn't. This should probably be changed to
++      # be consistent with the single-file branch.
++      if os.path.exists(dest):
++        shutil.rmtree(dest)
++      shutil.copytree(source, dest)
++    elif extension == '.xib':
++      return self._CopyXIBFile(source, dest)
++    elif extension == '.storyboard':
++      return self._CopyXIBFile(source, dest)
++    elif extension == '.strings':
++      self._CopyStringsFile(source, dest, convert_to_binary)
++    else:
++      shutil.copy(source, dest)
++
++  def _CopyXIBFile(self, source, dest):
++    """Compiles a XIB file with ibtool into a binary plist in the bundle."""
++
++    # ibtool sometimes crashes with relative paths. See crbug.com/314728.
++    base = os.path.dirname(os.path.realpath(__file__))
++    if os.path.relpath(source):
++      source = os.path.join(base, source)
++    if os.path.relpath(dest):
++      dest = os.path.join(base, dest)
++
++    args = ['xcrun', 'ibtool', '--errors', '--warnings', '--notices',
++        '--output-format', 'human-readable-text', '--compile', dest, source]
++    ibtool_section_re = re.compile(r'/\*.*\*/')
++    ibtool_re = re.compile(r'.*note:.*is clipping its content')
++    ibtoolout = subprocess.Popen(args, stdout=subprocess.PIPE)
++    current_section_header = None
++    for line in ibtoolout.stdout:
++      if ibtool_section_re.match(line):
++        current_section_header = line
++      elif not ibtool_re.match(line):
++        if current_section_header:
++          sys.stdout.write(current_section_header)
++          current_section_header = None
++        sys.stdout.write(line)
++    return ibtoolout.returncode
++
++  def _ConvertToBinary(self, dest):
++    subprocess.check_call([
++        'xcrun', 'plutil', '-convert', 'binary1', '-o', dest, dest])
++
++  def _CopyStringsFile(self, source, dest, convert_to_binary):
++    """Copies a .strings file using iconv to reconvert the input into UTF-16."""
++    input_code = self._DetectInputEncoding(source) or "UTF-8"
++
++    # Xcode's CpyCopyStringsFile / builtin-copyStrings seems to call
++    # CFPropertyListCreateFromXMLData() behind the scenes; at least it prints
++    #     CFPropertyListCreateFromXMLData(): Old-style plist parser: missing
++    #     semicolon in dictionary.
++    # on invalid files. Do the same kind of validation.
++    import CoreFoundation
++    s = open(source, 'rb').read()
++    d = CoreFoundation.CFDataCreate(None, s, len(s))
++    _, error = CoreFoundation.CFPropertyListCreateFromXMLData(None, d, 0, None)
++    if error:
++      return
++
++    fp = open(dest, 'wb')
++    fp.write(s.decode(input_code).encode('UTF-16'))
++    fp.close()
++
++    if convert_to_binary == 'True':
++      self._ConvertToBinary(dest)
++
++  def _DetectInputEncoding(self, file_name):
++    """Reads the first few bytes from file_name and tries to guess the text
++    encoding. Returns None as a guess if it can't detect it."""
++    fp = open(file_name, 'rb')
++    try:
++      header = fp.read(3)
++    except Exception:
++      fp.close()
++      return None
++    fp.close()
++    if header.startswith("\xFE\xFF"):
++      return "UTF-16"
++    elif header.startswith("\xFF\xFE"):
++      return "UTF-16"
++    elif header.startswith("\xEF\xBB\xBF"):
++      return "UTF-8"
++    else:
++      return None
++
++  def ExecCopyInfoPlist(self, source, dest, convert_to_binary, *keys):
++    """Copies the |source| Info.plist to the destination directory |dest|."""
++    # Read the source Info.plist into memory.
++    fd = open(source, 'r')
++    lines = fd.read()
++    fd.close()
++
++    # Insert synthesized key/value pairs (e.g. BuildMachineOSBuild).
++    plist = plistlib.readPlistFromString(lines)
++    if keys:
++      plist = dict(plist.items() + json.loads(keys[0]).items())
++    lines = plistlib.writePlistToString(plist)
++
++    # Go through all the environment variables and replace them as variables in
++    # the file.
++    IDENT_RE = re.compile(r'[/\s]')
++    for key in os.environ:
++      if key.startswith('_'):
++        continue
++      evar = '${%s}' % key
++      evalue = os.environ[key]
++      lines = string.replace(lines, evar, evalue)
++
++      # Xcode supports various suffices on environment variables, which are
++      # all undocumented. :rfc1034identifier is used in the standard project
++      # template these days, and :identifier was used earlier. They are used to
++      # convert non-url characters into things that look like valid urls --
++      # except that the replacement character for :identifier, '_' isn't valid
++      # in a URL either -- oops, hence :rfc1034identifier was born.
++      evar = '${%s:identifier}' % key
++      evalue = IDENT_RE.sub('_', os.environ[key])
++      lines = string.replace(lines, evar, evalue)
++
++      evar = '${%s:rfc1034identifier}' % key
++      evalue = IDENT_RE.sub('-', os.environ[key])
++      lines = string.replace(lines, evar, evalue)
++
++    # Remove any keys with values that haven't been replaced.
++    lines = lines.split('\n')
++    for i in range(len(lines)):
++      if lines[i].strip().startswith("<string>${"):
++        lines[i] = None
++        lines[i - 1] = None
++    lines = '\n'.join(filter(lambda x: x is not None, lines))
++
++    # Write out the file with variables replaced.
++    fd = open(dest, 'w')
++    fd.write(lines)
++    fd.close()
++
++    # Now write out PkgInfo file now that the Info.plist file has been
++    # "compiled".
++    self._WritePkgInfo(dest)
++
++    if convert_to_binary == 'True':
++      self._ConvertToBinary(dest)
++
++  def _WritePkgInfo(self, info_plist):
++    """This writes the PkgInfo file from the data stored in Info.plist."""
++    plist = plistlib.readPlist(info_plist)
++    if not plist:
++      return
++
++    # Only create PkgInfo for executable types.
++    package_type = plist['CFBundlePackageType']
++    if package_type != 'APPL':
++      return
++
++    # The format of PkgInfo is eight characters, representing the bundle type
++    # and bundle signature, each four characters. If that is missing, four
++    # '?' characters are used instead.
++    signature_code = plist.get('CFBundleSignature', '????')
++    if len(signature_code) != 4:  # Wrong length resets everything, too.
++      signature_code = '?' * 4
++
++    dest = os.path.join(os.path.dirname(info_plist), 'PkgInfo')
++    fp = open(dest, 'w')
++    fp.write('%s%s' % (package_type, signature_code))
++    fp.close()
++
++  def ExecFlock(self, lockfile, *cmd_list):
++    """Emulates the most basic behavior of Linux's flock(1)."""
++    # Rely on exception handling to report errors.
++    fd = os.open(lockfile, os.O_RDONLY|os.O_NOCTTY|os.O_CREAT, 0o666)
++    fcntl.flock(fd, fcntl.LOCK_EX)
++    return subprocess.call(cmd_list)
++
++  def ExecFilterLibtool(self, *cmd_list):
++    """Calls libtool and filters out '/path/to/libtool: file: foo.o has no
++    symbols'."""
++    libtool_re = re.compile(r'^.*libtool: file: .* has no symbols$')
++    libtool_re5 = re.compile(
++        r'^.*libtool: warning for library: ' +
++        r'.* the table of contents is empty ' +
++        r'\(no object file members in the library define global symbols\)$')
++    env = os.environ.copy()
++    # Ref:
++    # http://www.opensource.apple.com/source/cctools/cctools-809/misc/libtool.c
++    # The problem with this flag is that it resets the file mtime on the file to
++    # epoch=0, e.g. 1970-1-1 or 1969-12-31 depending on timezone.
++    env['ZERO_AR_DATE'] = '1'
++    libtoolout = subprocess.Popen(cmd_list, stderr=subprocess.PIPE, env=env)
++    _, err = libtoolout.communicate()
++    if PY3:
++      err = err.decode('utf-8')
++    for line in err.splitlines():
++      if not libtool_re.match(line) and not libtool_re5.match(line):
++        print(line, file=sys.stderr)
++    # Unconditionally touch the output .a file on the command line if present
++    # and the command succeeded. A bit hacky.
++    if not libtoolout.returncode:
++      for i in range(len(cmd_list) - 1):
++        if cmd_list[i] == "-o" and cmd_list[i+1].endswith('.a'):
++          os.utime(cmd_list[i+1], None)
++          break
++    return libtoolout.returncode
++
++  def ExecPackageFramework(self, framework, version):
++    """Takes a path to Something.framework and the Current version of that and
++    sets up all the symlinks."""
++    # Find the name of the binary based on the part before the ".framework".
++    binary = os.path.basename(framework).split('.')[0]
++
++    CURRENT = 'Current'
++    RESOURCES = 'Resources'
++    VERSIONS = 'Versions'
++
++    if not os.path.exists(os.path.join(framework, VERSIONS, version, binary)):
++      # Binary-less frameworks don't seem to contain symlinks (see e.g.
++      # chromium's out/Debug/org.chromium.Chromium.manifest/ bundle).
++      return
++
++    # Move into the framework directory to set the symlinks correctly.
++    pwd = os.getcwd()
++    os.chdir(framework)
++
++    # Set up the Current version.
++    self._Relink(version, os.path.join(VERSIONS, CURRENT))
++
++    # Set up the root symlinks.
++    self._Relink(os.path.join(VERSIONS, CURRENT, binary), binary)
++    self._Relink(os.path.join(VERSIONS, CURRENT, RESOURCES), RESOURCES)
++
++    # Back to where we were before!
++    os.chdir(pwd)
++
++  def _Relink(self, dest, link):
++    """Creates a symlink to |dest| named |link|. If |link| already exists,
++    it is overwritten."""
++    if os.path.lexists(link):
++      os.remove(link)
++    os.symlink(dest, link)
++
++  def ExecCompileXcassets(self, keys, *inputs):
++    """Compiles multiple .xcassets files into a single .car file.
++
++    This invokes 'actool' to compile all the inputs .xcassets files. The
++    |keys| arguments is a json-encoded dictionary of extra arguments to
++    pass to 'actool' when the asset catalogs contains an application icon
++    or a launch image.
++
++    Note that 'actool' does not create the Assets.car file if the asset
++    catalogs does not contains imageset.
++    """
++    command_line = [
++      'xcrun', 'actool', '--output-format', 'human-readable-text',
++      '--compress-pngs', '--notices', '--warnings', '--errors',
++    ]
++    is_iphone_target = 'IPHONEOS_DEPLOYMENT_TARGET' in os.environ
++    if is_iphone_target:
++      platform = os.environ['CONFIGURATION'].split('-')[-1]
++      if platform not in ('iphoneos', 'iphonesimulator'):
++        platform = 'iphonesimulator'
++      command_line.extend([
++          '--platform', platform, '--target-device', 'iphone',
++          '--target-device', 'ipad', '--minimum-deployment-target',
++          os.environ['IPHONEOS_DEPLOYMENT_TARGET'], '--compile',
++          os.path.abspath(os.environ['CONTENTS_FOLDER_PATH']),
++      ])
++    else:
++      command_line.extend([
++          '--platform', 'macosx', '--target-device', 'mac',
++          '--minimum-deployment-target', os.environ['MACOSX_DEPLOYMENT_TARGET'],
++          '--compile',
++          os.path.abspath(os.environ['UNLOCALIZED_RESOURCES_FOLDER_PATH']),
++      ])
++    if keys:
++      keys = json.loads(keys)
++      for key, value in keys.items():
++        arg_name = '--' + key
++        if isinstance(value, bool):
++          if value:
++            command_line.append(arg_name)
++        elif isinstance(value, list):
++          for v in value:
++            command_line.append(arg_name)
++            command_line.append(str(v))
++        else:
++          command_line.append(arg_name)
++          command_line.append(str(value))
++    # Note: actool crashes if inputs path are relative, so use os.path.abspath
++    # to get absolute path name for inputs.
++    command_line.extend(map(os.path.abspath, inputs))
++    subprocess.check_call(command_line)
++
++  def ExecMergeInfoPlist(self, output, *inputs):
++    """Merge multiple .plist files into a single .plist file."""
++    merged_plist = {}
++    for path in inputs:
++      plist = self._LoadPlistMaybeBinary(path)
++      self._MergePlist(merged_plist, plist)
++    plistlib.writePlist(merged_plist, output)
++
++  def ExecCodeSignBundle(self, key, resource_rules, entitlements, provisioning):
++    """Code sign a bundle.
++
++    This function tries to code sign an iOS bundle, following the same
++    algorithm as Xcode:
++      1. copy ResourceRules.plist from the user or the SDK into the bundle,
++      2. pick the provisioning profile that best match the bundle identifier,
++         and copy it into the bundle as embedded.mobileprovision,
++      3. copy Entitlements.plist from user or SDK next to the bundle,
++      4. code sign the bundle.
++    """
++    resource_rules_path = self._InstallResourceRules(resource_rules)
++    substitutions, overrides = self._InstallProvisioningProfile(
++        provisioning, self._GetCFBundleIdentifier())
++    entitlements_path = self._InstallEntitlements(
++        entitlements, substitutions, overrides)
++    subprocess.check_call([
++        'codesign', '--force', '--sign', key, '--resource-rules',
++        resource_rules_path, '--entitlements', entitlements_path,
++        os.path.join(
++            os.environ['TARGET_BUILD_DIR'],
++            os.environ['FULL_PRODUCT_NAME'])])
++
++  def _InstallResourceRules(self, resource_rules):
++    """Installs ResourceRules.plist from user or SDK into the bundle.
++
++    Args:
++      resource_rules: string, optional, path to the ResourceRules.plist file
++        to use, default to "${SDKROOT}/ResourceRules.plist"
++
++    Returns:
++      Path to the copy of ResourceRules.plist into the bundle.
++    """
++    source_path = resource_rules
++    target_path = os.path.join(
++        os.environ['BUILT_PRODUCTS_DIR'],
++        os.environ['CONTENTS_FOLDER_PATH'],
++        'ResourceRules.plist')
++    if not source_path:
++      source_path = os.path.join(
++          os.environ['SDKROOT'], 'ResourceRules.plist')
++    shutil.copy2(source_path, target_path)
++    return target_path
++
++  def _InstallProvisioningProfile(self, profile, bundle_identifier):
++    """Installs embedded.mobileprovision into the bundle.
++
++    Args:
++      profile: string, optional, short name of the .mobileprovision file
++        to use, if empty or the file is missing, the best file installed
++        will be used
++      bundle_identifier: string, value of CFBundleIdentifier from Info.plist
++
++    Returns:
++      A tuple containing two dictionary: variables substitutions and values
++      to overrides when generating the entitlements file.
++    """
++    source_path, provisioning_data, team_id = self._FindProvisioningProfile(
++        profile, bundle_identifier)
++    target_path = os.path.join(
++        os.environ['BUILT_PRODUCTS_DIR'],
++        os.environ['CONTENTS_FOLDER_PATH'],
++        'embedded.mobileprovision')
++    shutil.copy2(source_path, target_path)
++    substitutions = self._GetSubstitutions(bundle_identifier, team_id + '.')
++    return substitutions, provisioning_data['Entitlements']
++
++  def _FindProvisioningProfile(self, profile, bundle_identifier):
++    """Finds the .mobileprovision file to use for signing the bundle.
++
++    Checks all the installed provisioning profiles (or if the user specified
++    the PROVISIONING_PROFILE variable, only consult it) and select the most
++    specific that correspond to the bundle identifier.
++
++    Args:
++      profile: string, optional, short name of the .mobileprovision file
++        to use, if empty or the file is missing, the best file installed
++        will be used
++      bundle_identifier: string, value of CFBundleIdentifier from Info.plist
++
++    Returns:
++      A tuple of the path to the selected provisioning profile, the data of
++      the embedded plist in the provisioning profile and the team identifier
++      to use for code signing.
++
++    Raises:
++      SystemExit: if no .mobileprovision can be used to sign the bundle.
++    """
++    profiles_dir = os.path.join(
++        os.environ['HOME'], 'Library', 'MobileDevice', 'Provisioning Profiles')
++    if not os.path.isdir(profiles_dir):
++      print('cannot find mobile provisioning for %s' % (bundle_identifier), file=sys.stderr)
++      sys.exit(1)
++    provisioning_profiles = None
++    if profile:
++      profile_path = os.path.join(profiles_dir, profile + '.mobileprovision')
++      if os.path.exists(profile_path):
++        provisioning_profiles = [profile_path]
++    if not provisioning_profiles:
++      provisioning_profiles = glob.glob(
++          os.path.join(profiles_dir, '*.mobileprovision'))
++    valid_provisioning_profiles = {}
++    for profile_path in provisioning_profiles:
++      profile_data = self._LoadProvisioningProfile(profile_path)
++      app_id_pattern = profile_data.get(
++          'Entitlements', {}).get('application-identifier', '')
++      for team_identifier in profile_data.get('TeamIdentifier', []):
++        app_id = '%s.%s' % (team_identifier, bundle_identifier)
++        if fnmatch.fnmatch(app_id, app_id_pattern):
++          valid_provisioning_profiles[app_id_pattern] = (
++              profile_path, profile_data, team_identifier)
++    if not valid_provisioning_profiles:
++      print('cannot find mobile provisioning for %s' % (bundle_identifier), file=sys.stderr)
++      sys.exit(1)
++    # If the user has multiple provisioning profiles installed that can be
++    # used for ${bundle_identifier}, pick the most specific one (ie. the
++    # provisioning profile whose pattern is the longest).
++    selected_key = max(valid_provisioning_profiles, key=lambda v: len(v))
++    return valid_provisioning_profiles[selected_key]
++
++  def _LoadProvisioningProfile(self, profile_path):
++    """Extracts the plist embedded in a provisioning profile.
++
++    Args:
++      profile_path: string, path to the .mobileprovision file
++
++    Returns:
++      Content of the plist embedded in the provisioning profile as a dictionary.
++    """
++    with tempfile.NamedTemporaryFile() as temp:
++      subprocess.check_call([
++          'security', 'cms', '-D', '-i', profile_path, '-o', temp.name])
++      return self._LoadPlistMaybeBinary(temp.name)
++
++  def _MergePlist(self, merged_plist, plist):
++    """Merge |plist| into |merged_plist|."""
++    for key, value in plist.items():
++      if isinstance(value, dict):
++        merged_value = merged_plist.get(key, {})
++        if isinstance(merged_value, dict):
++          self._MergePlist(merged_value, value)
++          merged_plist[key] = merged_value
++        else:
++          merged_plist[key] = value
++      else:
++        merged_plist[key] = value
++
++  def _LoadPlistMaybeBinary(self, plist_path):
++    """Loads into a memory a plist possibly encoded in binary format.
++
++    This is a wrapper around plistlib.readPlist that tries to convert the
++    plist to the XML format if it can't be parsed (assuming that it is in
++    the binary format).
++
++    Args:
++      plist_path: string, path to a plist file, in XML or binary format
++
++    Returns:
++      Content of the plist as a dictionary.
++    """
++    try:
++      # First, try to read the file using plistlib that only supports XML,
++      # and if an exception is raised, convert a temporary copy to XML and
++      # load that copy.
++      return plistlib.readPlist(plist_path)
++    except:
++      pass
++    with tempfile.NamedTemporaryFile() as temp:
++      shutil.copy2(plist_path, temp.name)
++      subprocess.check_call(['plutil', '-convert', 'xml1', temp.name])
++      return plistlib.readPlist(temp.name)
++
++  def _GetSubstitutions(self, bundle_identifier, app_identifier_prefix):
++    """Constructs a dictionary of variable substitutions for Entitlements.plist.
++
++    Args:
++      bundle_identifier: string, value of CFBundleIdentifier from Info.plist
++      app_identifier_prefix: string, value for AppIdentifierPrefix
++
++    Returns:
++      Dictionary of substitutions to apply when generating Entitlements.plist.
++    """
++    return {
++      'CFBundleIdentifier': bundle_identifier,
++      'AppIdentifierPrefix': app_identifier_prefix,
++    }
++
++  def _GetCFBundleIdentifier(self):
++    """Extracts CFBundleIdentifier value from Info.plist in the bundle.
++
++    Returns:
++      Value of CFBundleIdentifier in the Info.plist located in the bundle.
++    """
++    info_plist_path = os.path.join(
++        os.environ['TARGET_BUILD_DIR'],
++        os.environ['INFOPLIST_PATH'])
++    info_plist_data = self._LoadPlistMaybeBinary(info_plist_path)
++    return info_plist_data['CFBundleIdentifier']
++
++  def _InstallEntitlements(self, entitlements, substitutions, overrides):
++    """Generates and install the ${BundleName}.xcent entitlements file.
++
++    Expands variables "$(variable)" pattern in the source entitlements file,
++    add extra entitlements defined in the .mobileprovision file and the copy
++    the generated plist to "${BundlePath}.xcent".
++
++    Args:
++      entitlements: string, optional, path to the Entitlements.plist template
++        to use, defaults to "${SDKROOT}/Entitlements.plist"
++      substitutions: dictionary, variable substitutions
++      overrides: dictionary, values to add to the entitlements
++
++    Returns:
++      Path to the generated entitlements file.
++    """
++    source_path = entitlements
++    target_path = os.path.join(
++        os.environ['BUILT_PRODUCTS_DIR'],
++        os.environ['PRODUCT_NAME'] + '.xcent')
++    if not source_path:
++      source_path = os.path.join(
++          os.environ['SDKROOT'],
++          'Entitlements.plist')
++    shutil.copy2(source_path, target_path)
++    data = self._LoadPlistMaybeBinary(target_path)
++    data = self._ExpandVariables(data, substitutions)
++    if overrides:
++      for key in overrides:
++        if key not in data:
++          data[key] = overrides[key]
++    plistlib.writePlist(data, target_path)
++    return target_path
++
++  def _ExpandVariables(self, data, substitutions):
++    """Expands variables "$(variable)" in data.
++
++    Args:
++      data: object, can be either string, list or dictionary
++      substitutions: dictionary, variable substitutions to perform
++
++    Returns:
++      Copy of data where each references to "$(variable)" has been replaced
++      by the corresponding value found in substitutions, or left intact if
++      the key was not found.
++    """
++    if isinstance(data, str):
++      for key, value in substitutions.items():
++        data = data.replace('$(%s)' % key, value)
++      return data
++    if isinstance(data, list):
++      return [self._ExpandVariables(v, substitutions) for v in data]
++    if isinstance(data, dict):
++      return {k: self._ExpandVariables(data[k], substitutions) for k in data}
++    return data
++
++if __name__ == '__main__':
++  sys.exit(main(sys.argv[1:]))
+diff --git a/node_modules/usb/build/libusb.Makefile b/node_modules/usb/build/libusb.Makefile
+new file mode 100644
+index 0000000..0aad120
+--- /dev/null
++++ b/node_modules/usb/build/libusb.Makefile
+@@ -0,0 +1,6 @@
++# This file is generated by gyp; do not edit.
++
++export builddir_name ?= ./build/.
++.PHONY: all
++all:
++	$(MAKE) libusb
+diff --git a/node_modules/usb/build/libusb.target.mk b/node_modules/usb/build/libusb.target.mk
+new file mode 100644
+index 0000000..7bc6b2a
+--- /dev/null
++++ b/node_modules/usb/build/libusb.target.mk
+@@ -0,0 +1,218 @@
++# This file is generated by gyp; do not edit.
++
++TOOLSET := target
++TARGET := libusb
++DEFS_Debug := \
++	'-DNODE_GYP_MODULE_NAME=libusb' \
++	'-DUSING_UV_SHARED=1' \
++	'-DUSING_V8_SHARED=1' \
++	'-DV8_DEPRECATION_WARNINGS=1' \
++	'-DV8_DEPRECATION_WARNINGS' \
++	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
++	'-D_DARWIN_USE_64_BIT_INODE=1' \
++	'-D_LARGEFILE_SOURCE' \
++	'-D_FILE_OFFSET_BITS=64' \
++	'-DV8_COMPRESS_POINTERS' \
++	'-DV8_31BIT_SMIS_ON_64BIT_ARCH' \
++	'-DV8_REVERSE_JSARGS' \
++	'-DENABLE_LOGGING=1' \
++	'-DDEFAULT_VISIBILITY=' \
++	'-DHAVE_GETTIMEOFDAY=1' \
++	'-DHAVE_POLL_H=1' \
++	'-DHAVE_SYS_TIME_H=1' \
++	'-DLIBUSB_DESCRIBE="1.0.17"' \
++	'-DPOLL_NFDS_TYPE=nfds_t' \
++	'-DTHREADS_POSIX=1' \
++	'-DOS_DARWIN=1' \
++	'-DDEBUG' \
++	'-D_DEBUG' \
++	'-DV8_ENABLE_CHECKS'
++
++# Flags passed to all source files.
++CFLAGS_Debug := \
++	-O0 \
++	-gdwarf-2 \
++	-mmacosx-version-min=10.13 \
++	-arch x86_64 \
++	-Wall \
++	-Wendif-labels \
++	-W \
++	-Wno-unused-parameter
++
++# Flags passed to only C files.
++CFLAGS_C_Debug := \
++	-fno-strict-aliasing
++
++# Flags passed to only C++ files.
++CFLAGS_CC_Debug := \
++	-std=gnu++1y \
++	-stdlib=libc++ \
++	-fno-rtti \
++	-fno-exceptions \
++	-fno-strict-aliasing
++
++# Flags passed to only ObjC files.
++CFLAGS_OBJC_Debug :=
++
++# Flags passed to only ObjC++ files.
++CFLAGS_OBJCC_Debug :=
++
++INCS_Debug := \
++	-I/Users/daniel/.electron-gyp/13.1.0/include/node \
++	-I/Users/daniel/.electron-gyp/13.1.0/src \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/zlib \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include \
++	-I$(srcdir)/libusb_config \
++	-I$(srcdir)/libusb/libusb \
++	-I$(srcdir)/libusb/libusb/os
++
++DEFS_Release := \
++	'-DNODE_GYP_MODULE_NAME=libusb' \
++	'-DUSING_UV_SHARED=1' \
++	'-DUSING_V8_SHARED=1' \
++	'-DV8_DEPRECATION_WARNINGS=1' \
++	'-DV8_DEPRECATION_WARNINGS' \
++	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
++	'-D_DARWIN_USE_64_BIT_INODE=1' \
++	'-D_LARGEFILE_SOURCE' \
++	'-D_FILE_OFFSET_BITS=64' \
++	'-DV8_COMPRESS_POINTERS' \
++	'-DV8_31BIT_SMIS_ON_64BIT_ARCH' \
++	'-DV8_REVERSE_JSARGS' \
++	'-DENABLE_LOGGING=1' \
++	'-DDEFAULT_VISIBILITY=' \
++	'-DHAVE_GETTIMEOFDAY=1' \
++	'-DHAVE_POLL_H=1' \
++	'-DHAVE_SYS_TIME_H=1' \
++	'-DLIBUSB_DESCRIBE="1.0.17"' \
++	'-DPOLL_NFDS_TYPE=nfds_t' \
++	'-DTHREADS_POSIX=1' \
++	'-DOS_DARWIN=1'
++
++# Flags passed to all source files.
++CFLAGS_Release := \
++	-O3 \
++	-gdwarf-2 \
++	-mmacosx-version-min=10.13 \
++	-arch x86_64 \
++	-Wall \
++	-Wendif-labels \
++	-W \
++	-Wno-unused-parameter
++
++# Flags passed to only C files.
++CFLAGS_C_Release := \
++	-fno-strict-aliasing
++
++# Flags passed to only C++ files.
++CFLAGS_CC_Release := \
++	-std=gnu++1y \
++	-stdlib=libc++ \
++	-fno-rtti \
++	-fno-exceptions \
++	-fno-strict-aliasing
++
++# Flags passed to only ObjC files.
++CFLAGS_OBJC_Release :=
++
++# Flags passed to only ObjC++ files.
++CFLAGS_OBJCC_Release :=
++
++INCS_Release := \
++	-I/Users/daniel/.electron-gyp/13.1.0/include/node \
++	-I/Users/daniel/.electron-gyp/13.1.0/src \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/zlib \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include \
++	-I$(srcdir)/libusb_config \
++	-I$(srcdir)/libusb/libusb \
++	-I$(srcdir)/libusb/libusb/os
++
++OBJS := \
++	$(obj).target/$(TARGET)/libusb/libusb/core.o \
++	$(obj).target/$(TARGET)/libusb/libusb/descriptor.o \
++	$(obj).target/$(TARGET)/libusb/libusb/hotplug.o \
++	$(obj).target/$(TARGET)/libusb/libusb/io.o \
++	$(obj).target/$(TARGET)/libusb/libusb/strerror.o \
++	$(obj).target/$(TARGET)/libusb/libusb/sync.o \
++	$(obj).target/$(TARGET)/libusb/libusb/os/poll_posix.o \
++	$(obj).target/$(TARGET)/libusb/libusb/os/threads_posix.o \
++	$(obj).target/$(TARGET)/libusb/libusb/os/darwin_usb.o
++
++# Add to the list of files we specially track dependencies for.
++all_deps += $(OBJS)
++
++# CFLAGS et al overrides must be target-local.
++# See "Target-specific Variable Values" in the GNU Make manual.
++$(OBJS): TOOLSET := $(TOOLSET)
++$(OBJS): GYP_CFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_C_$(BUILDTYPE))
++$(OBJS): GYP_CXXFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_CC_$(BUILDTYPE))
++$(OBJS): GYP_OBJCFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_C_$(BUILDTYPE)) $(CFLAGS_OBJC_$(BUILDTYPE))
++$(OBJS): GYP_OBJCXXFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_CC_$(BUILDTYPE)) $(CFLAGS_OBJCC_$(BUILDTYPE))
++
++# Suffix rules, putting all outputs into $(obj).
++
++$(obj).$(TOOLSET)/$(TARGET)/%.o: $(srcdir)/%.c FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++
++# Try building from generated source, too.
++
++$(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj).$(TOOLSET)/%.c FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++
++$(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj)/%.c FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++
++# End of this set of suffix rules
++### Rules for final target.
++LDFLAGS_Debug := \
++	-mmacosx-version-min=10.13 \
++	-arch x86_64 \
++	-L$(builddir) \
++	-stdlib=libc++
++
++LIBTOOLFLAGS_Debug :=
++
++LDFLAGS_Release := \
++	-mmacosx-version-min=10.13 \
++	-arch x86_64 \
++	-L$(builddir) \
++	-stdlib=libc++
++
++LIBTOOLFLAGS_Release :=
++
++LIBS :=
++
++$(builddir)/usb.a: GYP_LDFLAGS := $(LDFLAGS_$(BUILDTYPE))
++$(builddir)/usb.a: LIBS := $(LIBS)
++$(builddir)/usb.a: GYP_LIBTOOLFLAGS := $(LIBTOOLFLAGS_$(BUILDTYPE))
++$(builddir)/usb.a: TOOLSET := $(TOOLSET)
++$(builddir)/usb.a: $(OBJS) FORCE_DO_CMD
++	$(call do_cmd,alink)
++
++all_deps += $(builddir)/usb.a
++# Add target alias
++.PHONY: libusb
++libusb: $(builddir)/usb.a
++
++# Add target alias to "all" target.
++.PHONY: all
++all: libusb
++
++# Add target alias
++.PHONY: libusb
++libusb: $(builddir)/usb.a
++
++# Short alias for building this static library.
++.PHONY: usb.a
++usb.a: $(builddir)/usb.a
++
++# Add static library to "all" target.
++.PHONY: all
++all: $(builddir)/usb.a
++
+diff --git a/node_modules/usb/build/usb_bindings.target.mk b/node_modules/usb/build/usb_bindings.target.mk
+new file mode 100644
+index 0000000..1061adc
+--- /dev/null
++++ b/node_modules/usb/build/usb_bindings.target.mk
+@@ -0,0 +1,227 @@
++# This file is generated by gyp; do not edit.
++
++TOOLSET := target
++TARGET := usb_bindings
++DEFS_Debug := \
++	'-DNODE_GYP_MODULE_NAME=usb_bindings' \
++	'-DUSING_UV_SHARED=1' \
++	'-DUSING_V8_SHARED=1' \
++	'-DV8_DEPRECATION_WARNINGS=1' \
++	'-DV8_DEPRECATION_WARNINGS' \
++	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
++	'-D_DARWIN_USE_64_BIT_INODE=1' \
++	'-D_LARGEFILE_SOURCE' \
++	'-D_FILE_OFFSET_BITS=64' \
++	'-DV8_COMPRESS_POINTERS' \
++	'-DV8_31BIT_SMIS_ON_64BIT_ARCH' \
++	'-DV8_REVERSE_JSARGS' \
++	'-DNAPI_VERSION=7' \
++	'-DBUILDING_NODE_EXTENSION' \
++	'-DDEBUG' \
++	'-D_DEBUG' \
++	'-DV8_ENABLE_CHECKS'
++
++# Flags passed to all source files.
++CFLAGS_Debug := \
++	-O0 \
++	-gdwarf-2 \
++	-mmacosx-version-min=10.10 \
++	-arch x86_64 \
++	-Wall \
++	-Wendif-labels \
++	-W \
++	-Wno-unused-parameter
++
++# Flags passed to only C files.
++CFLAGS_C_Debug := \
++	-fno-strict-aliasing \
++	-std=c++1y \
++	-stdlib=libc++
++
++# Flags passed to only C++ files.
++CFLAGS_CC_Debug := \
++	-std=gnu++1y \
++	-stdlib=libc++ \
++	-fno-rtti \
++	-fno-strict-aliasing \
++	-std=c++1y \
++	-stdlib=libc++
++
++# Flags passed to only ObjC files.
++CFLAGS_OBJC_Debug :=
++
++# Flags passed to only ObjC++ files.
++CFLAGS_OBJCC_Debug :=
++
++INCS_Debug := \
++	-I$(srcdir)/src \
++	-I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api \
++	-I/Users/daniel/.electron-gyp/13.1.0/include/node \
++	-I/Users/daniel/.electron-gyp/13.1.0/src \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/zlib \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include \
++	-I$(srcdir)/libusb/libusb
++
++DEFS_Release := \
++	'-DNODE_GYP_MODULE_NAME=usb_bindings' \
++	'-DUSING_UV_SHARED=1' \
++	'-DUSING_V8_SHARED=1' \
++	'-DV8_DEPRECATION_WARNINGS=1' \
++	'-DV8_DEPRECATION_WARNINGS' \
++	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
++	'-D_DARWIN_USE_64_BIT_INODE=1' \
++	'-D_LARGEFILE_SOURCE' \
++	'-D_FILE_OFFSET_BITS=64' \
++	'-DV8_COMPRESS_POINTERS' \
++	'-DV8_31BIT_SMIS_ON_64BIT_ARCH' \
++	'-DV8_REVERSE_JSARGS' \
++	'-DNAPI_VERSION=7' \
++	'-DBUILDING_NODE_EXTENSION'
++
++# Flags passed to all source files.
++CFLAGS_Release := \
++	-O3 \
++	-gdwarf-2 \
++	-mmacosx-version-min=10.10 \
++	-arch x86_64 \
++	-Wall \
++	-Wendif-labels \
++	-W \
++	-Wno-unused-parameter
++
++# Flags passed to only C files.
++CFLAGS_C_Release := \
++	-fno-strict-aliasing \
++	-std=c++1y \
++	-stdlib=libc++
++
++# Flags passed to only C++ files.
++CFLAGS_CC_Release := \
++	-std=gnu++1y \
++	-stdlib=libc++ \
++	-fno-rtti \
++	-fno-strict-aliasing \
++	-std=c++1y \
++	-stdlib=libc++
++
++# Flags passed to only ObjC files.
++CFLAGS_OBJC_Release :=
++
++# Flags passed to only ObjC++ files.
++CFLAGS_OBJCC_Release :=
++
++INCS_Release := \
++	-I$(srcdir)/src \
++	-I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api \
++	-I/Users/daniel/.electron-gyp/13.1.0/include/node \
++	-I/Users/daniel/.electron-gyp/13.1.0/src \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/zlib \
++	-I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include \
++	-I$(srcdir)/libusb/libusb
++
++OBJS := \
++	$(obj).target/$(TARGET)/src/node_usb.o \
++	$(obj).target/$(TARGET)/src/device.o \
++	$(obj).target/$(TARGET)/src/transfer.o
++
++# Add to the list of files we specially track dependencies for.
++all_deps += $(OBJS)
++
++# Make sure our dependencies are built before any of us.
++$(OBJS): | $(builddir)/usb.a
++
++# CFLAGS et al overrides must be target-local.
++# See "Target-specific Variable Values" in the GNU Make manual.
++$(OBJS): TOOLSET := $(TOOLSET)
++$(OBJS): GYP_CFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_C_$(BUILDTYPE))
++$(OBJS): GYP_CXXFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_CC_$(BUILDTYPE))
++$(OBJS): GYP_OBJCFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_C_$(BUILDTYPE)) $(CFLAGS_OBJC_$(BUILDTYPE))
++$(OBJS): GYP_OBJCXXFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(BUILDTYPE)) $(CFLAGS_CC_$(BUILDTYPE)) $(CFLAGS_OBJCC_$(BUILDTYPE))
++
++# Suffix rules, putting all outputs into $(obj).
++
++$(obj).$(TOOLSET)/$(TARGET)/%.o: $(srcdir)/%.cc FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++
++# Try building from generated source, too.
++
++$(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj).$(TOOLSET)/%.cc FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++
++$(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj)/%.cc FORCE_DO_CMD
++	@$(call do_cmd,cxx,1)
++
++# End of this set of suffix rules
++### Rules for final target.
++LDFLAGS_Debug := \
++	-framework \
++	CoreFoundation \
++	-framework \
++	IOKit \
++	-undefined dynamic_lookup \
++	-Wl,-no_pie \
++	-Wl,-search_paths_first \
++	-mmacosx-version-min=10.10 \
++	-arch x86_64 \
++	-L$(builddir) \
++	-stdlib=libc++
++
++LIBTOOLFLAGS_Debug := \
++	-framework \
++	CoreFoundation \
++	-framework \
++	IOKit \
++	-undefined dynamic_lookup \
++	-Wl,-no_pie \
++	-Wl,-search_paths_first
++
++LDFLAGS_Release := \
++	-framework \
++	CoreFoundation \
++	-framework \
++	IOKit \
++	-undefined dynamic_lookup \
++	-Wl,-no_pie \
++	-Wl,-search_paths_first \
++	-mmacosx-version-min=10.10 \
++	-arch x86_64 \
++	-L$(builddir) \
++	-stdlib=libc++
++
++LIBTOOLFLAGS_Release := \
++	-framework \
++	CoreFoundation \
++	-framework \
++	IOKit \
++	-undefined dynamic_lookup \
++	-Wl,-no_pie \
++	-Wl,-search_paths_first
++
++LIBS :=
++
++$(builddir)/usb_bindings.node: GYP_LDFLAGS := $(LDFLAGS_$(BUILDTYPE))
++$(builddir)/usb_bindings.node: LIBS := $(LIBS)
++$(builddir)/usb_bindings.node: GYP_LIBTOOLFLAGS := $(LIBTOOLFLAGS_$(BUILDTYPE))
++$(builddir)/usb_bindings.node: TOOLSET := $(TOOLSET)
++$(builddir)/usb_bindings.node: $(OBJS) $(builddir)/usb.a FORCE_DO_CMD
++	$(call do_cmd,solink_module)
++
++all_deps += $(builddir)/usb_bindings.node
++# Add target alias
++.PHONY: usb_bindings
++usb_bindings: $(builddir)/usb_bindings.node
++
++# Short alias for building this executable.
++.PHONY: usb_bindings.node
++usb_bindings.node: $(builddir)/usb_bindings.node
++
++# Add executable to "all" target.
++.PHONY: all
++all: $(builddir)/usb_bindings.node
++
