@@ -1,22 +1,27 @@
 diff --git a/node_modules/usb/bin/darwin-x64-89/usb.node b/node_modules/usb/bin/darwin-x64-89/usb.node
 new file mode 100755
-index 0000000..bb2ff3e
+index 0000000..8802ab9
 Binary files /dev/null and b/node_modules/usb/bin/darwin-x64-89/usb.node differ
 diff --git a/node_modules/usb/binding.gyp b/node_modules/usb/binding.gyp
-index c926142..9b5112c 100644
+index c926142..e2eba7d 100644
 --- a/node_modules/usb/binding.gyp
 +++ b/node_modules/usb/binding.gyp
-@@ -10,7 +10,7 @@
+@@ -10,7 +10,8 @@
        'cflags_cc!': [ '-fno-exceptions' ],
        'xcode_settings': { 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
          'CLANG_CXX_LIBRARY': 'libc++',
 -        'MACOSX_DEPLOYMENT_TARGET': '10.7',
 +        'MACOSX_DEPLOYMENT_TARGET': '10.10',
++        'CLANG_CXX_LANGUAGE_STANDARD': 'c++14',
        },
        'msvs_settings': {
          'VCCLCompilerTool': { 'ExceptionHandling': 1 },
-@@ -52,7 +52,7 @@
-               'OTHER_CFLAGS': [ '-std=c++1y', '-stdlib=libc++' ],
+@@ -49,10 +50,10 @@
+           }],
+           ['OS=="mac"', {
+             'xcode_settings': {
+-              'OTHER_CFLAGS': [ '-std=c++1y', '-stdlib=libc++' ],
++              'OTHER_CFLAGS': [ '-std=c++14', '-stdlib=libc++' ],
                'OTHER_LDFLAGS': [ '-framework', 'CoreFoundation', '-framework', 'IOKit' ],
                'SDKROOT': 'macosx',
 -              'MACOSX_DEPLOYMENT_TARGET': '10.7',
@@ -26,7 +31,7 @@ index c926142..9b5112c 100644
            ['OS=="win"', {
 diff --git a/node_modules/usb/build/Makefile b/node_modules/usb/build/Makefile
 new file mode 100644
-index 0000000..38b438b
+index 0000000..d07816c
 --- /dev/null
 +++ b/node_modules/usb/build/Makefile
 @@ -0,0 +1,347 @@
@@ -310,9 +315,9 @@ index 0000000..38b438b
 +	@$(call do_cmd,objc,1)
 +$(obj).$(TOOLSET)/%.o: $(srcdir)/%.mm FORCE_DO_CMD
 +	@$(call do_cmd,objcxx,1)
-+$(obj).$(TOOLSET)/%.o: $(srcdir)/%.s FORCE_DO_CMD
-+	@$(call do_cmd,cc,1)
 +$(obj).$(TOOLSET)/%.o: $(srcdir)/%.S FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(srcdir)/%.s FORCE_DO_CMD
 +	@$(call do_cmd,cc,1)
 +
 +# Try building from generated source, too.
@@ -328,9 +333,9 @@ index 0000000..38b438b
 +	@$(call do_cmd,objc,1)
 +$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.mm FORCE_DO_CMD
 +	@$(call do_cmd,objcxx,1)
-+$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.s FORCE_DO_CMD
-+	@$(call do_cmd,cc,1)
 +$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.S FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(obj).$(TOOLSET)/%.s FORCE_DO_CMD
 +	@$(call do_cmd,cc,1)
 +
 +$(obj).$(TOOLSET)/%.o: $(obj)/%.c FORCE_DO_CMD
@@ -345,9 +350,9 @@ index 0000000..38b438b
 +	@$(call do_cmd,objc,1)
 +$(obj).$(TOOLSET)/%.o: $(obj)/%.mm FORCE_DO_CMD
 +	@$(call do_cmd,objcxx,1)
-+$(obj).$(TOOLSET)/%.o: $(obj)/%.s FORCE_DO_CMD
-+	@$(call do_cmd,cc,1)
 +$(obj).$(TOOLSET)/%.o: $(obj)/%.S FORCE_DO_CMD
++	@$(call do_cmd,cc,1)
++$(obj).$(TOOLSET)/%.o: $(obj)/%.s FORCE_DO_CMD
 +	@$(call do_cmd,cc,1)
 +
 +
@@ -363,8 +368,8 @@ index 0000000..38b438b
 +endif
 +
 +quiet_cmd_regen_makefile = ACTION Regenerating $@
-+cmd_regen_makefile = cd $(srcdir); /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/Users/daniel/.electron-gyp/13.1.0" "-Dnode_gyp_dir=/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp" "-Dnode_lib_file=/Users/daniel/.electron-gyp/13.1.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/usb" "-Dnode_engine=v8" "--depth=." "-Goutput_dir=." "--generator-output=build" -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/usb/build/config.gypi -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp/addon.gypi -I/Users/daniel/.electron-gyp/13.1.0/include/node/common.gypi "--toplevel-dir=." binding.gyp
-+Makefile: $(srcdir)/../../../../../.electron-gyp/13.1.0/include/node/common.gypi $(srcdir)/libusb.gypi $(srcdir)/binding.gyp $(srcdir)/build/config.gypi $(srcdir)/../electron-rebuild/node_modules/node-gyp/addon.gypi
++cmd_regen_makefile = cd $(srcdir); /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "--toplevel-dir=." -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/usb/build/config.gypi -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp/addon.gypi -I/Users/daniel/.electron-gyp/13.1.0/include/node/common.gypi "--depth=." "-Goutput_dir=." "--generator-output=build" "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/Users/daniel/.electron-gyp/13.1.0" "-Dnode_gyp_dir=/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/electron-rebuild/node_modules/node-gyp" "-Dnode_lib_file=/Users/daniel/.electron-gyp/13.1.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/usb" "-Dnode_engine=v8" binding.gyp
++Makefile: $(srcdir)/binding.gyp $(srcdir)/../../../../../.electron-gyp/13.1.0/include/node/common.gypi $(srcdir)/build/config.gypi $(srcdir)/../electron-rebuild/node_modules/node-gyp/addon.gypi $(srcdir)/libusb.gypi
 +	$(call do_cmd,regen_makefile)
 +
 +# "all" is a concatenation of the "all" targets from all the included
@@ -379,11 +384,11 @@ index 0000000..38b438b
 +endif
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d
 new file mode 100644
-index 0000000..4e38018
+index 0000000..718d93d
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d
 @@ -0,0 +1,15 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/core.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/core.o ../libusb/libusb/core.c
++cmd_Release/obj.target/libusb/libusb/libusb/core.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/core.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/core.o ../libusb/libusb/core.c
 +Release/obj.target/libusb/libusb/libusb/core.o: ../libusb/libusb/core.c \
 +  ../libusb_config/config.h ../libusb/libusb/libusbi.h \
 +  ../libusb/libusb/libusb.h ../libusb/libusb/version.h \
@@ -400,11 +405,11 @@ index 0000000..4e38018
 +../libusb/libusb/hotplug.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d
 new file mode 100644
-index 0000000..c329ab4
+index 0000000..f4ad9a0
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d
 @@ -0,0 +1,14 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/descriptor.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/descriptor.o ../libusb/libusb/descriptor.c
++cmd_Release/obj.target/libusb/libusb/libusb/descriptor.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/descriptor.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/descriptor.o ../libusb/libusb/descriptor.c
 +Release/obj.target/libusb/libusb/libusb/descriptor.o: \
 +  ../libusb/libusb/descriptor.c ../libusb/libusb/libusbi.h \
 +  ../libusb_config/config.h ../libusb/libusb/libusb.h \
@@ -420,11 +425,11 @@ index 0000000..c329ab4
 +../libusb/libusb/os/poll_posix.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d
 new file mode 100644
-index 0000000..fe535d2
+index 0000000..497d55b
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d
 @@ -0,0 +1,16 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/hotplug.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/hotplug.o ../libusb/libusb/hotplug.c
++cmd_Release/obj.target/libusb/libusb/libusb/hotplug.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/hotplug.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/hotplug.o ../libusb/libusb/hotplug.c
 +Release/obj.target/libusb/libusb/libusb/hotplug.o: \
 +  ../libusb/libusb/hotplug.c ../libusb_config/config.h \
 +  ../libusb/libusb/libusbi.h ../libusb/libusb/libusb.h \
@@ -442,11 +447,11 @@ index 0000000..fe535d2
 +../libusb/libusb/hotplug.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d
 new file mode 100644
-index 0000000..dd945f0
+index 0000000..430ba65
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d
 @@ -0,0 +1,15 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/io.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/io.o ../libusb/libusb/io.c
++cmd_Release/obj.target/libusb/libusb/libusb/io.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/io.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/io.o ../libusb/libusb/io.c
 +Release/obj.target/libusb/libusb/libusb/io.o: ../libusb/libusb/io.c \
 +  ../libusb_config/config.h ../libusb/libusb/libusbi.h \
 +  ../libusb/libusb/libusb.h ../libusb/libusb/version.h \
@@ -463,11 +468,11 @@ index 0000000..dd945f0
 +../libusb/libusb/hotplug.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d
 new file mode 100644
-index 0000000..7dd7894
+index 0000000..4e5913a
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d
 @@ -0,0 +1,16 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o ../libusb/libusb/os/darwin_usb.c
++cmd_Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o ../libusb/libusb/os/darwin_usb.c
 +Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o: \
 +  ../libusb/libusb/os/darwin_usb.c ../libusb_config/config.h \
 +  ../libusb/libusb/os/darwin_usb.h ../libusb/libusb/libusbi.h \
@@ -485,11 +490,11 @@ index 0000000..7dd7894
 +../libusb/libusb/os/poll_posix.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d
 new file mode 100644
-index 0000000..d21096c
+index 0000000..1e0d147
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d
 @@ -0,0 +1,14 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/os/poll_posix.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/os/poll_posix.o ../libusb/libusb/os/poll_posix.c
++cmd_Release/obj.target/libusb/libusb/libusb/os/poll_posix.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/poll_posix.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/os/poll_posix.o ../libusb/libusb/os/poll_posix.c
 +Release/obj.target/libusb/libusb/libusb/os/poll_posix.o: \
 +  ../libusb/libusb/os/poll_posix.c ../libusb/libusb/libusbi.h \
 +  ../libusb_config/config.h ../libusb/libusb/libusb.h \
@@ -505,11 +510,11 @@ index 0000000..d21096c
 +../libusb/libusb/os/poll_posix.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d
 new file mode 100644
-index 0000000..4f00fe0
+index 0000000..55e4799
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d
 @@ -0,0 +1,6 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/os/threads_posix.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/os/threads_posix.o ../libusb/libusb/os/threads_posix.c
++cmd_Release/obj.target/libusb/libusb/libusb/os/threads_posix.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/os/threads_posix.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/os/threads_posix.o ../libusb/libusb/os/threads_posix.c
 +Release/obj.target/libusb/libusb/libusb/os/threads_posix.o: \
 +  ../libusb/libusb/os/threads_posix.c \
 +  ../libusb/libusb/os/threads_posix.h
@@ -517,11 +522,11 @@ index 0000000..4f00fe0
 +../libusb/libusb/os/threads_posix.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d
 new file mode 100644
-index 0000000..7a274af
+index 0000000..5729b90
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d
 @@ -0,0 +1,14 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/strerror.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/strerror.o ../libusb/libusb/strerror.c
++cmd_Release/obj.target/libusb/libusb/libusb/strerror.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/strerror.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/strerror.o ../libusb/libusb/strerror.c
 +Release/obj.target/libusb/libusb/libusb/strerror.o: \
 +  ../libusb/libusb/strerror.c ../libusb_config/config.h \
 +  ../libusb/libusb/libusb.h ../libusb/libusb/libusbi.h \
@@ -537,11 +542,11 @@ index 0000000..7a274af
 +../libusb/libusb/os/poll_posix.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d
 new file mode 100644
-index 0000000..28f909b
+index 0000000..3342a72
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d
 @@ -0,0 +1,14 @@
-+cmd_Release/obj.target/libusb/libusb/libusb/sync.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d.raw   -c -o Release/obj.target/libusb/libusb/libusb/sync.o ../libusb/libusb/sync.c
++cmd_Release/obj.target/libusb/libusb/libusb/sync.o := clang '-DNODE_GYP_MODULE_NAME=libusb' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DENABLE_LOGGING=1' '-DDEFAULT_VISIBILITY=' '-DHAVE_GETTIMEOFDAY=1' '-DHAVE_POLL_H=1' '-DHAVE_SYS_TIME_H=1' '-DLIBUSB_DESCRIBE="1.0.17"' '-DPOLL_NFDS_TYPE=nfds_t' '-DTHREADS_POSIX=1' '-DOS_DARWIN=1' -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb_config -I../libusb/libusb -I../libusb/libusb/os  -O3 -gdwarf-2 -mmacosx-version-min=10.13 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -fno-strict-aliasing -MMD -MF ./Release/.deps/Release/obj.target/libusb/libusb/libusb/sync.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/libusb/libusb/libusb/sync.o ../libusb/libusb/sync.c
 +Release/obj.target/libusb/libusb/libusb/sync.o: ../libusb/libusb/sync.c \
 +  ../libusb_config/config.h ../libusb/libusb/libusbi.h \
 +  ../libusb/libusb/libusb.h ../libusb/libusb/version.h \
@@ -557,11 +562,11 @@ index 0000000..28f909b
 +../libusb/libusb/os/poll_posix.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/device.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/device.o.d
 new file mode 100644
-index 0000000..5c393e3
+index 0000000..c8201cf
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/device.o.d
 @@ -0,0 +1,41 @@
-+cmd_Release/obj.target/usb_bindings/src/device.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -O3 -gdwarf-2 -mmacosx-version-min=10.10 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/device.o.d.raw   -c -o Release/obj.target/usb_bindings/src/device.o ../src/device.cc
++cmd_Release/obj.target/usb_bindings/src/device.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -O3 -gdwarf-2 -mmacosx-version-min=10.7 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/device.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/usb_bindings/src/device.o ../src/device.cc
 +Release/obj.target/usb_bindings/src/device.o: ../src/device.cc \
 +  ../src/node_usb.h ../libusb/libusb/libusb.h \
 +  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h \
@@ -604,11 +609,11 @@ index 0000000..5c393e3
 +../src/uv_async_queue.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d
 new file mode 100644
-index 0000000..c66e6d3
+index 0000000..0832d40
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d
 @@ -0,0 +1,41 @@
-+cmd_Release/obj.target/usb_bindings/src/node_usb.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -O3 -gdwarf-2 -mmacosx-version-min=10.10 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d.raw   -c -o Release/obj.target/usb_bindings/src/node_usb.o ../src/node_usb.cc
++cmd_Release/obj.target/usb_bindings/src/node_usb.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -O3 -gdwarf-2 -mmacosx-version-min=10.7 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/node_usb.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/usb_bindings/src/node_usb.o ../src/node_usb.cc
 +Release/obj.target/usb_bindings/src/node_usb.o: ../src/node_usb.cc \
 +  ../src/node_usb.h ../libusb/libusb/libusb.h \
 +  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h \
@@ -651,11 +656,11 @@ index 0000000..c66e6d3
 +../src/uv_async_queue.h:
 diff --git a/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d
 new file mode 100644
-index 0000000..3f6b45b
+index 0000000..bd0528b
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d
 @@ -0,0 +1,41 @@
-+cmd_Release/obj.target/usb_bindings/src/transfer.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -O3 -gdwarf-2 -mmacosx-version-min=10.10 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d.raw   -c -o Release/obj.target/usb_bindings/src/transfer.o ../src/transfer.cc
++cmd_Release/obj.target/usb_bindings/src/transfer.o := clang++ '-DNODE_GYP_MODULE_NAME=usb_bindings' '-DUSING_UV_SHARED=1' '-DUSING_V8_SHARED=1' '-DV8_DEPRECATION_WARNINGS=1' '-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS' '-D_DARWIN_USE_64_BIT_INODE=1' '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DV8_COMPRESS_POINTERS' '-DV8_31BIT_SMIS_ON_64BIT_ARCH' '-DV8_REVERSE_JSARGS' '-DNAPI_VERSION=7' '-DBUILDING_NODE_EXTENSION' -I../src -I/Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api -I/Users/daniel/.electron-gyp/13.1.0/include/node -I/Users/daniel/.electron-gyp/13.1.0/src -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/config -I/Users/daniel/.electron-gyp/13.1.0/deps/openssl/openssl/include -I/Users/daniel/.electron-gyp/13.1.0/deps/uv/include -I/Users/daniel/.electron-gyp/13.1.0/deps/zlib -I/Users/daniel/.electron-gyp/13.1.0/deps/v8/include -I../libusb/libusb  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -O3 -gdwarf-2 -mmacosx-version-min=10.7 -arch x86_64 -Wall -Wendif-labels -W -Wno-unused-parameter -std=gnu++1y -stdlib=libc++ -fno-rtti -fno-strict-aliasing -std=c++1y -stdlib=libc++ -MMD -MF ./Release/.deps/Release/obj.target/usb_bindings/src/transfer.o.d.raw -I/opt/homebrew/opt/libffi/include  -c -o Release/obj.target/usb_bindings/src/transfer.o ../src/transfer.cc
 +Release/obj.target/usb_bindings/src/transfer.o: ../src/transfer.cc \
 +  ../src/node_usb.h ../libusb/libusb/libusb.h \
 +  /Users/daniel/Workspace/cardano/daedalus-ddw414/node_modules/node-addon-api/napi.h \
@@ -705,11 +710,11 @@ index 0000000..852a88f
 +cmd_Release/usb.a := rm -f Release/usb.a && ./gyp-mac-tool filter-libtool libtool  -static -o Release/usb.a Release/obj.target/libusb/libusb/libusb/core.o Release/obj.target/libusb/libusb/libusb/descriptor.o Release/obj.target/libusb/libusb/libusb/hotplug.o Release/obj.target/libusb/libusb/libusb/io.o Release/obj.target/libusb/libusb/libusb/strerror.o Release/obj.target/libusb/libusb/libusb/sync.o Release/obj.target/libusb/libusb/libusb/os/poll_posix.o Release/obj.target/libusb/libusb/libusb/os/threads_posix.o Release/obj.target/libusb/libusb/libusb/os/darwin_usb.o
 diff --git a/node_modules/usb/build/Release/.deps/Release/usb_bindings.node.d b/node_modules/usb/build/Release/.deps/Release/usb_bindings.node.d
 new file mode 100644
-index 0000000..874dc77
+index 0000000..29ff51e
 --- /dev/null
 +++ b/node_modules/usb/build/Release/.deps/Release/usb_bindings.node.d
 @@ -0,0 +1 @@
-+cmd_Release/usb_bindings.node := clang++ -bundle -framework CoreFoundation -framework IOKit -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.10 -arch x86_64 -L./Release -stdlib=libc++  -o Release/usb_bindings.node Release/obj.target/usb_bindings/src/node_usb.o Release/obj.target/usb_bindings/src/device.o Release/obj.target/usb_bindings/src/transfer.o Release/usb.a 
++cmd_Release/usb_bindings.node := clang++ -bundle -framework CoreFoundation -framework IOKit -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -arch x86_64 -L./Release -stdlib=libc++ -L/opt/homebrew/opt/libffi/lib -o Release/usb_bindings.node Release/obj.target/usb_bindings/src/node_usb.o Release/obj.target/usb_bindings/src/device.o Release/obj.target/usb_bindings/src/transfer.o Release/usb.a 
 diff --git a/node_modules/usb/build/Release/.forge-meta b/node_modules/usb/build/Release/.forge-meta
 new file mode 100644
 index 0000000..651c3ef
@@ -756,22 +761,22 @@ index 0000000..460fb4a
 Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/libusb/libusb/libusb/sync.o differ
 diff --git a/node_modules/usb/build/Release/obj.target/usb_bindings/src/device.o b/node_modules/usb/build/Release/obj.target/usb_bindings/src/device.o
 new file mode 100644
-index 0000000..aa4578d
+index 0000000..64f65f0
 Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/usb_bindings/src/device.o differ
 diff --git a/node_modules/usb/build/Release/obj.target/usb_bindings/src/node_usb.o b/node_modules/usb/build/Release/obj.target/usb_bindings/src/node_usb.o
 new file mode 100644
-index 0000000..3fc46b2
+index 0000000..44e4c34
 Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/usb_bindings/src/node_usb.o differ
 diff --git a/node_modules/usb/build/Release/obj.target/usb_bindings/src/transfer.o b/node_modules/usb/build/Release/obj.target/usb_bindings/src/transfer.o
 new file mode 100644
-index 0000000..5bc864c
+index 0000000..c80dabe
 Binary files /dev/null and b/node_modules/usb/build/Release/obj.target/usb_bindings/src/transfer.o differ
 diff --git a/node_modules/usb/build/Release/usb.a b/node_modules/usb/build/Release/usb.a
 new file mode 100644
 index 0000000..1ad4c11
 Binary files /dev/null and b/node_modules/usb/build/Release/usb.a differ
 diff --git a/node_modules/usb/build/Release/usb_bindings.node b/node_modules/usb/build/Release/usb_bindings.node
-index cbb68e6..bb2ff3e 100755
+index cbb68e6..8802ab9 100755
 Binary files a/node_modules/usb/build/Release/usb_bindings.node and b/node_modules/usb/build/Release/usb_bindings.node differ
 diff --git a/node_modules/usb/build/binding.Makefile b/node_modules/usb/build/binding.Makefile
 new file mode 100644
@@ -787,10 +792,10 @@ index 0000000..5cbb253
 +	$(MAKE) usb_bindings
 diff --git a/node_modules/usb/build/config.gypi b/node_modules/usb/build/config.gypi
 new file mode 100644
-index 0000000..7418cfc
+index 0000000..d6dbf42
 --- /dev/null
 +++ b/node_modules/usb/build/config.gypi
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,99 @@
 +# Do not edit. File was generated by node-gyp's "configure" step
 +{
 +  "target_defaults": {
@@ -871,9 +876,11 @@ index 0000000..7418cfc
 +    "build_from_source": "true",
 +    "runtime": "electron",
 +    "version_git_tag": "true",
++    "email": "daniel.main.cernhoff@icloud.com",
 +    "init_license": "MIT",
 +    "registry": "https://registry.npmjs.org/",
 +    "version_commit_hooks": "true",
++    "username": "danielmain",
 +    "bin_links": "true",
 +    "wrap_output": "",
 +    "save_prefix": "^",
@@ -1747,10 +1754,10 @@ index 0000000..7bc6b2a
 +
 diff --git a/node_modules/usb/build/usb_bindings.target.mk b/node_modules/usb/build/usb_bindings.target.mk
 new file mode 100644
-index 0000000..1061adc
+index 0000000..5b8d08c
 --- /dev/null
 +++ b/node_modules/usb/build/usb_bindings.target.mk
-@@ -0,0 +1,227 @@
+@@ -0,0 +1,231 @@
 +# This file is generated by gyp; do not edit.
 +
 +TOOLSET := target
@@ -1776,9 +1783,10 @@ index 0000000..1061adc
 +
 +# Flags passed to all source files.
 +CFLAGS_Debug := \
++	-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk \
 +	-O0 \
 +	-gdwarf-2 \
-+	-mmacosx-version-min=10.10 \
++	-mmacosx-version-min=10.7 \
 +	-arch x86_64 \
 +	-Wall \
 +	-Wendif-labels \
@@ -1836,9 +1844,10 @@ index 0000000..1061adc
 +
 +# Flags passed to all source files.
 +CFLAGS_Release := \
++	-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk \
 +	-O3 \
 +	-gdwarf-2 \
-+	-mmacosx-version-min=10.10 \
++	-mmacosx-version-min=10.7 \
 +	-arch x86_64 \
 +	-Wall \
 +	-Wendif-labels \
@@ -1920,7 +1929,8 @@ index 0000000..1061adc
 +	-undefined dynamic_lookup \
 +	-Wl,-no_pie \
 +	-Wl,-search_paths_first \
-+	-mmacosx-version-min=10.10 \
++	-mmacosx-version-min=10.7 \
++	-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk \
 +	-arch x86_64 \
 +	-L$(builddir) \
 +	-stdlib=libc++
@@ -1942,7 +1952,8 @@ index 0000000..1061adc
 +	-undefined dynamic_lookup \
 +	-Wl,-no_pie \
 +	-Wl,-search_paths_first \
-+	-mmacosx-version-min=10.10 \
++	-mmacosx-version-min=10.7 \
++	-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk \
 +	-arch x86_64 \
 +	-L$(builddir) \
 +	-stdlib=libc++
