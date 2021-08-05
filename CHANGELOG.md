@@ -3,8 +3,18 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
+- Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
+
 ### Fixes
+
 - Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
+
+### Chores
+
+- Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
 
 ## 4.2.0
 
