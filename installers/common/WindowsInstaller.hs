@@ -201,6 +201,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "genesis.json"
                     file [] "genesis-byron.json"
                     file [] "genesis-shelley.json"
+                    file [] "genesis-alonzo.json"
                     file [] "libsodium-23.dll"
                     when (clusterName == Selfnode) $ do
                       file [] "signing.key"

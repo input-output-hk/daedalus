@@ -166,6 +166,7 @@ let
       cp $installerConfigPath $out/installer-config.json
       ${lib.optionalString (envCfg.nodeConfig ? ByronGenesisFile) "cp ${envCfg.nodeConfig.ByronGenesisFile} $out/genesis-byron.json"}
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
+      ${lib.optionalString (envCfg.nodeConfig ? AlonzoGenesisFile) "cp ${envCfg.nodeConfig.AlonzoGenesisFile} $out/genesis-alonzo.json"}
     '';
 
   mkConfigCardano = let
@@ -179,6 +180,7 @@ let
     in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
       ByronGenesisFile = "genesis-byron.json";
       ShelleyGenesisFile = "genesis-shelley.json";
+      AlonzoGenesisFile = "genesis-alonzo.json";
     })));
     genesisFile = let
       genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
