@@ -26,7 +26,7 @@ let
       cluster = "mainnet";
       networkName = "mainnet";
     };
-  };
+ };
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
     linux = configFilesSource;
@@ -46,6 +46,19 @@ let
   in frontendBin.${os};
 
 
+  selfnodeConfig = rec {
+    useByronWallet = true;
+    private = false;
+    networkConfig = import ./selfnode-config.nix;
+    nodeConfig = networkConfig // cardanoLib.defaultLogConfig;
+    consensusProtocol = networkConfig.Protocol;
+    genesisFile = ../utils/cardano/selfnode/genesis.json;
+    delegationCertificate = ./selfnode.cert;
+    signingKey = ./selfnode.key;
+    topology = ./selfnode-topology.json;
+  };
+
+
   # Helper function to make a path to a binary
   mkBinPath = binary: let
     binDir = {
@@ -61,7 +74,7 @@ let
     cardanoEnv = if __hasAttr network clusterOverrides
                  then clusterOverrides.${network}.cardanoEnv
                  else cardanoLib.environments.${network};
-  in cardanoEnv;
+  in if network == "selfnode" then selfnodeConfig else cardanoEnv;
   kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
 
   installDirectorySuffix = let
