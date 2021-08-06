@@ -86,6 +86,7 @@ let
       staging = "Staging";
       testnet = "Testnet";
       shelley_qa = "Shelley QA";
+      alonzo_purple = "Alonzo Purple";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;
