@@ -17880,17 +17880,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Copy",
-        "description": "Copy label.",
+        "defaultMessage": "!!!Show",
+        "description": "Show label.",
         "end": {
           "column": 3,
           "line": 300
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.labels.copy",
+        "id": "global.labels.show",
         "start": {
           "column": 8,
           "line": 296
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy",
+        "description": "Copy label.",
+        "end": {
+          "column": 3,
+          "line": 305
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.copy",
+        "start": {
+          "column": 8,
+          "line": 301
         }
       },
       {
@@ -17898,13 +17912,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 307
+          "line": 312
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 301
+          "line": 306
         }
       },
       {
@@ -17912,13 +17926,13 @@
         "description": "Dropdown search \"No results\" message",
         "end": {
           "column": 3,
-          "line": 312
+          "line": 317
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.search.noResultsMessage",
         "start": {
           "column": 26,
-          "line": 308
+          "line": 313
         }
       }
     ],
