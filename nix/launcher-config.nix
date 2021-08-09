@@ -26,6 +26,11 @@ let
       cluster = "mainnet";
       networkName = "mainnet";
     };
+    alonzo_purple = {
+      cardanoEnv = cardanoLib.environments.alonzo-purple;
+      cluster = "alonzo-purple";
+      networkName = "alonzo-purple";
+    };
   };
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
