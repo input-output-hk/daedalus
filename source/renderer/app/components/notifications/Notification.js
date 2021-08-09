@@ -5,8 +5,10 @@ import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Notification.scss';
 import closeCross from '../../assets/images/close-cross.inline.svg';
+import NotificationActions from './NotificationActions';
+import type { NotificationActionItems } from './NotificationActions';
 
-export type NotificationMessageProps = {
+export type NotificationDataProps = {
   icon?: string,
   clickToClose?: boolean,
   hasCloseButton?: boolean,
@@ -14,10 +16,11 @@ export type NotificationMessageProps = {
   themeOverride?: 'grey', // if left empty, the notification will have its normal colors
   labelValues?: Object,
   hasSpinner?: boolean,
+  actions?: NotificationActionItems,
 };
 
 type Props = {
-  ...$Exact<NotificationMessageProps>,
+  ...$Exact<NotificationDataProps>,
   children?: Node,
   onClose?: Function,
   isVisible: boolean,
@@ -34,16 +37,17 @@ export default class Notification extends Component<Props> {
 
   render() {
     const {
-      icon,
+      actions,
       children,
       clickToClose,
       hasCloseButton,
       hasEllipsis,
-      onClose,
-      index,
-      themeOverride,
-      isVisible,
       hasSpinner,
+      icon,
+      index,
+      isVisible,
+      onClose,
+      themeOverride,
     } = this.props;
 
     const notificationMessageStyles = classNames([
@@ -78,6 +82,8 @@ export default class Notification extends Component<Props> {
             {icon && <SVGInline svg={icon} className={iconStyles} />}
 
             <div className={messageStyles}>{children}</div>
+
+            {actions && <NotificationActions actions={actions} />}
 
             {hasCloseButton && (
               <button

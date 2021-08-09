@@ -481,6 +481,8 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.8)',
     '--theme-legacy-notification-title-color': '#ffffff',
     '--theme-legacy-notification-description-color': '#ffffff',
+    '--theme-notification-button-secondary-background-color':
+      'rgba(255, 255, 255, .3)',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':

@@ -467,6 +467,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgb(250, 251, 252, 0.8)',
     '--theme-legacy-notification-title-color': '#fafbfc',
     '--theme-legacy-notification-description-color': '#fafbfc',
+    '--theme-notification-button-secondary-background-color':
+      'rgba(250, 251, 252, .3)',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':

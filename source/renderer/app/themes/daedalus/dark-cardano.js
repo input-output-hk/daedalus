@@ -464,6 +464,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-legacy-notification-description-color': '#ffffff',
     '--theme-notification-message-checkmark-icon-color': '#fafbfc',
     '--theme-notification-message-close-icon-color': '#fafbfc',
+    '--theme-notification-button-secondary-background-color':
+      'rgba(250, 251, 252, .3)',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
