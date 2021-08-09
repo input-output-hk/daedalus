@@ -26,7 +26,7 @@ let
       cluster = "mainnet";
       networkName = "mainnet";
     };
- };
+  };
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
     linux = configFilesSource;
@@ -45,7 +45,6 @@ let
     frontendBin.macos64 = "Frontend";
   in frontendBin.${os};
 
-
   selfnodeConfig = rec {
     useByronWallet = true;
     private = false;
@@ -57,7 +56,6 @@ let
     signingKey = ../utils/cardano/selfnode/selfnode.key;
     topology = ../utils/cardano/selfnode/selfnode-topology.json;
   };
-
 
   # Helper function to make a path to a binary
   mkBinPath = binary: let
