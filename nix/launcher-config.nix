@@ -53,9 +53,9 @@ let
     nodeConfig = networkConfig // cardanoLib.defaultLogConfig;
     consensusProtocol = networkConfig.Protocol;
     genesisFile = ../utils/cardano/selfnode/genesis.json;
-    delegationCertificate = ./selfnode.cert;
-    signingKey = ./selfnode.key;
-    topology = ./selfnode-topology.json;
+    delegationCertificate = ../utils/cardano/selfnode/selfnode.cert;
+    signingKey = ../utils/cardano/selfnode/selfnode.key;
+    topology = ../utils/cardano/selfnode/selfnode-topology.json;
   };
 
 
