@@ -21,7 +21,7 @@ type Props = {
   children?: Node,
   onClose?: Function,
   isVisible: boolean,
-  index: number,
+  index?: number,
 };
 
 export default class Notification extends Component<Props> {
@@ -70,7 +70,7 @@ export default class Notification extends Component<Props> {
         role="link"
         aria-hidden
         style={{
-          zIndex: 9999999 + index,
+          zIndex: 9999999 + (index || 0),
         }}
       >
         {isVisible && (

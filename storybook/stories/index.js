@@ -36,6 +36,9 @@ import './navigation/Sidebar.stories';
 import './navigation/SidebarCategory.stories';
 import './navigation/SidebarWalletsMenu.stories';
 
+// Notifications
+import './notifications/Notifications.stories';
+
 // Common
 import './common/Widgets.stories';
 import './common/ItemsDropdown.stories';
