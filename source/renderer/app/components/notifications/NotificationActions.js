@@ -32,9 +32,10 @@ const NotificationActions = observer(({ actions }: Props) => {
     <div className={componentStyles}>
       {map(actions, (action, key) => {
         const buttonClasses = classnames([
-          action.button,
+          styles.button,
           action.className,
           action.primary ? 'primary' : 'flat',
+          action.primary ? styles.primaryButton : styles.secondaryButton,
         ]);
         const autoFocus =
           (action.primary && action.autoFocus) !== false || !!action.autoFocus;

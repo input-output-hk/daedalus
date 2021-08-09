@@ -1,9 +1,29 @@
 .component {
+  display: inline;
+  margin-left: 20px;
 }
 .button {
-  width: auto;
+  height: 38px;
+  margin-left: 20px;
   padding: 8px 20px;
+  width: auto;
 }
+.primaryButton {
+  background-color: var(
+    --theme-dialog-fullsize-button-background-color
+  ) !important;
+  color: var(--theme-network-window-button-text-color) !important;
+  &:hover {
+    color: var(--theme-dialog-fullsize-button-text-color-hover) !important;
+    background-color: var(
+      --theme-dialog-fullsize-button-background-color-hover
+    ) !important;
+  }
+}
+
 .secondaryButton {
-  background-color: var(--theme-notification-button-secondary-background-color);
+  background-color: var(
+    --theme-notification-button-secondary-background-color
+  ) !important;
+  color: var(--theme-button-disclaimer-text-color) !important;
 }
