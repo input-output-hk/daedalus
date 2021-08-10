@@ -95,7 +95,7 @@ Daedalus - Cryptocurrency Wallet
 
 #### Alonzo Purple
 
-1. Run `yarn nix:alonzo-purple` from `daedalus`.
+1. Run `yarn nix:alonzo_purple` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
 #### Native token metadata server
