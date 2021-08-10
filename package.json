@@ -61,7 +61,7 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "yarn build:electron"
+    "postinstall": "patch-package && yarn build:electron"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -137,6 +137,7 @@
     "node-sass": "4.14.1",
     "nodemon": "2.0.4",
     "npmlog": "4.1.2",
+    "patch-package": "6.4.7",
     "postcss": "7.0.27",
     "postcss-modules": "1.5.0",
     "prettier": "2.1.2",
