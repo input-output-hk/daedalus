@@ -14,6 +14,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to version `2021-07-30` ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635))
 - Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
 
 ## 4.2.0
