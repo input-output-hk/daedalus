@@ -213,6 +213,11 @@ export default defineMessages({
     defaultMessage: '!!!Shelley QA',
     description: '"Shelley QA" Cardano network',
   },
+  network_alonzo_purple: {
+    id: 'environment.network.alonzo_purple',
+    defaultMessage: '!!!Alonzo Purple',
+    description: '"Alonzo Purple" Cardano network',
+  },
   network_development: {
     id: 'environment.network.development',
     defaultMessage: '!!!Development',

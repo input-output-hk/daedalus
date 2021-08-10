@@ -56,6 +56,7 @@ data Cluster
   | Staging
   | Shelley_QA
   | Testnet
+  | Alonzo_Purple
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
@@ -106,6 +107,7 @@ clusterNetwork Mainnet_Flight = "mainnet_flight"
 clusterNetwork Staging = "staging"
 clusterNetwork Shelley_QA = "shelley_qa"
 clusterNetwork Testnet = "testnet"
+clusterNetwork Alonzo_Purple = "alonzo_purple"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
 packageFileName _os cluster ver backend _backendVer build = fromText name <.> ext
