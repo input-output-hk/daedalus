@@ -10,20 +10,17 @@
 }
 .primaryButton {
   background-color: var(
-    --theme-dialog-fullsize-button-background-color
+    --theme-button-primary-invert-background-color
   ) !important;
-  color: var(--theme-network-window-button-text-color) !important;
-  &:hover {
-    color: var(--theme-dialog-fullsize-button-text-color-hover) !important;
-    background-color: var(
-      --theme-dialog-fullsize-button-background-color-hover
-    ) !important;
-  }
+  color: var(--theme-button-primary-invert-text-color) !important;
 }
 
 .secondaryButton {
-  background-color: var(
-    --theme-notification-button-secondary-background-color
-  ) !important;
-  color: var(--theme-button-disclaimer-text-color) !important;
+  background-color: var(--theme-button-flat-invert-background-color) !important;
+  color: var(--theme-button-flat-invert-text-color) !important;
+  &:hover {
+    background-color: var(
+      --theme-button-flat-invert-background-color-hover
+    ) !important;
+  }
 }

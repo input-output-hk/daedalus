@@ -483,8 +483,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(250, 251, 252, 0.8)',
     '--theme-legacy-notification-title-color': '#fafbfc',
     '--theme-legacy-notification-description-color': '#fafbfc',
-    '--theme-notification-button-secondary-background-color':
-      'rgba(250, 251, 252, .3)',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
@@ -1102,6 +1100,20 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.1)',
     '--theme-dapp-transaction-request-code-background-color':
       'rgba(233, 244, 254, 0.05)',
+  },
+  buttonFlatInvert: {
+    '--theme-button-flat-invert-background-color': 'rgba(250, 251, 252, 0.4)',
+    '--theme-button-flat-invert-background-color-hover':
+      'rgba(250, 251, 252, 0.6)',
+    '--theme-button-flat-invert-background-color-active':
+      'rgba(250, 251, 252, 0.8)',
+    '--theme-button-flat-invert-text-color': '#e9f4fe',
+  },
+  buttonPrimaryInvert: {
+    '--theme-button-primary-invert-background-color': '#fafbfc',
+    '--theme-button-primary-invert-background-color-hover':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-button-primary-invert-text-color': '#282c31',
   },
 };
 

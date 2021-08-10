@@ -481,8 +481,6 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.8)',
     '--theme-legacy-notification-title-color': '#ffffff',
     '--theme-legacy-notification-description-color': '#ffffff',
-    '--theme-notification-button-secondary-background-color':
-      'rgba(255, 255, 255, .3)',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
@@ -1098,6 +1096,20 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(94, 96, 102, 0.1)',
     '--theme-dapp-transaction-request-code-background-color':
       'rgba(94, 96, 102, 0.05)',
+  },
+  buttonFlatInvert: {
+    '--theme-button-flat-invert-background-color': 'rgba(255, 255, 255, 0.4)',
+    '--theme-button-flat-invert-background-color-hover':
+      'rgba(255, 255, 255, 0.6)',
+    '--theme-button-flat-invert-background-color-active':
+      'rgba(255, 255, 255, 0.8)',
+    '--theme-button-flat-invert-text-color': '#fff',
+  },
+  buttonPrimaryInvert: {
+    '--theme-button-primary-invert-background-color': '#ffffff',
+    '--theme-button-primary-invert-background-color-hover':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-button-primary-invert-text-color': '#282c31',
   },
 };
 
