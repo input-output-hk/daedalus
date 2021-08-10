@@ -23,18 +23,18 @@ import downloadPlayStoreIcon from '../../assets/images/voting/download-play-stor
 const messages = defineMessages({
   heading: {
     id: 'voting.info.heading',
-    defaultMessage: '!!!Register to vote on Fund5',
+    defaultMessage: '!!!Register to vote on Fund6',
     description: 'Headline for voting registration steps',
   },
   headingForEndedRegistration: {
     id: 'voting.info.headingForEndedRegistration',
-    defaultMessage: '!!!Fund5 Voting Registration Ended',
+    defaultMessage: '!!!Fund6 Voting Registration Ended',
     description: 'Headline for ended voting registration',
   },
   descriptionForEndedRegistration: {
     id: 'voting.info.descriptionForEndedRegistration',
     defaultMessage:
-      '!!!<p>Voting registration for Project Catalyst Fund5 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund5, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund5 registration will start on <b>{newRegistrationStartDate}</b>.</p>',
+      '!!!<p>Voting registration for Project Catalyst Fund6 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund6, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund6 registration will start on <b>{newRegistrationStartDate}</b>.</p>',
     description: 'Description for ended voting registration',
   },
   stepTitle1: {
@@ -66,7 +66,7 @@ const messages = defineMessages({
   },
   learnMoreLinkLabelForEndedRegistration: {
     id: 'voting.info.learnMoreLinkLabelForEndedRegistration',
-    defaultMessage: '!!!Fund5 FAQs',
+    defaultMessage: '!!!Fund6 FAQs',
     description: 'Learn more link label for ended registration',
   },
   learnMoreLinkUrl: {
@@ -88,13 +88,13 @@ const messages = defineMessages({
   bottomContentDescription: {
     id: 'voting.info.bottomContentDescription',
     defaultMessage:
-      '!!!To register to vote for Catalyst Fund5 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
+      '!!!To register to vote for Catalyst Fund6 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
     description: 'bottomContentDescription for voting registration steps',
   },
   bottomContentDescriptionForEndedRegistration: {
     id: 'voting.info.bottomContentDescriptionForEndedRegistration',
     defaultMessage:
-      '!!!To cast your vote on Project Catalyst Fund5 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
+      '!!!To cast your vote on Project Catalyst Fund6 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
     description: 'bottomContentDescription for ended registration',
   },
   checkboxLabel: {
