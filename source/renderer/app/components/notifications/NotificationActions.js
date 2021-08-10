@@ -64,4 +64,3 @@ const NotificationActions = observer(({ actions }: Props) => {
 });
 
 export default NotificationActions;
-// export default injectIntl(NotificationActions);

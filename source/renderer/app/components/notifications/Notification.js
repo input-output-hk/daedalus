@@ -50,10 +50,12 @@ export default class Notification extends Component<Props> {
       themeOverride,
     } = this.props;
 
+    const isClickToClose = clickToClose && !actions;
+
     const notificationMessageStyles = classNames([
       styles.component,
       isVisible ? styles.isVisible : null,
-      clickToClose ? styles.clickToClose : null,
+      isClickToClose ? styles.clickToClose : null,
       themeOverride ? styles[`theme-override-${themeOverride}`] : null,
     ]);
 
@@ -70,7 +72,7 @@ export default class Notification extends Component<Props> {
     return (
       <div
         className={notificationMessageStyles}
-        onClick={() => clickToClose && onClose && onClose()}
+        onClick={() => isClickToClose && onClose && onClose()}
         role="link"
         aria-hidden
         style={{
