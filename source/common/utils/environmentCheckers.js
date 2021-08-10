@@ -1,6 +1,7 @@
 // @flow
 import { upperFirst } from 'lodash';
 import {
+  ALONZO_PURPLE,
   DEVELOPMENT,
   LINUX,
   MAC_OS,
@@ -23,6 +24,9 @@ export const evaluateNetwork = (network: ?string) => {
   let currentNetwork = network || DEVELOPMENT;
   if (network === MAINNET_FLIGHT) {
     currentNetwork = MAINNET;
+  }
+  if (network === 'alonzo-purple') {
+    currentNetwork = ALONZO_PURPLE;
   }
   return currentNetwork;
 };
