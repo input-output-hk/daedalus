@@ -1,7 +1,6 @@
 // @flow
 export type Environment = {
   network: Network,
-  rawNetwork: string,
   apiVersion: string,
   nodeVersion: string,
   mobxDevTools: boolean | string,
