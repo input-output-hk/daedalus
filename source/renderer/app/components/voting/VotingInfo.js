@@ -46,7 +46,7 @@ const messages = defineMessages({
   stepTitle2: {
     id: 'voting.info.stepTitle2',
     defaultMessage:
-      '!!!$425.000 worth of ada rewards will be distributed between ada holders who register their vote.',
+      '!!!$560.000 worth of ada rewards will be distributed between ada holders who register their vote.',
     description: 'Info step title 2 for voting registration steps',
   },
   learnMorePreviousLabel: {

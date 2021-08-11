@@ -8396,7 +8396,7 @@
         }
       },
       {
-        "defaultMessage": "!!!$425.000 worth of ada rewards will be distributed between ada holders who register their vote.",
+        "defaultMessage": "!!!$560.000 worth of ada rewards will be distributed between ada holders who register their vote.",
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,

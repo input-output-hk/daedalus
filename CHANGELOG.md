@@ -3,7 +3,9 @@ Changelog
 
 ## 4.2.1
 
-- Updated Catalyst Fund6 and Fund7 voting registration dates ([PR 2639](https://github.com/input-output-hk/daedalus/pull/2639))
+### Chores
+
+- Updated Catalyst Fund6 and Fund7 voting registration dates ([PR 2640](https://github.com/input-output-hk/daedalus/pull/2640))
 
 ## 4.2.0
 
