@@ -127,12 +127,12 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-button-flat-outline-color': 'rgba(94, 96, 102, 0.2)',
   },
   buttonFlatInvert: {
-    '--theme-button-flat-invert-background-color': 'rgba(45, 45, 45, 0.4)',
+    '--theme-button-flat-invert-background-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-button-flat-invert-background-color-hover':
-      'rgba(45, 45, 45, 0.6)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-button-flat-invert-background-color-active':
-      'rgba(45, 45, 45, 0.8)',
-    '--theme-button-flat-invert-text-color': '#fff',
+      'rgba(45, 45, 45, 0.4)',
+    '--theme-button-flat-invert-text-color': '#2d2d2d',
   },
   buttonPrimary: {
     '--theme-button-primary-background-color': '#2d2d2d',
@@ -144,9 +144,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.3)',
   },
   buttonPrimaryInvert: {
-    '--theme-button-primary-invert-background-color-hover':
-      'rgba(0, 0, 0, 0.1)',
     '--theme-button-primary-invert-background-color': '#2d2d2d',
+    '--theme-button-primary-invert-background-color-hover':
+      'rgba(45, 45, 45, 0.9)',
+    '--theme-button-primary-invert-background-color-active':
+      'rgba(45, 45, 45, 0.8)',
     '--theme-button-primary-invert-text-color': '#ffffff',
   },
   connecting: {

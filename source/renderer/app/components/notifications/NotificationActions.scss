@@ -12,6 +12,16 @@
   background-color: var(
     --theme-button-primary-invert-background-color
   ) !important;
+  &:hover {
+    background-color: var(
+      --theme-button-primary-invert-background-color-hover
+    ) !important;
+  }
+  &:active {
+    background-color: var(
+      --theme-button-primary-invert-background-color-active
+    ) !important;
+  }
   color: var(--theme-button-primary-invert-text-color) !important;
 }
 
@@ -21,6 +31,11 @@
   &:hover {
     background-color: var(
       --theme-button-flat-invert-background-color-hover
+    ) !important;
+  }
+  &:active {
+    background-color: var(
+      --theme-button-flat-invert-background-color-active
     ) !important;
   }
 }

@@ -122,10 +122,12 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-button-flat-outline-color': 'rgba(94, 96, 102, 0.3)',
   },
   buttonFlatInvert: {
-    '--theme-button-flat-invert-background-color': '#afafb866',
-    '--theme-button-flat-invert-background-color-hover': '#afafb899',
-    '--theme-button-flat-invert-background-color-active': '#afafb8cc',
-    '--theme-button-flat-invert-text-color': '#121326',
+    '--theme-button-flat-invert-background-color': 'rgba(255, 255, 255, 0.2)',
+    '--theme-button-flat-invert-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-button-flat-invert-background-color-active':
+      'rgba(255, 255, 255, 0.4)',
+    '--theme-button-flat-invert-text-color': '#fff',
   },
   buttonPrimary: {
     '--theme-button-primary-background-color': '#1fc1c3',
@@ -137,9 +139,12 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.5)',
   },
   buttonPrimaryInvert: {
-    '--theme-button-primary-invert-background-color-hover': '#313245',
-    '--theme-button-primary-invert-background-color': '#000000',
-    '--theme-button-primary-invert-text-color': '#ffffff',
+    '--theme-button-primary-invert-background-color': '#fff',
+    '--theme-button-primary-invert-background-color-hover':
+      'rgba(255, 255, 255, 0.9)',
+    '--theme-button-primary-invert-background-color-active':
+      'rgba(255, 255, 255, 0.8)',
+    '--theme-button-primary-invert-text-color': '#414251',
   },
   connecting: {
     '--theme-connecting-background-color': '#36374d',
