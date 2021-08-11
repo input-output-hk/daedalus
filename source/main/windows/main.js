@@ -7,6 +7,7 @@ import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
+import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
@@ -150,6 +151,9 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
   });
 
   window.on('closed', () => {
+    if (ledgerStatus.listening) {
+      ledgerStatus?.Listener?.unsubscribe();
+    }
     app.quit();
   });
 

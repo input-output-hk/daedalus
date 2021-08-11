@@ -4,61 +4,73 @@ import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
 import TrezorConnect, {
-  DEVICE_EVENT,
-  TRANSPORT_EVENT,
-  TRANSPORT,
-  UI_EVENT,
-  UI,
   DEVICE,
-  // $FlowFixMe
+  DEVICE_EVENT,
+  TRANSPORT,
+  TRANSPORT_EVENT,
+  UI,
+  UI_EVENT,
 } from 'trezor-connect';
-import { get, omit, last, find, includes } from 'lodash';
+import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import type {
+  deriveAddressMainResponse,
+  deriveAddressRendererRequest,
+  deriveXpubMainResponse,
+  deriveXpubRendererRequest,
+  getCardanoAdaAppMainResponse,
+  getCardanoAdaAppRendererRequest,
+  getExtendedPublicKeyMainResponse,
+  getExtendedPublicKeyRendererRequest,
+  getHardwareWalletConnectiontMainRequest,
+  getHardwareWalletConnectiontRendererResponse,
+  getHardwareWalletTransportMainResponse,
+  getHardwareWalletTransportRendererRequest,
+  handleInitLedgerConnectMainResponse,
+  handleInitLedgerConnectRendererRequest,
+  handleInitTrezorConnectMainResponse,
+  handleInitTrezorConnectRendererRequest,
+  resetTrezorActionMainResponse,
+  resetTrezorActionRendererRequest,
+  showAddressMainResponse,
+  showAddressRendererRequest,
+  signTransactionLedgerMainResponse,
+  signTransactionLedgerRendererRequest,
+  signTransactionTrezorMainResponse,
+  signTransactionTrezorRendererRequest,
+} from '../../common/ipc/api';
 import {
-  GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
-  GET_EXTENDED_PUBLIC_KEY_CHANNEL,
+  DERIVE_ADDRESS_CHANNEL,
+  DERIVE_XPUB_CHANNEL,
   GET_CARDANO_ADA_APP_CHANNEL,
+  GET_EXTENDED_PUBLIC_KEY_CHANNEL,
   GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
+  GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
+  GET_INIT_LEDGER_CONNECT_CHANNEL,
+  GET_INIT_TREZOR_CONNECT_CHANNEL,
+  RESET_ACTION_TREZOR_CHANNEL,
+  SHOW_ADDRESS_CHANNEL,
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
-  GET_INIT_TREZOR_CONNECT_CHANNEL,
-  GET_INIT_LEDGER_CONNECT_CHANNEL,
-  DERIVE_XPUB_CHANNEL,
-  RESET_ACTION_TREZOR_CHANNEL,
-  DERIVE_ADDRESS_CHANNEL,
-  SHOW_ADDRESS_CHANNEL,
 } from '../../common/ipc/api';
 
 import { logger } from '../utils/logging';
-
-import type {
-  getHardwareWalletTransportRendererRequest,
-  getHardwareWalletTransportMainResponse,
-  getExtendedPublicKeyRendererRequest,
-  getExtendedPublicKeyMainResponse,
-  getCardanoAdaAppRendererRequest,
-  getCardanoAdaAppMainResponse,
-  getHardwareWalletConnectiontMainRequest,
-  getHardwareWalletConnectiontRendererResponse,
-  signTransactionLedgerRendererRequest,
-  signTransactionLedgerMainResponse,
-  signTransactionTrezorRendererRequest,
-  signTransactionTrezorMainResponse,
-  handleInitTrezorConnectRendererRequest,
-  handleInitTrezorConnectMainResponse,
-  handleInitLedgerConnectRendererRequest,
-  handleInitLedgerConnectMainResponse,
-  resetTrezorActionRendererRequest,
-  resetTrezorActionMainResponse,
-  deriveXpubRendererRequest,
-  deriveXpubMainResponse,
-  deriveAddressRendererRequest,
-  deriveAddressMainResponse,
-  showAddressRendererRequest,
-  showAddressMainResponse,
-} from '../../common/ipc/api';
 import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
+
+type ListenerType = {
+  unsubscribe: Function,
+};
+
+type ledgerStatusType = {
+  listening: boolean,
+  Listener: ListenerType | null,
+};
+
+export const ledgerStatus: ledgerStatusType = {
+  listening: true,
+  Listener: null,
+};
 
 const getHardwareWalletTransportChannel: MainIpcChannel<
   getHardwareWalletTransportRendererRequest,
@@ -431,10 +443,15 @@ export const handleHardwareWalletRequests = async (
     try {
       logger.info('[HW-DEBUG] OBSERVER INIT');
       TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
-      await TransportNodeHid.listen(observer);
-      logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
+      ledgerStatus.Listener = await TransportNodeHid.listen(observer);
+      ledgerStatus.listening = true;
+      logger.info(
+        '[HW-DEBUG] OBSERVER INIT - listener started',
+        ledgerStatus.Listener
+      );
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
+      ledgerStatus.listening = false;
     }
   });
 
