@@ -3,7 +3,7 @@
 .component {
   font-family: var(--font-medium);
 
-  &.missing {
+  &.error {
     .assetLabel,
     .amount,
     .unformattedAmountLabel,

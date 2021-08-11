@@ -86,6 +86,9 @@ storiesOf('dApps|TransactionRequest', module)
           )}
           wallets={wallets}
           assets={allAssets}
+          assetsAmounts={[...Array(allAssets.length)].map(
+            (x, index) => new BigNumber(index + 10)
+          )}
           feesAmount={new BigNumber(number('feesAmount', 100))}
           transactionFee={new BigNumber(1)}
           additionalData={{

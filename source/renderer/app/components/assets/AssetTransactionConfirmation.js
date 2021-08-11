@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
 import {
   defineMessages,
   intlShape,
@@ -49,6 +50,11 @@ const messages = defineMessages({
     defaultMessage: '!!!There is no such token in this wallet',
     description: '"missingToken" item on AssetTransactionConfirmation.',
   },
+  insufficientBalance: {
+    id: 'asset.transactionConfirmation.insufficientBalance',
+    defaultMessage: '!!!Insufficient token balance',
+    description: '"insufficientBalance" item on AssetTransactionConfirmation.',
+  },
 });
 
 type Props = {
@@ -57,16 +63,32 @@ type Props = {
   intl: intlShape.isRequired,
   isHardwareWallet: boolean,
   tokenIsMissing?: boolean,
+  insufficientBalance?: boolean,
+  amount: BigNumber,
 };
 
 const onCopyAssetItem = () => {};
 
 const AssetTransactionConfirmation = observer((props: Props) => {
-  const { index, asset, intl, isHardwareWallet, tokenIsMissing } = props;
-  const { quantity, metadata, decimals } = asset;
-  const amount = formattedTokenWalletAmount(quantity, metadata, decimals);
+  const {
+    index,
+    asset,
+    intl,
+    isHardwareWallet,
+    tokenIsMissing,
+    insufficientBalance,
+    amount,
+  } = props;
+  const error = tokenIsMissing || insufficientBalance;
+  const { metadata, decimals } = asset;
+  const formattedAmount = formattedTokenWalletAmount(
+    amount,
+    metadata,
+    decimals
+  );
+  const unformattedAmount = formattedTokenWalletAmount(amount, null, 0);
   const componentStyles = classnames(styles.component, {
-    [styles.missing]: tokenIsMissing,
+    [styles.error]: error,
   });
 
   const content = (
@@ -80,11 +102,11 @@ const AssetTransactionConfirmation = observer((props: Props) => {
             asset={asset}
             onCopyAssetItem={onCopyAssetItem}
             className={styles.assetToken}
-            error={tokenIsMissing}
+            error={error}
           />
         </h3>
         <div className={styles.amountFeesWrapper}>
-          <div className={styles.amount}>{amount}</div>
+          <div className={styles.amount}>{formattedAmount}</div>
         </div>
       </div>
       <div className={styles.assetsContainer}>
@@ -111,12 +133,12 @@ const AssetTransactionConfirmation = observer((props: Props) => {
           </PopOver>
           {':'}
         </div>
-        <div className={styles.unformattedAmount}>{amount}</div>
+        <div className={styles.unformattedAmount}>{unformattedAmount}</div>
       </div>
     </>
   );
 
-  if (tokenIsMissing)
+  if (tokenIsMissing) {
     return (
       <div className={componentStyles}>
         <PopOver
@@ -127,6 +149,20 @@ const AssetTransactionConfirmation = observer((props: Props) => {
         </PopOver>
       </div>
     );
+  }
+
+  if (insufficientBalance) {
+    return (
+      <div className={componentStyles}>
+        <PopOver
+          content={intl.formatMessage(messages.insufficientBalance)}
+          appendTo="parent"
+        >
+          {content}
+        </PopOver>
+      </div>
+    );
+  }
 
   return <div className={componentStyles}>{content}</div>;
 });

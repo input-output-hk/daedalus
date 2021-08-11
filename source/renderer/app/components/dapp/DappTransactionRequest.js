@@ -69,6 +69,7 @@ type Props = {
   address: string,
   additionalData?: Object,
   assets: Array<AssetToken>,
+  assetsAmounts: Array<BigNumber>,
   feesAmount?: BigNumber,
   intl: intlShape.isRequired,
   metadata?: Object,
@@ -95,6 +96,7 @@ const DappTransactionRequest = observer((props: Props) => {
     address,
     additionalData,
     assets,
+    assetsAmounts,
     feesAmount,
     intl,
     metadata,
@@ -163,6 +165,7 @@ const DappTransactionRequest = observer((props: Props) => {
       <p className={styles.address}>{address}</p>
       <AssetsTransactionConfirmation
         assets={assets}
+        assetsAmounts={assetsAmounts}
         feesAmount={feesAmount}
         wallet={selectedWallet}
       />

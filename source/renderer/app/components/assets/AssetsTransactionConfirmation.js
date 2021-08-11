@@ -14,16 +14,22 @@ import { isTokenMissingInWallet } from '../../utils/assets';
 
 type Props = {
   assets: Array<AssetToken>,
+  assetsAmounts: Array<BigNumber>,
   className?: string,
   feesAmount?: BigNumber,
   feesUnit?: string,
   intl: intlShape.isRequired,
   wallet?: ?Wallet,
+  getAssetByUniqueId: Function,
 };
+
+const insufficientBalance = (amount: BigNumber, asset: AssetToken) =>
+  asset.quantity.isGreaterThanOrEqualTo(amount);
 
 const AssetsTransactionConfirmation = observer((props: Props) => {
   const {
     assets,
+    assetsAmounts,
     className,
     feesAmount,
     intl,
@@ -45,7 +51,9 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
           index={index}
           isHardwareWallet={false}
           asset={asset}
+          amount={assetsAmounts[index]}
           tokenIsMissing={isTokenMissingInWallet(wallet, asset)}
+          insufficientBalance={insufficientBalance(assetsAmounts[index], asset)}
         />
       ))}
     </div>
