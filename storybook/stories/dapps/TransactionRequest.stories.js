@@ -15,13 +15,13 @@ const allAssets = [
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
-    200
+    10
   ),
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z4567',
-    50,
+    10,
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -54,6 +54,9 @@ storiesOf('dApps|TransactionRequest', module)
               assetsList = assetsList.slice(0, 1);
               name = `${wallet.name} - Missing token`;
             }
+            if (index === 1) {
+              name = `${wallet.name} - Insuficient Balance`;
+            }
             const assets = {
               total: assetsList,
               available: assetsList,
@@ -65,6 +68,12 @@ storiesOf('dApps|TransactionRequest', module)
             };
           })
         : [];
+      const assetsAmounts = [...Array(allAssets.length)].map(
+        (x, index) => new BigNumber(index + 10)
+      );
+      if (selectedWallet && selectedWallet.id === '2') {
+        assetsAmounts[1] = new BigNumber(300);
+      }
       return (
         <DappTransactionRequest
           address="addr1zCqrhsvWEPg886YEtnjN3vLXhFBHsc6j7oZ3pXzuwgZquGUT4fuztk43fHZnBhQKMnojvyxhFBHsc6j7oZ3pXzuwgZq"
@@ -86,9 +95,7 @@ storiesOf('dApps|TransactionRequest', module)
           )}
           wallets={wallets}
           assets={allAssets}
-          assetsAmounts={[...Array(allAssets.length)].map(
-            (x, index) => new BigNumber(index + 10)
-          )}
+          assetsAmounts={assetsAmounts}
           feesAmount={new BigNumber(number('feesAmount', 100))}
           transactionFee={new BigNumber(1)}
           additionalData={{

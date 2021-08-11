@@ -53,7 +53,9 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
           asset={asset}
           amount={assetsAmounts[index]}
           tokenIsMissing={isTokenMissingInWallet(wallet, asset)}
-          insufficientBalance={insufficientBalance(assetsAmounts[index], asset)}
+          insufficientBalance={
+            !!wallet && insufficientBalance(assetsAmounts[index], asset)
+          }
         />
       ))}
     </div>
