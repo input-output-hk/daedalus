@@ -625,7 +625,7 @@
   "voting.info.noWallets.headLine": "現在Shelley対応のウォレットがないため、Fund6の有権者登録はできません。",
   "voting.info.noWallets.instructions": "ウォレットを作成し、そこに{minVotingFunds} ADA以上を移してから（または既存の資金入りウォレットを復元してから）、改めてここで有権者登録を行ってください。",
   "voting.info.stepTitle1": "Cardanoの革新的なアイデアの中で、どのアイデアに資金を提供するか決定します。",
-  "voting.info.stepTitle2": "560,000米ドル相当のADA報酬が、有権者登録を行ったADA保有者に分配されます。",
+  "voting.info.stepTitle2": "520,000米ドル相当のADA報酬が、有権者登録を行ったADA保有者に分配されます。",
   "voting.unavailable.heading": "Project Catalyst有権者登録",
   "voting.unavailable.link1Text": "Catalyst案内",
   "voting.unavailable.link1Url": "https://t.me/cardanocatalyst",
