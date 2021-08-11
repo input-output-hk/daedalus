@@ -115,14 +115,11 @@ export const hasTokensLeftAfterTransaction = (
   return false;
 };
 
-export const isTokenMissingInWallet = (
-  wallet?: ?Wallet,
-  assetToken?: AssetToken
-) => {
-  if (!wallet || !assetToken || !assetToken.uniqueId) {
+export const isTokenMissingInWallet = (wallet?: ?Wallet, token?: Token) => {
+  if (!wallet || !token || !token.uniqueId) {
     return false;
   }
   const { available } = wallet.assets;
-  const { uniqueId } = assetToken;
+  const { uniqueId } = token;
   return !available.find((walletToken) => walletToken.uniqueId === uniqueId);
 };
