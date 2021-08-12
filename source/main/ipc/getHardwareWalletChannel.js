@@ -68,7 +68,7 @@ type ledgerStatusType = {
 };
 
 export const ledgerStatus: ledgerStatusType = {
-  listening: true,
+  listening: false,
   Listener: null,
 };
 
@@ -444,11 +444,10 @@ export const handleHardwareWalletRequests = async (
       logger.info('[HW-DEBUG] OBSERVER INIT');
       TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
       ledgerStatus.Listener = await TransportNodeHid.listen(observer);
-      ledgerStatus.listening = true;
-      logger.info(
-        '[HW-DEBUG] OBSERVER INIT - listener started',
-        ledgerStatus.Listener
-      );
+      ledgerStatus.listening = false;
+      ledgerStatus.Listener.unsubscribe();
+
+      logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
       ledgerStatus.listening = false;

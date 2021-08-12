@@ -150,11 +150,14 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     }
   });
 
-  window.on('closed', () => {
-    if (ledgerStatus.listening) {
-      ledgerStatus?.Listener?.unsubscribe();
+  window.on('closed', (event) => {
+    event.preventDefault();
+    if (ledgerStatus.listening && !!ledgerStatus.Listener) {
+      ledgerStatus.Listener.unsubscribe();
+      setTimeout(() => app.quit(), 5000);
+    } else {
+      app.quit();
     }
-    app.quit();
   });
 
   window.webContents.on('did-fail-load', (err) => {
