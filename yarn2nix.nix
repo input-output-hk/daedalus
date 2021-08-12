@@ -122,7 +122,7 @@ yarn2nix.mkYarnPackage {
   '' else ''
     npx patch-package
     rm -rf node_modules/usb/build
-    cd node_modules && yarn install
+    cd node_modules/usb && yarn install
 
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
