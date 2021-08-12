@@ -120,6 +120,10 @@ yarn2nix.mkYarnPackage {
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
   '' else ''
+    npx patch-package
+    rm -rf node_modules/usb/build
+    cd node_modules && yarn install
+
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
     yarn --offline run build

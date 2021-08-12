@@ -131,7 +131,7 @@ let
       yarn install
       npx patch-package
       rm -rf node_modules/usb/build
-      cd node_modules/usb
+      cd node_modules && yarn install
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
