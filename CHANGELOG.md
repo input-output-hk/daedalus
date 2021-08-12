@@ -17,6 +17,12 @@ Changelog
 - Updated `cardano-wallet` to version `2021-07-30` ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
 - Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
 
+## 4.2.1
+
+### Chores
+
+- Updated Catalyst Fund6 and Fund7 voting registration dates ([PR 2640](https://github.com/input-output-hk/daedalus/pull/2640))
+
 ## 4.2.0
 
 ### Features
