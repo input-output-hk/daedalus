@@ -7,6 +7,7 @@ import { withKnobs, select, number, boolean } from '@storybook/addon-knobs';
 import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../_support/StoryDecorator';
 import DappTransactionRequest from '../../../source/renderer/app/components/dapp/DappTransactionRequest';
+import Notification from '../../../source/renderer/app/components/notifications/Notification';
 import { WALLETS_V2 } from '../_support/StoryProvider';
 import { generateAssetToken } from '../_support/utils';
 
@@ -15,13 +16,13 @@ const allAssets = [
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
-    10
+    50
   ),
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z4567',
-    10,
+    50,
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -136,4 +137,39 @@ storiesOf('dApps|TransactionRequest', module)
         />
       );
     })
-  );
+  )
+  .add('Notifications', ({ locale }: { locale: string }) => {
+    let text1 = 'Opening transaction received via link...';
+    let text2 = '1 ADA transaction request';
+    let actionBtn1 = 'Reject';
+    let actionBtn2 = 'View';
+    if (locale !== 'en-US') {
+      text1 = 'Text1 JS';
+      text2 = 'Text2 JS';
+      actionBtn1 = 'ActionBtn1 JS';
+      actionBtn2 = 'ActionBtn2 JS';
+    }
+    const actions = [
+      {
+        label: actionBtn1,
+      },
+      {
+        label: actionBtn2,
+        primary: true,
+      },
+    ];
+    return (
+      <div style={{ overflow: 'hidden', height: 200 }}>
+        <div>
+          <Notification isVisible clickToClose={false} hasCloseButton={false}>
+            {text1}
+          </Notification>
+        </div>
+        <div style={{ position: 'relative', marginTop: 72 }}>
+          <Notification isVisible onClose={action('onClose')} actions={actions}>
+            {text2}
+          </Notification>
+        </div>
+      </div>
+    );
+  });

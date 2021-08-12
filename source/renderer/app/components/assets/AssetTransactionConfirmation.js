@@ -52,7 +52,8 @@ const messages = defineMessages({
   },
   insufficientBalance: {
     id: 'asset.transactionConfirmation.insufficientBalance',
-    defaultMessage: '!!!Insufficient token balance',
+    defaultMessage:
+      '!!!Insufficient funds. The balance for the token in this wallet is  {formattedBalance} (Unformatted: {unformattedBalance})',
     description: '"insufficientBalance" item on AssetTransactionConfirmation.',
   },
 });
@@ -87,6 +88,18 @@ const AssetTransactionConfirmation = observer((props: Props) => {
     decimals
   );
   const unformattedAmount = formattedTokenWalletAmount(amount, null, 0);
+
+  const formattedBalance = formattedTokenWalletAmount(
+    asset.quantity,
+    metadata,
+    decimals
+  );
+  const unformattedBalance = formattedTokenWalletAmount(
+    asset.quantity,
+    null,
+    0
+  );
+
   const componentStyles = classnames(styles.component, {
     [styles.error]: error,
   });
@@ -155,7 +168,10 @@ const AssetTransactionConfirmation = observer((props: Props) => {
     return (
       <div className={componentStyles}>
         <PopOver
-          content={intl.formatMessage(messages.insufficientBalance)}
+          content={intl.formatMessage(messages.insufficientBalance, {
+            formattedBalance,
+            unformattedBalance,
+          })}
           appendTo="parent"
         >
           {content}

@@ -14,6 +14,7 @@ import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import AssetsTransactionConfirmation from '../assets/AssetsTransactionConfirmation';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { smarQuotes } from '../../utils/strings';
+import { isTokenMissingInWallet, tokenHasBalance } from '../../utils/assets';
 import type { AssetToken } from '../../api/assets/types';
 
 const messages = defineMessages({
@@ -109,6 +110,18 @@ const DappTransactionRequest = observer((props: Props) => {
     triggedFrom,
     wallets,
   } = props;
+
+  const canSubmit = () => {
+    if (!selectedWallet) return false;
+    return assets.reduce((result, token, index) => {
+      if (!result) return false;
+      return (
+        !isTokenMissingInWallet(selectedWallet, token) &&
+        tokenHasBalance(token, assetsAmounts[index])
+      );
+    }, true);
+  };
+
   const actions = [
     {
       label: intl.formatMessage(globalMessages.cancel),
@@ -118,6 +131,7 @@ const DappTransactionRequest = observer((props: Props) => {
       label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
       primary: true,
       onClick: onSubmit,
+      disabled: !canSubmit(),
     },
   ];
   const componentStyles = classnames([styles.component]);

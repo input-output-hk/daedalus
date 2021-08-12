@@ -10,7 +10,7 @@ import Wallet from '../../domains/Wallet';
 import globalMessages from '../../i18n/global-messages';
 import { formattedWalletAmount } from '../../utils/formatters';
 import type { AssetToken } from '../../api/assets/types';
-import { isTokenMissingInWallet } from '../../utils/assets';
+import { isTokenMissingInWallet, tokenHasBalance } from '../../utils/assets';
 
 type Props = {
   assets: Array<AssetToken>,
@@ -22,9 +22,6 @@ type Props = {
   wallet?: ?Wallet,
   getAssetByUniqueId: Function,
 };
-
-const insufficientBalance = (amount: BigNumber, asset: AssetToken) =>
-  asset.quantity.isGreaterThanOrEqualTo(amount);
 
 const AssetsTransactionConfirmation = observer((props: Props) => {
   const {
@@ -54,7 +51,7 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
           amount={assetsAmounts[index]}
           tokenIsMissing={isTokenMissingInWallet(wallet, asset)}
           insufficientBalance={
-            !!wallet && insufficientBalance(assetsAmounts[index], asset)
+            !!wallet && !tokenHasBalance(asset, assetsAmounts[index])
           }
         />
       ))}
