@@ -1,0 +1,13 @@
+--- a/node_modules/usb/package.json
++++ a/node_modules/usb/package.json
+@@ -30,10 +30,6 @@
+     }
+   ],
+   "main": "./usb",
+-  "repository": {
+-    "type": "git",
+-    "url": "https://github.com/tessel/node-usb.git"
+-  },
+   "scripts": {
+     "install": "prebuild-install --runtime napi --target 4 --verbose || node-gyp rebuild",
+     "prebuild": "prebuild --runtime napi --target 4 --force --strip --verbose",

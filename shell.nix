@@ -130,7 +130,8 @@ let
       }
 
       yarn install
-      npx patch-package
+      patch $PWD/node_modules/usb/src/node_usb.cc $PWD/patches/usb/node_usb.cc.patch
+      patch $PWD/node_modules/usb/package.json $PWD/patches/usb/package.json.patch
       rm -rf $PWD/node_modules/usb/build
       pushd $PWD/node_modules/usb
       yarn install
