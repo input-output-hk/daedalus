@@ -138,6 +138,7 @@
     "node-sass": "4.14.1",
     "nodemon": "2.0.4",
     "npmlog": "4.1.2",
+    "patch-package": "^6.4.7",
     "postcss": "7.0.27",
     "postcss-modules": "1.5.0",
     "prettier": "2.1.2",
@@ -249,7 +250,7 @@
     "tcp-port-used": "1.0.1",
     "trezor-connect": "8.1.27-extended",
     "unorm": "1.6.0",
-    "usb": "1.7.1",
+    "usb": "^1.7.1",
     "validator": "13.1.17"
   },
   "devEngines": {
