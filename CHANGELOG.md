@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
+- Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
+
+### Fixes
+
+- Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-07-30` ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
+- Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
+
 ## 4.2.1
 
 ### Chores

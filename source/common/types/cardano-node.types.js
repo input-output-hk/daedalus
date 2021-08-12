@@ -22,6 +22,7 @@ export type NetworkNames =
   | 'testnet'
   | 'staging'
   | 'shelley_qa'
+  | 'alonzo_purple'
   | 'selfnode'
   | 'development'
   | string;
@@ -33,6 +34,7 @@ export const NetworkNameOptions = {
   testnet: 'testnet',
   staging: 'staging',
   shelley_qa: 'shelley_qa',
+  alonzo_purple: 'alonzo_purple',
   selfnode: 'selfnode',
   development: 'development',
 };
@@ -67,6 +69,7 @@ export type CardanoPidOptions =
   | 'testnet-PREVIOUS-CARDANO-PID'
   | 'staging-PREVIOUS-CARDANO-PID'
   | 'shelley_qa-PREVIOUS-CARDANO-PID'
+  | 'alonzo_purple-PREVIOUS-CARDANO-PID'
   | 'selfnode-PREVIOUS-CARDANO-PID'
   | 'development-PREVIOUS-CARDANO-PID'
   | string;
