@@ -140,14 +140,14 @@ storiesOf('dApps|TransactionRequest', module)
   )
   .add('Notifications', ({ locale }: { locale: string }) => {
     let text1 = 'Opening transaction received via link...';
-    let text2 = '1 ADA transaction request';
+    let text2 = 'Transaction received via link';
     let actionBtn1 = 'Reject';
     let actionBtn2 = 'View';
     if (locale !== 'en-US') {
-      text1 = 'Text1 JS';
-      text2 = 'Text2 JS';
-      actionBtn1 = 'ActionBtn1 JS';
-      actionBtn2 = 'ActionBtn2 JS';
+      text1 = 'リンク経由で受信したトランザクションを開いています...';
+      text2 = 'リンク経由で受信したトランザクション';
+      actionBtn1 = '拒否する';
+      actionBtn2 = '表示する';
     }
     const actions = [
       {

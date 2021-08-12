@@ -130,7 +130,7 @@
   "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl": "https://iohk.zendesk.com/hc/en-us/articles/360035654533",
   "dapp.transaction.request.additionalData.label": "Addicional data",
   "dapp.transaction.request.fromWalletLabel": "From wallet",
-  "dapp.transaction.request.metaData.label": "Meta data",
+  "dapp.transaction.request.metaData.label": "Metadata",
   "dapp.transaction.request.receiver.label": "Receiver",
   "dapp.transaction.request.subtitle": "triggered from {triggedFrom}",
   "dapp.transaction.request.title": "Transaction request",
