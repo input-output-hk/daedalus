@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "4.2.0-FC1",
+  "version": "4.2.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -29,7 +29,7 @@
     "cucumber:rerun": "yarn cucumber tests-report/@rerun.txt",
     "cucumber:rerun:fail-fast": "yarn cucumber tests-report/@rerun.txt --fail-fast",
     "debug": "gulp debug",
-    "package": "NODE_DEBUG=cluster,http,tls,fs node ./node_modules/.bin/gulp build && cross-env NODE_ENV=production NODE_DEBUG=cluster,http,tls,fs node -r @babel/register -r @babel/polyfill scripts/package.js",
+    "package": "gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill scripts/package.js",
     "package:all": "yarn package --all",
     "cleanup": "mop -v",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source storybook utils *.js",
@@ -46,6 +46,7 @@
     "themes:update": "gulp build:themes && node -r esm ./dist/scripts/update.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
     "themes:copy": "node -r @babel/register -r @babel/polyfill source/renderer/app/themes/utils/copyTheme.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
     "clear:cache": "gulp clear:cache",
+    "nix:alonzo_purple": "NETWORK=alonzo_purple nix-shell --argstr nodeImplementation cardano --argstr cluster alonzo_purple",
     "nix:mainnet": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet",
     "nix:flight": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet_flight",
     "nix:selfnode": "NETWORK=selfnode nix-shell --argstr nodeImplementation cardano --argstr cluster selfnode",
@@ -61,7 +62,7 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "yarn build:electron"
+    "postinstall": "npx patch-package && yarn build:electron"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -106,7 +107,7 @@
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "3.2.0",
     "electron-packager": "15.2.0",
-    "electron-rebuild": "1.11.0",
+    "electron-rebuild": "3.1.1",
     "eslint": "7.10.0",
     "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "6.12.0",
@@ -137,6 +138,7 @@
     "node-sass": "4.14.1",
     "nodemon": "2.0.4",
     "npmlog": "4.1.2",
+    "patch-package": "^6.4.7",
     "postcss": "7.0.27",
     "postcss-modules": "1.5.0",
     "prettier": "2.1.2",
@@ -170,7 +172,7 @@
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "3.1.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
-    "@ledgerhq/hw-transport-node-hid": "6.0.1-typescript.0",
+    "@ledgerhq/hw-transport-node-hid": "6.3.0",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
     "bignumber.js": "9.0.1",
@@ -248,6 +250,7 @@
     "tcp-port-used": "1.0.1",
     "trezor-connect": "8.1.27-extended",
     "unorm": "1.6.0",
+    "usb": "^1.7.1",
     "validator": "13.1.17"
   },
   "devEngines": {
@@ -262,7 +265,7 @@
   },
   "resolutions": {
     "**/**/marked": "^0.7.0",
-    "**/**/minimatch": "3.0.2",
+    "**/**/minimatch": "^3.0.2",
     "**/**/unicode-properties": "1.1.0",
     "**/**/handlebars": "4.5.3",
     "**/**/minimist": "^1.2.2",
@@ -274,6 +277,7 @@
     "**/**/braces": "^2.3.1",
     "**/**/node-fetch": "^2.6.1",
     "**/**/mobx-react-lite": "2.2.2",
-    "**/**/ini": "^1.3.8"
+    "**/**/ini": "^1.3.8",
+    "**/**/usb": "1.7.1"
   }
 }

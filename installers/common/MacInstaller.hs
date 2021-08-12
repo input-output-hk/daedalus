@@ -334,7 +334,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Executables (from daedalus-bridge)
       forM_ ["cardano-wallet", "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
@@ -354,6 +354,13 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
           symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
       mapM_ sortaMove [ "usb_bindings.node" ]
       void $ chain (encodeString dir) [ tt $ dir </> "usb_bindings.node" ]
+      let
+        sortaMove :: FilePath -> IO ()
+        sortaMove filename = do
+          mv (appRoot </> "Contents/Resources/app/build" </> filename) (dir</>filename)
+          symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
+      mapM_ sortaMove [ "HID.node" ]
+      void $ chain (encodeString dir) [ tt $ dir </> "HID.node" ]
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")

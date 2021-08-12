@@ -1,4 +1,5 @@
 // @flow
+import find from 'lodash/find';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
@@ -34,7 +35,7 @@ export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
     getAsset(policyId, assetName) || {};
-  const txAsset = {
+  return {
     policyId,
     assetName,
     quantity,
@@ -45,7 +46,6 @@ export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
     recommendedDecimals,
     uniqueId,
   };
-  return txAsset;
 };
 
 /**
@@ -74,4 +74,42 @@ export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
     }
   }
   return 0;
+};
+
+/**
+ * Check if after the transactions your wallet has some assets left
+ *
+ * @param allAvailableTokens Collection of assets in your wallet
+ * @param initialSelectedAssets Collection of assets initially preselected
+ * @param selectedAssets Selected assets to be send in the transaction
+ * @returns {boolean}
+ */
+export const hasTokensLeftAfterTransaction = (
+  allAvailableTokens: AssetToken[],
+  initialSelectedAssets: AssetToken[],
+  selectedAssets?: string[]
+): boolean => {
+  if (
+    !!selectedAssets &&
+    selectedAssets.length &&
+    selectedAssets.length > 0 &&
+    !!initialSelectedAssets &&
+    initialSelectedAssets?.length &&
+    initialSelectedAssets?.length > 0
+  ) {
+    // If there is a minimal difference between the assets selected and the
+    // ones available in your wallet means you left assets in your wallet
+    if (
+      initialSelectedAssets.length < allAvailableTokens.length ||
+      selectedAssets.length < initialSelectedAssets.length
+    ) {
+      return true;
+    }
+    return !!find(
+      selectedAssets,
+      (selectedAsset, index) =>
+        !initialSelectedAssets[index]?.quantity?.isEqualTo(selectedAsset)
+    );
+  }
+  return false;
 };

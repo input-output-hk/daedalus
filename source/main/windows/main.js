@@ -1,12 +1,13 @@
 // @flow
 import path from 'path';
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Rectangle } from 'electron';
 import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
+import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
@@ -36,11 +37,12 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const createMainWindow = (locale: string) => {
+export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
+    ...windowBounds,
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
@@ -138,8 +140,24 @@ export const createMainWindow = (locale: string) => {
     }
   });
 
-  window.on('closed', () => {
-    app.quit();
+  /**
+   * We need to set bounds explicitly because passing them to the
+   * window constructor above was buggy (height was not correctly applied)
+   */
+  window.on('ready-to-show', () => {
+    if (windowBounds) {
+      window.setBounds(windowBounds);
+    }
+  });
+
+  window.on('closed', (event) => {
+    event.preventDefault();
+    if (ledgerStatus.listening && !!ledgerStatus.Listener) {
+      ledgerStatus.Listener.unsubscribe();
+      setTimeout(() => app.quit(), 5000);
+    } else {
+      app.quit();
+    }
   });
 
   window.webContents.on('did-fail-load', (err) => {

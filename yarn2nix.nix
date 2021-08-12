@@ -42,6 +42,8 @@ let
     # newer style
     mkdir -p $out/${electronPathHash}/
     ln -sv ${windowsElectron} $out/${electronPathHash}/electron-v${windowsElectronVersion}-win32-x64.zip
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v13.1.0/node-v13.1.0-headers.tar.gz";
@@ -118,6 +120,10 @@ yarn2nix.mkYarnPackage {
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
   '' else ''
+    npx patch-package
+    rm -rf node_modules/usb/build
+    cd node_modules/usb && yarn install
+
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
     yarn --offline run build
@@ -160,8 +166,10 @@ yarn2nix.mkYarnPackage {
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
-    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
-    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
+    cp node_modules/usb/build/Release/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
+    cp node_modules/node-hid/build/Release/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
+    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
+
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
       $STRIP $file
       patchelf --shrink-rpath $file

@@ -62,7 +62,7 @@ let
       libusb
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
-    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin" || pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
+    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
       darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.AppKit
     ] else [
       daedalusPkgs.electron
@@ -90,6 +90,7 @@ let
     NODE_EXE = "cardano-wallet";
     CLI_EXE = "cardano-cli";
     NODE_IMPLEMENTATION = nodeImplementation;
+    BUILDTYPE = "Release";
     shellHook = let
       secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
     in ''
@@ -111,10 +112,10 @@ let
       ln -svf $(type -P cardano-node)
       ln -svf $(type -P cardano-wallet)
       ln -svf $(type -P cardano-cli)
-      mkdir -p Release/
-      ln -sv $PWD/node_modules/usb/build/Release/usb_bindings.node Release/
-      ln -sv $PWD/node_modules/node-hid/build/Release/HID.node Release/
-      ln -sv $PWD/node_modules/node-hid/build/Release/HID_hidraw.node Release/
+      mkdir -p ${BUILDTYPE}/
+      ln -sv $PWD/node_modules/usb/build/${BUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
+      ln -sv $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID.node ${BUILDTYPE}/
+      ln -sv $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
@@ -128,9 +129,13 @@ let
         ''
       }
       yarn install
+      npx patch-package
+      rm -rf node_modules/usb/build
+      cd node_modules/usb && yarn install
+
       ${localLib.optionalString pkgs.stdenv.isLinux ''
-        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/usb_bindings.node
-        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/HID.node
+        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
+        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/HID.node
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
