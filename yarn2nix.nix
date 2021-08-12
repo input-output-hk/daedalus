@@ -195,17 +195,16 @@ yarn2nix.mkYarnPackage {
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
 
-  usb = {
-    postInstall = ''
-      npx patch-package
-      rm -rf node_modules/usb/build
-      pushd node_modules/usb
-      yarn install
-      popd
-    '';
-  };
-
   pkgConfig = {
+    usb = {
+      postInstall = ''
+        npx patch-package
+        rm -rf node_modules/usb/build
+        pushd node_modules/usb
+        yarn install
+        popd
+      '';
+    };
     node-sass = {
       buildInputs = [ python ];
       postInstall = ''
