@@ -198,8 +198,8 @@ storiesOf('Decentralization | Staking', module)
         step: 1,
       });
       const epochNumber = number('epochNumber', 257);
-      const isFullyDecentralized = percentage === 100;
-      const epochDate = isFullyDecentralized
+      const isAlonzoActivated = percentage === 100;
+      const epochDate = isAlonzoActivated
         ? new Date().getTime() - 100000000
         : new Date().getTime() + 100000000;
       const epochStart = new Date(epochDate).toISOString();
@@ -213,7 +213,7 @@ storiesOf('Decentralization | Staking', module)
           }}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
           isAnimating={boolean('isAnimating', false)}
-          isFullyDecentralized={boolean('isFullyDecentralized', false)}
+          isAlonzoActivated={boolean('isAlonzoActivated', false)}
           stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
           onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
           onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}

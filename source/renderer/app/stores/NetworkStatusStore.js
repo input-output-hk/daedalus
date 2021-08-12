@@ -126,7 +126,7 @@ export default class NetworkStatusStore extends Store {
   @observable stateDirectoryPath: string = '';
   @observable isShelleyActivated: boolean = false;
   @observable isShelleyPending: boolean = false;
-  @observable isFullyDecentralized: boolean = false;
+  @observable isAlonzoActivated: boolean = false;
   @observable shelleyActivationTime: string = '';
   @observable verificationProgress: number = 0;
 
@@ -572,13 +572,13 @@ export default class NetworkStatusStore extends Store {
 
       const { environment } = this;
       const { epochNumber } = nextEpoch || {};
-      const isFullyDecentralized =
+      const isAlonzoActivated =
         (isFlight || environment.isMainnet) &&
         !!epochNumber &&
         epochNumber > EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
-      if (isFullyDecentralized) {
-        runInAction('set isFullyDecentralized = true', () => {
-          this.isFullyDecentralized = true;
+      if (isAlonzoActivated) {
+        runInAction('set isAlonzoActivated = true', () => {
+          this.isAlonzoActivated = true;
         });
       }
 
@@ -731,9 +731,8 @@ export default class NetworkStatusStore extends Store {
     return this.syncProgress || 0;
   }
 
-  /* In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
-  then we set the `epochToFullyDecentralized` value */
-  @computed get epochToFullyDecentralized(): ?NextEpoch {
+  // TODO: get alonzo era epoch
+  @computed get alonzoEraEpoch(): ?NextEpoch {
     const { nextEpoch, environment } = this;
     const { epochNumber } = nextEpoch || {};
     return (isFlight || environment.isMainnet) &&

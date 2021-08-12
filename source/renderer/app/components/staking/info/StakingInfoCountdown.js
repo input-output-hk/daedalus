@@ -57,7 +57,7 @@ type Props = {
   onLearnMoreClick: Function,
   epoch: NextEpoch,
   onSetStakingInfoWasOpen: Function,
-  isFullyDecentralized: boolean,
+  isAlonzoActivated: boolean,
   stakingInfoWasOpen: boolean,
 };
 
@@ -82,10 +82,10 @@ export default class StakingInfoCountdown extends Component<Props> {
   checkIfShouldSetStakingInfoWasOpen = () => {
     const {
       onSetStakingInfoWasOpen,
-      isFullyDecentralized,
+      isAlonzoActivated,
       stakingInfoWasOpen,
     } = this.props;
-    if (isFullyDecentralized && !stakingInfoWasOpen) {
+    if (isAlonzoActivated && !stakingInfoWasOpen) {
       onSetStakingInfoWasOpen();
     }
   };
@@ -96,12 +96,12 @@ export default class StakingInfoCountdown extends Component<Props> {
       percentage,
       onLearnMoreClick,
       epoch,
-      isFullyDecentralized,
+      isAlonzoActivated,
     } = this.props;
-    const heading = isFullyDecentralized
+    const heading = isAlonzoActivated
       ? intl.formatMessage(messages.headingAfter)
       : intl.formatMessage(messages.headingBefore);
-    const description = isFullyDecentralized
+    const description = isAlonzoActivated
       ? messages.descriptionAfter
       : messages.descriptionBefore;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
@@ -125,7 +125,7 @@ export default class StakingInfoCountdown extends Component<Props> {
               {intl.formatMessage(messages.countdownTitle)}
             </div>
             <CountdownWidget
-              startDateTime={isFullyDecentralized ? '0' : epochStart}
+              startDateTime={isAlonzoActivated ? '0' : epochStart}
               format="DD-HH-mm-ss"
             />
             <ButtonLink
@@ -140,7 +140,7 @@ export default class StakingInfoCountdown extends Component<Props> {
               }}
             />
           </div>
-          <FullyDecentralizedEffect isActive={isFullyDecentralized} />
+          <FullyDecentralizedEffect isActive={isAlonzoActivated} />
         </div>
       </div>
     );

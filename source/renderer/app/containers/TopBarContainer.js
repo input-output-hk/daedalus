@@ -30,8 +30,10 @@ export default class TopBarContainer extends Component<Props> {
       appUpdate,
     } = stores;
     const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
+
     const HAS_TADA_ICON_ANIMATION = false;
-    const HAS_TADA_ICON = false;
+    const HAS_TADA_ICON = true;
+
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,

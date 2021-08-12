@@ -66,10 +66,10 @@ export default class StakingNavigation extends Component<Props> {
       //   id: 'epochs',
       //   label: intl.formatMessage(messages.epochs),
       // },
-      // {
-      //   id: 'info',
-      //   label: intl.formatMessage(messages.info),
-      // },
+      {
+        id: 'info',
+        label: intl.formatMessage(messages.info),
+      },
     ];
 
     return (

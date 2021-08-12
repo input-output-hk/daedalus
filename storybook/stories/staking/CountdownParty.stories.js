@@ -23,8 +23,8 @@ storiesOf('Decentralization | Countdown', module)
       step: 1,
     });
     const epochNumber = number('epochNumber', 257);
-    const isFullyDecentralized = percentage === 100;
-    const date = isFullyDecentralized
+    const isAlonzoActivated = percentage === 100;
+    const date = isAlonzoActivated
       ? new Date().getTime() - 100000000
       : new Date().getTime() + 100000000;
     const epochStart = new Date(date).toISOString();
@@ -47,9 +47,9 @@ storiesOf('Decentralization | Countdown', module)
             syncPercentage={100}
             isProduction
             isMainnet
-            hasTadaIcon={isFullyDecentralized}
+            hasTadaIcon={isAlonzoActivated}
           />
-          {isFullyDecentralized && (
+          {isAlonzoActivated && (
             <TadaButton
               onClick={action('onIconClick')}
               shouldAnimate={boolean('shouldAnimate', false)}
@@ -71,7 +71,7 @@ storiesOf('Decentralization | Countdown', module)
           }}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
           isAnimating={boolean('isAnimating', false)}
-          isFullyDecentralized={boolean('isFullyDecentralized', false)}
+          isAlonzoActivated={boolean('isAlonzoActivated', false)}
           stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
           onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
           onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}
