@@ -198,8 +198,9 @@ yarn2nix.mkYarnPackage {
   pkgConfig = {
     usb = {
       postInstall = ''
-        patch ./node_modules/usb/src/node_usb.cc ./patches/usb/node_usb.cc.patch
-        patch ./node_modules/usb/package.json ./patches/usb/package.json.patch
+
+        patch node_modules/usb/src/node_usb.cc patches/usb/node_usb.cc.patch
+        patch node_modules/usb/package.json patches/usb/package.json.patch
         rm -rf node_modules/usb/build
         pushd node_modules/usb
         yarn install
