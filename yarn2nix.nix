@@ -120,10 +120,6 @@ yarn2nix.mkYarnPackage {
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
   '' else ''
-    npx patch-package
-    rm -rf node_modules/usb/build
-    cd node_modules/usb && yarn install
-
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
     yarn --offline run build
@@ -198,6 +194,17 @@ yarn2nix.mkYarnPackage {
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
+
+  usb = {
+    postInstall = ''
+      npx patch-package
+      rm -rf node_modules/usb/build
+      pushd node_modules/usb
+      yarn install
+      popd
+    '';
+  };
+
   pkgConfig = {
     node-sass = {
       buildInputs = [ python ];
