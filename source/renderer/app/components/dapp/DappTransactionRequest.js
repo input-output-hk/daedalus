@@ -13,7 +13,6 @@ import Wallet from '../../domains/Wallet';
 import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import AssetsTransactionConfirmation from '../assets/AssetsTransactionConfirmation';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { smarQuotes } from '../../utils/strings';
 import { isTokenMissingInWallet, tokenHasBalance } from '../../utils/assets';
 import type { AssetToken } from '../../api/assets/types';
 
@@ -68,12 +67,12 @@ const messages = defineMessages({
 
 type Props = {
   address: string,
-  additionalData?: Object,
+  additionalData?: string,
   assets: Array<AssetToken>,
   assetsAmounts: Array<BigNumber>,
   feesAmount?: BigNumber,
   intl: intlShape.isRequired,
-  metadata?: Object,
+  metadata?: string,
   onAddWallet: Function,
   onClose: Function,
   onSelectWallet: Function,
@@ -200,7 +199,7 @@ const DappTransactionRequest = observer((props: Props) => {
       </p>
       {isAdditionalDataVisible && (
         <div className={styles.additionalData}>
-          <pre>{smarQuotes(JSON.stringify(additionalData, null, 2))}</pre>
+          <pre>{additionalData}</pre>
         </div>
       )}
       <p className={styles.label}>
@@ -214,7 +213,7 @@ const DappTransactionRequest = observer((props: Props) => {
       </p>
       {isMetadataVisible && (
         <div className={styles.metadata}>
-          <pre>{smarQuotes(JSON.stringify(metadata, null, 2))}</pre>
+          <pre>{metadata}</pre>
         </div>
       )}
     </Dialog>

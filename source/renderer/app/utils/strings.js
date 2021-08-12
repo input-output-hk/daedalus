@@ -18,15 +18,3 @@ export const ellipsis = (
 
 export const hexToString = (valueInHex: string): string =>
   Buffer.from(valueInHex, 'hex').toString();
-
-export const smarQuotes = (str?: string): string =>
-  str
-    ? str
-        .replace(/":"/g, '” : “')
-        .replace(/,"/g, ' , “')
-        .replace('{"', '{ “')
-        .replace('"}', '” }')
-        // .replace('"', '“')
-        .replace(/"/g, '”')
-        .replace(/"/g, '”')
-    : '';

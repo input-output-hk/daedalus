@@ -99,41 +99,49 @@ storiesOf('dApps|TransactionRequest', module)
           assetsAmounts={assetsAmounts}
           feesAmount={new BigNumber(number('feesAmount', 100))}
           transactionFee={new BigNumber(1)}
-          additionalData={{
-            appName: 'daedalus',
-            action: 'convert',
-            state: 'true',
-          }}
-          metadata={{
-            id: 1569325866799,
-            title: {
-              'en-US': 'Incident 1 in English',
-              'ja-JP': 'Incident 1 in Japanese',
+          additionalData={JSON.stringify(
+            {
+              appName: 'daedalus',
+              action: 'convert',
+              state: 'true',
             },
-            content: {
-              'en-US': '# h1 English incident content',
-              'ja-JP': '# h1 Japanese incident content',
-            },
-            target: {
-              daedalusVersion: '>=2.0.0-ITN1',
-              platforms: ['darwin', 'win32', 'linux'],
-            },
-            action: {
-              label: {
-                'en-US': 'Visit en-US',
-                'ja-JP': 'Visit ja-JP',
+            null,
+            2
+          )}
+          metadata={JSON.stringify(
+            {
+              id: 1569325866799,
+              title: {
+                'en-US': 'Incident 1 in English',
+                'ja-JP': 'Incident 1 in Japanese',
               },
-              url: {
-                'en-US': 'https://iohk.zendesk.com/hc/en-us/articles/',
-                'ja-JP': 'https://iohk.zendesk.com/hc/ja/articles/',
+              content: {
+                'en-US': '# h1 English incident content',
+                'ja-JP': '# h1 Japanese incident content',
               },
+              target: {
+                daedalusVersion: '>=2.0.0-ITN1',
+                platforms: ['darwin', 'win32', 'linux'],
+              },
+              action: {
+                label: {
+                  'en-US': 'Visit en-US',
+                  'ja-JP': 'Visit ja-JP',
+                },
+                url: {
+                  'en-US': 'https://iohk.zendesk.com/hc/en-us/articles/',
+                  'ja-JP': 'https://iohk.zendesk.com/hc/ja/articles/',
+                },
+              },
+              publishedAt: {
+                'en-US': 1569325866799,
+                'ja-JP': 1569325866799,
+              },
+              type: 'incident',
             },
-            publishedAt: {
-              'en-US': 1569325866799,
-              'ja-JP': 1569325866799,
-            },
-            type: 'incident',
-          }}
+            null,
+            2
+          )}
         />
       );
     })
