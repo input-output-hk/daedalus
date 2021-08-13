@@ -87,8 +87,8 @@ yarn2nix.mkYarnPackage {
   BUILDTYPE = "Release";
   extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);
   buildPhase = ''
-    patch node_modules/usb/src/node_usb.cc patches/usb/node_usb.cc.patch
-    patch node_modules/usb/package.json patches/usb/package.json.patch
+    patch node_modules/usb/src/node_usb.cc ${src}/patches/usb/node_usb.cc.patch
+    patch node_modules/usb/package.json ${src}/patches/usb/package.json.patch
     rm -rf build
     pushd node_modules/usb
     yarn install --offline
