@@ -86,6 +86,14 @@ yarn2nix.mkYarnPackage {
   NODE_ENV = "production";
   BUILDTYPE = "Release";
   extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);
+  buildPhase = ''
+    patch node_modules/usb/src/node_usb.cc patches/usb/node_usb.cc.patch
+    patch node_modules/usb/package.json patches/usb/package.json.patch
+    rm -rf build
+    pushd node_modules/usb
+    yarn install --offline
+    popd
+  '';
   installPhase = let
     nukeAllRefs = ''
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
@@ -199,16 +207,16 @@ yarn2nix.mkYarnPackage {
   '';
 
   pkgConfig = {
-    usb = {
-      postInstall = ''
-        patch src/node_usb.cc patches/usb/node_usb.cc.patch
-        patch package.json patches/usb/package.json.patch
-        rm -rf build
-        pushd node_modules/usb
-        yarn install --offline
-        popd
-      '';
-    };
+#    usb = {
+#      postInstall = ''
+#        patch src/node_usb.cc patches/usb/node_usb.cc.patch
+#        patch package.json patches/usb/package.json.patch
+#        rm -rf build
+#        pushd node_modules/usb
+#        yarn install --offline
+#        popd
+#      '';
+#    };
     node-sass = {
       buildInputs = [ python ];
       postInstall = ''
