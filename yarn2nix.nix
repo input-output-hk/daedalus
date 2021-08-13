@@ -139,18 +139,6 @@ yarn2nix.mkYarnPackage {
       mv -v node_modules/''${1}-temp node_modules/''${1}
       chmod -R +w node_modules/''${1}
     }
-
-    echo "====================================>"
-    pwd
-    ls -la
-    patch node_modules/usb/src/node_usb.cc patches/usb/node_usb.cc.patch
-    patch node_modules/usb/package.json patches/usb/package.json.patch
-    rm -rf node_modules/usb/build
-    pushd node_modules/usb
-    yarn install
-    popd
-    echo "====================================>"
-
     pwd
     find -name node_modules
     dup keccak
@@ -177,6 +165,9 @@ yarn2nix.mkYarnPackage {
     cp node_modules/usb/build/Release/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
     cp node_modules/node-hid/build/Release/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
     cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
+
+    echo "TCL: ===>"
+    pwd
 
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
       $STRIP $file
@@ -208,6 +199,16 @@ yarn2nix.mkYarnPackage {
   '';
 
   pkgConfig = {
+    usb = {
+      postInstall = ''
+        patch src/node_usb.cc patches/usb/node_usb.cc.patch
+        patch package.json patches/usb/package.json.patch
+        rm -rf build
+        pushd node_modules/usb
+        yarn install --offline
+        popd
+      '';
+    };
     node-sass = {
       buildInputs = [ python ];
       postInstall = ''
