@@ -86,8 +86,8 @@ storiesOf('dApps|TransactionRequest', module)
             store.set({ selectedWallet: newSelectedWallet });
           }}
           selectedWallet={selectedWallet}
-          triggedFrom={select(
-            'triggedFrom',
+          triggeredFrom={select(
+            'triggeredFrom',
             {
               safari: 'safari',
               chrome: 'chrome',

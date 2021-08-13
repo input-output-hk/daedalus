@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './DappTransactionRequest.scss';
@@ -24,7 +23,7 @@ const messages = defineMessages({
   },
   subtitle: {
     id: 'dapp.transaction.request.subtitle',
-    defaultMessage: '!!!triggered from {triggedFrom}',
+    defaultMessage: '!!!triggered from {triggeredFrom}',
     description: '"subtitle" in the dApp transaction request dialog',
   },
   fromWalletLabel: {
@@ -79,7 +78,7 @@ type Props = {
   onSubmit: Function,
   selectedWallet: ?Wallet,
   transactionFee: BigNumber,
-  triggedFrom: string,
+  triggeredFrom: string,
   wallets: Array<Wallet>,
 };
 
@@ -91,7 +90,7 @@ const DappTransactionRequest = observer((props: Props) => {
   const getToggleLabel = (isVisible: boolean) =>
     isVisible
       ? intl.formatMessage(globalMessages.hide)
-      : intl.formatMessage(globalMessages.show);
+      : intl.formatMessage(globalMessages.view);
   const {
     address,
     additionalData,
@@ -106,7 +105,7 @@ const DappTransactionRequest = observer((props: Props) => {
     onSubmit,
     selectedWallet,
     transactionFee,
-    triggedFrom,
+    triggeredFrom,
     wallets,
   } = props;
 
@@ -139,7 +138,7 @@ const DappTransactionRequest = observer((props: Props) => {
     <Dialog
       className={componentStyles}
       title={intl.formatMessage(messages.title)}
-      subtitle={intl.formatMessage(messages.subtitle, { triggedFrom })}
+      subtitle={intl.formatMessage(messages.subtitle, { triggeredFrom })}
       actions={actions}
     >
       <p className={styles.label}>
@@ -166,7 +165,6 @@ const DappTransactionRequest = observer((props: Props) => {
               value: 'add-wallet',
             },
           ]}
-          skin={SelectSkin}
           className={styles.addWalletSelect}
         />
       )}

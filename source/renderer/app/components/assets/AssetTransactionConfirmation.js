@@ -157,6 +157,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
         <PopOver
           content={intl.formatMessage(messages.missingToken)}
           appendTo="parent"
+          placement="bottom"
         >
           {content}
         </PopOver>
@@ -173,6 +174,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
             unformattedBalance,
           })}
           appendTo="parent"
+          placement="bottom"
         >
           {content}
         </PopOver>

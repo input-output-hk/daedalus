@@ -298,10 +298,10 @@ export default defineMessages({
     defaultMessage: '!!!Hide',
     description: 'Hide label.',
   },
-  show: {
-    id: 'global.labels.show',
-    defaultMessage: '!!!Show',
-    description: 'Show label.',
+  view: {
+    id: 'global.labels.view',
+    defaultMessage: '!!!View',
+    description: 'View label.',
   },
   copy: {
     id: 'global.labels.copy',
