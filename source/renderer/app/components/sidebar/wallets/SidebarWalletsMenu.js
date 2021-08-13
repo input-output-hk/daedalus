@@ -10,6 +10,7 @@ import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
 import SidebarWalletMenuItem from './SidebarWalletMenuItem';
+import SidebarWalletMenuItemTotal from './SidebarWalletMenuItemTotal';
 import type { SidebarWalletType } from '../../../types/sidebarTypes';
 
 const messages = defineMessages({
@@ -28,6 +29,7 @@ type Props = {
   visible: boolean,
   isAddWalletButtonActive: boolean,
   isShelleyActivated: boolean,
+  totalWalletBalance?: number,
 };
 
 @observer
@@ -49,6 +51,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
       onWalletItemClick,
       isAddWalletButtonActive,
       isShelleyActivated,
+      totalWalletBalance,
     } = this.props;
 
     const addWalletButtonStyles = classNames([
@@ -59,6 +62,10 @@ export default class SidebarWalletsMenu extends Component<Props> {
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
+          <SidebarWalletMenuItemTotal
+            total={totalWalletBalance}
+            className="Wallets_total"
+          />
           <Scrollbars
             renderThumbHorizontal={() => <div className={styles.hideThumb} />}
             renderThumbVertical={this.renderThumb}

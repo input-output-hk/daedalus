@@ -83,6 +83,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}
+        totalWalletBalance={walletsStore.totalWalletBalanceFormatted}
       />
     );
 

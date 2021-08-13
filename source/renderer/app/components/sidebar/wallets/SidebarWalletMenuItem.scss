@@ -63,6 +63,11 @@
     }
   }
 
+  &.walletTotal {
+    background-color: var(--theme-sidebar-menu-item-background-color-active);
+    border-bottom: 2px solid var(--theme-sidebar-background-color);
+  }
+
   .meta {
     display: flex;
     flex-direction: column;

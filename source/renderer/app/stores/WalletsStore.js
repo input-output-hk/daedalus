@@ -919,6 +919,19 @@ export default class WalletsStore extends Store {
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
+  @computed get totalWalletBalance(): BigNumber {
+    const defaultValue = new BigNumber(0);
+    return (
+      this.all.reduce<BigNumber>((accumulator, w) => {
+        return accumulator.plus(w.amount);
+      }, defaultValue) || defaultValue
+    );
+  }
+
+  @computed get totalWalletBalanceFormatted(): string {
+    return formattedWalletAmount(this.totalWalletBalance, false, true);
+  }
+
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:

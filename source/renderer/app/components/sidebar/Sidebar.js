@@ -23,6 +23,7 @@ type Props = {
   onActivateCategory: Function,
   onAddWallet: Function,
   isShelleyActivated: boolean,
+  totalWalletBalance: number,
 };
 
 export type SidebarMenus = {
@@ -51,6 +52,7 @@ export default class Sidebar extends Component<Props> {
       onAddWallet,
       isShelleyActivated,
       onActivateCategory,
+      totalWalletBalance,
     } = this.props;
 
     let subMenu = null;
@@ -68,6 +70,7 @@ export default class Sidebar extends Component<Props> {
     ) {
       subMenu = (
         <SidebarWalletsMenu
+          totalWalletBalance={totalWalletBalance}
           wallets={menus.wallets ? menus.wallets.items : []}
           onAddWallet={onAddWallet}
           onWalletItemClick={
