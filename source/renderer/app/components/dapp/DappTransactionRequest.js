@@ -62,14 +62,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Meta data',
     description: '"metaDataLabel" in the dApp transaction request dialog',
   },
+  insufficientBalanceErrorMessage: {
+    id: 'dapp.transaction.request.error.notEnoughAda',
+    defaultMessage: '!!!Not enough ada to make this transaction.',
+    description:
+      '"Not enough ada" error in the dApp transaction request dialog',
+  },
 });
 
 type Props = {
-  address: string,
+  adaAmount: BigNumber,
   additionalData?: string,
+  address: string,
   assets: Array<AssetToken>,
   assetsAmounts: Array<BigNumber>,
-  feesAmount?: BigNumber,
   intl: intlShape.isRequired,
   metadata?: string,
   onAddWallet: Function,
@@ -92,11 +98,11 @@ const DappTransactionRequest = observer((props: Props) => {
       ? intl.formatMessage(globalMessages.hide)
       : intl.formatMessage(globalMessages.view);
   const {
+    adaAmount,
     address,
     additionalData,
     assets,
     assetsAmounts,
-    feesAmount,
     intl,
     metadata,
     onClose,
@@ -133,7 +139,16 @@ const DappTransactionRequest = observer((props: Props) => {
     },
   ];
   const componentStyles = classnames([styles.component]);
-
+  const walletsDropdownError =
+    selectedWallet &&
+    selectedWallet.amount.isLessThan(adaAmount.plus(transactionFee));
+  const walletsDropdownErrorMessage = walletsDropdownError
+    ? intl.formatMessage(messages.insufficientBalanceErrorMessage)
+    : null;
+  const walletsDropdownStyles = classnames([
+    styles.walletsDropdown,
+    walletsDropdownError ? styles.error : null,
+  ]);
   return (
     <Dialog
       className={componentStyles}
@@ -146,13 +161,14 @@ const DappTransactionRequest = observer((props: Props) => {
       </p>
       {wallets.length ? (
         <WalletsDropdown
-          className={styles.walletsDropdown}
+          className={walletsDropdownStyles}
           getStakePoolById={() => {}}
           numberOfStakePools={100}
           onChange={onSelectWallet}
           placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
           value={selectedWallet ? selectedWallet.id : null}
           wallets={wallets}
+          error={walletsDropdownErrorMessage}
         />
       ) : (
         <Select
@@ -175,9 +191,9 @@ const DappTransactionRequest = observer((props: Props) => {
       </p>
       <p className={styles.address}>{address}</p>
       <AssetsTransactionConfirmation
+        adaAmount={adaAmount}
         assets={assets}
         assetsAmounts={assetsAmounts}
-        feesAmount={feesAmount}
         wallet={selectedWallet}
       />
       <p className={styles.label}>

@@ -16,30 +16,21 @@ type Props = {
   assets: Array<AssetToken>,
   assetsAmounts: Array<BigNumber>,
   className?: string,
-  feesAmount?: BigNumber,
-  feesUnit?: string,
+  adaAmount?: BigNumber,
   intl: intlShape.isRequired,
   wallet?: ?Wallet,
   getAssetByUniqueId: Function,
 };
 
 const AssetsTransactionConfirmation = observer((props: Props) => {
-  const {
-    assets,
-    assetsAmounts,
-    className,
-    feesAmount,
-    intl,
-    feesUnit = intl.formatMessage(globalMessages.unitAda),
-    wallet,
-  } = props;
+  const { adaAmount, assets, assetsAmounts, className, intl, wallet } = props;
   const componentStyles = classnames([styles.component, className]);
   return (
     <div className={componentStyles}>
-      <div className={styles.fees}>
-        <p>{feesUnit}</p>
+      <div className={styles.adaAmount}>
+        <p>{intl.formatMessage(globalMessages.unitAda)}</p>
         <div className={styles.amount}>
-          {formattedWalletAmount(feesAmount, false)}
+          {formattedWalletAmount(adaAmount, false)}
         </div>
       </div>
       {assets.map((asset, index) => (

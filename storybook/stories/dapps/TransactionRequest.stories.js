@@ -50,13 +50,17 @@ storiesOf('dApps|TransactionRequest', module)
       const wallets = boolean('Has wallets?', true)
         ? WALLETS_V2.map((wallet, index) => {
             let assetsList = allAssets;
-            let { name } = wallet;
+            let { name, amount } = wallet;
             if (index === 0) {
               assetsList = assetsList.slice(0, 1);
               name = `${wallet.name} - Missing token`;
             }
             if (index === 1) {
               name = `${wallet.name} - Insuficient Balance`;
+            }
+            if (index === 2) {
+              name = `${wallet.name} - Insuficient Ada amount`;
+              amount = new BigNumber(0);
             }
             const assets = {
               total: assetsList,
@@ -66,6 +70,7 @@ storiesOf('dApps|TransactionRequest', module)
               ...wallet,
               assets,
               name,
+              amount,
             };
           })
         : [];
@@ -97,7 +102,7 @@ storiesOf('dApps|TransactionRequest', module)
           wallets={wallets}
           assets={allAssets}
           assetsAmounts={assetsAmounts}
-          feesAmount={new BigNumber(number('feesAmount', 100))}
+          adaAmount={new BigNumber(number('adaAmount', 100))}
           transactionFee={new BigNumber(1)}
           additionalData={JSON.stringify(
             {

@@ -21,6 +21,21 @@
       }
     }
   }
+  .walletsDropdown {
+    &.error {
+      input {
+        border-color: var(--theme-color-error);
+      }
+
+      :global {
+        .SimpleSelect_selectInput {
+          &:after {
+            background-color: var(--theme-color-error);
+          }
+        }
+      }
+    }
+  }
   hr {
     margin: 20px 0;
     border: 0;

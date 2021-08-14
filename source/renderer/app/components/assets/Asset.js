@@ -259,7 +259,7 @@ export default class Asset extends Component<Props, State> {
           }}
           contentClassName={styles.popOver}
           content={popOverContent}
-          visible1={isPillPopOverVisible}
+          visible={isPillPopOverVisible}
           appendTo="parent"
           maxWidth={376}
           allowHTML
