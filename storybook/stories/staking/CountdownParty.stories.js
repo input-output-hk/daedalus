@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, number, boolean } from '@storybook/addon-knobs';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -16,18 +16,11 @@ storiesOf('Decentralization | Countdown', module)
   // ====== Stories ======
 
   .add('Countdown party', () => {
-    const percentage = number('percentage', 98, {
-      range: true,
-      min: 0,
-      max: 100,
-      step: 1,
-    });
-    const epochNumber = number('epochNumber', 257);
-    const isAlonzoActivated = percentage === 100;
+    const isAlonzoActivated = boolean('isAlonzoActivated', false);
     const date = isAlonzoActivated
       ? new Date().getTime() - 100000000
       : new Date().getTime() + 100000000;
-    const epochStart = new Date(date).toISOString();
+    const startDateTime = new Date(date).toISOString();
     return (
       <div>
         <TopBar
@@ -63,12 +56,8 @@ storiesOf('Decentralization | Countdown', module)
           />
         </TopBar>
         <StakingInfoCountdown
-          percentage={percentage}
           onLearnMoreClick={action('onLearnMoreClick')}
-          epoch={{
-            epochNumber,
-            epochStart,
-          }}
+          startDateTime={startDateTime}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
           isAnimating={boolean('isAnimating', false)}
           isAlonzoActivated={boolean('isAlonzoActivated', false)}

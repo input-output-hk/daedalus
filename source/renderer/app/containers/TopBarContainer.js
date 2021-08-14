@@ -28,12 +28,19 @@ export default class TopBarContainer extends Component<Props> {
       wallets,
       newsFeed,
       appUpdate,
+      staking,
     } = stores;
-    const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
-
-    const HAS_TADA_ICON_ANIMATION = false;
-    const HAS_TADA_ICON = true;
-
+    const {
+      isSynced,
+      syncPercentage,
+      isShelleyActivated,
+      isAlonzoActivated,
+      alonzoActivationTime,
+    } = networkStatus;
+    const { stakingInfoWasOpen } = staking;
+    const shouldShowAlonzoTadaAnimation =
+      isAlonzoActivated && !stakingInfoWasOpen;
+    const shouldShowAlonzoTada = isSynced && !!alonzoActivationTime;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
@@ -91,12 +98,12 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
-          hasTadaIcon={HAS_TADA_ICON}
+          hasTadaIcon={shouldShowAlonzoTada}
         />
-        {HAS_TADA_ICON && (
+        {shouldShowAlonzoTada && (
           <TadaButton
             onClick={onClickTadaButton}
-            shouldAnimate={HAS_TADA_ICON_ANIMATION}
+            shouldAnimate={shouldShowAlonzoTadaAnimation}
           />
         )}
         <NewsFeedIcon
