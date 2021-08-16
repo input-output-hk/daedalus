@@ -15,6 +15,7 @@ Changelog
 ### Chores
 
 - Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
+- Added tests for currency display settings and stake-pool settings screens ([PR 2622](https://github.com/input-output-hk/daedalus/pull/2622))
 
 ## 4.2.0
 
@@ -40,7 +41,6 @@ Changelog
 
 ### Chores
 
-- Added tests for currency display settings and stake-pool settings screens ([PR 2622](https://github.com/input-output-hk/daedalus/pull/2622/))
 - Disabled Fund5 voting registration ([PR 2608](https://github.com/input-output-hk/daedalus/pull/2608))
 - Updated Fund5 registaration start date ([PR 2607](https://github.com/input-output-hk/daedalus/pull/2607))
 - Removed Jormungandr integration and legacy clusters ([PR 2579](https://github.com/input-output-hk/daedalus/pull/2579))
