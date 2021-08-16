@@ -114,12 +114,22 @@ const DappTransactionRequest = observer((props: Props) => {
     triggeredFrom,
     wallets,
   } = props;
-
+  const walletsDropdownError =
+    selectedWallet &&
+    selectedWallet.amount.isLessThan(adaAmount.plus(transactionFee));
+  const walletsDropdownErrorMessage = walletsDropdownError
+    ? intl.formatMessage(messages.insufficientBalanceErrorMessage)
+    : null;
+  const walletsDropdownStyles = classnames([
+    styles.walletsDropdown,
+    walletsDropdownError ? styles.error : null,
+  ]);
   const canSubmit = () => {
     if (!selectedWallet) return false;
     return assets.reduce((result, token, index) => {
       if (!result) return false;
       return (
+        !walletsDropdownError &&
         !isTokenMissingInWallet(selectedWallet, token) &&
         tokenHasBalance(token, assetsAmounts[index])
       );
@@ -139,16 +149,7 @@ const DappTransactionRequest = observer((props: Props) => {
     },
   ];
   const componentStyles = classnames([styles.component]);
-  const walletsDropdownError =
-    selectedWallet &&
-    selectedWallet.amount.isLessThan(adaAmount.plus(transactionFee));
-  const walletsDropdownErrorMessage = walletsDropdownError
-    ? intl.formatMessage(messages.insufficientBalanceErrorMessage)
-    : null;
-  const walletsDropdownStyles = classnames([
-    styles.walletsDropdown,
-    walletsDropdownError ? styles.error : null,
-  ]);
+
   return (
     <Dialog
       className={componentStyles}
