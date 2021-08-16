@@ -1,4 +1,4 @@
-{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , libcap
 , libgcrypt
 , libgpgerror
@@ -6,11 +6,13 @@
 , libunistring
 , libusb
 , libusb1
+, libudev
 , lz4
 , pkgconfig
 , systemd
 , writeShellScriptBin
 , xz
+, nodePackages
 , zlib
 , strace }:
 let
@@ -65,14 +67,21 @@ let
       );
   commonInputs = [
     python27
+    python3
     nukeReferences
     strace
     pkgconfig
     libusb
   ];
   hack = writeShellScriptBin "node-gyp" ''
-    echo gyp wrapper
+    echo ===== gyp wrapper
+    export PATH=${python3}/bin:$PATH
     $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
+  '';
+  hack2 = writeShellScriptBin "node-gyp" ''
+    echo ______ gyp wrapper
+    #$NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
+    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
   '';
 in
 yarn2nix.mkYarnPackage {
@@ -86,14 +95,6 @@ yarn2nix.mkYarnPackage {
   NODE_ENV = "production";
   BUILDTYPE = "Release";
   extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);
-  buildPhase = ''
-    patch node_modules/usb/src/node_usb.cc ${src}/patches/usb/node_usb.cc.patch
-    patch node_modules/usb/package.json ${src}/patches/usb/package.json.patch
-    rm -rf build
-    pushd node_modules/usb
-    yarn install --offline
-    popd
-  '';
   installPhase = let
     nukeAllRefs = ''
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
@@ -207,8 +208,18 @@ yarn2nix.mkYarnPackage {
   '';
 
   pkgConfig = {
+    usb = {
+      buildInputs = [ libudev ];
+      postInstall = ''
+        find $NIX_BUILD_TOP -name common.gypi
+        patch src/node_usb.cc ${./patches/usb/node_usb.cc.patch}
+        patch package.json ${./patches/usb/package.json.patch}
+        rm -rf build
+        ${hack2}/bin/node-gyp rebuild
+      '';
+    };
     node-sass = {
-      buildInputs = [ python ];
+      buildInputs = [ python2 ];
       postInstall = ''
         yarn --offline run build
         rm build/config.gypi
@@ -218,18 +229,6 @@ yarn2nix.mkYarnPackage {
       postInstall = ''
         flow_ver=${origPackage.devDependencies."flow-bin"}
         patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
-      '';
-    };
-    usb = {
-      postInstall = ''
-        if [ -d node_modules ]; then
-          mv -vi node_modules/.bin/node-gyp node_modules/.bin/node-gyp-old
-          ln -sv ${hack}/bin/node-gyp node_modules/.bin/node-gyp
-        fi
-        patch src/node_usb.cc ${./patches/usb/node_usb.cc.patch}
-        patch package.json ${./patches/usb/package.json.patch}
-        rm -rf build
-        yarn run install --offline
       '';
     };
     electron-rebuild = {
