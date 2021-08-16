@@ -15,7 +15,7 @@ type RangeOptions = {
 };
 
 const defaultRangeOptions = {
-  colors: ['#1cca5b', '#fc602c'],
+  colors: ['#1ccc5d', '#aeafb2'],
   numberOfItems: 99,
   darken: 0,
   brighten: 0,
