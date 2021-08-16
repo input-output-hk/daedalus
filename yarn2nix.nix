@@ -207,16 +207,6 @@ yarn2nix.mkYarnPackage {
   '';
 
   pkgConfig = {
-#    usb = {
-#      postInstall = ''
-#        patch src/node_usb.cc patches/usb/node_usb.cc.patch
-#        patch package.json patches/usb/package.json.patch
-#        rm -rf build
-#        pushd node_modules/usb
-#        yarn install --offline
-#        popd
-#      '';
-#    };
     node-sass = {
       buildInputs = [ python ];
       postInstall = ''
@@ -228,6 +218,18 @@ yarn2nix.mkYarnPackage {
       postInstall = ''
         flow_ver=${origPackage.devDependencies."flow-bin"}
         patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
+      '';
+    };
+    usb = {
+      postInstall = ''
+        if [ -d node_modules ]; then
+          mv -vi node_modules/.bin/node-gyp node_modules/.bin/node-gyp-old
+          ln -sv ${hack}/bin/node-gyp node_modules/.bin/node-gyp
+        fi
+        patch src/node_usb.cc ${./patches/usb/node_usb.cc.patch}
+        patch package.json ${./patches/usb/package.json.patch}
+        rm -rf build
+        yarn run install --offline
       '';
     };
     electron-rebuild = {
