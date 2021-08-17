@@ -1,7 +1,6 @@
 // @flow
 export type Environment = {
   network: Network,
-  rawNetwork: string,
   apiVersion: string,
   nodeVersion: string,
   mobxDevTools: boolean | string,
@@ -44,6 +43,7 @@ export const MAINNET_FLIGHT = 'mainnet_flight';
 export const TESTNET = 'testnet';
 export const STAGING = 'staging';
 export const SHELLEY_QA = 'shelley_qa';
+export const ALONZO_PURPLE = 'alonzo_purple';
 export const SELFNODE = 'selfnode';
 
 export const MAC_OS = 'darwin';
@@ -63,6 +63,7 @@ export type Network =
   | 'testnet'
   | 'staging'
   | 'shelley_qa'
+  | 'alonzo_purple'
   | 'selfnode'
   | 'development';
 
@@ -71,6 +72,7 @@ export const networkPrettyNames = {
   testnet: 'Testnet',
   staging: 'Staging',
   shelley_qa: 'Shelley QA',
+  alonzo_purple: 'Alonzo Purple',
   selfnode: 'Selfnode',
   development: 'Development',
 };
