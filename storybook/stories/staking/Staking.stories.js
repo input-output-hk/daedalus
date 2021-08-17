@@ -17,6 +17,7 @@ import DelegationCenterNoWallets from '../../../source/renderer/app/components/s
 
 import { StakePoolsStory } from './StakePools.stories';
 import { StakingRewardsStory } from './Rewards.stories';
+import { ThumbPoolStory } from './ThumbPool.stories';
 import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
@@ -53,6 +54,7 @@ const pageNames = {
   epochs: 'Epochs',
   info: 'Info',
   'info-countdown': 'Info Countdown',
+  'thumb-pool': 'Thumb Pool',
 };
 
 const decorator = (story, context) => {
@@ -168,6 +170,8 @@ storiesOf('Decentralization | Staking', module)
   })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
+
+  .add(pageNames['thumb-pool'], ThumbPoolStory, { id: 'thumb-pool' })
 
   .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 
