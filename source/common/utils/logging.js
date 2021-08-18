@@ -14,6 +14,7 @@ const DEFAULT_MESSAGE_BODY = {
 };
 
 const isProd = process.env.NODE_ENV === 'production';
+const isSilentMode = process.env.NODE_ENV === 'silence';
 
 const stringifyMessageBody = (messageBody: MessageBody): string => {
   const spacing = isProd ? 0 : 2;
@@ -87,6 +88,8 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
   };
 
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
+
+  if (isSilentMode) return '';
 
   if (isProd) return stringifyMessageBody(messageBody);
 

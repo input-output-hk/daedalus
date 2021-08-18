@@ -1,6 +1,7 @@
 // @flow
 import { app } from 'electron';
 import log from 'electron-log-daedalus';
+import { isBlankScreenFixActive } from '../environment';
 
 export const safeExitWithCode = (exitCode: number = 0) => {
   const { file } = log.transports;
@@ -10,11 +11,18 @@ export const safeExitWithCode = (exitCode: number = 0) => {
   // https://nodejs.org/api/stream.html#stream_writable_end_chunk_encoding_callback
   file.stream.end('', 'utf8', () => {
     app.releaseSingleInstanceLock();
-    const args =
-      exitCode === 21
-        ? { args: process.argv.slice(1).concat(['--safe-mode']) }
-        : {};
-    if (exitCode !== 0) app.relaunch(args);
-    app.exit(exitCode);
+    if (exitCode === 21 && !isBlankScreenFixActive()) {
+      app.relaunch({
+        args: process.argv.slice(1).concat(['--blankScreenFixActive']),
+      });
+      app.exit(0);
+    } else if (exitCode === 22) {
+      app.relaunch({
+        args: process.argv.slice(1).concat(['--normal']),
+      });
+      app.exit(0);
+    } else {
+      app.exit(exitCode);
+    }
   });
 };

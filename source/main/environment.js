@@ -1,22 +1,22 @@
 // @flow
 import os from 'os';
-import { uniq, get, includes } from 'lodash';
+import { get, last, uniq } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
-  evaluateNetwork,
   checkIsDev,
-  checkIsTest,
-  checkIsProduction,
-  checkIsMainnet,
-  checkIsStaging,
-  checkIsTestnet,
-  checkIsSelfnode,
   checkIsDevelopment,
-  checkIsMacOS,
-  checkIsWindows,
   checkIsLinux,
+  checkIsMacOS,
+  checkIsMainnet,
+  checkIsProduction,
+  checkIsSelfnode,
+  checkIsStaging,
+  checkIsTest,
+  checkIsTestnet,
+  checkIsWindows,
+  evaluateNetwork,
 } from '../common/utils/environmentCheckers';
 
 /* ==================================================================
@@ -45,7 +45,6 @@ const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
 const cpu = os.cpus();
 const ram = os.totalmem();
-const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
@@ -53,6 +52,9 @@ const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
+
+export const isBlankScreenFixActive = () =>
+  last(process.argv) === '--blankScreenFixActive';
 
 /* ==================================================================
 =                       Compose environment                         =
@@ -89,7 +91,7 @@ export const environment: Environment = Object.assign(
     isWindows,
     isMacOS,
     isLinux,
-    isBlankScreenFixActive,
+    isBlankScreenFixActive: isBlankScreenFixActive(),
     keepLocalClusterRunning,
   },
   process.env
