@@ -36,7 +36,7 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
       {assets.map((asset, index) => (
         <AssetTransactionConfirmation
           key={asset.uniqueId}
-          index={index}
+          assetNumber={index + 1}
           isHardwareWallet={false}
           asset={asset}
           amount={assetsAmounts[index]}

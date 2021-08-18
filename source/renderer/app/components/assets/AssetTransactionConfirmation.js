@@ -20,7 +20,7 @@ import { formattedTokenWalletAmount } from '../../utils/formatters';
 const messages = defineMessages({
   assetLabel: {
     id: 'asset.transactionConfirmation.assetLabel',
-    defaultMessage: '!!!Token #{index}',
+    defaultMessage: '!!!Token #{assetNumber}',
     description: '"assetLabel" item on AssetTransactionConfirmation.',
   },
   unformattedAmountLabel: {
@@ -60,7 +60,7 @@ const messages = defineMessages({
 
 type Props = {
   asset: AssetToken,
-  index: number,
+  assetNumber: number,
   intl: intlShape.isRequired,
   isHardwareWallet: boolean,
   tokenIsMissing?: boolean,
@@ -72,7 +72,7 @@ const onCopyAssetItem = () => {};
 
 const AssetTransactionConfirmation = observer((props: Props) => {
   const {
-    index,
+    assetNumber,
     asset,
     intl,
     isHardwareWallet,
@@ -109,7 +109,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
       <div className={styles.assetsContainer}>
         <h3>
           <span className={styles.assetLabel}>
-            {intl.formatMessage(messages.assetLabel, { index })}{' '}
+            {intl.formatMessage(messages.assetLabel, { assetNumber })}{' '}
           </span>
           <Asset
             asset={asset}

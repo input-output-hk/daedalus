@@ -35,7 +35,7 @@
   "appUpdate.overlay.postponeInstall.link.label": "Postpone the update",
   "appUpdate.overlay.subtitle": "You are currently running Daedalus version <b>{currentAppVersion}</b>.<br />Daedalus version <b>{availableAppVersion}</b> is now available to download.",
   "appUpdate.overlay.title": "Software update available!",
-  "asset.transactionConfirmation.assetLabel": "Token #{index}",
+  "asset.transactionConfirmation.assetLabel": "Token #{assetNumber}",
   "asset.transactionConfirmation.missingToken": "This token does not exist in this wallet",
   "asset.transactionConfirmation.insufficientBalance": "Insufficient funds available. The balance for the token in this wallet is {formattedBalance} (Unformatted: {unformattedBalance})",
   "asset.transactionConfirmation.unformattedAmountLabel": "unformatted amount",
