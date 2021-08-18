@@ -18,6 +18,7 @@ import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
+import clockIcon from '../../../assets/images/clock-corner.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
@@ -348,6 +349,15 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                             <SVGInline svg={adaIcon} />
                           </div>
                           <div className={styles.stakePoolTicker}>
+                            {IS_RANKING_DATA_AVAILABLE ||
+                              (delegatedStakePool.retiring && (
+                                <div className={styles.clock}>
+                                  <SVGInline
+                                    svg={clockIcon}
+                                    className={styles.clockIcon}
+                                  />
+                                </div>
+                              ))}
                             {delegatedStakePool.ticker}
                           </div>
                         </div>
@@ -376,6 +386,15 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                   >
                     {nextPendingDelegatedStakePool ? (
                       <div className={styles.stakePoolTicker}>
+                        {IS_RANKING_DATA_AVAILABLE ||
+                          (nextPendingDelegatedStakePool.retiring && (
+                            <div className={styles.clock}>
+                              <SVGInline
+                                svg={clockIcon}
+                                className={styles.clockIcon}
+                              />
+                            </div>
+                          ))}
                         {nextPendingDelegatedStakePool.ticker}
                       </div>
                     ) : (
@@ -395,6 +414,16 @@ export default class WalletRow extends Component<Props, WalletRowState> {
               <div className={futureStakePoolTileStyles}>
                 {futurePendingDelegatedStakePoolId ? (
                   <>
+                    {IS_RANKING_DATA_AVAILABLE ||
+                      (futurePendingDelegatedStakePool &&
+                        futurePendingDelegatedStakePool.retiring && (
+                          <div className={styles.clock}>
+                            <SVGInline
+                              svg={clockIcon}
+                              className={styles.clockIcon}
+                            />
+                          </div>
+                        ))}
                     {futurePendingDelegatedStakePool ? (
                       <PoolPopOver
                         openOnHover
@@ -409,9 +438,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         numberOfRankedStakePools={numberOfRankedStakePools}
                         showWithSelectButton={showWithSelectButton}
                       >
-                        <div className={styles.stakePoolTicker}>
-                          {futurePendingDelegatedStakePool.ticker}
-                        </div>
+                        <div className={styles.stakePoolTicker}>FUTUR</div>
                         {IS_RANKING_DATA_AVAILABLE ? (
                           <div
                             className={styles.ranking}

@@ -108,7 +108,7 @@ type State = {
 
 const NUMBER_OF_STEPS = 6;
 
-export class StakingDelegationSteps extends Component<Props, State> {
+export class DelegationStepsStory extends Component<Props, State> {
   state = {
     currentStep: 0,
   };

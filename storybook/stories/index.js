@@ -9,7 +9,14 @@ import './wallets';
 import './nodes';
 
 // Staking
-import './staking/Staking.stories';
+import './staking/Delegation.stories';
+import './staking/Delegation-Undelegation.stories';
+import './staking/StakePools.stories';
+import './staking/Rewards.stories.js';
+import './staking/RewardsITNRewards.stories';
+import './staking/Info.stories.js';
+import './staking/Widgets.stories';
+import './staking/Countdown.stories';
 import './staking/CountdownParty.stories';
 
 // Voting

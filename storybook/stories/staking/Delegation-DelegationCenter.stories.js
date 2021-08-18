@@ -328,7 +328,7 @@ const wallets = [
   }),
 ];
 
-export const StakingDelegationCenterStory = ({
+export const DelegationCenterStory = ({
   locale,
   isLoading,
   isEpochsInfoAvailable,

@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
+import crossIcon from '../../../assets/images/cross-corner.inline.svg';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -50,6 +51,7 @@ export default class ThumbPoolContent extends Component<Props> {
       nonMyopicMemberRewards,
       ticker,
       retiring,
+      didNotMetPledge,
       saturation,
       potentialRewards,
     } = stakePool;
@@ -107,11 +109,17 @@ export default class ThumbPoolContent extends Component<Props> {
         )}
         {IS_RANKING_DATA_AVAILABLE ? (
           <>
-            {retiring && (
-              <div className={styles.clock}>
-                <SVGInline svg={clockIcon} className={styles.clockIcon} />
+            {didNotMetPledge && (
+              <div className={styles.cornerIcon}>
+                <SVGInline svg={crossIcon} />
               </div>
             )}
+            {!didNotMetPledge && retiring && (
+              <div className={styles.cornerIcon}>
+                <SVGInline svg={clockIcon} />
+              </div>
+            )}
+
             <div
               className={styles.colorBand}
               style={{

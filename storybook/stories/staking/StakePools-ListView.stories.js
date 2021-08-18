@@ -17,7 +17,7 @@ type Props = {
   currentTheme: string,
 };
 
-export const StakePoolsTableStory = (props: Props) => (
+export const StakePoolsListViewStory = (props: Props) => (
   <React.Fragment>
     <div
       style={{

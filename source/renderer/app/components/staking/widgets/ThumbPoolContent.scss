@@ -86,7 +86,7 @@
     }
   }
 
-  .clock {
+  .cornerIcon {
     background: var(--theme-staking-stake-pool-retirement-background-color);
     border-radius: 0 2px 0 4px;
     height: 18px;
@@ -94,15 +94,14 @@
     right: 0;
     top: 0;
     width: 18px;
-  }
 
-  .clockIcon {
-    display: block;
-    line-height: 0;
-    margin: 1px 0 0;
-    padding: 0;
-    text-align: center;
-
+    > span {
+      display: block;
+      line-height: 0;
+      margin: 1px 0 0;
+      padding: 0;
+      text-align: center;
+    }
     svg {
       height: 15px;
       width: 15px;
