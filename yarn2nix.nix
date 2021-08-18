@@ -76,11 +76,11 @@ let
   hack = writeShellScriptBin "node-gyp" ''
     echo ===== gyp wrapper
     export PATH=${python3}/bin:$PATH
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.1.1/
   '';
   hack2 = writeShellScriptBin "node-gyp" ''
     echo ______ gyp wrapper
-    #$NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
+    #$NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.1.1/
     ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
   '';
 in
@@ -135,7 +135,7 @@ yarn2nix.mkYarnPackage {
 
     mkdir -pv $HOME/.electron-gyp/
     tar -xvf ${electron-gyp} -C $HOME/.electron-gyp
-    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/13.0.1/
+    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/13.1.0/
 
     ln -sv $HOME/.electron-gyp $HOME/.node-gyp
 
