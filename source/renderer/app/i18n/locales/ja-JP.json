@@ -37,7 +37,7 @@
   "appUpdate.overlay.title": "ソフトウェアが更新できます!",
   "asset.transactionConfirmation.assetLabel": "Token #{index}",
   "asset.transactionConfirmation.missingToken": "このウォレットにこのトークンはありません",
-  "asset.transactionConfirmation.insufficientBalance": "十分な資金がありません。このウォレットのトークン残高は{formattedBalance}です（書式なし：{unformattedBalance}）",
+  "asset.transactionConfirmation.insufficientBalance": "資金が不足しています。このウォレットのトークン残高は{formattedBalance}です（書式なし：{unformattedBalance}）",
   "asset.transactionConfirmation.unformattedAmountLabel": "書式なしの金額",
   "asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets": "ブロックチェーンでは、ネイティブトークンは少数なしの整数で表現されます。<br /><br />書式化した金額は、ウォレット概要画面のネイティブトークンの設定で指定した書式で表示されています。<br /><br />トランザクションを送信する前に、小数点以下の桁数をもう一度確認してください。<br /><br />ネイティブトークンの書式なしの金額は、トランザクションの確認中にハードウェアウォレットデバイスに表示されます。",
   "asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets": "ブロックチェーンでは、ネイティブトークンは少数なしの整数で表現されます。<br /><br />書式化した金額は、ウォレット概要画面のネイティブトークンの設定で指定した書式で表示されています。<br /><br />トランザクションを送信する前に、小数点以下の桁数をもう一度確認してください。",
