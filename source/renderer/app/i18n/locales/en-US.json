@@ -137,7 +137,7 @@
   "dapp.transaction.request.transactionFee.label": "Transaction fee",
   "dapp.transaction.request.walletsDropdown.addWalletLabel": "+ Add a wallet",
   "dapp.transaction.request.walletsDropdown.placeholder": "Select a wallet",
-  "dapp.transaction.request.error.notEnoughAda": "Not enough ada to make this transaction",
+  "dapp.transaction.request.error.notEnoughAda": "Insufficient ada (Not enough ada available for this transaction)",
   "environment.apiName.cardano": "Cardano",
   "environment.currency.ada": "Ada",
   "environment.network.alonzo_purple": "Alonzo Purple",
