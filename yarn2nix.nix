@@ -155,7 +155,7 @@ yarn2nix.mkYarnPackage {
     dup usb
     dup @ledgerhq
 
-    node_modules/.bin/electron-rebuild -w usb --useCache -s
+    node_modules/.bin/electron-rebuild --useCache -s
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
