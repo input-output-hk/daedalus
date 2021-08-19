@@ -48,7 +48,7 @@ let
     ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
   '';
   electron-gyp = fetchurl {
-    url = "https://www.electronjs.org/headers/v13.1.0/node-v13.1.0-headers.tar.gz";
+    url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
     sha256 = "eb80aa2631401d9646d9eb70bfcfc8cb47408bf2ac1baedcaaf324afb7529ac0";
   };
   filter = name: type: let
@@ -76,11 +76,10 @@ let
   hack = writeShellScriptBin "node-gyp" ''
     echo ===== gyp wrapper
     export PATH=${python3}/bin:$PATH
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.1.0/
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/${windowsElectronVersion}/
   '';
   hack2 = writeShellScriptBin "node-gyp" ''
     echo ______ gyp wrapper
-    #$NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.1.0/
     ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
   '';
 in
@@ -135,7 +134,7 @@ yarn2nix.mkYarnPackage {
 
     mkdir -pv $HOME/.electron-gyp/
     tar -xvf ${electron-gyp} -C $HOME/.electron-gyp
-    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/13.1.0/
+    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/${windowsElectronVersion}/
 
     ln -sv $HOME/.electron-gyp $HOME/.node-gyp
 
@@ -171,12 +170,9 @@ yarn2nix.mkYarnPackage {
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
-    cp node_modules/usb/build/Release/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
-    cp node_modules/node-hid/build/Release/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
-    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
-
-    echo "TCL: ===>"
-    pwd
+    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
+    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
+    #cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
 
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
       $STRIP $file
