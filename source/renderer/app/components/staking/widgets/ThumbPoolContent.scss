@@ -116,6 +116,9 @@
     left: 0;
     position: absolute;
     width: 100%;
+    &.pledgeNotMet {
+      background: var(--theme-staking-stake-pool-retirement-background-color);
+    }
   }
 
   .greyColorBand {

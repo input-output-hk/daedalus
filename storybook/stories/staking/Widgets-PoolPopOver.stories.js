@@ -4,20 +4,32 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, text } from '@storybook/addon-knobs';
 
 // Screens
-import { ThumbPool } from '../../../source/renderer/app/components/staking/widgets/ThumbPool';
+import { PoolPopOver } from '../../../source/renderer/app/components/staking/widgets/PoolPopOver';
 
 // Dummy data
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 const { cost, ranking, ticker, ...pool } = STAKE_POOLS[0];
 
-export const ThumbPoolStory = ({ currentTheme }: { currentTheme: string }) => (
+export const PoolPopOverStory = ({
+  currentTheme,
+}: {
+  currentTheme: string,
+}) => (
   <div style={{ padding: 30 }}>
-    <ThumbPool
+    <PoolPopOver
+      color="#5e6066"
+      containerClassName="container"
       currentTheme={currentTheme}
-      isSelected={boolean('isSelected', false)}
+      isGridRewardsView={boolean('isGridRewardsView', false)}
+      numberOfRankedStakePools={number('numberOfRankedStakePools', 100)}
+      onClose={action('onClose')}
+      onOpen={action('onOpen')}
       onOpenExternalLink={action('onOpenExternalLink')}
       onSelect={action('onSelect')}
+      openOnHover={boolean('openOnHover', true)}
+      openWithDelay={boolean('openWithDelay', true)}
+      showWithSelectButton={boolean('showWithSelectButton', false)}
       stakePool={{
         ...pool,
         cost: number('cost', cost),
@@ -28,11 +40,9 @@ export const ThumbPoolStory = ({ currentTheme }: { currentTheme: string }) => (
           : null,
         pledgeNotMet: boolean('pledgeNotMet', false),
       }}
-      containerClassName="container"
-      numberOfRankedStakePools={number('numberOfRankedStakePools', 100)}
-      disabledStakePoolId={STAKE_POOLS[1].id}
-      selectOnClick={boolean('selectOnClick', false)}
-      showWithSelectButton={boolean('showWithSelectButton', false)}
-    />
+      visible
+    >
+      <div style={{ background: '#ccc', padding: 10 }}>Hover this area</div>
+    </PoolPopOver>
   </div>
 );

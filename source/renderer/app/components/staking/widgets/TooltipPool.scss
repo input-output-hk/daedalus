@@ -14,40 +14,6 @@ $tooltip-width: 280px;
   z-index: 1000;
 
   :global {
-    button.SimpleButton_root {
-      background-color: var(
-        --theme-staking-stake-pool-tooltip-delegate-button-background-color
-      );
-      border: 1px solid
-        var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
-      border-radius: 2px;
-      color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
-      height: 33px;
-      margin-top: 14px;
-      user-select: none;
-      width: 100%;
-
-      &:hover {
-        background-color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color,
-          --rp-button-bg-color-hover
-        );
-        color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
-        );
-      }
-
-      &:active {
-        background-color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-active-background-color
-        );
-        border: none;
-        color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
-        );
-      }
-    }
-
     .TooltipPool_container > span {
       outline: none;
     }
@@ -104,6 +70,11 @@ $tooltip-width: 280px;
 
 .greyColorBand {
   background: var(--theme-staking-stake-pool-grey-color);
+}
+.redColorBand {
+  background: var(
+    --theme-staking-stake-pool-tooltip-retirement-background-color
+  );
 }
 
 .homepage {
@@ -234,18 +205,21 @@ $tooltip-width: 280px;
   vertical-align: middle;
 }
 
-.retirement {
+.retirement,
+.pledgeNotMet {
   background: var(
     --theme-staking-stake-pool-tooltip-retirement-background-color
   );
   border-radius: 3px;
   color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
+  cursor: default;
   display: inline-block;
   font-size: 10px;
   margin-bottom: 9px;
   margin-left: 8px;
   padding: 3px 9px;
   vertical-align: middle;
+  user-select: none;
 }
 
 .description {
@@ -472,4 +446,48 @@ $tooltip-width: 280px;
 .defaultColorContent {
   background: var(--theme-staking-stake-pool-tooltip-neutral-background-color);
   color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
+}
+
+.delegateButton {
+  border-radius: 2px;
+  height: 33px;
+  margin-top: 14px;
+  user-select: none;
+  width: 100%;
+
+  &:not(.pledgeNotMetButton) {
+    background-color: var(
+      --theme-staking-stake-pool-tooltip-delegate-button-background-color
+    );
+    border: 1px solid
+      var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
+    color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
+    &:hover {
+      background-color: var(
+        --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color,
+        --rp-button-bg-color-hover
+      );
+      color: var(
+        --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
+      );
+    }
+    &:active {
+      background-color: var(
+        --theme-staking-stake-pool-tooltip-delegate-button-active-background-color
+      );
+      border: none;
+      color: var(
+        --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
+      );
+    }
+  }
+
+  &.pledgeNotMetButton {
+    background: var(
+      --theme-staking-stake-pool-tooltip-retirement-background-color
+    ) !important;
+    color: var(
+      --theme-staking-stake-pool-tooltip-retirement-text-color
+    ) !important;
+  }
 }

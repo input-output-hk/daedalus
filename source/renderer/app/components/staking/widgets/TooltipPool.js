@@ -14,9 +14,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './TooltipPool.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
@@ -107,6 +105,17 @@ const messages = defineMessages({
     id: 'staking.stakePools.tooltip.retirement',
     defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
+  },
+  pledgeNotMetLabel: {
+    id: 'staking.stakePools.tooltip.pledgeNotMet.label',
+    defaultMessage: '!!!Retirement in {retirementFromNow}',
+    description: '"pledgeNotMet" label for the Stake Pools Tooltip page.',
+  },
+  pledgeNotMetPopOver: {
+    id: 'staking.stakePools.tooltip.pledgeNotMet.popover',
+    defaultMessage:
+      '!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.',
+    description: '"pledgeNotMet" popover for the Stake Pools Tooltip page.',
   },
   saturation: {
     id: 'staking.stakePools.tooltip.saturation',
@@ -219,14 +228,15 @@ export default class TooltipPool extends Component<Props, State> {
       isGridRewardsView,
     } = this.props;
     const {
+      cost,
+      pledge,
+      pledgeNotMet,
+      potentialRewards,
+      producedBlocks,
+      profitMargin,
       ranking,
       relativeStake,
-      producedBlocks,
-      potentialRewards,
-      cost,
-      profitMargin,
       saturation,
-      pledge,
     } = stakePool;
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
@@ -257,7 +267,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {IS_RANKING_DATA_AVAILABLE ? (
+            {IS_RANKING_DATA_AVAILABLE && !pledgeNotMet ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -423,7 +433,15 @@ export default class TooltipPool extends Component<Props, State> {
     } = this.props;
     const { componentStyle, idCopyFeedback } = this.state;
 
-    const { id, name, description, ticker, homepage, retiring } = stakePool;
+    const {
+      id,
+      name,
+      description,
+      ticker,
+      homepage,
+      retiring,
+      pledgeNotMet,
+    } = stakePool;
 
     const retirementFromNow = retiring
       ? moment(retiring).locale(intl.locale).fromNow(true)
@@ -437,12 +455,19 @@ export default class TooltipPool extends Component<Props, State> {
     const colorBandClassnames = classnames([
       styles.colorBand,
       this.isGreyColor ? styles.greyColorBand : null,
+      pledgeNotMet ? styles.redColorBand : null,
     ]);
-    const colorBandStyle = this.isGreyColor
-      ? {}
-      : {
-          background: this.props.color,
-        };
+    const colorBandStyle =
+      this.isGreyColor || pledgeNotMet
+        ? {}
+        : {
+            background: this.props.color,
+          };
+
+    const delegateButtonClassnames = classnames([
+      styles.delegateButton,
+      pledgeNotMet ? styles.pledgeNotMetButton : null,
+    ]);
 
     return (
       <div
@@ -463,12 +488,22 @@ export default class TooltipPool extends Component<Props, State> {
             <SVGInline svg={closeCross} />
           </button>
           <div className={styles.ticker}>{ticker}</div>
-          {retiring && (
+          {!pledgeNotMet && retiring && (
             <div className={styles.retirement}>
               <FormattedMessage
                 {...messages.retirement}
                 values={{ retirementFromNow }}
               />
+            </div>
+          )}
+          {pledgeNotMet && (
+            <div className={styles.pledgeNotMet}>
+              <PopOver
+                offset={[0, 10]}
+                content={intl.formatMessage(messages.pledgeNotMetPopOver)}
+              >
+                {intl.formatMessage(messages.pledgeNotMetLabel)}
+              </PopOver>
             </div>
           )}
           <PopOver
@@ -499,7 +534,6 @@ export default class TooltipPool extends Component<Props, State> {
             onClick={() => onOpenExternalLink(homepage)}
             className={styles.homepage}
             label={homepage}
-            skin={LinkSkin}
           />
           {this.renderDescriptionFields()}
         </div>
@@ -507,7 +541,7 @@ export default class TooltipPool extends Component<Props, State> {
           <Button
             label={intl.formatMessage(messages.delegateButton)}
             onClick={() => onSelect && onSelect()}
-            skin={ButtonSkin}
+            className={delegateButtonClassnames}
           />
         )}
       </div>

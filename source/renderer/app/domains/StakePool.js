@@ -30,7 +30,7 @@ export type StakePoolProps = {
   ranking: number,
   retiring?: ?Date,
   saturation: number,
-  didNotMetPledge?: boolean,
+  pledgeNotMet?: boolean,
 };
 
 export default class StakePool {
@@ -50,7 +50,7 @@ export default class StakePool {
   @observable ranking: number;
   @observable retiring: ?Date;
   @observable saturation: number;
-  @observable didNotMetPledge: boolean = false;
+  @observable pledgeNotMet: boolean = false;
 
   constructor(data: StakePoolProps) {
     Object.assign(this, data);
