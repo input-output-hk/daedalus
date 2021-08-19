@@ -155,7 +155,7 @@ yarn2nix.mkYarnPackage {
     dup usb
     dup @ledgerhq
 
-    node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
+    node_modules/.bin/electron-rebuild -w usb --useCache -s
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
@@ -170,8 +170,8 @@ yarn2nix.mkYarnPackage {
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
-    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
-    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
+    cp node_modules/usb/build/Release/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
+    cp node_modules/node-hid/build/Release/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
     #cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
 
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
