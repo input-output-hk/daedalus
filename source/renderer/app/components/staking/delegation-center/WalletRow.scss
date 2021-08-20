@@ -117,6 +117,28 @@
         line-height: 1.57;
       }
 
+      .cornerIcon {
+        background: var(--theme-staking-stake-pool-retirement-background-color);
+        border-radius: 0 2px 0 4px;
+        height: 18px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 18px;
+
+        > span {
+          display: block;
+          line-height: 0;
+          margin: 1px 0 0;
+          padding: 0;
+          text-align: center;
+        }
+        svg {
+          height: 15px;
+          width: 15px;
+        }
+      }
+
       &:last-child {
         margin-right: 0;
       }
@@ -235,6 +257,11 @@
           margin-top: 58px;
           position: absolute;
           width: 80px;
+          &.pledgeNotMet {
+            background-color: var(
+              --theme-staking-stake-pool-tooltip-retirement-background-color
+            );
+          }
         }
 
         .action {
@@ -295,9 +322,7 @@
     .action {
       @extend %accentText;
       align-items: center;
-      background-color: var(--theme-button-primary-background-color);
       border-radius: 0 0 4px 4px;
-      color: var(--theme-button-primary-text-color);
       cursor: pointer;
       display: flex;
       font-size: 8px;
@@ -312,12 +337,26 @@
       transition: opacity 0.2s ease-in;
       width: 80px;
 
-      &:hover {
-        background-color: var(--theme-button-primary-background-color-hover);
+      &:not(.pledgeNotMetButton) {
+        background-color: var(--theme-button-primary-background-color);
+        color: var(--theme-button-primary-text-color);
+
+        &:hover {
+          background-color: var(--theme-button-primary-background-color-hover);
+        }
+
+        &:active {
+          background-color: var(--theme-button-primary-background-color-active);
+        }
       }
 
-      &:active {
-        background-color: var(--theme-button-primary-background-color-active);
+      &.pledgeNotMetButton {
+        background: var(
+          --theme-staking-stake-pool-tooltip-retirement-background-color
+        ) !important;
+        color: var(
+          --theme-staking-stake-pool-tooltip-retirement-text-color
+        ) !important;
       }
     }
 

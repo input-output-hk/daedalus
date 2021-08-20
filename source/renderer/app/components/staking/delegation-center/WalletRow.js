@@ -19,6 +19,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
+import crossIcon from '../../../assets/images/cross-corner.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
@@ -76,6 +77,13 @@ const messages = defineMessages({
     defaultMessage: '!!!Syncing {syncingProgress}%',
     description:
       'unknown stake pool label for the Delegation center body section.',
+  },
+  pledgeNotMetPopOver: {
+    id: 'staking.stakePools.tooltip.pledgeNotMet.popover',
+    defaultMessage:
+      '!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.',
+    description:
+      '"pledgeNotMet" popover for the Delegation center body section.',
   },
 });
 
@@ -205,37 +213,204 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     return get(foundDelegation, 'target', null);
   };
 
-  render() {
+  renderLeftContent = () => {
+    const {
+      wallet: { name, amount, isRestoring, isHardwareWallet },
+    } = this.props;
+    return (
+      <div className={styles.left}>
+        <div className={styles.title}>
+          {name}
+          {isHardwareWallet && (
+            <SVGInline
+              svg={hardwareWalletsIcon}
+              className={styles.hardwareWalletsIcon}
+            />
+          )}
+        </div>
+        <div className={styles.description}>
+          {!isRestoring ? (
+            <FormattedMessage
+              {...messages.walletAmount}
+              values={{
+                amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
+              }}
+            />
+          ) : (
+            '-'
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  renderRestoringRightContent = () => {
+    const { intl } = this.context;
+    const { syncState } = this.props.wallet;
+    const syncingProgress = get(syncState, 'progress.quantity', '');
+    const containerStyles = classnames([styles.right, styles.isRestoring]);
+    return (
+      <div className={containerStyles}>
+        <PopOver
+          content={intl.formatMessage(messages.syncingTooltipLabel, {
+            syncingProgress,
+          })}
+        >
+          <LoadingSpinner medium />
+        </PopOver>
+      </div>
+    );
+  };
+
+  renderInteractiveDelegatedTile = (stakePool: ?StakePool) => {
     const { intl } = this.context;
     const {
-      wallet: {
-        name,
-        amount,
-        isRestoring,
-        syncState,
-        delegatedStakePoolId,
-        isHardwareWallet,
-        id,
-      },
-      delegatedStakePool,
       numberOfRankedStakePools,
+      currentTheme,
+      onOpenExternalLink,
+      showWithSelectButton,
+      containerClassName,
+    } = this.props;
+
+    if (!stakePool) {
+      return this.renderUnknownPoolTile();
+    }
+
+    const { pledgeNotMet, retiring } = stakePool;
+
+    const stakePoolRankingColor = !pledgeNotMet
+      ? getColorFromRange(stakePool.ranking, numberOfRankedStakePools)
+      : 'null';
+
+    const saturationStyles = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(stakePool.saturation)],
+    ]);
+    const stakePoolRankingIndicatorStyles = classnames([
+      styles.stakePoolRankingIndicator,
+      pledgeNotMet ? styles.pledgeNotMet : null,
+    ]);
+
+    return (
+      <PoolPopOver
+        openOnHover
+        color={stakePoolRankingColor}
+        currentTheme={currentTheme}
+        onClose={this.handlePopOverClose}
+        onOpen={this.handlePopOverOpen}
+        onOpenExternalLink={onOpenExternalLink}
+        openWithDelay={false}
+        stakePool={stakePool}
+        containerClassName={containerClassName}
+        numberOfRankedStakePools={numberOfRankedStakePools}
+        showWithSelectButton={showWithSelectButton}
+      >
+        <div className={styles.stakePoolTicker}>{stakePool.ticker}</div>
+        {pledgeNotMet && (
+          <div className={styles.cornerIcon}>
+            <PopOver
+              content={intl.formatMessage(messages.pledgeNotMetPopOver)}
+              zIndex={10000}
+            >
+              <SVGInline svg={crossIcon} />
+            </PopOver>
+          </div>
+        )}
+        {!pledgeNotMet && retiring && (
+          <div className={styles.cornerIcon}>
+            <SVGInline svg={clockIcon} />
+          </div>
+        )}
+        {IS_RANKING_DATA_AVAILABLE && !pledgeNotMet ? (
+          <div
+            className={styles.ranking}
+            style={{ color: stakePoolRankingColor }}
+          >
+            {stakePool.nonMyopicMemberRewards ? (
+              stakePool.ranking
+            ) : (
+              <>
+                {numberOfRankedStakePools + 1}
+                <sup>*</sup>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className={styles.noDataDash}>
+            <SVGInline svg={noDataDashBigImage} />
+          </div>
+        )}
+        {IS_SATURATION_DATA_AVAILABLE && !pledgeNotMet && (
+          <div className={saturationStyles}>
+            <span
+              style={{
+                width: `${parseFloat(stakePool.saturation).toFixed(2)}%`,
+              }}
+            />
+          </div>
+        )}
+        <div
+          className={stakePoolRankingIndicatorStyles}
+          style={{ background: stakePoolRankingColor }}
+        />
+      </PoolPopOver>
+    );
+  };
+
+  renderNonInteractiveDelegatedTile = (
+    stakePool: ?StakePool,
+    stakePoolFirstTileRef?: ?any,
+    stakePoolAdaSymbolRef?: ?any
+  ) => {
+    return (
+      <div className={styles.stakePoolTile} ref={stakePoolFirstTileRef}>
+        <div className={!stakePool ? styles.unknown : null}>
+          {stakePool ? (
+            <div className={styles.stakePoolName}>
+              <div
+                className={styles.activeAdaSymbol}
+                ref={stakePoolAdaSymbolRef}
+              >
+                <SVGInline svg={adaIcon} />
+              </div>
+              <div className={styles.stakePoolTicker}>{stakePool.ticker}</div>
+            </div>
+          ) : (
+            this.renderUnknownPoolTile()
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  renderUnknownPoolTile = () => (
+    <div className={styles.stakePoolUnknown}>
+      {this.context.intl.formatMessage(messages.unknownStakePoolLabel)}
+    </div>
+  );
+
+  renderNotDelegatedTile = () => (
+    <div className={styles.nonDelegatedText}>
+      {this.context.intl.formatMessage(messages.notDelegated)}
+    </div>
+  );
+
+  renderRightContent = () => {
+    const { intl } = this.context;
+    const {
+      wallet: { isRestoring, delegatedStakePoolId, id },
+      delegatedStakePool,
       getStakePoolById,
       onDelegate,
       onUndelegate,
       nextEpochNumber,
       futureEpochNumber,
-      currentTheme,
-      onOpenExternalLink,
-      showWithSelectButton,
-      containerClassName,
     } = this.props;
     const { highlightedPoolId } = this.state;
 
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
     const isUndelegateBlocked = true;
 
-    const syncingProgress = get(syncState, 'progress.quantity', '');
-    const notDelegatedText = intl.formatMessage(messages.notDelegated);
     const removeDelegationText = intl.formatMessage(messages.removeDelegation);
     const delegateText = intl.formatMessage(messages.delegate);
     const redelegateText = intl.formatMessage(messages.redelegate);
@@ -251,23 +426,18 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       futureEpochNumber,
       nextPendingDelegatedStakePoolId
     );
-    const futurePendingDelegatedStakePool = futurePendingDelegatedStakePoolId
+    let futurePendingDelegatedStakePool = futurePendingDelegatedStakePoolId
       ? getStakePoolById(futurePendingDelegatedStakePoolId)
       : null;
 
-    const stakePoolRankingColor = futurePendingDelegatedStakePool
-      ? getColorFromRange(
-          futurePendingDelegatedStakePool.ranking,
-          numberOfRankedStakePools
-        )
-      : '';
-
-    const saturationStyles = classnames([
-      styles.saturationBar,
-      futurePendingDelegatedStakePool
-        ? styles[getSaturationColor(futurePendingDelegatedStakePool.saturation)]
-        : null,
-    ]);
+    // @TODO PLEDGE - Remove
+    if (futurePendingDelegatedStakePool) {
+      futurePendingDelegatedStakePool = {
+        ...futurePendingDelegatedStakePool,
+        pledgeNotMet: true,
+        // retiring: '2030-01-01T01:01:01.000Z',
+      };
+    }
 
     const futureStakePoolTileStyles = classnames([
       styles.stakePoolTile,
@@ -280,242 +450,95 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         : null,
     ]);
 
-    const rightContainerStyles = classnames([
-      styles.right,
-      isRestoring ? styles.isRestoring : null,
-    ]);
-
-    const actionButtonStyles = classnames([
+    const removeDelegationButtonStyles = classnames([
       styles.action,
       highlightedPoolId ? styles.active : null,
     ]);
+    const delegateButtonStyles = classnames([
+      styles.action,
+      highlightedPoolId ? styles.active : null,
+      futurePendingDelegatedStakePool &&
+      futurePendingDelegatedStakePool.pledgeNotMet
+        ? styles.pledgeNotMetButton
+        : null,
+    ]);
+
+    if (isRestoring) {
+      return this.renderRestoringRightContent();
+    }
 
     return (
-      <div className={styles.component}>
-        <div className={styles.left}>
-          <div className={styles.title}>
-            {name}
-            {isHardwareWallet && (
-              <SVGInline
-                svg={hardwareWalletsIcon}
-                className={styles.hardwareWalletsIcon}
-              />
-            )}
-          </div>
-          <div className={styles.description}>
-            {!isRestoring ? (
-              <FormattedMessage
-                {...messages.walletAmount}
-                values={{
-                  amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
-                }}
-              />
-            ) : (
-              '-'
-            )}
-          </div>
-        </div>
-
-        <div className={rightContainerStyles}>
-          {!isRestoring ? (
-            <Fragment>
-              {delegatedStakePoolId ? (
-                <PopOver
-                  themeOverrides={popOverThemeOverrides}
-                  className={`wallet-row-${id}`}
-                  content={
-                    <div className={styles.tooltipLabelWrapper}>
-                      <span>
-                        {intl.formatMessage(
-                          messages.TooltipPoolTickerEarningRewards
-                        )}
-                      </span>
-                    </div>
-                  }
-                >
-                  <div
-                    className={styles.stakePoolTile}
-                    ref={this.stakePoolFirstTileRef}
-                  >
-                    <div
-                      className={!delegatedStakePool ? styles.unknown : null}
-                    >
-                      {delegatedStakePool ? (
-                        <div className={styles.stakePoolName}>
-                          <div
-                            className={styles.activeAdaSymbol}
-                            ref={this.stakePoolAdaSymbolRef}
-                          >
-                            <SVGInline svg={adaIcon} />
-                          </div>
-                          <div className={styles.stakePoolTicker}>
-                            {IS_RANKING_DATA_AVAILABLE ||
-                              (delegatedStakePool.retiring && (
-                                <div className={styles.clock}>
-                                  <SVGInline
-                                    svg={clockIcon}
-                                    className={styles.clockIcon}
-                                  />
-                                </div>
-                              ))}
-                            {delegatedStakePool.ticker}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className={styles.stakePoolUnknown}>
-                          {intl.formatMessage(messages.unknownStakePoolLabel)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </PopOver>
-              ) : (
-                <div className={styles.stakePoolTile}>
-                  <div className={styles.nonDelegatedText}>
-                    {notDelegatedText}
-                  </div>
-                </div>
-              )}
-              <SVGInline svg={arrow} className={styles.arrow} />
-              <div className={styles.stakePoolTile}>
-                {nextPendingDelegatedStakePoolId ? (
-                  <div
-                    className={
-                      !nextPendingDelegatedStakePool ? styles.unknown : null
-                    }
-                  >
-                    {nextPendingDelegatedStakePool ? (
-                      <div className={styles.stakePoolTicker}>
-                        {IS_RANKING_DATA_AVAILABLE ||
-                          (nextPendingDelegatedStakePool.retiring && (
-                            <div className={styles.clock}>
-                              <SVGInline
-                                svg={clockIcon}
-                                className={styles.clockIcon}
-                              />
-                            </div>
-                          ))}
-                        {nextPendingDelegatedStakePool.ticker}
-                      </div>
-                    ) : (
-                      <div className={styles.stakePoolUnknown}>
-                        {intl.formatMessage(messages.unknownStakePoolLabel)}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className={styles.nonDelegatedText}>
-                    {notDelegatedText}
-                  </div>
-                )}
+      <div className={styles.right}>
+        {/* LEFT COLUM - Current Epoch */}
+        {delegatedStakePoolId ? (
+          <PopOver
+            themeOverrides={popOverThemeOverrides}
+            className={`wallet-row-${id}`}
+            content={
+              <div className={styles.tooltipLabelWrapper}>
+                <span>
+                  {intl.formatMessage(messages.TooltipPoolTickerEarningRewards)}
+                </span>
               </div>
-              <SVGInline svg={arrow} className={styles.arrow} />
+            }
+          >
+            {this.renderNonInteractiveDelegatedTile(
+              delegatedStakePool,
+              this.stakePoolFirstTileRef,
+              this.stakePoolAdaSymbolRef
+            )}
+          </PopOver>
+        ) : (
+          <div className={styles.stakePoolTile}>
+            {this.renderNotDelegatedTile()}
+          </div>
+        )}
+        <SVGInline svg={arrow} className={styles.arrow} />
 
-              <div className={futureStakePoolTileStyles}>
-                {futurePendingDelegatedStakePoolId ? (
-                  <>
-                    {IS_RANKING_DATA_AVAILABLE ||
-                      (futurePendingDelegatedStakePool &&
-                        futurePendingDelegatedStakePool.retiring && (
-                          <div className={styles.clock}>
-                            <SVGInline
-                              svg={clockIcon}
-                              className={styles.clockIcon}
-                            />
-                          </div>
-                        ))}
-                    {futurePendingDelegatedStakePool ? (
-                      <PoolPopOver
-                        openOnHover
-                        color={stakePoolRankingColor}
-                        currentTheme={currentTheme}
-                        onClose={this.handlePopOverClose}
-                        onOpen={this.handlePopOverOpen}
-                        onOpenExternalLink={onOpenExternalLink}
-                        openWithDelay={false}
-                        stakePool={futurePendingDelegatedStakePool}
-                        containerClassName={containerClassName}
-                        numberOfRankedStakePools={numberOfRankedStakePools}
-                        showWithSelectButton={showWithSelectButton}
-                      >
-                        <div className={styles.stakePoolTicker}>FUTUR</div>
-                        {IS_RANKING_DATA_AVAILABLE ? (
-                          <div
-                            className={styles.ranking}
-                            style={{ color: stakePoolRankingColor }}
-                          >
-                            {futurePendingDelegatedStakePool.nonMyopicMemberRewards ? (
-                              futurePendingDelegatedStakePool.ranking
-                            ) : (
-                              <>
-                                {numberOfRankedStakePools + 1}
-                                <sup>*</sup>
-                              </>
-                            )}
-                          </div>
-                        ) : (
-                          <div className={styles.noDataDash}>
-                            <SVGInline svg={noDataDashBigImage} />
-                          </div>
-                        )}
-                        {IS_SATURATION_DATA_AVAILABLE && (
-                          <div className={saturationStyles}>
-                            <span
-                              style={{
-                                width: `${parseFloat(
-                                  futurePendingDelegatedStakePool.saturation
-                                ).toFixed(2)}%`,
-                              }}
-                            />
-                          </div>
-                        )}
-                        <div
-                          className={styles.stakePoolRankingIndicator}
-                          style={{ background: stakePoolRankingColor }}
-                        />
-                      </PoolPopOver>
-                    ) : (
-                      <div className={styles.stakePoolUnknown}>
-                        {intl.formatMessage(messages.unknownStakePoolLabel)}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className={styles.nonDelegatedText}>
-                    {notDelegatedText}
-                  </div>
-                )}
-                {futurePendingDelegatedStakePoolId && !isUndelegateBlocked && (
-                  <div
-                    className={actionButtonStyles}
-                    role="presentation"
-                    onClick={onUndelegate}
-                    key="undelegate"
-                  >
-                    {removeDelegationText}
-                  </div>
-                )}
-                <div
-                  className={actionButtonStyles}
-                  role="presentation"
-                  onClick={onDelegate}
-                >
-                  {!futurePendingDelegatedStakePoolId
-                    ? delegateText
-                    : redelegateText}
-                </div>
-              </div>
-            </Fragment>
-          ) : (
-            <PopOver
-              content={intl.formatMessage(messages.syncingTooltipLabel, {
-                syncingProgress,
-              })}
+        {/* MIDDLE COLUM - Next Epoch */}
+        {delegatedStakePoolId ? (
+          this.renderNonInteractiveDelegatedTile(nextPendingDelegatedStakePool)
+        ) : (
+          <div className={styles.stakePoolTile}>
+            {this.renderNotDelegatedTile()}
+          </div>
+        )}
+        <SVGInline svg={arrow} className={styles.arrow} />
+
+        {/* MIDDLE COLUM - Future Epoch */}
+        <div className={futureStakePoolTileStyles}>
+          {futurePendingDelegatedStakePoolId
+            ? this.renderInteractiveDelegatedTile(
+                futurePendingDelegatedStakePool
+              )
+            : this.renderNotDelegatedTile()}
+          {futurePendingDelegatedStakePoolId && !isUndelegateBlocked && (
+            <div
+              className={removeDelegationButtonStyles}
+              role="presentation"
+              onClick={onUndelegate}
+              key="undelegate"
             >
-              <LoadingSpinner medium />
-            </PopOver>
+              {removeDelegationText}
+            </div>
           )}
+          <div
+            className={delegateButtonStyles}
+            role="presentation"
+            onClick={onDelegate}
+          >
+            {!futurePendingDelegatedStakePoolId ? delegateText : redelegateText}
+          </div>
         </div>
+      </div>
+    );
+  };
+
+  render() {
+    return (
+      <div className={styles.component}>
+        {this.renderLeftContent()}
+        {this.renderRightContent()}
       </div>
     );
   }

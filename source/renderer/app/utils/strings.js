@@ -4,6 +4,10 @@ export const ellipsis = (
   minCharsInit: number,
   minCharsEnd?: ?number
 ) => {
+  if (!str) {
+    console.warn('MISSING STRING');
+    return '';
+  }
   if (str.length <= minCharsInit) return str;
 
   const initStr = str.substr(0, minCharsInit);
