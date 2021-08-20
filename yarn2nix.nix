@@ -155,7 +155,7 @@ yarn2nix.mkYarnPackage {
     dup usb
     dup @ledgerhq
 
-    node_modules/.bin/electron-rebuild --useCache -s
+    node_modules/.bin/electron-rebuild -w usb --useCache -s
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
@@ -208,8 +208,9 @@ yarn2nix.mkYarnPackage {
       buildInputs = [ libudev ];
       postInstall = ''
         find $NIX_BUILD_TOP -name common.gypi
-        patch src/node_usb.cc ${./patches/usb/node_usb.cc.patch}
-        patch package.json ${./patches/usb/package.json.patch}
+        patch -f src/node_usb.cc ${./patches/usb/node_usb.cc.patch}
+        patch -f package.json ${./patches/usb/package.json.patch}
+        touch patched
         rm -rf build
         ${hack2}/bin/node-gyp rebuild
       '';
