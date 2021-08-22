@@ -303,8 +303,8 @@ npmPackage DarwinConfig{dcAppName} = do
   procs "yarn" ["install"] empty
   -- Patching as long https://github.com/tessel/node-usb/issues/438 has not being fixed
   echo "Patching ..."
-  procs "patch" ["-p1", "./patches/usb/node_usb.cc.patch" ] empty
-  procs "patch" ["-p1", "./patches/usb/package.json.patch" ] empty
+  procs "patch" ["node_modules/usb/src/node_usb.cc", "./patches/usb/node_usb.cc.patch" ] empty
+  procs "patch" ["node_modules/usb/package.json", "./patches/usb/package.json.patch" ] empty
   procs "rm" ["-rf", "./node_modules/usb/build" ] empty
   procs "npx" ["node-gyp", "rebuild", "--directory", "./node_modules/usb" ] empty
   -- Patching END
