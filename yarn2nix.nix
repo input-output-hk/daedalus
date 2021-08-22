@@ -203,8 +203,7 @@ yarn2nix.mkYarnPackage {
     usb = {
       buildInputs = [ libudev ];
       postInstall = ''
-        patch -f src/node_usb.cc ${./patches/usb/node_usb.cc.patch}
-        patch -f package.json ${./patches/usb/package.json.patch}
+        patch -f ${./patches/usb/node_usb.cc.patch}
         rm -rf build
         ${hack2}/bin/node-gyp rebuild
       '';
