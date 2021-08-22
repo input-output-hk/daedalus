@@ -147,8 +147,7 @@ yarn2nix.mkYarnPackage {
       mv -v node_modules/''${1}-temp node_modules/''${1}
       chmod -R +w node_modules/''${1}
     }
-    pwd
-    find -name node_modules
+
     dup keccak
     dup node-hid
     dup secp256k1
@@ -172,8 +171,6 @@ yarn2nix.mkYarnPackage {
     mkdir -pv $out/share/daedalus/build
     cp node_modules/usb/build/Release/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
     cp node_modules/node-hid/build/Release/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
-    #cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
-
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
@@ -202,15 +199,12 @@ yarn2nix.mkYarnPackage {
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
-
   pkgConfig = {
     usb = {
       buildInputs = [ libudev ];
       postInstall = ''
-        find $NIX_BUILD_TOP -name common.gypi
         patch -f src/node_usb.cc ${./patches/usb/node_usb.cc.patch}
         patch -f package.json ${./patches/usb/package.json.patch}
-        touch patched
         rm -rf build
         ${hack2}/bin/node-gyp rebuild
       '';

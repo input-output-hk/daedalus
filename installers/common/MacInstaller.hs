@@ -301,8 +301,8 @@ npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
   echo "Installing nodejs dependencies..."
   procs "yarn" ["install"] empty
-  -- Patching as long https://github.com/tessel/node-usb/issues/438 has not being fixed
-  echo "Patching ..."
+  -- Patching as long https://github.com/tessel/node-usb/issues/438 has not been fixed
+  echo "Patching usb (workaround fix)..."
   procs "patch" ["node_modules/usb/src/node_usb.cc", "./patches/usb/node_usb.cc.patch" ] empty
   procs "patch" ["node_modules/usb/package.json", "./patches/usb/package.json.patch" ] empty
   procs "rm" ["-rf", "./node_modules/usb/build" ] empty

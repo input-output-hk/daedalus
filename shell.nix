@@ -129,9 +129,12 @@ let
         ''
       }
 
+      rm -rf Release
+      rm -rf $PWD/node_modules/usb
       yarn install
-      patch $PWD/node_modules/usb/src/node_usb.cc $PWD/patches/usb/node_usb.cc.patch
-      patch $PWD/node_modules/usb/package.json $PWD/patches/usb/package.json.patch
+      yarn add usb
+      patch -f $PWD/node_modules/usb/src/node_usb.cc $PWD/patches/usb/node_usb.cc.patch
+      patch -f $PWD/node_modules/usb/package.json $PWD/patches/usb/package.json.patch
       rm -rf $PWD/node_modules/usb/build
       pushd $PWD/node_modules/usb
       yarn install
