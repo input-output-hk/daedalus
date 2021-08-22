@@ -306,7 +306,7 @@ npmPackage DarwinConfig{dcAppName} = do
   procs "patch" ["-f", "./node_modules/usb/src/node_usb.cc", "./patches/usb/node_usb.cc.patch" ] empty
   procs "patch" ["-f", "./node_modules/usb/package.json", "./patches/usb/package.json.patch" ] empty
   procs "rm" ["-rf", "./node_modules/usb/build" ] empty
-  procs "npx" ["node-gyp", "rebuild" ] empty
+  procs "npx" ["node-gyp", "rebuild", "--directory", "./node_modules/usb" ] empty
   -- Patching END
   echo "Running electron packager script..."
   export "NODE_ENV" "production"
