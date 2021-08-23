@@ -130,7 +130,7 @@ const DappTransactionRequest = observer((props: Props) => {
     : null;
   const walletsDropdownStyles = classnames([
     styles.walletsDropdown,
-    walletsDropdownHasError ? styles.error : null,
+    walletsDropdownHasError || hasTokenError ? styles.error : null,
   ]);
   const canSubmit = !!selectedWallet && !hasTokenError;
 
