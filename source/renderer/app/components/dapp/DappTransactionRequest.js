@@ -114,6 +114,7 @@ const DappTransactionRequest = observer((props: Props) => {
     triggeredFrom,
     wallets,
   } = props;
+  let hasAmountError = false;
   const hasTokenError = assets.reduce((result, token, index) => {
     if (!selectedWallet) return false;
     if (result) return true;
@@ -125,12 +126,16 @@ const DappTransactionRequest = observer((props: Props) => {
   const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
     adaAmount.plus(transactionFee)
   );
+  if (walletsDropdownHasError) {
+    hasAmountError = true;
+  }
   const walletsDropdownErrorMessage = walletsDropdownHasError
     ? intl.formatMessage(messages.insufficientBalanceErrorMessage)
     : null;
   const walletsDropdownStyles = classnames([
     styles.walletsDropdown,
     walletsDropdownHasError || hasTokenError ? styles.error : null,
+    hasAmountError ? styles.amountError : null,
   ]);
   const canSubmit = !!selectedWallet && !hasTokenError;
 
