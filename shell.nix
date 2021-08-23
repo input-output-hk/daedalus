@@ -129,7 +129,6 @@ let
         ''
       }
 
-      rm -rf Release
       rm -rf $PWD/node_modules/usb
       yarn install
       yarn add usb
@@ -137,7 +136,7 @@ let
       patch -f $PWD/node_modules/usb/package.json $PWD/patches/usb/package.json.patch
       rm -rf $PWD/node_modules/usb/build
       pushd $PWD/node_modules/usb
-      yarn install
+      npx node-gyp rebuild
       popd
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
