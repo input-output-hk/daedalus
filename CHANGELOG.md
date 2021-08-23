@@ -10,6 +10,7 @@ Changelog
 
 ### Fixes
 
+- Fixed ‘Stakepool Metadata Aggregation Server (SMASH)’ link returning 404 error ([PR 2646](https://github.com/input-output-hk/daedalus/pull/2646))
 - Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
 
 ### Chores
