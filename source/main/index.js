@@ -1,9 +1,10 @@
 // @flow
 import os from 'os';
 import path from 'path';
-import { app, dialog, BrowserWindow, shell } from 'electron';
+import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
+import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -41,6 +42,10 @@ import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrat
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 import { HardwareWalletsHandler } from './utils/handleHardwareWallets';
+import {
+  restoreSavedWindowBounds,
+  saveWindowBoundsOnSizeAndPositionChange,
+} from './windows/windowBounds';
 
 /* eslint-disable consistent-return */
 
@@ -146,8 +151,11 @@ const onAppReady = async () => {
 
   // Detect locale
   let locale = getLocale(network);
-
-  mainWindow = createMainWindow(locale);
+  mainWindow = createMainWindow(
+    locale,
+    restoreSavedWindowBounds(screen, requestElectronStore)
+  );
+  saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,

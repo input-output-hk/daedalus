@@ -1,6 +1,30 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
+- Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
+
+### Fixes
+
+- Fixed ‘Stakepool Metadata Aggregation Server (SMASH)’ link returning 404 error ([PR 2646](https://github.com/input-output-hk/daedalus/pull/2646))
+- Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-08-11` which includes `cardano-node` alonzo-purple-1.0.1 ([PR 2641](https://github.com/input-output-hk/daedalus/pull/2641))
+- Updated `cardano-wallet` to version `2021-07-30` which includes `cardano-node` 1.28.0 ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
+- Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
+
+## 4.2.1
+
+### Chores
+
+- Updated Catalyst Fund6 and Fund7 voting registration dates ([PR 2640](https://github.com/input-output-hk/daedalus/pull/2640))
+
 ## 4.2.0
 
 ### Features
