@@ -52,6 +52,8 @@ export const checkIsProduction = (currentNodeEnv: string) =>
   currentNodeEnv === PRODUCTION;
 export const checkIsMainnet = (network: string) => network === MAINNET;
 export const checkIsTestnet = (network: string) => network === TESTNET;
+export const checkIsAlonzoPurple = (network: string) =>
+  network === ALONZO_PURPLE;
 export const checkIsStaging = (network: string) => network === STAGING;
 export const checkIsSelfnode = (network: string) => network === SELFNODE;
 export const checkIsDevelopment = (network: string) => network === DEVELOPMENT;
