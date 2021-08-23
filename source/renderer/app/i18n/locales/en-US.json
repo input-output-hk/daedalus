@@ -128,7 +128,7 @@
   "daedalus.diagnostics.dialog.systemTimeIgnored": "System time ignored",
   "daedalus.diagnostics.dialog.unknownDiskSpace": "Unknown",
   "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl": "https://iohk.zendesk.com/hc/en-us/articles/360035654533",
-  "dapp.transaction.request.additionalData.label": "Addicional data",
+  "dapp.transaction.request.additionalData.label": "Additional data",
   "dapp.transaction.request.fromWalletLabel": "From wallet",
   "dapp.transaction.request.metaData.label": "Metadata",
   "dapp.transaction.request.receiver.label": "Receiver",

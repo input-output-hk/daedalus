@@ -84,7 +84,7 @@ type Props = {
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
   metadataNameChars?: number,
-  error?: boolean,
+  hasError?: boolean,
 };
 
 type State = {
@@ -176,14 +176,14 @@ export default class Asset extends Component<Props, State> {
       small,
       fullFingerprint,
       hasWarning,
-      error,
+      hasError,
     } = this.props;
     const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.pill,
       small ? styles.small : null,
-      error ? styles.error : null,
+      hasError ? styles.error : null,
     ]);
     let warningPopOverMessage;
     if (hasWarning) {
@@ -224,7 +224,7 @@ export default class Asset extends Component<Props, State> {
       onCopyAssetItem,
       assetSettingsDialogWasOpened,
       anyAssetWasHovered,
-      error,
+      hasError,
     } = this.props;
     const pillContent = this.renderPillContent();
     const popOverContent = (
@@ -235,7 +235,7 @@ export default class Asset extends Component<Props, State> {
         anyAssetWasHovered={anyAssetWasHovered}
         className={styles.popOverContent}
         highlightFingerprint
-        error={error}
+        hasError={hasError}
       />
     );
     const { isPillPopOverVisible } = this.state;

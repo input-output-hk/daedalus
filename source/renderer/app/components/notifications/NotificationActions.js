@@ -30,35 +30,50 @@ const NotificationActions = observer(({ actions }: Props) => {
   const componentStyles = classnames([styles.component]);
   return (
     <div className={componentStyles}>
-      {map(actions, (action, key) => {
-        const buttonClasses = classnames([
-          styles.button,
-          action.className,
-          action.primary ? 'primary' : 'flat',
-          action.primary ? styles.primaryButton : styles.secondaryButton,
-        ]);
-        const autoFocus =
-          (action.primary && action.autoFocus) !== false || !!action.autoFocus;
-        return !action.isLink ? (
-          <Button
-            key={key}
-            className={buttonClasses}
-            label={action.label}
-            onClick={action.onClick}
-            disabled={action.disabled}
-            autoFocus={autoFocus}
-          />
-        ) : (
-          <Link
-            key={key}
-            className={action.className}
-            onClick={action.onClick}
-            label={action.label}
-            hasIconAfter={action.hasIconAfter}
-            hasIconBefore={action.hasIconBefore}
-          />
-        );
-      })}
+      {map(
+        actions,
+        (
+          {
+            className,
+            label,
+            primary,
+            disabled,
+            onClick,
+            isLink,
+            hasIconAfter,
+            hasIconBefore,
+            autoFocus,
+          },
+          key
+        ) => {
+          const buttonClasses = classnames([
+            styles.button,
+            className,
+            primary ? 'primary' : 'flat',
+            primary ? styles.primaryButton : styles.secondaryButton,
+          ]);
+          const isAutoFocus = (primary && autoFocus) !== false || !!autoFocus;
+          return !isLink ? (
+            <Button
+              key={key}
+              className={buttonClasses}
+              label={label}
+              onClick={onClick}
+              disabled={disabled}
+              autoFocus={isAutoFocus}
+            />
+          ) : (
+            <Link
+              key={key}
+              className={className}
+              onClick={onClick}
+              label={label}
+              hasIconAfter={hasIconAfter}
+              hasIconBefore={hasIconBefore}
+            />
+          );
+        }
+      )}
     </div>
   );
 });

@@ -75,7 +75,7 @@ type Props = {
   highlightFingerprint?: boolean,
   className?: string,
   intl: intlShape.isRequired,
-  error?: boolean,
+  hasError?: boolean,
 };
 
 type ItemCopied = ?string;
@@ -131,14 +131,14 @@ const AssetContent = observer((props: Props) => {
     );
   };
 
-  const { asset, highlightFingerprint, className, intl, error } = props;
+  const { asset, highlightFingerprint, className, intl, hasError } = props;
   const { fingerprint, policyId, assetName, metadata } = asset;
   const { name, ticker, description } = metadata || {};
   const componentStyles = classnames([
     styles.component,
     className,
     highlightFingerprint ? styles.highlightFingerprint : null,
-    error ? styles.error : null,
+    hasError ? styles.error : null,
   ]);
   return (
     <div className={componentStyles}>

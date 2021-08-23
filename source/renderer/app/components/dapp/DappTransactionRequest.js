@@ -54,7 +54,7 @@ const messages = defineMessages({
   },
   additionalDataLabel: {
     id: 'dapp.transaction.request.additionalData.label',
-    defaultMessage: '!!!Addicional data',
+    defaultMessage: '!!!Additional data',
     description: '"additionalDataLabel" in the dApp transaction request dialog',
   },
   metaDataLabel: {
@@ -114,27 +114,25 @@ const DappTransactionRequest = observer((props: Props) => {
     triggeredFrom,
     wallets,
   } = props;
-  const walletsDropdownError =
-    selectedWallet &&
-    selectedWallet.amount.isLessThan(adaAmount.plus(transactionFee));
-  const walletsDropdownErrorMessage = walletsDropdownError
+  const hasTokenError = assets.reduce((result, token, index) => {
+    if (!selectedWallet) return false;
+    if (result) return true;
+    return (
+      isTokenMissingInWallet(selectedWallet, token) ||
+      !tokenHasBalance(token, assetsAmounts[index])
+    );
+  }, false);
+  const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
+    adaAmount.plus(transactionFee)
+  );
+  const walletsDropdownErrorMessage = walletsDropdownHasError
     ? intl.formatMessage(messages.insufficientBalanceErrorMessage)
     : null;
   const walletsDropdownStyles = classnames([
     styles.walletsDropdown,
-    walletsDropdownError ? styles.error : null,
+    walletsDropdownHasError ? styles.error : null,
   ]);
-  const canSubmit = () => {
-    if (!selectedWallet) return false;
-    return assets.reduce((result, token, index) => {
-      if (!result) return false;
-      return (
-        !walletsDropdownError &&
-        !isTokenMissingInWallet(selectedWallet, token) &&
-        tokenHasBalance(token, assetsAmounts[index])
-      );
-    }, true);
-  };
+  const canSubmit = !!selectedWallet && !hasTokenError;
 
   const actions = [
     {
@@ -145,7 +143,7 @@ const DappTransactionRequest = observer((props: Props) => {
       label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
       primary: true,
       onClick: onSubmit,
-      disabled: !canSubmit(),
+      disabled: !canSubmit,
     },
   ];
   const componentStyles = classnames([styles.component]);
@@ -167,7 +165,7 @@ const DappTransactionRequest = observer((props: Props) => {
           numberOfStakePools={100}
           onChange={onSelectWallet}
           placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
-          value={selectedWallet ? selectedWallet.id : null}
+          value={selectedWallet?.id}
           wallets={wallets}
           error={walletsDropdownErrorMessage}
         />

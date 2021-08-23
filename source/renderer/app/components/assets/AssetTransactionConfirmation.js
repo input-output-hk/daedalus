@@ -80,7 +80,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
     insufficientBalance,
     amount,
   } = props;
-  const error = tokenIsMissing || insufficientBalance;
+  const hasError = tokenIsMissing || insufficientBalance;
   const { metadata, decimals } = asset;
   const formattedAmount = formattedTokenWalletAmount(
     amount,
@@ -101,7 +101,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
   );
 
   const componentStyles = classnames(styles.component, {
-    [styles.error]: error,
+    [styles.error]: hasError,
   });
 
   const content = (
@@ -115,7 +115,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
             asset={asset}
             onCopyAssetItem={onCopyAssetItem}
             className={styles.assetToken}
-            error={error}
+            hasError={hasError}
           />
         </h3>
         <div className={styles.amountFeesWrapper}>
