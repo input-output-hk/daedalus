@@ -170,6 +170,7 @@ pushd installers
           chmod -R +w .
           echo 'Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
+cat node_modules/usb/src/node_usb.cc || true
 
           if [ -d ${APP_NAME} ]; then
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
