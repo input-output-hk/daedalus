@@ -206,7 +206,7 @@ const DappTransactionRequest = observer((props: Props) => {
       <div className={styles.transactionFee}>
         {formattedWalletAmount(transactionFee)}
       </div>
-      <p className={styles.label}>
+      <p className={styles.dataLabel}>
         {intl.formatMessage(messages.additionalDataLabel)}
         <button
           className={styles.toggleButton}
@@ -220,7 +220,7 @@ const DappTransactionRequest = observer((props: Props) => {
           <pre>{additionalData}</pre>
         </div>
       )}
-      <p className={styles.label}>
+      <p className={styles.dataLabel}>
         {intl.formatMessage(messages.metaDataLabel)}
         <button
           className={styles.toggleButton}

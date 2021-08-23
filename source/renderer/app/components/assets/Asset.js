@@ -224,7 +224,6 @@ export default class Asset extends Component<Props, State> {
       onCopyAssetItem,
       assetSettingsDialogWasOpened,
       anyAssetWasHovered,
-      hasError,
     } = this.props;
     const pillContent = this.renderPillContent();
     const popOverContent = (
@@ -235,7 +234,6 @@ export default class Asset extends Component<Props, State> {
         anyAssetWasHovered={anyAssetWasHovered}
         className={styles.popOverContent}
         highlightFingerprint
-        hasError={hasError}
       />
     );
     const { isPillPopOverVisible } = this.state;
