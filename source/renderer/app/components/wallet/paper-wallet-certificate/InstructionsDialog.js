@@ -110,7 +110,6 @@ const messages = defineMessages({
 type Props = {
   inProgress: boolean,
   network: string,
-  rawNetwork: string,
   onClose: Function,
   onOpenExternalLink: Function,
   onPrint: Function,
@@ -125,7 +124,6 @@ export default class InstructionsDialog extends Component<Props> {
 
   static defaultProps = {
     network: DEVELOPMENT,
-    rawNetwork: DEVELOPMENT,
   };
 
   componentDidUpdate(prevProps: Props) {

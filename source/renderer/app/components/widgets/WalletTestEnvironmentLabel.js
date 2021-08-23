@@ -25,6 +25,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Shelley QA',
     description: 'Label for shelley_qa with version.',
   },
+  alonzo_purple: {
+    id: 'test.environment.alonzoPurpleLabel',
+    defaultMessage: '!!!Alonzo Purple',
+    description: 'Label for alonzo_purple with version.',
+  },
   selfnode: {
     id: 'test.environment.selfnodeLabel',
     defaultMessage: '!!!Selfnode vx',

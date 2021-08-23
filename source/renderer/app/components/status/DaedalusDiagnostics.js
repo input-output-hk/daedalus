@@ -504,7 +504,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoWalletVersion,
       cardanoWalletPID,
       cardanoWalletApiPort,
-      cardanoRawNetwork,
       cardanoNetwork,
       daedalusStateDirectoryPath,
     } = coreInfo;
@@ -518,16 +517,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       messages.unknownDiskSpaceSupportUrl
     );
 
-    let cardanoNetworkValue = intl.formatMessage(
+    const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
-
-    if (cardanoRawNetwork && cardanoNetwork !== cardanoRawNetwork) {
-      const cardanoRawNetworkValue = intl.formatMessage(
-        globalMessages[`network_${cardanoRawNetwork}`]
-      );
-      cardanoNetworkValue += ` (${cardanoRawNetworkValue})`;
-    }
 
     const localTimeDifferenceClasses = isCheckingSystemTime
       ? classNames([styles.layoutData, styles.localTimeDifference])
