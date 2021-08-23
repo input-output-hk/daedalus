@@ -15,7 +15,7 @@ import classnames from 'classnames';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { Link } from 'react-polymorph/lib/components/Link';
-import styles from './TooltipPool.scss';
+import styles from './PoolPopOverContent.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
@@ -176,7 +176,7 @@ type State = {
 };
 
 @observer
-export default class TooltipPool extends Component<Props, State> {
+export default class PoolPopOverContent extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -244,6 +244,29 @@ export default class TooltipPool extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
+
+    let potentialRewardsValue;
+    if (pledgeNotMet) {
+      potentialRewardsValue = (
+        <span className={styles.defaultColorContent}>?</span>
+      );
+    } else if (
+      isGridRewardsView &&
+      potentialRewards.isZero &&
+      potentialRewards.isZero()
+    ) {
+      potentialRewardsValue = (
+        <div className={styles.noDataDash}>
+          <SVGInline svg={noDataDashSmallImage} />
+        </div>
+      );
+    } else {
+      potentialRewardsValue = (
+        <span className={styles.defaultColorContent}>
+          {formattedWalletAmount(potentialRewards)}
+        </span>
+      );
+    }
 
     const fields = [
       {
@@ -362,19 +385,7 @@ export default class TooltipPool extends Component<Props, State> {
       {
         key: 'potentialRewards',
         value: (
-          <div className={styles.defaultColor}>
-            {isGridRewardsView &&
-            potentialRewards.isZero &&
-            potentialRewards.isZero() ? (
-              <div className={styles.noDataDash}>
-                <SVGInline svg={noDataDashSmallImage} />
-              </div>
-            ) : (
-              <span className={styles.defaultColorContent}>
-                {formattedWalletAmount(potentialRewards)}
-              </span>
-            )}
-          </div>
+          <div className={styles.defaultColor}>{potentialRewardsValue}</div>
         ),
       },
     ];

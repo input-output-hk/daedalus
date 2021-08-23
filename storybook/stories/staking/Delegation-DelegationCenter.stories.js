@@ -3,7 +3,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.js';
 import Wallet, {
@@ -83,12 +83,12 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 24,
     syncState: walletSyncedStateReady,
-    delegatedStakePoolId: null,
-    lastDelegationStakePoolId: STAKE_POOLS[250].id,
+    delegatedStakePoolId: STAKE_POOLS[1].id,
+    lastDelegationStakePoolId: STAKE_POOLS[2].id,
     pendingDelegations: [
       {
         status: 'delegating',
-        target: STAKE_POOLS[250].id,
+        target: STAKE_POOLS[0].id,
         changes_at: {
           epoch_number: nextEpoch.epochNumber,
           epoch_start_time: nextEpoch.epochStart,
@@ -132,11 +132,11 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 24,
     syncState: walletSyncedStateReady,
-    delegatedStakePoolId: STAKE_POOLS[250].id,
-    lastDelegationStakePoolId: STAKE_POOLS[0].id,
+    delegatedStakePoolId: STAKE_POOLS[2].id,
+    lastDelegationStakePoolId: STAKE_POOLS[2].id,
     pendingDelegations: [
       {
-        target: STAKE_POOLS[0].id,
+        target: STAKE_POOLS[2].id,
         status: 'delegating',
         changes_at: {
           epoch_number: nextEpoch.epochNumber,
@@ -338,37 +338,49 @@ export const DelegationCenterStory = ({
   isLoading: boolean,
   isEpochsInfoAvailable: boolean,
   currentTheme: string,
-}) => (
-  <DelegationCenter
-    wallets={wallets}
-    onDelegate={action('onDelegate')}
-    onUndelegate={action('onUndelegate')}
-    getStakePoolById={(poolId) =>
-      find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
-    }
-    numberOfStakePools={STAKE_POOLS.length}
-    networkTip={networkTip}
-    nextEpoch={nextEpoch}
-    fetchingStakePoolsFailed={isLoading}
-    futureEpoch={futureEpoch}
-    currentLocale={locale}
-    isLoading={isLoading}
-    isEpochsInfoAvailable={isEpochsInfoAvailable}
-    slotLength={null}
-    epochLength={null}
-    containerClassName="StakingWithNavigation_page"
-    currentTheme={currentTheme}
-    numberOfRankedStakePools={
-      STAKE_POOLS.slice(
-        0,
-        number('Pools', 300, {
-          range: true,
-          min: 37,
-          max: 300,
-          step: 1,
-        })
-      ).length
-    }
-    onOpenExternalLink={action('onOpenExternalLink')}
-  />
-);
+}) => {
+  const stakePools = [
+    {
+      ...STAKE_POOLS[0],
+      retiring: boolean('retiring', false, 'First Pool')
+        ? '2023-01-01T01:01:01.000Z'
+        : null,
+      pledgeNotMet: boolean('pledgeNotMet', false, 'First Pool'),
+    },
+    ...STAKE_POOLS.slice(1),
+  ];
+  return (
+    <DelegationCenter
+      wallets={wallets}
+      onDelegate={action('onDelegate')}
+      onUndelegate={action('onUndelegate')}
+      getStakePoolById={(poolId) =>
+        find(stakePools, (stakePool) => stakePool.id === poolId)
+      }
+      numberOfStakePools={STAKE_POOLS.length}
+      networkTip={networkTip}
+      nextEpoch={nextEpoch}
+      fetchingStakePoolsFailed={isLoading}
+      futureEpoch={futureEpoch}
+      currentLocale={locale}
+      isLoading={isLoading}
+      isEpochsInfoAvailable={isEpochsInfoAvailable}
+      slotLength={null}
+      epochLength={null}
+      containerClassName="StakingWithNavigation_page"
+      currentTheme={currentTheme}
+      numberOfRankedStakePools={
+        STAKE_POOLS.slice(
+          0,
+          number('Pools', 300, {
+            range: true,
+            min: 37,
+            max: 300,
+            step: 1,
+          })
+        ).length
+      }
+      onOpenExternalLink={action('onOpenExternalLink')}
+    />
+  );
+};

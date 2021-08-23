@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
-import TooltipPool from './TooltipPool';
+import PoolPopOverContent from './PoolPopOverContent';
 import styles from './PoolPopOver.scss';
 
 /**
@@ -77,7 +77,7 @@ export function PoolPopOver(props: {
           // Passing in the trigger element allows lazy initialization
           reference={popOverTargetRef}
           content={
-            <TooltipPool
+            <PoolPopOverContent
               color={props.color}
               containerClassName={props.containerClassName}
               currentTheme={props.currentTheme}

@@ -426,18 +426,9 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       futureEpochNumber,
       nextPendingDelegatedStakePoolId
     );
-    let futurePendingDelegatedStakePool = futurePendingDelegatedStakePoolId
+    const futurePendingDelegatedStakePool = futurePendingDelegatedStakePoolId
       ? getStakePoolById(futurePendingDelegatedStakePoolId)
       : null;
-
-    // @TODO PLEDGE - Remove
-    if (futurePendingDelegatedStakePool) {
-      futurePendingDelegatedStakePool = {
-        ...futurePendingDelegatedStakePool,
-        pledgeNotMet: true,
-        // retiring: '2030-01-01T01:01:01.000Z',
-      };
-    }
 
     const futureStakePoolTileStyles = classnames([
       styles.stakePoolTile,

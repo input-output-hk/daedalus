@@ -16,6 +16,6 @@ export default STAKE_POOLS.map(
     potentialRewards: new BigNumber(potentialRewards),
     cost: new BigNumber(cost),
     pledge: new BigNumber(pledge),
-    retiring: new Date(retiring),
+    retiring: retiring ? new Date(retiring) : null,
   })
 );
