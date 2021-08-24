@@ -84,9 +84,19 @@ export const StakePoolsTileViewStory = (props: Props) => {
     },
     null
   );
+  const stakePools = [
+    {
+      ...STAKE_POOLS[0],
+      retiring: boolean('retiring', false, 'First Pool')
+        ? '2023-01-01T01:01:01.000Z'
+        : null,
+      pledgeNotMet: boolean('pledgeNotMet', false, 'First Pool'),
+    },
+    ...STAKE_POOLS.slice(1),
+  ];
   return (
     <StakePools
-      stakePoolsList={STAKE_POOLS.slice(
+      stakePoolsList={stakePools.slice(
         0,
         number('Pools', 300, {
           range: true,
@@ -112,7 +122,7 @@ export const StakePoolsTileViewStory = (props: Props) => {
       rankStakePools={() => null}
       wallets={dummyWallets}
       getStakePoolById={(poolId) =>
-        find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
+        find(stakePools, (stakePool) => stakePool.id === poolId)
       }
       onSmashSettingsClick={action('onSmashSettingsClick')}
       smashServerUrl="https://smash.cardano-mainnet.iohk.io"

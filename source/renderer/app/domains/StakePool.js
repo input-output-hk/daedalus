@@ -30,7 +30,9 @@ export type StakePoolProps = {
   ranking: number,
   retiring?: ?Date,
   saturation: number,
-  pledgeNotMet?: boolean,
+  pledgeNotMet: boolean,
+  desirabilityScore: number,
+  ownerStake: number,
 };
 
 export default class StakePool {

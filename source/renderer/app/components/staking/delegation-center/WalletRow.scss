@@ -322,7 +322,9 @@
     .action {
       @extend %accentText;
       align-items: center;
+      background-color: var(--theme-button-primary-background-color);
       border-radius: 0 0 4px 4px;
+      color: var(--theme-button-primary-text-color);
       cursor: pointer;
       display: flex;
       font-size: 8px;
@@ -337,26 +339,12 @@
       transition: opacity 0.2s ease-in;
       width: 80px;
 
-      &:not(.pledgeNotMetButton) {
-        background-color: var(--theme-button-primary-background-color);
-        color: var(--theme-button-primary-text-color);
-
-        &:hover {
-          background-color: var(--theme-button-primary-background-color-hover);
-        }
-
-        &:active {
-          background-color: var(--theme-button-primary-background-color-active);
-        }
+      &:hover {
+        background-color: var(--theme-button-primary-background-color-hover);
       }
 
-      &.pledgeNotMetButton {
-        background: var(
-          --theme-staking-stake-pool-tooltip-retirement-background-color
-        ) !important;
-        color: var(
-          --theme-staking-stake-pool-tooltip-retirement-text-color
-        ) !important;
+      &:active {
+        background-color: var(--theme-button-primary-background-color-active);
       }
     }
 

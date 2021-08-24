@@ -2955,20 +2955,23 @@ const _createStakePoolFromServerData = action(
   'AdaApi::_createStakePoolFromServerData',
   (stakePool: AdaApiStakePool, index: number) => {
     const {
-      id,
-      metrics,
       cost,
+      // flags,
+      id,
       margin: profitMargin,
       metadata,
+      metrics,
       pledge,
       retirement,
     } = stakePool;
     const {
-      relative_stake: relativeStake,
-      produced_blocks: producedBlocks,
+      // desirability_score: desirabilityScore,
       non_myopic_member_rewards: nonMyopicMemberRewards,
+      // owner_stake: ownerStake,
+      produced_blocks: producedBlocks,
+      relative_stake: relativeStake,
       saturation,
-    } = metrics; // eslint-disable-line
+    } = metrics;
     const { name, description = '', ticker, homepage } = metadata;
     const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
@@ -2981,6 +2984,13 @@ const _createStakePoolFromServerData = action(
     const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     const retiringAt = get(retirement, 'epoch_start_time', null);
+    // const pledgeNotMet = flags.includes('owner_stake_lower_than_pledge');
+
+    // @TODO PLEDGE - Get real data from the API
+    const desirabilityScore = index;
+    const ownerStake = 5000;
+    const pledgeNotMet = index === 1;
+
     return new StakePool({
       id,
       relativeStake: relativeStakePercentage,
@@ -3002,6 +3012,9 @@ const _createStakePoolFromServerData = action(
       ranking: index + 1,
       retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
+      desirabilityScore,
+      ownerStake,
+      pledgeNotMet,
     });
   }
 );

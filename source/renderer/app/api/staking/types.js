@@ -8,13 +8,18 @@ export type DelegationAction =
   | 'removeDelegation'
   | 'delegate';
 
-export type AdaApiStakePoolFlag = 'delisted';
+export type AdaApiStakePoolFlag = 'delisted' | 'owner_stake_lower_than_pledge';
 export type AdaApiStakePoolFlags = Array<AdaApiStakePoolFlag>;
 
 export type AdaApiStakePool = {
   id: string,
   metrics: {
+    desirability_score: number,
     non_myopic_member_rewards: {
+      quantity: number,
+      unit: 'lovelace',
+    },
+    owner_stake: {
       quantity: number,
       unit: 'lovelace',
     },

@@ -448,10 +448,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     const delegateButtonStyles = classnames([
       styles.action,
       highlightedPoolId ? styles.active : null,
-      futurePendingDelegatedStakePool &&
-      futurePendingDelegatedStakePool.pledgeNotMet
-        ? styles.pledgeNotMetButton
-        : null,
     ]);
 
     if (isRestoring) {
