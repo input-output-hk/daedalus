@@ -1,10 +1,13 @@
 // @flow
 import { When, Then } from 'cucumber';
+import en from '../../../../source/renderer/app/i18n/locales/en-US.json';
+
+const SELECT_CURRENCY_TEXT = en['settings.wallets.currency.selectLabel'];
 
 const CONVERTED_CURRENCY_WALLET_DISPLAY_GENERAL = '//*[@class="WalletSummaryCurrency_currencyRate"]';
 const DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_OFF = '//*[@class="SimpleSwitch_switch SwitchOverrides_switch"]';
 const DISPLAY_BALANCE_OTHER_CURRENCY_TOGGLE_STATUS_ON = '//*[@class="NormalSwitch_component SimpleSwitch_root SwitchOverrides_root SimpleSwitch_checked SwitchOverrides_checked"]';
-const SELECT_CURRENCY_DROPDOWN = '//*[@label="Select currency"]';
+const SELECT_CURRENCY_DROPDOWN = `//*[@label="${SELECT_CURRENCY_TEXT}"]`;
 
 When(/^I open currency selection dropdown$/, function() {
   return this.client.click(SELECT_CURRENCY_DROPDOWN);

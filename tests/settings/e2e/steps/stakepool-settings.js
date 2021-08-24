@@ -1,16 +1,23 @@
 import { When, Then } from 'cucumber';
+import en from '../../../../source/renderer/app/i18n/locales/en-US.json';
 
-const CUSTOM_SERVER_DROPDOWN_OPTION = '//*[@class="SimpleInput_customValueWrapper"]//*[@value="Custom server"]';
+const CUSTOM_SERVER_TEXT = en['settings.stakePools.smash.select.customServer'];
+const INVALID_SMASH_SERVER_TEXT = en['api.errors.invalidSmashServer'];
+const OFF_CHAIN_METADATA_SERVER_TEXT = en['settings.stakePools.smash.select.label'];
+const SMASH_SERVER_URL_TEXT = en['settings.stakePools.smashUrl.input.label'];
+const STAKE_POOL_TEXT = en['settings.menu.stakePools.link.label'];
+
+const CUSTOM_SERVER_DROPDOWN_OPTION = `//*[@class="SimpleInput_customValueWrapper"]//*[@value="${CUSTOM_SERVER_TEXT}"]`;
 const DAEDALUS_TOP_BAR_LOGO = '//*[@class="TopBar_topBar TopBar_withoutWallet"]';
-const NOT_A_VALID_SMASH_SERVER_ERROR_MESSAGE_ACTIVATED = '//*[@class="InlineEditingInput_errorMessage" and text()="This URL is not a valid SMASH server"]';
-const OFF_CHAIN_METADATA_SERVER_SMASH_LABEL = '//*[contains(text(), "Off-chain metadata server (SMASH)")]';
+const NOT_A_VALID_SMASH_SERVER_ERROR_MESSAGE_ACTIVATED = `//*[@class="InlineEditingInput_errorMessage" and text()="${INVALID_SMASH_SERVER_TEXT}"]`;
+const OFF_CHAIN_METADATA_SERVER_SMASH_LABEL = `//*[contains(text(), "${OFF_CHAIN_METADATA_SERVER_TEXT}")]`;
 const SERVER_URL = "https://smash.cardano-testnet.iohkdev.io/";
-const SMASH_SERVER_URL_INPUT_BOX = '//*[@label="SMASH server URL"]';
+const SMASH_SERVER_URL_INPUT_BOX = `//*[@label="${SMASH_SERVER_URL_TEXT}"]`;
 const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_SUBMIT_BUTTON = '//*[@class="InlineEditingInput_button InlineEditingInput_okButton SimpleButton_root ButtonOverrides_root"]';
 const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON = '//*[@class="InlineEditingInput_button InlineEditingInput_cancelButton SimpleButton_root ButtonOverrides_root"]';
 const STAKE_POOL_SERVER_DROPDOWN = '//*[@class="SimpleFormField_inputWrapper"]';
-const STAKE_POOL_SERVER_DROPDOWN_CUSTOM_OPTION = '//*[@class="ScrollbarsCustom-Content"]//span[text()="Custom server"]';
-const STAKE_POOLS_SUBMENU_SETTINGS = '//*[@class="SettingsMenu_component"]//button[text()="Stake pools"]';
+const STAKE_POOL_SERVER_DROPDOWN_CUSTOM_OPTION = `//*[@class="ScrollbarsCustom-Content"]//span[text()="${CUSTOM_SERVER_TEXT}"]`;
+const STAKE_POOLS_SUBMENU_SETTINGS = `//*[@class="SettingsMenu_component"]//button[text()="${STAKE_POOL_TEXT}"]`;
 
 When(/^custom server is the default option$/, function() {
   return this.waitAndClick(CUSTOM_SERVER_DROPDOWN_OPTION);
