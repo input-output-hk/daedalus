@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "master",
+        "branch": "HeinrichApfelmus/ADP-996/daedalus-testing",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "9cc1b563cd2363b1fd878ac5fe6aff874b36a1b8",
-        "sha256": "1mi1a0jaq85jf5c4k6rnij6np1mn4aq1py2mrd3wbv4b3lwxf2ln",
+        "rev": "b57a179574af4d84b6f03b21a5547b7b0a5d1aa6",
+        "sha256": "04rr0dp3ryg2058rs8ysc4z2cr9ynjvnn7r6rqq20bvhqslprw48",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/9cc1b563cd2363b1fd878ac5fe6aff874b36a1b8.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/b57a179574af4d84b6f03b21a5547b7b0a5d1aa6.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {

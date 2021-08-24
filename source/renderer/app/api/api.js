@@ -2233,6 +2233,17 @@ export default class AdaApi {
           ({ margin }: AdaApiStakePool) =>
             margin !== undefined && margin.quantity < 100
         )
+        .sort((pool1, pool2) => {
+          const pledgeNotMet1 = pool1.flags.includes(
+            'owner_stake_lower_than_pledge'
+          );
+          const pledgeNotMet2 = pool2.flags.includes(
+            'owner_stake_lower_than_pledge'
+          );
+          if (pledgeNotMet1 === pledgeNotMet2) return 0;
+          if (pledgeNotMet1) return 1;
+          return -1;
+        })
         .map(_createStakePoolFromServerData);
       logger.debug('AdaApi::getStakePools success', {
         stakePoolsTotal: response.length,
@@ -2956,7 +2967,7 @@ const _createStakePoolFromServerData = action(
   (stakePool: AdaApiStakePool, index: number) => {
     const {
       cost,
-      // flags,
+      flags,
       id,
       margin: profitMargin,
       metadata,
@@ -2965,9 +2976,9 @@ const _createStakePoolFromServerData = action(
       retirement,
     } = stakePool;
     const {
-      // desirability_score: desirabilityScore,
+      desirability_score: desirabilityScore,
       non_myopic_member_rewards: nonMyopicMemberRewards,
-      // owner_stake: ownerStake,
+      owner_stake: ownerStake,
       produced_blocks: producedBlocks,
       relative_stake: relativeStake,
       saturation,
@@ -2984,12 +2995,7 @@ const _createStakePoolFromServerData = action(
     const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     const retiringAt = get(retirement, 'epoch_start_time', null);
-    // const pledgeNotMet = flags.includes('owner_stake_lower_than_pledge');
-
-    // @TODO PLEDGE - Get real data from the API
-    const desirabilityScore = index;
-    const ownerStake = 5000;
-    const pledgeNotMet = index === 1;
+    const pledgeNotMet = flags.includes('owner_stake_lower_than_pledge');
 
     return new StakePool({
       id,
