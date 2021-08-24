@@ -53,10 +53,13 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
       const producedBlocks = get(stakePool, 'producedBlocks', '');
       const pledge = new BigNumber(get(stakePool, 'pledge', ''));
       const retiring = get(stakePool, 'retiring', '');
-      const memberRewards = new BigNumber(
+      const pledgeNotMet = get(stakePool, 'pledgeNotMet', false);
+      const potentialRewards = new BigNumber(
         get(stakePool, 'potentialRewards', '')
       );
-      const potentialRewards = formattedWalletAmount(memberRewards);
+      const formattedPotentialRewards = !potentialRewards.isZero()
+        ? formattedWalletAmount(potentialRewards)
+        : '?';
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);
       const pledgeValue = formattedWalletAmount(pledge, false, false);
@@ -68,18 +71,21 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
 
       const color = getColorFromRange(rank, numberOfRankedStakePools);
 
+      let rankValue = rank;
+      if (pledgeNotMet) {
+        rankValue = '-';
+      } else if (potentialRewards.isZero()) {
+        rankValue = (
+          <>
+            {numberOfRankedStakePools + 1}
+            <span className={styles.asterisk}>*</span>
+          </>
+        );
+      }
+
       return (
         <tr key={key}>
-          <td>
-            {!memberRewards.isZero() ? (
-              rank
-            ) : (
-              <>
-                {numberOfRankedStakePools + 1}
-                <span className={styles.asterisk}>*</span>
-              </>
-            )}
-          </td>
+          <td>{rankValue}</td>
           <td>
             <PoolPopOver
               color={color}
@@ -115,7 +121,7 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
           <td>{costValue}</td>
           <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
           <td>{toFixedUserFormat(producedBlocks, 0)}</td>
-          <td>{potentialRewards}</td>
+          <td>{formattedPotentialRewards}</td>
           <td>{pledgeValue}</td>
           <td>
             {retirement ? (

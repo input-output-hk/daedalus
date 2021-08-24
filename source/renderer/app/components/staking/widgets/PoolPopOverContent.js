@@ -167,7 +167,6 @@ type Props = {
   color: string,
   containerClassName: string,
   numberOfRankedStakePools: number,
-  isGridRewardsView?: boolean,
 };
 
 type State = {
@@ -221,12 +220,7 @@ export default class PoolPopOverContent extends Component<Props, State> {
 
   renderDescriptionFields = () => {
     const { intl } = this.context;
-    const {
-      currentTheme,
-      stakePool,
-      numberOfRankedStakePools,
-      isGridRewardsView,
-    } = this.props;
+    const { currentTheme, stakePool, numberOfRankedStakePools } = this.props;
     const {
       cost,
       pledge,
@@ -244,29 +238,6 @@ export default class PoolPopOverContent extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
-
-    let potentialRewardsValue;
-    if (pledgeNotMet) {
-      potentialRewardsValue = (
-        <span className={styles.defaultColorContent}>?</span>
-      );
-    } else if (
-      isGridRewardsView &&
-      potentialRewards.isZero &&
-      potentialRewards.isZero()
-    ) {
-      potentialRewardsValue = (
-        <div className={styles.noDataDash}>
-          <SVGInline svg={noDataDashSmallImage} />
-        </div>
-      );
-    } else {
-      potentialRewardsValue = (
-        <span className={styles.defaultColorContent}>
-          {formattedWalletAmount(potentialRewards)}
-        </span>
-      );
-    }
 
     const fields = [
       {
@@ -385,7 +356,13 @@ export default class PoolPopOverContent extends Component<Props, State> {
       {
         key: 'potentialRewards',
         value: (
-          <div className={styles.defaultColor}>{potentialRewardsValue}</div>
+          <div className={styles.defaultColor}>
+            <span className={styles.defaultColorContent}>
+              {potentialRewards.isZero && potentialRewards.isZero()
+                ? '?'
+                : formattedWalletAmount(potentialRewards)}
+            </span>
+          </div>
         ),
       },
     ];
