@@ -132,8 +132,7 @@ let
       rm -rf $PWD/node_modules/usb
       yarn install
       yarn add usb
-      patch -f $PWD/node_modules/usb/src/node_usb.cc $PWD/patches/usb/node_usb.cc.patch
-      patch -f $PWD/node_modules/usb/package.json $PWD/patches/usb/package.json.patch
+      patch -N -p1 -i $PWD/patches/usb/node_usb.cc.patch
       rm -rf $PWD/node_modules/usb/build
       pushd $PWD/node_modules/usb
       npx node-gyp rebuild

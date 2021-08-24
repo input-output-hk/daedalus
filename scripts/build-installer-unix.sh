@@ -138,8 +138,6 @@ function checkItnCluster() {
 echo '~~~ Prebuilding cardano bridge'
 CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
 
-cat node_modules/usb/src/node_usb.cc || true
-
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell ../default.nix -A daedalus-installer --run true || echo "Prebuild failed!"
@@ -170,7 +168,6 @@ pushd installers
           chmod -R +w .
           echo 'Running make-installer in nix-shell'
           $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
-cat node_modules/usb/src/node_usb.cc || true
 
           if [ -d ${APP_NAME} ]; then
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
@@ -187,7 +184,5 @@ cat node_modules/usb/src/node_usb.cc || true
           fi
     done
 popd || exit 1
-
-cat node_modules/usb/src/node_usb.cc || true
 
 exit 0

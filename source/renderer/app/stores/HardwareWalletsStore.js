@@ -148,16 +148,7 @@ const useCardanoAppInterval = (
           walletId: txWalletId,
           address: verificationAddress,
         });
-      } catch (error) {
-        // TODO: Remove this logs
-        logger.debug('TCL: Details =>', {
-          interval,
-          path,
-          address,
-          addressVerification,
-        });
-        logger.debug('TCL: Error =>', { error });
-
+      } catch (_error) {
         return null;
       }
     },
