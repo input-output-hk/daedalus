@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { defineMessages, intlShape } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-import { intlShape } from 'react-intl';
 import { get, map } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -14,6 +16,17 @@ import { PoolPopOver } from '../widgets/PoolPopOver';
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
+import pledgeNotMetIcon from '../../../assets/images/red-warning.inline.svg';
+
+const messages = defineMessages({
+  pledgeNotMetPopOver: {
+    id: 'staking.stakePools.tooltip.pledgeNotMet.popover',
+    defaultMessage:
+      '!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.',
+    description:
+      'Table body "pledgeNotMetPopOver" label on stake pools list view page',
+  },
+});
 
 type TableBodyProps = {
   sortedStakePoolList: StakePool,
@@ -62,7 +75,6 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
         : '?';
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);
-      const pledgeValue = formattedWalletAmount(pledge, false, false);
       const costValue = formattedWalletAmount(cost, false, false);
       const progressBarContentClassnames = classNames([
         styles.progressBarContent,
@@ -72,8 +84,20 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
       const color = getColorFromRange(rank, numberOfRankedStakePools);
 
       let rankValue = rank;
+      let pledgeValue = formattedWalletAmount(pledge, false, false);
       if (pledgeNotMet) {
-        rankValue = '-';
+        rankValue = '–';
+        pledgeValue = (
+          <span className={styles.pledgeNotMetIcon}>
+            {formattedWalletAmount(pledge, false, false)}
+            <PopOver
+              content={intl.formatMessage(messages.pledgeNotMetPopOver)}
+              className={styles.pledgeNotMetPopOver}
+            >
+              <SVGInline svg={pledgeNotMetIcon} />
+            </PopOver>
+          </span>
+        );
       } else if (potentialRewards.isZero()) {
         rankValue = (
           <>

@@ -448,6 +448,10 @@ $tooltip-width: 280px;
   color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
 }
 
+.pledgeNotMetValue {
+  background-color: var(--theme-light-background-color-error);
+}
+
 .delegateButton {
   border-radius: 2px;
   height: 33px;

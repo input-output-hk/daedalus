@@ -238,6 +238,10 @@ export default class PoolPopOverContent extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
+    const pledgeStyles = classnames([
+      styles.defaultColorContent,
+      pledgeNotMet ? styles.pledgeNotMetValue : null,
+    ]);
 
     const fields = [
       {
@@ -320,7 +324,7 @@ export default class PoolPopOverContent extends Component<Props, State> {
         key: 'pledge',
         value: (
           <div className={styles.defaultColor}>
-            <span className={styles.defaultColorContent}>
+            <span className={pledgeStyles}>
               {formattedWalletAmount(pledge, true, false)}
             </span>
           </div>

@@ -226,6 +226,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
+    '--theme-light-background-color-error': 'rgba(234, 76, 91, 0.3)',
   },
   fonts: {
     '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
