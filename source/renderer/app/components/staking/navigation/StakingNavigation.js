@@ -36,6 +36,7 @@ const messages = defineMessages({
 
 type Props = {
   activeItem: string,
+  showInfoTab: boolean,
   onNavItemClick: Function,
   isActiveNavItem: Function,
 };
@@ -47,7 +48,12 @@ export default class StakingNavigation extends Component<Props> {
   };
 
   render() {
-    const { onNavItemClick, activeItem, isActiveNavItem } = this.props;
+    const {
+      onNavItemClick,
+      activeItem,
+      isActiveNavItem,
+      showInfoTab,
+    } = this.props;
     const { intl } = this.context;
     const navigationItems = [
       {
@@ -66,11 +72,14 @@ export default class StakingNavigation extends Component<Props> {
       //   id: 'epochs',
       //   label: intl.formatMessage(messages.epochs),
       // },
-      {
+    ];
+
+    if (showInfoTab) {
+      navigationItems.push({
         id: 'info',
         label: intl.formatMessage(messages.info),
-      },
-    ];
+      });
+    }
 
     return (
       <Navigation

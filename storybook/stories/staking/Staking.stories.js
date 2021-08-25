@@ -78,6 +78,7 @@ const decorator = (story, context) => {
             <StakingWithNavigation
               key="stakingWithNavigation"
               isActiveNavItem={(item) => item === getItemFromContext()}
+              showInfoTab
               activeItem={getItemFromContext()}
               onNavItemClick={() => {}}
             >
