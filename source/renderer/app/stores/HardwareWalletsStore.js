@@ -2142,6 +2142,8 @@ export default class HardwareWalletsStore extends Store {
   @action _changeHardwareWalletConnectionStatus = async (
     params: HardwareWalletConnectionRequest
   ) => {
+    // eslint-disable-next-line
+    console.debug('>>> CHANGE: ', params);
     const {
       disconnected,
       deviceType,
