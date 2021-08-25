@@ -10,6 +10,7 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   UI,
   UI_EVENT,
+  // $FlowFixMe
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
@@ -236,7 +237,7 @@ export const handleHardwareWalletRequests = async (
         if (event.payload && event.payload.device) {
           TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
-            payload: { value: '', passphraseOnDevice: true },
+            payload: { value: '', passphraseOnDevice: true, save: true },
           });
         }
       }
@@ -273,7 +274,7 @@ export const handleHardwareWalletRequests = async (
             disconnected: event.type === DEVICE.DISCONNECT,
             deviceType: 'trezor',
             deviceId: event.payload.id, // 123456ABCDEF
-            deviceModel: event.payload.features.model, // e.g. T
+            deviceModel: event?.payload?.features?.model, // e.g. T
             deviceName: event.payload.label, // e.g. Test Name
             path: event.payload.path,
             eventType: event.type,
