@@ -11,10 +11,7 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
-import {
-  INITIAL_DESIRED_POOLS_NUMBER,
-  EPOCH_NUMBER_TO_FULLY_DECENTRALIZED,
-} from '../config/stakingConfig';
+import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -129,6 +126,7 @@ export default class NetworkStatusStore extends Store {
   @observable isAlonzoActivated: boolean = false;
   @observable shelleyActivationTime: string = '';
   @observable isAlonzoActivated: boolean = false;
+  @observable isAlonzoPending: boolean = false;
   @observable alonzoActivationTime: string = '';
   @observable verificationProgress: number = 0;
 
@@ -572,18 +570,6 @@ export default class NetworkStatusStore extends Store {
         }
       }
 
-      const { environment } = this;
-      const { epochNumber } = nextEpoch || {};
-      const isAlonzoActivated =
-        (isFlight || environment.isMainnet) &&
-        !!epochNumber &&
-        epochNumber > EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
-      if (isAlonzoActivated) {
-        runInAction('set isAlonzoActivated = true', () => {
-          this.isAlonzoActivated = true;
-        });
-      }
-
       // Reset request errors since we've received a valid response
       if (this.getNetworkInfoRequest.error !== null) {
         this.getNetworkInfoRequest.reset();
@@ -626,6 +612,7 @@ export default class NetworkStatusStore extends Store {
         isShelleyPending,
         shelleyActivationTime,
         isAlonzoActivated,
+        isAlonzoPending,
         alonzoActivationTime,
       } = this;
       const {
@@ -639,8 +626,8 @@ export default class NetworkStatusStore extends Store {
       if (eras) {
         const currentTimeStamp = new Date().getTime();
 
-        shelleyActivationTime = get(eras, 'shelley', 'epoch_start_time', '');
-        if (shelleyActivationTime) {
+        shelleyActivationTime = get(eras, 'shelley.epoch_start_time', '');
+        if (shelleyActivationTime !== '') {
           const shelleyActivationTimeStamp = new Date(
             shelleyActivationTime
           ).getTime();
@@ -648,12 +635,13 @@ export default class NetworkStatusStore extends Store {
           isShelleyPending = currentTimeStamp < shelleyActivationTimeStamp;
         }
 
-        alonzoActivationTime = get(eras, 'alonzo', 'epoch_start_time', '');
-        if (alonzoActivationTime) {
+        alonzoActivationTime = get(eras, 'alonzo.epoch_start_time', '');
+        if (alonzoActivationTime !== '') {
           const alonzoActivationTimeStamp = new Date(
             alonzoActivationTime
           ).getTime();
           isAlonzoActivated = currentTimeStamp >= alonzoActivationTimeStamp;
+          isAlonzoPending = currentTimeStamp < alonzoActivationTimeStamp;
         }
       }
 
@@ -663,6 +651,7 @@ export default class NetworkStatusStore extends Store {
         this.isShelleyPending = isShelleyPending;
         this.shelleyActivationTime = shelleyActivationTime;
         this.isAlonzoActivated = isAlonzoActivated;
+        this.isAlonzoPending = isAlonzoPending;
         this.alonzoActivationTime = alonzoActivationTime;
       });
 

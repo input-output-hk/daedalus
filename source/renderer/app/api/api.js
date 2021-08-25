@@ -2379,7 +2379,20 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
-        eras,
+        eras: eras
+          ? {
+              ...eras,
+              alonzo: window.isAlonzoActivated
+                ? {
+                    epoch_start_time: '2021-07-12T20:20:16Z',
+                    epoch_number: 100,
+                  }
+                : {
+                    epoch_start_time: '2021-09-12T20:20:16Z',
+                    epoch_number: 156,
+                  },
+            }
+          : {},
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
