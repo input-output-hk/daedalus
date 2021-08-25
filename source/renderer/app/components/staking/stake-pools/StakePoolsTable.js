@@ -129,7 +129,7 @@ export const defaultTableOrdering = {
   profitMargin: 'asc',
   producedBlocks: 'desc',
   nonMyopicMemberRewards: 'desc',
-  pledge: 'asc',
+  pledge: 'desc',
   retiring: 'asc',
 };
 
@@ -238,26 +238,28 @@ export class StakePoolsTable extends Component<Props, State> {
 
     const sortedStakePoolList = orderBy(
       stakePoolsList.map((stakePool) => {
+        const { ticker, pledge, pledgeNotMet, cost } = stakePool;
         let calculatedPledge;
         let calculatedCost;
         let formattedTicker;
+        let pledgeNotMetValue;
         if (stakePoolsSortBy === 'ticker') {
-          formattedTicker = stakePool.ticker
-            .replace(/[^\w\s]/gi, '')
-            .toLowerCase();
+          formattedTicker = ticker.replace(/[^\w\s]/gi, '').toLowerCase();
         }
         if (stakePoolsSortBy === 'pledge') {
-          const formattedPledgeValue = stakePool.pledge.toFixed(2);
+          const formattedPledgeValue = pledge.toFixed(2);
+          pledgeNotMetValue = pledgeNotMet ? 1 : 0;
           calculatedPledge = Number(
             parseFloat(formattedPledgeValue).toFixed(2)
           );
         }
         if (stakePoolsSortBy === 'cost') {
-          const formattedCostValue = stakePool.cost.toFixed(2);
+          const formattedCostValue = cost.toFixed(2);
           calculatedCost = Number(parseFloat(formattedCostValue).toFixed(2));
         }
         return {
           ...stakePool,
+          pledgeNotMetValue,
           calculatedPledge,
           calculatedCost,
           formattedTicker,
@@ -265,11 +267,18 @@ export class StakePoolsTable extends Component<Props, State> {
       }),
       [
         'formattedTicker',
+        'pledgeNotMetValue',
         'calculatedPledge',
         'calculatedCost',
         stakePoolsSortBy,
       ],
-      [stakePoolsOrder, stakePoolsOrder, stakePoolsOrder, stakePoolsOrder]
+      [
+        stakePoolsOrder,
+        'asc',
+        stakePoolsOrder,
+        stakePoolsOrder,
+        stakePoolsOrder,
+      ]
     );
 
     const availableTableHeaders = [
