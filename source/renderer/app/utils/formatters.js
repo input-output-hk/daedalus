@@ -1,5 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js';
+import { get } from 'lodash';
 import moment from 'moment';
 import {
   DECIMAL_PLACES_IN_ADA,
@@ -156,6 +157,14 @@ export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
     .dividedBy(LOVELACES_PER_ADA)
     .toNumber();
+
+export const formattedApiQuantityToBigNumber = (
+  object: Object,
+  param?: string = 'quantity'
+): BigNumber => {
+  const quantity = get(object, param, 0).toString();
+  return new BigNumber(quantity).dividedBy(LOVELACES_PER_ADA);
+};
 
 export const formattedBytesToSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];

@@ -301,6 +301,7 @@ export default class StakePools extends Component<Props, State> {
                       containerClassName="StakingWithNavigation_page"
                       onSelect={this.onDelegate}
                       numberOfRankedStakePools={numberOfRankedStakePools}
+                      isGridRewardsView={isGridRewardsView}
                       showWithSelectButton
                       scrollElementRef={
                         stakePoolsScrollContext.scrollElementRef
@@ -367,6 +368,7 @@ export default class StakePools extends Component<Props, State> {
                       containerClassName="StakingWithNavigation_page"
                       onSelect={this.onDelegate}
                       numberOfRankedStakePools={numberOfRankedStakePools}
+                      isGridRewardsView={isGridRewardsView}
                       scrollElementRef={
                         stakePoolsScrollContext.scrollElementRef
                       }

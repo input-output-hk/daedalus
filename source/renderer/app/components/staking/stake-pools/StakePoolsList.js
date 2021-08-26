@@ -43,6 +43,7 @@ type StakePoolsListProps = {
   numberOfRankedStakePools: number,
   selectedPoolId?: ?string,
   disabledStakePoolId?: ?string,
+  isGridRewardsView?: boolean,
   scrollElementRef?: ?ElementRef<*>,
 };
 
@@ -97,6 +98,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
               containerClassName={props.containerClassName}
               numberOfRankedStakePools={props.numberOfRankedStakePools}
               disabledStakePoolId={props.disabledStakePoolId}
+              isGridRewardsView={props.isGridRewardsView}
             />
           ))}
           {numberOfMissingRowItems > 0

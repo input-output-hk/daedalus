@@ -32,7 +32,7 @@ export type StakePoolProps = {
   saturation: number,
   pledgeNotMet: boolean,
   desirabilityScore: number,
-  ownerStake: number,
+  ownerStake: BigNumber,
 };
 
 export default class StakePool {

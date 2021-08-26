@@ -275,14 +275,7 @@ export default class PoolPopOverContent extends Component<Props, State> {
                   }),
                 }}
               >
-                {potentialRewards.isZero && !potentialRewards.isZero() ? (
-                  ranking
-                ) : (
-                  <>
-                    {numberOfRankedStakePools + 1}
-                    <span className={styles.asterisk}>*</span>
-                  </>
-                )}
+                {ranking}
               </span>
             ) : (
               <div className={styles.noDataDash}>

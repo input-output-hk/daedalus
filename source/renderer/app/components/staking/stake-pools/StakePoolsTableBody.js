@@ -39,6 +39,8 @@ type TableBodyProps = {
   selectedPoolId?: ?number,
 };
 
+let prev = 0;
+
 @observer
 export class StakePoolsTableBody extends Component<TableBodyProps> {
   static contextTypes = {
@@ -59,8 +61,10 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
     const { intl } = this.context;
     return map(sortedStakePoolList, (stakePool, key) => {
       const rank = get(stakePool, 'ranking', '');
+      // const ticker = `${get(stakePool, 'ticker', '')} - ${stakePool.desirabilityScore.toFormat()}`;
       const ticker = get(stakePool, 'ticker', '');
       const saturation = get(stakePool, 'saturation', '');
+
       const cost = new BigNumber(get(stakePool, 'cost', ''));
       const margin = get(stakePool, 'profitMargin', '');
       const producedBlocks = get(stakePool, 'producedBlocks', '');
@@ -70,6 +74,7 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
       const potentialRewards = new BigNumber(
         get(stakePool, 'potentialRewards', '')
       );
+      const { desirabilityScore } = stakePool;
       const formattedPotentialRewards = !potentialRewards.isZero()
         ? formattedWalletAmount(potentialRewards)
         : '?';
@@ -97,13 +102,6 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
               <SVGInline svg={pledgeNotMetIcon} />
             </PopOver>
           </span>
-        );
-      } else if (potentialRewards.isZero()) {
-        rankValue = (
-          <>
-            {numberOfRankedStakePools + 1}
-            <span className={styles.asterisk}>*</span>
-          </>
         );
       }
 

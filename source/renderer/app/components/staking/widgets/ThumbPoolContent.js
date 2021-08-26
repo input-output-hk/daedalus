@@ -64,7 +64,6 @@ export default class ThumbPoolContent extends Component<Props> {
     } = this.props;
     const {
       ranking,
-      nonMyopicMemberRewards,
       ticker,
       retiring,
       pledgeNotMet,
@@ -93,27 +92,18 @@ export default class ThumbPoolContent extends Component<Props> {
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
         {isGridRewardsView &&
-          (IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+          (IS_RANKING_DATA_AVAILABLE && !potentialRewards.isZero() ? (
             <div className={styles.rewards}>
               {this.formattedRewards(potentialRewards)}
               <SVGInline svg={adaIcon} className={styles.adaIcon} />
             </div>
           ) : (
-            <div className={styles.noDataDash}>
-              <SVGInline svg={noDataDashBigImage} />
-            </div>
+            <div className={styles.rewards}>?</div>
           ))}
         {!isGridRewardsView &&
           (IS_RANKING_DATA_AVAILABLE && !pledgeNotMet ? (
             <div className={styles.ranking} style={{ color }}>
-              {nonMyopicMemberRewards ? (
-                ranking
-              ) : (
-                <>
-                  {numberOfRankedStakePools + 1}
-                  <sup>*</sup>
-                </>
-              )}
+              {ranking}
             </div>
           ) : (
             <div className={styles.noDataDash}>

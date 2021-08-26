@@ -233,7 +233,10 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
-import { formattedAmountToLovelace } from '../utils/formatters';
+import {
+  formattedAmountToLovelace,
+  formattedApiQuantityToBigNumber,
+} from '../utils/formatters';
 import type {
   GetAssetsRequest,
   GetAssetsResponse,
@@ -2240,9 +2243,30 @@ export default class AdaApi {
           const pledgeNotMet2 = pool2.flags.includes(
             'owner_stake_lower_than_pledge'
           );
-          if (pledgeNotMet1 === pledgeNotMet2) return 0;
-          if (pledgeNotMet1) return 1;
-          return -1;
+          const {
+            desirability_score: desirabilityScoreValue1,
+            non_myopic_member_rewards: nonMyopicMemberRewards1,
+          } = pool1.metrics;
+          const {
+            desirability_score: desirabilityScoreValue2,
+            non_myopic_member_rewards: nonMyopicMemberRewards2,
+          } = pool2.metrics;
+          const desirabilityScore1 = new BigNumber(desirabilityScoreValue1);
+          const desirabilityScore2 = new BigNumber(desirabilityScoreValue2);
+          const potentialRewards1 = formattedApiQuantityToBigNumber(
+            nonMyopicMemberRewards1
+          ).isZero();
+          const potentialRewards2 = formattedApiQuantityToBigNumber(
+            nonMyopicMemberRewards2
+          ).isZero();
+          // Sort 1 by pledgeNotMet
+          if (pledgeNotMet1 && !pledgeNotMet2) return 1;
+          if (!pledgeNotMet1 && pledgeNotMet2) return -1;
+          // Sort 2 by zero potentialRewards
+          if (potentialRewards1 && !potentialRewards2) return 1;
+          if (!potentialRewards1 && potentialRewards2) return -1;
+          // Sort 2 by desirability
+          return desirabilityScore1.isLessThan(desirabilityScore2) ? 1 : -1;
         })
         .map(_createStakePoolFromServerData);
       logger.debug('AdaApi::getStakePools success', {
@@ -2991,8 +3015,6 @@ const _createStakePoolFromServerData = action(
       'quantity',
       0
     );
-    const costQuantity = get(cost, 'quantity', 0).toString();
-    const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     const retiringAt = get(retirement, 'epoch_start_time', null);
     const pledgeNotMet = flags.includes('owner_stake_lower_than_pledge');
@@ -3001,25 +3023,21 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
-      potentialRewards: new BigNumber(
-        nonMyopicMemberRewardsQuantity.toString()
-      ).dividedBy(LOVELACES_PER_ADA),
+      potentialRewards: formattedApiQuantityToBigNumber(nonMyopicMemberRewards),
       nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,
-      cost: new BigNumber(costQuantity.toString()).dividedBy(LOVELACES_PER_ADA),
+      cost: formattedApiQuantityToBigNumber(cost),
       description,
       isCharity: false,
       name,
-      pledge: new BigNumber(pledgeQuantity.toString()).dividedBy(
-        LOVELACES_PER_ADA
-      ),
+      pledge: formattedApiQuantityToBigNumber(pledge),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
-      desirabilityScore,
-      ownerStake,
+      desirabilityScore: new BigNumber(desirabilityScore),
+      ownerStake: formattedApiQuantityToBigNumber(ownerStake),
       pledgeNotMet,
     });
   }
