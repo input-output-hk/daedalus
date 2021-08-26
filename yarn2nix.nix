@@ -1,4 +1,4 @@
-{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , libcap
 , libgcrypt
 , libgpgerror
@@ -6,11 +6,13 @@
 , libunistring
 , libusb
 , libusb1
+, libudev
 , lz4
 , pkgconfig
 , systemd
 , writeShellScriptBin
 , xz
+, nodePackages
 , zlib
 , strace }:
 let
@@ -31,11 +33,11 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "13.1.7";
+  windowsElectronVersion = "13.1.0";
   electronPath = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}";
   windowsElectron = fetchurl {
     url = "${electronPath}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "fc36dec427b93fbbaeac73b46461c8f30dee01ca9dbd27a56080ce616ce92250";
+    sha256 = "dea5e784471828dedb294801f0d35a11459b2a940b6b60ed80c2c19eccd4d8f2";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
@@ -46,8 +48,8 @@ let
     ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
   '';
   electron-gyp = fetchurl {
-    url = "https://www.electronjs.org/headers/v13.1.7/node-v13.1.7-headers.tar.gz";
-    sha256 = "16e04d35417cc10ad08f0f5eed382f83ea7754ea2d37f260340c40d6e39b567f";
+    url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
+    sha256 = "eb80aa2631401d9646d9eb70bfcfc8cb47408bf2ac1baedcaaf324afb7529ac0";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -65,14 +67,20 @@ let
       );
   commonInputs = [
     python27
+    python3
     nukeReferences
     strace
     pkgconfig
     libusb
   ];
   hack = writeShellScriptBin "node-gyp" ''
-    echo gyp wrapper
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
+    echo ===== gyp wrapper
+    export PATH=${python3}/bin:$PATH
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/${windowsElectronVersion}/
+  '';
+  hack2 = writeShellScriptBin "node-gyp" ''
+    echo ______ gyp wrapper
+    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
   '';
 in
 yarn2nix.mkYarnPackage {
@@ -126,7 +134,7 @@ yarn2nix.mkYarnPackage {
 
     mkdir -pv $HOME/.electron-gyp/
     tar -xvf ${electron-gyp} -C $HOME/.electron-gyp
-    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/13.1.7/
+    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/${windowsElectronVersion}/
 
     ln -sv $HOME/.electron-gyp $HOME/.node-gyp
 
@@ -139,15 +147,14 @@ yarn2nix.mkYarnPackage {
       mv -v node_modules/''${1}-temp node_modules/''${1}
       chmod -R +w node_modules/''${1}
     }
-    pwd
-    find -name node_modules
+
     dup keccak
     dup node-hid
     dup secp256k1
     dup usb
     dup @ledgerhq
 
-    node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
+    node_modules/.bin/electron-rebuild -w usb --useCache -s
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
@@ -162,8 +169,8 @@ yarn2nix.mkYarnPackage {
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
-    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
-    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
+    cp node_modules/usb/build/Release/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
+    cp node_modules/node-hid/build/Release/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
@@ -193,8 +200,16 @@ yarn2nix.mkYarnPackage {
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
   pkgConfig = {
+    usb = {
+      buildInputs = [ libudev ];
+      postInstall = ''
+        patch -f ${./patches/usb/node_usb.cc.patch}
+        rm -rf build
+        ${hack2}/bin/node-gyp rebuild
+      '';
+    };
     node-sass = {
-      buildInputs = [ python ];
+      buildInputs = [ python2 ];
       postInstall = ''
         yarn --offline run build
         rm build/config.gypi

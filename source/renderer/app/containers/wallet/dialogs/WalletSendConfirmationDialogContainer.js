@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import type BigNumber from 'bignumber.js';
 import { ellipsis } from '../../../utils/strings';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
@@ -8,21 +9,23 @@ import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
+import { getAssetTokens } from '../../../utils/assets';
 
 type Props = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
   amount: string,
   receiver: string,
-  assets: Array<AssetToken>,
+  selectedAssets: Array<AssetToken>,
   assetsAmounts: Array<string>,
-  totalAmount: ?string,
+  totalAmount: BigNumber,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   currencyUnit: string,
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
+  formattedTotalAmount: string,
 };
 
 @inject('actions', 'stores')
@@ -59,7 +62,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const {
       actions,
       amount,
-      assets,
+      selectedAssets,
       assetsAmounts,
       receiver,
       totalAmount,
@@ -69,15 +72,22 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       currencyUnit,
       hwDeviceStatus,
       isHardwareWallet,
+      formattedTotalAmount,
+      stores,
     } = this.props;
-    const { stores } = this.props;
-    const { sendMoneyRequest, active: activeWallet } = stores.wallets;
+
     const {
-      _resetTransaction: resetHardwareWalletTransaction,
-      sendMoneyRequest: sendMoneyExternalRequest,
-      isTransactionPending,
-      checkIsTrezorByWalletId,
-    } = stores.hardwareWallets;
+      assets: assetsStore,
+      wallets: { sendMoneyRequest, active: activeWallet },
+      hardwareWallets: {
+        _resetTransaction: resetHardwareWalletTransaction,
+        sendMoneyRequest: sendMoneyExternalRequest,
+        isTransactionPending,
+        checkIsTrezorByWalletId,
+      },
+    } = stores;
+
+    const { getAsset } = assetsStore;
     const { isFlight } = global;
 
     if (!activeWallet)
@@ -94,15 +104,20 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
+    const walletTokens = activeWallet.assets.total;
+    const assetTokens = getAssetTokens(walletTokens, getAsset);
+
     return (
       <>
-        {assets.length ? (
+        {selectedAssets.length ? (
           <WalletSendAssetsConfirmationDialog
             amount={amount}
             sender={activeWallet.id}
             receiver={receiver}
+            wallet={activeWallet}
             totalAmount={totalAmount}
-            assets={assets}
+            selectedAssets={selectedAssets}
+            allAvailableTokens={assetTokens}
             assetsAmounts={assetsAmounts}
             transactionFee={transactionFee}
             amountToNaturalUnits={amountToNaturalUnits}
@@ -120,15 +135,17 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
-            walletName={activeWallet.name}
             onCopyAssetItem={this.handleOnCopyAssetItem}
             isTrezor={isTrezor}
+            formattedTotalAmount={formattedTotalAmount}
           />
         ) : (
           <WalletSendConfirmationDialog
             amount={amount}
             receiver={receiver}
+            wallet={activeWallet}
             totalAmount={totalAmount}
+            allAvailableTokens={assetTokens}
             transactionFee={transactionFee}
             amountToNaturalUnits={amountToNaturalUnits}
             onSubmit={this.handleWalletSendFormSubmit}
@@ -145,8 +162,8 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
-            walletName={activeWallet.name}
             isTrezor={isTrezor}
+            formattedTotalAmount={formattedTotalAmount}
           />
         )}
       </>

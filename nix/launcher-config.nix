@@ -26,6 +26,11 @@ let
       cluster = "mainnet";
       networkName = "mainnet";
     };
+    alonzo_purple = {
+      cardanoEnv = cardanoLib.environments.alonzo-purple;
+      cluster = "alonzo-purple";
+      networkName = "alonzo-purple";
+    };
   };
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
@@ -45,6 +50,17 @@ let
     frontendBin.macos64 = "Frontend";
   in frontendBin.${os};
 
+  selfnodeConfig = rec {
+    useByronWallet = true;
+    private = false;
+    networkConfig = import ./selfnode-config.nix;
+    nodeConfig = networkConfig // cardanoLib.defaultLogConfig;
+    consensusProtocol = networkConfig.Protocol;
+    genesisFile = ../utils/cardano/selfnode/genesis.json;
+    delegationCertificate = ../utils/cardano/selfnode/selfnode.cert;
+    signingKey = ../utils/cardano/selfnode/selfnode.key;
+    topology = ../utils/cardano/selfnode/selfnode-topology.json;
+  };
 
   # Helper function to make a path to a binary
   mkBinPath = binary: let
@@ -61,7 +77,7 @@ let
     cardanoEnv = if __hasAttr network clusterOverrides
                  then clusterOverrides.${network}.cardanoEnv
                  else cardanoLib.environments.${network};
-  in cardanoEnv;
+  in if network == "selfnode" then selfnodeConfig else cardanoEnv;
   kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
 
   installDirectorySuffix = let
@@ -73,6 +89,7 @@ let
       staging = "Staging";
       testnet = "Testnet";
       shelley_qa = "Shelley QA";
+      alonzo_purple = "Alonzo Purple";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;
@@ -166,6 +183,7 @@ let
       cp $installerConfigPath $out/installer-config.json
       ${lib.optionalString (envCfg.nodeConfig ? ByronGenesisFile) "cp ${envCfg.nodeConfig.ByronGenesisFile} $out/genesis-byron.json"}
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
+      ${lib.optionalString (envCfg.nodeConfig ? AlonzoGenesisFile) "cp ${envCfg.nodeConfig.AlonzoGenesisFile} $out/genesis-alonzo.json"}
     '';
 
   mkConfigCardano = let
@@ -179,6 +197,7 @@ let
     in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
       ByronGenesisFile = "genesis-byron.json";
       ShelleyGenesisFile = "genesis-shelley.json";
+      AlonzoGenesisFile = "genesis-alonzo.json";
     })));
     genesisFile = let
       genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;

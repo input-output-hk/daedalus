@@ -55,6 +55,7 @@ let
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
     nodejs = pkgs.nodejs-14_x;
+    nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
       version = "1.22.4";
       hash = "1l3sv30g61dcn7ls213prcja2y3dqdi5apq9r7yyick295w25npq";

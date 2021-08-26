@@ -301,6 +301,12 @@ npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
   echo "Installing nodejs dependencies..."
   procs "yarn" ["install"] empty
+  -- Patching as long https://github.com/tessel/node-usb/issues/438 has not been fixed
+  echo "Patching usb (workaround fix)..."
+  procs "sh" ["-c", "patch -N -p1 -i patches/usb/node_usb.cc.patch || true" ] empty
+  procs "rm" ["-rf", "./node_modules/usb/build" ] empty
+  procs "npx" ["node-gyp", "rebuild", "--directory", "./node_modules/usb" ] empty
+  -- Patching END
   echo "Running electron packager script..."
   export "NODE_ENV" "production"
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
@@ -334,7 +340,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Executables (from daedalus-bridge)
       forM_ ["cardano-wallet", "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
