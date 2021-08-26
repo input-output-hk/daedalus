@@ -245,14 +245,6 @@ import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 
-window.setAlonzoActivation = (offset: number) => {
-  window.alonzoActivation = `${moment
-    .utc()
-    .add(offset, 'seconds')
-    .format('YYYY-MM-DDTHH:mm:ss')}Z`;
-};
-window.setAlonzoActivation(3600);
-
 export default class AdaApi {
   config: RequestConfig;
 
@@ -2387,15 +2379,7 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
-        eras: eras
-          ? {
-              ...eras,
-              alonzo: {
-                epoch_start_time: window.alonzoActivation,
-                epoch_number: 500,
-              },
-            }
-          : {},
+        eras,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
