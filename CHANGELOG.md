@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added "Alonzo countdown" screen for the upcoming Alonzo upgrade ([PR 2653](https://github.com/input-output-hk/daedalus/pull/2653))
 - Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
 - Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
 
