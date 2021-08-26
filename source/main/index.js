@@ -71,7 +71,8 @@ const {
 } = environment;
 
 if (isBlankScreenFixActive) {
-  // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
+  // Run "console.log(JSON.stringify(daedalus.stores.app.gpuStatus, null, 2))"
+  // in DevTools JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
 
