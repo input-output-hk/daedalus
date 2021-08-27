@@ -6,6 +6,7 @@
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
+    "build:electron": "electron-rebuild -f -w usb",
     "check:all": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations",
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
