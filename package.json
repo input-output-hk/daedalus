@@ -249,7 +249,6 @@
     "tcp-port-used": "1.0.1",
     "trezor-connect": "8.1.27-extended",
     "unorm": "1.6.0",
-    "usb": "^1.7.1",
     "validator": "13.1.17"
   },
   "devEngines": {
