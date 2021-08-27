@@ -1804,6 +1804,7 @@ export default class HardwareWalletsStore extends Store {
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         devicePath: recognizedDevicePath,
+        signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
         auxiliaryData,
       });
 

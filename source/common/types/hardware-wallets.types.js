@@ -276,6 +276,7 @@ export type TrezorSignTransactionRequest = {
   reset?: boolean,
   devicePath: string,
   validityIntervalStartStr?: string,
+  signingMode: string,
   auxiliaryData: ?TrezorAuxiliaryDataType,
 };
 
