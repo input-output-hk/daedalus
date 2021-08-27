@@ -60,8 +60,7 @@
     "yoroi:wallet:importer": "node utils/api-importer/yoroi-wallet-importer.js",
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
-    "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "electron-rebuild -f -w usb"
+    "lockfile:fix": "node utils/lockfile-checker/index.js --fix"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
