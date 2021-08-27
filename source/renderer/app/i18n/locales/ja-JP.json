@@ -137,7 +137,7 @@
   "dapp.transaction.request.transactionFee.label": "トランザクション手数料",
   "dapp.transaction.request.walletsDropdown.addWalletLabel": "+ ウォレット追加",
   "dapp.transaction.request.walletsDropdown.placeholder": "ウォレットを選択してください",
-  "dapp.transaction.request.error.notEnoughAda": "ADAが不足しています（このトランザクションに必要なADAが不足しています）",
+  "dapp.transaction.request.error.notEnoughAda": "ADAが不足しています。このウォレットの残高は{walletBalance}です",
   "environment.apiName.cardano": "Cardano",
   "environment.currency.ada": "ADA",
   "environment.network.alonzo_purple": "Alonzo Purple",

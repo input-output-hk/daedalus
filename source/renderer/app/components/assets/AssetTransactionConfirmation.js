@@ -53,7 +53,7 @@ const messages = defineMessages({
   insufficientBalance: {
     id: 'asset.transactionConfirmation.insufficientBalance',
     defaultMessage:
-      '!!!Insufficient funds. The balance for the token in this wallet is  {formattedBalance} (Unformatted: {unformattedBalance})',
+      '!!!Insufficient funds. The balance of the token in this wallet is  {formattedBalance} (Unformatted: {unformattedBalance})',
     description: '"insufficientBalance" item on AssetTransactionConfirmation.',
   },
 });

@@ -64,7 +64,8 @@ const messages = defineMessages({
   },
   insufficientBalanceErrorMessage: {
     id: 'dapp.transaction.request.error.notEnoughAda',
-    defaultMessage: '!!!Not enough ada to make this transaction.',
+    defaultMessage:
+      '!!!Insufficient ada available. The balance of this wallet is {walletBalance}',
     description:
       '"Not enough ada" error in the dApp transaction request dialog',
   },
@@ -126,11 +127,16 @@ const DappTransactionRequest = observer((props: Props) => {
   const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
     adaAmount.plus(transactionFee)
   );
+  const walletBalance = selectedWallet
+    ? formattedWalletAmount(selectedWallet.amount)
+    : null;
   if (walletsDropdownHasError) {
     hasAmountError = true;
   }
   const walletsDropdownErrorMessage = walletsDropdownHasError
-    ? intl.formatMessage(messages.insufficientBalanceErrorMessage)
+    ? intl.formatMessage(messages.insufficientBalanceErrorMessage, {
+        walletBalance,
+      })
     : null;
   const walletsDropdownStyles = classnames([
     styles.walletsDropdown,
