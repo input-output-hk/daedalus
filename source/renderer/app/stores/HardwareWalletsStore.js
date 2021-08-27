@@ -58,6 +58,7 @@ import {
   prepareTrezorCertificate,
   prepareTrezorWithdrawal,
   prepareTrezorAuxiliaryData,
+  TrezorTransactionSigningMode,
 } from '../utils/shelleyTrezor';
 import {
   DeviceModels,
@@ -93,6 +94,7 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
   HardwareWalletConnectionRequest,
   Witness,
+  TrezorWitness,
 } from '../../../common/types/hardware-wallets.types';
 
 import { logger } from '../utils/logging';
@@ -1804,7 +1806,7 @@ export default class HardwareWalletsStore extends Store {
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         devicePath: recognizedDevicePath,
-        signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
+        signingMode: TrezorTransactionSigningMode.ORDINARY_TRANSACTION,
         auxiliaryData,
       });
 
@@ -1813,6 +1815,7 @@ export default class HardwareWalletsStore extends Store {
       }
       // Compatible with old firmwares
       const serializedTx = get(signedTransaction, ['payload', 'serializedTx']);
+
       if (serializedTx) {
         runInAction(
           'HardwareWalletsStore:: transaction successfully signed',
@@ -1857,10 +1860,7 @@ export default class HardwareWalletsStore extends Store {
 
       const unsignedTx = prepareTxAux(txAuxData);
       const witnesses = get(signedTransaction, ['payload', 'witnesses'], []);
-      let signedWitnesses = [];
-      if (witnesses) {
-        signedWitnesses = await this._signWitnesses(witnesses, xpubHex);
-      }
+      const signedWitnesses = await this._signWitnesses(witnesses, xpubHex);
       const txWitnesses = new Map();
       if (signedWitnesses.length > 0) {
         txWitnesses.set(0, signedWitnesses);
@@ -1893,7 +1893,10 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _signWitnesses = async (witnesses: Array<Witness>, xpubHex: string) => {
+  _signWitnesses = async (
+    witnesses: Array<TrezorWitness | Witness>,
+    xpubHex: string
+  ) => {
     const signedWitnesses = [];
     for (const witness of witnesses) {
       const signedWitness = await this.ShelleyWitness(witness, xpubHex);
@@ -1902,11 +1905,25 @@ export default class HardwareWalletsStore extends Store {
     return signedWitnesses;
   };
 
-  ShelleyWitness = async (witness: Witness, xpubHex: string) => {
-    const xpub = await this._deriveXpub(witness.path, xpubHex);
-    const publicKey = xpub.slice(0, 32);
-    const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
-    return ShelleyTxWitnessShelley(publicKey, signature);
+  ShelleyWitness = async (
+    witness: TrezorWitness | Witness,
+    xpubHex: string
+  ) => {
+    let publicKey;
+    let witnessSignatureHex;
+    if (witness.pubKey && witness.signature) {
+      publicKey = Buffer.from(witness.pubKey, 'hex');
+      witnessSignatureHex = witness.signature;
+    } else if (witness.path && witness.witnessSignatureHex) {
+      const xpub = await this._deriveXpub(witness.path, xpubHex);
+      publicKey = xpub.slice(0, 32);
+      witnessSignatureHex = witness.witnessSignatureHex;
+    }
+    if (witnessSignatureHex && publicKey) {
+      const signature = Buffer.from(witnessSignatureHex, 'hex');
+      return ShelleyTxWitnessShelley(publicKey, signature);
+    }
+    return null;
   };
 
   _deriveXpub = CachedDeriveXpubFactory(async (xpubHex) => {
@@ -2071,6 +2088,7 @@ export default class HardwareWalletsStore extends Store {
       let txAuxiliaryData = null;
       if (
         unsignedTxAuxiliaryData &&
+        signedTransaction &&
         signedTransaction.auxiliaryDataSupplement
       ) {
         txAuxData = {
@@ -2088,10 +2106,8 @@ export default class HardwareWalletsStore extends Store {
 
       const unsignedTx = prepareTxAux(txAuxData);
 
-      const signedWitnesses = await this._signWitnesses(
-        signedTransaction.witnesses,
-        xpubHex
-      );
+      const witnesses = get(signedTransaction, 'witnesses', []);
+      const signedWitnesses = await this._signWitnesses(witnesses, xpubHex);
       const txWitnesses = new Map();
       if (signedWitnesses.length > 0) {
         txWitnesses.set(0, signedWitnesses);
