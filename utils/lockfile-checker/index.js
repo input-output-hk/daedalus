@@ -16,7 +16,7 @@ lodash.map(json.object, (entry, key) => {
   }
 });
 
-const dependencyNamesToRemove = ['@types/react-syntax-highlighter', '@types/npmlog', '@types/reactcss', '@types/uglify-js', '@types/parse-json', '@types/html-minifier-terser', '@types/minimist'];
+const dependencyNamesToRemove = ['@types/react-syntax-highlighter', '@types/npmlog', '@types/reactcss', '@types/uglify-js', '@types/parse-json', '@types/html-minifier-terser', '@types/minimist', 'blake2b-wasm@https://github.com/BitGo/blake2b-wasm', 'blake2b@https://github.com/BitGo/blake2b'];
 const dependenciesToRemove = Object.keys(json.object).filter(key => dependencyNamesToRemove.find(name => key.includes(name)));
 const affectedDependencies = Object.keys(json.object).filter(key => {
   const { dependencies } = json.object[key];
@@ -57,7 +57,7 @@ function check() {
     console.log(`\x1b[31mPlease check blake2b dependency!`, '\x1b[0m');
     console.log(`\x1b[31mblake2b dependency: ${blake2bGitRefDependency}\n`, '\x1b[0m');
   }
-  
+
   console.log('To FIX issues run: \x1b[36m yarn lockfile:fix\n', '\x1b[0m');
 }
 

@@ -2379,7 +2379,6 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
-        hardforkAt: eras.shelley || null,
         eras,
       };
     } catch (error) {
