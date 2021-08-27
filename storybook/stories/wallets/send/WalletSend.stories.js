@@ -14,7 +14,9 @@ import {
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileConfig';
-import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
+import Wallet, {
+  HwDeviceStatuses,
+} from '../../../../source/renderer/app/domains/Wallet';
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
@@ -337,62 +339,80 @@ storiesOf('Wallets|Send', module)
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
     />
   ))
-  .add('Wallet Send Confirmation Dialog With Assets', () => (
-    <div>
-      <WalletSendAssetsConfirmationDialog
-        currencyUnit="Ada"
-        amount="20.000000"
-        totalAmount="21.000000"
-        sender={
-          generateWallet('Wallet name', '45119903750165', walletTokens).id
-        }
-        receiver={generateHash()}
-        assets={confirmationTokens}
-        assetsAmounts={confirmationTokensAmounts}
-        transactionFee="1.000000"
-        amountToNaturalUnits={formattedAmountToNaturalUnits}
-        onSubmit={() => null}
-        isSubmitting={false}
-        error={null}
-        isFlight={false}
-        onCancel={() => null}
-        onExternalLinkClick={() => null}
-        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-        isHardwareWallet={boolean('isHardwareWallet', false)}
-        onInitiateTransaction={() => null}
-        walletName={
-          generateWallet('TrueUSD', '15119903750165', walletTokens).name
-        }
-        onCopyAssetItem={() => {}}
-        isTrezor={boolean('isTrezor', false)}
-      />
-    </div>
-  ))
-  .add('Wallet Send Confirmation Dialog With No Assets', () => (
-    <div>
-      <WalletSendConfirmationDialog
-        amount="20.000000"
-        totalAmount="21.000000"
-        currencyUnit="ADA"
-        sender={
-          generateWallet('Wallet name', '45119903750165', walletTokens).id
-        }
-        receiver={generateHash()}
-        transactionFee="1.000000"
-        amountToNaturalUnits={formattedAmountToNaturalUnits}
-        onSubmit={() => null}
-        isSubmitting={false}
-        error={null}
-        isFlight={false}
-        onCancel={() => null}
-        onExternalLinkClick={() => null}
-        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-        isHardwareWallet={boolean('isHardwareWallet', false)}
-        onInitiateTransaction={() => null}
-        walletName={
-          generateWallet('TrueUSD', '15119903750165', walletTokens).name
-        }
-        isTrezor={boolean('isTrezor', false)}
-      />
-    </div>
-  ));
+  .add('Wallet Send Confirmation Dialog With Assets', () => {
+    // $FlowFixMe[prop-missing]
+    const wallet: Wallet = {
+      name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
+      amount: new BigNumber(100),
+      isDelegating: true,
+    };
+    return (
+      <div>
+        <WalletSendAssetsConfirmationDialog
+          currencyUnit="Ada"
+          amount="20.000000"
+          wallet={wallet}
+          totalAmount={new BigNumber('21.000000')}
+          sender={
+            generateWallet('Wallet name', '45119903750165', walletTokens).id
+          }
+          receiver={generateHash()}
+          selectedAssets={confirmationTokens}
+          allAvailableTokens={confirmationTokens}
+          assetsAmounts={confirmationTokensAmounts}
+          transactionFee="1.000000"
+          amountToNaturalUnits={formattedAmountToNaturalUnits}
+          onSubmit={() => null}
+          isSubmitting={false}
+          error={null}
+          isFlight={false}
+          onCancel={() => null}
+          onExternalLinkClick={() => null}
+          hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+          isHardwareWallet={boolean('isHardwareWallet', false)}
+          onInitiateTransaction={() => null}
+          onCopyAssetItem={() => {}}
+          isTrezor={boolean('isTrezor', false)}
+          formattedTotalAmount="21.000000"
+        />
+      </div>
+    );
+  })
+  .add('Wallet Send Confirmation Dialog With No Assets', () => {
+    // $FlowFixMe[prop-missing]
+    const wallet: Wallet = {
+      name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
+      amount: new BigNumber(100),
+      isDelegating: true,
+    };
+    return (
+      <div>
+        <WalletSendConfirmationDialog
+          amount="20.000000"
+          totalAmount={new BigNumber('21.000000')}
+          wallet={wallet}
+          currencyUnit="ADA"
+          sender={
+            generateWallet('Wallet name', '45119903750165', walletTokens).id
+          }
+          receiver={generateHash()}
+          transactionFee="1.000000"
+          amountToNaturalUnits={formattedAmountToNaturalUnits}
+          onSubmit={() => null}
+          isSubmitting={false}
+          error={null}
+          isFlight={false}
+          onCancel={() => null}
+          onExternalLinkClick={() => null}
+          hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+          isHardwareWallet={boolean('isHardwareWallet', false)}
+          onInitiateTransaction={() => null}
+          walletName={
+            generateWallet('TrueUSD', '15119903750165', walletTokens).name
+          }
+          isTrezor={boolean('isTrezor', false)}
+          formattedTotalAmount="21.000000"
+        />
+      </div>
+    );
+  });
