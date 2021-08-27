@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './TadaButton.scss';
-import tadaIcon from '../../assets/images/tada-color-ic.inline.svg';
+import tadaIcon from '../../assets/images/tada-green-ic.inline.svg';
 
 type Props = {
   onClick: Function,
