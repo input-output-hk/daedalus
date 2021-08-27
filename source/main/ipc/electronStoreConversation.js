@@ -27,18 +27,26 @@ const unset = async (key: StorageKey) =>
   });
 
 const reset = async () => {
-  await unset(keys.USER_LOCALE);
-  await unset(keys.USER_NUMBER_FORMAT);
+  await unset(keys.APP_AUTOMATIC_UPDATE_FAILED);
+  await unset(keys.APP_UPDATE_COMPLETED);
+  await unset(keys.CURRENCY_ACTIVE);
+  await unset(keys.CURRENCY_SELECTED);
+  await unset(keys.DATA_LAYER_MIGRATION_ACCEPTANCE);
+  await unset(keys.DOWNLOAD_MANAGER);
+  await unset(keys.HARDWARE_WALLET_DEVICES);
+  await unset(keys.HARDWARE_WALLETS);
+  await unset(keys.READ_NEWS);
+  await unset(keys.SMASH_SERVER);
+  await unset(keys.STAKING_INFO_WAS_OPEN);
+  await unset(keys.TERMS_OF_USE_ACCEPTANCE);
+  await unset(keys.THEME);
   await unset(keys.USER_DATE_FORMAT_ENGLISH);
   await unset(keys.USER_DATE_FORMAT_JAPANESE);
+  await unset(keys.USER_LOCALE);
+  await unset(keys.USER_NUMBER_FORMAT);
   await unset(keys.USER_TIME_FORMAT);
-  await unset(keys.TERMS_OF_USE_ACCEPTANCE);
-  await unset(keys.USER_THEME);
-  await unset(keys.DATA_LAYER_MIGRATION_ACCEPTANCE);
-  await unset(keys.READ_NEWS);
-  await unset(keys.HARDWARE_WALLETS);
   await unset(keys.WALLET_MIGRATION_STATUS);
-  await unset(keys.HARDWARE_WALLET_DEVICES);
+  await unset(keys.WALLETS);
   await unset(keys.WINDOW_BOUNDS);
 };
 
