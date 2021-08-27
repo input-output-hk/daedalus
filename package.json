@@ -60,7 +60,8 @@
     "yoroi:wallet:importer": "node utils/api-importer/yoroi-wallet-importer.js",
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
-    "lockfile:fix": "node utils/lockfile-checker/index.js --fix"
+    "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
+    "postinstall": "electron-rebuild -f -w usb"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -169,6 +170,7 @@
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "3.1.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
+    "@ledgerhq/hw-transport-node-hid": "6.3.0",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
     "bignumber.js": "9.0.1",
@@ -248,9 +250,6 @@
     "unorm": "1.6.0",
     "usb": "^1.7.1",
     "validator": "13.1.17"
-  },
-  "optionalDependencies": {
-    "@ledgerhq/hw-transport-node-hid": "6.3.0"
   },
   "devEngines": {
     "node": ">=14.17.0",
