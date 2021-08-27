@@ -360,7 +360,7 @@ storiesOf('Wallets|Send', module)
           currencyUnit="Ada"
           amount="20.000000"
           wallet={wallet}
-          totalAmount={new BigNumber(21.0)}
+          totalAmount={new BigNumber('21.000000')}
           sender={
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }
@@ -397,7 +397,7 @@ storiesOf('Wallets|Send', module)
       <div>
         <WalletSendConfirmationDialog
           amount="20.000000"
-          totalAmount="21.000000"
+          totalAmount={new BigNumber('21.000000')}
           wallet={wallet}
           currencyUnit="ADA"
           sender={

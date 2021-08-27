@@ -6,11 +6,13 @@ Changelog
 ### Features
 
 - Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
+- Added "Alonzo countdown" screen for the upcoming Alonzo upgrade ([PR 2653](https://github.com/input-output-hk/daedalus/pull/2653))
 - Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
 - Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
 
 ### Fixes
 
+- Fixed type issue on Storybook "Wallet Send Confirmation Dialog" story ([PR 2654](https://github.com/input-output-hk/daedalus/pull/2654))
 - Fixed ‘Stakepool Metadata Aggregation Server (SMASH)’ link returning 404 error ([PR 2646](https://github.com/input-output-hk/daedalus/pull/2646))
 - Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
 
