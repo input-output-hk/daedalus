@@ -194,6 +194,9 @@
           display: flex;
           height: 27px;
           justify-content: center;
+          position: relative;
+          top: 0;
+          transition: top 200ms ease-in-out;
 
           :global {
             .SVGInline {
@@ -386,6 +389,10 @@
 
           .ranking {
             top: -7px;
+          }
+
+          .noDataDash {
+            top: -5px;
           }
 
           .saturationBar,
