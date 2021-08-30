@@ -37,8 +37,12 @@ export function ThumbPool(props: {
     numberOfRankedStakePools,
     stakePool,
   } = props;
-  const { ranking, id } = stakePool;
-  const color = getColorFromRange(ranking, numberOfRankedStakePools);
+  const { ranking, id, pledgeNotMet } = stakePool;
+  const color = getColorFromRange(
+    ranking,
+    numberOfRankedStakePools,
+    pledgeNotMet
+  );
   const isDisabled = props.disabledStakePoolId === id;
   const [isHighlighted, setIsHighlighted] = useState(false);
 

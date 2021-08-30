@@ -32,8 +32,8 @@ export default class WalletsDropdownLabel extends Component<WalletOption> {
     if (!numberOfStakePools || !delegatedStakePool) {
       return null;
     }
-    const { ranking, ticker } = delegatedStakePool;
-    const color = getColorFromRange(ranking, numberOfStakePools);
+    const { ranking, ticker, pledgeNotMet } = delegatedStakePool;
+    const color = getColorFromRange(ranking, numberOfStakePools, pledgeNotMet);
     return (
       <div style={{ color }} className={styles.ticker}>
         [{ticker}]

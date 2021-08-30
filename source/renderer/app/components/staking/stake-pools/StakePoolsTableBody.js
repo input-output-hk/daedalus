@@ -61,7 +61,6 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
     const { intl } = this.context;
     return map(sortedStakePoolList, (stakePool, key) => {
       const rank = get(stakePool, 'ranking', '');
-      // const ticker = `${get(stakePool, 'ticker', '')} - ${stakePool.desirabilityScore.toFormat()}`;
       const ticker = get(stakePool, 'ticker', '');
       const saturation = get(stakePool, 'saturation', '');
 
@@ -74,7 +73,6 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
       const potentialRewards = new BigNumber(
         get(stakePool, 'potentialRewards', '')
       );
-      const { desirabilityScore } = stakePool;
       const formattedPotentialRewards = !potentialRewards.isZero()
         ? formattedWalletAmount(potentialRewards)
         : '?';
@@ -86,7 +84,11 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
         styles[getSaturationColor(saturation)],
       ]);
 
-      const color = getColorFromRange(rank, numberOfRankedStakePools);
+      const color = getColorFromRange(
+        rank,
+        numberOfRankedStakePools,
+        pledgeNotMet
+      );
 
       let rankValue = rank;
       let pledgeValue = formattedWalletAmount(pledge, false, false);

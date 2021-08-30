@@ -2,8 +2,7 @@
 import chroma from 'chroma-js';
 import isNil from 'lodash/isNil';
 
-// Ranking 001: hsla(142, 76%, 45%, 1)
-// Ranking 100: hsla(15, 97%, 58%, 1)
+import { LIGHT_BLUE_THEME_OUTPUT } from '../themes/daedalus/light-blue';
 
 type RangeOptions = {
   colors?: Array<any>,
@@ -25,10 +24,14 @@ const defaultRangeOptions = {
 
 export const getColorFromRange = (
   index: ?number,
-  optionsOrNumberOfItems?: RangeOptions | number
+  optionsOrNumberOfItems?: RangeOptions | number,
+  pledgeNotMet?: boolean
 ) => {
   let options = {};
   let { numberOfItems } = defaultRangeOptions;
+
+  if (pledgeNotMet)
+    return LIGHT_BLUE_THEME_OUTPUT.errors['--theme-color-error'];
 
   if (typeof optionsOrNumberOfItems === 'object') {
     options = optionsOrNumberOfItems;

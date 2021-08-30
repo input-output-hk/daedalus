@@ -440,14 +440,12 @@ export default class PoolPopOverContent extends Component<Props, State> {
     const colorBandClassnames = classnames([
       styles.colorBand,
       this.isGreyColor ? styles.greyColorBand : null,
-      pledgeNotMet ? styles.redColorBand : null,
     ]);
-    const colorBandStyle =
-      this.isGreyColor || pledgeNotMet
-        ? {}
-        : {
-            background: this.props.color,
-          };
+    const colorBandStyle = this.isGreyColor
+      ? {}
+      : {
+          background: this.props.color,
+        };
 
     const delegateButtonClassnames = classnames([
       styles.delegateButton,
