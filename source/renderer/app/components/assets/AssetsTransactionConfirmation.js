@@ -24,10 +24,15 @@ type Props = {
 
 const AssetsTransactionConfirmation = observer((props: Props) => {
   const { adaAmount, assets, assetsAmounts, className, intl, wallet } = props;
+  const insufficientAdaAmount = wallet?.amount.isLessThan(adaAmount);
   const componentStyles = classnames([styles.component, className]);
+  const adaAmountStyles = classnames([
+    styles.adaAmount,
+    insufficientAdaAmount ? styles.adaAmountError : null,
+  ]);
   return (
     <div className={componentStyles}>
-      <div className={styles.adaAmount}>
+      <div className={adaAmountStyles}>
         <p>{intl.formatMessage(globalMessages.unitAda)}</p>
         <div className={styles.amount}>
           {formattedWalletAmount(adaAmount, false)}

@@ -37,5 +37,11 @@
       max-width: 250px;
       padding: 3px 9px;
     }
+    &.adaAmountError {
+      p,
+      .amount {
+        color: var(--theme-color-error);
+      }
+    }
   }
 }

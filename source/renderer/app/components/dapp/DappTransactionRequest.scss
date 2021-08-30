@@ -6,10 +6,6 @@
     line-height: 1.38;
     margin-bottom: 6px;
   }
-  .dataLabel {
-    @extend .label;
-    margin-bottom: 20px;
-  }
   .address {
     font-family: var(--font-light);
     line-height: 1.38;
@@ -36,13 +32,6 @@
         .SimpleSelect_selectInput {
           &:after {
             background-color: var(--theme-color-error);
-          }
-        }
-      }
-      &.amountError {
-        :global {
-          .ItemDropdownOption_detail {
-            color: var(--theme-color-error);
           }
         }
       }
