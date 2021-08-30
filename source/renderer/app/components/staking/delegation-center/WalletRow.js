@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
@@ -326,14 +326,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
             className={styles.ranking}
             style={{ color: stakePoolRankingColor }}
           >
-            {stakePool.nonMyopicMemberRewards ? (
-              stakePool.ranking
-            ) : (
-              <>
-                {numberOfRankedStakePools + 1}
-                <sup>*</sup>
-              </>
-            )}
+            {stakePool.ranking}
           </div>
         ) : (
           <div className={styles.noDataDash}>
