@@ -786,7 +786,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   </div>
                 )}
                 <div className={styles.adaAmountLabel}>
-                  {intl.formatMessage(globalMessages.unitAda)}
+                  {intl.formatMessage(globalMessages.adaUnit)}
                 </div>
                 <NumericInput
                   {...adaAmountField.bind()}
@@ -803,7 +803,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   onChange={(value) => {
                     adaAmountField.onChange(value);
                   }}
-                  currency={globalMessages.unitAda}
+                  currency={globalMessages.adaUnit}
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
@@ -929,12 +929,12 @@ export default class WalletSendForm extends Component<Props, State> {
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
                   value={
                     fees && !transactionFeeError
-                      ? `${fees} ${intl.formatMessage(globalMessages.unitAda)}`
+                      ? `${fees} ${intl.formatMessage(globalMessages.adaUnit)}`
                       : `0${
                           this.getCurrentNumberFormat().decimalSeparator
                         }${'0'.repeat(
                           this.props.currencyMaxFractionalDigits
-                        )} ${intl.formatMessage(globalMessages.unitAda)}`
+                        )} ${intl.formatMessage(globalMessages.adaUnit)}`
                   }
                   isSet
                 />

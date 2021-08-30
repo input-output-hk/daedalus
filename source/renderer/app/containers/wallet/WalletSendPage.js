@@ -121,7 +121,7 @@ export default class WalletSendPage extends Component<Props> {
 
     return (
       <WalletSendForm
-        currencyUnit={intl.formatMessage(globalMessages.unitAda)}
+        currencyUnit={intl.formatMessage(globalMessages.adaName)}
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
         currentNumberFormat={profile.currentNumberFormat}

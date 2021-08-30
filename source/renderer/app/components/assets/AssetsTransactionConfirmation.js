@@ -33,7 +33,7 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
   return (
     <div className={componentStyles}>
       <div className={adaAmountStyles}>
-        <p>{intl.formatMessage(globalMessages.unitAda)}</p>
+        <p>{intl.formatMessage(globalMessages.adaName)}</p>
         <div className={styles.amount}>
           {formattedWalletAmount(adaAmount, false)}
         </div>
