@@ -79,7 +79,9 @@ export default class DelegationCenterPage extends Component<Props, State> {
 
     const numberOfRankedStakePools: number = stakePools.filter(
       (stakePool) =>
-        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+        IS_RANKING_DATA_AVAILABLE &&
+        stakePool.nonMyopicMemberRewards &&
+        !stakePool.pledgeNotMet
     ).length;
 
     if (!wallets.allWallets.length) {

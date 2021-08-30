@@ -196,7 +196,9 @@ export default class StakePools extends Component<Props, State> {
 
     const numberOfRankedStakePools: number = stakePoolsList.filter(
       (stakePool) =>
-        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+        IS_RANKING_DATA_AVAILABLE &&
+        stakePool.nonMyopicMemberRewards &&
+        !stakePool.pledgeNotMet
     ).length;
 
     const listTitleMessage = isFetching

@@ -306,7 +306,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
 
     const numberOfRankedStakePools: number = stakePoolsList.filter(
       (stakePool) =>
-        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+        IS_RANKING_DATA_AVAILABLE &&
+        stakePool.nonMyopicMemberRewards &&
+        !stakePool.pledgeNotMet
     ).length;
 
     return (
