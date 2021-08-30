@@ -128,15 +128,7 @@ let
         npm cache clean --force
         ''
       }
-
-      rm -rf $PWD/node_modules/usb
       yarn install
-      yarn add usb
-      patch -N -p1 -i $PWD/patches/usb/node_usb.cc.patch
-      rm -rf $PWD/node_modules/usb/build
-      pushd $PWD/node_modules/usb
-      npx node-gyp rebuild
-      popd
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node

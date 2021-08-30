@@ -200,14 +200,6 @@ yarn2nix.mkYarnPackage {
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
   pkgConfig = {
-    usb = {
-      buildInputs = [ libudev ];
-      postInstall = ''
-        patch -f ${./patches/usb/node_usb.cc.patch}
-        rm -rf build
-        ${hack2}/bin/node-gyp rebuild
-      '';
-    };
     node-sass = {
       buildInputs = [ python2 ];
       postInstall = ''
