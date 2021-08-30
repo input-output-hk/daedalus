@@ -13,7 +13,7 @@ Feature: Stake-pool server settings
     And The smash server input textBox is visible
     And And I enter a custom server URL as custom server option
     And I focus the stake-pool custom server input box submit button and then click it
-    And I see the "Your changes have been saved" success message
+    And I see the 'Your changes have been saved' success message
     And I am on the Delegation "stake-pools" screen
     Then The custom server I chose earlier is visible on stake-pool screen above stake-pool list and is clickable
     And I am brought back to the stake-pool server settings screen

@@ -6,6 +6,7 @@ const INVALID_SMASH_SERVER_TEXT = en['api.errors.invalidSmashServer'];
 const OFF_CHAIN_METADATA_SERVER_TEXT = en['settings.stakePools.smash.select.label'];
 const SMASH_SERVER_URL_TEXT = en['settings.stakePools.smashUrl.input.label'];
 const STAKE_POOL_TEXT = en['settings.menu.stakePools.link.label'];
+const YOUR_CHANGES_HAVE_BEEN_SAVED_SUCCESS_MESSAGE = en['inline.editing.input.changesSaved'];
 
 const CUSTOM_SERVER_DROPDOWN_OPTION = `//*[@class="SimpleInput_customValueWrapper"]//*[@value="${CUSTOM_SERVER_TEXT}"]`;
 const DAEDALUS_TOP_BAR_LOGO = '//*[@class="TopBar_topBar TopBar_withoutWallet"]';
@@ -77,6 +78,6 @@ When(/^I click on stakepool subtab$/, function() {
   return this.waitAndClick(STAKE_POOLS_SUBMENU_SETTINGS);
 });
 
-Then(/^I see the "([^"]*)" success message$/, function(message) {
-  return this.client.waitForVisible(`//*[@class="StakePoolsSettings_savingResultLabel" and text()="${message}"]`);
+Then(/^I see the 'Your changes have been saved' success message$/, function() {
+  return this.client.waitForVisible(`//*[@class="StakePoolsSettings_savingResultLabel" and text()="${YOUR_CHANGES_HAVE_BEEN_SAVED_SUCCESS_MESSAGE}"]`);
 });
