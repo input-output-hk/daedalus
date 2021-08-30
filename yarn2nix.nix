@@ -1,4 +1,4 @@
-{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , libcap
 , libgcrypt
 , libgpgerror
@@ -67,14 +67,20 @@ let
       );
   commonInputs = [
     python27
+    python3
     nukeReferences
     strace
     pkgconfig
     libusb
   ];
   hack = writeShellScriptBin "node-gyp" ''
-    echo gyp wrapper
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
+    echo ===== gyp wrapper
+    export PATH=${python3}/bin:$PATH
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/${windowsElectronVersion}/
+  '';
+  hack2 = writeShellScriptBin "node-gyp" ''
+    echo ______ gyp wrapper
+    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
   '';
 in
 yarn2nix.mkYarnPackage {
@@ -195,7 +201,7 @@ yarn2nix.mkYarnPackage {
   '';
   pkgConfig = {
     node-sass = {
-      buildInputs = [ python ];
+      buildInputs = [ python2 ];
       postInstall = ''
         yarn --offline run build
         rm build/config.gypi
