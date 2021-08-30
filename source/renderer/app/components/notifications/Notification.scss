@@ -95,6 +95,7 @@
 
   .closeButton {
     cursor: pointer;
+    height: 11px;
     opacity: 0.5;
     position: absolute;
     right: 20px;
@@ -102,6 +103,11 @@
 
     &:hover {
       opacity: 0.8;
+    }
+
+    > span {
+      display: block;
+      margin-top: -1px;
     }
 
     svg {
