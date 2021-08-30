@@ -108,7 +108,6 @@ export type GetNetworkParametersResponse = {
   decentralizationLevel: DecentralizationLevel,
   desiredPoolNumber: number,
   minimumUtxoValue: MinimumUtxoValue,
-  hardforkAt: ?HardforkAt,
   eras: {
     byron?: HardforkAt,
     shelley?: HardforkAt,
