@@ -1,7 +1,7 @@
 // @flow
 import find from 'lodash/find';
-import Wallet from '../domains/Wallet';
 import BigNumber from 'bignumber.js';
+import Wallet from '../domains/Wallet';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
