@@ -1,4 +1,4 @@
-{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , libcap
 , libgcrypt
 , libgpgerror
@@ -67,20 +67,14 @@ let
       );
   commonInputs = [
     python27
-    python3
     nukeReferences
     strace
     pkgconfig
     libusb
   ];
   hack = writeShellScriptBin "node-gyp" ''
-    echo ===== gyp wrapper
-    export PATH=${python3}/bin:$PATH
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/${windowsElectronVersion}/
-  '';
-  hack2 = writeShellScriptBin "node-gyp" ''
-    echo ______ gyp wrapper
-    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
+    echo gyp wrapper
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/13.0.1/
   '';
 in
 yarn2nix.mkYarnPackage {
@@ -154,7 +148,7 @@ yarn2nix.mkYarnPackage {
     dup usb
     dup @ledgerhq
 
-    node_modules/.bin/electron-rebuild -w usb --useCache -s
+    node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
@@ -169,8 +163,8 @@ yarn2nix.mkYarnPackage {
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
-    cp node_modules/usb/build/Release/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
-    cp node_modules/node-hid/build/Release/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
+    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
+    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
@@ -201,7 +195,7 @@ yarn2nix.mkYarnPackage {
   '';
   pkgConfig = {
     node-sass = {
-      buildInputs = [ python2 ];
+      buildInputs = [ python ];
       postInstall = ''
         yarn --offline run build
         rm build/config.gypi

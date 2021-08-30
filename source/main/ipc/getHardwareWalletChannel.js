@@ -237,7 +237,7 @@ export const handleHardwareWalletRequests = async (
         if (event.payload && event.payload.device) {
           TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
-            payload: { value: '', passphraseOnDevice: true, save: true },
+            payload: { value: '', passphraseOnDevice: true },
           });
         }
       }
@@ -274,7 +274,7 @@ export const handleHardwareWalletRequests = async (
             disconnected: event.type === DEVICE.DISCONNECT,
             deviceType: 'trezor',
             deviceId: event.payload.id, // 123456ABCDEF
-            deviceModel: event?.payload?.features?.model, // e.g. T
+            deviceModel: event.payload.features.model, // e.g. T
             deviceName: event.payload.label, // e.g. Test Name
             path: event.payload.path,
             eventType: event.type,
@@ -444,10 +444,8 @@ export const handleHardwareWalletRequests = async (
     try {
       logger.info('[HW-DEBUG] OBSERVER INIT');
       TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
-      ledgerStatus.Listener = await TransportNodeHid.listen(observer);
+      ledgerStatus.Listener = TransportNodeHid.listen(observer);
       ledgerStatus.listening = false;
-      ledgerStatus.Listener.unsubscribe();
-
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');

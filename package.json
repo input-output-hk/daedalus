@@ -1,12 +1,12 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "4.2.1",
+  "version": "4.3.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
-    "build:electron": "electron-rebuild -f -w usb",
+    "build:electron": "electron-rebuild -w usb --useCache -s --debug",
     "check:all": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations",
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
@@ -170,7 +170,7 @@
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "3.1.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
-    "@ledgerhq/hw-transport-node-hid": "5.51.1",
+    "@ledgerhq/hw-transport-node-hid": "6.3.0",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
     "bignumber.js": "9.0.1",

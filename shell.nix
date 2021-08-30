@@ -90,7 +90,7 @@ let
     NODE_EXE = "cardano-wallet";
     CLI_EXE = "cardano-cli";
     NODE_IMPLEMENTATION = nodeImplementation;
-    BUILDTYPE = "Release";
+    BUILDTYPE = "Debug";
     shellHook = let
       secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
     in ''
@@ -129,7 +129,7 @@ let
         ''
       }
       yarn install
-
+      yarn build:electron
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/HID.node
