@@ -9,6 +9,7 @@ import styles from './StakingWithNavigation.scss';
 type Props = {
   children?: Node,
   activeItem: string,
+  showInfoTab: boolean,
   onNavItemClick: Function,
   isActiveNavItem: Function,
   isLoading: boolean,
@@ -33,6 +34,7 @@ export default class StakingWithNavigation extends Component<Props> {
       activeItem,
       isActiveNavItem,
       isLoading,
+      showInfoTab,
     } = this.props;
     const componentStyles = classnames([
       styles.component,
@@ -50,6 +52,7 @@ export default class StakingWithNavigation extends Component<Props> {
               isActiveNavItem={isActiveNavItem}
               onNavItemClick={onNavItemClick}
               activeItem={activeItem}
+              showInfoTab={showInfoTab}
             />
           </div>
           <div

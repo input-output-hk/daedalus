@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -46,6 +46,7 @@
     "themes:update": "gulp build:themes && node -r esm ./dist/scripts/update.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
     "themes:copy": "node -r @babel/register -r @babel/polyfill source/renderer/app/themes/utils/copyTheme.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
     "clear:cache": "gulp clear:cache",
+    "nix:alonzo_purple": "NETWORK=alonzo_purple nix-shell --argstr nodeImplementation cardano --argstr cluster alonzo_purple",
     "nix:mainnet": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet",
     "nix:flight": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet_flight",
     "nix:selfnode": "NETWORK=selfnode nix-shell --argstr nodeImplementation cardano --argstr cluster selfnode",

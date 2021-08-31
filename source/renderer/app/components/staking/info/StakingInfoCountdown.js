@@ -1,64 +1,55 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfoCountdown.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 import CountdownWidget from '../../widgets/CountdownWidget';
-import type { NextEpoch } from '../../../api/network/types';
 
 const messages = defineMessages({
-  headingBefore: {
-    id: 'staking.infoCountdown.before.heading',
-    defaultMessage: '!!!Fully decentralized block production',
-    description: 'Headline for the Decentralization progress notification.',
+  heading: {
+    id: 'staking.infoCountdown.heading',
+    defaultMessage: '!!!Alonzo upgrade',
+    description: 'Headline for the "Staking Info" page screen.',
   },
   descriptionBefore: {
-    id: 'staking.infoCountdown.before.description',
+    id: 'staking.infoCountdown.description.before',
     defaultMessage:
-      '!!!<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>',
-    description:
-      'Info description for the Decentralization progress notification.',
-  },
-  headingAfter: {
-    id: 'staking.infoCountdown.after.heading',
-    defaultMessage: '!!!Cardano is transitioning into a decentralized system',
-    description: 'Headline for the Decentralization progress notification.',
+      '!!!The ‘Alonzo’ protocol upgrade will bring highly-anticipated new smart contract capabilities to Cardano, by integrating Plutus scripts onto the blockchain. This important milestone will open up a whole new world of smart contracts, DeFi capabilities, and dApp development on Cardano.',
+    description: 'Info description for the "Staking Info" page screen.',
   },
   descriptionAfter: {
-    id: 'staking.infoCountdown.after.description',
+    id: 'staking.infoCountdown.description.after',
     defaultMessage:
-      '!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.',
-    description:
-      'Info description for the Decentralization progress notification.',
+      '!!!The ‘Alonzo’ protocol upgrade is now live on Cardano, enabling highly-anticipated new smart contract capabilities, by integrating Plutus scripts onto the blockchain. This important milestone opens up a whole new world of smart contracts, DeFi capabilities, and dApp development on Cardano.',
+    description: 'Info description for the "Staking Info" page screen.',
   },
   countdownTitle: {
     id: 'staking.infoCountdown.countdownTitle',
-    defaultMessage: '!!!Fully decentralized block production in',
-    description:
-      'Countdown Title for the Decentralization progress notification.',
+    defaultMessage: '!!!Alonzo upgrade in',
+    description: 'Countdown Title for the "Staking Info" page screen.',
   },
   buttonLabel: {
     id: 'staking.infoCountdown.buttonLabel',
     defaultMessage: '!!!Learn more',
-    description: 'Button Label for the Decentralization progress notification.',
+    description: 'Button Label for the "Staking Info" page screen.',
   },
   learnMoreLinkUrl: {
     id: 'staking.infoCountdown.learnMore.linkUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc',
-    description: '"Learn more" link URL in the staking info page',
+    defaultMessage:
+      '!!!https://iohk.io/en/blog/posts/2021/04/08/smart-contracts-%E2%80%93-here-we-come/',
+    description: '"Learn more" link URL in the "Staking Info" screen.',
   },
 });
 
 type Props = {
-  percentage: number,
-  onLearnMoreClick: Function,
-  epoch: NextEpoch,
-  onSetStakingInfoWasOpen: Function,
-  isFullyDecentralized: boolean,
+  startDateTime: string,
+  isAlonzoActivated: boolean,
   stakingInfoWasOpen: boolean,
+  onSetStakingInfoWasOpen: Function,
+  onLearnMoreClick: Function,
 };
 
 @observer
@@ -82,50 +73,35 @@ export default class StakingInfoCountdown extends Component<Props> {
   checkIfShouldSetStakingInfoWasOpen = () => {
     const {
       onSetStakingInfoWasOpen,
-      isFullyDecentralized,
+      isAlonzoActivated,
       stakingInfoWasOpen,
     } = this.props;
-    if (isFullyDecentralized && !stakingInfoWasOpen) {
+    if (isAlonzoActivated && !stakingInfoWasOpen) {
       onSetStakingInfoWasOpen();
     }
   };
 
   render() {
     const { intl } = this.context;
-    const {
-      percentage,
-      onLearnMoreClick,
-      epoch,
-      isFullyDecentralized,
-    } = this.props;
-    const heading = isFullyDecentralized
-      ? intl.formatMessage(messages.headingAfter)
-      : intl.formatMessage(messages.headingBefore);
-    const description = isFullyDecentralized
+    const { startDateTime, onLearnMoreClick, isAlonzoActivated } = this.props;
+    const heading = intl.formatMessage(messages.heading);
+    const description = isAlonzoActivated
       ? messages.descriptionAfter
       : messages.descriptionBefore;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
-    const { epochNumber, epochStart } = epoch;
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
           <div className={styles.content}>
             <div className={styles.heading}>{heading}</div>
             <div className={styles.description}>
-              <FormattedHTMLMessage
-                {...description}
-                values={{
-                  percentageDecentralized: percentage,
-                  percentageFederated: 100 - percentage,
-                  epochNumber,
-                }}
-              />
+              {intl.formatMessage(description)}
             </div>
             <div className={styles.countdownTitle}>
               {intl.formatMessage(messages.countdownTitle)}
             </div>
             <CountdownWidget
-              startDateTime={isFullyDecentralized ? '0' : epochStart}
+              startDateTime={isAlonzoActivated ? '0' : startDateTime}
               format="DD-HH-mm-ss"
             />
             <ButtonLink
@@ -140,7 +116,7 @@ export default class StakingInfoCountdown extends Component<Props> {
               }}
             />
           </div>
-          <FullyDecentralizedEffect isActive={isFullyDecentralized} />
+          <FullyDecentralizedEffect isActive={isAlonzoActivated} />
         </div>
       </div>
     );

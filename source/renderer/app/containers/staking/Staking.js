@@ -75,8 +75,14 @@ export default class Staking extends Component<Props> {
       stores: { app, staking, networkStatus, uiDialogs },
       children,
     } = this.props;
-    const { isSynced, syncPercentage } = networkStatus;
-    const { isStakingDelegationCountdown, isLoadingStakePools } = staking;
+    const {
+      isSynced,
+      syncPercentage,
+      isAlonzoPending,
+      isAlonzoActivated,
+    } = networkStatus;
+    const { isStakingDelegationCountdown } = staking;
+    const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
 
     const isDelegationWizardOpen = uiDialogs.isOpen(
       DelegationSetupWizardDialog
@@ -105,7 +111,7 @@ export default class Staking extends Component<Props> {
             isActiveNavItem={this.isActiveNavItem}
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
-            isLoading={isLoadingStakePools}
+            showInfoTab={shouldShowInfoTab}
           >
             {children}
           </StakingWithNavigation>

@@ -23,7 +23,6 @@ import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
 import { messages as apiErrorMessages } from '../../api/errors';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import { submitOnEnter } from '../../utils/form';
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
@@ -200,7 +199,10 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
+  handleSubmitOnEnter = (event: KeyboardEvent): void => {
+    if (event.target instanceof HTMLInputElement && event.key === 'Enter')
+      this.handleOnSubmit();
+  };
 
   handleOnSubmit = () => {
     if (this.isDisabled()) {
@@ -706,7 +708,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
+      this.isAddressFromSameWallet() ? styles.sameReceiverInput : null,
     ]);
 
     const minAdaRequiredTooltip = selectedAssetUniqueIds.length
@@ -897,13 +899,11 @@ export default class WalletSendForm extends Component<Props, State> {
     const adaAmountField = form.$('adaAmount');
     const adaAmount = new BigNumber(adaAmountField.value || 0);
 
-    let fees = null;
-    let total = null;
+    let fees = '0';
+    let total: BigNumber = adaAmount;
     if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = adaAmount
-        .plus(transactionFee)
-        .toFormat(currencyMaxFractionalDigits);
+      total = adaAmount.plus(transactionFee);
     }
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -972,7 +972,7 @@ export default class WalletSendForm extends Component<Props, State> {
           <WalletSendConfirmationDialogContainer
             currencyUnit={currencyUnit}
             receiver={receiver}
-            assets={this.selectedAssets}
+            selectedAssets={this.selectedAssets}
             assetsAmounts={this.selectedAssetsAmounts}
             amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
@@ -981,6 +981,7 @@ export default class WalletSendForm extends Component<Props, State> {
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
+            formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
       </div>

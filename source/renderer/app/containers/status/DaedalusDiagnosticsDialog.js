@@ -69,7 +69,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
 
     const {
       network,
-      rawNetwork,
       version,
       rendererProcessID,
       mainProcessID,
@@ -92,7 +91,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       cardanoWalletPID,
       cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: network,
-      cardanoRawNetwork: rawNetwork,
     };
 
     return (

@@ -1,6 +1,7 @@
 // @flow
 import { upperFirst } from 'lodash';
 import {
+  ALONZO_PURPLE,
   DEVELOPMENT,
   LINUX,
   MAC_OS,
@@ -24,6 +25,9 @@ export const evaluateNetwork = (network: ?string) => {
   let currentNetwork = network || DEVELOPMENT;
   if (network === MAINNET_FLIGHT) {
     currentNetwork = MAINNET;
+  }
+  if (network === 'alonzo-purple') {
+    currentNetwork = ALONZO_PURPLE;
   }
   return currentNetwork;
 };
@@ -49,6 +53,8 @@ export const checkIsProduction = (currentNodeEnv: string) =>
   currentNodeEnv === PRODUCTION;
 export const checkIsMainnet = (network: string) => network === MAINNET;
 export const checkIsTestnet = (network: string) => network === TESTNET;
+export const checkIsAlonzoPurple = (network: string) =>
+  network === ALONZO_PURPLE;
 export const checkIsStaging = (network: string) => network === STAGING;
 export const checkIsSelfnode = (network: string) => network === SELFNODE;
 export const checkIsDevelopment = (network: string) => network === DEVELOPMENT;
