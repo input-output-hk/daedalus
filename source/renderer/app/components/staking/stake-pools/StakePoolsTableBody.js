@@ -39,8 +39,6 @@ type TableBodyProps = {
   selectedPoolId?: ?number,
 };
 
-let prev = 0;
-
 @observer
 export class StakePoolsTableBody extends Component<TableBodyProps> {
   static contextTypes = {

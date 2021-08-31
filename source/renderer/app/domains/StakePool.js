@@ -53,6 +53,8 @@ export default class StakePool {
   @observable retiring: ?Date;
   @observable saturation: number;
   @observable pledgeNotMet: boolean = false;
+  @observable desirabilityScore: number;
+  @observable ownerStake: BigNumber;
 
   constructor(data: StakePoolProps) {
     Object.assign(this, data);

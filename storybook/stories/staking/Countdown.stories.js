@@ -54,8 +54,11 @@ storiesOf('Decentralization | Countdown', module)
         isAnimating={boolean('isAnimating', false)}
         isFullyDecentralized={boolean('isFullyDecentralized', false)}
         stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
+        isAlonzoActivated={boolean('isAlonzoActivated', false)}
+        startDateTime="2021-01-01"
         onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
         onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}
+        showInfoTab
       />
     );
   });

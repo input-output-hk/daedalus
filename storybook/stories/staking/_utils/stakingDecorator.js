@@ -20,6 +20,7 @@ export default (activeItem: string) => (story: any, context: any) => {
               isActiveNavItem={(item) => item === activeItem}
               activeItem={activeItem}
               onNavItemClick={() => {}}
+              showInfoTab
             >
               {storyWithKnobs}
             </StakingWithNavigation>

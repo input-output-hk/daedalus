@@ -7,8 +7,7 @@ import type {
 
 import type { SmashServerStatuses } from '../api/staking/types';
 
-const { smashUrl, environment, isFlight } = global;
-const { isMainnet } = environment;
+const { smashUrl } = global;
 
 export const SMASH_SERVERS_LIST: {
   [key: SmashServerType]: {
