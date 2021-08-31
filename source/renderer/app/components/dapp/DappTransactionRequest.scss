@@ -23,6 +23,9 @@
     }
   }
   .walletsDropdown {
+    b {
+      font-family: var(--font-bold);
+    }
     &.error {
       input {
         border-color: var(--theme-color-error);

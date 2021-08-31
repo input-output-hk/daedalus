@@ -59,7 +59,7 @@ storiesOf('dApps|TransactionRequest', module)
               name = `${wallet.name} - Insuficient Balance`;
             }
             if (index === 2) {
-              name = `${wallet.name} - Insuficient Ada amount`;
+              name = `${wallet.name} - Insuficient Ada balance`;
               amount = new BigNumber(0);
             }
             const assets = {

@@ -95,11 +95,12 @@
 
   .closeButton {
     cursor: pointer;
-    height: 11px;
+    height: 62px;
     opacity: 0.5;
     position: absolute;
-    right: 20px;
-    top: 25.5px;
+    right: 0;
+    top: 0;
+    width: 62px;
 
     &:hover {
       opacity: 0.8;

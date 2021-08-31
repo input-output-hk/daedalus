@@ -38,8 +38,11 @@
       padding: 3px 9px;
     }
     &.adaAmountError {
-      p,
+      p {
+        color: var(--theme-color-error);
+      }
       .amount {
+        background-color: var(--theme-background-color-error);
         color: var(--theme-color-error);
       }
     }

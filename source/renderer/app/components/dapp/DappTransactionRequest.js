@@ -3,7 +3,12 @@ import React, { useState } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
-import { defineMessages, intlShape, injectIntl } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  injectIntl,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './DappTransactionRequest.scss';
 import Dialog from '../widgets/Dialog';
@@ -65,7 +70,7 @@ const messages = defineMessages({
   insufficientBalanceErrorMessage: {
     id: 'dapp.transaction.request.error.notEnoughAda',
     defaultMessage:
-      '!!!Insufficient ada available. The balance of this wallet is {walletBalance}',
+      '!!!This wallet does not contain the minimum amount of {adaBalanceRequired} which is required for delegation to be available. Please select a wallet with <b>a minimum amount of {adaBalanceRequired}</b>.',
     description:
       '"Not enough ada" error in the dApp transaction request dialog',
   },
@@ -124,20 +129,21 @@ const DappTransactionRequest = observer((props: Props) => {
       !tokenHasBalance(token, assetsAmounts[index])
     );
   }, false);
+  const adaBalanceRequired = adaAmount.plus(transactionFee);
   const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
-    adaAmount.plus(transactionFee)
+    adaBalanceRequired
   );
-  const walletBalance = selectedWallet
-    ? formattedWalletAmount(selectedWallet.amount)
-    : null;
   if (walletsDropdownHasError) {
     hasAmountError = true;
   }
-  const walletsDropdownErrorMessage = walletsDropdownHasError
-    ? intl.formatMessage(messages.insufficientBalanceErrorMessage, {
-        walletBalance,
-      })
-    : null;
+  const walletsDropdownErrorMessage = walletsDropdownHasError ? (
+    <FormattedHTMLMessage
+      {...messages.insufficientBalanceErrorMessage}
+      values={{
+        adaBalanceRequired: formattedWalletAmount(adaBalanceRequired),
+      }}
+    />
+  ) : null;
   const walletsDropdownStyles = classnames([
     styles.walletsDropdown,
     walletsDropdownHasError || hasTokenError ? styles.error : null,
