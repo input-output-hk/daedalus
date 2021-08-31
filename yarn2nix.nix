@@ -148,6 +148,7 @@ yarn2nix.mkYarnPackage {
     dup usb
     dup @ledgerhq
 
+    # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
 
     mkdir -p $out/bin $out/share/daedalus
