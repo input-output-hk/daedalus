@@ -6,6 +6,10 @@
     line-height: 1.38;
     margin-bottom: 6px;
   }
+  .labelData {
+    @extend .label;
+    margin-top: 20px;
+  }
   .address {
     font-family: var(--font-light);
     line-height: 1.38;
@@ -53,7 +57,6 @@
   }
   .additionalData,
   .metadata {
-    margin-bottom: 20px;
     pre {
       background-color: var(
         --theme-dapp-transaction-request-code-background-color
@@ -79,6 +82,7 @@
     );
     border-radius: 4px;
     color: var(--theme-label-button-color);
+    cursor: pointer;
     font-family: var(--font-medium);
     font-size: 10px;
     letter-spacing: 0.5px;

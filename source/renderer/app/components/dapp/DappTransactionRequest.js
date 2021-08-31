@@ -149,7 +149,8 @@ const DappTransactionRequest = observer((props: Props) => {
     walletsDropdownHasError || hasTokenError ? styles.error : null,
     hasAmountError ? styles.amountError : null,
   ]);
-  const canSubmit = !!selectedWallet && !hasTokenError;
+  const canSubmit =
+    !!selectedWallet && !hasTokenError && !walletsDropdownHasError;
 
   const actions = [
     {
@@ -218,7 +219,7 @@ const DappTransactionRequest = observer((props: Props) => {
       <div className={styles.transactionFee}>
         {formattedWalletAmount(transactionFee)}
       </div>
-      <p className={styles.label}>
+      <p className={styles.labelData}>
         {intl.formatMessage(messages.additionalDataLabel)}
         <button
           className={styles.toggleButton}
@@ -232,7 +233,7 @@ const DappTransactionRequest = observer((props: Props) => {
           <pre>{additionalData}</pre>
         </div>
       )}
-      <p className={styles.label}>
+      <p className={styles.labelData}>
         {intl.formatMessage(messages.metaDataLabel)}
         <button
           className={styles.toggleButton}

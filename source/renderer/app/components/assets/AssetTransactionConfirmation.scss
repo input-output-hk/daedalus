@@ -14,8 +14,7 @@
       background-color: var(--theme-background-color-error);
     }
     .questionMark svg path {
-      fill: var(--theme-background-color-dark-error);
-      opacity: 1;
+      fill: var(--theme-color-error);
     }
     > [data-tippy-root] {
       :global {
