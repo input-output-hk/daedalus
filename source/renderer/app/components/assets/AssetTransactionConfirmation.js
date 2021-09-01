@@ -114,7 +114,6 @@ const AssetTransactionConfirmation = observer((props: Props) => {
           <Asset
             asset={asset}
             onCopyAssetItem={onCopyAssetItem}
-            className={styles.assetToken}
             hasError={hasError}
           />
         </h3>

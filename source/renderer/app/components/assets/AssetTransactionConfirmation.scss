@@ -56,6 +56,7 @@
 .assetsContainer {
   display: flex;
   justify-content: space-between;
+  line-height: 22px;
   padding: 3px 0;
   width: 100%;
 
@@ -128,10 +129,6 @@
   line-height: 21px;
   padding-left: 4px;
   padding-right: 9px;
-}
-
-.assetToken {
-  margin-top: -2px;
 }
 
 .amountFeesWrapper {
