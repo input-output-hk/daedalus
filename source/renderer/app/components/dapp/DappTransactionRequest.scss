@@ -57,10 +57,10 @@
   }
   .additionalData,
   .metadata {
+    background-color: var(
+      --theme-dapp-transaction-request-code-background-color
+    );
     pre {
-      background-color: var(
-        --theme-dapp-transaction-request-code-background-color
-      );
       font-family: var(--font-mono);
       font-size: 14px;
       line-height: 1.38;
@@ -68,12 +68,6 @@
       overflow: auto;
       padding: 9px 12px;
       user-select: text;
-      &::-webkit-scrollbar-corner {
-        background: transparent;
-      }
-      &::-webkit-scrollbar-thumb {
-        background-color: red;
-      }
     }
   }
   .toggleButton {
