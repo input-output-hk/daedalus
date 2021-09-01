@@ -10,6 +10,7 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   UI,
   UI_EVENT,
+  // $FlowFixMe
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
@@ -57,7 +58,6 @@ import {
 
 import { logger } from '../utils/logging';
 import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
-import { toJS } from '../../common/utils/helper';
 
 type ListenerType = {
   unsubscribe: Function,
@@ -181,7 +181,7 @@ class EventObserver {
                   path: device.path,
                 },
                 // $FlowFixMe
-                toJS(this.mainWindow)
+                this.mainWindow
               );
             } catch (e) {
               logger.info('[HW-DEBUG] CONSTRUCTOR error');
