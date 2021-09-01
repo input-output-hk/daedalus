@@ -448,7 +448,7 @@ export const handleHardwareWalletRequests = async (
       logger.info('[HW-DEBUG] OBSERVER INIT');
       TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
       ledgerStatus.Listener = TransportNodeHid.listen(observer);
-      ledgerStatus.listening = false;
+      ledgerStatus.listening = true;
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
