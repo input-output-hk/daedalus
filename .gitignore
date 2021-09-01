@@ -111,6 +111,7 @@ utils/js-launcher/state
 
 state-cluster
 Release
+Debug
 /cardano-cli
 /cardano-wallet
 .vscode

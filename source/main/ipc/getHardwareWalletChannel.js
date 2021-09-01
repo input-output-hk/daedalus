@@ -10,7 +10,6 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   UI,
   UI_EVENT,
-  // $FlowFixMe
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
@@ -58,6 +57,7 @@ import {
 
 import { logger } from '../utils/logging';
 import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
+import { toJS } from '../../common/utils/helper';
 
 type ListenerType = {
   unsubscribe: Function,
@@ -161,6 +161,7 @@ class EventObserver {
         if (event.type === 'add') {
           if (!devicesMemo[device.path]) {
             logger.info('[HW-DEBUG] CONSTRUCTOR ADD');
+            console.debug(device);
             try {
               // $FlowFixMe
               const transport = await TransportNodeHid.open(device.path);
@@ -180,7 +181,7 @@ class EventObserver {
                   path: device.path,
                 },
                 // $FlowFixMe
-                this.mainWindow
+                toJS(this.mainWindow)
               );
             } catch (e) {
               logger.info('[HW-DEBUG] CONSTRUCTOR error');
@@ -370,6 +371,7 @@ export const handleHardwareWalletRequests = async (
             };
           } catch (e) {
             logger.info('[HW-DEBUG] INIT NEW transport - ERROR');
+            console.debug(e);
             throw e;
           }
         } else if (!devicePath || !devicesMemo[devicePath]) {
@@ -408,6 +410,7 @@ export const handleHardwareWalletRequests = async (
         throw new Error('Missing device info');
       } catch (error) {
         logger.info('[HW-DEBUG] ERROR on getHardwareWalletTransportChannel');
+        console.debug(error);
         throw error;
       }
     }

@@ -1,69 +1,78 @@
 // @flow
-import { observable, action, runInAction, computed } from 'mobx';
-import { get, map, find, findLast, includes } from 'lodash';
+import { action, computed, observable, runInAction } from 'mobx';
+import { find, findLast, get, includes, map } from 'lodash';
 import semver from 'semver';
 import {
-  TransactionSigningMode,
   AddressType,
+  TransactionSigningMode,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import type { HwDeviceStatus } from '../domains/Wallet';
 import { HwDeviceStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { toJS } from '../../../common/utils/helper';
 import {
-  HW_SHELLEY_CONFIG,
-  SHELLEY_PURPOSE_INDEX,
   ADA_COIN_TYPE,
-  MINIMAL_TREZOR_FIRMWARE_VERSION,
-  MINIMAL_LEDGER_FIRMWARE_VERSION,
-  MINIMAL_CARDANO_APP_VERSION,
+  HW_SHELLEY_CONFIG,
   isHardwareWalletSupportEnabled,
-  isTrezorEnabled,
   isLedgerEnabled,
+  isTrezorEnabled,
+  MINIMAL_CARDANO_APP_VERSION,
+  MINIMAL_LEDGER_FIRMWARE_VERSION,
+  MINIMAL_TREZOR_FIRMWARE_VERSION,
+  SHELLEY_PURPOSE_INDEX,
 } from '../config/hardwareWalletsConfig';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
-  getHardwareWalletTransportChannel,
-  getExtendedPublicKeyChannel,
+  deriveAddressChannel,
   getCardanoAdaAppChannel,
+  getExtendedPublicKeyChannel,
   getHardwareWalletConnectionChannel,
+  getHardwareWalletTransportChannel,
+  handleInitLedgerConnectChannel,
+  handleInitTrezorConnectChannel,
+  resetTrezorActionChannel,
+  showAddressChannel,
   signTransactionLedgerChannel,
   signTransactionTrezorChannel,
-  handleInitTrezorConnectChannel,
-  handleInitLedgerConnectChannel,
-  resetTrezorActionChannel,
-  deriveAddressChannel,
-  showAddressChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
+  CachedDeriveXpubFactory,
+  CATALYST_VOTING_REGISTRATION_TYPE,
+  cborizeTxAuxiliaryVotingData,
+  prepareBody,
+  prepareLedgerAuxiliaryData,
+  prepareLedgerCertificate,
   prepareLedgerInput,
   prepareLedgerOutput,
-  prepareTxAux,
-  prepareBody,
-  prepareLedgerCertificate,
   prepareLedgerWithdrawal,
-  CachedDeriveXpubFactory,
-  ShelleyTxWitnessShelley,
+  prepareTxAux,
+  ShelleyTxCert,
   ShelleyTxInputFromUtxo,
   ShelleyTxOutput,
-  ShelleyTxCert,
   ShelleyTxWithdrawal,
-  cborizeTxAuxiliaryVotingData,
-  prepareLedgerAuxiliaryData,
-  CATALYST_VOTING_REGISTRATION_TYPE,
+  ShelleyTxWitnessShelley,
 } from '../utils/shelleyLedger';
 import {
+  prepareTrezorAuxiliaryData,
+  prepareTrezorCertificate,
   prepareTrezorInput,
   prepareTrezorOutput,
-  prepareTrezorCertificate,
   prepareTrezorWithdrawal,
-  prepareTrezorAuxiliaryData,
 } from '../utils/shelleyTrezor';
+import type {
+  HardwareWalletConnectionRequest,
+  HardwareWalletExtendedPublicKeyResponse,
+  LedgerModel,
+  TransportDevice,
+  TrezorModel,
+  Witness,
+} from '../../../common/types/hardware-wallets.types';
 import {
+  DeviceEvents,
   DeviceModels,
   DeviceTypes,
-  DeviceEvents,
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -71,30 +80,20 @@ import {
   CERTIFICATE_TYPE,
   getParamsFromPath,
 } from '../utils/hardwareWalletUtils';
-
-import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
-  CoinSelectionsPaymentRequestType,
   CoinSelectionsDelegationRequestType,
-  CreateExternalTransactionResponse,
+  CoinSelectionsPaymentRequestType,
   CoinSelectionsResponse,
+  CreateExternalTransactionResponse,
   VotingDataType,
 } from '../api/transactions/types';
 import type {
+  HardwareWalletDevicesType,
   HardwareWalletLocalData,
   HardwareWalletsLocalData,
-  HardwareWalletDevicesType,
-  SetHardwareWalletLocalDataRequestType,
   SetHardwareWalletDeviceRequestType,
+  SetHardwareWalletLocalDataRequestType,
 } from '../api/utils/localStorage';
-import type {
-  TransportDevice,
-  LedgerModel,
-  TrezorModel,
-  HardwareWalletExtendedPublicKeyResponse,
-  HardwareWalletConnectionRequest,
-  Witness,
-} from '../../../common/types/hardware-wallets.types';
 
 import { logger } from '../utils/logging';
 
@@ -2185,6 +2184,7 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
+    console.debug(params);
 
     // Handle Trezor Bridge instance checker
     if (error && deviceType === DeviceTypes.TREZOR) {
