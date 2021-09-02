@@ -68,8 +68,13 @@
       overflow: auto;
       padding: 9px 12px;
       user-select: text;
+      white-space: pre-wrap;
+      word-wrap: break-word;
       &::-webkit-scrollbar-corner {
         background: transparent !important;
+      }
+      &::-webkit-scrollbar-button {
+        height: 2px !important;
       }
     }
   }

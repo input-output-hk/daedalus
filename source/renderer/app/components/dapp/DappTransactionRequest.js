@@ -217,7 +217,7 @@ const DappTransactionRequest = observer((props: Props) => {
         {intl.formatMessage(messages.transactionFeeLabel)}
       </p>
       <div className={styles.transactionFee}>
-        {formattedWalletAmount(transactionFee)}
+        +{formattedWalletAmount(transactionFee)}
       </div>
       <p className={styles.labelData}>
         {intl.formatMessage(messages.additionalDataLabel)}

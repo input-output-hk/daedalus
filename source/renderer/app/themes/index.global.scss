@@ -287,8 +287,9 @@ body,
   &::-webkit-scrollbar-thumb {
     background-clip: content-box;
     background-color: var(--theme-scrollbar-thumb-background);
-    border: 8px solid transparent;
     border-radius: 10px;
+    border: 8px solid transparent;
+    min-width: 50px;
     &:vertical {
       min-height: 30px;
     }
