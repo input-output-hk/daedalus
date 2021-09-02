@@ -47,6 +47,7 @@ storiesOf('dApps|TransactionRequest', module)
     'Request',
     withState({ selectedWallet: null }, (store) => {
       const { selectedWallet } = store.state;
+      const adaAmount = number('adaAmount', 50);
       const wallets = boolean('Has wallets?', true)
         ? WALLETS_V2.map((wallet, index) => {
             let assetsList = allAssets;
@@ -56,7 +57,7 @@ storiesOf('dApps|TransactionRequest', module)
               name = `${wallet.name} - Missing token`;
             }
             if (index === 1) {
-              name = `${wallet.name} - Insuficient Balance`;
+              name = `${wallet.name} - Insuficient Token Balance`;
             }
             if (index === 2) {
               name = `${wallet.name} - Insuficient Ada balance`;
@@ -102,7 +103,7 @@ storiesOf('dApps|TransactionRequest', module)
           wallets={wallets}
           assets={allAssets}
           assetsAmounts={assetsAmounts}
-          adaAmount={new BigNumber(number('adaAmount', 100))}
+          adaAmount={new BigNumber(adaAmount)}
           transactionFee={new BigNumber(1)}
           additionalData={JSON.stringify(
             {

@@ -136,7 +136,7 @@ const DappTransactionRequest = observer((props: Props) => {
   if (walletsDropdownHasError) {
     hasAmountError = true;
   }
-  const walletsDropdownErrorMessage = walletsDropdownHasError ? (
+  const adaAmountErrorMessage = walletsDropdownHasError ? (
     <FormattedHTMLMessage
       {...messages.insufficientBalanceErrorMessage}
       values={{
@@ -185,7 +185,6 @@ const DappTransactionRequest = observer((props: Props) => {
           placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
           value={selectedWallet?.id}
           wallets={wallets}
-          error={walletsDropdownErrorMessage}
         />
       ) : (
         <Select
@@ -212,7 +211,7 @@ const DappTransactionRequest = observer((props: Props) => {
         assets={assets}
         assetsAmounts={assetsAmounts}
         wallet={selectedWallet}
-        adaError={walletsDropdownErrorMessage}
+        adaError={adaAmountErrorMessage}
       />
       <p className={styles.label}>
         {intl.formatMessage(messages.transactionFeeLabel)}
