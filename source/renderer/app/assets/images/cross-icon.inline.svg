@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>cross</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="zero-blocks-pool" transform="translate(-366.000000, -240.000000)" fill="#FAFBFC" fill-rule="nonzero">
+            <g id="pool-Copy-10" transform="translate(232.000000, 230.000000)">
+                <g id="zero-label" transform="translate(124.000000, 0.000000)">
+                    <g id="cross" transform="translate(10.000000, 10.000000)">
+                        <path d="M12.9481029,0 L16,3.05189712 L11.051,8 L16,12.9481029 L12.9481029,16 L8,11.051 L3.05189712,16 L0,12.9481029 L4.948,8 L0,3.05189712 L3.05189712,0 L8,4.948 L12.9481029,0 Z" id="Combined-Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

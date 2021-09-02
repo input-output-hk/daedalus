@@ -64,7 +64,7 @@
   .noDataDash {
     align-items: center;
     display: flex;
-    height: 27px;
+    height: 37px;
     justify-content: center;
 
     :global {
@@ -102,6 +102,17 @@
       padding: 0;
       text-align: center;
     }
+  }
+  .pledgeNotMetIcon {
+    @extend .cornerIcon;
+    padding-top: 4px;
+    svg {
+      height: 9px;
+      width: 9px;
+    }
+  }
+  .retiringIcon {
+    @extend .cornerIcon;
     svg {
       height: 15px;
       width: 15px;

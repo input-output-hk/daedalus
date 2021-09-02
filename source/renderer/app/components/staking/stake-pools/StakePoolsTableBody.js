@@ -127,6 +127,9 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
           </td>
           <td>
             <div className={styles.saturation}>
+              <div className={styles.saturationLabel}>
+                {`${toFixedUserFormat(saturation, 2)}%`}
+              </div>
               <div className={styles.progressBar}>
                 <div className={styles.progressBarContainer}>
                   <div
@@ -134,9 +137,6 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
                     style={{ width: `${parseFloat(saturation).toFixed(2)}%` }}
                   />
                 </div>
-              </div>
-              <div className={styles.saturationLabel}>
-                {`${toFixedUserFormat(saturation, 2)}%`}
               </div>
             </div>
           </td>

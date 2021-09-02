@@ -133,12 +133,22 @@
           padding: 0;
           text-align: center;
         }
+      }
+      .pledgeNotMetIcon {
+        @extend .cornerIcon;
+        padding-top: 4px;
+        svg {
+          height: 9px;
+          width: 9px;
+        }
+      }
+      .retiringIcon {
+        @extend .cornerIcon;
         svg {
           height: 15px;
           width: 15px;
         }
       }
-
       &:last-child {
         margin-right: 0;
       }
@@ -392,7 +402,7 @@
           }
 
           .noDataDash {
-            top: -5px;
+            top: -9px;
           }
 
           .saturationBar,

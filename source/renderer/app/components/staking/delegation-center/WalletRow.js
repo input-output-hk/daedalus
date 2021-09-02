@@ -19,7 +19,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import crossIcon from '../../../assets/images/cross-corner.inline.svg';
+import crossIcon from '../../../assets/images/cross-icon.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
@@ -278,9 +278,11 @@ export default class WalletRow extends Component<Props, WalletRowState> {
 
     const { pledgeNotMet, retiring } = stakePool;
 
-    const stakePoolRankingColor = !pledgeNotMet
-      ? getColorFromRange(stakePool.ranking, numberOfRankedStakePools)
-      : 'null';
+    const stakePoolRankingColor = getColorFromRange(
+      stakePool.ranking,
+      numberOfRankedStakePools,
+      pledgeNotMet
+    );
 
     const saturationStyles = classnames([
       styles.saturationBar,
@@ -307,7 +309,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       >
         <div className={styles.stakePoolTicker}>{stakePool.ticker}</div>
         {pledgeNotMet && (
-          <div className={styles.cornerIcon}>
+          <div className={styles.pledgeNotMetIcon}>
             <PopOver
               content={intl.formatMessage(messages.pledgeNotMetPopOver)}
               zIndex={10000}
@@ -317,7 +319,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
           </div>
         )}
         {!pledgeNotMet && retiring && (
-          <div className={styles.cornerIcon}>
+          <div className={styles.retiringIcon}>
             <SVGInline svg={clockIcon} />
           </div>
         )}

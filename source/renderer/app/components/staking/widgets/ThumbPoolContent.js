@@ -7,7 +7,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import crossIcon from '../../../assets/images/cross-corner.inline.svg';
+import crossIcon from '../../../assets/images/cross-icon.inline.svg';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -124,7 +124,7 @@ export default class ThumbPoolContent extends Component<Props> {
         {IS_RANKING_DATA_AVAILABLE ? (
           <>
             {pledgeNotMet && (
-              <div className={styles.cornerIcon}>
+              <div className={styles.pledgeNotMetIcon}>
                 <PopOver
                   content={intl.formatMessage(messages.pledgeNotMetPopOver)}
                   zIndex={10000}
@@ -134,7 +134,7 @@ export default class ThumbPoolContent extends Component<Props> {
               </div>
             )}
             {!pledgeNotMet && retiring && (
-              <div className={styles.cornerIcon}>
+              <div className={styles.retiringIcon}>
                 <SVGInline svg={clockIcon} />
               </div>
             )}
