@@ -43,9 +43,7 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
   const adaAmountContent = (
     <div className={adaAmountStyles}>
       <p>{intl.formatMessage(globalMessages.adaName)}</p>
-      <div className={styles.amount}>
-        {formattedWalletAmount(adaAmount, false)}
-      </div>
+      <div className={styles.amount}>{formattedWalletAmount(adaAmount)}</div>
     </div>
   );
 

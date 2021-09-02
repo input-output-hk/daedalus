@@ -42,7 +42,6 @@ import type { AssetToken, ApiTokens } from '../../api/assets/types';
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  currencyUnit: string,
   currencyMaxIntegerDigits: number,
   currencyMaxFractionalDigits: number,
   currentNumberFormat: string,
@@ -884,7 +883,6 @@ export default class WalletSendForm extends Component<Props, State> {
       isTransactionFeeCalculated,
     } = this.state;
     const {
-      currencyUnit,
       currencyMaxFractionalDigits,
       hwDeviceStatus,
       isHardwareWallet,
@@ -970,7 +968,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletSendAssetsConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
-            currencyUnit={currencyUnit}
             receiver={receiver}
             selectedAssets={this.selectedAssets}
             assetsAmounts={this.selectedAssetsAmounts}

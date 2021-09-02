@@ -221,7 +221,6 @@ storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send - No Assets', () => (
     <WalletSendForm
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -246,7 +245,6 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
     <WalletSendForm
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -271,7 +269,6 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
     <WalletSendForm
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -296,7 +293,6 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
     <WalletSendForm
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -321,7 +317,6 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Send - With Assets', () => (
     <WalletSendForm
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -357,7 +352,6 @@ storiesOf('Wallets|Send', module)
     return (
       <div>
         <WalletSendAssetsConfirmationDialog
-          currencyUnit="Ada"
           amount="20.000000"
           wallet={wallet}
           totalAmount={new BigNumber('21.000000')}
@@ -399,7 +393,6 @@ storiesOf('Wallets|Send', module)
           amount="20.000000"
           totalAmount={new BigNumber('21.000000')}
           wallet={wallet}
-          currencyUnit="Ada"
           sender={
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }
