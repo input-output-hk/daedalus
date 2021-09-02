@@ -47,4 +47,12 @@
       }
     }
   }
+  .adaErrorPopOver {
+    background-color: var(--theme-color-error) !important;
+    :global {
+      .tippy-arrow:before {
+        background-color: var(--theme-color-error) !important;
+      }
+    }
+  }
 }

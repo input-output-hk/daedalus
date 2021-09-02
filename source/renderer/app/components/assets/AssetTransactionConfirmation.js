@@ -128,16 +128,14 @@ const AssetTransactionConfirmation = observer((props: Props) => {
           {intl.formatMessage(messages.unformattedAmountLabel)}
           <PopOver
             content={
-              <div className="UnformattedAmountTooltip">
-                <FormattedHTMLMessage
-                  {...messages[
-                    isHardwareWallet
-                      ? 'unformattedAmountMessageForHardwareWallets'
-                      : 'unformattedAmountMessageForSoftwareWallets'
-                  ]}
-                  tagName="div"
-                />
-              </div>
+              <FormattedHTMLMessage
+                {...messages[
+                  isHardwareWallet
+                    ? 'unformattedAmountMessageForHardwareWallets'
+                    : 'unformattedAmountMessageForSoftwareWallets'
+                ]}
+                tagName="div"
+              />
             }
           >
             <div className={styles.questionMark}>

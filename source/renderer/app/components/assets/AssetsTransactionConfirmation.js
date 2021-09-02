@@ -2,6 +2,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { intlShape, injectIntl } from 'react-intl';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import styles from './AssetsTransactionConfirmation.scss';
@@ -20,24 +21,47 @@ type Props = {
   intl: intlShape.isRequired,
   wallet?: ?Wallet,
   getAssetByUniqueId: Function,
+  adaError?: string,
 };
 
 const AssetsTransactionConfirmation = observer((props: Props) => {
-  const { adaAmount, assets, assetsAmounts, className, intl, wallet } = props;
+  const {
+    adaAmount,
+    assets,
+    assetsAmounts,
+    className,
+    intl,
+    wallet,
+    adaError,
+  } = props;
   const insufficientAdaAmount = wallet?.amount.isLessThan(adaAmount);
   const componentStyles = classnames([styles.component, className]);
   const adaAmountStyles = classnames([
     styles.adaAmount,
     insufficientAdaAmount ? styles.adaAmountError : null,
   ]);
+  const adaAmountContent = (
+    <div className={adaAmountStyles}>
+      <p>{intl.formatMessage(globalMessages.adaName)}</p>
+      <div className={styles.amount}>
+        {formattedWalletAmount(adaAmount, false)}
+      </div>
+    </div>
+  );
+
   return (
     <div className={componentStyles}>
-      <div className={adaAmountStyles}>
-        <p>{intl.formatMessage(globalMessages.adaName)}</p>
-        <div className={styles.amount}>
-          {formattedWalletAmount(adaAmount, false)}
-        </div>
-      </div>
+      {adaError ? (
+        <PopOver
+          content={adaError}
+          className={styles.adaErrorPopOver}
+          appendTo="parent"
+        >
+          {adaAmountContent}
+        </PopOver>
+      ) : (
+        adaAmountContent
+      )}
       {assets.map((asset, index) => (
         <AssetTransactionConfirmation
           key={asset.uniqueId}

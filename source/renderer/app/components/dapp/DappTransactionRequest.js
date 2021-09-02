@@ -212,6 +212,7 @@ const DappTransactionRequest = observer((props: Props) => {
         assets={assets}
         assetsAmounts={assetsAmounts}
         wallet={selectedWallet}
+        adaError={walletsDropdownErrorMessage}
       />
       <p className={styles.label}>
         {intl.formatMessage(messages.transactionFeeLabel)}
