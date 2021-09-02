@@ -40,26 +40,28 @@ const AssetsTransactionConfirmation = observer((props: Props) => {
     styles.adaAmount,
     insufficientAdaAmount ? styles.adaAmountError : null,
   ]);
-  const adaAmountContent = (
-    <div className={adaAmountStyles}>
-      <p>{intl.formatMessage(globalMessages.adaName)}</p>
-      <div className={styles.amount}>{formattedWalletAmount(adaAmount)}</div>
-    </div>
-  );
 
   return (
     <div className={componentStyles}>
-      {adaError ? (
-        <PopOver
-          content={adaError}
-          className={styles.adaErrorPopOver}
-          appendTo="parent"
-        >
-          {adaAmountContent}
-        </PopOver>
-      ) : (
-        adaAmountContent
-      )}
+      <div className={adaAmountStyles}>
+        <p>{intl.formatMessage(globalMessages.adaName)}</p>
+        <div className={styles.amount}>
+          {adaError ? (
+            <PopOver
+              content={adaError}
+              className={styles.adaErrorPopOver}
+              appendTo="parent"
+              visible
+              placement="left-start"
+              offset={[-8, 23]}
+            >
+              {formattedWalletAmount(adaAmount)}
+            </PopOver>
+          ) : (
+            formattedWalletAmount(adaAmount)
+          )}
+        </div>
+      </div>
       {assets.map((asset, index) => (
         <AssetTransactionConfirmation
           key={asset.uniqueId}
