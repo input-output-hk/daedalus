@@ -68,6 +68,9 @@
       overflow: auto;
       padding: 9px 12px;
       user-select: text;
+      &::-webkit-scrollbar-corner {
+        background: transparent !important;
+      }
     }
   }
   .toggleButton {
