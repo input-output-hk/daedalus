@@ -20,7 +20,7 @@ const topBarTestEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
-    isFullyDecentralized={boolean('isFullyDecentralized', false)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
@@ -44,7 +44,7 @@ const topBarStagingEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
-    isFullyDecentralized={boolean('isFullyDecentralized', false)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <WalletTestEnvironmentLabel network="staging" />
     <NodeSyncStatusIcon
@@ -68,7 +68,7 @@ const topBarProductionEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
-    isFullyDecentralized={boolean('isFullyDecentralized', false)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
     <NewsFeedIcon
