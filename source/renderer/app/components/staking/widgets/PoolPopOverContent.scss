@@ -228,7 +228,7 @@ $tooltip-width: 280px;
 .description {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   font-size: 14px;
-  line-height: 1.36;
+  line-height: 20px;
   margin-bottom: 4px;
   max-height: 57px;
   overflow-y: auto;
@@ -267,7 +267,7 @@ $tooltip-width: 280px;
     }
 
     & > div {
-      height: 19px;
+      height: 20px;
       margin-bottom: 6px;
       white-space: nowrap;
     }
@@ -309,7 +309,7 @@ $tooltip-width: 280px;
       }
 
       .fieldLabel {
-        line-height: 1;
+        line-height: 20px;
         margin-right: 4px;
         opacity: 0.8;
       }
