@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -31,6 +32,11 @@ const messages = defineMessages({
     defaultMessage:
       '!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.',
     description: '"pledgeNotMet" popover for the Stake Pools Tooltip page.',
+  },
+  retirement: {
+    id: 'staking.stakePools.tooltip.retirement',
+    defaultMessage: '!!!Retirement in {retirementFromNow}',
+    description: '"Retirement" for the Stake Pools Tooltip page.',
   },
 });
 
@@ -88,6 +94,10 @@ export default class ThumbPoolContent extends Component<Props> {
       pledgeNotMet ? styles.pledgeNotMet : null,
     ]);
 
+    const retirementFromNow = retiring
+      ? moment(retiring).locale(intl.locale).fromNow(true)
+      : '';
+
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
@@ -135,7 +145,14 @@ export default class ThumbPoolContent extends Component<Props> {
             )}
             {!pledgeNotMet && retiring && (
               <div className={styles.retiringIcon}>
-                <SVGInline svg={clockIcon} />
+                <PopOver
+                  content={intl.formatMessage(messages.retirement, {
+                    retirementFromNow,
+                  })}
+                  zIndex={10000}
+                >
+                  <SVGInline svg={clockIcon} />
+                </PopOver>
               </div>
             )}
 

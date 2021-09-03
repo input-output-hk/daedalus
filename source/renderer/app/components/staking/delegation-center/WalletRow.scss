@@ -119,7 +119,7 @@
 
       .cornerIcon {
         background: var(--theme-staking-stake-pool-retirement-background-color);
-        border-radius: 0 2px 0 4px;
+        border-radius: 0 4px;
         height: 18px;
         position: absolute;
         right: 0;
@@ -144,12 +144,9 @@
       }
       .retiringIcon {
         @extend .cornerIcon;
-        > span {
-          margin-top: 1px;
-        }
         svg {
-          height: 15px;
-          width: 15px;
+          height: 17px;
+          width: 17px;
         }
       }
       &:last-child {

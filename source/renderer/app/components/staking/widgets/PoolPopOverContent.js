@@ -483,10 +483,9 @@ export default class PoolPopOverContent extends Component<Props, State> {
           )}
           {retiring && (
             <div className={styles.retirement}>
-              <FormattedMessage
-                {...messages.retirement}
-                values={{ retirementFromNow }}
-              />
+              {intl.formatMessage(messages.retirement, {
+                retirementFromNow,
+              })}
             </div>
           )}
           <PopOver

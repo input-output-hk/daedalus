@@ -93,15 +93,13 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
       if (pledgeNotMet) {
         rankValue = '–';
         pledgeValue = (
-          <span className={styles.pledgeNotMetIcon}>
+          <PopOver
+            content={intl.formatMessage(messages.pledgeNotMetPopOver)}
+            className={styles.pledgeNotMetPopOver}
+          >
             {formattedWalletAmount(pledge, false, false)}
-            <PopOver
-              content={intl.formatMessage(messages.pledgeNotMetPopOver)}
-              className={styles.pledgeNotMetPopOver}
-            >
-              <SVGInline svg={pledgeNotMetIcon} />
-            </PopOver>
-          </span>
+            <SVGInline svg={pledgeNotMetIcon} />
+          </PopOver>
         );
       }
 
@@ -144,7 +142,9 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
           <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
           <td>{toFixedUserFormat(producedBlocks, 0)}</td>
           <td>{formattedPotentialRewards}</td>
-          <td>{pledgeValue}</td>
+          <td className={pledgeNotMet ? styles.pledgeNotMet : null}>
+            {pledgeValue}
+          </td>
           <td>
             {retirement ? (
               <span className={styles.retiring}>{retirement}</span>
