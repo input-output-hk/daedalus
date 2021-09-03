@@ -3272,17 +3272,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for selfnode with version.",
+        "defaultMessage": "!!!Alonzo Purple",
+        "description": "Label for alonzo_purple with version.",
         "end": {
           "column": 3,
           "line": 37
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
+        "id": "test.environment.alonzoPurpleLabel",
+        "start": {
+          "column": 17,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.selfnodeLabel",
         "start": {
           "column": 12,
-          "line": 33
+          "line": 38
         }
       },
       {
@@ -3290,13 +3304,13 @@
         "description": "Label for development with version.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 47
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.developmentLabel",
         "start": {
           "column": 15,
-          "line": 38
+          "line": 43
         }
       }
     ],
@@ -4748,176 +4762,87 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
-        "description": "Headline for the Decentralization progress notification.",
+        "defaultMessage": "!!!Alonzo upgrade",
+        "description": "Headline for the \"Staking Info\" page screen.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 16
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.heading",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.heading",
         "start": {
           "column": 11,
-          "line": 10
+          "line": 12
         }
       },
       {
-        "defaultMessage": "!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.",
-        "description": "Info description for the Decentralization progress notification.",
+        "defaultMessage": "!!!The ‘Alonzo’ protocol upgrade will bring highly-anticipated new smart contract capabilities to Cardano, by integrating Plutus scripts onto the blockchain. This important milestone will open up a whole new world of smart contracts, DeFi capabilities, and dApp development on Cardano.",
+        "description": "Info description for the \"Staking Info\" page screen.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.description",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.description.before",
         "start": {
-          "column": 15,
-          "line": 15
+          "column": 21,
+          "line": 17
         }
       },
       {
-        "defaultMessage": "!!!Currently, {percentage}% of the blocks are produced by the stake pools.",
-        "description": "Percentage info description for the Decentralization progress notification.",
+        "defaultMessage": "!!!The ‘Alonzo’ protocol upgrade is now live on Cardano, enabling highly-anticipated new smart contract capabilities, by integrating Plutus scripts onto the blockchain. This important milestone opens up a whole new world of smart contracts, DeFi capabilities, and dApp development on Cardano.",
+        "description": "Info description for the \"Staking Info\" page screen.",
         "end": {
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.percentage",
+        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
+        "id": "staking.infoCountdown.description.after",
         "start": {
-          "column": 14,
-          "line": 22
+          "column": 20,
+          "line": 23
         }
       },
       {
-        "defaultMessage": "!!!Learn more",
-        "description": "Button Label for the Decentralization progress notification.",
+        "defaultMessage": "!!!Alonzo upgrade in",
+        "description": "Countdown Title for the \"Staking Info\" page screen.",
         "end": {
           "column": 3,
           "line": 33
-        },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.buttonLabel",
-        "start": {
-          "column": 15,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Learn more\" link URL in the staking info page",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
-        "id": "staking.info.learnMore.linkUrl",
-        "start": {
-          "column": 20,
-          "line": 34
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/info/StakingInfo.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Fully decentralized block production",
-        "description": "Headline for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.infoCountdown.before.heading",
-        "start": {
-          "column": 17,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!<p>Cardano is fast approaching full decentralization for block production. Soon, all blocks will be produced by Cardano’s network of stake pools. </p> <p>Currently, stake pools are producing {percentageDecentralized}% of blocks, while federated nodes are just producing {percentageFederated}%.</p> <p>At the boundary of Cardano epoch #{epochNumber}, stake pools will start producing 100% of blocks and full block decentralization will be achieved.</p>",
-        "description": "Info description for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.infoCountdown.before.description",
-        "start": {
-          "column": 21,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
-        "description": "Headline for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.infoCountdown.after.heading",
-        "start": {
-          "column": 16,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.",
-        "description": "Info description for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
-        "id": "staking.infoCountdown.after.description",
-        "start": {
-          "column": 20,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Fully decentralized block production in",
-        "description": "Countdown Title for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 42
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.infoCountdown.countdownTitle",
         "start": {
           "column": 18,
-          "line": 37
+          "line": 29
         }
       },
       {
         "defaultMessage": "!!!Learn more",
-        "description": "Button Label for the Decentralization progress notification.",
+        "description": "Button Label for the \"Staking Info\" page screen.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.infoCountdown.buttonLabel",
         "start": {
           "column": 15,
-          "line": 43
+          "line": 34
         }
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
-        "description": "\"Learn more\" link URL in the staking info page",
+        "defaultMessage": "!!!https://iohk.io/en/blog/posts/2021/04/08/smart-contracts-%E2%80%93-here-we-come/",
+        "description": "\"Learn more\" link URL in the \"Staking Info\" screen.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/info/StakingInfoCountdown.js",
         "id": "staking.infoCountdown.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 48
+          "line": 39
         }
       }
     ],
@@ -7923,7 +7848,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please enter a PIN for your Fund5 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
+        "defaultMessage": "!!!Please enter a PIN for your Fund6 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
@@ -8082,7 +8007,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund5.",
+        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund6.",
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
@@ -8129,7 +8054,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund5 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
+        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund6 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
@@ -8246,7 +8171,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cancel Fund5 voting registration?",
+        "defaultMessage": "!!!Cancel Fund6 voting registration?",
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8260,7 +8185,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Are you sure that you want to cancel Fund5 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
+        "defaultMessage": "!!!Are you sure that you want to cancel Fund6 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8307,7 +8232,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register for Fund5 voting",
+        "defaultMessage": "!!!Register for Fund6 voting",
         "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
@@ -8340,7 +8265,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register to vote on Fund5",
+        "defaultMessage": "!!!Register to vote on Fund6",
         "description": "Headline for voting registration steps",
         "end": {
           "column": 3,
@@ -8354,7 +8279,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Fund5 Voting Registration Ended",
+        "defaultMessage": "!!!Fund6 Voting Registration Ended",
         "description": "Headline for ended voting registration",
         "end": {
           "column": 3,
@@ -8368,7 +8293,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund5 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund5, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund5 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
+        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund6 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund6, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund6 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
         "description": "Description for ended voting registration",
         "end": {
           "column": 3,
@@ -8396,7 +8321,7 @@
         }
       },
       {
-        "defaultMessage": "!!!$425.000 worth of ada rewards will be distributed between ada holders who register their vote.",
+        "defaultMessage": "!!!$520.000 worth of ada rewards will be distributed between ada holders who register their vote.",
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
@@ -8452,7 +8377,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Fund5 FAQs",
+        "defaultMessage": "!!!Fund6 FAQs",
         "description": "Learn more link label for ended registration",
         "end": {
           "column": 3,
@@ -8508,7 +8433,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To register to vote for Catalyst Fund5 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
+        "defaultMessage": "!!!To register to vote for Catalyst Fund6 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
         "description": "bottomContentDescription for voting registration steps",
         "end": {
           "column": 3,
@@ -8522,7 +8447,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund5 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
+        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund6 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
         "description": "bottomContentDescription for ended registration",
         "end": {
           "column": 3,
@@ -8597,7 +8522,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting registration for Fund5 is not available as you currently do not have any Shelley-compatible wallets.",
+        "defaultMessage": "!!!Voting registration for Fund6 is not available as you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the voting info page.",
         "end": {
           "column": 3,
@@ -8658,7 +8583,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Project Catalyst Fund4 has now ended. Fund5 is currently in preparation, voting registration is not available yet.",
+        "defaultMessage": "!!!Project Catalyst Fund5 has now ended. Fund6 is currently in preparation, voting registration is not available yet.",
         "description": "First paragraph on the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
@@ -16579,17 +16504,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for selfnode with version.",
+        "defaultMessage": "!!!Alonzo Purple",
+        "description": "Label for alonzo_purple with version.",
         "end": {
           "column": 3,
           "line": 32
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.alonzoPurpleLabel",
+        "start": {
+          "column": 17,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.selfnodeLabel",
         "start": {
           "column": 12,
-          "line": 28
+          "line": 33
         }
       },
       {
@@ -16597,13 +16536,13 @@
         "description": "Label for development with version.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 42
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.developmentLabel",
         "start": {
           "column": 15,
-          "line": 33
+          "line": 38
         }
       }
     ],
@@ -17656,17 +17595,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Development",
-        "description": "\"development\" Cardano network",
+        "defaultMessage": "!!!Alonzo Purple",
+        "description": "\"Alonzo Purple\" Cardano network",
         "end": {
           "column": 3,
           "line": 220
         },
         "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "environment.network.alonzo_purple",
+        "start": {
+          "column": 25,
+          "line": 216
+        }
+      },
+      {
+        "defaultMessage": "!!!Development",
+        "description": "\"development\" Cardano network",
+        "end": {
+          "column": 3,
+          "line": 225
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 216
+          "line": 221
         }
       },
       {
@@ -17674,13 +17627,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 225
+          "line": 230
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 221
+          "line": 226
         }
       },
       {
@@ -17688,13 +17641,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 230
+          "line": 235
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 226
+          "line": 231
         }
       },
       {
@@ -17702,13 +17655,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 235
+          "line": 240
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 231
+          "line": 236
         }
       },
       {
@@ -17716,13 +17669,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 240
+          "line": 245
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 236
+          "line": 241
         }
       },
       {
@@ -17730,13 +17683,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 245
+          "line": 250
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 241
+          "line": 246
         }
       },
       {
@@ -17744,13 +17697,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 250
+          "line": 255
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 246
+          "line": 251
         }
       },
       {
@@ -17758,13 +17711,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 255
+          "line": 260
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 251
+          "line": 256
         }
       },
       {
@@ -17772,13 +17725,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 260
+          "line": 265
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 256
+          "line": 261
         }
       },
       {
@@ -17786,13 +17739,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 265
+          "line": 270
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 261
+          "line": 266
         }
       },
       {
@@ -17800,13 +17753,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 270
+          "line": 275
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 266
+          "line": 271
         }
       },
       {
@@ -17814,13 +17767,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 275
+          "line": 280
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 271
+          "line": 276
         }
       },
       {
@@ -17828,13 +17781,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 280
+          "line": 285
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 276
+          "line": 281
         }
       },
       {
@@ -17842,13 +17795,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 285
+          "line": 290
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 281
+          "line": 286
         }
       },
       {
@@ -17856,13 +17809,13 @@
         "description": "Reveal label.",
         "end": {
           "column": 3,
-          "line": 290
+          "line": 295
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reveal",
         "start": {
           "column": 10,
-          "line": 286
+          "line": 291
         }
       },
       {
@@ -17870,13 +17823,13 @@
         "description": "Hide label.",
         "end": {
           "column": 3,
-          "line": 295
+          "line": 300
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.hide",
         "start": {
           "column": 8,
-          "line": 291
+          "line": 296
         }
       },
       {
@@ -17884,13 +17837,13 @@
         "description": "Copy label.",
         "end": {
           "column": 3,
-          "line": 300
+          "line": 305
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.copy",
         "start": {
           "column": 8,
-          "line": 296
+          "line": 301
         }
       },
       {
@@ -17898,13 +17851,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 307
+          "line": 312
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 301
+          "line": 306
         }
       },
       {
@@ -17912,13 +17865,13 @@
         "description": "Dropdown search \"No results\" message",
         "end": {
           "column": 3,
-          "line": 312
+          "line": 317
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.search.noResultsMessage",
         "start": {
           "column": 26,
-          "line": 308
+          "line": 313
         }
       }
     ],
