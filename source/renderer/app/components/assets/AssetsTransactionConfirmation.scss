@@ -47,15 +47,9 @@
         color: var(--theme-color-error);
       }
     }
-    &:hover {
-      .adaErrorPopOver {
-        display: block;
-      }
-    }
   }
   .adaErrorPopOver {
     background-color: var(--theme-color-error) !important;
-    display: none;
     :global {
       .tippy-arrow:before {
         background-color: var(--theme-color-error) !important;
