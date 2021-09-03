@@ -128,8 +128,8 @@
 
         > span {
           display: block;
+          height: 18px;
           line-height: 0;
-          margin: 1px 0 0;
           padding: 0;
           text-align: center;
         }
@@ -138,12 +138,15 @@
         @extend .cornerIcon;
         padding-top: 4px;
         svg {
-          height: 9px;
-          width: 9px;
+          height: 10px;
+          width: 10px;
         }
       }
       .retiringIcon {
         @extend .cornerIcon;
+        > span {
+          margin-top: 1px;
+        }
         svg {
           height: 15px;
           width: 15px;

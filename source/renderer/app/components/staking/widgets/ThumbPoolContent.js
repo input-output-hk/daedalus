@@ -7,7 +7,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import crossIcon from '../../../assets/images/cross-icon.inline.svg';
+import forbiddenIcon from '../../../assets/images/forbidden-icon.inline.svg';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -129,7 +129,7 @@ export default class ThumbPoolContent extends Component<Props> {
                   content={intl.formatMessage(messages.pledgeNotMetPopOver)}
                   zIndex={10000}
                 >
-                  <SVGInline svg={crossIcon} />
+                  <SVGInline svg={forbiddenIcon} />
                 </PopOver>
               </div>
             )}

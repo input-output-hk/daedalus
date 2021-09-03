@@ -19,7 +19,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import crossIcon from '../../../assets/images/cross-icon.inline.svg';
+import forbiddenIcon from '../../../assets/images/forbidden-icon.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
@@ -314,7 +314,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
               content={intl.formatMessage(messages.pledgeNotMetPopOver)}
               zIndex={10000}
             >
-              <SVGInline svg={crossIcon} />
+              <SVGInline svg={forbiddenIcon} />
             </PopOver>
           </div>
         )}
