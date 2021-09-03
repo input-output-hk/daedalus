@@ -57,6 +57,10 @@ const buildMainWatch = () => (done) =>
 const buildRenderer = () => () =>
   rendererInputSource()
     .pipe(webpackStream(rendererWebpackConfig, webpack))
+    .on('error', function (err) {
+      console.error('WEBPACK ERROR', err);
+      this.emit('end'); // Don't stop the rest of the task
+    })
     .pipe(rendererOutputDestination());
 
 const buildRendererWatch = () => (done) =>

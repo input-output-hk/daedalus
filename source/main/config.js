@@ -20,25 +20,25 @@ const {
 const { LAUNCHER_CONFIG } = process.env;
 const isStartedByLauncher = !!LAUNCHER_CONFIG;
 const isWindows = process.platform === 'win32';
-if (!isStartedByLauncher) {
-  const dialogTitle = 'Daedalus improperly started!';
-  let dialogMessage;
-  if (isProduction) {
-    dialogMessage = isWindows
-      ? 'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.'
-      : 'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
-  } else {
-    dialogMessage =
-      'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
-  }
-  try {
-    // app may not be available at this moment so we need to use try-catch
-    dialog.showErrorBox(dialogTitle, dialogMessage);
-    app.exit(1);
-  } catch (e) {
-    throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
-  }
-}
+// if (!isStartedByLauncher) {
+//   const dialogTitle = 'Daedalus improperly started!';
+//   let dialogMessage;
+//   if (isProduction) {
+//     dialogMessage = isWindows
+//       ? 'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.'
+//       : 'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
+//   } else {
+//     dialogMessage =
+//       'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
+//   }
+//   try {
+//     // app may not be available at this moment so we need to use try-catch
+//     dialog.showErrorBox(dialogTitle, dialogMessage);
+//     app.exit(1);
+//   } catch (e) {
+//     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
+//   }
+// }
 
 export type NodeConfig = {
   configurationDir: string,
@@ -110,9 +110,69 @@ export const windowOptions: WindowOptionsType = {
   useContentSize: true,
 };
 
-export const launcherConfig: LauncherConfig = readLauncherConfig(
-  LAUNCHER_CONFIG
-);
+export const launcherConfig: LauncherConfig = {
+  cardanoAddressBin: 'cardano-address',
+  cliBin: 'cardano-cli',
+  cluster: 'testnet',
+  daedalusBin: 'Frontend',
+  isFlight: false,
+  isStaging: false,
+  launcherLogsPrefix:
+    '%UserProfile%\\AppData\\Roaming\\Daedalus Testnet\\Logs\\pub',
+  legacySecretKey: 'Secrets-1.0/secret.key',
+  legacyStateDir: '%UserProfile%\\AppData\\Roaming\\Daedalus Testnet',
+  legacyWalletDB: 'Wallet-1.0',
+  logsPrefix: '%UserProfile%\\AppData\\Roaming\\Daedalus Testnet\\Logs',
+  metadataUrl: 'https://metadata.cardano-testnet.iohkdev.io',
+  networkName: 'testnet',
+  nodeBin: 'cardano-node',
+  nodeConfig: {
+    configurationDir: '',
+    kind: 'shelley',
+    network: {
+      configFile:
+        '/nix/store/a3j4hxvgi4ajr8dgsjdcjx4jyp887ya8-node-cfg-files/config.yaml',
+      genesisFile:
+        '/nix/store/a3j4hxvgi4ajr8dgsjdcjx4jyp887ya8-node-cfg-files/genesis.json',
+      topologyFile:
+        '/nix/store/a3j4hxvgi4ajr8dgsjdcjx4jyp887ya8-node-cfg-files/topology.yaml',
+    },
+  },
+  nodeImplementation: 'cardano',
+  smashUrl: 'https://smash.cardano-testnet.iohkdev.io',
+  stateDir: '%UserProfile%\\AppData\\Roaming\\Daedalus Testnet',
+  syncTolerance: '300s',
+  tlsConfig: {
+    ca: {
+      commonName: 'Daedalus Self-Signed Root CA',
+      expiryDays: 3650,
+      organization: 'Daedalus',
+    },
+    clients: [
+      {
+        commonName: 'Daedalus Frontend',
+        expiryDays: 365,
+        organization: 'Daedalus',
+      },
+    ],
+    server: {
+      altDNS: ['localhost', 'localhost.localdomain', '127.0.0.1', '::1'],
+      commonName: 'Daedalus Wallet Backend',
+      expiryDays: 365,
+      organization: 'Daedalus',
+    },
+  },
+  tlsPath: '%UserProfile%\\AppData\\Roaming\\Daedalus Testnet\\tls',
+  updateArchive: '',
+  updateRunnerBin: 'update-runner',
+  updateWindowsRunner: '',
+  updaterArgs: [],
+  updaterPath: '',
+  walletBin: 'cardano-wallet',
+  walletLogging: false,
+  workingDir: '%UserProfile%\\AppData\\Roaming\\Daedalus Testnet',
+};
+
 export const {
   cluster,
   nodeImplementation,
