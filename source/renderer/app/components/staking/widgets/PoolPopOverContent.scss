@@ -88,7 +88,7 @@ $tooltip-width: 280px;
   font-size: 10px;
   height: 14px;
   line-height: 14px;
-  margin: -8px 0 12px;
+  margin-bottom: 12px;
   padding: 3px 0;
   transition: margin 0.4s ease-in-out;
   word-break: break-all;
@@ -200,7 +200,7 @@ $tooltip-width: 280px;
   display: inline-block;
   font-size: 14px;
   line-height: 1.36;
-  margin-bottom: 9px;
+  margin-right: 8px;
   opacity: 0.6;
   vertical-align: middle;
 }
@@ -214,12 +214,15 @@ $tooltip-width: 280px;
   color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
   cursor: default;
   display: inline-block;
-  font-size: 10px;
-  margin-bottom: 9px;
-  margin-left: 8px;
+  font-family: var(--font-bold);
+  font-size: 8px;
+  line-height: 10px;
+  margin-bottom: 0px;
+  margin-right: 8px;
   padding: 3px 9px;
-  vertical-align: middle;
+  text-transform: uppercase;
   user-select: none;
+  vertical-align: middle;
 }
 
 .description {

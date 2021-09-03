@@ -471,14 +471,6 @@ export default class PoolPopOverContent extends Component<Props, State> {
             <SVGInline svg={closeCross} />
           </button>
           <div className={styles.ticker}>{ticker}</div>
-          {!pledgeNotMet && retiring && (
-            <div className={styles.retirement}>
-              <FormattedMessage
-                {...messages.retirement}
-                values={{ retirementFromNow }}
-              />
-            </div>
-          )}
           {pledgeNotMet && (
             <div className={styles.pledgeNotMet}>
               <PopOver
@@ -487,6 +479,14 @@ export default class PoolPopOverContent extends Component<Props, State> {
               >
                 {intl.formatMessage(messages.pledgeNotMetLabel)}
               </PopOver>
+            </div>
+          )}
+          {retiring && (
+            <div className={styles.retirement}>
+              <FormattedMessage
+                {...messages.retirement}
+                values={{ retirementFromNow }}
+              />
             </div>
           )}
           <PopOver
