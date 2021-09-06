@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
@@ -99,10 +99,11 @@ const DappTransactionRequest = observer((props: Props) => {
     false
   );
   const [isMetadataVisible, toggleMetadata] = useState<boolean>(false);
-  const getToggleLabel = (isVisible: boolean) =>
+  const getToggleLabel = useCallback((isVisible: boolean) =>
     isVisible
       ? intl.formatMessage(globalMessages.hide)
-      : intl.formatMessage(globalMessages.view);
+      : intl.formatMessage(globalMessages.view)
+  );
   const {
     adaAmount,
     address,
@@ -121,14 +122,18 @@ const DappTransactionRequest = observer((props: Props) => {
     wallets,
   } = props;
   let hasAmountError = false;
-  const hasTokenError = assets.reduce((result, token, index) => {
-    if (!selectedWallet) return false;
-    if (result) return true;
-    return (
-      isTokenMissingInWallet(selectedWallet, token) ||
-      !tokenHasBalance(token, assetsAmounts[index])
-    );
-  }, false);
+  const hasTokenError = useMemo(
+    () =>
+      assets.reduce((result, token, index) => {
+        if (!selectedWallet) return false;
+        if (result) return true;
+        return (
+          isTokenMissingInWallet(selectedWallet, token) ||
+          !tokenHasBalance(token, assetsAmounts[index])
+        );
+      }, false),
+    [assets, selectedWallet]
+  );
   const adaBalanceRequired = adaAmount.plus(transactionFee);
   const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
     adaBalanceRequired
