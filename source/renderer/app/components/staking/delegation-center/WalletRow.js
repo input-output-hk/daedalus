@@ -308,17 +308,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         showWithSelectButton={showWithSelectButton}
       >
         <div className={styles.stakePoolTicker}>{stakePool.ticker}</div>
-        {pledgeNotMet && (
-          <div className={styles.pledgeNotMetIcon}>
-            <PopOver
-              content={intl.formatMessage(messages.pledgeNotMetPopOver)}
-              zIndex={10000}
-            >
-              <SVGInline svg={forbiddenIcon} />
-            </PopOver>
-          </div>
-        )}
-        {!pledgeNotMet && retiring && (
+        {retiring && (
           <div className={styles.retiringIcon}>
             <SVGInline svg={clockIcon} />
           </div>
@@ -332,7 +322,12 @@ export default class WalletRow extends Component<Props, WalletRowState> {
           </div>
         ) : (
           <div className={styles.noDataDash}>
-            <SVGInline svg={noDataDashBigImage} />
+            <PopOver
+              content={intl.formatMessage(messages.pledgeNotMetPopOver)}
+              zIndex={10000}
+            >
+              <SVGInline svg={noDataDashBigImage} />
+            </PopOver>
           </div>
         )}
         {IS_SATURATION_DATA_AVAILABLE && !pledgeNotMet && (
