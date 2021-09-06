@@ -482,7 +482,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         )}
         <SVGInline svg={arrow} className={styles.arrow} />
 
-        {/* MIDDLE COLUM - Future Epoch */}
+        {/* RIGHT COLUM - Future Epoch */}
         <div className={futureStakePoolTileStyles}>
           {futurePendingDelegatedStakePoolId
             ? this.renderInteractiveDelegatedTile(
