@@ -1,9 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { intlShape } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import globalMessages from '../../i18n/global-messages';
 import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
@@ -20,10 +18,6 @@ type Props = InjectedProps;
 @observer
 export default class WalletSendPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
-
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
 
   calculateTransactionFee = async (params: {
     walletId: string,
@@ -84,7 +78,6 @@ export default class WalletSendPage extends Component<Props> {
   };
 
   render() {
-    const { intl } = this.context;
     const { stores, actions } = this.props;
     const {
       uiDialogs,
