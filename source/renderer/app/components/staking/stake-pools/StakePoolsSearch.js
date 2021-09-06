@@ -12,7 +12,6 @@ import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
 import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
 import listIcon from '../../../assets/images/list-ic.inline.svg';
-import { IS_GRID_REWARDS_VIEW_AVAILABLE } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -57,11 +56,9 @@ type Props = {
   placeholder?: string,
   isListView?: boolean,
   isGridView?: boolean,
-  isGridRewardsView?: boolean,
   onSearch: Function,
   onClearSearch: Function,
   onGridView?: Function,
-  onGridRewardsView?: Function,
   onListView?: Function,
   search: string,
 };
@@ -93,13 +90,11 @@ export class StakePoolsSearch extends Component<Props> {
       label,
       onSearch,
       onGridView,
-      onGridRewardsView,
       onListView,
       placeholder,
       search,
       isListView,
       isGridView,
-      isGridRewardsView,
     } = this.props;
 
     const gridButtonClasses = classnames([
@@ -107,28 +102,21 @@ export class StakePoolsSearch extends Component<Props> {
       isGridView ? styles.selected : null,
     ]);
 
-    const gridRewardsButtonClasses = classnames([
-      styles.gridRewardsView,
-      isGridRewardsView ? styles.selected : null,
-    ]);
-
     const listButtonClasses = classnames([
       styles.listView,
       isListView ? styles.selected : null,
     ]);
 
-    const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
+    const isBigSearchComponent = isListView || isGridView;
 
     const searchInputClases = classnames([
       styles.searchInput,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
-      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
     ]);
 
     const clearSearchClasses = classnames([
       styles.inputExtras,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
-      IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
     ]);
 
     return (
@@ -174,18 +162,6 @@ export class StakePoolsSearch extends Component<Props> {
                   <SVGInline svg={gridIcon} />
                 </button>
               </PopOver>
-              {IS_GRID_REWARDS_VIEW_AVAILABLE && (
-                <PopOver
-                  content={intl.formatMessage(messages.gridRewardsIconTooltip)}
-                >
-                  <button
-                    className={gridRewardsButtonClasses}
-                    onClick={onGridRewardsView}
-                  >
-                    <SVGInline svg={gridRewardsIcon} />
-                  </button>
-                </PopOver>
-              )}
               <PopOver content={intl.formatMessage(messages.listIconTooltip)}>
                 <button className={listButtonClasses} onClick={onListView}>
                   <SVGInline svg={listIcon} />

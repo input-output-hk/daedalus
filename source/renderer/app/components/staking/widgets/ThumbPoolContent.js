@@ -16,13 +16,11 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
-import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { formattedWalletAmount } from '../../../utils/formatters';
 
 type Props = {
   stakePool: StakePool,
   numberOfRankedStakePools: number,
-  isGridRewardsView?: boolean,
 };
 
 const messages = defineMessages({
@@ -62,19 +60,8 @@ export default class ThumbPoolContent extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      stakePool,
-      numberOfRankedStakePools,
-      isGridRewardsView,
-    } = this.props;
-    const {
-      ranking,
-      ticker,
-      retiring,
-      pledgeNotMet,
-      saturation,
-      potentialRewards,
-    } = stakePool;
+    const { stakePool, numberOfRankedStakePools } = this.props;
+    const { ranking, ticker, retiring, pledgeNotMet, saturation } = stakePool;
     const color =
       !pledgeNotMet && getColorFromRange(ranking, numberOfRankedStakePools);
 
@@ -100,32 +87,20 @@ export default class ThumbPoolContent extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
-        {isGridRewardsView &&
-          (IS_RANKING_DATA_AVAILABLE &&
-          !potentialRewards.isZero() &&
-          !pledgeNotMet ? (
-            <div className={styles.rewards}>
-              {this.formattedRewards(potentialRewards)}
-              <SVGInline svg={adaIcon} className={styles.adaIcon} />
-            </div>
-          ) : (
-            <div className={styles.rewards}>{!pledgeNotMet ? '?' : '0'}</div>
-          ))}
-        {!isGridRewardsView &&
-          (IS_RANKING_DATA_AVAILABLE && !pledgeNotMet ? (
-            <div className={styles.ranking} style={{ color }}>
-              {ranking}
-            </div>
-          ) : (
-            <div className={styles.noDataDash}>
-              <PopOver
-                content={intl.formatMessage(messages.pledgeNotMetPopOver)}
-                zIndex={10000}
-              >
-                <SVGInline svg={noDataDashBigImage} />
-              </PopOver>
-            </div>
-          ))}
+        {IS_RANKING_DATA_AVAILABLE && !pledgeNotMet ? (
+          <div className={styles.ranking} style={{ color }}>
+            {ranking}
+          </div>
+        ) : (
+          <div className={styles.noDataDash}>
+            <PopOver
+              content={intl.formatMessage(messages.pledgeNotMetPopOver)}
+              zIndex={10000}
+            >
+              <SVGInline svg={noDataDashBigImage} />
+            </PopOver>
+          </div>
+        )}
         {IS_SATURATION_DATA_AVAILABLE && !pledgeNotMet && (
           <div className={saturationClassnames}>
             <span

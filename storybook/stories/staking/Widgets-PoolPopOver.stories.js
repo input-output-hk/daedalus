@@ -21,7 +21,6 @@ export const PoolPopOverStory = ({
       color="#5e6066"
       containerClassName="container"
       currentTheme={currentTheme}
-      isGridRewardsView={boolean('isGridRewardsView', false)}
       numberOfRankedStakePools={number('numberOfRankedStakePools', 100)}
       onClose={action('onClose')}
       onOpen={action('onOpen')}

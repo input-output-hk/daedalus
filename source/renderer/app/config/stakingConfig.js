@@ -113,7 +113,6 @@ export const DELEGATION_ACTIONS: {
   QUIT: 'quit',
 };
 
-export const IS_GRID_REWARDS_VIEW_AVAILABLE = false;
 export const IS_RANKING_DATA_AVAILABLE = true;
 export const IS_SATURATION_DATA_AVAILABLE = true;
 

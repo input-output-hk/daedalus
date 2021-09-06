@@ -35,10 +35,6 @@
     input {
       padding-right: 160px;
     }
-
-    &.withGridRewardsView input {
-      padding-right: 193px;
-    }
   }
 }
 
@@ -52,10 +48,6 @@
 
   &.inputExtrasSearch {
     right: 110px;
-
-    &.withGridRewardsView {
-      right: 145px;
-    }
   }
 }
 
@@ -147,12 +139,6 @@
   }
 
   .gridView {
-    svg {
-      width: 15px !important;
-    }
-  }
-
-  .gridRewardsView {
     svg {
       width: 15px !important;
     }
