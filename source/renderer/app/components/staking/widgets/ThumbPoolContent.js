@@ -8,7 +8,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import forbiddenIcon from '../../../assets/images/forbidden-icon.inline.svg';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -119,7 +118,12 @@ export default class ThumbPoolContent extends Component<Props> {
             </div>
           ) : (
             <div className={styles.noDataDash}>
-              <SVGInline svg={noDataDashBigImage} />
+              <PopOver
+                content={intl.formatMessage(messages.pledgeNotMetPopOver)}
+                zIndex={10000}
+              >
+                <SVGInline svg={noDataDashBigImage} />
+              </PopOver>
             </div>
           ))}
         {IS_SATURATION_DATA_AVAILABLE && !pledgeNotMet && (
@@ -133,17 +137,7 @@ export default class ThumbPoolContent extends Component<Props> {
         )}
         {IS_RANKING_DATA_AVAILABLE ? (
           <>
-            {pledgeNotMet && (
-              <div className={styles.pledgeNotMetIcon}>
-                <PopOver
-                  content={intl.formatMessage(messages.pledgeNotMetPopOver)}
-                  zIndex={10000}
-                >
-                  <SVGInline svg={forbiddenIcon} />
-                </PopOver>
-              </div>
-            )}
-            {!pledgeNotMet && retiring && (
+            {retiring && (
               <div className={styles.retiringIcon}>
                 <PopOver
                   content={intl.formatMessage(messages.retirement, {
