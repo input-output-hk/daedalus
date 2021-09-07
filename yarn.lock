@@ -1343,10 +1343,6 @@
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
 
-"@sovpro/delimited-stream@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@sovpro/delimited-stream/-/delimited-stream-1.1.0.tgz#4334bba7ee241036e580fdd99c019377630d26b4"
-
 "@storybook/addon-actions@5.3.14":
   version "5.3.14"
   resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-5.3.14.tgz#aacc4d2703fc200a4565bfaa9f5870ed70a6fe32"
@@ -3475,18 +3471,6 @@ borc@2.1.2, borc@^2.1.1:
     ieee754 "^1.1.13"
     iso-url "~0.4.7"
     json-text-sequence "~0.1.0"
-    readable-stream "^3.6.0"
-
-borc@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/borc/-/borc-3.0.0.tgz#49ada1be84de86f57bb1bb89789f34c186dfa4fe"
-  dependencies:
-    bignumber.js "^9.0.0"
-    buffer "^6.0.3"
-    commander "^2.15.0"
-    ieee754 "^1.1.13"
-    iso-url "^1.1.5"
-    json-text-sequence "~0.3.0"
     readable-stream "^3.6.0"
 
 bowser@^2.11.0:
@@ -8833,10 +8817,6 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
 
-iso-url@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/iso-url/-/iso-url-1.1.5.tgz#875a0f2bf33fa1fc200f8d89e3f49eee57a8f0d9"
-
 iso-url@~0.4.7:
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/iso-url/-/iso-url-0.4.7.tgz#de7e48120dae46921079fe78f325ac9e9217a385"
@@ -9290,12 +9270,6 @@ json-text-sequence@^0.1, json-text-sequence@~0.1.0:
   resolved "https://registry.yarnpkg.com/json-text-sequence/-/json-text-sequence-0.1.1.tgz#a72f217dc4afc4629fff5feb304dc1bd51a2f3d2"
   dependencies:
     delimit-stream "0.1.0"
-
-json-text-sequence@~0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/json-text-sequence/-/json-text-sequence-0.3.0.tgz#6603e0ee45da41f949669fd18744b97fb209e6ce"
-  dependencies:
-    "@sovpro/delimited-stream" "^1.1.0"
 
 json3@^3.3.2:
   version "3.3.3"
@@ -15287,9 +15261,9 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
 
-"trezor-connect@https://github.com/vacuumlabs/connect/releases/download/8.1.30-rc.1-tx-streaming-extended/trezor-connect-v8.1.30-rc.1-tx-streaming-extended.tgz":
-  version "8.1.30-rc.1-tx-streaming"
-  resolved "https://github.com/vacuumlabs/connect/releases/download/8.1.30-rc.1-tx-streaming-extended/trezor-connect-v8.1.30-rc.1-tx-streaming-extended.tgz#abbdfff7b0fd06128d82469e511c802cae51721b"
+"trezor-connect@https://github.com/vacuumlabs/connect/releases/download/8.1.30-rc.2-tx-streaming-extended/trezor-connect-v8.1.30-rc.2-tx-streaming-extended.tgz":
+  version "8.1.30-rc.2-tx-streaming"
+  resolved "https://github.com/vacuumlabs/connect/releases/download/8.1.30-rc.2-tx-streaming-extended/trezor-connect-v8.1.30-rc.2-tx-streaming-extended.tgz#a8436504895b2eb855fe68e4c59eed2fbad30e1d"
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
@@ -15297,7 +15271,7 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
     "@trezor/utxo-lib" "^0.1.2"
     bchaddrjs "^0.5.2"
     bignumber.js "^9.0.1"
-    borc "^3.0.0"
+    borc "2.1.2"
     bowser "^2.11.0"
     events "^3.2.0"
     hd-wallet "9.1.2"
