@@ -19,7 +19,6 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import forbiddenIcon from '../../../assets/images/forbidden-icon.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,

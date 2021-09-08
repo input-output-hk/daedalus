@@ -2,12 +2,7 @@
 import React, { createRef, Component } from 'react';
 import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
-import {
-  defineMessages,
-  intlShape,
-  FormattedMessage,
-  FormattedHTMLMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import CopyToClipboard from 'react-copy-to-clipboard';

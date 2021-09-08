@@ -10,7 +10,6 @@ import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
-import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
 import listIcon from '../../../assets/images/list-ic.inline.svg';
 
 const messages = defineMessages({
