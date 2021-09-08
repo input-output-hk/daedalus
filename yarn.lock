@@ -3974,10 +3974,6 @@ cashaddrjs@0.4.4:
   dependencies:
     big-integer "1.6.36"
 
-cbor-web@^7.0.6:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-7.0.6.tgz#6e23a0c58db4c38e485e395de511b9e2f628961c"
-
 cbor@5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/cbor/-/cbor-5.0.2.tgz#aa8c3820280ebb9f3a45b2a4c66ac344294443de"
@@ -3993,6 +3989,12 @@ cbor@^4.3.0:
     commander "^3.0.0"
     json-text-sequence "^0.1"
     nofilter "^1.0.3"
+
+cbor@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/cbor/-/cbor-8.0.0.tgz#51657d26a99a6a1866f8c3258e948576eb17d709"
+  dependencies:
+    nofilter "^3.0.2"
 
 ccount@^1.0.0:
   version "1.0.5"
@@ -10817,6 +10819,10 @@ nofilter@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nofilter/-/nofilter-1.0.4.tgz#78d6f4b6a613e7ced8b015cec534625f7667006e"
 
+nofilter@^3.0.2:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/nofilter/-/nofilter-3.0.3.tgz#3ff3b142efdccb403434ccae4a0c2c835cb9b522"
+
 noop-logger@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/noop-logger/-/noop-logger-0.1.1.tgz#94a2b1633c4f1317553007d8966fd0e841b6a4c2"
@@ -15265,9 +15271,9 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
 
-trezor-connect@8.1.30-beta.4:
-  version "8.1.30-beta.4"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.30-beta.4.tgz#337b2de73f3973c484e5493a3b5c424dd8ae56f8"
+"trezor-connect@https://github.com/vacuumlabs/connect/releases/download/8.1.30-rc.2-tx-streaming-extended/trezor-connect-v8.1.30-rc.2-tx-streaming-extended-borc-patch.tgz":
+  version "8.1.30-rc.2-tx-streaming-extended-borc-patch"
+  resolved "https://github.com/vacuumlabs/connect/releases/download/8.1.30-rc.2-tx-streaming-extended/trezor-connect-v8.1.30-rc.2-tx-streaming-extended-borc-patch.tgz#9b7ae1b35eeaa4af9ec8921a875791f4454ea905"
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
@@ -15276,7 +15282,7 @@ trezor-connect@8.1.30-beta.4:
     bchaddrjs "^0.5.2"
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
-    cbor-web "^7.0.6"
+    cbor "^8.0.0"
     events "^3.2.0"
     hd-wallet "9.1.2"
     keccak "^3.0.1"
