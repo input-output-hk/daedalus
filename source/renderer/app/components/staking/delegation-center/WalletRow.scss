@@ -121,6 +121,7 @@
         background: var(--theme-staking-stake-pool-retirement-background-color);
         border-radius: 0 4px;
         height: 18px;
+        padding-top: 4px;
         position: absolute;
         right: 0;
         top: 0;
@@ -133,22 +134,18 @@
           padding: 0;
           text-align: center;
         }
-      }
-      .pledgeNotMetIcon {
-        @extend .cornerIcon;
-        padding-top: 4px;
         svg {
           height: 10px;
           width: 10px;
         }
       }
+      .pledgeNotMetIcon {
+        @extend .cornerIcon;
+      }
       .retiringIcon {
         @extend .cornerIcon;
-        svg {
-          height: 17px;
-          width: 17px;
-        }
       }
+
       &:last-child {
         margin-right: 0;
       }
@@ -202,10 +199,10 @@
         .noDataDash {
           align-items: center;
           display: flex;
-          height: 27px;
+          height: 3px;
           justify-content: center;
           position: relative;
-          top: 0;
+          top: 14.5px;
           transition: top 200ms ease-in-out;
 
           :global {
@@ -402,7 +399,7 @@
           }
 
           .noDataDash {
-            top: -9px;
+            top: 3px;
           }
 
           .saturationBar,

@@ -18,7 +18,7 @@ import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
-import clockIcon from '../../../assets/images/clock-corner.inline.svg';
+import clockIcon from '../../../assets/images/clock-icon.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
@@ -262,7 +262,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
   };
 
   renderInteractiveDelegatedTile = (stakePool: ?StakePool) => {
-    const { intl } = this.context;
     const {
       numberOfRankedStakePools,
       currentTheme,
@@ -321,12 +320,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
           </div>
         ) : (
           <div className={styles.noDataDash}>
-            <PopOver
-              content={intl.formatMessage(messages.pledgeNotMetPopOver)}
-              zIndex={10000}
-            >
-              <SVGInline svg={noDataDashBigImage} />
-            </PopOver>
+            <SVGInline svg={noDataDashBigImage} />
           </div>
         )}
         {IS_SATURATION_DATA_AVAILABLE && !pledgeNotMet && (
