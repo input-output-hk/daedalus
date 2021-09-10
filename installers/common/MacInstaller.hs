@@ -282,6 +282,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "int64-buffer"
       , "call-bind"
       , "get-intrinsic"
+      , "cbor-web"
       ]
   mapM_ (\lib -> do
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
