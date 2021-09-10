@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
+
+## 4.3.1
+
+### Fixes
+
+- Covered Trezor firmware breaking changes ([PR 2629](https://github.com/input-output-hk/daedalus/pull/2629))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-09-09`
+
 ## 4.3.0
 
 ### Features
@@ -11,14 +27,12 @@ Changelog
 
 ### Fixes
 
-- Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
 - Fixed type issue on Storybook "Wallet Send Confirmation Dialog" story ([PR 2654](https://github.com/input-output-hk/daedalus/pull/2654))
 - Fixed ‘Stakepool Metadata Aggregation Server (SMASH)’ link returning 404 error ([PR 2646](https://github.com/input-output-hk/daedalus/pull/2646))
 - Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
 
 ### Chores
 
-- Covered Trezor firmware breaking changes ([PR 2629](https://github.com/input-output-hk/daedalus/pull/2629))
 - Updated `cardano-wallet` to revision `9ae2d48b` which enables hardware wallet support in Alonzo era ([PR 2663](https://github.com/input-output-hk/daedalus/issues/2663))
 - Updated `cardano-wallet` to version `2021-08-27` which includes `cardano-node` 1.29.0 ([PR 2650](https://github.com/input-output-hk/daedalus/pull/2650))
 - Updated `cardano-wallet` to version `2021-08-11` which includes `cardano-node` alonzo-purple-1.0.1 ([PR 2641](https://github.com/input-output-hk/daedalus/pull/2641))
