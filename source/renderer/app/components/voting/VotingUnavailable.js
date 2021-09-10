@@ -22,7 +22,7 @@ const messages = defineMessages({
   paragraph1: {
     id: 'voting.unavailable.paragraph1',
     defaultMessage:
-      '!!!Project Catalyst Fund4 has now ended. Fund5 is currently in preparation, voting registration is not available yet.',
+      '!!!Project Catalyst Fund5 has now ended. Fund6 is currently in preparation, voting registration is not available yet.',
     description: 'First paragraph on the "Voting unavailable" screen',
   },
   paragraph2: {

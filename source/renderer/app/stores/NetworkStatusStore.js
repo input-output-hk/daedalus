@@ -12,10 +12,7 @@ import {
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
   HANDLE_INTERNET_CONNECTION_INTERVAL,
 } from '../config/timingConfig';
-import {
-  INITIAL_DESIRED_POOLS_NUMBER,
-  EPOCH_NUMBER_TO_FULLY_DECENTRALIZED,
-} from '../config/stakingConfig';
+import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -131,8 +128,11 @@ export default class NetworkStatusStore extends Store {
   @observable stateDirectoryPath: string = '';
   @observable isShelleyActivated: boolean = false;
   @observable isShelleyPending: boolean = false;
-  @observable isFullyDecentralized: boolean = false;
+  @observable isAlonzoActivated: boolean = false;
   @observable shelleyActivationTime: string = '';
+  @observable isAlonzoActivated: boolean = false;
+  @observable isAlonzoPending: boolean = false;
+  @observable alonzoActivationTime: string = '';
   @observable verificationProgress: number = 0;
 
   @observable epochLength: ?number = null; // unit: 1 slot
@@ -579,18 +579,6 @@ export default class NetworkStatusStore extends Store {
         }
       }
 
-      const { environment } = this;
-      const { epochNumber } = nextEpoch || {};
-      const isFullyDecentralized =
-        (isFlight || environment.isMainnet) &&
-        !!epochNumber &&
-        epochNumber > EPOCH_NUMBER_TO_FULLY_DECENTRALIZED;
-      if (isFullyDecentralized) {
-        runInAction('set isFullyDecentralized = true', () => {
-          this.isFullyDecentralized = true;
-        });
-      }
-
       // Reset request errors since we've received a valid response
       if (this.getNetworkInfoRequest.error !== null) {
         this.getNetworkInfoRequest.reset();
@@ -628,28 +616,52 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
-      let { isShelleyActivated, isShelleyPending } = this;
+      let {
+        isShelleyActivated,
+        isShelleyPending,
+        shelleyActivationTime,
+        isAlonzoActivated,
+        isAlonzoPending,
+        alonzoActivationTime,
+      } = this;
       const {
         decentralizationLevel,
         desiredPoolNumber,
-        hardforkAt,
         slotLength,
         epochLength,
+        eras,
       } = networkParameters;
-      const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
 
-      if (hardforkAt) {
+      if (eras) {
         const currentTimeStamp = new Date().getTime();
-        const hardforkStartTime = new Date(epochStartTime).getTime();
-        isShelleyActivated = currentTimeStamp >= hardforkStartTime;
-        isShelleyPending = currentTimeStamp < hardforkStartTime;
+
+        shelleyActivationTime = get(eras, 'shelley.epoch_start_time', '');
+        if (shelleyActivationTime !== '') {
+          const shelleyActivationTimeStamp = new Date(
+            shelleyActivationTime
+          ).getTime();
+          isShelleyActivated = currentTimeStamp >= shelleyActivationTimeStamp;
+          isShelleyPending = currentTimeStamp < shelleyActivationTimeStamp;
+        }
+
+        alonzoActivationTime = get(eras, 'alonzo.epoch_start_time', '');
+        if (alonzoActivationTime !== '') {
+          const alonzoActivationTimeStamp = new Date(
+            alonzoActivationTime
+          ).getTime();
+          isAlonzoActivated = currentTimeStamp >= alonzoActivationTimeStamp;
+          isAlonzoPending = currentTimeStamp < alonzoActivationTimeStamp;
+        }
       }
 
       runInAction('Update Decentralization Progress', () => {
         this.decentralizationProgress = decentralizationLevel.quantity;
         this.isShelleyActivated = isShelleyActivated;
         this.isShelleyPending = isShelleyPending;
-        this.shelleyActivationTime = epochStartTime;
+        this.shelleyActivationTime = shelleyActivationTime;
+        this.isAlonzoActivated = isAlonzoActivated;
+        this.isAlonzoPending = isAlonzoPending;
+        this.alonzoActivationTime = alonzoActivationTime;
       });
 
       runInAction('Update Desired Pool Number', () => {
@@ -775,18 +787,6 @@ export default class NetworkStatusStore extends Store {
 
   @computed get syncPercentage(): number {
     return this.syncProgress || 0;
-  }
-
-  /* In case the next epoch number is EQUAL or LARGER than the EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
-  then we set the `epochToFullyDecentralized` value */
-  @computed get epochToFullyDecentralized(): ?NextEpoch {
-    const { nextEpoch, environment } = this;
-    const { epochNumber } = nextEpoch || {};
-    return (isFlight || environment.isMainnet) &&
-      epochNumber &&
-      epochNumber >= EPOCH_NUMBER_TO_FULLY_DECENTRALIZED
-      ? nextEpoch
-      : null;
   }
 
   @computed get absoluteSlotNumber(): number {

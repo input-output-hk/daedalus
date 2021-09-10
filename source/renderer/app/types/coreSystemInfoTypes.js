@@ -11,6 +11,5 @@ export type CoreSystemInfo = {
   cardanoWalletPID: number,
   cardanoWalletApiPort: number,
   cardanoNetwork: string,
-  cardanoRawNetwork?: string,
   daedalusStateDirectoryPath: string,
 };

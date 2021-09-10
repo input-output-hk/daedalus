@@ -38,12 +38,13 @@ export default class TopBarContainer extends Component<Props> {
       epochToFullyDecentralized,
       isFullyDecentralized,
       isOffline,
+      isAlonzoActivated,
+      isAlonzoPending,
     } = networkStatus;
     const { stakingInfoWasOpen } = staking;
-    const shouldShowDecentralizationTopbarTadaAnimation =
-      isFullyDecentralized && !stakingInfoWasOpen;
-    const shouldShowDecentralizationCountdown =
-      isSynced && !!epochToFullyDecentralized;
+    const shouldShowTadaIconAnimation =
+      isAlonzoActivated && !stakingInfoWasOpen;
+    const shouldShowTadaIcon = isAlonzoPending || isAlonzoActivated;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
@@ -60,6 +61,11 @@ export default class TopBarContainer extends Component<Props> {
       ? menuIconOpened
       : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
+    const onClickTadaButton = () => {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
+    };
     const testnetLabel = !isMainnet ? (
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
@@ -67,21 +73,21 @@ export default class TopBarContainer extends Component<Props> {
       <NodeSyncStatusIcon
         isSynced={isSynced}
         syncPercentage={syncPercentage}
-        hasTadaIcon={shouldShowDecentralizationCountdown}
+        hasTadaIcon={shouldShowTadaIcon}
       />
     ) : (
-      <NodeConnectionIcon hasTadaIcon={shouldShowDecentralizationCountdown} />
+      <NodeConnectionIcon hasTadaIcon={shouldShowTadaIcon} />
+    );
+    const tadaIcon = shouldShowTadaIcon && (
+      <TadaButton
+        onClick={onClickTadaButton}
+        shouldAnimate={shouldShowTadaIconAnimation}
+      />
     );
 
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.ADD,
-      });
-    };
-
-    const onClickTadaButton = () => {
-      actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.INFO,
       });
     };
 
@@ -108,12 +114,7 @@ export default class TopBarContainer extends Component<Props> {
       >
         {testnetLabel}
         {nodeIcon}
-        {shouldShowDecentralizationCountdown && (
-          <TadaButton
-            onClick={onClickTadaButton}
-            shouldAnimate={shouldShowDecentralizationTopbarTadaAnimation}
-          />
-        )}
+        {tadaIcon}
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}

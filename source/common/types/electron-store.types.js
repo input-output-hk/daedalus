@@ -3,6 +3,7 @@
 export type StorageType = 'get' | 'set' | 'delete' | 'reset';
 
 export type StorageKey =
+  | 'ALONZO-INFO-WAS-OPEN'
   | 'APP-AUTOMATIC-UPDATE-FAILED'
   | 'APP-UPDATE-COMPLETED'
   | 'ASSET-DATA'
@@ -16,7 +17,6 @@ export type StorageKey =
   | 'READ-NEWS'
   | 'RESET'
   | 'SMASH-SERVER'
-  | 'STAKING-INFO-WAS-OPEN'
   | 'TERMS-OF-USE-ACCEPTANCE'
   | 'THEME'
   | 'USER-DATE-FORMAT-ENGLISH'
@@ -25,7 +25,8 @@ export type StorageKey =
   | 'USER-NUMBER-FORMAT'
   | 'USER-TIME-FORMAT'
   | 'WALLET-MIGRATION-STATUS'
-  | 'WALLETS';
+  | 'WALLETS'
+  | 'WINDOW-BOUNDS';
 
 export type StoreMessage = {
   type: StorageType,
