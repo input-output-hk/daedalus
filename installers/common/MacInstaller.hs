@@ -248,6 +248,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "bytebuffer-old-fixed-webpack"
       , "call-bind"
       , "cashaddrjs"
+      , "cbor-web"
       , "create-hash"
       , "create-hmac"
       , "cross-fetch"
