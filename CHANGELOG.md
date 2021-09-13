@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
+
 ### Fixes
 
 - Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
@@ -21,7 +25,6 @@ Changelog
 
 ### Features
 
-- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
 - Added "Alonzo countdown" screen for the upcoming Alonzo upgrade ([PR 2653](https://github.com/input-output-hk/daedalus/pull/2653))
 - Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
 - Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
