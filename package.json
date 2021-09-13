@@ -132,7 +132,8 @@
     "hash.js": "1.1.7",
     "html-loader": "0.5.5",
     "husky": "4.3.0",
-    "jest": "27.0.6",
+    "jest": "26.6.3",
+    "jest-environment-jsdom": "26.6.2",
     "markdown-loader": "5.1.0",
     "mini-css-extract-plugin": "0.12.0",
     "minimist": "1.2.5",
@@ -268,7 +269,7 @@
   "resolutions": {
     "**/**/marked": "^0.7.0",
     "**/**/minimatch": "^3.0.2",
-    "**/**/unicode-properties": "1.2.2",
+    "**/**/unicode-properties": "1.1.0",
     "**/**/handlebars": "4.5.3",
     "**/**/minimist": "^1.2.2",
     "**/**/acorn": "^6.4.1",
