@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671))
 - Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
 
 ### Fixes
