@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
+
 ### Fixes
 
 - Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))

@@ -23,6 +23,7 @@ import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 import type { AssetToken } from '../../../api/assets/types';
+import globalMessages from '../../../i18n/global-messages';
 
 type Props = {
   amount: string,
@@ -37,7 +38,6 @@ type Props = {
   isSubmitting: boolean,
   isFlight: boolean,
   error: ?LocalizableError,
-  currencyUnit: string,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
@@ -193,7 +193,6 @@ export default class WalletSendConfirmationDialog extends Component<
       isSubmitting,
       isFlight,
       error,
-      currencyUnit,
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
@@ -275,7 +274,7 @@ export default class WalletSendConfirmationDialog extends Component<
             </div>
             <div className={styles.amount}>
               {amount}
-              <span>&nbsp;{currencyUnit}</span>
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
             </div>
           </div>
 
@@ -285,7 +284,7 @@ export default class WalletSendConfirmationDialog extends Component<
             </div>
             <div className={styles.fees}>
               +{transactionFee}
-              <span>&nbsp;{currencyUnit}</span>
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
             </div>
           </div>
         </div>
@@ -295,7 +294,7 @@ export default class WalletSendConfirmationDialog extends Component<
         </div>
         <div className={styles.totalAmount}>
           {formattedTotalAmount}
-          <span>&nbsp;{currencyUnit}</span>
+          <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
         </div>
 
         {isFlight && (

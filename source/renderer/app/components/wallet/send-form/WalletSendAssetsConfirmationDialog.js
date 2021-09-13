@@ -30,6 +30,7 @@ import type { AssetToken } from '../../../api/assets/types';
 import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 import { hasTokensLeftAfterTransaction } from '../../../utils/assets';
+import globalMessages from '../../../i18n/global-messages';
 
 const SHOW_TOTAL_AMOUNT = false;
 
@@ -53,7 +54,6 @@ type Props = {
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
   onCopyAssetItem: Function,
-  currencyUnit: string,
   isTrezor: boolean,
   formattedTotalAmount: string,
 };
@@ -243,7 +243,6 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       hwDeviceStatus,
       isHardwareWallet,
       onCopyAssetItem,
-      currencyUnit,
       wallet,
       formattedTotalAmount,
       totalAmount,
@@ -337,11 +336,11 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                   />
                   <div className={styles.assetsContainer}>
                     <h3>
-                      <span>{currencyUnit}</span>
+                      <span>{intl.formatMessage(globalMessages.adaName)}</span>
                     </h3>
                     <div className={styles.amountFeesWrapper}>
                       <div className={styles.amount}>
-                        {amount} {currencyUnit}
+                        {amount} {intl.formatMessage(globalMessages.adaUnit)}
                       </div>
                     </div>
                   </div>
@@ -417,7 +416,9 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                 </div>
                 <div className={styles.adaAmount}>
                   {amount}
-                  <span>&nbsp;{currencyUnit}</span>
+                  <span>
+                    &nbsp;{intl.formatMessage(globalMessages.adaUnit)}
+                  </span>
                 </div>
               </div>
 
@@ -427,7 +428,9 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                 </div>
                 <div className={styles.fees}>
                   +{transactionFee}
-                  <span>&nbsp;{currencyUnit}</span>
+                  <span>
+                    &nbsp;{intl.formatMessage(globalMessages.adaUnit)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -437,7 +440,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             </div>
             <div className={styles.totalAmount}>
               {formattedTotalAmount}
-              <span>&nbsp;{currencyUnit}</span>
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
             </div>
           </>
         ) : (
@@ -447,7 +450,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
             </div>
             <div className={styles.fees}>
               +{transactionFee}
-              <span>&nbsp;{currencyUnit}</span>
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
             </div>
           </div>
         )}

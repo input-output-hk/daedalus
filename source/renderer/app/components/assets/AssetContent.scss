@@ -58,24 +58,37 @@
       width: calc(100% - 87px);
     }
   }
+  &.error {
+    * {
+      color: var(--theme-color-error);
+    }
+    .fingerprint {
+      background-color: var(--theme-background-color-error);
+    }
+    .copyIcon {
+      g {
+        fill: var(--theme-color-error);
+      }
+      svg > path {
+        stroke: var(--theme-color-error);
+      }
+    }
+  }
 }
 
 .fingerprint {
   background: var(--theme-widgets-asset-token-fingerprint-background-color);
   border-radius: 3px;
   color: var(--theme-widgets-asset-token-text-color);
+  cursor: pointer;
   display: inline-flex;
   font-family: var(--font-medium);
   font-size: 11px;
   font-weight: 500;
   line-height: 1.27;
   padding: 4px;
-  white-space: nowrap;
-}
-
-.fingerprint {
-  cursor: pointer;
   position: relative;
+  white-space: nowrap;
 
   .copyIcon {
     margin-left: 9px;
