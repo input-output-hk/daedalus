@@ -10,7 +10,7 @@ import type {
   NotificationConfig,
   NotificationId,
 } from '../../types/notificationTypes';
-import type { NotificationMessageProps } from '../../components/notifications/Notification';
+import type { NotificationDataProps } from '../../components/notifications/Notification';
 
 const ICONS = {
   successIcon,
@@ -167,8 +167,8 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     },
   ];
 
-  notificationsMessage: {
-    [key: NotificationId]: $Exact<NotificationMessageProps>,
+  notificationsData: {
+    [key: NotificationId]: $Exact<NotificationDataProps>,
   } = {
     downloadLogsProgress: {
       icon: 'spinner',
@@ -199,16 +199,16 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       <div>
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {
           const isVisible = id in activeNotifications;
-          const message = this.notificationsMessage[id] || {};
+          const data = this.notificationsData[id] || {};
           const { labelValues, index } = isVisible
             ? activeNotifications[id]
             : {};
-          const { icon } = message || {};
+          const { icon } = data || {};
           const hasSpinner = icon === 'spinner';
           return (
             <Notification
               key={id}
-              {...message}
+              {...data}
               onClose={() => closeNotification.trigger({ id })}
               icon={this.getIcon(icon)}
               isVisible={isVisible}

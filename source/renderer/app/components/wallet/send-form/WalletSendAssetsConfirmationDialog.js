@@ -9,12 +9,11 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendAssetsConfirmationDialog.scss';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
@@ -24,124 +23,24 @@ import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { HwDeviceStatuses } from '../../../domains/Wallet';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import Asset from '../../assets/Asset';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
+import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
+import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
+import { hasTokensLeftAfterTransaction } from '../../../utils/assets';
+import globalMessages from '../../../i18n/global-messages';
 
 const SHOW_TOTAL_AMOUNT = false;
 
-export const messages = defineMessages({
-  dialogTitle: {
-    id: 'wallet.send.confirmationDialog.title',
-    defaultMessage: '!!!Confirm transaction',
-    description: 'Title for the "Confirm transaction" dialog.',
-  },
-  passphraseLabel: {
-    id: 'wallet.send.confirmationDialog.passphraseLabel',
-    defaultMessage: '!!!Spending password',
-    description:
-      'Label for the "Spending password" input in the wallet send confirmation dialog.',
-  },
-  addressToLabel: {
-    id: 'wallet.send.confirmationDialog.addressToLabel',
-    defaultMessage: '!!!To',
-    description: 'Label for the "To" in the wallet send confirmation dialog.',
-  },
-  amountLabel: {
-    id: 'wallet.send.confirmationDialog.amountLabel',
-    defaultMessage: '!!!Amount',
-    description:
-      'Label for the "Amount" in the wallet send confirmation dialog.',
-  },
-  assetLabel: {
-    id: 'wallet.send.confirmationDialog.assetLabel',
-    defaultMessage: '!!!Token',
-    description: 'Token',
-  },
-  feesLabel: {
-    id: 'wallet.send.confirmationDialog.feesLabel',
-    defaultMessage: '!!!Transaction fee',
-    description: 'Label for the "Fees" in the wallet send confirmation dialog.',
-  },
-  totalLabel: {
-    id: 'wallet.send.confirmationDialog.totalLabel',
-    defaultMessage: '!!!Total',
-    description:
-      'Label for the "Total" in the wallet send confirmation dialog.',
-  },
-  receiverLabel: {
-    id: 'wallet.send.confirmationDialog.receiver.label',
-    defaultMessage: '!!!Receiver',
-    description:
-      'Label for the "Receiver" in the wallet send confirmation dialog.',
-  },
-  passphraseFieldPlaceholder: {
-    id: 'wallet.send.confirmationDialog.passphraseFieldPlaceholder',
-    defaultMessage: '!!!Type your spending password',
-    description:
-      'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
-  },
-  flightCandidateWarning: {
-    id: 'wallet.send.confirmationDialog.flightCandidateWarning',
-    defaultMessage:
-      '!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.',
-    description:
-      'Text for the "Flight candidate" warning in the wallet send confirmation dialog.',
-  },
-  flightCandidateCheckboxLabel: {
-    id: 'wallet.send.confirmationDialog.flightCandidateCheckboxLabel',
-    defaultMessage:
-      '!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.',
-    description:
-      'Label for the "Flight candidate" warning checkbox in the wallet send confirmation dialog.',
-  },
-  sendButtonLabel: {
-    id: 'wallet.send.confirmationDialog.submit',
-    defaultMessage: '!!!Send',
-    description:
-      'Label for the send button in the wallet send confirmation dialog.',
-  },
-  backButtonLabel: {
-    id: 'wallet.send.confirmationDialog.back',
-    defaultMessage: '!!!Back',
-    description:
-      'Label for the back button in the wallet send confirmation dialog.',
-  },
-  passwordErrorMessage: {
-    id: 'wallet.send.confirmationDialog.passwordError',
-    defaultMessage: '!!!Incorrect spending password.',
-    description:
-      'Label for password error in the wallet send confirmation dialog.',
-  },
-  unformattedAmountLabel: {
-    id: 'wallet.send.confirmationDialog.unformattedAmountLabel',
-    defaultMessage: '!!!unformatted amount',
-    description: 'Label for "unformated amount"',
-  },
-  unformattedAmountMessageForSoftwareWallets: {
-    id:
-      'wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets',
-    defaultMessage:
-      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
-    description: 'Message for "unformated amount"',
-  },
-  unformattedAmountMessageForHardwareWallets: {
-    id:
-      'wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets',
-    defaultMessage:
-      '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
-    description: 'Message for "unformated amount"',
-  },
-});
-
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
   amount: string,
-  totalAmount: ?string,
   receiver: string,
-  assets: Array<AssetToken>,
+  wallet: Wallet,
+  totalAmount: BigNumber,
+  selectedAssets: Array<AssetToken>,
+  allAvailableTokens: Array<AssetToken>,
   assetsAmounts: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
@@ -154,18 +53,18 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
-  walletName: string,
-  onExternalLinkClick: Function,
   onCopyAssetItem: Function,
-  currencyUnit: string,
   isTrezor: boolean,
+  formattedTotalAmount: string,
 };
 
 type State = {
-  assets: Array<AssetToken>,
+  selectedAssets: Array<AssetToken>,
   assetsAmounts: Array<string>,
   areTermsAccepted: boolean,
 };
+
+const messages = getMessages();
 
 @observer
 export default class WalletSendAssetsConfirmationDialog extends Component<
@@ -177,18 +76,18 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   };
 
   state = {
-    assets: [],
+    selectedAssets: [],
     assetsAmounts: [],
     areTermsAccepted: false,
   };
 
   componentDidMount() {
-    // We need to keep initial list of assets and their amounts as a state
+    // We need to keep initial list of selectedAssets and their amounts as a state
     // value to avoid losing them after the transaction is confirmed
     // (this affects only hardware wallets for which we close the dialog
     // after transaction has been confirmed)
-    const { assets, assetsAmounts } = this.props;
-    this.setState({ assets, assetsAmounts });
+    const { selectedAssets, assetsAmounts } = this.props;
+    this.setState({ selectedAssets, assetsAmounts });
   }
 
   form = new ReactToolboxMobxForm(
@@ -234,7 +133,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { assets, assetsAmounts } = this.state;
+        const { selectedAssets, assetsAmounts } = this.state;
         const {
           receiver,
           amount,
@@ -247,7 +146,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
-          assets,
+          assets: selectedAssets,
           assetsAmounts,
         };
         this.props.onSubmit(transactionData);
@@ -260,31 +159,32 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
 
-  renderConfirmationElement = (isHardwareWallet: boolean) => {
+  renderConfirmationElement = (
+    isHardwareWallet: boolean
+  ): React$Element<*> | null => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
       hwDeviceStatus,
       isFlight,
       onExternalLinkClick,
-      walletName,
+      wallet,
       isTrezor,
     } = this.props;
 
+    let returnJSX = null;
     if (!isFlight || (isFlight && areTermsAccepted)) {
-      if (isHardwareWallet) {
-        return (
-          <div className={styles.hardwareWalletStatusWrapper}>
-            <HardwareWalletStatus
-              hwDeviceStatus={hwDeviceStatus}
-              walletName={walletName}
-              isTrezor={isTrezor}
-              onExternalLinkClick={onExternalLinkClick}
-            />
-          </div>
-        );
-      }
-      return (
+      const { name } = wallet;
+      returnJSX = isHardwareWallet ? (
+        <div className={styles.hardwareWalletStatusWrapper}>
+          <HardwareWalletStatus
+            hwDeviceStatus={hwDeviceStatus}
+            walletName={name}
+            isTrezor={isTrezor}
+            onExternalLinkClick={onExternalLinkClick}
+          />
+        </div>
+      ) : (
         <Input
           type="password"
           className={styles.passphrase}
@@ -296,7 +196,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         />
       );
     }
-    return null;
+    return returnJSX;
   };
 
   onCheckboxClick = (areTermsAccepted: boolean) => {
@@ -309,8 +209,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
   getAssetAmount = (index: number) => {
     const { assetsAmounts } = this.state;
-    const asset = get(assetsAmounts, index, 0);
-    return asset;
+    return get(assetsAmounts, index, 0);
   };
 
   getFormattedAssetAmount = (
@@ -328,14 +227,14 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { assets, areTermsAccepted } = this.state;
+    const { selectedAssets, areTermsAccepted, assetsAmounts } = this.state;
     const passphraseField = form.$('passphrase');
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
+      allAvailableTokens,
       amount,
       receiver,
-      totalAmount,
       transactionFee,
       isSubmitting,
       isFlight,
@@ -344,8 +243,9 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       hwDeviceStatus,
       isHardwareWallet,
       onCopyAssetItem,
-      currencyUnit,
-      walletName,
+      wallet,
+      formattedTotalAmount,
+      totalAmount,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -374,8 +274,8 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     ];
 
     const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight = assets.length
-      ? assetsSeparatorBasicHeight * assets.length * 2 - 18
+    const assetsSeparatorCalculatedHeight = selectedAssets.length
+      ? assetsSeparatorBasicHeight * selectedAssets.length * 2 - 18
       : assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -390,11 +290,12 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         intl.formatMessage(error)
       );
     }
+    const { name } = wallet;
 
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
-        subtitle={walletName}
+        subtitle={name}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
@@ -402,169 +303,175 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
-        <div className={styles.passphraseFields}>
-          <div className={styles.addressToLabelWrapper}>
-            <div className={styles.receiverRow}>
-              <div className={styles.receiverRowItem}>
-                <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
-                <div className={styles.receiverRowItemAddresses}>
-                  <p className={styles.addressTo}>{receiver}</p>
-                  <div className={styles.assetsWrapper}>
-                    <div
-                      className={styles.assetsSeparator}
-                      style={{
-                        height: `${assetsSeparatorCalculatedHeight}px`,
-                        top: `${assetsSeparatorCalculatedHeight + 5}px`,
-                        marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`,
-                      }}
-                    />
-                    <div className={styles.assetsContainer}>
-                      <h3>
-                        <span>{currencyUnit}</span>
-                      </h3>
-                      <div className={styles.amountFeesWrapper}>
-                        <div className={styles.amount}>
-                          {amount} {currencyUnit}
-                        </div>
+        {shouldShowEmptyWalletWarning(
+          totalAmount,
+          wallet,
+          !!allAvailableTokens?.length &&
+            allAvailableTokens.length > 0 &&
+            hasTokensLeftAfterTransaction(
+              allAvailableTokens,
+              selectedAssets,
+              assetsAmounts
+            )
+        ) && (
+          <div className={styles.warning}>
+            <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
+          </div>
+        )}
+
+        <div className={styles.addressToLabelWrapper}>
+          <div className={styles.receiverRow}>
+            <div className={styles.receiverRowItem}>
+              <h2>{intl.formatMessage(messages.receiverLabel)}</h2>
+              <div className={styles.receiverRowItemAddresses}>
+                <p className={styles.addressTo}>{receiver}</p>
+                <div className={styles.assetsWrapper}>
+                  <div
+                    className={styles.assetsSeparator}
+                    style={{
+                      height: `${assetsSeparatorCalculatedHeight}px`,
+                      top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                      marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`,
+                    }}
+                  />
+                  <div className={styles.assetsContainer}>
+                    <h3>
+                      <span>{intl.formatMessage(globalMessages.adaName)}</span>
+                    </h3>
+                    <div className={styles.amountFeesWrapper}>
+                      <div className={styles.amount}>
+                        {amount} {intl.formatMessage(globalMessages.adaUnit)}
                       </div>
                     </div>
-                    {assets.map((asset, assetIndex) => {
-                      const assetAmount = this.getFormattedAssetAmount(
-                        asset,
-                        assetIndex
-                      );
-                      return (
-                        <Fragment key={asset.uniqueId}>
-                          <div className={styles.assetsContainer}>
-                            <h3>
-                              <span>
-                                {intl.formatMessage(messages.assetLabel)}
-                                &nbsp;#{assetIndex + 1}
-                              </span>
-                              <Asset
-                                asset={asset}
-                                onCopyAssetItem={onCopyAssetItem}
-                                className={styles.assetToken}
-                              />
-                            </h3>
-                            <div className={styles.amountFeesWrapper}>
-                              <div className={styles.amount}>{assetAmount}</div>
-                            </div>
-                          </div>
-                          <div className={styles.assetsContainer}>
-                            <div className={styles.unformattedAmountLine} />
-                            <div className={styles.unformattedAmountLabel}>
-                              {intl.formatMessage(
-                                messages.unformattedAmountLabel
-                              )}
-                              <PopOver
-                                content={
-                                  <div className="UnformattedAmountTooltip">
-                                    <FormattedHTMLMessage
-                                      {...messages[
-                                        isHardwareWallet
-                                          ? 'unformattedAmountMessageForHardwareWallets'
-                                          : 'unformattedAmountMessageForSoftwareWallets'
-                                      ]}
-                                      tagName="div"
-                                    />
-                                  </div>
-                                }
-                                key="tooltip"
-                              >
-                                <div className={styles.questionMark}>
-                                  <SVGInline svg={questionMarkIcon} />
-                                </div>
-                              </PopOver>
-                              {':'}
-                            </div>
-                            <div className={styles.unformattedAmount}>
-                              {this.getAssetAmount(assetIndex)}
-                            </div>
-                          </div>
-                        </Fragment>
-                      );
-                    })}
                   </div>
+                  {selectedAssets.map((asset, assetIndex) => {
+                    const assetAmount = this.getFormattedAssetAmount(
+                      asset,
+                      assetIndex
+                    );
+                    return (
+                      <Fragment key={asset.uniqueId}>
+                        <div className={styles.assetsContainer}>
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetIndex + 1}
+                            </span>
+                            <Asset
+                              asset={asset}
+                              onCopyAssetItem={onCopyAssetItem}
+                              className={styles.assetToken}
+                            />
+                          </h3>
+                          <div className={styles.amountFeesWrapper}>
+                            <div className={styles.amount}>{assetAmount}</div>
+                          </div>
+                        </div>
+                        <div className={styles.assetsContainer}>
+                          <div className={styles.unformattedAmountLine} />
+                          <div className={styles.unformattedAmountLabel}>
+                            {intl.formatMessage(
+                              messages.unformattedAmountLabel
+                            )}
+                            <PopOver
+                              content={
+                                <div className="UnformattedAmountTooltip">
+                                  <FormattedHTMLMessage
+                                    {...messages[
+                                      isHardwareWallet
+                                        ? 'unformattedAmountMessageForHardwareWallets'
+                                        : 'unformattedAmountMessageForSoftwareWallets'
+                                    ]}
+                                    tagName="div"
+                                  />
+                                </div>
+                              }
+                              key="tooltip"
+                            >
+                              <div className={styles.questionMark}>
+                                <SVGInline svg={questionMarkIcon} />
+                              </div>
+                            </PopOver>
+                            {':'}
+                          </div>
+                          <div className={styles.unformattedAmount}>
+                            {this.getAssetAmount(assetIndex)}
+                          </div>
+                        </div>
+                      </Fragment>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {SHOW_TOTAL_AMOUNT ? (
-            <>
-              <div className={styles.adaAmountFeesWrapper}>
-                <div className={styles.adaAmountWrapper}>
-                  <div className={styles.adaAmountLabel}>
-                    {intl.formatMessage(messages.amountLabel)}
-                  </div>
-                  <div className={styles.adaAmount}>
-                    {amount}
-                    <span className={styles.currencyCode}>
-                      &nbsp;{currencyUnit}
-                    </span>
-                  </div>
+        {SHOW_TOTAL_AMOUNT ? (
+          <>
+            <div className={styles.adaAmountFeesWrapper}>
+              <div className={styles.adaAmountWrapper}>
+                <div className={styles.adaAmountLabel}>
+                  {intl.formatMessage(messages.amountLabel)}
                 </div>
-
-                <div className={styles.feesWrapper}>
-                  <div className={styles.feesLabel}>
-                    {intl.formatMessage(messages.feesLabel)}
-                  </div>
-                  <div className={styles.fees}>
-                    +{transactionFee}
-                    <span className={styles.currencyCode}>
-                      &nbsp;{currencyUnit}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.totalAmountWrapper}>
-                <div className={styles.totalAmountLabel}>
-                  {intl.formatMessage(messages.totalLabel)}
-                </div>
-                <div className={styles.totalAmount}>
-                  {totalAmount}
-                  <span className={styles.currencyCode}>
-                    &nbsp;{currencyUnit}
+                <div className={styles.adaAmount}>
+                  {amount}
+                  <span>
+                    &nbsp;{intl.formatMessage(globalMessages.adaUnit)}
                   </span>
                 </div>
               </div>
-            </>
-          ) : (
-            <div className={styles.feesWrapper}>
-              <div className={styles.feesLabel}>
-                {intl.formatMessage(messages.feesLabel)}
-              </div>
-              <div className={styles.fees}>
-                +{transactionFee}
-                <span className={styles.currencyCode}>
-                  &nbsp;{currencyUnit}
-                </span>
+
+              <div className={styles.feesWrapper}>
+                <div className={styles.feesLabel}>
+                  {intl.formatMessage(messages.feesLabel)}
+                </div>
+                <div className={styles.fees}>
+                  +{transactionFee}
+                  <span>
+                    &nbsp;{intl.formatMessage(globalMessages.adaUnit)}
+                  </span>
+                </div>
               </div>
             </div>
-          )}
 
-          {isFlight && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage
-                {...messages.flightCandidateWarning}
-                tagName="p"
-              />
-              <Checkbox
-                {...flightCandidateCheckboxField.bind()}
-                error={flightCandidateCheckboxField.error}
-                skin={CheckboxSkin}
-                disabled={areTermsAccepted}
-                onChange={this.onCheckboxClick}
-                checked={areTermsAccepted}
-              />
+            <div className={styles.totalAmountLabel}>
+              {intl.formatMessage(messages.totalLabel)}
             </div>
-          )}
+            <div className={styles.totalAmount}>
+              {formattedTotalAmount}
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
+            </div>
+          </>
+        ) : (
+          <div className={styles.feesWrapper}>
+            <div className={styles.feesLabel}>
+              {intl.formatMessage(messages.feesLabel)}
+            </div>
+            <div className={styles.fees}>
+              +{transactionFee}
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
+            </div>
+          </div>
+        )}
 
-          {this.renderConfirmationElement(isHardwareWallet)}
-        </div>
-
+        {isFlight && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...messages.flightCandidateWarning}
+              tagName="p"
+            />
+            <Checkbox
+              {...flightCandidateCheckboxField.bind()}
+              error={flightCandidateCheckboxField.error}
+              skin={CheckboxSkin}
+              disabled={areTermsAccepted}
+              onChange={this.onCheckboxClick}
+              checked={areTermsAccepted}
+            />
+          </div>
+        )}
+        {this.renderConfirmationElement(isHardwareWallet)}
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
     );

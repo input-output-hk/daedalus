@@ -282,6 +282,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "int64-buffer"
       , "call-bind"
       , "get-intrinsic"
+      , "cbor-web"
       ]
   mapM_ (\lib -> do
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
@@ -327,7 +328,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Executables (from daedalus-bridge)
       forM_ ["cardano-wallet", "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do

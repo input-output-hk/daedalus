@@ -27,7 +27,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.register.step.description',
     defaultMessage:
-      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund5 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
+      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund6 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
     description: 'Description on the voting registration "sign" step.',
   },
   continueButtonLabel: {
@@ -211,7 +211,7 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
               <>
                 <span>{formattedWalletAmount(transactionFee, false)}</span>
                 <span className={styles.feesAmountLabel}>
-                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                  &nbsp;{intl.formatMessage(globalMessages.adaUnit)}
                 </span>
               </>
             )}

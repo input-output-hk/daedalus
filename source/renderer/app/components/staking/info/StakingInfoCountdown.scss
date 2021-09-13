@@ -7,6 +7,7 @@
 
   .learnMoreButton {
     margin-top: 30px;
+    width: 270px;
 
     .externalLinkIcon {
       color: var(--theme-staking-info-learn-more-icon-color);
@@ -35,11 +36,9 @@
       }
 
       .description {
-        p {
-          color: var(--theme-staking-font-color-accent);
-          font-family: var(--font-light);
-          margin-bottom: 20px;
-        }
+        @extend %regularText;
+        color: var(--theme-staking-font-color-light);
+        margin-bottom: 24px;
       }
 
       .countdownTitle {

@@ -23,7 +23,6 @@ import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
 import { messages as apiErrorMessages } from '../../api/errors';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import { submitOnEnter } from '../../utils/form';
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
@@ -43,7 +42,6 @@ import type { AssetToken, ApiTokens } from '../../api/assets/types';
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  currencyUnit: string,
   currencyMaxIntegerDigits: number,
   currencyMaxFractionalDigits: number,
   currentNumberFormat: string,
@@ -200,7 +198,10 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
+  handleSubmitOnEnter = (event: KeyboardEvent): void => {
+    if (event.target instanceof HTMLInputElement && event.key === 'Enter')
+      this.handleOnSubmit();
+  };
 
   handleOnSubmit = () => {
     if (this.isDisabled()) {
@@ -706,7 +707,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const receiverFieldClasses = classNames([
       styles.receiverInput,
-      this.isAddressFromSameWallet() ? styles.sameRecieverInput : null,
+      this.isAddressFromSameWallet() ? styles.sameReceiverInput : null,
     ]);
 
     const minAdaRequiredTooltip = selectedAssetUniqueIds.length
@@ -784,7 +785,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   </div>
                 )}
                 <div className={styles.adaAmountLabel}>
-                  {intl.formatMessage(globalMessages.unitAda)}
+                  {intl.formatMessage(globalMessages.adaUnit)}
                 </div>
                 <NumericInput
                   {...adaAmountField.bind()}
@@ -801,7 +802,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   onChange={(value) => {
                     adaAmountField.onChange(value);
                   }}
-                  currency={globalMessages.unitAda}
+                  currency={globalMessages.adaUnit}
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
@@ -882,7 +883,6 @@ export default class WalletSendForm extends Component<Props, State> {
       isTransactionFeeCalculated,
     } = this.state;
     const {
-      currencyUnit,
       currencyMaxFractionalDigits,
       hwDeviceStatus,
       isHardwareWallet,
@@ -897,13 +897,11 @@ export default class WalletSendForm extends Component<Props, State> {
     const adaAmountField = form.$('adaAmount');
     const adaAmount = new BigNumber(adaAmountField.value || 0);
 
-    let fees = null;
-    let total = null;
+    let fees = '0';
+    let total: BigNumber = adaAmount;
     if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = adaAmount
-        .plus(transactionFee)
-        .toFormat(currencyMaxFractionalDigits);
+      total = adaAmount.plus(transactionFee);
     }
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -929,12 +927,12 @@ export default class WalletSendForm extends Component<Props, State> {
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
                   value={
                     fees && !transactionFeeError
-                      ? `${fees} ${intl.formatMessage(globalMessages.unitAda)}`
+                      ? `${fees} ${intl.formatMessage(globalMessages.adaUnit)}`
                       : `0${
                           this.getCurrentNumberFormat().decimalSeparator
                         }${'0'.repeat(
                           this.props.currencyMaxFractionalDigits
-                        )} ${intl.formatMessage(globalMessages.unitAda)}`
+                        )} ${intl.formatMessage(globalMessages.adaUnit)}`
                   }
                   isSet
                 />
@@ -970,9 +968,8 @@ export default class WalletSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletSendAssetsConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
-            currencyUnit={currencyUnit}
             receiver={receiver}
-            assets={this.selectedAssets}
+            selectedAssets={this.selectedAssets}
             assetsAmounts={this.selectedAssetsAmounts}
             amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
@@ -981,6 +978,7 @@ export default class WalletSendForm extends Component<Props, State> {
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
+            formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
       </div>
