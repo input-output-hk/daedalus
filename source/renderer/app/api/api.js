@@ -2379,7 +2379,6 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
-        hardforkAt: eras.shelley || null,
         eras,
       };
     } catch (error) {
@@ -2734,17 +2733,23 @@ const _createWalletFromServerData = action(
     // Mapping asset items from server data
     const walletAssets = {
       available: assets.available.map((item) => {
+        const { policy_id: policyId, asset_name: assetName, quantity } = item;
+        const uniqueId = `${policyId}${assetName}`;
         return {
-          policyId: item.policy_id,
-          assetName: item.asset_name,
-          quantity: new BigNumber(item.quantity.toString()),
+          uniqueId,
+          policyId,
+          assetName,
+          quantity: new BigNumber(quantity.toString()),
         };
       }),
       total: assets.total.map((item) => {
+        const { policy_id: policyId, asset_name: assetName, quantity } = item;
+        const uniqueId = `${policyId}${assetName}`;
         return {
-          policyId: item.policy_id,
-          assetName: item.asset_name,
-          quantity: new BigNumber(item.quantity.toString()),
+          uniqueId,
+          policyId,
+          assetName,
+          quantity: new BigNumber(quantity.toString()),
         };
       }),
     };

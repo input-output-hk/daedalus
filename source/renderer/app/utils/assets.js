@@ -1,5 +1,7 @@
 // @flow
 import find from 'lodash/find';
+import BigNumber from 'bignumber.js';
+import Wallet from '../domains/Wallet';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
@@ -113,3 +115,15 @@ export const hasTokensLeftAfterTransaction = (
   }
   return false;
 };
+
+export const isTokenMissingInWallet = (wallet?: ?Wallet, token?: Token) => {
+  if (!wallet || !token || !token.uniqueId) {
+    return false;
+  }
+  const { available } = wallet.assets;
+  const { uniqueId } = token;
+  return !available.find((walletToken) => walletToken.uniqueId === uniqueId);
+};
+
+export const tokenHasBalance = (token: Token, amount: BigNumber) =>
+  token.quantity.isGreaterThanOrEqualTo(amount);

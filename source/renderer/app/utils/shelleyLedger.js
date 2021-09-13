@@ -104,7 +104,7 @@ export const derivationScheme = {
 
 // Constructors
 export const ShelleyTxWitnessShelley = (
-  publicKey: string,
+  publicKey: Buffer,
   signature: Buffer
 ) => {
   function encodeCBOR(encoder: any) {
