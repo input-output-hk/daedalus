@@ -12,14 +12,6 @@ type Props = InjectedProps;
 @inject('stores', 'actions')
 @observer
 export default class WalletTransactionsPage extends Component<Props> {
-  handleOnCopyAssetParam = (assetItem: string, fullValue: string) => {
-    const value = ellipsis(fullValue, 15, 15);
-    this.props.actions.wallets.copyAssetItem.trigger({
-      assetItem,
-      value,
-    });
-  };
-
   render() {
     const { actions, stores } = this.props;
     const { app, wallets, addresses, profile, assets } = stores;
@@ -48,6 +40,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { searchLimit = 0 } = filterOptions || {};
     const { transactions: transactionActions } = this.props.actions;
     const { filterTransactions, requestCSVFile } = transactionActions;
+    const { onCopyAssetParam } = actions.assets;
 
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
@@ -85,7 +78,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         hasAssetsEnabled={hasAssetsEnabled}
         isInternalAddress={isInternalAddress}
         getAsset={getAsset}
-        onCopyAssetParam={this.handleOnCopyAssetParam}
+        onCopyAssetParam={onCopyAssetParam.trigger}
       />
     );
   }

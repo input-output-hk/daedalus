@@ -49,14 +49,6 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOnCopyAssetParam = (assetItem: string, fullValue: string) => {
-    const value = ellipsis(fullValue, 15, 15);
-    this.props.actions.wallets.copyAssetItem.trigger({
-      assetItem,
-      value,
-    });
-  };
-
   render() {
     const { intl } = this.context;
     const { stores, actions } = this.props;
@@ -71,7 +63,11 @@ export default class WalletSummaryPage extends Component<Props> {
     } = stores;
     const { getAsset, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
-    const { onAssetSettingsOpen, onOpenAssetSend } = actions.assets;
+    const {
+      onAssetSettingsOpen,
+      onOpenAssetSend,
+      onCopyAssetParam,
+    } = actions.assets;
     const {
       openExternalLink,
       environment: { network },
@@ -135,7 +131,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
           getAsset={getAsset}
-          onCopyAssetParam={this.handleOnCopyAssetParam}
+          onCopyAssetParam={onCopyAssetParam.trigger}
         />
       );
     } else if (!hasAny) {
@@ -162,7 +158,7 @@ export default class WalletSummaryPage extends Component<Props> {
           assets={assetTokens}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           onOpenAssetSend={onOpenAssetSend.trigger}
-          onCopyAssetParam={this.handleOnCopyAssetParam}
+          onCopyAssetParam={onCopyAssetParam.trigger}
           onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
         />

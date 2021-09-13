@@ -16,37 +16,37 @@ import type { Asset as AssetProps } from '../../api/assets/types';
 
 const messages = defineMessages({
   fingerprintItem: {
-    id: 'assets.assetToken.item.fingerprint',
+    id: 'assets.assetToken.param.fingerprint',
     defaultMessage: '!!!Fingerprint',
     description: '"fingerprint" item.',
   },
   policyIdItem: {
-    id: 'assets.assetToken.item.policyId',
+    id: 'assets.assetToken.param.policyId',
     defaultMessage: '!!!Policy Id',
     description: '"policyId" item.',
   },
   assetNameItem: {
-    id: 'assets.assetToken.item.assetName',
+    id: 'assets.assetToken.param.assetName',
     defaultMessage: '!!!Asset name',
     description: '"assetName" item.',
   },
   nameItem: {
-    id: 'assets.assetToken.item.name',
+    id: 'assets.assetToken.param.name',
     defaultMessage: '!!!Name',
     description: '"name" item.',
   },
   tickerItem: {
-    id: 'assets.assetToken.item.ticker',
+    id: 'assets.assetToken.param.ticker',
     defaultMessage: '!!!Ticker',
     description: '"ticker" item.',
   },
   descriptionItem: {
-    id: 'assets.assetToken.item.description',
+    id: 'assets.assetToken.param.description',
     defaultMessage: '!!!Description',
     description: '"description" item.',
   },
   blank: {
-    id: 'assets.assetToken.item.blank',
+    id: 'assets.assetToken.param.blank',
     defaultMessage: '!!!Blank',
     description: '"Blank" item value.',
   },

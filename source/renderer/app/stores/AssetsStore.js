@@ -6,6 +6,7 @@ import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { requestGetter } from '../utils/storesUtils';
+import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
 
 type WalletId = string;
@@ -32,6 +33,7 @@ export default class AssetsStore extends Store {
     assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
     assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
     assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
+    assetsActions.onCopyAssetParam.listen(this._onCopyAssetParam);
 
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
@@ -100,7 +102,6 @@ export default class AssetsStore extends Store {
   };
 
   @action _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {
-    console.log('_onOpenAssetSend', uniqueId);
     const { stores, actions } = this;
     const { wallets } = stores;
     const { active } = wallets;
@@ -113,6 +114,20 @@ export default class AssetsStore extends Store {
         params: { id, page: 'send' },
       });
     }
+  };
+
+  @action _onCopyAssetParam = ({
+    param,
+    fullValue,
+  }: {
+    param: string,
+    fullValue: string,
+  }) => {
+    const shortValue = ellipsis(fullValue, 15, 15);
+    this.actions.assets.copyAssetParamNotification.trigger({
+      param,
+      shortValue,
+    });
   };
 
   @action _refreshAssetsData = () => {

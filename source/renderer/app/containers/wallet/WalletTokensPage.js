@@ -17,24 +17,18 @@ const WalletTokensPage = inject(
     const { getAsset, assetSettingsDialogWasOpened } = assets;
     const { onAssetSettingsOpen, onOpenAssetSend } = actions.assets;
     const { active: activeWallet } = wallets;
-    const { active: wallet } = wallets;
-
     const { currentLocale } = profile;
 
     // Guard against potential null values
-    if (!wallet)
+    if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
 
-    const walletTokens = wallet.assets.total;
+    const walletTokens = activeWallet.assets.total;
     const assetTokens = getAssetTokens(walletTokens, getAsset);
-    const totalRawAssets = wallet.assets.total.length;
+    const totalRawAssets = activeWallet.assets.total.length;
     const totalAssets = assetTokens.length;
-    const hasRawAssets = wallet.assets.total.length > 0;
+    const hasRawAssets = activeWallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
-
-    // Guard against potential null values
-    if (!activeWallet)
-      throw new Error('Active wallet required for WalletReceivePage.');
 
     return (
       <WalletTokens

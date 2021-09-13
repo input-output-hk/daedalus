@@ -12,5 +12,9 @@ export default class AssetsActions {
   }> = new Action();
   onAssetSettingsCancel: Action<any> = new Action();
   onOpenAssetSend: Action<{ uniqueId: string }> = new Action();
-  onCopyAssetParam: Action<{ uniqueId: string }> = new Action();
+  onCopyAssetParam: Action<{ param: string, fullValue: string }> = new Action();
+  copyAssetParamNotification: Action<{
+    param: string,
+    shortValue: string,
+  }> = new Action();
 }

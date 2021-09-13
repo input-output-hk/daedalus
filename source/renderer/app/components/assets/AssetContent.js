@@ -14,40 +14,40 @@ import { ASSET_TOKEN_ID_COPY_FEEDBACK } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
 
 const messages = defineMessages({
-  fingerprintItem: {
-    id: 'assets.assetToken.item.fingerprint',
+  fingerprintrenderAssetParam: {
+    id: 'assets.assetToken.param.fingerprint',
     defaultMessage: '!!!Fingerprint',
-    description: '"fingerprint" item.',
+    description: '"fingerprint" param.',
   },
-  policyIdItem: {
-    id: 'assets.assetToken.item.policyId',
+  policyIdrenderAssetParam: {
+    id: 'assets.assetToken.param.policyId',
     defaultMessage: '!!!Policy Id',
-    description: '"policyId" item.',
+    description: '"policyId" param.',
   },
-  assetNameItem: {
-    id: 'assets.assetToken.item.assetName',
+  assetNamerenderAssetParam: {
+    id: 'assets.assetToken.param.assetName',
     defaultMessage: '!!!Asset name',
-    description: '"assetName" item.',
+    description: '"assetName" param.',
   },
-  nameItem: {
-    id: 'assets.assetToken.item.name',
+  namerenderAssetParam: {
+    id: 'assets.assetToken.param.name',
     defaultMessage: '!!!Name',
-    description: '"name" item.',
+    description: '"name" param.',
   },
-  tickerItem: {
-    id: 'assets.assetToken.item.ticker',
+  tickerrenderAssetParam: {
+    id: 'assets.assetToken.param.ticker',
     defaultMessage: '!!!Ticker',
-    description: '"ticker" item.',
+    description: '"ticker" param.',
   },
-  descriptionItem: {
-    id: 'assets.assetToken.item.description',
+  descriptionrenderAssetParam: {
+    id: 'assets.assetToken.param.description',
     defaultMessage: '!!!Description',
-    description: '"description" item.',
+    description: '"description" param.',
   },
   blank: {
-    id: 'assets.assetToken.item.blank',
+    id: 'assets.assetToken.param.blank',
     defaultMessage: '!!!Blank',
-    description: '"Blank" item value.',
+    description: '"Blank" param value.',
   },
   settingsCogPopOver: {
     id: 'assets.assetToken.settings.cogPopOver',
@@ -78,45 +78,41 @@ type Props = {
   hasError?: boolean,
 };
 
-type ItemCopied = ?string;
+type ParamCopied = ?string;
 
 const AssetContent = observer((props: Props) => {
-  const [itemCopied, setItemCopied] = useState<ItemCopied>(null);
+  const [paramCopied, setParamCopied] = useState<ParamCopied>(null);
 
   let copyNotificationTimeout: TimeoutID;
 
-  const handleCopyItem = (
-    newItemCopied: string,
-    assetItem: string,
-    value: string
+  const handleCopyParam = (
+    newParamCopied: string,
+    param: string,
+    fullValue: string
   ) => {
     const { onCopyAssetParam } = props;
     if (onCopyAssetParam) {
-      onCopyAssetParam(assetItem, value);
+      onCopyAssetParam({ param, fullValue });
     }
     clearTimeout(copyNotificationTimeout);
-    setItemCopied(newItemCopied);
+    setParamCopied(newParamCopied);
     copyNotificationTimeout = setTimeout(() => {
-      setItemCopied(null);
+      setParamCopied(null);
     }, ASSET_TOKEN_ID_COPY_FEEDBACK);
   };
 
-  const renderAssetItem = (
-    assetId: string,
-    assetItem: string,
-    value: string
-  ) => {
-    const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
+  const renderAssetParam = (assetId: string, param: string, value: string) => {
+    const icon = paramCopied === assetId ? copyCheckmarkIcon : copyIcon;
     const iconClassnames = classnames([
       styles.copyIcon,
-      itemCopied === assetId ? styles.copiedIcon : null,
+      paramCopied === assetId ? styles.copiedIcon : null,
     ]);
     const onCopy = () => {
-      handleCopyItem(assetId, assetItem, value);
+      handleCopyParam(assetId, param, value);
     };
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
-        <div className={styles.assetItem}>
+        <div className={styles.assetParam}>
           <div className={styles.value}>
             {value}
             <SVGInline svg={icon} className={iconClassnames} />
@@ -144,9 +140,9 @@ const AssetContent = observer((props: Props) => {
     <div className={componentStyles}>
       {highlightFingerprint && (
         <div className={styles.fingerprint}>
-          {renderAssetItem(
+          {renderAssetParam(
             'fingerprint',
-            intl.formatMessage(messages.fingerprintItem),
+            intl.formatMessage(messages.fingerprintrenderAssetParam),
             fingerprint
           )}
         </div>
@@ -154,11 +150,11 @@ const AssetContent = observer((props: Props) => {
       <dl>
         {!highlightFingerprint && (
           <>
-            <dt>{intl.formatMessage(messages.fingerprintItem)}</dt>
+            <dt>{intl.formatMessage(messages.fingerprintrenderAssetParam)}</dt>
             <dd>
-              {renderAssetItem(
+              {renderAssetParam(
                 'fingerprint',
-                intl.formatMessage(messages.fingerprintItem),
+                intl.formatMessage(messages.fingerprintrenderAssetParam),
                 fingerprint
               )}
             </dd>
@@ -166,11 +162,11 @@ const AssetContent = observer((props: Props) => {
         )}
         {ticker && (
           <>
-            <dt>{intl.formatMessage(messages.tickerItem)}</dt>
+            <dt>{intl.formatMessage(messages.tickerrenderAssetParam)}</dt>
             <dd>
-              {renderAssetItem(
+              {renderAssetParam(
                 'ticker',
-                intl.formatMessage(messages.tickerItem),
+                intl.formatMessage(messages.tickerrenderAssetParam),
                 ticker
               )}
             </dd>
@@ -178,11 +174,11 @@ const AssetContent = observer((props: Props) => {
         )}
         {name && (
           <>
-            <dt>{intl.formatMessage(messages.nameItem)}</dt>
+            <dt>{intl.formatMessage(messages.namerenderAssetParam)}</dt>
             <dd>
-              {renderAssetItem(
+              {renderAssetParam(
                 'name',
-                intl.formatMessage(messages.nameItem),
+                intl.formatMessage(messages.namerenderAssetParam),
                 name
               )}
             </dd>
@@ -190,30 +186,30 @@ const AssetContent = observer((props: Props) => {
         )}
         {description && (
           <>
-            <dt>{intl.formatMessage(messages.descriptionItem)}</dt>
+            <dt>{intl.formatMessage(messages.descriptionrenderAssetParam)}</dt>
             <dd>
-              {renderAssetItem(
+              {renderAssetParam(
                 'description',
-                intl.formatMessage(messages.descriptionItem),
+                intl.formatMessage(messages.descriptionrenderAssetParam),
                 description
               )}
             </dd>
           </>
         )}
-        <dt>{intl.formatMessage(messages.policyIdItem)}</dt>
+        <dt>{intl.formatMessage(messages.policyIdrenderAssetParam)}</dt>
         <dd>
-          {renderAssetItem(
+          {renderAssetParam(
             'policyId',
-            intl.formatMessage(messages.policyIdItem),
+            intl.formatMessage(messages.policyIdrenderAssetParam),
             policyId
           )}
         </dd>
-        <dt>{intl.formatMessage(messages.assetNameItem)}</dt>
+        <dt>{intl.formatMessage(messages.assetNamerenderAssetParam)}</dt>
         <dd>
           {assetName ? (
-            renderAssetItem(
+            renderAssetParam(
               'assetName',
-              intl.formatMessage(messages.assetNameItem),
+              intl.formatMessage(messages.assetNamerenderAssetParam),
               assetName
             )
           ) : (

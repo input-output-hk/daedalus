@@ -9,7 +9,7 @@ import type { AssetToken } from '../../../api/assets/types';
 
 // const messages = defineMessages({
 //   fingerprintItem: {
-//     id: 'assets.assetToken.item.fingerprint',
+//     id: 'assets.assetToken.param.fingerprint',
 //     defaultMessage: '!!!Fingerprint',
 //     description: '"fingerprint" item.',
 //   },
