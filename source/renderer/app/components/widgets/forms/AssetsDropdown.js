@@ -21,10 +21,11 @@ type Props = {
 };
 
 export const onSearchAssetsDropdown = (
-  searchValue: string,
+  _searchValue: string,
   options: Array<any>
 ) => {
   return filter(options, ({ asset }) => {
+    const searchValue = _searchValue.trim();
     if (searchValue.length < 3) {
       return true;
     }

@@ -1,39 +1,60 @@
 // @flow
-import React from 'react';
-import classnames from 'classnames';
-import { defineMessages, intlShape, injectIntl } from 'react-intl';
+import React, { useState } from 'react';
+import { intlShape, injectIntl, defineMessages } from 'react-intl';
+import { omit } from 'lodash';
 import { observer } from 'mobx-react';
 import styles from './WalletTokens.scss';
 import Wallet from '../../../domains/Wallet';
+import WalletTokensList from './WalletTokensList';
+import WalletTokensSearch from './WalletTokensSearch';
 import type { AssetToken } from '../../../api/assets/types';
 
-// const messages = defineMessages({
-//   fingerprintItem: {
-//     id: 'assets.assetToken.param.fingerprint',
-//     defaultMessage: '!!!Fingerprint',
-//     description: '"fingerprint" item.',
-//   },
-// });
+const messages = defineMessages({
+  favoritesListTitle: {
+    id: 'wallet.tokens.list.favorites.title',
+    defaultMessage: '!!!Favorites',
+    description: 'Favorites list title label',
+  },
+  tokensListTitle: {
+    id: 'wallet.tokens.list.tokens.title',
+    defaultMessage: '!!!Tokens',
+    description: 'Favorites list title label',
+  },
+});
 
 type Props = {
-  wallet: Wallet,
   assets: Array<AssetToken>,
-  onOpenAssetSend: Function,
-  onCopyAssetParam: Function,
-  onAssetSettings: Function,
-  currentLocale: string,
-  isLoadingAssets: boolean,
   assetSettingsDialogWasOpened: boolean,
+  currentLocale: string,
+  intl: intlShape.isRequired,
+  isLoadingAssets: boolean,
+  onAssetSettings: Function,
+  onCopyAssetParam: Function,
+  onOpenAssetSend: Function,
+  wallet: Wallet,
   intl: intlShape.isRequired,
 };
-
+type SearchValue = string;
 const WalletTokens = observer((props: Props) => {
-  console.log('props', props);
-  const { assets } = props;
+  const [searchValue, setSearchValue] = useState<SearchValue>('');
+
+  const { assets, intl } = props;
+  const listProps = { ...omit(props, 'assets', 'intl'), searchValue };
+  const favoriteTokens = [...assets.slice(0, 1)];
 
   return (
     <div className={styles.component}>
-      <pre>{JSON.stringify(assets, null, 2)}</pre>
+      <WalletTokensSearch searchValue={searchValue} onSearch={setSearchValue} />
+      <WalletTokensList
+        assets={favoriteTokens}
+        title={intl.formatMessage(messages.favoritesListTitle)}
+        {...listProps}
+      />
+      <WalletTokensList
+        assets={assets}
+        title={intl.formatMessage(messages.tokensListTitle)}
+        {...listProps}
+      />
     </div>
   );
 });

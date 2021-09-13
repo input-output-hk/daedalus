@@ -8,11 +8,6 @@ import {
   LEGACY_WALLET_EXCLUDED_NAV_ITEMS,
 } from '../../../config/walletNavigationConfig';
 import Navigation from '../../navigation/Navigation';
-import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
-import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
-import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
-import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic.inline.svg';
-import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 import type {
   NavButtonProps,
   NavDropdownProps,
@@ -91,33 +86,27 @@ export default class WalletNavigation extends Component<Props> {
       {
         id: WALLET_NAV_IDS.SUMMARY,
         label: intl.formatMessage(messages.summary),
-        icon: summaryIcon,
       },
       {
         id: WALLET_NAV_IDS.SEND,
         label: intl.formatMessage(messages.send),
-        icon: sendIcon,
       },
       {
         id: WALLET_NAV_IDS.RECEIVE,
         label: intl.formatMessage(messages.receive),
-        icon: receiveIcon,
       },
       {
         id: WALLET_NAV_IDS.TRANSACTIONS,
         label: intl.formatMessage(messages.transactions),
-        icon: transactionsIcon,
       },
       {
         id: WALLET_NAV_IDS.TOKENS,
         label: intl.formatMessage(messages.tokens),
-        icon: transactionsIcon,
       },
       {
         id: WALLET_NAV_IDS.SETTINGS,
         type: 'dropdown',
         label: intl.formatMessage(messages.more),
-        icon: settingsIcon,
         hasNotification,
         options: [
           {
