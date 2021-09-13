@@ -1,12 +1,12 @@
 import { When, Then } from 'cucumber';
-import en from '../../../../source/renderer/app/i18n/locales/en-US.json';
+import enCopy from '../../../../source/renderer/app/i18n/locales/en-US.json';
 
-const CUSTOM_SERVER_TEXT = en['settings.stakePools.smash.select.customServer'];
-const INVALID_SMASH_SERVER_TEXT = en['api.errors.invalidSmashServer'];
-const OFF_CHAIN_METADATA_SERVER_TEXT = en['settings.stakePools.smash.select.label'];
-const SMASH_SERVER_URL_TEXT = en['settings.stakePools.smashUrl.input.label'];
-const STAKE_POOL_TEXT = en['settings.menu.stakePools.link.label'];
-const YOUR_CHANGES_HAVE_BEEN_SAVED_SUCCESS_MESSAGE = en['inline.editing.input.changesSaved'];
+const CUSTOM_SERVER_TEXT = enCopy['settings.stakePools.smash.select.customServer'];
+const INVALID_SMASH_SERVER_TEXT = enCopy['api.errors.invalidSmashServer'];
+const OFF_CHAIN_METADATA_SERVER_TEXT = enCopy['settings.stakePools.smash.select.label'];
+const SMASH_SERVER_URL_TEXT = enCopy['settings.stakePools.smashUrl.input.label'];
+const STAKE_POOL_TEXT = enCopy['settings.menu.stakePools.link.label'];
+const YOUR_CHANGES_HAVE_BEEN_SAVED_SUCCESS_MESSAGE = enCopy['inline.editing.input.changesSaved'];
 
 const CUSTOM_SERVER_DROPDOWN_OPTION = `//*[@class="SimpleInput_customValueWrapper"]//*[@value="${CUSTOM_SERVER_TEXT}"]`;
 const DAEDALUS_TOP_BAR_LOGO = '//*[@class="TopBar_topBar TopBar_withoutWallet"]';
