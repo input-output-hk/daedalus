@@ -5,7 +5,7 @@ type Element = ClassName | HTMLElement;
 
 export const getRelativePosition = (
   targetElement: Element,
-  parentElement?: Element
+  parentElement?: ?Element
 ): Object => {
   const targetHTMLElement = getElementHTMLElement(targetElement);
   const parentHTMLElement = parentElement

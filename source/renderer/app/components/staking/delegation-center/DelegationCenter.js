@@ -13,14 +13,23 @@ import type {
 type Props = {
   wallets: Array<Wallet>,
   numberOfStakePools: number,
+  numberOfRankedStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
   networkTip: ?TipInfo,
+  epochLength: ?number,
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
   getStakePoolById: Function,
   isLoading: boolean,
   currentLocale: string,
+  isEpochsInfoAvailable: boolean,
+  isListActive?: boolean,
+  currentTheme: string,
+  onOpenExternalLink: Function,
+  containerClassName: string,
+  setListActive?: Function,
+  listName?: string,
 };
 
 @observer
@@ -29,31 +38,52 @@ export default class DelegationCenter extends Component<Props> {
     const {
       wallets,
       numberOfStakePools,
+      numberOfRankedStakePools,
       onDelegate,
       onUndelegate,
       networkTip,
+      epochLength,
       nextEpoch,
       futureEpoch,
       getStakePoolById,
       isLoading,
       currentLocale,
+      isEpochsInfoAvailable,
+      isListActive,
+      currentTheme,
+      onOpenExternalLink,
+      containerClassName,
+      setListActive,
+      listName,
     } = this.props;
 
     return (
       <Fragment>
-        <DelegationCenterHeader
-          networkTip={networkTip}
-          nextEpoch={nextEpoch}
-          futureEpoch={futureEpoch}
-          currentLocale={currentLocale}
-        />
+        {isEpochsInfoAvailable && (
+          <DelegationCenterHeader
+            networkTip={networkTip}
+            epochLength={epochLength}
+            nextEpoch={nextEpoch}
+            futureEpoch={futureEpoch}
+            currentLocale={currentLocale}
+          />
+        )}
         <DelegationCenterBody
           wallets={wallets}
           numberOfStakePools={numberOfStakePools}
+          numberOfRankedStakePools={numberOfRankedStakePools}
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
-          isLoading={isLoading}
+          nextEpoch={nextEpoch}
+          futureEpoch={futureEpoch}
+          isLoading={isLoading || !isEpochsInfoAvailable}
+          currentTheme={currentTheme}
+          isListActive={isListActive}
+          onOpenExternalLink={onOpenExternalLink}
+          containerClassName={containerClassName}
+          setListActive={setListActive}
+          listName={listName}
         />
       </Fragment>
     );

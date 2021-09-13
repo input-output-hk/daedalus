@@ -14,17 +14,25 @@
     height: calc(100% - 190px);
   }
 
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  *::-webkit-scrollbar-track {
+    margin-bottom: 12px;
+  }
+
   :global(.ReactVirtualized__Grid__innerScrollContainer) {
     overflow: visible !important;
   }
-}
 
-.list {
-  overflow-y: scroll;
-  padding-top: 8px;
-  will-change: none !important;
+  .list {
+    overflow-y: scroll;
+    padding-top: 8px;
+    will-change: none !important;
 
-  &:focus {
-    outline: 0;
+    &:focus {
+      outline: 0;
+    }
   }
 }

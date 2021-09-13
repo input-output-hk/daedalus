@@ -23,6 +23,7 @@ export const defaultProps = {
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       wordCount={number('wordCount', 15)}
+      walletName="My Wallet"
     />
   ),
   walletRecoveryPhraseStep2Container: (
@@ -30,16 +31,22 @@ export const defaultProps = {
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       wordCount={number('wordCount', 15)}
+      expectedWordCount={15}
+      walletName="My Wallet"
     />
   ),
   walletRecoveryPhraseStep3Container: (
-    <WalletRecoveryPhraseStep3Dialog onClose={action('onClose')} />
+    <WalletRecoveryPhraseStep3Dialog
+      onClose={action('onClose')}
+      walletName="My Wallet"
+    />
   ),
   walletRecoveryPhraseStep4Container: (
     <WalletRecoveryPhraseStep4Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       openExternalLink={action('openExternalLink')}
+      walletName="My Wallet"
     />
   ),
   activeField: null,
@@ -54,9 +61,7 @@ export const defaultProps = {
   onStopEditing: () => {},
   openDialogAction: () => {},
   walletName: text('Wallet Name', 'Wallet Name'),
-  spendingPasswordUpdateDate: moment()
-    .subtract(1, 'month')
-    .toDate(),
+  spendingPasswordUpdateDate: moment().subtract(1, 'month').toDate(),
   changeSpendingPasswordDialog: (
     <ChangeSpendingPasswordDialog
       walletName={text('Wallet Name', 'Wallet Name')}
@@ -72,6 +77,7 @@ export const defaultProps = {
       onDataChange={action('Change Password - onDataChange')}
       isSubmitting={boolean('Change Password - isSubmitting', false)}
       error={null}
+      currentLocale={'en-US'}
     />
   ),
   deleteWalletDialogContainer: (

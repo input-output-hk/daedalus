@@ -8,7 +8,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import StakingEpochsCurrentEpochData from './StakingEpochsCurrentEpochData';
 import StakingEpochsPreviousEpochData from './StakingEpochsPreviousEpochData';
-import { SELECTED_EPOCH_OPTIONS, humanizeDurationToShort } from './helpers.js';
+import { SELECTED_EPOCH_OPTIONS, humanizeDurationToShort } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
 
@@ -112,7 +112,7 @@ export default class StakingEpochs extends Component<Props, State> {
               value={selectedEpoch}
               onChange={this.onSelectedEpochChange}
               skin={SelectSkin}
-              selectionRenderer={option => (
+              selectionRenderer={(option) => (
                 <div className={styles.customSelectValue}>{option.label}</div>
               )}
               optionHeight={50}

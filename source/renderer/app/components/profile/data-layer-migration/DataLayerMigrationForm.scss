@@ -54,8 +54,8 @@
 
 .submitButton {
   background-color: var(--theme-data-migration-layer-button-background-color);
-  border: solid 1px var(--theme-data-migration-button-border-color) !important;
-  color: var(--theme-data-migration-button-label-color) !important;
+  border: solid 1px var(--theme-data-migration-layer-button-border-color) !important;
+  color: var(--theme-data-migration-layer-button-label-color) !important;
   line-height: 1.36 !important;
   margin-bottom: 30px;
   transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1),

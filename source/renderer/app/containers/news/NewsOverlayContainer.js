@@ -11,8 +11,9 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { app, newsFeed, profile } = this.props.stores;
-    const { openExternalLink } = app;
+    const { stores } = this.props;
+    const { newsFeed, profile } = stores;
+    const { openExternalLink } = stores.app;
     const {
       closeOpenedAlert,
       markNewsAsRead,

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import classnames from 'classnames';
-import type { Node, Element } from 'react';
+import type { Node, Element, ElementRef } from 'react';
 import { Modal } from 'react-polymorph/lib/components/Modal';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -10,13 +10,14 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
-import dialogOverridesStyles from './DialogOverride.scss';
+import dialogOverrides from './DialogOverride.scss';
+import dialogFullSizeOverride from './DialogFullSizeOverride.scss';
 
 export type DialogActionItems = Array<DialogActionItem>;
 
 export type DialogActionItem = {
   className?: ?string,
-  label: string,
+  label: string | Node,
   primary?: boolean,
   disabled?: boolean,
   onClick?: Function,
@@ -33,20 +34,23 @@ export type DialogActionOptions = {
   direction?: ActionDirection,
 };
 
+export type DialogActions = DialogActionItems | DialogActionOptions;
+
 type Props = {
-  title?: string,
+  title?: string | Element<any>,
   subtitle?: string | Node,
   children?: Node,
   footer?: Node,
-  actions?: DialogActionItems | DialogActionOptions,
+  actions?: DialogActions,
   closeButton?: ?Element<any>,
   backButton?: Node,
   className?: string,
   defaultThemeOverrides?: boolean,
-  customThemeOverrides?: Object,
   onClose?: Function,
   closeOnOverlayClick?: boolean,
   primaryButtonAutoFocus?: boolean,
+  fullSize?: boolean,
+  scrollWrapperRef?: ?ElementRef<*>,
 };
 
 const defaultActionOptions = {
@@ -69,7 +73,8 @@ export default class Dialog extends Component<Props> {
       backButton,
       primaryButtonAutoFocus,
       defaultThemeOverrides,
-      customThemeOverrides,
+      fullSize,
+      scrollWrapperRef,
     } = this.props;
 
     const { items, direction } = Array.isArray(actions)
@@ -82,9 +87,9 @@ export default class Dialog extends Component<Props> {
           ...actions,
         };
 
-    const themeOverrides = defaultThemeOverrides
-      ? dialogOverridesStyles
-      : customThemeOverrides || '';
+    let themeOverrides;
+    if (defaultThemeOverrides) themeOverrides = dialogOverrides;
+    else if (fullSize) themeOverrides = dialogFullSizeOverride;
 
     const classActionsClasses = classnames([
       styles.actions,
@@ -112,7 +117,16 @@ export default class Dialog extends Component<Props> {
             </div>
           )}
 
-          {children && <div className={styles.content}>{children}</div>}
+          {children && (
+            <div
+              className={styles.contentWrapper}
+              ref={(ref) => {
+                if (scrollWrapperRef) scrollWrapperRef.current = ref;
+              }}
+            >
+              <div className={styles.content}>{children}</div>
+            </div>
+          )}
           {footer && <div className={styles.footer}>{footer}</div>}
 
           {items && (
@@ -134,6 +148,7 @@ export default class Dialog extends Component<Props> {
                   />
                 ) : (
                   <Link
+                    key={key}
                     className={action.className}
                     onClick={action.onClick}
                     label={action.label}

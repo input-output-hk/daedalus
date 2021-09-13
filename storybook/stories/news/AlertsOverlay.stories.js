@@ -84,11 +84,11 @@ const getAlerts = (locale: string) => [
   }),
 ];
 
-storiesOf('News|Alerts', module)
+storiesOf('News|Overlays', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
-  .add('Alerts Overlay', (props: { locale: string }) => (
+  .add('Alerts', (props: { locale: string }) => (
     <AlertsOverlay
       allAlertsCount={getAlerts(props.locale).length}
       alerts={getAlerts(props.locale)}

@@ -32,6 +32,7 @@
     height: 24px;
     width: 24px;
 
+    & > path,
     & > g > path {
       fill: var(--theme-icon-sidebar-color);
     }
@@ -39,13 +40,6 @@
     & > g > g {
       stroke: var(--theme-icon-sidebar-color);
     }
-  }
-}
-
-.hardwareWalletsIcon {
-  & > svg {
-    height: 44px;
-    width: 44px;
   }
 }
 

@@ -115,13 +115,13 @@ export default class VerificationDialog extends Component<Props, State> {
   };
 
   onStoringConfirmation = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       storingConfirmed: !prevState.storingConfirmed,
     }));
   };
 
   onRecoveringConfirmation = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       recoveringConfirmed: !prevState.recoveringConfirmed,
     }));
   };
@@ -192,7 +192,7 @@ export default class VerificationDialog extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { recoveryPhrase } = form.values();
         this.props.onContinue({ recoveryPhrase });
       },
@@ -205,7 +205,7 @@ export default class VerificationDialog extends Component<Props, State> {
     const autocomplete = this.recoveryPhraseAutocomplete;
 
     // Cancel all debounced field validations
-    form.each(field => {
+    form.each((field) => {
       field.debouncedValidation.cancel();
     });
     form.reset();
@@ -289,7 +289,7 @@ export default class VerificationDialog extends Component<Props, State> {
               className={styles.recoveryPhrase}
               options={suggestedMnemonics}
               maxSelections={PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT}
-              ref={autocomplete => {
+              ref={(autocomplete) => {
                 this.recoveryPhraseAutocomplete = autocomplete;
               }}
               {...recoveryPhraseField.bind()}

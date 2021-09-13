@@ -11,4 +11,7 @@ export const rangeMap = (
 };
 
 export const closestNumber = (number: number, numbers: Array<number>) =>
-  numbers.sort((a, b) => a - b).find(item => item > number);
+  numbers.sort((a, b) => a - b).find((item) => item > number);
+
+export const randomInRange = (min: number, max: number) =>
+  Math.random() * (max - min) + min;

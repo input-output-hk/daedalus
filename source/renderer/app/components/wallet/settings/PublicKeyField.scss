@@ -1,0 +1,211 @@
+.component {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+
+  .title {
+    color: var(--theme-input-label-color);
+    font-family: var(--font-medium);
+    font-size: 16px;
+  }
+
+  .description {
+    margin-bottom: 14px;
+  }
+
+  .contentBox {
+    align-items: center;
+    color: var(--theme-bordered-box-text-color);
+    display: flex;
+    flex-direction: row;
+    font-family: var(--font-light);
+    justify-content: space-between;
+    line-height: 1.38;
+    padding-top: 14px;
+
+    p:first-child {
+      margin-bottom: 15px;
+    }
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .inputBox {
+    position: relative;
+    width: 100%;
+  }
+
+  .field {
+    margin-top: 13px;
+    &.valueHidden {
+      :global {
+        .SimpleFormField_label {
+          pointer-events: none;
+        }
+
+        .SimpleInput_input {
+          color: var(--rp-input-text-color-disabled);
+          pointer-events: none;
+        }
+      }
+    }
+
+    &.valueShown {
+      :global {
+        .SimpleInput_input {
+          color: var(--theme-input-text-color);
+        }
+      }
+    }
+
+    &.withBigToggleButton {
+      :global {
+        .SimpleFormField_inputWrapper {
+          & > span {
+            margin-right: 86px;
+
+            .SimpleInput_input {
+              width: calc(100% - 213px);
+            }
+          }
+        }
+      }
+    }
+
+    :global {
+      .SimpleFormField_inputWrapper {
+        background-color: var(--rp-input-bg-color-disabled);
+        display: flex;
+        height: 50px;
+        justify-content: flex-end;
+        padding: 11px 0;
+
+        & > span {
+          display: block;
+          margin-right: 86px;
+          overflow: visible;
+          width: 28px;
+
+          .SimpleInput_input {
+            background-color: transparent;
+            border: none;
+            height: 28px;
+            left: 20px;
+            padding: 0;
+            position: absolute;
+            text-overflow: ellipsis;
+            top: 11px;
+            width: calc(100% - 150px);
+          }
+        }
+      }
+    }
+  }
+
+  .imageButton,
+  .button {
+    align-items: center;
+    border-radius: 3px;
+    display: flex;
+    height: 28px;
+    justify-content: center;
+    width: 28px;
+
+    &:focus {
+      box-shadow: none !important;
+    }
+
+    :global {
+      .SVGInline {
+        svg {
+          g g,
+          path {
+            fill: var(--theme-button-flat-text-color);
+          }
+        }
+      }
+    }
+  }
+
+  .copyButton {
+    :global {
+      .SVGInline {
+        height: 14px;
+        margin-bottom: 2px;
+        width: 12px;
+      }
+    }
+  }
+
+  .qrCodeButton {
+    :global {
+      .SVGInline {
+        height: 18px;
+        margin-top: 2px;
+        width: 14px;
+      }
+    }
+  }
+
+  .revealButton {
+    :global {
+      .SVGInline {
+        height: 18px;
+        margin-bottom: 2px;
+        width: 14px;
+      }
+    }
+  }
+
+  .contentBox {
+    align-items: center;
+    color: var(--theme-bordered-box-text-color);
+    display: flex;
+    flex-direction: row;
+    font-family: var(--font-light);
+    justify-content: space-between;
+    line-height: 1.38;
+    padding-top: 14px;
+
+    p:first-child {
+      margin-bottom: 15px;
+    }
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .hideButton {
+    :global {
+      .SVGInline {
+        height: 18px;
+        width: 14px;
+      }
+    }
+  }
+
+  .addons {
+    align-items: center;
+    display: flex;
+    position: absolute;
+    right: 10px;
+    top: 24px;
+
+    .imageButtonContainer {
+      margin-right: 10px;
+    }
+
+    .button {
+      font-family: var(--font-bold);
+      font-size: 12px;
+      line-height: 1.33;
+      margin-right: 10px;
+      padding: 0 5px;
+      text-transform: uppercase;
+      width: auto;
+    }
+  }
+}

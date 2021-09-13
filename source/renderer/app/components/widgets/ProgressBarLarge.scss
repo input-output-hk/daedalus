@@ -1,0 +1,92 @@
+.component {
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  p {
+    font-size: 14px;
+  }
+}
+
+.rightLabel {
+  opacity: 0.5;
+  b {
+    font-family: var(--font-bold);
+  }
+}
+
+.progressBarContainer {
+  background-color: var(--theme-progress-bar-large-background-color);
+  border-radius: 5px;
+  height: 24px;
+  position: relative;
+  width: 100%;
+
+  &.loading {
+    animation: animatedStripesBackground 2s linear infinite;
+    background: repeating-linear-gradient(
+      -63deg,
+      var(--theme-staking-progress-stripe-dark-1-background-color),
+      var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+    );
+    background-size: 23px 24px;
+    opacity: 0.3;
+  }
+}
+
+.progress {
+  align-items: center;
+  background-size: 23px 24px !important;
+  border-radius: 5px;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end;
+  transition: width 0.24s;
+
+  &:not(.isComplete) {
+    animation: animatedStripesBackground 2s linear infinite;
+  }
+}
+
+.progressDarkMode {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-progress-bar-large-progress-dark-stripe1),
+    var(--theme-progress-bar-large-progress-dark-stripe1) 10px,
+    var(--theme-progress-bar-large-progress-dark-stripe2) 10px,
+    var(--theme-progress-bar-large-progress-dark-stripe2) 20px
+  );
+}
+
+.progressLightMode {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-staking-progress-stripe-dark-1-background-color),
+    var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+    var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+    var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+  );
+}
+
+.progressLabel {
+  transform: translateX(calc(100% + 8px));
+}
+
+.progressLabelWhite {
+  color: var(--theme-staking-progress-label-light);
+  transform: translateX(-8px);
+}
+
+@keyframes animatedStripesBackground {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 68px;
+  }
+}

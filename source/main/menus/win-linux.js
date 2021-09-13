@@ -10,11 +10,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
-const {
-  isWindows,
-  isBlankScreenFixActive,
-  isIncentivizedTestnet,
-} = environment;
+const { isWindows, isBlankScreenFixActive } = environment;
 
 export const winLinuxMenu = (
   app: App,
@@ -22,7 +18,7 @@ export const winLinuxMenu = (
   actions: MenuActions,
   translations: {},
   locale: string,
-  isUpdateAvailable: boolean,
+  isNavigationEnabled: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -33,8 +29,18 @@ export const winLinuxMenu = (
         click() {
           actions.openAboutDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
+      { type: 'separator' },
+      {
+        label: translation('daedalus.redeemItnRewards'),
+        accelerator: 'Ctrl+T',
+        click() {
+          actions.openItnRewardsRedemptionDialog();
+        },
+        enabled: isNavigationEnabled,
+      },
+      { type: 'separator' },
       {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
@@ -101,7 +107,7 @@ export const winLinuxMenu = (
         click() {
           actions.openSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
@@ -109,7 +115,7 @@ export const winLinuxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
       {
         type: 'separator',
@@ -152,16 +158,14 @@ export const winLinuxMenu = (
           shell.openExternal(faqLink);
         },
       },
-      !isIncentivizedTestnet
-        ? {
-            label: translation('helpSupport.blankScreenFix'),
-            type: 'checkbox',
-            checked: isBlankScreenFixActive,
-            click(item) {
-              actions.toggleBlankScreenFix(item);
-            },
-          }
-        : null,
+      {
+        label: translation('helpSupport.blankScreenFix'),
+        type: 'checkbox',
+        checked: isBlankScreenFixActive,
+        click(item) {
+          actions.toggleBlankScreenFix(item);
+        },
+      },
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),
@@ -170,7 +174,7 @@ export const winLinuxMenu = (
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
-      {
+      /* {
         label: translation('helpSupport.featureRequest'),
         click() {
           const featureRequestLinkUrl = translation(
@@ -178,7 +182,7 @@ export const winLinuxMenu = (
           );
           shell.openExternal(featureRequestLinkUrl);
         },
-      },
+      }, */
       {
         label: translation('helpSupport.supportRequest'),
         click() {
@@ -198,7 +202,6 @@ export const winLinuxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
-        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -207,7 +210,7 @@ export const winLinuxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
     ]),
   },

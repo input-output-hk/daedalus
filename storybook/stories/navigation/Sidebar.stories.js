@@ -7,14 +7,10 @@ import { withKnobs, select } from '@storybook/addon-knobs';
 import {
   DEVELOPMENT,
   TESTNET,
-  ITN_REWARDS_V1,
   STAGING,
 } from '../../../source/common/types/environment.types';
 import StoryDecorator from '../_support/StoryDecorator';
-import {
-  isIncentivizedTestnetTheme,
-  isShelleyTestnetTheme,
-} from '../_support/utils';
+import { isShelleyTestnetTheme } from '../_support/utils';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
@@ -112,7 +108,7 @@ const sidebarMenusHardware = observable({
 let emptyMenus;
 
 storiesOf('Navigation|Sidebar', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
   // ====== Stories ======
   .add('No Category', (props: { currentTheme: string }) => (
@@ -128,8 +124,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -146,8 +140,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -165,8 +157,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -184,8 +174,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -202,8 +190,6 @@ storiesOf('Navigation|Sidebar', module)
       pathname="/"
       currentTheme={props.currentTheme}
       network="testnet"
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -222,8 +208,6 @@ storiesOf('Navigation|Sidebar', module)
         pathname="/"
         currentTheme={props.currentTheme}
         network="testnet"
-        isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-        isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
         isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       />
     )
@@ -245,13 +229,10 @@ storiesOf('Navigation|Sidebar', module)
         {
           Development: DEVELOPMENT,
           Test: TESTNET,
-          'Incentivized Testnet v1 - Rewards': ITN_REWARDS_V1,
-          Stagiing: STAGING,
+          Staging: STAGING,
         },
         TESTNET
       )}
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ));

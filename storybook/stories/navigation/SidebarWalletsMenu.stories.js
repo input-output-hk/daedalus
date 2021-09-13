@@ -3,15 +3,12 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
-import {
-  isIncentivizedTestnetTheme,
-  isShelleyTestnetTheme,
-} from '../_support/utils';
+import { isShelleyTestnetTheme } from '../_support/utils';
 import WalletsWrapper from '../wallets/_utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
 
 storiesOf('Navigation|Wallets Menu', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <StoryDecorator>
       <div style={{ width: '200px' }}>{story()}</div>
     </StoryDecorator>
@@ -27,8 +24,6 @@ storiesOf('Navigation|Wallets Menu', module)
       onWalletItemClick={() => {}}
       isActiveWallet={() => false}
       isAddWalletButtonActive={false}
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       visible
     />
@@ -90,12 +85,10 @@ storiesOf('Navigation|Wallets Menu', module)
           hasNotification: false,
         },
       ]}
-      isActiveWallet={id => id === '2'}
+      isActiveWallet={(id) => id === '2'}
       onWalletItemClick={action('walletItemClick')}
       onAddWallet={action('addWallet')}
       isAddWalletButtonActive={false}
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       visible
     />

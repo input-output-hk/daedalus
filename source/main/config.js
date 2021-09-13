@@ -63,18 +63,19 @@ export type LauncherConfig = {
   tlsPath: string,
   logsPrefix: string,
   cluster: string,
-  block0Path: string,
-  block0Hash: string,
-  secretPath: string,
   configPath: string,
   syncTolerance: string,
   cliBin: string,
-  exportWalletsBin: string,
   legacyStateDir: string,
   legacySecretKey: string,
   legacyWalletDB: string,
   isFlight: boolean,
   isStaging: boolean,
+  smashUrl?: string,
+  metadataUrl?: string,
+  updateRunnerBin: string,
+  selfnodeBin: string,
+  mockTokenMetadataServerBin: string,
 };
 
 type WindowOptionsType = {
@@ -90,15 +91,15 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const WINDOW_WIDTH = 1150;
-export const WINDOW_HEIGHT = 870;
+export const DEFAULT_WINDOW_WIDTH = 1150;
+export const DEFAULT_WINDOW_HEIGHT = 870;
 export const MIN_WINDOW_CONTENT_WIDTH = 905;
-export const MIN_WINDOW_CONTENT_HEIGHT = 700;
+export const MIN_WINDOW_CONTENT_HEIGHT = 564;
 
 export const windowOptions: WindowOptionsType = {
   show: false,
-  width: WINDOW_WIDTH,
-  height: WINDOW_HEIGHT,
+  width: DEFAULT_WINDOW_WIDTH,
+  height: DEFAULT_WINDOW_HEIGHT,
   webPreferences: {
     nodeIntegration: isTest,
     webviewTag: false,
@@ -119,11 +120,11 @@ export const {
   legacyStateDir,
   logsPrefix,
   isFlight,
+  smashUrl,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;
-export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 export const buildLabel = getBuildLabel(
   build,
   network,
@@ -143,8 +144,10 @@ export const ALLOWED_LOGS = [
   'node.log',
 ];
 export const ALLOWED_NODE_LOGS = new RegExp(/(node.log-)(\d{14}$)/);
+export const ALLOWED_WALLET_LOGS = new RegExp(/(cardano-wallet.log-)(\d{14}$)/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
+export const MAX_WALLET_LOGS_ALLOWED = 3;
 export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
 
 // CardanoNode config
@@ -161,15 +164,13 @@ export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: m
 export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
-// CardanoWallet config
-export const STAKE_POOL_REGISTRY_URL = {
-  itn_selfnode:
-    'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
-  nightly:
-    'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',
-  qa:
-    'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
-};
+export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
 
-// Cardano Byron Testnet network magic
-export const TESTNET_MAGIC = '1097911063';
+// Used if token metadata server URL is not defined in launcher config
+export const FALLBACK_TOKEN_METADATA_SERVER_URL =
+  'https://metadata.cardano-testnet.iohkdev.io';
+
+// Used by mock-token-metadata-server
+export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
+export const MOCK_TOKEN_METADATA_SERVER_PORT =
+  process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;

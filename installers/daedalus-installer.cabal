@@ -16,7 +16,6 @@ library
                    , WindowsInstaller
                    , MacInstaller
                    , RewriteLibs
-                   , AppVeyor
                    , Util
   ghc-options:         -Wextra -Wno-unused-do-bind -Werror
                        -fno-warn-orphans

@@ -26,7 +26,7 @@ const generateRandomSlots = (count: number) => {
 };
 
 storiesOf('StakingChart', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

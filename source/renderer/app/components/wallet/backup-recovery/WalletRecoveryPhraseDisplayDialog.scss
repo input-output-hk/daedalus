@@ -3,5 +3,15 @@
     .WalletRecoveryInstructions_component {
       text-align: center !important;
     }
+
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(--theme-button-primary-text-color-disabled) !important;
+          }
+        }
+      }
+    }
   }
 }

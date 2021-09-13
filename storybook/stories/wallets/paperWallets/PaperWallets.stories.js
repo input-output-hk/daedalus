@@ -2,8 +2,8 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from '../../_support/StoryDecorator';
+import wordlist from '../../../../source/common/config/crypto/valid-words.en';
 import InstructionsDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog';
 import PrintDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog';
 import SecuringPasswordDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
@@ -11,7 +11,7 @@ import VerificationDialog from '../../../../source/renderer/app/components/walle
 import CompletionDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
 
 storiesOf('Wallets|Paper Wallets', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

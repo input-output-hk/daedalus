@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import { formattedNumber } from '../../utils/formatters';
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
 import syncedIcon from '../../assets/images/top-bar/node-sync-synced.inline.svg';
 import styles from './NodeSyncStatusIcon.scss';
@@ -19,6 +20,7 @@ const messages = defineMessages({
 type Props = {
   isSynced: boolean,
   syncPercentage: number,
+  hasTadaIcon?: boolean,
 };
 
 export default class NodeSyncStatusIcon extends Component<Props> {
@@ -27,12 +29,13 @@ export default class NodeSyncStatusIcon extends Component<Props> {
   };
 
   render() {
-    const { isSynced, syncPercentage } = this.props;
+    const { isSynced, syncPercentage, hasTadaIcon } = this.props;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
       isSynced ? styles.synced : styles.syncing,
+      hasTadaIcon ? styles.hasTadaIcon : null,
     ]);
     const percentage = syncPercentage.toFixed(syncPercentage === 100 ? 0 : 2);
 
@@ -41,7 +44,7 @@ export default class NodeSyncStatusIcon extends Component<Props> {
         <SVGInline className={styles.icon} svg={statusIcon} />
         <div className={styles.info}>
           {intl.formatMessage(messages.blocksSynced, {
-            percentage,
+            percentage: formattedNumber(percentage),
           })}
         </div>
       </div>

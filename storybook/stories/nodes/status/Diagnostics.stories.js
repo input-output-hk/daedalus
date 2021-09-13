@@ -34,7 +34,7 @@ const coreInfo = {
 };
 
 storiesOf('Nodes|Status', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
@@ -67,8 +67,50 @@ storiesOf('Nodes|Status', module)
         280719
       )}
       nodeConnectionError={null}
-      localTip={{ epoch: 123, slot: 13400 }}
-      networkTip={{ epoch: 123, slot: 13400 }}
+      localTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
+      networkTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
+      localBlockHeight={number('localBlockHeight', 280719)}
+      networkBlockHeight={number('networkBlockHeight', 42539)}
+      isCheckingSystemTime={boolean('isCheckingSystemTime', true)}
+      isForceCheckingSystemTime={boolean('isForceCheckingSystemTime', false)}
+      onForceCheckNetworkClock={() => null}
+      onCopyStateDirectoryPath={() => null}
+      onOpenStateDirectory={() => null}
+      onOpenExternalLink={() => null}
+      onRestartNode={() => null}
+      onClose={() => null}
+    />
+  ))
+  .add('Daedalus Diagnostics - without last network block info', () => (
+    <DaedalusDiagnostics
+      systemInfo={systemInfo}
+      coreInfo={coreInfo}
+      cardanoNodeState="running"
+      isDev={false}
+      isMainnet
+      isStaging={false}
+      isTestnet={false}
+      isNodeResponding
+      isNodeSubscribed
+      isNodeSyncing
+      isNodeInSync
+      isNodeTimeCorrect
+      isConnected
+      isSynced
+      syncPercentage={number('syncPercentage', 100)}
+      hasBeenConnected
+      localTimeDifference={number('localTimeDifference', 0)}
+      isSystemTimeCorrect
+      isForceCheckingNodeTime={false}
+      isSystemTimeIgnored={false}
+      latestLocalBlockTimestamp={number('latestLocalBlockTimestamp', 280719)}
+      latestNetworkBlockTimestamp={number(
+        'latestNetworkBlockTimestamp',
+        280719
+      )}
+      nodeConnectionError={null}
+      localTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
+      networkTip={null}
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}
       isCheckingSystemTime={boolean('isCheckingSystemTime', true)}

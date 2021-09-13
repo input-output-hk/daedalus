@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual, includes } from 'lodash';
+import { isEqual, includes, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -11,6 +11,7 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
+import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -20,7 +21,8 @@ import {
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
-import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
+import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
@@ -61,7 +63,7 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
-const { isIncentivizedTestnet, isFlight } = global;
+const { isFlight } = global;
 
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
@@ -85,7 +87,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSplashShown = isIncentivizedTestnet || isFlight; // Visibility of splash screen
+  @observable isSplashShown = isFlight; // Visibility of splash screen
   @observable isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
 
   @observable hasBeenConnected = false;
@@ -97,6 +99,8 @@ export default class NetworkStatusStore extends Store {
   @observable lastSyncProgressChangeTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable decentralizationProgress: number = 0; // percentage
+  @observable desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
+
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -117,6 +121,17 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
   @observable stateDirectoryPath: string = '';
+  @observable isShelleyActivated: boolean = false;
+  @observable isShelleyPending: boolean = false;
+  @observable isAlonzoActivated: boolean = false;
+  @observable shelleyActivationTime: string = '';
+  @observable isAlonzoActivated: boolean = false;
+  @observable isAlonzoPending: boolean = false;
+  @observable alonzoActivationTime: string = '';
+  @observable verificationProgress: number = 0;
+
+  @observable epochLength: ?number = null; // unit: 1 slot
+  @observable slotLength: ?number = null; // unit: 1 second
 
   // DEFINE STORE METHODS
   setup() {
@@ -160,6 +175,9 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+
+    // Blockchain verification checking
+    getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
   }
 
   _restartNode = async () => {
@@ -302,7 +320,6 @@ export default class NetworkStatusStore extends Store {
           this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
-        this.stores.appUpdate.hideUpdateDialog();
         this.stores.app._closeActiveDialog();
         break;
       default:
@@ -451,13 +468,20 @@ export default class NetworkStatusStore extends Store {
         return;
       }
 
-      const {
-        syncProgress,
-        localTip,
-        networkTip,
-        nextEpoch,
-        futureEpoch,
-      } = networkStatus;
+      const { syncProgress, localTip, networkTip, nextEpoch } = networkStatus;
+      let futureEpoch = null;
+
+      if (nextEpoch && this.epochLength && this.slotLength) {
+        const startDelta = this.epochLength * this.slotLength;
+        futureEpoch = {
+          epochNumber: nextEpoch.epochNumber ? nextEpoch.epochNumber + 1 : null,
+          epochStart: nextEpoch.epochStart
+            ? moment(nextEpoch.epochStart)
+                .add(startDelta, 'seconds')
+                .toISOString()
+            : '',
+        };
+      }
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
@@ -583,9 +607,62 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
-      runInAction('Set Decentralization Progress', () => {
-        this.decentralizationProgress =
-          networkParameters.decentralizationLevel.quantity;
+      let {
+        isShelleyActivated,
+        isShelleyPending,
+        shelleyActivationTime,
+        isAlonzoActivated,
+        isAlonzoPending,
+        alonzoActivationTime,
+      } = this;
+      const {
+        decentralizationLevel,
+        desiredPoolNumber,
+        slotLength,
+        epochLength,
+        eras,
+      } = networkParameters;
+
+      if (eras) {
+        const currentTimeStamp = new Date().getTime();
+
+        shelleyActivationTime = get(eras, 'shelley.epoch_start_time', '');
+        if (shelleyActivationTime !== '') {
+          const shelleyActivationTimeStamp = new Date(
+            shelleyActivationTime
+          ).getTime();
+          isShelleyActivated = currentTimeStamp >= shelleyActivationTimeStamp;
+          isShelleyPending = currentTimeStamp < shelleyActivationTimeStamp;
+        }
+
+        alonzoActivationTime = get(eras, 'alonzo.epoch_start_time', '');
+        if (alonzoActivationTime !== '') {
+          const alonzoActivationTimeStamp = new Date(
+            alonzoActivationTime
+          ).getTime();
+          isAlonzoActivated = currentTimeStamp >= alonzoActivationTimeStamp;
+          isAlonzoPending = currentTimeStamp < alonzoActivationTimeStamp;
+        }
+      }
+
+      runInAction('Update Decentralization Progress', () => {
+        this.decentralizationProgress = decentralizationLevel.quantity;
+        this.isShelleyActivated = isShelleyActivated;
+        this.isShelleyPending = isShelleyPending;
+        this.shelleyActivationTime = shelleyActivationTime;
+        this.isAlonzoActivated = isAlonzoActivated;
+        this.isAlonzoPending = isAlonzoPending;
+        this.alonzoActivationTime = alonzoActivationTime;
+      });
+
+      runInAction('Update Desired Pool Number', () => {
+        this.desiredPoolNumber =
+          desiredPoolNumber || INITIAL_DESIRED_POOLS_NUMBER;
+      });
+
+      runInAction('Update Epoch Config', () => {
+        this.slotLength = slotLength.quantity;
+        this.epochLength = epochLength.quantity;
       });
     } catch (e) {
       runInAction('Clear Decentralization Progress', () => {
@@ -624,6 +701,13 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
+  @action _onCheckVerificationProgress = (
+    verificationProgress: number
+  ): Promise<void> => {
+    this.verificationProgress = verificationProgress;
+    return Promise.resolve();
+  };
+
   @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
   };
@@ -657,5 +741,24 @@ export default class NetworkStatusStore extends Store {
 
   @computed get syncPercentage(): number {
     return this.syncProgress || 0;
+  }
+
+  @computed get absoluteSlotNumber(): number {
+    const { networkTip } = this;
+    return get(networkTip, 'absoluteSlotNumber', 0);
+  }
+
+  @computed get isEpochsInfoAvailable(): boolean {
+    const { networkTip, nextEpoch } = this;
+    return (
+      get(nextEpoch, 'epochNumber', null) !== null &&
+      get(nextEpoch, 'epochStart', null) !== null &&
+      get(networkTip, 'epoch', null) !== null &&
+      get(networkTip, 'slot', null) !== null
+    );
+  }
+
+  @computed get isVerifyingBlockchain(): boolean {
+    return !this.isConnected && this.verificationProgress < 100;
   }
 }

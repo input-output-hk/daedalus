@@ -17,7 +17,11 @@ export default (onError?: Function) => {
   });
 
   process.on('unhandledRejection', (error: any) => {
-    handleError('unhandledRejection', error);
+    handleError('unhandledRejection', {
+      error,
+      stack: error.stack,
+      message: error.message,
+    });
   });
 
   app.on('gpu-process-crashed', (event: any, killed: boolean) => {

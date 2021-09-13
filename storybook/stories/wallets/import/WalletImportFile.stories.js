@@ -59,7 +59,7 @@ storiesOf('Wallets|Import File', module)
       <VerticalFlexContainer>
         <WalletSelectImportDialog
           isSubmitting={boolean('isSubmitting', false)}
-          nameValidator={name => isValidWalletName(name)}
+          nameValidator={(name) => isValidWalletName(name)}
           // $FlowFixMe
           exportedWallets={[...namedWallets, ...unnamedWallets]}
           pendingImportWalletsCount={number('pendingImportWalletsCount', 0)}

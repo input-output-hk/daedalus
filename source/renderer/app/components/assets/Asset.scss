@@ -1,0 +1,121 @@
+.component {
+  display: inline-flex;
+  width: 100%;
+
+  .popOverContainer {
+    display: inline-flex;
+    min-width: 0;
+    text-transform: initial;
+
+    > span {
+      min-width: 0;
+    }
+
+    :global {
+      [data-tippy-root] {
+        pointer-events: all !important;
+      }
+    }
+  }
+}
+
+.popOverContent {
+  padding: 9px 0;
+  dl {
+    margin-top: 10px;
+  }
+}
+
+.pill {
+  display: flex;
+  height: 22px;
+  min-width: 0;
+  position: relative;
+  .warningIconWrapper {
+    margin: 2px 0 0 6px;
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
+    }
+    svg {
+      height: 9px;
+      width: 11px;
+    }
+  }
+  &.error {
+    .fingerprint {
+      background-color: var(--theme-background-color-error);
+      color: var(--theme-color-error);
+    }
+    .metadataName {
+      color: var(--theme-color-error);
+    }
+  }
+}
+
+.fingerprint {
+  background: var(--theme-widgets-asset-token-fingerprint-background-color);
+  border-radius: 3px;
+  color: var(--theme-widgets-asset-token-text-color);
+  display: inline-flex;
+  font-family: var(--font-medium);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.27;
+  padding: 4px;
+  white-space: nowrap;
+}
+
+.metadataName {
+  color: var(--theme-widgets-asset-token-text-color);
+  font-family: var(--font-regular);
+  font-size: 11px;
+  line-height: 1.27;
+  margin: 4px 0 4px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metadata {
+  display: none;
+}
+
+.settingsButton {
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  z-index: 1;
+  &:hover {
+    .settingsIcon {
+      opacity: 1;
+    }
+  }
+  .settingsIcon,
+  .warningIcon {
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  > span {
+    display: inline-flex;
+    margin-left: 6px;
+  }
+  .settingsIcon {
+    svg {
+      height: 10px;
+      width: 10px;
+      > g > g {
+        fill: var(--theme-widgets-asset-token-text-color);
+      }
+    }
+  }
+  .warningIcon {
+    margin-top: -1px;
+    svg {
+      height: 9px;
+      width: 11px;
+    }
+  }
+}

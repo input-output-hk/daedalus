@@ -1,6 +1,6 @@
 .component {
   height: 100%;
-  padding: 20px 0 0 20px;
+  padding-left: 20px;
   width: 100%;
 
   .syncingTransactionsWrapper {
@@ -21,51 +21,65 @@
       text-align: center;
     }
   }
-}
 
-.groupDate {
-  color: var(--theme-transactions-list-group-date-color);
-  font-family: var(--font-regular);
-  font-size: 16px;
-  opacity: 0.5;
-  padding: 20px 0 10px 20px;
+  .groupDate {
+    color: var(--theme-transactions-list-group-date-color);
+    font-family: var(--font-regular);
+    font-size: 16px;
+    opacity: 0.5;
+    padding: 20px 0 10px 20px;
 
-  &:first-child {
-    padding-top: 0;
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+
+  .transaction {
+    background-blend-mode: lighten;
+    background-color: var(--theme-transactions-list-background-color);
+
+    // Only left and right border for items in the middle
+    border: solid var(--theme-transactions-list-border-color);
+    border-width: 0 1px;
+    height: 100%;
+
+    &.firstInGroup {
+      border-radius: 4px 4px 0 0;
+      // Round corners on top border
+      border-top-width: 1px;
+    }
+
+    &.lastInGroup {
+      // Round corners on bottom border
+      border-bottom-width: 1px;
+      border-radius: 0 0 4px 4px;
+      height: calc(100% - 20px);
+      margin-bottom: 20px;
+    }
+
+    &.firstInGroup.lastInGroup {
+      border-radius: 4px;
+      // Only element in group -> all round corners
+      border-width: 1px;
+    }
+  }
+
+  .showMoreTransactionsButton {
+    display: block !important;
+    margin: 30px auto 20px;
   }
 }
 
-.transaction {
-  background-blend-mode: lighten;
-  background-color: var(--theme-transactions-list-background-color);
+.preloadingBlockWrapper {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-height: 44px;
 
-  // Only left and right border for items in the middle
-  border: solid var(--theme-transactions-list-border-color);
-  border-width: 0 1px;
-  height: 100%;
-
-  &.firstInGroup {
-    border-radius: 4px 4px 0 0;
-    // Round corners on top border
-    border-top-width: 1px;
+  :global {
+    .LoadingSpinner_component {
+      margin: 0;
+    }
   }
-
-  &.lastInGroup {
-    // Round corners on bottom border
-    border-bottom-width: 1px;
-    border-radius: 0 0 4px 4px;
-    height: calc(100% - 20px);
-    margin-bottom: 20px;
-  }
-
-  &.firstInGroup.lastInGroup {
-    border-radius: 4px;
-    // Only element in group -> all round corners
-    border-width: 1px;
-  }
-}
-
-.showMoreTransactionsButton {
-  display: block !important;
-  margin: 30px auto;
 }

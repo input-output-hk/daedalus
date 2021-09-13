@@ -33,7 +33,7 @@ export type ExportedByronWallet = {
   name: ?string,
   id: string,
   passphrase_hash: string,
-  is_passphrase_empty: boolean,
+  isEmptyPassphrase: boolean,
 
   // Daedalus derived wallet props
   hasName: boolean,

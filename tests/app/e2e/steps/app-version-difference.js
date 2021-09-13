@@ -16,15 +16,15 @@ const nextAppVersion = [
   currentAppVersionChunks[2],
 ].join('.');
 const SELECTORS = {
-  DESCRIPTION: 'manualUpdate.description2',
+  DESCRIPTION: 'appUpdate.manualUpdateOverlay.description2',
   OVERLAY: '.ManualUpdate_content',
   VERSION_INFO: '.ManualUpdate_content .ManualUpdate_description p:nth-child(2)',
 };
 
 Given(/^There is a newer application version available$/, async function() {
-  await this.client.execute(version => {
-    daedalus.api.ada.setLatestAppVersion(version);
-  }, nextAppVersion);
+  // await this.client.execute(version => {
+  //   daedalus.api.ada.setLatestAppVersion(version);
+  // }, nextAppVersion);
 });
 
 Then(/^I should see the "Manual Update" overlay$/, function() {
@@ -54,12 +54,12 @@ Then(
 );
 
 When(/^I trigger the apply-update endpoint$/, async function() {
-  await this.client.executeAsync(done => {
-    daedalus.api.ada
-      .applyUpdate()
-      .then(done)
-      .catch(e => {
-        throw e;
-      });
-  });
+  // await this.client.executeAsync(done => {
+  //   daedalus.api.ada
+  //     .applyUpdate()
+  //     .then(done)
+  //     .catch(e => {
+  //       throw e;
+  //     });
+  // });
 });

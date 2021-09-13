@@ -3,15 +3,6 @@ import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
-  ITN_EXPLORER_URL,
-  ITN_QA_EXPLORER_URL,
-  ITN_NIGHTLY_EXPLORER_URL,
-  DEVELOPMENT_EKG_URL,
-  STAGING_EKG_URL,
-  TESTNET_EKG_URL,
-  MAINNET_LATEST_VERSION_INFO_URL,
-  STAGING_LATEST_VERSION_INFO_URL,
-  TESTNET_LATEST_VERSION_INFO_URL,
   MAINNET_NEWS_URL,
   TESTNET_NEWS_URL,
   STAGING_NEWS_URL,
@@ -26,17 +17,9 @@ import {
   STAGING,
   TESTNET,
   DEVELOPMENT,
-  ITN_REWARDS_V1,
 } from '../../../common/types/environment.types';
-import {
-  checkIsIncentivizedTestnetQA,
-  checkIsIncentivizedTestnetNightly,
-} from '../../../common/utils/environmentCheckers';
 
-export const getNetworkExplorerUri = (
-  network: string,
-  rawNetwork: string
-): string => {
+export const getNetworkExplorerUri = (network: string): string => {
   if (network === MAINNET) {
     return MAINNET_EXPLORER_URL;
   }
@@ -46,27 +29,15 @@ export const getNetworkExplorerUri = (
   if (network === TESTNET) {
     return TESTNET_EXPLORER_URL;
   }
-  if (checkIsIncentivizedTestnetQA(rawNetwork)) {
-    return ITN_QA_EXPLORER_URL;
-  }
-  if (checkIsIncentivizedTestnetNightly(rawNetwork)) {
-    return ITN_NIGHTLY_EXPLORER_URL;
-  }
-  if (network === ITN_REWARDS_V1) {
-    return ITN_EXPLORER_URL;
-  }
   return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
 };
 
-export const getNetworkExplorerUrl = (
-  network: string,
-  rawNetwork: string
-): string => {
+export const getNetworkExplorerUrl = (network: string): string => {
   const protocol =
-    network === MAINNET || network === DEVELOPMENT || network === ITN_REWARDS_V1
+    network === MAINNET || network === TESTNET || network === DEVELOPMENT
       ? 'https://'
       : 'http://';
-  const uri = getNetworkExplorerUri(network, rawNetwork);
+  const uri = getNetworkExplorerUri(network);
   return `${protocol}${uri}`;
 };
 
@@ -74,57 +45,27 @@ export const getNetworkExplorerUrlByType = (
   type: 'tx' | 'address',
   param: string,
   network: string,
-  rawNetwork: string,
   currentLocale: string
 ): string => {
   let queryStringPrefix = '';
   let localePrefix = '';
   let typeValue = type;
 
-  if (network === ITN_REWARDS_V1) {
-    queryStringPrefix = '?id=';
+  if (network === MAINNET || network === TESTNET) {
     localePrefix = `/${currentLocale.substr(0, 2)}`;
-    if (type === 'tx') typeValue = 'transaction';
+    if (type === 'address') {
+      queryStringPrefix = '?address=';
+      typeValue = 'address.html';
+    }
+    if (type === 'tx') {
+      queryStringPrefix = '?id=';
+      typeValue = 'transaction';
+    }
   }
 
   return `${getNetworkExplorerUrl(
-    network,
-    rawNetwork
-  )}${localePrefix}/${typeValue}/${queryStringPrefix}${param}`;
-};
-
-export const getNetworkEkgUrl = (env: {
-  isDev: boolean,
-  isStaging: boolean,
-  isTestnet: boolean,
-}) => {
-  // sets default to development in case env.NETWORK is undefined
-  let ekgUrl = DEVELOPMENT_EKG_URL;
-  if (env.isDev) {
-    ekgUrl = DEVELOPMENT_EKG_URL;
-  }
-  if (env.isStaging) {
-    ekgUrl = STAGING_EKG_URL;
-  }
-  if (env.isTestnet) {
-    ekgUrl = TESTNET_EKG_URL;
-  }
-  return ekgUrl;
-};
-
-export const getLatestVersionInfoUrl = (network: string): string => {
-  // sets default to mainnet in case env.NETWORK is undefined
-  let latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL;
-  if (network === MAINNET) {
-    latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL;
-  }
-  if (network === STAGING) {
-    latestVersionInfoUrl = STAGING_LATEST_VERSION_INFO_URL;
-  }
-  if (network === TESTNET) {
-    latestVersionInfoUrl = TESTNET_LATEST_VERSION_INFO_URL;
-  }
-  return latestVersionInfoUrl;
+    network
+  )}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
 };
 
 export const getNewsURL = (network: string): string => {

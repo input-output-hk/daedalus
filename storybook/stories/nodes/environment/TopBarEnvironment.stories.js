@@ -2,6 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 import SidebarLayout from '../../../../source/renderer/app/components/layout/SidebarLayout';
 import TopBar from '../../../../source/renderer/app/components/layout/TopBar';
@@ -12,13 +13,14 @@ import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-i
 import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import { isShelleyTestnetTheme } from '../../_support/utils';
 
-const topBarTestEnv = currentTheme => (
+const topBarTestEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
@@ -29,20 +31,22 @@ const topBarTestEnv = currentTheme => (
     />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
-      showDot={false}
+      hasNotification={false}
+      hasUpdate={false}
     />
   </TopBar>
 );
 
-const topBarItnEnv = currentTheme => (
+const topBarStagingEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
-    <WalletTestEnvironmentLabel network="itn_rewards_v1" />
+    <WalletTestEnvironmentLabel network="staging" />
     <NodeSyncStatusIcon
       isSynced
       syncPercentage={100}
@@ -51,29 +55,33 @@ const topBarItnEnv = currentTheme => (
     />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
-      showDot={false}
+      hasNotification={false}
+      hasUpdate={false}
     />
   </TopBar>
 );
 
-const topBarProductionEnv = currentTheme => (
+const topBarProductionEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
-      showDot={false}
+      hasNotification={false}
+      hasUpdate={false}
     />
   </TopBar>
 );
 
 storiesOf('Nodes|Environment', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator(withKnobs)
   // ====== Stories ======
   .add('Testnet', (props: { currentTheme: string }) => (
     <SidebarLayout
@@ -81,9 +89,9 @@ storiesOf('Nodes|Environment', module)
       sidebar={<noscript />}
     />
   ))
-  .add('Incentivized Testnet', (props: { currentTheme: string }) => (
+  .add('Staging', (props: { currentTheme: string }) => (
     <SidebarLayout
-      topbar={topBarItnEnv(props.currentTheme)}
+      topbar={topBarStagingEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
   ))

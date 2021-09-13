@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
+import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
@@ -20,10 +21,27 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus, wallets, newsFeed, staking } = stores;
-    const { isSynced, syncPercentage } = networkStatus;
+    const {
+      sidebar,
+      app,
+      networkStatus,
+      wallets,
+      newsFeed,
+      appUpdate,
+      staking,
+    } = stores;
+    const {
+      isSynced,
+      syncPercentage,
+      isShelleyActivated,
+      isAlonzoActivated,
+      isAlonzoPending,
+    } = networkStatus;
+    const { stakingInfoWasOpen } = staking;
+    const shouldShowTadaIconAnimation =
+      isAlonzoActivated && !stakingInfoWasOpen;
+    const shouldShowTadaIcon = isAlonzoPending || isAlonzoActivated;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
-    const { isShelleyActivated } = staking;
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -49,12 +67,20 @@ export default class TopBarContainer extends Component<Props> {
       });
     };
 
+    const onClickTadaButton = () => {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
+    };
+
     const onTransferFunds = (sourceWalletId: string) =>
       actions.wallets.transferFundsSetSourceWalletId.trigger({
         sourceWalletId,
       });
 
     const { unread } = newsFeed.newsFeedData;
+    const { displayAppUpdateNewsItem } = appUpdate;
+
     const hasUnreadNews = unread.length > 0;
 
     return (
@@ -72,10 +98,18 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
+          hasTadaIcon={shouldShowTadaIcon}
         />
+        {shouldShowTadaIcon && (
+          <TadaButton
+            onClick={onClickTadaButton}
+            shouldAnimate={shouldShowTadaIconAnimation}
+          />
+        )}
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
-          showDot={hasUnreadNews}
+          hasNotification={hasUnreadNews}
+          hasUpdate={displayAppUpdateNewsItem}
         />
       </TopBar>
     );

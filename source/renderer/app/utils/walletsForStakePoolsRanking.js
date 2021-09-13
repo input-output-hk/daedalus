@@ -6,7 +6,7 @@ import { MIN_DELEGATION_FUNDS } from '../config/stakingConfig';
 export const getFilteredWallets = (wallets: Array<Wallet>): Array<Wallet> => {
   return wallets.filter(
     (w: Wallet) =>
-      w.amount.greaterThanOrEqualTo(new BigNumber(MIN_DELEGATION_FUNDS)) &&
+      w.amount.isGreaterThanOrEqualTo(new BigNumber(MIN_DELEGATION_FUNDS)) &&
       !w.isLegacy
   );
 };

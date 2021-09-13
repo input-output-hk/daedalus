@@ -1,5 +1,4 @@
 // TODO: Remove once the new wallet creation process is ready
-@import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/place-form-field-error-below-input';
 
 .spendingPasswordWrapper {
@@ -40,10 +39,60 @@
       line-height: 1.38;
       margin-top: 10px;
     }
+
+    .spendingPasswordField {
+      display: flex;
+
+      > span {
+        height: 12px;
+        left: -139px;
+        outline: none;
+        position: relative;
+        top: 5px;
+        width: 12px;
+      }
+
+      &.jpLangTooltipIcon {
+        > span {
+          left: -35px !important;
+        }
+      }
+
+      .infoIcon {
+        height: 14px;
+        opacity: 0.4;
+        transform: translateY(2px);
+        width: 14px;
+
+        &:hover {
+          opacity: 0.8;
+        }
+
+        path {
+          fill: var(--theme-input-label-color);
+        }
+      }
+
+      :global .PasswordInput_root.spendingPassword,
+      :global .PasswordInput_root.repeatedPassword {
+        width: 100%;
+      }
+    }
   }
 }
 
-.isSubmitting {
-  box-shadow: none !important;
-  @include loading-spinner('../../assets/images/spinner-light.svg');
+.component {
+  :global {
+    .LoadingSpinner_component {
+      margin: 11px auto !important;
+
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(--theme-button-primary-text-color-disabled) !important;
+          }
+        }
+      }
+    }
+  }
 }

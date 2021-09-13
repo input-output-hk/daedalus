@@ -48,7 +48,7 @@ export default class Request<Result, Error> {
       if (!this._method)
         reject(new ReferenceError('Request method not defined'));
       this._method(...callArgs)
-        .then(result => {
+        .then((result) => {
           setTimeout(
             action('Request::execute/then', () => {
               if (
@@ -72,7 +72,7 @@ export default class Request<Result, Error> {
           return result;
         })
         .catch(
-          action('Request::execute/catch', error => {
+          action('Request::execute/catch', (error) => {
             setTimeout(
               action(() => {
                 this.error = error;
@@ -127,7 +127,7 @@ export default class Request<Result, Error> {
    * @returns {Promise}
    */
   patch(modify: Function): Promise<Request<Result, Error>> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(
         action(() => {
           const override = modify(this.result);

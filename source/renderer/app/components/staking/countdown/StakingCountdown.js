@@ -16,7 +16,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCountdown.description',
     defaultMessage:
-      '!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (12 hours) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (12 hours).',
+      '!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (10 days) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (10 days).',
     description: 'Info for the Decentralisation notification.',
   },
   timeLeftDesc: {

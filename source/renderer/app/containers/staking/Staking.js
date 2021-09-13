@@ -2,8 +2,11 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
+import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import StakingUnavailable from '../../components/staking/StakingUnavailable';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
-import ExperimentalDataOverlay from '../../components/notifications/ExperimentalDataOverlay';
+import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import UndelegateWalletConfirmationDialog from '../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -45,7 +48,7 @@ export default class Staking extends Component<Props> {
     const { app } = this.props.stores;
     const { options } = item;
     if (options && options.length) {
-      options.forEach(option => {
+      options.forEach((option) => {
         if (
           app.currentRoute &&
           app.currentRoute.includes(option.value.toString())
@@ -67,27 +70,40 @@ export default class Staking extends Component<Props> {
     });
   };
 
-  handleCloseExperimentalDataOverlay = () => {
-    const { stores } = this.props;
-    const { markStakingExperimentAsRead } = stores.staking;
-    markStakingExperimentAsRead();
-  };
-
   render() {
     const {
-      stores: { app, staking },
+      stores: { app, staking, networkStatus, uiDialogs },
       children,
     } = this.props;
-    const { isShelleyTestnet } = global;
-    const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
+    const {
+      isSynced,
+      syncPercentage,
+      isAlonzoPending,
+      isAlonzoActivated,
+    } = networkStatus;
+    const { isStakingDelegationCountdown } = staking;
+    const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
+
+    const isDelegationWizardOpen = uiDialogs.isOpen(
+      DelegationSetupWizardDialog
+    );
+
+    const isUndelegationWizardOpen = uiDialogs.isOpen(
+      UndelegateWalletConfirmationDialog
+    );
+
+    if (!isSynced && !(isDelegationWizardOpen || isUndelegationWizardOpen)) {
+      return (
+        <MainLayout>
+          <VerticalFlexContainer>
+            <StakingUnavailable syncPercentage={syncPercentage} />
+          </VerticalFlexContainer>
+        </MainLayout>
+      );
+    }
 
     return (
       <MainLayout>
-        {!isShelleyTestnet && !isStakingExperimentRead && (
-          <ExperimentalDataOverlay
-            onClose={this.handleCloseExperimentalDataOverlay}
-          />
-        )}
         {isStakingDelegationCountdown ? (
           children
         ) : (
@@ -95,8 +111,7 @@ export default class Staking extends Component<Props> {
             isActiveNavItem={this.isActiveNavItem}
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
-            isIncentivizedTestnet={global.isIncentivizedTestnet}
-            isShelleyTestnet={global.isShelleyTestnet}
+            showInfoTab={shouldShowInfoTab}
           >
             {children}
           </StakingWithNavigation>

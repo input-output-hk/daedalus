@@ -11,8 +11,3 @@ export const WALLET_BACKUP_STEPS = {
   RECOVERY_PHRASE_DISPLAY: 'recoveryPhraseDisplay',
   RECOVERY_PHRASE_ENTRY: 'recoveryPhraseEntry',
 };
-
-export type RecoveryPhraseWord = {
-  word: string,
-  isActive?: boolean,
-};

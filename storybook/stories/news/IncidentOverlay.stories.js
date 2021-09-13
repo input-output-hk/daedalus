@@ -8,8 +8,8 @@ import IncidentOverlay from '../../../source/renderer/app/components/news/Incide
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 
-storiesOf('News|Incidents', module)
-  .addDecorator(story => (
+storiesOf('News|Overlays', module)
+  .addDecorator((story) => (
     <StoryDecorator>
       {story({
         action: {
@@ -29,9 +29,39 @@ storiesOf('News|Incidents', module)
     </StoryDecorator>
   ))
   .addDecorator(withKnobs)
-  .add('Incident Overlay', props => (
+  .add('Incident Overlay', (props) => (
     <IncidentOverlay
       incident={props}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptions,
+        DATE_ENGLISH_OPTIONS[0].value
+      )}
+    />
+  ))
+  .add('Incident - Themed', (props) => (
+    <IncidentOverlay
+      incident={{
+        ...props,
+        color: 'theme-default',
+      }}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptions,
+        DATE_ENGLISH_OPTIONS[0].value
+      )}
+    />
+  ))
+  .add('Incident - Grey', (props) => (
+    <IncidentOverlay
+      incident={{
+        ...props,
+        color: 'grey',
+      }}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(

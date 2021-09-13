@@ -5,6 +5,8 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import SVGInline from 'react-svg-inline';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -18,6 +20,7 @@ import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
+import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
   dialogTitleSetPassword: {
@@ -74,6 +77,12 @@ const messages = defineMessages({
     description:
       'Placeholder for the "Repeat password" inputs in the change wallet password dialog.',
   },
+  passwordTooltip: {
+    id: 'wallet.dialog.passwordTooltip',
+    defaultMessage:
+      'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
+    description: 'Tooltip for the password input in the wallet dialog.',
+  },
 });
 
 type Props = {
@@ -87,6 +96,7 @@ type Props = {
   error: ?LocalizableError,
   isSpendingPasswordSet: boolean,
   walletName: string,
+  currentLocale: string,
 };
 
 @observer
@@ -189,7 +199,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { currentPassword, spendingPassword } = form.values();
         const passwordData = {
           oldPassword: currentPassword,
@@ -216,6 +226,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       error,
       isSpendingPasswordSet,
       walletName,
+      currentLocale,
     } = this.props;
     const dialogClasses = classnames([
       styles.dialog,
@@ -225,6 +236,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     const confirmButtonClasses = classnames([
       'confirmButton',
       isSubmitting ? styles.isSubmitting : null,
+    ]);
+
+    const spendingPasswordClasses = classnames([
+      styles.spendingPasswordField,
+      currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
@@ -258,6 +274,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           ],
           { walletName }
         )}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => {}}
@@ -266,19 +283,39 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       >
         <div className={styles.spendingPasswordFields}>
           {isSpendingPasswordSet && (
-            <Input
-              className={styles.currentPassword}
-              error={currentPasswordField.error || currentPasswordError}
-              {...currentPasswordField.bind()}
-              onKeyPress={this.handleSubmitOnEnter}
-            />
+            <div className={spendingPasswordClasses}>
+              <Input
+                className={styles.currentPassword}
+                error={currentPasswordField.error || currentPasswordError}
+                {...currentPasswordField.bind()}
+                onKeyPress={this.handleSubmitOnEnter}
+              />
+              <PopOver
+                content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                key="tooltip"
+              >
+                <SVGInline svg={infoIconInline} className={styles.infoIcon} />
+              </PopOver>
+            </div>
           )}
 
           <div className={newPasswordClasses}>
-            <PasswordInput
-              {...newPasswordField.bind()}
-              onKeyPress={this.handleSubmitOnEnter}
-            />
+            <div className={spendingPasswordClasses}>
+              <PasswordInput
+                {...newPasswordField.bind()}
+                onKeyPress={this.handleSubmitOnEnter}
+              />
+              {!isSpendingPasswordSet && (
+                <PopOver
+                  content={
+                    <FormattedHTMLMessage {...messages.passwordTooltip} />
+                  }
+                  key="tooltip"
+                >
+                  <SVGInline svg={infoIconInline} className={styles.infoIcon} />
+                </PopOver>
+              )}
+            </div>
           </div>
 
           <div className={styles.repeatedPassword}>

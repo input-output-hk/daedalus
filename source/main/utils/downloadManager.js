@@ -3,12 +3,13 @@ import { app } from 'electron';
 import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
-
+import { logger } from './logging';
 import {
   ALLOWED_DOWNLOAD_DIRECTORIES,
-  DOWNLOAD_PROGRESS_DEFAULT,
+  DOWNLOAD_DATA_DEFAULT,
   DOWNLOAD_EVENT_TYPES as types,
   DOWNLOAD_STATES as states,
+  ERROR_TIME_AFTER_NO_END_EVENT,
 } from '../../common/config/downloadManagerConfig';
 import { extractFileNameFromPath } from '../../common/utils/files';
 import { downloadManagerLocalStorage as localStorage } from './mainLocalStorage';
@@ -22,10 +23,12 @@ import type {
   DownloadInfoProgress,
   DownloadInfoEnd,
   DownloadInfoError,
-  DownloadData,
-  DownloadProgressUpdate,
+  DownloadInfo,
+  DownloadDataUpdate,
 } from '../../common/types/downloadManager.types';
 import { stateDirectoryPath } from '../config';
+
+export const downloads = {};
 
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
@@ -58,130 +61,174 @@ export const getOriginalFilename = ({
   return name;
 };
 
+const getPath = (
+  info: DownloadInfo
+): { temporaryPath: string, newPath: string } => {
+  const { destinationPath, temporaryFilename, originalFilename } = info;
+  const temporaryPath = `${destinationPath}/${temporaryFilename}`;
+  const newPath = `${destinationPath}/${originalFilename}`;
+  return {
+    temporaryPath,
+    newPath,
+  };
+};
+
 export const getEventActions = async (
-  data: DownloadData,
+  info: DownloadInfo,
   window: BrowserWindow,
   requestDownloadChannel: MainIpcChannel<
     DownloadRendererRequest,
     DownloadMainResponse
   >
 ): Promise<Object> => {
-  const { downloadId } = data;
-  await localStorage.setData(data, downloadId);
+  const { downloadId } = info;
+  await localStorage.setInfo(info, downloadId);
+  let serverFileSize;
+  let checkNoEndEvent: TimeoutID;
+
+  const startEvent = async () => {
+    logger.info('DownloadManager:startEvent.');
+    const eventType = types.START;
+    const data = DOWNLOAD_DATA_DEFAULT;
+    requestDownloadChannel.send(
+      {
+        eventType,
+        info,
+        data,
+      },
+      window.webContents
+    );
+  };
+  const downloadEvent = async ({
+    totalSize,
+    downloadedSize: diskFileSize,
+  }: DownloadInfoInit) => {
+    logger.info('DownloadManager:downloadEvent.');
+    serverFileSize = totalSize;
+    const rawData: DownloadDataUpdate = {
+      ...{
+        serverFileSize,
+        diskFileSize,
+        remainingSize: serverFileSize,
+      },
+      state: states.DOWNLOADING,
+    };
+    const data = await localStorage.setData(rawData, downloadId);
+    requestDownloadChannel.send(
+      {
+        eventType: types.DOWNLOAD,
+        info,
+        data,
+      },
+      window.webContents
+    );
+  };
+  const progressEvent = async ({
+    total,
+    downloaded: downloadSize,
+    progress,
+    speed,
+  }: DownloadInfoProgress) => {
+    const rawData: DownloadDataUpdate = {
+      ...{
+        remainingSize: total - downloadSize,
+        serverFileSize,
+        downloadSize,
+        progress,
+        speed,
+      },
+      state: states.DOWNLOADING,
+    };
+    const formattedData = await localStorage.setData(rawData, downloadId);
+    requestDownloadChannel.send(
+      {
+        eventType: types.PROGRESS,
+        info,
+        data: formattedData,
+      },
+      window.webContents
+    );
+    if (progress === 100) {
+      // Checks if the file was delete while the download was in progress
+      checkNoEndEvent = setTimeout(() => {
+        const { temporaryPath, newPath } = getPath(info);
+        if (!fs.existsSync(temporaryPath) || !fs.existsSync(newPath)) {
+          errorEvent({ message: 'The download file was manually deleted' });
+        }
+      }, ERROR_TIME_AFTER_NO_END_EVENT);
+    }
+  };
+  const endEvent = async ({
+    totalSize: downloadSize,
+    onDiskSize: diskFileSize,
+    incomplete,
+  }: DownloadInfoEnd) => {
+    clearTimeout(checkNoEndEvent);
+    delete downloads[downloadId];
+    logger.info('DownloadManager:endEvent.');
+    const rawData: DownloadDataUpdate = {
+      ...{
+        downloadSize,
+        diskFileSize,
+        incomplete,
+      },
+      state: states.FINISHED,
+    };
+    const formattedData = await localStorage.setData(rawData, downloadId);
+    const { temporaryPath, newPath } = getPath(info);
+    fs.renameSync(temporaryPath, newPath);
+    requestDownloadChannel.send(
+      {
+        eventType: types.END,
+        info,
+        data: formattedData,
+      },
+      window.webContents
+    );
+    const { persistLocalData } = info.options;
+    if (!persistLocalData) await localStorage.unset(downloadId);
+  };
+  const pauseEvent = async () => {
+    logger.info('DownloadManager:pauseEvent.');
+    const newState: DownloadDataUpdate = {
+      state: states.PAUSED,
+    };
+    const formattedData = await localStorage.setData(newState, downloadId);
+    requestDownloadChannel.send(
+      {
+        eventType: types.PAUSE,
+        info,
+        data: formattedData,
+      },
+      window.webContents
+    );
+  };
+  const errorEvent = async ({ message }: DownloadInfoError) => {
+    logger.error('DownloadManager:errorEvent', { error: message });
+    const rawData: DownloadDataUpdate = {
+      ...{
+        message,
+      },
+      state: states.FAILED,
+    };
+    const formattedData = await localStorage.setData(rawData, downloadId);
+    requestDownloadChannel.send(
+      {
+        eventType: types.ERROR,
+        info,
+        data: formattedData,
+        error: message,
+      },
+      window.webContents
+    );
+  };
+
   return {
-    start: async () => {
-      const eventType = types.START;
-      const progress = DOWNLOAD_PROGRESS_DEFAULT;
-      requestDownloadChannel.send(
-        {
-          eventType,
-          data,
-          progress,
-        },
-        window.webContents
-      );
-    },
-    download: async ({
-      totalSize: serverFileSize,
-      downloadedSize: diskFileSize,
-    }: DownloadInfoInit) => {
-      const rawProgress: DownloadProgressUpdate = {
-        ...{
-          serverFileSize,
-          diskFileSize,
-          remainingSize: serverFileSize,
-        },
-        state: states.DOWNLOADING,
-      };
-      const progress = await localStorage.setProgress(rawProgress, downloadId);
-      requestDownloadChannel.send(
-        {
-          eventType: types.DOWNLOAD,
-          data,
-          progress,
-        },
-        window.webContents
-      );
-    },
-    progress: async ({
-      total,
-      downloaded: downloadSize,
-      progress,
-      speed,
-    }: DownloadInfoProgress) => {
-      const rawProgress: DownloadProgressUpdate = {
-        ...{
-          remainingSize: total - downloadSize,
-          downloadSize,
-          progress,
-          speed,
-        },
-        state: states.DOWNLOADING,
-      };
-      const formattedProgress = await localStorage.setProgress(
-        rawProgress,
-        downloadId
-      );
-      requestDownloadChannel.send(
-        {
-          eventType: types.PROGRESS,
-          data,
-          progress: formattedProgress,
-        },
-        window.webContents
-      );
-    },
-    end: async ({
-      totalSize: downloadSize,
-      onDiskSize: diskFileSize,
-      incomplete,
-    }: DownloadInfoEnd) => {
-      const rawProgress: DownloadProgressUpdate = {
-        ...{
-          downloadSize,
-          diskFileSize,
-          incomplete,
-        },
-        state: states.FINISHED,
-      };
-      const formattedProgress = await localStorage.setProgress(
-        rawProgress,
-        downloadId
-      );
-      const { destinationPath, temporaryFilename, originalFilename } = data;
-      const temporaryPath = `${destinationPath}/${temporaryFilename}`;
-      const newPath = `${destinationPath}/${originalFilename}`;
-      fs.renameSync(temporaryPath, newPath);
-      requestDownloadChannel.send(
-        {
-          eventType: types.END,
-          data,
-          progress: formattedProgress,
-        },
-        window.webContents
-      );
-      const { persistLocalData } = data;
-      if (!persistLocalData) await localStorage.unset(downloadId);
-    },
-    error: async ({ message }: DownloadInfoError) => {
-      const rawProgress: DownloadProgressUpdate = {
-        ...{
-          message,
-        },
-        state: states.FAILED,
-      };
-      const formattedProgress = await localStorage.setProgress(
-        rawProgress,
-        downloadId
-      );
-      requestDownloadChannel.send(
-        {
-          eventType: types.ERROR,
-          data,
-          progress: formattedProgress,
-        },
-        window.webContents
-      );
-    },
+    start: startEvent,
+    download: downloadEvent,
+    progress: progressEvent,
+    end: endEvent,
+    pause: pauseEvent,
+    error: errorEvent,
   };
 };

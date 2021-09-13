@@ -50,7 +50,7 @@ const messages = defineMessages({
   },
   showUsedLabel: {
     id: 'wallet.receive.page.showUsedLabel',
-    defaultMessage: '!!!show used',
+    defaultMessage: '!!!Show used',
     description:
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
@@ -80,26 +80,21 @@ type Props = {
   walletHasPassword: boolean,
   isSubmitting: boolean,
   error?: ?LocalizableError,
-};
-
-type State = {
   showUsed: boolean,
+  onToggleUsedAddresses: Function,
 };
 
 @observer
-export default class WalletReceiveRandom extends Component<Props, State> {
+export default class WalletReceiveRandom extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  state = {
-    showUsed: true,
   };
 
   passwordField: Input;
 
   toggleUsedAddresses = () => {
-    this.setState(prevState => ({ showUsed: !prevState.showUsed }));
+    const { onToggleUsedAddresses } = this.props;
+    onToggleUsedAddresses();
   };
 
   form = new ReactToolboxMobxForm(
@@ -148,7 +143,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { spendingPassword } = form.values();
         this.props.onGenerateAddress(spendingPassword || '');
         form.clear();
@@ -166,7 +161,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
     walletAddresses.filter(
-      (address: WalletAddress) => !address.used || this.state.showUsed
+      (address: WalletAddress) => !address.used || this.props.showUsed
     );
 
   render() {
@@ -180,9 +175,9 @@ export default class WalletReceiveRandom extends Component<Props, State> {
       isSubmitting,
       error,
       isWalletAddressUsed,
+      showUsed,
     } = this.props;
     const { intl } = this.context;
-    const { showUsed } = this.state;
 
     const walletAddressClasses = classnames([
       styles.hash,
@@ -211,7 +206,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
           <Input
             className={styles.spendingPassword}
             {...passwordField.bind()}
-            ref={input => {
+            ref={(input) => {
               this.passwordField = input;
             }}
             error={passwordField.error}

@@ -23,7 +23,7 @@ export default class Wallet extends Component<Props> {
     if (!wallets.active) return false;
     const { options } = item;
     if (options && options.length) {
-      options.forEach(option => {
+      options.forEach((option) => {
         if (
           app.currentRoute &&
           app.currentRoute.includes(option.value.toString())
@@ -70,6 +70,7 @@ export default class Wallet extends Component<Props> {
       isRestoring,
       isLegacy,
       isNotResponding,
+      isHardwareWallet,
       hasPassword,
     } = activeWallet;
 
@@ -88,6 +89,7 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           isLegacy={isLegacy}
           isNotResponding={isNotResponding}
+          isHardwareWallet={isHardwareWallet}
           isSetWalletPasswordDialogOpen={isDialogOpen(
             ChangeSpendingPasswordDialog
           )}

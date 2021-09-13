@@ -11,7 +11,9 @@ import type {
   SaveFileDialogResponseParams,
 } from '../types/file-dialog.types';
 import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
-import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
+import type { GenerateVotingPDFParams } from '../types/voting-pdf-request.types';
+import type { GenerateCsvParams } from '../types/csv-request.types';
+import type { GenerateQRCodeParams } from '../types/save-qrCode.types';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -36,8 +38,29 @@ import type {
   DownloadResponse,
   ResumeDownloadRequest,
   ResumeDownloadResponse,
+  ClearDownloadLocalDataRequest,
+  ClearDownloadLocalDataResponse,
+  DeleteDownloadedFileRequest,
+  DeleteDownloadedFileResponse,
+  CheckFileExistsRequest,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
+import type {
+  IntrospectAddressRequest,
+  IntrospectAddressResponse,
+} from '../types/address-introspection.types';
+import type {
+  HardwareWalletTransportDeviceRequest,
+  HardwareWalletTransportDeviceResponse,
+  HardwareWalletExtendedPublicKeyRequest,
+  HardwareWalletExtendedPublicKeyResponse,
+  HardwareWalletCardanoAdaAppResponse,
+  LedgerSignTransactionRequest,
+  LedgerSignTransactionResponse,
+  TrezorSignTransactionRequest,
+  TrezorSignTransactionResponse,
+  HardwareWalletConnectionRequest,
+} from '../types/hardware-wallets.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -155,7 +178,9 @@ export type SubmitBugReportRequestMainResponse = void;
  * Channel to rebuild the electron application menu after the language setting changes
  */
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
-export type RebuildAppMenuRendererRequest = { isUpdateAvailable: boolean };
+export type RebuildAppMenuRendererRequest = {
+  isNavigationEnabled: boolean,
+};
 export type RebuildAppMenuMainResponse = void;
 
 /**
@@ -180,11 +205,25 @@ export type GenerateAddressPDFRendererRequest = GenerateAddressPDFParams;
 export type GenerateAddressPDFMainResponse = void;
 
 /**
- * Channel to generate and save a rewards csv
+ * Channel to generate and save a share voting PDF
  */
-export const GENERATE_REWARDS_CSV_CHANNEL = 'GENERATE_REWARDS_CSV_CHANNEL';
-export type GenerateRewardsCsvRendererRequest = GenerateRewardsCsvParams;
-export type GenerateRewardsCsvMainResponse = void;
+export const GENERATE_VOTING_PDF_CHANNEL = 'GENERATE_VOTING_PDF_CHANNEL';
+export type GenerateVotingPDFRendererRequest = GenerateVotingPDFParams;
+export type GenerateVotingPDFMainResponse = void;
+
+/**
+ * Channel to generate and save a csv file
+ */
+export const GENERATE_CSV_CHANNEL = 'GENERATE_CSV_CHANNEL';
+export type GenerateCsvRendererRequest = GenerateCsvParams;
+export type GenerateCsvMainResponse = void;
+
+/**
+ * Channel to generate and save a QR code
+ */
+export const GENERATE_QRCODE_CHANNEL = 'GENERATE_QRCODE_CHANNEL';
+export type GenerateQRCodeRendererRequest = GenerateQRCodeParams;
+export type GenerateQRCodeMainResponse = void;
 
 /**
  * ====================== CARDANO IPC CHANNELS ======================
@@ -267,6 +306,14 @@ export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReport
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
+ * Channel for enabling application menu navigation
+ */
+export const ENABLE_APPLICATION_MENU_NAVIGATION_CHANNEL =
+  'ENABLE_APPLICATION_MENU_NAVIGATION_CHANNEL';
+export type EnableApplicationMenuNavigationRendererRequest = void;
+export type EnableApplicationMenuNavigationMainResponse = void;
+
+/**
  * Channel for generating wallet migration report
  */
 export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';
@@ -294,6 +341,27 @@ export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
 export type ElectronStoreMessage = StoreMessage;
 
 /**
+ * Channel for requesting a new download
+ */
+export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
+export type DownloadRendererRequest = DownloadRequest;
+export type DownloadMainResponse = DownloadResponse;
+
+/**
+ * Channel for resuming an existing download
+ */
+export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
+export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
+export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+
+/**
+ * Channel for resuming an existing download
+ */
+export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
+export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
+export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
+
+/**
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOAD_LOCAL_DATA = 'GET_DOWNLOAD_LOCAL_DATA';
@@ -308,15 +376,138 @@ export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
- * Channel for requesting a new download
+ * Channel for initiating the download manager
  */
-export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
-export type DownloadRendererRequest = DownloadRequest;
-export type DownloadMainResponse = DownloadResponse;
+export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
+export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
- * Channel for requesting a new download
+ * Channel for checking if the downloaded file still exists
  */
-export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
-export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
-export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+export const CHECK_FILE_EXISTS = 'CHECK_FILE_EXISTS';
+export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
+export type CheckFileExistsMainResponse = boolean;
+
+/**
+ * Channel for quitting Daedalus and installing update
+ */
+export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
+export type ManageAppUpdateRendererRequest = {
+  filePath: string,
+  hash: string,
+};
+export type ManageAppUpdateMainResponse = {
+  status: 'progress' | 'success' | 'error',
+  data: {
+    message?: string,
+    progress?: number,
+    code?: number,
+    error?: Error,
+    info?: Object,
+  },
+};
+
+export type DeriveXpubRendererRequestType = {
+  parentXpubHex: string,
+  lastIndex: number,
+  derivationScheme: number,
+};
+
+export type StakingBlockchainPointer = {
+  blockIndex: number,
+  txIndex: number,
+  certificateIndex: number,
+};
+
+export type deriveAddressRendererRequestType = {
+  devicePath: ?string,
+  addressType: number,
+  networkId: number,
+  protocolMagic: number,
+  spendingPathStr: string,
+  stakingPathStr: ?string,
+  isTrezor: boolean,
+};
+
+export type showAddressRendererRequestType = {
+  devicePath: ?string,
+  addressType: number,
+  networkId: number,
+  protocolMagic: number,
+  spendingPathStr: string,
+  stakingPathStr: ?string,
+  isTrezor: boolean,
+};
+
+/**
+ * Channel for introspecting an address
+ */
+export const INTROSPECT_ADDRESS_CHANNEL = 'INTROSPECT_ADDRESS_CHANNEL';
+export type IntrospectAddressRendererRequest = IntrospectAddressRequest;
+export type IntrospectAddressMainResponse = IntrospectAddressResponse;
+
+/**
+ * Channel for checking block replay progress
+ */
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;
+
+/**
+ * Channels for connecting / interacting with Hardware Wallet devices
+ */
+export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
+  'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
+export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
+
+export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
+  'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
+export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
+
+export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
+export type getCardanoAdaAppRendererRequest = { path: ?string };
+export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
+
+export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
+  'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
+export type getHardwareWalletConnectiontMainRequest = HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectiontRendererResponse = Object;
+
+export const SIGN_TRANSACTION_LEDGER_CHANNEL =
+  'SIGN_TRANSACTION_LEDGER_CHANNEL';
+export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
+export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
+
+export const SIGN_TRANSACTION_TREZOR_CHANNEL =
+  'SIGN_TRANSACTION_TREZOR_CHANNEL';
+export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
+export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
+
+export const GET_INIT_TREZOR_CONNECT_CHANNEL =
+  'GET_INIT_TREZOR_CONNECT_CHANNEL';
+export type handleInitTrezorConnectRendererRequest = void;
+export type handleInitTrezorConnectMainResponse = void;
+
+export const GET_INIT_LEDGER_CONNECT_CHANNEL =
+  'GET_INIT_LEDGER_CONNECT_CHANNEL';
+export type handleInitLedgerConnectRendererRequest = void;
+export type handleInitLedgerConnectMainResponse = void;
+
+export const DERIVE_XPUB_CHANNEL = 'DERIVE_XPUB_CHANNEL';
+export type deriveXpubRendererRequest = DeriveXpubRendererRequestType;
+export type deriveXpubMainResponse = string;
+
+export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
+export type resetTrezorActionRendererRequest = void;
+export type resetTrezorActionMainResponse = void;
+
+export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
+export type deriveAddressRendererRequest = deriveAddressRendererRequestType;
+export type deriveAddressMainResponse = string;
+
+export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
+export type showAddressRendererRequest = showAddressRendererRequestType;
+export type showAddressMainResponse = void;

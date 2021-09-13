@@ -1,42 +1,75 @@
-.sadWalletImage {
-  display: block;
-  margin-bottom: 30px;
-  text-align: center;
-  svg {
-    height: 71px;
-    stroke: var(--theme-staking-redeemItnRewards-icon-color);
-    path {
-      stroke: var(--theme-staking-redeemItnRewards-icon-color);
-    }
-    g {
-      ellipse {
-        &:nth-child(7),
-        &:nth-child(8),
-        &:nth-child(9) {
-          stroke: var(--theme-staking-redeemItnRewards-icon-color);
-        }
+.component {
+  .sadWalletImage {
+    display: block;
+    margin-bottom: 30px;
+    text-align: center;
 
-        &:nth-child(11),
-        &:nth-child(12),
-        &:nth-child(13),
-        &:nth-child(14),
-        &:nth-child(15),
-        &:nth-child(16) {
-          fill: var(--theme-staking-redeemItnRewards-icon-color);
+    svg {
+      fill: transparent;
+      height: 71px;
+      stroke: var(--theme-dialog-fullsize-text-highlight-color);
+
+      path {
+        stroke: var(--theme-dialog-fullsize-text-highlight-color);
+      }
+
+      path:nth-child(4) {
+        fill: var(--theme-dialog-fullsize-text-highlight-color);
+      }
+
+      circle {
+        fill: var(--theme-dialog-fullsize-text-highlight-color);
+      }
+
+      g {
+        ellipse {
+          &:nth-child(7),
+          &:nth-child(8),
+          &:nth-child(9) {
+            stroke: var(--theme-dialog-fullsize-text-highlight-color);
+          }
+
+          &:nth-child(11),
+          &:nth-child(12),
+          &:nth-child(13),
+          &:nth-child(14),
+          &:nth-child(15),
+          &:nth-child(16) {
+            fill: var(--theme-dialog-fullsize-text-highlight-color);
+          }
         }
       }
     }
   }
+
+  .description {
+    color: var(--theme-splash-network-title-color);
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: center;
+
+    b {
+      color: #ffffff;
+      font-family: var(--font-semibold);
+    }
+  }
 }
-.description {
-  color: rgba(255, 255, 255, 0.7);
-  font-family: var(--font-regular);
-  font-size: 16px;
-  line-height: 1.38;
-  margin-bottom: 30px;
-  text-align: center;
-  b {
-    color: #ffffff;
-    font-family: var(--font-semibold);
+
+:global {
+  .DialogFullSizeOverride_overlay .DialogCloseButton_component {
+    background-color: transparent !important;
+    opacity: 1;
+
+    &:hover {
+      background-color: var(
+        --theme-dialog-fullsize-field-background-color
+      ) !important;
+    }
+  }
+
+  .Dialog_dialogWrapper > .Dialog_actions button:only-child {
+    max-width: 360px;
+    width: 100%;
   }
 }

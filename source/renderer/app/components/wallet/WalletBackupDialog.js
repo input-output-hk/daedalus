@@ -4,10 +4,7 @@ import { observer } from 'mobx-react';
 import WalletBackupPrivacyWarningDialog from './backup-recovery/WalletBackupPrivacyWarningDialog';
 import WalletRecoveryPhraseDisplayDialog from './backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from './backup-recovery/WalletRecoveryPhraseEntryDialog';
-import type {
-  RecoveryPhraseWord,
-  walletBackupStep,
-} from '../../types/walletBackupTypes';
+import type { walletBackupStep } from '../../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
 
 type Props = {
@@ -18,22 +15,17 @@ type Props = {
   isTermOfflineAccepted: boolean,
   canFinishBackup: boolean,
   isTermRecoveryAccepted: boolean,
-  isTermRewardsAccepted: boolean,
   isValid: boolean,
   isSubmitting: boolean,
-  isShelleyActivated: boolean,
   recoveryPhrase: string,
-  recoveryPhraseShuffled: Array<RecoveryPhraseWord>,
-  enteredPhrase: Array<{ word: string }>,
+  enteredPhrase: Array<string>,
   onCancelBackup: Function,
   onAcceptPrivacyNotice: Function,
   onContinue: Function,
   onStartWalletBackup: Function,
   onAcceptTermOffline: Function,
   onAcceptTermRecovery: Function,
-  onAcceptTermRewards: Function,
-  onAddWord: Function,
-  onClear: Function,
+  onUpdateVerificationPhrase: Function,
   onFinishBackup: Function,
   onRestartBackup: Function,
 };
@@ -55,18 +47,13 @@ export default class WalletBackupDialog extends Component<Props> {
       enteredPhrase,
       canFinishBackup,
       isTermRecoveryAccepted,
-      isTermRewardsAccepted,
       isValid,
       isSubmitting,
       onAcceptTermOffline,
       onAcceptTermRecovery,
-      onAcceptTermRewards,
-      onAddWord,
-      onClear,
+      onUpdateVerificationPhrase,
       onFinishBackup,
       onRestartBackup,
-      recoveryPhraseShuffled,
-      isShelleyActivated,
     } = this.props;
 
     if (currentStep === WALLET_BACKUP_STEPS.PRIVACY_WARNING) {
@@ -75,7 +62,6 @@ export default class WalletBackupDialog extends Component<Props> {
           canPhraseBeShown={canPhraseBeShown}
           isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
           countdownRemaining={countdownRemaining}
-          isShelleyActivated={isShelleyActivated}
           onAcceptPrivacyNotice={onAcceptPrivacyNotice}
           onCancelBackup={onCancelBackup}
           onContinue={onContinue}
@@ -88,7 +74,7 @@ export default class WalletBackupDialog extends Component<Props> {
           recoveryPhrase={recoveryPhrase}
           onStartWalletBackup={onStartWalletBackup}
           onCancelBackup={onCancelBackup}
-          isShelleyActivated={isShelleyActivated}
+          isSubmitting={isSubmitting}
         />
       );
     }
@@ -99,18 +85,14 @@ export default class WalletBackupDialog extends Component<Props> {
           enteredPhrase={enteredPhrase}
           canFinishBackup={canFinishBackup}
           isTermRecoveryAccepted={isTermRecoveryAccepted}
-          isTermRewardsAccepted={isTermRewardsAccepted}
           isValid={isValid}
           isSubmitting={isSubmitting}
           onAcceptTermOffline={onAcceptTermOffline}
           onAcceptTermRecovery={onAcceptTermRecovery}
-          onAcceptTermRewards={onAcceptTermRewards}
-          onAddWord={onAddWord}
+          onUpdateVerificationPhrase={onUpdateVerificationPhrase}
           onCancelBackup={onCancelBackup}
-          onClear={onClear}
           onFinishBackup={onFinishBackup}
           onRestartBackup={onRestartBackup}
-          recoveryPhraseShuffled={recoveryPhraseShuffled}
         />
       );
     }

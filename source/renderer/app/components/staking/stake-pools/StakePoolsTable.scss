@@ -1,0 +1,413 @@
+@import '../../../themes/mixins/link';
+@import '../../../themes/mixins/loading-spinner';
+
+.component {
+  .headerWrapper {
+    align-items: flex-end;
+    display: flex;
+    line-height: 1.38;
+    margin: 0 20px 10px;
+
+    & > .title {
+      color: var(--theme-staking-font-color-lighter);
+      flex-grow: 1;
+      font-family: var(--font-regular);
+      font-size: 16px;
+    }
+
+    & > .actionButton {
+      box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color);
+      display: flex;
+      height: auto;
+      padding: 7px 12px;
+      position: fixed;
+      right: 20px;
+      top: 144px;
+      width: auto;
+
+      &:focus {
+        box-shadow: 0 1.5px 5px 0
+          var(--theme-staking-export-button-shadow-color) !important;
+      }
+
+      &.actionButtonFaded {
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .actionLabel {
+        color: var(--theme-staking-learn-more-button-color);
+        font-family: var(--font-medium);
+        font-size: 14px;
+        letter-spacing: normal;
+        line-height: 1.36;
+        margin-right: 12px;
+      }
+
+      .downloadIcon {
+        height: 11px;
+        object-fit: contain;
+        width: 11px;
+
+        path {
+          fill: var(--theme-staking-learn-more-button-color);
+        }
+      }
+    }
+  }
+
+  .noRewardsLabel {
+    color: var(--theme-staking-font-color-lighter);
+    flex-grow: 1;
+    font-family: var(--font-regular);
+    font-size: 16px;
+    text-align: center;
+  }
+
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon svg path {
+        fill: var(--theme-loading-spinner-color) !important;
+      }
+    }
+  }
+
+  .loadingSpinnerWrapper {
+    margin: auto;
+  }
+
+  .exportingSpinnerWrapper {
+    :global {
+      .LoadingSpinner_component {
+        &.LoadingSpinner_small {
+          height: 19px;
+          margin: 0;
+          width: 19px;
+        }
+      }
+    }
+  }
+
+  table {
+    border-style: hidden;
+    user-select: text;
+    width: 100%;
+
+    thead {
+      background: var(--theme-bordered-box-background-color);
+      border-radius: 4px 4px 0 0;
+      box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
+      display: block;
+      margin: -20px -20px 0;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+
+      tr {
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        .tooltipWithHTMLContent {
+          p {
+            -webkit-box-orient: horizontal;
+            display: block;
+            -webkit-line-clamp: none;
+            overflow: visible;
+            text-overflow: clip;
+            word-break: normal;
+
+            & + p {
+              margin-top: 6px;
+            }
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        &:hover {
+          background-color: var(
+            --theme-staking-stake-pools-search-clear-button-hover-background-color
+          );
+        }
+      }
+    }
+
+    tr {
+      border-bottom: 1px solid var(--theme-staking-table-border-color);
+    }
+
+    th {
+      color: var(--theme-staking-font-color-regular);
+      cursor: pointer;
+      font-family: var(--font-semibold);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 2;
+      padding: 10px 0;
+      text-align: left;
+      text-transform: uppercase;
+      user-select: none;
+      vertical-align: middle;
+
+      &:nth-child(2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &:hover {
+        & > .sortIcon:not(.sorted) {
+          opacity: 0.5;
+          visibility: visible;
+
+          &.ascDefaultOrdering {
+            & > svg {
+              transform: rotateX(150deg);
+            }
+          }
+        }
+      }
+
+      & > .sortIcon {
+        margin-left: 3px;
+        visibility: hidden;
+
+        & > svg {
+          height: 7.5px;
+          width: 7px;
+
+          & > path {
+            fill: var(--theme-staking-font-color-regular);
+          }
+        }
+
+        &.ascCurrentOrdering {
+          & > svg {
+            transform: rotateX(150deg);
+          }
+        }
+
+        &.sorted {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+
+    td {
+      color: var(--theme-staking-font-color-regular);
+      font-family: var(--font-regular);
+      font-size: 12px;
+      line-height: 1.33;
+      padding: 10px 0;
+      position: relative;
+      text-align: left;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+
+      // Right alligned cells need this padding
+      // because of the sorting icon
+      &:nth-child(7),
+      &:nth-child(8) {
+        padding-right: 10px;
+      }
+
+      .ticker {
+        color: var(--theme-staking-stake-pool-tooltip-link-color);
+      }
+
+      &:nth-child(2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        .ticker {
+          cursor: pointer;
+          padding-left: 2px;
+        }
+      }
+
+      p {
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+
+        .stakePoolReference {
+          font-family: var(--font-medium);
+        }
+      }
+
+      .asterisk {
+        font-family: Verdana;
+        margin-right: -8px;
+        opacity: 50%;
+        width: 8px;
+      }
+
+      .saturation {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+      }
+
+      %saturationContainer {
+        display: flex;
+        height: 100%;
+      }
+
+      .progressBar {
+        @extend %saturationContainer;
+        flex: 1;
+        padding-top: 2px;
+      }
+
+      .progressBarContainer {
+        align-self: center;
+        background-color: var(--theme-staking-progress-bar-background-color);
+        border-radius: 5px;
+        display: flex;
+        height: 5px;
+        position: relative;
+        top: -1px;
+        width: 100%;
+      }
+
+      .progressBarContent {
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+
+        &.green {
+          background: var(--theme-staking-stake-pool-saturation-green-color);
+        }
+
+        &.orange {
+          background: var(--theme-staking-stake-pool-saturation-orange-color);
+        }
+
+        &.red {
+          background: var(--theme-staking-stake-pool-saturation-red-color);
+        }
+
+        &.yellow {
+          background: var(--theme-staking-stake-pool-saturation-yellow-color);
+        }
+      }
+
+      .saturationLabel {
+        @extend %saturationContainer;
+        color: var(--theme-staking-font-color-regular);
+        display: block;
+        font-family: var(--font-medium);
+        font-size: 12px;
+        text-align: right;
+        white-space: nowrap;
+        width: 60px;
+      }
+
+      .syncingProgress {
+        position: absolute;
+        right: 10px;
+        top: 0;
+
+        :global .LoadingSpinner_component.LoadingSpinner_medium {
+          margin: 10px auto !important;
+        }
+      }
+
+      .retiring {
+        background-color: var(--theme-button-attention-background-color);
+        border-radius: 3px;
+        color: var(--theme-staking-content-background-color);
+        font-family: var(--font-bold);
+        font-size: 8px;
+        font-weight: 500;
+        padding: 2px 5px;
+        text-transform: uppercase;
+      }
+    }
+
+    th,
+    td {
+      &:nth-child(1),
+      &:nth-child(3),
+      &:nth-child(4),
+      &:nth-child(5),
+      &:nth-child(6),
+      &:nth-child(9) {
+        text-align: center;
+      }
+      &:nth-child(7),
+      &:nth-child(8) {
+        text-align: right;
+      }
+
+      // Rank
+      &:nth-child(1) {
+        width: 7%;
+      }
+      // Ticker
+      &:nth-child(2) {
+        width: 9%;
+      }
+      // Saturation
+      &:nth-child(3) {
+        width: 11%;
+      }
+      // Cost
+      &:nth-child(4) {
+        width: 10%;
+      }
+      // Margin
+      &:nth-child(5) {
+        width: 8%;
+      }
+      // Produced Blocks
+      &:nth-child(6) {
+        width: 15%;
+      }
+      // Potential Rewards
+      &:nth-child(7) {
+        width: 16%;
+      }
+      // Pledge
+      &:nth-child(8) {
+        width: 12%;
+      }
+      // Retiring in
+      &:nth-child(9) {
+        width: 12%;
+      }
+    }
+  }
+}
+
+.preloadingBlockWrapper {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-height: 44px;
+
+  :global {
+    .LoadingSpinner_component {
+      margin: 0;
+    }
+  }
+}

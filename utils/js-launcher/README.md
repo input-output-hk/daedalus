@@ -1,1 +1,0 @@
-A development tool for running Daedalus in frontendOnly mode.

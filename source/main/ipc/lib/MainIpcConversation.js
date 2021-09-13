@@ -37,7 +37,7 @@ export class MainIpcConversation<Incoming, Outgoing> extends IpcConversation<
   }
 
   onRequest(
-    handler: Incoming => Promise<Outgoing>,
+    handler: (Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver = ipcMain
   ): void {
     super.onRequest(handler, receiver);

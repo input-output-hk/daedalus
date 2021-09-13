@@ -20,15 +20,12 @@
     }
   }
 
-  .deleteWalletLabel {
-    color: var(--theme-input-label-color);
-    font-size: 16px;
-    font-weight: 500;
-    padding-bottom: 14px;
+  .walletPublicKeyBox {
+    margin-top: 20px;
   }
 
+  .undelegateWalletBox,
   .deleteWalletBox {
-    margin-bottom: 20px;
     margin-top: 20px;
 
     span {
@@ -51,7 +48,22 @@
       p:first-child {
         margin-bottom: 15px;
       }
+      p:last-child {
+        margin-bottom: 0;
+      }
     }
+  }
+
+  .undelegateWalletBox {
+    :global {
+      .SimpleButton_root.flat {
+        color: var(--theme-color-error);
+      }
+    }
+  }
+
+  .deleteWalletBox {
+    margin-bottom: 20px;
   }
 }
 

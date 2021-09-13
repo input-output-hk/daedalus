@@ -3,6 +3,11 @@
   flex: 1;
   flex-direction: column;
   overflow-y: overlay;
+  &.transactions {
+    .page {
+      overflow-y: hidden;
+    }
+  }
 }
 
 .navigation {
@@ -13,7 +18,8 @@
 
 .page {
   height: calc(100% - 50px);
-  overflow: overlay;
+  overflow-x: hidden;
+  overflow-y: overlay;
   position: relative;
 }
 

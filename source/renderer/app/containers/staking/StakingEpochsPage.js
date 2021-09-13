@@ -14,18 +14,6 @@ type Props = InjectedProps;
 export default class StakingEpochsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  componentDidMount() {
-    const {
-      actions: {
-        staking: { goToStakingDelegationCenterPage },
-      },
-    } = this.props;
-
-    if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
-      goToStakingDelegationCenterPage.trigger();
-    }
-  }
-
   render() {
     return (
       <StakingEpochs

@@ -5,6 +5,7 @@ import StakePools from '../../components/staking/stake-pools/StakePools';
 import StakePoolsRankingLoader from '../../components/staking/stake-pools/StakePoolsRankingLoader';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -13,8 +14,6 @@ type Props = InjectedProps;
 @observer
 export default class StakePoolsListPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
-
-  rankTimeoutHandler = null;
 
   handleDelegate = (poolId: string) => {
     const { actions } = this.props;
@@ -25,18 +24,25 @@ export default class StakePoolsListPage extends Component<Props> {
     });
   };
 
-  onRank = (selectedWalletId: string, sliderValue: number) => {
-    if (this.rankTimeoutHandler) {
-      clearTimeout(this.rankTimeoutHandler);
-    }
-    this.rankTimeoutHandler = setTimeout(() => {
-      const {
-        actions: { staking: stakingActions },
-      } = this.props;
-      stakingActions.selectDelegationWallet.trigger(selectedWalletId);
-      stakingActions.updateStake.trigger(sliderValue);
-      this.rankTimeoutHandler = null;
-    }, 1000);
+  onUpdateDelegatingStake = (selectedWalletId: string, sliderValue: number) => {
+    const {
+      actions: { staking: stakingActions },
+    } = this.props;
+    stakingActions.selectDelegationWallet.trigger(selectedWalletId);
+    stakingActions.updateDelegatingStake.trigger(sliderValue);
+  };
+
+  onRankStakePools = () => {
+    const {
+      actions: { staking: stakingActions },
+    } = this.props;
+    stakingActions.rankStakePools.trigger();
+  };
+
+  handleSmashSettingsClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.SETTINGS.STAKE_POOLS,
+    });
   };
 
   render() {
@@ -48,40 +54,48 @@ export default class StakePoolsListPage extends Component<Props> {
       profile,
       wallets,
     } = this.props.stores;
-    const { currentTheme } = profile;
+    const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
       stakePools,
-      isRanking,
       selectedDelegationWalletId,
       stake,
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
+      smashServerUrl,
+      maxDelegationFunds,
+      isFetchingStakePools,
     } = staking;
     const { all } = wallets;
+    const isLoading = !isSynced || fetchingStakePoolsFailed;
+    const isRanking =
+      !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
 
     return (
       <Fragment>
         <StakePools
           wallets={all}
-          currentLocale={profile.currentLocale}
+          currentLocale={currentLocale}
           stakePoolsList={stakePools}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}
-          onRank={this.onRank}
+          updateDelegatingStake={this.onUpdateDelegatingStake}
+          rankStakePools={this.onRankStakePools}
           selectedDelegationWalletId={selectedDelegationWalletId}
           stake={stake}
           onDelegate={this.handleDelegate}
-          isLoading={!isSynced || fetchingStakePoolsFailed}
-          isRanking={isRanking && stakePoolsRequest.isExecuting}
+          isLoading={isLoading}
+          isFetching={isFetchingStakePools}
+          isRanking={isRanking}
           getStakePoolById={getStakePoolById}
+          smashServerUrl={smashServerUrl}
+          onSmashSettingsClick={this.handleSmashSettingsClick}
+          maxDelegationFunds={maxDelegationFunds}
         />
-        {isRanking && stakePoolsRequest.isExecuting && (
-          <StakePoolsRankingLoader />
-        )}
+        {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}

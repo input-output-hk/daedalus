@@ -20,7 +20,8 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Pro
 
   render() {
     const { actions } = this.props;
-    const { uiDialogs, wallets, walletSettings } = this.props.stores;
+    const { uiDialogs, wallets, walletSettings, profile } = this.props.stores;
+    const { currentLocale } = profile;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
@@ -51,12 +52,13 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Pro
           actions.dialogs.closeActiveDialog.trigger();
           updateSpendingPasswordRequest.reset();
         }}
-        onDataChange={data => {
+        onDataChange={(data) => {
           updateDataForActiveDialog.trigger({ data });
         }}
         isSubmitting={updateSpendingPasswordRequest.isExecuting}
         error={updateSpendingPasswordRequest.error}
         walletName={activeWallet.name}
+        currentLocale={currentLocale}
       />
     );
   }

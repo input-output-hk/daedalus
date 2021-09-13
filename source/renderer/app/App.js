@@ -3,18 +3,18 @@ import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
+import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
-import { themeOverrides } from './themes/overrides/index.js';
+import { themeOverrides } from './themes/overrides';
 import translations from './i18n/translations';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
-import AutomaticUpdateNotificationDialog from './containers/notifications/AutomaticUpdateNotificationDialog';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
@@ -34,8 +34,7 @@ export default class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app, appUpdate, networkStatus } = stores;
-    const { showManualUpdate, showNextUpdate } = appUpdate;
+    const { app, networkStatus } = stores;
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
@@ -46,8 +45,6 @@ export default class App extends Component<{
 
     const canShowNews =
       !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
-      !showNextUpdate && // Automatic update not available
-      !showManualUpdate && // Manual update not available
       !isNodeStopping && // Daedalus is not shutting down
       !isNodeStopped; // Daedalus is not shutting down
 
@@ -58,6 +55,7 @@ export default class App extends Component<{
           <ThemeProvider
             theme={daedalusTheme}
             skins={SimpleSkins}
+            variables={SimpleDefaults}
             themeOverrides={themeOverrides}
           >
             <IntlProvider
@@ -68,17 +66,13 @@ export default class App extends Component<{
                   <Routes />
                 </Router>
                 {mobxDevTools}
-                {showNextUpdate ? (
-                  <AutomaticUpdateNotificationDialog />
-                ) : (
-                  [
-                    isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
-                    isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
-                      <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
-                    ),
-                    <NotificationsContainer key="notificationsContainer" />,
-                  ]
-                )}
+                {[
+                  isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
+                  isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
+                    <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
+                  ),
+                  <NotificationsContainer key="notificationsContainer" />,
+                ]}
                 {canShowNews && [
                   <NewsFeedContainer key="newsFeedList" />,
                   <NewsOverlayContainer key="newsFeedOverlay" />,

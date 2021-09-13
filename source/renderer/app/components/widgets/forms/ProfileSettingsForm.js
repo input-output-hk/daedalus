@@ -69,7 +69,7 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
 
   get locale() {
     const { props, context } = this;
-    const options = LANGUAGE_OPTIONS.map(language => ({
+    const options = LANGUAGE_OPTIONS.map((language) => ({
       value: language.value,
       label: context.intl.formatMessage(language.label),
     }));

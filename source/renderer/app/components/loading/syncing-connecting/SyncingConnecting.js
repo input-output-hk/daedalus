@@ -6,7 +6,6 @@ import StatusIcons from './StatusIcons';
 import ReportIssue from './ReportIssue';
 import LogosDisplay from './LogosDisplay';
 import SyncingConnectingBackground from './SyncingConnectingBackground';
-import SyncingConnectingTitle from './SyncingConnectingTitle';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnecting.scss';
@@ -22,9 +21,9 @@ type State = {
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  verificationProgress: number,
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
-  isFlight: boolean,
   isConnected: boolean,
   isSynced: boolean,
   isConnecting: boolean,
@@ -35,22 +34,18 @@ type Props = {
   isTlsCertInvalid: boolean,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
-  hasUnreadNews: boolean,
+  hasNotification: boolean,
+  hasUpdate: boolean,
   isCheckingSystemTime: boolean,
   isNodeResponding: boolean,
   isNodeSyncing: boolean,
   isNodeTimeCorrect: boolean,
-  isNewAppVersionAvailable: boolean,
-  isNewAppVersionLoading: boolean,
-  isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
-  isIncentivizedTestnet: boolean,
-  isShelleyTestnet: boolean,
+  isVerifyingBlockchain: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
-  onGetAvailableVersions: Function,
   onStatusIconClick: Function,
   onToggleNewsFeedIconClick: Function,
 };
@@ -62,41 +57,20 @@ export default class SyncingConnecting extends Component<Props, State> {
   };
 
   componentDidMount() {
-    this._defensivelyStartTimers(this.props.isConnected);
+    const { isConnected, isVerifyingBlockchain } = this.props;
+    this._defensivelyStartTimers(isConnected, isVerifyingBlockchain);
   }
 
   componentDidUpdate() {
-    const { connectingTime } = this.state;
-    const {
+    const { isConnected, isVerifyingBlockchain } = this.props;
+    const canResetConnecting = this._connectingTimerShouldStop(
       isConnected,
-      cardanoNodeState,
-      isSyncProgressStalling,
-      onGetAvailableVersions,
-      isNewAppVersionLoading,
-      isNewAppVersionLoaded,
-      isIncentivizedTestnet,
-      isFlight,
-    } = this.props;
-    const canResetConnecting = this._connectingTimerShouldStop(isConnected);
+      isVerifyingBlockchain
+    );
 
-    this._defensivelyStartTimers(isConnected);
+    this._defensivelyStartTimers(isConnected, isVerifyingBlockchain);
     if (canResetConnecting) {
       this._resetConnectingTime();
-    }
-    const isAppLoadingStuck =
-      isSyncProgressStalling ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
-    // If app loading is stuck, check if a newer version is available and set flag (state)
-    if (
-      isAppLoadingStuck &&
-      !isNewAppVersionLoaded &&
-      !isNewAppVersionLoading &&
-      !isIncentivizedTestnet &&
-      !isFlight
-    ) {
-      onGetAvailableVersions();
     }
   }
 
@@ -104,14 +78,26 @@ export default class SyncingConnecting extends Component<Props, State> {
     this._resetConnectingTime();
   }
 
-  _connectingTimerShouldStart = (isConnected: boolean): boolean =>
-    !isConnected && connectingInterval === null;
+  _connectingTimerShouldStart = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ): boolean =>
+    !isConnected && !isVerifyingBlockchain && connectingInterval === null;
 
-  _connectingTimerShouldStop = (isConnected: boolean): boolean =>
-    isConnected && connectingInterval !== null;
+  _connectingTimerShouldStop = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ): boolean =>
+    (isConnected || isVerifyingBlockchain) && connectingInterval !== null;
 
-  _defensivelyStartTimers = (isConnected: boolean) => {
-    const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
+  _defensivelyStartTimers = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ) => {
+    const needConnectingTimer = this._connectingTimerShouldStart(
+      isConnected,
+      isVerifyingBlockchain
+    );
     if (needConnectingTimer) {
       connectingInterval = setInterval(this._incrementConnectingTime, 1000);
     }
@@ -126,37 +112,28 @@ export default class SyncingConnecting extends Component<Props, State> {
   };
 
   _incrementConnectingTime = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       connectingTime: prevState.connectingTime + 1,
     }));
   };
 
   get showReportIssue() {
     const {
-      isFlight,
       isConnected,
       isSyncProgressStalling,
       cardanoNodeState,
-      isNewAppVersionLoaded,
-      isNewAppVersionAvailable,
-      isIncentivizedTestnet,
       forceConnectivityIssue,
+      isVerifyingBlockchain,
     } = this.props;
     const { connectingTime } = this.state;
     const canReportConnectingIssue =
-      isSyncProgressStalling ||
-      forceConnectivityIssue ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
-    if (isFlight || isIncentivizedTestnet) {
-      return canReportConnectingIssue;
-    }
-    return (
-      isNewAppVersionLoaded &&
-      !isNewAppVersionAvailable &&
-      canReportConnectingIssue
-    );
+      !isVerifyingBlockchain &&
+      (isSyncProgressStalling ||
+        forceConnectivityIssue ||
+        (!isConnected &&
+          (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+            cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
+    return canReportConnectingIssue;
   }
 
   render() {
@@ -168,13 +145,12 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSyncing,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      hasUnreadNews,
+      hasNotification,
+      hasUpdate,
       onIssueClick,
       onOpenExternalLink,
       onDownloadLogs,
       disableDownloadLogs,
-      isIncentivizedTestnet,
-      isShelleyTestnet,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -186,6 +162,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       onStatusIconClick,
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = this.props;
 
     const newsFeedIconStyles = classNames([
@@ -197,8 +175,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       <div className={styles.component}>
         <SyncingConnectingBackground
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
-          isIncentivizedTestnet={isIncentivizedTestnet}
-          isShelleyTestnet={isShelleyTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
         />
@@ -215,13 +191,11 @@ export default class SyncingConnecting extends Component<Props, State> {
             <NewsFeedIcon
               onNewsFeedIconClick={onToggleNewsFeedIconClick}
               newsFeedIconClass={newsFeedIconStyles}
-              showDot={hasUnreadNews}
+              hasNotification={hasNotification}
+              hasUpdate={hasUpdate}
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          {isIncentivizedTestnet && !isShelleyTestnet && (
-            <SyncingConnectingTitle />
-          )}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}
@@ -231,6 +205,8 @@ export default class SyncingConnecting extends Component<Props, State> {
           isConnected={isConnected}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
+          isVerifyingBlockchain={isVerifyingBlockchain}
+          verificationProgress={verificationProgress}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

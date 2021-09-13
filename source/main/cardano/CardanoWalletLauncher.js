@@ -7,56 +7,54 @@ import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { environment } from '../environment';
-import { STAKE_POOL_REGISTRY_URL } from '../config';
+import {
+  FALLBACK_TOKEN_METADATA_SERVER_URL,
+  MOCK_TOKEN_METADATA_SERVER_URL,
+  MOCK_TOKEN_METADATA_SERVER_PORT,
+} from '../config';
 import {
   MAINNET,
   STAGING,
   TESTNET,
   SELFNODE,
-  ITN_REWARDS_V1,
-  ITN_SELFNODE,
-  NIGHTLY,
-  QA,
 } from '../../common/types/environment.types';
 import { CardanoNodeImplementationOptions } from '../../common/types/cardano-node.types';
 import { createSelfnodeConfig } from './utils';
 import { logger } from '../utils/logging';
 import type { CardanoNodeImplementations } from '../../common/types/cardano-node.types';
 
-export type WalletOpts = {
+export type WalletOptions = {
   nodeImplementation: CardanoNodeImplementations,
   nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,
   tlsPath: string,
-  block0Path: string,
-  block0Hash: string,
-  secretPath: string,
   configPath: string,
   syncTolerance: string,
   nodeLogFile: WriteStream,
   walletLogFile: WriteStream,
   cliBin: string,
   isStaging: boolean,
+  metadataUrl?: string,
 };
 
-export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
+export async function CardanoWalletLauncher(
+  walletOptions: WalletOptions
+): Launcher {
   const {
     nodeImplementation,
     nodeConfig, // For cardano-node / byron only!
     cluster,
     stateDir,
     tlsPath,
-    block0Path,
-    block0Hash,
-    secretPath,
     configPath,
     syncTolerance,
     nodeLogFile,
     walletLogFile,
     cliBin,
     isStaging,
-  } = walletOpts;
+    metadataUrl,
+  } = walletOptions;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
 
@@ -95,6 +93,8 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     await fs.copy('tls', tlsPath);
   }
 
+  let tokenMetadataServer;
+
   // This switch statement handles any node specific
   // configuration, prior to spawning the child process
   logger.info('Node implementation', { nodeImplementation });
@@ -128,69 +128,28 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         launcherConfig.networkName = TESTNET;
         logger.info('Launching Wallet with --testnet flag');
       }
-      merge(launcherConfig, { nodeConfig, tlsConfiguration });
-      break;
-    case CardanoNodeImplementationOptions.JORMUNGANDR:
-      if (cluster === ITN_SELFNODE) {
-        merge(launcherConfig, {
-          apiPort: 8088,
-          networkName: SELFNODE,
-          nodeConfig: {
-            restPort: 8888,
-            network: {
-              genesisBlock: {
-                file: block0Path,
-                hash: block0Hash,
-              },
-              secretFile: [secretPath],
-            },
-          },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[ITN_SELFNODE],
-        });
+      if (MOCK_TOKEN_METADATA_SERVER_PORT) {
+        tokenMetadataServer = `${MOCK_TOKEN_METADATA_SERVER_URL}:${MOCK_TOKEN_METADATA_SERVER_PORT}`;
+      } else if (metadataUrl) {
+        tokenMetadataServer = metadataUrl;
+      } else {
+        tokenMetadataServer = FALLBACK_TOKEN_METADATA_SERVER_URL;
       }
-      if (cluster === NIGHTLY) {
-        merge(launcherConfig, {
-          nodeConfig: {
-            network: {
-              genesisBlock: {
-                hash: block0Hash,
-              },
-            },
-          },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[NIGHTLY],
-        });
-      }
-      if (cluster === QA) {
-        merge(launcherConfig, {
-          nodeConfig: {
-            network: {
-              genesisBlock: {
-                hash: block0Hash,
-              },
-            },
-          },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[QA],
-        });
-      }
-      if (cluster === ITN_REWARDS_V1) {
-        merge(launcherConfig, {
-          nodeConfig: {
-            network: {
-              genesisBlock: {
-                file: block0Path,
-                hash: block0Hash,
-              },
-            },
-          },
-        });
-      }
+      logger.info('Launching Wallet with --token-metadata-server flag', {
+        tokenMetadataServer,
+      });
+      merge(launcherConfig, {
+        nodeConfig,
+        tlsConfiguration,
+        tokenMetadataServer,
+      });
       break;
     default:
       break;
   }
 
   logger.info('Setting up CardanoLauncher now...', {
-    walletOpts,
+    walletOptions,
     launcherConfig,
   });
 

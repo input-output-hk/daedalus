@@ -9,13 +9,17 @@ import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import { ROUTES } from '../../routes-config';
-import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
+import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
+import { ellipsis } from '../../utils/strings';
+import { getAssetTokens } from '../../utils/assets';
+import type { InjectedProps } from '../../types/injectedPropsType';
+import type { AssetToken } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
-    id: 'wallet.summary.no.transactions',
+    id: 'wallet.summary.page.no.transactions',
     defaultMessage: '!!!No recent transactions',
     description:
       'Message shown when wallet has no transactions on wallet summary page.',
@@ -40,13 +44,53 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
+  handleCurrencySettingsClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.SETTINGS.WALLETS,
+    });
+  };
+
+  handleOpenAssetSend = ({ uniqueId }: AssetToken) => {
+    const { stores } = this.props;
+    const { wallets } = stores;
+    const { active } = wallets;
+    if (active) {
+      const { id } = active;
+      const { wallets: walletActions, router } = this.props.actions;
+      walletActions.setActiveAsset.trigger(uniqueId);
+      router.goToRoute.trigger({
+        route: ROUTES.WALLETS.PAGE,
+        params: { id, page: 'send' },
+      });
+    }
+  };
+
+  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+    const value = ellipsis(fullValue, 15, 15);
+    this.props.actions.wallets.copyAssetItem.trigger({
+      assetItem,
+      value,
+    });
+  };
+
   render() {
     const { intl } = this.context;
-    const { stores } = this.props;
-    const { app, wallets, transactions, profile } = stores;
+    const { stores, actions } = this.props;
+    const {
+      app,
+      wallets,
+      addresses,
+      transactions,
+      profile,
+      assets,
+      currency,
+    } = stores;
+    const { getAsset, assetSettingsDialogWasOpened } = assets;
+    const { isInternalAddress } = addresses;
+    const { onAssetSettingsOpen } = actions.assets;
     const {
       openExternalLink,
-      environment: { network, rawNetwork },
+      environment: { network },
     } = app;
     const {
       hasAny,
@@ -57,23 +101,27 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
-    const wallet = wallets.active;
+    const { active: wallet } = wallets;
+    const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
+
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
+    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
+
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
-
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
+    const walletTokens = wallet.assets.total;
+    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const totalRawAssets = wallet.assets.total.length;
+    const totalAssets = assetTokens.length;
+    const hasRawAssets = wallet.assets.total.length > 0;
+    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
-      getNetworkExplorerUrlByType(
-        type,
-        param,
-        network,
-        rawNetwork,
-        currentLocale
-      );
+      getNetworkExplorerUrlByType(type, param, network, currentLocale);
 
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
@@ -100,6 +148,10 @@ export default class WalletSummaryPage extends Component<Props> {
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
+          isInternalAddress={isInternalAddress}
+          hasAssetsEnabled={hasAssetsEnabled}
+          getAsset={getAsset}
+          onCopyAssetItem={this.handleOnCopyAssetItem}
         />
       );
     } else if (!hasAny) {
@@ -114,6 +166,21 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+          isLoadingAssets={isLoadingAssets}
+          hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
+          currentLocale={currentLocale}
+          currencyIsActive={isActive}
+          currencyIsFetchingRate={isFetchingRate}
+          currencyLastFetched={lastFetched}
+          currencyRate={rate}
+          currencySelected={selected}
+          onCurrencySettingClick={this.handleCurrencySettingsClick}
+          assets={assetTokens}
+          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+          onOpenAssetSend={this.handleOpenAssetSend}
+          onCopyAssetItem={this.handleOnCopyAssetItem}
+          onAssetSettings={onAssetSettingsOpen.trigger}
+          onExternalLinkClick={app.openExternalLink}
         />
         {walletTransactions}
       </VerticalFlexContainer>

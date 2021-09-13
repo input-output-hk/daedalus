@@ -142,7 +142,7 @@ export class IpcChannel<Incoming, Outgoing> {
    * Sets up a permanent handler for receiving request from the other side.
    */
   onRequest(
-    handler: Incoming => Promise<Outgoing>,
+    handler: (Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver
   ): void {
     receiver.on(

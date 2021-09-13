@@ -1,0 +1,92 @@
+@import '../stakingConfig';
+@import '../../../themes/mixins/link';
+
+.component {
+  padding: 20px 0 20px 20px;
+  text-align: center;
+
+  .learnMoreButton {
+    margin-top: 30px;
+    width: 270px;
+
+    .externalLinkIcon {
+      color: var(--theme-staking-info-learn-more-icon-color);
+
+      &:before {
+        background-color: var(--theme-staking-info-learn-more-icon-color);
+        vertical-align: sub;
+      }
+    }
+  }
+
+  .mainContent {
+    @extend %contentBorderAndBackground;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+
+    .content {
+      position: relative;
+      z-index: 9;
+
+      .heading {
+        @extend %accentText;
+        font-size: 19px;
+        margin-bottom: 14px;
+      }
+
+      .description {
+        @extend %regularText;
+        color: var(--theme-staking-font-color-light);
+        margin-bottom: 24px;
+      }
+
+      .countdownTitle {
+        color: var(--theme-staking-font-color-accent);
+        font-family: var(--font-medium);
+        line-height: 1.38;
+        margin-bottom: 10px;
+      }
+
+      .progressBar {
+        height: 24px;
+        margin: 0 auto;
+        margin-bottom: 24px;
+        width: 80%;
+
+        .progressBarContainer {
+          background-color: var(--theme-staking-progress-bar-background-color);
+          border-radius: 5px;
+          height: 100%;
+          width: 100%;
+
+          .progress {
+            align-items: center;
+            background: repeating-linear-gradient(
+              -63deg,
+              var(--theme-staking-progress-stripe-dark-1-background-color),
+              var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+              var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+              var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+            );
+            border-radius: 5px;
+            display: flex;
+            height: 100%;
+            justify-content: flex-end;
+          }
+
+          .progressLabel {
+            @extend %regularText;
+            transform: translateX(calc(100% + 8px));
+          }
+
+          .progressLabelWhite {
+            @extend %accentText;
+            color: var(--theme-staking-progress-label-light);
+            transform: translateX(-8px);
+          }
+        }
+      }
+    }
+  }
+}

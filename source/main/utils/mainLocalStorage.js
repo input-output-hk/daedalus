@@ -5,53 +5,49 @@ import {
   STORAGE_KEYS,
 } from '../../common/config/electron-store.config';
 import type {
+  DownloadInfo,
   DownloadData,
-  DownloadProgress,
-  DownloadProgressUpdate,
+  DownloadDataUpdate,
   DownloadLocalDataResponse,
 } from '../../common/types/downloadManager.types';
 import {
-  DOWNLOAD_PROGRESS_DEFAULT,
+  DOWNLOAD_DATA_DEFAULT,
   DOWNLOAD_STATES,
 } from '../../common/config/downloadManagerConfig';
 import { requestElectronStore } from '../ipc/electronStoreConversation';
 
 export const downloadManagerLocalStorage = {
   get: async (id: string): Promise<DownloadLocalDataResponse> => {
-    const { data, progress } =
+    const { info, data } =
       (await requestElectronStore({
         type: STORAGE_TYPES.GET,
         key: STORAGE_KEYS.DOWNLOAD_MANAGER,
         id,
       })) || {};
-    if (!data || !progress) throw new Error('Invalid download Id');
-    return { data, progress };
+    return { info, data };
   },
   getAll: async () => {
-    const data = await requestElectronStore({
+    const info = await requestElectronStore({
       type: STORAGE_TYPES.GET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
     });
-    return data || [];
+    return info || [];
   },
-  setData: async (data: DownloadData, id: string) => {
-    const progress: DownloadProgress = DOWNLOAD_PROGRESS_DEFAULT;
+  setInfo: async (info: DownloadInfo, id: string) => {
+    const data: DownloadData = DOWNLOAD_DATA_DEFAULT;
     requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      data: { data, progress },
+      data: { info, data },
       id,
     });
   },
-  setProgress: async (
-    newProgres: DownloadProgressUpdate,
+  setData: async (
+    newData: DownloadDataUpdate,
     id: string
-  ): Promise<DownloadProgress> => {
-    const {
-      progress: oldProgress,
-      data,
-    } = await downloadManagerLocalStorage.get(id);
-    const progress = mergeWith(oldProgress, newProgres, (o, n, key) => {
+  ): Promise<DownloadData> => {
+    const { data: oldData, info } = await downloadManagerLocalStorage.get(id);
+    const data = mergeWith(oldData, newData, (o, n, key) => {
       if (typeof n === 'number' && key !== 'remainingSize')
         return Math.max(o, n);
       return n;
@@ -59,21 +55,26 @@ export const downloadManagerLocalStorage = {
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      data: { data, progress },
+      data: { info, data },
       id,
     });
-    return progress;
+    return data;
   },
-  setAllStopped: async () => {
+  setAllPaused: async () => {
     const downloads = await downloadManagerLocalStorage.getAll();
     const downloadsArray = Object.keys(downloads);
     for (let index = 0; index < downloadsArray.length; index++) {
-      await downloadManagerLocalStorage.setProgress(
-        {
-          state: DOWNLOAD_STATES.STOPPED,
-        },
-        downloadsArray[index]
-      );
+      const downloadId = downloadsArray[index];
+      const { data } = downloads[downloadId];
+      const { state, progress } = data;
+      if (state === DOWNLOAD_STATES.DOWNLOADING && progress < 100) {
+        await downloadManagerLocalStorage.setData(
+          {
+            state: DOWNLOAD_STATES.PAUSED,
+          },
+          downloadId
+        );
+      }
     }
   },
   unset: async (id: string) => {
@@ -85,6 +86,10 @@ export const downloadManagerLocalStorage = {
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
       data: omit(localDownloadsData, id),
+    });
+    await requestElectronStore({
+      type: STORAGE_TYPES.DELETE,
+      key: STORAGE_KEYS.APP_AUTOMATIC_UPDATE_FAILED,
     });
   },
 };

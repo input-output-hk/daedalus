@@ -13,7 +13,9 @@ export const logUsedVersion = async (version: string, logFilePath: string) => {
     const rawContent = await fs.promises.readFile(logFilePath, 'utf8');
     usedVersions = JSON.parse(rawContent);
     const versionsData = usedVersions && usedVersions.versions;
-    const isAlreadyLogged = versionsData.some(item => item.version === version);
+    const isAlreadyLogged = versionsData.some(
+      (item) => item.version === version
+    );
     // Add current version if it has not yet been saved
     if (!isAlreadyLogged) {
       versionsData.push(currentVersionData);

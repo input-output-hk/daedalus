@@ -15,7 +15,7 @@ Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
   return navigateTo.call(this, `/staking/${screenName}`);
 });
 
-Then(/^I should see a "Create rewards wallet" notification$/, async function() {
+Then(/^I should see a "Create a Shelley wallet" notification$/, async function() {
   await this.client.waitForVisible('.DelegationCenterNoWallets_component');
 });
 

@@ -2,16 +2,17 @@
 export type TipInfo = {
   epoch: number,
   slot: number,
+  absoluteSlotNumber: number,
 };
 
 export type NextEpoch = {
-  epochNumber: number,
-  epochStart: string,
+  epochNumber: ?number,
+  epochStart: ?string,
 };
 
 export type FutureEpoch = {
-  epochNumber: number,
-  epochStart: string,
+  epochNumber: ?number,
+  epochStart: ?string,
 };
 
 export type ClockOffset = {
@@ -29,7 +30,7 @@ export type EpochLength = {
   unit: string,
 };
 
-export type EpochStability = {
+export type SecurityParameter = {
   quantity: number,
   unit: string,
 };
@@ -52,9 +53,8 @@ export type MinimumUtxoValue = {
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
-  networkTip: TipInfo,
-  nextEpoch: NextEpoch,
-  futureEpoch: FutureEpoch,
+  networkTip: ?TipInfo,
+  nextEpoch: ?NextEpoch,
 };
 
 export type NetworkInfoResponse = {
@@ -73,13 +73,13 @@ export type NetworkInfoResponse = {
       unit: 'block',
     },
   },
-  network_tip: {
-    slot_number: number,
-    epoch_number: number,
+  network_tip?: ?{
+    slot_number: ?number,
+    epoch_number: ?number,
   },
-  next_epoch: {
-    epoch_number: number,
-    epoch_start_time: string,
+  next_epoch?: ?{
+    epoch_number: ?number,
+    epoch_start_time: ?string,
   },
 };
 
@@ -93,16 +93,27 @@ export type GetNetworkClockResponse = {
   offset: ?number,
 };
 
+export type HardforkAt = {
+  epoch_start_time: string,
+  epoch_number: number,
+};
+
 export type GetNetworkParametersResponse = {
   genesisBlockHash: string,
   blockchainStartTime: number,
   slotLength: SlotLength,
   epochLength: EpochLength,
-  epochStability: EpochStability,
+  securityParameter: SecurityParameter,
   activeSlotCoefficient: ActiveSlotCoefficient,
   decentralizationLevel: DecentralizationLevel,
   desiredPoolNumber: number,
   minimumUtxoValue: MinimumUtxoValue,
+  eras: {
+    byron?: HardforkAt,
+    shelley?: HardforkAt,
+    allegra?: HardforkAt,
+    mary?: HardforkAt,
+  },
 };
 
 export type GetNetworkParametersApiResponse = {
@@ -110,9 +121,15 @@ export type GetNetworkParametersApiResponse = {
   blockchain_start_time: string,
   slot_length: SlotLength,
   epoch_length: EpochLength,
-  epoch_stability: EpochStability,
+  security_parameter: SecurityParameter,
   active_slot_coefficient: ActiveSlotCoefficient,
   decentralization_level: DecentralizationLevel,
   desired_pool_number: number,
   minimum_utxo_value: MinimumUtxoValue,
+  eras: {
+    byron?: HardforkAt,
+    shelley?: HardforkAt,
+    allegra?: HardforkAt,
+    mary?: HardforkAt,
+  },
 };

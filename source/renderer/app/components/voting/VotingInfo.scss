@@ -1,0 +1,201 @@
+@import './votingConfig';
+
+.component {
+  padding: 20px;
+  text-align: center;
+
+  :global {
+    button.SimpleButton_root {
+      width: 415px;
+    }
+  }
+
+  .separator {
+    margin: 20px 0;
+    opacity: 0.2;
+  }
+
+  .bottomContent {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+
+    .leftContent {
+      text-align: left;
+
+      > p {
+        @extend %regularText;
+        color: var(--theme-voting-font-color-regular);
+        font-family: var(--font-medium);
+        margin-bottom: 11px;
+      }
+
+      > span {
+        color: var(--theme-voting-font-color-regular);
+        display: block;
+        font-family: var(--font-light);
+        line-height: 1.38;
+        margin: 0 20px 20px 0;
+
+        b {
+          font-family: var(--font-medium);
+        }
+      }
+    }
+
+    .rightContent {
+      .appStore {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+
+        .appStoreItem {
+          align-items: center;
+          display: flex;
+          flex-direction: column;
+
+          &:first-child {
+            border-right: 1px solid var(--theme-voting-separator-color);
+            padding-right: 30px;
+          }
+
+          &:last-child {
+            margin-left: 30px;
+          }
+
+          .appStoreButton {
+            cursor: pointer;
+
+            > span {
+              display: block;
+              height: 30px;
+            }
+
+            svg {
+              height: 30px;
+              width: 90px;
+
+              &:last-child {
+                width: 100px;
+              }
+
+              path {
+                fill: var(--theme-voting-font-color-regular);
+              }
+            }
+          }
+
+          .qrCode {
+            border: 2px solid var(--theme-receive-qr-code-background-color);
+            margin-top: 10px;
+
+            svg {
+              display: block;
+              height: 75px;
+              width: 75px;
+
+              path:first-child {
+                fill: var(--theme-receive-qr-code-background-color);
+              }
+
+              path:last-child {
+                fill: var(--theme-receive-qr-code-foreground-color);
+              }
+            }
+          }
+
+          canvas {
+            margin-top: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .heading {
+    @extend %accentText;
+    font-size: 19px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .stepsContainer {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    width: 100%;
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      padding: 0 30px;
+      text-align: center;
+      width: 50%;
+
+      .stepIcon {
+        height: 72px;
+        margin: 20px auto 40px auto;
+        width: 72px;
+      }
+
+      p {
+        @extend %regularText;
+        color: var(--theme-voting-font-color-regular);
+        font-family: var(--font-light);
+      }
+
+      .number {
+        background: var(--theme-voting-info-background-color);
+        border-radius: 100%;
+        color: var(--theme-voting-info-font-color);
+        height: 32px;
+        line-height: 34px;
+        margin: 10px auto 20px;
+        width: 32px;
+        @extend %regularText;
+      }
+
+      .appStore {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 10px;
+
+        .appStoreItem {
+          cursor: pointer;
+          width: 100px;
+        }
+      }
+    }
+  }
+
+  .descriptionForEndedRegistration {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    p {
+      @extend %regularText;
+      color: var(--theme-voting-font-color-regular);
+      font-family: var(--font-light);
+      margin-bottom: 11px;
+      text-align: left;
+    }
+
+    b {
+      font-family: var(--font-medium);
+    }
+
+    .learnMoreContainer {
+      @extend %regularText;
+      color: var(--theme-voting-font-color-regular);
+      font-family: var(--font-light);
+      margin-bottom: 0;
+
+      .learnMoreLink {
+        font-family: var(--font-regular);
+        font-size: 16px;
+        margin: 0 5px;
+      }
+    }
+  }
+}

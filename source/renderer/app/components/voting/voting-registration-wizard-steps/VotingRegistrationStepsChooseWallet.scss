@@ -1,0 +1,66 @@
+.component {
+  :global {
+    .SimpleInput_input {
+      &::selection {
+        background: transparent;
+      }
+    }
+  }
+
+  .description {
+    color: var(--theme-voting-registration-steps-description-color);
+
+    span > span {
+      color: var(
+        --theme-voting-registration-steps-description-highlighted-color
+      );
+      font-family: var(--font-medium);
+      font-weight: 500;
+    }
+  }
+
+  .walletSelect {
+    margin-top: 20px;
+
+    &.error {
+      input {
+        border-color: var(--theme-color-error);
+      }
+
+      :global {
+        .SimpleSelect_selectInput {
+          &:after {
+            background-color: var(--theme-color-error);
+          }
+        }
+      }
+    }
+
+    :global {
+      .SimpleOptions_option {
+        align-items: center;
+        display: flex;
+        height: 50px;
+        padding-bottom: 0;
+        padding-top: 0;
+      }
+    }
+  }
+
+  .errorMessage {
+    color: var(
+      --theme-voting-registration-steps-choose-wallet-error-message-light-color
+    );
+    font-size: 14px;
+    letter-spacing: normal;
+    margin-top: 10px;
+
+    span > span {
+      color: var(
+        --theme-voting-registration-steps-choose-wallet-error-message-color
+      );
+      font-family: var(--font-medium);
+      font-weight: 500;
+    }
+  }
+}

@@ -28,6 +28,7 @@ import {
   ImportFromOptions,
 } from '../types/walletExportTypes';
 import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
+import { IS_AUTOMATIC_WALLET_MIGRATION_ENABLED } from '../config/walletsConfig';
 import type { ImportWalletStep } from '../types/walletRestoreTypes';
 
 export type WalletMigrationStatus =
@@ -98,16 +99,16 @@ export default class WalletMigrationStore extends Store {
   }
 
   getExportedWalletById = (id: string): ?ExportedByronWallet =>
-    this.exportedWallets.find(w => w.id === id);
+    this.exportedWallets.find((w) => w.id === id);
 
   getExportedWalletDuplicatesById = (
     id: string,
     index: number
   ): Array<ExportedByronWallet> =>
-    this.exportedWallets.filter(w => w.id === id && w.index !== index);
+    this.exportedWallets.filter((w) => w.id === id && w.index !== index);
 
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
-    this.exportedWallets.find(w => w.index === index);
+    this.exportedWallets.find((w) => w.index === index);
 
   @action _initiateMigration = () => {
     this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE;
@@ -183,7 +184,7 @@ export default class WalletMigrationStore extends Store {
         index
       );
       if (walletDuplicates.length) {
-        walletDuplicates.forEach(w => {
+        walletDuplicates.forEach((w) => {
           if (w.import.status === WalletImportStatuses.PENDING) {
             w.import.status = WalletImportStatuses.UNSTARTED;
           }
@@ -233,7 +234,7 @@ export default class WalletMigrationStore extends Store {
     });
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = orderBy(
-        wallets.map(wallet => {
+        wallets.map((wallet) => {
           const hasName = wallet.name !== null;
           const importedWallet = this.stores.wallets.getWalletById(
             `legacy_${wallet.id}`
@@ -245,7 +246,7 @@ export default class WalletMigrationStore extends Store {
             : WalletImportStatuses.UNSTARTED;
           return { ...wallet, hasName, import: { status, error: null } };
         }),
-        ['hasName', 'id', 'name', 'is_passphrase_empty'],
+        ['hasName', 'id', 'name', 'isEmptyPassphrase'],
         ['desc', 'asc', 'asc', 'asc']
       );
 
@@ -286,7 +287,7 @@ export default class WalletMigrationStore extends Store {
           {
             id: wallet.id,
             name: wallet.name,
-            hasPassword: wallet.is_passphrase_empty,
+            hasPassword: !wallet.isEmptyPassphrase,
           }
         );
         return this._restoreWallet(wallet);
@@ -322,7 +323,7 @@ export default class WalletMigrationStore extends Store {
           index
         );
         if (walletDuplicates.length) {
-          walletDuplicates.forEach(w => {
+          walletDuplicates.forEach((w) => {
             if (w.import.status !== WalletImportStatuses.COMPLETED) {
               w.import.status = WalletImportStatuses.COMPLETED;
             }
@@ -333,7 +334,7 @@ export default class WalletMigrationStore extends Store {
       });
     } catch (error) {
       runInAction('update restorationErrors', () => {
-        const { name, is_passphrase_empty: hasPassword } = exportedWallet;
+        const { name, isEmptyPassphrase } = exportedWallet;
         this._updateWalletImportStatus(
           index,
           WalletImportStatuses.ERRORED,
@@ -341,7 +342,7 @@ export default class WalletMigrationStore extends Store {
         );
         this.restorationErrors.push({
           error,
-          wallet: { id, name, hasPassword },
+          wallet: { id, name, hasPassword: !isEmptyPassphrase },
         });
       });
     }
@@ -381,6 +382,8 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _startMigration = async () => {
+    if (!IS_AUTOMATIC_WALLET_MIGRATION_ENABLED) return;
+
     const { isMainnet, isTestnet, isTest } = this.environment;
     if (isMainnet || isTestnet || (isTest && this.isTestMigrationEnabled)) {
       // Reset migration data
@@ -508,10 +511,10 @@ export default class WalletMigrationStore extends Store {
   }
 
   @computed get exportedWalletsData(): Array<ExportedWalletData> {
-    return this.exportedWallets.map(wallet => ({
+    return this.exportedWallets.map((wallet) => ({
       id: wallet.id,
       name: wallet.name,
-      hasPassword: wallet.is_passphrase_empty,
+      hasPassword: !wallet.isEmptyPassphrase,
       import: wallet.import,
     }));
   }
@@ -521,7 +524,7 @@ export default class WalletMigrationStore extends Store {
   }
 
   @computed get restoredWalletsData(): Array<RestoredWalletData> {
-    return this.restoredWallets.map(wallet => ({
+    return this.restoredWallets.map((wallet) => ({
       id: getRawWalletId(wallet.id),
       name: wallet.name,
       hasPassword: wallet.hasPassword,

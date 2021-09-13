@@ -1,14 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import path from 'path';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
-import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
-import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { CsvRecord } from '../../../../common/types/rewards-csv-request.types';
+import { ellipsis } from '../../utils/strings';
+import { getNetworkExplorerUrl } from '../../utils/network';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -36,58 +33,38 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  onExportCsv = async (rewards: Array<CsvRecord>) => {
+  onOpenExternalLink = (rewardsAddress: string) => {
+    const { app } = this.props.stores;
     const {
-      actions: { wallets },
-    } = this.props;
-    const fileName = generateFileNameWithTimestamp({
-      prefix: 'rewards',
-      extension: 'csv',
-      isUTC: true,
-    });
-    const { desktopDirectoryPath } = this.props.stores.profile;
-    const defaultPath = path.join(desktopDirectoryPath, fileName);
-    const params = {
-      defaultPath,
-      filters: [
-        {
-          extensions: ['csv'],
-        },
-      ],
-    };
-    const { filePath } = await showSaveDialogChannel.send(params);
+      environment: { network },
+    } = app;
+    const cardanoExplorerLink = `${getNetworkExplorerUrl(
+      network
+    )}/address/${rewardsAddress}`;
+    this.props.stores.app.openExternalLink(cardanoExplorerLink);
+  };
 
-    // if cancel button is clicked or path is empty
-    if (!filePath) return;
-
-    wallets.generateRewardsCsv.trigger({ rewards, filePath });
+  handleCopyAddress = (copiedAddress: string) => {
+    const address = ellipsis(copiedAddress, 15, 15);
+    this.props.actions.wallets.copyAddress.trigger({ address });
   };
 
   render() {
     const {
-      staking: { rewards, rewardsForIncentivizedTestnet },
-      networkStatus,
+      staking: { rewards },
       wallets,
     } = this.props.stores;
-    const { isTest } = networkStatus.environment;
-
-    if (global.isIncentivizedTestnet || isTest) {
-      return (
-        <StakingRewardsForIncentivizedTestnet
-          rewards={rewardsForIncentivizedTestnet}
-          isLoading={false}
-          isExporting={wallets.generatingRewardsCsvInProgress}
-          onLearnMoreClick={this.handleLearnMoreClick}
-          onExportCsv={this.onExportCsv}
-        />
-      );
-    }
+    const { requestCSVFile } = this.props.actions.staking;
 
     return (
       <StakingRewards
         rewards={rewards}
         isLoading={false}
+        isExporting={wallets.generatingRewardsCsvInProgress}
         onLearnMoreClick={this.handleLearnMoreClick}
+        onExportCsv={requestCSVFile.trigger}
+        onCopyAddress={this.handleCopyAddress}
+        onOpenExternalLink={this.onOpenExternalLink}
       />
     );
   }

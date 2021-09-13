@@ -9,10 +9,7 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
-import {
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../../config/cryptoConfig';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({
@@ -30,22 +27,15 @@ const messages = defineMessages({
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
-  recoveryPhraseInstructions3Itn: {
-    id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3.itn',
-    defaultMessage:
-      '!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working. You will also need this recovery phrase to receive your Incentivized Testnet ada rewards on the Cardano mainnet.</strong>',
-    description:
-      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
-  },
   recoveryPhraseInstructions3: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions3',
     defaultMessage:
       '!!!<strong>Using your recovery phrase is the only way to recover your wallet if your computer is lost, broken, stolen, or stops working.</strong>',
     description:
-      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase on ITN.',
+      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   buttonLabelContinue: {
-    id: 'wallet.backup.privacy.warning.dialog..button.labelContinue', // TODO: fix translation key path 'dialog..button'
+    id: 'wallet.backup.privacy.warning.dialog.button.labelContinue',
     defaultMessage: '!!!Continue',
     description: 'Label for button "Continue" on wallet backup dialog',
   },
@@ -58,13 +48,10 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
-
 type Props = {
   countdownRemaining: number,
   canPhraseBeShown: boolean,
   isPrivacyNoticeAccepted: boolean,
-  isShelleyActivated: boolean,
   onAcceptPrivacyNotice: Function,
   onContinue: Function,
   onCancelBackup: Function,
@@ -81,7 +68,6 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
     const {
       countdownRemaining,
       canPhraseBeShown,
-      isShelleyActivated,
       onAcceptPrivacyNotice,
       onCancelBackup,
       isPrivacyNoticeAccepted,
@@ -117,11 +103,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
           instructionsText={intl.formatMessage(
             messages.recoveryPhraseInstructions1,
             {
-              walletRecoveryPhraseWordCount:
-                (isIncentivizedTestnet && !isShelleyTestnet) ||
-                isShelleyActivated
-                  ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                  : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
             }
           )}
         />
@@ -132,13 +114,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         />
         <WalletRecoveryInstructions
           instructionsText={
-            isIncentivizedTestnet && !isShelleyTestnet ? (
-              <FormattedHTMLMessage
-                {...messages.recoveryPhraseInstructions3Itn}
-              />
-            ) : (
-              <FormattedHTMLMessage {...messages.recoveryPhraseInstructions3} />
-            )
+            <FormattedHTMLMessage {...messages.recoveryPhraseInstructions3} />
           }
         />
         <div className={styles.checkbox}>

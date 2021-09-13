@@ -7,9 +7,10 @@ import styles from './WalletAdd.scss';
 import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
 import createIcon from '../../assets/images/create-ic.inline.svg';
 import importIcon from '../../assets/images/import-ic.inline.svg';
-import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
+import connectIcon from '../../assets/images/connect-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
+import { isHardwareWalletSupportEnabled } from '../../config/hardwareWalletsConfig';
 
 const messages = defineMessages({
   title: {
@@ -21,12 +22,6 @@ const messages = defineMessages({
     id: 'wallet.add.dialog.create.label',
     defaultMessage: '!!!Create',
     description: 'Label for the "Create" button on the wallet add dialog.',
-  },
-  createDescriptionItn: {
-    id: 'wallet.add.dialog.create.description.itn',
-    defaultMessage: '!!!Create a new wallet',
-    description:
-      'Description for the "Create a new wallet" button on the wallet add dialog.',
   },
   createDescription: {
     id: 'wallet.add.dialog.create.description',
@@ -43,6 +38,17 @@ const messages = defineMessages({
     id: 'wallet.add.dialog.join.description',
     defaultMessage: '!!!Join a shared wallet with up to 5 people',
     description: 'Description for the "Join" button on the wallet add dialog.',
+  },
+  connectLabel: {
+    id: 'wallet.add.dialog.connect.label',
+    defaultMessage: '!!!Pair',
+    description: 'Label for the "Connect" button on the wallet add dialog.',
+  },
+  connectDescription: {
+    id: 'wallet.add.dialog.connect.description',
+    defaultMessage: '!!!Pair a hardware wallet device',
+    description:
+      'Description for the "Connect" button on the wallet add dialog.',
   },
   restoreLabel: {
     id: 'wallet.add.dialog.restore.label',
@@ -90,12 +96,11 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet } = global;
-
 type Props = {
   onCreate: Function,
   onRestore: Function,
   onImport: Function,
+  onConnect: Function,
   isMaxNumberOfWalletsReached: boolean,
   isMainnet: boolean,
   isTestnet: boolean,
@@ -119,6 +124,7 @@ export default class WalletAdd extends Component<Props> {
       onCreate,
       onRestore,
       onImport,
+      onConnect,
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
@@ -141,19 +147,18 @@ export default class WalletAdd extends Component<Props> {
               onClick={onCreate}
               icon={createIcon}
               label={intl.formatMessage(messages.createLabel)}
-              description={
-                isIncentivizedTestnet
-                  ? intl.formatMessage(messages.createDescriptionItn)
-                  : intl.formatMessage(messages.createDescription)
-              }
+              description={intl.formatMessage(messages.createDescription)}
               isDisabled={isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs
-              className="joinWalletButton"
-              icon={joinSharedIcon}
-              label={intl.formatMessage(messages.joinLabel)}
-              description={intl.formatMessage(messages.joinDescription)}
-              isDisabled
+              className="connectWalletButton"
+              onClick={onConnect}
+              icon={connectIcon}
+              label={intl.formatMessage(messages.connectLabel)}
+              description={intl.formatMessage(messages.connectDescription)}
+              isDisabled={
+                isMaxNumberOfWalletsReached || !isHardwareWalletSupportEnabled
+              }
             />
           </div>
           <div className={styles.secondRow}>
@@ -175,7 +180,7 @@ export default class WalletAdd extends Component<Props> {
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
                 isMaxNumberOfWalletsReached ||
-                (isProduction && !isMainnet && !isTestnet)
+                (isProduction && !(isMainnet || isTestnet))
               }
             />
           </div>

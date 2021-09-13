@@ -4,36 +4,22 @@ import _https from 'https';
 import _http from 'http';
 import { ipcRenderer } from 'electron';
 import electronLog from 'electron-log-daedalus';
+import EventEmitter from 'events';
 import { environment } from './environment';
-import {
-  buildLabel,
-  cluster,
-  legacyStateDir,
-  nodeImplementation,
-  isFlight,
-} from './config';
-import {
-  SHELLEY_LOCAL,
-  SHELLEY_TESTNET,
-  SHELLEY_QA,
-} from '../common/types/environment.types';
-import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
+import { buildLabel, legacyStateDir, isFlight, smashUrl } from './config';
 
 const _process = process;
-const _isShelleyTestnet =
-  nodeImplementation === CardanoNodeImplementationOptions.CARDANO &&
-  (cluster === SHELLEY_LOCAL ||
-    cluster === SHELLEY_TESTNET ||
-    cluster === SHELLEY_QA);
-const _isIncentivizedTestnet =
-  nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR ||
-  _isShelleyTestnet;
+
+// Increase maximum event listeners to avoid IPC channel stalling
+// (2/2) this line increases the limit for the renderer process
+EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 process.once('loaded', () => {
   Object.assign(global, {
     environment,
     buildLabel,
     https: {
+      Agent: _https.Agent,
       request: (...args) => _https.request(...args),
     },
     http: {
@@ -55,11 +41,11 @@ process.once('loaded', () => {
       error: (...args) => electronLog.error(...args),
       warn: (...args) => electronLog.warn(...args),
     },
-    isShelleyTestnet: _isShelleyTestnet,
-    isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
     legacyStateDir,
+    smashUrl,
   });
+
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
     // $FlowFixMe
@@ -77,7 +63,7 @@ process.once('loaded', () => {
     // must have a css property of user-select: 'text' or be an input element
     global.document.addEventListener(
       'contextmenu',
-      event => {
+      (event) => {
         const targetIsSelectable =
           getComputedStyle(event.target).userSelect === 'text';
         const targetIsInput = event.target.nodeName === 'INPUT';

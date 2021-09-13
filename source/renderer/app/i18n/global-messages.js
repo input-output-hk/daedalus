@@ -2,16 +2,37 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  adaName: {
+    id: 'global.ada.name',
+    defaultMessage: '!!!Ada',
+    description: '"Ada" name',
+  },
+  adaUnit: {
+    id: 'global.ada.unit',
+    defaultMessage: '!!!ADA',
+    description: '"ADA" unit',
+  },
+  currency: {
+    id: 'environment.currency.ada',
+    defaultMessage: '!!!ADA',
+    description: 'Name for "Ada" unit.',
+  },
   fieldIsRequired: {
     id: 'global.errors.fieldIsRequired',
     defaultMessage: '!!!This field is required.',
     description: 'Error message when required fields are left empty.',
   },
-  incompleteMnemonic: {
-    id: 'global.errors.incompleteMnemonic',
-    defaultMessage: '!!!Please enter all {expected} words.',
+  knownMnemonicWordCount: {
+    id: 'global.info.knownMnemonicWordCount',
+    defaultMessage: '!!!{actual} of {required} words entered',
     description:
-      'Error message shown when incomplete bip39 mnemonic was entered.',
+      'Info message displayed above mnemonic inputs about actual vs. required words entered',
+  },
+  unknownMnemonicWordCount: {
+    id: 'global.info.unknownMnemonicWordCount',
+    defaultMessage: '!!!{actual} words entered',
+    description:
+      'Info message displayed above mnemonic inputs about how many words have been entered',
   },
   invalidEmail: {
     id: 'global.errors.invalidEmail',
@@ -65,7 +86,7 @@ export default defineMessages({
   passwordInstructions: {
     id: 'global.passwordInstructions',
     defaultMessage:
-      '!!!Note that password needs to be at least 10 characters long.',
+      '!!!Note that password needs to be at least 10 characters and at most 255 characters long.',
     description: 'Password instructions note.',
   },
   cancel: {
@@ -143,11 +164,6 @@ export default defineMessages({
     defaultMessage: '!!!.',
     description: 'Final dot punctuation.',
   },
-  unitAda: {
-    id: 'global.unit.ada',
-    defaultMessage: '!!!ADA',
-    description: 'Name for "ADA" unit.',
-  },
   recoveryPhraseDialogTitle: {
     id: 'wallet.backup.recovery.phrase.dialog.title',
     defaultMessage: '!!!Recovery phrase',
@@ -177,11 +193,6 @@ export default defineMessages({
     description:
       'URL for the "Known Issues" link in the "Help and support" section on the support settings page',
   },
-  currency: {
-    id: 'environment.currency.ada',
-    defaultMessage: '!!!ADA',
-    description: 'Name for "Ada" unit.',
-  },
   apiName: {
     id: 'environment.apiName.cardano',
     defaultMessage: '!!!Cardano',
@@ -202,45 +213,25 @@ export default defineMessages({
     defaultMessage: '!!!Testnet',
     description: '"testnet" Cardano network',
   },
-  network_shelley_testnet: {
-    id: 'environment.network.shelley_testnet',
-    defaultMessage: '!!!Shelley Testnet',
-    description: '"Shelley Testnet" Cardano network',
-  },
   network_shelley_qa: {
     id: 'environment.network.shelley_qa',
     defaultMessage: '!!!Shelley QA',
     description: '"Shelley QA" Cardano network',
+  },
+  network_alonzo_purple: {
+    id: 'environment.network.alonzo_purple',
+    defaultMessage: '!!!Alonzo Purple',
+    description: '"Alonzo Purple" Cardano network',
   },
   network_development: {
     id: 'environment.network.development',
     defaultMessage: '!!!Development',
     description: '"development" Cardano network',
   },
-  network_itn_rewards_v1: {
-    id: 'environment.network.itn_rewards_v1',
-    defaultMessage: '!!!Incentivized Testnet v1 - Rewards',
-    description: '"itn_rewards_v1" Cardano network',
-  },
-  network_itn_selfnode: {
-    id: 'environment.network.itn_selfnode',
-    defaultMessage: '!!!ITN Selfnode',
-    description: '"itn_selfnode" Cardano network',
-  },
   network_selfnode: {
     id: 'environment.network.selfnode',
     defaultMessage: '!!!Selfnode',
     description: '"selfnode" Cardano network',
-  },
-  network_qa: {
-    id: 'environment.network.qa',
-    defaultMessage: '!!!QA',
-    description: '"qa" Cardano network',
-  },
-  network_nightly: {
-    id: 'environment.network.nightly',
-    defaultMessage: '!!!Nightly',
-    description: '"nightly" Cardano network',
   },
   years: {
     id: 'global.duration.years',
@@ -301,5 +292,37 @@ export default defineMessages({
     id: 'global.labels.token',
     defaultMessage: '!!!Token',
     description: 'Token description.',
+  },
+  reveal: {
+    id: 'global.labels.reveal',
+    defaultMessage: '!!!Reveal',
+    description: 'Reveal label.',
+  },
+  hide: {
+    id: 'global.labels.hide',
+    defaultMessage: '!!!Hide',
+    description: 'Hide label.',
+  },
+  view: {
+    id: 'global.labels.view',
+    defaultMessage: '!!!View',
+    description: 'View label.',
+  },
+  copy: {
+    id: 'global.labels.copy',
+    defaultMessage: '!!!Copy',
+    description: 'Copy label.',
+  },
+  featureUnavailableWhileSyncing: {
+    id: 'global.info.featureUnavailableWhileSyncing',
+    defaultMessage:
+      '!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently <b>{syncPercentage}%</b> complete. This feature will become available once Daedalus is fully synchronized.',
+    description:
+      'Info message displayed for features which are unavailable while Daedalus is syncing',
+  },
+  searchNoResultsMessage: {
+    id: 'global.search.noResultsMessage',
+    defaultMessage: '!!!No results',
+    description: 'Dropdown search "No results" message',
   },
 });

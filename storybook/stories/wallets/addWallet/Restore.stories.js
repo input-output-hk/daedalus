@@ -3,6 +3,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../../source/renderer/app/config/cryptoConfig';
 
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -18,6 +19,10 @@ import WalletTypeDialog from '../../../../source/renderer/app/components/wallet/
 import MnemonicsDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog';
 import ConfigurationDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog';
 import SuccessDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/SuccessDialog';
+
+type Props = {
+  locale: string,
+};
 
 storiesOf('Wallets|Add Wallet', module)
   .addDecorator(WalletsWrapper)
@@ -49,7 +54,6 @@ storiesOf('Wallets|Add Wallet', module)
         onContinue={action('onContinue')}
         onClose={action('onClose')}
         onSetWalletKind={action('onSetWalletKind')}
-        isShelleyActivated
         walletKind={walletKindSelect}
         walletKindDaedalus={walletKindSpecificSelect}
         walletKindYoroi={walletKindSpecificSelect}
@@ -90,24 +94,28 @@ storiesOf('Wallets|Add Wallet', module)
         walletKindYoroi={walletKindSpecificSelect}
         walletKindHardware={walletKindSpecificSelect}
         mnemonics={[]}
-        expectedWordCount={0}
-        maxWordCount={0}
+        expectedWordCount={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+        maxWordCount={WALLET_RECOVERY_PHRASE_WORD_COUNT}
         onValidateMnemonics={action('onValidateMnemonics')}
       />
     );
   })
-  .add('Restore - Step 3', () => (
-    <ConfigurationDialog
-      isSubmitting={false}
-      onContinue={action('onContinue')}
-      onClose={action('onClose')}
-      onBack={action('onSetWalletKind')}
-      onChange={action('onSetWalletKind')}
-      repeatPassword=""
-      spendingPassword=""
-      walletName=""
-    />
-  ))
+  .add('Restore - Step 3', (props: Props) => {
+    const { locale } = props;
+    return (
+      <ConfigurationDialog
+        isSubmitting={false}
+        onContinue={action('onContinue')}
+        onClose={action('onClose')}
+        onBack={action('onSetWalletKind')}
+        onChange={action('onSetWalletKind')}
+        repeatPassword=""
+        spendingPassword=""
+        walletName=""
+        currentLocale={locale}
+      />
+    );
+  })
   .add('Restore - Step 4', () => {
     const walletKindSelect = select(
       'Wallet Kind',
@@ -131,10 +139,8 @@ storiesOf('Wallets|Add Wallet', module)
     return (
       <SuccessDialog
         onClose={action('onClose')}
-        walletKind={walletKindSelect}
         walletKindDaedalus={walletKindSpecificSelect}
         walletKindYoroi={walletKindSpecificSelect}
-        walletKindHardware={walletKindSpecificSelect}
       />
     );
   });

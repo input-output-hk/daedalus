@@ -7,6 +7,8 @@ import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import SVGInline from 'react-svg-inline';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { PasswordInput } from '../widgets/forms/PasswordInput';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
@@ -18,6 +20,8 @@ import {
   isValidWalletName,
   isValidSpendingPassword,
   isValidRepeatPassword,
+  errorOrIncompleteMarker,
+  validateMnemonics,
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -30,10 +34,11 @@ import {
 } from '../../config/walletsConfig';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+import infoIconInline from '../../assets/images/info-icon.inline.svg';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   title: {
@@ -170,11 +175,23 @@ const messages = defineMessages({
     description:
       'Hint "Enter your 27-word paper wallet recovery phrase." for the recovery phrase input on the wallet restore dialog.',
   },
+  shieldedRecoveryPhraseInputPlaceholder: {
+    id: 'wallet.restore.dialog.shielded.recovery.phrase.input.placeholder',
+    defaultMessage: '!!!Enter word #{wordNumber}',
+    description:
+      'Placeholder "Enter word #" for the recovery phrase input on the wallet restore dialog.',
+  },
   restorePaperWalletButtonLabel: {
     id: 'wallet.restore.dialog.paper.wallet.button.label',
     defaultMessage: '!!!Restore paper wallet',
     description:
       'Label for the "Restore paper wallet" button on the wallet restore dialog.',
+  },
+  passwordTooltip: {
+    id: 'wallet.dialog.passwordTooltip',
+    defaultMessage:
+      'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
+    description: 'Tooltip for the password input in the wallet dialog.',
   },
 });
 
@@ -235,30 +252,22 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         recoveryPhrase: {
           value: [],
           validators: ({ field }) => {
-            const { intl } = this.context;
-            const { walletType } = this.state;
-            const enteredWords = field.value;
-            const wordCount = enteredWords.length;
             const expectedWordCount =
-              RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType];
-            const value = join(enteredWords, ' ');
-            // Regular mnemonics have 12 and paper wallet recovery needs 27 words
-            const isPhraseComplete = wordCount === expectedWordCount;
-            if (!isPhraseComplete) {
-              return [
-                false,
-                intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: expectedWordCount,
-                }),
-              ];
-            }
-            return [
-              // TODO: we should also validate paper wallets mnemonics here!
-              !this.isCertificate()
-                ? this.props.mnemonicValidator(value, expectedWordCount)
-                : true,
-              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-            ];
+              RECOVERY_PHRASE_WORD_COUNT_OPTIONS[this.state.walletType];
+            return validateMnemonics({
+              requiredWords: expectedWordCount,
+              providedWords: field.value,
+              validator: (providedWords) => [
+                // TODO: we should also validate paper wallets mnemonics here!
+                !this.isCertificate()
+                  ? this.props.mnemonicValidator(
+                      providedWords,
+                      expectedWordCount
+                    )
+                  : true,
+                this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+              ],
+            });
           },
         },
         spendingPassword: {
@@ -318,7 +327,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { onSubmit } = this.props;
         const { recoveryPhrase, walletName, spendingPassword } = form.values();
         const walletData: Object = {
@@ -341,7 +350,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
-    form.each(field => {
+    form.each((field) => {
       field.debouncedValidation.cancel();
     });
     form.reset();
@@ -380,14 +389,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
+    const label = this.isCertificate()
+      ? this.context.intl.formatMessage(messages.restorePaperWalletButtonLabel)
+      : this.context.intl.formatMessage(messages.importButtonLabel);
+    const buttonLabel = !isSubmitting ? label : <LoadingSpinner />;
     const actions = [
       {
-        className: isSubmitting ? styles.isSubmitting : null,
-        label: this.isCertificate()
-          ? this.context.intl.formatMessage(
-              messages.restorePaperWalletButtonLabel
-            )
-          : this.context.intl.formatMessage(messages.importButtonLabel),
+        label: buttonLabel,
         primary: true,
         disabled: isSubmitting,
         onClick: this.submit,
@@ -560,7 +568,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         <Autocomplete
           {...recoveryPhraseField.bind()}
-          ref={autocomplete => {
+          ref={(autocomplete) => {
             this.recoveryPhraseAutocomplete = autocomplete;
           }}
           label={
@@ -571,13 +579,23 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           placeholder={
             !this.isCertificate()
               ? intl.formatMessage(messages.recoveryPhraseInputHint)
-              : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
-                  numberOfWords: PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-                })
+              : intl.formatMessage(
+                  messages.shieldedRecoveryPhraseInputPlaceholder,
+                  {
+                    wordNumber: recoveryPhraseField.value.length + 1,
+                  }
+                )
           }
           options={suggestedMnemonics}
+          requiredSelections={[RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]]}
+          requiredSelectionsInfo={(required, actual) =>
+            intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+              actual,
+              required,
+            })
+          }
           maxSelections={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}
-          error={recoveryPhraseField.error}
+          error={errorOrIncompleteMarker(recoveryPhraseField.error)}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(
             messages.recoveryPhraseNoResults
@@ -595,18 +613,28 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <PasswordInput
-              className="spendingPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...spendingPasswordField.bind()}
-            />
-            <PasswordInput
-              className="repeatedPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...repeatedPasswordField.bind()}
-              repeatPassword={spendingPasswordField.value}
-              isPasswordRepeat
-            />
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                className="spendingPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...spendingPasswordField.bind()}
+              />
+              <PopOver
+                content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                key="tooltip"
+              >
+                <SVGInline svg={infoIconInline} className={styles.infoIcon} />
+              </PopOver>
+            </div>
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                className="repeatedPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...repeatedPasswordField.bind()}
+                repeatPassword={spendingPasswordField.value}
+                isPasswordRepeat
+              />
+            </div>
           </div>
           <p className={styles.passwordInstructions}>
             <FormattedHTMLMessage {...globalMessages.passwordInstructions} />

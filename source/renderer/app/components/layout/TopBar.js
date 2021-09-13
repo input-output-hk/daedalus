@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
+import { IS_BYRON_WALLET_MIGRATION_ENABLED } from '../../config/walletsConfig';
 import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
@@ -37,7 +38,6 @@ export default class TopBar extends Component<Props> {
       onLearnMore,
       isShelleyActivated,
     } = this.props;
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const topBarStyles = classNames([
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
@@ -46,7 +46,7 @@ export default class TopBar extends Component<Props> {
     const hasLegacyNotification =
       activeWallet &&
       activeWallet.isLegacy &&
-      ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated) &&
+      isShelleyActivated &&
       activeWallet.amount.gt(0) &&
       !activeWallet.isRestoring &&
       ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
@@ -55,6 +55,8 @@ export default class TopBar extends Component<Props> {
       onTransferFunds && activeWallet
         ? () => onTransferFunds(activeWallet.id)
         : () => {};
+
+    const isRestoreActive = activeWallet ? activeWallet.isRestoring : false;
 
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
@@ -65,8 +67,10 @@ export default class TopBar extends Component<Props> {
           )}
         </span>
         <span className={styles.walletAmount}>
-          {// show currency and use long format
-          formattedWalletAmount(activeWallet.amount)}
+          {
+            // show currency and use long format
+            isRestoreActive ? '-' : formattedWalletAmount(activeWallet.amount)
+          }
         </span>
       </span>
     ) : null;
@@ -90,15 +94,17 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {hasLegacyNotification && activeWallet && (
-          <LegacyNotification
-            activeWalletName={activeWallet.name}
-            onLearnMore={onLearnMore}
-            onTransferFunds={onTransferFundsFn}
-            hasRewardsWallets={hasRewardsWallets}
-            onWalletAdd={onWalletAdd}
-          />
-        )}
+        {IS_BYRON_WALLET_MIGRATION_ENABLED &&
+          hasLegacyNotification &&
+          activeWallet && (
+            <LegacyNotification
+              activeWalletName={activeWallet.name}
+              onLearnMore={onLearnMore}
+              onTransferFunds={onTransferFundsFn}
+              hasRewardsWallets={hasRewardsWallets}
+              onWalletAdd={onWalletAdd}
+            />
+          )}
       </header>
     );
   }

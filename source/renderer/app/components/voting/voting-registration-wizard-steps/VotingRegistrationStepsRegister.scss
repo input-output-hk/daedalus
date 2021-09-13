@@ -1,0 +1,67 @@
+@import '../../../themes/mixins/animations';
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  .description {
+    color: var(--theme-voting-registration-steps-description-color);
+  }
+
+  .feesWrapper {
+    font-family: var(--font-medium);
+    font-weight: 500;
+    line-height: 1.38;
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+    .feesLabel {
+      color: var(--theme-voting-registration-steps-deposit-fees-label-color);
+      margin-bottom: 6px;
+    }
+
+    .calculatingFeesLabel {
+      @include animated-ellipsis($width: 20px);
+      --webkit-backface-visibility: hidden;
+    }
+
+    .feesAmount {
+      color: var(--theme-voting-registration-steps-deposit-fees-amount-color);
+      user-select: text;
+
+      .feesAmountLabel {
+        font-family: var(--font-light);
+      }
+    }
+  }
+
+  .hardwareWalletStatusWrapper {
+    margin-top: 20px;
+    max-width: 640px;
+    width: 100%;
+  }
+
+  .errorMessage {
+    margin-top: 20px;
+    text-align: center;
+
+    p {
+      color: var(--theme-color-error);
+      font-family: var(--font-medium);
+      font-weight: 500;
+    }
+  }
+
+  .learnMoreWrapper {
+    margin-top: 10px;
+
+    .externalLink {
+      font-family: var(--font-regular);
+      font-size: 16px;
+    }
+  }
+}
+
+.isSubmitting {
+  box-shadow: none !important;
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
+}

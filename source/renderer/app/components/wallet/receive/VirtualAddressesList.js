@@ -104,7 +104,7 @@ export class VirtualAddressesList extends Component<Props> {
           {({ width, height }) => (
             <List
               className={styles.list}
-              ref={list => {
+              ref={(list) => {
                 this.list = list;
               }}
               width={width}

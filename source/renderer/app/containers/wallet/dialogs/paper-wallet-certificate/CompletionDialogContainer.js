@@ -20,7 +20,7 @@ export default class CompletionDialogContainer extends Component<Props> {
   render() {
     const { app, wallets } = this.props.stores;
     const {
-      environment: { network, rawNetwork },
+      environment: { network },
     } = app;
     const { walletCertificateAddress } = wallets;
     if (!walletCertificateAddress) {
@@ -38,7 +38,6 @@ export default class CompletionDialogContainer extends Component<Props> {
           ADDRESS_COPY_NOTIFICATION_SMALL_DURATION
         }
         network={network}
-        rawNetwork={rawNetwork}
       />
     );
   }

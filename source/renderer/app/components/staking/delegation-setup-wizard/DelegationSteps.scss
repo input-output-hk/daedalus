@@ -4,13 +4,16 @@
   :global {
     .Dialog_title {
       letter-spacing: 2px;
-      margin-bottom: 0;
+    }
+
+    .BackToTopButton_component {
+      margin-left: 0 !important;
     }
   }
 
   .delegationStepsIndicatorWrapper {
-    margin: auto;
-    width: 288px;
+    margin: -20px auto 20px;
+    width: 300px;
 
     .stepIndicatorLabel {
       color: var(--theme-delegation-steps-activation-steps-indicator-color);
@@ -26,7 +29,6 @@
   .content {
     font-size: 16px;
     line-height: 1.38;
-    margin-top: 20px;
     text-align: left;
   }
 }

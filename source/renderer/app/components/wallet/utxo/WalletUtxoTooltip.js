@@ -44,7 +44,7 @@ export default class WalletUtxoTooltip extends Component<Props> {
 
   getPreviousAmount = (walletAmount: string) => {
     const walletAmountIndex = PRETTY_WALLET_AMOUNTS.findIndex(
-      wa => wa === walletAmount
+      (wa) => wa === walletAmount
     );
     return PRETTY_WALLET_AMOUNTS[walletAmountIndex - 1];
   };

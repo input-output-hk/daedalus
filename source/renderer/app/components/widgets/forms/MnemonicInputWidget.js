@@ -45,7 +45,7 @@ export default class MnemonicInputWidget extends Component<Props> {
               key={index}
               className={styles.input}
               value={token}
-              onChange={value => onTokenChanged(index, value)}
+              onChange={(value) => onTokenChanged(index, value)}
               skin={InputSkin}
             />
           ))}

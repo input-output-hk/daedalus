@@ -1,23 +1,31 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { shortNumber } from '../../../utils/formatters';
+import BigNumber from 'bignumber.js';
+import {
+  shortNumber,
+  generateThousands,
+  formattedWalletAmount,
+  toFixedUserFormat,
+} from '../../../utils/formatters';
 import {
   getFilteredWallets,
   getAllAmounts,
 } from '../../../utils/walletsForStakePoolsRanking';
 import Wallet from '../../../domains/Wallet';
 import {
+  RANKING_SLIDER_RATIO,
+  MIN_DELEGATION_FUNDS_LOG,
   MIN_DELEGATION_FUNDS,
-  MAX_DELEGATION_FUNDS,
-  OUT_OF_RANGE_MAX_DELEGATION_FUNDS,
-  ALL_WALLETS_SELECTION_ID,
+  INITIAL_DELEGATION_FUNDS_LOG,
   INITIAL_DELEGATION_FUNDS,
+  CIRCULATING_SUPPLY,
+  ALL_WALLETS_SELECTION_ID,
+  IS_RANKING_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
@@ -44,7 +52,7 @@ const messages = defineMessages({
   rankingDescription: {
     id: 'staking.stakePools.rankingDescription',
     defaultMessage:
-      '!!!Use the slider to rank the stake pools based on the amount you intend to delegate.',
+      '!!!Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.',
     description: 'Ranking description.',
   },
   rankingLearnMoreUrl: {
@@ -100,26 +108,24 @@ const messages = defineMessages({
   },
 });
 
-const walletSelectorLanguageMap = {
-  'en-US': 'enSelector',
-  'ja-JP': 'jaSelector',
-};
-
 type Props = {
   wallets: Array<Wallet>,
-  currentLocale: string,
   onOpenExternalLink: Function,
-  onRank: Function,
+  updateDelegatingStake: Function,
+  rankStakePools: Function,
   selectedDelegationWalletId?: ?string,
   stake?: ?number,
   isLoading: boolean,
   isRanking: boolean,
   numberOfStakePools: number,
   getStakePoolById: Function,
+  maxDelegationFunds: number,
+  maxDelegationFundsLog: number,
 };
 
 type State = {
   sliderValue: number,
+  displayValue: string,
 };
 
 @observer
@@ -133,14 +139,23 @@ export default class StakePoolsRanking extends Component<Props, State> {
   };
 
   state = {
-    sliderValue: INITIAL_DELEGATION_FUNDS,
+    sliderValue: Math.round(
+      INITIAL_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
+    ),
+    displayValue: toFixedUserFormat(INITIAL_DELEGATION_FUNDS, 0),
   };
 
   componentDidMount() {
     const { stake } = this.props;
-
     if (stake) {
-      this.setState({ sliderValue: stake });
+      const hasDecimal = stake - Math.floor(stake);
+      const displayValue = hasDecimal
+        ? formattedWalletAmount(new BigNumber(stake), false)
+        : toFixedUserFormat(stake, 0);
+      this.setState({
+        sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
+        displayValue,
+      });
     }
   }
 
@@ -153,41 +168,80 @@ export default class StakePoolsRanking extends Component<Props, State> {
   }
 
   onSelectedWalletChange = (selectedWalletId: string) => {
-    const { wallets, onRank, selectedDelegationWalletId } = this.props;
+    const {
+      wallets,
+      updateDelegatingStake,
+      rankStakePools,
+      selectedDelegationWalletId,
+      maxDelegationFunds,
+    } = this.props;
     const selectedWallet = wallets.find(
-      wallet => wallet.id === selectedWalletId
+      (wallet) => wallet.id === selectedWalletId
     );
+    const hasSelectedWallet = !!selectedWallet;
+    const isAllWalletsSelected = selectedWalletId === ALL_WALLETS_SELECTION_ID;
+    const wasSelectedWalletChanged =
+      selectedWalletId !== selectedDelegationWalletId;
 
-    if (
-      selectedWalletId === selectedDelegationWalletId ||
-      (selectedWalletId !== ALL_WALLETS_SELECTION_ID && !selectedWallet)
-    ) {
+    // Prevent ranking stake pools if we don't have data for the selected wallet ready
+    if (wasSelectedWalletChanged && !isAllWalletsSelected && !hasSelectedWallet)
       return;
-    }
 
-    let sliderValue = MIN_DELEGATION_FUNDS;
+    let amountValue = 0;
+    let sliderValue = 0;
     if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
-      sliderValue = Math.min(
-        Math.floor(getAllAmounts(wallets).toNumber()),
-        MAX_DELEGATION_FUNDS
+      amountValue = Math.min(
+        getAllAmounts(wallets).toNumber(),
+        maxDelegationFunds
       );
     } else if (selectedWallet) {
-      sliderValue = Math.floor(selectedWallet.amount.toNumber());
+      amountValue = selectedWallet.amount.toNumber();
     }
-    sliderValue = Math.max(sliderValue, MIN_DELEGATION_FUNDS);
+    amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
+    sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
+    const hasSliderValueChanged = sliderValue !== this.state.sliderValue;
 
-    this.setState({ sliderValue });
-    onRank(selectedWalletId, sliderValue);
+    // Prevent ranking stake pools if selected wallet and slider value remains unchanged
+    if (!wasSelectedWalletChanged && !hasSliderValueChanged) return;
+
+    const displayValue = formattedWalletAmount(
+      new BigNumber(amountValue),
+      false
+    );
+    this.setState({ sliderValue, displayValue });
+    updateDelegatingStake(selectedWalletId, amountValue);
+    rankStakePools();
   };
 
   onSliderChange = (sliderValue: number) => {
-    this.setState({ sliderValue });
-    this.props.onRank(null, sliderValue);
+    const {
+      updateDelegatingStake,
+      maxDelegationFunds,
+      maxDelegationFundsLog,
+    } = this.props;
+    let amountValue = null;
+    if (
+      sliderValue ===
+      Math.round(MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO)
+    ) {
+      amountValue = MIN_DELEGATION_FUNDS;
+    } else if (
+      sliderValue === Math.round(maxDelegationFundsLog * RANKING_SLIDER_RATIO)
+    ) {
+      amountValue = maxDelegationFunds;
+    } else {
+      amountValue = generateThousands(
+        Math.exp(sliderValue / RANKING_SLIDER_RATIO)
+      );
+    }
+    const displayValue = toFixedUserFormat(amountValue, 0);
+    this.setState({ sliderValue, displayValue });
+    updateDelegatingStake(null, amountValue);
   };
 
   generateInfo = () => {
     const { intl } = this.context;
-    const { wallets, currentLocale, selectedDelegationWalletId } = this.props;
+    const { wallets, selectedDelegationWalletId } = this.props;
     const allWalletsItem = {
       id: ALL_WALLETS_SELECTION_ID,
       name: intl.formatMessage(messages.rankingAllWallets),
@@ -197,8 +251,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const walletSelectorWallets = [allWalletsItem, ...filteredWallets];
     const walletSelectorClasses = classnames([
       styles.walletSelector,
-      walletSelectorLanguageMap[currentLocale],
       selectedDelegationWalletId === null ? 'noValueSelected' : null,
+    ]);
+    const walletSelectorContainerClasses = classnames([
+      styles.walletSelectorContainer,
+      styles.col,
     ]);
     const learnMoreUrl = intl.formatMessage(messages.rankingLearnMoreUrl);
 
@@ -223,6 +280,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     return {
       walletSelectorWallets,
       walletSelectorClasses,
+      walletSelectorContainerClasses,
       walletSelectionStart,
       walletSelectionEnd,
       learnMoreUrl,
@@ -239,29 +297,38 @@ export default class StakePoolsRanking extends Component<Props, State> {
       wallets,
       numberOfStakePools,
       getStakePoolById,
+      rankStakePools,
+      maxDelegationFunds,
+      maxDelegationFundsLog,
     } = this.props;
-    const { sliderValue } = this.state;
-    const rankingDescription = intl.formatMessage(messages.rankingDescription);
+    const { sliderValue, displayValue } = this.state;
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
       walletSelectorWallets,
       walletSelectorClasses,
+      walletSelectorContainerClasses,
       walletSelectionStart,
       walletSelectionEnd,
       learnMoreUrl,
     } = this.generateInfo();
+
+    if (!IS_RANKING_DATA_AVAILABLE) {
+      return null;
+    }
 
     return (
       <div className={styles.component}>
         <div className={styles.upper}>
           <div className={styles.selectWallet}>
             <div className={styles.row}>
-              <div className={styles.col}>{rankingDescription}</div>
+              <div className={styles.col}>
+                <FormattedHTMLMessage {...messages.rankingDescription} />
+              </div>
             </div>
             {getFilteredWallets(wallets).length > 0 ? (
               <div className={styles.row}>
                 <div className={styles.col}>{walletSelectionStart}</div>
-                <div className={styles.col}>
+                <div className={walletSelectorContainerClasses}>
                   <WalletsDropdown
                     className={walletSelectorClasses}
                     placeholder={intl.formatMessage(
@@ -270,13 +337,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
                     wallets={walletSelectorWallets}
                     onChange={this.onSelectedWalletChange}
                     disabled={isLoading || isRanking}
-                    value={selectedDelegationWalletId}
-                    selectionRenderer={option => (
+                    value={selectedDelegationWalletId || '0'}
+                    selectionRenderer={(option) => (
                       <button
                         className="customValue"
                         onClick={() => {
                           const selectionInput = document.querySelector(
-                            '.StakePoolsRanking_walletSelector .SimpleInput_input'
+                            '.StakePoolsRanking_walletSelectorContainer input'
                           );
                           if (selectionInput) {
                             selectionInput.click();
@@ -315,10 +382,17 @@ export default class StakePoolsRanking extends Component<Props, State> {
             </div>
             <div className={styles.slider}>
               <Slider
-                min={MIN_DELEGATION_FUNDS}
-                max={MAX_DELEGATION_FUNDS}
+                min={Math.round(
+                  MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
+                )}
+                minDisplayValue={MIN_DELEGATION_FUNDS}
+                max={Math.round(maxDelegationFundsLog * RANKING_SLIDER_RATIO)}
+                maxDisplayValue={maxDelegationFunds}
                 value={sliderValue}
+                displayValue={displayValue}
+                showRawValue
                 onChange={this.onSliderChange}
+                onAfterChange={rankStakePools}
                 disabled={isLoading || isRanking}
                 showTooltip
                 minTooltip={intl.formatMessage(messages.rankingMinTooltip)}
@@ -327,12 +401,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
             </div>
             <div className={styles.col}>
               <div className={styles.outOfRangeMaxAmount}>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.rankingExtraTooltip)}
+                <PopOver
+                  content={intl.formatMessage(messages.rankingExtraTooltip)}
                 >
-                  {shortNumber(OUT_OF_RANGE_MAX_DELEGATION_FUNDS)}
-                </Tooltip>
+                  {shortNumber(CIRCULATING_SUPPLY)}
+                </PopOver>
               </div>
               <div className={styles.outOfSliderRangeEnd} />
             </div>

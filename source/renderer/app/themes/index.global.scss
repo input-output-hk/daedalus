@@ -254,6 +254,16 @@ body,
   width: 100%;
 }
 
+#root {
+  position: relative;
+
+  canvas {
+    position: absolute;
+    top: 0;
+    z-index: 9;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -265,6 +275,11 @@ body,
     width: 20px;
   }
 
+  &::-webkit-scrollbar-button {
+    display: block;
+    height: 6px;
+  }
+
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
@@ -274,6 +289,7 @@ body,
     background-color: var(--theme-scrollbar-thumb-background);
     border: 8px solid transparent;
     border-radius: 10px;
+    min-width: 50px;
     &:vertical {
       min-height: 30px;
     }

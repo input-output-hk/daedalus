@@ -8,7 +8,7 @@ import {
   NEWS_POLL_INTERVAL_ON_ERROR,
   NEWS_POLL_INTERVAL_ON_INCIDENT,
 } from '../config/timingConfig';
-import News, { NewsTypes } from '../domains/News';
+import News, { NewsTypes, IncidentColors } from '../domains/News';
 import type {
   GetNewsResponse,
   GetReadNewsResponse,
@@ -37,6 +37,10 @@ export default class NewsFeedStore extends Store {
   markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsRead
   );
+  @observable
+  markNewsAsUnreadRequest: Request<MarkNewsAsReadResponse> = new Request(
+    this.api.localStorage.markNewsAsUnread
+  );
   @observable openedAlert: ?News.News = null;
   @observable fetchLocalNews: boolean = false;
 
@@ -46,7 +50,7 @@ export default class NewsFeedStore extends Store {
 
   setup() {
     // Fetch news on app start
-    this.getNews();
+    this.getNews({ isInit: true });
     if (!isTest) {
       // Refetch news every 30 mins
       this.pollingNewsIntervalId = setInterval(
@@ -56,15 +60,30 @@ export default class NewsFeedStore extends Store {
     }
   }
 
-  @action getNews = async () => {
+  @action getNews = async (params?: { isInit: boolean }) => {
     let rawNews;
     try {
       rawNews = await this.getNewsRequest.execute().promise;
 
       const hasIncident = find(
         rawNews.items,
-        news => news.type === NewsTypes.INCIDENT
+        (news) => news.type === NewsTypes.INCIDENT
       );
+
+      // Check for "Alerts" with repeatable state and set as unread
+      if (params && params.isInit && rawNews) {
+        const repeatableNews = find(
+          rawNews.items,
+          (news) => news.type === NewsTypes.ALERT && news.repeatOnStartup
+        );
+        if (repeatableNews) {
+          const mainIdentificator = repeatableNews.id || repeatableNews.date;
+          // Mark Alert as unread in LC if "repeatOnStartup" parameter set
+          await this.markNewsAsUnreadRequest.execute(mainIdentificator);
+          // Get all read news to force @computed change
+          await this.getReadNewsRequest.execute();
+        }
+      }
 
       // Reset "getNews" fast polling interval if set and set regular polling interval
       if (!isTest && this.pollingNewsOnErrorIntervalId) {
@@ -156,7 +175,7 @@ export default class NewsFeedStore extends Store {
   @action openAlert = (newsId: number) => {
     if (this.getNewsRequest.wasExecuted) {
       const alertToOpen = this.newsFeedData.alerts.all.find(
-        newsItem => newsItem.id === newsId
+        (newsItem) => newsItem.id === newsId
       );
       if (alertToOpen) {
         this.openedAlert = alertToOpen;
@@ -215,10 +234,10 @@ export default class NewsFeedStore extends Store {
     let news = [];
 
     if (this.getNewsRequest.wasExecuted) {
-      news = map(this.rawNews, item => {
+      news = map(this.rawNews, (item) => {
         // Match old and new newsfeed JSON format
         const mainIdentificator = item.id || item.date;
-        return {
+        let newsfeedItem = {
           ...item,
           id: mainIdentificator,
           title: item.title[currentLocale],
@@ -232,8 +251,25 @@ export default class NewsFeedStore extends Store {
           date: get(item, ['publishedAt', currentLocale], item.date),
           read: readNews.includes(mainIdentificator),
         };
+        // Exclude "color" parameter from news that are not incidents
+        if (item.type === NewsTypes.INCIDENT) {
+          newsfeedItem = {
+            ...newsfeedItem,
+            color: get(item, 'color', IncidentColors.RED),
+          };
+        }
+
+        // Exclude "repeatOnStartup" parameter from news that are not alerts
+        if (item.type === NewsTypes.ALERT) {
+          newsfeedItem = {
+            ...newsfeedItem,
+            repeatOnStartup: get(item, 'repeatOnStartup', false),
+          };
+        }
+        return newsfeedItem;
       });
     }
+
     return new News.NewsCollection(news);
   }
 

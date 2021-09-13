@@ -13,7 +13,7 @@ export const downloadLogsChannel: MainIpcChannel<
 > = new MainIpcChannel(DOWNLOAD_LOGS_CHANNEL);
 
 export default () => {
-  downloadLogsChannel.onRequest(request => {
+  downloadLogsChannel.onRequest((request) => {
     const { compressedLogsFilePath, destinationPath } = request;
 
     if (!fs.existsSync(compressedLogsFilePath)) {

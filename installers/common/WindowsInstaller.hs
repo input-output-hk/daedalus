@@ -10,9 +10,7 @@ module WindowsInstaller
 
 import           Universum hiding (pass, writeFile, stdout, FilePath, die, view)
 
-import           Control.Monad (unless)
 import qualified Data.List as L
-import           Data.Text (Text, unpack)
 import qualified Data.Text as T
 import           Data.Yaml                 (decodeFileThrow)
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
@@ -28,10 +26,8 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
-import           AppVeyor
-import qualified Codec.Archive.Zip    as Zip
 
 import           Config
 import           Types
@@ -42,7 +38,7 @@ import           Util
 daedalusShortcut :: Text -> [Attrib]
 daedalusShortcut installDir =
         [ Target "$INSTDIR\\cardano-launcher.exe"
-        , IconFile $ fromString $ unpack $ "$INSTDIR\\" <> installDir <> ".exe"
+        , IconFile $ fromString $ T.unpack $ "$INSTDIR\\" <> installDir <> ".exe"
         , StartOptions "SW_SHOWMINIMIZED"
         , IconIndex 0
         ]
@@ -52,9 +48,9 @@ writeUninstallerNSIS :: Version -> InstallerConfig -> IO ()
 writeUninstallerNSIS (Version fullVersion) installerConfig = do
     tempDir <- getTempDir
     IO.writeFile "uninstaller.nsi" $ nsis $ do
-        _ <- constantStr "Version" (str $ unpack fullVersion)
-        _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
-        _ <- constantStr "SpacedName" (str $ unpack $ spacedName installerConfig)
+        _ <- constantStr "Version" (str $ T.unpack fullVersion)
+        _ <- constantStr "InstallDir" (str $ T.unpack $ installDirectory installerConfig)
+        _ <- constantStr "SpacedName" (str $ T.unpack $ spacedName installerConfig)
         unsafeInjectGlobal "Unicode true"
 
         loadLanguage "English"
@@ -68,7 +64,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         name "$SpacedName Uninstaller $Version"
         -- TODO, the nsis library doesn't support translation vars
         -- name "$InstallDir $(UninstallName) $Version"
-        --unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
+        --unsafeInjectGlobal $ T.unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
@@ -133,17 +129,17 @@ parseVersion ver =
         _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} Options{oBackend} clusterName = do
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirectory,spacedName} Options{oBackend} clusterName = do
     tempDir <- getTempDir
-    let fullVersion = unpack fullVersion'
+    let fullVersion = T.unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     printf ("VIProductVersion: "%w%"\n") viProductVersion
 
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ lshow clusterName)
-        _ <- constantStr "InstallDir" (str $ unpack installDirectory)
-        _ <- constantStr "SpacedName" (str $ unpack spacedName)
+        _ <- constantStr "InstallDir" (str $ T.unpack installDirectory)
+        _ <- constantStr "SpacedName" (str $ T.unpack spacedName)
         name "$SpacedName ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
@@ -191,20 +187,13 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
                 onError (delete [] "$APPDATA\\$InstallDir\\daedalus_lockfile") $
                     --abort "$SpacedName $(AlreadyRunning)"
-                    unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
+                    unsafeInject $ T.unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 case oBackend of
-                  Jormungandr _ -> do
-                    file [] "jormungandr.exe"
-                    file [] "cardano-wallet-jormungandr.exe"
-                    file [] "config.yaml"
-                  Cardano kind _ -> do
-                    let
-                      mainBinary Shelley = "cardano-wallet-shelley.exe"
-                      mainBinary Byron = "cardano-wallet-byron.exe"
+                  Cardano _ -> do
                     file [] "cardano-node.exe"
-                    file [] (mainBinary kind)
+                    file [] "cardano-wallet.exe"
                     file [] "cardano-address.exe"
                     file [] "cardano-cli.exe"
                     file [] "config.yaml"
@@ -212,6 +201,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     file [] "genesis.json"
                     file [] "genesis-byron.json"
                     file [] "genesis-shelley.json"
+                    file [] "genesis-alonzo.json"
                     file [] "libsodium-23.dll"
                     when (clusterName == Selfnode) $ do
                       file [] "signing.key"
@@ -225,11 +215,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 --file [] "configuration.yaml"
                 --file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
-                when hasBlock0 $
-                  file [] "block-0.bin"
-                when (clusterName == ITN_Selfnode) $ do
-                  file [] "genesis.yaml"
-                  file [] "secret.yaml"
                 file [Recursive] "dlls\\"
                 file [Recursive] "..\\release\\win32-x64\\$SpacedName-win32-x64\\"
 
@@ -281,7 +266,7 @@ packageFrontend cluster installerConfig = do
     rewritePackageJson "../package.json" installDir
     echo "running yarn"
     shells ("yarn run package --icon " <> icon) empty
-    cp "../node_modules/ps-list/fastlist.exe" $ fromString $ unpack $ releaseDir <> "/resources/app/dist/main/fastlist.exe"
+    cp "../node_modules/ps-list/fastlist.exe" $ fromString $ T.unpack $ releaseDir <> "/resources/app/dist/main/fastlist.exe"
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
@@ -289,9 +274,6 @@ main opts@Options{..}  = do
     cp (fromText "launcher-config.yaml") (fromText "../launcher-config.yaml")
 
     installerConfig <- decodeFileThrow "installer-config.json"
-
-    fetchCardanoSL "."
-    printCardanoBuildInfo "."
 
     fullVersion <- getDaedalusVersion "../package.json"
     ver <- getCardanoVersion
@@ -321,7 +303,7 @@ main opts@Options{..}  = do
     putStr rawnsi
     IO.hFlush IO.stdout
 
-    windowsRemoveDirectoryRecursive $ unpack $ "../release/win32-x64/" <> (installDirectory installerConfig) <> "-win32-x64/resources/app/installers/.stack-work"
+    windowsRemoveDirectoryRecursive $ T.unpack $ "../release/win32-x64/" <> (installDirectory installerConfig) <> "-win32-x64/resources/app/installers/.stack-work"
 
     echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
@@ -330,25 +312,6 @@ main opts@Options{..}  = do
     case signed of
       SignedOK  -> pure ()
       NotSigned -> rm fullName
-
--- | Download and extract the cardano-sl windows build.
-fetchCardanoSL :: FilePath -> IO ()
-fetchCardanoSL dst = do
-  bs <- downloadCardanoSL "../cardano-sl-src.json"
-  let opts = [Zip.OptDestination (encodeString dst), Zip.OptVerbose]
-  Zip.extractFilesFromArchive opts (Zip.toArchive bs)
-
-printCardanoBuildInfo :: MonadIO io => FilePath -> io ()
-printCardanoBuildInfo dst = do
-  let buildInfo what f = do
-        let f' = dst </> f
-        e <- testfile f'
-        when e $ do
-          echo what
-          stdout (input f')
-  buildInfo "cardano-sl build-id:" "build-id"
-  buildInfo "cardano-sl commit-id:" "commit-id"
-  buildInfo "cardano-sl ci-url:" "ci-url"
 
 -- | Run cardano-node --version to get a version string.
 -- Because this is Windows, all necessary DLLs for cardano-node.exe

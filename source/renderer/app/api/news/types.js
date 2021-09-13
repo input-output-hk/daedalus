@@ -1,5 +1,7 @@
 // @flow
 
+import type { Platform } from '../../../../common/types/environment.types';
+
 export type NewsTranslations = {
   'en-US': string,
   'ja-JP': string,
@@ -17,7 +19,22 @@ export type NewsTarget = {
   platform: string,
 };
 
-export type NewsType = 'incident' | 'alert' | 'announcement' | 'info';
+export type NewsType =
+  | 'incident'
+  | 'alert'
+  | 'announcement'
+  | 'info'
+  | 'software-update';
+
+export type SoftwareUpdateInfo = {
+  version: string,
+  hash: string,
+  url: string,
+};
+
+export type SoftwareUpdate = {
+  [key: Platform]: SoftwareUpdateInfo,
+};
 
 export type NewsTimestamp = number;
 
@@ -28,6 +45,7 @@ export type NewsItem = {
   action: NewsAction,
   date: NewsTimestamp,
   type: NewsType,
+  softwareUpdate?: SoftwareUpdate,
 };
 
 export type GetNewsResponse = {

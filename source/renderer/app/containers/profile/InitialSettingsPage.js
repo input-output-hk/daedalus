@@ -22,14 +22,17 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     const { actions, stores } = this.props;
     const { updateUserLocalSetting } = actions.profile;
     updateUserLocalSetting.trigger({ param, value });
-    const { isUpdateAvailable } = stores.appUpdate;
+    const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
+
     if (param === 'locale') {
-      await rebuildApplicationMenu.send({ isUpdateAvailable });
+      await rebuildApplicationMenu.send({
+        isNavigationEnabled,
+      });
     }
   };
 
   render() {
-    const { app, profile, staking } = this.props.stores;
+    const { app, profile, networkStatus } = this.props.stores;
     const { currentRoute } = app;
     const {
       setProfileLocaleRequest,
@@ -39,7 +42,7 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
       currentTimeFormat,
     } = profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const { isShelleyActivated } = staking;
+    const { isShelleyActivated } = networkStatus;
     const topbar = (
       <TopBar
         currentRoute={currentRoute}

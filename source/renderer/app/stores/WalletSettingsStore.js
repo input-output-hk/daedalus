@@ -68,6 +68,9 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.recoveryPhraseVerificationClose.listen(
       this._recoveryPhraseVerificationClose
     );
+    walletSettingsActions.toggleShowUsedAddresses.listen(
+      this._toggleShowUsedAddressesStatuses
+    );
 
     sidebarActions.walletSelected.listen(this._onWalletSelected);
   }
@@ -79,15 +82,17 @@ export default class WalletSettingsStore extends Store {
   getWalletsRecoveryPhraseVerificationData = (walletId: string) =>
     this.walletsRecoveryPhraseVerificationData[walletId] || {};
 
+  getLocalWalletDataById = (id: any): ?WalletLocalData => {
+    const { all: walletsLocalData } = this.stores.walletsLocal;
+    return walletsLocalData[id];
+  };
+
   @computed get walletsRecoveryPhraseVerificationData() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
-    const { isIncentivizedTestnet } = global;
-    // $FlowFixMe
-    return Object.values(walletsLocalData).reduce(
-      (
-        obj,
-        { id, recoveryPhraseVerificationDate, creationDate }: WalletLocalData
-      ) => {
+
+    return Object.keys(walletsLocalData)
+      .map((key) => walletsLocalData[key])
+      .reduce((obj, { id, recoveryPhraseVerificationDate, creationDate }) => {
         const {
           recoveryPhraseVerificationStatus,
           recoveryPhraseVerificationStatusType,
@@ -97,8 +102,7 @@ export default class WalletSettingsStore extends Store {
         });
         const hasNotification =
           recoveryPhraseVerificationStatus ===
-            RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION &&
-          !isIncentivizedTestnet;
+          RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION;
         obj[id] = {
           id,
           recoveryPhraseVerificationDate,
@@ -108,9 +112,7 @@ export default class WalletSettingsStore extends Store {
           hasNotification,
         };
         return obj;
-      },
-      {}
-    );
+      }, {});
   }
 
   // =================== PRIVATE API ==================== //
@@ -175,7 +177,7 @@ export default class WalletSettingsStore extends Store {
 
     if (!wallet) return;
 
-    await this.stores.wallets.walletsRequest.patch(result => {
+    await this.stores.wallets.walletsRequest.patch((result) => {
       const walletIndex = findIndex(result, { id: walletId });
       result[walletIndex] = wallet;
     });
@@ -194,8 +196,8 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _startWalletUtxoPolling = () => {
+    this._clearWalletUtxoPollingInterval();
     this._getWalletUtxoApiData();
-    this._stopWalletUtxoPolling();
 
     this.pollingApiInterval = setInterval(
       this._getWalletUtxoApiData,
@@ -204,12 +206,21 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _stopWalletUtxoPolling = () => {
-    if (this.pollingApiInterval) clearInterval(this.pollingApiInterval);
+    this._clearWalletUtxoPollingInterval();
+    this.getWalletUtxosRequest.reset();
+  };
+
+  @action _clearWalletUtxoPollingInterval = () => {
+    if (this.pollingApiInterval) {
+      clearInterval(this.pollingApiInterval);
+      this.pollingApiInterval = null;
+    }
   };
 
   @action _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
+
     const { id: walletId, isLegacy } = activeWallet;
     const walletUtxos = await this.getWalletUtxosRequest.execute({
       walletId,
@@ -272,4 +283,25 @@ export default class WalletSettingsStore extends Store {
   };
 
   /* ====  End of Wallet Recovery Phrase Verification  ===== */
+
+  @action _toggleShowUsedAddressesStatuses = async () => {
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet)
+      throw new Error(
+        'Active wallet required before checking show used addresses statuses.'
+      );
+
+    const localWalletData: ?WalletLocalData = this.getLocalWalletDataById(
+      activeWallet ? activeWallet.id : ''
+    );
+
+    const { showUsedAddresses } = localWalletData || {};
+
+    await this.actions.walletsLocal.setWalletLocalData.trigger({
+      walletId: activeWallet.id,
+      updatedWalletData: {
+        showUsedAddresses: !showUsedAddresses,
+      },
+    });
+  };
 }

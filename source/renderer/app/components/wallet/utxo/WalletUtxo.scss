@@ -12,103 +12,102 @@
   &.isEmpty {
     min-height: auto;
   }
-}
 
-.borderedBox {
-  padding: 30px;
-}
-
-.container {
-  h1 {
-    color: var(--theme-utxo-title-text-color);
-    font-size: 16px;
-    line-height: 1.38;
-    margin-bottom: 14px;
+  .borderedBox {
+    margin-bottom: 20px;
+    padding: 30px;
   }
 
-  > p {
-    color: var(--theme-utxo-title-description-color);
-    font-family: var(--font-light);
-    font-size: 16px;
-    line-height: 22px;
-
-    b {
+  .container {
+    h1 {
       color: var(--theme-utxo-title-text-color);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 14px;
+    }
+
+    > p {
+      color: var(--theme-utxo-title-description-color);
+      font-family: var(--font-light);
+      font-size: 16px;
+      line-height: 22px;
+
+      b {
+        color: var(--theme-utxo-title-text-color);
+        font-family: var(--font-regular);
+      }
+    }
+
+    :global {
+      .recharts-cartesian-grid-bg {
+        fill: var(--theme-utxo-background-color);
+      }
+    }
+
+    .responsiveContainerWrapper {
+      margin: auto;
+      max-width: 464px;
+      padding: 20px 0;
+    }
+
+    .responsiveContainer {
+      margin: 30px 0 10px -13px;
+      width: auto !important;
+
+      > div > svg {
+        overflow: visible;
+      }
+
+      .yAxisLabel {
+        fill: var(--theme-utxo-label-text-color);
+        font-family: var(--font-regular);
+        font-size: 10px;
+        line-height: 1.3;
+        transform: translate(10px, -31px);
+      }
+
+      .xAxisLabel {
+        transform: rotate(90deg) translate(36px, 16px);
+        transform-origin: right bottom;
+
+        > tspan {
+          fill: var(--theme-utxo-label-text-color);
+          font-family: var(--font-regular);
+          font-size: 10px;
+          line-height: 1.3;
+          transform: rotate(90deg);
+        }
+      }
+
+      .bar {
+        path {
+          fill: var(--theme-utxo-bar-color);
+        }
+      }
+    }
+
+    .externalLink {
       font-family: var(--font-regular);
+      font-size: 16px;
+    }
+
+    .pendingTxnsWrapper {
+      margin: 20px 0 0 30px;
+      text-align: center;
+      width: 100%;
+
+      p {
+        color: var(--theme-utxo-title-description-color);
+        font-family: var(--font-light);
+        font-size: 14px;
+        line-height: 1.43;
+        white-space: nowrap;
+
+        b {
+          color: var(--theme-utxo-title-text-color);
+          font-family: var(--font-medium);
+        }
+      }
     }
   }
-
-  :global {
-    .recharts-cartesian-grid-bg {
-      fill: var(--theme-utxo-background-color);
-    }
-  }
-}
-
-.pendingTxnsWrapper {
-  margin: 20px 0 0 30px;
-  text-align: center;
-  width: 100%;
-
-  p {
-    color: var(--theme-utxo-title-description-color);
-    font-family: var(--font-light);
-    font-size: 14px;
-    line-height: 1.43;
-    white-space: nowrap;
-
-    b {
-      color: var(--theme-utxo-title-text-color);
-      font-family: var(--font-medium);
-    }
-  }
-}
-
-// CHARTS STYLES
-
-.responsiveContainerWrapper {
-  margin: auto;
-  max-width: 464px;
-  padding: 20px 0;
-}
-
-.responsiveContainer {
-  margin: 30px 0 10px -13px;
-  width: auto !important;
-
-  > div > svg {
-    overflow: visible;
-  }
-}
-
-.bar {
-  path {
-    fill: var(--theme-utxo-bar-color);
-  }
-}
-
-.yAxisLabel {
-  fill: var(--theme-utxo-label-text-color);
-  font-family: var(--font-regular);
-  font-size: 10px;
-  line-height: 1.3;
-  transform: translate(10px, -31px);
-}
-
-.xAxisLabel {
-  transform: rotate(90deg) translate(36px, 16px);
-  transform-origin: right bottom;
-
-  > tspan {
-    fill: var(--theme-utxo-label-text-color);
-    font-family: var(--font-regular);
-    font-size: 10px;
-    line-height: 1.3;
-    transform: rotate(90deg);
-  }
-}
-
-.externalLink {
-  font-family: var(--font-regular);
-  font-size: 16px;
 }

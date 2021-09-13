@@ -75,7 +75,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
 
   submit = () => {
     this.validator.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { inputField } = form.values();
         this.setState({ isActive: false });
         if (inputField !== this.props.inputFieldValue) {
@@ -86,7 +86,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
         }
         this.input.blur();
       },
-      onError: form => {
+      onError: (form) => {
         const { inputField } = form.values();
         if (!inputField || !form.isValid) {
           this.setState({ isActive: false });
@@ -203,11 +203,11 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
           onChange={inputField.onChange}
           onFocus={inputField.onFocus}
           onBlur={inputField.onBlur}
-          onKeyDown={event => this.handleInputKeyDown(event)}
+          onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={isActive || inputBlocked ? inputField.error : null}
           disabled={isDisabled}
           placeholder={placeholder || ''}
-          ref={input => {
+          ref={(input) => {
             this.inputField = input;
           }}
           skin={InputSkin}

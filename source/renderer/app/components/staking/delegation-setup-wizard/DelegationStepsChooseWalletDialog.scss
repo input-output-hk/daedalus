@@ -9,11 +9,29 @@
         background: transparent;
       }
     }
+
+    .WalletsDropdownLabel_syncing .LoadingSpinner_icon svg path {
+      fill: var(
+        --theme-delegation-steps-choose-wallet-custom-value-color
+      ) !important;
+      opacity: 0.5;
+    }
+
+    .SimpleOptions_option {
+      display: flex !important;
+      height: 50px !important;
+      padding: 10px 20px !important;
+    }
+
+    .SimpleBubble_bubble {
+      border-radius: 2px !important;
+    }
   }
 
   .content {
     .description {
       color: var(--theme-delegation-steps-choose-wallet-description-color);
+
       span > span {
         color: var(
           --theme-delegation-steps-choose-wallet-description-highlighted-color
@@ -25,10 +43,12 @@
 
     .walletSelect {
       margin-top: 20px;
+
       &.error {
         input {
           border-color: var(--theme-color-error);
         }
+
         :global {
           .SimpleSelect_selectInput {
             &:after {
@@ -46,6 +66,7 @@
       font-size: 14px;
       letter-spacing: normal;
       margin-top: 10px;
+
       span > span {
         color: var(--theme-delegation-steps-choose-wallet-error-message-color);
         font-family: var(--font-medium);

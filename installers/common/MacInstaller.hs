@@ -18,22 +18,16 @@ module MacInstaller
 import           Universum                 hiding (FilePath, toText, (<>))
 
 import           Control.Exception         (handle)
-import           Control.Monad             (unless)
-import           Data.Text                 (Text)
 import qualified Data.Text                 as T
 import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
 import           Data.Yaml                 (decodeFileThrow)
 import           Text.RawString.QQ
-import           Filesystem.Path           (FilePath, dropExtension, (<.>),
-                                            (</>))
-import           Filesystem.Path.CurrentOS (encodeString)
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
 import           System.Environment        (getEnv)
 import           System.Posix.Files
 import           Turtle                    hiding (e, prefix, stdout)
-import           Turtle.Line               (unsafeTextToLine)
 
 
 import           Config
@@ -149,6 +143,13 @@ eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Ver
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib\" $LOG"
 
+# Sign native electron bindings and supplementary binaries
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/usb_bindings.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/HID.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-76/keccak.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node\" $LOG"
+
 # Sign the whole component deeply
 eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
 
@@ -166,6 +167,8 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
   <dict>
     <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
     <true/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
   </dict>
 </plist>|]
 
@@ -179,8 +182,7 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
-    Cardano   _ _ -> common
-    Jormungandr _ -> common
+    Cardano     _ -> common
   where
     common = do
       tmp <- fromString <$> (liftIO $ getEnv "TMP")
@@ -224,7 +226,69 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
     pathtoapp :: Text
     pathtoapp = format formatter dcAppName dcAppNameApp
-  cptree "../node_modules/js-chain-libs-node" (fromText $ pathtoapp <> "/Contents/Resources/app/node_modules/js-chain-libs-node")
+    externalYarn :: [FilePath]
+    externalYarn =
+      [ "@babel"
+      , "regenerator-runtime"
+      , "node-fetch"
+      , "@trezor"
+      , "runtypes"
+      , "parse-uri"
+      , "randombytes"
+      , "safe-buffer"
+      , "bip66"
+      , "pushdata-bitcoin"
+      , "bitcoin-ops"
+      , "typeforce"
+      , "varuint-bitcoin"
+      , "bigi"
+      , "create-hash"
+      , "merkle-lib"
+      , "blake2b"
+      , "nanoassert"
+      , "blake2b-wasm"
+      , "bs58check"
+      , "bs58"
+      , "base-x"
+      , "create-hmac"
+      , "ecurve"
+      , "wif"
+      , "ms"
+      , "keccak"
+      , "trezor-link"
+      , "semver-compare"
+      , "protobufjs-old-fixed-webpack"
+      , "bytebuffer-old-fixed-webpack"
+      , "long"
+      , "object.values"
+      , "define-properties"
+      , "object-keys"
+      , "has"
+      , "function-bind"
+      , "es-abstract"
+      , "has-symbols"
+      , "json-stable-stringify"
+      , "tiny-worker"
+      , "hd-wallet"
+      , "cashaddrjs"
+      , "big-integer"
+      , "queue"
+      , "inherits"
+      , "bchaddrjs"
+      , "cross-fetch"
+      , "trezor-connect"
+      , "js-chain-libs-node"
+      , "bignumber.js"
+      , "int64-buffer"
+      , "call-bind"
+      , "get-intrinsic"
+      , "cbor-web"
+      ]
+  mapM_ (\lib -> do
+      cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
+    ) externalYarn
+  mktree ((fromText pathtoapp) </> "Contents/Resources/app/build")
+  mapM_ (\(srcdir, name) -> cp ("../node_modules" </> srcdir </> name) ((fromText pathtoapp) </> "Contents/Resources/app/build" </> name)) [ ("usb/build/Release","usb_bindings.node"), ("node-hid/build/Release", "HID.node") ]
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
@@ -238,16 +302,15 @@ npmPackage DarwinConfig{dcAppName} = do
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
+  procs "find" ["-name", "*.node"] empty
 
 getBackendVersion :: Backend -> IO Text
-getBackendVersion (Cardano   _ bridge) = readCardanoVersionFile bridge
-getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
+getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
-makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{hasBlock0,genesisPath,secretPath} = do
+makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{} = do
   let dir     = appRoot </> "Contents/MacOS"
       dataDir = appRoot </> "Contents/Resources"
-      maybeCopyToResources (maybePath,name) = maybe (pure ()) (\path -> cp (fromText path) (dataDir </> name)) maybePath
 
   echo "Preparing files ..."
   let
@@ -260,15 +323,12 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Config yaml
       cp "launcher-config.yaml" (dataDir </> "launcher-config.yaml")
   case oBackend of
-    Cardano kind bridge -> do
-      let
-        mainBinary Shelley = "cardano-wallet-shelley"
-        mainBinary Byron = "cardano-wallet-byron"
+    Cardano bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)
-      forM_ [mainBinary kind, "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
+      forM_ ["cardano-wallet", "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
@@ -280,33 +340,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       rmtree $ dataDir </> "app/installers"
 
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> mainBinary kind, dir </> "cardano-node", dir </> "cardano-cli", dir </> "cardano-address" ]
-    Jormungandr bridge -> do
-      common bridge
-      -- Executables (from daedalus-bridge)
-      forM_ ["cardano-wallet-jormungandr", "jormungandr" ] $ \f ->
-        cp (bridge </> "bin" </> f) (dir </> f)
-
-      -- Config files (from launcherConfig.configFiles)
-      cp "config.yaml" (dataDir </> "config.yaml")
-
-      when hasBlock0 $
-        cp "block-0.bin" (dataDir </> "block-0.bin")
-
-      mapM_ maybeCopyToResources [ (genesisPath,"genesis.yaml"), (secretPath,"secret.yaml") ]
-
-      -- Genesis (from daedalus-bridge)
-      --genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
-      --when (null genesisFiles) $
-      --  error "Cardano package carries no genesis files."
-      --procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
-
-      procs "chmod" ["-R", "+w", tt dir] empty
-
-      rmtree $ dataDir </> "app/installers"
-
-      -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-jormungandr", dir </> "jormungandr" ]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet", dir </> "cardano-node", dir </> "cardano-cli", dir </> "cardano-address" ]
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")

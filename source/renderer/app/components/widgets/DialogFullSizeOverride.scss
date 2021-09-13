@@ -1,0 +1,244 @@
+.overlay {
+  background-color: var(--theme-dialog-fullsize-background-color) !important;
+
+  .modal {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: auto !important;
+    max-width: 740px !important;
+    width: 100% !important;
+  }
+
+  .dialogWrapper {
+    position: static;
+  }
+
+  :global {
+    // Background Color Transparent
+    .AutocompleteOverrides_autocompleteContent,
+    .SimpleInput_customValueBlock,
+    .SimpleInput_customValueWrapper,
+    .SimpleInput_input,
+    .SimpleInput_input:focus,
+    .SimpleInput_input:hover,
+    .SimpleLink_root {
+      background-color: transparent !important;
+    }
+
+    .SimpleOptions_option {
+      display: flex;
+      height: 50px;
+      padding: 10px 20px;
+    }
+
+    .SimpleOptions_option,
+    .SimpleOptions_option:after {
+      background-color: var(
+        --theme-dialog-fullsize-background-color
+      ) !important;
+    }
+
+    .SimpleOptions_option:first-child {
+      border-radius: 10px 10px 0 0;
+    }
+
+    .SimpleOptions_option:last-child {
+      border-radius: 0 0 10px 10px;
+    }
+
+    // Background Color Darker
+    .DialogCloseButton_component,
+    .SimpleOptions_highlightedOption {
+      background-color: var(
+        --theme-dialog-fullsize-field-background-color
+      ) !important;
+      border-radius: 0 !important;
+    }
+
+    // Background Opaque (se same as the normal background, without the opacity)
+    .SimpleBubble_bubble {
+      background-color: var(
+        --theme-dialog-fullsize-background-color-opaque
+      ) !important;
+      border: 1px solid var(--theme-dialog-fullsize-text-color) !important;
+      border-radius: 2px;
+    }
+
+    // Background Light
+    .SelectOverrides_selectInput,
+    .SelectOverrides_selectInput:hover {
+      &:after {
+        background-color: var(--theme-dialog-fullsize-text-color) !important;
+      }
+    }
+
+    // Text Title color
+    .Dialog_title {
+      color: var(--theme-dialog-fullsize-title-text-color);
+    }
+
+    .ItemDropdownOption_syncingSpinner
+      .LoadingSpinner_component.LoadingSpinner_medium
+      .LoadingSpinner_icon
+      svg
+      path {
+      fill: var(--theme-dialog-fullsize-title-text-color) !important;
+    }
+
+    // Text color default
+    .Dialog_content,
+    .Dialog_dialogWrapper,
+    .SimpleCheckbox_label,
+    .SimpleFormField_label,
+    .SimpleInput_input,
+    .SimpleInput_input::placeholder,
+    .SimpleInput_input:focus,
+    .SimpleInput_input:hover,
+    .SimpleLink_root {
+      color: var(--theme-dialog-fullsize-text-color);
+    }
+
+    // Text color highlight
+    .SimpleAutocomplete_autocompleteContent input,
+    .SimpleOptions_option,
+    .SimpleLink_root {
+      color: var(--theme-dialog-fullsize-text-highlight-color);
+    }
+
+    // Border Color
+    .AutocompleteOverrides_autocompleteContent:not(.SimpleAutocomplete_errored),
+    .SelectOverrides_selectInput input,
+    .SimpleInput_customValueBlock,
+    .SimpleInput_customValueWrapper .SimpleInput_input,
+    .SimpleInput_input:focus:not(.SimpleInput_errored),
+    .SimpleInput_input:hover:not(.SimpleInput_errored),
+    .SimpleLink_root,
+    .SimpleOptions_option:after {
+      background-color: transparent !important;
+      border-color: var(--theme-dialog-fullsize-text-color) !important;
+    }
+
+    .SimpleLink_root {
+      color: var(--theme-dialog-fullsize-text-highlight-color);
+
+      &:after {
+        background-color: var(
+          --theme-dialog-fullsize-text-highlight-color
+        ) !important;
+      }
+    }
+
+    .Dialog_dialogWrapper {
+      position: static;
+    }
+
+    .DialogCloseButton_component {
+      border-radius: 50% !important;
+      height: 44px;
+      opacity: 0.5;
+      right: 10px;
+      top: 10px;
+      width: 44px;
+      z-index: 999;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    // SVG Fill color
+    .DialogCloseButton_component,
+    .DialogCloseButton_component:hover,
+    .DialogCloseButton_disabled {
+      svg polygon {
+        fill: var(--theme-dialog-fullsize-text-color);
+      }
+    }
+
+    .CheckboxOverrides_check {
+      background-color: transparent;
+      border-color: var(--theme-splash-network-overlay-button-border-color);
+
+      &:after {
+        border-color: var(--theme-splash-network-overlay-button-border-color);
+      }
+
+      &.SimpleCheckbox_checked {
+        background-color: var(
+          --theme-splash-network-overlay-button-background-color-hover
+        );
+
+        &:after {
+          border-color: var(--theme-dialog-fullsize-background-color);
+        }
+      }
+    }
+
+    .ItemDropdownOption_label,
+    .ItemDropdownOption_detail {
+      color: var(--theme-dialog-fullsize-text-highlight-color) !important;
+    }
+
+    .ItemDropdownOption_syncingSpinner svg circle {
+      stroke: var(--theme-dialog-fullsize-text-highlight-color) !important;
+    }
+
+    .SimpleAutocomplete_selectedWordBox {
+      background-color: var(
+        --rp-autocomplete-selected-word-dialog-box-bg-color
+      ) !important;
+    }
+
+    .SimpleAutocomplete_selectedWordValue {
+      color: var(--rp-autocomplete-selected-word-dialog-text-color) !important;
+    }
+
+    button.primary {
+      background-color: var(
+        --theme-splash-network-overlay-button-background-color
+      );
+      border: solid 1px var(--theme-splash-network-overlay-button-border-color);
+      color: var(--theme-splash-network-overlay-button-text-color);
+      font-weight: 500;
+      line-height: 1.36;
+      margin: 0 auto;
+
+      &:hover {
+        background-color: var(
+          --theme-splash-network-overlay-button-background-color-hover
+        );
+        border: none;
+        color: var(--theme-splash-network-overlay-button-text-color-hover);
+      }
+
+      &:disabled {
+        background-color: var(
+          --theme-splash-network-overlay-button-background-color
+        );
+        border: solid 1px
+          var(--theme-splash-network-overlay-button-border-color);
+        color: var(--theme-splash-network-overlay-button-text-color);
+        opacity: 0.3;
+
+        &:hover {
+          background-color: var(
+            --theme-splash-network-overlay-button-background-color
+          );
+          border: solid 1px
+            var(--theme-splash-network-overlay-button-border-color);
+          color: var(--theme-splash-network-overlay-button-text-color);
+        }
+      }
+    }
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--theme-splash-network-scrollbar-thumb-background);
+    &:hover {
+      background-color: var(
+        --theme-splash-network-scrollbar-thumb-background-hover
+      );
+    }
+  }
+}

@@ -23,7 +23,8 @@ export default class ConfigurationDialogContainer extends Component<Props> {
 
   render() {
     const { onClose, onBack, stores } = this.props;
-    const { wallets } = stores;
+    const { wallets, profile } = stores;
+    const { currentLocale } = profile;
     const { error, isExecuting } = wallets.restoreRequest;
     const { walletName, spendingPassword, repeatPassword } = wallets;
     const {
@@ -40,6 +41,7 @@ export default class ConfigurationDialogContainer extends Component<Props> {
         walletName={walletName}
         spendingPassword={spendingPassword}
         repeatPassword={repeatPassword}
+        currentLocale={currentLocale}
       />
     );
   }

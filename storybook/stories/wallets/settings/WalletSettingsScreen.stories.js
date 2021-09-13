@@ -2,12 +2,23 @@
 import React from 'react';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { isIncentivizedTestnetTheme } from '../../_support/utils';
+import { defineMessages } from 'react-intl';
+import {
+  generateWallet,
+  generateHash,
+  generatePolicyIdHash,
+} from '../../_support/utils';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import type { Locale } from '../../../../source/common/types/locales.types';
 
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
+import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
+import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
+import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
@@ -18,12 +29,22 @@ import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
+import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
+
+import {
+  ICO_PUBLIC_KEY_DERIVATION_PATH,
+  WALLET_PUBLIC_KEY_DERIVATION_PATH,
+} from '../../../../source/renderer/app/config/walletsConfig';
+import type { ReactIntlMessage } from '../../../../source/renderer/app/types/i18nTypes';
 
 /* eslint-disable react/display-name  */
 
 const basicSettingsId = 'Basic Settings';
 const changePasswordId = 'Change Password';
+const undelegateWalletId = 'Undelegate Wallet';
 const deleteWalletId = 'Delete Wallet';
+const walletPublicKeyId = 'Wallet Public Key';
+const icoPublicKeyId = 'ICO Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
@@ -61,6 +82,49 @@ const recoveryDialogOptions = {
   'Step 4 - Verification failure': 4,
 };
 
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
+
+const selectedWallet = generateWallet(
+  'Wallet 1',
+  '1000000000',
+  assets,
+  0,
+  STAKE_POOLS[0]
+);
+
 const getWalletDates = (type: string, status: string) => {
   let date = new Date();
   if (status === 'warning')
@@ -81,8 +145,8 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-export default (props: { currentTheme: string, locale: string }) => {
-  const { currentTheme, locale } = props;
+export default (props: { locale: Locale }) => {
+  const { locale } = props;
 
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
@@ -103,11 +167,50 @@ export default (props: { currentTheme: string, locale: string }) => {
     recoveryPhraseId
   );
 
+  const delegationStakePoolStatus = select(
+    'Delegation status',
+    {
+      Delegating: 'delegating',
+      'Not delegating': 'not_delegating',
+    },
+    'delegating',
+    undelegateWalletId
+  );
+
+  const walletMessages: {
+    [string]: ReactIntlMessage,
+  } = defineMessages({
+    dialogTitle: {
+      id: 'wallet.settings.walletPublicKey',
+      defaultMessage: '!!!Wallet Public Key',
+      description: 'Title for the "Wallet Public Key QR Code" dialog.',
+    },
+    copyPublicKeyLabel: {
+      id: 'wallet.settings.copyPublicKey',
+      defaultMessage: '!!!Copy public key',
+      description: 'Copy public key label.',
+    },
+  });
+
+  const icoMessages: {
+    [string]: ReactIntlMessage,
+  } = defineMessages({
+    dialogTitle: {
+      id: 'wallet.settings.icoPublicKey',
+      defaultMessage: '!!!ICO Public Key',
+      description: 'Title for the "ICO Public Key QR Code" dialog.',
+    },
+    copyPublicKeyLabel: {
+      id: 'wallet.settings.copyPublicKey',
+      defaultMessage: '!!!Copy public key',
+      description: 'Copy public key label.',
+    },
+  });
+
   return (
     <WalletSettings
-      isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
       isLegacy={boolean('isLegacy', false)}
-      isDialogOpen={dialog => {
+      isDialogOpen={(dialog) => {
         if (dialog === ChangeSpendingPasswordDialog) {
           return boolean(
             'Change Password - Show dialog',
@@ -137,15 +240,20 @@ export default (props: { currentTheme: string, locale: string }) => {
       isSubmitting={false}
       lastUpdatedField={null}
       nameValidator={() => true}
-      onCancelEditing={() => {}}
+      onCancel={() => {}}
       onFieldValueChange={() => {}}
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
+      walletId="walletid"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
-      spendingPasswordUpdateDate={moment()
-        .subtract(1, 'month')
-        .toDate()}
+      delegationStakePoolStatus={delegationStakePoolStatus}
+      lastDelegationStakePoolStatus={delegationStakePoolStatus}
+      isRestoring={false}
+      isSyncing={false}
+      walletPublicKey={walletPublicKeyId}
+      icoPublicKey={icoPublicKeyId}
+      spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(
         'isSpendingPasswordSet',
         false,
@@ -174,6 +282,80 @@ export default (props: { currentTheme: string, locale: string }) => {
             changePasswordId
           )}
           error={null}
+          currentLocale={'en-US'}
+        />
+      }
+      walletPublicKeyDialogContainer={
+        <WalletPublicKeyDialog
+          onRevealPublicKey={action('onRevealPublicKey')}
+          onClose={action('onCancel')}
+          error={null}
+          walletName={'Test Wallet'}
+          hasReceivedWalletPublicKey
+        />
+      }
+      icoPublicKeyDialogContainer={
+        <ICOPublicKeyDialog
+          onRevealPublicKey={action('onRevealICOPublicKey')}
+          onClose={action('onCancel')}
+          hasReceivedICOPublicKey
+          error={null}
+          walletName={'ICO Test Wallet'}
+        />
+      }
+      walletPublicKeyQRCodeDialogContainer={
+        <PublicKeyQRCodeDialog
+          walletName={text(
+            'PublicKeyQRCodeDialog: Wallet Name',
+            'Wallet',
+            walletPublicKeyId
+          )}
+          walletPublicKey={walletPublicKeyId}
+          onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
+          onClose={action('Wallet Public Key QR Code - onClose')}
+          messages={walletMessages}
+          derivationPath={WALLET_PUBLIC_KEY_DERIVATION_PATH}
+        />
+      }
+      icoPublicKeyQRCodeDialogContainer={
+        <PublicKeyQRCodeDialog
+          walletName={text(
+            'PublicKeyQRCodeDialog: Wallet Name',
+            'Wallet',
+            walletPublicKeyId
+          )}
+          walletPublicKey={icoPublicKeyId}
+          onCopyWalletPublicKey={action('ICO Public Key QR Code - copy')}
+          onClose={action('ICO Public Key QR Code - onClose')}
+          messages={icoMessages}
+          derivationPath={ICO_PUBLIC_KEY_DERIVATION_PATH}
+        />
+      }
+      undelegateWalletDialogContainer={
+        <UndelegateWalletConfirmationDialog
+          selectedWallet={selectedWallet}
+          stakePoolName={text(
+            'UndelegateWalletConfirmationDialog: Stake Pool Name',
+            'Stake Pool Name'
+          )}
+          stakePoolTicker={text(
+            'UndelegateWalletConfirmationDialog: Stake Pool Ticker',
+            'Stake Pool Ticker'
+          )}
+          onConfirm={action('Undelegate Wallet - onConfirm')}
+          onCancel={action('Undelegate Wallet - onCancel')}
+          onExternalLinkClick={action(
+            'Undelegate Wallet - onExternalLinkClick'
+          )}
+          isSubmitting={boolean(
+            'Undelegate Wallet - submitting',
+            false,
+            undelegateWalletId
+          )}
+          error={null}
+          fees={new BigNumber(10)}
+          hwDeviceStatus="ready"
+          isTrezor={boolean('isTrezor', false)}
         />
       }
       deleteWalletDialogContainer={
@@ -211,6 +393,11 @@ export default (props: { currentTheme: string, locale: string }) => {
         />
       }
       onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
+      onCopyWalletPublicKey={() => null}
+      onCopyICOPublicKey={() => null}
+      updateDataForActiveDialogAction={() => null}
+      onDelegateClick={() => null}
+      getWalletPublicKey={() => null}
       creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
       recoveryPhraseVerificationStatus={
@@ -222,6 +409,8 @@ export default (props: { currentTheme: string, locale: string }) => {
       locale={locale}
       wordCount={number('wordCount', 12)}
       shouldDisplayRecoveryPhrase={boolean('shouldDisplayRecoveryPhrase', true)}
+      isHardwareWallet={false}
+      isDelegating={false}
     />
   );
 };

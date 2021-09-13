@@ -7,7 +7,7 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import LegacyNotification from '../../../../source/renderer/app/components/notifications/LegacyNotification';
 
 storiesOf('Wallets|Legacy Wallets', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
   // ====== Stories ======

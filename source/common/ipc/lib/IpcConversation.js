@@ -95,7 +95,7 @@ export class IpcConversation<Incoming, Outgoing> {
    * from the other side.
    */
   onRequest(
-    handler: Incoming => Promise<Outgoing>,
+    handler: (Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver
   ): void {
     receiver.on(

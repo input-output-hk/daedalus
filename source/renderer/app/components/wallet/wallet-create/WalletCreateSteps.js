@@ -60,7 +60,7 @@ export default class WalletCreateSteps extends Component<Props> {
   };
 
   get stepsList(): Array<RestoreWalletStep> {
-    return CREATE_WALLET_STEPS.map(stepId =>
+    return CREATE_WALLET_STEPS.map((stepId) =>
       this.context.intl.formatMessage(messages[`${stepId}Step`])
     );
   }

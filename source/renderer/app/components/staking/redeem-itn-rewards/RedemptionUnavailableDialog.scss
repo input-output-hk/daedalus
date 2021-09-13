@@ -1,0 +1,29 @@
+.component {
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  text-align: center;
+
+  b {
+    color: var(--theme-dialog-fullsize-text-highlight-color);
+    font-family: var(--font-bold);
+  }
+
+  .description {
+    margin-top: 15px;
+  }
+
+  :global {
+    .LoadingSpinner_component {
+      margin: 0 auto 20px !important;
+
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(--theme-dialog-fullsize-text-color) !important;
+          }
+        }
+      }
+    }
+  }
+}

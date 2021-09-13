@@ -9,19 +9,76 @@ import Step1ConfigurationDialog from '../../../source/renderer/app/components/st
 import Step2ConfirmationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog';
 import Step3SuccessDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog';
 import Step3FailureDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog';
+import NoWalletsDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog';
+import RedemptionUnavailableDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog';
 
 // Helpers
 import { isValidMnemonic } from '../../../source/common/config/crypto/decrypt';
 import validWords from '../../../source/common/config/crypto/valid-words.en';
-import { generateWallet } from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
 
 const WALLETS = [
-  generateWallet('First Wallet', '1000000000'),
-  generateWallet('Second Wallet', '500000000'),
-  generateWallet('Third Wallet', '100000000'),
-  generateWallet('Fourth Wallet', '50000000'),
-  generateWallet('Fifth Wallet', '7000000'),
+  generateWallet('First Wallet', '1000000000', assets),
+  generateWallet(
+    'Second Wallet',
+    '500000000',
+    assets,
+    0,
+    undefined,
+    true,
+    'syncing'
+  ),
+  generateWallet('Third Wallet', '100000000', assets),
+  generateWallet('Fourth Wallet', '50000000', assets),
+  generateWallet('Fifth Wallet', '7000000', assets),
 ];
+
+// 'Dummy2',
+// '2000000000000',
+// assets,
+// 0,
+// undefined,
+// true,
+// WalletSyncStateStatuses.SYNCING
 
 export const Step1ConfigurationDialogStory = () => {
   const redeemWallet = select(
@@ -38,7 +95,8 @@ export const Step1ConfigurationDialogStory = () => {
       wallets={WALLETS}
       wallet={redeemWallet}
       isWalletValid={boolean('isWalletValid')}
-      isSubmitting={boolean('isSubmitting')}
+      isCalculatingReedemFees={boolean('isCalculatingReedemFees')}
+      syncPercentage={99.55}
       mnemonicValidator={isValidMnemonic}
       onSelectWallet={action('onSelectWallet')}
       onClose={action('onClose')}
@@ -62,9 +120,8 @@ export const Step2ConfirmationDialogStory = () => {
     <Step2ConfirmationDialog
       key="Step2ConfirmationDialog"
       wallet={redeemWallet}
-      rewardsTotal={new BigNumber(number('rewardsTotal', 100000))}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
-      finalTotal={new BigNumber(number('finalTotal', 100000))}
+      redeemedRewards={new BigNumber(number('redeemedRewards', 100000))}
       onContinue={action('onContinue')}
       onClose={action('onClose')}
       onBack={action('onBack')}
@@ -86,27 +143,37 @@ export const Step3SuccessDialogStory = () => {
       key="Step2ConfirmationDialog"
       wallet={redeemWallet}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
-      finalTotal={new BigNumber(number('finalTotal', 100000))}
+      redeemedRewards={new BigNumber(number('redeemedRewards', 100000))}
       onContinue={action('onContinue')}
       onClose={action('onClose')}
     />
   );
 };
 export const Step3FailureDialogStory = () => {
-  const stakingFailure = select(
-    'Error type',
-    {
-      'No rewards found': 1,
-      'Invalid recovery phrase': 2,
-      Generic: 3,
-    },
-    1
-  );
   return (
-    <Step3FailureDialog
+    <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
+  );
+};
+
+export const NoWalletsDialogDialogStory = () => {
+  return (
+    <NoWalletsDialog
       onClose={action('onClose')}
-      onBack={action('onBack')}
-      stakingFailure={stakingFailure}
+      onAddWallet={action('onAddWallet')}
+    />
+  );
+};
+
+export const RedemptionUnavailableDialogDialogStory = () => {
+  return (
+    <RedemptionUnavailableDialog
+      onClose={action('onClose')}
+      syncPercentage={number('syncPercentage', 37, {
+        range: true,
+        min: 0,
+        max: 100,
+        step: 1,
+      })}
     />
   );
 };

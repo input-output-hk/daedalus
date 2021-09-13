@@ -2,7 +2,6 @@
 
 module Util where
 
-import Control.Monad (mapM_)
 import Data.Text (Text)
 import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, removeFile, doesDirectoryExist)
 import Turtle (export)
@@ -36,8 +35,7 @@ exportBuildVars Options{oBackend, oBuildJob, oCluster} backendVersion = do
         , ("NETWORK", clusterNetwork oCluster)
         ]
     where
-        apiName (Cardano _ _) = "ada"
-        apiName (Jormungandr _) = "ada"
+        apiName (Cardano _) = "ada"
 
 rewritePackageJson :: FilePath -> Text -> IO ()
 rewritePackageJson path name = do

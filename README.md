@@ -4,7 +4,6 @@
 
 # Daedalus
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
-[![Windows build status](https://ci.appveyor.com/api/projects/status/github/input-output-hk/daedalus?branch=master&svg=true)](https://ci.appveyor.com/project/input-output/daedalus)
 [![Release](https://img.shields.io/github/release/input-output-hk/daedalus.svg)](https://github.com/input-output-hk/daedalus/releases)
 
 Daedalus - Cryptocurrency Wallet
@@ -19,10 +18,7 @@ Daedalus - Cryptocurrency Wallet
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
 
-**Note:** There are special instructions for
-[installing Nix on macOS Catalina](https://github.com/NixOS/nix/issues/2925#issuecomment-564149154).
-
-1. Install nix: `curl https://nixos.org/nix/install | sh`
+1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS Catalina)
 2. Employ the signed IOHK binary cache:
    ```bash
    $ sudo mkdir -p /etc/nix
@@ -46,8 +42,31 @@ Daedalus - Cryptocurrency Wallet
 #### Selfnode
 
 1. Run `yarn nix:selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn byron:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded Yoroi wallets by running `yarn yoroi:wallet:importer` script.
+2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
+3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
+   - Byron wallets: `yarn byron:wallet:importer`
+   - Shelley wallets: `yarn shelley:wallet:importer`
+   - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
+   - Yoroi Byron wallets: `yarn yoroi:wallet:importer`
+   - _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
+   - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
+
+   These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
+
+   List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
+
+**Notes:**
+- Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
+- Stake pool metadata is fetched directly by default (IOHK SMASH server option is not available).
+- Token metadata is fetched from a mock token metadata server which is automatically ran alongside the local cluster (there is no need to run it [manually](https://github.com/input-output-hk/daedalus#native-token-metadata-server))
+- Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
+
+| Parameter | Value
+| --- | ---
+| slotLength | 0.2 sec
+| epochLength | 50 slots
+| desiredPoolNumber | 3
+| minimumUtxoValue | 1 ADA
 
 #### Mainnet
 
@@ -69,54 +88,56 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Shelley Local
-
-1. Run `nix-shell -A devops` from `daedalus`.
-2. Run `start-cluster` to launch the cluster (run `stop-cluster` to stop it).
-3. Run `yarn nix:shelley_local` from `daedalus` in a separate Terminal window.
-4. Run `yarn dev` from the subsequent `nix-shell`
-5. Once Daedalus has started, and has gotten past the loading screen, run `yarn shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets.
-
-#### Shelley Testnet
-
-1. Run `yarn nix:shelley_testnet` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### Shelley QA Testnet
+#### Shelley QA
 
 1. Run `yarn nix:shelley_qa` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-### Running Daedalus with Jormungandr
+#### Alonzo Purple
 
-#### ITN Selfnode
-
-1. Run `yarn nix:itn_selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-3. Once Daedalus has started, and has gotten past the loading screen, run `yarn itn:shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets. It is also possible to import funded legacy wallets by running `yarn itn:byron:wallet:importer` script.
-
-#### ITN Rewards V1
-
-1. Run `yarn nix:itn` from `daedalus`.
+1. Run `yarn nix:alonzo_purple` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### QA Testnet
+#### Native token metadata server
 
-1. Run `yarn nix:qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
 
-#### Nightly Testnet
+It's also possible to use a mock server locally by running the following command in `nix-shell` prior to starting Daedalus:
 
-1. Run `yarn nix:nightly` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+```
+$ mock-token-metadata-server --port 65432 ./utils/cardano/native-tokens/registry.json
+Mock metadata server running with url http://localhost:65432/
+```
 
-### Updating upstream dependencies (cardano-wallet, cardano-node & Jormungandr)
+Then proceed to launch Daedalus and make sure to provide the mock token metadata server port:
+
+```
+$ MOCK_TOKEN_METADATA_SERVER_PORT=65432 yarn dev
+```
+
+This enables you to modify the metadata directly by modifying the registry file directly:
+
+```
+$ vi ./utils/cardano/native-tokens/registry.json        # ..or any other editor, if you prefer
+```
+
+Use the following command to check if the mock server is working correctly:
+
+```
+$ curl -i -H "Content-type: application/json" --data '{"subjects":["789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1"],"properties":["name","description","ticker","unit","logo"]}'
+http://localhost:65432/metadata/query
+```
+... and expect a "200 OK" response.
+
+### Updating upstream dependencies (cardano-wallet, cardano-node, and iohk-nix)
 
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
 Dependencies are updated with the follow nix commands:
-- Update to the latest master: `nix-shell -A devops --run "niv update cardano-wallet"`
-- Update to a specific revision: `nix-shell -A devops --run "niv update cardano-wallet -a rev=1988f22895c45e12506ec83da0496ebdcdd17719"`
+- Update cardano-wallet to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
+- Update cardano-wallet to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
+- Update cardano-node to a specific tag: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-node -b tags/1.20.0"`
+- Update iohk-nix to the latest master: `nix-shell -A devops --arg nivOnly true --run  "niv update iohk-nix -b master"`
 
 #### Notes
 
@@ -154,7 +175,7 @@ externals: ['bootstrap']
 ## Testing
 
 You can find more details regarding tests setup within
-[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
+[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/tests/README.md) README file.
 
 **Notes:** Be aware that only a single Daedalus instance can run per state directory.
 So you have to exit any development instances before running tests!

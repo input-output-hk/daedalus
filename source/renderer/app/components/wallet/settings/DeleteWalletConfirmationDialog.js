@@ -13,6 +13,7 @@ import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -92,7 +93,8 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
     const countdownDisplay =
       countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
-    const isWalletNameConfirmationCorrect = confirmationValue === walletName;
+    const isWalletNameConfirmationCorrect =
+      confirmationValue.normalize('NFKC') === walletName.normalize('NFKC'); // Always normalize non-breaking space into regular space.
     const isDisabled =
       !isCountdownFinished ||
       !isBackupNoticeAccepted ||
@@ -104,6 +106,12 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay
+    ) : (
+      <LoadingSpinner />
+    );
+
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
@@ -111,8 +119,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       },
       {
         className: buttonClasses,
-        label:
-          intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay,
+        label: buttonLabel,
         onClick: onContinue,
         disabled: isDisabled,
         primary: true,
@@ -122,6 +129,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={walletName}
         actions={actions}
         closeOnOverlayClick
         onClose={onCancel}
@@ -129,6 +137,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
         closeButton={<DialogCloseButton onClose={onCancel} />}
       >
         <FormattedHTMLMessage
+          tagName="p"
           {...messages.wantToDeleteWalletQuestion}
           values={{ walletName }}
         />

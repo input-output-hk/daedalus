@@ -1,0 +1,79 @@
+.component {
+  color: var(--theme-support-settings-text-color);
+  font-family: var(--font-regular);
+
+  .description {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    p {
+      line-height: 22px;
+      margin: 0;
+    }
+
+    :global {
+      .SimpleSwitch_root {
+        margin: 0;
+      }
+    }
+  }
+
+  .content {
+    position: relative;
+  }
+
+  .switch {
+    margin: 0;
+  }
+
+  .label {
+    display: block;
+    font-family: var(--font-semibold);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 14px;
+  }
+
+  p {
+    margin-bottom: 20px;
+  }
+
+  .currencyPoweredBy {
+    font-size: 14px;
+    line-height: 1.38;
+    margin-top: 2px;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    z-index: 2;
+  }
+
+  .currencyPoweredByLink {
+    font-size: 14px;
+  }
+
+  .disclaimer {
+    background: var(--theme-button-flat-background-color);
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 20px 0;
+    padding: 10px 20px;
+    text-align: left;
+
+    span {
+      color: var(--theme-button-flat-text-color);
+      font-size: 12px;
+      font-style: italic;
+      line-height: 1.5;
+    }
+  }
+
+  .separator {
+    background: var(--theme-wallet-settings-section-separator-color);
+    border: none;
+    height: 1px;
+    margin: 15px 0;
+  }
+}

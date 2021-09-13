@@ -1,5 +1,5 @@
 // @flow
-import { pickBy } from 'lodash';
+import omitDeep from 'omit-deep-lodash';
 import type {
   FormatMessageContextParams,
   ConstructMessageBodyParams,
@@ -29,13 +29,17 @@ export const filterLogData = (data: Object): Object => {
     'recoveryPhrase',
     'passphrase',
     'password',
+    'votingKey',
+    'stakeKey',
+    'signature',
+    'accountPublicKey',
+    'extendedPublicKey',
+    'publicKeyHex',
+    'chainCodeHex',
+    'signedTransactionBlob',
+    'withdrawal',
   ];
-  return pickBy(data, (value, key) => {
-    if (sensitiveData.includes(key)) {
-      return false;
-    }
-    return true;
-  });
+  return omitDeep(data, ...sensitiveData);
 };
 
 export const stringifyData = (data: any) => JSON.stringify(data, null, 2);

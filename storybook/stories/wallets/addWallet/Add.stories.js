@@ -2,7 +2,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { boolean } from '@storybook/addon-knobs';
-import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 // Screens
 import WalletAdd from '../../../../source/renderer/app/components/wallet/WalletAdd';
@@ -18,16 +17,16 @@ const wrapperStyles = {
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Add Wallet', module)
   // ====== Stories ======
-  .add('Add', (props: { currentTheme: string }) => (
+  .add('Add', () => (
     <div style={wrapperStyles}>
       <WalletAdd
         onCreate={() => {}}
         onRestore={() => {}}
         onImport={() => {}}
+        onConnect={() => {}}
         isMainnet={boolean('isMainnet', true)}
         isTestnet={boolean('isTestnet', false)}
         isProduction
-        isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
         isMaxNumberOfWalletsReached={boolean(
           'isMaxNumberOfWalletsReached',
           false

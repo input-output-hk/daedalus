@@ -3,18 +3,16 @@ import React from 'react';
 import { boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
-import {
-  isIncentivizedTestnetTheme,
-  isShelleyTestnetTheme,
-} from '../../_support/utils';
 
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
 
-export const DefaultSyncingConnectingStory = (props: {
-  currentTheme: string,
-}) => (
+export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
+    isVerifyingBlockchain={false}
+    verificationProgress={0}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -25,8 +23,6 @@ export const DefaultSyncingConnectingStory = (props: {
       CardanoNodeStates.STARTING
     )}
     hasBeenConnected={boolean('hasBeenConnected', false)}
-    isFlight={false}
-    isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
     isConnected={boolean('isConnected', false)}
     isSynced={boolean('isSynced', false)}
     isConnecting={boolean('isConnecting', true)}
@@ -42,8 +38,6 @@ export const DefaultSyncingConnectingStory = (props: {
     isNodeSubscribed={boolean('isNodeSubscribed', false)}
     isNodeSyncing={boolean('isNodeSyncing', false)}
     isNodeTimeCorrect={boolean('isNodeTimeCorrect', true)}
-    isNewAppVersionAvailable={boolean('isNewAppVersionAvailable', false)}
-    isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
     isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}
@@ -52,14 +46,15 @@ export const DefaultSyncingConnectingStory = (props: {
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
-    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const ConnectivityIssuesSyncingConnectingStory = (props: {
-  currentTheme: string,
-}) => (
+export const ConnectivityIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
+    isVerifyingBlockchain={false}
+    verificationProgress={0}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -68,8 +63,6 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isConnected={false}
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
-    isFlight={false}
-    isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
     isSynced={false}
     isConnecting
     isSyncing={false}
@@ -84,8 +77,6 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isNodeSubscribed={false}
     isNodeSyncing={false}
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}
@@ -94,14 +85,15 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
     showNewsFeedIcon
-    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );
 
-export const LoadingWalletDataSyncingConnectingStory = (props: {
-  currentTheme: string,
-}) => (
+export const LoadingWalletDataSyncingConnectingStory = () => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
+    isVerifyingBlockchain={false}
+    verificationProgress={0}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -109,8 +101,6 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
     isConnected
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
-    isFlight={false}
-    isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
     isSynced={false}
     isConnecting={false}
     isSyncing
@@ -125,8 +115,6 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
     isNodeSubscribed
     isNodeSyncing
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}
@@ -135,6 +123,5 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={false}
     showNewsFeedIcon
-    isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
   />
 );

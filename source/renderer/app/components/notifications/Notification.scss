@@ -30,80 +30,94 @@
       color: var(--rp-tooltip-text-color);
     }
   }
-}
 
-.clickToClose {
-  cursor: pointer;
-  &:hover {
-    .closeButton {
-      opacity: 0.8;
-    }
-  }
-}
+  &.clickToClose {
+    cursor: pointer;
 
-.icon {
-  display: inline-block;
-  margin-right: 10px;
-  vertical-align: top;
-  & > svg {
-    height: 44px;
-    width: 44px;
-    g {
-      path:nth-child(2) {
-        fill: var(--theme-notification-message-checkmark-icon-color);
+    &:hover {
+      .closeButton {
+        opacity: 0.8;
       }
     }
   }
-}
 
-.message {
-  color: var(--theme-notification-message-text-color);
-  display: inline-block;
-  font-family: var(--font-regular);
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: normal;
-  line-height: 45px;
-}
+  .icon {
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: top;
 
-.closeButton {
-  cursor: pointer;
-  opacity: 0.5;
-  position: absolute;
-  right: 20px;
-  top: 25.5px;
-  &:hover {
-    opacity: 0.8;
-  }
+    & > svg {
+      height: 44px;
+      width: 44px;
 
-  svg {
-    height: 11px;
-    width: 11px;
-    polygon {
-      fill: var(--theme-notification-message-close-icon-color);
+      g {
+        path:nth-child(2) {
+          fill: var(--theme-notification-message-checkmark-icon-color);
+        }
+      }
+    }
+
+    .spinnerIcon {
+      flex-shrink: 0;
+      height: 22px;
+      margin-top: 10px;
+      width: 22px;
+
+      & > svg {
+        height: inherit;
+        width: inherit;
+
+        path {
+          fill: var(--theme-notification-message-text-color);
+        }
+      }
+    }
+
+    .spinnerIcon :global {
+      animation: loading-spin 1.5s linear;
+      animation-iteration-count: infinite;
     }
   }
-}
 
-.spinnerIcon {
-  flex-shrink: 0;
-  height: 22px;
-  margin-top: 10px;
-  width: 22px;
-  & > svg {
-    height: inherit;
-    width: inherit;
-    path {
-      fill: var(--theme-notification-message-text-color);
+  .message {
+    color: var(--theme-notification-message-text-color);
+    display: inline-block;
+    font-family: var(--font-regular);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 45px;
+
+    &.hasEllipsis {
+      @include animated-ellipsis($width: 16px);
     }
   }
-}
 
-.spinnerIcon :global {
-  animation: loading-spin 1.5s linear;
-  animation-iteration-count: infinite;
-}
+  .closeButton {
+    cursor: pointer;
+    height: 62px;
+    opacity: 0.5;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 62px;
 
-.hasEllipsis {
-  @include animated-ellipsis($width: 16px);
+    &:hover {
+      opacity: 0.8;
+    }
+
+    > span {
+      display: block;
+      margin-top: -1px;
+    }
+
+    svg {
+      height: 11px;
+      width: 11px;
+
+      polygon {
+        fill: var(--theme-notification-message-close-icon-color);
+      }
+    }
+  }
 }

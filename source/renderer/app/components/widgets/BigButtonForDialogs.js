@@ -31,8 +31,7 @@ export default class BigButtonForDialogs extends Component<Props> {
     return (
       <button
         className={componentClasses}
-        onClick={onClick}
-        disabled={isDisabled}
+        onClick={() => !isDisabled && onClick && onClick()}
       >
         <SVGInline svg={icon} className={styles.icon} />
         <div className={styles.label}>{label}</div>

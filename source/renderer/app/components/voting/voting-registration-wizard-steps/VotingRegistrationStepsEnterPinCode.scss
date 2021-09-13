@@ -1,0 +1,26 @@
+.component {
+  .description,
+  .reminder {
+    color: var(--theme-voting-registration-steps-description-color);
+  }
+
+  .reminder {
+    span > span {
+      font-family: var(--font-medium);
+      font-weight: bold;
+    }
+  }
+
+  .pinCode {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 795px) {
+    .pinCode {
+      display: block;
+    }
+  }
+}

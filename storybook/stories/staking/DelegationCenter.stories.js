@@ -3,8 +3,9 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.js';
 import Wallet, {
   WalletDelegationStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -16,6 +17,7 @@ import type {
   NextEpoch,
   TipInfo,
 } from '../../../source/renderer/app/api/network/types';
+import { generateHash, generatePolicyIdHash } from '../_support/utils';
 
 const walletSyncedStateReady = { status: 'ready' };
 
@@ -30,6 +32,7 @@ const walletSyncedStateRestoring = {
 const networkTip: TipInfo = {
   epoch: 1232,
   slot: 123,
+  absoluteSlotNumber: 15000000,
 };
 
 const nextEpochDate = new Date();
@@ -57,6 +60,26 @@ const wallets = [
     amount: new BigNumber(100100),
     availableAmount: new BigNumber(100100),
     reward: new BigNumber(100),
+    assets: {
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -88,6 +111,26 @@ const wallets = [
     amount: new BigNumber(100100),
     availableAmount: new BigNumber(100100),
     reward: new BigNumber(100),
+    assets: {
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -119,6 +162,26 @@ const wallets = [
     amount: new BigNumber(10100.2),
     availableAmount: new BigNumber(10100.2),
     reward: new BigNumber(50),
+    assets: {
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -149,6 +212,26 @@ const wallets = [
     amount: new BigNumber(5001000),
     availableAmount: new BigNumber(5001000),
     reward: new BigNumber(30),
+    assets: {
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -170,6 +253,26 @@ const wallets = [
     amount: new BigNumber(5001000),
     availableAmount: new BigNumber(5001000),
     reward: new BigNumber(30),
+    assets: {
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -191,6 +294,26 @@ const wallets = [
     amount: new BigNumber(10100.2),
     availableAmount: new BigNumber(10100.2),
     reward: new BigNumber(50),
+    assets: {
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: new BigNumber(300),
+        },
+      ],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -220,16 +343,20 @@ const wallets = [
 export const StakingDelegationCenterStory = ({
   locale,
   isLoading,
+  isEpochsInfoAvailable,
+  currentTheme,
 }: {
   locale: string,
   isLoading: boolean,
+  isEpochsInfoAvailable: boolean,
+  currentTheme: string,
 }) => (
   <DelegationCenter
     wallets={wallets}
     onDelegate={action('onDelegate')}
     onUndelegate={action('onUndelegate')}
-    getStakePoolById={poolId =>
-      find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+    getStakePoolById={(poolId) =>
+      find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
     }
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
@@ -237,6 +364,23 @@ export const StakingDelegationCenterStory = ({
     fetchingStakePoolsFailed={isLoading}
     futureEpoch={futureEpoch}
     currentLocale={locale}
-    isLoading={false}
+    isLoading={isLoading}
+    isEpochsInfoAvailable={isEpochsInfoAvailable}
+    slotLength={null}
+    epochLength={null}
+    containerClassName="StakingWithNavigation_page"
+    currentTheme={currentTheme}
+    numberOfRankedStakePools={
+      STAKE_POOLS.slice(
+        0,
+        number('Pools', 300, {
+          range: true,
+          min: 37,
+          max: 300,
+          step: 1,
+        })
+      ).length
+    }
+    onOpenExternalLink={action('onOpenExternalLink')}
   />
 );

@@ -12,6 +12,16 @@ const messages = defineMessages({
     defaultMessage: '!!!General',
     description: 'Label for the "General" link in the settings menu.',
   },
+  wallets: {
+    id: 'settings.menu.wallets.link.label',
+    defaultMessage: '!!!Wallets',
+    description: 'Label for the "Wallets" link in the settings menu.',
+  },
+  stakePools: {
+    id: 'settings.menu.stakePools.link.label',
+    defaultMessage: '!!!Stake Pools',
+    description: 'Label for the "Support" link in the settings menu.',
+  },
   support: {
     id: 'settings.menu.support.link.label',
     defaultMessage: '!!!Support',
@@ -31,7 +41,6 @@ const messages = defineMessages({
 
 type Props = {
   isFlight: boolean,
-  isShelleyTestnet: boolean,
   isActiveItem: Function,
   onItemClick: Function,
 };
@@ -44,12 +53,7 @@ export default class SettingsMenu extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      onItemClick,
-      isActiveItem,
-      isFlight,
-      isShelleyTestnet,
-    } = this.props;
+    const { onItemClick, isActiveItem, isFlight } = this.props;
 
     return (
       <div>
@@ -60,7 +64,19 @@ export default class SettingsMenu extends Component<Props> {
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
           />
-          {!isFlight && !isShelleyTestnet && (
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.wallets)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.WALLETS)}
+            active={isActiveItem(ROUTES.SETTINGS.WALLETS)}
+            className="wallets"
+          />
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.stakePools)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.STAKE_POOLS)}
+            active={isActiveItem(ROUTES.SETTINGS.STAKE_POOLS)}
+            className="stakePools"
+          />
+          {!isFlight && (
             <SettingsMenuItem
               label={intl.formatMessage(messages.display)}
               onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}

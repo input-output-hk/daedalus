@@ -77,7 +77,7 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
       <div style={styles.component}>
         <span style={styles.separator} />
         <div style={styles.menuSlot}>
-          {localeNames.map(localeItem => (
+          {localeNames.map((localeItem) => (
             <button
               key={localeItem}
               onClick={() => this.sendUpdateParam('localeName', localeItem)}
@@ -92,7 +92,7 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
         </div>
         <span style={styles.separator} />
         <div style={styles.menuSlot}>
-          {themeNames.map(themeItem => (
+          {themeNames.map((themeItem) => (
             <button
               key={themeItem}
               onClick={() => this.sendUpdateParam('themeName', themeItem)}
@@ -107,7 +107,7 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
         </div>
         <span style={styles.separator} />
         <div style={styles.menuSlot}>
-          {osNames.map(osItem => (
+          {osNames.map((osItem) => (
             <button
               key={osItem}
               onClick={() => this.sendUpdateParam('osName', osItem)}

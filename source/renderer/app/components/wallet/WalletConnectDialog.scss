@@ -1,0 +1,118 @@
+@import '../../themes/mixins/error-message';
+
+.component {
+  font-family: var(--font-regular);
+
+  .hardwareWalletWrapper {
+    margin-top: 10px;
+
+    .hardwareWalletUnknown,
+    .hardwareWalletLedger,
+    .hardwareWalletTrezor {
+      opacity: 0.7;
+      text-align: center;
+
+      svg {
+        path {
+          fill: var(--theme-hardware-wallet-title-color);
+        }
+      }
+    }
+
+    .hardwareWalletUnknown {
+      .unknownDeviceIcon {
+        svg {
+          height: 138px;
+          width: 325.5px;
+        }
+      }
+    }
+
+    .hardwareWalletLedger {
+      .ledgerIcon {
+        svg {
+          height: 78px;
+          width: 250px;
+        }
+      }
+
+      .ledgerXIcon {
+        svg {
+          height: 75px;
+          width: 250px;
+        }
+      }
+    }
+
+    .hardwareWalletTrezor {
+      .trezorIcon {
+        svg {
+          height: 138px;
+          width: 70.5px;
+        }
+      }
+    }
+
+    .hardwareWalletMessage {
+      max-width: 670px;
+      padding-top: 30px;
+
+      p {
+        color: var(--theme-hardware-wallet-message-color);
+        font-family: var(--font-light);
+        font-size: 16px;
+        line-height: 22px;
+
+        b {
+          font-family: var(--font-medium);
+        }
+
+        & + p {
+          margin-top: 11px;
+        }
+      }
+    }
+
+    .hardwareWalletStatusWrapper {
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .hardwareWalletIssueArticleWrapper {
+      margin-top: 20px;
+
+      p {
+        color: var(--theme-hardware-wallet-message-color);
+        font-family: var(--font-light);
+        font-size: 16px;
+        line-height: 22px;
+      }
+
+      .externalLink {
+        font-family: var(--font-regular);
+        font-size: 16px;
+        margin-right: 4px;
+        word-break: break-word;
+      }
+    }
+
+    .error {
+      @include error-message;
+      margin-top: 27px;
+      text-align: center;
+    }
+
+    :global {
+      .LoadingSpinner_component {
+        height: 24px;
+        margin: 0 !important;
+        width: 24px;
+
+        .LoadingSpinner_icon svg path {
+          fill: var(--theme-hardware-wallet-message-color) !important;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}

@@ -6,13 +6,15 @@ import Dialog from '../../widgets/Dialog';
 import styles from './TransferFundsStep1Dialog.scss';
 import Wallet from '../../../domains/Wallet';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
-import WalletsDropdownOption from '../../widgets/forms/WalletsDropdownOption';
+import ItemDropdownOption from '../../widgets/forms/ItemDropdownOption';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog1.title',
-    defaultMessage: '!!!Transfer funds from the Byron legacy wallet',
+    defaultMessage: '!!!Transfer funds',
     description: 'Title  in the transfer funds form.',
   },
   sourceWallet: {
@@ -41,6 +43,8 @@ type Props = {
   wallets: Array<$Shape<Wallet>>,
   numberOfStakePools: number,
   getStakePoolById: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
 };
 
 export default class TransferFundsStep1Dialog extends Component<Props> {
@@ -59,17 +63,24 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
       wallets,
       numberOfStakePools,
       getStakePoolById,
+      isSubmitting,
+      error,
     } = this.props;
+
+    const onClick = error ? onClose : onContinue;
 
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
         actions={[
           {
-            label: intl.formatMessage(messages.buttonLabel),
-            onClick: onContinue,
+            className: isSubmitting ? styles.isSubmitting : null,
+            label: intl.formatMessage(
+              error ? globalMessages.close : messages.buttonLabel
+            ),
+            onClick: !isSubmitting ? onClick : () => null,
             primary: true,
-            disabled: !this.props.targetWalletId,
+            disabled: isSubmitting || !this.props.targetWalletId,
           },
         ]}
         closeOnOverlayClick
@@ -80,13 +91,9 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           {intl.formatMessage(messages.sourceWallet)}
         </p>
         <div className={styles.sourceWallet}>
-          <WalletsDropdownOption
+          <ItemDropdownOption
             label={sourceWallet.name}
             detail={formattedWalletAmount(sourceWallet.amount)}
-            numberOfStakePools={numberOfStakePools}
-            delegatedStakePool={getStakePoolById(
-              sourceWallet.delegatedStakePoolId
-            )}
             selected
           />
         </div>
@@ -98,6 +105,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           numberOfStakePools={numberOfStakePools}
           getStakePoolById={getStakePoolById}
         />
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
       </Dialog>
     );
   }

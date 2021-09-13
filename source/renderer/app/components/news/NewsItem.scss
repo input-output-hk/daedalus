@@ -13,6 +13,10 @@
     margin-top: 10px;
   }
 
+  &.noUpdateItem {
+    margin-top: 10px;
+  }
+
   &.isRead {
     opacity: 0.5;
   }
@@ -37,7 +41,7 @@
       word-break: break-all;
 
       .newsItemBadge {
-        background-color: var(--theme-news-item-badge-color);
+        background-color: var(--theme-news-item-badge-red-color);
         border-radius: 12.5px;
         display: inline-block;
         height: 8px;

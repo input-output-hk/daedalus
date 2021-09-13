@@ -1,12 +1,13 @@
 // @flow
-import { find, last, filter } from 'lodash';
+import { has, find, last, filter, findIndex } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
-import type { Address } from '../api/addresses/types';
+import { getStakeAddressFromStakeKey } from '../utils/crypto';
+import type { Address, InspectAddressResponse } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
   @observable lastGeneratedAddress: ?WalletAddress = null;
@@ -15,11 +16,20 @@ export default class AddressesStore extends Store {
     isLegacy: boolean,
     allRequest: CachedRequest<Array<WalletAddress>>,
   }> = [];
+  @observable stakeAddresses: {
+    [walletId: string]: string,
+  } = {};
   @observable error: ?LocalizableError = null;
 
   // REQUESTS
+
   @observable createByronWalletAddressRequest: Request<Address> = new Request(
     this.api.ada.createAddress
+  );
+
+  @observable
+  inspectAddressRequest: Request<InspectAddressResponse> = new Request(
+    this.api.ada.inspectAddress
   );
 
   setup() {
@@ -58,6 +68,15 @@ export default class AddressesStore extends Store {
     }
   };
 
+  _inspectAddress = async (params: { addressId: string }) => {
+    const { addressId } = params;
+    this.inspectAddressRequest.reset();
+    const addressDetails = await this.inspectAddressRequest.execute({
+      addressId,
+    }).promise;
+    return addressDetails;
+  };
+
   @computed get all(): Array<WalletAddress> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
@@ -85,7 +104,7 @@ export default class AddressesStore extends Store {
     if (!addresses) return null;
 
     // Check if there is any unused address and set last as active
-    const unusedAddresses = filter(addresses, address => !address.used);
+    const unusedAddresses = filter(addresses, (address) => !address.used);
     if (unusedAddresses.length) return last(unusedAddresses);
 
     // Set last used address as active
@@ -99,6 +118,34 @@ export default class AddressesStore extends Store {
     return addresses ? addresses.length : 0;
   }
 
+  @computed get stakeAddress(): string {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return '';
+    return this.stakeAddresses[wallet.id] || '';
+  }
+
+  @action _getStakeAddress = async (walletId: string, isLegacy: boolean) => {
+    const hasStakeAddress = has(this.stakeAddresses, walletId);
+    if (!hasStakeAddress) {
+      if (isLegacy) {
+        this.stakeAddresses[walletId] = '';
+      } else {
+        const getWalletStakeKeyRequest = new Request(
+          this.api.ada.getWalletPublicKey
+        );
+        const stakeKeyBech32 = await getWalletStakeKeyRequest.execute({
+          walletId,
+          role: 'mutable_account',
+          index: '0',
+        });
+        const stakeAddress = getStakeAddressFromStakeKey(stakeKeyBech32);
+        runInAction('set stake address', () => {
+          this.stakeAddresses[walletId] = stakeAddress;
+        });
+      }
+    }
+  };
+
   @action _refreshAddresses = () => {
     if (this.stores.networkStatus.isConnected) {
       const { all } = this.stores.wallets;
@@ -107,12 +154,21 @@ export default class AddressesStore extends Store {
         const allRequest = this._getAddressesAllRequest(walletId);
         allRequest.invalidate({ immediately: false });
         allRequest.execute({ walletId, isLegacy });
+        this._getStakeAddress(walletId, isLegacy);
       }
     }
   };
 
   @action _resetErrors = () => {
     this.error = null;
+  };
+
+  isInternalAddress = (address: string): boolean => {
+    return findIndex(this.all, { id: address }) > -1;
+  };
+
+  getAddressIndex = (address: string): number => {
+    return this.all.length - findIndex(this.all, { id: address }) - 1;
   };
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {

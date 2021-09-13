@@ -27,6 +27,5 @@ export const generateAccountMnemonics = (
   numberOfWords: number
 ): Array<string> => generateMnemonic(numberOfWords).split(' ');
 
-// eslint-disable-next-line
 export const generateAdditionalMnemonics = (): Array<string> =>
   generateMnemonic(PAPER_WALLET_WRITTEN_WORDS_COUNT).split(' ');

@@ -140,7 +140,7 @@ export default class CountdownWidget extends Component<Props, State> {
     const labels: Array<string> = format
       ? format
           .split('-')
-          .map(item => intl.formatMessage(globalMessages[COLUMNS[item]]))
+          .map((item) => intl.formatMessage(globalMessages[COLUMNS[item]]))
       : [
           yearsLabel,
           monthsLabel,
@@ -157,10 +157,10 @@ export default class CountdownWidget extends Component<Props, State> {
     const minutes = duration.minutes();
     const seconds = duration.seconds();
     const values = format
-      ? format.split('-').map(item => duration[COLUMNS[item]]())
+      ? format.split('-').map((item) => duration[COLUMNS[item]]())
       : [years, months, days, hours, minutes, seconds];
     const keys = format
-      ? format.split('-').map(item => COLUMNS[item])
+      ? format.split('-').map((item) => COLUMNS[item])
       : ['years', 'months', 'days', 'hours', 'minutes', 'seconds'];
 
     return labels.map<any>((

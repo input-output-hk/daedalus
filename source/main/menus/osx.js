@@ -10,7 +10,7 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
-const { isBlankScreenFixActive, isIncentivizedTestnet } = environment;
+const { isBlankScreenFixActive } = environment;
 
 export const osxMenu = (
   app: App,
@@ -18,7 +18,7 @@ export const osxMenu = (
   actions: MenuActions,
   translations: {},
   locale: string,
-  isUpdateAvailable: boolean,
+  isNavigationEnabled: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -29,7 +29,16 @@ export const osxMenu = (
         click() {
           actions.openAboutDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
+      },
+      { type: 'separator' },
+      {
+        label: translation('daedalus.redeemItnRewards'),
+        accelerator: 'Command+T',
+        click() {
+          actions.openItnRewardsRedemptionDialog();
+        },
+        enabled: isNavigationEnabled,
       },
       { type: 'separator' },
       {
@@ -38,7 +47,7 @@ export const osxMenu = (
         click() {
           actions.openSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
@@ -46,7 +55,7 @@ export const osxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
       { type: 'separator' },
       {
@@ -137,16 +146,14 @@ export const osxMenu = (
           shell.openExternal(faqLink);
         },
       },
-      !isIncentivizedTestnet
-        ? {
-            label: translation('helpSupport.blankScreenFix'),
-            type: 'checkbox',
-            checked: isBlankScreenFixActive,
-            click(item) {
-              actions.toggleBlankScreenFix(item);
-            },
-          }
-        : null,
+      {
+        label: translation('helpSupport.blankScreenFix'),
+        type: 'checkbox',
+        checked: isBlankScreenFixActive,
+        click(item) {
+          actions.toggleBlankScreenFix(item);
+        },
+      },
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),
@@ -155,7 +162,7 @@ export const osxMenu = (
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
-      {
+      /* {
         label: translation('helpSupport.featureRequest'),
         click() {
           const featureRequestLinkUrl = translation(
@@ -163,7 +170,7 @@ export const osxMenu = (
           );
           shell.openExternal(featureRequestLinkUrl);
         },
-      },
+      }, */
       {
         label: translation('helpSupport.supportRequest'),
         click() {
@@ -183,7 +190,6 @@ export const osxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
-        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -192,7 +198,7 @@ export const osxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: isNavigationEnabled,
       },
     ]),
   },

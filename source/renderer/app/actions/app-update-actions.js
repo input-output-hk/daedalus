@@ -1,10 +1,11 @@
 // @flow
 import Action from './lib/Action';
 
-// ======= NODE UPDATE ACTIONS =======
+// ======= APP UPDATE ACTIONS =======
 
 export default class AppUpdateActions {
-  acceptAppUpdate: Action<any> = new Action();
-  postponeAppUpdate: Action<any> = new Action();
-  getLatestAvailableAppVersion: Action<any> = new Action();
+  installUpdate: Action<any> = new Action();
+  postponeUpdate: Action<any> = new Action();
+  openAppUpdateOverlay: Action<any> = new Action();
+  closeAppUpdateOverlay: Action<any> = new Action();
 }

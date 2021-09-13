@@ -1,11 +1,19 @@
 @import '../../../themes/mixins/link';
+@import '../../../themes/mixins/loading-spinner';
+
 .component {
-  padding: 20px;
+  height: 100%;
+  padding: 0 0 20px 20px;
 
   .headerWrapper {
+    align-items: center;
     display: flex;
+    justify-content: space-between;
     line-height: 1.38;
-    margin: 0 20px 10px;
+    margin: 0 0 0 -20px;
+    padding: 10px 40px;
+    position: relative;
+    transition: box-shadow 0.25s ease-out;
 
     & > .title {
       color: var(--theme-staking-font-color-lighter);
@@ -14,14 +22,42 @@
       font-size: 16px;
     }
 
-    & > .actionLabel {
-      color: var(--theme-staking-font-color-light);
-      cursor: pointer;
-      font-family: var(--font-medium);
-      font-size: 14px;
-      &:hover {
-        color: var(--theme-staking-font-color-light);
+    & > .actionButton {
+      border-radius: 2px;
+      display: flex;
+      height: auto;
+      padding: 7px 12px;
+      width: auto;
+
+      .actionLabel {
+        line-height: 1.36;
+        margin-right: 12px;
       }
+
+      .downloadIcon {
+        height: 11px;
+        object-fit: contain;
+        width: 11px;
+
+        path {
+          fill: var(--theme-button-flat-text-color);
+        }
+      }
+    }
+  }
+
+  .headerWrapperWithShadow {
+    box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  .contentWrapper {
+    height: calc(100% - 53px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar-track {
+      margin-bottom: -20px;
+      margin-top: -20px;
     }
   }
 
@@ -34,39 +70,59 @@
   }
 
   .note {
+    align-items: flex-start;
     color: var(--theme-staking-font-color-lighter);
     display: flex;
+    flex-direction: column;
     font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.43;
-    padding: 10px 20px;
+    padding: 10px 20px 0;
 
-    .asterisk {
-      margin-right: 12px;
+    p {
+      margin-bottom: 3px;
     }
 
-    .noteContent {
-      align-items: flex-start;
-      display: flex;
-      flex-direction: column;
+    button {
+      font-size: 14px;
+      margin-top: 3px;
+      @include link(--theme-staking-link-color-light);
 
-      p {
-        margin-bottom: 3px;
-      }
+      &:hover {
+        border-bottom: 1px solid var(--theme-staking-link-color);
+        color: var(--theme-staking-link-color);
 
-      .externalLink {
-        font-size: 14px;
-        margin-top: 3px;
-        opacity: 0.7;
-        &:hover {
-          opacity: 1;
+        svg {
+          g {
+            stroke: var(--theme-staking-link-color);
+          }
         }
+      }
+    }
+  }
+
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon svg path {
+        fill: var(--theme-loading-spinner-color) !important;
       }
     }
   }
 
   .loadingSpinnerWrapper {
     margin: auto;
+  }
+
+  .exportingSpinnerWrapper {
+    :global {
+      .LoadingSpinner_component {
+        &.LoadingSpinner_small {
+          height: 19px;
+          margin: 0;
+          width: 19px;
+        }
+      }
+    }
   }
 
   table {
@@ -103,18 +159,22 @@
       & > .sortIcon {
         margin-left: 6px;
         visibility: hidden;
+
         & > svg {
           height: 7.5px;
           width: 7px;
+
           & > path {
             fill: var(--theme-staking-font-color-regular);
           }
         }
+
         &.ascending {
           & > svg {
-            transform: rotate(180deg);
+            transform: rotateX(150deg);
           }
         }
+
         &.sorted {
           opacity: 1;
           visibility: visible;
@@ -128,8 +188,11 @@
       font-size: 14px;
       line-height: 1.3;
       padding: 14px 20px;
+      position: relative;
       text-align: left;
-      width: 25%;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
 
       p {
         -webkit-box-orient: vertical;
@@ -141,6 +204,125 @@
 
         .stakePoolReference {
           font-family: var(--font-medium);
+        }
+      }
+
+      .syncingProgress {
+        position: absolute;
+        right: 10px;
+        top: 0;
+
+        :global .LoadingSpinner_component.LoadingSpinner_medium {
+          margin: 10px auto !important;
+
+          .LoadingSpinner_icon svg path {
+            fill: var(--theme-loading-spinner-color);
+            opacity: 0.3;
+          }
+        }
+      }
+
+      .copyAddress {
+        cursor: pointer;
+        display: flex;
+        white-space: nowrap;
+      }
+
+      .copyIcon {
+        cursor: pointer;
+        margin-left: 6px;
+        object-fit: contain;
+        opacity: 0;
+
+        & > svg {
+          height: 10px;
+          width: 8px;
+
+          path {
+            fill: var(--theme-icon-copy-address-color);
+          }
+        }
+      }
+
+      .actionExplorerLink {
+        align-items: center;
+        border-radius: 3px;
+        display: flex;
+        height: 16px;
+        justify-content: center;
+        line-height: 16px;
+        margin-left: 15px;
+        padding: 3px 8px;
+        white-space: nowrap;
+        width: auto;
+      }
+
+      .externalLink {
+        font-size: 8px;
+        font-weight: bold;
+        line-height: 1.25;
+        text-transform: uppercase;
+
+        &:after {
+          height: 8px !important;
+          -webkit-mask-size: 8px, 8px !important;
+          mask-size: 8px, 8px !important;
+          width: 8px !important;
+        }
+      }
+
+      &.rewardWallet {
+        max-width: 200px;
+        min-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.rewardAmount {
+        min-width: 250px;
+      }
+
+      &.rewardsAddress {
+        min-width: 100px;
+
+        > div {
+          align-items: center;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .addressContainer {
+          align-items: center;
+          display: flex;
+
+          .address {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 237px;
+
+            &:hover {
+              cursor: pointer;
+            }
+
+            @media screen and (min-width: 992px) {
+              width: 297px;
+            }
+            @media screen and (min-width: 1024px) {
+              width: 355px;
+            }
+            @media screen and (min-width: 1098px) {
+              width: auto;
+            }
+          }
+
+          &:hover {
+            .copyIcon {
+              opacity: 1;
+            }
+          }
         }
       }
     }

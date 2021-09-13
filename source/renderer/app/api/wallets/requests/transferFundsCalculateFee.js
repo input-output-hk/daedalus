@@ -2,7 +2,7 @@
 import type { RequestConfig } from '../../common/types';
 import type {
   TransferFundsCalculateFeeRequest,
-  TransferFundsCalculateFeeResponse,
+  TransferFundsCalculateFeeApiResponse,
 } from '../types';
 import { request } from '../../utils/request';
 import { getRawWalletId } from '../../utils';
@@ -10,7 +10,7 @@ import { getRawWalletId } from '../../utils';
 export const transferFundsCalculateFee = (
   config: RequestConfig,
   { sourceWalletId }: TransferFundsCalculateFeeRequest
-): Promise<TransferFundsCalculateFeeResponse> =>
+): Promise<TransferFundsCalculateFeeApiResponse> =>
   request({
     method: 'GET',
     path: `/v2/byron-wallets/${getRawWalletId(sourceWalletId)}/migrations`,

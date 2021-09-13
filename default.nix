@@ -1,11 +1,6 @@
-let
-  itn_clusters = [ "itn_rewards_v1"  "qa" "nightly" "itn_selfnode" ];
-  getDefaultBackend = cluster: if (builtins.elem cluster itn_clusters) then "jormungandr" else "cardano";
-in
 { target ? builtins.currentSystem
-, nodeImplementation ? (getDefaultBackend cluster)
+, nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
-, config ? {}
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
@@ -28,6 +23,13 @@ let
     x86_64-windows = lib.systems.examples.mingwW64;
   };
   system = systemTable.${target} or target;
+  config = {
+    packageOverrides = super: {
+      systemd = super.systemd.overrideAttrs ({ patches ? [], ... }: {
+        patches = patches ++ [ ./nix/systemd.patch ];
+      });
+    };
+  };
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
@@ -49,7 +51,6 @@ let
   ostable.x86_64-darwin = "macos64";
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
-    jormungandrLib = localLib.iohkNix.jormungandrLib;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
@@ -70,19 +71,17 @@ let
 
     sources = localLib.sources;
     bridgeTable = {
-      jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
       cardano = self.callPackage ./nix/cardano-bridge.nix {
-        cardano-wallet = if self.launcherConfigs.launcherConfig.nodeConfig.kind == "byron"
-                         then self.cardano-wallet.cardano-wallet-byron
-                         else self.cardano-wallet.cardano-wallet-shelley;
+        cardano-wallet = self.cardano-wallet.cardano-wallet;
         cardanoWalletPkgs = self.cardano-wallet.pkgs;
       };
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
-    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).haskellPackages.cardano-addresses.components.exes.cardano-address;
+    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).cardano-address;
+    mock-token-metadata-server = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).mock-token-metadata-server;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli.components.exes.cardano-cli;
+    local-cluster = if cluster == "selfnode" then (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).local-cluster else null;
     cardano-node-cluster = let
       # Test wallets with known mnemonics
       walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
@@ -97,9 +96,11 @@ let
       };
     in (import self.sources.cardano-node { inherit system customConfig; crossSystem = crossSystem nodePkgs.lib; }).cluster;
     cardano-node = if useLocalNode
-                   then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
+                   then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-node
                    else self.cardano-wallet.cardano-node;
-    cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
+    cardano-cli = if useLocalNode
+                   then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
+                   else self.cardano-wallet.cardano-cli;
     darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
@@ -116,17 +117,11 @@ let
     nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
-      inherit (self) jormungandrLib;
       inherit devShell topologyOverride configOverride genesisOverride;
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
       runCommandNative = pkgsNative.runCommand;
-    };
-
-    itnClustersFile = writeTextFile {
-      name = "itn-clusters";
-      text = concatStringsSep " " itn_clusters;
     };
 
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
@@ -200,7 +195,7 @@ let
     '';
 
     nsisFiles = let
-      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}-${self.launcherConfigs.launcherConfig.nodeConfig.kind}";
+      nodeImplementation' = "${nodeImplementation}";
     in pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''
@@ -336,12 +331,7 @@ let
       runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
-    nix-bundle = import (pkgs.fetchFromGitHub {
-      owner = "matthewbauer";
-      repo = "nix-bundle";
-      rev = "7f12322399fd87d937355d0fc263d37d798496fc";
-      sha256 = "07wnmdadchf73p03wk51abzgd3zm2xz5khwadz1ypbvv3cqlzp5m";
-    }) { nixpkgs = pkgs; };
+    nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
     iconPath = self.launcherConfigs.installerConfig.iconPath;
     # used for name of profile, binary and the desktop shortcut
     linuxClusterBinName = cluster;

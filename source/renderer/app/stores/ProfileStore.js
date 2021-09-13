@@ -14,6 +14,7 @@ import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
+import { enableApplicationMenuNavigationChannel } from '../ipc/enableApplicationMenuNavigationChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -31,6 +32,7 @@ import {
   hasLoadedRequest,
   isRequestSet,
   requestGetter,
+  requestGetterLocale,
   getRequestKeys,
 } from '../utils/storesUtils';
 import {
@@ -148,8 +150,8 @@ export default class ProfileStore extends Store {
     BigNumber.config({ FORMAT });
   };
 
-  @computed get currentLocale(): string {
-    return requestGetter(this.getProfileLocaleRequest, this.systemLocale);
+  @computed get currentLocale(): Locale {
+    return requestGetterLocale(this.getProfileLocaleRequest, this.systemLocale);
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {
@@ -160,18 +162,10 @@ export default class ProfileStore extends Store {
     return isRequestSet(this.getProfileLocaleRequest);
   }
 
-  @computed get isIncentivizedTestnetTheme(): boolean {
-    return this.currentTheme === THEMES.INCENTIVIZED_TESTNET;
-  }
-
   @computed get currentTheme(): string {
     // Default theme handling
     let systemValue;
-    if (global.isShelleyTestnet) {
-      systemValue = THEMES.SHELLEY_TESTNET;
-    } else if (global.isIncentivizedTestnet) {
-      systemValue = THEMES.INCENTIVIZED_TESTNET;
-    } else if (global.isFlight) {
+    if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
     } else {
       systemValue = this.environment.isMainnet
@@ -301,10 +295,14 @@ export default class ProfileStore extends Store {
   _acceptTermsOfUse = async () => {
     await this.setTermsOfUseAcceptanceRequest.execute();
     await this.getTermsOfUseAcceptanceRequest.execute();
+    await enableApplicationMenuNavigationChannel.send();
   };
 
-  _getTermsOfUseAcceptance = () => {
-    this.getTermsOfUseAcceptanceRequest.execute();
+  _getTermsOfUseAcceptance = async () => {
+    await this.getTermsOfUseAcceptanceRequest.execute();
+    if (this.getTermsOfUseAcceptanceRequest.result) {
+      await enableApplicationMenuNavigationChannel.send();
+    }
   };
 
   _acceptDataLayerMigration = async () => {
@@ -369,8 +367,8 @@ export default class ProfileStore extends Store {
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
-      if (!this.stores.wallets.hasAnyWallets || global.isIncentivizedTestnet) {
-        // There are no wallets to migrate or it's Incentivized Testnet:
+      if (!this.stores.wallets.hasAnyWallets) {
+        // There are no wallets to migrate:
         // set the data layer migration acceptance to true
         // in order to prevent future data migration checks
         this._acceptDataLayerMigration();
@@ -479,7 +477,6 @@ export default class ProfileStore extends Store {
   _setStateSnapshotLog = async () => {
     try {
       logger.info('ProfileStore: Requesting state snapshot log file creation');
-      const { isIncentivizedTestnet } = global;
       const { networkStatus } = this.stores;
       const {
         cardanoNodePID,
@@ -554,7 +551,6 @@ export default class ProfileStore extends Store {
         isStaging,
         isSynced,
         isTestnet,
-        isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
         localTip,

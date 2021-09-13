@@ -13,8 +13,13 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
-    const { stores } = this.props;
+    const {
+      newsFeed,
+      appUpdate,
+      networkStatus,
+      profile,
+      app,
+    } = this.props.stores;
     const {
       cardanoNodeState,
       isNodeResponding,
@@ -29,22 +34,19 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
-    } = stores.networkStatus;
-    const {
-      isNewAppVersionAvailable,
-      isNewAppVersionLoading,
-      isNewAppVersionLoaded,
-    } = stores.appUpdate;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
+      isVerifyingBlockchain,
+      verificationProgress,
+    } = networkStatus;
+    const { displayAppUpdateNewsItem } = appUpdate;
+    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
-    const { unread } = stores.newsFeed.newsFeedData;
-    const hasUnreadNews = unread.length > 0;
+    const { unread } = newsFeed.newsFeedData;
+    const hasNotification = unread.length > 0;
 
     return (
       <SyncingConnecting
         cardanoNodeState={cardanoNodeState}
         hasBeenConnected={hasBeenConnected}
-        isFlight={isFlight}
         isConnected={isConnected}
         isSynced={isSynced}
         isConnecting={!isConnected}
@@ -54,7 +56,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNodeStopped={isNodeStopped}
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
-        hasUnreadNews={hasUnreadNews}
+        hasNotification={hasNotification}
+        hasUpdate={displayAppUpdateNewsItem}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={
@@ -63,19 +66,15 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNodeResponding={isNodeResponding}
         isNodeSyncing={isNodeSyncing}
         isNodeTimeCorrect={isNodeTimeCorrect}
-        isNewAppVersionAvailable={isNewAppVersionAvailable}
-        isNewAppVersionLoading={isNewAppVersionLoading}
-        isNewAppVersionLoaded={isNewAppVersionLoaded}
-        isIncentivizedTestnet={isIncentivizedTestnet}
-        isShelleyTestnet={isShelleyTestnet}
         onIssueClick={this.handleIssueClick}
         onOpenExternalLink={this.handleOpenExternalLink}
-        onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
-        disableDownloadLogs={stores.app.isDownloadNotificationVisible}
+        disableDownloadLogs={app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
+        isVerifyingBlockchain={isVerifyingBlockchain}
+        verificationProgress={verificationProgress}
       />
     );
   }
@@ -99,11 +98,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
     app.setIsDownloadingLogs.trigger(true);
-  };
-
-  handleGetAvailableVersions = () => {
-    const { appUpdate } = this.props.actions;
-    appUpdate.getLatestAvailableAppVersion.trigger();
   };
 
   openDaedalusDiagnosticsDialog = () => {

@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
+import { get, camelCase } from 'lodash';
 import ReactMarkdown from 'react-markdown';
+import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import ButtonLink from '../widgets/ButtonLink';
@@ -59,8 +60,12 @@ export default class IncidentOverlay extends Component<Props> {
   render() {
     const { incident, currentDateFormat } = this.props;
     const { content, date, action, title } = incident;
+    const componentClasses = classnames([
+      styles.component,
+      styles[camelCase(incident.color)],
+    ]);
     return (
-      <div className={styles.component}>
+      <div className={componentClasses}>
         <h1 className={styles.title}>{title}</h1>
         <span className={styles.date}>
           {moment(date).format(currentDateFormat)}

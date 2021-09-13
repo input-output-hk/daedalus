@@ -10,7 +10,7 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 
 storiesOf('Wallets|Settings', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

@@ -25,11 +25,10 @@ import qualified Data.Text                        as T
 import           Filesystem.Path                     (FilePath)
 import qualified Filesystem.Path.Rules            as FP
 
-import           Turtle                              (optional, (<|>), format, (%), s, Format, makeFormat)
+import           Turtle                              (format, (%), s, Format, makeFormat)
 import           Turtle.Options
 
 import           Universum                    hiding (FilePath, unlines, writeFile)
-import           GHC.Base                            (id)
 import           Types
 
 -- | Enum-instanced sum types as case-insensitive option values.
@@ -54,7 +53,6 @@ argReadLower = arg (diagReadCaseInsensitive . T.unpack)
 
 data Command
   =  GenInstaller
-  | Appveyor
   | BuildkiteCrossWin
   deriving (Eq, Show)
 
@@ -75,7 +73,6 @@ commandParser = (fromMaybe GenInstaller <$>) . optional $
   subcommandGroup "Subcommands:"
   [ ("installer",  "Build an installer",
       pure GenInstaller)
-  , ("appveyor",   "do an appveroy build", pure Appveyor)
   , ("buildkite-cross", "cross-compile windows from linux", pure BuildkiteCrossWin)
   ]
 
@@ -97,11 +94,9 @@ optionsParser detectedOS = Options
   <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the product signing config")
 
 backendOptionParser :: Parser Backend
-backendOptionParser = enableJormungandr <|> cardanoByron <|> cardanoShelley
+backendOptionParser = cardano
   where
-    cardanoByron = Cardano Byron <$> optPath "cardano-byron" 'B' "Use Cardano Byron backend with given Daedalus bridge path"
-    cardanoShelley = Cardano Shelley <$> optPath "cardano-shelley" 'S' "Use Cardano Shelley backend with given Daedalus bridge path"
-    enableJormungandr = Jormungandr <$> optPath  "jormungandr" 'j' "use Jormungandr backend"
+    cardano = Cardano <$> optPath "cardano" 'S' "Use Cardano backend with given Daedalus bridge path"
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the
 -- Dhall syntax.

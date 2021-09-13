@@ -1,133 +1,69 @@
 // @flow
 import React, { Component } from 'react';
-import type { Element } from 'react';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import { omit } from 'lodash';
-import WalletsDropdownOption from './WalletsDropdownOption';
-import styles from './WalletsDropdown.scss';
-
+import { omit, filter, escapeRegExp } from 'lodash';
+import WalletsDropdownLabel from './WalletsDropdownLabel';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
-import StakePool from '../../../domains/StakePool';
+import ItemsDropdown from './ItemsDropdown';
 
-type SelectProps = {
-  allowBlank?: boolean,
-  autoFocus?: boolean,
-  className?: string,
-  context?: any,
-  disabled?: boolean,
-  error?: string | Element<any>,
-  errorPosition?: 'top' | 'bottom',
-  label?: string | Element<any>,
-  isOpeningUpward?: boolean,
-  onBlur?: Function,
-  onChange?: Function,
-  onFocus?: Function,
-  optionRenderer?: Function,
-  options?: Array<any>,
-  placeholder?: string,
-  selectionRenderer?: Function,
-  skin?: Element<any>,
-  theme?: ?Object, // will take precedence over theme in context if passed
-  themeId?: string,
-  themeOverrides?: Object,
-  value: ?string,
-};
-
+/**
+ *
+ * This component extends the ItemDropdownProps component
+ * which is based on React Polymorph's Select
+ * Any prop from it can be used
+ * Reference:
+ * https://github.com/input-output-hk/react-polymorph/blob/develop/source/components/Select.js
+ *
+ */
 type Props = {
-  ...$Shape<SelectProps>,
-  numberOfStakePools: number,
-  wallets: Array<$Shape<Wallet>>,
   getStakePoolById: Function,
+  numberOfStakePools: number,
+  wallets?: Array<$Shape<Wallet>>,
+  className?: string,
 };
 
-type WalletOption = {
-  delegatedStakePool?: ?StakePool,
-  label: string,
-  numberOfStakePools: number,
-  detail: string,
-  value: string,
+export const onSearchWalletsDropdown = (
+  searchValue: string,
+  options: Array<any>
+) => {
+  return filter(options, (option) => {
+    const { walletName, detail } = option;
+    const regex = new RegExp(escapeRegExp(searchValue), 'i');
+    return [walletName, detail].some((item) => regex.test(item));
+  });
 };
 
 export default class WalletsDropdown extends Component<Props> {
   static defaultProps = {
-    optionRenderer: ({
-      label,
-      detail,
-      numberOfStakePools,
-      delegatedStakePool,
-    }: WalletOption) => (
-      <WalletsDropdownOption
-        label={label}
-        numberOfStakePools={numberOfStakePools}
-        detail={detail}
-        delegatedStakePool={delegatedStakePool}
-      />
-    ),
-    selectionRenderer: ({
-      label,
-      detail,
-      numberOfStakePools,
-      delegatedStakePool,
-    }: WalletOption) => (
-      <WalletsDropdownOption
-        selected
-        label={label}
-        numberOfStakePools={numberOfStakePools}
-        detail={detail}
-        delegatedStakePool={delegatedStakePool}
-      />
-    ),
-    skin: SelectSkin,
-    errorPosition: 'top',
+    onSearch: onSearchWalletsDropdown,
   };
-
   render() {
-    const {
-      wallets,
-      numberOfStakePools,
-      getStakePoolById,
-      error,
-      errorPosition,
-      ...props
-    } = this.props;
-    const walletsData = wallets.map(
-      ({
-        name: label,
+    const { wallets = [], className } = this.props;
+    const props = omit(this.props, ['wallets', 'options']);
+    const formattedOptions = wallets.map((wallet) => {
+      const {
         id: value,
         amount,
-        delegatedStakePoolId,
-        lastDelegationStakePoolId,
-        pendingDelegations,
-      }: Wallet) => {
-        const hasPendingDelegations =
-          pendingDelegations && pendingDelegations.length > 0;
-        let currentStakePoolId = delegatedStakePoolId;
-        if (hasPendingDelegations) {
-          currentStakePoolId = lastDelegationStakePoolId;
-        }
-        const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const detail = formattedWalletAmount(amount);
-        return {
-          detail,
-          label,
-          value,
-          numberOfStakePools,
-          delegatedStakePool,
-        };
-      }
-    );
-    let topError;
-    let bottomError;
-    if (errorPosition === 'bottom') bottomError = error;
-    else topError = error;
-    const selectOptions = omit({ ...props, topError }, 'options');
+        isRestoring,
+        isSyncing,
+        restorationProgress: syncingProgress,
+      } = wallet;
+      const detail = !isRestoring ? formattedWalletAmount(amount) : null;
+      return {
+        label: <WalletsDropdownLabel wallet={wallet} {...props} />,
+        detail,
+        value,
+        walletName: wallet.name,
+        isSyncing,
+        syncingProgress,
+      };
+    });
     return (
-      <>
-        <Select options={walletsData} {...selectOptions} optionHeight={62} />
-        {bottomError && <div className={styles.error}>{bottomError}</div>}
-      </>
+      <ItemsDropdown
+        className={className}
+        options={formattedOptions}
+        {...props}
+      />
     );
   }
 }

@@ -1,0 +1,44 @@
+@import '../../votingConfig';
+
+.component {
+  text-align: center;
+
+  :global {
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-top: -8px;
+    }
+
+    .Dialog_subtitle {
+      text-transform: uppercase;
+    }
+  }
+
+  .votingRegistrationStepsIndicatorWrapper {
+    margin: -20px auto 0;
+    width: 450px;
+
+    .stepIndicatorLabel {
+      color: var(
+        --theme-voting-registration-steps-activation-steps-indicator-color
+      );
+      font-family: var(--font-medium);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.83;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  }
+
+  .container {
+    font-family: var(--font-regular);
+    text-align: center;
+  }
+
+  .content {
+    font-size: 16px;
+    line-height: 1.38;
+    margin-top: 20px;
+    text-align: left;
+  }
+}

@@ -21,14 +21,12 @@ import Config
 import Types
 import qualified MacInstaller as Mac
 import Util
-import AppVeyor
 
 main :: IO ()
 main = hspec $ do
   describe "Utility functions" utilSpec
   describe "MacInstaller build" macBuildSpec
   describe "recursive directory deletion" deleteSpec
-  describe "Hydra downloads for AppVeyor" hydraSpec
 
 macBuildSpec :: Spec
 macBuildSpec = do
@@ -42,7 +40,7 @@ macBuildSpec = do
                  { oOS = Win64
                  , oBackend = Cardano daedalusBridge
                  , oBuildJob = Just (BuildJob "test")
-                 , oCluster = Nightly
+                 , oCluster = Testnet
                  , oAppName = "Daedalus"
                  , oOutputDir = out
                  , oTestInstaller = testInstaller False
@@ -125,8 +123,8 @@ utilSpec = do
 
   describe "Package filename generation" $ do
     it "generates a good filename for windows" $ do
-      let f = packageFileName Win64 Nightly (Version "0.4.2") (Cardano "") "9.9" (Just "job.id")
-      f `shouldBe` (fromText "daedalus-0.4.2-cardano-sl-9.9-nightly-windows-job.id.exe")
+      let f = packageFileName Win64 Testnet (Version "0.4.2") (Cardano "") "9.9" (Just "job.id")
+      f `shouldBe` (fromText "daedalus-0.4.2-cardano-sl-9.9-testnet-windows-job.id.exe")
 
 ----------------------------------------------------------------------------
 -- Tests for Hydra downloading (yes it's in the AppVeyor module)

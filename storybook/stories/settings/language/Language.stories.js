@@ -11,7 +11,7 @@ import {
 } from '../../../../source/renderer/app/config/profileConfig';
 
 storiesOf('Settings|Language', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

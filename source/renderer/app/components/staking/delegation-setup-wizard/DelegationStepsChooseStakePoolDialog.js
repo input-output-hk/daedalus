@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import {
   defineMessages,
   intlShape,
@@ -21,7 +21,7 @@ import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import Wallet from '../../../domains/Wallet';
 import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
-
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
@@ -136,8 +136,7 @@ type Props = {
 
 type State = {
   searchValue: string,
-  selectedList?: ?string,
-  selectedPoolId: ?number,
+  selectedPoolId: ?string,
 };
 
 export default class DelegationStepsChooseStakePoolDialog extends Component<
@@ -148,21 +147,18 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     intl: intlShape.isRequired,
   };
 
+  stakePoolsScrollElementRef = createRef<*>();
+
   state = {
     searchValue: '',
-    selectedList: null,
     selectedPoolId: get(this.props, ['selectedPool', 'id'], null),
   };
 
   handleSearch = (searchValue: string) => this.setState({ searchValue });
   handleClearSearch = () => this.setState({ searchValue: '' });
 
-  handleSelect = (selectedPoolId: number) => {
+  handleSelect = (selectedPoolId: string) => {
     this.setState({ selectedPoolId });
-  };
-
-  handleSetListActive = (selectedList: string) => {
-    this.setState({ selectedList });
   };
 
   onAcceptPool = () => {
@@ -182,15 +178,15 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       onClose,
       onBack,
     } = this.props;
-    const { searchValue, selectedList, selectedPoolId } = this.state;
+    const { searchValue, selectedPoolId } = this.state;
     const selectedWalletName = get(selectedWallet, 'name');
     const selectedPool = find(
       stakePoolsList,
-      stakePool => stakePool.id === selectedPoolId
+      (stakePool) => stakePool.id === selectedPoolId
     );
     const lastDelegatedStakePoolId = get(
       selectedWallet,
-      'lastDelegationStakePoolId',
+      'lastDelegatedStakePoolId',
       null
     );
     const delegatedStakePoolId = get(
@@ -308,6 +304,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       searchValue
     );
 
+    const numberOfRankedStakePools: number = stakePoolsList.filter(
+      (stakePool) =>
+        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+    ).length;
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -319,9 +320,10 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
+        scrollWrapperRef={this.stakePoolsScrollElementRef}
       >
         <BackToTopButton
-          scrollableElementClassName="Dialog_content"
+          scrollableElementClassName="Dialog_contentWrapper"
           buttonTopPosition={100}
           scrollTopToActivate={100}
         />
@@ -343,7 +345,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           <div className={styles.selectStakePoolWrapper}>
             <ThumbSelectedPool
               stakePool={selectedPool}
-              numberOfStakePools={stakePoolsList.length}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               alreadyDelegated={selectedPool && !canSubmit}
             />
 
@@ -363,15 +365,15 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               stakePoolsList={recentStakePools}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
-              isListActive={selectedList === 'recentStakePools'}
-              setListActive={this.handleSetListActive}
               containerClassName="Dialog_content"
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
-              numberOfStakePools={stakePoolsList.length}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={activeStakePoolId}
-              showSelected
               highlightOnHover
+              highlightWithDelay
+              selectOnClick
+              scrollElementRef={this.stakePoolsScrollElementRef}
             />
           </div>
 
@@ -393,15 +395,15 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               stakePoolsList={filteredStakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
-              isListActive={selectedList === 'selectedIndexList'}
-              setListActive={this.handleSetListActive}
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
               containerClassName="Dialog_content"
-              numberOfStakePools={stakePoolsList.length}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={activeStakePoolId}
-              showSelected
               highlightOnHover
+              highlightWithDelay
+              selectOnClick
+              scrollElementRef={this.stakePoolsScrollElementRef}
             />
           </div>
         </div>

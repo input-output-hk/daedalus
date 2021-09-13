@@ -52,7 +52,7 @@ export default class WalletSelectImportStepContainer extends Component<
 
     let walletsCount =
       this.state.existingWalletsCount + pendingImportWalletsCount;
-    map(exportedWallets, wallet => {
+    map(exportedWallets, (wallet) => {
       if (
         wallet.import.status === WalletImportStatuses.COMPLETED ||
         wallet.import.status === WalletImportStatuses.RUNNING
@@ -68,7 +68,7 @@ export default class WalletSelectImportStepContainer extends Component<
         onClose={onClose}
         onContinue={onContinue}
         isSubmitting={isRestorationRunning}
-        nameValidator={name => isValidWalletName(name)}
+        nameValidator={(name) => isValidWalletName(name)}
         exportedWallets={exportedWallets}
         pendingImportWalletsCount={pendingImportWalletsCount}
         onOpenExternalLink={openExternalLink}

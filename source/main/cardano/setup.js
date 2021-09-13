@@ -42,13 +42,11 @@ const startCardanoNode = (
     tlsPath,
     stateDir,
     cluster,
-    block0Path,
-    block0Hash,
-    secretPath,
     configPath,
     syncTolerance,
     cliBin,
     isStaging,
+    metadataUrl,
   } = launcherConfig;
   const logFilePath = `${logsPrefix}/pub/`;
   const config = {
@@ -58,13 +56,11 @@ const startCardanoNode = (
     tlsPath,
     stateDir,
     cluster,
-    block0Path,
-    block0Hash,
-    secretPath,
     configPath,
     syncTolerance,
     cliBin,
     isStaging,
+    metadataUrl,
     startupTimeout: NODE_STARTUP_TIMEOUT,
     startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
     shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,
@@ -118,7 +114,7 @@ export const setupCardanoNode = (
       onStopped: () => {},
       onUpdating: () => {},
       onUpdated: () => {},
-      onCrashed: code => {
+      onCrashed: (code) => {
         const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 1000;
         logger.info(
           `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms...`,
@@ -178,7 +174,7 @@ export const setupCardanoNode = (
     return cardanoNode.restart(true); // forced restart
   });
 
-  cardanoFaultInjectionChannel.onReceive(fault => {
+  cardanoFaultInjectionChannel.onReceive((fault) => {
     logger.info(
       'ipcMain: Received request to inject a fault into cardano node',
       { fault }

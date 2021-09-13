@@ -30,7 +30,7 @@ const messages = defineMessages({
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
     defaultMessage:
-      '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
+      '!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Danilo Prates, Darko Mijić, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Manus McCole, Michael Bishop, Mior Sufian, Nikola Glumac, Piotr Stachyra, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov',
     description: 'About page daedalus team members',
   },
   aboutContentCardanoMembers: {
@@ -53,11 +53,6 @@ const messages = defineMessages({
     id: 'static.about.buildInfo',
     defaultMessage: '!!!MacOS build 3769, with Cardano 1.0.4',
     description: 'About page build information',
-  },
-  aboutBuildInfoForITN: {
-    id: 'static.about.buildInfoForITN',
-    defaultMessage: '!!!MacOS build 3769, with Cardano 1.0.4',
-    description: 'About page build information for ITN',
   },
 });
 
@@ -87,8 +82,6 @@ export default class About extends Component<Props> {
       version,
       onClose,
     } = this.props;
-    const { isIncentivizedTestnet } = global;
-
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
     const apiHeadline = intl.formatMessage(
@@ -112,28 +105,16 @@ export default class About extends Component<Props> {
               <span className={styles.daedalusVersion}>{version}</span>
             </div>
             <div className={styles.daedalusBuildInfo}>
-              {isIncentivizedTestnet ? (
-                <FormattedHTMLMessage
-                  {...messages.aboutBuildInfoForITN}
-                  values={{
-                    platform: os,
-                    build,
-                    apiName,
-                    apiVersion,
-                  }}
-                />
-              ) : (
-                <FormattedHTMLMessage
-                  {...messages.aboutBuildInfo}
-                  values={{
-                    platform: os,
-                    build,
-                    apiName,
-                    apiVersion,
-                    nodeVersion,
-                  }}
-                />
-              )}
+              <FormattedHTMLMessage
+                {...messages.aboutBuildInfo}
+                values={{
+                  platform: os,
+                  build,
+                  apiName,
+                  apiVersion,
+                  nodeVersion,
+                }}
+              />
             </div>
           </div>
 

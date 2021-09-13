@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import DelegationStepsIntroDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
@@ -15,17 +15,86 @@ import DelegationStepsSuccessDialog from '../../../source/renderer/app/component
 import { MIN_DELEGATION_FUNDS } from '../../../source/renderer/app/config/stakingConfig';
 import translations from '../../../source/renderer/app/i18n/translations';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import { generateWallet } from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
+import {
+  WalletSyncStateStatuses,
+  HwDeviceStatuses,
+} from '../../../source/renderer/app/domains/Wallet';
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: new BigNumber(200),
+    },
+  ],
+};
 
 const WALLETS = [
-  generateWallet('First Wallet', '1000000000', 0, STAKE_POOLS[0]),
-  generateWallet('Second Wallet', '500000000', 0, STAKE_POOLS[100]),
-  generateWallet('Third Wallet', '100000000', 0, STAKE_POOLS[150]),
-  generateWallet('Fourth Wallet', '50000000', 0, STAKE_POOLS[290]),
-  generateWallet('Fifth Wallet', '7000000'),
+  generateWallet('Wallet 1', '1000000000', assets, 0, STAKE_POOLS[0]),
+  generateWallet(
+    'Wallet 2 - Rewards Only',
+    '500000000',
+    assets,
+    500000000,
+    STAKE_POOLS[100]
+  ),
+  generateWallet(
+    'Wallet 3 - Min Amount - Rewards',
+    '10',
+    assets,
+    10,
+    STAKE_POOLS[150]
+  ),
+  generateWallet(
+    'Wallet 4 - Min Amount - No Reward',
+    '0',
+    assets,
+    0,
+    STAKE_POOLS[290]
+  ),
+  generateWallet(
+    'Wallet 5 - Restoring',
+    '0',
+    assets,
+    0,
+    STAKE_POOLS[290],
+    true,
+    WalletSyncStateStatuses.RESTORING
+  ),
 ];
 
-const getDelegationWizardStepsList = locale => [
+const getDelegationWizardStepsList = (locale) => [
   translations[locale]['staking.delegationSetup.steps.step.1.label'],
   translations[locale]['staking.delegationSetup.steps.step.2.label'],
   translations[locale]['staking.delegationSetup.steps.step.3.label'],
@@ -80,15 +149,17 @@ export class StakingDelegationSteps extends Component<Props, State> {
         numberOfStakePools={stakePoolsList.length}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
-        getStakePoolById={poolId =>
-          find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+        getStakePoolById={(poolId) =>
+          find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
         }
         onSelectWallet={this.onContinue}
         onBack={action('onBack')}
         wallets={WALLETS}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         selectedWalletId={null}
-        isWalletAcceptable={amount => amount.gte(MIN_DELEGATION_FUNDS)}
+        isWalletAcceptable={(amount, reward = 0) =>
+          amount.minus(reward).gte(MIN_DELEGATION_FUNDS)
+        }
       />,
       <DelegationStepsChooseStakePoolDialog
         key="DelegationStepsChooseStakePoolDialog"
@@ -105,7 +176,11 @@ export class StakingDelegationSteps extends Component<Props, State> {
       />,
       <DelegationStepsConfirmationDialog
         key="DelegationStepsConfirmationDialog"
-        transactionFee={new BigNumber(0.172081)}
+        transactionFee={{
+          fee: new BigNumber(0.172081),
+          deposits: new BigNumber(2),
+          depositsReclaimed: new BigNumber(0),
+        }}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         selectedPool={STAKE_POOLS[0]}
         isSubmitting={false}
@@ -114,15 +189,18 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onClose={action('onClose')}
         onBack={action('onBack')}
         error={null}
+        isHardwareWallet={false}
+        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+        onExternalLinkClick={action('onOpenExternalLink')}
+        isTrezor={boolean('isTrezor', false)}
       />,
       <DelegationStepsSuccessDialog
         key="DelegationStepsSuccessDialog"
         delegatedWallet={WALLETS[0]}
         delegatedStakePool={STAKE_POOLS[0]}
+        slotLength={null}
         currentLocale={this.props.locale}
-        futureEpochStartTime={moment()
-          .add(35, 'hour')
-          .toString()}
+        futureEpochStartTime={moment().add(35, 'hour').toString()}
         onClose={this.onReset}
       />,
     ];

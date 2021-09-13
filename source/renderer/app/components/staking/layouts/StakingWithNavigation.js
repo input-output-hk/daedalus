@@ -1,6 +1,7 @@
 // @flow
-import React, { Component } from 'react';
-import type { Node } from 'react';
+import React, { Component, createRef } from 'react';
+import type { ElementRef, Node } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import StakingNavigation from '../navigation/StakingNavigation';
 import styles from './StakingWithNavigation.scss';
@@ -8,36 +9,22 @@ import styles from './StakingWithNavigation.scss';
 type Props = {
   children?: Node,
   activeItem: string,
+  showInfoTab: boolean,
   onNavItemClick: Function,
   isActiveNavItem: Function,
-  isIncentivizedTestnet: boolean,
-  isShelleyTestnet: boolean,
-};
-
-type State = {
-  scrollTop: number,
 };
 
 type ContextValue = {
-  scrollTop: number,
+  scrollElementRef: ?ElementRef<*>,
 };
 
 export const StakingPageScrollContext = React.createContext<ContextValue>({
-  scrollTop: 0,
+  scrollElementRef: null,
 });
 
 @observer
-export default class StakingWithNavigation extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      scrollTop: 0,
-    };
-  }
-
-  handleScroll = (evt: SyntheticEvent<HTMLElement>) => {
-    this.setState({ scrollTop: evt.currentTarget.scrollTop });
-  };
+export default class StakingWithNavigation extends Component<Props> {
+  stakingPageRef = createRef<*>();
 
   render() {
     const {
@@ -45,24 +32,29 @@ export default class StakingWithNavigation extends Component<Props, State> {
       onNavItemClick,
       activeItem,
       isActiveNavItem,
-      isIncentivizedTestnet,
-      isShelleyTestnet,
+      showInfoTab,
     } = this.props;
-    const { scrollTop } = this.state;
+    const componentStyles = classnames([styles.component, styles[activeItem]]);
 
     return (
-      <StakingPageScrollContext.Provider value={{ scrollTop }}>
-        <div className={styles.component}>
+      <StakingPageScrollContext.Provider
+        value={{ scrollElementRef: this.stakingPageRef }}
+      >
+        <div className={componentStyles}>
           <div className={styles.navigation}>
             <StakingNavigation
               isActiveNavItem={isActiveNavItem}
               onNavItemClick={onNavItemClick}
               activeItem={activeItem}
-              isIncentivizedTestnet={isIncentivizedTestnet}
-              isShelleyTestnet={isShelleyTestnet}
+              showInfoTab={showInfoTab}
             />
           </div>
-          <div className={styles.page} onScroll={this.handleScroll}>
+          <div
+            className={styles.page}
+            ref={(ref) => {
+              this.stakingPageRef.current = ref;
+            }}
+          >
             {children}
           </div>
         </div>

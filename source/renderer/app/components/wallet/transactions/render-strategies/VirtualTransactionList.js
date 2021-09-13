@@ -12,11 +12,9 @@ import type { Row } from '../types';
 import { TransactionInfo, TransactionsGroup } from '../types';
 import styles from './VirtualTransactionList.scss';
 
-/* eslint-disable react/no-unused-prop-types */
-
 type Props = {
-  getExpandedTransactions: () => Array<any>,
-  renderRow: Row => Node,
+  getExpandedTransactions: () => Map<string, WalletTransaction>,
+  renderRow: (Row) => Node,
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
   isSyncingSpinnerShown?: boolean,
@@ -38,7 +36,7 @@ export class VirtualTransactionList extends Component<Props> {
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
   txIdHeight: number = 0;
-  visibleExpandedTx: Array<WalletTransaction>;
+  visibleExpandedTx: Array<WalletTransaction> = [];
   overscanStartIndex: number;
   overscanStopIndex: number;
 
@@ -55,22 +53,12 @@ export class VirtualTransactionList extends Component<Props> {
     window.removeEventListener('resize', this.onResize);
   }
 
-  componentDidUpdate(prevProps: Props) {
-    // Recompute all row heights in case the number of rows has changed
-    const prevNumberOfRows = prevProps.rows.length;
-    const nextNumberOfRows = this.props.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
-      this.rowHeights = this.estimateRowHeights(this.props.rows);
-      this.recomputeVirtualRowHeights();
-    }
-  }
-
   /**
    * Returns the row index of a given tx.
    */
   findIndexForTx = (tx: WalletTransaction): number =>
     this.props.rows.findIndex(
-      r => r instanceof TransactionInfo && r.tx.id === tx.id
+      (r) => r instanceof TransactionInfo && r.tx.id === tx.id
     );
 
   /**
@@ -140,7 +128,6 @@ export class VirtualTransactionList extends Component<Props> {
       ? this.estimateHeightOfTxExpandedRow(row, tx)
       : this.estimateHeightOfTxContractedRow(row);
     this.recomputeVirtualRowHeights();
-
     // In case transaction has just been manually expanded we need to schedule
     // another row height calculation if the transaction still isn't fully
     // expanded in the moment of the initial execution of this method
@@ -158,10 +145,16 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Gets a row height based on its type
    */
-  estimateRowHeight = (row: Row): number =>
-    row instanceof TransactionInfo
-      ? this.estimateHeightOfTxContractedRow(row)
-      : GROUP_DATE_HEIGHT;
+  estimateRowHeight = (row: Row): number => {
+    if (row instanceof TransactionInfo) {
+      const expandedTxMap = this.props.getExpandedTransactions();
+      if (expandedTxMap.has(row.tx.id)) {
+        return this.estimateHeightOfTxExpandedRow(row, row.tx);
+      }
+      return this.estimateHeightOfTxContractedRow(row);
+    }
+    return GROUP_DATE_HEIGHT;
+  };
 
   /**
    * Maps over all rows and returns array of calculated heights.
@@ -225,14 +218,16 @@ export class VirtualTransactionList extends Component<Props> {
   };
 
   updateVisibleExpandedTxRowHeights = () => {
-    const expandedRows = this.props.getExpandedTransactions();
-    const visibleExpandedTx = expandedRows.filter(tx => {
+    const expandedTxMap = this.props.getExpandedTransactions();
+    // This is needed because a spreaded Map results in an array of [key, value]
+    const expandedTxArray = [...expandedTxMap].map((mapValue) => mapValue[1]);
+    const visibleExpandedTx = expandedTxArray.filter((tx) => {
       const index = this.findIndexForTx(tx);
       return (
         index >= this.overscanStartIndex && index <= this.overscanStopIndex
       );
     });
-    visibleExpandedTx.forEach(tx => {
+    visibleExpandedTx.forEach((tx) => {
       this.updateTxRowHeight(tx, true, false);
       const estimatedHeight = this.rowHeights[this.findIndexForTx(tx)];
       this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
@@ -252,7 +247,7 @@ export class VirtualTransactionList extends Component<Props> {
 
     // Subsequently resizes, updates the expanded rows heights if there is any expanded one
     const expandedTransactions = this.props.getExpandedTransactions();
-    if (!expandedTransactions.length) return;
+    if (!expandedTransactions.size) return;
     this.updateAddressesAndIdHeights();
     this.updateVisibleExpandedTxRowHeights();
   };
@@ -291,7 +286,7 @@ export class VirtualTransactionList extends Component<Props> {
     context: ScrollContextType,
     { scrollTop }: { scrollTop: number }
   ) => {
-    context.setFilterButtonFaded(scrollTop > 10);
+    context.setIsScrolling(scrollTop > 10);
   };
 
   // =============== REACT LIFECYCLE ================= //
@@ -302,6 +297,11 @@ export class VirtualTransactionList extends Component<Props> {
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
 
+    if (rows.length !== this.rowHeights.length) {
+      this.rowHeights = this.estimateRowHeights(rows);
+      this.updateVisibleExpandedTxRowHeights();
+    }
+
     const componentStyles = classNames([
       styles.component,
       isLoadingSpinnerShown ? styles.withLoadingSpinner : null,
@@ -310,7 +310,7 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <WalletTransactionsListScrollContext.Consumer>
-        {context => (
+        {(context) => (
           <div className={componentStyles}>
             <AutoSizer
               onResize={throttle(this.onResize, 100, {
@@ -321,7 +321,7 @@ export class VirtualTransactionList extends Component<Props> {
               {({ width, height }) => (
                 <List
                   className={styles.list}
-                  ref={list => {
+                  ref={(list) => {
                     this.list = list;
                   }}
                   width={width}
@@ -336,7 +336,7 @@ export class VirtualTransactionList extends Component<Props> {
                   }
                   rowRenderer={this.rowRenderer}
                   style={{ overflowY: 'scroll' }}
-                  onScroll={param => this.onListScroll(context, param)}
+                  onScroll={(param) => this.onListScroll(context, param)}
                 />
               )}
             </AutoSizer>

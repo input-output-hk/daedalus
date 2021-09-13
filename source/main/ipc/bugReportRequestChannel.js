@@ -44,19 +44,19 @@ export const handleBugReportRequests = () => {
 
         logger.info('Sending bug report request with options', { options });
         const httpRequest = http.request(options);
-        httpRequest.on('response', response => {
+        httpRequest.on('response', (response) => {
           if (response.statusCode !== 200) {
             return reject();
           }
           response.on('data', () => {});
-          response.on('error', error => {
+          response.on('error', (error) => {
             reject(error);
           });
           response.on('end', () => {
             resolve();
           });
         });
-        httpRequest.on('error', error => reject(error));
+        httpRequest.on('error', (error) => reject(error));
 
         // Attach form-data and trigger the request
         formData.pipe(httpRequest);

@@ -1,6 +1,35 @@
-.component > div {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, 80px);
+.preloadingBlockWrapper {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-height: 44px;
+
+  :global {
+    .LoadingSpinner_component {
+      margin: 0;
+    }
+  }
+}
+
+.tiles {
+  display: flex;
+  gap: 10px;
   justify-content: space-between;
+}
+
+.rowFillerItem {
+  width: 80px;
+}
+
+.list {
+  overflow: visible !important;
+
+  :global(.ReactVirtualized__Grid__innerScrollContainer) {
+    overflow: visible !important;
+  }
+
+  &:focus {
+    outline: 0;
+  }
 }

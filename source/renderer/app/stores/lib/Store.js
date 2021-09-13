@@ -19,7 +19,9 @@ export default class Store {
   }
 
   registerReactions(reactions: Array<Function>) {
-    reactions.forEach(reaction => this._reactions.push(new Reaction(reaction)));
+    reactions.forEach((reaction) =>
+      this._reactions.push(new Reaction(reaction))
+    );
   }
 
   configure(stores: StoresMap) {
@@ -30,10 +32,10 @@ export default class Store {
 
   initialize() {
     this.setup();
-    this._reactions.forEach(reaction => reaction.start());
+    this._reactions.forEach((reaction) => reaction.start());
   }
 
   teardown() {
-    this._reactions.forEach(reaction => reaction.stop());
+    this._reactions.forEach((reaction) => reaction.stop());
   }
 }

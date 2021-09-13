@@ -33,10 +33,13 @@ export default class TransferFundsStep2Container extends Component<Props> {
       allLegacyWallets,
       allWallets,
       transferFundsFee,
+      transferFundsLeftovers,
       transferFundsRequest,
     } = stores.wallets;
 
-    const onFinish = spendingPassword =>
+    const { openExternalLink } = stores.app;
+
+    const onFinish = (spendingPassword) =>
       actions.wallets.transferFunds.trigger({ spendingPassword });
 
     const sourceWallet = allLegacyWallets.find(
@@ -45,18 +48,31 @@ export default class TransferFundsStep2Container extends Component<Props> {
     const targetWallet = allWallets.find(
       ({ id }) => id === transferFundsTargetWalletId
     );
-    if (!sourceWallet || !targetWallet) return null;
+    if (
+      !sourceWallet ||
+      !targetWallet ||
+      !transferFundsFee ||
+      !transferFundsLeftovers
+    )
+      return null;
+
+    const sourceWalletName = sourceWallet.name;
+    const sourceWalletAmount = sourceWallet.amount;
+    const targetWalletName = targetWallet.name;
+
     return (
       <TransferFundsStep2Dialog
-        addresses={[]}
-        transferFundsFee={transferFundsFee}
+        feesAmount={transferFundsFee}
+        leftoversAmount={transferFundsLeftovers}
+        sourceWalletAmount={sourceWalletAmount}
+        sourceWalletName={sourceWalletName}
+        targetWalletName={targetWalletName}
+        onOpenExternalLink={openExternalLink}
         onBack={onBack}
         onClose={this.onClose}
         onFinish={onFinish}
-        isSubmitting={transferFundsRequest.isExecuting}
+        isSubmitting={false /* transferFundsRequest.isExecuting */}
         error={transferFundsRequest.error}
-        sourceWallet={sourceWallet}
-        targetWallet={targetWallet}
       />
     );
   }

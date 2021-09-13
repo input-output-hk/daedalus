@@ -30,15 +30,14 @@ export const ROUTES = {
     SETTINGS: '/wallets/:id/settings',
     UTXO: '/wallets/:id/utxo',
   },
-  HARDWARE_WALLETS: {
-    ROOT: '/hardware-wallets',
-    ADD: '/hardware-wallets/add',
-    PAGE: '/hardware-wallets/:id/:page',
-    SUMMARY: '/hardware-wallets/:id/summary',
+  VOTING: {
+    REGISTRATION: '/voting/registration',
   },
   SETTINGS: {
     ROOT: '/settings',
+    WALLETS: '/settings/wallets',
     GENERAL: '/settings/general',
+    STAKE_POOLS: '/settings/stake-pools',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
     DISPLAY: '/settings/display',

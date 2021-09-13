@@ -1,0 +1,14 @@
+@import '../../../themes/mixins/animations';
+@import '../../../themes/mixins/loading-spinner';
+
+.component {
+  background: rgba(0, 0, 0, 0.4);
+  bottom: 0;
+  box-shadow: none !important;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 999;
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
+}

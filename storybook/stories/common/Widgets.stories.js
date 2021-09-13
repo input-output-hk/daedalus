@@ -4,6 +4,7 @@ import { defineMessages, IntlProvider } from 'react-intl';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
+import { withKnobs, boolean, number, text, date } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import StoryLayout from '../_support/StoryLayout';
@@ -11,6 +12,8 @@ import enMessages from '../../../source/renderer/app/i18n/locales/en-US.json';
 import jpMessages from '../../../source/renderer/app/i18n/locales/ja-JP.json';
 import BigButtonForDialogs from '../../../source/renderer/app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
+import InlineEditingInput from '../../../source/renderer/app/components/widgets/forms/InlineEditingInput';
+import CountdownWidget from '../../../source/renderer/app/components/widgets/CountdownWidget';
 import createIcon from '../../../source/renderer/app/assets/images/create-ic.inline.svg';
 import importIcon from '../../../source/renderer/app/assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
@@ -71,15 +74,13 @@ const messages = defineMessages({
     defaultMessage: '!!!Save',
     description: 'Save description.',
   },
-  followInstructions: {
-    id: 'manualUpdate.button.label',
-    defaultMessage: '!!!Follow instructions and manually update',
-    description: 'Follow instructions and manually update description.',
-  },
 });
 
 storiesOf('Common|Widgets', module)
   .addDecorator((story: any, context: any) => {
+    if (context.name === 'CountdownWidget') {
+      return story();
+    }
     const onChangeAction = action('onChange');
     const state = observable({
       checked: false,
@@ -100,7 +101,38 @@ storiesOf('Common|Widgets', module)
     );
   })
 
+  .addDecorator(withKnobs)
+
   // ====== Stories ======
+
+  .add('CountdownWidget', () => (
+    <CountdownWidget
+      startDateTime={new Date(date('startDateTime')).toISOString()}
+      format="DD-HH-mm-ss"
+    />
+  ))
+
+  .add('InlineEditingInput', () => (
+    <div>
+      <div style={{ width: '700px', height: '200px', display: 'flex' }}>
+        <InlineEditingInput
+          label={text('inputFieldLabel', 'Input label')}
+          value=""
+          placeholder={text('inputFieldPlaceholder', 'Enter you text here')}
+          onSubmit={action('onSubmit')}
+          isValid={(value) => value && value.length > 3 && value !== 'error'}
+          validationErrorMessage={text('validationErrorMessage', 'Error!')}
+          successfullyUpdated={boolean('successfullyUpdated', true)}
+          isActive={boolean('isActive', true)}
+          isSubmitting={boolean('isSubmitting', false)}
+          inputBlocked={boolean('inputBlocked', false)}
+          disabled={boolean('disabled', false)}
+          readOnly={boolean('readOnly', false)}
+          maxLength={number('maxLength')}
+        />
+      </div>
+    </div>
+  ))
 
   .add('BigButtonForDialogs', (props: { locale: string }) => (
     <div>
@@ -161,7 +193,7 @@ storiesOf('Common|Widgets', module)
 
   .add('ButtonLink', (props: { locale: string }) => (
     <ButtonLink
-      label={intl[props.locale].formatMessage(messages.followInstructions)}
+      label={intl[props.locale].formatMessage(messages.save)}
       onClick={action('onClick')}
     />
   ))

@@ -158,7 +158,7 @@ When(
     const walletCertificateAddress = await this.client.execute(
       () => daedalus.stores.wallets.walletCertificateAddress
     );
-    const cardanoExplorerLink = `https://cardanoexplorer.com/address/${
+    const cardanoExplorerLink = `https://explorer.cardano.org/en/address${
       walletCertificateAddress.value
     }`;
     this.certificateWalletAddress = walletCertificateAddress.value;

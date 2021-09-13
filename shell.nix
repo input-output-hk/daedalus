@@ -13,6 +13,7 @@
 , configOverride ? null
 , genesisOverride ? null
 , useLocalNode ? false
+, nivOnly ? false
 }:
 
 let
@@ -50,12 +51,15 @@ let
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
       daedalusPkgs.darwin-launcher
+      daedalusPkgs.mock-token-metadata-server
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
       chromedriver
+      pkgconfig
+      libusb
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
@@ -83,8 +87,8 @@ let
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
-    NODE_EXE = if nodeImplementation == "jormungandr" then "cardano-wallet-jormungandr" else "cardano-wallet-http-bridge";
-    CLI_EXE = if nodeImplementation == "jormungandr" then "jcli" else "";
+    NODE_EXE = "cardano-wallet";
+    CLI_EXE = "cardano-cli";
     NODE_IMPLEMENTATION = nodeImplementation;
     shellHook = let
       secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
@@ -98,21 +102,23 @@ let
       source <(cardano-cli --bash-completion-script cardano-cli)
       source <(cardano-node --bash-completion-script cardano-node)
       source <(cardano-address --bash-completion-script cardano-address)
-      [[ $(type -P cardano-wallet-shelley) ]] && source <(cardano-wallet-shelley --bash-completion-script cardano-wallet-shelley)
-      [[ $(type -P cardano-wallet-byron) ]] && source <(cardano-wallet-byron --bash-completion-script cardano-wallet-byron)
+      [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
 
       cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
       # These links will only occur to binaries that exist for the
       # specific build config
-      ln -svf $(type -P jormungandr)
-      ln -svf $(type -P cardano-wallet-jormungandr)
-      ln -svf $(type -P jcli)
+      ln -svf $(type -P cardano-node)
+      ln -svf $(type -P cardano-wallet)
+      ln -svf $(type -P cardano-cli)
+      mkdir -p Release/
+      ln -sv $PWD/node_modules/usb/build/Release/usb_bindings.node Release/
+      ln -sv $PWD/node_modules/node-hid/build/Release/HID.node Release/
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node -I${toString ./.}/node_modules/node-addon-api"
       ${localLib.optionalString purgeNpmCache ''
         warn "purging all NPM/Yarn caches"
         rm -rf node_modules
@@ -121,7 +127,9 @@ let
         ''
       }
       yarn install
-      ${pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") ''
+      ${localLib.optionalString pkgs.stdenv.isLinux ''
+        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/usb_bindings.node
+        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} Release/HID.node
         ln -svf ${daedalusPkgs.electron8}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
@@ -140,7 +148,7 @@ let
     name = "devops-shell";
     buildInputs = let
       inherit (localLib.iohkNix) niv;
-    in [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
+    in if nivOnly then [ niv ] else [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
     shellHook = ''
       export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket
       echo "DevOps Tools" \

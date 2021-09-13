@@ -2,7 +2,7 @@
 // @flow
 import { isEmpty } from 'lodash';
 import chalk from 'chalk';
-import { EXISTING_THEME_OUTPUTS_OBJ } from '../daedalus/index.js';
+import { EXISTING_THEME_OUTPUTS_OBJ } from '../daedalus/index';
 import { THEME_LOGGING_COLORS } from './constants';
 import { findMissingDefinitions, findMissingCSSVars } from './checkCreateTheme';
 import type { PendingThemesUpdates, LogDifferencesParams } from '../types';

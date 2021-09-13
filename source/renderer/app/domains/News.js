@@ -11,16 +11,30 @@ export type NewsAction = {
   event?: string,
 };
 
+export type IncidentColor = 'red' | 'theme-default' | 'grey';
+
 export const NewsTypes: {
   INCIDENT: NewsType,
   ALERT: NewsType,
   ANNOUNCEMENT: NewsType,
   INFO: NewsType,
+  UPDATE: NewsType,
 } = {
   INCIDENT: 'incident',
   ALERT: 'alert',
   ANNOUNCEMENT: 'announcement',
   INFO: 'info',
+  UPDATE: 'software-update',
+};
+
+export const IncidentColors: {
+  RED: IncidentColor,
+  THEME_DEFAULT: IncidentColor,
+  GREY: IncidentColor,
+} = {
+  RED: 'red',
+  THEME_DEFAULT: 'theme-default',
+  GREY: 'grey',
 };
 
 export type NewsTypesStateType = {
@@ -40,6 +54,8 @@ class News {
   @observable date: number;
   @observable type: NewsType;
   @observable read: boolean;
+  @observable color: ?IncidentColor;
+  @observable repeatOnStartup: ?boolean;
 
   constructor(data: {
     id: number,
@@ -50,6 +66,8 @@ class News {
     date: number,
     type: NewsType,
     read: boolean,
+    color?: ?IncidentColor,
+    repeatOnStartup?: ?boolean,
   }) {
     Object.assign(this, data);
   }
@@ -57,16 +75,18 @@ class News {
 
 class NewsCollection {
   @observable all: Array<News> = [];
+  @observable update: ?News = null;
 
   constructor(data: Array<News>) {
     // Filter news by platform and versions
-    const filteredNews = filter(data, newsItem => {
+    const filteredNews = filter(data, (newsItem) => {
       const availableTargetVersionRange = get(
         newsItem,
         ['target', 'daedalusVersion'],
         ''
       );
       const targetPlatforms = get(newsItem, ['target', 'platforms']);
+
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
@@ -74,6 +94,7 @@ class NewsCollection {
               includePrerelease: true,
             }))) &&
         (platform === 'browser' || includes(targetPlatforms, platform)) &&
+        newsItem.type !== NewsTypes.UPDATE &&
         newsItem.id &&
         newsItem.title &&
         newsItem.content &&
@@ -81,18 +102,19 @@ class NewsCollection {
         newsItem.date
       );
     });
-
     const orderedNews = orderBy(filteredNews, 'date', 'desc');
+    const update = data.filter((item) => item.type === NewsTypes.UPDATE)[0];
 
     runInAction(() => {
       this.all = orderedNews;
+      this.update = update;
     });
   }
 
   @computed get incident(): ?News {
     const incidents = filter(
       this.all,
-      item => item.type === NewsTypes.INCIDENT
+      (item) => item.type === NewsTypes.INCIDENT
     );
     const lastIncidentIndex =
       incidents.length > 0 ? incidents.length - 1 : null;
@@ -104,7 +126,7 @@ class NewsCollection {
   }
 
   @computed get alerts(): NewsTypesStateType {
-    const alerts = filter(this.all, item => item.type === NewsTypes.ALERT);
+    const alerts = filter(this.all, (item) => item.type === NewsTypes.ALERT);
     // Order alerts from newest to oldest
     const orderedAlerts = orderBy(alerts, 'date', 'asc');
 
@@ -119,7 +141,7 @@ class NewsCollection {
   @computed get announcements(): NewsTypesStateType {
     const announcements = filter(
       this.all,
-      item => item.type === NewsTypes.ANNOUNCEMENT && !item.read
+      (item) => item.type === NewsTypes.ANNOUNCEMENT && !item.read
     );
     const obj = new NewsCollection(announcements);
     return {
@@ -132,7 +154,7 @@ class NewsCollection {
   @computed get infos(): NewsTypesStateType {
     const infos = filter(
       this.all,
-      item => item.type === NewsTypes.INFO && !item.read
+      (item) => item.type === NewsTypes.INFO && !item.read
     );
 
     const obj = new NewsCollection(infos);
@@ -144,16 +166,20 @@ class NewsCollection {
   }
 
   @computed get unread(): Array<News> {
-    const unread = filter(this.all, item => !item.read);
+    const unread = filter(this.all, (item) => !item.read);
     // Order unread from newest to oldest
     return orderBy(unread, 'date', 'asc');
   }
 
   @computed get read(): Array<News> {
-    const read = filter(this.all, item => item.read);
+    const read = filter(this.all, (item) => item.read);
     // Order read from newest to oldest
     return orderBy(read, 'date', 'asc');
   }
+
+  // @computed get update(): News | null {
+  //   return this.all.filter(item => item.type === NewsTypes.UPDATE)[0];
+  // }
 }
 
 export default {

@@ -4,6 +4,9 @@ import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
 import AppUpdateStore from './AppUpdateStore';
+import AssetsStore from './AssetsStore';
+import CurrencyStore from './CurrencyStore';
+import HardwareWalletsStore from './HardwareWalletsStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
 import ProfileStore from './ProfileStore';
@@ -12,17 +15,21 @@ import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
-import WalletsStore from './WalletsStore';
-import WalletsLocalStore from './WalletsLocalStore';
+import VotingStore from './VotingStore';
 import WalletBackupStore from './WalletBackupStore';
 import WalletMigrationStore from './WalletMigrationStore';
 import WalletSettingsStore from './WalletSettingsStore';
+import WalletsLocalStore from './WalletsLocalStore';
+import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
 
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
   appUpdate: AppUpdateStore,
+  assets: AssetsStore,
+  currency: CurrencyStore,
+  hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -31,6 +38,7 @@ export const storeClasses = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
@@ -43,6 +51,9 @@ export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
   appUpdate: AppUpdateStore,
+  currency: CurrencyStore,
+  assets: AssetsStore,
+  hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -52,6 +63,7 @@ export type StoresMap = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
@@ -65,7 +77,7 @@ const storeNames = Object.keys(storeClasses);
 
 // Helpers
 function executeOnEveryStore(fn: (store: Store) => void) {
-  storeNames.forEach(name => {
+  storeNames.forEach((name) => {
     if (stores && stores[name]) fn(stores[name]);
   });
 }
@@ -77,22 +89,26 @@ export default action((api, actions, router): StoresMap => {
   }
 
   // Teardown existing stores
-  if (stores) executeOnEveryStore(store => store.teardown());
+  if (stores) executeOnEveryStore((store) => store.teardown());
 
   // Create fresh instances of all stores
   stores = observable({
-    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
     addresses: createStoreInstanceOf(AddressesStore),
     app: createStoreInstanceOf(AppStore),
+    assets: createStoreInstanceOf(AssetsStore),
+    currency: createStoreInstanceOf(CurrencyStore),
+    appUpdate: createStoreInstanceOf(AppUpdateStore),
+    hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
     newsFeed: createStoreInstanceOf(NewsFeedStore),
-    appUpdate: createStoreInstanceOf(AppUpdateStore),
     profile: createStoreInstanceOf(ProfileStore),
     router,
     sidebar: createStoreInstanceOf(SidebarStore),
     staking: createStoreInstanceOf(StakingStore),
     transactions: createStoreInstanceOf(TransactionsStore),
     uiDialogs: createStoreInstanceOf(UiDialogsStore),
+    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
+    voting: createStoreInstanceOf(VotingStore),
     wallets: createStoreInstanceOf(WalletsStore),
     walletsLocal: createStoreInstanceOf(WalletsLocalStore),
     walletBackup: createStoreInstanceOf(WalletBackupStore),
@@ -101,9 +117,9 @@ export default action((api, actions, router): StoresMap => {
     window: createStoreInstanceOf(WindowStore),
   });
   // Configure and initialize all stores
-  executeOnEveryStore(store => {
+  executeOnEveryStore((store) => {
     if (stores) store.configure(stores);
   });
-  executeOnEveryStore(store => store.initialize());
+  executeOnEveryStore((store) => store.initialize());
   return stores;
 });

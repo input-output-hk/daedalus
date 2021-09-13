@@ -7,6 +7,8 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import SVGInline from 'react-svg-inline';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -22,17 +24,14 @@ import { PasswordInput } from '../widgets/forms/PasswordInput';
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
+import infoIconInline from '../../assets/images/info-icon.inline.svg';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
-  dialogTitleItn: {
-    id: 'wallet.create.dialog.title.itn',
-    defaultMessage: '!!!Create a new wallet',
-    description: 'Title "Create a new wallet" in the wallet create form.',
-  },
   dialogTitle: {
     id: 'wallet.create.dialog.title',
-    defaultMessage: '!!!Create a wallet',
-    description: 'Title "Create a wallet" in the wallet create form.',
+    defaultMessage: '!!!Create a new wallet',
+    description: 'Title "Create a new wallet" in the wallet create form.',
   },
   walletName: {
     id: 'wallet.create.dialog.name.label',
@@ -46,17 +45,11 @@ const messages = defineMessages({
     description:
       'Hint for the "Wallet Name" text input in the wallet create form.',
   },
-  createPersonalWalletItn: {
-    id: 'wallet.create.dialog.create.personal.wallet.button.label.itn',
+  createPersonalWallet: {
+    id: 'wallet.create.dialog.create.personal.wallet.button.label',
     defaultMessage: '!!!Create Shelley wallet',
     description:
       'Label for the "Create Shelley wallet" button on create wallet dialog.',
-  },
-  createPersonalWallet: {
-    id: 'wallet.create.dialog.create.personal.wallet.button.label',
-    defaultMessage: '!!!Create wallet',
-    description:
-      'Label for the "Create wallet" button on create wallet dialog.',
   },
   passwordSectionLabel: {
     id: 'wallet.create.dialog.passwordSectionLabel',
@@ -86,14 +79,18 @@ const messages = defineMessages({
     description:
       'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
+  passwordTooltip: {
+    id: 'wallet.dialog.passwordTooltip',
+    defaultMessage:
+      'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
+    description: 'Tooltip for the password input in the wallet dialog.',
+  },
 });
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
-
 type Props = {
-  isShelleyActivated: boolean,
   onSubmit: Function,
   onCancel: Function,
+  currentLocale: string,
 };
 
 type State = {
@@ -189,8 +186,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
   );
 
   submit = () => {
+    this.setState({ isSubmitting: false });
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         const { walletName, spendingPassword } = form.values();
         const walletData = {
@@ -211,9 +209,13 @@ export default class WalletCreateDialog extends Component<Props, State> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onCancel, isShelleyActivated } = this.props;
+    const { onCancel, currentLocale } = this.props;
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
+    const spendingPasswordClasses = classnames([
+      styles.spendingPasswordField,
+      currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
+    ]);
 
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
@@ -221,15 +223,16 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
     const canSubmit = !isSubmitting && form.isValid;
 
+    const buttonLabel = !isSubmitting ? (
+      this.context.intl.formatMessage(messages.createPersonalWallet)
+    ) : (
+      <LoadingSpinner />
+    );
+
     const actions = [
       {
-        className: isSubmitting ? styles.isSubmitting : null,
         disabled: !canSubmit,
-        label: this.context.intl.formatMessage(
-          (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
-            ? messages.createPersonalWalletItn
-            : messages.createPersonalWallet
-        ),
+        label: buttonLabel,
         primary: true,
         onClick: this.submit,
       },
@@ -238,11 +241,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(
-          (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
-            ? messages.dialogTitleItn
-            : messages.dialogTitle
-        )}
+        title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => {}}
@@ -251,7 +250,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
         <Input
           className="walletName"
           onKeyPress={this.handleSubmitOnEnter}
-          ref={input => {
+          ref={(input) => {
             this.walletNameInput = input;
           }}
           {...walletNameField.bind()}
@@ -269,18 +268,28 @@ export default class WalletCreateDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <PasswordInput
-              className="spendingPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...spendingPasswordField.bind()}
-            />
-            <PasswordInput
-              className="repeatedPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...repeatedPasswordField.bind()}
-              repeatPassword={spendingPasswordField.value}
-              isPasswordRepeat
-            />
+            <div className={spendingPasswordClasses}>
+              <PasswordInput
+                className="spendingPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...spendingPasswordField.bind()}
+              />
+              <PopOver
+                content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                key="tooltip"
+              >
+                <SVGInline svg={infoIconInline} className={styles.infoIcon} />
+              </PopOver>
+            </div>
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                className="repeatedPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...repeatedPasswordField.bind()}
+                repeatPassword={spendingPasswordField.value}
+                isPasswordRepeat
+              />
+            </div>
             <p className={styles.passwordInstructions}>
               <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
             </p>

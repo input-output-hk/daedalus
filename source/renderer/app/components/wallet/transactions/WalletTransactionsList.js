@@ -7,7 +7,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import { set, omit, has } from 'lodash';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -16,26 +15,27 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
+import { getAssetTokens } from '../../../utils/assets';
 
 const messages = defineMessages({
   today: {
-    id: 'wallet.summary.page.todayLabel',
+    id: 'wallet.summary.transactionsList.todayLabel',
     defaultMessage: '!!!Today',
     description: 'Label for the "Today" label on the wallet summary page.',
   },
   yesterday: {
-    id: 'wallet.summary.page.yesterdayLabel',
+    id: 'wallet.summary.transactionsList.yesterdayLabel',
     defaultMessage: '!!!Yesterday',
     description: 'Label for the "Yesterday" label on the wallet summary page.',
   },
   showMoreTransactionsButtonLabel: {
-    id: 'wallet.summary.page.showMoreTransactionsButtonLabel',
+    id: 'wallet.summary.transactionsList.showMoreTransactionsButtonLabel',
     defaultMessage: '!!!Show more transactions',
     description:
       'Label for the "Show more transactions" button on the wallet summary page.',
   },
   syncingTransactionsMessage: {
-    id: 'wallet.summary.page.syncingTransactionsMessage',
+    id: 'wallet.summary.transactionsList.syncingTransactionsMessage',
     defaultMessage:
       '!!!Your transaction history for this wallet is being synced with the blockchain.',
     description: 'Syncing transactions message on async wallet restore.',
@@ -43,11 +43,11 @@ const messages = defineMessages({
 });
 
 export type ScrollContextType = {
-  setFilterButtonFaded: Function,
+  setIsScrolling: Function,
 };
 
 export const WalletTransactionsListScrollContext = React.createContext<ScrollContextType>(
-  { setFilterButtonFaded: () => null }
+  { setIsScrolling: () => null }
 );
 
 type Props = {
@@ -66,12 +66,20 @@ type Props = {
   isDeletingTransaction: boolean,
   currentDateFormat: string,
   currentTimeFormat: string,
+  hasAssetsEnabled: boolean,
+  getAsset: Function,
+  isInternalAddress: Function,
+  onCopyAssetItem: Function,
+};
+
+type State = {
+  isPreloading: boolean,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 @observer
-export default class WalletTransactionsList extends Component<Props> {
+export default class WalletTransactionsList extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -83,7 +91,28 @@ export default class WalletTransactionsList extends Component<Props> {
     onOpenExternalLink: () => {},
   };
 
-  expandedTransactions: { string: string } = {};
+  state = {
+    isPreloading: true,
+  };
+
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+    setTimeout(() => {
+      if (this._isMounted) this.setState({ isPreloading: false });
+    }, 0);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  expandedTransactionIds: Map<string, WalletTransaction> = new Map();
+  transactionsShowingMetadata: Map<string, WalletTransaction> = new Map();
   virtualList: ?VirtualTransactionList;
   simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
@@ -95,7 +124,7 @@ export default class WalletTransactionsList extends Component<Props> {
     for (const transaction of transactions) {
       const date = moment(transaction.date);
       let group = groups.find(
-        g => g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
+        (g) => g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
       );
       if (!group) {
         group = new TransactionsGroup({ date, transactions: [] });
@@ -128,39 +157,40 @@ export default class WalletTransactionsList extends Component<Props> {
     const today = moment().format(DATE_FORMAT);
     if (date === today) return intl.formatMessage(messages.today);
     // YESTERDAY
-    const yesterday = moment()
-      .subtract(1, 'days')
-      .format(DATE_FORMAT);
+    const yesterday = moment().subtract(1, 'days').format(DATE_FORMAT);
     if (date === yesterday) return intl.formatMessage(messages.yesterday);
     // PAST DATE
     return moment(date).format(currentDateFormat);
   }
 
   isTxExpanded = (tx: WalletTransaction) =>
-    has(this.expandedTransactions, tx.id);
+    this.expandedTransactionIds.has(tx.id);
 
-  registerTxAsExpanded = (tx: WalletTransaction) => {
-    this.expandedTransactions = {
-      ...this.expandedTransactions,
-      ...set({}, tx.id, tx),
-    };
-  };
-
-  removeTxFromExpanded = (tx: WalletTransaction) => {
-    this.expandedTransactions = {
-      ...omit(this.expandedTransactions, tx.id),
-    };
-  };
+  isTxShowingMetadata = (tx: WalletTransaction) =>
+    this.transactionsShowingMetadata.has(tx.id);
 
   toggleTransactionExpandedState = (tx: WalletTransaction) => {
     const isExpanded = this.isTxExpanded(tx);
     if (isExpanded) {
-      this.removeTxFromExpanded(tx);
+      this.expandedTransactionIds.delete(tx.id);
     } else {
-      this.registerTxAsExpanded(tx);
+      this.expandedTransactionIds.set(tx.id, tx);
     }
     if (this.virtualList) {
       this.virtualList.updateTxRowHeight(tx, !isExpanded, true);
+    } else if (this.simpleList) {
+      this.simpleList.forceUpdate();
+    }
+  };
+
+  /**
+   * Update the height of the transaction when metadata is shown
+   * @param tx
+   */
+  onShowMetadata = (tx: WalletTransaction) => {
+    this.transactionsShowingMetadata.set(tx.id, tx);
+    if (this.virtualList) {
+      this.virtualList.updateTxRowHeight(tx, true, true);
     } else if (this.simpleList) {
       this.simpleList.forceUpdate();
     }
@@ -172,8 +202,7 @@ export default class WalletTransactionsList extends Component<Props> {
     }
   };
 
-  getExpandedTransactions = (): Array<any> =>
-    Object.values(this.expandedTransactions);
+  getExpandedTransactions = () => this.expandedTransactionIds;
 
   renderGroup = (data: TransactionsGroup): Node => (
     <div className={styles.groupDate}>{this.localizedDate(data.date)}</div>
@@ -189,6 +218,10 @@ export default class WalletTransactionsList extends Component<Props> {
       walletId,
       isDeletingTransaction,
       currentTimeFormat,
+      hasAssetsEnabled,
+      getAsset,
+      isInternalAddress,
+      onCopyAssetItem,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -196,6 +229,14 @@ export default class WalletTransactionsList extends Component<Props> {
       isFirstInGroup ? styles.firstInGroup : null,
       isLastInGroup ? styles.lastInGroup : null,
     ]);
+
+    const txTokens = tx.assets;
+    const assetTokens = getAssetTokens(txTokens, getAsset);
+    const totalRawAssets = tx.assets.length;
+    const totalAssets = assetTokens.length;
+    const hasRawAssets = tx.assets.length > 0;
+    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
@@ -203,15 +244,22 @@ export default class WalletTransactionsList extends Component<Props> {
           deletePendingTransaction={deletePendingTransaction}
           formattedWalletAmount={formattedWalletAmount}
           isExpanded={this.isTxExpanded(tx)}
+          isShowingMetadata={this.isTxShowingMetadata(tx)}
           isLastInList={isLastInGroup}
           isRestoreActive={isRestoreActive}
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
+          onShowMetadata={() => this.onShowMetadata(tx)}
           getUrlByType={getUrlByType}
           state={tx.state}
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentTimeFormat={currentTimeFormat}
+          assetTokens={assetTokens}
+          hasAssetsEnabled={hasAssetsEnabled}
+          isInternalAddress={isInternalAddress}
+          isLoadingAssets={isLoadingAssets}
+          onCopyAssetItem={onCopyAssetItem}
         />
       </div>
     );
@@ -228,6 +276,8 @@ export default class WalletTransactionsList extends Component<Props> {
   };
 
   render() {
+    const { intl } = this.context;
+    const { isPreloading } = this.state;
     const {
       hasMoreToLoad,
       isLoadingTransactions,
@@ -237,14 +287,12 @@ export default class WalletTransactionsList extends Component<Props> {
       transactions,
       walletId,
     } = this.props;
-
-    const { intl } = this.context;
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
     const loadingSpinner =
       (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
         <LoadingSpinner
-          ref={component => {
+          ref={(component) => {
             this.loadingSpinner = component;
           }}
         />
@@ -266,7 +314,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
     // Generate flat list with dates in-between
     const rows: Row[] = [];
-    transactionsGroups.forEach(group => {
+    transactionsGroups.forEach((group) => {
       // First push the group into the list
       rows.push(group);
       // Followed by all transactions the tx in the group
@@ -294,13 +342,20 @@ export default class WalletTransactionsList extends Component<Props> {
       />
     );
 
+    if (isPreloading)
+      return (
+        <div className={styles.preloadingBlockWrapper}>
+          <LoadingSpinner big />
+        </div>
+      );
+
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
             getExpandedTransactions={this.getExpandedTransactions}
-            ref={list => {
+            ref={(list) => {
               this.virtualList = list;
             }}
             renderRow={this.renderItem}
@@ -310,7 +365,7 @@ export default class WalletTransactionsList extends Component<Props> {
           />
         ) : (
           <SimpleTransactionList
-            ref={list => {
+            ref={(list) => {
               this.simpleList = list;
             }}
             renderRow={this.renderItem}

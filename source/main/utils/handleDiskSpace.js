@@ -11,7 +11,7 @@ import {
   DISK_SPACE_CHECK_MEDIUM_INTERVAL,
   DISK_SPACE_CHECK_SHORT_INTERVAL,
   DISK_SPACE_RECOMMENDED_PERCENTAGE,
-  stateDrive,
+  stateDirectoryPath,
 } from '../config';
 
 export const handleDiskSpace = (
@@ -28,7 +28,7 @@ export const handleDiskSpace = (
       const {
         free: diskSpaceAvailable,
         size: diskTotalSpace,
-      } = await checkDiskSpace(stateDrive);
+      } = await checkDiskSpace(stateDirectoryPath);
       const diskSpaceMissing = Math.max(
         diskSpaceRequired - diskSpaceAvailable,
         0
@@ -96,7 +96,7 @@ export const handleDiskSpace = (
     }
   };
 
-  const setDiskSpaceIntervalChecking = interval => {
+  const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
     diskSpaceCheckInterval = setInterval(async () => {
       handleCheckDiskSpace();
@@ -107,7 +107,7 @@ export const handleDiskSpace = (
   // Start default interval
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
 
-  getDiskSpaceStatusChannel.onReceive(diskSpaceRequired =>
+  getDiskSpaceStatusChannel.onReceive((diskSpaceRequired) =>
     handleCheckDiskSpace(diskSpaceRequired)
   );
 

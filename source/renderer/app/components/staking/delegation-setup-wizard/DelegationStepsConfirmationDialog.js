@@ -14,7 +14,6 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import BigNumber from 'bignumber.js';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -26,8 +25,13 @@ import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import Wallet from '../../../domains/Wallet';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({
   title: {
@@ -45,15 +49,27 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
     defaultMessage:
-      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]<span> stake pool for your <span>{selectedWalletName}<span> wallet by posting your delegation preferences on the Cardano blockchain.',
+      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
+  },
+  stakePoolIdLabel: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel',
+    defaultMessage: '!!!Stake pool ID',
+    description:
+      'Stake pool ID label on the delegation setup "confirmation" step dialog.',
   },
   feesLabel: {
     id: 'staking.delegationSetup.confirmation.step.dialog.feesLabel',
     defaultMessage: '!!!Fees',
     description:
       'Fees label on the delegation setup "confirmation" step dialog.',
+  },
+  depositLabel: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.depositLabel',
+    defaultMessage: '!!!Deposit',
+    description:
+      'Deposit label on the delegation setup "confirmation" step dialog.',
   },
   spendingPasswordPlaceholder: {
     id:
@@ -82,7 +98,12 @@ const messages = defineMessages({
   calculatingFees: {
     id: 'staking.delegationSetup.confirmation.step.dialog.calculatingFees',
     defaultMessage: '!!!Calculating fees',
-    description: '"Calculating fees" message in the "Undelegate" dialog.',
+    description: '"Calculating fees" message in the "confirmation" dialog.',
+  },
+  calculatingDeposit: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.calculatingDeposit',
+    defaultMessage: '!!!Calculating deposit',
+    description: '"Calculating deposit" message in the "confirmation" dialog.',
   },
 });
 
@@ -92,12 +113,15 @@ type Props = {
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
-  transactionFee: ?BigNumber,
+  transactionFee: ?DelegationCalculateFeeResponse,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
   stepsList: Array<string>,
   isSubmitting: boolean,
+  hwDeviceStatus: HwDeviceStatus,
   error: ?LocalizableError,
+  onExternalLinkClick: Function,
+  isTrezor: boolean,
 };
 
 @observer
@@ -121,6 +145,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           validators: [
             ({ field }) => {
               const password = field.value;
+              const isHardwareWallet = get(
+                this.props.selectedWallet,
+                'isHardwareWallet'
+              );
+              if (isHardwareWallet) return [true];
               if (password === '') {
                 return [
                   false,
@@ -144,9 +173,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
+        const { selectedWallet } = this.props;
+        const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
         const { spendingPassword } = form.values();
-        this.props.onConfirm(spendingPassword);
+        this.props.onConfirm(spendingPassword, isHardwareWallet);
       },
       onError: () => {},
     });
@@ -166,29 +197,41 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       selectedWallet,
       error,
       isSubmitting,
+      hwDeviceStatus,
+      onExternalLinkClick,
+      isTrezor,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
     const selectedPoolTicker = get(selectedPool, 'ticker');
+    const selectedPoolId = get(selectedPool, 'id');
     const spendingPasswordField = form.$('spendingPassword');
 
-    const confirmButtonClasses = classNames([
-      'confirmButton',
-      isSubmitting ? styles.submitButtonSpinning : null,
-    ]);
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.confirmButtonLabel)
+    ) : (
+      <LoadingSpinner />
+    );
 
     const actions = [
       {
         className: 'cancelButton',
         label: intl.formatMessage(messages.cancelButtonLabel),
         onClick: !isSubmitting ? onClose : () => {},
+        disabled: isSubmitting,
       },
       {
-        className: confirmButtonClasses,
-        label: intl.formatMessage(messages.confirmButtonLabel),
+        className: 'confirmButton',
+        label: buttonLabel,
         onClick: this.submit,
         primary: true,
         disabled:
-          !spendingPasswordField.isValid || isSubmitting || !transactionFee,
+          (!isHardwareWallet && !spendingPasswordField.isValid) ||
+          (isHardwareWallet &&
+            hwDeviceStatus !==
+              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
+          isSubmitting ||
+          !transactionFee,
       },
     ];
 
@@ -217,7 +260,9 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         onClose={!isSubmitting ? onClose : () => {}}
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
+        backButton={
+          <DialogBackButton onBack={!isSubmitting ? onBack : () => {}} />
+        }
       >
         <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
@@ -239,33 +284,76 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
             />
           </p>
 
-          <div className={styles.feesWrapper}>
-            <p className={styles.feesLabel}>
-              {intl.formatMessage(messages.feesLabel)}
+          <div className={styles.stakePoolIdWrapper}>
+            <p className={styles.stakePoolIdLabel}>
+              {intl.formatMessage(messages.stakePoolIdLabel)}
             </p>
-            <p className={styles.feesAmount}>
-              {!transactionFee ? (
-                <span className={styles.calculatingFeesLabel}>
-                  {intl.formatMessage(messages.calculatingFees)}
-                </span>
-              ) : (
-                <>
-                  <span>{formattedWalletAmount(transactionFee, false)}</span>
-                  <span className={styles.feesAmountLabel}>
-                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
-                  </span>
-                </>
-              )}
-            </p>
+            <p className={styles.stakePoolId}>{selectedPoolId}</p>
           </div>
 
-          <Input
-            className={styles.spendingPassword}
-            {...spendingPasswordField.bind()}
-            skin={InputSkin}
-            error={spendingPasswordField.error}
-            onKeyPress={this.handleSubmitOnEnter}
-          />
+          <div className={styles.feesRow}>
+            <div className={styles.feesWrapper}>
+              <p className={styles.feesLabel}>
+                {intl.formatMessage(messages.feesLabel)}
+              </p>
+              <p className={styles.feesAmount}>
+                {!transactionFee ? (
+                  <span className={styles.calculatingFeesLabel}>
+                    {intl.formatMessage(messages.calculatingFees)}
+                  </span>
+                ) : (
+                  <>
+                    <span>
+                      {formattedWalletAmount(transactionFee.fee, false)}
+                    </span>
+                    <span className={styles.feesAmountLabel}>
+                      {` `}
+                      {intl.formatMessage(globalMessages.adaUnit)}
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+            {transactionFee &&
+              transactionFee.deposits.isZero &&
+              !transactionFee.deposits.isZero() && (
+                <>
+                  <div className={styles.depositWrapper}>
+                    <p className={styles.depositLabel}>
+                      {intl.formatMessage(messages.depositLabel)}
+                    </p>
+                    <p className={styles.depositAmount}>
+                      <span>
+                        {formattedWalletAmount(transactionFee.deposits, false)}
+                      </span>
+                      <span className={styles.depositAmountLabel}>
+                        {` `}
+                        {intl.formatMessage(globalMessages.adaUnit)}
+                      </span>
+                    </p>
+                  </div>
+                </>
+              )}
+          </div>
+
+          {isHardwareWallet ? (
+            <div className={styles.hardwareWalletStatusWrapper}>
+              <HardwareWalletStatus
+                hwDeviceStatus={hwDeviceStatus}
+                walletName={selectedWalletName}
+                isTrezor={isTrezor}
+                onExternalLinkClick={onExternalLinkClick}
+              />
+            </div>
+          ) : (
+            <Input
+              className={styles.spendingPassword}
+              {...spendingPasswordField.bind()}
+              skin={InputSkin}
+              error={spendingPasswordField.error}
+              onKeyPress={this.handleSubmitOnEnter}
+            />
+          )}
         </div>
 
         {error ? (

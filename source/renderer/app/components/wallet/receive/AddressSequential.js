@@ -55,12 +55,16 @@ export default class AddressSequential extends Component<Props> {
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
-    const addressIdClasses = classnames([styles.addressId]);
     return (
-      <div className={addressClasses}>
+      <div
+        className={addressClasses}
+        onClick={() => onShareAddress(address)}
+        role="link"
+        aria-hidden
+      >
         <div
-          className={addressIdClasses}
-          ref={ref => {
+          className={styles.addressId}
+          ref={(ref) => {
             this.addressContainerElement = ref;
           }}
           id={`address-${rawAddress}`}
@@ -68,7 +72,7 @@ export default class AddressSequential extends Component<Props> {
           {renderAddress}
           {shouldRegisterAddressElement && (
             <span
-              ref={ref => {
+              ref={(ref) => {
                 this.addressElement = ref;
               }}
               className={styles.addressElement}
@@ -81,6 +85,7 @@ export default class AddressSequential extends Component<Props> {
           address={address}
           onShareAddress={onShareAddress}
           onCopyAddress={onCopyAddress}
+          type="share"
         />
       </div>
     );

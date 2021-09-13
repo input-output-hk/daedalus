@@ -1,6 +1,6 @@
 // @flow
 import path from 'path';
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Rectangle } from 'electron';
 import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
@@ -36,11 +36,12 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const createMainWindow = (locale: string) => {
+export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
+    ...windowBounds,
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
@@ -72,22 +73,34 @@ export const createMainWindow = (locale: string) => {
   });
 
   // Provide render process with an api to close the main window
-  ipcMain.on('close-window', event => {
+  ipcMain.on('close-window', (event) => {
     if (event.sender !== window.webContents) return;
     window.close();
   });
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  window.on('page-title-updated', event => {
+  window.on('page-title-updated', (event) => {
     event.preventDefault();
   });
   window.setTitle(getWindowTitle(locale));
 
   window.webContents.on('context-menu', (e, props) => {
-    const contextMenuOptions = [
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
-    ];
+    const { canCopy, canPaste } = props.editFlags;
+    const contextMenuOptions = [];
+    if (canCopy && props.selectionText) {
+      contextMenuOptions.push({
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy',
+      });
+    }
+    if (canPaste) {
+      contextMenuOptions.push({
+        label: 'Paste',
+        accelerator: 'CmdOrCtrl+V',
+        role: 'paste',
+      });
+    }
 
     if (isDev || isTest) {
       const { x, y } = props;
@@ -99,7 +112,9 @@ export const createMainWindow = (locale: string) => {
       });
     }
 
-    Menu.buildFromTemplate(contextMenuOptions).popup(window);
+    if (contextMenuOptions.length) {
+      Menu.buildFromTemplate(contextMenuOptions).popup(window);
+    }
   });
 
   window.webContents.on('did-frame-finish-load', () => {
@@ -116,10 +131,20 @@ export const createMainWindow = (locale: string) => {
   });
 
   window.webContents.on('did-finish-load', () => {
-    if (isTest) {
+    if (isTest || isDev) {
       window.showInactive(); // show without focusing the window
     } else {
       window.show(); // show also focuses the window
+    }
+  });
+
+  /**
+   * We need to set bounds explicitly because passing them to the
+   * window constructor above was buggy (height was not correctly applied)
+   */
+  window.on('ready-to-show', () => {
+    if (windowBounds) {
+      window.setBounds(windowBounds);
     }
   });
 
@@ -127,11 +152,11 @@ export const createMainWindow = (locale: string) => {
     app.quit();
   });
 
-  window.webContents.on('did-fail-load', err => {
+  window.webContents.on('did-fail-load', (err) => {
     rendererErrorHandler.onError('did-fail-load', err);
   });
 
-  window.webContents.on('crashed', err => {
+  window.webContents.on('crashed', (err) => {
     rendererErrorHandler.onError('crashed', err);
   });
 

@@ -1,0 +1,141 @@
+@import '../../../themes/mixins/error-message';
+
+.dialog {
+  font-family: var(--font-medium);
+  width: 580px;
+
+  :global {
+    .Dialog_title {
+      margin-bottom: 0;
+    }
+  }
+
+  .currencySymbol {
+    font-family: var(--font-light);
+    text-transform: uppercase;
+  }
+
+  .addressToLabelWrapper,
+  .amountFeesWrapper {
+    margin-bottom: 20px;
+  }
+
+  .addressToLabel {
+    font-size: 16px;
+    line-height: 1.38;
+  }
+
+  .addressTo {
+    font-family: var(--font-light);
+    line-height: 1.38;
+    margin-top: 6px;
+    opacity: 0.5;
+    user-select: text;
+    word-wrap: break-word;
+  }
+
+  .amountFeesWrapper {
+    display: flex;
+    flex-direction: row;
+    .amountWrapper,
+    .feesWrapper {
+      width: 50%;
+    }
+    .amountWrapper {
+      margin-right: 10px;
+    }
+    .feesWrapper {
+      margin-left: 10px;
+    }
+    .amountLabel,
+    .feesLabel {
+      line-height: 1.38;
+    }
+    .amount,
+    .fees {
+      color: var(--theme-send-confirmation-dialog-send-values-color);
+      line-height: 1.38;
+      margin-top: 6px;
+      user-select: text;
+      word-break: break-word;
+    }
+    .fees {
+      opacity: 0.5;
+    }
+  }
+
+  .totalAmountLabel {
+    line-height: 1.38;
+  }
+
+  .totalAmount {
+    color: var(--theme-send-confirmation-dialog-send-values-color);
+    line-height: 1.38;
+    margin-top: 6px;
+    user-select: text;
+    word-break: break-word;
+  }
+
+  .passphrase {
+    margin-top: 20px;
+  }
+
+  .hardwareWalletStatusWrapper {
+    margin-top: 20px;
+    max-width: 640px;
+    width: 100%;
+  }
+
+  .error {
+    @include error-message;
+    margin-top: 27px;
+    text-align: center;
+  }
+
+  .flightCandidateWarning {
+    margin-top: 20px;
+    @extend .warning;
+  }
+
+  .warning {
+    p {
+      color: var(--theme-send-confirmation-dialog-send-values-color);
+      font-family: var(--font-regular);
+      line-height: 1.23;
+      margin-bottom: 20px;
+      b {
+        font-family: var(--font-bold);
+      }
+    }
+    em {
+      color: var(--theme-send-confirmation-dialog-send-values-color);
+      font-family: var(--font-light);
+    }
+    > div {
+      :global {
+        .SimpleCheckbox_check {
+          border-color: var(--theme-send-confirmation-dialog-send-values-color);
+        }
+        .SimpleCheckbox_checked {
+          background-color: var(
+            --theme-send-confirmation-dialog-send-values-color
+          );
+        }
+      }
+    }
+  }
+
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(
+              --theme-button-attention-delete-text-color-disabled
+            ) !important;
+          }
+        }
+      }
+    }
+  }
+}

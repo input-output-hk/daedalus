@@ -20,6 +20,7 @@ type Props = {
   expandWithoutTransition?: boolean,
   isNewsFeedOpen: boolean,
   currentDateFormat: string,
+  hasUpdateItem?: boolean,
 };
 
 type State = {
@@ -60,7 +61,7 @@ export default class NewsItem extends Component<Props, State> {
       const { newsItemCollapsible } = this.state;
       if (type === NewsTypes.INFO || type === NewsTypes.ANNOUNCEMENT) {
         if (newsItemCollapsible) {
-          this.setState(prevState => ({
+          this.setState((prevState) => ({
             newsItemExpanded: !prevState.newsItemExpanded,
           }));
         } else {
@@ -101,12 +102,18 @@ export default class NewsItem extends Component<Props, State> {
   };
 
   render() {
-    const { newsItem, expandWithoutTransition, currentDateFormat } = this.props;
+    const {
+      newsItem,
+      expandWithoutTransition,
+      currentDateFormat,
+      hasUpdateItem,
+    } = this.props;
     const componentClasses = classNames([
       styles.component,
       newsItem.type ? styles[newsItem.type] : null,
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
+      !hasUpdateItem ? styles.noUpdateItem : null,
     ]);
     const { url = '' } = newsItem.action;
     const title = this.generateTitleWithBadge(newsItem.title, newsItem.read);
@@ -144,7 +151,7 @@ export default class NewsItem extends Component<Props, State> {
             </div>
             <ButtonLink
               className={styles.newsItemActionBtn}
-              onClick={e => this.onProceedNewsAction(e)}
+              onClick={(e) => this.onProceedNewsAction(e)}
               skin={ButtonSkin}
               label={newsItem.action.label}
               linkProps={{

@@ -1,27 +1,22 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number } from '@storybook/addon-knobs';
+import { withKnobs, date, number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
 import StoryDecorator from '../_support/StoryDecorator';
-import {
-  isIncentivizedTestnetTheme,
-  isShelleyTestnetTheme,
-} from '../_support/utils';
 
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 
 import StakingWithNavigation from '../../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../../source/renderer/app/components/staking/countdown/StakingCountdown';
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
+import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
-import ExperimentalDataOverlay from '../../../source/renderer/app/components/notifications/ExperimentalDataOverlay';
 
 import { StakePoolsStory } from './StakePools.stories';
 import { StakingRewardsStory } from './Rewards.stories';
-import { StakingRewardsForIncentivizedTestnetStory } from './RewardsForIncentivizedTestnet.stories';
 import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
@@ -30,11 +25,14 @@ import {
   Step2ConfirmationDialogStory,
   Step3SuccessDialogStory,
   Step3FailureDialogStory,
+  NoWalletsDialogDialogStory,
+  RedemptionUnavailableDialogDialogStory,
 } from './RedeemItnWallets.stories';
 import {
   StakingUndelegateConfirmationStory,
   StakingUndelegateConfirmationResultStory,
 } from './Undelegate.stories';
+import { StakePoolsTableStory } from './StakePoolsTable.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date();
@@ -48,13 +46,13 @@ const startDateTimeKnob = (name, defaultValue) => {
 const pageNames = {
   countdown: 'Decentralization Countdown',
   'delegation-center': 'Delegation Center',
-  'delegation-center-experiment': 'Delegation Center - experimental feature',
   'stake-pools': 'Pools Index',
+  'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
-  'rewards-itn': 'Rewards - ITN',
   epochs: 'Epochs',
   info: 'Info',
+  'info-countdown': 'Info Countdown',
 };
 
 const decorator = (story, context) => {
@@ -74,40 +72,19 @@ const decorator = (story, context) => {
       <StoryProvider>
         <StoryLayout activeSidebarCategory={activeSidebarCategory} {...context}>
           {context.parameters.id === 'countdown' ||
-          context.parameters.id === 'wizard'
-            ? [
-                context.parameters.experiment ? (
-                  <ExperimentalDataOverlay
-                    key="experimentalDataOverlay"
-                    onClose={action('onCloseExperimentalDataOverlay')}
-                  />
-                ) : (
-                  <div />
-                ),
-                storyWithKnobs,
-              ]
-            : [
-                context.parameters.experiment ? (
-                  <ExperimentalDataOverlay
-                    key="experimentalDataOverlay"
-                    onClose={action('onCloseExperimentalDataOverlay')}
-                  />
-                ) : (
-                  <div />
-                ),
-                <StakingWithNavigation
-                  key="stakingWithNavigation"
-                  isActiveNavItem={item => item === getItemFromContext()}
-                  activeItem={getItemFromContext()}
-                  onNavItemClick={() => {}}
-                  isIncentivizedTestnet={isIncentivizedTestnetTheme(
-                    context.currentTheme
-                  )}
-                  isShelleyTestnet={isShelleyTestnetTheme(context.currentTheme)}
-                >
-                  {storyWithKnobs}
-                </StakingWithNavigation>,
-              ]}
+          context.parameters.id === 'wizard' ? (
+            storyWithKnobs
+          ) : (
+            <StakingWithNavigation
+              key="stakingWithNavigation"
+              isActiveNavItem={(item) => item === getItemFromContext()}
+              showInfoTab
+              activeItem={getItemFromContext()}
+              onNavItemClick={() => {}}
+            >
+              {storyWithKnobs}
+            </StakingWithNavigation>
+          )}
         </StoryLayout>
       </StoryProvider>
     </StoryDecorator>
@@ -136,22 +113,35 @@ storiesOf('Decentralization | Staking', module)
   .addDecorator(decorator)
   // ====== Stories ======
 
-  .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
-    id: 'delegation-center',
-  })
-
   .add(
-    pageNames['delegation-center-experiment'],
-    StakingDelegationCenterStory,
+    pageNames['delegation-center'],
+    (props) => (
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
+    ),
     {
       id: 'delegation-center',
-      experiment: true,
     }
   )
 
   .add(
     'Delegation Center - Loading',
-    props => <StakingDelegationCenterStory {...props} isLoading />,
+    (props) => (
+      <StakingDelegationCenterStory
+        {...props}
+        isLoading
+        isEpochsInfoAvailable
+      />
+    ),
+    {
+      id: 'delegation-center-loading',
+    }
+  )
+
+  .add(
+    'Delegation Center - Not an Shelley era',
+    (props) => (
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
+    ),
     {
       id: 'delegation-center-loading',
     }
@@ -168,17 +158,17 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     `${pageNames['stake-pools']} - Loading`,
-    props => <StakePoolsStory {...props} isLoading />,
+    (props) => <StakePoolsStory {...props} isLoading />,
     {
       id: 'stake-pools-loading',
     }
   )
 
-  .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
-
-  .add(pageNames['rewards-itn'], StakingRewardsForIncentivizedTestnetStory, {
-    id: 'rewards-incentivized-testnet',
+  .add(pageNames['stake-pools-table'], StakePoolsTableStory, {
+    id: 'stake-pools-table',
   })
+
+  .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
   .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 
@@ -199,23 +189,60 @@ storiesOf('Decentralization | Staking', module)
       id: 'info',
     }
   )
-  .add('Delegation Wizard', props => <StakingDelegationSteps {...props} />, {
+  .add(
+    pageNames['info-countdown'],
+    () => {
+      const isAlonzoActivated = boolean('isAlonzoActivated', false);
+      const epochDate = isAlonzoActivated
+        ? new Date().getTime() - 100000000
+        : new Date().getTime() + 100000000;
+      const startDateTime = new Date(epochDate).toISOString();
+      return (
+        <StakingInfoCountdown
+          onLearnMoreClick={action('onLearnMoreClick')}
+          startDateTime={startDateTime}
+          onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
+          isAnimating={boolean('isAnimating', false)}
+          isAlonzoActivated={boolean('isAlonzoActivated', false)}
+          stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
+          onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
+          onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}
+        />
+      );
+    },
+    {
+      id: 'info-countdown',
+    }
+  )
+
+  .add('Delegation Wizard', (props) => <StakingDelegationSteps {...props} />, {
     id: 'wizard',
   })
   .add(
     'Delegation Wizard - Delegation Not Available',
-    props => <StakingDelegationSteps {...props} isDisabled />,
+    (props) => <StakingDelegationSteps {...props} isDisabled />,
     {
       id: 'wizard',
     }
   )
-  .add('Undelegate Confirmation', StakingUndelegateConfirmationStory, {
-    id: 'undelegate-confirmation',
-  })
+  .add(
+    'Undelegate Confirmation',
+    (props) => (
+      <StakingUndelegateConfirmationStory
+        {...props}
+        isHardwareWallet={boolean('isHardwareWallet', false)}
+      />
+    ),
+    {
+      id: 'undelegate-confirmation',
+    }
+  )
 
   .add(
     'Undelegate Confirmation - unknownn stake pool',
-    props => <StakingUndelegateConfirmationStory {...props} unknownStakePool />,
+    (props) => (
+      <StakingUndelegateConfirmationStory {...props} unknownStakePool />
+    ),
     {
       id: 'undelegate-confirmation-unknown-pool',
     }
@@ -243,5 +270,11 @@ storiesOf('Decentralization | Redeem ITN Rewards', module)
     id: 'redeem-itn-wallets-story',
   })
   .add('Step 3 - Failure', Step3FailureDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('No Wallets', NoWalletsDialogDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Redemption Unavailable', RedemptionUnavailableDialogDialogStory, {
     id: 'redeem-itn-wallets-story',
   });
