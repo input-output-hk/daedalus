@@ -35,8 +35,6 @@ export default class TopBarContainer extends Component<Props> {
       isSynced,
       syncPercentage,
       isShelleyActivated,
-      epochToFullyDecentralized,
-      isFullyDecentralized,
       isOffline,
       isAlonzoActivated,
       isAlonzoPending,

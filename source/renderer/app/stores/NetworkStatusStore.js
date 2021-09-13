@@ -737,7 +737,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   _onChangeInternetConnection = () => {
-    console.info(
+    logger.info(
       'NetworkStatusStore: Network connection status change (triggering timeout)',
       {
         isOffline: !navigator.onLine,
@@ -747,7 +747,7 @@ export default class NetworkStatusStore extends Store {
     const handleInternetConnection = () => {
       runInAction('update internet connection status', () => {
         const isOffline = !navigator.onLine;
-        console.info(
+        logger.info(
           'NetworkStatusStore: Network connection status change (change app status)',
           {
             isOffline,

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { boolean, radios, number } from '@storybook/addon-knobs';
+import { boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 
