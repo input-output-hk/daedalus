@@ -45,14 +45,14 @@
     }
   }
   hr {
-    margin: 20px 0;
     border: 0;
     border-top: 1px solid var(--theme-dapp-transaction-request-separator);
+    margin: 20px 0;
     opacity: 0.3;
   }
   .transactionFee {
-    font-family: var(--font-regular);
     color: var(--theme-dapp-transaction-request-fees-text-color);
+    font-family: var(--font-regular);
     margin-bottom: 20px;
   }
   .additionalData,
