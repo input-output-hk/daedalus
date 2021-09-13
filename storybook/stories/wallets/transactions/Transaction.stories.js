@@ -80,6 +80,7 @@ const assetsMetadata = [
 const transactionTokens = [
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -87,6 +88,7 @@ const transactionTokens = [
   },
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -94,6 +96,7 @@ const transactionTokens = [
   },
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -101,6 +104,7 @@ const transactionTokens = [
   },
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',

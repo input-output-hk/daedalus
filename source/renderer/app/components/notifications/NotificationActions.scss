@@ -1,0 +1,41 @@
+.component {
+  display: inline;
+  margin-left: 20px;
+}
+.button {
+  height: 38px;
+  margin-left: 20px;
+  padding: 8px 20px;
+  width: auto;
+}
+.primaryButton {
+  background-color: var(
+    --theme-button-primary-invert-background-color
+  ) !important;
+  color: var(--theme-button-primary-invert-text-color) !important;
+  &:hover {
+    background-color: var(
+      --theme-button-primary-invert-background-color-hover
+    ) !important;
+  }
+  &:active {
+    background-color: var(
+      --theme-button-primary-invert-background-color-active
+    ) !important;
+  }
+}
+
+.secondaryButton {
+  background-color: var(--theme-button-flat-invert-background-color) !important;
+  color: var(--theme-button-flat-invert-text-color) !important;
+  &:hover {
+    background-color: var(
+      --theme-button-flat-invert-background-color-hover
+    ) !important;
+  }
+  &:active {
+    background-color: var(
+      --theme-button-flat-invert-background-color-active
+    ) !important;
+  }
+}
