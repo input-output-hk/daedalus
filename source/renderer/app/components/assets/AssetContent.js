@@ -71,7 +71,7 @@ const messages = defineMessages({
 
 type Props = {
   asset: AssetProps,
-  onCopyAssetItem?: Function,
+  onCopyAssetParam?: Function,
   highlightFingerprint?: boolean,
   className?: string,
   intl: intlShape.isRequired,
@@ -90,9 +90,9 @@ const AssetContent = observer((props: Props) => {
     assetItem: string,
     value: string
   ) => {
-    const { onCopyAssetItem } = props;
-    if (onCopyAssetItem) {
-      onCopyAssetItem(assetItem, value);
+    const { onCopyAssetParam } = props;
+    if (onCopyAssetParam) {
+      onCopyAssetParam(assetItem, value);
     }
     clearTimeout(copyNotificationTimeout);
     setItemCopied(newItemCopied);

@@ -40,6 +40,11 @@ const messages = defineMessages({
     description:
       'Label for the "Transactions" nav button in the wallet navigation.',
   },
+  tokens: {
+    id: 'wallet.navigation.tokens',
+    defaultMessage: '!!!Tokens',
+    description: 'Label for the "Tokens" nav button in the wallet navigation.',
+  },
   settings: {
     id: 'wallet.navigation.settings',
     defaultMessage: '!!!Settings',
@@ -101,6 +106,11 @@ export default class WalletNavigation extends Component<Props> {
       {
         id: WALLET_NAV_IDS.TRANSACTIONS,
         label: intl.formatMessage(messages.transactions),
+        icon: transactionsIcon,
+      },
+      {
+        id: WALLET_NAV_IDS.TOKENS,
+        label: intl.formatMessage(messages.tokens),
         icon: transactionsIcon,
       },
       {

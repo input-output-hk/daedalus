@@ -15,7 +15,6 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { ellipsis } from '../../utils/strings';
 import { getAssetTokens } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { AssetToken } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -50,22 +49,7 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = ({ uniqueId }: AssetToken) => {
-    const { stores } = this.props;
-    const { wallets } = stores;
-    const { active } = wallets;
-    if (active) {
-      const { id } = active;
-      const { wallets: walletActions, router } = this.props.actions;
-      walletActions.setActiveAsset.trigger(uniqueId);
-      router.goToRoute.trigger({
-        route: ROUTES.WALLETS.PAGE,
-        params: { id, page: 'send' },
-      });
-    }
-  };
-
-  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+  handleOnCopyAssetParam = (assetItem: string, fullValue: string) => {
     const value = ellipsis(fullValue, 15, 15);
     this.props.actions.wallets.copyAssetItem.trigger({
       assetItem,
@@ -87,7 +71,7 @@ export default class WalletSummaryPage extends Component<Props> {
     } = stores;
     const { getAsset, assetSettingsDialogWasOpened } = assets;
     const { isInternalAddress } = addresses;
-    const { onAssetSettingsOpen } = actions.assets;
+    const { onAssetSettingsOpen, onOpenAssetSend } = actions.assets;
     const {
       openExternalLink,
       environment: { network },
@@ -151,7 +135,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
           getAsset={getAsset}
-          onCopyAssetItem={this.handleOnCopyAssetItem}
+          onCopyAssetParam={this.handleOnCopyAssetParam}
         />
       );
     } else if (!hasAny) {
@@ -177,8 +161,8 @@ export default class WalletSummaryPage extends Component<Props> {
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={assetTokens}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-          onOpenAssetSend={this.handleOpenAssetSend}
-          onCopyAssetItem={this.handleOnCopyAssetItem}
+          onOpenAssetSend={onOpenAssetSend.trigger}
+          onCopyAssetParam={this.handleOnCopyAssetParam}
           onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
         />

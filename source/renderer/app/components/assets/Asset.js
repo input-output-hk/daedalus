@@ -74,7 +74,7 @@ type Props = {
   asset: AssetProps,
   small?: boolean,
   hidePopOver?: boolean,
-  onCopyAssetItem?: Function,
+  onCopyAssetParam?: Function,
   onClickSettings?: Function,
   assetSettingsDialogWasOpened?: ?boolean,
   anyAssetWasHovered?: ?boolean,
@@ -221,7 +221,7 @@ export default class Asset extends Component<Props, State> {
   renderPillPopOverContainer = () => {
     const {
       asset,
-      onCopyAssetItem,
+      onCopyAssetParam,
       assetSettingsDialogWasOpened,
       anyAssetWasHovered,
     } = this.props;
@@ -229,7 +229,7 @@ export default class Asset extends Component<Props, State> {
     const popOverContent = (
       <AssetContent
         asset={asset}
-        onCopyAssetItem={onCopyAssetItem}
+        onCopyAssetParam={onCopyAssetParam}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         anyAssetWasHovered={anyAssetWasHovered}
         className={styles.popOverContent}

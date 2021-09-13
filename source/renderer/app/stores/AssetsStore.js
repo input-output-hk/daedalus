@@ -4,6 +4,7 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
+import { ROUTES } from '../routes-config';
 import { requestGetter } from '../utils/storesUtils';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
 
@@ -30,6 +31,7 @@ export default class AssetsStore extends Store {
     assetsActions.onAssetSettingsOpen.listen(this._onAssetSettingsOpen);
     assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
     assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
+    assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
 
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
@@ -95,6 +97,22 @@ export default class AssetsStore extends Store {
 
   @action _onAssetSettingsCancel = () => {
     this.editingsAsset = null;
+  };
+
+  @action _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {
+    console.log('_onOpenAssetSend', uniqueId);
+    const { stores, actions } = this;
+    const { wallets } = stores;
+    const { active } = wallets;
+    if (active) {
+      const { id } = active;
+      const { wallets: walletActions, router } = actions;
+      walletActions.setActiveAsset.trigger(uniqueId);
+      router.goToRoute.trigger({
+        route: ROUTES.WALLETS.PAGE,
+        params: { id, page: 'send' },
+      });
+    }
   };
 
   @action _refreshAssetsData = () => {

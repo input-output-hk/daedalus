@@ -69,7 +69,7 @@ type Props = {
   hasAssetsEnabled: boolean,
   getAsset: Function,
   isInternalAddress: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
 };
 
 type State = {
@@ -221,7 +221,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
       hasAssetsEnabled,
       getAsset,
       isInternalAddress,
-      onCopyAssetItem,
+      onCopyAssetParam,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -259,7 +259,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
           hasAssetsEnabled={hasAssetsEnabled}
           isInternalAddress={isInternalAddress}
           isLoadingAssets={isLoadingAssets}
-          onCopyAssetItem={onCopyAssetItem}
+          onCopyAssetParam={onCopyAssetParam}
         />
       </div>
     );

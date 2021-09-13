@@ -49,7 +49,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     hardwareWallets.initiateTransaction({ walletId: activeWallet.id });
   };
 
-  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+  handleOnCopyAssetParam = (assetItem: string, fullValue: string) => {
     const value = ellipsis(fullValue, 15, 15);
     this.props.actions.wallets.copyAssetItem.trigger({
       assetItem,
@@ -132,7 +132,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
-            onCopyAssetItem={this.handleOnCopyAssetItem}
+            onCopyAssetParam={this.handleOnCopyAssetParam}
             isTrezor={isTrezor}
             formattedTotalAmount={formattedTotalAmount}
           />

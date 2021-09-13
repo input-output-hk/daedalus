@@ -68,7 +68,7 @@ type Props = {
   wallet: Wallet,
   assets: Array<AssetToken>,
   onOpenAssetSend: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
   onAssetSettings: Function,
   currentLocale: string,
   isLoadingAssets: boolean,
@@ -150,7 +150,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
     const {
       wallet,
       onOpenAssetSend,
-      onCopyAssetItem,
+      onCopyAssetParam,
       onAssetSettings,
       assetSettingsDialogWasOpened,
       isLoadingAssets,
@@ -183,7 +183,7 @@ export default class WalletSummaryAssets extends Component<Props, State> {
         key={asset.uniqueId}
         asset={asset}
         onOpenAssetSend={onOpenAssetSend}
-        onCopyAssetItem={onCopyAssetItem}
+        onCopyAssetParam={onCopyAssetParam}
         onAssetSettings={onAssetSettings}
         anyAssetWasHovered={anyAssetWasHovered}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}

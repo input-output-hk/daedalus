@@ -11,4 +11,6 @@ export default class AssetsActions {
     decimals: number,
   }> = new Action();
   onAssetSettingsCancel: Action<any> = new Action();
+  onOpenAssetSend: Action<{ uniqueId: string }> = new Action();
+  onCopyAssetParam: Action<{ uniqueId: string }> = new Action();
 }

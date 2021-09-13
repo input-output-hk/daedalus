@@ -12,7 +12,7 @@ type Props = InjectedProps;
 @inject('stores', 'actions')
 @observer
 export default class WalletTransactionsPage extends Component<Props> {
-  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+  handleOnCopyAssetParam = (assetItem: string, fullValue: string) => {
     const value = ellipsis(fullValue, 15, 15);
     this.props.actions.wallets.copyAssetItem.trigger({
       assetItem,
@@ -85,7 +85,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         hasAssetsEnabled={hasAssetsEnabled}
         isInternalAddress={isInternalAddress}
         getAsset={getAsset}
-        onCopyAssetItem={this.handleOnCopyAssetItem}
+        onCopyAssetParam={this.handleOnCopyAssetParam}
       />
     );
   }

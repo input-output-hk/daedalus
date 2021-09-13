@@ -253,7 +253,7 @@ storiesOf('Wallets|Summary', module)
         ]}
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
-        onCopyAssetItem={action('onCopyAsset')}
+        onCopyAssetParam={action('onCopyAsset')}
         onAssetSettings={action('onAssetSettings')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         assetSettingsDialogWasOpened={boolean(

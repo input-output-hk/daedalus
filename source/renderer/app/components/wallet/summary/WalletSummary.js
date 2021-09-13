@@ -24,7 +24,7 @@ type Props = {
   onCurrencySettingClick: Function,
   assets: Array<AssetToken>,
   onOpenAssetSend: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
   onAssetSettings: Function,
   isLoadingAssets: boolean,
   assetSettingsDialogWasOpened: boolean,
@@ -49,7 +49,7 @@ export default class WalletSummary extends Component<Props> {
       onCurrencySettingClick,
       assets,
       onOpenAssetSend,
-      onCopyAssetItem,
+      onCopyAssetParam,
       onAssetSettings,
       assetSettingsDialogWasOpened,
       isLoadingAssets,
@@ -89,7 +89,7 @@ export default class WalletSummary extends Component<Props> {
                 assets={assets}
                 onOpenAssetSend={onOpenAssetSend}
                 isLoadingAssets={isLoadingAssets}
-                onCopyAssetItem={onCopyAssetItem}
+                onCopyAssetParam={onCopyAssetParam}
                 onAssetSettings={onAssetSettings}
                 assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
                 currentLocale={currentLocale}
