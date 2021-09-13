@@ -84,6 +84,7 @@ type Props = {
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
   metadataNameChars?: number,
+  hasError?: boolean,
 };
 
 type State = {
@@ -175,12 +176,14 @@ export default class Asset extends Component<Props, State> {
       small,
       fullFingerprint,
       hasWarning,
+      hasError,
     } = this.props;
     const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.pill,
       small ? styles.small : null,
+      hasError ? styles.error : null,
     ]);
     let warningPopOverMessage;
     if (hasWarning) {

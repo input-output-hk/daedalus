@@ -154,12 +154,12 @@ export default class StakingEpochsPreviousEpochData extends Component<
               <td>
                 <span className={styles.mediumText}>{sharedRewards[0]}</span>
                 <span className={styles.uppercaseText}>{` ${intl.formatMessage(
-                  globalMessages.currency
+                  globalMessages.adaUnit
                 )} `}</span>
                 <span>{`${intl.formatMessage(messages.tableBodyOf)} `}</span>
                 <span className={styles.mediumText}>{sharedRewards[1]}</span>
                 <span className={styles.uppercaseText}>{` ${intl.formatMessage(
-                  globalMessages.currency
+                  globalMessages.adaUnit
                 )}`}</span>
               </td>
             </tr>

@@ -53,7 +53,7 @@ export type Token = {
   assetName: string,
   quantity: BigNumber,
   address?: ?string,
-  uniqueId?: string,
+  uniqueId: string,
 };
 
 export type Tokens = Array<Token>;

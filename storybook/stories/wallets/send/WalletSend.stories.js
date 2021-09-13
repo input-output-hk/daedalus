@@ -93,24 +93,28 @@ const walletTokens: WalletTokens = {
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: new BigNumber(400),
+      uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     },
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(100),
+      uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(200),
+      uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(300),
+      uniqueId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     },
   ],
   total: [
@@ -119,24 +123,28 @@ const walletTokens: WalletTokens = {
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: new BigNumber(400),
+      uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     },
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(100),
+      uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(200),
+      uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(300),
+      uniqueId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     },
   ],
 };
@@ -215,7 +223,6 @@ storiesOf('Wallets|Send', module)
     <WalletSendForm
       customProtocolParameters={null}
       resetCustomProptocolParams={action('resetCustomProptocolParams')}
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -242,7 +249,6 @@ storiesOf('Wallets|Send', module)
     <WalletSendForm
       customProtocolParameters={null}
       resetCustomProptocolParams={action('resetCustomProptocolParams')}
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -269,7 +275,6 @@ storiesOf('Wallets|Send', module)
     <WalletSendForm
       customProtocolParameters={null}
       resetCustomProptocolParams={action('resetCustomProptocolParams')}
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -296,7 +301,6 @@ storiesOf('Wallets|Send', module)
     <WalletSendForm
       customProtocolParameters={null}
       resetCustomProptocolParams={action('resetCustomProptocolParams')}
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -323,7 +327,6 @@ storiesOf('Wallets|Send', module)
     <WalletSendForm
       customProtocolParameters={null}
       resetCustomProptocolParams={action('resetCustomProptocolParams')}
-      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -359,10 +362,9 @@ storiesOf('Wallets|Send', module)
     return (
       <div>
         <WalletSendAssetsConfirmationDialog
-          currencyUnit="Ada"
           amount="20.000000"
           wallet={wallet}
-          totalAmount="21.000000"
+          totalAmount={new BigNumber('21.000000')}
           sender={
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }
@@ -399,9 +401,8 @@ storiesOf('Wallets|Send', module)
       <div>
         <WalletSendConfirmationDialog
           amount="20.000000"
-          totalAmount="21.000000"
+          totalAmount={new BigNumber('21.000000')}
           wallet={wallet}
-          currencyUnit="ADA"
           sender={
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }
