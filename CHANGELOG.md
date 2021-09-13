@@ -6,6 +6,26 @@ Changelog
 ### Features
 
 - Increased the maximum number of wallets limit to 100 and optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
+- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
+
+### Fixes
+
+- Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
+
+## 4.3.1
+
+### Fixes
+
+- Covered Trezor firmware breaking changes ([PR 2629](https://github.com/input-output-hk/daedalus/pull/2629))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-09-09`
+
+## 4.3.0
+
+### Features
+
 - Added "Alonzo countdown" screen for the upcoming Alonzo upgrade ([PR 2653](https://github.com/input-output-hk/daedalus/pull/2653))
 - Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
 - Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
@@ -18,6 +38,8 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `9ae2d48b` which enables hardware wallet support in Alonzo era ([PR 2663](https://github.com/input-output-hk/daedalus/issues/2663))
+- Updated `cardano-wallet` to version `2021-08-27` which includes `cardano-node` 1.29.0 ([PR 2650](https://github.com/input-output-hk/daedalus/pull/2650))
 - Updated `cardano-wallet` to version `2021-08-11` which includes `cardano-node` alonzo-purple-1.0.1 ([PR 2641](https://github.com/input-output-hk/daedalus/pull/2641))
 - Updated `cardano-wallet` to version `2021-07-30` which includes `cardano-node` 1.28.0 ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
 - Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))

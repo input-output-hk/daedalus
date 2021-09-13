@@ -15,6 +15,11 @@ import type {
   CoinSelectionAssetsType,
 } from '../api/transactions/types';
 
+export const TrezorTransactionSigningMode = {
+  ORDINARY_TRANSACTION: 0,
+  POOL_REGISTRATION_AS_OWNER: 1,
+};
+
 export const prepareTrezorInput = (input: CoinSelectionInput) => {
   return {
     path: derivationPathToString(input.derivationPath),
