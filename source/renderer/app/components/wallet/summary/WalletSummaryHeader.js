@@ -79,7 +79,7 @@ export default class WalletSummaryHeader extends Component<Props> {
               <div className={walletAmountStyles}>
                 {walletAmount}
                 <span className={styles.currencyCode}>
-                  {intl.formatMessage(globalMessages.unitAda)}
+                  {intl.formatMessage(globalMessages.adaUnit)}
                 </span>
               </div>
               {!isLoadingTransactions && (

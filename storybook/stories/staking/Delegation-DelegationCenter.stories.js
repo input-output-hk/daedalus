@@ -65,6 +65,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -73,6 +74,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -114,6 +116,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -122,6 +125,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -163,6 +167,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -171,6 +176,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -211,6 +217,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -219,6 +226,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -250,6 +258,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -258,6 +267,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -289,6 +299,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },
@@ -297,6 +308,7 @@ const wallets = [
         {
           id: generateHash(),
           policyId: generatePolicyIdHash(),
+          uniqueId: generatePolicyIdHash(),
           assetName: '',
           quantity: new BigNumber(300),
         },

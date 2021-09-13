@@ -3745,13 +3745,13 @@
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -3759,13 +3759,13 @@
         "description": "Undelegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -3773,13 +3773,13 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -3787,13 +3787,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEpoch",
         "start": {
           "column": 26,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -3801,13 +3801,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards",
         "start": {
           "column": 35,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -3815,13 +3815,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -3829,13 +3829,13 @@
         "description": "Redelegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.redelegate",
         "start": {
           "column": 14,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -3843,13 +3843,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -3857,13 +3857,27 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 73
+          "line": 74
+        }
+      },
+      {
+        "defaultMessage": "!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.",
+        "description": "\"pledgeNotMet\" popover for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 86
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.stakePools.tooltip.pledgeNotMet.popover",
+        "start": {
+          "column": 23,
+          "line": 80
         }
       }
     ],
@@ -5955,13 +5969,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 20
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 18
+          "line": 16
         }
       },
       {
@@ -5969,13 +5983,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 21
         }
       },
       {
@@ -5983,13 +5997,13 @@
         "description": "\"listTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listTitle",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 26
         }
       },
       {
@@ -5997,13 +6011,13 @@
         "description": "\"gridIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.gridIconTooltip",
         "start": {
           "column": 19,
-          "line": 33
+          "line": 31
         }
       },
       {
@@ -6011,13 +6025,13 @@
         "description": "\"gridRewardsIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.gridRewardsIconTooltip",
         "start": {
           "column": 26,
-          "line": 38
+          "line": 36
         }
       },
       {
@@ -6025,13 +6039,13 @@
         "description": "\"listIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listIconTooltip",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 41
         }
       },
       {
@@ -6039,13 +6053,13 @@
         "description": "\"clearTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.clearTooltip",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 46
         }
       }
     ],
@@ -6325,17 +6339,36 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.",
+        "description": "Table body \"pledgeNotMetPopOver\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTableBody.js",
+        "id": "staking.stakePools.tooltip.pledgeNotMet.popover",
+        "start": {
+          "column": 23,
+          "line": 22
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/StakePoolsTableBody.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Rank:",
         "description": "\"Rank\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 37
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 40
+          "line": 33
         }
       },
       {
@@ -6343,13 +6376,13 @@
         "description": "\"Rank\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 43
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.rankingTooltip",
         "start": {
           "column": 18,
-          "line": 45
+          "line": 38
         }
       },
       {
@@ -6357,13 +6390,13 @@
         "description": "\"Live stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 48
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
-          "line": 51
+          "line": 44
         }
       },
       {
@@ -6371,13 +6404,13 @@
         "description": "\"Live stake\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 54
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.relativeStakeTooltip",
         "start": {
           "column": 24,
-          "line": 56
+          "line": 49
         }
       },
       {
@@ -6385,13 +6418,13 @@
         "description": "\"Pool margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 59
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 62
+          "line": 55
         }
       },
       {
@@ -6399,13 +6432,13 @@
         "description": "\"Pool margin\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 65
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.profitMarginTooltip",
         "start": {
           "column": 23,
-          "line": 67
+          "line": 60
         }
       },
       {
@@ -6413,13 +6446,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 70
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 73
+          "line": 66
         }
       },
       {
@@ -6427,13 +6460,13 @@
         "description": "\"Cost per epoch\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 76
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.costPerEpochTooltip",
         "start": {
           "column": 23,
-          "line": 78
+          "line": 71
         }
       },
       {
@@ -6441,13 +6474,13 @@
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 81
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 84
+          "line": 77
         }
       },
       {
@@ -6455,13 +6488,13 @@
         "description": "\"Blocks\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 87
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.producedBlocksTooltip",
         "start": {
           "column": 25,
-          "line": 89
+          "line": 82
         }
       },
       {
@@ -6469,13 +6502,13 @@
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 92
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
           "column": 20,
-          "line": 95
+          "line": 88
         }
       },
       {
@@ -6483,13 +6516,13 @@
         "description": "\"Rewards\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 98
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
         "start": {
           "column": 27,
-          "line": 100
+          "line": 93
         }
       },
       {
@@ -6497,13 +6530,41 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 103
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 106
+          "line": 99
+        }
+      },
+      {
+        "defaultMessage": "!!!Retirement in {retirementFromNow}",
+        "description": "\"pledgeNotMet\" label for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 108
+        },
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
+        "id": "staking.stakePools.tooltip.pledgeNotMet.label",
+        "start": {
+          "column": 21,
+          "line": 104
+        }
+      },
+      {
+        "defaultMessage": "!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.",
+        "description": "\"pledgeNotMet\" popover for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
+        "id": "staking.stakePools.tooltip.pledgeNotMet.popover",
+        "start": {
+          "column": 23,
+          "line": 109
         }
       },
       {
@@ -6511,13 +6572,13 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 119
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 111
+          "line": 115
         }
       },
       {
@@ -6525,13 +6586,13 @@
         "description": "\"Saturation\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 125
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.saturationTooltip",
         "start": {
           "column": 21,
-          "line": 116
+          "line": 120
         }
       },
       {
@@ -6539,13 +6600,13 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 130
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
-          "line": 122
+          "line": 126
         }
       },
       {
@@ -6553,13 +6614,13 @@
         "description": "\"Pledge\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 136
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.pledgeTooltip",
         "start": {
           "column": 17,
-          "line": 127
+          "line": 131
         }
       },
       {
@@ -6567,13 +6628,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 142
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 133
+          "line": 137
         }
       },
       {
@@ -6581,13 +6642,13 @@
         "description": "copyId tooltip label",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 147
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
         "start": {
           "column": 22,
-          "line": 139
+          "line": 143
         }
       },
       {
@@ -6595,17 +6656,17 @@
         "description": "Data not available yet label",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 152
         },
-        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "file": "source/renderer/app/components/staking/widgets/PoolPopOverContent.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
-          "line": 144
+          "line": 148
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/widgets/TooltipPool.json"
+    "path": "source/renderer/app/components/staking/widgets/PoolPopOverContent.json"
   },
   {
     "descriptors": [
@@ -17063,451 +17124,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!This field is required.",
-        "description": "Error message when required fields are left empty.",
+        "defaultMessage": "!!!Ada",
+        "description": "\"Ada\" name",
         "end": {
           "column": 3,
           "line": 9
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.fieldIsRequired",
+        "id": "global.ada.name",
         "start": {
-          "column": 19,
+          "column": 11,
           "line": 5
         }
       },
       {
-        "defaultMessage": "!!!{actual} of {required} words entered",
-        "description": "Info message displayed above mnemonic inputs about actual vs. required words entered",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.info.knownMnemonicWordCount",
-        "start": {
-          "column": 26,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!{actual} words entered",
-        "description": "Info message displayed above mnemonic inputs about how many words have been entered",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.info.unknownMnemonicWordCount",
-        "start": {
-          "column": 28,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid email entered, please check.",
-        "description": "Error message shown when invalid email was entered.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.invalidEmail",
-        "start": {
-          "column": 16,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet name requires at least 3 and at most 40 letters",
-        "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.invalidWalletName",
-        "start": {
-          "column": 21,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Insecure",
-        "description": "Error message shown when insecure wallet password was entered in a password input.",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.invalidSpendingPassword",
-        "start": {
-          "column": 27,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Weak",
-        "description": "Error message shown when weak wallet password was entered in a password input.",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.weakSpendingPassword",
-        "start": {
-          "column": 24,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!Strong",
-        "description": "Error message shown when strong wallet password was entered in a password input.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.strongSpendingPassword",
-        "start": {
-          "column": 26,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Doesn't match.",
-        "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.invalidRepeatPassword",
-        "start": {
-          "column": 25,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!The file you are trying to replace is open. Please close it and try again.",
-        "description": "Error message shown when the file the user tries to replace is open.",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.paperWalletOpenPdfError",
-        "start": {
-          "column": 27,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!The file you are trying to replace is open. Please close it and try again.",
-        "description": "Error message shown when the file the user tries to replace is open.",
-        "end": {
-          "column": 3,
-          "line": 70
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.rewardsOpenCsvError",
-        "start": {
-          "column": 23,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!Note that password needs to be at least 10 characters and at most 255 characters long.",
-        "description": "Password instructions note.",
-        "end": {
-          "column": 3,
-          "line": 76
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.passwordInstructions",
-        "start": {
-          "column": 24,
-          "line": 71
-        }
-      },
-      {
-        "defaultMessage": "!!!Cancel",
-        "description": "The word \"cancel\" reused at several places (like cancel buttons)",
-        "end": {
-          "column": 3,
-          "line": 82
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.labels.cancel",
-        "start": {
-          "column": 10,
-          "line": 77
-        }
-      },
-      {
-        "defaultMessage": "!!!Close",
-        "description": "The word \"close\" reused at several places (like cancel buttons)",
-        "end": {
-          "column": 3,
-          "line": 88
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.labels.close",
-        "start": {
-          "column": 9,
-          "line": 83
-        }
-      },
-      {
-        "defaultMessage": "!!!Change",
-        "description": "The word \"change\" reused at several places (like change buttons)",
-        "end": {
-          "column": 3,
-          "line": 94
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.labels.change",
-        "start": {
-          "column": 10,
-          "line": 89
-        }
-      },
-      {
-        "defaultMessage": "!!!Create",
-        "description": "The word \"create\" reused at several places (like create buttons)",
-        "end": {
-          "column": 3,
-          "line": 100
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.labels.create",
-        "start": {
-          "column": 10,
-          "line": 95
-        }
-      },
-      {
-        "defaultMessage": "!!!Remove",
-        "description": "The word \"remove\" reused at several places (like remove buttons)",
-        "end": {
-          "column": 3,
-          "line": 106
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.labels.remove",
-        "start": {
-          "column": 10,
-          "line": 101
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "The word \"save\" reused at several places (like save buttons)",
-        "end": {
-          "column": 3,
-          "line": 111
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 107
-        }
-      },
-      {
-        "defaultMessage": "!!!English",
-        "description": "Language name for \"English\" language.",
-        "end": {
-          "column": 3,
-          "line": 116
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.language.english",
-        "start": {
-          "column": 19,
-          "line": 112
-        }
-      },
-      {
-        "defaultMessage": "!!!Japanese",
-        "description": "Language name for \"Japanese\" language.",
-        "end": {
-          "column": 3,
-          "line": 121
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.language.japanese",
-        "start": {
-          "column": 20,
-          "line": 117
-        }
-      },
-      {
-        "defaultMessage": "!!!Chinese",
-        "description": "Language name for \"Chinese\" language.",
-        "end": {
-          "column": 3,
-          "line": 126
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.language.chinese",
-        "start": {
-          "column": 19,
-          "line": 122
-        }
-      },
-      {
-        "defaultMessage": "!!!Korean",
-        "description": "Language name for \"Korean\" language.",
-        "end": {
-          "column": 3,
-          "line": 131
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.language.korean",
-        "start": {
-          "column": 18,
-          "line": 127
-        }
-      },
-      {
-        "defaultMessage": "!!!German",
-        "description": "Language name for \"German\" language.",
-        "end": {
-          "column": 3,
-          "line": 136
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.language.german",
-        "start": {
-          "column": 18,
-          "line": 132
-        }
-      },
-      {
-        "defaultMessage": "!!!Croatian",
-        "description": "Language name for \"Croatian\" language.",
-        "end": {
-          "column": 3,
-          "line": 141
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.language.croatian",
-        "start": {
-          "column": 20,
-          "line": 137
-        }
-      },
-      {
-        "defaultMessage": "!!!:",
-        "description": "Colon punctuation.",
-        "end": {
-          "column": 3,
-          "line": 146
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.punctuation.colon",
-        "start": {
-          "column": 20,
-          "line": 142
-        }
-      },
-      {
-        "defaultMessage": "!!!.",
-        "description": "Final dot punctuation.",
-        "end": {
-          "column": 3,
-          "line": 151
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.punctuation.dot",
-        "start": {
-          "column": 18,
-          "line": 147
-        }
-      },
-      {
         "defaultMessage": "!!!ADA",
-        "description": "Name for \"ADA\" unit.",
+        "description": "\"ADA\" unit",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 14
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.unit.ada",
+        "id": "global.ada.unit",
         "start": {
           "column": 11,
-          "line": 152
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery phrase",
-        "description": "Title for the \"Recovery Phrase\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 161
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "wallet.backup.recovery.phrase.dialog.title",
-        "start": {
-          "column": 29,
-          "line": 157
-        }
-      },
-      {
-        "defaultMessage": "!!!Spending Password",
-        "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 167
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.spendingPasswordLabel",
-        "start": {
-          "column": 25,
-          "line": 162
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 173
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.spendingPasswordPlaceholder",
-        "start": {
-          "column": 31,
-          "line": 168
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label \"Continue\" in dialogs.",
-        "end": {
-          "column": 3,
-          "line": 178
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.dialog.button.continue",
-        "start": {
-          "column": 29,
-          "line": 174
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
-        "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
-        "end": {
-          "column": 3,
-          "line": 185
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "settings.support.faq.faqLinkURL",
-        "start": {
-          "column": 14,
-          "line": 179
+          "line": 10
         }
       },
       {
@@ -17515,13 +17156,447 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 190
+          "line": 19
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 186
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!This field is required.",
+        "description": "Error message when required fields are left empty.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.fieldIsRequired",
+        "start": {
+          "column": 19,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!{actual} of {required} words entered",
+        "description": "Info message displayed above mnemonic inputs about actual vs. required words entered",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.info.knownMnemonicWordCount",
+        "start": {
+          "column": 26,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!{actual} words entered",
+        "description": "Info message displayed above mnemonic inputs about how many words have been entered",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.info.unknownMnemonicWordCount",
+        "start": {
+          "column": 28,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid email entered, please check.",
+        "description": "Error message shown when invalid email was entered.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.invalidEmail",
+        "start": {
+          "column": 16,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet name requires at least 3 and at most 40 letters",
+        "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.invalidWalletName",
+        "start": {
+          "column": 21,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Insecure",
+        "description": "Error message shown when insecure wallet password was entered in a password input.",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.invalidSpendingPassword",
+        "start": {
+          "column": 27,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Weak",
+        "description": "Error message shown when weak wallet password was entered in a password input.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.weakSpendingPassword",
+        "start": {
+          "column": 24,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Strong",
+        "description": "Error message shown when strong wallet password was entered in a password input.",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.strongSpendingPassword",
+        "start": {
+          "column": 26,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Doesn't match.",
+        "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.invalidRepeatPassword",
+        "start": {
+          "column": 25,
+          "line": 66
+        }
+      },
+      {
+        "defaultMessage": "!!!The file you are trying to replace is open. Please close it and try again.",
+        "description": "Error message shown when the file the user tries to replace is open.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.paperWalletOpenPdfError",
+        "start": {
+          "column": 27,
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!The file you are trying to replace is open. Please close it and try again.",
+        "description": "Error message shown when the file the user tries to replace is open.",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.errors.rewardsOpenCsvError",
+        "start": {
+          "column": 23,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!Note that password needs to be at least 10 characters and at most 255 characters long.",
+        "description": "Password instructions note.",
+        "end": {
+          "column": 3,
+          "line": 91
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.passwordInstructions",
+        "start": {
+          "column": 24,
+          "line": 86
+        }
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "The word \"cancel\" reused at several places (like cancel buttons)",
+        "end": {
+          "column": 3,
+          "line": 97
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.cancel",
+        "start": {
+          "column": 10,
+          "line": 92
+        }
+      },
+      {
+        "defaultMessage": "!!!Close",
+        "description": "The word \"close\" reused at several places (like cancel buttons)",
+        "end": {
+          "column": 3,
+          "line": 103
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.close",
+        "start": {
+          "column": 9,
+          "line": 98
+        }
+      },
+      {
+        "defaultMessage": "!!!Change",
+        "description": "The word \"change\" reused at several places (like change buttons)",
+        "end": {
+          "column": 3,
+          "line": 109
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.change",
+        "start": {
+          "column": 10,
+          "line": 104
+        }
+      },
+      {
+        "defaultMessage": "!!!Create",
+        "description": "The word \"create\" reused at several places (like create buttons)",
+        "end": {
+          "column": 3,
+          "line": 115
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.create",
+        "start": {
+          "column": 10,
+          "line": 110
+        }
+      },
+      {
+        "defaultMessage": "!!!Remove",
+        "description": "The word \"remove\" reused at several places (like remove buttons)",
+        "end": {
+          "column": 3,
+          "line": 121
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.remove",
+        "start": {
+          "column": 10,
+          "line": 116
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "The word \"save\" reused at several places (like save buttons)",
+        "end": {
+          "column": 3,
+          "line": 126
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.save",
+        "start": {
+          "column": 8,
+          "line": 122
+        }
+      },
+      {
+        "defaultMessage": "!!!English",
+        "description": "Language name for \"English\" language.",
+        "end": {
+          "column": 3,
+          "line": 131
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.language.english",
+        "start": {
+          "column": 19,
+          "line": 127
+        }
+      },
+      {
+        "defaultMessage": "!!!Japanese",
+        "description": "Language name for \"Japanese\" language.",
+        "end": {
+          "column": 3,
+          "line": 136
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.language.japanese",
+        "start": {
+          "column": 20,
+          "line": 132
+        }
+      },
+      {
+        "defaultMessage": "!!!Chinese",
+        "description": "Language name for \"Chinese\" language.",
+        "end": {
+          "column": 3,
+          "line": 141
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.language.chinese",
+        "start": {
+          "column": 19,
+          "line": 137
+        }
+      },
+      {
+        "defaultMessage": "!!!Korean",
+        "description": "Language name for \"Korean\" language.",
+        "end": {
+          "column": 3,
+          "line": 146
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.language.korean",
+        "start": {
+          "column": 18,
+          "line": 142
+        }
+      },
+      {
+        "defaultMessage": "!!!German",
+        "description": "Language name for \"German\" language.",
+        "end": {
+          "column": 3,
+          "line": 151
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.language.german",
+        "start": {
+          "column": 18,
+          "line": 147
+        }
+      },
+      {
+        "defaultMessage": "!!!Croatian",
+        "description": "Language name for \"Croatian\" language.",
+        "end": {
+          "column": 3,
+          "line": 156
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.language.croatian",
+        "start": {
+          "column": 20,
+          "line": 152
+        }
+      },
+      {
+        "defaultMessage": "!!!:",
+        "description": "Colon punctuation.",
+        "end": {
+          "column": 3,
+          "line": 161
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.punctuation.colon",
+        "start": {
+          "column": 20,
+          "line": 157
+        }
+      },
+      {
+        "defaultMessage": "!!!.",
+        "description": "Final dot punctuation.",
+        "end": {
+          "column": 3,
+          "line": 166
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.punctuation.dot",
+        "start": {
+          "column": 18,
+          "line": 162
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery phrase",
+        "description": "Title for the \"Recovery Phrase\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 171
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "wallet.backup.recovery.phrase.dialog.title",
+        "start": {
+          "column": 29,
+          "line": 167
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending Password",
+        "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 177
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 172
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 183
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 178
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label \"Continue\" in dialogs.",
+        "end": {
+          "column": 3,
+          "line": 188
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.dialog.button.continue",
+        "start": {
+          "column": 29,
+          "line": 184
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
+        "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
+        "end": {
+          "column": 3,
+          "line": 195
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "settings.support.faq.faqLinkURL",
+        "start": {
+          "column": 14,
+          "line": 189
         }
       },
       {
@@ -17529,13 +17604,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 195
+          "line": 200
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 191
+          "line": 196
         }
       },
       {
@@ -17543,13 +17618,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 200
+          "line": 205
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 196
+          "line": 201
         }
       },
       {
@@ -17557,13 +17632,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 205
+          "line": 210
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 201
+          "line": 206
         }
       },
       {
@@ -17571,13 +17646,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 210
+          "line": 215
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 206
+          "line": 211
         }
       },
       {
@@ -17585,13 +17660,13 @@
         "description": "\"Shelley QA\" Cardano network",
         "end": {
           "column": 3,
-          "line": 215
+          "line": 220
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_qa",
         "start": {
           "column": 22,
-          "line": 211
+          "line": 216
         }
       },
       {
@@ -17599,13 +17674,13 @@
         "description": "\"Alonzo Purple\" Cardano network",
         "end": {
           "column": 3,
-          "line": 220
+          "line": 225
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.alonzo_purple",
         "start": {
           "column": 25,
-          "line": 216
+          "line": 221
         }
       },
       {
@@ -17613,13 +17688,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 225
+          "line": 230
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 221
+          "line": 226
         }
       },
       {
@@ -17627,13 +17702,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 230
+          "line": 235
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 226
+          "line": 231
         }
       },
       {
@@ -17641,13 +17716,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 235
+          "line": 240
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 231
+          "line": 236
         }
       },
       {
@@ -17655,13 +17730,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 240
+          "line": 245
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 236
+          "line": 241
         }
       },
       {
@@ -17669,13 +17744,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 245
+          "line": 250
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 241
+          "line": 246
         }
       },
       {
@@ -17683,13 +17758,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 250
+          "line": 255
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 246
+          "line": 251
         }
       },
       {
@@ -17697,13 +17772,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 255
+          "line": 260
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 251
+          "line": 256
         }
       },
       {
@@ -17711,13 +17786,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 260
+          "line": 265
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 256
+          "line": 261
         }
       },
       {
@@ -17725,13 +17800,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 265
+          "line": 270
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 261
+          "line": 266
         }
       },
       {
@@ -17739,13 +17814,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 270
+          "line": 275
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 266
+          "line": 271
         }
       },
       {
@@ -17753,13 +17828,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 275
+          "line": 280
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 271
+          "line": 276
         }
       },
       {
@@ -17767,13 +17842,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 280
+          "line": 285
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 276
+          "line": 281
         }
       },
       {
@@ -17781,13 +17856,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 285
+          "line": 290
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 281
+          "line": 286
         }
       },
       {
@@ -17795,13 +17870,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 290
+          "line": 295
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 286
+          "line": 291
         }
       },
       {
@@ -17809,13 +17884,13 @@
         "description": "Reveal label.",
         "end": {
           "column": 3,
-          "line": 295
+          "line": 300
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reveal",
         "start": {
           "column": 10,
-          "line": 291
+          "line": 296
         }
       },
       {
@@ -17823,13 +17898,27 @@
         "description": "Hide label.",
         "end": {
           "column": 3,
-          "line": 300
+          "line": 305
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.hide",
         "start": {
           "column": 8,
-          "line": 296
+          "line": 301
+        }
+      },
+      {
+        "defaultMessage": "!!!View",
+        "description": "View label.",
+        "end": {
+          "column": 3,
+          "line": 310
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.view",
+        "start": {
+          "column": 8,
+          "line": 306
         }
       },
       {
@@ -17837,13 +17926,13 @@
         "description": "Copy label.",
         "end": {
           "column": 3,
-          "line": 305
+          "line": 315
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.copy",
         "start": {
           "column": 8,
-          "line": 301
+          "line": 311
         }
       },
       {
@@ -17851,13 +17940,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 312
+          "line": 322
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 306
+          "line": 316
         }
       },
       {
@@ -17865,13 +17954,13 @@
         "description": "Dropdown search \"No results\" message",
         "end": {
           "column": 3,
-          "line": 317
+          "line": 327
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.search.noResultsMessage",
         "start": {
           "column": 26,
-          "line": 313
+          "line": 323
         }
       }
     ],

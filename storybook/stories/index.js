@@ -19,6 +19,9 @@ import './staking/Widgets.stories';
 import './staking/Countdown.stories';
 import './staking/CountdownParty.stories';
 
+// dApps
+import './dapps/TransactionRequest.stories';
+
 // Voting
 import './voting/Voting.stories';
 
@@ -39,6 +42,9 @@ import './news/AppUpdateOverlay.stories';
 import './navigation/Sidebar.stories';
 import './navigation/SidebarCategory.stories';
 import './navigation/SidebarWalletsMenu.stories';
+
+// Notifications
+import './notifications/Notifications.stories';
 
 // Common
 import './common/Widgets.stories';

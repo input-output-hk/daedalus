@@ -515,10 +515,10 @@ export default class Transaction extends Component<Props, State> {
 
     const transactionsType = this.hasAssets
       ? intl.formatMessage(messages.multipleTokens)
-      : intl.formatMessage(globalMessages.currency);
+      : intl.formatMessage(globalMessages.adaUnit);
     const typeOfTransaction = this.hasAssets
       ? intl.formatMessage(headerStateTranslations[state])
-      : intl.formatMessage(globalMessages.currency);
+      : intl.formatMessage(globalMessages.adaUnit);
 
     const getIconType = (txState) => {
       switch (txState) {
@@ -568,7 +568,7 @@ export default class Transaction extends Component<Props, State> {
                 {data.amount && (
                   <div className={styles.amount}>
                     {formattedWalletAmount(data.amount, false)}
-                    <span>{intl.formatMessage(globalMessages.currency)}</span>
+                    <span>{intl.formatMessage(globalMessages.adaUnit)}</span>
                   </div>
                 )}
               </div>
@@ -630,7 +630,7 @@ export default class Transaction extends Component<Props, State> {
                       <div className={styles.transactionFeeValue}>
                         {formattedWalletAmount(data.fee, false)}&nbsp;
                         <span>
-                          {intl.formatMessage(globalMessages.unitAda)}
+                          {intl.formatMessage(globalMessages.adaUnit)}
                         </span>
                       </div>
                     </div>
@@ -644,7 +644,7 @@ export default class Transaction extends Component<Props, State> {
                       <div className={styles.depositValue}>
                         {formattedWalletAmount(data.deposit, false)}&nbsp;
                         <span>
-                          {intl.formatMessage(globalMessages.unitAda)}
+                          {intl.formatMessage(globalMessages.adaUnit)}
                         </span>
                       </div>
                     </div>

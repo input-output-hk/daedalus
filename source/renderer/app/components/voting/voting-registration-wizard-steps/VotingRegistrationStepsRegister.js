@@ -211,7 +211,7 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
               <>
                 <span>{formattedWalletAmount(transactionFee, false)}</span>
                 <span className={styles.feesAmountLabel}>
-                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                  &nbsp;{intl.formatMessage(globalMessages.adaUnit)}
                 </span>
               </>
             )}
