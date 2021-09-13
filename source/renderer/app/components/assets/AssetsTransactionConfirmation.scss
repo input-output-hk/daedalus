@@ -1,0 +1,59 @@
+.component {
+  margin: 0 0 20px 5px;
+  padding-left: 14px;
+  position: relative;
+
+  &:before {
+    border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
+    border-left: 1px solid var(--theme-transactions-list-item-details-color);
+    border-radius: 0 0 0 2px;
+    content: '';
+    display: block;
+    height: calc(100% - 42px);
+
+    left: 0;
+    opacity: 0.3;
+    position: absolute;
+    width: 6px;
+  }
+  .adaAmount {
+    display: flex;
+    justify-content: space-between;
+    line-height: 22px;
+    margin-bottom: 3px;
+    p {
+      font-family: var(--font-light);
+    }
+    .amount {
+      align-items: center;
+      background-color: var(--theme-staking-stake-pool-grey-bg-color);
+      border-radius: 3px;
+      display: flex;
+      flex-direction: row;
+      font-family: var(--font-bold);
+      font-size: 11px;
+      height: 21px;
+      justify-content: flex-end;
+      line-height: 1.36;
+      max-width: 250px;
+      padding: 3px 9px;
+    }
+    &.adaAmountError {
+      p {
+        color: var(--theme-color-error);
+      }
+      .amount {
+        background-color: var(--theme-background-color-error);
+        color: var(--theme-color-error);
+      }
+    }
+  }
+  .adaErrorPopOver {
+    background-color: var(--theme-color-error) !important;
+    :global {
+      .tippy-arrow:before {
+        background-color: var(--theme-color-error) !important;
+      }
+    }
+  }
+}

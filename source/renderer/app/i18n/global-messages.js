@@ -2,6 +2,21 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  adaName: {
+    id: 'global.ada.name',
+    defaultMessage: '!!!Ada',
+    description: '"Ada" name',
+  },
+  adaUnit: {
+    id: 'global.ada.unit',
+    defaultMessage: '!!!ADA',
+    description: '"ADA" unit',
+  },
+  currency: {
+    id: 'environment.currency.ada',
+    defaultMessage: '!!!ADA',
+    description: 'Name for "Ada" unit.',
+  },
   fieldIsRequired: {
     id: 'global.errors.fieldIsRequired',
     defaultMessage: '!!!This field is required.',
@@ -149,11 +164,6 @@ export default defineMessages({
     defaultMessage: '!!!.',
     description: 'Final dot punctuation.',
   },
-  unitAda: {
-    id: 'global.unit.ada',
-    defaultMessage: '!!!ADA',
-    description: 'Name for "ADA" unit.',
-  },
   recoveryPhraseDialogTitle: {
     id: 'wallet.backup.recovery.phrase.dialog.title',
     defaultMessage: '!!!Recovery phrase',
@@ -182,11 +192,6 @@ export default defineMessages({
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693',
     description:
       'URL for the "Known Issues" link in the "Help and support" section on the support settings page',
-  },
-  currency: {
-    id: 'environment.currency.ada',
-    defaultMessage: '!!!ADA',
-    description: 'Name for "Ada" unit.',
   },
   apiName: {
     id: 'environment.apiName.cardano',
@@ -297,6 +302,11 @@ export default defineMessages({
     id: 'global.labels.hide',
     defaultMessage: '!!!Hide',
     description: 'Hide label.',
+  },
+  view: {
+    id: 'global.labels.view',
+    defaultMessage: '!!!View',
+    description: 'View label.',
   },
   copy: {
     id: 'global.labels.copy',

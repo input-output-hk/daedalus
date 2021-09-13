@@ -30,12 +30,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -44,12 +46,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },

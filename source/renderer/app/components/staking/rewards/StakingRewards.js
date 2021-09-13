@@ -190,7 +190,7 @@ export default class StakingRewards extends Component<Props, State> {
         name: REWARD_FIELDS.REWARD_AMOUNT,
         title: `${intl.formatMessage(
           messages.tableHeaderReward
-        )} (${intl.formatMessage(globalMessages.unitAda)})`,
+        )} (${intl.formatMessage(globalMessages.adaUnit)})`,
       },
       {
         name: REWARD_FIELDS.ACTIONS,
