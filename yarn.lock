@@ -18803,9 +18803,9 @@ yamljs@0.3.0:
     argparse "^1.0.7"
     glob "^7.0.5"
 
-yargs-parser@5.0.0-security.0, yargs-parser@^13.1.2, yargs-parser@^15.0.1, yargs-parser@^16.0.0, yargs-parser@^18.1.2, yargs-parser@^18.1.3, yargs-parser@^20.2.0:
-  version "20.2.1"
-  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.1.tgz#28f3773c546cdd8a69ddae68116b48a5da328e77"
+yargs-parser@5.0.0-security.0, yargs-parser@^13.1.2, yargs-parser@^15.0.1, yargs-parser@^16.0.0, yargs-parser@^18.1.3, yargs-parser@^20.2.0, yargs-parser@^20.2.2:
+  version "20.2.2"
+  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.2.tgz#84562c6b1c41ccec2f13d346c7dd83f8d1a0dc70"
 
 yargs@^13.3.0, yargs@^13.3.2:
   version "13.3.2"
