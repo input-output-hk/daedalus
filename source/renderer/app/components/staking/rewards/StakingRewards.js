@@ -249,7 +249,7 @@ export default class StakingRewards extends Component<Props, State> {
         name: REWARD_FIELDS.REWARD,
         title: `${intl.formatMessage(
           messages.tableHeaderReward
-        )} (${intl.formatMessage(globalMessages.unitAda)})`,
+        )} (${intl.formatMessage(globalMessages.adaUnit)})`,
       },
     ];
     const exportCsvButtonLabel = isExporting ? (

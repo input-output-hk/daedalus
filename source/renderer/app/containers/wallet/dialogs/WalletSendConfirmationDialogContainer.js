@@ -21,7 +21,6 @@ type Props = {
   totalAmount: BigNumber,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
-  currencyUnit: string,
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
@@ -69,7 +68,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       onExternalLinkClick,
       transactionFee,
       amountToNaturalUnits,
-      currencyUnit,
       hwDeviceStatus,
       isHardwareWallet,
       formattedTotalAmount,
@@ -130,7 +128,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
               resetHardwareWalletTransaction({ cancelDeviceAction: true });
             }}
             error={error}
-            currencyUnit={currencyUnit}
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
@@ -157,7 +154,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
               resetHardwareWalletTransaction({ cancelDeviceAction: true });
             }}
             error={error}
-            currencyUnit={currencyUnit}
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
