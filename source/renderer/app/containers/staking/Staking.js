@@ -5,7 +5,6 @@ import MainLayout from '../MainLayout';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import StakingUnavailable from '../../components/staking/StakingUnavailable';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
-import ExperimentalDataOverlay from '../../components/notifications/ExperimentalDataOverlay';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import UndelegateWalletConfirmationDialog from '../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import { ROUTES } from '../../routes-config';
@@ -71,20 +70,19 @@ export default class Staking extends Component<Props> {
     });
   };
 
-  handleCloseExperimentalDataOverlay = () => {
-    const { stores } = this.props;
-    const { markStakingExperimentAsRead } = stores.staking;
-    markStakingExperimentAsRead();
-  };
-
   render() {
     const {
       stores: { app, staking, networkStatus, uiDialogs },
       children,
     } = this.props;
-    const { isIncentivizedTestnet } = global;
-    const { isSynced, syncPercentage } = networkStatus;
-    const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
+    const {
+      isSynced,
+      syncPercentage,
+      isAlonzoPending,
+      isAlonzoActivated,
+    } = networkStatus;
+    const { isStakingDelegationCountdown } = staking;
+    const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
 
     const isDelegationWizardOpen = uiDialogs.isOpen(
       DelegationSetupWizardDialog
@@ -106,11 +104,6 @@ export default class Staking extends Component<Props> {
 
     return (
       <MainLayout>
-        {isIncentivizedTestnet && !isStakingExperimentRead && (
-          <ExperimentalDataOverlay
-            onClose={this.handleCloseExperimentalDataOverlay}
-          />
-        )}
         {isStakingDelegationCountdown ? (
           children
         ) : (
@@ -118,7 +111,7 @@ export default class Staking extends Component<Props> {
             isActiveNavItem={this.isActiveNavItem}
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
-            isIncentivizedTestnet={global.isIncentivizedTestnet}
+            showInfoTab={shouldShowInfoTab}
           >
             {children}
           </StakingWithNavigation>

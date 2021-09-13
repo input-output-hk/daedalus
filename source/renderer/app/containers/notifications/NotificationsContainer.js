@@ -10,7 +10,7 @@ import type {
   NotificationConfig,
   NotificationId,
 } from '../../types/notificationTypes';
-import type { NotificationMessageProps } from '../../components/notifications/Notification';
+import type { NotificationDataProps } from '../../components/notifications/Notification';
 
 const ICONS = {
   successIcon,
@@ -40,12 +40,19 @@ const messages = defineMessages({
     defaultMessage: '!!!CSV file successfully downloaded',
     description: 'Notification for download Transactions CSV file.',
   },
-  copyPublicKey: {
-    id: 'notification.copyPublicKey',
+  copyWalletPublicKey: {
+    id: 'notification.copyWalletPublicKey',
     defaultMessage:
       '!!!Public key: <strong>{publicKey}</strong> copied to clipboard',
     description:
       'Notification for the wallet public key copy success in the Wallet Settings page.',
+  },
+  copyICOPublicKey: {
+    id: 'notification.copyICOPublicKey',
+    defaultMessage:
+      '!!!ICO Public key: <strong>{publicKey}</strong> copied to clipboard',
+    description:
+      'Notification for the ICO public key copy success in the Wallet Settings page.',
   },
   copyAddress: {
     id: 'notification.copyAddress',
@@ -122,8 +129,12 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       actionToListenAndClose: this.props.actions.transactions.requestCSVFile,
     },
     {
-      id: 'copyPublicKey',
-      actionToListenAndOpen: this.props.actions.wallets.copyPublicKey,
+      id: 'copyWalletPublicKey',
+      actionToListenAndOpen: this.props.actions.wallets.copyWalletPublicKey,
+    },
+    {
+      id: 'copyICOPublicKey',
+      actionToListenAndOpen: this.props.actions.wallets.copyICOPublicKey,
     },
     {
       id: 'copyAddress',
@@ -156,8 +167,8 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     },
   ];
 
-  notificationsMessage: {
-    [key: NotificationId]: $Exact<NotificationMessageProps>,
+  notificationsData: {
+    [key: NotificationId]: $Exact<NotificationDataProps>,
   } = {
     downloadLogsProgress: {
       icon: 'spinner',
@@ -188,16 +199,16 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       <div>
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {
           const isVisible = id in activeNotifications;
-          const message = this.notificationsMessage[id] || {};
+          const data = this.notificationsData[id] || {};
           const { labelValues, index } = isVisible
             ? activeNotifications[id]
             : {};
-          const { icon } = message || {};
+          const { icon } = data || {};
           const hasSpinner = icon === 'spinner';
           return (
             <Notification
               key={id}
-              {...message}
+              {...data}
               onClose={() => closeNotification.trigger({ id })}
               icon={this.getIcon(icon)}
               isVisible={isVisible}

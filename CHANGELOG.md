@@ -6,11 +6,120 @@ Changelog
 ### Features
 
 - Implemented stake pools filter pop over ([PR 2461](https://github.com/input-output-hk/daedalus/pull/2461))
+- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
 
 ### Fixes
 
+- Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
+
+## 4.3.1
+
+### Fixes
+
+- Covered Trezor firmware breaking changes ([PR 2629](https://github.com/input-output-hk/daedalus/pull/2629))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-09-09`
+
+## 4.3.0
+
+### Features
+
+- Added "Alonzo countdown" screen for the upcoming Alonzo upgrade ([PR 2653](https://github.com/input-output-hk/daedalus/pull/2653))
+- Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
+- Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
+
+### Fixes
+
+- Fixed type issue on Storybook "Wallet Send Confirmation Dialog" story ([PR 2654](https://github.com/input-output-hk/daedalus/pull/2654))
+- Fixed ‘Stakepool Metadata Aggregation Server (SMASH)’ link returning 404 error ([PR 2646](https://github.com/input-output-hk/daedalus/pull/2646))
+- Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `9ae2d48b` which enables hardware wallet support in Alonzo era ([PR 2663](https://github.com/input-output-hk/daedalus/issues/2663))
+- Updated `cardano-wallet` to version `2021-08-27` which includes `cardano-node` 1.29.0 ([PR 2650](https://github.com/input-output-hk/daedalus/pull/2650))
+- Updated `cardano-wallet` to version `2021-08-11` which includes `cardano-node` alonzo-purple-1.0.1 ([PR 2641](https://github.com/input-output-hk/daedalus/pull/2641))
+- Updated `cardano-wallet` to version `2021-07-30` which includes `cardano-node` 1.28.0 ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
+- Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
+
+## 4.2.1
+
+### Chores
+
+- Updated Catalyst Fund6 and Fund7 voting registration dates ([PR 2640](https://github.com/input-output-hk/daedalus/pull/2640))
+
+## 4.2.0
+
+### Features
+
+- Added voting registration with Trezor ([PR 2615](https://github.com/input-output-hk/daedalus/pull/2615))
+- Added voting registration with Ledger ([PR 2538](https://github.com/input-output-hk/daedalus/pull/2538))
+
+## 4.2.0-FC1
+
+### Features
+
+- Implemented sharing multi-signature public key ([PR 2604](https://github.com/input-output-hk/daedalus/pull/2604))
+- Implemented the expandable token view ([PR 2589](https://github.com/input-output-hk/daedalus/pull/2589), [PR 2609](https://github.com/input-output-hk/daedalus/pull/2609))
+
+### Fixes
+
+- Fixed asset amount validation ([PR 2472](https://github.com/input-output-hk/daedalus/pull/2472))
+- Fixed incorrect global instances in scss files ([PR 2593](https://github.com/input-output-hk/daedalus/pull/2593))
+- Fixed "shelley-qa" network issue on "Delegation" wizard ([PR 2595](https://github.com/input-output-hk/daedalus/pull/2595))
+- Fixed Trezor transaction native tokens grouping issue ([PR 2594](https://github.com/input-output-hk/daedalus/pull/2594))
+- Fixed notes field visibility for software wallets on Share Wallet Address dialog ([PR 2582](https://github.com/input-output-hk/daedalus/pull/2582))
+
+### Chores
+
+- Disabled Fund5 voting registration ([PR 2608](https://github.com/input-output-hk/daedalus/pull/2608))
+- Updated Fund5 registaration start date ([PR 2607](https://github.com/input-output-hk/daedalus/pull/2607))
+- Removed Jormungandr integration and legacy clusters ([PR 2579](https://github.com/input-output-hk/daedalus/pull/2579))
+
+## 4.1.0
+
+### Features
+
+- Enabled Catalyst voting registration on Mainnet and Flight builds
+
+## 4.1.0-FC1
+
+### Features
+
+- Integrated cardano-wallet Api native tokens decimal places value ([PR 2577](https://github.com/input-output-hk/daedalus/pull/2577))
+- Added address verification for "Trezor" hardware wallet devices ([PR 2558](https://github.com/input-output-hk/daedalus/pull/2558))
+- Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
+- Implemented manually configurable decimal places for native tokens ([PR 2533](https://github.com/input-output-hk/daedalus/pull/2533))
+- Added warning message when pasting an address of the same wallet in the send form ([PR 2506](https://github.com/input-output-hk/daedalus/pull/2506))
+- Implemented select search style variables ([PR 2512](https://github.com/input-output-hk/daedalus/pull/2512))
+- Enabled pasting of wallet recovery phrase ([PR 2459](https://github.com/input-output-hk/daedalus/pull/2459))
+
+### Fixes
+
+- Fixed pool description scrolling and styling ([PR 2556](https://github.com/input-output-hk/daedalus/pull/2564), [PR 2568](https://github.com/input-output-hk/daedalus/pull/2568))
+- Fixed external currencies not appearing when not connected ([PR 2556](https://github.com/input-output-hk/daedalus/pull/2556))
+- Fixed hardware wallets transactions issue with native tokens ([PR 2543](https://github.com/input-output-hk/daedalus/pull/2543))
+- Fixed hardware wallets transaction initialization issue on device reconnect ([PR 2541](https://github.com/input-output-hk/daedalus/pull/2541))
+- Fixed blank currency selection after updating to 4.0.5 ([PR 2529](https://github.com/input-output-hk/daedalus/pull/2529))
 - Fixed hardware wallets confirmation crashing issue when device is in "Busy" state ([PR 2522](https://github.com/input-output-hk/daedalus/pull/2522))
 - Fixed hardware wallets spending password issue ([PR 2519](https://github.com/input-output-hk/daedalus/pull/2519))
+
+### Chores
+
+- Updated wallet importer to extract private keys from 'WalletUserSecret' field ([PR 2445](https://github.com/input-output-hk/daedalus/pull/2445))
+- Changed the assets identifiers from fingerprint to policyId+name ([PR 2562](https://github.com/input-output-hk/daedalus/pull/2562))
+- Implemented the Items Dropdown component and simplified the Wallets and Assets Dropdowns ([PR 2540](https://github.com/input-output-hk/daedalus/pull/2540))
+- Included wallet names in dialog windows ([PR 2552](https://github.com/input-output-hk/daedalus/pull/2552))
+- Updated `cardano-cli` version to always match the one from `cardano-wallet` ([PR 2561](https://github.com/input-output-hk/daedalus/pull/2561))
+- Updated `react-polymorph` to version `1.0.0` ([PR 2549](https://github.com/input-output-hk/daedalus/pull/2549))
+- Updated `cardano-wallet` to version `2021-05-26` ([PR 2577](https://github.com/input-output-hk/daedalus/pull/2577), [PR 2580](https://github.com/input-output-hk/daedalus/pull/2580))
+- Updated `cardano-wallet` to version `2021-04-28` and `cardano-node` to version `1.26.2` ([PR 2551](https://github.com/input-output-hk/daedalus/pull/2551))
+- Updated Catalyst voting registration to include rewards address instead of the payment one ([PR 2550](https://github.com/input-output-hk/daedalus/pull/2550))
+- Moved currency related code into a dedicated store ([PR 2546](https://github.com/input-output-hk/daedalus/pull/2546))
+- Updated `trezor-connect` dependency to version `8.1.26` ([PR 2534](https://github.com/input-output-hk/daedalus/pull/2534))
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `3.0.0` ([PR 2530](https://github.com/input-output-hk/daedalus/pull/2530))
 
 ## 4.0.5
 
@@ -100,9 +209,6 @@ Changelog
 ### Features
 
 - Added native token support [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
-
-### Features
-
 - Enabled rewards withdrawals on hardware wallets ([PR 2408](https://github.com/input-output-hk/daedalus/pull/2408))
 
 ### Fixes

@@ -9,9 +9,9 @@ import styles from './StakingWithNavigation.scss';
 type Props = {
   children?: Node,
   activeItem: string,
+  showInfoTab: boolean,
   onNavItemClick: Function,
   isActiveNavItem: Function,
-  isIncentivizedTestnet: boolean,
 };
 
 type ContextValue = {
@@ -32,7 +32,7 @@ export default class StakingWithNavigation extends Component<Props> {
       onNavItemClick,
       activeItem,
       isActiveNavItem,
-      isIncentivizedTestnet,
+      showInfoTab,
     } = this.props;
     const componentStyles = classnames([styles.component, styles[activeItem]]);
 
@@ -46,7 +46,7 @@ export default class StakingWithNavigation extends Component<Props> {
               isActiveNavItem={isActiveNavItem}
               onNavItemClick={onNavItemClick}
               activeItem={activeItem}
-              isIncentivizedTestnet={isIncentivizedTestnet}
+              showInfoTab={showInfoTab}
             />
           </div>
           <div

@@ -2,36 +2,39 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { storiesOf } from '@storybook/react';
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, number, select, text } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
 import {
-  generateAsset,
+  generateAssetToken,
   generateHash,
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
-import currencyList from '../_utils/currencies.json';
+import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
 
 const allAssets = [
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234'
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234',
+    100
   ),
-  generateAsset(
+  generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345'
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
+    100
   ),
-  generateAsset(
+  generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z3456',
+    100,
     {
       name: 'USD Coin',
       ticker: 'USDC',
@@ -44,10 +47,11 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
+  generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z4567',
+    100,
     {
       name: 'MakerDAO',
       ticker: 'DAI',
@@ -67,24 +71,28 @@ const assets = {
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(45119903.750165),
     },
     {
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      uniqueId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(300),
     },
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: new BigNumber(400),
     },
@@ -93,24 +101,28 @@ const assets = {
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(45119903.750165),
     },
     {
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      uniqueId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(300),
     },
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: new BigNumber(400),
     },
@@ -134,8 +146,11 @@ const walletAssets = assets.total.map((assetTotal) => {
   return {
     policyId: assetTotal.policyId,
     assetName: assetTotal.assetName,
+    uniqueId: assetTotal.policyId + assetTotal.assetName,
     fingerprint,
     quantity: assetTotal.quantity,
+    decimals: 0,
+    recommendedDecimals: null,
     metadata: assetData
       ? assetData.metadata
       : {
@@ -149,7 +164,7 @@ const walletAssets = assets.total.map((assetTotal) => {
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
-  .add('Wallet Summary', () => {
+  .add('Wallet Summary', ({ locale }: { locale: string }) => {
     const currencyState = select(
       'Currency state',
       {
@@ -157,11 +172,11 @@ storiesOf('Wallets|Summary', module)
         'Fetching rate': 'loading',
         'Disabled or unavailable': 'off',
       },
-      'fetched'
+      'fetched',
+      'Currency'
     );
 
     let currencyIsFetchingRate = false;
-    let currencyIsAvailable = true;
     let currencyIsActive = true;
     let currencyLastFetched = new Date();
 
@@ -169,45 +184,82 @@ storiesOf('Wallets|Summary', module)
       currencyIsFetchingRate = true;
       currencyLastFetched = null;
     } else if (currencyState === 'off') {
-      currencyIsAvailable = false;
       currencyIsActive = false;
     }
 
     const currencySelected = select(
       'currencySelected',
-      currencyList.reduce((obj, currency) => {
-        obj[`${currency.id} - ${currency.name}`] = currency;
-        return obj;
-      }, {}),
+      currenciesList,
       {
         id: 'uniswap-state-dollar',
         symbol: 'usd',
         name: 'unified Stable Dollar',
-      }
+      },
+      'Currency'
     );
+
+    const [firstAsset] = walletAssets;
 
     return (
       <WalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}
-        numberOfTransactions={number('Number of transactions', 100)}
+        numberOfTransactions={number(
+          'Number of transactions',
+          100,
+          {},
+          'Header'
+        )}
         numberOfRecentTransactions={number(
           'Number of Recent transactions',
-          100
+          100,
+          {},
+          'Header'
         )}
-        numberOfPendingTransactions={number('Number of transactions', 3)}
-        isLoadingTransactions={boolean('isLoadingTransactions', false)}
+        numberOfPendingTransactions={number(
+          'Number of pending transactions',
+          0,
+          'Header'
+        )}
+        isLoadingTransactions={boolean(
+          'isLoadingTransactions',
+          false,
+          'Header'
+        )}
+        currentLocale={locale}
         currencyIsFetchingRate={currencyIsFetchingRate}
-        currencyIsAvailable={currencyIsAvailable}
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
         currencyRate={0.321}
         currencyLastFetched={currencyLastFetched}
         onCurrencySettingClick={action('onCurrencySettingClick')}
-        assets={walletAssets}
+        assets={[
+          {
+            ...firstAsset,
+            quantity: new BigNumber(number('quantity', 100, {}, 'First Asset')),
+            decimals: number('decimals', 0, {}, 'First Asset'),
+            recommendedDecimals: number(
+              'recommendedDecimals',
+              0,
+              {},
+              'First Asset'
+            ),
+            metadata: {
+              name: text('Metadata - name', 'FIRST', 'First Asset'),
+              ticker: text('Metadata - ticker', '', 'First Asset'),
+              description: text('Metadata - description', '', 'First Asset'),
+            },
+          },
+          ...walletAssets.slice(1),
+        ]}
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
+        onAssetSettings={action('onAssetSettings')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
+        assetSettingsDialogWasOpened={boolean(
+          'assetSettingsDialogWasOpened',
+          true
+        )}
         onExternalLinkClick={action('onExternalLinkClick')}
       />
     );

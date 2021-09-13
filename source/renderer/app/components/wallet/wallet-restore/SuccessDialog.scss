@@ -1,6 +1,4 @@
 .content {
-  margin-top: 28px;
-
   .tadaImage {
     display: block;
     margin-bottom: 23px;
@@ -38,8 +36,7 @@
   .description1,
   .description2,
   .description3,
-  .description4,
-  .description5 {
+  .description4 {
     color: var(--theme-delegation-steps-success-description-color);
     font-family: var(--font-light);
     font-size: 16px;
@@ -52,8 +49,7 @@
 
   .description2,
   .description3,
-  .description4,
-  .description5 {
+  .description4 {
     margin-top: 11px;
   }
 }

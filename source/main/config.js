@@ -63,9 +63,6 @@ export type LauncherConfig = {
   tlsPath: string,
   logsPrefix: string,
   cluster: string,
-  block0Path: string,
-  block0Hash: string,
-  secretPath: string,
   configPath: string,
   syncTolerance: string,
   cliBin: string,
@@ -94,15 +91,15 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const WINDOW_WIDTH = 1150;
-export const WINDOW_HEIGHT = 870;
+export const DEFAULT_WINDOW_WIDTH = 1150;
+export const DEFAULT_WINDOW_HEIGHT = 870;
 export const MIN_WINDOW_CONTENT_WIDTH = 905;
-export const MIN_WINDOW_CONTENT_HEIGHT = 700;
+export const MIN_WINDOW_CONTENT_HEIGHT = 564;
 
 export const windowOptions: WindowOptionsType = {
   show: false,
-  width: WINDOW_WIDTH,
-  height: WINDOW_HEIGHT,
+  width: DEFAULT_WINDOW_WIDTH,
+  height: DEFAULT_WINDOW_HEIGHT,
   webPreferences: {
     nodeIntegration: isTest,
     webviewTag: false,
@@ -168,16 +165,6 @@ export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
 export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
-
-// CardanoWallet config
-export const STAKE_POOL_REGISTRY_URL = {
-  itn_selfnode:
-    'https://github.com/input-output-hk/daedalus/raw/selfnode/test-integration-registry.zip',
-  nightly:
-    'https://github.com/piotr-iohk/incentivized-testnet-stakepool-registry/archive/master.zip',
-  qa:
-    'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
-};
 
 // Used if token metadata server URL is not defined in launcher config
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =

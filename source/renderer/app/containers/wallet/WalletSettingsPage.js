@@ -7,8 +7,8 @@ import { isValidWalletName } from '../../utils/validations';
 import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
-import WalletPublicKeyDialogContainer from './dialogs/settings/WalletPublicKeyDialogContainer';
-import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
+import PublicKeyDialogContainer from './dialogs/settings/PublicKeyDialogContainer';
+import PublicKeyQRCodeDialogContainer from './dialogs/settings/PublicKeyQRCodeDialogContainer';
 import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
@@ -33,7 +33,17 @@ export default class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-    wallets.copyPublicKey.trigger({ publicKey });
+    wallets.copyWalletPublicKey.trigger({ publicKey });
+  };
+
+  handleCopyICOPublicKey = (icoPublicKey: string) => {
+    const { wallets } = this.props.actions;
+    const publicKey = ellipsis(
+      icoPublicKey,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
+    );
+    wallets.copyICOPublicKey.trigger({ publicKey });
   };
 
   handleDelegateClick = () => {
@@ -54,6 +64,7 @@ export default class WalletSettingsPage extends Component<Props> {
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
+      icoPublicKey,
     } = wallets;
     // Guard against potential null values
     if (!activeWallet)
@@ -61,7 +72,6 @@ export default class WalletSettingsPage extends Component<Props> {
 
     const { isLegacy, isHardwareWallet } = activeWallet;
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
-
     const { actions } = this.props;
     const {
       environment: { isProduction },
@@ -79,20 +89,14 @@ export default class WalletSettingsPage extends Component<Props> {
       updateWalletField,
       recoveryPhraseVerificationContinue,
     } = actions.walletSettings;
-
     const {
       creationDate,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
     } = getWalletsRecoveryPhraseVerificationData(activeWallet.id);
-
     const locale = profile.currentLocale;
-    const { isIncentivizedTestnet } = global;
-
-    const shouldDisplayRecoveryPhrase =
-      ((!isIncentivizedTestnet && isLegacy) || !isLegacy) && !isHardwareWallet;
-
+    const shouldDisplayRecoveryPhrase = !isHardwareWallet;
     const wordCount = activeWallet.isRandom
       ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
       : WALLET_RECOVERY_PHRASE_WORD_COUNT;
@@ -104,6 +108,7 @@ export default class WalletSettingsPage extends Component<Props> {
           openDialogAction={actions.dialogs.open.trigger}
           isHardwareWallet={isHardwareWallet}
           isSpendingPasswordSet={activeWallet.hasPassword}
+          isDelegating={activeWallet.isDelegating}
           spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
           recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
           recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
@@ -121,8 +126,8 @@ export default class WalletSettingsPage extends Component<Props> {
           isRestoring={activeWallet.isRestoring}
           isSyncing={activeWallet.isSyncing}
           walletPublicKey={activeWalletPublicKey}
+          icoPublicKey={icoPublicKey}
           creationDate={creationDate}
-          isIncentivizedTestnet={isIncentivizedTestnet}
           isSubmitting={updateWalletRequest.isExecuting}
           isInvalid={
             updateWalletRequest.wasExecuted &&
@@ -138,6 +143,7 @@ export default class WalletSettingsPage extends Component<Props> {
           onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          onCopyICOPublicKey={this.handleCopyICOPublicKey}
           updateDataForActiveDialogAction={
             actions.dialogs.updateDataForActiveDialog.trigger
           }
@@ -147,9 +153,13 @@ export default class WalletSettingsPage extends Component<Props> {
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
           }
-          walletPublicKeyDialogContainer={<WalletPublicKeyDialogContainer />}
+          walletPublicKeyDialogContainer={<PublicKeyDialogContainer />}
+          icoPublicKeyDialogContainer={<PublicKeyDialogContainer isICO />}
           walletPublicKeyQRCodeDialogContainer={
-            <WalletPublicKeyQRCodeDialogContainer />
+            <PublicKeyQRCodeDialogContainer />
+          }
+          icoPublicKeyQRCodeDialogContainer={
+            <PublicKeyQRCodeDialogContainer isICO />
           }
           undelegateWalletDialogContainer={
             <UndelegateWalletDialogContainer

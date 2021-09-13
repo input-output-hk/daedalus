@@ -77,9 +77,10 @@ const assetsMetadata = [
   },
 ];
 
-const transactionAssets = [
+const transactionTokens = [
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -87,6 +88,7 @@ const transactionAssets = [
   },
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -94,6 +96,7 @@ const transactionAssets = [
   },
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -101,6 +104,7 @@ const transactionAssets = [
   },
   {
     policyId: generatePolicyIdHash(),
+    uniqueId: generatePolicyIdHash(),
     assetName: '',
     quantity: new BigNumber(200),
     address: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -126,19 +130,22 @@ storiesOf('Wallets|Transactions', module)
       },
       'incoming'
     );
-    const assets = [
+    const tokens = [
       {
-        ...transactionAssets[0],
+        ...transactionTokens[0],
         quantity: new BigNumber(number('amount', 10, {}, 'First Asset')),
       },
-      ...transactionAssets.slice(1),
+      ...transactionTokens.slice(1),
     ];
 
     const decimals = number('decimals', 1, {}, 'First Asset');
     const hasMetadata = boolean('hasMetadata', true, 'First Asset');
 
-    const txAssets = assets.map((txAsset, index) => ({
-      ...txAsset,
+    const assetTokens = tokens.map((token, index) => ({
+      ...token,
+      uniqueId: token.policyId + token.assetName,
+      decimals: 0,
+      recommendedDecimals: null,
       metadata:
         index === 0
           ? hasMetadata && {
@@ -176,7 +183,7 @@ storiesOf('Wallets|Transactions', module)
       deposit: new BigNumber(number('deposit', 1, {}, 'Transaction')).dividedBy(
         LOVELACES_PER_ADA
       ),
-      assets,
+      assets: tokens,
       date,
       description: '',
       addresses: {
@@ -200,7 +207,7 @@ storiesOf('Wallets|Transactions', module)
         isLoadingAssets={boolean('isLoadingAssets', false)}
         currentTimeFormat="hh:mm:ss A"
         walletId={generateHash()}
-        txAssets={txAssets}
+        assetTokens={assetTokens}
         onShowMetadata={action('onShowMetadata')}
         getUrlByType={action('getUrlByType')}
         deletePendingTransaction={action('deletePendingTransaction')}

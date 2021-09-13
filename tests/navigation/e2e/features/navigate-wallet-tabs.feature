@@ -19,7 +19,7 @@ Feature: Navigate Wallet Tabs
     | summary | transactions |
     | send    | summary      |
     | send    | receive      |
-    | send | transactions    |
+    | send    | transactions |
     | receive | summary      |
     | receive | send         |
     | receive | transactions |

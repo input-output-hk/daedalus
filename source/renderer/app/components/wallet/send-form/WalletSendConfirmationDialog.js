@@ -5,12 +5,12 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -18,109 +18,39 @@ import { submitOnEnter } from '../../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { HwDeviceStatuses } from '../../../domains/Wallet';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-
-export const messages = defineMessages({
-  dialogTitle: {
-    id: 'wallet.send.confirmationDialog.title',
-    defaultMessage: '!!!Confirm transaction',
-    description: 'Title for the "Confirm transaction" dialog.',
-  },
-  passphraseLabel: {
-    id: 'wallet.send.confirmationDialog.passphraseLabel',
-    defaultMessage: '!!!Spending password',
-    description:
-      'Label for the "Spending password" input in the wallet send confirmation dialog.',
-  },
-  addressToLabel: {
-    id: 'wallet.send.confirmationDialog.addressToLabel',
-    defaultMessage: '!!!To',
-    description: 'Label for the "To" in the wallet send confirmation dialog.',
-  },
-  amountLabel: {
-    id: 'wallet.send.confirmationDialog.amountLabel',
-    defaultMessage: '!!!Amount',
-    description:
-      'Label for the "Amount" in the wallet send confirmation dialog.',
-  },
-  feesLabel: {
-    id: 'wallet.send.confirmationDialog.feesLabel',
-    defaultMessage: '!!!Fees',
-    description: 'Label for the "Fees" in the wallet send confirmation dialog.',
-  },
-  totalLabel: {
-    id: 'wallet.send.confirmationDialog.totalLabel',
-    defaultMessage: '!!!Total',
-    description:
-      'Label for the "Total" in the wallet send confirmation dialog.',
-  },
-  passphraseFieldPlaceholder: {
-    id: 'wallet.send.confirmationDialog.passphraseFieldPlaceholder',
-    defaultMessage: '!!!Type your spending password',
-    description:
-      'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
-  },
-  flightCandidateWarning: {
-    id: 'wallet.send.confirmationDialog.flightCandidateWarning',
-    defaultMessage:
-      '!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.',
-    description:
-      'Text for the "Flight candidate" warning in the wallet send confirmation dialog.',
-  },
-  flightCandidateCheckboxLabel: {
-    id: 'wallet.send.confirmationDialog.flightCandidateCheckboxLabel',
-    defaultMessage:
-      '!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.',
-    description:
-      'Label for the "Flight candidate" warning checkbox in the wallet send confirmation dialog.',
-  },
-  sendButtonLabel: {
-    id: 'wallet.send.confirmationDialog.submit',
-    defaultMessage: '!!!Send',
-    description:
-      'Label for the send button in the wallet send confirmation dialog.',
-  },
-  backButtonLabel: {
-    id: 'wallet.send.confirmationDialog.back',
-    defaultMessage: '!!!Back',
-    description:
-      'Label for the back button in the wallet send confirmation dialog.',
-  },
-  passwordErrorMessage: {
-    id: 'wallet.send.confirmationDialog.passwordError',
-    defaultMessage: '!!!Incorrect spending password.',
-    description:
-      'Label for password error in the wallet send confirmation dialog.',
-  },
-});
-
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
+import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
+import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
+import type { AssetToken } from '../../../api/assets/types';
+import globalMessages from '../../../i18n/global-messages';
 
 type Props = {
   amount: string,
   receiver: string,
-  totalAmount: ?string,
+  wallet: Wallet,
+  totalAmount: BigNumber,
+  allAvailableTokens?: Array<AssetToken>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   onCancel: Function,
-  onExternalLinkClick: Function,
   isSubmitting: boolean,
   isFlight: boolean,
   error: ?LocalizableError,
-  currencyUnit: string,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
-  walletName: string,
   onExternalLinkClick: Function,
   isTrezor: boolean,
+  formattedTotalAmount: string,
 };
 
 type State = {
   areTermsAccepted: boolean,
 };
+
+const messages = getMessages();
 
 @observer
 export default class WalletSendConfirmationDialog extends Component<
@@ -201,31 +131,31 @@ export default class WalletSendConfirmationDialog extends Component<
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
 
-  renderConfirmationElement = (isHardwareWallet: boolean) => {
+  renderConfirmationElement = (
+    isHardwareWallet: boolean
+  ): ?React$Element<*> => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
       hwDeviceStatus,
       isFlight,
       onExternalLinkClick,
-      walletName,
+      wallet,
       isTrezor,
     } = this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
-      if (isHardwareWallet) {
-        return (
-          <div className={styles.hardwareWalletStatusWrapper}>
-            <HardwareWalletStatus
-              hwDeviceStatus={hwDeviceStatus}
-              walletName={walletName}
-              isTrezor={isTrezor}
-              onExternalLinkClick={onExternalLinkClick}
-            />
-          </div>
-        );
-      }
-      return (
+      const { name } = wallet;
+      return isHardwareWallet ? (
+        <div className={styles.hardwareWalletStatusWrapper}>
+          <HardwareWalletStatus
+            hwDeviceStatus={hwDeviceStatus}
+            walletName={name}
+            isTrezor={isTrezor}
+            onExternalLinkClick={onExternalLinkClick}
+          />
+        </div>
+      ) : (
         <Input
           type="password"
           className={styles.passphrase}
@@ -256,17 +186,19 @@ export default class WalletSendConfirmationDialog extends Component<
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
+      allAvailableTokens,
       amount,
       receiver,
-      totalAmount,
       transactionFee,
       isSubmitting,
       isFlight,
       error,
-      currencyUnit,
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
+      wallet,
+      formattedTotalAmount,
+      totalAmount,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -307,9 +239,11 @@ export default class WalletSendConfirmationDialog extends Component<
       );
     }
 
+    const { name } = wallet;
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={name}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
@@ -317,70 +251,69 @@ export default class WalletSendConfirmationDialog extends Component<
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
-        <div className={styles.passphraseFields}>
-          <div className={styles.addressToLabelWrapper}>
-            <div className={styles.addressToLabel}>
-              {intl.formatMessage(messages.addressToLabel)}
-            </div>
-            <div className={styles.addressTo}>{receiver}</div>
+        {shouldShowEmptyWalletWarning(
+          totalAmount,
+          wallet,
+          !!allAvailableTokens?.length && allAvailableTokens.length > 0
+        ) && (
+          <div className={styles.warning}>
+            <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
           </div>
-
-          <div className={styles.amountFeesWrapper}>
-            <div className={styles.amountWrapper}>
-              <div className={styles.amountLabel}>
-                {intl.formatMessage(messages.amountLabel)}
-              </div>
-              <div className={styles.amount}>
-                {amount}
-                <span className={styles.currencyCode}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.feesWrapper}>
-              <div className={styles.feesLabel}>
-                {intl.formatMessage(messages.feesLabel)}
-              </div>
-              <div className={styles.fees}>
-                +{transactionFee}
-                <span className={styles.currencyCode}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
+        )}
+        <div className={styles.addressToLabelWrapper}>
+          <div className={styles.addressToLabel}>
+            {intl.formatMessage(messages.addressToLabel)}
           </div>
-
-          <div className={styles.totalAmountWrapper}>
-            <div className={styles.totalAmountLabel}>
-              {intl.formatMessage(messages.totalLabel)}
-            </div>
-            <div className={styles.totalAmount}>
-              {totalAmount}
-              <span className={styles.currencyCode}>&nbsp;{currencyUnit}</span>
-            </div>
-          </div>
-
-          {isFlight && (
-            <div className={styles.flightCandidateWarning}>
-              <FormattedHTMLMessage
-                {...messages.flightCandidateWarning}
-                tagName="p"
-              />
-              <Checkbox
-                {...flightCandidateCheckboxField.bind()}
-                error={flightCandidateCheckboxField.error}
-                skin={CheckboxSkin}
-                disabled={areTermsAccepted}
-                onChange={this.onCheckboxClick}
-                checked={areTermsAccepted}
-              />
-            </div>
-          )}
-
-          {this.renderConfirmationElement(isHardwareWallet)}
+          <div className={styles.addressTo}>{receiver}</div>
         </div>
 
+        <div className={styles.amountFeesWrapper}>
+          <div className={styles.amountWrapper}>
+            <div className={styles.amountLabel}>
+              {intl.formatMessage(messages.amountLabel)}
+            </div>
+            <div className={styles.amount}>
+              {amount}
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
+            </div>
+          </div>
+
+          <div className={styles.feesWrapper}>
+            <div className={styles.feesLabel}>
+              {intl.formatMessage(messages.feesLabel)}
+            </div>
+            <div className={styles.fees}>
+              +{transactionFee}
+              <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.totalAmountLabel}>
+          {intl.formatMessage(messages.totalLabel)}
+        </div>
+        <div className={styles.totalAmount}>
+          {formattedTotalAmount}
+          <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
+        </div>
+
+        {isFlight && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...messages.flightCandidateWarning}
+              tagName="p"
+            />
+            <Checkbox
+              {...flightCandidateCheckboxField.bind()}
+              error={flightCandidateCheckboxField.error}
+              skin={CheckboxSkin}
+              disabled={areTermsAccepted}
+              onChange={this.onCheckboxClick}
+              checked={areTermsAccepted}
+            />
+          </div>
+        )}
+        {this.renderConfirmationElement(isHardwareWallet)}
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
     );

@@ -6,7 +6,7 @@ import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryAssets from './WalletSummaryAssets';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
-import type { WalletSummaryAsset } from '../../../api/assets/types';
+import type { AssetToken } from '../../../api/assets/types';
 import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 
 type Props = {
@@ -15,17 +15,19 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
+  currentLocale: string,
   currencyIsFetchingRate: boolean,
-  currencyIsAvailable: boolean,
   currencyIsActive: boolean,
   currencySelected: ?Currency,
   currencyRate: ?number,
   currencyLastFetched: ?Date,
   onCurrencySettingClick: Function,
-  assets: Array<WalletSummaryAsset>,
+  assets: Array<AssetToken>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
+  onAssetSettings: Function,
   isLoadingAssets: boolean,
+  assetSettingsDialogWasOpened: boolean,
   onExternalLinkClick: Function,
 };
 
@@ -38,8 +40,8 @@ export default class WalletSummary extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
+      currentLocale,
       currencyIsActive,
-      currencyIsAvailable,
       currencyIsFetchingRate,
       currencyLastFetched,
       currencyRate,
@@ -48,19 +50,14 @@ export default class WalletSummary extends Component<Props> {
       assets,
       onOpenAssetSend,
       onCopyAssetItem,
+      onAssetSettings,
+      assetSettingsDialogWasOpened,
       isLoadingAssets,
       onExternalLinkClick,
     } = this.props;
 
     const { isRestoring } = wallet;
-
-    const hasCurrency =
-      currencyIsActive &&
-      currencyIsAvailable &&
-      !!currencySelected &&
-      (!!currencyRate || currencyIsFetchingRate);
-
-    const hasAssets = assets.length;
+    const hasAssets = assets.length || isLoadingAssets;
 
     return (
       <>
@@ -71,11 +68,10 @@ export default class WalletSummary extends Component<Props> {
           numberOfPendingTransactions={numberOfPendingTransactions}
           isLoadingTransactions={isLoadingTransactions}
           currency={
-            hasCurrency && (
+            currencyIsActive && (
               <WalletSummaryCurrency
                 wallet={wallet}
                 currencyIsFetchingRate={currencyIsFetchingRate}
-                currencyIsAvailable={currencyIsAvailable}
                 currencyIsActive={currencyIsActive}
                 currencySelected={currencySelected}
                 currencyRate={currencyRate}
@@ -94,6 +90,9 @@ export default class WalletSummary extends Component<Props> {
                 onOpenAssetSend={onOpenAssetSend}
                 isLoadingAssets={isLoadingAssets}
                 onCopyAssetItem={onCopyAssetItem}
+                onAssetSettings={onAssetSettings}
+                assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+                currentLocale={currentLocale}
               />
             ) : (
               <WalletSummaryNoTokens

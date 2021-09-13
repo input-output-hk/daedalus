@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -18,9 +19,24 @@ import {
 } from '../config/votingConfig';
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
-import type { GetTransactionRequest } from '../api/transactions/types';
+import type { PathRoleIdentityType } from '../utils/hardwareWalletUtils';
+import type {
+  GetTransactionRequest,
+  VotingMetadataType,
+} from '../api/transactions/types';
 
 export type VotingRegistrationKeyType = { bytes: Function, public: Function };
+
+export type VotingDataType = {
+  stakeAddress: string,
+  stakeAddressHex: string,
+  votingKey: string,
+  stakeKey: string,
+  role: PathRoleIdentityType,
+  index: string,
+  metadata: VotingMetadataType,
+  absoluteSlotNumber: number,
+};
 
 export default class VotingStore extends Store {
   @observable registrationStep: number = 1;
@@ -155,35 +171,11 @@ export default class VotingStore extends Store {
     this.qrCode = value;
   };
 
-  _sendTransaction = async ({
-    amount,
-    passphrase,
-  }: {
-    amount: number,
-    passphrase: string,
-  }) => {
-    const walletId = this.selectedWalletId;
-    if (!walletId)
-      throw new Error(
-        'Selected wallet required before send voting registration.'
-      );
-    const [address] = await this.stores.addresses.getAddressesByWalletId(
-      walletId
-    );
-
-    const { absoluteSlotNumber } = this.stores.networkStatus;
-
-    // Reset voting registration transaction state
-    this._setIsTransactionPending(true);
-    this._setIsTransactionConfirmed(false);
-
-    // Reset voting registration requests
-    this.getWalletPublicKeyRequest.reset();
-    this.createVotingRegistrationTransactionRequest.reset();
-    this.signMetadataRequest.reset();
-
+  prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
-      const addressHex = await this._getHexFromBech32(address.id);
+      const { stakeAddresses } = this.stores.addresses;
+      const stakeAddress = stakeAddresses[walletId];
+      const stakeAddressHex = await this._getHexFromBech32(stakeAddress);
 
       await this._generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
@@ -198,35 +190,151 @@ export default class VotingStore extends Store {
         index: '0',
       });
       const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
+      const { absoluteSlotNumber } = this.stores.networkStatus;
+      const metadata = {
+        [61284]: {
+          map: [
+            {
+              k: {
+                int: 1,
+              },
+              v: {
+                bytes: votingKey,
+              },
+            },
+            {
+              k: {
+                int: 2,
+              },
+              v: {
+                bytes: stakeKey,
+              },
+            },
+            {
+              k: {
+                int: 3,
+              },
+              v: {
+                bytes: stakeAddressHex,
+              },
+            },
+            {
+              k: {
+                int: 4,
+              },
+              v: {
+                int: absoluteSlotNumber,
+              },
+            },
+          ],
+        },
+        [61285]: {
+          map: [
+            {
+              k: {
+                int: 1,
+              },
+              v: {
+                bytes:
+                  '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+              },
+            },
+          ],
+        },
+      };
 
-      const signature = await this.signMetadataRequest.execute({
-        addressHex,
-        walletId,
-        passphrase,
+      const votingData = {
+        stakeAddress,
+        stakeAddressHex,
         votingKey,
         stakeKey,
         role: 'mutable_account',
         index: '0',
-        absoluteSlotNumber,
-      });
+        metadata,
+        nonce: absoluteSlotNumber,
+      };
+      return votingData;
+    } catch (e) {
+      throw e;
+    }
+  };
 
-      const transaction = await this.createVotingRegistrationTransactionRequest.execute(
-        {
-          address: address.id,
-          addressHex,
-          amount,
-          passphrase,
-          walletId,
+  _sendTransaction = async ({
+    amount,
+    passphrase,
+  }: {
+    amount: number,
+    passphrase: ?string,
+  }) => {
+    const walletId = this.selectedWalletId;
+    if (!walletId)
+      throw new Error(
+        'Selected wallet required before send voting registration.'
+      );
+    const [address] = await this.stores.addresses.getAddressesByWalletId(
+      walletId
+    );
+    const selectedWallet = this.stores.wallets.getWalletById(walletId);
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
+    const { absoluteSlotNumber } = this.stores.networkStatus;
+
+    // Reset voting registration transaction state
+    this._setIsTransactionPending(true);
+    this._setIsTransactionConfirmed(false);
+
+    // Reset voting registration requests
+    this.getWalletPublicKeyRequest.reset();
+    this.createVotingRegistrationTransactionRequest.reset();
+    this.signMetadataRequest.reset();
+
+    let transaction;
+    try {
+      if (isHardwareWallet) {
+        transaction = await this.stores.hardwareWallets._sendMoney({
+          isVotingRegistrationTransaction: true,
+          selectedWalletId: walletId,
+        });
+      } else {
+        const votingData = await this.prepareVotingData({ walletId });
+        const {
+          stakeAddressHex,
           votingKey,
           stakeKey,
-          signature: signature.toString('hex'),
+          role,
+          index,
+        } = votingData;
+
+        const signature = await this.signMetadataRequest.execute({
+          addressHex: stakeAddressHex,
+          walletId,
+          passphrase,
+          votingKey,
+          stakeKey,
+          role,
+          index,
           absoluteSlotNumber,
-        }
-      );
+        });
+
+        transaction = await this.createVotingRegistrationTransactionRequest.execute(
+          {
+            address: address.id,
+            addressHex: stakeAddressHex,
+            amount,
+            passphrase,
+            walletId,
+            votingKey,
+            stakeKey,
+            signature: signature.toString('hex'),
+            absoluteSlotNumber,
+          }
+        );
+      }
 
       this._setTransactionId(transaction.id);
-      this._startTransactionPolling();
-      this._nextRegistrationStep();
+      if (!isHardwareWallet) {
+        this._startTransactionPolling();
+        this._nextRegistrationStep();
+      }
     } catch (error) {
       if (error.code === 'wrong_encryption_passphrase') {
         // In case of a invalid spending password we stay on the same screen

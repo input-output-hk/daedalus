@@ -2,7 +2,7 @@ Feature: Scrambling and Unscrambling mnemonics
 
   As a developer I want to be sure mnemonics are correctly scrambled and unscrambled
 
-  @unit
+  @unit @skip
   Scenario: Scramble and Unscramble mnemonics
     Given I generate 12 word mnemonic
     And I generate additional mnemonic words

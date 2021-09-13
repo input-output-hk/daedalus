@@ -298,7 +298,6 @@ export default class StakePools extends Component<Props, State> {
             />
             <StakePoolsRanking
               wallets={wallets}
-              currentLocale={currentLocale}
               onOpenExternalLink={onOpenExternalLink}
               updateDelegatingStake={updateDelegatingStake}
               rankStakePools={rankStakePools}

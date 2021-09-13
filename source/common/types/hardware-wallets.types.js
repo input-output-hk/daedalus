@@ -118,12 +118,6 @@ export type TransportDevice = {
   firmwareVersion: ?string,
 };
 
-/* export type Certificate = {|
-  type: CertificateType,
-  path: BIP32Path,
-  poolKeyHashHex: ?string,
-|}; */
-
 export type Certificate = {
   address: string,
   type: string,
@@ -168,6 +162,33 @@ export type LedgerSignTransactionInputsType = Array<LedgerSignTransactionInputTy
 export type LedgerSignTransactionOutputsType =
   | []
   | Array<LedgerOutputTypeAddress | LedgerOutputTypeChange>;
+
+export type LedgerAuxiliaryDataType = {
+  type: string,
+  params: {
+    votingPublicKeyHex: string,
+    stakingPath: BIP32Path,
+    rewardsDestination: {
+      type: number,
+      params: {
+        stakingPath: BIP32Path,
+      },
+    },
+    nonce: string,
+  },
+};
+
+export type TrezorAuxiliaryDataType = {
+  catalystRegistrationParameters: {
+    votingPublicKey: string,
+    stakingPath: string | Array<number>,
+    rewardAddressParameters: {
+      addressType: number,
+      path: string,
+    },
+    nonce: string,
+  },
+};
 
 export type TrezorSignTransactionInputType = {
   path: string,
@@ -236,10 +257,11 @@ export type LedgerSignTransactionRequest = {
   protocolMagic: number,
   certificates: Array<?Certificate>,
   withdrawals: Array<?Withdrawal>,
-  metadataHashHex: ?string,
   reset?: boolean,
   devicePath: ?string,
-  validityIntervalStartStr?: string,
+  validityIntervalStartStr?: ?string, // It is disabled for now
+  signingMode: string,
+  auxiliaryData: ?LedgerAuxiliaryDataType,
 };
 
 export type TrezorSignTransactionRequest = {
@@ -254,18 +276,43 @@ export type TrezorSignTransactionRequest = {
   reset?: boolean,
   devicePath: string,
   validityIntervalStartStr?: string,
+  signingMode: number,
+  auxiliaryData: ?TrezorAuxiliaryDataType,
 };
 
 export type LedgerSignTransactionResponse = {
   txHashHex: string,
   witnesses: Array<Witness>,
+  auxiliaryDataSupplement?: {
+    catalystRegistrationSignatureHex: string,
+    auxiliaryDataHashHex: string,
+    type: 'catalyst_registration',
+  },
+};
+
+export type TrezorWitness = {|
+  type: number,
+  pubKey: string,
+  signature: string,
+  chainCode: ?string,
+|};
+
+export type TrezorSerializedTxPayload = {|
+  serializedTx: string,
+|};
+
+export type TrezorRawTxPayload = {
+  witnesses: Array<TrezorWitness>,
+  auxiliaryDataSupplement?: {
+    type: number,
+    auxiliaryDataHash: string,
+    catalystSignature: string,
+  },
 };
 
 export type TrezorSignTransactionResponse = {
   success: boolean,
-  payload: {
-    serializedTx: string,
-  },
+  payload: TrezorSerializedTxPayload | TrezorRawTxPayload,
 };
 
 export type HardwareWalletConnectionRequest = {

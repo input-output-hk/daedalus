@@ -18,14 +18,17 @@ import type {
   CreateExternalTransactionRequest,
   GetWithdrawalsResponse,
 } from '../api/transactions/types';
-import { isValidAmountInLovelaces } from '../utils/validations';
+import {
+  isValidAmountInLovelaces,
+  isValidAssetAmountInNaturalUnits,
+} from '../utils/validations';
 import transactionsCsvGenerator from '../utils/transactionsCsvGenerator';
 import { i18nContext } from '../utils/i18nContext';
 import {
   generateFilterOptions,
   isTransactionInFilterRange,
 } from '../utils/transaction';
-import type { AssetItems } from '../api/assets/types';
+import type { ApiTokens } from '../api/assets/types';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
@@ -78,7 +81,7 @@ type TransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
-  assets?: AssetItems,
+  assets?: ApiTokens,
 };
 
 export default class TransactionsStore extends Store {
@@ -318,6 +321,9 @@ export default class TransactionsStore extends Store {
   validateAmount = (amountInLovelaces: string): Promise<boolean> =>
     Promise.resolve(isValidAmountInLovelaces(amountInLovelaces));
 
+  validateAssetAmount = (amountInNaturalUnits: string): Promise<boolean> =>
+    Promise.resolve(isValidAssetAmountInNaturalUnits(amountInNaturalUnits));
+
   // ======================= PRIVATE ========================== //
 
   @action _updateFilterOptions = (
@@ -356,13 +362,13 @@ export default class TransactionsStore extends Store {
     const intl = i18nContext(locale);
     const transactions = allFiltered;
     const walletName = active ? active.name : '';
-    const { getAssetDetails } = this.stores.assets;
+    const { getAsset } = this.stores.assets;
     const success = await transactionsCsvGenerator({
       desktopDirectoryPath,
       intl,
       transactions,
       walletName,
-      getAssetDetails,
+      getAsset,
       isInternalAddress,
     });
     if (success) actions.transactions.requestCSVFileSuccess.trigger();

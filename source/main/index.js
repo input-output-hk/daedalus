@@ -1,9 +1,10 @@
 // @flow
 import os from 'os';
 import path from 'path';
-import { app, dialog, BrowserWindow, shell } from 'electron';
+import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
+import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {
   setupLogging,
@@ -40,6 +41,10 @@ import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
+import {
+  restoreSavedWindowBounds,
+  saveWindowBoundsOnSizeAndPositionChange,
+} from './windows/windowBounds';
 
 /* eslint-disable consistent-return */
 
@@ -49,6 +54,7 @@ let cardanoNode: ?CardanoNode;
 
 const {
   isDev,
+  isTest,
   isWatchMode,
   isBlankScreenFixActive,
   isSelfnode,
@@ -124,24 +130,31 @@ const onAppReady = async () => {
     startTime,
   });
 
-  logger.info(`Daedalus is starting at ${startTime}`, { startTime });
-
-  logger.info('Updating System-info.json file', { ...systemInfo.data });
-
-  // We need DAEDALUS_INSTALL_DIRECTORY in PATH
-  // in order for the cardano-launcher to find wallet and node bins
+  // We need DAEDALUS_INSTALL_DIRECTORY in PATH in order for the
+  // cardano-launcher to find cardano-wallet and cardano-node executables
   process.env.PATH = [
     process.env.PATH,
     process.env.DAEDALUS_INSTALL_DIRECTORY,
   ].join(path.delimiter);
+
+  logger.info(`Daedalus is starting at ${startTime}`, { startTime });
+
+  logger.info('Updating System-info.json file', { ...systemInfo.data });
+
+  logger.info(`Current working directory is: ${process.cwd()}`, {
+    cwd: process.cwd(),
+  });
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
 
   // Detect locale
   let locale = getLocale(network);
-
-  mainWindow = createMainWindow(locale);
+  mainWindow = createMainWindow(
+    locale,
+    restoreSavedWindowBounds(screen, requestElectronStore)
+  );
+  saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
@@ -253,7 +266,7 @@ const onAppReady = async () => {
     event.preventDefault(); // prevent Daedalus from quitting immediately
 
     if (isSelfnode) {
-      if (keepLocalClusterRunning) {
+      if (keepLocalClusterRunning || isTest) {
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus',
           {

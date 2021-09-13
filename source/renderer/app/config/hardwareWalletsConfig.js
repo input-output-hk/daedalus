@@ -26,7 +26,14 @@ export const HW_SHELLEY_CONFIG = {
       ttl: 3600,
     },
   },
-  ABD_DERIVATION_PATH: [
+  DEFAULT_DERIVATION_PATH: [
+    HARDENED + SHELLEY_PURPOSE_INDEX,
+    HARDENED + ADA_COIN_TYPE,
+    HARDENED + DEFAULT_ADDRESS_INDEX,
+    2,
+    0,
+  ],
+  ABS_DERIVATION_PATH: [
     HARDENED + SHELLEY_PURPOSE_INDEX,
     HARDENED + ADA_COIN_TYPE,
     HARDENED + DEFAULT_ADDRESS_INDEX,
@@ -41,18 +48,33 @@ export const HW_BYRON_CONFIG = {
       protocolMagic: 764824073,
     },
   },
-  ABD_DERIVATION_PATH: [
+  DEFAULT_DERIVATION_PATH: [
+    HARDENED + BYRON_PURPOSE_INDEX,
+    HARDENED + ADA_COIN_TYPE,
+    HARDENED + DEFAULT_ADDRESS_INDEX,
+    2,
+    0,
+  ],
+  ABS_DERIVATION_PATH: [
     HARDENED + BYRON_PURPOSE_INDEX,
     HARDENED + ADA_COIN_TYPE,
     HARDENED + DEFAULT_ADDRESS_INDEX,
   ],
 };
 
-// JS Library supports Cardano APP version down to 2.0.4
-// https://github.com/vacuumlabs/ledgerjs-cardano-shelley/blob/develop/CHANGELOG.md#220---february-8th-2020
-export const MINIMAL_CARDANO_APP_VERSION = '2.2.0';
-export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
-export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.6';
+export const AddressTypeNibbles = {
+  BASE: 0b0000,
+  POINTER: 0b0100,
+  ENTERPRISE: 0b0110,
+  BYRON: 0b1000,
+  REWARD: 0b1110,
+};
+
+// MINIMAL_CARDANO_APP_VERSION v2.3.2 - Catalyst Voting support with LedgerJs 3.1.0 version
+// https://github.com/cardano-foundation/ledgerjs-hw-app-cardano/blob/master/CHANGELOG.md
+export const MINIMAL_CARDANO_APP_VERSION = '2.3.2';
+export const MINIMAL_LEDGER_FIRMWARE_VERSION = '2.0.0';
+export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.4.0';
 
 export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;

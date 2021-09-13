@@ -366,7 +366,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                     </span>
                     <span className={styles.feesAmountLabel}>
                       {` `}
-                      {intl.formatMessage(globalMessages.unitAda)}
+                      {intl.formatMessage(globalMessages.adaUnit)}
                     </span>
                   </>
                 )}
@@ -386,7 +386,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                       </span>
                       <span className={styles.depositAmountLabel}>
                         {` `}
-                        {intl.formatMessage(globalMessages.unitAda)}
+                        {intl.formatMessage(globalMessages.adaUnit)}
                       </span>
                     </p>
                   </div>

@@ -22,9 +22,9 @@ import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
-import type { WalletTransactionAsset } from '../../../api/assets/types';
-import AssetToken from '../../widgets/AssetToken';
-import { formattedTokenWalletAmount } from '../../../utils/formatters';
+import type { AssetToken } from '../../../api/assets/types';
+import Asset from '../../assets/Asset';
+import AssetAmount from '../../assets/AssetAmount';
 import { filterAssets } from '../../../utils/assets';
 
 /* eslint-disable consistent-return */
@@ -260,7 +260,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  txAssets: Array<WalletTransactionAsset>,
+  assetTokens: Array<AssetToken>,
   hasAssetsEnabled: boolean,
   isInternalAddress: Function,
   isLoadingAssets: boolean,
@@ -410,12 +410,17 @@ export default class Transaction extends Component<Props, State> {
     return !!this.assetsList.length;
   }
 
-  get assetsList(): Array<WalletTransactionAsset> {
-    const { txAssets, data, isInternalAddress, hasAssetsEnabled } = this.props;
+  get assetsList(): Array<AssetToken> {
+    const {
+      assetTokens,
+      data,
+      isInternalAddress,
+      hasAssetsEnabled,
+    } = this.props;
     if (!hasAssetsEnabled) {
       return [];
     }
-    return filterAssets(txAssets, data.type, isInternalAddress);
+    return filterAssets(assetTokens, data.type, isInternalAddress);
   }
 
   includesUnresolvedAddresses = (addresses: Array<?string>) =>
@@ -510,10 +515,10 @@ export default class Transaction extends Component<Props, State> {
 
     const transactionsType = this.hasAssets
       ? intl.formatMessage(messages.multipleTokens)
-      : intl.formatMessage(globalMessages.currency);
+      : intl.formatMessage(globalMessages.adaUnit);
     const typeOfTransaction = this.hasAssets
       ? intl.formatMessage(headerStateTranslations[state])
-      : intl.formatMessage(globalMessages.currency);
+      : intl.formatMessage(globalMessages.adaUnit);
 
     const getIconType = (txState) => {
       switch (txState) {
@@ -563,7 +568,7 @@ export default class Transaction extends Component<Props, State> {
                 {data.amount && (
                   <div className={styles.amount}>
                     {formattedWalletAmount(data.amount, false)}
-                    <span>{intl.formatMessage(globalMessages.currency)}</span>
+                    <span>{intl.formatMessage(globalMessages.adaUnit)}</span>
                   </div>
                 )}
               </div>
@@ -625,7 +630,7 @@ export default class Transaction extends Component<Props, State> {
                       <div className={styles.transactionFeeValue}>
                         {formattedWalletAmount(data.fee, false)}&nbsp;
                         <span>
-                          {intl.formatMessage(globalMessages.unitAda)}
+                          {intl.formatMessage(globalMessages.adaUnit)}
                         </span>
                       </div>
                     </div>
@@ -639,7 +644,7 @@ export default class Transaction extends Component<Props, State> {
                       <div className={styles.depositValue}>
                         {formattedWalletAmount(data.deposit, false)}&nbsp;
                         <span>
-                          {intl.formatMessage(globalMessages.unitAda)}
+                          {intl.formatMessage(globalMessages.adaUnit)}
                         </span>
                       </div>
                     </div>
@@ -687,21 +692,19 @@ export default class Transaction extends Component<Props, State> {
                               {intl.formatMessage(messages.assetLabel)}
                               &nbsp;#{assetIndex + 1}
                             </span>
-                            <AssetToken
+                            <Asset
                               asset={asset}
                               onCopyAssetItem={onCopyAssetItem}
-                              componentClassName={styles.assetToken}
+                              className={styles.assetToken}
                             />
                           </h3>
                           {asset.quantity && (
-                            <div className={styles.amountFeesWrapper}>
-                              <div className={styles.amount}>
-                                {formattedTokenWalletAmount(
-                                  asset.quantity,
-                                  asset.metadata
-                                )}
-                              </div>
-                            </div>
+                            <AssetAmount
+                              amount={asset.quantity}
+                              metadata={asset.metadata}
+                              decimals={asset.decimals}
+                              className={styles.assetAmount}
+                            />
                           )}
                         </div>
                       ))

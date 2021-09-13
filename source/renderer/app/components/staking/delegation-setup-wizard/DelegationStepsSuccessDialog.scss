@@ -1,16 +1,18 @@
 .delegationStepsSuccessDialogWrapper {
   .content {
-    margin-top: 28px;
     .tadaImage {
       display: block;
       margin-bottom: 23px;
       text-align: center;
+
       svg {
         height: 75px;
         stroke: var(--theme-delegation-steps-success-tada-color);
+
         path {
           stroke: var(--theme-delegation-steps-success-tada-color);
         }
+
         g {
           ellipse {
             &:nth-child(7),
@@ -31,12 +33,14 @@
         }
       }
     }
+
     .description1,
     .description2 {
       color: var(--theme-delegation-steps-success-description-color);
       font-family: var(--font-light);
       font-size: 16px;
       line-height: 1.38;
+
       span > span {
         font-family: var(--font-medium);
       }

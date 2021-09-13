@@ -1,10 +1,12 @@
-.component {
+.datePicker {
+  position: relative;
   :global {
     .rdtPicker {
       background: var(--rp-modal-bg-color, white);
       border: 0;
       border-radius: 4px;
       box-shadow: var(--rp-modal-box-shadow, 0 5px 20px 0 rgba(0, 0, 0, 0.25));
+      color: var(--theme-dialog-text-color);
       margin-top: 5px;
       padding: 12px;
       width: 276px;
@@ -73,26 +75,10 @@
       td.rdtActive.rdtToday:before {
         border-bottom-color: var(--rp-modal-bg-color);
       }
-
-      .reset {
-        margin-top: 12px;
-      }
     }
   }
 }
 
-.pickerPanelOnLeft {
-  :global {
-    .rdtPicker {
-      left: 0;
-    }
-  }
-}
-
-.pickerPanelOnRight {
-  :global {
-    .rdtPicker {
-      right: 0;
-    }
-  }
+.resetButton {
+  margin: 12px;
 }

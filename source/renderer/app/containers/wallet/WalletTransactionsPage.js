@@ -25,7 +25,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { app, wallets, addresses, profile, assets } = stores;
     const {
       openExternalLink,
-      environment: { network, rawNetwork },
+      environment: { network },
     } = app;
     const { isInternalAddress } = addresses;
     const activeWallet = wallets.active;
@@ -51,16 +51,10 @@ export default class WalletTransactionsPage extends Component<Props> {
 
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
-    const { getAssetDetails } = assets;
+    const { getAsset } = assets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
-      getNetworkExplorerUrlByType(
-        type,
-        param,
-        network,
-        rawNetwork,
-        currentLocale
-      );
+      getNetworkExplorerUrlByType(type, param, network, currentLocale);
 
     const hasMoreToLoad = () =>
       searchLimit !== null &&
@@ -90,7 +84,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         onRequestCSVFile={requestCSVFile.trigger}
         hasAssetsEnabled={hasAssetsEnabled}
         isInternalAddress={isInternalAddress}
-        getAssetDetails={getAssetDetails}
+        getAsset={getAsset}
         onCopyAssetItem={this.handleOnCopyAssetItem}
       />
     );

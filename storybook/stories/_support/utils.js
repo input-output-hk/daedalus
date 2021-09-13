@@ -27,8 +27,9 @@ import type {
 import Asset from '../../../source/renderer/app/domains/Asset';
 import type {
   AssetMetadata,
-  WalletAssetItems,
-  WalletAssets,
+  Tokens,
+  WalletTokens,
+  AssetToken,
 } from '../../../source/renderer/app/api/assets/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
@@ -108,15 +109,16 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
-  assets: WalletAssets,
+  assets?: WalletTokens = { available: [], total: [] },
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
   status?: SyncStateStatus = WalletSyncStateStatuses.READY,
-  isHardwareWallet?: boolean = false
+  isHardwareWallet?: boolean = false,
+  id?: string = generateHash()
 ) =>
   new Wallet({
-    id: generateHash(),
+    id,
     addressPoolGap: 20,
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
@@ -137,18 +139,40 @@ export const generateWallet = (
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
-export const generateAsset = (
+export const generateAssetDomain = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
-  metadata?: AssetMetadata
-) =>
+  metadata?: AssetMetadata = {}
+): Asset =>
   new Asset({
     policyId,
     assetName,
     fingerprint,
     metadata,
+    decimals: 0,
+    recommendedDecimals: null,
+    uniqueId: `${policyId}${assetName}`,
   });
+
+export const generateAssetToken = (
+  policyId: string,
+  assetName: string = '',
+  fingerprint: string = '',
+  quantity: number,
+  metadata: ?AssetMetadata,
+  decimals: ?number,
+  recommendedDecimals: ?number
+): AssetToken => ({
+  policyId,
+  assetName,
+  fingerprint,
+  metadata,
+  quantity: new BigNumber(quantity),
+  decimals,
+  recommendedDecimals,
+  uniqueId: `${policyId}${assetName}`,
+});
 
 export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
@@ -160,7 +184,7 @@ export const generateTransaction = (
   noIncomeAddresses: boolean = false,
   noWithdrawals: boolean = true,
   fee: BigNumber = new BigNumber(faker.finance.amount()),
-  assets?: WalletAssetItems,
+  assets?: Tokens,
   metadata?: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
@@ -217,6 +241,7 @@ export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
     used,
+    spendingPath: "1852'/1815'/0'/0/19",
   });
 
 export const promise = (returnValue: any): (() => Promise<any>) => () =>
@@ -225,9 +250,6 @@ export const promise = (returnValue: any): (() => Promise<any>) => () =>
       resolve(returnValue);
     }, 2000);
   });
-
-export const isIncentivizedTestnetTheme = (currentTheme: string) =>
-  currentTheme === 'incentivized-testnet';
 
 export const isShelleyTestnetTheme = (currentTheme: string) =>
   currentTheme === 'shelley-testnet';

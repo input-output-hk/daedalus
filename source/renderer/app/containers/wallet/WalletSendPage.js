@@ -1,9 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { intlShape } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import globalMessages from '../../i18n/global-messages';
 import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
@@ -11,10 +9,8 @@ import {
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
-import type {
-  AssetItems,
-  WalletTransactionAsset,
-} from '../../api/assets/types';
+import type { ApiTokens } from '../../api/assets/types';
+import { getAssetTokens } from '../../utils/assets';
 
 type Props = InjectedProps;
 
@@ -23,16 +19,12 @@ type Props = InjectedProps;
 export default class WalletSendPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   calculateTransactionFee = async (params: {
     walletId: string,
     address: string,
     amount: number,
     isHardwareWallet: boolean,
-    selectedAssets?: AssetItems,
+    selectedAssets?: ApiTokens,
   }) => {
     const {
       walletId,
@@ -81,19 +73,12 @@ export default class WalletSendPage extends Component<Props> {
     }
   };
 
-  getAssetByFingerprint = (fingerprint: string, allAssets: Array<Asset>) => {
-    return allAssets.find((asset) => asset.fingerprint === fingerprint);
-  };
-
-  handleUnsetActiveAssetFingerprint = () => {
-    const { wallets: walletActions } = this.props.actions;
-    walletActions.setActiveAssetFingerprint.trigger({
-      fingerprint: null,
-    });
+  getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) => {
+    return allAssets.find((asset) => asset.uniqueId === uniqueId);
   };
 
   render() {
-    const { intl } = this.context;
+    const { stores, actions } = this.props;
     const {
       uiDialogs,
       wallets,
@@ -102,19 +87,16 @@ export default class WalletSendPage extends Component<Props> {
       profile,
       hardwareWallets,
       assets: assetsStore,
-    } = this.props.stores;
-    const { isValidAddress } = wallets;
-    const { validateAmount } = transactions;
+    } = stores;
+    const { isValidAddress, isAddressFromSameWallet } = wallets;
+    const { validateAmount, validateAssetAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const {
-      all: allAssets,
-      activeAssetFingerprint,
-      getAssetDetails,
-    } = assetsStore;
+    const { all: allAssets, activeAsset, getAsset } = assetsStore;
+    const { unsetActiveAsset } = actions.wallets;
 
-    const selectedAsset = activeAssetFingerprint
-      ? this.getAssetByFingerprint(activeAssetFingerprint, allAssets)
+    const selectedAsset = activeAsset
+      ? this.getAssetByUniqueId(activeAsset, allAssets)
       : null;
 
     // Guard against potential null values
@@ -123,40 +105,22 @@ export default class WalletSendPage extends Component<Props> {
 
     const { isHardwareWallet } = wallet;
 
-    // $FlowFixMe
-    const walletAssets: Array<WalletTransactionAsset> = wallet.assets.total
-      .map((rawAsset) => {
-        const { policyId, assetName } = rawAsset;
-        const assetDetails = getAssetDetails(policyId, assetName);
-        return assetDetails ? Object.assign({}, rawAsset, assetDetails) : null;
-      })
-      .filter((asset) => asset != null)
-      .sort((asset1, asset2) => {
-        if (asset1 && asset2) {
-          if (asset1.fingerprint < asset2.fingerprint) {
-            return -1;
-          }
-          if (asset1.fingerprint > asset2.fingerprint) {
-            return 1;
-          }
-        }
-        return 0;
-      });
+    const walletTokens = wallet.assets.total;
+    const assetTokens = getAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = walletAssets.length;
+    const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
     return (
       <WalletSendForm
-        currencyUnit={intl.formatMessage(globalMessages.unitAda)}
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
         currentNumberFormat={profile.currentNumberFormat}
         calculateTransactionFee={(
           address: string,
           amount: number,
-          selectedAssets: AssetItems
+          selectedAssets: ApiTokens
         ) =>
           this.calculateTransactionFee({
             walletId: wallet.id,
@@ -168,8 +132,9 @@ export default class WalletSendPage extends Component<Props> {
         }
         walletAmount={wallet.amount}
         validateAmount={validateAmount}
+        validateAssetAmount={validateAssetAmount}
         addressValidator={isValidAddress}
-        assets={walletAssets}
+        assets={assetTokens}
         hasAssets={hasAssetsEnabled && hasRawAssets}
         selectedAsset={selectedAsset}
         isLoadingAssets={isLoadingAssets}
@@ -180,8 +145,9 @@ export default class WalletSendPage extends Component<Props> {
         onOpenDialogAction={(params) =>
           this.openDialog(params.dialog, isHardwareWallet, wallet.id)
         }
-        onUnsetActiveAssetFingerprint={this.handleUnsetActiveAssetFingerprint}
+        onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
+        isAddressFromSameWallet={isAddressFromSameWallet}
       />
     );
   }

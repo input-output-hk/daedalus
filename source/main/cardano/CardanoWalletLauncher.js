@@ -8,7 +8,6 @@ import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { environment } from '../environment';
 import {
-  STAKE_POOL_REGISTRY_URL,
   FALLBACK_TOKEN_METADATA_SERVER_URL,
   MOCK_TOKEN_METADATA_SERVER_URL,
   MOCK_TOKEN_METADATA_SERVER_PORT,
@@ -18,10 +17,6 @@ import {
   STAGING,
   TESTNET,
   SELFNODE,
-  ITN_REWARDS_V1,
-  ITN_SELFNODE,
-  NIGHTLY,
-  QA,
 } from '../../common/types/environment.types';
 import { CardanoNodeImplementationOptions } from '../../common/types/cardano-node.types';
 import { createSelfnodeConfig } from './utils';
@@ -34,9 +29,6 @@ export type WalletOptions = {
   cluster: string,
   stateDir: string,
   tlsPath: string,
-  block0Path: string,
-  block0Hash: string,
-  secretPath: string,
   configPath: string,
   syncTolerance: string,
   nodeLogFile: WriteStream,
@@ -55,9 +47,6 @@ export async function CardanoWalletLauncher(
     cluster,
     stateDir,
     tlsPath,
-    block0Path,
-    block0Hash,
-    secretPath,
     configPath,
     syncTolerance,
     nodeLogFile,
@@ -154,61 +143,6 @@ export async function CardanoWalletLauncher(
         tlsConfiguration,
         tokenMetadataServer,
       });
-      break;
-    case CardanoNodeImplementationOptions.JORMUNGANDR:
-      if (cluster === ITN_SELFNODE) {
-        merge(launcherConfig, {
-          apiPort: 8088,
-          networkName: SELFNODE,
-          nodeConfig: {
-            restPort: 8888,
-            network: {
-              genesisBlock: {
-                file: block0Path,
-                hash: block0Hash,
-              },
-              secretFile: [secretPath],
-            },
-          },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[ITN_SELFNODE],
-        });
-      }
-      if (cluster === NIGHTLY) {
-        merge(launcherConfig, {
-          nodeConfig: {
-            network: {
-              genesisBlock: {
-                hash: block0Hash,
-              },
-            },
-          },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[NIGHTLY],
-        });
-      }
-      if (cluster === QA) {
-        merge(launcherConfig, {
-          nodeConfig: {
-            network: {
-              genesisBlock: {
-                hash: block0Hash,
-              },
-            },
-          },
-          stakePoolRegistryUrl: STAKE_POOL_REGISTRY_URL[QA],
-        });
-      }
-      if (cluster === ITN_REWARDS_V1) {
-        merge(launcherConfig, {
-          nodeConfig: {
-            network: {
-              genesisBlock: {
-                file: block0Path,
-                hash: block0Hash,
-              },
-            },
-          },
-        });
-      }
       break;
     default:
       break;

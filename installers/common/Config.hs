@@ -94,10 +94,9 @@ optionsParser detectedOS = Options
   <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the product signing config")
 
 backendOptionParser :: Parser Backend
-backendOptionParser = enableJormungandr <|> cardano
+backendOptionParser = cardano
   where
     cardano = Cardano <$> optPath "cardano" 'S' "Use Cardano backend with given Daedalus bridge path"
-    enableJormungandr = Jormungandr <$> optPath  "jormungandr" 'j' "use Jormungandr backend"
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the
 -- Dhall syntax.

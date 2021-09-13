@@ -21,7 +21,6 @@ import styles from './TooltipPool.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
-import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
@@ -142,11 +141,6 @@ const messages = defineMessages({
     description:
       '"Delegate to this pool" Button for the Stake Pools Tooltip page.',
   },
-  experimentalTooltipLabel: {
-    id: 'staking.stakePools.tooltip.experimentalTooltipLabel',
-    defaultMessage: '!!!Experimental feature, data may be inaccurate.',
-    description: 'Experimental tooltip label',
-  },
   copyIdTooltipLabel: {
     id: 'staking.stakePools.tooltip.copyIdTooltipLabel',
     defaultMessage: '!!!Copy the stake pool ID',
@@ -223,7 +217,6 @@ export default class TooltipPool extends Component<Props, State> {
   }
 
   renderDescriptionFields = () => {
-    const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
     const {
       currentTheme,
@@ -293,23 +286,6 @@ export default class TooltipPool extends Component<Props, State> {
               <div className={styles.noDataDash}>
                 <SVGInline svg={noDataDashSmallImage} />
               </div>
-            )}
-            {isIncentivizedTestnet && (
-              <PopOver
-                key="experimentalTooltip"
-                content={
-                  <div className={styles.tooltipWithHTMLContent}>
-                    {intl.formatMessage(messages.experimentalTooltipLabel)}
-                  </div>
-                }
-              >
-                <button className={styles.iconButton}>
-                  <SVGInline
-                    svg={experimentalIcon}
-                    className={styles.experimentalIcon}
-                  />
-                </button>
-              </PopOver>
             )}
           </div>
         ),

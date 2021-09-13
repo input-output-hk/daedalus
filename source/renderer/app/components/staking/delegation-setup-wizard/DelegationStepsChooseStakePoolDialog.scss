@@ -10,6 +10,10 @@
     .Dialog_subtitle {
       color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
+
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-top: -8px;
+    }
   }
 
   .stakePoolsListWrapper {

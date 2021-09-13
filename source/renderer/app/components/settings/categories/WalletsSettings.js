@@ -8,6 +8,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
+import globalMessages from '../../../i18n/global-messages';
 import type { LocalizedCurrency } from '../../../types/currencyTypes';
 
 const messages = defineMessages({
@@ -105,6 +106,11 @@ export default class WalletSettings extends Component<Props> {
               value={currencySelected ? currencySelected.code : null}
               options={currencyOptions}
               onChange={onSelectCurrency}
+              optionHeight={50}
+              noResultsMessage={intl.formatMessage(
+                globalMessages.searchNoResultsMessage
+              )}
+              hasSearch
             />
             <div className={styles.disclaimer}>
               <FormattedHTMLMessage

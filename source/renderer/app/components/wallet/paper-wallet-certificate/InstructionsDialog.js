@@ -110,7 +110,6 @@ const messages = defineMessages({
 type Props = {
   inProgress: boolean,
   network: string,
-  rawNetwork: string,
   onClose: Function,
   onOpenExternalLink: Function,
   onPrint: Function,
@@ -125,7 +124,6 @@ export default class InstructionsDialog extends Component<Props> {
 
   static defaultProps = {
     network: DEVELOPMENT,
-    rawNetwork: DEVELOPMENT,
   };
 
   componentDidUpdate(prevProps: Props) {
@@ -142,7 +140,6 @@ export default class InstructionsDialog extends Component<Props> {
       inProgress,
       onOpenExternalLink,
       network,
-      rawNetwork,
       error,
     } = this.props;
     const dialogClasses = classnames([styles.component, 'instructionsDialog']);
@@ -162,7 +159,7 @@ export default class InstructionsDialog extends Component<Props> {
     ];
 
     const openNetworkExplorer = () =>
-      onOpenExternalLink(getNetworkExplorerUrl(network, rawNetwork));
+      onOpenExternalLink(getNetworkExplorerUrl(network));
 
     const cardanoExplorerLink = (
       <Link

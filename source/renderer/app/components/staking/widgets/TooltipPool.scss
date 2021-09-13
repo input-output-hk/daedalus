@@ -53,29 +53,6 @@ $tooltip-width: 280px;
     }
   }
 
-  .experimentalIcon {
-    padding: 0;
-
-    svg {
-      height: 14.5px;
-      width: 10px;
-
-      g {
-        path:nth-child(1) {
-          fill: var(
-            --theme-staking-stake-pool-tooltip-experimental-icon-background-color
-          );
-        }
-
-        path:nth-child(2) {
-          fill: var(
-            --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
-          );
-        }
-      }
-    }
-  }
-
   .iconButton {
     cursor: pointer;
   }
@@ -276,10 +253,23 @@ $tooltip-width: 280px;
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
-  margin-right: -5px;
   max-height: 57px;
   overflow-y: auto;
+  padding-right: 6px;
   word-break: break-word;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: block;
+    height: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: none;
+  }
 }
 
 .table {

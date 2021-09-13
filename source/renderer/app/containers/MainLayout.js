@@ -7,6 +7,7 @@ import SidebarLayout from '../components/layout/SidebarLayout';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import InstructionsDialog from '../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import TransferFundsPage from './wallet/TransferFundsPage';
+import AssetSettingsDialogContainer from './assets/AssetSettingsDialogContainer';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
 
@@ -69,7 +70,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       <Sidebar
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
-        isIncentivizedTestnet={global.isIncentivizedTestnet}
         isShelleyActivated={isShelleyActivated}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
@@ -96,6 +96,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             certificateStep={this.props.stores.wallets.certificateStep}
           />,
           <TransferFundsPage key="TransferFundsPage" />,
+          <AssetSettingsDialogContainer key="AssetSettingsDialogContainer" />,
         ]}
       >
         {this.props.children}

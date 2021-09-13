@@ -1,11 +1,17 @@
 // @flow
-import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import {
+  utils,
+  TxOutputDestinationType,
+  AddressType,
+  TxAuxiliaryDataType, // CHECK THIS
+} from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
-import { map, groupBy, sortBy } from 'lodash';
+import _ from 'lodash';
 import {
   derivationPathToLedgerPath,
   CERTIFICATE_TYPE,
+  groupTokensByPolicyId,
 } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { AddressStyles } from '../domains/WalletAddress';
@@ -23,6 +29,8 @@ import type {
   Certificate,
 } from '../../../common/types/hardware-wallets.types';
 import type { AddressStyle } from '../api/addresses/types';
+
+export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
 
 export type ShelleyTxInputType = {
   coins: number,
@@ -73,6 +81,19 @@ export type ShelleyTxWithdrawalsType = {
   encodeCBOR: Function,
 };
 
+export type TxAuxiliaryData = {
+  nonce: number,
+  rewardDestinationAddress: RewardDestinationAddressType,
+  stakePubKey: string,
+  type: 'CATALYST_VOTING',
+  votingPubKey: string,
+};
+
+export type RewardDestinationAddressType = {
+  address: string, // type of "address.id"
+  stakingPath: BIP32Path,
+};
+
 // Constants
 export const HARDENED_THRESHOLD = 0x80000000;
 export const derivationScheme = {
@@ -83,7 +104,7 @@ export const derivationScheme = {
 
 // Constructors
 export const ShelleyTxWitnessShelley = (
-  publicKey: string,
+  publicKey: Buffer,
   signature: Buffer
 ) => {
   function encodeCBOR(encoder: any) {
@@ -115,26 +136,12 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
-  const sortedAssets = sortBy(
-    assets,
-    (asset) => {
-      return asset.assetName.length;
-    },
-    ['asc'],
-    ['assetName', 'desc']
-  );
-  return groupBy(sortedAssets, 'policyId');
-};
-
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
   const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
-
   const tokenObject = groupTokensByPolicyId(assets);
-
   Object.entries(tokenObject).forEach(([policyId, tokens]) => {
     const assetMap = new Map<Buffer, number>();
-    map(tokens, (token) => {
+    _.map(tokens, (token) => {
       assetMap.set(Buffer.from(token.assetName, 'hex'), token.quantity);
     });
     policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
@@ -146,17 +153,16 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
   const tokenObjectEntries = Object.entries(tokenObject);
 
-  const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
+  const tokenBundle = _.map(tokenObjectEntries, ([policyId, tokens]) => {
     const tokensList = tokens.map(({ assetName, quantity }) => ({
       assetNameHex: assetName,
-      amountStr: quantity.toString(),
+      amount: quantity.toString(),
     }));
     return {
       policyIdHex: policyId,
       tokens: tokensList,
     };
   });
-
   return tokenBundle;
 };
 
@@ -229,7 +235,7 @@ export const ShelleyTxWithdrawal = (
 ) => {
   function encodeCBOR(encoder: any) {
     const withdrawalMap = new Map();
-    map(withdrawals, (withdrawal) => {
+    _.map(withdrawals, (withdrawal) => {
       const rewardAccount = utils.bech32_decodeAddress(withdrawal.stakeAddress);
       const coin = withdrawal.amount.quantity;
       withdrawalMap.set(rewardAccount, coin);
@@ -245,10 +251,12 @@ export const ShelleyTxWithdrawal = (
 export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
-    path: derivationPathToLedgerPath(cert.rewardAccountPath),
-    poolKeyHashHex: cert.pool
-      ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
-      : null,
+    params: {
+      path: derivationPathToLedgerPath(cert.rewardAccountPath),
+      poolKeyHashHex: cert.pool
+        ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
+        : null,
+    },
   };
 };
 
@@ -257,7 +265,7 @@ export const prepareLedgerWithdrawal = (
 ) => {
   return {
     path: derivationPathToLedgerPath(withdrawal.derivationPath),
-    amountStr: withdrawal.amount.quantity.toString(),
+    amount: withdrawal.amount.quantity.toString(),
   };
 };
 
@@ -287,12 +295,25 @@ export const ShelleyTxAux = (
   fee: ShelleyFeeType,
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
-  withdrawals: ?ShelleyTxWithdrawalsType
+  withdrawals: ?ShelleyTxWithdrawalsType,
+  auxiliaryData: ?TxAuxiliaryData,
+  auxiliaryDataHash: ?string
 ) => {
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
     return blake2b(
-      encode(ShelleyTxAux(inputs, outputs, fee, ttl, certs, withdrawals))
+      encode(
+        ShelleyTxAux(
+          inputs,
+          outputs,
+          fee,
+          ttl,
+          certs,
+          withdrawals,
+          auxiliaryData,
+          auxiliaryDataHash
+        )
+      )
       // 32
     ).toString('hex');
   }
@@ -305,6 +326,7 @@ export const ShelleyTxAux = (
     txMap.set(3, ttl);
     if (certs && certs.length) txMap.set(4, certs);
     if (withdrawals) txMap.set(5, withdrawals);
+    if (auxiliaryDataHash) txMap.set(7, Buffer.from(auxiliaryDataHash, 'hex'));
     return encoder.pushAny(txMap);
   }
 
@@ -316,6 +338,8 @@ export const ShelleyTxAux = (
     ttl,
     certs,
     withdrawals,
+    auxiliaryData,
+    auxiliaryDataHash,
     encodeCBOR,
   };
 };
@@ -323,20 +347,21 @@ export const ShelleyTxAux = (
 export const ShelleySignedTransactionStructured = (
   txAux: ShelleyTxAuxType,
   witnesses: Map<number, ShelleyTxWitnessType>,
-  meta: ?any // @TODO - TBD once meta introduced
+  txAuxiliaryData: ?CborizedVotingRegistrationMetadata
 ) => {
   function getId() {
     return txAux.getId();
   }
 
   function encodeCBOR(encoder: any) {
-    return encoder.pushAny([txAux, witnesses, meta]);
+    return encoder.pushAny([txAux, witnesses, txAuxiliaryData]);
   }
 
   return {
     getId,
     witnesses,
     txAux,
+    txAuxiliaryData,
     encodeCBOR,
   };
 };
@@ -414,24 +439,94 @@ export const prepareLedgerOutput = (
 
   if (isChange) {
     return {
-      addressTypeNibble: 0,
-      spendingPath: derivationPathToLedgerPath(output.derivationPath),
-      amountStr: output.amount.quantity.toString(),
-      stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
+      destination: {
+        type: TxOutputDestinationType.DEVICE_OWNED,
+        params: {
+          type: AddressType.BASE,
+          params: {
+            spendingPath: derivationPathToLedgerPath(output.derivationPath),
+            stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
+          },
+        },
+      },
+      amount: output.amount.quantity.toString(),
       tokenBundle,
     };
   }
-
-  const isSheeleyAddress = addressStyle === AddressStyles.ADDRESS_SHELLEY;
-  const decodedAddress = isSheeleyAddress
-    ? utils.bech32_decodeAddress(output.address)
-    : utils.base58_decode(output.address);
   return {
-    amountStr: output.amount.quantity.toString(),
-    addressHex: utils.buf_to_hex(decodedAddress),
+    destination: {
+      type: TxOutputDestinationType.THIRD_PARTY,
+      params: {
+        addressHex:
+          addressStyle === AddressStyles.ADDRESS_SHELLEY
+            ? utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
+            : utils.buf_to_hex(utils.base58_decode(output.address)),
+      },
+    },
+    amount: output.amount.quantity.toString(),
     tokenBundle,
   };
 };
+
+export const prepareLedgerAuxiliaryData = (
+  txAuxiliaryData: TxAuxiliaryData
+) => {
+  const { votingPubKey, rewardDestinationAddress, type } = txAuxiliaryData;
+  if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
+    return {
+      type: TxAuxiliaryDataType.CATALYST_REGISTRATION,
+      params: {
+        votingPublicKeyHex: votingPubKey,
+        stakingPath: rewardDestinationAddress.stakingPath,
+        rewardsDestination: {
+          type: AddressType.REWARD,
+          params: {
+            stakingPath: rewardDestinationAddress.stakingPath,
+          },
+        },
+        nonce: `${txAuxiliaryData.nonce}`,
+      },
+    };
+  }
+  // Regular tx has no voting metadata
+  return null;
+};
+
+export type CborizedVotingRegistrationMetadata = [
+  Map<number, Map<number, Buffer | number>>,
+  []
+];
+
+export const cborizeTxVotingRegistration = ({
+  votingPubKey,
+  stakePubKey,
+  rewardDestinationAddress,
+  nonce,
+}: TxAuxiliaryData) => {
+  return [
+    61284,
+    new Map<number, Buffer | number>([
+      [1, Buffer.from(votingPubKey, 'hex')],
+      [2, Buffer.from(stakePubKey, 'hex')],
+      [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
+      [4, Number(nonce)],
+    ]),
+  ];
+};
+
+export const cborizeTxAuxiliaryVotingData = (
+  txAuxiliaryData: TxAuxiliaryData,
+  signatureHex: string
+) => [
+  new Map<number, Map<number, Buffer | number>>([
+    cborizeTxVotingRegistration(txAuxiliaryData),
+    [
+      61285,
+      new Map<number, Buffer | number>([[1, Buffer.from(signatureHex, 'hex')]]),
+    ],
+  ]),
+  [],
+];
 
 export const prepareTxAux = ({
   txInputs,
@@ -440,9 +535,13 @@ export const prepareTxAux = ({
   ttl,
   certificates,
   withdrawals,
+  txAuxiliaryData,
+  txAuxiliaryDataHash,
 }: {
   txInputs: Array<ShelleyTxInputType>,
   txOutputs: Array<ShelleyTxOutputType>,
+  txAuxiliaryData?: TxAuxiliaryData,
+  txAuxiliaryDataHash?: string,
   fee: number,
   ttl: number,
   certificates: Array<?Certificate>,
@@ -452,24 +551,28 @@ export const prepareTxAux = ({
   const txTtl = ShelleyTtl(ttl);
   const txCerts = certificates;
   const txWithdrawals = withdrawals;
+
   return ShelleyTxAux(
     txInputs,
     txOutputs,
     txFee,
     txTtl,
     txCerts,
-    txWithdrawals
+    txWithdrawals,
+    txAuxiliaryData,
+    txAuxiliaryDataHash
   );
 };
 
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
-  txWitnesses: any // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
+  txWitnesses: any, // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
+  txAuxiliaryData: ?CborizedVotingRegistrationMetadata
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,
     txWitnesses,
-    null
+    txAuxiliaryData
   );
   return encode(signedTransactionStructure).toString('hex');
 };

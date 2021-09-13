@@ -1,0 +1,159 @@
+.component {
+  align-items: center;
+  color: var(--theme-widgets-asset-token-text-color);
+  display: flex;
+  flex-direction: column;
+  user-select: text;
+
+  dl {
+    line-height: 1;
+    padding-left: 8px;
+    width: 100%;
+  }
+
+  dt {
+    display: inline-block;
+    font-family: var(--font-medium);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.33;
+    text-align: right;
+    white-space: nowrap;
+    width: 120px;
+  }
+
+  dd {
+    display: inline-flex;
+    font-family: var(--font-light);
+    font-size: 12px;
+    line-height: 16px;
+    margin-left: 10px;
+    max-height: 48px;
+    overflow-y: auto;
+    width: calc(100% - 140px);
+
+    &:not(:first-of-type) {
+      margin-top: 10px;
+    }
+    &:hover {
+      .copyIcon {
+        opacity: 1;
+      }
+    }
+    &::-webkit-scrollbar-button {
+      display: none;
+    }
+    &::-webkit-scrollbar-track {
+      margin-bottom: -8px;
+      margin-top: -8px;
+    }
+  }
+
+  &.highlightFingerprint {
+    dt {
+      width: 67px;
+    }
+
+    dd {
+      width: calc(100% - 87px);
+    }
+  }
+  &.error {
+    * {
+      color: var(--theme-color-error);
+    }
+    .fingerprint {
+      background-color: var(--theme-background-color-error);
+    }
+    .copyIcon {
+      g {
+        fill: var(--theme-color-error);
+      }
+      svg > path {
+        stroke: var(--theme-color-error);
+      }
+    }
+  }
+}
+
+.fingerprint {
+  background: var(--theme-widgets-asset-token-fingerprint-background-color);
+  border-radius: 3px;
+  color: var(--theme-widgets-asset-token-text-color);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-medium);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.27;
+  padding: 4px;
+  position: relative;
+  white-space: nowrap;
+
+  .copyIcon {
+    margin-left: 9px;
+    position: absolute;
+    top: 6px;
+  }
+
+  &:hover {
+    .copyIcon {
+      opacity: 1;
+    }
+  }
+}
+
+.assetItem {
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+
+  .assetASCIIName {
+    opacity: 0.5;
+  }
+}
+
+.blankValue {
+  font-size: 12px;
+  line-height: 16px;
+  opacity: 0.4;
+}
+
+.value {
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 16px;
+  overflow: visible;
+  word-break: break-all;
+}
+
+.copyIcon {
+  display: inline-block;
+  height: 10px;
+  line-height: 0;
+  margin-left: 5px;
+  opacity: 0;
+  transition: opacity 0s;
+
+  svg {
+    height: 10px;
+    width: 8px;
+  }
+
+  g {
+    fill: var(--theme-widgets-asset-token-text-color);
+  }
+
+  svg > path {
+    stroke: var(--theme-widgets-asset-token-text-color);
+  }
+}
+
+.copiedIcon {
+  opacity: 1;
+
+  svg {
+    margin-top: 1px;
+  }
+}

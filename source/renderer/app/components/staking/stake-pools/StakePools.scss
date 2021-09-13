@@ -80,6 +80,7 @@
       }
     }
   }
+
   .smashSettingsIcon svg {
     margin-left: 4px;
     opacity: 0.6;
@@ -88,9 +89,10 @@
       fill: var(--theme-staking-stake-pools-title-color);
     }
   }
+
   .tinySpinner {
     display: inline-block;
-    margin-left: 6px;
+    margin: -6px 0 0 6px;
     vertical-align: middle;
     svg {
       animation: rotating-spinner 1.2s linear infinite;

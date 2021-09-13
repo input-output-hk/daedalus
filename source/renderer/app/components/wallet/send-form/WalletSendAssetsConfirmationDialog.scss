@@ -6,7 +6,7 @@
 
   :global {
     .Dialog_title {
-      margin-bottom: 20px;
+      margin-bottom: 0;
     }
   }
 
@@ -40,6 +40,7 @@
     word-wrap: break-word;
   }
 
+  .addressToLabelWrapper,
   .amountFeesWrapper {
     display: flex;
     flex-direction: row;
@@ -319,7 +320,10 @@
 
   .flightCandidateWarning {
     margin-top: 20px;
+    @extend .warning;
+  }
 
+  .warning {
     p {
       color: var(--theme-send-confirmation-dialog-send-values-color);
       font-family: var(--font-regular);

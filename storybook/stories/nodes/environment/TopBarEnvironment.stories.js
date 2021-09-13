@@ -20,7 +20,7 @@ const topBarTestEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
-    isFullyDecentralized={boolean('isFullyDecentralized', false)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
@@ -37,16 +37,16 @@ const topBarTestEnv = (currentTheme) => (
   </TopBar>
 );
 
-const topBarItnEnv = (currentTheme) => (
+const topBarStagingEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
-    isFullyDecentralized={boolean('isFullyDecentralized', false)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
-    <WalletTestEnvironmentLabel network="itn_rewards_v1" />
+    <WalletTestEnvironmentLabel network="staging" />
     <NodeSyncStatusIcon
       isSynced
       syncPercentage={100}
@@ -68,7 +68,7 @@ const topBarProductionEnv = (currentTheme) => (
     showSubMenuToggle={false}
     leftIcon={menuIconClosed}
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
-    isFullyDecentralized={boolean('isFullyDecentralized', false)}
+    isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
     <NewsFeedIcon
@@ -89,9 +89,9 @@ storiesOf('Nodes|Environment', module)
       sidebar={<noscript />}
     />
   ))
-  .add('Incentivized Testnet', (props: { currentTheme: string }) => (
+  .add('Staging', (props: { currentTheme: string }) => (
     <SidebarLayout
-      topbar={topBarItnEnv(props.currentTheme)}
+      topbar={topBarStagingEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
   ))

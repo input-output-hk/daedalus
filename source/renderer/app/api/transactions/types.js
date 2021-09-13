@@ -3,8 +3,9 @@ import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 import { WalletUnits } from '../../domains/Wallet';
 import type { DelegationAction } from '../../types/stakingTypes';
-import type { AssetItems } from '../assets/types';
+import type { ApiTokens } from '../assets/types';
 import type { TransactionMetadata } from '../../types/TransactionMetadata';
+import type { PathRoleIdentityType } from '../../utils/hardwareWalletUtils';
 
 export type TransactionAmount = {
   quantity: number,
@@ -60,7 +61,7 @@ export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
   address: string,
   amount?: TransactionAmount,
-  assets?: AssetItems,
+  assets?: ApiTokens,
   id: string,
   index: number,
 };
@@ -68,7 +69,7 @@ export type TransactionInputs = {
 export type TransactionOutputs = {
   address: string,
   amount: TransactionAmount,
-  assets?: AssetItems,
+  assets?: ApiTokens,
 };
 
 export type TransactionWithdrawals = {
@@ -114,7 +115,7 @@ export type GetTransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
-  assets?: AssetItems,
+  assets?: ApiTokens,
   walletBalance: BigNumber,
   availableBalance: BigNumber,
   rewardsBalance: BigNumber,
@@ -133,7 +134,7 @@ export type CreateTransactionRequest = {
   amount: number,
   passphrase: string,
   isLegacy: boolean,
-  assets?: AssetItems,
+  assets?: ApiTokens,
   withdrawal?: 'self' | Array<string>,
 };
 
@@ -171,7 +172,7 @@ export type GetTransactionFeeParams = {
 export type TransactionPaymentData = {
   address: string,
   amount: TransactionFeeAmount,
-  assets?: AssetItems,
+  assets?: ApiTokens,
 };
 
 export type TransactionFee = {
@@ -238,7 +239,8 @@ export type CoinSelectionsPaymentRequestType = {
   walletId: string,
   address: string,
   amount: number,
-  assets?: AssetItems,
+  assets?: ApiTokens,
+  metadata?: VotingMetadataType,
 };
 
 export type CoinSelectionsRequest =
@@ -253,6 +255,7 @@ export type CoinSelectionsResponse = {
   depositsReclaimed: BigNumber,
   withdrawals: Array<CoinSelectionWithdrawal>,
   fee: BigNumber,
+  metadata: ?string,
 };
 
 export type CreateExternalTransactionRequest = {
@@ -271,4 +274,65 @@ export type GetWithdrawalsResponse = {
   withdrawals: BigNumber,
 };
 
+export type ICOPublicKeyParams = {
+  walletId: string,
+  index: string,
+  data: {
+    passphrase: string,
+    format: 'extended' | 'non_extended',
+    purpose: string,
+  },
+};
+
 export type CoinSelectionAssetsType = Array<Asset>;
+
+export type VotingMetaIndexType = 61284 | 61285;
+
+export const VotingMetaIndexes: {
+  VOTING_REGISTRATION: VotingMetaIndexType,
+  VOTING_SIGNATURE: VotingMetaIndexType,
+} = {
+  VOTING_REGISTRATION: 61284,
+  VOTING_SIGNATURE: 61285,
+};
+
+export type VotingMetaKeyValuePairString = {
+  [key: 'string']: string,
+};
+export type VotingMetaKeyValuePairInt = {
+  [key: 'int']: number,
+};
+export type VotingMetaKeyValuePairBytes = {
+  [key: 'bytes']: string,
+};
+export type VotingMetaKeyValuePairMap = {
+  [key: 'int']: number,
+};
+
+export type VotingMetaKeyType = 'string' | 'int' | 'bytes' | 'list' | 'map';
+
+export type VotingMetaKeyValuePair = {
+  [key: 'k' | 'v']:
+    | VotingMetaKeyValuePairString
+    | VotingMetaKeyValuePairInt
+    | VotingMetaKeyValuePairBytes,
+};
+
+export type VotingMetaRegistrationType = {
+  [key: 'map']: Array<VotingMetaKeyValuePair>,
+};
+
+export type VotingMetadataType = {
+  [key: VotingMetaIndexType]: VotingMetaRegistrationType,
+};
+
+export type VotingDataType = {
+  stakeAddress: string,
+  stakeAddressHex: string,
+  votingKey: string,
+  stakeKey: string,
+  role: PathRoleIdentityType,
+  index: string,
+  metadata: VotingMetadataType,
+  nonce: number,
+};

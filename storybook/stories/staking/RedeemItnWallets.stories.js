@@ -26,12 +26,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -40,12 +42,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -54,11 +58,27 @@ const assets = {
 
 const WALLETS = [
   generateWallet('First Wallet', '1000000000', assets),
-  generateWallet('Second Wallet', '500000000', assets),
+  generateWallet(
+    'Second Wallet',
+    '500000000',
+    assets,
+    0,
+    undefined,
+    true,
+    'syncing'
+  ),
   generateWallet('Third Wallet', '100000000', assets),
   generateWallet('Fourth Wallet', '50000000', assets),
   generateWallet('Fifth Wallet', '7000000', assets),
 ];
+
+// 'Dummy2',
+// '2000000000000',
+// assets,
+// 0,
+// undefined,
+// true,
+// WalletSyncStateStatuses.SYNCING
 
 export const Step1ConfigurationDialogStory = () => {
   const redeemWallet = select(

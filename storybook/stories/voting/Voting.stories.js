@@ -25,18 +25,21 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
+import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 
 const assets = {
   available: [
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -45,12 +48,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -58,8 +63,16 @@ const assets = {
 };
 
 const WALLETS = [
-  generateWallet('Wallet 1', '100000000000', assets, 0),
-  generateWallet('Wallet 2', '100', assets, 0),
+  generateWallet('Wallet 1', '100000000000000', assets, 0),
+  generateWallet(
+    'Wallet 2',
+    '500000000',
+    assets,
+    0,
+    undefined,
+    true,
+    'syncing'
+  ),
 ];
 
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
@@ -102,6 +115,10 @@ storiesOf('Voting|Voting Registration Wizard', module)
       isSubmitting={boolean('isSubmitting')}
       onConfirm={action('onConfirm')}
       onExternalLinkClick={action('onExternalLinkClick')}
+      hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+      isHardwareWallet={boolean('isHardwareWallet', false)}
+      isTrezor={boolean('isTrezor', false)}
+      selectedWallet={WALLETS[0]}
     />
   ))
 

@@ -78,6 +78,14 @@
       color: var(--theme-dialog-fullsize-title-text-color);
     }
 
+    .ItemDropdownOption_syncingSpinner
+      .LoadingSpinner_component.LoadingSpinner_medium
+      .LoadingSpinner_icon
+      svg
+      path {
+      fill: var(--theme-dialog-fullsize-title-text-color) !important;
+    }
+
     // Text color default
     .Dialog_content,
     .Dialog_dialogWrapper,
@@ -167,9 +175,13 @@
       }
     }
 
-    .WalletsDropdownOption_label,
-    .WalletsDropdownOption_detail {
+    .ItemDropdownOption_label,
+    .ItemDropdownOption_detail {
       color: var(--theme-dialog-fullsize-text-highlight-color) !important;
+    }
+
+    .ItemDropdownOption_syncingSpinner svg circle {
+      stroke: var(--theme-dialog-fullsize-text-highlight-color) !important;
     }
 
     .SimpleAutocomplete_selectedWordBox {

@@ -1,9 +1,8 @@
 // @flow
-import type {
-  WalletAssetItem,
-  WalletAssetItems,
-  WalletTransactionAsset,
-} from '../api/assets/types';
+import find from 'lodash/find';
+import BigNumber from 'bignumber.js';
+import Wallet from '../domains/Wallet';
+import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 
@@ -28,50 +27,103 @@ export const filterAssets = (
 
 /**
  *
- * This function receives a list os Wallet Assets
- * which don't contain fingerprint nor metadata
+ * This function receives a Token (the asset included in a wallet or transaction)
+ * and combines with the data from the Asset
  *
- * And a function which gathers this missing items
- * from the `details` in the Assets Store
- *
+ * Data from the Token: policyId, assetName, quantity, address
+ * Data from the Asset: fingerprint, metadata, decimals, recommendedDecimals, uniqueId
  */
-export const getTransactionAsset = (
-  asset: WalletAssetItem,
-  getAssetDetails: Function
-): WalletTransactionAsset => {
+export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
-  const { fingerprint, metadata } = getAssetDetails(policyId, assetName) || {};
-  const txAsset = {
+  const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
+    getAsset(policyId, assetName) || {};
+  return {
     policyId,
     assetName,
     quantity,
     address,
     fingerprint,
     metadata,
+    decimals,
+    recommendedDecimals,
+    uniqueId,
   };
-  return txAsset;
 };
 
 /**
  *
- * This function gets the complete Tx Asset from `getTransactionAsset`
- * and sorts it accordingly
+ * This function receives a list of Tokens (the assets included in a wallet or transaction)
+ * then retrieves the Assets
+ * and sort them accordingly
  *
  */
-export const getTransactionAssets = (
-  assets: WalletAssetItems,
-  getAssetDetails: Function
-): Array<WalletTransactionAsset> =>
-  assets
-    .map((rawAsset) => getTransactionAsset(rawAsset, getAssetDetails))
-    .sort((asset1, asset2) => {
-      if (asset1 && asset2) {
-        if (asset1.fingerprint < asset2.fingerprint) {
-          return -1;
-        }
-        if (asset1.fingerprint > asset2.fingerprint) {
-          return 1;
-        }
-      }
-      return 0;
-    });
+export const getAssetTokens = (
+  tokens: Tokens,
+  getAsset: Function
+): Array<AssetToken> =>
+  tokens
+    .map((token) => getAssetToken(token, getAsset))
+    .filter((token) => !!token.uniqueId)
+    .sort(sortAssets);
+
+export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
+  if (asset1 && asset2) {
+    if (asset1.fingerprint < asset2.fingerprint) {
+      return -1;
+    }
+    if (asset1.fingerprint > asset2.fingerprint) {
+      return 1;
+    }
+  }
+  return 0;
+};
+
+/**
+ * Check if after the transactions your wallet has some assets left
+ *
+ * @param allAvailableTokens Collection of assets in your wallet
+ * @param initialSelectedAssets Collection of assets initially preselected
+ * @param selectedAssets Selected assets to be send in the transaction
+ * @returns {boolean}
+ */
+export const hasTokensLeftAfterTransaction = (
+  allAvailableTokens: AssetToken[],
+  initialSelectedAssets: AssetToken[],
+  selectedAssets?: string[]
+): boolean => {
+  if (
+    !!selectedAssets &&
+    selectedAssets.length &&
+    selectedAssets.length > 0 &&
+    !!initialSelectedAssets &&
+    initialSelectedAssets?.length &&
+    initialSelectedAssets?.length > 0
+  ) {
+    // If there is a minimal difference between the assets selected and the
+    // ones available in your wallet means you left assets in your wallet
+    if (
+      initialSelectedAssets.length < allAvailableTokens.length ||
+      selectedAssets.length < initialSelectedAssets.length
+    ) {
+      return true;
+    }
+    return !!find(
+      selectedAssets,
+      (selectedAsset, index) =>
+        !initialSelectedAssets[index]?.quantity?.isEqualTo(selectedAsset)
+    );
+  }
+  return false;
+};
+
+export const isTokenMissingInWallet = (wallet?: ?Wallet, token?: Token) => {
+  if (!wallet || !token || !token.uniqueId) {
+    return false;
+  }
+  const { available } = wallet.assets;
+  const { uniqueId } = token;
+  return !available.find((walletToken) => walletToken.uniqueId === uniqueId);
+};
+
+export const tokenHasBalance = (token: Token, amount: BigNumber) =>
+  token.quantity.isGreaterThanOrEqualTo(amount);

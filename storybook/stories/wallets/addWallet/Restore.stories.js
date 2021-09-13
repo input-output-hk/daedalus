@@ -139,10 +139,8 @@ storiesOf('Wallets|Add Wallet', module)
     return (
       <SuccessDialog
         onClose={action('onClose')}
-        walletKind={walletKindSelect}
         walletKindDaedalus={walletKindSpecificSelect}
         walletKindYoroi={walletKindSpecificSelect}
-        walletKindHardware={walletKindSpecificSelect}
       />
     );
   });

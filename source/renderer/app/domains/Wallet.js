@@ -10,7 +10,7 @@ import type {
   WalletPendingDelegations,
   Discovery,
 } from '../api/wallets/types';
-import type { WalletAssets } from '../api/assets/types';
+import type { WalletTokens } from '../api/assets/types';
 
 export const WalletDiscovery: {
   RANDOM: Discovery,
@@ -53,7 +53,12 @@ export type HwDeviceStatus =
   | 'wrong_firmware'
   | 'wrong_cardano_app_version'
   | 'unsupported_device'
-  | 'verifying_transaction_succeeded';
+  | 'verifying_transaction_succeeded'
+  | 'verifying_address'
+  | 'verifying_address_confirmation'
+  | 'verifying_address_failed'
+  | 'verifying_address_aborted'
+  | 'verifying_address_succeeded';
 
 export const HwDeviceStatuses: {
   CONNECTING: HwDeviceStatus,
@@ -69,6 +74,11 @@ export const HwDeviceStatuses: {
   WRONG_CARDANO_APP_VERSION: HwDeviceStatus,
   UNSUPPORTED_DEVICE: HwDeviceStatus,
   TREZOR_BRIDGE_FAILURE: HwDeviceStatus,
+  VERIFYING_ADDRESS: HwDeviceStatus,
+  VERIFYING_ADDRESS_CONFIRMATION: HwDeviceStatus,
+  VERIFYING_ADDRESS_FAILED: HwDeviceStatus,
+  VERIFYING_ADDRESS_ABORTED: HwDeviceStatus,
+  VERIFYING_ADDRESS_SUCCEEDED: HwDeviceStatus,
 } = {
   CONNECTING: 'connecting',
   CONNECTING_FAILED: 'connecting_failed',
@@ -83,6 +93,11 @@ export const HwDeviceStatuses: {
   VERIFYING_TRANSACTION: 'verifying_transaction',
   VERIFYING_TRANSACTION_FAILED: 'verifying_transaction_failed',
   VERIFYING_TRANSACTION_SUCCEEDED: 'verifying_transaction_succeeded',
+  VERIFYING_ADDRESS: 'verifying_address',
+  VERIFYING_ADDRESS_CONFIRMATION: 'verifying_address_confirmation',
+  VERIFYING_ADDRESS_FAILED: 'verifying_address_failed',
+  VERIFYING_ADDRESS_ABORTED: 'verifying_address_aborted',
+  VERIFYING_ADDRESS_SUCCEEDED: 'verifying_address_succeeded',
 };
 
 export const WalletUnits: {
@@ -100,7 +115,7 @@ export type WalletProps = {
   amount: BigNumber,
   availableAmount: BigNumber,
   reward: BigNumber,
-  assets: WalletAssets,
+  assets: WalletTokens,
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
@@ -122,7 +137,7 @@ export default class Wallet {
   @observable amount: BigNumber;
   @observable availableAmount: BigNumber;
   @observable reward: BigNumber;
-  @observable assets: WalletAssets;
+  @observable assets: WalletTokens;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
@@ -194,6 +209,13 @@ export default class Wallet {
 
   @computed get isRandom(): boolean {
     return this.discovery === WalletDiscovery.RANDOM;
+  }
+
+  @computed get isDelegating(): boolean {
+    return this.lastDelegationStakePoolStatus
+      ? this.lastDelegationStakePoolStatus ===
+          WalletDelegationStatuses.DELEGATING
+      : this.delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
   }
 
   @computed get isSequential(): boolean {

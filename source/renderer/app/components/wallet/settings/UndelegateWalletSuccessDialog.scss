@@ -4,7 +4,7 @@
   .sadLogoContainer {
     display: flex;
     justify-content: center;
-    margin: 5px 0 25px;
+    margin: 0 0 25px;
 
     .sadLogoIcon {
       height: 80px;
@@ -18,12 +18,14 @@
       }
     }
   }
+
   .description {
     p {
       font-weight: 300;
       line-height: 1.38;
       margin-bottom: 15px;
     }
+
     p:last-child {
       margin-bottom: 0;
     }

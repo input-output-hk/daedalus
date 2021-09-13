@@ -1,0 +1,11 @@
+.component {
+  :global {
+    .SimpleOptions_option {
+      display: flex !important;
+      height: 50px;
+      line-height: 33px;
+      padding: 10px 20px;
+    }
+    --rp-bubble-border-radius: 2px;
+  }
+}

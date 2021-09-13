@@ -1,4 +1,4 @@
-@e2e @shelley
+@e2e @wip
 Feature: Custom number, date and time formats
 
   Background:
