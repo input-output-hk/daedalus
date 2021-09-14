@@ -36,6 +36,10 @@ import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathCha
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
+import type {
+  GenerateWalletMigrationReportRendererRequest,
+  SetStateSnapshotLogMainResponse,
+} from '../common/ipc/api';
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
@@ -68,7 +72,8 @@ const {
 } = environment;
 
 if (isBlankScreenFixActive) {
-  // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
+  // Run "console.log(JSON.stringify(daedalus.stores.app.gpuStatus, null, 2))"
+  // in DevTools JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
 
@@ -204,13 +209,17 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  setStateSnapshotLogChannel.onReceive((data) => {
-    return Promise.resolve(logStateSnapshot(data));
-  });
+  setStateSnapshotLogChannel.onReceive(
+    (data: SetStateSnapshotLogMainResponse) => {
+      return Promise.resolve(logStateSnapshot(data));
+    }
+  );
 
-  generateWalletMigrationReportChannel.onReceive((data) => {
-    return Promise.resolve(generateWalletMigrationReport(data));
-  });
+  generateWalletMigrationReportChannel.onReceive(
+    (data: GenerateWalletMigrationReportRendererRequest) => {
+      return Promise.resolve(generateWalletMigrationReport(data));
+    }
+  );
 
   getStateDirectoryPathChannel.onRequest(() =>
     Promise.resolve(stateDirectoryPath)

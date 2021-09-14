@@ -77,7 +77,7 @@ export default class NetworkStatusStore extends Store {
 
   // Internal Node states
   @observable tlsConfig: ?TlsConfig = null;
-  @observable cardanoNodeState: ?CardanoNodeState = null;
+  @observable cardanoNodeState: CardanoNodeState = 'unknown';
   @observable cardanoNodePID: number = 0;
   @observable cardanoWalletPID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
