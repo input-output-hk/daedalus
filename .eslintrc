@@ -89,5 +89,8 @@
     "MOBX_DEV_TOOLS": true,
     "BUILD_NUMBER": true,
     "Process": true // TODO: remove after fix
+  },
+  "settings": {
+    "import/resolver": "webpack"
   }
 }
