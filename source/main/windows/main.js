@@ -7,6 +7,7 @@ import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
+import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
@@ -45,6 +46,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
+      contextIsolation: false, // TODO: change to ipc
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
       additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
@@ -148,8 +150,14 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     }
   });
 
-  window.on('closed', () => {
-    app.quit();
+  window.on('closed', (event) => {
+    event.preventDefault();
+    if (ledgerStatus.listening && !!ledgerStatus.Listener) {
+      ledgerStatus.Listener.unsubscribe();
+      setTimeout(() => app.quit(), 5000);
+    } else {
+      app.quit();
+    }
   });
 
   window.webContents.on('did-fail-load', (err) => {

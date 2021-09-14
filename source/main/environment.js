@@ -1,18 +1,18 @@
 // @flow
 import os from 'os';
-import { uniq, get, includes } from 'lodash';
+import { get, includes, uniq } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
   evaluateNetwork,
+  checkIsAlonzoPurple,
   checkIsDev,
   checkIsTest,
   checkIsProduction,
   checkIsMainnet,
   checkIsStaging,
   checkIsTestnet,
-  checkIsAlonzoPurple,
   checkIsSelfnode,
   checkIsDevelopment,
   checkIsMacOS,
