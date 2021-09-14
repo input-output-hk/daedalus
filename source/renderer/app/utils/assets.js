@@ -122,7 +122,7 @@ export const hasTokensLeftAfterTransaction = (
  */
 export const searchAssets = (
   rawSearchValue: string,
-  assets: Array<{ asset: AssetToken }>
+  assets: Array<AssetToken>
 ) => {
   const searchValue = rawSearchValue.trim();
   if (searchValue.length < 3) {

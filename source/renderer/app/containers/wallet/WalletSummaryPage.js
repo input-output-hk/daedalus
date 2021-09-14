@@ -49,6 +49,13 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
+  handleViewAllButtonClick = (walletId: string) => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.PAGE,
+      params: { id: walletId, page: 'tokens' },
+    });
+  };
+
   render() {
     const { intl } = this.context;
     const { stores, actions } = this.props;
@@ -83,7 +90,6 @@ export default class WalletSummaryPage extends Component<Props> {
     } = transactions;
     const { active: wallet } = wallets;
     const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
-
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
@@ -99,6 +105,8 @@ export default class WalletSummaryPage extends Component<Props> {
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+
+    const onViewAllButtonClick = () => this.handleViewAllButtonClick(wallet.id);
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(type, param, network, currentLocale);
@@ -161,6 +169,7 @@ export default class WalletSummaryPage extends Component<Props> {
           onCopyAssetParam={onCopyAssetParam.trigger}
           onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
+          onViewAllButtonClick={onViewAllButtonClick}
         />
         {walletTransactions}
       </VerticalFlexContainer>

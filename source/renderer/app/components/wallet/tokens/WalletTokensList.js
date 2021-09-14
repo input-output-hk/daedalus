@@ -23,6 +23,7 @@ type Props = {
   assets: Array<AssetToken>,
   assetSettingsDialogWasOpened: boolean,
   currentLocale: string,
+  onViewAllButtonClick?: Function,
   intl: intlShape.isRequired,
   isLoadingAssets: boolean,
   onAssetSettings: Function,
@@ -35,9 +36,9 @@ type Props = {
 
 const WalletTokensList = observer((props: Props) => {
   const {
-    // anyAssetWasHovered,
     assets,
     assetSettingsDialogWasOpened,
+    onViewAllButtonClick,
     intl,
     isLoadingAssets,
     onAssetSettings,
@@ -86,6 +87,9 @@ const WalletTokensList = observer((props: Props) => {
             assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           />
         ))}
+        {onViewAllButtonClick && (
+          <button onClick={onViewAllButtonClick}>VIEW ALL</button>
+        )}
       </BorderedBox>
     </div>
   );

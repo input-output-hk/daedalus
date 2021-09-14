@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import Wallet from '../../../domains/Wallet';
 import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
-import WalletSummaryAssets from './WalletSummaryAssets';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
 import WalletSummaryNoTokens from './WalletSummaryNoTokens';
@@ -30,6 +29,7 @@ type Props = {
   isLoadingAssets: boolean,
   assetSettingsDialogWasOpened: boolean,
   onExternalLinkClick: Function,
+  onViewAllButtonClick: Function,
 };
 
 @observer
@@ -55,6 +55,7 @@ export default class WalletSummary extends Component<Props> {
       assetSettingsDialogWasOpened,
       isLoadingAssets,
       onExternalLinkClick,
+      onViewAllButtonClick,
     } = this.props;
 
     const { isRestoring } = wallet;
@@ -95,6 +96,7 @@ export default class WalletSummary extends Component<Props> {
                 assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
                 currentLocale={currentLocale}
                 title="Recently used tokens"
+                onViewAllButtonClick={onViewAllButtonClick}
               />
             ) : (
               <WalletSummaryNoTokens
