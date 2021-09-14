@@ -27,6 +27,7 @@ export default class AppStore extends Store {
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
+    this._getGpuStatus();
 
     // About dialog actions
     this.actions.app.closeAboutDialog.listen(() => {
