@@ -161,7 +161,6 @@ class EventObserver {
         if (event.type === 'add') {
           if (!devicesMemo[device.path]) {
             logger.info('[HW-DEBUG] CONSTRUCTOR ADD');
-            console.debug(device);
             try {
               // $FlowFixMe
               const transport = await TransportNodeHid.open(device.path);
@@ -371,7 +370,6 @@ export const handleHardwareWalletRequests = async (
             };
           } catch (e) {
             logger.info('[HW-DEBUG] INIT NEW transport - ERROR');
-            console.debug(e);
             throw e;
           }
         } else if (!devicePath || !devicesMemo[devicePath]) {
@@ -410,7 +408,6 @@ export const handleHardwareWalletRequests = async (
         throw new Error('Missing device info');
       } catch (error) {
         logger.info('[HW-DEBUG] ERROR on getHardwareWalletTransportChannel');
-        console.debug(error);
         throw error;
       }
     }

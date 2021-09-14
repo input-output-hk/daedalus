@@ -2328,7 +2328,6 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
-    console.debug(params);
 
     // Handle Trezor Bridge instance checker
     if (error && deviceType === DeviceTypes.TREZOR) {
