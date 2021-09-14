@@ -58,8 +58,7 @@ type Props = {
 
 type IsExpanded = boolean;
 
-const WalletSummaryAsset = observer((props: Props) => {
-  console.log('props', props);
+const WalletToken = observer((props: Props) => {
   const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
 
   const toggleIsExpanded = () => {
@@ -203,4 +202,4 @@ const WalletSummaryAsset = observer((props: Props) => {
   );
 });
 
-export default injectIntl(WalletSummaryAsset);
+export default injectIntl(WalletToken);

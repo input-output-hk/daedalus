@@ -1,6 +1,7 @@
 // @flow
 import find from 'lodash/find';
 import BigNumber from 'bignumber.js';
+import { filter, escapeRegExp } from 'lodash';
 import Wallet from '../domains/Wallet';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
@@ -114,6 +115,34 @@ export const hasTokensLeftAfterTransaction = (
     );
   }
   return false;
+};
+
+/**
+ * Generic function for filtering AssetTokens
+ */
+export const searchAssets = (
+  rawSearchValue: string,
+  assets: Array<{ asset: AssetToken }>
+) => {
+  const searchValue = rawSearchValue.trim();
+  if (searchValue.length < 3) {
+    return assets;
+  }
+  return filter(assets, (asset) => {
+    const { policyId, assetName, fingerprint, metadata } = asset;
+    const { name, ticker, description } = metadata || {};
+    const checkList = [
+      policyId,
+      assetName,
+      fingerprint,
+      metadata,
+      name,
+      ticker,
+      description,
+    ];
+    const regex = new RegExp(escapeRegExp(searchValue), 'i');
+    return checkList.some((item) => regex.test(item));
+  });
 };
 
 export const isTokenMissingInWallet = (wallet?: ?Wallet, token?: Token) => {

@@ -8,6 +8,7 @@ import WalletSummaryAssets from './WalletSummaryAssets';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
 import WalletSummaryNoTokens from './WalletSummaryNoTokens';
+import WalletTokensList from '../tokens/WalletTokensList';
 
 type Props = {
   wallet: Wallet,
@@ -84,7 +85,7 @@ export default class WalletSummary extends Component<Props> {
         {!isRestoring && (
           <>
             {hasAssets ? (
-              <WalletSummaryAssets
+              <WalletTokensList
                 wallet={wallet}
                 assets={assets}
                 onOpenAssetSend={onOpenAssetSend}
@@ -93,6 +94,7 @@ export default class WalletSummary extends Component<Props> {
                 onAssetSettings={onAssetSettings}
                 assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
                 currentLocale={currentLocale}
+                title="Recently used tokens"
               />
             ) : (
               <WalletSummaryNoTokens
