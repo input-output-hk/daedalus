@@ -54,7 +54,8 @@ let
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    nodejs = pkgs.nodejs-12_x;
+    nodejs = pkgs.nodejs-14_x;
+    nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
       version = "1.22.4";
       hash = "1l3sv30g61dcn7ls213prcja2y3dqdi5apq9r7yyick295w25npq";
@@ -314,17 +315,7 @@ let
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
-    electron4 = pkgs.callPackage ./installers/nix/electron.nix {};
-    electron8 = self.electron4.overrideAttrs (old: rec {
-      name = "electron-${version}";
-      version = "8.2.2";
-      src = {
-        x86_64-linux = pkgs.fetchurl {
-          url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-          sha256 = "0sk63i72kg7xixqgdkq4z80ia3ya9cyc15pak8shg4qi605jdnr7";
-        };
-      }.${pkgs.stdenv.hostPlatform.system} or throwSystem;
-    });
+    electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {
       runFlow = self.callPackage ./tests/flow.nix {};

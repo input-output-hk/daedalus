@@ -110,3 +110,8 @@ utils/js-launcher/state
 # local development cluster
 
 state-cluster
+Release
+Debug
+/cardano-cli
+/cardano-wallet
+.vscode
