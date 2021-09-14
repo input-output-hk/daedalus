@@ -9,6 +9,7 @@ Changelog
 
 ### Fixes
 
+- Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 - Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
 
 ## 4.3.1

@@ -2,7 +2,7 @@
 import { app } from 'electron';
 import log from 'electron-log-daedalus';
 
-export const safeExitWithCode = (exitCode: number) => {
+export const safeExitWithCode = (exitCode: number = 0) => {
   const { file } = log.transports;
   // Prevent electron-log from writing to stream
   file.level = false;
