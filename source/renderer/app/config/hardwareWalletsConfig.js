@@ -1,4 +1,8 @@
-const { isMainnet, isTestnet } = global.environment;
+// @flow
+import { get } from 'lodash';
+import type { Network } from '../../../common/types/environment.types';
+
+const { isMainnet, isTestnet, isNonPublicTestnet } = global.environment;
 
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;
@@ -9,21 +13,29 @@ export const DEFAULT_ADDRESS_INDEX = 0;
 
 export const HW_SHELLEY_CONFIG = {
   NETWORK: {
-    MAINNET: {
-      name: 'mainnet',
+    mainnet: {
       networkId: 1,
+      networkName: 'mainnet',
       protocolMagic: 764824073,
       trezorProtocolMagic: 764824073,
-      eraStartSlot: 4492800,
-      ttl: 3600,
     },
-    TESTNET: {
-      name: 'testnet',
+    testnet: {
       networkId: 0,
+      networkName: 'testnet',
       protocolMagic: 1097911063,
       trezorProtocolMagic: 1097911063,
-      eraStartSlot: 4492800,
-      ttl: 3600,
+    },
+    shelley_qa: {
+      networkId: 0,
+      networkName: 'testnet',
+      protocolMagic: 3,
+      trezorProtocolMagic: 3,
+    },
+    alonzo_purple: {
+      networkId: 0,
+      networkName: 'testnet',
+      protocolMagic: 8,
+      trezorProtocolMagic: 8,
     },
   },
   DEFAULT_DERIVATION_PATH: [
@@ -80,6 +92,11 @@ export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
 
 export const isHardwareWalletSupportEnabled =
-  (isMainnet || isTestnet) && (isTrezorEnabled || isLedgerEnabled);
+  (isMainnet || isTestnet || isNonPublicTestnet) && (isTrezorEnabled || isLedgerEnabled);
 
 export const isHardwareWalletIndicatorEnabled = false;
+
+export const getHardwareWalletsNetworkConfig = (network: Network) => {
+  const networkConfig = get(HW_SHELLEY_CONFIG, ['NETWORK', network], {});
+  return networkConfig;
+};
