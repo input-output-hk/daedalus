@@ -77,12 +77,12 @@
     }
   }
   &.sticky {
-    position: relative;
     margin-right: -20px;
+    position: relative;
     .content {
       overflow-y: scroll;
-      position: relative;
       padding-bottom: 1px;
+      position: relative;
       &::-webkit-scrollbar-track {
         margin: 22px 0 -8px;
       }

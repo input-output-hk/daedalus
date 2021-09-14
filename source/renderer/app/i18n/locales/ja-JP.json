@@ -499,6 +499,7 @@
   "staking.rewardsHistory.dialog.rewardsAddress": "報酬アドレス",
   "staking.rewardsHistory.dialog.title": "報酬の詳細",
   "staking.rewardsHistory.dialog.unknownStakePoolTooltip": "このステークプールIDのステークプールの詳細は見つかりません",
+  "staking.rewardsHistory.dialog.unpaidEpoch": "!!!This item was not paid yet",
   "staking.stakePools.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.learnMore": "もっと知る",
   "staking.stakePools.listTitle": "ステークプール",

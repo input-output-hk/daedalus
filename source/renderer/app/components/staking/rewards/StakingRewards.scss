@@ -173,8 +173,8 @@
       max-height: 43px;
       padding: 14px 7px 14px 20px;
       text-align: left;
-      white-space: nowrap;
       user-select: none;
+      white-space: nowrap;
       &.actions {
         cursor: default;
       }
@@ -245,10 +245,10 @@
             display: inline-block;
             margin-right: 4px;
             svg {
-              width: 6px;
-              height: 6px;
               animation: rotating-spinner 1.2s linear infinite;
               display: block;
+              height: 6px;
+              width: 6px;
               circle {
                 stroke: var(--theme-staking-font-color-regular);
               }

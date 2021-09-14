@@ -85,15 +85,21 @@ gulp.task('server:start', (done) => {
 });
 
 gulp.task('server:create:dev', (done) => {
-  createElectronServer({ NODE_ENV: process.env.NODE_ENV || 'development' });
+  createElectronServer({
+    NODE_ENV: process.env.NODE_ENV,
+    XCURSOR_PATH: '/usr/share/icons' || 'development',
+  });
   done();
 });
 
 gulp.task('server:create:debug', (done) => {
-  createElectronServer({ NODE_ENV: process.env.NODE_ENV || 'development' }, [
-    '--inspect',
-    '--inspect-brk',
-  ]);
+  createElectronServer(
+    {
+      NODE_ENV: process.env.NODE_ENV,
+      XCURSOR_PATH: '/usr/share/icons' || 'development',
+    },
+    ['--inspect', '--inspect-brk']
+  );
   done();
 });
 

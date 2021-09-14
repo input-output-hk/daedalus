@@ -49,8 +49,8 @@
       .copyPopOver {
         :global {
           .tippy-content {
-            height: 24px;
             font-size: 13px;
+            height: 24px;
             line-height: 1.15;
             padding: 4px 16px;
           }
@@ -106,8 +106,8 @@
         max-width: 350px;
       }
       td.amount {
-        text-align: right;
         padding: 0 13px 0 0px;
+        text-align: right;
       }
     }
   }

@@ -12,7 +12,6 @@ type Props = {
   showInfoTab: boolean,
   onNavItemClick: Function,
   isActiveNavItem: Function,
-  isLoading: boolean,
 };
 
 type ContextValue = {
@@ -33,14 +32,9 @@ export default class StakingWithNavigation extends Component<Props> {
       onNavItemClick,
       activeItem,
       isActiveNavItem,
-      isLoading,
       showInfoTab,
     } = this.props;
-    const componentStyles = classnames([
-      styles.component,
-      styles[activeItem],
-      isLoading ? styles.isLoading : null,
-    ]);
+    const componentStyles = classnames([styles.component, styles[activeItem]]);
 
     return (
       <StakingPageScrollContext.Provider

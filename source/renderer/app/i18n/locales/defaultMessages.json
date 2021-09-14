@@ -5478,13 +5478,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 24
+          "line": 23
         }
       },
       {
@@ -5492,13 +5492,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 30
+          "line": 29
         }
       },
       {
@@ -5506,27 +5506,27 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 35
+          "line": 34
         }
       },
       {
-        "defaultMessage": "!!!Total rewards earned (ADA)",
+        "defaultMessage": "!!!Total (ADA)",
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 40
+          "line": 39
         }
       },
       {
@@ -5534,13 +5534,13 @@
         "description": "Table header \"Rewards address\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.rewardsAddress",
         "start": {
           "column": 29,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -5548,13 +5548,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 50
+          "line": 49
         }
       },
       {
@@ -5562,13 +5562,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 56
+          "line": 55
         }
       },
       {
@@ -5576,13 +5576,13 @@
         "description": "Details Button label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.detailsButton.label",
         "start": {
           "column": 22,
-          "line": 61
+          "line": 60
         }
       },
       {
@@ -5590,13 +5590,13 @@
         "description": "View in explorer button label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.actionViewInExplorer",
         "start": {
           "column": 24,
-          "line": 66
+          "line": 65
         }
       }
     ],
@@ -5609,13 +5609,13 @@
         "description": "Title \"Earned delegation rewards\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.title",
         "start": {
           "column": 9,
-          "line": 31
+          "line": 26
         }
       },
       {
@@ -5623,13 +5623,13 @@
         "description": "Transactions CSV column - Epoch",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.column.epoch",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 32
         }
       },
       {
@@ -5637,13 +5637,13 @@
         "description": "Transactions CSV column - Pool",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.column.stakePool",
         "start": {
           "column": 19,
-          "line": 42
+          "line": 37
         }
       },
       {
@@ -5651,13 +5651,13 @@
         "description": "Transactions CSV column - Amount",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.column.amount",
         "start": {
           "column": 16,
-          "line": 47
+          "line": 42
         }
       },
       {
@@ -5665,13 +5665,13 @@
         "description": "TexportCsvLabel on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.csv.label",
         "start": {
           "column": 18,
-          "line": 52
+          "line": 47
         }
       },
       {
@@ -5679,13 +5679,13 @@
         "description": "\"Rewards address\" label on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.rewardsAddress",
         "start": {
           "column": 18,
-          "line": 57
+          "line": 52
         }
       },
       {
@@ -5693,13 +5693,13 @@
         "description": "\"Unknown Stake Pool\" tooltip on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.unknownStakePoolTooltip",
         "start": {
           "column": 27,
-          "line": 62
+          "line": 57
         }
       },
       {
@@ -5707,13 +5707,13 @@
         "description": "\"No Data\" on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.noData.title",
         "start": {
           "column": 15,
-          "line": 68
+          "line": 63
         }
       },
       {
@@ -5721,13 +5721,13 @@
         "description": "\"No Data\" on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.noData.description",
         "start": {
           "column": 21,
-          "line": 73
+          "line": 68
         }
       },
       {
@@ -5735,13 +5735,13 @@
         "description": "\"No Data Link Url\" on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.noData.linkLabel",
         "start": {
           "column": 19,
-          "line": 79
+          "line": 74
         }
       },
       {
@@ -5749,12 +5749,26 @@
         "description": "\"No Data Link Url\" on the rewards history dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
         "id": "staking.rewardsHistory.dialog.noData.linkUrl",
         "start": {
           "column": 17,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!This item was not paid yet",
+        "description": "\"Unpaid Epoch\" on the rewards history dialog.",
+        "end": {
+          "column": 3,
+          "line": 88
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewardsHistoryDialog.js",
+        "id": "staking.rewardsHistory.dialog.unpaidEpoch",
+        "start": {
+          "column": 15,
           "line": 84
         }
       }
@@ -18015,13 +18029,13 @@
         "description": "Copied label.",
         "end": {
           "column": 3,
-          "line": 305
+          "line": 320
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.copied",
         "start": {
           "column": 10,
-          "line": 301
+          "line": 316
         }
       },
       {
@@ -18029,13 +18043,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 322
+          "line": 327
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 316
+          "line": 321
         }
       },
       {
@@ -18043,13 +18057,13 @@
         "description": "Dropdown search \"No results\" message",
         "end": {
           "column": 3,
-          "line": 327
+          "line": 332
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.search.noResultsMessage",
         "start": {
           "column": 26,
-          "line": 323
+          "line": 328
         }
       }
     ],

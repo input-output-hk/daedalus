@@ -49,6 +49,8 @@ tls/server
 # App packaged
 dist
 release
+Release
+Debug
 
 # Editors
 .idea
@@ -56,6 +58,7 @@ release
 \#*
 .\#*
 .~*
+.vscode
 
 # Generated translation files
 translations/messages
@@ -101,8 +104,10 @@ jcli
 /jormungandr
 cardano-http-bridge
 cardano-cli
+/cardano-cli
 cardano-node
 cardano-wallet
+/cardano-wallet
 
 # JS Launcher
 utils/js-launcher/state
