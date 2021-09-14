@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "master",
+        "branch": "url",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "5257fc818ef7df60986834310432e197aac90711",
-        "sha256": "1si7jb084m2z9h773b1v4mgdkcjbbfpsyys3d6iz6gn0pzkijvc8",
+        "rev": "225393cfbffc987820df2a8100f5669423c26fbf",
+        "sha256": "0bzgn43m29653f6a6xylygqhx106qqbyggka0rci81gk4p55h3yc",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/5257fc818ef7df60986834310432e197aac90711.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/225393cfbffc987820df2a8100f5669423c26fbf.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {

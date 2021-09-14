@@ -352,7 +352,7 @@ let
       genericName = "Crypto-Currency Wallet";
       categories = "Application;Network;";
       icon = "INSERT_ICON_PATH_HERE";
-      mimeType = "x-scheme-handler/web-cardano;";
+      mimeType = "x-scheme-handler/web+cardano;";
     };
     postInstall = pkgs.writeScriptBin "post-install" ''
       #!${pkgs.stdenv.shell}
@@ -378,7 +378,7 @@ let
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
         > "''${XDG_DATA_HOME}/applications/Daedalus-${self.linuxClusterBinName}.desktop"
-      echo -n "xdg-mime default Daedalus-${self.linuxClusterBinName}.desktop x-scheme-handler/web-cardano" > /escape-hatch
+      echo -n "xdg-mime default Daedalus-${self.linuxClusterBinName}.desktop x-scheme-handler/web+cardano" > /escape-hatch
     '';
     xdg-open = pkgs.writeScriptBin "xdg-open" ''
       #!${pkgs.stdenv.shell}
