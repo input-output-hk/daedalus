@@ -1,9 +1,10 @@
 // @flow
-import { observable, action } from 'mobx';
-import { includes, camelCase, get, snakeCase, map, keys, omit } from 'lodash';
+import { action, observable } from 'mobx';
+import { camelCase, get, includes, keys, map, omit, snakeCase } from 'lodash';
 import { GenericApiError } from '../api/common/errors';
 import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
+import { toJS } from '../../../common/utils/helper';
 
 type KnownErrorType =
   | 'invalid_wallet_type'
@@ -194,7 +195,9 @@ export default class ApiError {
   _logError(logging?: LoggingType) {
     if (logging && logging.msg) {
       const { logError, msg } = logging;
-      logger.error(msg, { error: logError ? this.values : null });
+      logger.error(msg, {
+        error: logError ? toJS(this.values) : null,
+      });
     }
   }
 }
