@@ -101,7 +101,7 @@ export default class WalletSummaryCurrency extends Component<Props> {
           </span>
         </div>
         <div className={styles.currencyRate}>
-          1 {intl.formatMessage(globalMessages.unitAda)} = {currencyRate || '–'}{' '}
+          1 {intl.formatMessage(globalMessages.adaUnit)} = {currencyRate || '–'}{' '}
           {currencyWalletAmountSymbol}
         </div>
         <button className={buttonStyles} onClick={onCurrencySettingClick}>
