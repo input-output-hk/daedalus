@@ -157,9 +157,7 @@ storiesOf('Wallets|Tokens', module)
         onAssetSettings={action('onAssetSettings')}
         onCopyAssetParam={action('onCopyAssetParam')}
         onOpenAssetSend={action('onOpenAssetSend')}
-        onViewAllButtonClick={action('onViewAllButtonClick')}
         searchValue={text('searchValue', '')}
-        title={text('Title', 'Tokens')}
         wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
       />
     </div>

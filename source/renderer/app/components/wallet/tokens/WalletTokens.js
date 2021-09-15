@@ -42,6 +42,7 @@ const WalletTokens = observer((props: Props) => {
   const listProps = { ...omit(props, 'assets', 'intl'), searchValue };
   const favoriteTokens = [...assets.slice(0, 1)];
 
+  console.log(intl.formatMessage(messages.favoritesListTitle));
   return (
     <div className={styles.component}>
       <WalletTokensSearch searchValue={searchValue} onSearch={setSearchValue} />

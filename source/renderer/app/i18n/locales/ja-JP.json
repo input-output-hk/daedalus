@@ -1122,6 +1122,7 @@
   "wallet.tokens.list.tokens.title": "!!!Tokens",
   "wallet.tokens.search.placeholder": "!!!Search",
   "wallet.tokens.search.searchResults": "。検索結果",
+  "wallet.tokens.search.noResults": "該当する結果はありません",
   "wallet.transaction.address.from": "送信元",
   "wallet.transaction.address.to": "送信先",
   "wallet.transaction.addresses.from": "送信元アドレス",

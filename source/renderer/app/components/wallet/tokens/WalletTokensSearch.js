@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-import styles from './WalletTokens.scss';
+import styles from './WalletTokensSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
 
@@ -24,11 +24,9 @@ type Props = {
 };
 const WalletTokensSearch = observer((props: Props) => {
   const { searchValue, onSearch, intl } = props;
-
-  console.log('!!searchValue.length', !!searchValue.length);
   return (
     <div className={styles.component}>
-      {/* <SVGInline svg={searchIcon} className={styles.searchIcon} /> */}
+      <SVGInline svg={searchIcon} className={styles.searchIcon} />
       <Input
         className={styles.spendingPassword}
         onChange={onSearch}

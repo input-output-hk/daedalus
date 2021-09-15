@@ -4,7 +4,7 @@ import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { observer } from 'mobx-react';
 import { searchAssets } from '../../../utils/assets';
 
-import styles from './WalletTokens.scss';
+import styles from './WalletTokensList.scss';
 import Wallet from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -59,20 +59,33 @@ const WalletTokensList = observer((props: Props) => {
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
   const noResults = hasSearch && !filteredAssets.length;
 
+  let content;
+
   if (isLoadingAssets) {
-    return (
+    content = (
       <div className={styles.syncingWrapper}>
         <LoadingSpinner big />
       </div>
     );
-  }
-
-  if (noResults) {
-    return (
+  } else if (noResults) {
+    content = (
       <p className={styles.noResults}>
         {intl.formatMessage(messages.noResults)}
       </p>
     );
+  } else {
+    content = filteredAssets.map((asset) => (
+      <WalletToken
+        key={asset.uniqueId}
+        asset={asset}
+        onOpenAssetSend={onOpenAssetSend}
+        onCopyAssetParam={onCopyAssetParam}
+        onAssetSettings={onAssetSettings}
+        anyAssetWasHovered
+        isLoading={isRestoreActive}
+        assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+      />
+    ));
   }
 
   return (
@@ -80,23 +93,16 @@ const WalletTokensList = observer((props: Props) => {
       <div className={styles.outerHeader}>
         <div className={styles.title}>
           {title}
-          {hasSearch && intl.formatMessage(messages.searchResults)} (
-          {assets.length})
+          {hasSearch && !noResults && (
+            <>
+              {intl.formatMessage(messages.searchResults)} (
+              {filteredAssets.length})
+            </>
+          )}
         </div>
       </div>
       <BorderedBox>
-        {filteredAssets.map((asset) => (
-          <WalletToken
-            key={asset.uniqueId}
-            asset={asset}
-            onOpenAssetSend={onOpenAssetSend}
-            onCopyAssetParam={onCopyAssetParam}
-            onAssetSettings={onAssetSettings}
-            anyAssetWasHovered
-            isLoading={isRestoreActive}
-            assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-          />
-        ))}
+        {content}
         {onViewAllButtonClick && (
           <button onClick={onViewAllButtonClick}>VIEW ALL</button>
         )}

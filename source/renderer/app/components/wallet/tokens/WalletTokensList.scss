@@ -1,0 +1,15 @@
+.component {
+  margin: 0 20px 20px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+.outerHeader {
+  margin: 0 10px 10px 20px;
+  .title {
+    color: var(--theme-tokens-list-header-text-color);
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 22px;
+  }
+}

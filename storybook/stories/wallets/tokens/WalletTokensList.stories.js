@@ -160,7 +160,6 @@ storiesOf('Wallets|Tokens', module)
             ? action('onViewAllButtonClick')
             : null
         }
-        searchValue={text('searchValue', '')}
         title={text('Title', 'Tokens')}
         wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
       />
