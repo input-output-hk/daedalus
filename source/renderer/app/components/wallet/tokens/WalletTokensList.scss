@@ -6,11 +6,30 @@
 }
 .outerHeader {
   margin: 0 10px 10px 20px;
+  display: flex;
+  justify-content: space-between;
   .title {
     color: var(--theme-tokens-list-header-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
     line-height: 22px;
+  }
+
+  .controls {
+    display: flex;
+    .sort {
+    }
+    .sortBySelect .toggleVisibility {
+      button {
+        background-color: rgba(68, 91, 124, 0.1);
+        border-radius: 4px;
+        color: black;
+        font-family: var(--font-regular);
+        font-size: 17px;
+        height: 20px;
+        width: 20px;
+      }
+    }
   }
 }
 .columns {

@@ -1,9 +1,9 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { observer } from 'mobx-react';
+import InlineSelect from '../../widgets/forms/InlineSelect';
 import { searchAssets } from '../../../utils/assets';
-
 import styles from './WalletTokensList.scss';
 import Wallet from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -47,18 +47,23 @@ type Props = {
   searchValue?: string,
   title: string,
   wallet: Wallet,
+  disableControls?: boolean,
 };
 
+type IsCollapsed = boolean;
+
 const WalletTokensList = observer((props: Props) => {
+  const [isCollapsed, setIsCollapsed] = useState<IsCollapsed>(false);
   const {
     assets,
     assetSettingsDialogWasOpened,
-    onViewAllButtonClick,
+    disableControls,
     intl,
     isLoadingAssets,
     onAssetSettings,
     onCopyAssetParam,
     onOpenAssetSend,
+    onViewAllButtonClick,
     searchValue = '',
     title,
     wallet,
@@ -110,17 +115,42 @@ const WalletTokensList = observer((props: Props) => {
             </>
           )}
         </div>
-      </div>
-      <BorderedBox>
-        <div className={styles.columns}>
-          <span>{intl.formatMessage(messages.columnToken)}</span>
-          <span>{intl.formatMessage(messages.columnAmount)}</span>
-        </div>
-        {content}
-        {onViewAllButtonClick && (
-          <button onClick={onViewAllButtonClick}>VIEW ALL</button>
+        {!disableControls && (
+          <div className={styles.controls}>
+            {!isCollapsed && (
+              <div className={styles.sortBy}>
+                sort by:
+                <InlineSelect
+                  options={[]}
+                  value={''}
+                  className={styles.sortBySelect}
+                  label="SORT BY"
+                  onChange={() => {}}
+                />
+              </div>
+            )}
+            <div className={styles.toggleVisibility}>
+              {isCollapsed ? (
+                <button onClick={() => setIsCollapsed(false)}>+</button>
+              ) : (
+                <button onClick={() => setIsCollapsed(true)}>-</button>
+              )}
+            </div>
+          </div>
         )}
-      </BorderedBox>
+      </div>
+      {!isCollapsed && (
+        <BorderedBox>
+          <div className={styles.columns}>
+            <span>{intl.formatMessage(messages.columnToken)}</span>
+            <span>{intl.formatMessage(messages.columnAmount)}</span>
+          </div>
+          {content}
+          {onViewAllButtonClick && (
+            <button onClick={onViewAllButtonClick}>VIEW ALL</button>
+          )}
+        </BorderedBox>
+      )}
     </div>
   );
 });

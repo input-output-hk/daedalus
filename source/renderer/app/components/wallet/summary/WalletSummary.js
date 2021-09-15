@@ -97,6 +97,7 @@ export default class WalletSummary extends Component<Props> {
                 currentLocale={currentLocale}
                 title="Recently used tokens"
                 onViewAllButtonClick={onViewAllButtonClick}
+                disableControls
               />
             ) : (
               <WalletSummaryNoTokens
