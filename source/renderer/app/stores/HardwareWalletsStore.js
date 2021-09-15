@@ -160,7 +160,7 @@ const useCardanoAppInterval = (
     addressVerification
   );
 
-const { network } = global.environment;
+const { network, isDev } = global.environment;
 const networkConfig = getHardwareWalletsNetworkConfig(network);
 
 export default class HardwareWalletsStore extends Store {
@@ -2698,7 +2698,7 @@ export default class HardwareWalletsStore extends Store {
 
   // For testing / development ONLY
   _resetHardwareWallets = async () => {
-    if (global.environment.isDev) {
+    if (isDev) {
       await Promise.all(
         this.stores.wallets.all.map(async (wallet) => {
           if (wallet.isHardwareWallet) {

@@ -39,6 +39,7 @@ import {
   STAGING_MAGIC,
   MAINNET_MAGIC,
   ALONZO_PURPLE_MAGIC,
+  SHELLEY_QA_MAGIC,
 } from '../../../common/types/cardano-node.types';
 import type { AddressStyle } from '../../../common/types/address-introspection.types';
 import type { AssetToken } from '../api/assets/types';
@@ -1035,6 +1036,7 @@ export default class WalletsStore extends Store {
       isStaging,
       isTestnet,
       isAlonzoPurple,
+      isShelleyQA,
     } = this.environment;
     let expectedNetworkTag: ?Array<?number> | ?number;
     const validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
@@ -1048,6 +1050,8 @@ export default class WalletsStore extends Store {
       expectedNetworkTag = TESTNET_MAGIC;
     } else if (isAlonzoPurple) {
       expectedNetworkTag = ALONZO_PURPLE_MAGIC;
+    } else if (isShelleyQA) {
+      expectedNetworkTag = SHELLEY_QA_MAGIC;
     } else if (isSelfnode) {
       expectedNetworkTag = SELFNODE_MAGIC;
     } else {

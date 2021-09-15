@@ -154,5 +154,8 @@ export const STAGING_MAGIC = [633343913, 1];
 // Cardano Alonzo Purple network magic
 export const ALONZO_PURPLE_MAGIC = [8, 0];
 
+// Cardano Shelley QA network magic
+export const SHELLEY_QA_MAGIC = [3, 0];
+
 // Cardano Selfnode network magic
 export const SELFNODE_MAGIC = MAINNET_MAGIC;

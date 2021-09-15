@@ -17,25 +17,21 @@ export const HW_SHELLEY_CONFIG = {
       networkId: 1,
       networkName: 'mainnet',
       protocolMagic: 764824073,
-      trezorProtocolMagic: 764824073,
     },
     testnet: {
       networkId: 0,
       networkName: 'testnet',
       protocolMagic: 1097911063,
-      trezorProtocolMagic: 1097911063,
     },
     shelley_qa: {
       networkId: 0,
       networkName: 'testnet',
       protocolMagic: 3,
-      trezorProtocolMagic: 3,
     },
     alonzo_purple: {
       networkId: 0,
       networkName: 'testnet',
       protocolMagic: 8,
-      trezorProtocolMagic: 8,
     },
   },
   DEFAULT_DERIVATION_PATH: [
@@ -92,7 +88,8 @@ export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
 
 export const isHardwareWalletSupportEnabled =
-  (isMainnet || isTestnet || isNonPublicTestnet) && (isTrezorEnabled || isLedgerEnabled);
+  (isMainnet || isTestnet || isNonPublicTestnet) &&
+  (isTrezorEnabled || isLedgerEnabled);
 
 export const isHardwareWalletIndicatorEnabled = false;
 
