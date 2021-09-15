@@ -9,7 +9,7 @@ import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { downloadManagerChannel } from './downloadManagerChannel';
 import getRecoveryWalletIdChannel from './getRecoveryWalletIdChannel';
-// import { handleHardwareWalletRequests } from './getHardwareWalletChannel';
+import { handleHardwareWalletRequests } from './getHardwareWalletChannel';
 import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handleFileMetaRequests } from './generateFileMetaChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
@@ -47,5 +47,5 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
-  // handleHardwareWalletRequests(window);
+  handleHardwareWalletRequests(window);
 };
