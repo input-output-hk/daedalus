@@ -13,3 +13,24 @@
     line-height: 22px;
   }
 }
+.columns {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 42px 10px 12px;
+  span {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-semibold);
+    font-size: 10px;
+    letter-spacing: 1px;
+    line-height: 2;
+    text-transform: uppercase;
+  }
+}
+.noResults {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  line-height: 1.33;
+  margin: 0 12px;
+}

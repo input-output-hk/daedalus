@@ -13,14 +13,24 @@ import type { AssetToken } from '../../../api/assets/types';
 
 const messages = defineMessages({
   noResults: {
-    id: 'wallet.tokens.search.noResults',
+    id: 'wallet.tokens.list.search.noResults',
     defaultMessage: '!!!No results matching your query',
     description: 'No results on the WalletTokensList',
   },
   searchResults: {
-    id: 'wallet.tokens.search.searchResults',
+    id: 'wallet.tokens.list.search.searchResults',
     defaultMessage: '!!!Search Results',
     description: 'Search Results on the WalletTokensList',
+  },
+  columnAmount: {
+    id: 'wallet.tokens.list.column.amount',
+    defaultMessage: '!!!Amount',
+    description: 'Amount header on Wallet summary assets page',
+  },
+  columnToken: {
+    id: 'wallet.tokens.list.column.token',
+    defaultMessage: '!!!Token',
+    description: 'Token header on Wallet summary assets page',
   },
 });
 
@@ -102,6 +112,10 @@ const WalletTokensList = observer((props: Props) => {
         </div>
       </div>
       <BorderedBox>
+        <div className={styles.columns}>
+          <span>{intl.formatMessage(messages.columnToken)}</span>
+          <span>{intl.formatMessage(messages.columnAmount)}</span>
+        </div>
         {content}
         {onViewAllButtonClick && (
           <button onClick={onViewAllButtonClick}>VIEW ALL</button>
