@@ -15,7 +15,12 @@ const messages = defineMessages({
   noResults: {
     id: 'wallet.tokens.search.noResults',
     defaultMessage: '!!!No results matching your query',
-    description: 'No results on Wallet summary assets page',
+    description: 'No results on the WalletTokensList',
+  },
+  searchResults: {
+    id: 'wallet.tokens.search.searchResults',
+    defaultMessage: '!!!Search Results',
+    description: 'Search Results on the WalletTokensList',
   },
 });
 
@@ -49,11 +54,10 @@ const WalletTokensList = observer((props: Props) => {
     wallet,
   } = props;
   const isRestoreActive = wallet.isRestoring;
-
   const filteredAssets = searchAssets(searchValue, assets);
-
-  const noResults =
-    !filteredAssets.length && searchValue && searchValue.trim().length >= 3;
+  const hasSearch =
+    !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
+  const noResults = hasSearch && !filteredAssets.length;
 
   if (isLoadingAssets) {
     return (
@@ -73,7 +77,13 @@ const WalletTokensList = observer((props: Props) => {
 
   return (
     <div className={styles.component}>
-      <h3>{title}</h3>
+      <div className={styles.outerHeader}>
+        <div className={styles.title}>
+          {title}
+          {hasSearch && intl.formatMessage(messages.searchResults)} (
+          {assets.length})
+        </div>
+      </div>
       <BorderedBox>
         {filteredAssets.map((asset) => (
           <WalletToken

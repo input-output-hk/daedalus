@@ -1002,6 +1002,9 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#f9f9f9',
     '--theme-transactions-header-texct-color': '#2d2d2d80',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': 'rgba(45, 45, 45, 0.5)',
+  },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
     '--theme-uploader-border-color': 'rgba(45, 45, 45, 0.3)',

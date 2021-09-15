@@ -997,6 +997,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#f8f3ed',
     '--theme-transactions-header-texct-color': '#2d2d2d80',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': '#2d2d2d80',
+  },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
     '--theme-uploader-border-color': 'rgba(45, 45, 45, 0.3)',

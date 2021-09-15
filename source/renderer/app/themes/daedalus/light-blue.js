@@ -1007,6 +1007,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#ebeff2',
     '--theme-transactions-header-texct-color': '#5e606680',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': 'rgba(94, 96, 102, 0.5)',
+  },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',
     '--theme-uploader-border-color': 'rgba(94, 96, 102, 0.3)',

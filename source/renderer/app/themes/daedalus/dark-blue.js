@@ -1015,6 +1015,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#263345',
     '--theme-transactions-header-texct-color': '#e9f4fe80',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': 'rgba(233, 244, 254, 0.5)',
+  },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',
     '--theme-uploader-border-color': 'rgba(233, 244, 254, 0.3)',
