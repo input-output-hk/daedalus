@@ -155,7 +155,11 @@ storiesOf('Wallets|Tokens', module)
         onAssetSettings={action('onAssetSettings')}
         onCopyAssetParam={action('onCopyAssetParam')}
         onOpenAssetSend={action('onOpenAssetSend')}
-        onViewAllButtonClick={action('onViewAllButtonClick')}
+        onViewAllButtonClick={
+          boolean('Has View All button', false)
+            ? action('onViewAllButtonClick')
+            : null
+        }
         searchValue={text('searchValue', '')}
         title={text('Title', 'Tokens')}
         wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}

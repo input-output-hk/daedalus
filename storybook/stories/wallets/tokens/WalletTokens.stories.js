@@ -143,7 +143,6 @@ const walletTokens: WalletTokens = {
 };
 
 storiesOf('Wallets|Tokens', module)
-  // .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs)
 

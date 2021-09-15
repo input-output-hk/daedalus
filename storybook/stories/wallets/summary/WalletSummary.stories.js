@@ -261,6 +261,7 @@ storiesOf('Wallets|Summary', module)
           true
         )}
         onExternalLinkClick={action('onExternalLinkClick')}
+        onViewAllButtonClick={action('onViewAllButtonClick')}
       />
     );
   });
