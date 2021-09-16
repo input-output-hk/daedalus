@@ -110,18 +110,16 @@ const WalletTokensList = observer((props: Props) => {
           )}
         </div>
       </div>
-      {!isCollapsed && (
-        <BorderedBox>
-          <div className={styles.columns}>
-            <span>{intl.formatMessage(messages.columnToken)}</span>
-            <span>{intl.formatMessage(messages.columnAmount)}</span>
-          </div>
-          {content}
-          {onViewAllButtonClick && (
-            <button onClick={onViewAllButtonClick}>VIEW ALL</button>
-          )}
-        </BorderedBox>
-      )}
+      <BorderedBox>
+        <div className={styles.columns}>
+          <span>{intl.formatMessage(messages.columnToken)}</span>
+          <span>{intl.formatMessage(messages.columnAmount)}</span>
+        </div>
+        {content}
+        {onViewAllButtonClick && (
+          <button onClick={onViewAllButtonClick}>VIEW ALL</button>
+        )}
+      </BorderedBox>
     </div>
   );
 });
