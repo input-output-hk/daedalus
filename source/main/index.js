@@ -268,11 +268,15 @@ const onAppReady = async () => {
       process.argv[1],
     ]);
   } else {
-    logger.info('[Custom-Protocol] Set Mac / Linux protocol params');
+    logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
+      platform: process.platform,
+    });
     app.setAsDefaultProtocolClient('web+cardano');
-    childProcess.exec(
-      'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
-    );
+    if (process.platform !== 'linux') {
+      childProcess.exec(
+        'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
+      );
+    }
   }
 
   app.on('open-url', (event, url) => {
