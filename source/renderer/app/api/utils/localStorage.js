@@ -327,6 +327,26 @@ export default class LocalStorageApi {
   unsetAppUpdateCompleted = (): Promise<void> =>
     LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
 
+  getWalletTokenFavorites = (): Promise<Object> =>
+    LocalStorageApi.get(keys.TOKEN_FAVORITES, {});
+
+  toggleWalletTokenFavorite = async (uniqueId: string): Promise<boolean> => {
+    const favorites = await this.getWalletTokenFavorites();
+    const isFavorite = !!favorites[uniqueId];
+    const newFavorites = {
+      ...favorites,
+      [uniqueId]: !isFavorite,
+    };
+    await LocalStorageApi.set(keys.TOKEN_FAVORITES, newFavorites);
+    return !isFavorite;
+  };
+
+  unsetWalletTokenFavorite = async (uniqueId: string): Promise<void> => {
+    const favorites = await this.getWalletTokenFavorites();
+    delete favorites[uniqueId];
+    await LocalStorageApi.set(keys.TOKEN_FAVORITES, favorites);
+  };
+
   getAssetsLocalData = (): Promise<AssetLocalData> =>
     LocalStorageApi.get(keys.ASSET_DATA, []);
 
