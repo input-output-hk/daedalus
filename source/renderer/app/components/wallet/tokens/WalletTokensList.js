@@ -1,8 +1,7 @@
 // @flow
-import React, { useState } from 'react';
+import React from 'react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { observer } from 'mobx-react';
-import InlineSelect from '../../widgets/forms/InlineSelect';
 import { searchAssets } from '../../../utils/assets';
 import styles from './WalletTokensList.scss';
 import Wallet from '../../../domains/Wallet';
@@ -47,17 +46,12 @@ type Props = {
   searchValue?: string,
   title: string,
   wallet: Wallet,
-  disableControls?: boolean,
 };
 
-type IsCollapsed = boolean;
-
 const WalletTokensList = observer((props: Props) => {
-  const [isCollapsed, setIsCollapsed] = useState<IsCollapsed>(false);
   const {
     assets,
     assetSettingsDialogWasOpened,
-    disableControls,
     intl,
     isLoadingAssets,
     onAssetSettings,
@@ -115,29 +109,6 @@ const WalletTokensList = observer((props: Props) => {
             </>
           )}
         </div>
-        {!disableControls && (
-          <div className={styles.controls}>
-            {!isCollapsed && (
-              <div className={styles.sortBy}>
-                sort by:
-                <InlineSelect
-                  options={[]}
-                  value={''}
-                  className={styles.sortBySelect}
-                  label="SORT BY"
-                  onChange={() => {}}
-                />
-              </div>
-            )}
-            <div className={styles.toggleVisibility}>
-              {isCollapsed ? (
-                <button onClick={() => setIsCollapsed(false)}>+</button>
-              ) : (
-                <button onClick={() => setIsCollapsed(true)}>-</button>
-              )}
-            </div>
-          </div>
-        )}
       </div>
       {!isCollapsed && (
         <BorderedBox>
