@@ -17,8 +17,33 @@
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  padding: 7px 42px 7px 12px;
+  padding: 7px 42px 7px 39px;
   position: relative;
+  .favoriteIcon {
+    border-radius: 3px;
+    cursor: pointer;
+    height: 22px;
+    left: 8px;
+    padding-top: 2px;
+    position: absolute;
+    top: 7px;
+    width: 23px;
+    z-index: 1;
+    svg {
+      height: 14px;
+      width: 15px;
+    }
+    &:not(.isFavorite) {
+      path {
+        stroke: var(--theme-button-flat-text-color-disabled);
+      }
+    }
+    &:hover {
+      background-color: var(
+        --theme-widgets-asset-token-fingerprint-background-color
+      );
+    }
+  }
   .asset {
     max-width: calc(100% - 90px);
   }

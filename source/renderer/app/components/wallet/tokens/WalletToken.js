@@ -14,6 +14,8 @@ import AssetContent from '../../assets/AssetContent';
 import type { AssetToken } from '../../../api/assets/types';
 import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
 import warningIcon from '../../../assets/images/asset-token-warning-ic.inline.svg';
+import starNotFilledIcon from '../../../assets/images/star-not-filled.inline.svg';
+import starFilledIcon from '../../../assets/images/star-filled.inline.svg';
 
 const messages = defineMessages({
   tokenSendButton: {
@@ -54,6 +56,8 @@ type Props = {
   isLoading: boolean,
   assetSettingsDialogWasOpened: boolean,
   intl: intlShape.isRequired,
+  isFavorite: boolean,
+  onFavoriteToggle: Function,
 };
 
 type IsExpanded = boolean;
@@ -61,17 +65,27 @@ type IsExpanded = boolean;
 const WalletToken = observer((props: Props) => {
   const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
 
+  // TODO: Use props, when done
+  const [isFavorite, onFavoriteToggle] = useState<boolean>(false);
+
   const toggleIsExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
+  const favoriteIconStyles = classNames([
+    styles.favoriteIcon,
+    isFavorite ? styles.isFavorite : null,
+  ]);
+
   const header = () => {
     const {
-      asset,
-      onCopyAssetParam,
-      isLoading,
       anyAssetWasHovered,
+      asset,
       assetSettingsDialogWasOpened,
+      // isFavorite,
+      isLoading,
+      onCopyAssetParam,
+      // onFavoriteToggle,
     } = props;
     const { decimals, recommendedDecimals } = asset;
     const arrowStyles = classNames(styles.arrow, {
@@ -80,8 +94,19 @@ const WalletToken = observer((props: Props) => {
     const hasWarning =
       typeof recommendedDecimals === 'number' &&
       decimals !== recommendedDecimals;
+    const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
     return (
       <div className={styles.header} onClick={toggleIsExpanded}>
+        <button
+          className={favoriteIconStyles}
+          onClick={(event) => {
+            event.persist();
+            event.stopPropagation();
+            onFavoriteToggle(!isFavorite);
+          }}
+        >
+          <SVGInline className={styles.warningIcon} svg={starIcon} />
+        </button>
         <Asset
           asset={asset}
           onCopyAssetParam={onCopyAssetParam}
