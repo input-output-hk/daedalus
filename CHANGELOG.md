@@ -14,7 +14,7 @@ Changelog
 
 ### Chores
 
-- Update wallet settings for wallet deletion ()
+- Update wallet settings for wallet deletion ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
 
 ## 4.3.1
 
