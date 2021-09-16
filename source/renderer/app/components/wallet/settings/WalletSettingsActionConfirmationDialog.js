@@ -61,7 +61,7 @@ type Props = {
 };
 
 @observer
-export default class DeleteWalletConfirmationDialog extends Component<Props> {
+export default class WalletSettingsActionConfirmationDialog extends Component<Props> {
   static defaultProps = {
     isBackupNoticeAccepted: false,
     confirmationValue: '',

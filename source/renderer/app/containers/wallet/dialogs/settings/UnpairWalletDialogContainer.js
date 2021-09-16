@@ -8,7 +8,7 @@ type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class DeleteWalletDialogContainer extends Component<Props> {
+export default class UnpairWalletDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {

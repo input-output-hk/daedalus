@@ -12,6 +12,10 @@ Changelog
 - Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 - Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
 
+### Chores
+
+- Update wallet settings for wallet deletion ()
+
 ## 4.3.1
 
 ### Fixes

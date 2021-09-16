@@ -7,7 +7,7 @@ import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../../_support/StoryDecorator';
 
 // Screens
-import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsActionConfirmationDialog';
 
 storiesOf('Wallets|Settings', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
@@ -16,7 +16,7 @@ storiesOf('Wallets|Settings', module)
 
   .add('Delete - Countdown', () => (
     <div>
-      <DeleteWalletConfirmationDialog
+      <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
         hasWalletFunds
         countdownFn={() => 10}
@@ -32,7 +32,7 @@ storiesOf('Wallets|Settings', module)
   ))
   .add('Delete - Accepted & filled incorrectly', () => (
     <div>
-      <DeleteWalletConfirmationDialog
+      <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
         hasWalletFunds
         countdownFn={() => 0}
@@ -48,7 +48,7 @@ storiesOf('Wallets|Settings', module)
   ))
   .add('Delete - Accepted & filled correctly', () => (
     <div>
-      <DeleteWalletConfirmationDialog
+      <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
         hasWalletFunds
         countdownFn={() => 0}
@@ -64,7 +64,7 @@ storiesOf('Wallets|Settings', module)
   ))
   .add('Delete - Accepted, filled correctly & submitting', () => (
     <div>
-      <DeleteWalletConfirmationDialog
+      <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
         hasWalletFunds
         countdownFn={() => 0}

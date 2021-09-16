@@ -6,7 +6,7 @@ import moment from 'moment';
 
 // Screens
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsActionConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
@@ -81,9 +81,9 @@ export const defaultProps = {
     />
   ),
   deleteWalletDialogContainer: (
-    <DeleteWalletConfirmationDialog
+    <WalletSettingsActionConfirmationDialog
       walletName={text(
-        'DeleteWalletConfirmationDialog: Wallet Name',
+        'WalletSettingsActionConfirmationDialog: Wallet Name',
         'Wallet To Delete'
       )}
       hasWalletFunds={boolean('hasWalletFunds', false)}
