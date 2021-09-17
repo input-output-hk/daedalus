@@ -14,6 +14,11 @@ type WalletId = string;
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
+  // REQUESTS
+  @observable favoritesRequest: Request<Object> = new Request(
+    this.api.localStorage.getWalletTokenFavorites
+  );
+
   @observable activeAsset: ?string = null;
   @observable editingsAsset: ?AssetToken = null;
   @observable assetsRequests: {
@@ -38,6 +43,8 @@ export default class AssetsStore extends Store {
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
     walletsActions.unsetActiveAsset.listen(this._unsetActiveAsset);
+
+    this._setUpFavorites();
   }
 
   // ==================== PUBLIC ==================
@@ -68,7 +75,15 @@ export default class AssetsStore extends Store {
     return requestGetter(this.getAssetSettingsDialogWasOpenedRequest, false);
   }
 
+  @computed get favorites(): Object {
+    return this.favoritesRequest.result || {};
+  }
+
   // =================== PRIVATE ==================
+
+  _setUpFavorites = async () => {
+    this.favoritesRequest.execute();
+  };
 
   @action _onAssetSettingsOpen = ({ asset }: { asset: AssetToken }) => {
     this.editingsAsset = asset;
