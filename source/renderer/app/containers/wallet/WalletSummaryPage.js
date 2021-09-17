@@ -12,7 +12,6 @@ import { ROUTES } from '../../routes-config';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
-import { ellipsis } from '../../utils/strings';
 import { getAssetTokens } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
@@ -68,12 +67,13 @@ export default class WalletSummaryPage extends Component<Props> {
       assets,
       currency,
     } = stores;
-    const { getAsset, assetSettingsDialogWasOpened } = assets;
+    const { getAsset, assetSettingsDialogWasOpened, favorites } = assets;
     const { isInternalAddress } = addresses;
     const {
       onAssetSettingsOpen,
       onOpenAssetSend,
       onCopyAssetParam,
+      onToggleFavorite,
     } = actions.assets;
     const {
       openExternalLink,
@@ -170,6 +170,8 @@ export default class WalletSummaryPage extends Component<Props> {
           onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
           onViewAllButtonClick={onViewAllButtonClick}
+          tokenFavorites={favorites}
+          onToggleFavorite={onToggleFavorite.trigger}
         />
         {walletTransactions}
       </VerticalFlexContainer>

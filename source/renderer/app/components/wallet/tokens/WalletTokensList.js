@@ -46,6 +46,8 @@ type Props = {
   searchValue?: string,
   title: string,
   wallet: Wallet,
+  onToggleFavorite: Function,
+  tokenFavorites: Object,
 };
 
 const WalletTokensList = observer((props: Props) => {
@@ -61,6 +63,8 @@ const WalletTokensList = observer((props: Props) => {
     searchValue = '',
     title,
     wallet,
+    onToggleFavorite,
+    tokenFavorites,
   } = props;
   const isRestoreActive = wallet.isRestoring;
   const filteredAssets = searchAssets(searchValue, assets);
@@ -93,6 +97,8 @@ const WalletTokensList = observer((props: Props) => {
         anyAssetWasHovered
         isLoading={isRestoreActive}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+        onToggleFavorite={onToggleFavorite}
+        isFavorite={tokenFavorites[asset.uniqueId]}
       />
     ));
   }

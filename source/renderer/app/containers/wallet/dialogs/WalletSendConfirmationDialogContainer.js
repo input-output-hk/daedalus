@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type BigNumber from 'bignumber.js';
-import { ellipsis } from '../../../utils/strings';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
 import type { StoresMap } from '../../../stores/index';

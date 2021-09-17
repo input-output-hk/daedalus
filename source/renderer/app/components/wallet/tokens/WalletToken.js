@@ -57,7 +57,7 @@ type Props = {
   assetSettingsDialogWasOpened: boolean,
   intl: intlShape.isRequired,
   isFavorite: boolean,
-  onFavoriteToggle: Function,
+  onToggleFavorite: Function,
 };
 
 type IsExpanded = boolean;
@@ -65,16 +65,13 @@ type IsExpanded = boolean;
 const WalletToken = observer((props: Props) => {
   const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
 
-  // TODO: Use props, when done
-  const [isFavorite, onFavoriteToggle] = useState<boolean>(false);
-
   const toggleIsExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
   const favoriteIconStyles = classNames([
     styles.favoriteIcon,
-    isFavorite ? styles.isFavorite : null,
+    props.isFavorite ? styles.isFavorite : null,
   ]);
 
   const header = () => {
@@ -82,12 +79,12 @@ const WalletToken = observer((props: Props) => {
       anyAssetWasHovered,
       asset,
       assetSettingsDialogWasOpened,
-      // isFavorite,
+      isFavorite,
       isLoading,
       onCopyAssetParam,
-      // onFavoriteToggle,
+      onToggleFavorite,
     } = props;
-    const { decimals, recommendedDecimals } = asset;
+    const { decimals, recommendedDecimals, uniqueId } = asset;
     const arrowStyles = classNames(styles.arrow, {
       [styles.isExpanded]: isExpanded,
     });
@@ -102,7 +99,7 @@ const WalletToken = observer((props: Props) => {
           onClick={(event) => {
             event.persist();
             event.stopPropagation();
-            onFavoriteToggle(!isFavorite);
+            onToggleFavorite({ uniqueId });
           }}
         >
           <SVGInline className={styles.warningIcon} svg={starIcon} />

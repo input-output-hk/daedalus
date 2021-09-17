@@ -39,6 +39,7 @@ export default class AssetsStore extends Store {
     assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
     assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
     assetsActions.onCopyAssetParam.listen(this._onCopyAssetParam);
+    assetsActions.onToggleFavorite.listen(this._onToggleFavorite);
 
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
@@ -168,6 +169,11 @@ export default class AssetsStore extends Store {
   ): Request<GetAssetsResponse> => {
     this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
     return this.assetsRequests[walletId];
+  };
+
+  @action _onToggleFavorite = async ({ uniqueId }: { uniqueId: string }) => {
+    await this.api.localStorage.toggleWalletTokenFavorite(uniqueId);
+    this.favoritesRequest.execute();
   };
 
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>

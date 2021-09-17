@@ -30,6 +30,8 @@ type Props = {
   assetSettingsDialogWasOpened: boolean,
   onExternalLinkClick: Function,
   onViewAllButtonClick: Function,
+  onToggleFavorite: Function,
+  tokenFavorites: Object,
 };
 
 @observer
@@ -56,6 +58,8 @@ export default class WalletSummary extends Component<Props> {
       isLoadingAssets,
       onExternalLinkClick,
       onViewAllButtonClick,
+      onToggleFavorite,
+      tokenFavorites,
     } = this.props;
 
     const { isRestoring } = wallet;
@@ -97,6 +101,8 @@ export default class WalletSummary extends Component<Props> {
                 currentLocale={currentLocale}
                 title="Recently used tokens"
                 onViewAllButtonClick={onViewAllButtonClick}
+                tokenFavorites={tokenFavorites}
+                onToggleFavorite={onToggleFavorite}
                 disableControls
               />
             ) : (

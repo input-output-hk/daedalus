@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
-import { ellipsis } from '../../utils/strings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 

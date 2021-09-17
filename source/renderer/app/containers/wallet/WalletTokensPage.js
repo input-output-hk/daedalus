@@ -14,8 +14,12 @@ const WalletTokensPage = inject(
   observer((props: Props) => {
     const { actions, stores } = props;
     const { assets, profile, wallets } = stores;
-    const { getAsset, assetSettingsDialogWasOpened } = assets;
-    const { onAssetSettingsOpen, onOpenAssetSend } = actions.assets;
+    const { getAsset, assetSettingsDialogWasOpened, favorites } = assets;
+    const {
+      onAssetSettingsOpen,
+      onOpenAssetSend,
+      onToggleFavorite,
+    } = actions.assets;
     const { active: activeWallet } = wallets;
     const { currentLocale } = profile;
 
@@ -40,6 +44,8 @@ const WalletTokensPage = inject(
         onCopyAssetParam={() => {}}
         onOpenAssetSend={onOpenAssetSend.trigger}
         wallet={activeWallet}
+        tokenFavorites={favorites}
+        onToggleFavorite={onToggleFavorite.trigger}
       />
     );
   })

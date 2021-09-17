@@ -230,6 +230,8 @@ storiesOf('Wallets|Summary', module)
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
         currencyRate={0.321}
+        onToggleFavorite={action('onToggleFavorite')}
+        tokenFavorites={{}}
         currencyLastFetched={currencyLastFetched}
         onCurrencySettingClick={action('onCurrencySettingClick')}
         assets={[

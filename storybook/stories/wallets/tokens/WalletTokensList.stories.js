@@ -4,6 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
+import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../../_support/StoryDecorator';
 
 import {
@@ -145,12 +146,13 @@ storiesOf('Wallets|Tokens', module)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
-  .add('WalletTokensList', ({ locale }: { locale: string }) => (
-    <div>
+  .add(
+    'WalletTokensList',
+    withState({ favorites: {} }, (store) => (
       <WalletTokensList
         assets={assets}
         assetSettingsDialogWasOpened
-        currentLocale={locale}
+        currentLocale="en-US"
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onAssetSettings={action('onAssetSettings')}
         onCopyAssetParam={action('onCopyAssetParam')}
@@ -162,6 +164,15 @@ storiesOf('Wallets|Tokens', module)
         }
         title={text('Title', 'Tokens')}
         wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
+        onToggleFavorite={({ uniqueId }: { uniqueId: string }) => {
+          const { favorites } = store.state;
+          const newState = {
+            ...favorites,
+            [uniqueId]: !favorites[uniqueId],
+          };
+          store.set({ favorites: newState });
+        }}
+        tokenFavorites={store.state.favorites}
       />
-    </div>
-  ));
+    ))
+  );

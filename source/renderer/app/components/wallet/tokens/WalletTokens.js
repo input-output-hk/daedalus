@@ -27,29 +27,35 @@ type Props = {
   assetSettingsDialogWasOpened: boolean,
   currentLocale: string,
   intl: intlShape.isRequired,
+  intl: intlShape.isRequired,
   isLoadingAssets: boolean,
   onAssetSettings: Function,
   onCopyAssetParam: Function,
+  onToggleFavorite: Function,
   onOpenAssetSend: Function,
+  tokenFavorites: Object,
   wallet: Wallet,
-  intl: intlShape.isRequired,
 };
 type SearchValue = string;
 const WalletTokens = observer((props: Props) => {
   const [searchValue, setSearchValue] = useState<SearchValue>('');
 
-  const { assets, intl } = props;
+  const { assets, intl, tokenFavorites } = props;
   const listProps = { ...omit(props, 'assets', 'intl'), searchValue };
-  const favoriteTokens = [...assets.slice(0, 1)];
+  const favoriteTokensList = assets.filter(
+    ({ uniqueId }) => tokenFavorites[uniqueId]
+  );
 
   return (
     <div className={styles.component}>
       <WalletTokensSearch searchValue={searchValue} onSearch={setSearchValue} />
-      <WalletTokensList
-        assets={favoriteTokens}
-        title={intl.formatMessage(messages.favoritesListTitle)}
-        {...listProps}
-      />
+      {!!favoriteTokensList.length && (
+        <WalletTokensList
+          assets={favoriteTokensList}
+          title={intl.formatMessage(messages.favoritesListTitle)}
+          {...listProps}
+        />
+      )}
       <WalletTokensList
         assets={assets}
         title={intl.formatMessage(messages.tokensListTitle)}
