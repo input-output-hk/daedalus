@@ -57,7 +57,6 @@ const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
-const isNonPublicTestnet = isAlonzoPurple || isShelleyQA;
 
 /* ==================================================================
 =                       Compose environment                         =
@@ -98,7 +97,6 @@ export const environment: Environment = Object.assign(
     isLinux,
     isBlankScreenFixActive,
     keepLocalClusterRunning,
-    isNonPublicTestnet,
   },
   process.env
 );
