@@ -8,6 +8,7 @@ import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
 import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 import WalletTokensList from '../tokens/WalletTokensList';
+import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
 
 type Props = {
   wallet: Wallet,
@@ -92,7 +93,7 @@ export default class WalletSummary extends Component<Props> {
             {hasAssets ? (
               <WalletTokensList
                 wallet={wallet}
-                assets={assets}
+                assets={assets.slice(0, MAX_TOKENS_ON_SUMMARY_PAGE)}
                 onOpenAssetSend={onOpenAssetSend}
                 isLoadingAssets={isLoadingAssets}
                 onCopyAssetParam={onCopyAssetParam}
