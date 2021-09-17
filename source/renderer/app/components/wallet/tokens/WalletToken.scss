@@ -24,7 +24,7 @@
     cursor: pointer;
     height: 22px;
     left: 8px;
-    opacity: 0.7;
+    opacity: 0.5;
     padding-top: 2px;
     position: absolute;
     top: 7px;
@@ -42,10 +42,6 @@
     }
     &:hover {
       opacity: 1;
-
-      // background-color: var(
-      //   --theme-widgets-asset-token-fingerprint-background-color
-      // );
     }
   }
   .asset {
