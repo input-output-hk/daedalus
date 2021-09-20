@@ -15,9 +15,9 @@ const WalletTokensPage = inject(
     const { actions, stores } = props;
     const { assets, profile, wallets } = stores;
     const {
+      all,
       assetSettingsDialogWasOpened,
       favorites,
-      getAsset,
       insertingAssetUniqueId,
       removingAssetUniqueId,
     } = assets;
@@ -34,7 +34,7 @@ const WalletTokensPage = inject(
       throw new Error('Active wallet required for WalletSummaryPage.');
 
     const walletTokens = activeWallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const assetTokens = getAssetTokens(all, walletTokens);
     const totalRawAssets = activeWallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = activeWallet.assets.total.length > 0;

@@ -62,6 +62,8 @@ export const formattedTokenWalletAmount = (
        * E.G.: 1,000,000 prints '1M'
        */
       formattedAmount = shortNumber(formattedAmount);
+    } else if (formattedAmount.isZero()) {
+      return '0';
     } else if (formattedAmount.isLessThan(0.01)) {
       /*
        * Short formatting for < 0.01

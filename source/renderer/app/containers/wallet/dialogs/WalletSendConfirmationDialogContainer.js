@@ -8,7 +8,7 @@ import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
-import { getAssetTokens } from '../../../utils/assets';
+import { getNonZeroAssetTokens } from '../../../utils/assets';
 
 type Props = {
   stores: any | StoresMap,
@@ -94,7 +94,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     const walletTokens = activeWallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const { onCopyAssetParam } = actions.assets;
 
     return (

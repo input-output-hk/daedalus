@@ -3,6 +3,7 @@ import find from 'lodash/find';
 import BigNumber from 'bignumber.js';
 import { filter, escapeRegExp } from 'lodash';
 import Wallet from '../domains/Wallet';
+import Asset from '../domains/Asset';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
@@ -26,6 +27,25 @@ export const filterAssets = (
         !isInternalAddress(address))
   );
 
+export const getZeroToken = ({
+  policyId,
+  assetName,
+  uniqueId,
+}: Asset): Token => ({
+  policyId,
+  assetName,
+  uniqueId,
+  quantity: new BigNumber(0),
+});
+
+export const getToken = (asset: Asset, tokens: Tokens) => {
+  let token = tokens.find(({ uniqueId }) => uniqueId === asset.uniqueId);
+  if (!token) {
+    token = getZeroToken(asset);
+  }
+  return token;
+};
+
 /**
  *
  * This function receives a Token (the asset included in a wallet or transaction)
@@ -34,7 +54,49 @@ export const filterAssets = (
  * Data from the Token: policyId, assetName, quantity, address
  * Data from the Asset: fingerprint, metadata, decimals, recommendedDecimals, uniqueId
  */
-export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
+export const getAssetToken = (
+  { fingerprint, metadata, decimals, recommendedDecimals, uniqueId }: Asset,
+  { policyId, assetName, quantity, address }: Token
+): AssetToken => ({
+  policyId,
+  assetName,
+  quantity,
+  address,
+  fingerprint,
+  metadata,
+  decimals,
+  recommendedDecimals,
+  uniqueId,
+});
+
+/**
+ *
+ * This function receives a list of Assets
+ * then retrieves the Token from that specific wallet
+ * and sort them accordingly
+ *
+ */
+export const getAssetTokens = (
+  assets: Array<Asset>,
+  tokens: Tokens
+): Array<AssetToken> =>
+  assets
+    .map((asset) => getAssetToken(asset, getToken(asset, tokens)))
+    .filter((token) => !!token.uniqueId)
+    .sort(sortAssets);
+
+/**
+ *
+ * This function receives a Token (the asset included in a wallet or transaction)
+ * and combines with the data from the Asset
+ *
+ * Data from the Token: policyId, assetName, quantity, address
+ * Data from the Asset: fingerprint, metadata, decimals, recommendedDecimals, uniqueId
+ */
+export const getNonZeroAssetToken = (
+  asset: Token,
+  getAsset: Function
+): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
     getAsset(policyId, assetName) || {};
@@ -58,12 +120,12 @@ export const getAssetToken = (asset: Token, getAsset: Function): AssetToken => {
  * and sort them accordingly
  *
  */
-export const getAssetTokens = (
+export const getNonZeroAssetTokens = (
   tokens: Tokens,
   getAsset: Function
 ): Array<AssetToken> =>
   tokens
-    .map((token) => getAssetToken(token, getAsset))
+    .map((token) => getNonZeroAssetToken(token, getAsset))
     .filter((token) => !!token.uniqueId)
     .sort(sortAssets);
 
