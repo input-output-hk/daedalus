@@ -9,12 +9,14 @@ Changelog
 
 ### Fixes
 
+- Fixed crash when Yubikey is connected ([PR 2673](https://github.com/input-output-hk/daedalus/pull/2673))
 - Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 - Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
 
 ### Chores
 
 - Added tests for currency display settings and stake-pool settings screens ([PR 2622](https://github.com/input-output-hk/daedalus/pull/2622))
+- Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
 
 ## 4.3.1
 
