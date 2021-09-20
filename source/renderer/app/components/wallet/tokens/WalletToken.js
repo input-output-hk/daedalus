@@ -48,15 +48,17 @@ const messages = defineMessages({
 });
 
 type Props = {
-  asset: AssetToken,
-  onOpenAssetSend: Function,
-  onCopyAssetParam: Function,
-  onAssetSettings: Function,
   anyAssetWasHovered: boolean,
-  isLoading: boolean,
+  asset: AssetToken,
   assetSettingsDialogWasOpened: boolean,
   intl: intlShape.isRequired,
   isFavorite: boolean,
+  isInsertingAsset: boolean,
+  isLoading: boolean,
+  isRemovingAsset: boolean,
+  onAssetSettings: Function,
+  onCopyAssetParam: Function,
+  onOpenAssetSend: Function,
   onToggleFavorite: Function,
 };
 
@@ -99,7 +101,7 @@ const WalletToken = observer((props: Props) => {
           onClick={(event) => {
             event.persist();
             event.stopPropagation();
-            onToggleFavorite({ uniqueId });
+            onToggleFavorite({ uniqueId, isFavorite });
           }}
         >
           <SVGInline className={styles.warningIcon} svg={starIcon} />
@@ -205,9 +207,11 @@ const WalletToken = observer((props: Props) => {
     );
   };
 
-  const { asset, onCopyAssetParam } = props;
+  const { asset, onCopyAssetParam, isInsertingAsset, isRemovingAsset } = props;
   const componentStyles = classNames(styles.component, {
     [styles.isExpanded]: isExpanded,
+    [styles.inserting]: isInsertingAsset,
+    [styles.removing]: isRemovingAsset,
   });
   return (
     <div className={componentStyles}>

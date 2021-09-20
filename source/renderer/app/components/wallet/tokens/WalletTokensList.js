@@ -37,34 +37,40 @@ type Props = {
   assets: Array<AssetToken>,
   assetSettingsDialogWasOpened: boolean,
   currentLocale: string,
-  onViewAllButtonClick?: Function,
+  insertingAssetUniqueId: ?string,
   intl: intlShape.isRequired,
+  isFavoriteList?: boolean,
   isLoadingAssets: boolean,
   onAssetSettings: Function,
   onCopyAssetParam: Function,
   onOpenAssetSend: Function,
+  onToggleFavorite: Function,
+  onViewAllButtonClick?: Function,
+  removingAssetUniqueId: ?string,
   searchValue?: string,
   title: string,
-  wallet: Wallet,
-  onToggleFavorite: Function,
   tokenFavorites: Object,
+  wallet: Wallet,
 };
 
 const WalletTokensList = observer((props: Props) => {
   const {
     assets,
     assetSettingsDialogWasOpened,
+    insertingAssetUniqueId,
     intl,
+    isFavoriteList,
     isLoadingAssets,
     onAssetSettings,
     onCopyAssetParam,
     onOpenAssetSend,
+    onToggleFavorite,
     onViewAllButtonClick,
+    removingAssetUniqueId,
     searchValue = '',
     title,
-    wallet,
-    onToggleFavorite,
     tokenFavorites,
+    wallet,
   } = props;
   const isRestoreActive = wallet.isRestoring;
   const filteredAssets = searchAssets(searchValue, assets);
@@ -87,20 +93,28 @@ const WalletTokensList = observer((props: Props) => {
       </p>
     );
   } else {
-    content = filteredAssets.map((asset) => (
-      <WalletToken
-        key={asset.uniqueId}
-        asset={asset}
-        onOpenAssetSend={onOpenAssetSend}
-        onCopyAssetParam={onCopyAssetParam}
-        onAssetSettings={onAssetSettings}
-        anyAssetWasHovered
-        isLoading={isRestoreActive}
-        assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-        onToggleFavorite={onToggleFavorite}
-        isFavorite={tokenFavorites[asset.uniqueId]}
-      />
-    ));
+    content = filteredAssets.map((asset) => {
+      return (
+        <WalletToken
+          key={asset.uniqueId}
+          asset={asset}
+          onOpenAssetSend={onOpenAssetSend}
+          onCopyAssetParam={onCopyAssetParam}
+          onAssetSettings={onAssetSettings}
+          anyAssetWasHovered
+          isLoading={isRestoreActive}
+          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+          onToggleFavorite={onToggleFavorite}
+          isFavorite={tokenFavorites[asset.uniqueId]}
+          isInsertingAsset={
+            isFavoriteList && insertingAssetUniqueId === asset.uniqueId
+          }
+          isRemovingAsset={
+            isFavoriteList && removingAssetUniqueId === asset.uniqueId
+          }
+        />
+      );
+    });
   }
 
   return (

@@ -13,7 +13,10 @@ export default class AssetsActions {
   onAssetSettingsCancel: Action<any> = new Action();
   onOpenAssetSend: Action<{ uniqueId: string }> = new Action();
   onCopyAssetParam: Action<{ param: string, fullValue: string }> = new Action();
-  onToggleFavorite: Action<{ uniqueId: string }> = new Action();
+  onToggleFavorite: Action<{
+    uniqueId: string,
+    isFavorite: boolean,
+  }> = new Action();
   copyAssetParamNotification: Action<{
     param: string,
     shortValue: string,
