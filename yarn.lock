@@ -2270,6 +2270,10 @@
     tiny-worker "^2.3.0"
     ws "^7.4.0"
 
+"@trezor/connect-common@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@trezor/connect-common/-/connect-common-0.0.2.tgz#d2bb1e90de6be2895b7f44215f09b52db361aaf4"
+
 "@trezor/rollout@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@trezor/rollout/-/rollout-1.2.0.tgz#827316debc5cf2e8af2210900eb49540ea2753d1"
@@ -17148,12 +17152,13 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
 
-trezor-connect@8.1.30-beta.4:
-  version "8.1.30-beta.4"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.30-beta.4.tgz#337b2de73f3973c484e5493a3b5c424dd8ae56f8"
+trezor-connect@8.2.0-extended:
+  version "8.2.0-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.0-extended.tgz#b33d3c7f4505cb5aee8acc1f8565410a1a811530"
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
+    "@trezor/connect-common" "^0.0.2"
     "@trezor/rollout" "^1.2.0"
     "@trezor/utxo-lib" "^0.1.2"
     bchaddrjs "^0.5.2"
