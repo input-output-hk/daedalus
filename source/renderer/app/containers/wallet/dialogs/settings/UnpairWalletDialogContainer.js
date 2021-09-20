@@ -25,18 +25,6 @@ const messages: WalletSettingActionMessages = defineMessages({
       '!!!Do you really want to unpair <strong>{walletName}</strong> wallet?',
     description: 'Question if the user really wants to unpair the wallet.',
   },
-  confirmBackupNotice: {
-    id: 'wallet.settings.unpair.dialog.confirmBackupNotice',
-    defaultMessage:
-      '!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.',
-    description:
-      'Notice to confirm if the user has made a backup of his wallet',
-  },
-  enterRecoveryWordLabel: {
-    id: 'wallet.settings.unpair.dialog.enterRecoveryWordLabel',
-    defaultMessage: '!!!Enter the name of the wallet to confirm unpairing:',
-    description: 'Instruction for recovery word on unpair wallet dialog',
-  },
 });
 
 @inject('actions', 'stores')
@@ -64,6 +52,7 @@ export default class UnpairWalletDialogContainer extends Component<Props> {
     return (
       <WalletSettingsActionConfirmationDialog
         isTest={isTest}
+        isUnpair
         walletName={activeWallet.name}
         hasWalletFunds={activeWallet.hasFunds}
         countdownFn={uiDialogs.countdownSinceDialogOpened}

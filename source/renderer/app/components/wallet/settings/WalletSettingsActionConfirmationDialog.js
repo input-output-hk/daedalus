@@ -1,11 +1,8 @@
 // @flow
 import React from 'react';
 import classnames from 'classnames';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { FormattedHTMLMessage, injectIntl, intlShape } from 'react-intl';
+import { observer } from 'mobx-react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './DeleteWalletConfirmationDialog.scss';
@@ -13,6 +10,8 @@ import globalMessages from '../../../i18n/global-messages';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import DeleteWalletConfirmation from './DeleteWalletConfirmation';
+
 // import type {ReactIntlMessage} from "../../../types/i18nTypes";
 
 export type WalletSettingActionMessages = {
@@ -40,11 +39,12 @@ type Props = {
   onConfirmationValueChange: Function,
   isSubmitting: boolean,
   isTest: boolean,
+  isUnpair: boolean,
   messages: WalletSettingActionMessages,
   intl: intlShape.isRequired,
 };
 
-const WalletSettingsActionConfirmationDialog = (props: Props) => {
+const WalletSettingsActionConfirmationDialog = observer((props: Props) => {
   const {
     countdownFn,
     isBackupNoticeAccepted = false,
@@ -56,20 +56,22 @@ const WalletSettingsActionConfirmationDialog = (props: Props) => {
     onConfirmationValueChange,
     isSubmitting,
     isTest = false,
+    isUnpair = false,
     messages,
     intl,
   } = props;
 
   const countdownRemaining = countdownFn(isTest ? 0 : DELETE_WALLET_COUNTDOWN);
   const countdownDisplay =
-    countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
+    !isUnpair && countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
   const isCountdownFinished = countdownRemaining <= 0;
   const isWalletNameConfirmationCorrect =
     confirmationValue.normalize('NFKC') === walletName.normalize('NFKC'); // Always normalize non-breaking space into regular space.
   const isDisabled =
-    !isCountdownFinished ||
-    !isBackupNoticeAccepted ||
-    !isWalletNameConfirmationCorrect;
+    !isUnpair &&
+    (!isCountdownFinished ||
+      !isBackupNoticeAccepted ||
+      !isWalletNameConfirmationCorrect);
   const handleSubmit = () => !isDisabled && onContinue();
 
   const buttonClasses = classnames([
@@ -78,7 +80,7 @@ const WalletSettingsActionConfirmationDialog = (props: Props) => {
   ]);
 
   const buttonLabel = !isSubmitting ? (
-    intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay
+    `${intl.formatMessage(messages.confirmButtonLabel)} ${countdownDisplay}`
   ) : (
     <LoadingSpinner />
   );
@@ -112,25 +114,21 @@ const WalletSettingsActionConfirmationDialog = (props: Props) => {
         {...messages.wantToWalletQuestion}
         values={{ walletName }}
       />
-      <Checkbox
-        label={intl.formatMessage(messages.confirmBackupNotice)}
-        onChange={onAcceptBackupNotice}
-        checked={isBackupNoticeAccepted}
-        skin={CheckboxSkin}
-      />
-      {isBackupNoticeAccepted ? (
-        <Input
-          className={styles.confirmationInput}
-          label={intl.formatMessage(messages.enterRecoveryWordLabel)}
-          value={confirmationValue}
-          // eslint-disable-next-line react/jsx-no-bind
-          onKeyPress={submitOnEnter.bind(this, handleSubmit)}
-          onChange={onConfirmationValueChange}
-          skin={InputSkin}
+
+      {!isUnpair && (
+        <DeleteWalletConfirmation
+          isBackupNoticeAccepted={isBackupNoticeAccepted}
+          confirmationValue={confirmationValue}
+          onAcceptBackupNotice={onAcceptBackupNotice}
+          submitOnEnter={submitOnEnter}
+          handleSubmit={handleSubmit}
+          onConfirmationValueChange={onConfirmationValueChange}
+          checkboxLabel={intl.formatMessage(messages.confirmBackupNotice)}
+          inputLabel={intl.formatMessage(messages.enterRecoveryWordLabel)}
         />
-      ) : null}
+      )}
     </Dialog>
   );
-};
+});
 
 export default injectIntl(WalletSettingsActionConfirmationDialog);

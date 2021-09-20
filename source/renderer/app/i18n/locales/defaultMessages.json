@@ -16926,13 +16926,13 @@
         "description": "Title for the \"Delete wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 16
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
         "id": "wallet.settings.delete.dialog.title",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 12
         }
       },
       {
@@ -16940,13 +16940,13 @@
         "description": "Label for the \"Delete (x)\" button in the delete wallet dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
         "id": "wallet.settings.delete.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 18
+          "line": 17
         }
       },
       {
@@ -16954,13 +16954,13 @@
         "description": "Question if the user really wants to delete the wallet.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
         "id": "wallet.settings.delete.dialog.wantToWalletQuestion",
         "start": {
           "column": 24,
-          "line": 24
+          "line": 23
         }
       },
       {
@@ -16968,13 +16968,13 @@
         "description": "Notice to confirm if the user has made a backup of his wallet",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
         "id": "wallet.settings.delete.dialog.confirmBackupNotice",
         "start": {
           "column": 23,
-          "line": 30
+          "line": 29
         }
       },
       {
@@ -16982,13 +16982,13 @@
         "description": "Instruction for recovery word on delete wallet dialog",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
         "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
         "start": {
           "column": 26,
-          "line": 37
+          "line": 36
         }
       }
     ],
@@ -17111,34 +17111,6 @@
         "start": {
           "column": 24,
           "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.",
-        "description": "Notice to confirm if the user has made a backup of his wallet",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/containers/wallet/dialogs/settings/UnpairWalletDialogContainer.js",
-        "id": "wallet.settings.unpair.dialog.confirmBackupNotice",
-        "start": {
-          "column": 23,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter the name of the wallet to confirm unpairing:",
-        "description": "Instruction for recovery word on unpair wallet dialog",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/containers/wallet/dialogs/settings/UnpairWalletDialogContainer.js",
-        "id": "wallet.settings.unpair.dialog.enterRecoveryWordLabel",
-        "start": {
-          "column": 26,
-          "line": 36
         }
       }
     ],
