@@ -111,7 +111,7 @@ const WalletTokensList = observer((props: Props) => {
       }
       return asset1.quantity.isLessThan(asset2.quantity) ? 1 : -1;
     });
-  }, [sortBy, sortDirection]);
+  }, [assets, sortBy, sortDirection]);
   const filteredAssets = searchAssets(searchValue, sortedAssets);
   const hasSearch =
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
