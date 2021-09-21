@@ -1,9 +1,10 @@
 // @flow
-import React from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
+import SVGInline from 'react-svg-inline';
 import { searchAssets } from '../../../utils/assets';
 import styles from './WalletTokensList.scss';
 import Wallet from '../../../domains/Wallet';
@@ -11,6 +12,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import WalletToken from './WalletToken';
 import type { AssetToken } from '../../../api/assets/types';
+import sortIcon from '../../../assets/images/ascending.inline.svg';
 
 const messages = defineMessages({
   noResults: {
@@ -59,7 +61,26 @@ type Props = {
   wallet: Wallet,
 };
 
+type SortBy = 'token' | 'amount';
+type SortDirection = 'asc' | 'desc';
+
+const getSortClasses = (
+  item: SortBy,
+  sortBy: SortBy,
+  sortDirection: SortDirection
+) => {
+  const isSorted = item === sortBy;
+  return classnames([
+    styles.sortIcon,
+    sortDirection === 'asc' ? styles.ascending : null,
+    isSorted ? styles.sorted : null,
+    isSorted ? styles[`${sortDirection}Sorting`] : 'ascSorting',
+  ]);
+};
+
 const WalletTokensList = observer((props: Props) => {
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [sortBy, setSortBy] = useState<SortBy>('token');
   const {
     assets,
     assetSettingsDialogWasOpened,
@@ -83,6 +104,38 @@ const WalletTokensList = observer((props: Props) => {
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
   const noResults = hasSearch && !filteredAssets.length;
   const viewAllButtonStyles = classnames(['flat', styles.viewAllButton]);
+
+  const sortIconClassesToken = useMemo(
+    () => getSortClasses('token', sortBy, sortDirection),
+    [sortBy, sortDirection]
+  );
+  const sortIconClassesAmount = useMemo(
+    () => getSortClasses('amount', sortBy, sortDirection),
+    [sortBy, sortDirection]
+  );
+  const toggleSortDirection = () => {
+    if (sortDirection === 'asc') {
+      setSortDirection('desc');
+    } else {
+      setSortDirection('asc');
+    }
+  };
+  const onSortBy = (newSortBy: SortBy) => {
+    if (newSortBy === sortBy) {
+      toggleSortDirection();
+    } else {
+      setSortDirection('asc');
+      setSortBy(newSortBy);
+    }
+  };
+  const onSortByToken = useCallback(() => onSortBy('token'), [
+    sortDirection,
+    sortBy,
+  ]);
+  const onSortByAmount = useCallback(() => onSortBy('amount'), [
+    sortDirection,
+    sortBy,
+  ]);
 
   let content;
   if (isLoadingAssets) {
@@ -133,8 +186,18 @@ const WalletTokensList = observer((props: Props) => {
       </div>
       <BorderedBox>
         <div className={styles.columns}>
-          <span>{intl.formatMessage(messages.columnToken)}</span>
-          <span>{intl.formatMessage(messages.columnAmount)}</span>
+          <div onClick={onSortByToken}>
+            {intl.formatMessage(messages.columnToken)}
+            {sortBy === 'token' && (
+              <SVGInline svg={sortIcon} className={sortIconClassesToken} />
+            )}
+          </div>
+          <div onClick={onSortByAmount}>
+            {intl.formatMessage(messages.columnAmount)}
+            {sortBy === 'amount' && (
+              <SVGInline svg={sortIcon} className={sortIconClassesAmount} />
+            )}
+          </div>
         </div>
         {content}
         {onViewAllButtonClick && (

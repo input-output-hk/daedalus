@@ -24,35 +24,43 @@
     font-size: 16px;
     line-height: 22px;
   }
-
-  .controls {
-    display: flex;
-    .sort {
-    }
-    .sortBySelect .toggleVisibility {
-      button {
-        background-color: rgba(68, 91, 124, 0.1);
-        border-radius: 4px;
-        color: black;
-        font-family: var(--font-regular);
-        font-size: 17px;
-        height: 20px;
-        width: 20px;
-      }
-    }
-  }
 }
 .columns {
   display: flex;
   justify-content: space-between;
   margin: 0 42px 10px 12px;
-  span {
+  > div {
     color: var(--theme-bordered-box-text-color);
+    cursor: pointer;
     font-family: var(--font-semibold);
     font-size: 10px;
     letter-spacing: 1px;
     line-height: 2;
     text-transform: uppercase;
+  }
+  .sortIcon {
+    margin-left: 3px;
+    visibility: hidden;
+
+    & > svg {
+      height: 7.5px;
+      width: 7px;
+
+      & > path {
+        fill: var(--theme-staking-font-color-regular);
+      }
+    }
+
+    &.ascSorting {
+      & > svg {
+        transform: rotateX(150deg);
+      }
+    }
+
+    &.sorted {
+      opacity: 1;
+      visibility: visible;
+    }
   }
 }
 .noResults {
