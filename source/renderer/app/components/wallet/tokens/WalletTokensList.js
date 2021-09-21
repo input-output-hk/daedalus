@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { searchAssets } from '../../../utils/assets';
 import styles from './WalletTokensList.scss';
@@ -24,12 +26,17 @@ const messages = defineMessages({
   columnAmount: {
     id: 'wallet.tokens.list.column.amount',
     defaultMessage: '!!!Amount',
-    description: 'Amount header on Wallet summary assets page',
+    description: 'Amount header on the WalletTokensList',
   },
   columnToken: {
     id: 'wallet.tokens.list.column.token',
     defaultMessage: '!!!Token',
-    description: 'Token header on Wallet summary assets page',
+    description: 'Token header on the WalletTokensList',
+  },
+  viewAllButtonLabel: {
+    id: 'wallet.tokens.list.viewAllButton.label',
+    defaultMessage: '!!!View all tokens',
+    description: 'View all button label on the WalletTokensList',
   },
 });
 
@@ -75,9 +82,9 @@ const WalletTokensList = observer((props: Props) => {
   const hasSearch =
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
   const noResults = hasSearch && !filteredAssets.length;
+  const viewAllButtonStyles = classnames(['flat', styles.viewAllButton]);
 
   let content;
-
   if (isLoadingAssets) {
     content = (
       <div className={styles.syncingWrapper}>
@@ -131,7 +138,11 @@ const WalletTokensList = observer((props: Props) => {
         </div>
         {content}
         {onViewAllButtonClick && (
-          <button onClick={onViewAllButtonClick}>VIEW ALL</button>
+          <Button
+            className={viewAllButtonStyles}
+            onClick={onViewAllButtonClick}
+            label={intl.formatMessage(messages.viewAllButtonLabel)}
+          />
         )}
       </BorderedBox>
     </div>

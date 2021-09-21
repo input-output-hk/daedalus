@@ -80,14 +80,14 @@ const WalletTokens = observer((props: Props) => {
       // We need to wait for the element to be removed, before updating the favorites list
       setRemovingAssetUniqueId(uniqueId);
       setTimeout(async () => {
-        await onToggleFavorite({ uniqueId, isFavorite: false });
+        await onToggleFavorite({ uniqueId, isFavorite });
         setRemovingAssetUniqueId(null);
       }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
     } else {
       // It's inserting favorite
       // We update the favorites list straight away
       setInsertingAssetUniqueId(uniqueId);
-      await onToggleFavorite({ uniqueId, isFavorite: true });
+      await onToggleFavorite({ uniqueId, isFavorite });
       setTimeout(() => {
         setInsertingAssetUniqueId(null);
       }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);

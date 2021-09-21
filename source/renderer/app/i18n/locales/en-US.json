@@ -1124,6 +1124,7 @@
   "wallet.tokens.list.search.noResults": "No results matching your query",
   "wallet.tokens.list.search.searchResults": ". Search results",
   "wallet.tokens.list.tokens.title": "Tokens",
+  "wallet.tokens.list.viewAllButton.label": "View all tokens",
   "wallet.tokens.search.placeholder": "Search",
   "wallet.transaction.address.from": "From address",
   "wallet.transaction.address.to": "To address",

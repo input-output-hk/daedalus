@@ -1,7 +1,17 @@
 .component {
   margin: 0 20px 20px;
+  text-align: center;
   &:last-of-type {
     margin-bottom: 0;
+  }
+  button.viewAllButton {
+    font-size: 14px;
+    height: 36px;
+    line-height: 19px;
+    margin-top: 20px;
+    padding: 0 40px;
+    text-align: center;
+    width: auto;
   }
 }
 .outerHeader {

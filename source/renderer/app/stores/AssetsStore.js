@@ -180,7 +180,10 @@ export default class AssetsStore extends Store {
     uniqueId: string,
     isFavorite: boolean,
   }) => {
-    await this.api.localStorage.toggleWalletTokenFavorite(uniqueId, isFavorite);
+    await this.api.localStorage.toggleWalletTokenFavorite(
+      uniqueId,
+      !isFavorite
+    );
     await this.favoritesRequest.execute();
   };
 
