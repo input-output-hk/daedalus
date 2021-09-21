@@ -2,6 +2,8 @@ import { When, Then } from '@cucumber/cucumber';
 import enCopy from '../../../../source/renderer/app/i18n/locales/en-US.json';
 import { environment } from '../../../../source/main/environment';
 
+const { IsTestnet } = environment;
+
 const CUSTOM_SERVER_TEXT = enCopy['settings.stakePools.smash.select.customServer'];
 const INVALID_SMASH_SERVER_TEXT = enCopy['api.errors.invalidSmashServer'];
 const OFF_CHAIN_METADATA_SERVER_TEXT = enCopy['settings.stakePools.smash.select.label'];
@@ -19,8 +21,6 @@ const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON = '//*[@class="InlineEditingIn
 const STAKE_POOL_SERVER_DROPDOWN = '//*[@class="SimpleFormField_inputWrapper"]';
 const STAKE_POOL_SERVER_DROPDOWN_CUSTOM_OPTION = `//*[@class="ScrollbarsCustom-Content"]//span[text()="${CUSTOM_SERVER_TEXT}"]`;
 const STAKE_POOLS_SUBMENU_SETTINGS = `//*[@class="SettingsMenu_component"]//button[text()="${STAKE_POOL_TEXT}"]`;
-
-const { IsTestnet } = environment;
 
 When(/^I select custom server$/, function() {
   return this.waitAndClick(CUSTOM_SERVER_DROPDOWN_OPTION);
@@ -51,7 +51,6 @@ When(/^And I enter a custom server URL as custom server option$/, function() {
   if (IsTestnet) {
     SERVER_URL =  "https://smash.cardano-mainnet.iohk.io";
   }
-
   this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, SERVER_URL);
 });
 
