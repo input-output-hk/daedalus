@@ -8,7 +8,6 @@ import { ROUTES } from '../routes-config';
 import { requestGetter } from '../utils/storesUtils';
 import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
-import { TOGGLE_TOKEN_FAVORITE_TIMEOUT } from '../config/timingConfig';
 
 type WalletId = string;
 
@@ -174,28 +173,6 @@ export default class AssetsStore extends Store {
     return this.assetsRequests[walletId];
   };
 
-  @action updateFavoriteLocalStorage = async (
-    uniqueId: string,
-    isFavorite: boolean
-  ) => {
-    await this.api.localStorage.toggleWalletTokenFavorite(uniqueId, isFavorite);
-    await this.favoritesRequest.execute();
-  };
-
-  @action clearFavoriteAction = () => {
-    this.insertingAssetUniqueId = null;
-    this.removingAssetUniqueId = null;
-  };
-
-  /**
-   *
-   * This function toggles a tokens favorite item
-   * It also adds for half a second the token id to
-   * either `removingAssetUniqueId` or `insertingAssetUniqueId`
-   * so the item can be animated.
-   * This is important, because the whole list shifts up or down.
-   *
-   */
   @action _onToggleFavorite = async ({
     uniqueId,
     isFavorite,
@@ -203,26 +180,8 @@ export default class AssetsStore extends Store {
     uniqueId: string,
     isFavorite: boolean,
   }) => {
-    if (this.insertingAssetUniqueId || this.removingAssetUniqueId) {
-      return;
-    }
-    if (isFavorite) {
-      // It's removing favorite
-      // We need to wait for the element to be removed, before updating the favorites list
-      this.removingAssetUniqueId = uniqueId;
-      setTimeout(async () => {
-        await this.updateFavoriteLocalStorage(uniqueId, false);
-        this.clearFavoriteAction();
-      }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
-    } else {
-      // It's inserting favorite
-      // We update the favorites list straight away
-      this.insertingAssetUniqueId = uniqueId;
-      await this.updateFavoriteLocalStorage(uniqueId, true);
-      setTimeout(() => {
-        this.clearFavoriteAction();
-      }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
-    }
+    await this.api.localStorage.toggleWalletTokenFavorite(uniqueId, isFavorite);
+    await this.favoritesRequest.execute();
   };
 
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
