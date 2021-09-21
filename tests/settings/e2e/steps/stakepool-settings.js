@@ -1,5 +1,6 @@
 import { When, Then } from 'cucumber';
 import enCopy from '../../../../source/renderer/app/i18n/locales/en-US.json';
+import { environment } from '../../../../source/main/environment';
 
 const CUSTOM_SERVER_TEXT = enCopy['settings.stakePools.smash.select.customServer'];
 const INVALID_SMASH_SERVER_TEXT = enCopy['api.errors.invalidSmashServer'];
@@ -12,7 +13,6 @@ const CUSTOM_SERVER_DROPDOWN_OPTION = `//*[@class="SimpleInput_customValueWrappe
 const DAEDALUS_TOP_BAR_LOGO = '//*[@class="TopBar_topBar TopBar_withoutWallet"]';
 const NOT_A_VALID_SMASH_SERVER_ERROR_MESSAGE_ACTIVATED = `//*[@class="InlineEditingInput_errorMessage" and text()="${INVALID_SMASH_SERVER_TEXT}"]`;
 const OFF_CHAIN_METADATA_SERVER_SMASH_LABEL = `//*[contains(text(), "${OFF_CHAIN_METADATA_SERVER_TEXT}")]`;
-const SERVER_URL = "https://smash.cardano-testnet.iohkdev.io/";
 const SMASH_SERVER_URL_INPUT_BOX = `//*[@label="${SMASH_SERVER_URL_TEXT}"]`;
 const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_SUBMIT_BUTTON = '//*[@class="InlineEditingInput_button InlineEditingInput_okButton SimpleButton_root ButtonOverrides_root"]';
 const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON = '//*[@class="InlineEditingInput_button InlineEditingInput_cancelButton SimpleButton_root ButtonOverrides_root"]';
@@ -20,7 +20,9 @@ const STAKE_POOL_SERVER_DROPDOWN = '//*[@class="SimpleFormField_inputWrapper"]';
 const STAKE_POOL_SERVER_DROPDOWN_CUSTOM_OPTION = `//*[@class="ScrollbarsCustom-Content"]//span[text()="${CUSTOM_SERVER_TEXT}"]`;
 const STAKE_POOLS_SUBMENU_SETTINGS = `//*[@class="SettingsMenu_component"]//button[text()="${STAKE_POOL_TEXT}"]`;
 
-When(/^custom server is the default option$/, function() {
+const { IsTestnet } = environment;
+
+When(/^I select custom server$/, function() {
   return this.waitAndClick(CUSTOM_SERVER_DROPDOWN_OPTION);
 });
 
@@ -45,6 +47,11 @@ Then(/^The smash server input textBox is visible$/, function() {
 });
 
 When(/^And I enter a custom server URL as custom server option$/, function() {
+  let SERVER_URL = "https://smash.cardano-testnet.iohkdev.io/";
+  if (IsTestnet) {
+    SERVER_URL =  "https://smash.cardano-mainnet.iohk.io";
+  }
+
   this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, SERVER_URL);
 });
 

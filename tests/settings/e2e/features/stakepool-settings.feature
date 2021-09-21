@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Stake-pool server settings
 
   Background:
@@ -9,7 +9,8 @@ Feature: Stake-pool server settings
 
   Scenario: Navigating to Stake-pool settings screen and selecting custom stake-pool server
     Given I am on the General Settings "stake-pools" screen
-    When custom server is the default option
+    When I open stake pool server dropdown
+    When I select custom server
     And The smash server input textBox is visible
     And And I enter a custom server URL as custom server option
     And I focus the stake-pool custom server input box submit button and then click it
