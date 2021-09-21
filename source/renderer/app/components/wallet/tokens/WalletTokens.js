@@ -53,8 +53,6 @@ const WalletTokens = observer((props: Props) => {
     onToggleFavorite,
     ...listProps
   } = props;
-
-  console.log('tokenFavorites', tokenFavorites);
   const favoriteTokensList = assets.filter(
     ({ uniqueId }) => tokenFavorites[uniqueId]
   );
@@ -96,7 +94,6 @@ const WalletTokens = observer((props: Props) => {
     }
   };
 
-  console.log('favoriteTokensList', favoriteTokensList);
   return (
     <div className={styles.component}>
       <WalletTokensSearch searchValue={searchValue} onSearch={setSearchValue} />
