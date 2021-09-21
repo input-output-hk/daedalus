@@ -1,4 +1,4 @@
-import { When, Then } from 'cucumber';
+import { When, Then } from '@cucumber/cucumber';
 import enCopy from '../../../../source/renderer/app/i18n/locales/en-US.json';
 
 const CUSTOM_SERVER_TEXT = enCopy['settings.stakePools.smash.select.customServer'];

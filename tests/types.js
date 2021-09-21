@@ -1,5 +1,5 @@
 // @flow
-import { defineParameterType } from 'cucumber';
+import { defineParameterType } from '@cucumber/cucumber';
 import type { Api } from '../source/renderer/app/api';
 import type { ActionsMap } from '../source/renderer/app/actions';
 import type { StoresMap } from '../source/renderer/app/stores';

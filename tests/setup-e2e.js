@@ -8,7 +8,7 @@ import {
   After,
   AfterAll,
   setDefaultTimeout,
-} from 'cucumber';
+} from '@cucumber/cucumber';
 import electronPath from 'electron';
 import fakeDialog from 'spectron-fake-dialog';
 import { includes } from 'lodash';
@@ -60,8 +60,11 @@ const startApp = async () => {
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
+    contextIsolation: false,
+    enableRemoteModule: false,
     startTimeout: DEFAULT_TIMEOUT,
     waitTimeout: DEFAULT_TIMEOUT,
+    chromeDriverArgs: ["--verbose"],
     chromeDriverLogPath: path.join(
       __dirname,
       '../logs/chrome-driver.log'

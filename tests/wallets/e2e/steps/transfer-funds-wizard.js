@@ -1,5 +1,5 @@
 // @flow
-import { When, Then } from 'cucumber';
+import { When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';

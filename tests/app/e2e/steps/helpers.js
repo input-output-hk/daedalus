@@ -1,5 +1,5 @@
 // @flow
-import { When } from 'cucumber';
+import { When } from '@cucumber/cucumber';
 import { getProcessesByName } from '../../../../source/main/utils/processes';
 import type { Daedalus } from '../../../types';
 

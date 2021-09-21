@@ -1,7 +1,7 @@
 // @flow
 import readline from 'readline';
 import { expect } from 'chai';
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { range, concat } from 'lodash';
 import { generateAccountMnemonics, generateAdditionalMnemonics, scrambleMnemonics, unscrambleMnemonics } from '../../../../source/renderer/app/api/utils/mnemonics';
 import { mnemonicToSeedHex, getScrambledInput, generateMnemonic } from '../../../../source/renderer/app/utils/crypto';

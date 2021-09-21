@@ -1,4 +1,4 @@
-import { After, Before } from 'cucumber';
+import { After, Before } from '@cucumber/cucumber';
 import sinon from 'sinon';
 import { environment } from '../source/main/environment';
 

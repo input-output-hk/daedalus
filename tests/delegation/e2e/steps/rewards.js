@@ -1,6 +1,6 @@
 // @flow
 import fs from 'fs';
-import { When, Then } from 'cucumber';
+import { When, Then } from '@cucumber/cucumber';
 import path from 'path';
 import moment from 'moment';
 import type { Daedalus } from '../../../types';
