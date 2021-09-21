@@ -1,5 +1,5 @@
 // @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;

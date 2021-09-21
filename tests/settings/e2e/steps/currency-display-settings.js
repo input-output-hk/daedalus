@@ -1,5 +1,5 @@
 // @flow
-import { When, Then } from 'cucumber';
+import { When, Then } from '@cucumber/cucumber';
 import en from '../../../../source/renderer/app/i18n/locales/en-US.json';
 
 const SELECT_CURRENCY_TEXT = en['settings.wallets.currency.selectLabel'];

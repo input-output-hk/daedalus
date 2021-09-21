@@ -1,5 +1,5 @@
 // @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { sidebarHelpers } from './helpers';
 import type { Daedalus } from '../../../types';
 

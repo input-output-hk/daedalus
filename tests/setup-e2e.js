@@ -8,7 +8,7 @@ import {
   After,
   AfterAll,
   setDefaultTimeout,
-} from 'cucumber';
+} from '@cucumber/cucumber';
 import electronPath from 'electron';
 import fakeDialog from 'spectron-fake-dialog';
 import { includes } from 'lodash';
@@ -55,13 +55,14 @@ const defaultWalletKeyFilePath = path.resolve(
 const startApp = async () => {
   const app = new Application({
     path: electronPath,
-    args: ['./dist/main/index.js'],
+    args: [path.join(__dirname, '..')],
     requireName: 'spectronRequire',
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
     startTimeout: DEFAULT_TIMEOUT,
     waitTimeout: DEFAULT_TIMEOUT,
+    chromeDriverArgs: ["--verbose"],
     chromeDriverLogPath: path.join(
       __dirname,
       '../logs/chrome-driver.log'

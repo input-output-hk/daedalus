@@ -1,5 +1,5 @@
 // @flow
-import { Given, Then } from 'cucumber';
+import { Given, Then } from '@cucumber/cucumber';
 import { expectTextInSelector } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 

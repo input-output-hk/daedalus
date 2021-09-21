@@ -1,5 +1,5 @@
 // @flow
-import { Given, Then } from 'cucumber';
+import { Given, Then } from '@cucumber/cucumber';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
 import { getCardanoNodeState, waitForCardanoNodeToExit } from './helpers';
 

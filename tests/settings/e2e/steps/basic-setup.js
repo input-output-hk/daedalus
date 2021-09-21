@@ -1,5 +1,5 @@
 // @flow
-import { Given } from 'cucumber';
+import { Given } from '@cucumber/cucumber';
 import { initialSettingsHelpers, migrationHelpers, termsOfUseHelpers } from './helpers';
 
 const { acceptMigration } = migrationHelpers;

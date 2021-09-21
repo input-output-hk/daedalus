@@ -1,5 +1,5 @@
 // @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { environment } from '../../../../source/main/environment';
 import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';

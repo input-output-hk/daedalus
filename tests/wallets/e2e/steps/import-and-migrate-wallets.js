@@ -1,7 +1,7 @@
 // @flow
 import fs from 'fs';
 import path from 'path';
-import { When, Then, Given } from 'cucumber';
+import { When, Then, Given } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { difference } from 'lodash';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../source/renderer/app/config/numbersConfig';

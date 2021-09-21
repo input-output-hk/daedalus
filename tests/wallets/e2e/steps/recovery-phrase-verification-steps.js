@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 
 const SETTINGS_PAGE_STATUS_SELECTOR = '.WalletRecoveryPhraseVerificationWidget_status';
 const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletRecoveryPhraseVerificationWidget_statusButton`;

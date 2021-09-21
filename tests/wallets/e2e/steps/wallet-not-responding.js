@@ -1,5 +1,5 @@
 // @flow
-import { When, Then } from 'cucumber';
+import { When, Then } from '@cucumber/cucumber';
 import type { Daedalus } from '../../../types';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet.js';
 
