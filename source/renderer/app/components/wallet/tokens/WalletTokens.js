@@ -57,6 +57,14 @@ const WalletTokens = observer((props: Props) => {
     ({ uniqueId }) => tokenFavorites[uniqueId]
   );
 
+  /**
+   *
+   * This function adds a `inserting` or `removing`
+   * state before actually proceding with these actions
+   * so the UI element insertion/removal can be animated,
+   * preventing undesirable jumps in the tokens list
+   *
+   */
   const handleToggleFavorite = async ({
     uniqueId,
     isFavorite,
@@ -98,7 +106,6 @@ const WalletTokens = observer((props: Props) => {
           removingAssetUniqueId={removingAssetUniqueId}
           onToggleFavorite={handleToggleFavorite}
           tokenFavorites={tokenFavorites}
-          isFavoriteList
         />
       )}
       <WalletTokensList

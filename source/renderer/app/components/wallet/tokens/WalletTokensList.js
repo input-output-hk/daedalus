@@ -39,7 +39,6 @@ type Props = {
   currentLocale: string,
   insertingAssetUniqueId: ?string,
   intl: intlShape.isRequired,
-  isFavoriteList?: boolean,
   isLoadingAssets: boolean,
   onAssetSettings: Function,
   onCopyAssetParam: Function,
@@ -59,7 +58,6 @@ const WalletTokensList = observer((props: Props) => {
     assetSettingsDialogWasOpened,
     insertingAssetUniqueId,
     intl,
-    isFavoriteList,
     isLoadingAssets,
     onAssetSettings,
     onCopyAssetParam,
@@ -106,12 +104,8 @@ const WalletTokensList = observer((props: Props) => {
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           onToggleFavorite={onToggleFavorite}
           isFavorite={tokenFavorites[asset.uniqueId]}
-          isInsertingAsset={
-            isFavoriteList && insertingAssetUniqueId === asset.uniqueId
-          }
-          isRemovingAsset={
-            isFavoriteList && removingAssetUniqueId === asset.uniqueId
-          }
+          isInsertingAsset={insertingAssetUniqueId === asset.uniqueId}
+          isRemovingAsset={removingAssetUniqueId === asset.uniqueId}
         />
       );
     });

@@ -12,7 +12,6 @@ import {
   generateWallet,
   generateHash,
 } from '../../_support/utils';
-import { TOGGLE_TOKEN_FAVORITE_TIMEOUT } from '../../../../source/renderer/app/config/timingConfig';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
@@ -148,67 +147,26 @@ storiesOf('Wallets|Tokens', module)
   // ====== Stories ======
   .add(
     'WalletTokens',
-    withState(
-      {
-        favorites: {},
-        insertingAssetUniqueId: null,
-        removingAssetUniqueId: null,
-      },
-      (store) => {
-        const onToggleFavorite = async ({ uniqueId }: { uniqueId: string }) => {
-          const { favorites: currentFavorite } = store.state;
-          let { insertingAssetUniqueId, removingAssetUniqueId } = store.state;
-          if (insertingAssetUniqueId || removingAssetUniqueId) return;
-          const isFavorite = !currentFavorite[uniqueId];
-          const favorites = {
-            ...currentFavorite,
-            [uniqueId]: isFavorite,
+    withState({ favorites: {} }, (store) => (
+      <WalletTokens
+        assets={assets}
+        assetSettingsDialogWasOpened
+        currentLocale="en-US"
+        isLoadingAssets={boolean('isLoadingAssets', false)}
+        onAssetSettings={action('onAssetSettings')}
+        onCopyAssetParam={action('onCopyAssetParam')}
+        onOpenAssetSend={action('onOpenAssetSend')}
+        searchValue={text('searchValue', '')}
+        wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
+        onToggleFavorite={({ uniqueId }: { uniqueId: string }) => {
+          const { favorites } = store.state;
+          const newState = {
+            ...favorites,
+            [uniqueId]: !favorites[uniqueId],
           };
-          if (!isFavorite) {
-            removingAssetUniqueId = uniqueId;
-            store.set({
-              removingAssetUniqueId,
-            });
-            setTimeout(async () => {
-              store.set({
-                favorites,
-                removingAssetUniqueId: null,
-              });
-            }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
-          } else {
-            insertingAssetUniqueId = uniqueId;
-            store.set({
-              favorites,
-              insertingAssetUniqueId,
-            });
-            setTimeout(() => {
-              store.set({
-                insertingAssetUniqueId: null,
-              });
-            }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
-          }
-        };
-        return (
-          <WalletTokens
-            assets={assets}
-            assetSettingsDialogWasOpened
-            currentLocale="en-US"
-            isLoadingAssets={boolean('isLoadingAssets', false)}
-            onAssetSettings={action('onAssetSettings')}
-            onCopyAssetParam={action('onCopyAssetParam')}
-            onOpenAssetSend={action('onOpenAssetSend')}
-            searchValue={text('searchValue', '')}
-            wallet={generateWallet(
-              'Wallet name',
-              '45119903750165',
-              walletTokens
-            )}
-            insertingAssetUniqueId={store.state.insertingAssetUniqueId}
-            removingAssetUniqueId={store.state.removingAssetUniqueId}
-            onToggleFavorite={onToggleFavorite}
-            tokenFavorites={store.state.favorites}
-          />
-        );
-      }
-    )
+          store.set({ favorites: newState });
+        }}
+        tokenFavorites={store.state.favorites}
+      />
+    ))
   );
