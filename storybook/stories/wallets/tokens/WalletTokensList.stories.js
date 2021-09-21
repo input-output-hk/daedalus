@@ -22,7 +22,7 @@ const assets = [
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
-    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2541',
     100,
     {
       name: 'MakerDAO',
@@ -39,13 +39,13 @@ const assets = [
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
+    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
     400
   ),
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
+    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2544',
     100,
     {
       name: 'Tether',
@@ -62,7 +62,7 @@ const assets = [
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
-    'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
+    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2543',
     100,
     {
       name: 'USD Coin',

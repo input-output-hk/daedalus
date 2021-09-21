@@ -37,10 +37,16 @@
     letter-spacing: 1px;
     line-height: 2;
     text-transform: uppercase;
+    &:hover {
+      .sortIcon {
+        visibility: visible;
+      }
+    }
   }
   .sortIcon {
     margin-left: 3px;
     visibility: hidden;
+    opacity: 0.5;
 
     & > svg {
       height: 7.5px;

@@ -72,9 +72,8 @@ const getSortClasses = (
   const isSorted = item === sortBy;
   return classnames([
     styles.sortIcon,
-    sortDirection === 'asc' ? styles.ascending : null,
     isSorted ? styles.sorted : null,
-    isSorted ? styles[`${sortDirection}Sorting`] : 'ascSorting',
+    isSorted ? styles[`${sortDirection}Sorting`] : styles.ascSorting,
   ]);
 };
 
@@ -99,7 +98,21 @@ const WalletTokensList = observer((props: Props) => {
     wallet,
   } = props;
   const isRestoreActive = wallet.isRestoring;
-  const filteredAssets = searchAssets(searchValue, assets);
+  const sortedAssets = useMemo(() => {
+    return [...assets].sort((asset1: AssetToken, asset2: AssetToken) => {
+      if (sortBy === 'token') {
+        if (sortDirection === 'asc') {
+          return asset1.fingerprint.localeCompare(asset2.fingerprint);
+        }
+        return asset2.fingerprint.localeCompare(asset1.fingerprint);
+      }
+      if (sortDirection === 'asc') {
+        return asset1.quantity.isLessThan(asset2.quantity) ? -1 : 1;
+      }
+      return asset1.quantity.isLessThan(asset2.quantity) ? 1 : -1;
+    });
+  }, [sortBy, sortDirection]);
+  const filteredAssets = searchAssets(searchValue, sortedAssets);
   const hasSearch =
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
   const noResults = hasSearch && !filteredAssets.length;
@@ -188,15 +201,11 @@ const WalletTokensList = observer((props: Props) => {
         <div className={styles.columns}>
           <div onClick={onSortByToken}>
             {intl.formatMessage(messages.columnToken)}
-            {sortBy === 'token' && (
-              <SVGInline svg={sortIcon} className={sortIconClassesToken} />
-            )}
+            <SVGInline svg={sortIcon} className={sortIconClassesToken} />
           </div>
           <div onClick={onSortByAmount}>
             {intl.formatMessage(messages.columnAmount)}
-            {sortBy === 'amount' && (
-              <SVGInline svg={sortIcon} className={sortIconClassesAmount} />
-            )}
+            <SVGInline svg={sortIcon} className={sortIconClassesAmount} />
           </div>
         </div>
         {content}
