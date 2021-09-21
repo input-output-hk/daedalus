@@ -55,13 +55,11 @@ const defaultWalletKeyFilePath = path.resolve(
 const startApp = async () => {
   const app = new Application({
     path: electronPath,
-    args: ['./dist/main/index.js'],
+    args: [path.join(__dirname, '..')],
     requireName: 'spectronRequire',
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
-    contextIsolation: false,
-    enableRemoteModule: false,
     startTimeout: DEFAULT_TIMEOUT,
     waitTimeout: DEFAULT_TIMEOUT,
     chromeDriverArgs: ["--verbose"],

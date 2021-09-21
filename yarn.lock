@@ -1041,9 +1041,9 @@
   dependencies:
     regexp-match-indices "1.0.2"
 
-"@cucumber/cucumber@^7.3.1":
+"@cucumber/cucumber@7.3.1":
   version "7.3.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-7.3.1.tgz#1339abc92044f865043eceb2993da15cee0cd255"
+  resolved "https://registry.npmjs.org/@cucumber/cucumber/-/cucumber-7.3.1.tgz#1339abc92044f865043eceb2993da15cee0cd255"
   dependencies:
     "@cucumber/create-meta" "^5.0.0"
     "@cucumber/cucumber-expressions" "^12.1.1"
@@ -1089,14 +1089,7 @@
     commander "7.2.0"
     source-map-support "0.5.19"
 
-"@cucumber/gherkin@^19.0.1":
-  version "19.0.3"
-  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-19.0.3.tgz#61036ca4940e66f8a787be5f92ce229ae3815ebf"
-  dependencies:
-    "@cucumber/message-streams" "^2.0.0"
-    "@cucumber/messages" "^16.0.1"
-
-"@cucumber/gherkin@^19.0.3":
+"@cucumber/gherkin@^19.0.1", "@cucumber/gherkin@^19.0.3":
   version "19.0.3"
   resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-19.0.3.tgz#61036ca4940e66f8a787be5f92ce229ae3815ebf"
   dependencies:
@@ -1117,7 +1110,7 @@
   dependencies:
     "@cucumber/messages" "^16.0.1"
 
-"@cucumber/messages@^16.0.0":
+"@cucumber/messages@^16.0.0", "@cucumber/messages@^16.0.1":
   version "16.0.1"
   resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-16.0.1.tgz#8a9f9bb6ad0430d8ddd044dd49cb45ef37ee67b7"
   dependencies:
@@ -1126,18 +1119,9 @@
     reflect-metadata "0.1.13"
     uuid "8.3.2"
 
-"@cucumber/messages@^16.0.1":
-  version "16.0.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-16.0.1.tgz#8a9f9bb6ad0430d8ddd044dd49cb45ef37ee67b7"
-  dependencies:
-    "@types/uuid" "8.3.0"
-    class-transformer "0.4.0"
-    reflect-metadata "0.1.13"
-    uuid "8.3.2"
-
-"@cucumber/pretty-formatter@^1.0.0-alpha.1":
+"@cucumber/pretty-formatter@1.0.0-alpha.1":
   version "1.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/pretty-formatter/-/pretty-formatter-1.0.0-alpha.1.tgz#361eb972036c6cf114f2978b42c79c48ea800f0e"
+  resolved "https://registry.npmjs.org/@cucumber/pretty-formatter/-/pretty-formatter-1.0.0-alpha.1.tgz#361eb972036c6cf114f2978b42c79c48ea800f0e"
   dependencies:
     ansi-styles "^5.0.0"
     cli-table3 "^0.6.0"
@@ -4771,7 +4755,7 @@ commander@2.17.x:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.17.1.tgz#bd77ab7de6de94205ceacc72f1716d29f20a77bf"
 
-commander@7.2.0:
+commander@7.2.0, commander@^7.0.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
 
@@ -4794,10 +4778,6 @@ commander@^5.0.0, commander@^5.1.0:
 commander@^6.0.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
-
-commander@^7.0.0:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
 
 commander@~2.19.0:
   version "2.19.0"
@@ -6506,9 +6486,9 @@ eslint-import-resolver-node@^0.3.4:
     debug "^2.6.9"
     resolve "^1.13.1"
 
-eslint-import-resolver-webpack@^0.13.1:
+eslint-import-resolver-webpack@0.13.1:
   version "0.13.1"
-  resolved "https://registry.yarnpkg.com/eslint-import-resolver-webpack/-/eslint-import-resolver-webpack-0.13.1.tgz#6d2fb928091daf2da46efa1e568055555b2de902"
+  resolved "https://registry.npmjs.org/eslint-import-resolver-webpack/-/eslint-import-resolver-webpack-0.13.1.tgz#6d2fb928091daf2da46efa1e568055555b2de902"
   dependencies:
     array-find "^1.0.0"
     debug "^3.2.7"
