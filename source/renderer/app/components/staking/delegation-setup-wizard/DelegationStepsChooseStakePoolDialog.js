@@ -325,7 +325,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         <BackToTopButton
           scrollableElementClassName="Dialog_contentWrapper"
           buttonTopPosition={100}
-          scrollTopToActivate={100}
+          scrollTopToActivate={460}
         />
 
         <div className={commonStyles.delegationStepsIndicatorWrapper}>
