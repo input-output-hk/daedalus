@@ -69,7 +69,7 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
         hasWalletFunds={activeWallet.hasFunds}
         countdownFn={uiDialogs.countdownSinceDialogOpened}
         isBackupNoticeAccepted={dialogData.isBackupNoticeAccepted}
-        messages={Object.freeze(messages)}
+        messages={messages}
         onAcceptBackupNotice={() =>
           updateDataForActiveDialog.trigger({
             data: { isBackupNoticeAccepted: true },
