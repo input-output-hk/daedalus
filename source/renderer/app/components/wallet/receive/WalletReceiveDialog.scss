@@ -26,7 +26,6 @@
   .qrCode {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px;
 
     canvas {
       border: 4px solid var(--theme-receive-qr-code-background-color);
@@ -37,7 +36,7 @@
   .addressPathsWrapper {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 20px 0 11px 0;
 
     .spendingPath,
     .stakingPath {
