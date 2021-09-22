@@ -33,11 +33,29 @@ global.environment = environment;
 /* eslint-disable consistent-return */
 
 declare var daedalus: Daedalus;
-const context = {};
+
+const application = new Application({
+  path: electronPath,
+  args: [path.join(__dirname, '..')],
+  requireName: 'spectronRequire',
+  env: Object.assign({}, process.env, {
+    NODE_ENV: TEST,
+  }),
+  startTimeout: DEFAULT_TIMEOUT,
+  waitTimeout: DEFAULT_TIMEOUT,
+  chromeDriverArgs: ["--verbose"],
+
+  chromeDriverLogPath: path.join(
+    __dirname,
+    '../logs/chrome-driver.log'
+  ),
+  webdriverLogPath: path.join(__dirname, '../logs/webdriver'),
+});
+
 let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
-  context.app.client.getMainProcessLogs().then(logs => {
+  application.client.getMainProcessLogs().then(logs => {
     // eslint-disable-next-line no-console
     console.log('========= DAEDALUS LOGS =========');
     // eslint-disable-next-line no-console
@@ -52,33 +70,6 @@ const defaultWalletKeyFilePath = path.resolve(
   './wallets/e2e/documents/default-wallet.key'
 );
 
-const startApp = async () => {
-  const app = new Application({
-    path: electronPath,
-    args: [path.join(__dirname, '..')],
-    requireName: 'spectronRequire',
-    env: Object.assign({}, process.env, {
-      NODE_ENV: TEST,
-    }),
-    startTimeout: DEFAULT_TIMEOUT,
-    waitTimeout: DEFAULT_TIMEOUT,
-    chromeDriverArgs: ["--verbose"],
-    chromeDriverLogPath: path.join(
-      __dirname,
-      '../logs/chrome-driver.log'
-    ),
-    webdriverLogPath: path.join(__dirname, '../logs/webdriver'),
-  });
-  fakeDialog.apply(app);
-  await app.start();
-  // TODO: develop mock that accept custom value to return
-  fakeDialog.mock([
-    { method: 'showOpenDialog', value: [defaultWalletKeyFilePath] },
-  ]);
-  await app.client.waitUntilWindowLoaded();
-  return app;
-};
-
 // The cucumber timeout should be high (and never reached in best case)
 // because the errors thrown by webdriver.io timeouts are more descriptive
 // and helpful than "this step timed out after 5 seconds" messages
@@ -90,7 +81,14 @@ function getTagNames(testCase) {
 
 // Boot up the electron app before all features
 BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
-  context.app = await startApp();
+  await application.start();
+  fakeDialog.apply(application);
+  // TODO: develop mock that accept custom value to return
+  fakeDialog.mock([
+    { method: 'showOpenDialog', value: [defaultWalletKeyFilePath] },
+  ]);
+  await application.client.waitUntilWindowLoaded();
+  return true;
 });
 
 // Skip / Execute test depending on node integration
@@ -103,9 +101,9 @@ Before(async function(testCase) {
 // Make the electron app accessible in each scenario context
 Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
   const tags = getTagNames(testCase);
-  this.app = context.app;
-  this.client = context.app.client;
-  this.browserWindow = context.app.browserWindow;
+  this.app = application;
+  this.client = application.client;
+  this.browserWindow = application.browserWindow;
 
   // Set timeouts of various operations:
 
@@ -195,8 +193,8 @@ Before({ tags: '@e2e' }, function() {
 // this ensures that the spectron instance of the app restarts
 // after the node update acceptance test shuts it down via 'kill-process'
 // eslint-disable-next-line prefer-arrow-callback
-After({ tags: '@restartApp' }, async function() {
-  context.app = await startApp();
+After({ tags: '@restartApp' }, () => {
+  return application.stop();
 });
 
 // this ensures that the reset-backend call successfully executes
@@ -218,7 +216,7 @@ After({ tags: '@e2e' }, async function({ sourceLocation, result }) {
   if (result.status === 'failed') {
     const testName = getTestNameFromTestFile(sourceLocation.uri);
     const file = generateScreenshotFilePath(testName);
-    await saveScreenshot(context.app, file);
+    await saveScreenshot(application, file);
     await printMainProcessLogs();
   }
 });
@@ -233,13 +231,13 @@ After({ tags: '@rewardsCsv' }, async function() {
 
 // eslint-disable-next-line prefer-arrow-callback
 AfterAll(async function() {
-  const allWindowsClosed = (await context.app.client.getWindowCount()) === 0;
-  if (allWindowsClosed || !context.app.running) return;
+  const allWindowsClosed = (await application.client.getWindowCount()) === 0;
+  if (allWindowsClosed || !application.running) return;
   if (scenariosCount === 0) {
     await printMainProcessLogs();
   }
   if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
     return;
   }
-  return context.app.stop();
+  return application.stop();
 });
