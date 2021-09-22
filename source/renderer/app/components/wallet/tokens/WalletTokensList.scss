@@ -37,6 +37,9 @@
     letter-spacing: 1px;
     line-height: 2;
     text-transform: uppercase;
+    &:first-of-type {
+      margin-left: 27px;
+    }
     &:hover {
       .sortIcon {
         visibility: visible;
