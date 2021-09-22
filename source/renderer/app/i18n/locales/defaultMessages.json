@@ -16957,7 +16957,7 @@
           "line": 28
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
-        "id": "wallet.settings.delete.dialog.wantToWalletQuestion",
+        "id": "wallet.settings.delete.dialog.confirmationQuestion",
         "start": {
           "column": 24,
           "line": 23
@@ -17107,7 +17107,7 @@
           "line": 27
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/UnpairWalletDialogContainer.js",
-        "id": "wallet.settings.unpair.dialog.wantToWalletQuestion",
+        "id": "wallet.settings.unpair.dialog.confirmationQuestion",
         "start": {
           "column": 24,
           "line": 22

@@ -23,8 +23,8 @@ const messages: WalletSettingActionMessages = defineMessages({
     description:
       'Label for the "Delete (x)" button in the delete wallet dialog.',
   },
-  wantToWalletQuestion: {
-    id: 'wallet.settings.delete.dialog.wantToWalletQuestion',
+  confirmationQuestion: {
+    id: 'wallet.settings.delete.dialog.confirmationQuestion',
     defaultMessage:
       '!!!Do you really want to delete <strong>{walletName}</strong> wallet?',
     description: 'Question if the user really wants to delete the wallet.',

@@ -15,7 +15,7 @@ import DeleteWalletConfirmation from './DeleteWalletConfirmation';
 export type WalletSettingActionMessages = {
   dialogTitle: Message,
   confirmButtonLabel: Message,
-  wantToWalletQuestion: $Exact<Message>,
+  confirmationQuestion: $Exact<Message>,
   confirmBackupNotice: Message,
   enterRecoveryWordLabel: Message,
 };
@@ -109,7 +109,7 @@ const WalletSettingsActionConfirmationDialog = observer((props: Props) => {
     >
       <FormattedHTMLMessage
         tagName="p"
-        {...messages.wantToWalletQuestion}
+        {...messages.confirmationQuestion}
         values={{ walletName }}
       />
 

@@ -65,12 +65,12 @@ const UnpairWallet = observer(
             </div>
             <WalletSettingsActionButton
               label={label}
-              onClick={() => {
+              onClick={React.useCallback(() => {
                 onBlockForm();
                 openDialogAction({
                   dialog: WalletSettingsActionConfirmationDialog,
                 });
-              }}
+              })}
             />
           </div>
         </BorderedBox>

@@ -19,8 +19,8 @@ const messages: WalletSettingActionMessages = defineMessages({
     description:
       'Label for the "Unpair (x)" button in the unpair wallet dialog.',
   },
-  wantToWalletQuestion: {
-    id: 'wallet.settings.unpair.dialog.wantToWalletQuestion',
+  confirmationQuestion: {
+    id: 'wallet.settings.unpair.dialog.confirmationQuestion',
     defaultMessage:
       '!!!Do you really want to unpair <strong>{walletName}</strong> wallet?',
     description: 'Question if the user really wants to unpair the wallet.',
