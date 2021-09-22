@@ -14,10 +14,10 @@
     }
   }
   &.inserting {
-    animation: insertAnimation 0.2s;
+    animation: insertAnimation 0.3s;
   }
   &.removing {
-    animation: removingAnimation 0.2s;
+    animation: removingAnimation 0.3s;
     border-bottom: 0 none;
     height: 0;
   }

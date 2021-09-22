@@ -77,7 +77,7 @@ const getSortIconClasses = (
 
 const WalletTokensList = observer((props: Props) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [sortBy, setSortBy] = useState<SortBy>('fingerprint');
+  const [sortBy, setSortBy] = useState<SortBy>('token');
   const {
     assets,
     assetSettingsDialogWasOpened,
@@ -106,7 +106,7 @@ const WalletTokensList = observer((props: Props) => {
   const viewAllButtonStyles = classnames(['flat', styles.viewAllButton]);
 
   const sortIconClassesToken = useMemo(
-    () => getSortIconClasses('fingerprint', sortBy, sortDirection),
+    () => getSortIconClasses('token', sortBy, sortDirection),
     [sortBy, sortDirection]
   );
   const sortIconClassesAmount = useMemo(
@@ -128,7 +128,7 @@ const WalletTokensList = observer((props: Props) => {
       setSortBy(newSortBy);
     }
   };
-  const onSortByToken = useCallback(() => onSortBy('fingerprint'), [
+  const onSortByToken = useCallback(() => onSortBy('token'), [
     sortDirection,
     sortBy,
   ]);

@@ -8,7 +8,7 @@ import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 
-export type SortBy = 'fingerprint' | 'quantity';
+export type SortBy = 'token' | 'fingerprint' | 'quantity';
 export type SortDirection = 'asc' | 'desc';
 
 /**
@@ -136,17 +136,44 @@ export const sortAssets = (sortBy: SortBy, sortDirection: SortDirection) => (
   asset1: AssetToken,
   asset2: AssetToken
 ) => {
+  const {
+    quantity: quantity1,
+    fingerprint: fingerprint1,
+    metadata: metadata1,
+  } = asset1;
+  const { name: name1 } = metadata1 || {};
+  const {
+    quantity: quantity2,
+    fingerprint: fingerprint2,
+    metadata: metadata2,
+  } = asset2;
+  const { name: name2 } = metadata2 || {};
+  if (sortBy === 'token') {
+    if (name1 && !name2) return -1;
+    if (!name1 && name2) return 1;
+    if (name1 && name2) {
+      if (sortDirection === 'asc') {
+        return name1.localeCompare(name2);
+      }
+      return name2.localeCompare(name1);
+    }
+
+    if (sortDirection === 'asc') {
+      return fingerprint1.localeCompare(fingerprint2);
+    }
+    return fingerprint2.localeCompare(fingerprint1);
+  }
   if (sortBy === 'fingerprint') {
     if (sortDirection === 'asc') {
-      return asset1.fingerprint.localeCompare(asset2.fingerprint);
+      return fingerprint1.localeCompare(fingerprint2);
     }
-    return asset2.fingerprint.localeCompare(asset1.fingerprint);
+    return fingerprint2.localeCompare(fingerprint1);
   }
   if (sortBy === 'quantity') {
     if (sortDirection === 'asc') {
-      return asset1.quantity.isLessThan(asset2.quantity) ? -1 : 1;
+      return quantity1.isLessThan(quantity2) ? -1 : 1;
     }
-    return asset1.quantity.isLessThan(asset2.quantity) ? 1 : -1;
+    return quantity1.isLessThan(quantity2) ? 1 : -1;
   }
   return 0;
 };
