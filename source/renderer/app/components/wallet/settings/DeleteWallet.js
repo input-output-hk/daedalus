@@ -55,7 +55,9 @@ const DeleteWallet = observer(
     return (
       <>
         <BorderedBox className={styles.deleteWalletBox}>
-          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
+          <div className={styles.title}>
+            {intl.formatMessage(messages.deleteWalletHeader)}
+          </div>
           <div className={styles.contentBox}>
             <div>
               <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>

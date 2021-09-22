@@ -54,7 +54,9 @@ const UnpairWallet = observer(
     return (
       <>
         <BorderedBox className={styles.unpairWalletBox}>
-          <span>{intl.formatMessage(messages.unpairWalletHeader)}</span>
+          <div className={styles.title}>
+            {intl.formatMessage(messages.unpairWalletHeader)}
+          </div>
           <div className={styles.contentBox}>
             <div>
               <p>
