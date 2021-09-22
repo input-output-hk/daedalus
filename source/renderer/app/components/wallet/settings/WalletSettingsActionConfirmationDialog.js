@@ -12,8 +12,6 @@ import { submitOnEnter } from '../../../utils/form';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import DeleteWalletConfirmation from './DeleteWalletConfirmation';
 
-// import type {ReactIntlMessage} from "../../../types/i18nTypes";
-
 export type WalletSettingActionMessages = {
   dialogTitle: Message,
   confirmButtonLabel: Message,
@@ -72,7 +70,7 @@ const WalletSettingsActionConfirmationDialog = observer((props: Props) => {
     (!isCountdownFinished ||
       !isBackupNoticeAccepted ||
       !isWalletNameConfirmationCorrect);
-  const handleSubmit = () => !isDisabled && onContinue();
+  const handleSubmit = React.useCallback(() => !isDisabled && onContinue());
 
   const buttonClasses = classnames([
     'attention',

@@ -2,7 +2,12 @@
 import type { Node } from 'react';
 import React from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import {
+  defineMessages,
+  FormattedHTMLMessage,
+  injectIntl,
+  intlShape,
+} from 'react-intl';
 import styles from './WalletSettings.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -52,7 +57,9 @@ const UnpairWallet = observer(
           <span>{intl.formatMessage(messages.unpairWalletHeader)}</span>
           <div className={styles.contentBox}>
             <div>
-              <p>{intl.formatMessage(messages.unpairWalletWarning)}</p>
+              <p>
+                <FormattedHTMLMessage {...messages.unpairWalletWarning} />
+              </p>
             </div>
             <WalletSettingsActionButton
               label={label}
