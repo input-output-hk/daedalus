@@ -8,6 +8,9 @@ import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 
+export type SortBy = 'fingerprint' | 'quantity';
+export type SortDirection = 'asc' | 'desc';
+
 /**
  *
  * This function removes the `change` assets
@@ -83,7 +86,7 @@ export const getAssetTokens = (
   assets
     .map((asset) => getAssetToken(asset, getToken(asset, tokens)))
     .filter((token) => !!token.uniqueId)
-    .sort(sortAssets);
+    .sort(sortAssets('fingerprint', 'asc'));
 
 /**
  *
@@ -127,16 +130,23 @@ export const getNonZeroAssetTokens = (
   tokens
     .map((token) => getNonZeroAssetToken(token, getAsset))
     .filter((token) => !!token.uniqueId)
-    .sort(sortAssets);
+    .sort(sortAssets('fingerprint', 'asc'));
 
-export const sortAssets = (asset1: AssetToken, asset2: AssetToken) => {
-  if (asset1 && asset2) {
-    if (asset1.fingerprint < asset2.fingerprint) {
-      return -1;
+export const sortAssets = (sortBy: SortBy, sortDirection: SortDirection) => (
+  asset1: AssetToken,
+  asset2: AssetToken
+) => {
+  if (sortBy === 'fingerprint') {
+    if (sortDirection === 'asc') {
+      return asset1.fingerprint.localeCompare(asset2.fingerprint);
     }
-    if (asset1.fingerprint > asset2.fingerprint) {
-      return 1;
+    return asset2.fingerprint.localeCompare(asset1.fingerprint);
+  }
+  if (sortBy === 'quantity') {
+    if (sortDirection === 'asc') {
+      return asset1.quantity.isLessThan(asset2.quantity) ? -1 : 1;
     }
+    return asset1.quantity.isLessThan(asset2.quantity) ? 1 : -1;
   }
   return 0;
 };

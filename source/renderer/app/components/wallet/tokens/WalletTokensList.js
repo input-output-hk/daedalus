@@ -5,14 +5,15 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
-import { searchAssets } from '../../../utils/assets';
+import { searchAssets, sortAssets } from '../../../utils/assets';
 import styles from './WalletTokensList.scss';
 import Wallet from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import WalletToken from './WalletToken';
-import type { AssetToken } from '../../../api/assets/types';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
+import type { AssetToken } from '../../../api/assets/types';
+import type { SortBy, SortDirection } from '../../../utils/assets';
 
 const messages = defineMessages({
   noResults: {
@@ -61,10 +62,7 @@ type Props = {
   wallet: Wallet,
 };
 
-type SortBy = 'token' | 'amount';
-type SortDirection = 'asc' | 'desc';
-
-const getSortClasses = (
+const getSortIconClasses = (
   item: SortBy,
   sortBy: SortBy,
   sortDirection: SortDirection
@@ -79,7 +77,7 @@ const getSortClasses = (
 
 const WalletTokensList = observer((props: Props) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [sortBy, setSortBy] = useState<SortBy>('token');
+  const [sortBy, setSortBy] = useState<SortBy>('fingerprint');
   const {
     assets,
     assetSettingsDialogWasOpened,
@@ -99,18 +97,7 @@ const WalletTokensList = observer((props: Props) => {
   } = props;
   const isRestoreActive = wallet.isRestoring;
   const sortedAssets = useMemo(() => {
-    return [...assets].sort((asset1: AssetToken, asset2: AssetToken) => {
-      if (sortBy === 'token') {
-        if (sortDirection === 'asc') {
-          return asset1.fingerprint.localeCompare(asset2.fingerprint);
-        }
-        return asset2.fingerprint.localeCompare(asset1.fingerprint);
-      }
-      if (sortDirection === 'asc') {
-        return asset1.quantity.isLessThan(asset2.quantity) ? -1 : 1;
-      }
-      return asset1.quantity.isLessThan(asset2.quantity) ? 1 : -1;
-    });
+    return [...assets].sort(sortAssets(sortBy, sortDirection));
   }, [assets, sortBy, sortDirection]);
   const filteredAssets = searchAssets(searchValue, sortedAssets);
   const hasSearch =
@@ -119,11 +106,11 @@ const WalletTokensList = observer((props: Props) => {
   const viewAllButtonStyles = classnames(['flat', styles.viewAllButton]);
 
   const sortIconClassesToken = useMemo(
-    () => getSortClasses('token', sortBy, sortDirection),
+    () => getSortIconClasses('fingerprint', sortBy, sortDirection),
     [sortBy, sortDirection]
   );
   const sortIconClassesAmount = useMemo(
-    () => getSortClasses('amount', sortBy, sortDirection),
+    () => getSortIconClasses('quantity', sortBy, sortDirection),
     [sortBy, sortDirection]
   );
   const toggleSortDirection = () => {
@@ -141,11 +128,11 @@ const WalletTokensList = observer((props: Props) => {
       setSortBy(newSortBy);
     }
   };
-  const onSortByToken = useCallback(() => onSortBy('token'), [
+  const onSortByToken = useCallback(() => onSortBy('fingerprint'), [
     sortDirection,
     sortBy,
   ]);
-  const onSortByAmount = useCallback(() => onSortBy('amount'), [
+  const onSortByAmount = useCallback(() => onSortBy('quantity'), [
     sortDirection,
     sortBy,
   ]);
