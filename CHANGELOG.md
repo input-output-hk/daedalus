@@ -8,10 +8,10 @@
 
 ### Fixes
 
+- Fixed font used for unavailable staking while updating messages ([PR 2680](https://github.com/input-output-hk/daedalus/pull/2680))
 - Fixed crash when Yubikey is connected ([PR 2673](https://github.com/input-output-hk/daedalus/pull/2673))
 - Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 - Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
-- Fixed font used for unavailable staking while updating messages ([PR 2680](https://github.com/input-output-hk/daedalus/pull/2680))
 
 ### Chores
 
