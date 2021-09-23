@@ -207,7 +207,7 @@ const AssetContent = observer((props: Props) => {
         <dt>{intl.formatMessage(messages.assetNameAssetParam)}</dt>
         <dd>
           {assetName ? (
-            AssetParam(
+            renderAssetParam(
               'assetName',
               intl.formatMessage(messages.assetNameAssetParam),
               assetName
