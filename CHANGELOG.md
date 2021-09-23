@@ -4,6 +4,7 @@
 
 ### Features
 
+- Support of apple arm64 chip ([PR ](https://github.com/input-output-hk/daedalus/pull/))
 - Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
 
 ### Fixes
