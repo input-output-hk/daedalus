@@ -81,7 +81,7 @@ const WalletTokens = observer((props: Props) => {
       setRemovingAssetUniqueId(uniqueId);
       setTimeout(async () => {
         await onToggleFavorite({ uniqueId, isFavorite });
-        setRemovingAssetUniqueId(null);
+        setTimeout(() => setRemovingAssetUniqueId(null), 500);
       }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
     } else {
       // It's inserting favorite
