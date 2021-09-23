@@ -30,7 +30,6 @@ export type Asset = {
   recommendedDecimals: ?number,
   uniqueId: string,
 };
-export type Assets = Array<Asset>;
 
 /**
  *
