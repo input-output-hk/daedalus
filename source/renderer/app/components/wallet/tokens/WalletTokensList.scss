@@ -31,14 +31,15 @@
   margin: 0 42px 10px 12px;
   > div {
     color: var(--theme-bordered-box-text-color);
-    cursor: pointer;
     font-family: var(--font-semibold);
     font-size: 10px;
     letter-spacing: 1px;
     line-height: 2;
+    margin: -5px 0 0 -5px;
+    padding: 5px;
     text-transform: uppercase;
     &:first-of-type {
-      margin-left: 27px;
+      margin-left: 22px;
     }
     &:hover {
       .sortIcon {
@@ -46,29 +47,34 @@
       }
     }
   }
-  .sortIcon {
-    margin-left: 3px;
-    visibility: hidden;
-    opacity: 0.5;
-
-    & > svg {
-      height: 7.5px;
-      width: 7px;
-
-      & > path {
-        fill: var(--theme-staking-font-color-regular);
-      }
+  &.sorting {
+    > div {
+      cursor: pointer;
     }
+    .sortIcon {
+      margin-left: 3px;
+      visibility: hidden;
+      opacity: 0.5;
 
-    &.ascSorting {
       & > svg {
-        transform: rotateX(150deg);
-      }
-    }
+        height: 7.5px;
+        width: 7px;
 
-    &.sorted {
-      opacity: 1;
-      visibility: visible;
+        & > path {
+          fill: var(--theme-staking-font-color-regular);
+        }
+      }
+
+      &.ascSorting {
+        & > svg {
+          transform: rotateX(150deg);
+        }
+      }
+
+      &.sorted {
+        opacity: 1;
+        visibility: visible;
+      }
     }
   }
 }

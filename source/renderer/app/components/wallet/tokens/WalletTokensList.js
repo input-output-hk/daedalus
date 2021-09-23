@@ -99,11 +99,18 @@ const WalletTokensList = observer((props: Props) => {
   const sortedAssets = useMemo(() => {
     return [...assets].sort(sortAssets(sortBy, sortDirection));
   }, [assets, sortBy, sortDirection]);
-  const filteredAssets = searchAssets(searchValue, sortedAssets);
+  const filteredAssets = searchAssets(searchValue, sortedAssets) || [];
+  console.log('filteredAssets', filteredAssets);
+  console.log('filteredAssets.length', filteredAssets.length);
   const hasSearch =
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
   const noResults = hasSearch && !filteredAssets.length;
   const viewAllButtonStyles = classnames(['flat', styles.viewAllButton]);
+  const hasSorting = filteredAssets.length && filteredAssets.length > 1;
+  const columnsStyles = classnames([
+    styles.columns,
+    hasSorting ? styles.sorting : null,
+  ]);
 
   const sortIconClassesToken = useMemo(
     () => getSortIconClasses('token', sortBy, sortDirection),
@@ -128,14 +135,12 @@ const WalletTokensList = observer((props: Props) => {
       setSortBy(newSortBy);
     }
   };
-  const onSortByToken = useCallback(() => onSortBy('token'), [
-    sortDirection,
-    sortBy,
-  ]);
-  const onSortByAmount = useCallback(() => onSortBy('quantity'), [
-    sortDirection,
-    sortBy,
-  ]);
+  const onSortByToken = hasSorting
+    ? useCallback(() => onSortBy('token'), [sortDirection, sortBy])
+    : null;
+  const onSortByAmount = hasSorting
+    ? useCallback(() => onSortBy('quantity'), [sortDirection, sortBy])
+    : null;
 
   let content;
   if (isLoadingAssets) {
@@ -185,14 +190,18 @@ const WalletTokensList = observer((props: Props) => {
         </div>
       </div>
       <BorderedBox>
-        <div className={styles.columns}>
+        <div className={columnsStyles}>
           <div onClick={onSortByToken}>
             {intl.formatMessage(messages.columnToken)}
-            <SVGInline svg={sortIcon} className={sortIconClassesToken} />
+            {hasSorting && (
+              <SVGInline svg={sortIcon} className={sortIconClassesToken} />
+            )}
           </div>
           <div onClick={onSortByAmount}>
             {intl.formatMessage(messages.columnAmount)}
-            <SVGInline svg={sortIcon} className={sortIconClassesAmount} />
+            {hasSorting && (
+              <SVGInline svg={sortIcon} className={sortIconClassesAmount} />
+            )}
           </div>
         </div>
         {content}

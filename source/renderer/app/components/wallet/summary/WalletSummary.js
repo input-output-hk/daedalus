@@ -78,7 +78,7 @@ export default class WalletSummary extends Component<Props> {
     const { intl } = this.context;
 
     const { isRestoring } = wallet;
-    const hasAssets = assets.length || isLoadingAssets;
+    const hasAssets = (!!assets && assets.length) || isLoadingAssets;
 
     return (
       <>
