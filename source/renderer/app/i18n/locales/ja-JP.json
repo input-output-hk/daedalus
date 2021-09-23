@@ -524,6 +524,7 @@
   "staking.stakePools.tableHeader.saturation": "飽和",
   "staking.stakePools.tableHeader.ticker": "ティッカー",
   "staking.stakePools.tableHeader.uptime": "!!!Uptime (days)",
+  "staking.stakePools.tooltip.copiedIdTooltipLabel": "コピーされました",
   "staking.stakePools.tooltip.copyIdTooltipLabel": "ステークプールIDをコピーする",
   "staking.stakePools.tooltip.costPerEpoch": "エポックごとのコスト：",
   "staking.stakePools.tooltip.costPerEpochTooltip": "各エポックで得られた報酬から差し引かれるステークプールの固定運営費",
