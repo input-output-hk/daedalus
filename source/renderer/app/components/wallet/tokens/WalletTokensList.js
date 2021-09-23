@@ -107,7 +107,7 @@ const WalletTokensList = observer((props: Props) => {
   const hasSorting = filteredAssets.length && filteredAssets.length > 1;
   const columnsStyles = classnames([
     styles.columns,
-    hasSorting ? styles.sorting : null,
+    hasSorting ? styles.hasSorting : null,
   ]);
   const sortIconClassesToken = useMemo(
     () => getSortIconClasses('token', sortBy, sortDirection),
@@ -193,17 +193,13 @@ const WalletTokensList = observer((props: Props) => {
       </div>
       <BorderedBox>
         <div className={columnsStyles}>
-          <div onClick={onSortByToken}>
+          <div className={styles.column} onClick={onSortByToken}>
             {intl.formatMessage(messages.columnToken)}
-            {hasSorting && (
-              <SVGInline svg={sortIcon} className={sortIconClassesToken} />
-            )}
+            <SVGInline svg={sortIcon} className={sortIconClassesToken} />
           </div>
-          <div onClick={onSortByAmount}>
+          <div className={styles.column} onClick={onSortByAmount}>
             {intl.formatMessage(messages.columnAmount)}
-            {hasSorting && (
-              <SVGInline svg={sortIcon} className={sortIconClassesAmount} />
-            )}
+            <SVGInline svg={sortIcon} className={sortIconClassesAmount} />
           </div>
         </div>
         {content}

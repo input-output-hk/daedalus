@@ -29,7 +29,7 @@
   display: flex;
   justify-content: space-between;
   margin: 0 42px 10px 12px;
-  > div {
+  .column {
     color: var(--theme-bordered-box-text-color);
     font-family: var(--font-semibold);
     font-size: 10px;
@@ -41,36 +41,40 @@
     &:first-of-type {
       margin-left: 22px;
     }
-    &:hover {
-      .sortIcon {
-        visibility: visible;
+    &:last-of-type {
+      margin-right: -16px;
+    }
+  }
+  .sortIcon {
+    margin-left: 3px;
+    visibility: hidden;
+    opacity: 0.5;
+
+    & > svg {
+      height: 7.5px;
+      width: 7px;
+
+      & > path {
+        fill: var(--theme-staking-font-color-regular);
+      }
+    }
+
+    &.ascSorting {
+      & > svg {
+        transform: rotateX(150deg);
       }
     }
   }
-  &.sorting {
-    > div {
+  &.hasSorting {
+    .column {
       cursor: pointer;
+      &:hover {
+        .sortIcon {
+          visibility: visible;
+        }
+      }
     }
     .sortIcon {
-      margin-left: 3px;
-      visibility: hidden;
-      opacity: 0.5;
-
-      & > svg {
-        height: 7.5px;
-        width: 7px;
-
-        & > path {
-          fill: var(--theme-staking-font-color-regular);
-        }
-      }
-
-      &.ascSorting {
-        & > svg {
-          transform: rotateX(150deg);
-        }
-      }
-
       &.sorted {
         opacity: 1;
         visibility: visible;

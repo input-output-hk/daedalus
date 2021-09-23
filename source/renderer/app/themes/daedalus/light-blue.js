@@ -1009,6 +1009,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   tokens: {
     '--theme-tokens-list-header-text-color': 'rgba(94, 96, 102, 0.5)',
+    '--theme-tokens-list-header-expanded-background-color':
+      'rgba(68, 91, 124, 0.05)',
+    '--theme-tokens-list-header-expanded-background-color-hover':
+      'rgba(68, 91, 124, 0.03)',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

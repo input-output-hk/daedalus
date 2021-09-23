@@ -4,10 +4,17 @@
     border-bottom: 1px solid rgba(94, 96, 102, 0.15);
   }
   &.isExpanded:not(.removing) {
-    background-color: var(--theme-button-flat-background-color-hover);
+    background-color: var(--theme-tokens-list-header-expanded-background-color);
     padding-bottom: 20px;
     .header {
-      background-color: var(--theme-button-flat-background-color-hover);
+      background-color: var(
+        --theme-tokens-list-header-expanded-background-color
+      );
+      &:hover {
+        background-color: var(
+          --theme-tokens-list-header-expanded-background-color-hover
+        );
+      }
     }
     .content {
       display: block;
@@ -84,6 +91,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  &:hover {
+    background: var(--theme-button-flat-background-color-hover);
   }
 }
 .leftContent {

@@ -1006,6 +1006,10 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   tokens: {
     '--theme-tokens-list-header-text-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-tokens-list-header-expanded-background-color':
+      'rgba(255, 255, 255, 0.05)',
+    '--theme-tokens-list-header-expanded-background-color-hover':
+      'rgba(255, 255, 255, 0.03)',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

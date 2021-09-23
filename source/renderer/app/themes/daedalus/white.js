@@ -1004,6 +1004,10 @@ export const WHITE_THEME_OUTPUT = {
   },
   tokens: {
     '--theme-tokens-list-header-text-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-tokens-list-header-expanded-background-color':
+      'rgba(41, 181, 149, 0.05)',
+    '--theme-tokens-list-header-expanded-background-color-hover':
+      'rgba(41, 181, 149, 0.03)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
