@@ -12722,13 +12722,13 @@
         "description": "No results on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.search.noResults",
         "start": {
           "column": 13,
-          "line": 16
+          "line": 19
         }
       },
       {
@@ -12736,13 +12736,13 @@
         "description": "Search Results on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.search.searchResults",
         "start": {
           "column": 17,
-          "line": 21
+          "line": 24
         }
       },
       {
@@ -12750,13 +12750,13 @@
         "description": "Amount header on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.column.amount",
         "start": {
           "column": 16,
-          "line": 26
+          "line": 29
         }
       },
       {
@@ -12764,13 +12764,13 @@
         "description": "Token header on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.column.token",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 34
         }
       },
       {
@@ -12778,13 +12778,13 @@
         "description": "View all button label on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.viewAllButton.label",
         "start": {
           "column": 22,
-          "line": 36
+          "line": 39
         }
       }
     ],
@@ -12793,7 +12793,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Search",
+        "defaultMessage": "!!!Search tokens",
         "description": "Search placeholder for the Wallet Tokens search",
         "end": {
           "column": 3,

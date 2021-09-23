@@ -12,7 +12,7 @@ import crossIcon from '../../../assets/images/close-cross.inline.svg';
 const messages = defineMessages({
   placeholder: {
     id: 'wallet.tokens.search.placeholder',
-    defaultMessage: '!!!Search',
+    defaultMessage: '!!!Search tokens',
     description: 'Search placeholder for the Wallet Tokens search',
   },
 });

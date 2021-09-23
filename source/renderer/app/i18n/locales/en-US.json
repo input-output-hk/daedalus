@@ -1117,7 +1117,7 @@
   "wallet.tokens.list.search.searchResults": ". Search results",
   "wallet.tokens.list.tokens.title": "Tokens",
   "wallet.tokens.list.viewAllButton.label": "View all tokens",
-  "wallet.tokens.search.placeholder": "Search",
+  "wallet.tokens.search.placeholder": "Search tokens",
   "wallet.transaction.address.from": "From address",
   "wallet.transaction.address.to": "To address",
   "wallet.transaction.addresses.from": "From addresses",
