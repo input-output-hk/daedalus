@@ -14,6 +14,7 @@ import globalMessages from '../../../i18n/global-messages';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { isValidWalletName } from '../../../utils/validations';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -154,6 +155,11 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
             value={confirmationValue}
             // eslint-disable-next-line react/jsx-no-bind
             onKeyPress={submitOnEnter.bind(this, handleSubmit)}
+            error={
+              !!confirmationValue &&
+              !isValidWalletName(confirmationValue) &&
+              intl.formatMessage(globalMessages.invalidWalletName)
+            }
             onChange={onConfirmationValueChange}
             skin={InputSkin}
           />
