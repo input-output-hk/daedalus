@@ -100,8 +100,6 @@ const WalletTokensList = observer((props: Props) => {
     return [...assets].sort(sortAssets(sortBy, sortDirection));
   }, [assets, sortBy, sortDirection]);
   const filteredAssets = searchAssets(searchValue, sortedAssets) || [];
-  console.log('filteredAssets', filteredAssets);
-  console.log('filteredAssets.length', filteredAssets.length);
   const hasSearch =
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
   const noResults = hasSearch && !filteredAssets.length;
@@ -111,7 +109,6 @@ const WalletTokensList = observer((props: Props) => {
     styles.columns,
     hasSorting ? styles.sorting : null,
   ]);
-
   const sortIconClassesToken = useMemo(
     () => getSortIconClasses('token', sortBy, sortDirection),
     [sortBy, sortDirection]
@@ -128,6 +125,7 @@ const WalletTokensList = observer((props: Props) => {
     }
   };
   const onSortBy = (newSortBy: SortBy) => {
+    if (!hasSorting) return;
     if (newSortBy === sortBy) {
       toggleSortDirection();
     } else {
@@ -135,12 +133,16 @@ const WalletTokensList = observer((props: Props) => {
       setSortBy(newSortBy);
     }
   };
-  const onSortByToken = hasSorting
-    ? useCallback(() => onSortBy('token'), [sortDirection, sortBy])
-    : null;
-  const onSortByAmount = hasSorting
-    ? useCallback(() => onSortBy('quantity'), [sortDirection, sortBy])
-    : null;
+  const onSortByToken = useCallback(() => onSortBy('token'), [
+    sortDirection,
+    sortBy,
+    hasSorting,
+  ]);
+  const onSortByAmount = useCallback(() => onSortBy('quantity'), [
+    sortDirection,
+    sortBy,
+    hasSorting,
+  ]);
 
   let content;
   if (isLoadingAssets) {
