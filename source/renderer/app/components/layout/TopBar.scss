@@ -36,6 +36,7 @@
       .walletName {
         -webkit-box-orient: vertical;
         color: var(--theme-topbar-wallet-name-color);
+        display: -webkit-box;
         font-size: 21px;
         -webkit-line-clamp: 1;
         line-height: 25px;
