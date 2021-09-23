@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
@@ -9,6 +10,14 @@ import type { AssetToken } from '../../../api/assets/types';
 import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 import WalletTokensList from '../tokens/WalletTokensList';
 import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
+
+const messages = defineMessages({
+  tokensListTitle: {
+    id: 'wallet.summary.tokensList.title',
+    defaultMessage: '!!!Recently used tokens',
+    description: 'Send button on Wallet summary assets page',
+  },
+});
 
 type Props = {
   wallet: Wallet,
@@ -37,6 +46,10 @@ type Props = {
 
 @observer
 export default class WalletSummary extends Component<Props> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   render() {
     const {
       wallet,
@@ -62,6 +75,7 @@ export default class WalletSummary extends Component<Props> {
       onToggleFavorite,
       tokenFavorites,
     } = this.props;
+    const { intl } = this.context;
 
     const { isRestoring } = wallet;
     const hasAssets = assets.length || isLoadingAssets;
@@ -100,7 +114,7 @@ export default class WalletSummary extends Component<Props> {
                 onAssetSettings={onAssetSettings}
                 assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
                 currentLocale={currentLocale}
-                title="Recently used tokens"
+                title={intl.formatMessage(messages.tokensListTitle)}
                 onViewAllButtonClick={onViewAllButtonClick}
                 tokenFavorites={tokenFavorites}
                 onToggleFavorite={onToggleFavorite}

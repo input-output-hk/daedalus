@@ -1106,6 +1106,7 @@
   "wallet.summary.noTokens.learnMore.textBottom": "役立つ入門書については、IOHKブログにアクセスすることから始めてください。",
   "wallet.summary.noTokens.learnMore.textTop": "ネイティブトークンについてもっと知りたいですか？",
   "wallet.summary.page.no.transactions": "最近のトランザクションはありません",
+  "wallet.summary.tokensList.title": "!!!Recently used tokens",
   "wallet.summary.transactionsList.showMoreTransactionsButtonLabel": "もっと表示",
   "wallet.summary.transactionsList.syncingTransactionsMessage": "ウォレットのトランザクション履歴は現在ブロックチェーンと同期中です。",
   "wallet.summary.transactionsList.todayLabel": "今日",

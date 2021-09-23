@@ -12455,6 +12455,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Recently used tokens",
+        "description": "Send button on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.tokensList.title",
+        "start": {
+          "column": 19,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/summary/WalletSummary.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Converts as",
         "description": "\"Currency - title\" label on Wallet summary currency page",
         "end": {

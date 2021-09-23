@@ -1106,6 +1106,7 @@
   "wallet.summary.noTokens.learnMore.textBottom": "Start by visiting the IOHK blog for a useful primer.",
   "wallet.summary.noTokens.learnMore.textTop": "Want to find out more about native tokens?",
   "wallet.summary.page.no.transactions": "No recent transactions",
+  "wallet.summary.tokensList.title": "Recently used tokens",
   "wallet.summary.transactionsList.showMoreTransactionsButtonLabel": "Show more transactions",
   "wallet.summary.transactionsList.syncingTransactionsMessage": "Your transaction history for this wallet is being synced with the blockchain.",
   "wallet.summary.transactionsList.todayLabel": "Today",
