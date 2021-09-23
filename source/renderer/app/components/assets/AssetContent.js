@@ -14,32 +14,32 @@ import { ASSET_TOKEN_ID_COPY_FEEDBACK } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
 
 const messages = defineMessages({
-  fingerprintrenderAssetParam: {
+  fingerprintAssetParam: {
     id: 'assets.assetToken.param.fingerprint',
     defaultMessage: '!!!Fingerprint',
     description: '"fingerprint" param.',
   },
-  policyIdrenderAssetParam: {
+  policyIdAssetParam: {
     id: 'assets.assetToken.param.policyId',
     defaultMessage: '!!!Policy Id',
     description: '"policyId" param.',
   },
-  assetNamerenderAssetParam: {
+  assetNameAssetParam: {
     id: 'assets.assetToken.param.assetName',
     defaultMessage: '!!!Asset name',
     description: '"assetName" param.',
   },
-  namerenderAssetParam: {
+  nameAssetParam: {
     id: 'assets.assetToken.param.name',
     defaultMessage: '!!!Name',
     description: '"name" param.',
   },
-  tickerrenderAssetParam: {
+  tickerAssetParam: {
     id: 'assets.assetToken.param.ticker',
     defaultMessage: '!!!Ticker',
     description: '"ticker" param.',
   },
-  descriptionrenderAssetParam: {
+  descriptionAssetParam: {
     id: 'assets.assetToken.param.description',
     defaultMessage: '!!!Description',
     description: '"description" param.',
@@ -142,7 +142,7 @@ const AssetContent = observer((props: Props) => {
         <div className={styles.fingerprint}>
           {renderAssetParam(
             'fingerprint',
-            intl.formatMessage(messages.fingerprintrenderAssetParam),
+            intl.formatMessage(messages.fingerprintAssetParam),
             fingerprint
           )}
         </div>
@@ -150,11 +150,11 @@ const AssetContent = observer((props: Props) => {
       <dl>
         {!highlightFingerprint && (
           <>
-            <dt>{intl.formatMessage(messages.fingerprintrenderAssetParam)}</dt>
+            <dt>{intl.formatMessage(messages.fingerprintAssetParam)}</dt>
             <dd>
               {renderAssetParam(
                 'fingerprint',
-                intl.formatMessage(messages.fingerprintrenderAssetParam),
+                intl.formatMessage(messages.fingerprintAssetParam),
                 fingerprint
               )}
             </dd>
@@ -162,11 +162,11 @@ const AssetContent = observer((props: Props) => {
         )}
         {ticker && (
           <>
-            <dt>{intl.formatMessage(messages.tickerrenderAssetParam)}</dt>
+            <dt>{intl.formatMessage(messages.tickerAssetParam)}</dt>
             <dd>
               {renderAssetParam(
                 'ticker',
-                intl.formatMessage(messages.tickerrenderAssetParam),
+                intl.formatMessage(messages.tickerAssetParam),
                 ticker
               )}
             </dd>
@@ -174,11 +174,11 @@ const AssetContent = observer((props: Props) => {
         )}
         {name && (
           <>
-            <dt>{intl.formatMessage(messages.namerenderAssetParam)}</dt>
+            <dt>{intl.formatMessage(messages.nameAssetParam)}</dt>
             <dd>
               {renderAssetParam(
                 'name',
-                intl.formatMessage(messages.namerenderAssetParam),
+                intl.formatMessage(messages.nameAssetParam),
                 name
               )}
             </dd>
@@ -186,30 +186,30 @@ const AssetContent = observer((props: Props) => {
         )}
         {description && (
           <>
-            <dt>{intl.formatMessage(messages.descriptionrenderAssetParam)}</dt>
+            <dt>{intl.formatMessage(messages.descriptionAssetParam)}</dt>
             <dd>
               {renderAssetParam(
                 'description',
-                intl.formatMessage(messages.descriptionrenderAssetParam),
+                intl.formatMessage(messages.descriptionAssetParam),
                 description
               )}
             </dd>
           </>
         )}
-        <dt>{intl.formatMessage(messages.policyIdrenderAssetParam)}</dt>
+        <dt>{intl.formatMessage(messages.policyIdAssetParam)}</dt>
         <dd>
           {renderAssetParam(
             'policyId',
-            intl.formatMessage(messages.policyIdrenderAssetParam),
+            intl.formatMessage(messages.policyIdAssetParam),
             policyId
           )}
         </dd>
-        <dt>{intl.formatMessage(messages.assetNamerenderAssetParam)}</dt>
+        <dt>{intl.formatMessage(messages.assetNameAssetParam)}</dt>
         <dd>
           {assetName ? (
-            renderAssetParam(
+            AssetParam(
               'assetName',
-              intl.formatMessage(messages.assetNamerenderAssetParam),
+              intl.formatMessage(messages.assetNameAssetParam),
               assetName
             )
           ) : (
