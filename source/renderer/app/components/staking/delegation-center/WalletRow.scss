@@ -24,10 +24,11 @@
   .left {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
 
     .title {
       @extend %accentText;
+      margin-bottom: 4px;
 
       .hardwareWalletsIcon {
         svg {
