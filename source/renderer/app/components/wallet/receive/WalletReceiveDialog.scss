@@ -66,18 +66,18 @@
     margin-bottom: 20px;
     text-align: center;
     width: 100%;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
 
     .copyAddressLabel {
       color: var(--theme-label-button-color);
       cursor: pointer;
       font-family: var(--font-regular);
       font-size: 14px;
-      opacity: 0.7;
       padding-left: 6px;
-
-      &:hover {
-        opacity: 1;
-      }
     }
 
     .copyIcon {
