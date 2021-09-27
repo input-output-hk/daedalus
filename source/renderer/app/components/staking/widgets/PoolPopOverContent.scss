@@ -86,11 +86,13 @@ $tooltip-width: 280px;
 
 .pledgeNotMetWarning {
   background: var(--theme-background-color-error);
+  cursor: default;
   font-size: 10px;
   line-height: 1.4;
   margin: 12px -10px 0;
   padding: 6px 10px;
   position: relative;
+  user-select: none;
   &:after {
     border-color: var(--theme-background-color-error) transparent transparent
       transparent;
@@ -98,12 +100,10 @@ $tooltip-width: 280px;
     border-width: 6px 6px 0 6px;
     bottom: -6px;
     content: '';
-    cursor: default;
     display: block;
     height: 0;
     position: absolute;
     right: 16px;
-    user-select: none;
     width: 0;
   }
 }
@@ -479,7 +479,7 @@ $tooltip-width: 280px;
 }
 
 .pledgeNotMetValue {
-  background-color: var(--theme-light-background-color-error);
+  background: var(--theme-background-color-error);
 }
 
 .delegateButton {
