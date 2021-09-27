@@ -14,10 +14,6 @@
 .mainContainer {
   display: flex;
   justify-content: center;
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-  }
 }
 
 .heading {
