@@ -29,6 +29,9 @@ $tooltip-width: 280px;
     display: inline-block;
     height: 16px;
     width: 23px;
+    &.pledgeNotMetDash {
+      background: var(--theme-background-color-error);
+    }
 
     :global {
       .SVGInline {
@@ -95,10 +98,12 @@ $tooltip-width: 280px;
     border-width: 6px 6px 0 6px;
     bottom: -6px;
     content: '';
+    cursor: default;
     display: block;
     height: 0;
     position: absolute;
     right: 16px;
+    user-select: none;
     width: 0;
   }
 }

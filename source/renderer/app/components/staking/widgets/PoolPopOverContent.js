@@ -237,6 +237,10 @@ export default class PoolPopOverContent extends Component<Props, State> {
       styles.defaultColorContent,
       pledgeNotMet ? styles.pledgeNotMetValue : null,
     ]);
+    const nodataDashStyles = classnames([
+      styles.noDataDash,
+      pledgeNotMet ? styles.pledgeNotMetDash : null,
+    ]);
 
     const fields = [
       {
@@ -256,7 +260,7 @@ export default class PoolPopOverContent extends Component<Props, State> {
                 {ranking}
               </span>
             ) : (
-              <div className={styles.noDataDash}>
+              <div className={nodataDashStyles}>
                 <SVGInline svg={noDataDashSmallImage} />
               </div>
             )}
