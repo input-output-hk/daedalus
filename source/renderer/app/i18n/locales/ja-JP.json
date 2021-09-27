@@ -530,7 +530,7 @@
   "staking.stakePools.tooltip.delegateButton": "このプールに委任する",
   "staking.stakePools.tooltip.pledge": "出資：",
   "staking.stakePools.tooltip.pledgeNotMet.label": "出資額不足",
-  "staking.stakePools.tooltip.pledgeNotMet.popover": "このプールは出資要件を満たしていません。出資額が満たされるまで、このプールがブロックを生成したり報酬を生み出すことはありません。",
+  "staking.stakePools.tooltip.pledgeNotMet.popover": "このプールは出資要件を満たしていません。これが満たされるまで、このプールがブロックを生成したり、ここから報酬が得られることはありません。また、ランクは付きません。",
   "staking.stakePools.tooltip.pledgeTooltip": "プールオペレーターが自分のプールに投資するステーク量で、出資額が多いプールは、より多くの報酬を自身と委任者にもたらすが、出資をしないプールは報酬を稼ぐことができず、ランクが低くなる",
   "staking.stakePools.tooltip.potentialRewards": "見込み報酬額：",
   "staking.stakePools.tooltip.potentialRewardsTooltip": "意図したステーク量を委任した場合に、エポックごとに得られると見込まれる報酬額の見積もりで、システムはプールのパラメーターとパフォーマンスデータの履歴を考慮し、見込み報酬額を算出するが、その際、プールが飽和値に達していることを想定している",

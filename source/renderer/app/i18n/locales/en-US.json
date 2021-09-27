@@ -530,7 +530,7 @@
   "staking.stakePools.tooltip.delegateButton": "Delegate to this pool",
   "staking.stakePools.tooltip.pledge": "Pledge:",
   "staking.stakePools.tooltip.pledgeNotMet.label": "Pledge not met",
-  "staking.stakePools.tooltip.pledgeNotMet.popover": "This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.",
+  "staking.stakePools.tooltip.pledgeNotMet.popover": "This pool has not met its pledge requirements, so it will not produce blocks or generate rewards until it does. The pool remains unranked.",
   "staking.stakePools.tooltip.pledgeTooltip": "The amount of stake that a pool operator contributes to a pool. Pools with higher pledge amounts earn more rewards for themselves and their delegators. Pools that do not honor their pledge earn zero rewards and accrue low ranking.",
   "staking.stakePools.tooltip.potentialRewards": "Potential rewards:",
   "staking.stakePools.tooltip.potentialRewardsTooltip": "An estimation of the potential rewards you will earn per epoch if you delegate the intended amount of stake. The system looks at the pool's parameters and historical performance data to calculate potential rewards, assuming that the pool reaches optimal saturation.",

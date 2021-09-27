@@ -109,7 +109,7 @@ const messages = defineMessages({
   pledgeNotMetPopOver: {
     id: 'staking.stakePools.tooltip.pledgeNotMet.popover',
     defaultMessage:
-      '!!!This pool has not met its pledge requirements. This means that the pool will not produce blocks or generate rewards until the pledge is met.',
+      '!!!This pool has not met its pledge requirements, so it will not produce blocks or generate rewards until it does. The pool remains unranked.',
     description: '"pledgeNotMet" popover for the Stake Pools Tooltip page.',
   },
   saturation: {
@@ -233,29 +233,12 @@ export default class PoolPopOverContent extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
-    const pledgeStyles = classnames([
+    const pledgeParamStyles = classnames([
       styles.defaultColorContent,
       pledgeNotMet ? styles.pledgeNotMetValue : null,
     ]);
 
     const fields = [
-      {
-        key: 'saturation',
-        value: (
-          <div className={styles.saturationValue}>
-            <span>
-              <span className={saturationBarClassnames}>
-                <span
-                  style={{
-                    width: `${parseFloat(saturation).toFixed(2)}%`,
-                  }}
-                />
-              </span>
-              {`${toFixedUserFormat(saturation, 2)}%`}
-            </span>
-          </div>
-        ),
-      },
       {
         key: 'ranking',
         value: (
@@ -277,6 +260,23 @@ export default class PoolPopOverContent extends Component<Props, State> {
                 <SVGInline svg={noDataDashSmallImage} />
               </div>
             )}
+          </div>
+        ),
+      },
+      {
+        key: 'saturation',
+        value: (
+          <div className={styles.saturationValue}>
+            <span>
+              <span className={saturationBarClassnames}>
+                <span
+                  style={{
+                    width: `${parseFloat(saturation).toFixed(2)}%`,
+                  }}
+                />
+              </span>
+              {`${toFixedUserFormat(saturation, 2)}%`}
+            </span>
           </div>
         ),
       },
@@ -312,7 +312,7 @@ export default class PoolPopOverContent extends Component<Props, State> {
         key: 'pledge',
         value: (
           <div className={styles.defaultColor}>
-            <span className={pledgeStyles}>
+            <span className={pledgeParamStyles}>
               {formattedWalletAmount(pledge, true, false)}
             </span>
           </div>
@@ -512,6 +512,11 @@ export default class PoolPopOverContent extends Component<Props, State> {
             className={styles.homepage}
             label={homepage}
           />
+          {pledgeNotMet && (
+            <div className={styles.pledgeNotMetWarning}>
+              {intl.formatMessage(messages.pledgeNotMetPopOver)}
+            </div>
+          )}
           {this.renderDescriptionFields()}
         </div>
         {onSelect && showWithSelectButton && (

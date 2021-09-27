@@ -81,6 +81,28 @@ $tooltip-width: 280px;
   width: initial;
 }
 
+.pledgeNotMetWarning {
+  background: var(--theme-background-color-error);
+  font-size: 10px;
+  line-height: 1.4;
+  margin: 12px -10px 0;
+  padding: 6px 10px;
+  position: relative;
+  &:after {
+    border-color: var(--theme-background-color-error) transparent transparent
+      transparent;
+    border-style: solid;
+    border-width: 6px 6px 0 6px;
+    bottom: -6px;
+    content: '';
+    display: block;
+    height: 0;
+    position: absolute;
+    right: 16px;
+    width: 0;
+  }
+}
+
 .id {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   cursor: pointer;
@@ -251,7 +273,7 @@ $tooltip-width: 280px;
 
 .table {
   @extend %regularText;
-  margin: 18px 0 6px 0;
+  margin: 9px 0 6px 0;
 
   .dRow {
     align-items: center;
