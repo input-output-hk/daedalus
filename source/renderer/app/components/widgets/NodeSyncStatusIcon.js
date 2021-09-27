@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import { formattedNumber } from '../../utils/formatters';
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
@@ -41,12 +42,19 @@ export default class NodeSyncStatusIcon extends Component<Props> {
 
     return (
       <div className={componentClasses}>
-        <SVGInline className={styles.icon} svg={statusIcon} />
-        <div className={styles.info}>
-          {intl.formatMessage(messages.blocksSynced, {
-            percentage: formattedNumber(percentage),
-          })}
-        </div>
+        <PopOver
+          content={
+            <div className={styles.info}>
+              {intl.formatMessage(messages.blocksSynced, {
+                percentage: formattedNumber(percentage),
+              })}
+            </div>
+          }
+        >
+          <div className={styles.questionMark}>
+            <SVGInline className={styles.icon} svg={statusIcon} />
+          </div>
+        </PopOver>
       </div>
     );
   }
