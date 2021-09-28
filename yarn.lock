@@ -8664,7 +8664,6 @@ int64-buffer@0.99.1007:
 int64-buffer@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-1.0.1.tgz#c78d841b444cadf036cd04f8683696c740f15dca"
-  integrity sha512-+3azY4pXrjAupJHU1V9uGERWlhoqNswJNji6aD/02xac7oxol508AsMC5lxKhEqyZeDFy3enq5OGWXF4u75hiw==
 
 internal-slot@^1.0.2:
   version "1.0.2"
