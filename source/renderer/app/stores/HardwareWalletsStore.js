@@ -1139,7 +1139,7 @@ export default class HardwareWalletsStore extends Store {
       const derivedAddress = await deriveAddressChannel.request({
         devicePath: path,
         isTrezor,
-        addressType: AddressType.BASE,
+        addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
         networkId: isMainnet
@@ -1245,7 +1245,7 @@ export default class HardwareWalletsStore extends Store {
       await showAddressChannel.request({
         devicePath: path,
         isTrezor,
-        addressType: AddressType.BASE,
+        addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
         networkId: isMainnet
