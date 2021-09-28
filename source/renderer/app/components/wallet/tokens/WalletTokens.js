@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './WalletTokens.scss';
@@ -53,8 +53,9 @@ const WalletTokens = observer((props: Props) => {
     onToggleFavorite,
     ...listProps
   } = props;
-  const favoriteTokensList = assets.filter(
-    ({ uniqueId }) => tokenFavorites[uniqueId]
+  const favoriteTokensList = useMemo(
+    () => assets.filter(({ uniqueId }) => tokenFavorites[uniqueId]),
+    [assets, tokenFavorites]
   );
 
   /**
@@ -65,34 +66,37 @@ const WalletTokens = observer((props: Props) => {
    * preventing undesirable jumps in the tokens list
    *
    */
-  const handleToggleFavorite = async ({
-    uniqueId,
-    isFavorite,
-  }: {
-    uniqueId: string,
-    isFavorite: boolean,
-  }) => {
-    if (insertingAssetUniqueId || removingAssetUniqueId) {
-      return;
-    }
-    if (isFavorite) {
-      // It's removing favorite
-      // We need to wait for the element to be removed, before updating the favorites list
-      setRemovingAssetUniqueId(uniqueId);
-      setTimeout(async () => {
+  const handleToggleFavorite = useCallback(
+    async ({
+      uniqueId,
+      isFavorite,
+    }: {
+      uniqueId: string,
+      isFavorite: boolean,
+    }) => {
+      if (insertingAssetUniqueId || removingAssetUniqueId) {
+        return;
+      }
+      if (isFavorite) {
+        // It's removing favorite
+        // We need to wait for the element to be removed, before updating the favorites list
+        setRemovingAssetUniqueId(uniqueId);
+        setTimeout(async () => {
+          await onToggleFavorite({ uniqueId, isFavorite });
+          setTimeout(() => setRemovingAssetUniqueId(null), 500);
+        }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
+      } else {
+        // It's inserting favorite
+        // We update the favorites list straight away
+        setInsertingAssetUniqueId(uniqueId);
         await onToggleFavorite({ uniqueId, isFavorite });
-        setTimeout(() => setRemovingAssetUniqueId(null), 500);
-      }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
-    } else {
-      // It's inserting favorite
-      // We update the favorites list straight away
-      setInsertingAssetUniqueId(uniqueId);
-      await onToggleFavorite({ uniqueId, isFavorite });
-      setTimeout(() => {
-        setInsertingAssetUniqueId(null);
-      }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
-    }
-  };
+        setTimeout(() => {
+          setInsertingAssetUniqueId(null);
+        }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
+      }
+    },
+    [insertingAssetUniqueId, removingAssetUniqueId]
+  );
 
   return (
     <div className={styles.component}>

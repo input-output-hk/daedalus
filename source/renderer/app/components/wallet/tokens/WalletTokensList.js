@@ -117,22 +117,25 @@ const WalletTokensList = observer((props: Props) => {
     () => getSortIconClasses('quantity', sortBy, sortDirection),
     [sortBy, sortDirection]
   );
-  const toggleSortDirection = () => {
+  const toggleSortDirection = useCallback(() => {
     if (sortDirection === 'asc') {
       setSortDirection('desc');
     } else {
       setSortDirection('asc');
     }
-  };
-  const onSortBy = (newSortBy: SortBy) => {
-    if (!hasSorting) return;
-    if (newSortBy === sortBy) {
-      toggleSortDirection();
-    } else {
-      setSortDirection('asc');
-      setSortBy(newSortBy);
-    }
-  };
+  }, [sortDirection]);
+  const onSortBy = useCallback(
+    (newSortBy: SortBy) => {
+      if (!hasSorting) return;
+      if (newSortBy === sortBy) {
+        toggleSortDirection();
+      } else {
+        setSortDirection('asc');
+        setSortBy(newSortBy);
+      }
+    },
+    [hasSorting, sortBy]
+  );
   const onSortByToken = useCallback(() => onSortBy('token'), [
     sortDirection,
     sortBy,
