@@ -161,7 +161,7 @@ const useCardanoAppInterval = (
   );
 
 const { network, isDev } = global.environment;
-const networkConfig = getHardwareWalletsNetworkConfig(network);
+const hardwareWalletsNetworkConfig = getHardwareWalletsNetworkConfig(network);
 
 export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
@@ -1144,8 +1144,8 @@ export default class HardwareWalletsStore extends Store {
         addressType: AddressType.BASE,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-        networkId: networkConfig.networkId,
-        protocolMagic: networkConfig.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
 
       if (derivedAddress === address.id) {
@@ -1245,8 +1245,8 @@ export default class HardwareWalletsStore extends Store {
         addressType: AddressType.BASE,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-        networkId: networkConfig.networkId,
-        protocolMagic: networkConfig.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
       runInAction(
         'HardwareWalletsStore:: Address show process finished',
@@ -1819,8 +1819,8 @@ export default class HardwareWalletsStore extends Store {
         fee: fee.toString(),
         ttl: ttl.toString(),
         validityIntervalStartStr: absoluteSlotNumber.toString(),
-        networkId: networkConfig.networkId,
-        protocolMagic: networkConfig.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         devicePath: recognizedDevicePath,
@@ -2076,8 +2076,8 @@ export default class HardwareWalletsStore extends Store {
         fee: fee.toString(),
         ttl: ttl.toString(),
         validityIntervalStartStr: null,
-        networkId: networkConfig.networkId,
-        protocolMagic: networkConfig.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,

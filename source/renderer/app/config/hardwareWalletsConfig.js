@@ -4,8 +4,6 @@ import { NetworkMagics } from '../../../common/types/cardano-node.types';
 import type { NetworkMagicType } from '../../../common/types/cardano-node.types';
 import type { Network } from '../../../common/types/environment.types';
 
-const { isMainnet, isSelfnode } = global.environment;
-
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;
 export const SHELLEY_PURPOSE_INDEX = 1852;
@@ -13,11 +11,13 @@ export const BYRON_PURPOSE_INDEX = 44;
 export const ADA_COIN_TYPE = 1815;
 export const DEFAULT_ADDRESS_INDEX = 0;
 
+const { isMainnet, isStaging, isSelfnode } = global.environment;
 const hardwareWalletNetworksConfig = {};
 map(NetworkMagics, (networkMagic: NetworkMagicType, network: Network) => {
+  const isMainnetLikeNetwork = isMainnet || isSelfnode || isStaging;
   hardwareWalletNetworksConfig[network] = {
-    networkId: isMainnet || isSelfnode ? networkMagic[0] : networkMagic[1],
-    protocolMagic: isMainnet || isSelfnode ? 764824073 : networkMagic[0],
+    networkId: isMainnetLikeNetwork ? 1 : networkMagic[1],
+    protocolMagic: isMainnetLikeNetwork ? 764824073 : networkMagic[0],
   };
 });
 
