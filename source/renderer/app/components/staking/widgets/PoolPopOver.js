@@ -66,7 +66,7 @@ export function PoolPopOver(props: {
             '--rp-pop-over-bg-color':
               'var(--theme-staking-stake-pool-tooltip-background-color)',
             '--rp-pop-over-box-shadow':
-              '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
+              '0 5px 20px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
             '--rp-pop-over-border-color':
               'var(--theme-staking-stake-pool-tooltip-border-color)',
             '--rp-pop-over-border-radius': '5px',
