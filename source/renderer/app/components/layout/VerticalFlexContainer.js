@@ -7,7 +7,7 @@ type Props = {
   children?: ?Node,
 };
 
-const VerticalFlexContainer = memo(({ children }: Props) => (
+const VerticalFlexContainer = ({ children }: Props) => (
   <div className={styles.component}>{children}</div>
-));
-export default VerticalFlexContainer;
+);
+export default memo<Props>(VerticalFlexContainer);
