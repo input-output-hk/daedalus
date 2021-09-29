@@ -350,7 +350,7 @@ export default class WalletSettings extends Component<Props, State> {
       : intl.formatMessage(messages.passwordNotSet);
 
     return (
-      <div className={styles.component}>
+      <div className={styles.root}>
         <BorderedBox>
           <InlineEditingInput
             className="walletName"

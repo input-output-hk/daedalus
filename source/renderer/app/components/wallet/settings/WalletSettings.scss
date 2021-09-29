@@ -1,12 +1,11 @@
 @import '../../../themes/mixins/error-message';
 
-.component {
+.root {
   background-color: var(--theme-main-body-background-color);
   display: flex;
   flex-direction: column;
   font-family: var(--font-regular);
-  height: 100%;
-  padding: 20px;
+  padding: 20px 20px 0 20px;
 
   :global {
     .SimpleFormField_label {
