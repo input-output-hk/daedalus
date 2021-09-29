@@ -5,6 +5,7 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { submitOnEnter } from '../../../utils/form';
 import styles from './DeleteWalletConfirmationDialog.scss';
 
 type Props = {
@@ -12,7 +13,6 @@ type Props = {
   confirmationValue: string,
   onAcceptBackupNotice: Function,
   onConfirmationValueChange: Function,
-  submitOnEnter: Function,
   handleSubmit: Function,
   inputLabel: string,
   checkboxLabel: string,
@@ -23,7 +23,6 @@ const DeleteWalletConfirmation = ({
   confirmationValue,
   onAcceptBackupNotice,
   onConfirmationValueChange,
-  submitOnEnter,
   handleSubmit,
   checkboxLabel,
   inputLabel,
@@ -40,8 +39,9 @@ const DeleteWalletConfirmation = ({
         className={styles.confirmationInput}
         label={inputLabel}
         value={confirmationValue}
-        // eslint-disable-next-line react/jsx-no-bind
-        onKeyPress={submitOnEnter.bind(this, handleSubmit)}
+        onKeyPress={(event: KeyboardEvent) =>
+          submitOnEnter(handleSubmit, event)
+        }
         onChange={onConfirmationValueChange}
         skin={InputSkin}
       />

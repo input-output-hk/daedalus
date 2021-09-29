@@ -6,8 +6,8 @@ import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import styles from './WalletSettings.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import BorderedBox from '../../widgets/BorderedBox';
-import WalletSettingsActionButton from './WalletSettingsActionButton';
-import WalletSettingsActionConfirmationDialog from './WalletSettingsActionConfirmationDialog';
+import WalletSettingsRemoveButton from './WalletSettingsRemoveButton';
+import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
 
 export const messages: { [string]: ReactIntlMessage } = defineMessages({
   deleteWalletHeader: {
@@ -63,7 +63,7 @@ const DeleteWallet = observer(
               <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
               <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
             </div>
-            <WalletSettingsActionButton
+            <WalletSettingsRemoveButton
               label={label}
               onClick={React.useCallback(() => {
                 onBlockForm();

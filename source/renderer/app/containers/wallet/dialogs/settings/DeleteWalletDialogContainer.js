@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
-import type { WalletSettingActionMessages } from '../../../../components/wallet/settings/WalletSettingsActionConfirmationDialog';
-import WalletSettingsActionConfirmationDialog from '../../../../components/wallet/settings/WalletSettingsActionConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
+import type { WalletSettingRemoveMessages } from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 
 type Props = InjectedProps;
 
-const messages: WalletSettingActionMessages = defineMessages({
+const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.delete.dialog.title',
     defaultMessage: '!!!Delete Wallet',

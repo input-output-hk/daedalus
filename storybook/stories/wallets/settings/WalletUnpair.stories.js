@@ -7,11 +7,11 @@ import { action } from '@storybook/addon-actions';
 import { defineMessages } from 'react-intl';
 import StoryDecorator from '../../_support/StoryDecorator';
 
-import type { WalletSettingActionMessages } from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsActionConfirmationDialog';
+import type { WalletSettingRemoveMessages } from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 // Screens
-import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsActionConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 
-const messages: WalletSettingActionMessages = defineMessages({
+const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.unpair.dialog.title',
     defaultMessage: '!!!Unpair Wallet',

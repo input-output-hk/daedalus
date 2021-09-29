@@ -8,11 +8,10 @@ import Dialog from '../../widgets/Dialog';
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
-import { submitOnEnter } from '../../../utils/form';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import DeleteWalletConfirmation from './DeleteWalletConfirmation';
 
-export type WalletSettingActionMessages = {
+export type WalletSettingRemoveMessages = {
   dialogTitle: Message,
   confirmButtonLabel: Message,
   confirmationQuestion: $Exact<Message>,
@@ -38,11 +37,11 @@ type Props = {
   isSubmitting: boolean,
   isTest: boolean,
   isUnpair: boolean,
-  messages: WalletSettingActionMessages,
+  messages: WalletSettingRemoveMessages,
   intl: intlShape.isRequired,
 };
 
-const WalletSettingsActionConfirmationDialog = observer((props: Props) => {
+const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
   const {
     countdownFn,
     isBackupNoticeAccepted = false,
@@ -118,7 +117,6 @@ const WalletSettingsActionConfirmationDialog = observer((props: Props) => {
           isBackupNoticeAccepted={isBackupNoticeAccepted}
           confirmationValue={confirmationValue}
           onAcceptBackupNotice={onAcceptBackupNotice}
-          submitOnEnter={submitOnEnter}
           handleSubmit={handleSubmit}
           onConfirmationValueChange={onConfirmationValueChange}
           checkboxLabel={intl.formatMessage(messages.confirmBackupNotice)}
@@ -129,4 +127,4 @@ const WalletSettingsActionConfirmationDialog = observer((props: Props) => {
   );
 });
 
-export default injectIntl(WalletSettingsActionConfirmationDialog);
+export default injectIntl(WalletSettingsRemoveConfirmationDialog);

@@ -16,7 +16,7 @@ import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import UndelegateWalletButton from './UndelegateWalletButton';
 import DelegateWalletButton from './DelegateWalletButton';
 import UndelegateWalletConfirmationDialog from './UndelegateWalletConfirmationDialog';
-import WalletSettingsActionConfirmationDialog from './WalletSettingsActionConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
 import UnpairWallet from './UnpairWallet';
 import DeleteWallet from './DeleteWallet';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
@@ -212,8 +212,8 @@ export default class WalletSettings extends Component<Props, State> {
       return null;
     }
 
-    let headerMessage = null;
-    let warningMessage = null;
+    let headerMessage;
+    let warningMessage;
 
     if (isDelegating) {
       headerMessage = intl.formatMessage(messages.undelegateWalletHeader);

@@ -11,8 +11,8 @@ import {
 import styles from './WalletSettings.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import BorderedBox from '../../widgets/BorderedBox';
-import WalletSettingsActionButton from './WalletSettingsActionButton';
-import WalletSettingsActionConfirmationDialog from './WalletSettingsActionConfirmationDialog';
+import WalletSettingsRemoveButton from './WalletSettingsRemoveButton';
+import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
 
 export const messages: { [string]: ReactIntlMessage } = defineMessages({
   unpairWalletHeader: {
@@ -63,7 +63,7 @@ const UnpairWallet = observer(
                 <FormattedHTMLMessage {...messages.unpairWalletWarning} />
               </p>
             </div>
-            <WalletSettingsActionButton
+            <WalletSettingsRemoveButton
               label={label}
               onClick={React.useCallback(() => {
                 onBlockForm();

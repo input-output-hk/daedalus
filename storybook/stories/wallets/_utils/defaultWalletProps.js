@@ -7,14 +7,14 @@ import moment from 'moment';
 // Screens
 import { defineMessages } from 'react-intl';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import type { WalletSettingActionMessages } from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsActionConfirmationDialog';
-import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsActionConfirmationDialog';
+import type { WalletSettingRemoveMessages } from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 
-const messages: WalletSettingActionMessages = defineMessages({
+const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.delete.dialog.title',
     defaultMessage: '!!!Delete Wallet',
@@ -117,7 +117,7 @@ export const defaultProps = {
   deleteWalletDialogContainer: (
     <WalletSettingsActionConfirmationDialog
       walletName={text(
-        'WalletSettingsActionConfirmationDialog: Wallet Name',
+        'WalletSettingsRemoveConfirmationDialog: Wallet Name',
         'Wallet To Delete'
       )}
       hasWalletFunds={boolean('hasWalletFunds', false)}

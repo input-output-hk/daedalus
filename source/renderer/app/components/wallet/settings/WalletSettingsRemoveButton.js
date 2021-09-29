@@ -2,17 +2,22 @@
 import React from 'react';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import styles from './DeleteWalletButton.scss';
+import styles from './RemoveWalletButton.scss';
 
 type Props = {
   onClick: Function,
   label: string,
+  disabled?: boolean,
 };
 
-const WalletSettingsActionButton = ({ onClick, label }: Props) => (
+const WalletSettingsRemoveButton = ({
+  onClick,
+  label,
+  disabled = false,
+}: Props) => (
   <Button
     className="flat"
-    disabled={false}
+    disabled={disabled}
     label={label}
     onClick={onClick}
     skin={ButtonSkin}
@@ -20,4 +25,4 @@ const WalletSettingsActionButton = ({ onClick, label }: Props) => (
   />
 );
 
-export default WalletSettingsActionButton;
+export default WalletSettingsRemoveButton;

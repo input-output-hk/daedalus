@@ -19,7 +19,7 @@ import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/compon
 import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
-import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsActionConfirmationDialog';
+import WalletSettingsRemoveConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
@@ -218,7 +218,7 @@ export default (props: { locale: Locale }) => {
             changePasswordId
           );
         }
-        if (dialog === WalletSettingsActionConfirmationDialog) {
+        if (dialog === WalletSettingsRemoveConfirmationDialog) {
           return boolean('Delete Wallet - Show dialog', false, deleteWalletId);
         }
         if (dialog === WalletRecoveryPhraseStep1Dialog) {
@@ -359,9 +359,9 @@ export default (props: { locale: Locale }) => {
         />
       }
       deleteWalletDialogContainer={
-        <WalletSettingsActionConfirmationDialog
+        <WalletSettingsRemoveConfirmationDialog
           walletName={text(
-            'WalletSettingsActionConfirmationDialog: Wallet Name',
+            'WalletSettingsRemoveConfirmationDialog: Wallet Name',
             'Wallet To Delete',
             deleteWalletId
           )}
@@ -393,9 +393,9 @@ export default (props: { locale: Locale }) => {
         />
       }
       unpairWalletDialogContainer={
-        <WalletSettingsActionConfirmationDialog
+        <WalletSettingsRemoveConfirmationDialog
           walletName={text(
-            'WalletSettingsActionConfirmationDialog: Wallet Name',
+            'WalletSettingsRemoveConfirmationDialog: Wallet Name',
             'Wallet To Unpair',
             deleteWalletId
           )}
