@@ -118,7 +118,7 @@ const AssetContent = observer((props: Props) => {
       <CopyToClipboard text={value} onCopy={onCopy}>
         <div className={styles.assetItem}>
           <div className={styles.value}>
-            {value}
+            {value}&nbsp;
             <SVGInline svg={icon} className={iconClassnames} />
           </div>
           {assetId === 'assetName' && (
