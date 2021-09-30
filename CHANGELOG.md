@@ -15,6 +15,7 @@
 
 ### Chores
 
+- Updated `cardano-wallet` to version `2021-09-29` which includes `cardano-node` 1.30.1
 - Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
 
 ## 4.3.1
