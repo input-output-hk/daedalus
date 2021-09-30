@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "anviking/ADP-1081/node-alonzo-rc",
+        "branch": "hkm/ghc8107",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "011a258c1b5ba57ca70f13346109ce3074820032",
-        "sha256": "14l6fyjp7pxpjc7ga33bakg19fqy8dna6hmmrzp2f73hw27xg4dj",
+        "rev": "664304966e8510df4df4eccb80ae5ce68c1cebd3",
+        "sha256": "0zvknqphvgrf0i6qjxc50fhj5b5j7d58j09xdq58862n8f8qc0bg",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/011a258c1b5ba57ca70f13346109ce3074820032.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/664304966e8510df4df4eccb80ae5ce68c1cebd3.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {
@@ -53,10 +53,10 @@
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "2849ac1f92e79bf6721b9b67a5c70f2588d04a56",
-        "sha256": "04mqzynnyq919wmdd5cv743w3r5f7b8bfdx7rbqqff4s5l03yd60",
+        "rev": "7421a25fb842e188eff6612f31a766e479f973a5",
+        "sha256": "0879xpcddii5v43r6if298dms8fk0lb433pm2r8mk4k7f2nkjiqc",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/2849ac1f92e79bf6721b9b67a5c70f2588d04a56.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/7421a25fb842e188eff6612f31a766e479f973a5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
