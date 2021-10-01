@@ -13,6 +13,8 @@ let
   } ''
     export HOME=$NIX_BUILD_TOP
     mkdir -p $out/bin
+    cd $(mktemp -d)
+    CGO_ENABLED=0 go mod init darwin-launcher
     cp ${./darwin-launcher.go} darwin-launcher.go
     CGO_ENABLED=0 go build -a -o $out/bin/darwin-launcher
   '';
