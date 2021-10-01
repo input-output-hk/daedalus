@@ -134,7 +134,7 @@ const WalletTokensList = observer((props: Props) => {
         setSortBy(newSortBy);
       }
     },
-    [hasSorting, sortBy]
+    [sortDirection, hasSorting, sortBy]
   );
   const onSortByToken = useCallback(() => onSortBy('token'), [
     sortDirection,
