@@ -15,9 +15,10 @@ import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import UndelegateWalletButton from './UndelegateWalletButton';
 import DelegateWalletButton from './DelegateWalletButton';
-import DeleteWalletButton from './DeleteWalletButton';
 import UndelegateWalletConfirmationDialog from './UndelegateWalletConfirmationDialog';
-import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
+import UnpairWallet from './UnpairWallet';
+import DeleteWallet from './DeleteWallet';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
@@ -75,23 +76,6 @@ export const messages: { [string]: ReactIntlMessage } = defineMessages({
     description:
       'Delegate wallet disabled warning explaining why it is disabled.',
   },
-  deleteWalletHeader: {
-    id: 'wallet.settings.deleteWallet.header',
-    defaultMessage: '!!!Delete wallet',
-    description: 'Delete wallet header on the wallet settings page.',
-  },
-  deleteWalletWarning1: {
-    id: 'wallet.settings.deleteWallet.warning1',
-    defaultMessage:
-      '!!!Once you delete this wallet it will be removed from the Daedalus interface and you will lose access to any remaining funds in the wallet. The only way to regain access after deletion is by restoring it using your wallet recovery phrase.',
-    description: 'Delete wallet warning explaining the consequences.',
-  },
-  deleteWalletWarning2: {
-    id: 'wallet.settings.deleteWallet.warning2',
-    defaultMessage:
-      '!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.',
-    description: 'Delete wallet warning explaining the consequences.',
-  },
   name: {
     id: 'wallet.settings.name.label',
     defaultMessage: '!!!Name',
@@ -145,6 +129,7 @@ type Props = {
   icoPublicKeyQRCodeDialogContainer: Node,
   undelegateWalletDialogContainer: Node,
   deleteWalletDialogContainer: Node,
+  unpairWalletDialogContainer: Node,
   shouldDisplayRecoveryPhrase: boolean,
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
@@ -174,7 +159,7 @@ export default class WalletSettings extends Component<Props, State> {
     const { isFormBlocked } = this.state;
     // Set "name" input to active and "unblock form" on Dialog close
     if (
-      !isDialogOpen(DeleteWalletConfirmationDialog) &&
+      !isDialogOpen(WalletSettingsActionConfirmationDialog) &&
       !isDialogOpen(ChangeSpendingPasswordDialog) &&
       isFormBlocked
     ) {
@@ -227,8 +212,8 @@ export default class WalletSettings extends Component<Props, State> {
       return null;
     }
 
-    let headerMessage = null;
-    let warningMessage = null;
+    let headerMessage;
+    let warningMessage;
 
     if (isDelegating) {
       headerMessage = intl.formatMessage(messages.undelegateWalletHeader);
@@ -272,40 +257,6 @@ export default class WalletSettings extends Component<Props, State> {
     );
   };
 
-  renderDeleteWalletBox = () => {
-    const { intl } = this.context;
-    const {
-      openDialogAction,
-      isDialogOpen,
-      deleteWalletDialogContainer,
-    } = this.props;
-
-    return (
-      <>
-        <BorderedBox className={styles.deleteWalletBox}>
-          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
-          <div className={styles.contentBox}>
-            <div>
-              <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
-              <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
-            </div>
-            <DeleteWalletButton
-              onClick={() => {
-                this.onBlockForm();
-                openDialogAction({
-                  dialog: DeleteWalletConfirmationDialog,
-                });
-              }}
-            />
-          </div>
-        </BorderedBox>
-        {isDialogOpen(DeleteWalletConfirmationDialog)
-          ? deleteWalletDialogContainer
-          : false}
-      </>
-    );
-  };
-
   render() {
     const { intl } = this.context;
     const {
@@ -335,7 +286,10 @@ export default class WalletSettings extends Component<Props, State> {
       walletPublicKeyQRCodeDialogContainer,
       icoPublicKeyDialogContainer,
       icoPublicKeyQRCodeDialogContainer,
+      deleteWalletDialogContainer,
+      unpairWalletDialogContainer,
     } = this.props;
+
     const { isFormBlocked } = this.state;
 
     // Set Japanese locale to moment. Default is en-US
@@ -437,7 +391,21 @@ export default class WalletSettings extends Component<Props, State> {
         )}
 
         {this.renderUndelegateWalletBox()}
-        {this.renderDeleteWalletBox()}
+        {isHardwareWallet ? (
+          <UnpairWallet
+            openDialogAction={openDialogAction}
+            isDialogOpen={isDialogOpen}
+            unpairWalletDialogContainer={unpairWalletDialogContainer}
+            onBlockForm={this.onBlockForm}
+          />
+        ) : (
+          <DeleteWallet
+            openDialogAction={openDialogAction}
+            isDialogOpen={isDialogOpen}
+            deleteWalletDialogContainer={deleteWalletDialogContainer}
+            onBlockForm={this.onBlockForm}
+          />
+        )}
       </div>
     );
   }

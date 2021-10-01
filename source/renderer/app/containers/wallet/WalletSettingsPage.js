@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
@@ -11,6 +11,7 @@ import PublicKeyDialogContainer from './dialogs/settings/PublicKeyDialogContaine
 import PublicKeyQRCodeDialogContainer from './dialogs/settings/PublicKeyQRCodeDialogContainer';
 import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
+import UnpairWalletDialogContainer from './dialogs/settings/UnpairWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -169,6 +170,7 @@ export default class WalletSettingsPage extends Component<Props> {
             />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
+          unpairWalletDialogContainer={<UnpairWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
           locale={locale}
           wordCount={wordCount}
