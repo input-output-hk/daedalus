@@ -8,6 +8,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 // Screens
 import WalletSettingsScreen from './WalletSettingsScreen.stories.js';
 import './WalletDelete.stories';
+import './WalletUnpair.stories';
 import './WalletRecoveryPhraseVerification.stories';
 import './WalletPublicKey.stories';
 import './PublicKeyQRCode.stories';
