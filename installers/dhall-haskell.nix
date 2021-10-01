@@ -6,7 +6,7 @@
 , memory, mtl, optparse-generic, parsers, prettyprinter
 , prettyprinter-ansi-terminal, repline, scientific, stdenv, tasty
 , tasty-hunit, text, text-format, transformers, trifecta, unordered-containers
-, vector
+, vector, lib
 }:
 mkDerivation {
   pname = "dhall";
@@ -35,5 +35,5 @@ mkDerivation {
     tasty-hunit text vector text-format
   ];
   description = "A configuration language guaranteed to terminate";
-  license = stdenv.lib.licenses.bsd3;
+  license = lib.licenses.bsd3;
 }

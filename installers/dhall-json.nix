@@ -1,6 +1,6 @@
 { mkDerivation, aeson, aeson-pretty, base, bytestring, dhall
 , fetchgit, optparse-generic, stdenv, text, trifecta
-, unordered-containers, yaml
+, unordered-containers, yaml, lib
 }:
 mkDerivation {
   pname = "dhall-json";
@@ -19,5 +19,5 @@ mkDerivation {
     aeson aeson-pretty base bytestring dhall optparse-generic text yaml
   ];
   description = "Compile Dhall to JSON or YAML";
-  license = stdenv.lib.licenses.bsd3;
+  license = lib.licenses.bsd3;
 }

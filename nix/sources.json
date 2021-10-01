@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "anviking/ADP-1081/node-alonzo-rc",
+        "branch": "hkm/ghc8107",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "011a258c1b5ba57ca70f13346109ce3074820032",
-        "sha256": "14l6fyjp7pxpjc7ga33bakg19fqy8dna6hmmrzp2f73hw27xg4dj",
+        "rev": "664304966e8510df4df4eccb80ae5ce68c1cebd3",
+        "sha256": "0zvknqphvgrf0i6qjxc50fhj5b5j7d58j09xdq58862n8f8qc0bg",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/011a258c1b5ba57ca70f13346109ce3074820032.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/664304966e8510df4df4eccb80ae5ce68c1cebd3.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {
@@ -53,10 +53,10 @@
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "6260dcb06b7d2855cbcd0a0f36483453c311248e",
-        "sha256": "1q9bqgf41ch3dpghsvh74xqnj98h3khj4gxk9n2kq9qai12720yv",
+        "rev": "7421a25fb842e188eff6612f31a766e479f973a5",
+        "sha256": "0879xpcddii5v43r6if298dms8fk0lb433pm2r8mk4k7f2nkjiqc",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/6260dcb06b7d2855cbcd0a0f36483453c311248e.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/7421a25fb842e188eff6612f31a766e479f973a5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
@@ -65,10 +65,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "266ca46a8d1cb4286b9699b4fd435066e88440ac",
-        "sha256": "132fbnnpp7bbfqv3dgvn9xi9dc1gsn9mivbqnxmglgmlv4lmrad8",
+        "rev": "db2c75a09c696271194bb3ef25ec8e9839b594b7",
+        "sha256": "1g4cnxglbqhl1nnmi7w8gc1y3779y5l29jaz78a9jrrd8rqq55rp",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/266ca46a8d1cb4286b9699b4fd435066e88440ac.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/db2c75a09c696271194bb3ef25ec8e9839b594b7.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
@@ -105,6 +105,18 @@
         "sha256": "0pcc8bh1x3shr6k2h8zw05n0apm5ppx6nk07xp89ljldah4mmc6c",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/nix-bundle/archive/acf3b142c1fa332d4f9050e7cdfb3c3f8091e78b.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixpkgs-unstable",
+        "description": "Nix Packages collection",
+        "homepage": "",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a3a23d9599b0a82e333ad91db2cdc479313ce154",
+        "sha256": "05xmgrrnw6j39lh3d48kg064z510i0w5vvrm1s5cdwhdc2fkspjq",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/a3a23d9599b0a82e333ad91db2cdc479313ce154.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-nsis": {

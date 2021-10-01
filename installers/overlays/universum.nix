@@ -2,7 +2,7 @@
 , gauge, ghc-prim, Glob, hashable, hedgehog, microlens
 , microlens-mtl, mtl, safe-exceptions, stdenv, stm, tasty
 , tasty-hedgehog, text, transformers, unordered-containers
-, utf8-string, vector
+, utf8-string, vector, lib
 }:
 mkDerivation {
   pname = "universum";
@@ -22,5 +22,5 @@ mkDerivation {
   ];
   homepage = "https://github.com/serokell/universum";
   description = "Custom prelude used in Serokell";
-  license = stdenv.lib.licenses.mit;
+  license = lib.licenses.mit;
 }

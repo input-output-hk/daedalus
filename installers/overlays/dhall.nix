@@ -10,7 +10,7 @@
 , spoon, stdenv, tasty, tasty-expected-failure, tasty-hunit
 , tasty-quickcheck, template-haskell, text, th-lift-instances
 , transformers, transformers-compat, turtle, unordered-containers
-, uri-encode, vector
+, uri-encode, vector, lib
 }:
 mkDerivation {
   pname = "dhall";
@@ -40,5 +40,5 @@ mkDerivation {
     base bytestring containers directory gauge serialise text
   ];
   description = "A configuration language guaranteed to terminate";
-  license = stdenv.lib.licenses.bsd3;
+  license = lib.licenses.bsd3;
 }

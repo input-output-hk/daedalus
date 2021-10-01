@@ -3,7 +3,7 @@
 , megaparsec, microlens, network-uri, nsis, optional-args
 , optparse-applicative, optparse-generic, split, stdenv
 , system-filepath, temporary, text, turtle, universum, raw-strings-qq
-, unordered-containers, wreq, yaml, zip-archive
+, unordered-containers, wreq, yaml, zip-archive, lib
 }:
 mkDerivation {
   pname = "daedalus-installer";
@@ -30,5 +30,5 @@ mkDerivation {
     system-filepath temporary text turtle universum yaml
   ];
   description = "Daedalus Installer Builder";
-  license = stdenv.lib.licenses.asl20;
+  license = lib.licenses.asl20;
 }
