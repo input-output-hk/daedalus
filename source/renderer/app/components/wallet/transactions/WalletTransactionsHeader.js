@@ -89,7 +89,6 @@ export default class WalletTransactionsHeader extends Component<Props> {
             />
             <FilterDialog
               {...filterDialogProps}
-              isDisabled={isFilterDisabled}
               triggerElement={
                 <FilterButton
                   disabled={isFilterDisabled}
