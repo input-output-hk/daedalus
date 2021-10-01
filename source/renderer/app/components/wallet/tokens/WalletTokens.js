@@ -65,7 +65,7 @@ const WalletTokens = observer((props: Props) => {
   const { isRestoring } = props.wallet;
   const favoriteTokensList = useMemo(
     () => assets.filter(({ uniqueId }) => tokenFavorites[uniqueId]),
-    [assets, tokenFavorites]
+    [assets, tokenFavorites, searchValue]
   );
 
   /**
@@ -131,6 +131,7 @@ const WalletTokens = observer((props: Props) => {
           removingAssetUniqueId={removingAssetUniqueId}
           onToggleFavorite={handleToggleFavorite}
           tokenFavorites={tokenFavorites}
+          searchValue={searchValue}
         />
       )}
       <WalletTokensList
@@ -139,6 +140,7 @@ const WalletTokens = observer((props: Props) => {
         title={intl.formatMessage(messages.tokensListTitle)}
         onToggleFavorite={handleToggleFavorite}
         tokenFavorites={tokenFavorites}
+        searchValue={searchValue}
       />
     </div>
   );
