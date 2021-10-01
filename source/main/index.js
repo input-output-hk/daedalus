@@ -272,14 +272,28 @@ const onAppReady = async () => {
       platform: process.platform,
     });
     app.setAsDefaultProtocolClient('web+cardano');
-    if (process.platform !== 'linux') {
+    /* if (process.platform !== 'linux') {
       childProcess.exec(
         'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
       );
-    }
+    } */
+    childProcess.exec(
+      'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
+    );
+
+    // Check
+    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set 1: ', {
+      isDefaultProtocolClientSet,
+    });
   }
 
   app.on('open-url', (event, url) => {
+    // Check
+    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set 2: ', {
+      isDefaultProtocolClientSet,
+    });
     logger.info('[Custom-Protocol] Open', {
       event,
       url,
