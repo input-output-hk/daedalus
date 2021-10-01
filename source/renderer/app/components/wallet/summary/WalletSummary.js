@@ -13,9 +13,9 @@ import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   tokensListTitle: {
-    id: 'wallet.summary.tokensList.title',
-    defaultMessage: '!!!Recently used tokens',
-    description: 'Send button on Wallet summary assets page',
+    id: 'wallet.summary.assets.tokensTitle',
+    defaultMessage: '!!!Tokens',
+    description: 'Tokens title in the wallet summary',
   },
 });
 

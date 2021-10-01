@@ -12,7 +12,7 @@ import { ROUTES } from '../../routes-config';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
-import { getAssetTokens } from '../../utils/assets';
+import { getAssetTokens, sortAssets } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 export const messages = defineMessages({
@@ -100,7 +100,9 @@ export default class WalletSummaryPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(all, walletTokens);
+    const assetTokens = getAssetTokens(all, walletTokens).sort(
+      sortAssets('token', 'asc')
+    );
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
