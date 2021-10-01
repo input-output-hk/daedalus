@@ -164,7 +164,8 @@
         }
 
         .stakePoolUnknown {
-          transition: margin-top 200ms ease-in-out;
+          transition: margin-top 200ms ease-in-out,
+            padding-top 200ms ease-in-out;
         }
 
         .noDataDash {
@@ -275,12 +276,14 @@
 
         .stakePoolUnknown,
         .nonDelegatedText {
-          transition: margin-top 200ms ease-in-out;
+          transition: margin-top 200ms ease-in-out,
+            padding-top 200ms ease-in-out;
         }
 
         .action {
-          bottom: -26px;
+          bottom: -25px;
           margin-left: -12px;
+          margin-top: -12px;
           position: relative;
         }
       }
@@ -346,7 +349,8 @@
           }
 
           .nonDelegatedText {
-            margin-top: -5px;
+            margin-top: -15px;
+            padding-top: 10px;
           }
         }
 
