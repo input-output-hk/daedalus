@@ -11067,13 +11067,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/settings/DeleteWallet.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
-          "column": 24,
-          "line": 18
+          "column": 15,
+          "line": 20
         }
       },
       {
@@ -11081,13 +11081,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/settings/DeleteWallet.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
-          "column": 24,
-          "line": 24
+          "column": 22,
+          "line": 25
         }
       },
       {
@@ -11095,13 +11095,41 @@
         "description": "Label for the delete button on wallet settings",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/DeleteWallet.js",
         "id": "wallet.settings.deleteWalletButtonLabel",
         "start": {
-          "column": 16,
-          "line": 30
+          "column": 30,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.",
+        "description": "Notice to confirm if the user has made a backup of his wallet",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "id": "wallet.settings.delete.dialog.confirmBackupNotice",
+        "start": {
+          "column": 23,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter the name of the wallet to confirm deletion:",
+        "description": "Instruction for recovery word on delete wallet dialog",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
+        "start": {
+          "column": 26,
+          "line": 44
         }
       }
     ],
