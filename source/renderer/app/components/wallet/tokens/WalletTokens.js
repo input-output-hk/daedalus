@@ -6,6 +6,7 @@ import styles from './WalletTokens.scss';
 import Wallet from '../../../domains/Wallet';
 import WalletTokensList from './WalletTokensList';
 import WalletTokensSearch from './WalletTokensSearch';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AssetToken } from '../../../api/assets/types';
 import { TOGGLE_TOKEN_FAVORITE_TIMEOUT } from '../../../config/timingConfig';
 
@@ -19,6 +20,13 @@ const messages = defineMessages({
     id: 'wallet.tokens.list.tokens.title',
     defaultMessage: '!!!Tokens',
     description: 'Favorites list title label',
+  },
+  syncingMessage: {
+    id: 'wallet.send.form.syncingTransactionsMessage',
+    defaultMessage:
+      '!!!The balance and transaction history of this wallet is being synced with the blockchain.',
+    description:
+      'Syncing transactions message shown during async wallet restore in the wallet send form.',
   },
 });
 
@@ -51,8 +59,10 @@ const WalletTokens = observer((props: Props) => {
     intl,
     tokenFavorites,
     onToggleFavorite,
+    isLoadingAssets,
     ...listProps
   } = props;
+  const { isRestoring } = props.wallet;
   const favoriteTokensList = useMemo(
     () => assets.filter(({ uniqueId }) => tokenFavorites[uniqueId]),
     [assets, tokenFavorites]
@@ -97,6 +107,17 @@ const WalletTokens = observer((props: Props) => {
     },
     [insertingAssetUniqueId, removingAssetUniqueId]
   );
+
+  if (isRestoring) {
+    return (
+      <div className={styles.syncing}>
+        <LoadingSpinner big />
+        <p className={styles.syncingText}>
+          {intl.formatMessage(messages.syncingMessage)}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.component}>

@@ -1,3 +1,14 @@
 .component {
   padding-bottom: 20px;
 }
+.syncing {
+  padding: 10px 20px;
+  .syncingText {
+    color: var(--theme-transactions-list-group-date-color);
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 1.38;
+    opacity: 0.5;
+    text-align: center;
+  }
+}
