@@ -38,15 +38,15 @@ type Props = {
   isLoadingAssets: boolean,
   onAssetSettings: Function,
   onCopyAssetParam: Function,
+  onExternalLinkClick: Function,
   onOpenAssetSend: Function,
   onToggleFavorite: Function,
   tokenFavorites: Object,
   wallet: Wallet,
 };
 
-type SearchValue = string;
 const WalletTokens = observer((props: Props) => {
-  const [searchValue, setSearchValue] = useState<SearchValue>('');
+  const [searchValue, setSearchValue] = useState<string>('');
   const [insertingAssetUniqueId, setInsertingAssetUniqueId] = useState<?string>(
     null
   );
@@ -63,6 +63,7 @@ const WalletTokens = observer((props: Props) => {
     ...listProps
   } = props;
   const { isRestoring } = props.wallet;
+  const hasTokens = assets.length || isLoadingAssets;
   const favoriteTokensList = useMemo(
     () => assets.filter(({ uniqueId }) => tokenFavorites[uniqueId]),
     [assets, tokenFavorites, searchValue]
@@ -121,26 +122,31 @@ const WalletTokens = observer((props: Props) => {
 
   return (
     <div className={styles.component}>
-      <WalletTokensSearch searchValue={searchValue} onSearch={setSearchValue} />
+      {hasTokens && (
+        <WalletTokensSearch
+          searchValue={searchValue}
+          onSearch={setSearchValue}
+        />
+      )}
       {!!favoriteTokensList.length && (
         <WalletTokensList
           {...listProps}
           assets={favoriteTokensList}
-          title={intl.formatMessage(messages.favoritesListTitle)}
           insertingAssetUniqueId={insertingAssetUniqueId}
-          removingAssetUniqueId={removingAssetUniqueId}
           onToggleFavorite={handleToggleFavorite}
-          tokenFavorites={tokenFavorites}
+          removingAssetUniqueId={removingAssetUniqueId}
           searchValue={searchValue}
+          title={intl.formatMessage(messages.favoritesListTitle)}
+          tokenFavorites={tokenFavorites}
         />
       )}
       <WalletTokensList
         {...listProps}
         assets={assets}
-        title={intl.formatMessage(messages.tokensListTitle)}
         onToggleFavorite={handleToggleFavorite}
-        tokenFavorites={tokenFavorites}
         searchValue={searchValue}
+        title={intl.formatMessage(messages.tokensListTitle)}
+        tokenFavorites={tokenFavorites}
       />
     </div>
   );

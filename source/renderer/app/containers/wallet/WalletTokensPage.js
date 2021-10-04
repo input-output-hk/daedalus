@@ -13,7 +13,7 @@ const WalletTokensPage = inject(
 )(
   observer((props: Props) => {
     const { actions, stores } = props;
-    const { assets, profile, wallets } = stores;
+    const { assets, profile, wallets, app } = stores;
     const {
       all,
       assetSettingsDialogWasOpened,
@@ -42,7 +42,7 @@ const WalletTokensPage = inject(
 
     return (
       <WalletTokens
-        assets={assetTokens}
+        assets={[assetTokens]}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         currentLocale={currentLocale}
         insertingAssetUniqueId={insertingAssetUniqueId}
@@ -52,6 +52,7 @@ const WalletTokensPage = inject(
         onOpenAssetSend={onOpenAssetSend.trigger}
         onToggleFavorite={onToggleFavorite.trigger}
         removingAssetUniqueId={removingAssetUniqueId}
+        onExternalLinkClick={app.openExternalLink}
         tokenFavorites={favorites}
         wallet={activeWallet}
       />

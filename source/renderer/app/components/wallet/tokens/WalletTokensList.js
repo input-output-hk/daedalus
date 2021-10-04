@@ -11,6 +11,7 @@ import Wallet from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import WalletToken from './WalletToken';
+import WalletNoTokens from './WalletNoTokens';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import type { AssetToken } from '../../../api/assets/types';
 import type { SortBy, SortDirection } from '../../../utils/assets';
@@ -52,6 +53,7 @@ type Props = {
   isLoadingAssets: boolean,
   onAssetSettings: Function,
   onCopyAssetParam: Function,
+  onExternalLinkClick: Function,
   onOpenAssetSend: Function,
   onToggleFavorite: Function,
   onViewAllButtonClick?: Function,
@@ -86,6 +88,7 @@ const WalletTokensList = observer((props: Props) => {
     isLoadingAssets,
     onAssetSettings,
     onCopyAssetParam,
+    onExternalLinkClick,
     onOpenAssetSend,
     onToggleFavorite,
     onViewAllButtonClick,
@@ -146,6 +149,16 @@ const WalletTokensList = observer((props: Props) => {
     sortBy,
     hasSorting,
   ]);
+  const hasTokens = assets.length || isLoadingAssets;
+
+  if (!hasTokens)
+    return (
+      <WalletNoTokens
+        numberOfAssets={assets.length}
+        isLoadingAssets={isLoadingAssets}
+        onExternalLinkClick={onExternalLinkClick}
+      />
+    );
 
   let content;
   if (isLoadingAssets) {

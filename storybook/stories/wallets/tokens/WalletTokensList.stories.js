@@ -150,7 +150,7 @@ storiesOf('Wallets|Tokens', module)
     'WalletTokensList',
     withState({ favorites: {} }, (store) => (
       <WalletTokensList
-        assets={assets}
+        assets={boolean('Has Tokens', true) ? assets : []}
         assetSettingsDialogWasOpened
         currentLocale="en-US"
         isLoadingAssets={boolean('isLoadingAssets', false)}

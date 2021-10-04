@@ -7,7 +7,6 @@ import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
-import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 import WalletTokensList from '../tokens/WalletTokensList';
 import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
 
@@ -78,7 +77,6 @@ export default class WalletSummary extends Component<Props> {
     const { intl } = this.context;
 
     const { isRestoring } = wallet;
-    const hasAssets = assets.length || isLoadingAssets;
 
     return (
       <>
@@ -103,31 +101,21 @@ export default class WalletSummary extends Component<Props> {
           }
         />
         {!isRestoring && (
-          <>
-            {hasAssets ? (
-              <WalletTokensList
-                wallet={wallet}
-                assets={assets.slice(0, MAX_TOKENS_ON_SUMMARY_PAGE)}
-                onOpenAssetSend={onOpenAssetSend}
-                isLoadingAssets={isLoadingAssets}
-                onCopyAssetParam={onCopyAssetParam}
-                onAssetSettings={onAssetSettings}
-                assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-                currentLocale={currentLocale}
-                title={intl.formatMessage(messages.tokensListTitle)}
-                onViewAllButtonClick={onViewAllButtonClick}
-                tokenFavorites={tokenFavorites}
-                onToggleFavorite={onToggleFavorite}
-                disableControls
-              />
-            ) : (
-              <WalletSummaryNoTokens
-                numberOfAssets={assets.length}
-                isLoadingAssets={isLoadingAssets}
-                onExternalLinkClick={onExternalLinkClick}
-              />
-            )}
-          </>
+          <WalletTokensList
+            assets={assets.slice(0, MAX_TOKENS_ON_SUMMARY_PAGE)}
+            assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+            currentLocale={currentLocale}
+            isLoadingAssets={isLoadingAssets}
+            onAssetSettings={onAssetSettings}
+            onCopyAssetParam={onCopyAssetParam}
+            onExternalLinkClick={onExternalLinkClick}
+            onOpenAssetSend={onOpenAssetSend}
+            onToggleFavorite={onToggleFavorite}
+            onViewAllButtonClick={onViewAllButtonClick}
+            title={intl.formatMessage(messages.tokensListTitle)}
+            tokenFavorites={tokenFavorites}
+            wallet={wallet}
+          />
         )}
       </>
     );
