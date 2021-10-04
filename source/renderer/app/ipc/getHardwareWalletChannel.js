@@ -13,6 +13,7 @@ import {
   DERIVE_XPUB_CHANNEL,
   DERIVE_ADDRESS_CHANNEL,
   SHOW_ADDRESS_CHANNEL,
+  GET_DEVICES_LIST,
 } from '../../../common/ipc/api';
 
 import type {
@@ -40,6 +41,8 @@ import type {
   deriveAddressRendererRequest,
   showAddressMainResponse,
   showAddressRendererRequest,
+  getDevicesListRendererRequest,
+  getDevicesListMainResponse,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
@@ -107,3 +110,8 @@ export const showAddressChannel: RendererIpcChannel<
   showAddressMainResponse,
   showAddressRendererRequest
 > = new RendererIpcChannel(SHOW_ADDRESS_CHANNEL);
+
+export const getDevicesListChannel: RendererIpcChannel<
+  getDevicesListMainResponse,
+  getDevicesListRendererRequest
+> = new RendererIpcChannel(GET_DEVICES_LIST);

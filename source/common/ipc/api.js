@@ -25,6 +25,7 @@ import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
 import type { ExportedByronWallet } from '../../renderer/app/types/walletExportTypes';
 import type {
+  MessageBody,
   StateSnapshotLogParams,
   WalletMigrationReportData,
 } from '../types/logging.types';
@@ -139,8 +140,10 @@ export type GetSystemLocaleMainResponse = Locale;
  * Channel for setting log state snapshot
  */
 export const SET_STATE_SNAPSHOT_LOG_CHANNEL = 'SetStateSnapshotLogChannel';
-export type SetStateSnapshotLogRendererRequest = StateSnapshotLogParams | any;
-export type SetStateSnapshotLogMainResponse = StateSnapshotLogParams | any;
+export type SetStateSnapshotLogRendererRequest =
+  | StateSnapshotLogParams
+  | MessageBody;
+export type SetStateSnapshotLogMainResponse = StateSnapshotLogParams;
 
 /**
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder
@@ -511,3 +514,8 @@ export type deriveAddressMainResponse = string;
 export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
 export type showAddressRendererRequest = showAddressRendererRequestType;
 export type showAddressMainResponse = void;
+
+// TODO - remove once usb testing is done
+export const GET_DEVICES_LIST = 'GET_DEVICES_LIST';
+export type getDevicesListRendererRequest = any;
+export type getDevicesListMainResponse = any;

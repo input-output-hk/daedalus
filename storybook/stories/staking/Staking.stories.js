@@ -78,6 +78,7 @@ const decorator = (story, context) => {
             <StakingWithNavigation
               key="stakingWithNavigation"
               isActiveNavItem={(item) => item === getItemFromContext()}
+              showInfoTab
               activeItem={getItemFromContext()}
               onNavItemClick={() => {}}
             >
@@ -191,29 +192,18 @@ storiesOf('Decentralization | Staking', module)
   .add(
     pageNames['info-countdown'],
     () => {
-      const percentage = number('percentage', 98, {
-        range: true,
-        min: 0,
-        max: 100,
-        step: 1,
-      });
-      const epochNumber = number('epochNumber', 257);
-      const isFullyDecentralized = percentage === 100;
-      const epochDate = isFullyDecentralized
+      const isAlonzoActivated = boolean('isAlonzoActivated', false);
+      const epochDate = isAlonzoActivated
         ? new Date().getTime() - 100000000
         : new Date().getTime() + 100000000;
-      const epochStart = new Date(epochDate).toISOString();
+      const startDateTime = new Date(epochDate).toISOString();
       return (
         <StakingInfoCountdown
-          percentage={percentage}
           onLearnMoreClick={action('onLearnMoreClick')}
-          epoch={{
-            epochNumber,
-            epochStart,
-          }}
+          startDateTime={startDateTime}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
           isAnimating={boolean('isAnimating', false)}
-          isFullyDecentralized={boolean('isFullyDecentralized', false)}
+          isAlonzoActivated={boolean('isAlonzoActivated', false)}
           stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
           onStartStakingInfoAnimation={action('onStartStakingInfoAnimation')}
           onStopStakingInfoAnimation={action('onStopStakingInfoAnimation')}

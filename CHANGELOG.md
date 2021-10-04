@@ -1,20 +1,51 @@
-Changelog
-=========
+# Changelog
 
 ## vNext
 
 ### Features
 
+- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
+
+### Fixes
+
+- Fixed font used for unavailable staking while updating messages ([PR 2680](https://github.com/input-output-hk/daedalus/pull/2680))
+- Fixed crash when Yubikey is connected ([PR 2673](https://github.com/input-output-hk/daedalus/pull/2673))
+- Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
+- Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
+
+### Chores
+
+- Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
+- Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
+
+## 4.3.1
+
+### Fixes
+
+- Covered Trezor firmware breaking changes ([PR 2629](https://github.com/input-output-hk/daedalus/pull/2629))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-09-09`
+
+## 4.3.0
+
+### Features
+
+- Added "Alonzo countdown" screen for the upcoming Alonzo upgrade ([PR 2653](https://github.com/input-output-hk/daedalus/pull/2653))
 - Maintain window size and position between launches ([PR 2611](https://github.com/input-output-hk/daedalus/pull/2611))
 - Emptying wallet - warning ([PR 2617](https://github.com/input-output-hk/daedalus/pull/2617))
 
 ### Fixes
 
+- Fixed type issue on Storybook "Wallet Send Confirmation Dialog" story ([PR 2654](https://github.com/input-output-hk/daedalus/pull/2654))
 - Fixed ‘Stakepool Metadata Aggregation Server (SMASH)’ link returning 404 error ([PR 2646](https://github.com/input-output-hk/daedalus/pull/2646))
 - Enter key not working on send ([PR 2621](https://github.com/input-output-hk/daedalus/pull/2621))
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `9ae2d48b` which enables hardware wallet support in Alonzo era ([PR 2663](https://github.com/input-output-hk/daedalus/issues/2663))
+- Updated `cardano-wallet` to version `2021-08-27` which includes `cardano-node` 1.29.0 ([PR 2650](https://github.com/input-output-hk/daedalus/pull/2650))
 - Updated `cardano-wallet` to version `2021-08-11` which includes `cardano-node` alonzo-purple-1.0.1 ([PR 2641](https://github.com/input-output-hk/daedalus/pull/2641))
 - Updated `cardano-wallet` to version `2021-07-30` which includes `cardano-node` 1.28.0 ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
 - Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
@@ -1074,7 +1105,7 @@ Changelog
 - Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
 - Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
 - Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
-- Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
+- Fixed flat button color ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
 
 ## 0.15.1
 
@@ -1476,6 +1507,7 @@ Changelog
 ## 0.9.1
 
 ### Features
+
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes
@@ -1823,15 +1855,15 @@ Changelog
 
 - Added wallet creation screen that appears when there is no wallet yet
 - Updated to the latest design specs and refactor to
-[react-toolbox](http://react-toolbox.com/) instead of
-material-ui for the UI components. This gives us much better style
-customization and theming options.
+  [react-toolbox](http://react-toolbox.com/) instead of
+  material-ui for the UI components. This gives us much better style
+  customization and theming options.
 - Cleaned up the boilerplate app menus
 - Added basic form validations using [mobx-react-form](https://github.com/foxhound87/mobx-react-form)
 - Added i18n support with [react-intl](https://github.com/yahoo/react-intl)
 - Added wallet send / receive / transactions screens
 - Form submitting UX updated to the design specifications with introduction of button loading spinners
-and support for submitting the form with enter key
+  and support for submitting the form with enter key
 - Added cut, copy & paste application menu items and keyboard shortcuts
 
 ### Fixes

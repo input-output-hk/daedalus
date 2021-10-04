@@ -145,7 +145,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
     });
   };
 
-  handleSubmitOnEnter = (event: {}) =>
+  handleSubmitOnEnter = (event: KeyboardEvent) =>
     this.form.$('spendingPassword').isValid &&
     submitOnEnter(this.submit, event);
 

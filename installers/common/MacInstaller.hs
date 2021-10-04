@@ -118,10 +118,12 @@ KEYCHAIN="$2"
 REL_PATH="$3"
 XML_PATH="$4"
 ABS_PATH="$(pwd)/$REL_PATH"
-SIGN_CMD="codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign \"$SIGN_ID\""
+TS="$(date +%Y-%m-%d_%H-%M-%S)"
+function sign_cmd() {
+  codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$1" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
+}
 VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
 ENTITLEMENT_CMD="codesign -d --entitlements :-"
-TS="$(date +%Y-%m-%d_%H-%M-%S)"
 LOG="2>&1 | tee -a /tmp/codesign-output-${TS}.txt"
 
 # Remove symlinks pointing outside of the project build folder:
@@ -133,25 +135,26 @@ eval "security find-identity -v -p codesigning \"$KEYCHAIN\" $LOG"
 eval "security list-keychains -d user -s \"$KEYCHAIN\" $LOG"
 
 # Sign framework executables not signed by the deep sign command:
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Resources/crashpad_handler\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libnode.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libffmpeg.dylib\" $LOG"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Resources/crashpad_handler"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libnode.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/Current/Libraries/libffmpeg.dylib"
 
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libEGL.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib\" $LOG"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libEGL.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib"
+sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib"
 
 # Sign native electron bindings and supplementary binaries
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/usb_bindings.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/HID.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-76/keccak.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node\" $LOG"
-eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node\" $LOG"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*"/keccak.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
 
 # Sign the whole component deeply
-eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
+sign_cmd "$ABS_PATH"
 
 # Verify the signing
 eval "$VERIFY_CMD \"$ABS_PATH\" $LOG"
@@ -229,59 +232,62 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     externalYarn :: [FilePath]
     externalYarn =
       [ "@babel"
-      , "regenerator-runtime"
-      , "node-fetch"
       , "@trezor"
-      , "runtypes"
-      , "parse-uri"
-      , "randombytes"
-      , "safe-buffer"
+      , "base-x"
+      , "base64-js"
+      , "bchaddrjs"
+      , "big-integer"
+      , "bigi"
+      , "bignumber.js"
       , "bip66"
-      , "pushdata-bitcoin"
       , "bitcoin-ops"
+      , "blake2b"
+      , "blake2b-wasm"
+      , "bs58"
+      , "bs58check"
+      , "bytebuffer-old-fixed-webpack"
+      , "call-bind"
+      , "cashaddrjs"
+      , "cbor-web"
+      , "create-hash"
+      , "create-hmac"
+      , "cross-fetch"
+      , "define-properties"
+      , "ecurve"
+      , "es-abstract"
+      , "function-bind"
+      , "get-intrinsic"
+      , "has"
+      , "has-symbols"
+      , "hd-wallet"
+      , "ieee754"
+      , "inherits"
+      , "int64-buffer"
+      , "js-chain-libs-node"
+      , "json-stable-stringify"
+      , "keccak"
+      , "long"
+      , "merkle-lib"
+      , "ms"
+      , "nanoassert"
+      , "node-fetch"
+      , "object-keys"
+      , "object.values"
+      , "parse-uri"
+      , "protobufjs-old-fixed-webpack"
+      , "pushdata-bitcoin"
+      , "queue"
+      , "randombytes"
+      , "regenerator-runtime"
+      , "runtypes"
+      , "safe-buffer"
+      , "semver-compare"
+      , "tiny-worker"
+      , "trezor-connect"
+      , "trezor-link"
       , "typeforce"
       , "varuint-bitcoin"
-      , "bigi"
-      , "create-hash"
-      , "merkle-lib"
-      , "blake2b"
-      , "nanoassert"
-      , "blake2b-wasm"
-      , "bs58check"
-      , "bs58"
-      , "base-x"
-      , "create-hmac"
-      , "ecurve"
       , "wif"
-      , "ms"
-      , "keccak"
-      , "trezor-link"
-      , "semver-compare"
-      , "protobufjs-old-fixed-webpack"
-      , "bytebuffer-old-fixed-webpack"
-      , "long"
-      , "object.values"
-      , "define-properties"
-      , "object-keys"
-      , "has"
-      , "function-bind"
-      , "es-abstract"
-      , "has-symbols"
-      , "json-stable-stringify"
-      , "tiny-worker"
-      , "hd-wallet"
-      , "cashaddrjs"
-      , "big-integer"
-      , "queue"
-      , "inherits"
-      , "bchaddrjs"
-      , "cross-fetch"
-      , "trezor-connect"
-      , "js-chain-libs-node"
-      , "bignumber.js"
-      , "int64-buffer"
-      , "call-bind"
-      , "get-intrinsic"
       ]
   mapM_ (\lib -> do
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
@@ -308,7 +314,9 @@ getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{} = do
-  let dir     = appRoot </> "Contents/MacOS"
+  let
+      dir :: FilePath
+      dir     = appRoot </> "Contents/MacOS"
       dataDir = appRoot </> "Contents/Resources"
 
   echo "Preparing files ..."
@@ -340,6 +348,20 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
 
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet", dir </> "cardano-node", dir </> "cardano-cli", dir </> "cardano-address" ]
+      let
+        sortaMove :: FilePath -> IO ()
+        sortaMove filename = do
+          mv (appRoot </> "Contents/Resources/app/build" </> filename) (dir</>filename)
+          symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
+      mapM_ sortaMove [ "usb_bindings.node" ]
+      void $ chain (encodeString dir) [ tt $ dir </> "usb_bindings.node" ]
+      let
+        sortaMove :: FilePath -> IO ()
+        sortaMove filename = do
+          mv (appRoot </> "Contents/Resources/app/build" </> filename) (dir</>filename)
+          symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
+      mapM_ sortaMove [ "HID.node" ]
+      void $ chain (encodeString dir) [ tt $ dir </> "HID.node" ]
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
