@@ -274,6 +274,7 @@
       .progressBar {
         @extend %saturationContainer;
         flex: 1;
+        max-width: 100px;
         padding-top: 2px;
       }
 
