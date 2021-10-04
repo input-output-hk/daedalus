@@ -42,7 +42,7 @@ const WalletTokensPage = inject(
 
     return (
       <WalletTokens
-        assets={[assetTokens]}
+        assets={assetTokens}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         currentLocale={currentLocale}
         insertingAssetUniqueId={insertingAssetUniqueId}
