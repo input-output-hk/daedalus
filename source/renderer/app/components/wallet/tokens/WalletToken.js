@@ -202,6 +202,7 @@ const WalletToken = observer((props: Props) => {
           ])}
           onClick={() => onOpenAssetSend(asset)}
           label={intl.formatMessage(messages.tokenSendButton)}
+          disabled={asset.quantity.isZero()}
         />
       </div>
     );

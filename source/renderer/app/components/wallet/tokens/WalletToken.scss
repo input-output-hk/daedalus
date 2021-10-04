@@ -182,6 +182,9 @@
       height: 36px;
       margin-left: 12px;
       width: 120px;
+      &.disabled {
+        opacity: 0.4;
+      }
     }
     .settingsButton {
       svg {
