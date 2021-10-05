@@ -48,7 +48,6 @@ let
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
-  ostable.aarch64-linux = "linux-arm";
   ostable.x86_64-darwin = "macos64";
   ostable.aarch64-darwin = "macos64-arm";
 
