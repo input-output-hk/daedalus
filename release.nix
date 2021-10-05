@@ -9,7 +9,6 @@ let
   };
   shellEnvs = {
     linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
-    linux-arm = import ./shell.nix { system = "aarch64-linux"; autoStartBackend = true; };
     darwin = import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; };
     darwin-arm = import ./shell.nix { system = "aarch64-darwin"; autoStartBackend = true; };
   };
@@ -19,7 +18,6 @@ let
   let
     table = {
       x86_64-linux = import ./. { target = "x86_64-linux"; };
-      aarch64-linux = import ./. { target = "aarch64-linux"; };
       x86_64-windows = import ./. { target = "x86_64-windows"; };
       x86_64-darwin = import ./. { target = "x86_64-darwin"; };
       aarch64-darwin = import ./. { target = "aarch64-darwin"; };
@@ -63,10 +61,10 @@ in {
   };
 } // (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
 // (mapOverArches {
-  daedalus-installer = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-  yaml2json = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+  daedalus-installer = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
+  yaml2json = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
   bridgeTable = {
-    cardano = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
+    cardano = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
   };
-  cardano-node = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
+  cardano-node = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
 })
