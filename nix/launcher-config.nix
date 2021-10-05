@@ -48,6 +48,7 @@ let
     frontendBin.linux = "daedalus-frontend";
     frontendBin.windows = "${spacedName}";
     frontendBin.macos64 = "Frontend";
+    frontendBin.macos64-arm = "Frontend";
   in frontendBin.${os};
 
   selfnodeConfig = rec {
