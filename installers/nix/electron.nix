@@ -12,7 +12,7 @@ let
     homepage = https://github.com/electron/electron;
     license = licenses.mit;
     maintainers = with maintainers; [ travisbhartwell manveru ];
-    platforms = [ "x86_64-darwin" "arm64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
+    platforms = [ "x86_64-darwin" "aarch64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
   };
 
   linux = {
@@ -68,7 +68,7 @@ let
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-x64.zip";
         sha256 = "d62a561e80fcbcb0f249e74c487313192451046f288478add65be997793831de";
       };
-      arm64-darwin = fetchurl {
+      aarch64-darwin = fetchurl {
         url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-arm64.zip";
         sha256 = "6da46d2861011263af2953a3e0186735e54708c01c50967ff5f8ed71b73f7fea";
       };

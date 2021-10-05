@@ -150,10 +150,10 @@ sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/
 sign_cmd "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*"/keccak.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-arm64-"*"/keccak.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-aarch64-"*"/keccak.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-arm64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-aarch64/node.napi.node"
 
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"

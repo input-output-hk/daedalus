@@ -47,11 +47,10 @@ let
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ostable.x86_64-windows = "windows";
-  ostable.arm64-windows = "windows-arm";
   ostable.x86_64-linux = "linux";
   ostable.aarch64-linux = "linux-arm";
   ostable.x86_64-darwin = "macos64";
-  ostable.arm64-darwin = "macos64-arm";
+  ostable.aarch64-darwin = "macos64-arm";
 
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;

@@ -21,7 +21,6 @@ let
       x86_64-linux = import ./. { target = "x86_64-linux"; };
       aarch64-linux = import ./. { target = "aarch64-linux"; };
       x86_64-windows = import ./. { target = "x86_64-windows"; };
-      arm64-windows = import ./. { target = "arm64-windows"; };
       x86_64-darwin = import ./. { target = "x86_64-darwin"; };
       aarch64-darwin = import ./. { target = "aarch64-darwin"; };
     };
@@ -67,7 +66,7 @@ in {
   daedalus-installer = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
   yaml2json = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
   bridgeTable = {
-    cardano = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" "arm64-windows" ];
+    cardano = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
   };
-  cardano-node = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" "arm64-windows" ];
+  cardano-node = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
 })
