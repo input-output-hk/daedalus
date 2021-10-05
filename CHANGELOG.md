@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
+
 ### Chores
 
 - Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
@@ -10,7 +14,6 @@
 
 ### Features
 
-- Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
 - Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
 
 ### Fixes
