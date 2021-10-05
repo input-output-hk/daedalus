@@ -104,7 +104,9 @@ export const getAssetTokens = (
 ): Array<AssetToken> =>
   assets
     .map((asset) => getAssetToken(asset, getToken(asset, tokens)))
-    .filter((token) => !!token.uniqueId);
+    .filter((token) => !!token.uniqueId)
+    // @TOKEN TODO - Remove this filter once we can list zero tokens
+    .filter((token) => !token.quantity.isZero());
 
 /**
  * Receives a Token
