@@ -1,7 +1,13 @@
-Changelog
-=========
+# Changelog
 
 ## vNext
+
+### Chores
+
+- Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
+- Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
+
+## 4.3.2
 
 ### Features
 
@@ -9,12 +15,14 @@ Changelog
 
 ### Fixes
 
+- Fixed font used for unavailable staking while updating messages ([PR 2680](https://github.com/input-output-hk/daedalus/pull/2680))
 - Fixed crash when Yubikey is connected ([PR 2673](https://github.com/input-output-hk/daedalus/pull/2673))
 - Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 - Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
 
 ### Chores
-- Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
+
+- Updated `cardano-wallet` to version `2021-09-29` which includes `cardano-node` 1.30.1
 - Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
 
 ## 4.3.1
@@ -1104,7 +1112,7 @@ Changelog
 - Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
 - Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
 - Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
-- Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
+- Fixed flat button color ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
 
 ## 0.15.1
 
@@ -1506,6 +1514,7 @@ Changelog
 ## 0.9.1
 
 ### Features
+
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes
@@ -1853,15 +1862,15 @@ Changelog
 
 - Added wallet creation screen that appears when there is no wallet yet
 - Updated to the latest design specs and refactor to
-[react-toolbox](http://react-toolbox.com/) instead of
-material-ui for the UI components. This gives us much better style
-customization and theming options.
+  [react-toolbox](http://react-toolbox.com/) instead of
+  material-ui for the UI components. This gives us much better style
+  customization and theming options.
 - Cleaned up the boilerplate app menus
 - Added basic form validations using [mobx-react-form](https://github.com/foxhound87/mobx-react-form)
 - Added i18n support with [react-intl](https://github.com/yahoo/react-intl)
 - Added wallet send / receive / transactions screens
 - Form submitting UX updated to the design specifications with introduction of button loading spinners
-and support for submitting the form with enter key
+  and support for submitting the form with enter key
 - Added cut, copy & paste application menu items and keyboard shortcuts
 
 ### Fixes
