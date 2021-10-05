@@ -36,6 +36,7 @@ let
   configDir = configFilesSource: {
     linux = configFilesSource;
     macos64 = if devShell then configFilesSource else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
+    macos64-arm = if devShell then configFilesSource else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
 
@@ -67,6 +68,7 @@ let
   mkBinPath = binary: let
     binDir = {
       macos64 = "\${DAEDALUS_INSTALL_DIRECTORY}";
+      macos64-arm = "\${DAEDALUS_INSTALL_DIRECTORY}";
       windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
     };
     binary' = if binary == "frontend" then frontendBinPath else binary;
