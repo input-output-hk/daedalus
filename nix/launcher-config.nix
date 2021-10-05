@@ -108,6 +108,7 @@ let
   dataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
     path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
+    path.macos64-arm = "\${HOME}/Library/Application Support/${spacedName}";
     path.windows = "\${APPDATA}\\${spacedName}";
   in path.${os};
 
@@ -115,6 +116,7 @@ let
   legacyDataDir = let
     path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
     path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
+    path.macos64-arm = "\${HOME}/Library/Application Support/Daedalus";
     path.windows = "\${APPDATA}\\Daedalus";
   in path.${os};
 
@@ -122,6 +124,7 @@ let
     path.linux = "${dataDir}/Logs";
     path.windows = "Logs";
     path.macos64 = "${dataDir}/Logs";
+    path.macos64-arm = "${dataDir}/Logs";
   in path.${os};
 
   tlsConfig = {
@@ -232,12 +235,14 @@ let
     legacyWalletDB = let
       path.linux = "Wallet";
       path.macos64 = "Wallet-1.0";
+      path.macos64-arm = "Wallet-1.0";
       path.windows = "Wallet-1.0";
     in path.${os};
 
     legacySecretKey = let
       path.linux = "Secrets${dirSep}secret.key";
       path.macos64 = "Secrets-1.0${dirSep}secret.key";
+      path.macos64-arm = "Secrets-1.0${dirSep}secret.key";
       path.windows = "Secrets-1.0${dirSep}secret.key";
     in path.${os};
 
