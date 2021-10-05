@@ -11036,95 +11036,62 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Delete wallet",
-        "description": "Label for the delete button on wallet settings",
+        "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 17
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletButton.js",
-        "id": "wallet.settings.deleteWalletButtonLabel",
+        "file": "source/renderer/app/components/wallet/settings/DeleteWallet.js",
+        "id": "wallet.settings.deleteWallet.header",
         "start": {
-          "column": 9,
-          "line": 9
+          "column": 22,
+          "line": 13
         }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/DeleteWalletButton.json"
-  },
-  {
-    "descriptors": [
+      },
       {
-        "defaultMessage": "!!!Delete Wallet",
-        "description": "Title for the \"Delete wallet\" dialog.",
+        "defaultMessage": "!!!Once you delete this wallet it will be removed from the Daedalus interface and you will lose access to any remaining funds in the wallet. The only way to regain access after deletion is by restoring it using your wallet recovery phrase.",
+        "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
-        "id": "wallet.settings.delete.dialog.title",
+        "file": "source/renderer/app/components/wallet/settings/DeleteWallet.js",
+        "id": "wallet.settings.deleteWallet.warning1",
         "start": {
-          "column": 15,
-          "line": 19
+          "column": 24,
+          "line": 18
         }
       },
       {
-        "defaultMessage": "!!!Delete",
-        "description": "Label for the \"Delete (x)\" button in the delete wallet dialog.",
+        "defaultMessage": "!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.",
+        "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
-        "id": "wallet.settings.delete.dialog.confirmButtonLabel",
+        "file": "source/renderer/app/components/wallet/settings/DeleteWallet.js",
+        "id": "wallet.settings.deleteWallet.warning2",
         "start": {
-          "column": 22,
+          "column": 24,
           "line": 24
         }
       },
       {
-        "defaultMessage": "!!!Do you really want to delete <strong>{walletName}</strong> wallet?",
-        "description": "Question if the user really wants to delete the wallet.",
+        "defaultMessage": "!!!Delete wallet",
+        "description": "Label for the delete button on wallet settings",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
-        "id": "wallet.settings.delete.dialog.wantToDeleteWalletQuestion",
+        "file": "source/renderer/app/components/wallet/settings/DeleteWallet.js",
+        "id": "wallet.settings.deleteWalletButtonLabel",
         "start": {
-          "column": 30,
+          "column": 16,
           "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.",
-        "description": "Notice to confirm if the user has made a backup of his wallet",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
-        "id": "wallet.settings.delete.dialog.confirmBackupNotice",
-        "start": {
-          "column": 23,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter the name of the wallet to confirm deletion:",
-        "description": "Instruction for recovery word on delete wallet dialog",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
-        "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
-        "start": {
-          "column": 26,
-          "line": 43
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.json"
+    "path": "source/renderer/app/components/wallet/settings/DeleteWallet.json"
   },
   {
     "descriptors": [
@@ -11580,6 +11547,53 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Unpair wallet",
+        "description": "Unpair wallet header on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/wallet/settings/UnpairWallet.js",
+        "id": "wallet.settings.unpairWallet.header",
+        "start": {
+          "column": 22,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Once you unpair this wallet it will be removed from the Daedalus interface and you will lose access to any remaining funds in the wallet. The only way to regain access after deletion is by restoring it using your wallet recovery phrase.",
+        "description": "Unpair wallet warning explaining the consequences.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/settings/UnpairWallet.js",
+        "id": "wallet.settings.unpairWallet.warning",
+        "start": {
+          "column": 23,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Unpair wallet",
+        "description": "Label for the unpair button on wallet settings",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/wallet/settings/UnpairWallet.js",
+        "id": "wallet.settings.unpairWalletButtonLabel",
+        "start": {
+          "column": 16,
+          "line": 29
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/UnpairWallet.json"
   },
   {
     "descriptors": [
@@ -12211,13 +12225,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -12225,13 +12239,13 @@
         "description": "Undelegate wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.header",
         "start": {
           "column": 26,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -12239,13 +12253,13 @@
         "description": "Undelegate wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.warning",
         "start": {
           "column": 27,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -12253,13 +12267,13 @@
         "description": "Undelegate wallet disabled warning explaining why it is disabled.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.disabledWarning",
         "start": {
           "column": 35,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -12267,13 +12281,13 @@
         "description": "Delegate wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.delegateWallet.header",
         "start": {
           "column": 24,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -12281,13 +12295,13 @@
         "description": "Delegate wallet warning.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.delegateWallet.warning",
         "start": {
           "column": 25,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -12295,55 +12309,13 @@
         "description": "Delegate wallet disabled warning explaining why it is disabled.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.delegateWallet.disabledWarning",
         "start": {
           "column": 33,
-          "line": 71
-        }
-      },
-      {
-        "defaultMessage": "!!!Delete wallet",
-        "description": "Delete wallet header on the wallet settings page.",
-        "end": {
-          "column": 3,
-          "line": 82
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.deleteWallet.header",
-        "start": {
-          "column": 22,
-          "line": 78
-        }
-      },
-      {
-        "defaultMessage": "!!!Once you delete this wallet it will be removed from the Daedalus interface and you will lose access to any remaining funds in the wallet. The only way to regain access after deletion is by restoring it using your wallet recovery phrase.",
-        "description": "Delete wallet warning explaining the consequences.",
-        "end": {
-          "column": 3,
-          "line": 88
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.deleteWallet.warning1",
-        "start": {
-          "column": 24,
-          "line": 83
-        }
-      },
-      {
-        "defaultMessage": "!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.",
-        "description": "Delete wallet warning explaining the consequences.",
-        "end": {
-          "column": 3,
-          "line": 94
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.deleteWallet.warning2",
-        "start": {
-          "column": 24,
-          "line": 89
+          "line": 72
         }
       },
       {
@@ -12351,13 +12323,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 83
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 95
+          "line": 79
         }
       },
       {
@@ -12365,13 +12337,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 88
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 100
+          "line": 84
         }
       },
       {
@@ -12379,13 +12351,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 105
+          "line": 89
         }
       },
       {
@@ -12393,13 +12365,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 98
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 110
+          "line": 94
         }
       }
     ],
@@ -16950,6 +16922,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Delete Wallet",
+        "description": "Title for the \"Delete wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
+        "id": "wallet.settings.delete.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Delete",
+        "description": "Label for the \"Delete (x)\" button in the delete wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
+        "id": "wallet.settings.delete.dialog.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Do you really want to delete <strong>{walletName}</strong> wallet?",
+        "description": "Question if the user really wants to delete the wallet.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
+        "id": "wallet.settings.delete.dialog.confirmationQuestion",
+        "start": {
+          "column": 24,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.",
+        "description": "Notice to confirm if the user has made a backup of his wallet",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
+        "id": "wallet.settings.delete.dialog.confirmBackupNotice",
+        "start": {
+          "column": 23,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter the name of the wallet to confirm deletion:",
+        "description": "Instruction for recovery word on delete wallet dialog",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.js",
+        "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
+        "start": {
+          "column": 26,
+          "line": 36
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/dialogs/settings/DeleteWalletDialogContainer.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet Public Key",
         "description": "Title for the \"Wallet Public Key QR Code\" dialog.",
         "end": {
@@ -17021,6 +17068,53 @@
       }
     ],
     "path": "source/renderer/app/containers/wallet/dialogs/settings/PublicKeyQRCodeDialogContainer.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Unpair Wallet",
+        "description": "Title for the \"Unpair wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/UnpairWalletDialogContainer.js",
+        "id": "wallet.settings.unpair.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Delete",
+        "description": "Label for the \"Unpair (x)\" button in the unpair wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/UnpairWalletDialogContainer.js",
+        "id": "wallet.settings.unpair.dialog.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Do you really want to unpair <strong>{walletName}</strong> wallet?",
+        "description": "Question if the user really wants to unpair the wallet.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/settings/UnpairWalletDialogContainer.js",
+        "id": "wallet.settings.unpair.dialog.confirmationQuestion",
+        "start": {
+          "column": 24,
+          "line": 22
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/dialogs/settings/UnpairWalletDialogContainer.json"
   },
   {
     "descriptors": [

@@ -7,42 +7,29 @@ import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { WalletSettingRemoveMessages } from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 
 type Props = InjectedProps;
-
 const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
-    id: 'wallet.settings.delete.dialog.title',
-    defaultMessage: '!!!Delete Wallet',
-    description: 'Title for the "Delete wallet" dialog.',
+    id: 'wallet.settings.unpair.dialog.title',
+    defaultMessage: '!!!Unpair Wallet',
+    description: 'Title for the "Unpair wallet" dialog.',
   },
   confirmButtonLabel: {
-    id: 'wallet.settings.delete.dialog.confirmButtonLabel',
+    id: 'wallet.settings.unpair.dialog.confirmButtonLabel',
     defaultMessage: '!!!Delete',
     description:
-      'Label for the "Delete (x)" button in the delete wallet dialog.',
+      'Label for the "Unpair (x)" button in the unpair wallet dialog.',
   },
   confirmationQuestion: {
-    id: 'wallet.settings.delete.dialog.confirmationQuestion',
+    id: 'wallet.settings.unpair.dialog.confirmationQuestion',
     defaultMessage:
-      '!!!Do you really want to delete <strong>{walletName}</strong> wallet?',
-    description: 'Question if the user really wants to delete the wallet.',
-  },
-  confirmBackupNotice: {
-    id: 'wallet.settings.delete.dialog.confirmBackupNotice',
-    defaultMessage:
-      '!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.',
-    description:
-      'Notice to confirm if the user has made a backup of his wallet',
-  },
-  enterRecoveryWordLabel: {
-    id: 'wallet.settings.delete.dialog.enterRecoveryWordLabel',
-    defaultMessage: '!!!Enter the name of the wallet to confirm deletion:',
-    description: 'Instruction for recovery word on delete wallet dialog',
+      '!!!Do you really want to unpair <strong>{walletName}</strong> wallet?',
+    description: 'Question if the user really wants to unpair the wallet.',
   },
 });
 
 @inject('actions', 'stores')
 @observer
-export default class DeleteWalletDialogContainer extends Component<Props> {
+export default class UnpairWalletDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -65,11 +52,12 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
     return (
       <WalletSettingsActionConfirmationDialog
         isTest={isTest}
+        isUnpair
         walletName={activeWallet.name}
         hasWalletFunds={activeWallet.hasFunds}
         countdownFn={uiDialogs.countdownSinceDialogOpened}
         isBackupNoticeAccepted={dialogData.isBackupNoticeAccepted}
-        messages={messages}
+        messages={Object.freeze(messages)}
         onAcceptBackupNotice={() =>
           updateDataForActiveDialog.trigger({
             data: { isBackupNoticeAccepted: true },

@@ -2,6 +2,13 @@
 
 ## vNext
 
+### Chores
+
+- Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
+- Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
+
+## 4.3.2
+
 ### Features
 
 - Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
@@ -14,7 +21,8 @@
 - Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
 
 ### Chores
-- Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
+
+- Updated `cardano-wallet` to version `2021-09-29` which includes `cardano-node` 1.30.1
 - Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
 
 ## 4.3.1

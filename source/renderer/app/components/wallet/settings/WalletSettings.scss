@@ -25,10 +25,11 @@
   }
 
   .undelegateWalletBox,
-  .deleteWalletBox {
+  .deleteWalletBox,
+  .unpairWalletBox {
     margin-top: 20px;
 
-    span {
+    .title {
       color: var(--theme-input-label-color);
       font-family: var(--font-medium);
       font-size: 16px;
@@ -48,6 +49,7 @@
       p:first-child {
         margin-bottom: 15px;
       }
+
       p:last-child {
         margin-bottom: 0;
       }
