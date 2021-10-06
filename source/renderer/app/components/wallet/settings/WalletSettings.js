@@ -15,9 +15,10 @@ import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import UndelegateWalletButton from './UndelegateWalletButton';
 import DelegateWalletButton from './DelegateWalletButton';
-import DeleteWalletButton from './DeleteWalletButton';
 import UndelegateWalletConfirmationDialog from './UndelegateWalletConfirmationDialog';
-import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
+import UnpairWallet from './UnpairWallet';
+import DeleteWallet from './DeleteWallet';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
@@ -66,6 +67,7 @@ type Props = {
   icoPublicKeyQRCodeDialogContainer: Node,
   undelegateWalletDialogContainer: Node,
   deleteWalletDialogContainer: Node,
+  unpairWalletDialogContainer: Node,
   shouldDisplayRecoveryPhrase: boolean,
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
@@ -95,7 +97,7 @@ export default class WalletSettings extends Component<Props, State> {
     const { isFormBlocked } = this.state;
     // Set "name" input to active and "unblock form" on Dialog close
     if (
-      !isDialogOpen(DeleteWalletConfirmationDialog) &&
+      !isDialogOpen(WalletSettingsActionConfirmationDialog) &&
       !isDialogOpen(ChangeSpendingPasswordDialog) &&
       isFormBlocked
     ) {
@@ -148,8 +150,8 @@ export default class WalletSettings extends Component<Props, State> {
       return null;
     }
 
-    let headerMessage = null;
-    let warningMessage = null;
+    let headerMessage;
+    let warningMessage;
 
     if (isDelegating) {
       headerMessage = intl.formatMessage(messages.undelegateWalletHeader);
@@ -193,50 +195,9 @@ export default class WalletSettings extends Component<Props, State> {
     );
   };
 
-  renderDeleteWalletBox = () => {
-    const { intl } = this.context;
-    const {
-      openDialogAction,
-      isDialogOpen,
-      deleteWalletDialogContainer,
-    } = this.props;
-
-    return (
-      <>
-        <BorderedBox className={styles.deleteWalletBox}>
-          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
-          <div className={styles.contentBox}>
-            <div>
-              <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
-              <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
-            </div>
-            <DeleteWalletButton
-              onClick={() => {
-                this.onBlockForm();
-                openDialogAction({
-                  dialog: DeleteWalletConfirmationDialog,
-                });
-              }}
-            />
-          </div>
-        </BorderedBox>
-        {isDialogOpen(DeleteWalletConfirmationDialog)
-          ? deleteWalletDialogContainer
-          : false}
-      </>
-    );
-  };
-
   render() {
     const { intl } = this.context;
     const {
-      isDelegating,
-      isRestoring,
-      isSyncing,
-      undelegateWalletDialogContainer,
-      walletId,
-      onDelegateClick,
-      updateDataForActiveDialogAction,
       walletName,
       creationDate,
       spendingPasswordUpdateDate,
@@ -263,7 +224,10 @@ export default class WalletSettings extends Component<Props, State> {
       walletPublicKeyQRCodeDialogContainer,
       icoPublicKeyDialogContainer,
       icoPublicKeyQRCodeDialogContainer,
+      deleteWalletDialogContainer,
+      unpairWalletDialogContainer,
     } = this.props;
+
     const { isFormBlocked } = this.state;
 
     // Set Japanese locale to moment. Default is en-US
@@ -364,23 +328,22 @@ export default class WalletSettings extends Component<Props, State> {
           </>
         )}
 
-        {IS_WALLET_UNDELEGATION_ENABLED && !isLegacy && (
-          <UndelegateWalletBox
-            {...{
-              isDelegating,
-              isRestoring,
-              isSyncing,
-              isDialogOpen,
-              undelegateWalletDialogContainer,
-              walletId,
-              onBlockForm: this.onBlockForm,
-              onDelegateClick,
-              openDialogAction,
-              updateDataForActiveDialogAction,
-            }}
+        {this.renderUndelegateWalletBox()}
+        {isHardwareWallet ? (
+          <UnpairWallet
+            openDialogAction={openDialogAction}
+            isDialogOpen={isDialogOpen}
+            unpairWalletDialogContainer={unpairWalletDialogContainer}
+            onBlockForm={this.onBlockForm}
+          />
+        ) : (
+          <DeleteWallet
+            openDialogAction={openDialogAction}
+            isDialogOpen={isDialogOpen}
+            deleteWalletDialogContainer={deleteWalletDialogContainer}
+            onBlockForm={this.onBlockForm}
           />
         )}
-        {this.renderDeleteWalletBox()}
       </div>
     );
   }
