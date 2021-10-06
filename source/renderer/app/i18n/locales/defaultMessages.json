@@ -16560,6 +16560,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Token",
+        "description": "Token description.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/widgets/forms/MnemonicInputWidget.js",
+        "id": "global.labels.token",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/forms/MnemonicInputWidget.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Language",
         "description": "Label for the language select.",
         "end": {
@@ -18700,5 +18719,169 @@
       }
     ],
     "path": "source/renderer/app/utils/votingPDFGenerator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Create",
+        "description": "Create label.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.create",
+        "start": {
+          "column": 10,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Create a new wallet description.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.create.description",
+        "start": {
+          "column": 19,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!Join",
+        "description": "Join label.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.label",
+        "start": {
+          "column": 8,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Join a shared wallet",
+        "description": "Join a shared wallet description.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.description",
+        "start": {
+          "column": 20,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Import",
+        "description": "Import label.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.label",
+        "start": {
+          "column": 10,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
+        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.description",
+        "start": {
+          "column": 24,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Recovery Phrase description.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.restore.dialog.mnemonicsStep",
+        "start": {
+          "column": 18,
+          "line": 67
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "Save description.",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.save",
+        "start": {
+          "column": 8,
+          "line": 72
+        }
+      }
+    ],
+    "path": "storybook/stories/common/Widgets.stories.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Read More",
+        "description": "Read More button label.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.labels.readMore",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Failure Alert",
+        "description": "Failure Alert title.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.errors.failureAlert",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Content",
+        "description": "Content.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "static.dummy.markdown",
+        "start": {
+          "column": 11,
+          "line": 43
+        }
+      }
+    ],
+    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]
