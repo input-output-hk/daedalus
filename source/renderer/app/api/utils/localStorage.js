@@ -327,7 +327,7 @@ export default class LocalStorageApi {
   unsetAppUpdateCompleted = (): Promise<void> =>
     LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
 
-  getWalletTokenFavorites = (): Promise<Object> =>
+  getWalletTokenFavorites = (): Promise<{ [key: string]: boolean }> =>
     LocalStorageApi.get(keys.TOKEN_FAVORITES, {});
 
   toggleWalletTokenFavorite = async (
