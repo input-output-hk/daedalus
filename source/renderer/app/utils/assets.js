@@ -7,6 +7,7 @@ import Asset from '../domains/Asset';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
+import { formattedTokenDecimals } from './formatters';
 
 export type SortBy = 'token' | 'fingerprint' | 'quantity';
 export type SortDirection = 'asc' | 'desc';
@@ -154,16 +155,20 @@ export const sortAssets = (sortBy: SortBy, sortDirection: SortDirection) => (
   asset2: AssetToken
 ) => {
   const {
-    quantity: quantity1,
+    quantity: unformattedQuantity1,
     fingerprint: fingerprint1,
     metadata: metadata1,
+    decimals: decimals1,
   } = asset1;
+  const quantity1 = formattedTokenDecimals(unformattedQuantity1, decimals1);
   const { name: name1 } = metadata1 || {};
   const {
-    quantity: quantity2,
+    quantity: unformattedQuantity2,
     fingerprint: fingerprint2,
     metadata: metadata2,
+    decimals: decimals2,
   } = asset2;
+  const quantity2 = formattedTokenDecimals(unformattedQuantity2, decimals2);
   const { name: name2 } = metadata2 || {};
   if (sortBy === 'token') {
     if (name1 && !name2) return -1;

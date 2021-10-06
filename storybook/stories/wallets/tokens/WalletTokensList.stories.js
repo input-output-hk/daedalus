@@ -76,6 +76,18 @@ const assets = [
       logo: '',
     }
   ),
+  generateAssetToken(
+    '65bc72542b0ca20391caaf66a4d4d7s97d281f9c136cd3513136945b',
+    '',
+    'tokenb0ca20391caaf66aad4e7897d282f9c136cd3513136945c2542',
+    500,
+    {
+      name: 'Little',
+      ticker: 'LTTL',
+      description: '',
+    },
+    4
+  ),
 ];
 
 const walletTokens: WalletTokens = {

@@ -49,12 +49,7 @@ export const formattedTokenWalletAmount = (
   isShort?: boolean
 ): string => {
   const { ticker } = metadata || {};
-  const decimalPrecision = decimals || DEFAULT_DECIMAL_PRECISION;
-  const divider = parseInt(
-    getMultiplierFromDecimalPlaces(decimalPrecision),
-    10
-  );
-  let formattedAmount = amount.dividedBy(divider);
+  let formattedAmount = formattedTokenDecimals(amount, decimals);
   if (isShort) {
     if (formattedAmount.isGreaterThanOrEqualTo(1000)) {
       /*
@@ -84,6 +79,18 @@ export const formattedTokenWalletAmount = (
     formattedAmount += ` ${ticker}`;
   }
   return formattedAmount;
+};
+
+export const formattedTokenDecimals = (
+  amount: BigNumber,
+  decimals: ?number
+): BigNumber => {
+  const decimalPrecision = decimals || DEFAULT_DECIMAL_PRECISION;
+  const divider = parseInt(
+    getMultiplierFromDecimalPlaces(decimalPrecision),
+    10
+  );
+  return amount.dividedBy(divider);
 };
 
 // Symbol   Name                Scientific Notation
