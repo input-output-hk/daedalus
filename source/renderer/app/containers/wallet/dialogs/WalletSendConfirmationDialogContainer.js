@@ -5,11 +5,13 @@ import type BigNumber from 'bignumber.js';
 import { ellipsis } from '../../../utils/strings';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
+import DappTransactionRequest from '../../../components/dapp/DappTransactionRequest';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getAssetTokens } from '../../../utils/assets';
+import { IS_DAPP_ENABLED } from '../../../config/walletsConfig';
 
 type Props = {
   stores: any | StoresMap,
@@ -104,6 +106,25 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
     const walletTokens = activeWallet.assets.total;
     const assetTokens = getAssetTokens(walletTokens, getAsset);
+
+    if (IS_DAPP_ENABLED) {
+      return (
+        <DappTransactionRequest
+          adaAmount={amount}
+          address=""
+          assets={[]}
+          assetsAmounts={selectedAssets}
+          onAddWallet={() => {}}
+          onClose={() => {}}
+          onSelectWallet={() => {}}
+          onSubmit={() => {}}
+          selectedWallet={activeWallet}
+          transactionFee={transactionFee}
+          triggeredFrom=""
+          wallets={[]}
+        />
+      );
+    }
 
     return (
       <>
