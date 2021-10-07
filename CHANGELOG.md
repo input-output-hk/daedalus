@@ -2,6 +2,16 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed the missing text for the DAPP static screens ([PR 2693](https://github.com/input-output-hk/daedalus/pull/2693))
+
+### Chores
+
+- Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
+
+## 4.3.2
+
 ### Features
 
 - Support of apple aarch64 chip ([PR ](https://github.com/input-output-hk/daedalus/pull/))
@@ -16,7 +26,7 @@
 
 ### Chores
 
-- Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
+- Updated `cardano-wallet` to version `2021-09-29` which includes `cardano-node` 1.30.1
 - Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
 
 ## 4.3.1
