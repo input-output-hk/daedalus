@@ -6,6 +6,10 @@
 
 - Added functionality to undelegate a wallet ([PR 2636](https://github.com/input-output-hk/daedalus/pull/2636))
 
+### Fixes
+
+- Fixed the missing text for the DAPP static screens ([PR 2693](https://github.com/input-output-hk/daedalus/pull/2693))
+
 ### Chores
 
 - Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
