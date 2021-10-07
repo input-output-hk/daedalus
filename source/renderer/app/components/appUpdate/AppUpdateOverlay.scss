@@ -239,7 +239,9 @@
     top: 10px;
     width: 44px;
     z-index: 999;
-
+    polygon {
+      fill: var(--theme-news-overlay-update-button-text-color);
+    }
     &:hover {
       background-color: var(
         --theme-news-overlay-update-content-background-color
