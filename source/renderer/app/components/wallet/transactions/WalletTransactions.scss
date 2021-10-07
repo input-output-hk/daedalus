@@ -1,4 +1,9 @@
 .component {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  flex-grow: 1;
   height: 100%;
   padding-top: 53px;
 }
