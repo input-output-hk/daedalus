@@ -708,7 +708,7 @@
         "file": "source/renderer/app/components/assets/AssetContent.js",
         "id": "assets.assetToken.param.fingerprint",
         "start": {
-          "column": 31,
+          "column": 25,
           "line": 17
         }
       },
@@ -722,7 +722,7 @@
         "file": "source/renderer/app/components/assets/AssetContent.js",
         "id": "assets.assetToken.param.policyId",
         "start": {
-          "column": 28,
+          "column": 22,
           "line": 22
         }
       },
@@ -736,7 +736,7 @@
         "file": "source/renderer/app/components/assets/AssetContent.js",
         "id": "assets.assetToken.param.assetName",
         "start": {
-          "column": 29,
+          "column": 23,
           "line": 27
         }
       },
@@ -750,7 +750,7 @@
         "file": "source/renderer/app/components/assets/AssetContent.js",
         "id": "assets.assetToken.param.name",
         "start": {
-          "column": 24,
+          "column": 18,
           "line": 32
         }
       },
@@ -764,7 +764,7 @@
         "file": "source/renderer/app/components/assets/AssetContent.js",
         "id": "assets.assetToken.param.ticker",
         "start": {
-          "column": 26,
+          "column": 20,
           "line": 37
         }
       },
@@ -778,7 +778,7 @@
         "file": "source/renderer/app/components/assets/AssetContent.js",
         "id": "assets.assetToken.param.description",
         "start": {
-          "column": 31,
+          "column": 25,
           "line": 42
         }
       },
@@ -971,6 +971,240 @@
       }
     ],
     "path": "source/renderer/app/components/assets/AssetSettingsDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Token #{assetNumber}",
+        "description": "\"assetLabel\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.assetLabel",
+        "start": {
+          "column": 14,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!unformatted amount",
+        "description": "\"unformattedAmountLabel\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.unformattedAmountLabel",
+        "start": {
+          "column": 26,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
+        "description": "\"unformattedAmountMessageForHardwareWallets\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets",
+        "start": {
+          "column": 46,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
+        "description": "\"unformattedAmountMessageForSoftwareWallets\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets",
+        "start": {
+          "column": 46,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!There is no such token in this wallet",
+        "description": "\"missingToken\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.missingToken",
+        "start": {
+          "column": 16,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Insufficient funds. The balance of the token in this wallet is  {formattedBalance} (Unformatted: {unformattedBalance})",
+        "description": "\"insufficientBalance\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.insufficientBalance",
+        "start": {
+          "column": 23,
+          "line": 53
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/assets/AssetTransactionConfirmation.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Transaction request",
+        "description": "\"title\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.title",
+        "start": {
+          "column": 9,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!triggered from {triggeredFrom}",
+        "description": "\"subtitle\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.subtitle",
+        "start": {
+          "column": 12,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!From wallet",
+        "description": "\"fromWalletLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.fromWalletLabel",
+        "start": {
+          "column": 19,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiver",
+        "description": "\"receiver\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.receiver.label",
+        "start": {
+          "column": 17,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Select a wallet",
+        "description": "\"walletsDropdownPlaceholder\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.walletsDropdown.placeholder",
+        "start": {
+          "column": 30,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Add a wallet",
+        "description": "\"addWalletLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.walletsDropdown.addWalletLabel",
+        "start": {
+          "column": 18,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "description": "\"transactionFeeLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.transactionFee.label",
+        "start": {
+          "column": 23,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Additional data",
+        "description": "\"additionalDataLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.additionalData.label",
+        "start": {
+          "column": 23,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Meta data",
+        "description": "\"metaDataLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.metaData.label",
+        "start": {
+          "column": 17,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet does not contain the minimum amount of {adaBalanceRequired} which is required for delegation to be available. Please select a wallet with <b>a minimum amount of {adaBalanceRequired}</b>.",
+        "description": "\"Not enough ada\" error in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.error.notEnoughAda",
+        "start": {
+          "column": 35,
+          "line": 70
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/dapp/DappTransactionRequest.json"
   },
   {
     "descriptors": [
@@ -10595,7 +10829,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
+        "defaultMessage": "!!!The balance and transaction history of this wallet is being synced with the blockchain.",
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
@@ -12427,17 +12661,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Recently used tokens",
-        "description": "Send button on Wallet summary assets page",
+        "defaultMessage": "!!!Tokens",
+        "description": "Tokens title in the wallet summary",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.tokensList.title",
+        "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 19,
-          "line": 15
+          "line": 14
         }
       }
     ],
@@ -12532,7 +12766,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 15,
@@ -12546,7 +12780,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textTop",
         "start": {
           "column": 20,
@@ -12560,7 +12794,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textBottom",
         "start": {
           "column": 23,
@@ -12574,7 +12808,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkLabel",
         "start": {
           "column": 22,
@@ -12588,7 +12822,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkUrl",
         "start": {
           "column": 20,
@@ -12596,7 +12830,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.json"
+    "path": "source/renderer/app/components/wallet/tokens/WalletNoTokens.json"
   },
   {
     "descriptors": [
@@ -12680,13 +12914,13 @@
         "description": "Favorites list title label",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
         "id": "wallet.tokens.list.favorites.title",
         "start": {
           "column": 22,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -12694,13 +12928,27 @@
         "description": "Favorites list title label",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
         "id": "wallet.tokens.list.tokens.title",
         "start": {
           "column": 19,
-          "line": 18
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!The balance and transaction history of this wallet is being synced with the blockchain.",
+        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
+        "id": "wallet.send.form.syncingTransactionsMessage",
+        "start": {
+          "column": 18,
+          "line": 24
         }
       }
     ],
@@ -12713,13 +12961,13 @@
         "description": "No results on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.search.noResults",
         "start": {
           "column": 13,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -12727,13 +12975,13 @@
         "description": "Search Results on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.search.searchResults",
         "start": {
           "column": 17,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -12741,13 +12989,13 @@
         "description": "Amount header on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.column.amount",
         "start": {
           "column": 16,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -12755,13 +13003,13 @@
         "description": "Token header on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.column.token",
         "start": {
           "column": 15,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -12769,13 +13017,13 @@
         "description": "View all button label on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
         "id": "wallet.tokens.list.viewAllButton.label",
         "start": {
           "column": 22,
-          "line": 39
+          "line": 40
         }
       }
     ],
@@ -13686,13 +13934,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactions.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 19
         }
       }
     ],

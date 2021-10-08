@@ -6,6 +6,11 @@
 
 - Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671))
 
+### Fixes
+
+- Fixed wallet settings screen - no space at the bottom when scrolled down ([PR 2686](https://github.com/input-output-hk/daedalus/pull/2686))
+- Fixed the missing text for the DAPP static screens ([PR 2693](https://github.com/input-output-hk/daedalus/pull/2693))
+
 ### Chores
 
 - Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))

@@ -15,9 +15,9 @@
   }
 }
 .outerHeader {
-  margin: 0 10px 10px 20px;
   display: flex;
   justify-content: space-between;
+  margin: 0 10px 10px 20px;
   .title {
     color: var(--theme-tokens-list-header-text-color);
     font-family: var(--font-regular);
@@ -47,8 +47,8 @@
   }
   .sortIcon {
     margin-left: 3px;
-    visibility: hidden;
     opacity: 0.5;
+    visibility: hidden;
 
     & > svg {
       height: 7.5px;

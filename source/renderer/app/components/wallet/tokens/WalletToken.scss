@@ -61,9 +61,9 @@
     padding-top: 2px;
     position: absolute;
     top: 7px;
+    transition: opacity 0.25s;
     width: 23px;
     z-index: 1;
-    transition: opacity 0.25s;
     svg {
       height: 14px;
       width: 15px;

@@ -8,7 +8,6 @@ import WalletTransactionsList, {
 import WalletTransactionsHeader from './WalletTransactionsHeader';
 import FilterResultInfo from './FilterResultInfo';
 import WalletNoTransactions from './WalletNoTransactions';
-import VerticalFlexContainer from '../../layout/VerticalFlexContainer';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -165,7 +164,7 @@ export default class WalletTransactions extends Component<Props, State> {
               numberFormat: currentNumberFormat,
             }}
           />
-          <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
+          {walletTransactions}
         </div>
       </WalletTransactionsListScrollContext.Provider>
     );

@@ -4,11 +4,13 @@ import { inject, observer } from 'mobx-react';
 import type BigNumber from 'bignumber.js';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
+import DappTransactionRequest from '../../../components/dapp/DappTransactionRequest';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../../utils/assets';
+import { IS_DAPP_ENABLED } from '../../../config/walletsConfig';
 
 type Props = {
   stores: any | StoresMap,
@@ -96,6 +98,25 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const walletTokens = activeWallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const { onCopyAssetParam } = actions.assets;
+
+    if (IS_DAPP_ENABLED) {
+      return (
+        <DappTransactionRequest
+          adaAmount={amount}
+          address=""
+          assets={[]}
+          assetsAmounts={selectedAssets}
+          onAddWallet={() => {}}
+          onClose={() => {}}
+          onSelectWallet={() => {}}
+          onSubmit={() => {}}
+          selectedWallet={activeWallet}
+          transactionFee={transactionFee}
+          triggeredFrom=""
+          wallets={[]}
+        />
+      );
+    }
 
     return (
       <>
