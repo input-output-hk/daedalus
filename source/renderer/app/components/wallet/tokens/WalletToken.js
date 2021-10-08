@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -76,16 +76,20 @@ const WalletToken = observer((props: Props) => {
     props.isFavorite ? styles.isFavorite : null,
   ]);
 
-  const header = () => {
-    const {
-      anyAssetWasHovered,
-      asset,
-      assetSettingsDialogWasOpened,
-      isFavorite,
-      isLoading,
-      onCopyAssetParam,
-      onToggleFavorite,
-    } = props;
+  const {
+    anyAssetWasHovered,
+    asset,
+    assetSettingsDialogWasOpened,
+    intl,
+    isFavorite,
+    isLoading,
+    onAssetSettings,
+    onCopyAssetParam,
+    onOpenAssetSend,
+    onToggleFavorite,
+  } = props;
+
+  const header = useMemo(() => {
     const { decimals, recommendedDecimals, uniqueId } = asset;
     const arrowStyles = classNames(styles.arrow, {
       [styles.isExpanded]: isExpanded,
@@ -128,10 +132,17 @@ const WalletToken = observer((props: Props) => {
         <SVGInline svg={arrow} className={arrowStyles} />
       </div>
     );
-  };
+  }, [
+    anyAssetWasHovered,
+    asset,
+    assetSettingsDialogWasOpened,
+    isFavorite,
+    isLoading,
+    onCopyAssetParam,
+    onToggleFavorite,
+  ]);
 
-  const footer = () => {
-    const { asset, isLoading, intl } = props;
+  const footer = useMemo(() => {
     return (
       <div className={styles.footer}>
         <dl>
@@ -147,13 +158,12 @@ const WalletToken = observer((props: Props) => {
             />
           </dd>
         </dl>
-        {buttons()}
+        {buttons}
       </div>
     );
-  };
+  }, [asset, isLoading, intl]);
 
-  const buttons = () => {
-    const { asset, onOpenAssetSend, onAssetSettings, intl } = props;
+  const buttons = useMemo(() => {
     const { recommendedDecimals, decimals } = asset;
     const hasWarning =
       typeof recommendedDecimals === 'number' &&
@@ -206,9 +216,9 @@ const WalletToken = observer((props: Props) => {
         />
       </div>
     );
-  };
+  }, [asset, onOpenAssetSend, onAssetSettings, intl]);
 
-  const { asset, onCopyAssetParam, isInsertingAsset, isRemovingAsset } = props;
+  const { isInsertingAsset, isRemovingAsset } = props;
   const componentStyles = classNames(styles.component, {
     [styles.isExpanded]: isExpanded,
     [styles.inserting]: isInsertingAsset,
@@ -216,14 +226,14 @@ const WalletToken = observer((props: Props) => {
   });
   return (
     <div className={componentStyles}>
-      {header()}
+      {header}
       <div className={styles.content}>
         <AssetContent
           asset={asset}
           onCopyAssetParam={onCopyAssetParam}
           highlightFingerprint={false}
         />
-        {footer()}
+        {footer}
       </div>
     </div>
   );
