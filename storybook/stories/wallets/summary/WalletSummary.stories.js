@@ -230,6 +230,8 @@ storiesOf('Wallets|Summary', module)
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
         currencyRate={0.321}
+        onToggleFavorite={action('onToggleFavorite')}
+        tokenFavorites={{}}
         currencyLastFetched={currencyLastFetched}
         onCurrencySettingClick={action('onCurrencySettingClick')}
         assets={[
@@ -253,7 +255,7 @@ storiesOf('Wallets|Summary', module)
         ]}
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
-        onCopyAssetItem={action('onCopyAsset')}
+        onCopyAssetParam={action('onCopyAsset')}
         onAssetSettings={action('onAssetSettings')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         assetSettingsDialogWasOpened={boolean(
@@ -261,6 +263,7 @@ storiesOf('Wallets|Summary', module)
           true
         )}
         onExternalLinkClick={action('onExternalLinkClick')}
+        onViewAllButtonClick={action('onViewAllButtonClick')}
       />
     );
   });

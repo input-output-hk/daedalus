@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -7,13 +7,15 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
-import styles from './WalletSummaryAsset.scss';
+import styles from './WalletToken.scss';
 import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
 import AssetContent from '../../assets/AssetContent';
 import type { AssetToken } from '../../../api/assets/types';
 import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
 import warningIcon from '../../../assets/images/asset-token-warning-ic.inline.svg';
+import starNotFilledIcon from '../../../assets/images/star-not-filled.inline.svg';
+import starFilledIcon from '../../../assets/images/star-filled.inline.svg';
 
 const messages = defineMessages({
   tokenSendButton: {
@@ -46,42 +48,68 @@ const messages = defineMessages({
 });
 
 type Props = {
-  asset: AssetToken,
-  onOpenAssetSend: Function,
-  onCopyAssetParam: Function,
-  onAssetSettings: Function,
   anyAssetWasHovered: boolean,
-  isLoading: boolean,
+  asset: AssetToken,
   assetSettingsDialogWasOpened: boolean,
   intl: intlShape.isRequired,
+  isFavorite: boolean,
+  isInsertingAsset: boolean,
+  isLoading: boolean,
+  isRemovingAsset: boolean,
+  onAssetSettings: Function,
+  onCopyAssetParam: Function,
+  onOpenAssetSend: Function,
+  onToggleFavorite: Function,
 };
 
 type IsExpanded = boolean;
 
-const WalletSummaryAsset = observer((props: Props) => {
+const WalletToken = observer((props: Props) => {
   const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
 
   const toggleIsExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const header = () => {
-    const {
-      asset,
-      onCopyAssetParam,
-      isLoading,
-      anyAssetWasHovered,
-      assetSettingsDialogWasOpened,
-    } = props;
-    const { decimals, recommendedDecimals } = asset;
+  const favoriteIconStyles = classNames([
+    styles.favoriteIcon,
+    props.isFavorite ? styles.isFavorite : null,
+  ]);
+
+  const {
+    anyAssetWasHovered,
+    asset,
+    assetSettingsDialogWasOpened,
+    intl,
+    isFavorite,
+    isLoading,
+    onAssetSettings,
+    onCopyAssetParam,
+    onOpenAssetSend,
+    onToggleFavorite,
+  } = props;
+
+  const header = useMemo(() => {
+    const { decimals, recommendedDecimals, uniqueId } = asset;
     const arrowStyles = classNames(styles.arrow, {
       [styles.isExpanded]: isExpanded,
     });
     const hasWarning =
       typeof recommendedDecimals === 'number' &&
       decimals !== recommendedDecimals;
+    const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
     return (
       <div className={styles.header} onClick={toggleIsExpanded}>
+        <button
+          className={favoriteIconStyles}
+          onClick={(event) => {
+            event.persist();
+            event.stopPropagation();
+            onToggleFavorite({ uniqueId, isFavorite });
+          }}
+        >
+          <SVGInline className={styles.warningIcon} svg={starIcon} />
+        </button>
         <Asset
           asset={asset}
           onCopyAssetParam={onCopyAssetParam}
@@ -104,10 +132,17 @@ const WalletSummaryAsset = observer((props: Props) => {
         <SVGInline svg={arrow} className={arrowStyles} />
       </div>
     );
-  };
+  }, [
+    anyAssetWasHovered,
+    asset,
+    assetSettingsDialogWasOpened,
+    isFavorite,
+    isLoading,
+    onCopyAssetParam,
+    onToggleFavorite,
+  ]);
 
-  const footer = () => {
-    const { asset, isLoading, intl } = props;
+  const footer = useMemo(() => {
     return (
       <div className={styles.footer}>
         <dl>
@@ -123,13 +158,12 @@ const WalletSummaryAsset = observer((props: Props) => {
             />
           </dd>
         </dl>
-        {buttons()}
+        {buttons}
       </div>
     );
-  };
+  }, [asset, isLoading, intl]);
 
-  const buttons = () => {
-    const { asset, onOpenAssetSend, onAssetSettings, intl } = props;
+  const buttons = useMemo(() => {
     const { recommendedDecimals, decimals } = asset;
     const hasWarning =
       typeof recommendedDecimals === 'number' &&
@@ -178,28 +212,31 @@ const WalletSummaryAsset = observer((props: Props) => {
           ])}
           onClick={() => onOpenAssetSend(asset)}
           label={intl.formatMessage(messages.tokenSendButton)}
+          disabled={asset.quantity.isZero()}
         />
       </div>
     );
-  };
+  }, [asset, onOpenAssetSend, onAssetSettings, intl]);
 
-  const { asset, onCopyAssetParam } = props;
+  const { isInsertingAsset, isRemovingAsset } = props;
   const componentStyles = classNames(styles.component, {
     [styles.isExpanded]: isExpanded,
+    [styles.inserting]: isInsertingAsset,
+    [styles.removing]: isRemovingAsset,
   });
   return (
     <div className={componentStyles}>
-      {header()}
+      {header}
       <div className={styles.content}>
         <AssetContent
           asset={asset}
           onCopyAssetParam={onCopyAssetParam}
           highlightFingerprint={false}
         />
-        {footer()}
+        {footer}
       </div>
     </div>
   );
 });
 
-export default injectIntl(WalletSummaryAsset);
+export default injectIntl(WalletToken);

@@ -264,7 +264,7 @@ type Props = {
   hasAssetsEnabled: boolean,
   isInternalAddress: Function,
   isLoadingAssets: boolean,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
 };
 
 type State = {
@@ -486,7 +486,7 @@ export default class Transaction extends Component<Props, State> {
       isDeletingTransaction,
       currentTimeFormat,
       isLoadingAssets,
-      onCopyAssetItem,
+      onCopyAssetParam,
     } = this.props;
 
     const { intl } = this.context;
@@ -694,7 +694,7 @@ export default class Transaction extends Component<Props, State> {
                             </span>
                             <Asset
                               asset={asset}
-                              onCopyAssetItem={onCopyAssetItem}
+                              onCopyAssetParam={onCopyAssetParam}
                               className={styles.assetToken}
                             />
                           </h3>

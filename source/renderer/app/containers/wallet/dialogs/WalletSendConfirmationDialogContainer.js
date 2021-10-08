@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type BigNumber from 'bignumber.js';
-import { ellipsis } from '../../../utils/strings';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
 import DappTransactionRequest from '../../../components/dapp/DappTransactionRequest';
@@ -10,7 +9,7 @@ import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
-import { getAssetTokens } from '../../../utils/assets';
+import { getNonZeroAssetTokens } from '../../../utils/assets';
 import { IS_DAPP_ENABLED } from '../../../config/walletsConfig';
 
 type Props = {
@@ -49,14 +48,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
     hardwareWallets.initiateTransaction({ walletId: activeWallet.id });
-  };
-
-  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
-    const value = ellipsis(fullValue, 15, 15);
-    this.props.actions.wallets.copyAssetItem.trigger({
-      assetItem,
-      value,
-    });
   };
 
   render() {
@@ -105,7 +96,8 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     const walletTokens = activeWallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
+    const { onCopyAssetParam } = actions.assets;
 
     if (IS_DAPP_ENABLED) {
       return (
@@ -153,7 +145,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
-            onCopyAssetItem={this.handleOnCopyAssetItem}
+            onCopyAssetParam={onCopyAssetParam.trigger}
             isTrezor={isTrezor}
             formattedTotalAmount={formattedTotalAmount}
           />
