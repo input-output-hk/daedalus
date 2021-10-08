@@ -1019,9 +1019,9 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@https://github.com/vacuumlabs/ledgerjs-cardano-shelley/releases/download/v4.0.0-multisig-rc1/cardano-foundation-ledgerjs-hw-app-cardano-v4.0.0-rc1.tgz":
-  version "4.0.0"
-  resolved "https://github.com/vacuumlabs/ledgerjs-cardano-shelley/releases/download/v4.0.0-multisig-rc1/cardano-foundation-ledgerjs-hw-app-cardano-v4.0.0-rc1.tgz#6c882904f6058c88dfbde2a1555ca6d36c85ca9f"
+"@cardano-foundation/ledgerjs-hw-app-cardano@https://github.com/vacuumlabs/ledgerjs-cardano-shelley/releases/download/v4.0.0-multisig-rc4/cardano-foundation-ledgerjs-hw-app-cardano-v4.0.0-rc4.tgz":
+  version "4.0.0-rc4"
+  resolved "https://github.com/vacuumlabs/ledgerjs-cardano-shelley/releases/download/v4.0.0-multisig-rc4/cardano-foundation-ledgerjs-hw-app-cardano-v4.0.0-rc4.tgz#5fc8887dff96786a3b5111de71102a371ea708f4"
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     "@types/ledgerhq__hw-transport" "^4.21.3"
