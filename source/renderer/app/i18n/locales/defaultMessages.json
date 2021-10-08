@@ -975,6 +975,240 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Token #{assetNumber}",
+        "description": "\"assetLabel\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.assetLabel",
+        "start": {
+          "column": 14,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!unformatted amount",
+        "description": "\"unformattedAmountLabel\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.unformattedAmountLabel",
+        "start": {
+          "column": 26,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
+        "description": "\"unformattedAmountMessageForHardwareWallets\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets",
+        "start": {
+          "column": 46,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
+        "description": "\"unformattedAmountMessageForSoftwareWallets\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets",
+        "start": {
+          "column": 46,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!There is no such token in this wallet",
+        "description": "\"missingToken\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.missingToken",
+        "start": {
+          "column": 16,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Insufficient funds. The balance of the token in this wallet is  {formattedBalance} (Unformatted: {unformattedBalance})",
+        "description": "\"insufficientBalance\" item on AssetTransactionConfirmation.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.js",
+        "id": "asset.transactionConfirmation.insufficientBalance",
+        "start": {
+          "column": 23,
+          "line": 53
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/assets/AssetTransactionConfirmation.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Transaction request",
+        "description": "\"title\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.title",
+        "start": {
+          "column": 9,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!triggered from {triggeredFrom}",
+        "description": "\"subtitle\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.subtitle",
+        "start": {
+          "column": 12,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!From wallet",
+        "description": "\"fromWalletLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.fromWalletLabel",
+        "start": {
+          "column": 19,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiver",
+        "description": "\"receiver\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.receiver.label",
+        "start": {
+          "column": 17,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Select a wallet",
+        "description": "\"walletsDropdownPlaceholder\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.walletsDropdown.placeholder",
+        "start": {
+          "column": 30,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Add a wallet",
+        "description": "\"addWalletLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.walletsDropdown.addWalletLabel",
+        "start": {
+          "column": 18,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "description": "\"transactionFeeLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.transactionFee.label",
+        "start": {
+          "column": 23,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Additional data",
+        "description": "\"additionalDataLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.additionalData.label",
+        "start": {
+          "column": 23,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Meta data",
+        "description": "\"metaDataLabel\" in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.metaData.label",
+        "start": {
+          "column": 17,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet does not contain the minimum amount of {adaBalanceRequired} which is required for delegation to be available. Please select a wallet with <b>a minimum amount of {adaBalanceRequired}</b>.",
+        "description": "\"Not enough ada\" error in the dApp transaction request dialog",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/dapp/DappTransactionRequest.js",
+        "id": "dapp.transaction.request.error.notEnoughAda",
+        "start": {
+          "column": 35,
+          "line": 70
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/dapp/DappTransactionRequest.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "end": {
@@ -13657,13 +13891,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactions.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 19
         }
       }
     ],
@@ -16326,6 +16560,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Token",
+        "description": "Token description.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/widgets/forms/MnemonicInputWidget.js",
+        "id": "global.labels.token",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/forms/MnemonicInputWidget.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Language",
         "description": "Label for the language select.",
         "end": {
@@ -18466,5 +18719,169 @@
       }
     ],
     "path": "source/renderer/app/utils/votingPDFGenerator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Create",
+        "description": "Create label.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.create",
+        "start": {
+          "column": 10,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Create a new wallet description.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.create.description",
+        "start": {
+          "column": 19,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!Join",
+        "description": "Join label.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.label",
+        "start": {
+          "column": 8,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Join a shared wallet",
+        "description": "Join a shared wallet description.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.description",
+        "start": {
+          "column": 20,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Import",
+        "description": "Import label.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.label",
+        "start": {
+          "column": 10,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
+        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.description",
+        "start": {
+          "column": 24,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Recovery Phrase description.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.restore.dialog.mnemonicsStep",
+        "start": {
+          "column": 18,
+          "line": 67
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "Save description.",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.save",
+        "start": {
+          "column": 8,
+          "line": 72
+        }
+      }
+    ],
+    "path": "storybook/stories/common/Widgets.stories.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Read More",
+        "description": "Read More button label.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.labels.readMore",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Failure Alert",
+        "description": "Failure Alert title.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.errors.failureAlert",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Content",
+        "description": "Content.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "static.dummy.markdown",
+        "start": {
+          "column": 11,
+          "line": 43
+        }
+      }
+    ],
+    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]
