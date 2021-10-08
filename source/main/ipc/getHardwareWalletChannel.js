@@ -295,7 +295,7 @@ export const handleHardwareWalletRequests = async (
     });
   };
 
-  getDevicesListChannel.onRequest(async (params) => {
+  getDevicesListChannel.onRequest(async () => {
     try {
       logger.info('[HW-DEBUG] Get Devices list - Start');
       const deviceListFromNoEvents = getDevices();
@@ -304,7 +304,7 @@ export const handleHardwareWalletRequests = async (
       logger.info('[HW-DEBUG] Get Devices list - Done: ', {
         deviceListFromNoEvents,
         transportList,
-        usbList
+        usbList,
       });
       const data = JSON.stringify({
         deviceListFromNoEvents,

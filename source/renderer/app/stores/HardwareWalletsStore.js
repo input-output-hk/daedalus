@@ -1234,14 +1234,14 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action getDevicesList = async () => {
-    console.debug('>>> devicesList - INIT');
     try {
-      const devicesList = await getDevicesListChannel.request({});
+      const devicesList = await getDevicesListChannel.request();
+      // eslint-disable-next-line
       console.debug('>>> devicesList - DONE: ', devicesList);
     } catch (error) {
-      console.debug('>>> getDevicesList - ERROR: ', error);
+      throw error;
     }
-  }
+  };
 
   @action showAddress = async (params: {
     address: WalletAddress,
@@ -2326,8 +2326,6 @@ export default class HardwareWalletsStore extends Store {
   @action _changeHardwareWalletConnectionStatus = async (
     params: HardwareWalletConnectionRequest
   ) => {
-    // eslint-disable-next-line
-    console.debug('>>> CHANGE: ', params);
     const {
       disconnected,
       deviceType,
