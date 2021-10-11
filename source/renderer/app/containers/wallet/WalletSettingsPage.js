@@ -19,6 +19,7 @@ import {
 } from '../../config/cryptoConfig';
 import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
+import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 
 type Props = InjectedProps;
 
@@ -103,7 +104,7 @@ export default class WalletSettingsPage extends Component<Props> {
       : WALLET_RECOVERY_PHRASE_WORD_COUNT;
 
     return (
-      <>
+      <VerticalFlexContainer>
         <WalletSettings
           error={updateWalletRequest.error}
           openDialogAction={actions.dialogs.open.trigger}
@@ -176,7 +177,7 @@ export default class WalletSettingsPage extends Component<Props> {
           shouldDisplayRecoveryPhrase={shouldDisplayRecoveryPhrase}
         />
         {shouldDisplayRecoveryPhrase && <WalletRecoveryPhraseContainer />}
-      </>
+      </VerticalFlexContainer>
     );
   }
 }
