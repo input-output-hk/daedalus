@@ -39,7 +39,6 @@ export function PoolPopOver(props: {
   const poolId = props.stakePool.id;
 
   const close = () => {
-    setIsHovered(false);
     if (props.onClose) props.onClose();
   };
   return (
@@ -47,6 +46,7 @@ export function PoolPopOver(props: {
       <div
         className={styles.triggerTarget}
         onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         ref={popOverTargetRef}
       >
         {props.children}
