@@ -91,7 +91,7 @@ const WalletToken = observer((props: Props) => {
   } = props;
 
   const assetHeaderContent = useMemo(() => {
-    const { decimals, recommendedDecimals, uniqueId } = asset;
+    const { decimals, recommendedDecimals } = asset;
     const hasWarning =
       typeof recommendedDecimals === 'number' &&
       decimals !== recommendedDecimals;
