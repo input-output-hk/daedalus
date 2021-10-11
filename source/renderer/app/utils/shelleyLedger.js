@@ -253,7 +253,10 @@ export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
     params: {
-      path: derivationPathToLedgerPath(cert.rewardAccountPath),
+      stakeCredential: {
+        type: StakeCredentialParamsType.KEY_PATH,
+        keyPath: derivationPathToLedgerPath(cert.rewardAccountPath),
+      },
       poolKeyHashHex: cert.pool
         ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
         : null,
