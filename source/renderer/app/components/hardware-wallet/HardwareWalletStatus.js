@@ -22,7 +22,8 @@ const messages = defineMessages({
   },
   connecting_failed: {
     id: 'wallet.hardware.deviceStatus.connecting.failed',
-    defaultMessage: '!!!Unable to detect your hardware wallet device. ',
+    defaultMessage:
+      '!!!Disconnect and reconnect your device to restart the process',
     description: '"Connect failed" device state',
   },
   connecting_known: {
@@ -311,12 +312,6 @@ export default class HardwareWalletStatus extends Component<Props, State> {
             <SVGInline svg={clearIcon} className={styles.clearIcon} />
           )}
         </div>
-        {(hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED ||
-          hwDeviceStatus === HwDeviceStatuses.CONNECTING_FAILED) && (
-          <div className={styles.errorText}>
-            {intl.formatMessage(messages.exportingPublicKeyError)}
-          </div>
-        )}
       </>
     );
   }
