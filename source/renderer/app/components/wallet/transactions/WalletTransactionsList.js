@@ -15,7 +15,7 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
-import { getAssetTokens } from '../../../utils/assets';
+import { getNonZeroAssetTokens } from '../../../utils/assets';
 
 const messages = defineMessages({
   today: {
@@ -69,7 +69,7 @@ type Props = {
   hasAssetsEnabled: boolean,
   getAsset: Function,
   isInternalAddress: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
 };
 
 type State = {
@@ -221,7 +221,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
       hasAssetsEnabled,
       getAsset,
       isInternalAddress,
-      onCopyAssetItem,
+      onCopyAssetParam,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -231,7 +231,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
     ]);
 
     const txTokens = tx.assets;
-    const assetTokens = getAssetTokens(txTokens, getAsset);
+    const assetTokens = getNonZeroAssetTokens(txTokens, getAsset);
     const totalRawAssets = tx.assets.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = tx.assets.length > 0;
@@ -259,7 +259,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
           hasAssetsEnabled={hasAssetsEnabled}
           isInternalAddress={isInternalAddress}
           isLoadingAssets={isLoadingAssets}
-          onCopyAssetItem={onCopyAssetItem}
+          onCopyAssetParam={onCopyAssetParam}
         />
       </div>
     );

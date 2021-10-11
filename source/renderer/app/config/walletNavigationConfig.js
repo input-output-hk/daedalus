@@ -4,6 +4,7 @@ export const WALLET_NAV_IDS = {
   SEND: 'send',
   RECEIVE: 'receive',
   TRANSACTIONS: 'transactions',
+  TOKENS: 'tokens',
   SETTINGS: 'settings',
 };
 

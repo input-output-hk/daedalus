@@ -542,7 +542,7 @@
           "line": 22
         },
         "file": "source/renderer/app/components/assets/Asset.js",
-        "id": "assets.assetToken.item.fingerprint",
+        "id": "assets.assetToken.param.fingerprint",
         "start": {
           "column": 19,
           "line": 18
@@ -556,7 +556,7 @@
           "line": 27
         },
         "file": "source/renderer/app/components/assets/Asset.js",
-        "id": "assets.assetToken.item.policyId",
+        "id": "assets.assetToken.param.policyId",
         "start": {
           "column": 16,
           "line": 23
@@ -570,7 +570,7 @@
           "line": 32
         },
         "file": "source/renderer/app/components/assets/Asset.js",
-        "id": "assets.assetToken.item.assetName",
+        "id": "assets.assetToken.param.assetName",
         "start": {
           "column": 17,
           "line": 28
@@ -584,7 +584,7 @@
           "line": 37
         },
         "file": "source/renderer/app/components/assets/Asset.js",
-        "id": "assets.assetToken.item.name",
+        "id": "assets.assetToken.param.name",
         "start": {
           "column": 12,
           "line": 33
@@ -598,7 +598,7 @@
           "line": 42
         },
         "file": "source/renderer/app/components/assets/Asset.js",
-        "id": "assets.assetToken.item.ticker",
+        "id": "assets.assetToken.param.ticker",
         "start": {
           "column": 14,
           "line": 38
@@ -612,7 +612,7 @@
           "line": 47
         },
         "file": "source/renderer/app/components/assets/Asset.js",
-        "id": "assets.assetToken.item.description",
+        "id": "assets.assetToken.param.description",
         "start": {
           "column": 19,
           "line": 43
@@ -626,7 +626,7 @@
           "line": 52
         },
         "file": "source/renderer/app/components/assets/Asset.js",
-        "id": "assets.assetToken.item.blank",
+        "id": "assets.assetToken.param.blank",
         "start": {
           "column": 9,
           "line": 48
@@ -700,97 +700,97 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Fingerprint",
-        "description": "\"fingerprint\" item.",
+        "description": "\"fingerprint\" param.",
         "end": {
           "column": 3,
           "line": 21
         },
         "file": "source/renderer/app/components/assets/AssetContent.js",
-        "id": "assets.assetToken.item.fingerprint",
+        "id": "assets.assetToken.param.fingerprint",
         "start": {
-          "column": 19,
+          "column": 25,
           "line": 17
         }
       },
       {
         "defaultMessage": "!!!Policy Id",
-        "description": "\"policyId\" item.",
+        "description": "\"policyId\" param.",
         "end": {
           "column": 3,
           "line": 26
         },
         "file": "source/renderer/app/components/assets/AssetContent.js",
-        "id": "assets.assetToken.item.policyId",
+        "id": "assets.assetToken.param.policyId",
         "start": {
-          "column": 16,
+          "column": 22,
           "line": 22
         }
       },
       {
         "defaultMessage": "!!!Asset name",
-        "description": "\"assetName\" item.",
+        "description": "\"assetName\" param.",
         "end": {
           "column": 3,
           "line": 31
         },
         "file": "source/renderer/app/components/assets/AssetContent.js",
-        "id": "assets.assetToken.item.assetName",
+        "id": "assets.assetToken.param.assetName",
         "start": {
-          "column": 17,
+          "column": 23,
           "line": 27
         }
       },
       {
         "defaultMessage": "!!!Name",
-        "description": "\"name\" item.",
+        "description": "\"name\" param.",
         "end": {
           "column": 3,
           "line": 36
         },
         "file": "source/renderer/app/components/assets/AssetContent.js",
-        "id": "assets.assetToken.item.name",
+        "id": "assets.assetToken.param.name",
         "start": {
-          "column": 12,
+          "column": 18,
           "line": 32
         }
       },
       {
         "defaultMessage": "!!!Ticker",
-        "description": "\"ticker\" item.",
+        "description": "\"ticker\" param.",
         "end": {
           "column": 3,
           "line": 41
         },
         "file": "source/renderer/app/components/assets/AssetContent.js",
-        "id": "assets.assetToken.item.ticker",
+        "id": "assets.assetToken.param.ticker",
         "start": {
-          "column": 14,
+          "column": 20,
           "line": 37
         }
       },
       {
         "defaultMessage": "!!!Description",
-        "description": "\"description\" item.",
+        "description": "\"description\" param.",
         "end": {
           "column": 3,
           "line": 46
         },
         "file": "source/renderer/app/components/assets/AssetContent.js",
-        "id": "assets.assetToken.item.description",
+        "id": "assets.assetToken.param.description",
         "start": {
-          "column": 19,
+          "column": 25,
           "line": 42
         }
       },
       {
         "defaultMessage": "!!!Blank",
-        "description": "\"Blank\" item value.",
+        "description": "\"Blank\" param value.",
         "end": {
           "column": 3,
           "line": 51
         },
         "file": "source/renderer/app/components/assets/AssetContent.js",
-        "id": "assets.assetToken.item.blank",
+        "id": "assets.assetToken.param.blank",
         "start": {
           "column": 9,
           "line": 47
@@ -9149,13 +9149,13 @@
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.summary",
         "start": {
           "column": 11,
-          "line": 22
+          "line": 17
         }
       },
       {
@@ -9163,13 +9163,13 @@
         "description": "Label for the \"Send\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.send",
         "start": {
           "column": 8,
-          "line": 27
+          "line": 22
         }
       },
       {
@@ -9177,13 +9177,13 @@
         "description": "Label for the \"Receive\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.receive",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 27
         }
       },
       {
@@ -9191,13 +9191,27 @@
         "description": "Label for the \"Transactions\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.transactions",
         "start": {
           "column": 16,
-          "line": 37
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Tokens",
+        "description": "Label for the \"Tokens\" nav button in the wallet navigation.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "id": "wallet.navigation.tokens",
+        "start": {
+          "column": 10,
+          "line": 38
         }
       },
       {
@@ -10815,7 +10829,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
+        "defaultMessage": "!!!The balance and transaction history of this wallet is being synced with the blockchain.",
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
@@ -12647,208 +12661,21 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Send",
-        "description": "Send button on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
-        "id": "wallet.summary.asset.tokenSendButton",
-        "start": {
-          "column": 19,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Amount label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
-        "id": "wallet.summary.asset.amountLabel",
-        "start": {
-          "column": 15,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!Settings",
-        "description": "Settings label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
-        "id": "wallet.summary.asset.settings.button.label",
-        "start": {
-          "column": 23,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
-        "description": "Asset settings recommended pop over content",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
-        "id": "assets.warning.available",
-        "start": {
-          "column": 35,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
-        "description": "Asset settings recommended pop over content",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.js",
-        "id": "assets.warning.notUsing",
-        "start": {
-          "column": 34,
-          "line": 40
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/summary/WalletSummaryAsset.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Tokens",
-        "description": "Number of tokens title on Wallet summary assets page",
+        "description": "Tokens title in the wallet summary",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 18
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
-          "column": 15,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Send",
-        "description": "Send button on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.tokenSendButton",
-        "start": {
           "column": 19,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Unknown",
-        "description": "Unknown label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.unknownLabel",
-        "start": {
-          "column": 16,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Hide search",
-        "description": "Hide search label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.search.button.label.hide",
-        "start": {
-          "column": 25,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Show search",
-        "description": "Show search label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.search.button.label.show",
-        "start": {
-          "column": 25,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Search tokens",
-        "description": "Search placeholder on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.search.input.placeholder",
-        "start": {
-          "column": 26,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token header on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.header.token",
-        "start": {
-          "column": 15,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Amount header on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.header.amount",
-        "start": {
-          "column": 16,
-          "line": 55
-        }
-      },
-      {
-        "defaultMessage": "!!!No results matching your query",
-        "description": "No results on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
-        "id": "wallet.summary.assets.search.noResults",
-        "start": {
-          "column": 13,
-          "line": 60
+          "line": 14
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.json"
+    "path": "source/renderer/app/components/wallet/summary/WalletSummary.json"
   },
   {
     "descriptors": [
@@ -12939,7 +12766,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 15,
@@ -12953,7 +12780,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textTop",
         "start": {
           "column": 20,
@@ -12967,7 +12794,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textBottom",
         "start": {
           "column": 23,
@@ -12981,7 +12808,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkLabel",
         "start": {
           "column": 22,
@@ -12995,7 +12822,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkUrl",
         "start": {
           "column": 20,
@@ -13003,7 +12830,223 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/summary/WalletSummaryNoTokens.json"
+    "path": "source/renderer/app/components/wallet/tokens/WalletNoTokens.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Send",
+        "description": "Send button on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "id": "wallet.summary.asset.tokenSendButton",
+        "start": {
+          "column": 19,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount label on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "id": "wallet.summary.asset.amountLabel",
+        "start": {
+          "column": 15,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Settings",
+        "description": "Settings label on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "id": "wallet.summary.asset.settings.button.label",
+        "start": {
+          "column": 23,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "id": "assets.warning.available",
+        "start": {
+          "column": 35,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 34,
+          "line": 42
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/WalletToken.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Favorites",
+        "description": "Favorites list title label",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
+        "id": "wallet.tokens.list.favorites.title",
+        "start": {
+          "column": 22,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Tokens",
+        "description": "Favorites list title label",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
+        "id": "wallet.tokens.list.tokens.title",
+        "start": {
+          "column": 19,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!The balance and transaction history of this wallet is being synced with the blockchain.",
+        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
+        "id": "wallet.send.form.syncingTransactionsMessage",
+        "start": {
+          "column": 18,
+          "line": 24
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/WalletTokens.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!No results matching your query",
+        "description": "No results on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.search.noResults",
+        "start": {
+          "column": 13,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Search Results",
+        "description": "Search Results on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.search.searchResults",
+        "start": {
+          "column": 17,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount header on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.column.amount",
+        "start": {
+          "column": 16,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token header on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.column.token",
+        "start": {
+          "column": 15,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!View all tokens",
+        "description": "View all button label on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.viewAllButton.label",
+        "start": {
+          "column": 22,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/WalletTokensList.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Search tokens",
+        "description": "Search placeholder for the Wallet Tokens search",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensSearch.js",
+        "id": "wallet.tokens.search.placeholder",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/WalletTokensSearch.json"
   },
   {
     "descriptors": [
@@ -16560,25 +16603,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Token",
-        "description": "Token description.",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/components/widgets/forms/MnemonicInputWidget.js",
-        "id": "global.labels.token",
-        "start": {
-          "column": 9,
-          "line": 11
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/forms/MnemonicInputWidget.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Language",
         "description": "Label for the language select.",
         "end": {
@@ -16874,16 +16898,16 @@
         }
       },
       {
-        "defaultMessage": "!!!{assetItem}: <strong>{value}</strong> copied to clipboard",
+        "defaultMessage": "!!!{param}: <strong>{shortValue}</strong> copied to clipboard",
         "description": "Notification for the wallet assetItem copy success in the Wallet Receive page.",
         "end": {
           "column": 3,
           "line": 70
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
-        "id": "notification.copyAssetItem",
+        "id": "notification.copyAssetParam",
         "start": {
-          "column": 17,
+          "column": 18,
           "line": 64
         }
       },
@@ -17395,13 +17419,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
-          "line": 21
+          "line": 19
         }
       }
     ],
@@ -18719,169 +18743,5 @@
       }
     ],
     "path": "source/renderer/app/utils/votingPDFGenerator.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create",
-        "description": "Create label.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.create",
-        "start": {
-          "column": 10,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Create a new wallet description.",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.create.description",
-        "start": {
-          "column": 19,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Join",
-        "description": "Join label.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.label",
-        "start": {
-          "column": 8,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Join a shared wallet",
-        "description": "Join a shared wallet description.",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.description",
-        "start": {
-          "column": 20,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Import",
-        "description": "Import label.",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.label",
-        "start": {
-          "column": 10,
-          "line": 55
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
-        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.description",
-        "start": {
-          "column": 24,
-          "line": 60
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery Phrase",
-        "description": "Recovery Phrase description.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.restore.dialog.mnemonicsStep",
-        "start": {
-          "column": 18,
-          "line": 67
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "Save description.",
-        "end": {
-          "column": 3,
-          "line": 76
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 72
-        }
-      }
-    ],
-    "path": "storybook/stories/common/Widgets.stories.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Read More",
-        "description": "Read More button label.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.labels.readMore",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Failure Alert",
-        "description": "Failure Alert title.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.errors.failureAlert",
-        "start": {
-          "column": 16,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Content",
-        "description": "Content.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "static.dummy.markdown",
-        "start": {
-          "column": 11,
-          "line": 43
-        }
-      }
-    ],
-    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]
