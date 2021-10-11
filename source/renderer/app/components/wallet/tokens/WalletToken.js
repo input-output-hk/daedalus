@@ -1,5 +1,5 @@
 // @flow
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -66,6 +66,7 @@ type IsExpanded = boolean;
 
 const WalletToken = observer((props: Props) => {
   const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
+  const [arrowStyles, setArrowStyles] = useState<string | null>(null);
 
   const toggleIsExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -89,27 +90,13 @@ const WalletToken = observer((props: Props) => {
     onToggleFavorite,
   } = props;
 
-  const header = useMemo(() => {
-    const { decimals, recommendedDecimals, uniqueId } = asset;
-    const arrowStyles = classNames(styles.arrow, {
-      [styles.isExpanded]: isExpanded,
-    });
+  const assetHeaderContent = useMemo(() => {
+    const { decimals, recommendedDecimals } = asset;
     const hasWarning =
       typeof recommendedDecimals === 'number' &&
       decimals !== recommendedDecimals;
-    const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
     return (
-      <div className={styles.header} onClick={toggleIsExpanded}>
-        <button
-          className={favoriteIconStyles}
-          onClick={(event) => {
-            event.persist();
-            event.stopPropagation();
-            onToggleFavorite({ uniqueId, isFavorite });
-          }}
-        >
-          <SVGInline className={styles.warningIcon} svg={starIcon} />
-        </button>
+      <>
         <Asset
           asset={asset}
           onCopyAssetParam={onCopyAssetParam}
@@ -129,8 +116,7 @@ const WalletToken = observer((props: Props) => {
           className={styles.assetAmount}
           isShort
         />
-        <SVGInline svg={arrow} className={arrowStyles} />
-      </div>
+      </>
     );
   }, [
     anyAssetWasHovered,
@@ -141,6 +127,37 @@ const WalletToken = observer((props: Props) => {
     onCopyAssetParam,
     onToggleFavorite,
   ]);
+
+  useEffect(
+    () =>
+      setArrowStyles(
+        classNames(styles.arrow, {
+          [styles.isExpanded]: isExpanded,
+        })
+      ),
+    [isExpanded]
+  );
+
+  const header = useMemo(() => {
+    const { uniqueId } = asset;
+    const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
+    return (
+      <div className={styles.header} onClick={toggleIsExpanded}>
+        <button
+          className={favoriteIconStyles}
+          onClick={(event) => {
+            event.persist();
+            event.stopPropagation();
+            onToggleFavorite({ uniqueId, isFavorite });
+          }}
+        >
+          <SVGInline className={styles.warningIcon} svg={starIcon} />
+        </button>
+        {assetHeaderContent}
+        <SVGInline svg={arrow} className={arrowStyles} />
+      </div>
+    );
+  }, [asset, isExpanded, arrowStyles]);
 
   const footer = useMemo(() => {
     return (
