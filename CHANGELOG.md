@@ -6,6 +6,10 @@
 
 - Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671))
 
+### Chores
+
+- Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
+
 ### Fixes
 
 - Fixed wallet settings screen - no space at the bottom when scrolled down ([PR 2686](https://github.com/input-output-hk/daedalus/pull/2686))
