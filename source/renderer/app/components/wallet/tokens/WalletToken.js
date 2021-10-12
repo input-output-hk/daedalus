@@ -157,7 +157,14 @@ const WalletToken = observer((props: Props) => {
         <SVGInline svg={arrow} className={arrowStyles} />
       </div>
     );
-  }, [asset, isExpanded, arrowStyles]);
+  }, [
+    asset,
+    isExpanded,
+    arrowStyles,
+    onToggleFavorite,
+    isFavorite,
+    favoriteIconStyles,
+  ]);
 
   const buttons = useMemo(() => {
     const { recommendedDecimals, decimals } = asset;
