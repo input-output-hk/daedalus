@@ -159,27 +159,6 @@ const WalletToken = observer((props: Props) => {
     );
   }, [asset, isExpanded, arrowStyles]);
 
-  const footer = useMemo(() => {
-    return (
-      <div className={styles.footer}>
-        <dl>
-          <dt>{intl.formatMessage(messages.amountLabel)}</dt>
-          <dd>
-            {' '}
-            <AssetAmount
-              amount={asset.quantity}
-              metadata={asset.metadata}
-              decimals={asset.decimals}
-              isLoading={isLoading}
-              className={styles.assetAmount}
-            />
-          </dd>
-        </dl>
-        {buttons}
-      </div>
-    );
-  }, [asset, isLoading, intl]);
-
   const buttons = useMemo(() => {
     const { recommendedDecimals, decimals } = asset;
     const hasWarning =
@@ -234,6 +213,27 @@ const WalletToken = observer((props: Props) => {
       </div>
     );
   }, [asset, onOpenAssetSend, onAssetSettings, intl]);
+
+  const footer = useMemo(() => {
+    return (
+      <div className={styles.footer}>
+        <dl>
+          <dt>{intl.formatMessage(messages.amountLabel)}</dt>
+          <dd>
+            {' '}
+            <AssetAmount
+              amount={asset.quantity}
+              metadata={asset.metadata}
+              decimals={asset.decimals}
+              isLoading={isLoading}
+              className={styles.assetAmount}
+            />
+          </dd>
+        </dl>
+        {buttons}
+      </div>
+    );
+  }, [asset, isLoading, intl, buttons]);
 
   const { isInsertingAsset, isRemovingAsset } = props;
   const componentStyles = classNames(styles.component, {
