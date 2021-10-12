@@ -33,7 +33,8 @@ export function PoolPopOver(props: {
   isGridRewardsView?: boolean,
 }) {
   // Track hover state manually to optimize performance by lazy init pop overs
-  const [isHovered, setIsHovered] = useState(false);
+  const [hasHovered, setHasHovered] = useState(false);
+
   // The ref passed to Tippy.js as trigger target
   const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
@@ -45,13 +46,12 @@ export function PoolPopOver(props: {
     <>
       <div
         className={styles.triggerTarget}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => setHasHovered(true)}
         ref={popOverTargetRef}
       >
         {props.children}
       </div>
-      {isHovered ? ( // Init the pop over only when the target is hovered
+      {hasHovered ? ( // Init the pop over only when the target is hovered
         <PopOver
           interactive
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
