@@ -11,6 +11,7 @@ import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
+import { IS_STAKING_INFO_PAGE_AVAILABLE } from '../../config/stakingConfig';
 
 type Props = InjectedContainerProps;
 
@@ -82,7 +83,7 @@ export default class Staking extends Component<Props> {
       isAlonzoActivated,
     } = networkStatus;
     const { isStakingDelegationCountdown } = staking;
-    const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
+    const shouldShowInfoTab = IS_STAKING_INFO_PAGE_AVAILABLE;
 
     const isDelegationWizardOpen = uiDialogs.isOpen(
       DelegationSetupWizardDialog
