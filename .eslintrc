@@ -1,17 +1,17 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "legacyDecorators": true
     }
   },
   "extends": [
+    "eslint:recommended",
     "airbnb",
-    "plugin:flowtype/recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "prettier",
     "prettier/babel",
-    "prettier/flowtype",
     "prettier/react"
   ],
   "env": {
@@ -74,7 +74,7 @@
     "react/static-property-placement": 0
   },
   "plugins": [
-    "flowtype",
+    "@typescript-eslint",
     "import",
     "promise",
     "react"
