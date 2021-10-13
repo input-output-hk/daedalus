@@ -263,10 +263,22 @@ const onAppReady = async () => {
     logger.info('[Custom-Protocol] Set Windows protocol params: ', {
       execPath: process.execPath,
       argv: process.argv,
+      process,
+      processEnv: process.env,
+      processEnvPath: process.env.PATH,
     });
-    app.setAsDefaultProtocolClient('web+cardano', process.execPath, [
+    logger.info(`[Custom-Protocol] Current working directory is: ${process.cwd()}`, {
+      cwd: process.cwd(),
+      execPath: path.dirname(process.execPath),
+    });
+    const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), '..', 'cardano-launcher.exe')
+    logger.info(`[Custom-Protocol] cardano-launcher.exe: ${cardanoLauncherExe}`, {
+      cardanoLauncherExe,
+    });
+    /* app.setAsDefaultProtocolClient('web+cardano', process.execPath, [
       process.argv[1],
-    ]);
+    ]); */
+    app.setAsDefaultProtocolClient('web+cardano', cardanoLauncherExe);
   } else {
     logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
       platform: process.platform,
