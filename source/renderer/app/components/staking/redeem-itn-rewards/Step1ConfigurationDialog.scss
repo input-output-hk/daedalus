@@ -28,6 +28,9 @@
       .SimpleOptions_option {
         padding: 14px 20px;
       }
+      .SimpleAutocomplete_requiredWordsInfo {
+        color: var(--rp-autocomplete-required-words-invert-color);
+      }
     }
   }
 

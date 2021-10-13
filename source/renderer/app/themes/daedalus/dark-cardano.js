@@ -568,6 +568,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--rp-autocomplete-required-words-color': 'rgba(255, 255, 255, 0.5)',
+    '--rp-autocomplete-required-words-invert-color': 'rgba(255, 255, 255, 0.5)',
     '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
