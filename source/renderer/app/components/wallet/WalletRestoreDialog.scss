@@ -137,6 +137,9 @@
   }
 
   :global {
+    .Dialog_subtitle {
+      margin-bottom: 4px;
+    }
     .LoadingSpinner_component {
       .LoadingSpinner_icon {
         svg {
