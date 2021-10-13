@@ -5,6 +5,12 @@
 ### Features
 
 - Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
+- Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671), [PR 2701](https://github.com/input-output-hk/daedalus/pull/2701))
+
+### Fixes
+
+- Fixed wallet settings screen - no space at the bottom when scrolled down ([PR 2686](https://github.com/input-output-hk/daedalus/pull/2686))
+- Fixed the missing text for the DAPP static screens ([PR 2693](https://github.com/input-output-hk/daedalus/pull/2693))
 
 ### Chores
 
