@@ -67,9 +67,9 @@
       background-color: var(--theme-button-flat-background-color-disabled);
       border-radius: 4px;
       height: 71px;
+      overflow: hidden;
       padding: 25px 9px;
       text-align: center;
-      overflow: hidden;
       width: 80px;
 
       .stakePoolName {
