@@ -17,10 +17,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "fe14d02a18ecb4280f50da4706ac682b5543271c",
-        "sha256": "0qmkp572m433vp4rzpz7ph18z9q89901xlxc24j0gvh7ljx0b84f",
+        "rev": "2d93508a7c986a7a0b08cc912e3abc7908137e49",
+        "sha256": "0xada5xf2vfpdczgcvadrwhqpz6c2gl93h766wsza12blvnhpvci",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/fe14d02a18ecb4280f50da4706ac682b5543271c.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/2d93508a7c986a7a0b08cc912e3abc7908137e49.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
