@@ -272,7 +272,7 @@ const onAppReady = async () => {
         cwd: process.cwd(),
         execPath: path.dirname(process.execPath),
       });
-      const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), '..', 'cardano-launcher.exe')
+      const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), 'cardano-launcher.exe');
       logger.info("[Custom-Protocol] cardano-launcher.exe:", {
         cardanoLauncherExe,
       });
