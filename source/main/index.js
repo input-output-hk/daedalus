@@ -111,6 +111,7 @@ const safeExit = async () => {
 };
 
 const onAppReady = async () => {
+  logger.info('[Custom-Protocol] APP READY');
   setupLogging();
   logUsedVersion(
     environment.version,
@@ -285,27 +286,28 @@ const onAppReady = async () => {
     }
     // Check
     const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set Mac / Linux: ', {
+    logger.info('[Custom-Protocol] isDefaultProtocolClient set Mac / Linux: ', {
       isDefaultProtocolClientSet,
     });
   }
 
   app.on('open-url', (event, url) => {
+    event.preventDefault();
     // Check
     const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] Check isDefaultProtocolClient - open-url: ', {
+    logger.info('[Custom-Protocol] ON READY (open-url) isDefaultProtocolClient: ', {
       isDefaultProtocolClientSet,
+      processArgv: process.argv,
     });
-    logger.info('[Custom-Protocol] Open', {
+    logger.info('[Custom-Protocol] ON READY (open-url) Open params', {
       event,
       url,
     });
-    event.preventDefault();
     mainWindow.focus();
     try {
       handleCustomProtocol(url, mainWindow);
     } catch (error) {
-      logger.info('[Custom-Protocol] Open handler error: ', error);
+      logger.info('[Custom-Protocol] ON READY (open-url) Open handler error: ', error);
       throw error;
     }
   });
@@ -375,6 +377,26 @@ if (!isSingleInstance) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
     }
+  });
+  app.on('will-finish-launching' , () => {
+    logger.info('[Custom-Protocol] will-finish-launching');
+    app.on('open-url', (event, url) => {
+      event.preventDefault();
+
+      // Check
+      const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+      logger.info('[Custom-Protocol] will-finish-launching (open-url) - isDefaultProtocolClient: ', {
+        isDefaultProtocolClientSet,
+        processArgv: process.argv,
+      });
+
+      if (isDefaultProtocolClientSet) {
+        logger.info('[Custom-Protocol] will-finish-launching (open-url) - Open params', {
+          event,
+          url,
+        });
+      }
+    });
   });
   app.on('ready', onAppReady);
 }
