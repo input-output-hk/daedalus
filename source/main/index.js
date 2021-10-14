@@ -57,6 +57,7 @@ import {
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
+let deeplinkingUrl;
 
 const {
   isDev,
@@ -163,6 +164,8 @@ const onAppReady = async () => {
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
+
+  logger.info('[Custom-Protocol] deeplinkingUrl ON READY: ', { deeplinkingUrl });
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
@@ -368,34 +371,42 @@ if (process.platform === 'win32') {
     isDefaultProtocolClientSet,
   });
 }
-app.on('open-url', (event, url) => {
-  event.preventDefault();
-  logger.info('[Custom-Protocol] TRY: ', {
-    url,
-  });
-  // Check
-  const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-  logger.info('[Custom-Protocol] ON READY (open-url) isDefaultProtocolClient: ', {
-    isDefaultProtocolClientSet,
-    processArgv: process.argv,
-  });
-  logger.info('[Custom-Protocol] ON READY (open-url) Open params', {
-    event,
-    url,
-  });
-  // mainWindow.focus(); // TODO: Window is not initialized - Remove this
-  /* try {
-    handleCustomProtocol(url, mainWindow);
-  } catch (error) {
-    logger.info('[Custom-Protocol] ON READY (open-url) Open handler error: ', error);
-    throw error;
-  } */
-});
+
+if (!app.isDefaultProtocolClient('web+cardano')) {
+  logEverywhere('set default protocol')
+  // Define custom protocol handler. Deep linking works on packaged versions of the application!
+  app.setAsDefaultProtocolClient('web+cardano')
+}
+
+app.on('will-finish-launching', function() {
+  // Protocol handler for osx
+  app.on('open-url', function(event, url) {
+    event.preventDefault()
+    deeplinkingUrl = url
+    logEverywhere('open-url# ' + deeplinkingUrl)
+  })
+})
+
+// Protocol handler for osx
+app.on('open-url', function(event, url) {
+  event.preventDefault()
+  deeplinkingUrl = url
+  logEverywhere('open-url-2# ' + deeplinkingUrl)
+})
+
+// Log both at dev console and at running node console instance
+logEverywhere = (s) => {
+  logger.info('[Custom-Protocol] logEverywhere: ', { s });
+  console.log(s)
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.executeJavaScript(`console.log("${s}")`)
+  }
+}
 
 if (!isSingleInstance) {
   app.quit();
 } else {
-  app.on('will-finish-launching' , () => {
+  /* app.on('will-finish-launching' , () => {
     logger.info('[Custom-Protocol] will-finish-launching');
     app.on('open-url', (event, url) => {
       event.preventDefault();
@@ -414,7 +425,7 @@ if (!isSingleInstance) {
         });
       }
     });
-  });
+  }); */
   app.on('second-instance', () => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
