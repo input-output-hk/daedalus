@@ -57,7 +57,9 @@ let
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-      chromedriver
+      (if system == "aarch64-darwin"
+        then (localLib.iohkNix.getPkgs { system = "x86_64-darwin"; inherit config; }).chromedriver
+        else chromedriver)
       pkgconfig
       libusb
     ] ++ (localLib.optionals autoStartBackend [
