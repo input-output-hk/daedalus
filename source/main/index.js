@@ -260,38 +260,7 @@ const onAppReady = async () => {
       })
   );
 
-  if (process.platform === 'win32') {
-    logger.info('[Custom-Protocol] Set Windows protocol params: ', {
-      platform: process.platform,
-    });
-    const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), 'cardano-launcher.exe');
-    logger.info("[Custom-Protocol] cardano-launcher.exe:", {
-      cardanoLauncherExe,
-    });
-    app.setAsDefaultProtocolClient('web+cardano', cardanoLauncherExe);
-    // Check
-    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set Windows: ', {
-      isDefaultProtocolClientSet,
-    });
-  } else {
-    logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
-      platform: process.platform,
-    });
-    app.setAsDefaultProtocolClient('web+cardano');
-    if (process.platform !== 'linux') {
-      childProcess.exec(
-        'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
-      );
-    }
-    // Check
-    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] isDefaultProtocolClient set Mac / Linux: ', {
-      isDefaultProtocolClientSet,
-    });
-  }
-
-  app.on('open-url', (event, url) => {
+  /* app.on('open-url', (event, url) => {
     event.preventDefault();
     // Check
     const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
@@ -310,7 +279,7 @@ const onAppReady = async () => {
       logger.info('[Custom-Protocol] ON READY (open-url) Open handler error: ', error);
       throw error;
     }
-  });
+  }); */
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
@@ -369,15 +338,63 @@ const onAppReady = async () => {
 // Make sure this is the only Daedalus instance running per cluster before doing anything else
 const isSingleInstance = app.requestSingleInstanceLock();
 
+if (process.platform === 'win32') {
+  logger.info('[Custom-Protocol] Set Windows protocol params: ', {
+    platform: process.platform,
+  });
+  const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), 'cardano-launcher.exe');
+  logger.info("[Custom-Protocol] cardano-launcher.exe:", {
+    cardanoLauncherExe,
+  });
+  app.setAsDefaultProtocolClient('web+cardano', cardanoLauncherExe);
+  // Check
+  const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+  logger.info('[Custom-Protocol] Check isDefaultProtocolClient set Windows: ', {
+    isDefaultProtocolClientSet,
+  });
+} else {
+  logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
+    platform: process.platform,
+  });
+  app.setAsDefaultProtocolClient('web+cardano');
+  if (process.platform !== 'linux') {
+    childProcess.exec(
+      'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
+    );
+  }
+  // Check
+  const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+  logger.info('[Custom-Protocol] isDefaultProtocolClient set Mac / Linux: ', {
+    isDefaultProtocolClientSet,
+  });
+}
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  logger.info('[Custom-Protocol] TRY: ', {
+    url,
+  });
+  // Check
+  const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+  logger.info('[Custom-Protocol] ON READY (open-url) isDefaultProtocolClient: ', {
+    isDefaultProtocolClientSet,
+    processArgv: process.argv,
+  });
+  logger.info('[Custom-Protocol] ON READY (open-url) Open params', {
+    event,
+    url,
+  });
+  mainWindow.focus();
+  try {
+    handleCustomProtocol(url, mainWindow);
+  } catch (error) {
+    logger.info('[Custom-Protocol] ON READY (open-url) Open handler error: ', error);
+    throw error;
+  }
+});
+
 if (!isSingleInstance) {
   app.quit();
 } else {
-  app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-    }
-  });
   app.on('will-finish-launching' , () => {
     logger.info('[Custom-Protocol] will-finish-launching');
     app.on('open-url', (event, url) => {
@@ -397,6 +414,12 @@ if (!isSingleInstance) {
         });
       }
     });
+  });
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
   });
   app.on('ready', onAppReady);
 }
