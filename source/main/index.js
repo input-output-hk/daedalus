@@ -260,47 +260,32 @@ const onAppReady = async () => {
   );
 
   if (process.platform === 'win32') {
-    logger.info('[Custom-Protocol] SET WINDOWS PROTOCOL')
-    try {
-      logger.info('[Custom-Protocol] Set Windows protocol params: ', {
-        execPath: process.execPath,
-        argv: process.argv,
-        processEnv: process.env,
-        processEnvPath: process.env.PATH,
-      });
-      logger.info("[Custom-Protocol] Current working directory is: ${process.cwd()}", {
-        cwd: process.cwd(),
-        execPath: path.dirname(process.execPath),
-      });
-      const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), 'cardano-launcher.exe');
-      logger.info("[Custom-Protocol] cardano-launcher.exe:", {
-        cardanoLauncherExe,
-      });
-      /* app.setAsDefaultProtocolClient('web+cardano', process.execPath, [
-        process.argv[1],
-      ]); */
-      app.setAsDefaultProtocolClient('web+cardano', cardanoLauncherExe);
-    } catch (e) {
-      logger.info('[Custom-Protocol] SET WINDOWS PROTOCOL - has error');
-      logger.info('[Custom-Protocol] SET WINDOWS PROTOCOL - ERROR: ', { e });
-    }
+    logger.info('[Custom-Protocol] Set Windows protocol params: ', {
+      platform: process.platform,
+    });
+    const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), 'cardano-launcher.exe');
+    logger.info("[Custom-Protocol] cardano-launcher.exe:", {
+      cardanoLauncherExe,
+    });
+    app.setAsDefaultProtocolClient('web+cardano', cardanoLauncherExe);
+    // Check
+    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set Windows: ', {
+      isDefaultProtocolClientSet,
+    });
   } else {
     logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
       platform: process.platform,
     });
     app.setAsDefaultProtocolClient('web+cardano');
-    /* if (process.platform !== 'linux') {
+    if (process.platform !== 'linux') {
       childProcess.exec(
         'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
       );
-    } */
-    childProcess.exec(
-      'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
-    );
-
+    }
     // Check
     const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set 1: ', {
+    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set Mac / Linux: ', {
       isDefaultProtocolClientSet,
     });
   }
@@ -308,7 +293,7 @@ const onAppReady = async () => {
   app.on('open-url', (event, url) => {
     // Check
     const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set 2: ', {
+    logger.info('[Custom-Protocol] Check isDefaultProtocolClient - open-url: ', {
       isDefaultProtocolClientSet,
     });
     logger.info('[Custom-Protocol] Open', {
