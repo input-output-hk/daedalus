@@ -23,11 +23,11 @@
   }
 
   .ranking {
+    font-family: var(--font-bold);
     font-size: 20px;
     font-weight: bold;
     position: relative;
     text-align: center;
-    font-family: var(--font-bold);
 
     sup {
       font-family: Verdana;
