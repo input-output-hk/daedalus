@@ -383,13 +383,13 @@ app.on('open-url', (event, url) => {
     event,
     url,
   });
-  mainWindow.focus();
-  try {
+  // mainWindow.focus(); // TODO: Window is not initialized - Remove this
+  /* try {
     handleCustomProtocol(url, mainWindow);
   } catch (error) {
     logger.info('[Custom-Protocol] ON READY (open-url) Open handler error: ', error);
     throw error;
-  }
+  } */
 });
 
 if (!isSingleInstance) {
