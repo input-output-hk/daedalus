@@ -40,8 +40,12 @@
 
   .walletsDropdown {
     &.disabled {
-      opacity: 0.5;
       pointer-events: none;
+      :global {
+        .SimpleFormField_inputWrapper {
+          opacity: 0.5;
+        }
+      }
     }
   }
 
