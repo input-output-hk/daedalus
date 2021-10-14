@@ -5,7 +5,12 @@
 ### Features
 
 - Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
-- Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671), [PR 2701](https://github.com/input-output-hk/daedalus/pull/2701))
+
+## 4.4.0
+
+### Features
+
+- Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671), [PR 2701](https://github.com/input-output-hk/daedalus/pull/2701), [PR 2703](https://github.com/input-output-hk/daedalus/pull/2703))
 
 ### Fixes
 
