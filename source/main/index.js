@@ -395,7 +395,7 @@ app.on('open-url', function(event, url) {
 })
 
 // Log both at dev console and at running node console instance
-logEverywhere = (s) => {
+const logEverywhere = (s) => {
   logger.info('[Custom-Protocol] logEverywhere: ', { s });
   console.log(s)
   if (mainWindow && mainWindow.webContents) {
