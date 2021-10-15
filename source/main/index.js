@@ -166,6 +166,11 @@ const onAppReady = async () => {
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   logger.info('[Custom-Protocol] deeplinkingUrl ON READY: ', { deeplinkingUrl });
+  logger.info('[Custom-Protocol] deeplinkingUrl ON READY - Get processArgv: ', {
+    processArgv: process.argv,
+    platform: process.platform,
+  });
+
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
@@ -382,7 +387,7 @@ app.on('will-finish-launching', function() {
   // Protocol handler for osx
   app.on('open-url', function(event, url) {
     event.preventDefault()
-    deeplinkingUrl = url
+    deeplinkingUrl = `${url}-#1`;
     logEverywhere('open-url# ' + deeplinkingUrl)
   })
 })
@@ -390,12 +395,14 @@ app.on('will-finish-launching', function() {
 // Protocol handler for osx
 app.on('open-url', function(event, url) {
   event.preventDefault()
-  deeplinkingUrl = url
+  deeplinkingUrl = `${url}-#2`;
   logEverywhere('open-url-2# ' + deeplinkingUrl)
 })
 
 // Log both at dev console and at running node console instance
-const logEverywhere = (s) => {
+const logEverywhere = (s, obj) => {
+  console.debug('>>> tt - s : ', s);
+  console.debug('>>> tt - obj : ', obj);
   logger.info('[Custom-Protocol] logEverywhere: ', { s });
   console.log(s)
   if (mainWindow && mainWindow.webContents) {
@@ -404,8 +411,10 @@ const logEverywhere = (s) => {
 }
 
 if (!isSingleInstance) {
+  logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
   app.quit();
 } else {
+  logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
   /* app.on('will-finish-launching' , () => {
     logger.info('[Custom-Protocol] will-finish-launching');
     app.on('open-url', (event, url) => {
@@ -427,6 +436,7 @@ if (!isSingleInstance) {
     });
   }); */
   app.on('second-instance', () => {
+    logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
