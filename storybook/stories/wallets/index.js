@@ -8,6 +8,8 @@ import './transactions/TransactionsList.stories';
 import './transactions/Transaction.stories';
 import './transactions/TransactionMetadata.stories';
 import './transactions/Utxo.stories';
+import './tokens/WalletTokens.stories';
+import './tokens/WalletTokensList.stories';
 import './settings/WalletSettings.stories';
 import './addWallet/AddWallet.stories';
 import './import/WalletImportFile.stories';
