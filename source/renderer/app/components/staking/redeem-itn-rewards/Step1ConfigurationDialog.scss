@@ -42,6 +42,9 @@
     &.disabled {
       pointer-events: none;
       :global {
+        .SelectOverrides_selectInput:after {
+          opacity: 0.5;
+        }
         .SimpleFormField_inputWrapper {
           opacity: 0.5;
         }
