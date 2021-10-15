@@ -55,6 +55,10 @@
   .checkbox {
     margin-bottom: 20px;
 
+    label {
+      font-family: var(--font-regular);
+    }
+
     &:last-child {
       margin-bottom: 30px;
     }
