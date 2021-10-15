@@ -1,0 +1,38 @@
+.component {
+  margin: 0 20px 20px;
+  position: relative;
+  .searchIcon {
+    left: 20px;
+    position: absolute;
+    top: 17px;
+    z-index: 1;
+    svg {
+      height: 15px;
+      width: 15px;
+    }
+  }
+  input {
+    border-radius: 4px;
+    padding: 13px 58px 13px 54px;
+  }
+  .clearButton {
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    position: absolute;
+    right: 12px;
+    top: 11px;
+    width: 28px;
+    z-index: 1;
+    &:hover {
+      opacity: 0.8;
+    }
+    svg {
+      height: 10px;
+      width: 10px;
+      polygon {
+        fill: var(--theme-bordered-box-text-color);
+      }
+    }
+  }
+}

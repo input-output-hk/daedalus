@@ -1,16 +1,50 @@
 // @flow
 import React from 'react';
-import { text, boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
 // Screens
+import { defineMessages } from 'react-intl';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import type { WalletSettingRemoveMessages } from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
+import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
+
+const messages: WalletSettingRemoveMessages = defineMessages({
+  dialogTitle: {
+    id: 'wallet.settings.delete.dialog.title',
+    defaultMessage: '!!!Delete Wallet',
+    description: 'Title for the "Delete wallet" dialog.',
+  },
+  confirmButtonLabel: {
+    id: 'wallet.settings.delete.dialog.confirmButtonLabel',
+    defaultMessage: '!!!Delete',
+    description:
+      'Label for the "Delete (x)" button in the delete wallet dialog.',
+  },
+  confirmationQuestion: {
+    id: 'wallet.settings.delete.dialog.confirmationQuestion',
+    defaultMessage:
+      '!!!Do you really want to delete <strong>{walletName}</strong> wallet?',
+    description: 'Question if the user really wants to delete the wallet.',
+  },
+  confirmBackupNotice: {
+    id: 'wallet.settings.delete.dialog.confirmBackupNotice',
+    defaultMessage:
+      '!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.',
+    description:
+      'Notice to confirm if the user has made a backup of his wallet',
+  },
+  enterRecoveryWordLabel: {
+    id: 'wallet.settings.delete.dialog.enterRecoveryWordLabel',
+    defaultMessage: '!!!Enter the name of the wallet to confirm deletion:',
+    description: 'Instruction for recovery word on delete wallet dialog',
+  },
+});
 
 export const defaultProps = {
   isDialogOpen: () => {},
@@ -81,14 +115,15 @@ export const defaultProps = {
     />
   ),
   deleteWalletDialogContainer: (
-    <DeleteWalletConfirmationDialog
+    <WalletSettingsActionConfirmationDialog
       walletName={text(
-        'DeleteWalletConfirmationDialog: Wallet Name',
+        'WalletSettingsRemoveConfirmationDialog: Wallet Name',
         'Wallet To Delete'
       )}
       hasWalletFunds={boolean('hasWalletFunds', false)}
       countdownFn={() => number('Delete Wallet Countdown', 9)}
       isBackupNoticeAccepted={boolean('isBackupNoticeAccepted', false)}
+      messages={messages}
       onAcceptBackupNotice={action('Delete Wallet - onAcceptBackupNotice')}
       onContinue={action('Delete Wallet - onContinue')}
       onCancel={action('Delete Wallet - onCancel')}

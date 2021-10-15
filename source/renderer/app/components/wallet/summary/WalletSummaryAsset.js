@@ -48,7 +48,7 @@ const messages = defineMessages({
 type Props = {
   asset: AssetToken,
   onOpenAssetSend: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
   onAssetSettings: Function,
   anyAssetWasHovered: boolean,
   isLoading: boolean,
@@ -68,7 +68,7 @@ const WalletSummaryAsset = observer((props: Props) => {
   const header = () => {
     const {
       asset,
-      onCopyAssetItem,
+      onCopyAssetParam,
       isLoading,
       anyAssetWasHovered,
       assetSettingsDialogWasOpened,
@@ -84,7 +84,7 @@ const WalletSummaryAsset = observer((props: Props) => {
       <div className={styles.header} onClick={toggleIsExpanded}>
         <Asset
           asset={asset}
-          onCopyAssetItem={onCopyAssetItem}
+          onCopyAssetParam={onCopyAssetParam}
           metadataNameChars={get('name', asset.metadata, 0)}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           anyAssetWasHovered={anyAssetWasHovered}
@@ -183,7 +183,7 @@ const WalletSummaryAsset = observer((props: Props) => {
     );
   };
 
-  const { asset, onCopyAssetItem } = props;
+  const { asset, onCopyAssetParam } = props;
   const componentStyles = classNames(styles.component, {
     [styles.isExpanded]: isExpanded,
   });
@@ -193,7 +193,7 @@ const WalletSummaryAsset = observer((props: Props) => {
       <div className={styles.content}>
         <AssetContent
           asset={asset}
-          onCopyAssetItem={onCopyAssetItem}
+          onCopyAssetParam={onCopyAssetParam}
           highlightFingerprint={false}
         />
         {footer()}
