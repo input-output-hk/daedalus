@@ -377,18 +377,12 @@ if (process.platform === 'win32') {
   });
 }
 
-if (!app.isDefaultProtocolClient('web+cardano')) {
-  logEverywhere('set default protocol')
-  // Define custom protocol handler. Deep linking works on packaged versions of the application!
-  app.setAsDefaultProtocolClient('web+cardano')
-}
-
 app.on('will-finish-launching', function() {
   // Protocol handler for osx
   app.on('open-url', function(event, url) {
     event.preventDefault()
     deeplinkingUrl = `${url}-#1`;
-    logEverywhere('open-url# ' + deeplinkingUrl)
+    // logEverywhere('open-url# ' + deeplinkingUrl)
   })
 })
 
@@ -396,7 +390,7 @@ app.on('will-finish-launching', function() {
 app.on('open-url', function(event, url) {
   event.preventDefault()
   deeplinkingUrl = `${url}-#2`;
-  logEverywhere('open-url-2# ' + deeplinkingUrl)
+  // logEverywhere('open-url-2# ' + deeplinkingUrl)
 })
 
 // Log both at dev console and at running node console instance
