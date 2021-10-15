@@ -23,7 +23,7 @@ const messages = defineMessages({
   connecting_failed: {
     id: 'wallet.hardware.deviceStatus.connecting.failed',
     defaultMessage:
-      '!!!Disconnect and reconnect your device to restart the process',
+      '!!!Disconnect and reconnect your device to restart the process.',
     description: '"Connect failed" device state',
   },
   connecting_known: {
@@ -50,7 +50,7 @@ const messages = defineMessages({
   exportingPublicKeyError: {
     id: 'wallet.hardware.deviceStatus.exportingPublicKeyError',
     defaultMessage:
-      '!!!Disconnect and reconnect your device to restart the process',
+      '!!!Disconnect and reconnect your device to restart the process.',
     description:
       '"Disconnect and reconnect your device to start the process again" device state',
   },
@@ -312,6 +312,11 @@ export default class HardwareWalletStatus extends Component<Props, State> {
             <SVGInline svg={clearIcon} className={styles.clearIcon} />
           )}
         </div>
+        {hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED && (
+          <div className={styles.errorText}>
+            {intl.formatMessage(messages.exportingPublicKeyError)}
+          </div>
+        )}
       </>
     );
   }
