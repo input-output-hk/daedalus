@@ -40,7 +40,9 @@ export function PoolPopOver(props: {
   const poolId = props.stakePool.id;
 
   const close = (removeHover: boolean) => {
-    removeHover && setIsHovered(false);
+    if (removeHover) {
+      setIsHovered(false);
+    }
     props.onClose?.();
   };
   return (
