@@ -1223,7 +1223,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process",
+        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Connect failed\" device state",
         "end": {
           "column": 3,
@@ -1293,7 +1293,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process",
+        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,

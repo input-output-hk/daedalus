@@ -33,25 +33,26 @@ export function PoolPopOver(props: {
   isGridRewardsView?: boolean,
 }) {
   // Track hover state manually to optimize performance by lazy init pop overs
-  const [hasHovered, setHasHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   // The ref passed to Tippy.js as trigger target
   const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
 
-  const close = () => {
-    if (props.onClose) props.onClose();
+  const close = (removeHover: boolean) => {
+    removeHover && setIsHovered(false);
+    props.onClose?.();
   };
   return (
     <>
       <div
         className={styles.triggerTarget}
-        onMouseEnter={() => setHasHovered(true)}
+        onMouseEnter={() => setIsHovered(true)}
         ref={popOverTargetRef}
       >
         {props.children}
       </div>
-      {hasHovered ? ( // Init the pop over only when the target is hovered
+      {isHovered ? ( // Init the pop over only when the target is hovered
         <PopOver
           interactive
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
@@ -60,8 +61,8 @@ export function PoolPopOver(props: {
           trigger={props.openOnHover ? 'mouseenter' : 'click'}
           placement="auto"
           onShow={() => props.onOpen && props.onOpen(poolId)}
-          onHide={close}
-          onClickOutside={close}
+          onHide={() => close(false)}
+          onClickOutside={() => close(true)}
           themeVariables={{
             '--rp-pop-over-bg-color':
               'var(--theme-staking-stake-pool-tooltip-background-color)',
@@ -81,10 +82,10 @@ export function PoolPopOver(props: {
               containerClassName={props.containerClassName}
               currentTheme={props.currentTheme}
               numberOfRankedStakePools={props.numberOfRankedStakePools}
-              onClose={close}
+              onClose={() => close(true)}
               onOpenExternalLink={props.onOpenExternalLink}
               onSelect={() => {
-                close();
+                close(true);
                 if (props.onSelect) props.onSelect(poolId);
               }}
               showWithSelectButton={props.showWithSelectButton}
