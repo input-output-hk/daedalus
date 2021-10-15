@@ -75,6 +75,11 @@
         margin-left: 20px;
       }
     }
+
+    span {
+      opacity: 0.8;
+      color: var(--theme-dialog-fullsize-button-label-color);
+    }
   }
 
   :global {
