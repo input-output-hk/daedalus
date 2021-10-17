@@ -30,10 +30,11 @@ import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
-const messages = defineMessages({
+const messages: { [string]: ReactIntlMessage } = defineMessages({
   title: {
     id: 'staking.delegationSetup.confirmation.step.dialog.title',
     defaultMessage: '!!!Confirm Delegation',
@@ -52,6 +53,14 @@ const messages = defineMessages({
       '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
+  },
+  oversaturationWarning: {
+    id:
+      'staking.delegationSetup.confirmation.step.dialog.oversaturationWarning',
+    defaultMessage:
+      '!!!The selected stake pool will become oversaturated by <span>[{oversaturationPercentage}]</span>, which will reduce future rewards for all delegators to that pool.',
+    description:
+      'Warning shown if pool is going to be saturated if delegation happens',
   },
   stakePoolIdLabel: {
     id: 'staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel',
@@ -118,11 +127,18 @@ type Props = {
   selectedPool: ?StakePool,
   stepsList: Array<string>,
   isSubmitting: boolean,
+  maxDelegationFunds: number,
   hwDeviceStatus: HwDeviceStatus,
   error: ?LocalizableError,
   onExternalLinkClick: Function,
   isTrezor: boolean,
 };
+
+const OversaturationText = () => (
+  <p className={styles.description}>
+    <FormattedHTMLMessage {...messages.oversaturationWarning} />
+  </p>
+);
 
 @observer
 export default class DelegationStepsConfirmationDialog extends Component<Props> {
@@ -200,6 +216,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       hwDeviceStatus,
       onExternalLinkClick,
       isTrezor,
+      maxDelegationFunds,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
@@ -274,6 +291,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         </div>
 
         <div className={contentClassName}>
+          {maxDelegationFunds}
+          <OversaturationText />
           <p className={styles.description}>
             <FormattedHTMLMessage
               {...messages.description}

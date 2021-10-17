@@ -26,6 +26,7 @@ type Props = {
   onSelectWallet: Function,
   onSelectPool: Function,
   isWalletAcceptable: Function,
+  maxDelegationFunds: number,
   stepsList: Array<string>,
   wallets: Array<Wallet>,
   minDelegationFunds: number,
@@ -88,6 +89,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       getStakePoolById,
       hwDeviceStatus,
       isTrezor,
+      maxDelegationFunds,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -146,6 +148,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onConfirm={onConfirm}
             onBack={onBack}
             isSubmitting={isSubmitting}
+            maxDelegationFunds={maxDelegationFunds}
             error={error}
             hwDeviceStatus={hwDeviceStatus}
             onExternalLinkClick={onOpenExternalLink}
