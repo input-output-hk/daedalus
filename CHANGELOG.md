@@ -5,6 +5,7 @@
 ### Fixes
 
 - Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
+- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685))
 
 ## 4.4.0
 
