@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
+
 ### Fixes
 
 - Updated 'Trezor T' image used in Daedalus ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))

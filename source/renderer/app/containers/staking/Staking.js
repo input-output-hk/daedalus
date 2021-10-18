@@ -11,6 +11,7 @@ import { ROUTES } from '../../routes-config';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
+import { IS_STAKING_INFO_PAGE_AVAILABLE } from '../../config/stakingConfig';
 
 type Props = InjectedContainerProps;
 
@@ -111,7 +112,7 @@ export default class Staking extends Component<Props> {
             isActiveNavItem={this.isActiveNavItem}
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
-            showInfoTab={shouldShowInfoTab}
+            showInfoTab={IS_STAKING_INFO_PAGE_AVAILABLE && shouldShowInfoTab}
           >
             {children}
           </StakingWithNavigation>
