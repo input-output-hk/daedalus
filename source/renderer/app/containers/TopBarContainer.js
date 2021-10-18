@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
+import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
@@ -28,6 +29,8 @@ export default class TopBarContainer extends Component<Props> {
       newsFeed,
       appUpdate,
     } = stores;
+    const HAS_TADA_ICON = false;
+    const HAS_TADA_ICON_ANIMATION = false;
     const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
@@ -52,6 +55,12 @@ export default class TopBarContainer extends Component<Props> {
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.ADD,
+      });
+    };
+
+    const onClickTadaButton = () => {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
       });
     };
 
@@ -80,8 +89,14 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
-          hasTadaIcon={false}
+          hasTadaIcon={HAS_TADA_ICON}
         />
+        {HAS_TADA_ICON && (
+          <TadaButton
+            onClick={onClickTadaButton}
+            shouldAnimate={HAS_TADA_ICON_ANIMATION}
+          />
+        )}
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}

@@ -117,6 +117,6 @@ export const DELEGATION_ACTIONS: {
 export const IS_GRID_REWARDS_VIEW_AVAILABLE = !isMainnet && !isFlight;
 export const IS_RANKING_DATA_AVAILABLE = true;
 export const IS_SATURATION_DATA_AVAILABLE = true;
+export const IS_STAKING_INFO_PAGE_AVAILABLE = false;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
-export const IS_STAKING_INFO_PAGE_AVAILABLE = false;

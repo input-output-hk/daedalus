@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Features
+
+- Remove Alonzo tada icon and countdown screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
+
 ## 4.4.0
 
 ### Features
