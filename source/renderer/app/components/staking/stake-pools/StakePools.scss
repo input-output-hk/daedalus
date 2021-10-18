@@ -46,6 +46,7 @@
     cursor: pointer;
     display: flex;
     font-size: 16px;
+    line-height: 23px;
     > span:first-child {
       color: var(--theme-staking-stake-pools-title-color);
       display: inline-block;
