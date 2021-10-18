@@ -11,6 +11,7 @@ import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../assets/images/menu-ic.inline.svg';
 import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
+import { IS_STAKING_INFO_PAGE_AVAILABLE } from '../config/stakingConfig';
 
 type Props = InjectedProps;
 
@@ -28,10 +29,23 @@ export default class TopBarContainer extends Component<Props> {
       wallets,
       newsFeed,
       appUpdate,
+      staking,
     } = stores;
-    const HAS_TADA_ICON = false;
-    const HAS_TADA_ICON_ANIMATION = false;
-    const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
+    const {
+      isSynced,
+      syncPercentage,
+      isShelleyActivated,
+      isAlonzoActivated,
+      isAlonzoPending,
+    } = networkStatus;
+    const { stakingInfoWasOpen } = staking;
+    const shouldShowTadaIconAnimation =
+      IS_STAKING_INFO_PAGE_AVAILABLE &&
+      isAlonzoActivated &&
+      !stakingInfoWasOpen;
+    const shouldShowTadaIcon =
+      IS_STAKING_INFO_PAGE_AVAILABLE && (isAlonzoPending || isAlonzoActivated);
+
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
       currentRoute,
@@ -89,12 +103,12 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
-          hasTadaIcon={HAS_TADA_ICON}
+          hasTadaIcon={shouldShowTadaIcon}
         />
-        {HAS_TADA_ICON && (
+        {shouldShowTadaIcon && (
           <TadaButton
             onClick={onClickTadaButton}
-            shouldAnimate={HAS_TADA_ICON_ANIMATION}
+            shouldAnimate={shouldShowTadaIconAnimation}
           />
         )}
         <NewsFeedIcon
