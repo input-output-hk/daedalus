@@ -11,7 +11,7 @@ import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../assets/images/menu-ic.inline.svg';
 import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import { IS_STAKING_INFO_PAGE_AVAILABLE } from '../config/stakingConfig';
+import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
 
 type Props = InjectedProps;
 
@@ -40,11 +40,9 @@ export default class TopBarContainer extends Component<Props> {
     } = networkStatus;
     const { stakingInfoWasOpen } = staking;
     const shouldShowTadaIconAnimation =
-      IS_STAKING_INFO_PAGE_AVAILABLE &&
-      isAlonzoActivated &&
-      !stakingInfoWasOpen;
+      isAlonzoActivated && !stakingInfoWasOpen;
     const shouldShowTadaIcon =
-      IS_STAKING_INFO_PAGE_AVAILABLE && (isAlonzoPending || isAlonzoActivated);
+      IS_TADA_ICON_AVAILABLE && (isAlonzoPending || isAlonzoActivated);
 
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
