@@ -193,6 +193,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
         onExternalLinkClick={action('onOpenExternalLink')}
         isTrezor={boolean('isTrezor', false)}
+        maxDelegationFunds={63000000}
       />,
       <DelegationStepsSuccessDialog
         key="DelegationStepsSuccessDialog"
