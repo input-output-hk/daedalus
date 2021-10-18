@@ -1,6 +1,10 @@
 # Changelog
 
-## vNext
+## 4.4.0
+
+### Features
+
+- Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671), [PR 2701](https://github.com/input-output-hk/daedalus/pull/2701), [PR 2703](https://github.com/input-output-hk/daedalus/pull/2703))
 
 ### Fixes
 

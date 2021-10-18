@@ -77,8 +77,8 @@ export type AssetToken = {
 
 export type AssetMetadata = {
   name: string,
-  ticker: string,
   description: string,
+  ticker?: string,
   decimals?: number, // [0 .. 255]
   url?: string,
   logo?: string,

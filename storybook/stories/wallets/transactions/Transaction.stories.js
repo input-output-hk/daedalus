@@ -215,7 +215,7 @@ storiesOf('Wallets|Transactions', module)
         onDetailsToggled={action('onDetailsToggled')}
         onOpenExternalLink={action('onOpenExternalLink')}
         isInternalAddress={() => direction === 'incoming'}
-        onCopyAssetItem={action('onCopyAssetItem')}
+        onCopyAssetParam={action('onCopyAssetParam')}
       />
     );
   });

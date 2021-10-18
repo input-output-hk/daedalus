@@ -12,10 +12,8 @@ import { ROUTES } from '../../routes-config';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
-import { ellipsis } from '../../utils/strings';
-import { getAssetTokens } from '../../utils/assets';
+import { getAssetTokens, sortAssets } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { AssetToken } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -50,26 +48,10 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = ({ uniqueId }: AssetToken) => {
-    const { stores } = this.props;
-    const { wallets } = stores;
-    const { active } = wallets;
-    if (active) {
-      const { id } = active;
-      const { wallets: walletActions, router } = this.props.actions;
-      walletActions.setActiveAsset.trigger(uniqueId);
-      router.goToRoute.trigger({
-        route: ROUTES.WALLETS.PAGE,
-        params: { id, page: 'send' },
-      });
-    }
-  };
-
-  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
-    const value = ellipsis(fullValue, 15, 15);
-    this.props.actions.wallets.copyAssetItem.trigger({
-      assetItem,
-      value,
+  handleViewAllButtonClick = (walletId: string) => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.PAGE,
+      params: { id: walletId, page: 'tokens' },
     });
   };
 
@@ -85,9 +67,14 @@ export default class WalletSummaryPage extends Component<Props> {
       assets,
       currency,
     } = stores;
-    const { getAsset, assetSettingsDialogWasOpened } = assets;
+    const { all, getAsset, assetSettingsDialogWasOpened, favorites } = assets;
     const { isInternalAddress } = addresses;
-    const { onAssetSettingsOpen } = actions.assets;
+    const {
+      onAssetSettingsOpen,
+      onOpenAssetSend,
+      onCopyAssetParam,
+      onToggleFavorite,
+    } = actions.assets;
     const {
       openExternalLink,
       environment: { network },
@@ -103,7 +90,6 @@ export default class WalletSummaryPage extends Component<Props> {
     } = transactions;
     const { active: wallet } = wallets;
     const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
-
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 
@@ -114,11 +100,15 @@ export default class WalletSummaryPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const assetTokens = getAssetTokens(all, walletTokens).sort(
+      sortAssets('token', 'asc')
+    );
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+
+    const onViewAllButtonClick = () => this.handleViewAllButtonClick(wallet.id);
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(type, param, network, currentLocale);
@@ -151,7 +141,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isInternalAddress={isInternalAddress}
           hasAssetsEnabled={hasAssetsEnabled}
           getAsset={getAsset}
-          onCopyAssetItem={this.handleOnCopyAssetItem}
+          onCopyAssetParam={onCopyAssetParam.trigger}
         />
       );
     } else if (!hasAny) {
@@ -177,10 +167,13 @@ export default class WalletSummaryPage extends Component<Props> {
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={assetTokens}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-          onOpenAssetSend={this.handleOpenAssetSend}
-          onCopyAssetItem={this.handleOnCopyAssetItem}
+          onOpenAssetSend={onOpenAssetSend.trigger}
+          onCopyAssetParam={onCopyAssetParam.trigger}
           onAssetSettings={onAssetSettingsOpen.trigger}
           onExternalLinkClick={app.openExternalLink}
+          onViewAllButtonClick={onViewAllButtonClick}
+          tokenFavorites={favorites}
+          onToggleFavorite={onToggleFavorite.trigger}
         />
         {walletTransactions}
       </VerticalFlexContainer>

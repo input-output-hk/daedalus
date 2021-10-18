@@ -53,7 +53,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
   isTrezor: boolean,
   formattedTotalAmount: string,
 };
@@ -242,7 +242,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
-      onCopyAssetItem,
+      onCopyAssetParam,
       wallet,
       formattedTotalAmount,
       totalAmount,
@@ -359,7 +359,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                             </span>
                             <Asset
                               asset={asset}
-                              onCopyAssetItem={onCopyAssetItem}
+                              onCopyAssetParam={onCopyAssetParam}
                               className={styles.assetToken}
                             />
                           </h3>
