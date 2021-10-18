@@ -1,7 +1,6 @@
 .component {
-  height: 100%;
-  width: 100%;
-  width: -webkit-calc(100% + 20px);
+  flex: 1;
+  flex-grow: 1;
 
   *::-webkit-scrollbar-button {
     display: none;
