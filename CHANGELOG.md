@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Updated 'Trezor T' image used in Daedalus ([]())
+- Updated 'Trezor T' image used in Daedalus ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
 - Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
 
 ### Chores
