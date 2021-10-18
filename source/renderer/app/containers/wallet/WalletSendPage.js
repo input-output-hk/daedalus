@@ -1,9 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { intlShape } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import globalMessages from '../../i18n/global-messages';
 import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
@@ -12,7 +10,7 @@ import WalletSendForm from '../../components/wallet/WalletSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
-import { getAssetTokens } from '../../utils/assets';
+import { getNonZeroAssetTokens } from '../../utils/assets';
 
 type Props = InjectedProps;
 
@@ -20,10 +18,6 @@ type Props = InjectedProps;
 @observer
 export default class WalletSendPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
-
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
 
   calculateTransactionFee = async (params: {
     walletId: string,
@@ -84,7 +78,6 @@ export default class WalletSendPage extends Component<Props> {
   };
 
   render() {
-    const { intl } = this.context;
     const { stores, actions } = this.props;
     const {
       uiDialogs,
@@ -113,7 +106,7 @@ export default class WalletSendPage extends Component<Props> {
     const { isHardwareWallet } = wallet;
 
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
@@ -121,7 +114,6 @@ export default class WalletSendPage extends Component<Props> {
 
     return (
       <WalletSendForm
-        currencyUnit={intl.formatMessage(globalMessages.unitAda)}
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
         currentNumberFormat={profile.currentNumberFormat}

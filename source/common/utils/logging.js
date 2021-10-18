@@ -14,6 +14,7 @@ const DEFAULT_MESSAGE_BODY = {
 };
 
 const isProd = process.env.NODE_ENV === 'production';
+const isSilentMode = process.env.NODE_ENV === 'silence';
 
 const stringifyMessageBody = (messageBody: MessageBody): string => {
   const spacing = isProd ? 0 : 2;
@@ -72,14 +73,14 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
   const at = loggerMessage.date.toISOString();
   const [context, messageData] = loggerMessage.data;
   const { level } = loggerMessage;
-  const { message: msg, data = {}, environmentData } = messageData;
+  const { message: msg, environmentData } = messageData;
   const { network, os, platformVersion, version } = environmentData;
 
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env: `${network}:${os}:${platformVersion}`,
     ns: ['daedalus', `v${version}`, `*${network}*`],
-    data,
+    ...(!!messageData.data && { data: messageData.data }),
     msg,
     pid: '',
     sev: level,
@@ -87,6 +88,8 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
   };
 
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
+
+  if (isSilentMode) return '';
 
   if (isProd) return stringifyMessageBody(messageBody);
 

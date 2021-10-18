@@ -113,12 +113,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -127,12 +129,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -207,7 +211,7 @@ storiesOf('Wallets|Transactions', module)
         transactions={transactions}
         hasAssetsEnabled={false}
         getAsset={getAsset}
-        onCopyAssetItem={() => {}}
+        onCopyAssetParam={() => {}}
       />
     );
   })
@@ -249,7 +253,7 @@ storiesOf('Wallets|Transactions', module)
         transactions={transactions}
         hasAssetsEnabled={hasAssetsEnabled}
         getAsset={getAsset}
-        onCopyAssetItem={() => {}}
+        onCopyAssetParam={() => {}}
       />
     );
   });

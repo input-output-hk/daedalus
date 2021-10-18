@@ -1,0 +1,92 @@
+.component {
+  margin: 0 20px 20px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+  button.viewAllButton {
+    display: flex;
+    font-size: 14px;
+    height: 36px;
+    line-height: 19px;
+    margin: 20px auto 0;
+    padding: 7px 40px 0;
+    text-align: center;
+    width: auto;
+  }
+}
+.outerHeader {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 10px 10px 20px;
+  .title {
+    color: var(--theme-tokens-list-header-text-color);
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
+.columns {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 42px 10px 12px;
+  .column {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-semibold);
+    font-size: 10px;
+    letter-spacing: 1px;
+    line-height: 2;
+    margin: -5px 0 0 -5px;
+    padding: 5px;
+    text-transform: uppercase;
+    &:first-of-type {
+      margin-left: 22px;
+    }
+    &:last-of-type {
+      margin-right: -16px;
+    }
+  }
+  .sortIcon {
+    margin-left: 3px;
+    opacity: 0.5;
+    visibility: hidden;
+
+    & > svg {
+      height: 7.5px;
+      width: 7px;
+
+      & > path {
+        fill: var(--theme-staking-font-color-regular);
+      }
+    }
+
+    &.ascSorting {
+      & > svg {
+        transform: rotateX(150deg);
+      }
+    }
+  }
+  &.hasSorting {
+    .column {
+      cursor: pointer;
+      &:hover {
+        .sortIcon {
+          visibility: visible;
+        }
+      }
+    }
+    .sortIcon {
+      &.sorted {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+}
+.noResults {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  line-height: 1.33;
+  margin: 0 12px;
+}

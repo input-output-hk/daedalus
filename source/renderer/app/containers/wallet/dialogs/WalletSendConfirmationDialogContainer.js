@@ -2,14 +2,15 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type BigNumber from 'bignumber.js';
-import { ellipsis } from '../../../utils/strings';
 import WalletSendConfirmationDialog from '../../../components/wallet/send-form/WalletSendConfirmationDialog';
 import WalletSendAssetsConfirmationDialog from '../../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
+import DappTransactionRequest from '../../../components/dapp/DappTransactionRequest';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
-import { getAssetTokens } from '../../../utils/assets';
+import { getNonZeroAssetTokens } from '../../../utils/assets';
+import { IS_DAPP_ENABLED } from '../../../config/walletsConfig';
 
 type Props = {
   stores: any | StoresMap,
@@ -21,7 +22,6 @@ type Props = {
   totalAmount: BigNumber,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
-  currencyUnit: string,
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
@@ -50,14 +50,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     hardwareWallets.initiateTransaction({ walletId: activeWallet.id });
   };
 
-  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
-    const value = ellipsis(fullValue, 15, 15);
-    this.props.actions.wallets.copyAssetItem.trigger({
-      assetItem,
-      value,
-    });
-  };
-
   render() {
     const {
       actions,
@@ -69,7 +61,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       onExternalLinkClick,
       transactionFee,
       amountToNaturalUnits,
-      currencyUnit,
       hwDeviceStatus,
       isHardwareWallet,
       formattedTotalAmount,
@@ -105,7 +96,27 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
 
     const walletTokens = activeWallet.assets.total;
-    const assetTokens = getAssetTokens(walletTokens, getAsset);
+    const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
+    const { onCopyAssetParam } = actions.assets;
+
+    if (IS_DAPP_ENABLED) {
+      return (
+        <DappTransactionRequest
+          adaAmount={amount}
+          address=""
+          assets={[]}
+          assetsAmounts={selectedAssets}
+          onAddWallet={() => {}}
+          onClose={() => {}}
+          onSelectWallet={() => {}}
+          onSubmit={() => {}}
+          selectedWallet={activeWallet}
+          transactionFee={transactionFee}
+          triggeredFrom=""
+          wallets={[]}
+        />
+      );
+    }
 
     return (
       <>
@@ -130,12 +141,11 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
               resetHardwareWalletTransaction({ cancelDeviceAction: true });
             }}
             error={error}
-            currencyUnit={currencyUnit}
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
-            onCopyAssetItem={this.handleOnCopyAssetItem}
+            onCopyAssetParam={onCopyAssetParam.trigger}
             isTrezor={isTrezor}
             formattedTotalAmount={formattedTotalAmount}
           />
@@ -157,7 +167,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
               resetHardwareWalletTransaction({ cancelDeviceAction: true });
             }}
             error={error}
-            currencyUnit={currencyUnit}
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}

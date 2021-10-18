@@ -4,7 +4,9 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
+import { ROUTES } from '../routes-config';
 import { requestGetter } from '../utils/storesUtils';
+import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
 
 type WalletId = string;
@@ -12,11 +14,18 @@ type WalletId = string;
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
+  // REQUESTS
+  @observable favoritesRequest: Request<Object> = new Request(
+    this.api.localStorage.getWalletTokenFavorites
+  );
+
   @observable activeAsset: ?string = null;
   @observable editingsAsset: ?AssetToken = null;
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
   } = {};
+  @observable insertingAssetUniqueId: ?string = null;
+  @observable removingAssetUniqueId: ?string = null;
 
   // REQUESTS
   @observable
@@ -30,10 +39,15 @@ export default class AssetsStore extends Store {
     assetsActions.onAssetSettingsOpen.listen(this._onAssetSettingsOpen);
     assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
     assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
+    assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
+    assetsActions.onCopyAssetParam.listen(this._onCopyAssetParam);
+    assetsActions.onToggleFavorite.listen(this._onToggleFavorite);
 
     walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
     walletsActions.unsetActiveAsset.listen(this._unsetActiveAsset);
+
+    this._setUpFavorites();
   }
 
   // ==================== PUBLIC ==================
@@ -64,7 +78,15 @@ export default class AssetsStore extends Store {
     return requestGetter(this.getAssetSettingsDialogWasOpenedRequest, false);
   }
 
+  @computed get favorites(): Object {
+    return this.favoritesRequest.result || {};
+  }
+
   // =================== PRIVATE ==================
+
+  _setUpFavorites = async () => {
+    this.favoritesRequest.execute();
+  };
 
   @action _onAssetSettingsOpen = ({ asset }: { asset: AssetToken }) => {
     this.editingsAsset = asset;
@@ -97,6 +119,35 @@ export default class AssetsStore extends Store {
     this.editingsAsset = null;
   };
 
+  @action _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {
+    const { stores, actions } = this;
+    const { wallets } = stores;
+    const { active } = wallets;
+    if (active) {
+      const { id } = active;
+      const { wallets: walletActions, router } = actions;
+      walletActions.setActiveAsset.trigger(uniqueId);
+      router.goToRoute.trigger({
+        route: ROUTES.WALLETS.PAGE,
+        params: { id, page: 'send' },
+      });
+    }
+  };
+
+  @action _onCopyAssetParam = ({
+    param,
+    fullValue,
+  }: {
+    param: string,
+    fullValue: string,
+  }) => {
+    const shortValue = ellipsis(fullValue, 15, 15);
+    this.actions.assets.copyAssetParamNotification.trigger({
+      param,
+      shortValue,
+    });
+  };
+
   @action _refreshAssetsData = () => {
     if (this.stores.networkStatus.isConnected) {
       const { all } = this.stores.wallets;
@@ -120,6 +171,20 @@ export default class AssetsStore extends Store {
   ): Request<GetAssetsResponse> => {
     this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
     return this.assetsRequests[walletId];
+  };
+
+  @action _onToggleFavorite = async ({
+    uniqueId,
+    isFavorite,
+  }: {
+    uniqueId: string,
+    isFavorite: boolean,
+  }) => {
+    await this.api.localStorage.toggleWalletTokenFavorite(
+      uniqueId,
+      !isFavorite
+    );
+    await this.favoritesRequest.execute();
   };
 
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>

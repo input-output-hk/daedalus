@@ -71,24 +71,28 @@ const assets = {
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(45119903.750165),
     },
     {
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      uniqueId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(300),
     },
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: new BigNumber(400),
     },
@@ -97,24 +101,28 @@ const assets = {
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(45119903.750165),
     },
     {
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      uniqueId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: new BigNumber(300),
     },
     {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: new BigNumber(400),
     },
@@ -222,6 +230,8 @@ storiesOf('Wallets|Summary', module)
         currencyIsActive={currencyIsActive}
         currencySelected={currencySelected}
         currencyRate={0.321}
+        onToggleFavorite={action('onToggleFavorite')}
+        tokenFavorites={{}}
         currencyLastFetched={currencyLastFetched}
         onCurrencySettingClick={action('onCurrencySettingClick')}
         assets={[
@@ -245,7 +255,7 @@ storiesOf('Wallets|Summary', module)
         ]}
         isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
-        onCopyAssetItem={action('onCopyAsset')}
+        onCopyAssetParam={action('onCopyAsset')}
         onAssetSettings={action('onAssetSettings')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         assetSettingsDialogWasOpened={boolean(
@@ -253,6 +263,7 @@ storiesOf('Wallets|Summary', module)
           true
         )}
         onExternalLinkClick={action('onExternalLinkClick')}
+        onViewAllButtonClick={action('onViewAllButtonClick')}
       />
     );
   });
