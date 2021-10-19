@@ -33,11 +33,11 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "13.1.0";
+  windowsElectronVersion = "13.1.1";
   electronPath = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}";
   windowsElectron = fetchurl {
     url = "${electronPath}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "dea5e784471828dedb294801f0d35a11459b2a940b6b60ed80c2c19eccd4d8f2";
+    sha256 = "2f8932aec40882381e839eee34998f9b1d48292f425735d8dc9a45cc3d75cb41";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
