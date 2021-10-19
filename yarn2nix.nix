@@ -49,7 +49,7 @@ let
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
-    sha256 = "eb80aa2631401d9646d9eb70bfcfc8cb47408bf2ac1baedcaaf324afb7529ac0";
+    sha256 = "25bfc02a19d7eac9191f4735868891e87c9352222d73a931699b47229e3380cd";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
