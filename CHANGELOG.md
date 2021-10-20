@@ -12,6 +12,7 @@
 
 ### Chores
 
+- Improves the Daedalus startup by avoiding unnecessary cardano-node restarts ([PR 2716](https://github.com/input-output-hk/daedalus/pull/2716))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
 
 ## 4.4.1
