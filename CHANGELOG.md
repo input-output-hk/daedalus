@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4.1
+
+### Fixes
+
+- Updated Electron package to the version which includes a fix for crashes on Windows
+
 ## 4.4.0
 
 ### Features
