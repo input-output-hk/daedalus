@@ -12,7 +12,6 @@ import { HwDeviceStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { toJS } from '../../../common/utils/helper';
 import {
-  HW_SHELLEY_CONFIG,
   SHELLEY_PURPOSE_INDEX,
   ADA_COIN_TYPE,
   MINIMAL_TREZOR_FIRMWARE_VERSION,
@@ -21,6 +20,7 @@ import {
   isHardwareWalletSupportEnabled,
   isTrezorEnabled,
   isLedgerEnabled,
+  getHardwareWalletsNetworkConfig,
 } from '../config/hardwareWalletsConfig';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
@@ -160,6 +160,9 @@ const useCardanoAppInterval = (
     addressVerification
   );
 
+const { network, isDev } = global.environment;
+const hardwareWalletsNetworkConfig = getHardwareWalletsNetworkConfig(network);
+
 export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
     this.api.ada.selectCoins
@@ -262,7 +265,7 @@ export default class HardwareWalletsStore extends Store {
 
   initLedger = async () => {
     logger.debug(
-      `[HW-DEBUG] HWStore - initLedger() | isHardwareWalletSupportEnabled=${isHardwareWalletSupportEnabled} isLedgerEnabled=${isLedgerEnabled}`
+      `[HW-DEBUG] HWStore - initLedger() | isHardwareWalletSupportEnabled=${isHardwareWalletSupportEnabled.toString()} isLedgerEnabled=${isLedgerEnabled.toString()}`
     );
     if (isHardwareWalletSupportEnabled && isLedgerEnabled) {
       logger.debug('[HW-DEBUG] HWStore - start ledger');
@@ -1131,7 +1134,6 @@ export default class HardwareWalletsStore extends Store {
   }) => {
     logger.debug('[HW-DEBUG] - VERIFY Address');
     const { address, path, isTrezor } = params;
-    const { isMainnet } = this.environment;
 
     this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS;
     this.tempAddressToVerify = params;
@@ -1142,12 +1144,8 @@ export default class HardwareWalletsStore extends Store {
         addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
 
       if (derivedAddress === address.id) {
@@ -1239,7 +1237,6 @@ export default class HardwareWalletsStore extends Store {
   }) => {
     logger.debug('[HW-DEBUG] - SHOW Address');
     const { address, path, isTrezor } = params;
-    const { isMainnet } = this.environment;
 
     try {
       await showAddressChannel.request({
@@ -1248,12 +1245,8 @@ export default class HardwareWalletsStore extends Store {
         addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
       runInAction(
         'HardwareWalletsStore:: Address show process finished',
@@ -1818,7 +1811,6 @@ export default class HardwareWalletsStore extends Store {
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
-    const { isMainnet } = this.environment;
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
@@ -1827,12 +1819,8 @@ export default class HardwareWalletsStore extends Store {
         fee: fee.toString(),
         ttl: ttl.toString(),
         validityIntervalStartStr: absoluteSlotNumber.toString(),
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         devicePath: recognizedDevicePath,
@@ -2061,7 +2049,6 @@ export default class HardwareWalletsStore extends Store {
 
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
-    const { isMainnet } = this.environment;
 
     let unsignedTxAuxiliaryData = null;
     if (this.votingData) {
@@ -2089,12 +2076,8 @@ export default class HardwareWalletsStore extends Store {
         fee: fee.toString(),
         ttl: ttl.toString(),
         validityIntervalStartStr: null,
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
@@ -2716,7 +2699,7 @@ export default class HardwareWalletsStore extends Store {
 
   // For testing / development ONLY
   _resetHardwareWallets = async () => {
-    if (global.environment.isDev) {
+    if (isDev) {
       await Promise.all(
         this.stores.wallets.all.map(async (wallet) => {
           if (wallet.isHardwareWallet) {

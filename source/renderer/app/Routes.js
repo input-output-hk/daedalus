@@ -34,6 +34,7 @@ import WalletTokensPage from './containers/wallet/WalletTokensPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
+import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -145,7 +146,9 @@ export const Routes = withRouter(() => (
               component={StakingRewardsPage}
             />
             <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
-            <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+            {IS_STAKING_INFO_PAGE_AVAILABLE && (
+              <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+            )}
           </Staking>
           <Route
             path={ROUTES.REDEEM_ITN_REWARDS}
