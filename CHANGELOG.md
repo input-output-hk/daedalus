@@ -12,6 +12,7 @@
 
 ### Chores
 
+- Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
 
 ## 4.4.0
@@ -19,10 +20,6 @@
 ### Features
 
 - Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671), [PR 2701](https://github.com/input-output-hk/daedalus/pull/2701), [PR 2703](https://github.com/input-output-hk/daedalus/pull/2703))
-
-### Chores
-
-- Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
 
 ### Fixes
 
