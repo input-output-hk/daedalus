@@ -55,6 +55,7 @@ import {
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
+let hadNotEnoughSpaceLeft: boolean = false;
 
 const {
   isDev,
@@ -165,7 +166,11 @@ const onAppReady = async () => {
     isNotEnoughDiskSpace,
   }: CheckDiskSpaceResponse) => {
     if (cardanoNode) {
+      logger.info(
+        `[CHECK-DEBUG] isNotEnoughDiskSpace: ${isNotEnoughDiskSpace?.toString()}`
+      );
       if (isNotEnoughDiskSpace) {
+        hadNotEnoughSpaceLeft = true;
         if (
           cardanoNode.state !== CardanoNodeStates.STOPPING &&
           cardanoNode.state !== CardanoNodeStates.STOPPED
@@ -174,11 +179,27 @@ const onAppReady = async () => {
             cardanoNode.stop();
           } catch (e) {} // eslint-disable-line
         }
-      } else if (
-        cardanoNode.state !== CardanoNodeStates.STARTING &&
-        cardanoNode.state !== CardanoNodeStates.RUNNING
-      ) {
-        cardanoNode.restart();
+      } else {
+        if (
+          // Happens after the user made more disk space
+          cardanoNode._startupTries > 0 &&
+          cardanoNode.state !== CardanoNodeStates.STARTING &&
+          cardanoNode.state !== CardanoNodeStates.RUNNING &&
+          hadNotEnoughSpaceLeft
+        ) {
+          try {
+            logger.info(
+              `[ACTION-DEBUG] restarting cardano node after freeing ug disk space`
+            );
+            cardanoNode.restart();
+          } catch (error) {
+            logger.error(
+              `[ACTION-ERROR] Daedalus tried to restart, but failed ${startTime}`,
+              JSON.stringify(error)
+            );
+          }
+        }
+        hadNotEnoughSpaceLeft = false;
       }
     }
   };

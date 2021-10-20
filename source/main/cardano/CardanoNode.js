@@ -549,11 +549,12 @@ export class CardanoNode {
         await this.start(_config, isForced);
       }
     } catch (error) {
-      _log.error('CardanoNode#restart: Could not restart cardano-node', {
-        error,
-      });
+      _log.error(
+        'CardanoNode#restart: Could not restart cardano-node',
+        JSON.stringify(error)
+      );
       if (this._state !== CardanoNodeStates.UNRECOVERABLE) {
-        this._changeToState(CardanoNodeStates.ERRORED);
+        this._changeToState(CardanoNodeStates.ERRORED); // TODO: What is the intention here?
       }
       return Promise.reject(error);
     }
@@ -706,7 +707,7 @@ export class CardanoNode {
     } else {
       this._changeToState(CardanoNodeStates.ERRORED);
       this._transitionListeners.onError(code, signal);
-      await this.restart();
+      await this.restart(); // TODO: Handle try/catch
     }
   };
 
