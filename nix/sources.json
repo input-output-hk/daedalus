@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "hkm/ghc8107",
+        "branch": "rvl/2578/scrypt-flag",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "8169ac8d778adabb4ec0e4c86a5be00967490257",
-        "sha256": "1s4viy15km5shp9jb46lvqkbsn76layd7cmavgfbbb8lx7lpqr7l",
+        "rev": "d9563439e99d393380849f4586f7e2c9ab1e3561",
+        "sha256": "0rm0y7fcr53fqd24ysd8mp74cxfgjxg6rhydq1njjnjmpknyswqm",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/8169ac8d778adabb4ec0e4c86a5be00967490257.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d9563439e99d393380849f4586f7e2c9ab1e3561.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {
