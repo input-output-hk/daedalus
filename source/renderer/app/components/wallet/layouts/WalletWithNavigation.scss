@@ -17,10 +17,11 @@
 }
 
 .page {
-  height: calc(100% - 50px);
+  flex: 1;
+  flex-direction: column;
+  flex-grow: 1;
   overflow-x: hidden;
   overflow-y: overlay;
-  position: relative;
 }
 
 .settingsTabPage {

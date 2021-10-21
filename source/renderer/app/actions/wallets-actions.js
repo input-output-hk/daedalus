@@ -82,7 +82,6 @@ export default class WalletsActions {
   copyWalletPublicKey: Action<{ publicKey: string }> = new Action();
   copyICOPublicKey: Action<{ publicKey: string }> = new Action();
   copyAddress: Action<{ address: string }> = new Action();
-  copyAssetItem: Action<{ assetItem: string, value: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   closeRewardsCsvGeneration: Action<any> = new Action();

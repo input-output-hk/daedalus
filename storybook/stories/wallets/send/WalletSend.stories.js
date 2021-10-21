@@ -373,7 +373,7 @@ storiesOf('Wallets|Send', module)
           hwDeviceStatus={HwDeviceStatuses.CONNECTING}
           isHardwareWallet={boolean('isHardwareWallet', false)}
           onInitiateTransaction={() => null}
-          onCopyAssetItem={() => {}}
+          onCopyAssetParam={() => {}}
           isTrezor={boolean('isTrezor', false)}
           formattedTotalAmount="21.000000"
         />
