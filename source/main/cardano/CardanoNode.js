@@ -707,7 +707,11 @@ export class CardanoNode {
     } else {
       this._changeToState(CardanoNodeStates.ERRORED);
       this._transitionListeners.onError(code, signal);
-      await this.restart(); // TODO: Handle try/catch
+      try {
+        await this.restart();
+      } catch (error) {
+        _log.error('CardanoNode: cannot be restarted', JSON.stringify(error));
+      }
     }
   };
 
