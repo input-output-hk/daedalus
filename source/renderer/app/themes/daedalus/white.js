@@ -1011,6 +1011,13 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#f9f9f9',
     '--theme-transactions-header-texct-color': '#2d2d2d80',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-tokens-list-header-expanded-background-color':
+      'rgba(41, 181, 149, 0.05)',
+    '--theme-tokens-list-header-expanded-background-color-hover':
+      'rgba(41, 181, 149, 0.03)',
+  },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
     '--theme-uploader-border-color': 'rgba(45, 45, 45, 0.3)',
