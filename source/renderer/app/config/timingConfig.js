@@ -1,5 +1,5 @@
 // @flow
-const { isTest } = global.environment;
+const { isTest, isDev } = global.environment;
 
 // All configuration values for timeouts / intervals should go here
 export const MAX_ALLOWED_STALL_DURATION = isTest
@@ -24,3 +24,7 @@ export const ASSET_TOKEN_ID_COPY_FEEDBACK = 3 * 1000; // 3 seconds | unit: milli
 export const ASSET_TOKEN_DISPLAY_DELAY = 250; // .25 second | unit: milliseconds
 export const DECENTRALIZATION_LEVEL_POLLING_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
 export const TOGGLE_TOKEN_FAVORITE_TIMEOUT = 300; // .3 second | unit: milliseconds
+export const HANDLE_INTERNET_CONNECTION_INTERVAL =
+  isTest || isDev
+    ? 5 * 1000 // 5 seconds | unit: milliseconds
+    : 30 * 1000; // 30 seconds | unit: milliseconds

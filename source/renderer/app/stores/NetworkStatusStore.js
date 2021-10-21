@@ -10,6 +10,7 @@ import {
   NETWORK_CLOCK_POLL_INTERVAL,
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
+  HANDLE_INTERNET_CONNECTION_INTERVAL,
 } from '../config/timingConfig';
 import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
@@ -72,6 +73,7 @@ export default class NetworkStatusStore extends Store {
   _networkStatusPollingInterval: ?IntervalID = null;
   _networkClockPollingInterval: ?IntervalID = null;
   _networkParametersPollingInterval: ?IntervalID = null;
+  _handleInternetConnectionTimeout: TimeoutID;
 
   // Initialize store observables
 
@@ -100,6 +102,9 @@ export default class NetworkStatusStore extends Store {
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable decentralizationProgress: number = 0; // percentage
   @observable desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
+
+  @observable isOfflineOnLoad: boolean = !navigator.onLine;
+  @observable isOffline: boolean = !navigator.onLine;
 
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
@@ -178,6 +183,10 @@ export default class NetworkStatusStore extends Store {
 
     // Blockchain verification checking
     getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
+
+    // Internet connection events
+    window.addEventListener('online', this._onChangeInternetConnection);
+    window.addEventListener('offline', this._onChangeInternetConnection);
   }
 
   _restartNode = async () => {
@@ -725,6 +734,43 @@ export default class NetworkStatusStore extends Store {
       this.isNodeTimeCorrect = true;
       this.isSystemTimeIgnored = false;
     });
+  };
+
+  _onChangeInternetConnection = () => {
+    logger.info(
+      'NetworkStatusStore: Network connection status change (triggering timeout)',
+      {
+        isOffline: !navigator.onLine,
+      }
+    );
+    clearTimeout(this._handleInternetConnectionTimeout);
+    const handleInternetConnection = () => {
+      runInAction('update internet connection status', () => {
+        const isOffline = !navigator.onLine;
+        logger.info(
+          'NetworkStatusStore: Network connection status change (change app status)',
+          {
+            isOffline,
+          }
+        );
+        this.isOffline = isOffline;
+        if (!isOffline) {
+          this.isOfflineOnLoad = isOffline;
+        }
+      });
+    };
+    this._handleInternetConnectionTimeout = setTimeout(
+      handleInternetConnection,
+      HANDLE_INTERNET_CONNECTION_INTERVAL
+    );
+  };
+
+  @action TEMP_CHANGE_CONNECTION = (isOffline: boolean) => {
+    this.isOffline = isOffline;
+  };
+
+  @action TEMP_CHANGE_CONNECTION_ON_LOAD = (isOffline: boolean) => {
+    this.isOfflineOnLoad = isOffline;
   };
 
   @computed get isConnected(): boolean {

@@ -40,6 +40,7 @@ export default class Root extends Component<Props> {
       isNotEnoughDiskSpace,
       isSplashShown,
       isSystemTimeCorrect,
+      isOfflineOnLoad,
     } = networkStatus;
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
 
@@ -80,6 +81,7 @@ export default class Root extends Component<Props> {
     }
 
     if (
+      isOfflineOnLoad ||
       !isConnected ||
       !hasLoadedWallets ||
       isNotEnoughDiskSpace ||

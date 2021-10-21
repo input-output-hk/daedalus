@@ -955,6 +955,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-topbar-wallet-name-color': '#ffffff',
     '--theme-topbar-wallet-info-color': '#ffffff',
     '--theme-topbar-logo-color': '#ffffff',
+    '--theme-topbar-no-connection-warning-color': '#f2a218',
   },
   transactions: {
     '--theme-transactions-list-background-color': '#1e1f31',

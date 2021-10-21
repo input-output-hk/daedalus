@@ -957,6 +957,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-topbar-wallet-name-color': '#2d2d2d',
     '--theme-topbar-wallet-info-color': '#2d2d2d',
     '--theme-topbar-logo-color': '#2d2d2d',
+    '--theme-topbar-no-connection-warning-color': '#f2a218',
   },
   transactions: {
     '--theme-transactions-list-background-color': '#fff',

@@ -11,13 +11,14 @@ import {
   DefaultSyncingConnectingStory,
   LoadingWalletDataSyncingConnectingStory,
   ConnectivityIssuesSyncingConnectingStory,
+  NoConnectionOverlayStory,
 } from './SyncingConnecting.stories';
 
 storiesOf('Nodes|Connecting and Loading', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator(withKnobs)
   // ====== Stories ======
   .add('Connecting', DefaultSyncingConnectingStory)
   .add('Trouble Connecting', ConnectivityIssuesSyncingConnectingStory)
-  .add('Loading Wallet Data', LoadingWalletDataSyncingConnectingStory);
+  .add('Loading Wallet Data', LoadingWalletDataSyncingConnectingStory)
+  .add('No Connection', NoConnectionOverlayStory);

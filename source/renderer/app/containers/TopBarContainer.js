@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
+import NodeConnectionIcon from '../components/widgets/NodeConnectionIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
@@ -35,6 +36,7 @@ export default class TopBarContainer extends Component<Props> {
       isSynced,
       syncPercentage,
       isShelleyActivated,
+      isOffline,
       isAlonzoActivated,
       isAlonzoPending,
     } = networkStatus;
@@ -60,19 +62,33 @@ export default class TopBarContainer extends Component<Props> {
       ? menuIconOpened
       : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
+    const onClickTadaButton = () => {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
+    };
     const testnetLabel = !isMainnet ? (
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
+    const nodeIcon = !isOffline ? (
+      <NodeSyncStatusIcon
+        isSynced={isSynced}
+        syncPercentage={syncPercentage}
+        hasTadaIcon={shouldShowTadaIcon}
+      />
+    ) : (
+      <NodeConnectionIcon hasTadaIcon={shouldShowTadaIcon} />
+    );
+    const tadaIcon = shouldShowTadaIcon && (
+      <TadaButton
+        onClick={onClickTadaButton}
+        shouldAnimate={shouldShowTadaIconAnimation}
+      />
+    );
 
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({
         route: ROUTES.WALLETS.ADD,
-      });
-    };
-
-    const onClickTadaButton = () => {
-      actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.INFO,
       });
     };
 
@@ -98,17 +114,8 @@ export default class TopBarContainer extends Component<Props> {
         isShelleyActivated={isShelleyActivated}
       >
         {testnetLabel}
-        <NodeSyncStatusIcon
-          isSynced={isSynced}
-          syncPercentage={syncPercentage}
-          hasTadaIcon={shouldShowTadaIcon}
-        />
-        {shouldShowTadaIcon && (
-          <TadaButton
-            onClick={onClickTadaButton}
-            shouldAnimate={shouldShowTadaIconAnimation}
-          />
-        )}
+        {nodeIcon}
+        {tadaIcon}
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}

@@ -970,6 +970,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-topbar-wallet-name-color': '#e9f4fe',
     '--theme-topbar-wallet-info-color': '#e9f4fe',
     '--theme-topbar-logo-color': 'rgb(250, 251, 252)',
+    '--theme-topbar-no-connection-warning-color': '#f2a218',
   },
   transactions: {
     '--theme-transactions-list-background-color': '#263345',
