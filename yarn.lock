@@ -6669,9 +6669,9 @@ electron-to-chromium@^1.3.830:
   version "1.3.842"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.842.tgz#641e414012dded277468892c0156cb01984f4f6f"
 
-electron@13.1.0:
-  version "13.1.0"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-13.1.0.tgz#6d960bcc0dfb8663dd511b59a697e2fad35b2b6a"
+electron@13.1.1:
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-13.1.1.tgz#de1ea908bcac2197d7a5a373fb68c0c66043e10e"
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^14.6.2"
