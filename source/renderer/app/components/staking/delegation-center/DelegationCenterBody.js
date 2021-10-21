@@ -34,7 +34,6 @@ type Props = {
   numberOfStakePools: number,
   numberOfRankedStakePools: number,
   onDelegate: Function,
-  onUndelegate: Function,
   getStakePoolById: Function,
   isLoading: boolean,
   nextEpoch: ?NextEpoch,
@@ -62,7 +61,6 @@ export default class DelegationCenterBody extends Component<Props> {
       numberOfStakePools,
       numberOfRankedStakePools,
       onDelegate,
-      onUndelegate,
       getStakePoolById,
       isLoading,
       nextEpoch,
@@ -123,7 +121,6 @@ export default class DelegationCenterBody extends Component<Props> {
                   numberOfStakePools={numberOfStakePools}
                   numberOfRankedStakePools={numberOfRankedStakePools}
                   onDelegate={() => onDelegate(wallet.id)}
-                  onUndelegate={() => onUndelegate(wallet.id)}
                   delegatedStakePool={getStakePoolById(
                     wallet.delegatedStakePoolId
                   )}

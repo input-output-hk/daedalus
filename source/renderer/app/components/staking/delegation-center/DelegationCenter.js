@@ -15,7 +15,6 @@ type Props = {
   numberOfStakePools: number,
   numberOfRankedStakePools: number,
   onDelegate: Function,
-  onUndelegate: Function,
   networkTip: ?TipInfo,
   epochLength: ?number,
   nextEpoch: ?NextEpoch,
@@ -40,7 +39,6 @@ export default class DelegationCenter extends Component<Props> {
       numberOfStakePools,
       numberOfRankedStakePools,
       onDelegate,
-      onUndelegate,
       networkTip,
       epochLength,
       nextEpoch,
@@ -73,7 +71,6 @@ export default class DelegationCenter extends Component<Props> {
           numberOfStakePools={numberOfStakePools}
           numberOfRankedStakePools={numberOfRankedStakePools}
           onDelegate={onDelegate}
-          onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}

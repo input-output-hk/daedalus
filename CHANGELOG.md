@@ -4,6 +4,7 @@
 
 ### Features
 
+- Added functionality to undelegate a wallet ([PR 2636](https://github.com/input-output-hk/daedalus/pull/2636))
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
 
 ### Fixes
