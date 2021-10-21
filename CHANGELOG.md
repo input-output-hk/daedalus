@@ -5,9 +5,32 @@
 ### Features
 
 - Added functionality to undelegate a wallet ([PR 2636](https://github.com/input-output-hk/daedalus/pull/2636))
+- Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
 
 ### Fixes
 
+- Updated "Trezor T" image shown on the "Pair a hardware wallet device" dialog ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
+- Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
+
+### Chores
+
+- Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
+
+## 4.4.1
+
+### Fixes
+
+- Updated Electron package to the version which includes a fix for crashes on Windows
+
+## 4.4.0
+
+### Features
+
+- Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671), [PR 2701](https://github.com/input-output-hk/daedalus/pull/2701), [PR 2703](https://github.com/input-output-hk/daedalus/pull/2703))
+
+### Fixes
+
+- Fixed wallet settings screen - no space at the bottom when scrolled down ([PR 2686](https://github.com/input-output-hk/daedalus/pull/2686))
 - Fixed the missing text for the DAPP static screens ([PR 2693](https://github.com/input-output-hk/daedalus/pull/2693))
 
 ### Chores
