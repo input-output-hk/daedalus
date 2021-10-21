@@ -40,7 +40,7 @@ const commonUpdateData = {
 export const updateEN = {
   title: `Daedalus ${availableAppVersion} update`,
   content:
-    'This release brings **cool new features** and *some bug fixes*. It provides a more seamless experience.  \n\nYou can find more information in the [release notes](https://daedalus.io).',
+    'This release brings **cool new features** and *some bug fixes*. It provides a more seamless experience.  \n\nYou can find more information in the [release notes](https://daedalus.io).\n\nThe following fixes are also included in this release:\n\n- Issue 1\n- Issue 2\n- Issue 3\n- Issue 4\n- Issue 5',
   action: {
     label: 'Download Daedalus at daedalus.io',
     url: 'https://daedalus.io',
