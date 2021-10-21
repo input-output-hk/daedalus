@@ -23,6 +23,7 @@ export const STAKE_POOL_ID_COPY_FEEDBACK = 3000; // 1.5 second | unit: milliseco
 export const ASSET_TOKEN_ID_COPY_FEEDBACK = 3 * 1000; // 3 seconds | unit: milliseconds
 export const ASSET_TOKEN_DISPLAY_DELAY = 250; // .25 second | unit: milliseconds
 export const DECENTRALIZATION_LEVEL_POLLING_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
+export const TOGGLE_TOKEN_FAVORITE_TIMEOUT = 300; // .3 second | unit: milliseconds
 export const HANDLE_INTERNET_CONNECTION_INTERVAL =
   isTest || isDev
     ? 5 * 1000 // 5 seconds | unit: milliseconds

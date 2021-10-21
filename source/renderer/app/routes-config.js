@@ -27,6 +27,7 @@ export const ROUTES = {
     TRANSACTIONS: '/wallets/:id/transactions',
     SEND: '/wallets/:id/send',
     RECEIVE: '/wallets/:id/receive',
+    TOKENS: '/wallets/:id/tokens',
     SETTINGS: '/wallets/:id/settings',
     UTXO: '/wallets/:id/utxo',
   },

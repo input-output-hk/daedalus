@@ -1011,6 +1011,13 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#efefef',
     '--theme-transactions-header-texct-color': '#5e606680',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': 'rgba(94, 96, 102, 0.5)',
+    '--theme-tokens-list-header-expanded-background-color':
+      'rgba(32, 34, 37, 0.05)',
+    '--theme-tokens-list-header-expanded-background-color-hover':
+      'rgba(32, 34, 37, 0.03)',
+  },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',
     '--theme-uploader-border-color': 'rgba(94, 96, 102, 0.3)',

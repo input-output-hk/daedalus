@@ -127,7 +127,7 @@ export default class WalletSendConfirmationDialog extends Component<
     });
   };
 
-  handleSubmitOnEnter = (event: {}) =>
+  handleSubmitOnEnter = (event: KeyboardEvent) =>
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
 
