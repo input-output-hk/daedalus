@@ -1,4 +1,13 @@
 // @flow
+import {
+  MAINNET,
+  TESTNET,
+  STAGING,
+  SHELLEY_QA,
+  ALONZO_PURPLE,
+  SELFNODE,
+} from './environment.types';
+
 export type TlsConfig = {
   hostname: string,
   port: number,
@@ -142,17 +151,26 @@ export type CardanoStatus = {
   cardanoWalletPID: number,
 };
 
-// Cardano Mainet network magic
-export const MAINNET_MAGIC = [1, null];
+export type NetworkMagicType = Array<?number>;
 
-// Cardano Byron Testnet network magic
-export const TESTNET_MAGIC = [1097911063, 0];
-
-// Cardano Staging network magic
-export const STAGING_MAGIC = [633343913, 1];
-
-// Cardano Alonzo Purple network magic
-export const ALONZO_PURPLE_MAGIC = [8, 0];
-
-// Cardano Selfnode network magic
-export const SELFNODE_MAGIC = MAINNET_MAGIC;
+export const NetworkMagics: {
+  mainnet: NetworkMagicType,
+  testnet: NetworkMagicType,
+  staging: NetworkMagicType,
+  alonzo_purple: NetworkMagicType,
+  shelley_qa: NetworkMagicType,
+  selfnode: NetworkMagicType,
+} = {
+  // Cardano Mainet network magic
+  [MAINNET]: [1, null],
+  // Cardano Staging network magic
+  [STAGING]: [633343913, 1],
+  // Cardano Byron Testnet network magic
+  [TESTNET]: [1097911063, 0],
+  // Cardano Alonzo Purple network magic
+  [ALONZO_PURPLE]: [8, 0],
+  // Cardano Shelley QA network magic
+  [SHELLEY_QA]: [3, 0],
+  // Cardano Selfnode network magic
+  [SELFNODE]: [1, null],
+};

@@ -1,0 +1,37 @@
+@import '../../../themes/mixins/animations';
+
+.numberOfAssets {
+  color: var(--theme-transactions-list-group-date-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  margin-bottom: -10px;
+  opacity: 0.5;
+  padding: 0 20px 0 40px;
+}
+
+.component {
+  padding: 20px 20px;
+
+  .noTokensContainer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    .noTokensLeftContainer {
+      p {
+        color: var(--theme-bordered-box-text-color);
+        font-family: var(--font-light);
+        font-size: 16px;
+        line-height: 1.38;
+      }
+    }
+
+    .noTokensRightContainer {
+      .noTokensLearnMoreLinkUrl {
+        font-family: var(--font-medium);
+        height: 36px;
+        width: 160px;
+      }
+    }
+  }
+}

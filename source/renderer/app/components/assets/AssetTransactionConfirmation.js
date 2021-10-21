@@ -68,7 +68,7 @@ type Props = {
   amount: BigNumber,
 };
 
-const onCopyAssetItem = () => {};
+const onCopyAssetParam = () => {};
 
 const AssetTransactionConfirmation = observer((props: Props) => {
   const {
@@ -113,7 +113,7 @@ const AssetTransactionConfirmation = observer((props: Props) => {
           </span>
           <Asset
             asset={asset}
-            onCopyAssetItem={onCopyAssetItem}
+            onCopyAssetParam={onCopyAssetParam}
             hasError={hasError}
           />
         </h3>

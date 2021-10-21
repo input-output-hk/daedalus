@@ -1,4 +1,8 @@
-const { isMainnet, isTestnet } = global.environment;
+// @flow
+import { get, map } from 'lodash';
+import { NetworkMagics } from '../../../common/types/cardano-node.types';
+import type { NetworkMagicType } from '../../../common/types/cardano-node.types';
+import type { Network } from '../../../common/types/environment.types';
 
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;
@@ -7,25 +11,18 @@ export const BYRON_PURPOSE_INDEX = 44;
 export const ADA_COIN_TYPE = 1815;
 export const DEFAULT_ADDRESS_INDEX = 0;
 
+const { isMainnet, isStaging, isSelfnode } = global.environment;
+const hardwareWalletNetworksConfig = {};
+map(NetworkMagics, (networkMagic: NetworkMagicType, network: Network) => {
+  const isMainnetLikeNetwork = isMainnet || isSelfnode || isStaging;
+  hardwareWalletNetworksConfig[network] = {
+    networkId: isMainnetLikeNetwork ? 1 : networkMagic[1],
+    protocolMagic: isMainnetLikeNetwork ? 764824073 : networkMagic[0],
+  };
+});
+
 export const HW_SHELLEY_CONFIG = {
-  NETWORK: {
-    MAINNET: {
-      name: 'mainnet',
-      networkId: 1,
-      protocolMagic: 764824073,
-      trezorProtocolMagic: 764824073,
-      eraStartSlot: 4492800,
-      ttl: 3600,
-    },
-    TESTNET: {
-      name: 'testnet',
-      networkId: 0,
-      protocolMagic: 1097911063,
-      trezorProtocolMagic: 1097911063,
-      eraStartSlot: 4492800,
-      ttl: 3600,
-    },
-  },
+  NETWORK: hardwareWalletNetworksConfig,
   DEFAULT_DERIVATION_PATH: [
     HARDENED + SHELLEY_PURPOSE_INDEX,
     HARDENED + ADA_COIN_TYPE,
@@ -41,13 +38,7 @@ export const HW_SHELLEY_CONFIG = {
 };
 
 export const HW_BYRON_CONFIG = {
-  NETWORK: {
-    MAINNET: {
-      name: 'mainnet',
-      networkId: 1,
-      protocolMagic: 764824073,
-    },
-  },
+  NETWORK: hardwareWalletNetworksConfig,
   DEFAULT_DERIVATION_PATH: [
     HARDENED + BYRON_PURPOSE_INDEX,
     HARDENED + ADA_COIN_TYPE,
@@ -80,6 +71,11 @@ export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
 
 export const isHardwareWalletSupportEnabled =
-  (isMainnet || isTestnet) && (isTrezorEnabled || isLedgerEnabled);
+  isTrezorEnabled || isLedgerEnabled;
 
 export const isHardwareWalletIndicatorEnabled = false;
+
+export const getHardwareWalletsNetworkConfig = (network: Network) => {
+  const networkConfig = get(HW_SHELLEY_CONFIG, ['NETWORK', network], {});
+  return networkConfig;
+};
