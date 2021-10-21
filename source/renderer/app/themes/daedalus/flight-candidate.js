@@ -1001,6 +1001,13 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#121326',
     '--theme-transactions-header-texct-color': '#ffffff80',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-tokens-list-header-expanded-background-color':
+      'rgba(255, 255, 255, 0.05)',
+    '--theme-tokens-list-header-expanded-background-color-hover':
+      'rgba(255, 255, 255, 0.03)',
+  },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',
     '--theme-uploader-border-color': 'rgba(255, 255, 255, 0.3)',
