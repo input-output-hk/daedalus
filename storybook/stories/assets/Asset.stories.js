@@ -45,7 +45,7 @@ storiesOf('Assets|Asset pill', module)
           }}
           small={boolean('small', false)}
           hidePopOver={boolean('hidePopOver')}
-          onCopyAssetItem={action('onCopyAssetItem')}
+          onCopyAssetParam={action('onCopyAssetParam')}
           onClickSettings={
             boolean('Is configurable', true) ? action('onClickSettings') : null
           }

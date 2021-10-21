@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import classnames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
-import styles from './WalletSummaryNoTokens.scss';
+import styles from './WalletNoTokens.scss';
 import ButtonLink from '../../widgets/ButtonLink';
 
 const messages = defineMessages({

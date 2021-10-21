@@ -122,7 +122,7 @@ export default defineMessages({
   syncingTransactionsMessage: {
     id: 'wallet.send.form.syncingTransactionsMessage',
     defaultMessage:
-      '!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.',
+      '!!!The balance and transaction history of this wallet is being synced with the blockchain.',
     description:
       'Syncing transactions message shown during async wallet restore in the wallet send form.',
   },

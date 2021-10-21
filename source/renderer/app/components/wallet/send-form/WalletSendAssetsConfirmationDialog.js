@@ -53,7 +53,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
   isTrezor: boolean,
   formattedTotalAmount: string,
 };
@@ -155,7 +155,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     });
   };
 
-  handleSubmitOnEnter = (event: {}) =>
+  handleSubmitOnEnter = (event: KeyboardEvent) =>
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
 
@@ -242,7 +242,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
-      onCopyAssetItem,
+      onCopyAssetParam,
       wallet,
       formattedTotalAmount,
       totalAmount,
@@ -359,7 +359,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
                             </span>
                             <Asset
                               asset={asset}
-                              onCopyAssetItem={onCopyAssetItem}
+                              onCopyAssetParam={onCopyAssetParam}
                               className={styles.assetToken}
                             />
                           </h3>

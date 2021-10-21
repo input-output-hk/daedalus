@@ -8,7 +8,6 @@ import WalletTransactionsList, {
 import WalletTransactionsHeader from './WalletTransactionsHeader';
 import FilterResultInfo from './FilterResultInfo';
 import WalletNoTransactions from './WalletNoTransactions';
-import VerticalFlexContainer from '../../layout/VerticalFlexContainer';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -47,7 +46,7 @@ type Props = {
   hasAssetsEnabled: boolean,
   getAsset: Function,
   isInternalAddress: Function,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
 };
 
 type State = {
@@ -95,7 +94,7 @@ export default class WalletTransactions extends Component<Props, State> {
       hasAssetsEnabled,
       getAsset,
       isInternalAddress,
-      onCopyAssetItem,
+      onCopyAssetParam,
     } = this.props;
 
     // Guard against potential null values
@@ -140,7 +139,7 @@ export default class WalletTransactions extends Component<Props, State> {
           getAsset={getAsset}
           isRenderingAsVirtualList
           isInternalAddress={isInternalAddress}
-          onCopyAssetItem={onCopyAssetItem}
+          onCopyAssetParam={onCopyAssetParam}
         />
       );
     }
@@ -165,7 +164,7 @@ export default class WalletTransactions extends Component<Props, State> {
               numberFormat: currentNumberFormat,
             }}
           />
-          <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
+          {walletTransactions}
         </div>
       </WalletTransactionsListScrollContext.Provider>
     );
