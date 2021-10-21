@@ -15,6 +15,12 @@
 
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
 
+## 4.4.1
+
+### Fixes
+
+- Updated Electron package to the version which includes a fix for crashes on Windows
+
 ## 4.4.0
 
 ### Features
