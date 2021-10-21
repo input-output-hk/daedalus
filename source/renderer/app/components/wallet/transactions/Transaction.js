@@ -576,7 +576,9 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.details}>
                 <div className={styles.type}>
                   {intl.formatMessage(messages.type, { typeOfTransaction })},{' '}
-                  {moment(data.date).format(currentTimeFormat)}
+                  {moment(data.date)
+                    .locale(intl.locale)
+                    .format(currentTimeFormat)}
                 </div>
                 {this.renderTxnStateTag()}
               </div>
