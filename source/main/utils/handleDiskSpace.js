@@ -16,7 +16,7 @@ import {
 
 export const handleDiskSpace = (
   mainWindow: BrowserWindow,
-  onCheckDiskSpace?: Function
+  onCheckDiskSpace: Function
 ) => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
@@ -74,8 +74,8 @@ export const handleDiskSpace = (
       };
       if (isNotEnoughDiskSpace)
         logger.info('Not enough disk space', { response });
-      if (typeof onCheckDiskSpace === 'function') onCheckDiskSpace(response);
-      getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
+      await onCheckDiskSpace?.(response);
+      await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
       return response;
     } catch (error) {
       // Remove diskSpaceCheckInterval if set
@@ -91,7 +91,7 @@ export const handleDiskSpace = (
         diskSpaceRecommended: '',
         diskSpaceAvailable: '',
       };
-      getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
+      await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
       return response;
     }
   };

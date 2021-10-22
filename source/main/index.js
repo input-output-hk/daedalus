@@ -162,7 +162,7 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  const onCheckDiskSpace = ({
+  const onCheckDiskSpace = async ({
     isNotEnoughDiskSpace,
   }: CheckDiskSpaceResponse) => {
     if (cardanoNode) {
@@ -176,26 +176,30 @@ const onAppReady = async () => {
           cardanoNode.state !== CardanoNodeStates.STOPPED
         ) {
           try {
-            cardanoNode.stop();
-          } catch (e) {} // eslint-disable-line
+            await cardanoNode.stop();
+          } catch (error) {
+            logger.error(
+              `[CHECK-ERROR] Cannot stop cardano node: ${JSON.stringify(error)}`
+            );
+          }
         }
       } else {
         if (
           // Happens after the user made more disk space
-          cardanoNode._startupTries > 0 &&
           cardanoNode.state !== CardanoNodeStates.STARTING &&
           cardanoNode.state !== CardanoNodeStates.RUNNING &&
           hadNotEnoughSpaceLeft
         ) {
           try {
             logger.info(
-              `[ACTION-DEBUG] restarting cardano node after freeing ug disk space`
+              `[ACTION-DEBUG] restart cardano node after freeing ug disk space`
             );
-            cardanoNode.restart();
+            await cardanoNode.restart();
           } catch (error) {
             logger.error(
-              `[ACTION-ERROR] Daedalus tried to restart, but failed ${startTime}`,
-              JSON.stringify(error)
+              `[ACTION-ERROR] Daedalus tried to restart, but failed ${JSON.stringify(
+                error
+              )}`
             );
           }
         }
