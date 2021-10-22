@@ -32,19 +32,20 @@
       font-family: var(--font-regular);
       text-align: center;
       user-select: text;
+      width: 100%;
 
       .walletName {
         -webkit-box-orient: vertical;
         color: var(--theme-topbar-wallet-name-color);
-        display: -webkit-box;
+        display: inline;
         font-size: 21px;
-        -webkit-line-clamp: 1;
         line-height: 25px;
         margin-bottom: 4px;
         max-width: 45%;
         overflow: hidden;
         position: relative;
         text-overflow: ellipsis;
+        white-space: nowrap;
         width: 100%;
         word-break: keep-all;
       }
@@ -84,6 +85,8 @@
     display: flex;
     flex-grow: 1;
     justify-content: center;
-    margin-right: 24px;
+    left: 0;
+    position: absolute;
+    width: 100%;
   }
 }
