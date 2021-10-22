@@ -13,6 +13,7 @@
 
 ### Chores
 
+- Added tests for currency display settings and stake-pool settings screens ([PR 2622](https://github.com/input-output-hk/daedalus/pull/2622))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
 
 ## 4.4.1
