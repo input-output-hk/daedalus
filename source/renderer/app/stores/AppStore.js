@@ -76,6 +76,16 @@ export default class AppStore extends Store {
       isSystemTimeCorrect,
     } = networkStatus;
 
+    // eslint-disable-next-line
+    console.debug('>>> _processCustomProtocolParams: ', {
+      isConnected,
+      hasLoadedWallets,
+      isNotEnoughDiskSpace,
+      isSystemTimeCorrect,
+      displayAppUpdateOverlay,
+      customProtocolParameters: this.customProtocolParameters,
+    });
+
     if (
       isConnected &&
       hasLoadedWallets &&
@@ -234,10 +244,16 @@ export default class AppStore extends Store {
           address: actionParam,
         };
       }
+      // eslint-disable-next-line
+      console.debug('>>> _handleCustomProtocol: ', {
+        action: isAddress ? 'address' : actionParam, // e.g address / stake /...
+        data: parsedParamsData,
+        hasAnyWallets: this.stores.wallets.hasAnyWallets,
+      });
       if (this.stores.wallets.hasAnyWallets) {
         runInAction('Store custom protocol data', () => {
           this.customProtocolParameters = {
-            action: isAddress ? 'address' : actionParam, // e.g address / statke /...
+            action: isAddress ? 'address' : actionParam, // e.g address / stake /...
             data: parsedParamsData,
           };
         });

@@ -14,7 +14,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-import { handleCustomProtocol } from './utils/handleCustomProtocol';
+// import { handleCustomProtocol } from './utils/handleCustomProtocol';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
@@ -165,12 +165,11 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  logger.info('[Custom-Protocol] deeplinkingUrl ON READY: ', { deeplinkingUrl });
+  logger.info('[Custom-Protocol] deeplinkingUrl ON READY - URL: ', { deeplinkingUrl });
   logger.info('[Custom-Protocol] deeplinkingUrl ON READY - Get processArgv: ', {
     processArgv: process.argv,
     platform: process.platform,
   });
-
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
@@ -268,6 +267,7 @@ const onAppReady = async () => {
       })
   );
 
+  // Register custom browser protocol
   if (process.platform === 'win32') {
     logger.info('[Custom-Protocol] Set Windows protocol params: ', {
       platform: process.platform,
@@ -324,6 +324,7 @@ const onAppReady = async () => {
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {
     contents.on('new-window', (event, url) => {
+      logger.info('[Custom-Protocol] ON new-window', { url });
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
       logger.info('Prevented creation of new browser window', { url });
@@ -376,33 +377,24 @@ const onAppReady = async () => {
 
 // Make sure this is the only Daedalus instance running per cluster before doing anything else
 const isSingleInstance = app.requestSingleInstanceLock();
+logger.info('[Custom-Protocol] isSingleInstance', { isSingleInstance });
 
-app.on('will-finish-launching', function() {
+app.on('will-finish-launching', () => {
+  logger.info('[Custom-Protocol] will-finish-launching');
   // Protocol handler for osx
-  app.on('open-url', function(event, url) {
+  app.on('open-url', (event, url) => {
+    logger.info('[Custom-Protocol] will-finish-launching - Open URL: ', { url });
     event.preventDefault()
     deeplinkingUrl = `${url}-#1`;
-    // logEverywhere('open-url# ' + deeplinkingUrl)
   })
 })
 
 // Protocol handler for osx
-app.on('open-url', function(event, url) {
+app.on('open-url', (event, url) => {
+  logger.info('[Custom-Protocol] Open URL: ', { url });
   event.preventDefault()
   deeplinkingUrl = `${url}-#2`;
-  // logEverywhere('open-url-2# ' + deeplinkingUrl)
 })
-
-// Log both at dev console and at running node console instance
-const logEverywhere = (s, obj) => {
-  console.debug('>>> tt - s : ', s);
-  console.debug('>>> tt - obj : ', obj);
-  logger.info('[Custom-Protocol] logEverywhere: ', { s });
-  console.log(s)
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.executeJavaScript(`console.log("${s}")`)
-  }
-}
 
 if (!isSingleInstance) {
   logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
