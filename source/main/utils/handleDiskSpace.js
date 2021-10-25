@@ -13,10 +13,48 @@ import {
   DISK_SPACE_RECOMMENDED_PERCENTAGE,
   stateDirectoryPath,
 } from '../config';
+import { CardanoNodeStates } from '../../common/types/cardano-node.types';
+import { CardanoNode } from '../cardano/CardanoNode';
+
+const startStopCardanoNode = async (
+  cardanoNode: CardanoNode,
+  isNotEnoughDiskSpace: boolean
+) => {
+  if (isNotEnoughDiskSpace) {
+    if (
+      cardanoNode.state !== CardanoNodeStates.STOPPING &&
+      cardanoNode.state !== CardanoNodeStates.STOPPED
+    ) {
+      try {
+        logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
+        await cardanoNode.stop();
+      } catch (error) {
+        logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
+      }
+    }
+  } else if (
+    // Happens after the user made more disk space
+    cardanoNode.state !== CardanoNodeStates.STARTING &&
+    cardanoNode.state !== CardanoNodeStates.RUNNING
+  ) {
+    try {
+      logger.info(
+        '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
+      );
+      if (cardanoNode._startupTries > 0) await cardanoNode.restart();
+      else await cardanoNode.start();
+    } catch (error) {
+      logger.error(
+        '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
+        error
+      );
+    }
+  }
+};
 
 export const handleDiskSpace = (
   mainWindow: BrowserWindow,
-  onCheckDiskSpace: Function
+  cardanoNode: CardanoNode
 ) => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
@@ -74,7 +112,7 @@ export const handleDiskSpace = (
       };
       if (isNotEnoughDiskSpace)
         logger.info('Not enough disk space', { response });
-      await onCheckDiskSpace?.(response);
+      await startStopCardanoNode(cardanoNode, isNotEnoughDiskSpace);
       await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
       return response;
     } catch (error) {

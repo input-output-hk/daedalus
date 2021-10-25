@@ -35,7 +35,6 @@ import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
-import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import type {
   GenerateWalletMigrationReportRendererRequest,
   SetStateSnapshotLogMainResponse,
@@ -55,7 +54,6 @@ import {
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
-let hadNotEnoughSpaceLeft: boolean = false;
 
 const {
   isDev,
@@ -164,48 +162,7 @@ const onAppReady = async () => {
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
-  const onCheckDiskSpace = async ({
-    isNotEnoughDiskSpace,
-  }: CheckDiskSpaceResponse) => {
-    if (cardanoNode) {
-      if (isNotEnoughDiskSpace) {
-        hadNotEnoughSpaceLeft = true;
-        if (
-          cardanoNode.state !== CardanoNodeStates.STOPPING &&
-          cardanoNode.state !== CardanoNodeStates.STOPPED
-        ) {
-          try {
-            logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
-            await cardanoNode.stop();
-          } catch (error) {
-            logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
-          }
-        }
-      } else {
-        if (
-          // Happens after the user made more disk space
-          cardanoNode.state !== CardanoNodeStates.STARTING &&
-          cardanoNode.state !== CardanoNodeStates.RUNNING &&
-          hadNotEnoughSpaceLeft
-        ) {
-          try {
-            logger.info(
-              '[DISK-SPACE-DEBUG] restart cardano node after freeing ug disk space'
-            );
-            if (cardanoNode._startupTries > 0) await cardanoNode.restart();
-            else await cardanoNode.start();
-          } catch (error) {
-            logger.error(
-              '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
-              error
-            );
-          }
-        }
-        hadNotEnoughSpaceLeft = false;
-      }
-    }
-  };
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow, onCheckDiskSpace);
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
       handleCheckDiskSpace();

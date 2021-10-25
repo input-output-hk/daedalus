@@ -353,18 +353,19 @@ export class CardanoNode {
       } else {
         try {
           const node = await CardanoWalletLauncher({
+            ...this._config,
             nodeImplementation,
-            nodeConfig: this._config.nodeConfig,
-            cluster: this._config.cluster,
-            stateDir: this._config.stateDir,
-            tlsPath: this._config.tlsPath,
-            configPath: this._config.configPath,
-            syncTolerance: this._config.syncTolerance,
             nodeLogFile,
             walletLogFile,
-            cliBin: this._config.cliBin,
-            isStaging: this._config.isStaging,
-            metadataUrl: this._config.metadataUrl,
+            // nodeConfig: this._config.nodeConfig,
+            // cluster: this._config.cluster,
+            // stateDir: this._config.stateDir,
+            // tlsPath: this._config.tlsPath,
+            // configPath: this._config.configPath,
+            // syncTolerance: this._config.syncTolerance,
+            // cliBin: this._config.cliBin,
+            // isStaging: this._config.isStaging,
+            // metadataUrl: this._config.metadataUrl,
           });
 
           this._node = node;
@@ -537,8 +538,11 @@ export class CardanoNode {
       }
     } catch (error) {
       _log.error('CardanoNode#restart: Could not restart cardano-node', error);
-      const { code, signal } = error || {};
-      await this._handleCardanoNodeError(code, signal);
+      // const { code, signal } = error || {};
+      // await this._handleCardanoNodeError(code, signal);
+      if (this._state !== CardanoNodeStates.UNRECOVERABLE) {
+        this._changeToState(CardanoNodeStates.ERRORED); // TODO: What is the intention here?
+      }
       return Promise.reject(error);
     }
   }
