@@ -162,13 +162,12 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
+
   const onCheckDiskSpace = async ({
     isNotEnoughDiskSpace,
   }: CheckDiskSpaceResponse) => {
     if (cardanoNode) {
-      logger.info(
-        `[CHECK-DEBUG] isNotEnoughDiskSpace: ${isNotEnoughDiskSpace?.toString()}`
-      );
       if (isNotEnoughDiskSpace) {
         hadNotEnoughSpaceLeft = true;
         if (
@@ -176,11 +175,10 @@ const onAppReady = async () => {
           cardanoNode.state !== CardanoNodeStates.STOPPED
         ) {
           try {
+            logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
             await cardanoNode.stop();
           } catch (error) {
-            logger.error(
-              `[CHECK-ERROR] Cannot stop cardano node: ${JSON.stringify(error)}`
-            );
+            logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
           }
         }
       } else {
@@ -192,14 +190,14 @@ const onAppReady = async () => {
         ) {
           try {
             logger.info(
-              `[ACTION-DEBUG] restart cardano node after freeing ug disk space`
+              '[DISK-SPACE-DEBUG] restart cardano node after freeing ug disk space'
             );
-            await cardanoNode.restart();
+            if (cardanoNode._startupTries > 0) await cardanoNode.restart();
+            else await cardanoNode.start();
           } catch (error) {
             logger.error(
-              `[ACTION-ERROR] Daedalus tried to restart, but failed ${JSON.stringify(
-                error
-              )}`
+              '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
+              error
             );
           }
         }
@@ -218,8 +216,6 @@ const onAppReady = async () => {
   await handleCheckDiskSpace();
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
-
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes

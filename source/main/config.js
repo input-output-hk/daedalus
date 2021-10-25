@@ -157,7 +157,7 @@ export const NODE_SHUTDOWN_TIMEOUT = isTest ? 5000 : 5 * 60 * 1000; // 5 minutes
 export const NODE_KILL_TIMEOUT = isTest ? 5000 : 10 * 5 * 1000; // 5 minutes | unit: milliseconds
 export const NODE_UPDATE_TIMEOUT = isTest ? 10000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
 
-export const DISK_SPACE_REQUIRED = 2 * 1073741274; // 2 GB | unit: bytes
+export const DISK_SPACE_REQUIRED = 400 * 1073741274; // 2 GB | unit: bytes
 export const DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE = 10; // 10% of the available disk space
 export const DISK_SPACE_CHECK_LONG_INTERVAL = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
 export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
