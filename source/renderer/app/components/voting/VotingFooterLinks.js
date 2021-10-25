@@ -7,12 +7,12 @@ import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import styles from './VotingFooterLinks.scss';
 
 type FooterLink = {
-  url: String,
-  label: String,
+  url: string,
+  label: string,
 };
 
 type Props = {
-  onClickExternalLink: any,
+  onClickExternalLink: Function,
   intl: intlShape.isRequired,
 };
 
@@ -55,7 +55,7 @@ export const VotingFooterLinks = injectIntl(
         label: intl.formatMessage(messages.community),
       },
       {
-        url: 'https://t.me/cardanocatalyst',
+        url: 'https://cardano.ideascale.com/',
         label: intl.formatMessage(messages.projects),
       },
     ];
@@ -66,7 +66,7 @@ export const VotingFooterLinks = injectIntl(
           <li key={link.url}>
             <Link
               className={styles.link}
-              {...link}
+              label={link.label}
               onClick={(event) => onClickExternalLink(link.url, event)}
             />
           </li>
