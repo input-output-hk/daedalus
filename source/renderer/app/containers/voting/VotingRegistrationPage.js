@@ -14,6 +14,7 @@ import VotingRegistrationDialog from '../../components/voting/voting-registratio
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
+import { VotingFooterLinks } from '../../components/voting/VotingFooterLinks';
 
 type Props = InjectedProps;
 
@@ -81,6 +82,7 @@ export default class VotingRegistrationPage extends Component<Props> {
             }
             onExternalLinkClick={openExternalLink}
           />
+          <VotingFooterLinks onClickExternalLink={openExternalLink} />
         </VerticalFlexContainer>
 
         {isVotingRegistrationDialogOpen && (
