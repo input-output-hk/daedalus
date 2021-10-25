@@ -13184,9 +13184,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@1.0.0-next.1:
-  version "1.0.0-next.1"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.0-next.1.tgz#99c8f90e7188d176288c94f425fbb7505b31918c"
+react-polymorph@1.0.0-next.2:
+  version "1.0.0-next.2"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.0-next.2.tgz#c24b9711c42e264c5074ca768138f53ea423dcaf"
   dependencies:
     "@tippyjs/react" "4.2.1"
     create-react-context "0.2.2"
