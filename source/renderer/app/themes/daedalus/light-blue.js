@@ -1049,6 +1049,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#5e6066',
     '--theme-voting-separator-color': 'rgba(94, 96, 102, 0.15)',
+    '--theme-voting-footer-separator-color': 'rgba(94, 96, 102, 0.5)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(36, 62, 98, 0.98)',
