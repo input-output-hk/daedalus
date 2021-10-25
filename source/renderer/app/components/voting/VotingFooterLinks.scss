@@ -2,9 +2,9 @@
   align-items: flex-end;
   display: flex;
   flex: 1;
+  font-size: 14px;
   justify-content: center;
   padding: 20px;
-  font-size: 14px;
 
   li {
     .link {
@@ -16,9 +16,9 @@
   }
 
   li:not(:first-child)::before {
-    display: inline;
-    content: '';
     border-left: 1px solid var(--theme-voting-footer-separator-color);
+    content: '';
+    display: inline;
     margin-left: 20px;
     padding-right: 20px;
   }
