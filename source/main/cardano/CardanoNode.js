@@ -357,15 +357,6 @@ export class CardanoNode {
             nodeImplementation,
             nodeLogFile,
             walletLogFile,
-            // nodeConfig: this._config.nodeConfig,
-            // cluster: this._config.cluster,
-            // stateDir: this._config.stateDir,
-            // tlsPath: this._config.tlsPath,
-            // configPath: this._config.configPath,
-            // syncTolerance: this._config.syncTolerance,
-            // cliBin: this._config.cliBin,
-            // isStaging: this._config.isStaging,
-            // metadataUrl: this._config.metadataUrl,
           });
 
           this._node = node;
