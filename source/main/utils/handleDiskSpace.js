@@ -137,7 +137,7 @@ export const handleDiskSpace = (
   const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
     diskSpaceCheckInterval = setInterval(async () => {
-      handleCheckDiskSpace();
+      await handleCheckDiskSpace();
     }, interval);
     diskSpaceCheckIntervalLength = interval;
   };
