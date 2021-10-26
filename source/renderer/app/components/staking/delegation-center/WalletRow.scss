@@ -69,6 +69,7 @@
       height: 71px;
       overflow: hidden;
       padding: 25px 9px;
+      position: relative;
       text-align: center;
       width: 80px;
 
@@ -282,10 +283,9 @@
         }
 
         .action {
-          bottom: -25px;
-          margin-left: -12px;
-          margin-top: -12px;
-          position: relative;
+          bottom: 0;
+          left: 0;
+          position: absolute;
         }
       }
     }
@@ -345,13 +345,9 @@
       .stakePoolTile {
         &.futureStakePoolTileUndelegated,
         &.futureStakePoolTileUndefined {
-          .stakePoolUnknown {
-            margin-top: -6px;
-          }
-
+          .stakePoolUnknown,
           .nonDelegatedText {
-            margin-top: -15px;
-            padding-top: 10px;
+            margin-top: -6px;
           }
         }
 
