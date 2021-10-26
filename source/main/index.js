@@ -396,6 +396,27 @@ app.on('open-url', (event, url) => {
   deeplinkingUrl = `${url}-#2`;
 })
 
+app.on('second-instance', () => {
+  logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
+  if (mainWindow) {
+    const exitSelfnodeDialogOptions_test = {
+      buttons: ['Yes', 'No'],
+      type: 'warning',
+      title: 'Second instance',
+      message: 'Instance found after delay',
+      defaultId: 0,
+      cancelId: 1,
+      noLink: true,
+    };
+    dialog.showMessageBox(
+      mainWindow,
+      exitSelfnodeDialogOptions_test
+    );
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
+  }
+});
+
 if (!isSingleInstance) {
   setTimeout(() => {
     if (!isSingleInstance) {
@@ -425,25 +446,5 @@ if (!isSingleInstance) {
       }
     });
   }); */
-  app.on('second-instance', () => {
-    logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
-    if (mainWindow) {
-      const exitSelfnodeDialogOptions_test = {
-        buttons: ['Yes', 'No'],
-        type: 'warning',
-        title: 'Second instance',
-        message: 'Instance found after delay',
-        defaultId: 0,
-        cancelId: 1,
-        noLink: true,
-      };
-      dialog.showMessageBox(
-        mainWindow,
-        exitSelfnodeDialogOptions_test
-      );
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-    }
-  });
   app.on('ready', onAppReady);
 }
