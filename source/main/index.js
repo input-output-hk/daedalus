@@ -397,39 +397,13 @@ app.on('open-url', (event, url) => {
 })
 
 if (!isSingleInstance) {
-  logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
-  if (mainWindow) {
-    const exitSelfnodeDialogOptions = {
-      buttons: ['Yes', 'No'],
-      type: 'warning',
-      title: 'Safe EXIT',
-      message: 'Safe EXIT - not a single instance',
-      defaultId: 0,
-      cancelId: 1,
-      noLink: true,
-    };
-    dialog.showMessageBox(
-      mainWindow,
-      exitSelfnodeDialogOptions
-    );
-  }
-  safeExit();
+  setTimeout(() => {
+    if (!isSingleInstance) {
+      logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
+      safeExit();
+    }
+  }, 5000);
 } else {
-  if (mainWindow) {
-    const exitSelfnodeDialogOptions2 = {
-      buttons: ['Yes', 'No'],
-      type: 'warning',
-      title: 'It is single instance',
-      message: '...',
-      defaultId: 0,
-      cancelId: 1,
-      noLink: true,
-    };
-    dialog.showMessageBox(
-      mainWindow,
-      exitSelfnodeDialogOptions2
-    );
-  }
   logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
   /* app.on('will-finish-launching' , () => {
     logger.info('[Custom-Protocol] will-finish-launching');
@@ -452,23 +426,21 @@ if (!isSingleInstance) {
     });
   }); */
   app.on('second-instance', () => {
-    if (mainWindow) {
-    const exitSelfnodeDialogOptions3 = {
-      buttons: ['Yes', 'No'],
-      type: 'warning',
-      title: 'On second instance',
-      message: '...',
-      defaultId: 0,
-      cancelId: 1,
-      noLink: true,
-    };
-    dialog.showMessageBox(
-      mainWindow,
-      exitSelfnodeDialogOptions3
-    );
-  }
     logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
     if (mainWindow) {
+      const exitSelfnodeDialogOptions_test = {
+        buttons: ['Yes', 'No'],
+        type: 'warning',
+        title: 'Second instance',
+        message: 'Instance found after delay',
+        defaultId: 0,
+        cancelId: 1,
+        noLink: true,
+      };
+      dialog.showMessageBox(
+        mainWindow,
+        exitSelfnodeDialogOptions_test
+      );
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
     }
