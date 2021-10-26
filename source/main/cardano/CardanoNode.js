@@ -529,8 +529,10 @@ export class CardanoNode {
       }
     } catch (error) {
       _log.error('CardanoNode#restart: Could not restart cardano-node', error);
-      const { code, signal } = error || {};
-      await this._handleCardanoNodeError(code, signal);
+      if (this._state !== CardanoNodeStates.UNRECOVERABLE) {
+        const { code, signal } = error || {};
+        this._changeToState(CardanoNodeStates.ERRORED, code, signal);
+      }
       return Promise.reject(error);
     }
   }
@@ -761,6 +763,8 @@ export class CardanoNode {
         return _transitionListeners.onUpdated();
       case CardanoNodeStates.CRASHED:
         return _transitionListeners.onCrashed(...args);
+      case CardanoNodeStates.ERRORED:
+        return _transitionListeners.onError(...args);
       case CardanoNodeStates.UNRECOVERABLE:
         return _transitionListeners.onUnrecoverable();
       default:

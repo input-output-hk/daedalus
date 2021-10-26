@@ -15,52 +15,20 @@ import {
 } from '../config';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
-
-const startStopCardanoNode = async (
-  cardanoNode: CardanoNode,
-  isNotEnoughDiskSpace: boolean
-) => {
-  if (isNotEnoughDiskSpace) {
-    if (
-      cardanoNode.state !== CardanoNodeStates.STOPPING &&
-      cardanoNode.state !== CardanoNodeStates.STOPPED
-    ) {
-      try {
-        logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
-        await cardanoNode.stop();
-      } catch (error) {
-        logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
-      }
-    }
-  } else if (
-    // Happens after the user made more disk space
-    cardanoNode.state !== CardanoNodeStates.STARTING &&
-    cardanoNode.state !== CardanoNodeStates.RUNNING
-  ) {
-    try {
-      logger.info(
-        '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
-      );
-      if (cardanoNode._startupTries > 0) await cardanoNode.restart();
-      else await cardanoNode.start();
-    } catch (error) {
-      logger.error(
-        '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
-        error
-      );
-    }
-  }
-};
+import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
 
 export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode
-) => {
+): Function => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
   let isNotEnoughDiskSpace = false; // Default check state
 
-  const handleCheckDiskSpace = async (forceDiskSpaceRequired?: number) => {
+  const handleCheckDiskSpace = async (
+    hadNotEnoughSpaceLeft: boolean,
+    forceDiskSpaceRequired?: number
+  ): Promise<CheckDiskSpaceResponse> => {
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
     try {
       const {
@@ -109,10 +77,44 @@ export const handleDiskSpace = (
         diskSpaceMissing: prettysize(diskSpaceMissing),
         diskSpaceRecommended: prettysize(diskSpaceRecommended),
         diskSpaceAvailable: prettysize(diskSpaceAvailable),
+        hadNotEnoughSpaceLeft,
       };
-      if (isNotEnoughDiskSpace)
+      if (isNotEnoughDiskSpace) {
+        response.hadNotEnoughSpaceLeft = true;
         logger.info('Not enough disk space', { response });
-      await startStopCardanoNode(cardanoNode, isNotEnoughDiskSpace);
+        if (
+          cardanoNode.state !== CardanoNodeStates.STOPPING &&
+          cardanoNode.state !== CardanoNodeStates.STOPPED
+        ) {
+          try {
+            logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
+            await cardanoNode.stop();
+          } catch (error) {
+            logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
+          }
+        }
+      } else {
+        if (
+          // Happens after the user made more disk space
+          cardanoNode.state === CardanoNodeStates.STOPPED &&
+          cardanoNode.state !== CardanoNodeStates.STOPPING &&
+          response.hadNotEnoughSpaceLeft
+        ) {
+          try {
+            logger.info(
+              '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
+            );
+            if (cardanoNode._startupTries > 0) await cardanoNode.restart();
+            else await cardanoNode.start();
+          } catch (error) {
+            logger.error(
+              '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
+              error
+            );
+          }
+        }
+        response.hadNotEnoughSpaceLeft = false;
+      }
       await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
       return response;
     } catch (error) {
@@ -128,16 +130,20 @@ export const handleDiskSpace = (
         diskSpaceMissing: '',
         diskSpaceRecommended: '',
         diskSpaceAvailable: '',
+        hadNotEnoughSpaceLeft: false,
       };
       await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
       return response;
     }
   };
 
+  let hadNotEnoughSpaceLeft: boolean = false;
+
   const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
     diskSpaceCheckInterval = setInterval(async () => {
-      await handleCheckDiskSpace();
+      const response = await handleCheckDiskSpace(hadNotEnoughSpaceLeft);
+      hadNotEnoughSpaceLeft = response.hadNotEnoughSpaceLeft;
     }, interval);
     diskSpaceCheckIntervalLength = interval;
   };
@@ -146,7 +152,7 @@ export const handleDiskSpace = (
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
 
   getDiskSpaceStatusChannel.onReceive((diskSpaceRequired) =>
-    handleCheckDiskSpace(diskSpaceRequired)
+    handleCheckDiskSpace(hadNotEnoughSpaceLeft, diskSpaceRequired)
   );
 
   return handleCheckDiskSpace;
