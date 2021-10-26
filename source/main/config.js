@@ -154,7 +154,7 @@ export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
 export const NODE_STARTUP_TIMEOUT = 5000;
 export const NODE_STARTUP_MAX_RETRIES = 5;
 export const NODE_SHUTDOWN_TIMEOUT = isTest ? 5000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
-export const NODE_KILL_TIMEOUT = isTest ? 5000 : 10 * 5 * 1000; // 5 minutes | unit: milliseconds
+export const NODE_KILL_TIMEOUT = isTest ? 5000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
 export const NODE_UPDATE_TIMEOUT = isTest ? 10000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
 
 export const DISK_SPACE_REQUIRED = 400 * 1073741274; // 2 GB | unit: bytes
