@@ -121,6 +121,11 @@
 
     .SimpleLink_root {
       color: var(--theme-dialog-fullsize-text-highlight-color);
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
 
       &:after {
         background-color: var(
