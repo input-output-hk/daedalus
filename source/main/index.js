@@ -399,31 +399,36 @@ app.on('open-url', (event, url) => {
 app.on('second-instance', () => {
   logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
   if (mainWindow) {
-    const exitSelfnodeDialogOptions_test = {
-      buttons: ['Yes', 'No'],
-      type: 'warning',
-      title: 'Second instance',
-      message: 'Instance found after delay',
-      defaultId: 0,
-      cancelId: 1,
-      noLink: true,
-    };
-    dialog.showMessageBox(
-      mainWindow,
-      exitSelfnodeDialogOptions_test
-    );
     if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.focus();
   }
 });
 
 if (!isSingleInstance) {
-  setTimeout(() => {
-    if (!isSingleInstance) {
-      logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
-      safeExit();
+  logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
+  app.quit();
+} else {
+  logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
+  // Only create a new window if no windows are already open (prevents your app being open multiple times)
+  app.whenReady().then(onAppReady);
+  app.on('activate', () => {
+    logger.info('[Custom-Protocol] Activate: ', { getAllWindows: BrowserWindow.getAllWindows() });
+    if (BrowserWindow.getAllWindows().length === 0) {
+      logger.info('[Custom-Protocol] Activate - new window');
+      onAppReady();
+    } else {
+      logger.info('[Custom-Protocol] Activate - restore / focus?');
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+      }
     }
-  }, 5000);
+  });
+}
+
+if (!isSingleInstance) {
+  logger.info('[Custom-Protocol] isSingleInstance - QUIT: ', { isSingleInstance });
+  app.quit()
 } else {
   logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
   /* app.on('will-finish-launching' , () => {
@@ -446,5 +451,5 @@ if (!isSingleInstance) {
       }
     });
   }); */
-  app.on('ready', onAppReady);
+  // app.on('ready', onAppReady);
 }
