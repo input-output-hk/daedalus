@@ -43,13 +43,11 @@ export default class NodeSyncStatusIcon extends Component<Props> {
     return (
       <div className={componentClasses}>
         <PopOver
-          content={
-            <div className={styles.info}>
-              {intl.formatMessage(messages.blocksSynced, {
-                percentage: formattedNumber(percentage),
-              })}
-            </div>
-          }
+          arrow={false}
+          placement="bottom-end"
+          content={intl.formatMessage(messages.blocksSynced, {
+            percentage: formattedNumber(percentage),
+          })}
         >
           <div className={styles.questionMark}>
             <SVGInline className={styles.icon} svg={statusIcon} />
