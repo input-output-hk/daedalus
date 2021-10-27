@@ -396,14 +396,7 @@ app.on('open-url', (event, url) => {
   deeplinkingUrl = `${url}-#2`;
 })
 
-app.on('second-instance', () => {
-  logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
-  }
-});
-
+/*
 if (!isSingleInstance) {
   logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
   app.quit();
@@ -424,11 +417,11 @@ if (!isSingleInstance) {
       }
     }
   });
-}
+} */
 
 if (!isSingleInstance) {
   logger.info('[Custom-Protocol] isSingleInstance - QUIT: ', { isSingleInstance });
-  app.quit()
+  safeExitWithCode(0)
 } else {
   logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
   /* app.on('will-finish-launching' , () => {
@@ -451,5 +444,12 @@ if (!isSingleInstance) {
       }
     });
   }); */
-  // app.on('ready', onAppReady);
+  app.on('second-instance', () => {
+    logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+  app.on('ready', onAppReady);
 }
