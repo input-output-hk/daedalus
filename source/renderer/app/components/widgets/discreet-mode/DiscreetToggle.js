@@ -26,21 +26,16 @@ const messages = defineMessages({
 });
 
 type Props = {
-  hasTadaIcon?: boolean,
+  className?: string,
   intl: intlShape.isRequired,
   isDiscreetMode?: Boolean,
   onToggle: Function,
 };
 
 export const DiscreetToggle = injectIntl(
-  observer(({ hasTadaIcon, intl, isDiscreetMode = true, onToggle }: Props) => {
-    const rootClasses = classNames([
-      styles.root,
-      hasTadaIcon && styles.hasTadaIcon,
-    ]);
-
+  observer(({ className, intl, isDiscreetMode = true, onToggle }: Props) => {
     return (
-      <div className={rootClasses}>
+      <div className={classNames(styles.root, className)}>
         <PopOver
           themeVariables={{
             '--rp-pop-over-arrow-size': '15px',

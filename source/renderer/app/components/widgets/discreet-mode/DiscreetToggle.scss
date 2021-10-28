@@ -1,11 +1,4 @@
 .root {
-  position: absolute;
-  right: 160px;
-
-  &.hasTadaIcon {
-    right: 220px;
-  }
-
   .button {
     cursor: pointer;
     opacity: 0.4;
@@ -20,10 +13,6 @@
       height: 15px;
       opacity: 0.8;
       width: 21px;
-
-      path {
-        fill: var(--theme-node-sync-icon-color);
-      }
     }
   }
 }

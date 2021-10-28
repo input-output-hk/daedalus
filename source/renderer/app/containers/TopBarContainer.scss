@@ -1,0 +1,14 @@
+.discreetToggle {
+  position: absolute;
+  right: 160px;
+
+  &.hasTadaIcon {
+    right: 220px;
+  }
+
+  svg {
+    path {
+      fill: var(--theme-node-sync-icon-color);
+    }
+  }
+}

@@ -7,7 +7,6 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import SidebarLayout from '../../../../source/renderer/app/components/layout/SidebarLayout';
 import TopBar from '../../../../source/renderer/app/components/layout/TopBar';
 import NodeSyncStatusIcon from '../../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
-import { DiscreetToggle } from '../../../../source/renderer/app/components/widgets/discreet-mode/DiscreetToggle';
 import WalletTestEnvironmentLabel from '../../../../source/renderer/app/components/widgets/WalletTestEnvironmentLabel';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-ic.inline.svg';
@@ -24,10 +23,6 @@ const topBarTestEnv = (currentTheme) => (
     isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <WalletTestEnvironmentLabel network="testnet" />
-    <DiscreetToggle
-      onToggle={action('onDiscreetModeToggle')}
-      isDiscreetMode={boolean('isDiscreetMode', true)}
-    />
     <NodeSyncStatusIcon
       isSynced
       syncPercentage={100}
@@ -52,10 +47,6 @@ const topBarStagingEnv = (currentTheme) => (
     isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <WalletTestEnvironmentLabel network="staging" />
-    <DiscreetToggle
-      onToggle={action('onDiscreetModeToggle')}
-      isDiscreetMode={boolean('isDiscreetMode', true)}
-    />
     <NodeSyncStatusIcon
       isSynced
       syncPercentage={100}
@@ -79,10 +70,6 @@ const topBarProductionEnv = (currentTheme) => (
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
     isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
-    <DiscreetToggle
-      onToggle={action('onDiscreetModeToggle')}
-      isDiscreetMode={boolean('isDiscreetMode', true)}
-    />
     <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}

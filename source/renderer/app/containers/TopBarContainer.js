@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import classNames from 'classnames';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import { DiscreetToggle } from '../components/widgets/discreet-mode/DiscreetToggle';
@@ -11,8 +12,11 @@ import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../assets/images/menu-ic.inline.svg';
 import { matchRoute } from '../utils/routing';
+
 import { ROUTES } from '../routes-config';
 import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
+
+import styles from './TopBarContainer.scss';
 
 type Props = InjectedProps;
 
@@ -99,7 +103,12 @@ export default class TopBarContainer extends Component<Props> {
         isShelleyActivated={isShelleyActivated}
       >
         {testnetLabel}
-        <DiscreetToggle hasTadaIcon={shouldShowTadaIcon} />
+        <DiscreetToggle
+          className={classNames(
+            styles.discreetToggle,
+            shouldShowTadaIcon && styles.hasTadaIcon
+          )}
+        />
         <NodeSyncStatusIcon
           isSynced={isSynced}
           syncPercentage={syncPercentage}
