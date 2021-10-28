@@ -207,11 +207,7 @@ storiesOf('Common|Widgets', module)
   ))
   .add('DiscreetToggle', () => (
     <div style={{ padding: 10 }}>
-      <DiscreetToggle
-        styles={{ marginBottom: 10 }}
-        onToggle={action('onChange')}
-        isDiscreetMode
-      />
+      <DiscreetToggle onToggle={action('onChange')} isDiscreetMode />
       <DiscreetToggle onToggle={action('onChange')} isDiscreetMode={false} />
     </div>
   ));
