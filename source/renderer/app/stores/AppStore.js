@@ -2,6 +2,7 @@
 import { observable, computed, action, runInAction } from 'mobx';
 import path from 'path';
 import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
@@ -23,6 +24,16 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
+  @observable isDiscreetMode: boolean = false;
+  @observable openInDiscreetMode: boolean = false;
+
+  @observable getDiscreetModeSettingsRequest: Request<
+    Promise<boolean>
+  > = new Request(this.api.localStorage.getDiscreetModeSettings);
+
+  @observable setDiscreetModeSettingsRequest: Request<
+    Promise<boolean>
+  > = new Request(this.api.localStorage.setDiscreetModeSettings);
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -51,8 +62,16 @@ export default class AppStore extends Store {
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
 
+    this.actions.app.toggleDiscreetMode.listen(this._toggleDiscreetMode);
+
+    this.actions.app.toggleOpenInDiscreetMode.listen(
+      this._toggleOpenInDiscreetMode
+    );
+
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
+
+    this._setupDiscreetMode();
   }
 
   @computed get currentRoute(): string {
@@ -143,6 +162,19 @@ export default class AppStore extends Store {
     });
   };
 
+  _setupDiscreetMode = async () => {
+    await this.getDiscreetModeSettingsRequest.execute();
+
+    const discreetModeSettings = this.getDiscreetModeSettingsRequest.result;
+
+    runInAction(() => {
+      this.openInDiscreetMode = Boolean(discreetModeSettings);
+
+      this.isDiscreetMode =
+        discreetModeSettings === null ? false : discreetModeSettings;
+    });
+  };
+
   @action _updateRouteLocation = (options: {
     route: string,
     params?: ?Object,
@@ -184,5 +216,18 @@ export default class AppStore extends Store {
 
   @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
+  };
+
+  @action _toggleDiscreetMode = () => {
+    this.isDiscreetMode = !this.isDiscreetMode;
+  };
+
+  @action _toggleOpenInDiscreetMode = async () => {
+    const nextSetting = !this.openInDiscreetMode;
+    await this.setDiscreetModeSettingsRequest.execute(nextSetting);
+
+    runInAction(() => {
+      this.openInDiscreetMode = nextSetting;
+    });
   };
 }
