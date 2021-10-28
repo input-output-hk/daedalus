@@ -3,7 +3,8 @@
 ## vNext
 
 ### Features
-- Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724))
+
+- Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724), [PR 2725](https://github.com/input-output-hk/daedalus/pull/2725))
 - Implemented "Catalyst Fund7" voting registration changes ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
 - Added Over-saturation warning in delegation wizard ([PR 2733](https://github.com/input-output-hk/daedalus/pull/2733))
 - Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
