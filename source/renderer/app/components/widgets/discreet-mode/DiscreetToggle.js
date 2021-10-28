@@ -48,7 +48,10 @@ export const DiscreetToggle = injectIntl(
           <button className={styles.button} onClick={onToggle}>
             <SVGInline
               svg={isDiscreetMode ? hideIcon : revealIcon}
-              className={styles.icon}
+              className={classNames(
+                styles.icon,
+                isDiscreetMode && styles.hideIcon
+              )}
             />
           </button>
         </PopOver>

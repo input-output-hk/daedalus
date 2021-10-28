@@ -11,8 +11,13 @@
   .icon {
     svg {
       height: 15px;
-      opacity: 0.8;
       width: 21px;
+    }
+
+    &.hideIcon {
+      svg {
+        height: 18px;
+      }
     }
   }
 }
