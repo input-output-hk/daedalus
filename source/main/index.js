@@ -53,7 +53,7 @@ import {
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
-let cardanoNode: ?CardanoNode;
+let cardanoNode: CardanoNode;
 
 const {
   isDev,
@@ -161,7 +161,7 @@ const onAppReady = async () => {
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
-
+  await cardanoNode?.start();
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
