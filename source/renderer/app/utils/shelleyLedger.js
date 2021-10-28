@@ -4,6 +4,7 @@ import {
   TxOutputDestinationType,
   AddressType,
   TxAuxiliaryDataType, // CHECK THIS
+  StakeCredentialParamsType,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
@@ -252,7 +253,10 @@ export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
     params: {
-      path: derivationPathToLedgerPath(cert.rewardAccountPath),
+      stakeCredential: {
+        type: StakeCredentialParamsType.KEY_PATH,
+        keyPath: derivationPathToLedgerPath(cert.rewardAccountPath),
+      },
       poolKeyHashHex: cert.pool
         ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
         : null,
@@ -264,7 +268,10 @@ export const prepareLedgerWithdrawal = (
   withdrawal: CoinSelectionWithdrawal
 ) => {
   return {
-    path: derivationPathToLedgerPath(withdrawal.derivationPath),
+    stakeCredential: {
+      type: StakeCredentialParamsType.KEY_PATH,
+      keyPath: derivationPathToLedgerPath(withdrawal.derivationPath),
+    },
     amount: withdrawal.amount.quantity.toString(),
   };
 };
@@ -442,7 +449,7 @@ export const prepareLedgerOutput = (
       destination: {
         type: TxOutputDestinationType.DEVICE_OWNED,
         params: {
-          type: AddressType.BASE,
+          type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
           params: {
             spendingPath: derivationPathToLedgerPath(output.derivationPath),
             stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
@@ -479,7 +486,7 @@ export const prepareLedgerAuxiliaryData = (
         votingPublicKeyHex: votingPubKey,
         stakingPath: rewardDestinationAddress.stakingPath,
         rewardsDestination: {
-          type: AddressType.REWARD,
+          type: AddressType.REWARD_KEY,
           params: {
             stakingPath: rewardDestinationAddress.stakingPath,
           },
