@@ -1019,15 +1019,15 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-3.1.0.tgz#7b27501a0001cb31cfc3c59ac9398bd6596c0648"
+"@cardano-foundation/ledgerjs-hw-app-cardano@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-4.0.0.tgz#d4532b23e2ccd652f94a469106933aad821a65e7"
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     "@types/ledgerhq__hw-transport" "^4.21.3"
     base-x "^3.0.5"
     bech32 "^1.1.4"
-    node-int64 "^0.4.0"
+    int64-buffer "^1.0.1"
 
 "@dump247/storybook-state@1.6.1":
   version "1.6.1"
@@ -8660,6 +8660,10 @@ inquirer@7.3.3, inquirer@^7.0.0:
 int64-buffer@0.99.1007:
   version "0.99.1007"
   resolved "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-0.99.1007.tgz#211ea089a2fdb960070a2e77cd6d17dc456a5220"
+
+int64-buffer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-1.0.1.tgz#c78d841b444cadf036cd04f8683696c740f15dca"
 
 internal-slot@^1.0.2:
   version "1.0.2"
