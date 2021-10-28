@@ -37,13 +37,6 @@ export const DiscreetToggle = injectIntl(
     return (
       <div className={classNames(styles.root, className)}>
         <PopOver
-          themeVariables={{
-            '--rp-pop-over-arrow-size': '15px',
-            '--rp-pop-over-bg-color':
-              'var(--theme-node-sync-info-message-background-color)',
-            '--rp-pop-over-text-color':
-              'var(--theme-node-sync-info-message-text-color)',
-          }}
           content={
             <span className={styles.tooltip}>
               {intl.formatMessage(
