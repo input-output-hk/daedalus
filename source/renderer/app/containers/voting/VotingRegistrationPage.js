@@ -44,35 +44,37 @@ export default class VotingRegistrationPage extends Component<Props> {
           onExternalLinkClick={openExternalLink}
         />
       );
-    } else if (!wallets.allWallets.length) {
+    }
+
+    if (!wallets.allWallets.length) {
       return (
         <VotingNoWallets
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
           minVotingFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
         />
       );
-    } else {
-      const { profile } = this.props.stores;
-      const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
-      return (
-        <VotingInfo
-          currentLocale={currentLocale}
-          currentDateFormat={currentDateFormat}
-          currentTimeFormat={currentTimeFormat}
-          isRegistrationEnded={isRegistrationEnded}
-          onRegisterToVoteClick={() =>
-            this.props.actions.dialogs.open.trigger({
-              dialog: VotingRegistrationDialog,
-            })
-          }
-          onExternalLinkClick={openExternalLink}
-        />
-      );
     }
+
+    const { profile } = this.props.stores;
+    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
+    return (
+      <VotingInfo
+        currentLocale={currentLocale}
+        currentDateFormat={currentDateFormat}
+        currentTimeFormat={currentTimeFormat}
+        isRegistrationEnded={isRegistrationEnded}
+        onRegisterToVoteClick={() =>
+          this.props.actions.dialogs.open.trigger({
+            dialog: VotingRegistrationDialog,
+          })
+        }
+        onExternalLinkClick={openExternalLink}
+      />
+    );
   };
 
   render() {
-    const { actions, stores } = this.props;
+    const { stores } = this.props;
     const { app, uiDialogs } = stores;
     const { openExternalLink } = app;
 
