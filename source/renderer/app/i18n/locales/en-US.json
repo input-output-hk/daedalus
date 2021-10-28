@@ -1240,5 +1240,5 @@
   "widgets.discreetToggle.off": "Toggle discreet mode off",
   "widgets.discreetToggle.on": "Toggle discreet mode on",
   "widgets.itemsDropdown.syncingLabel": "Syncing",
-  "widgets.itemsDropdown.syncingLabelProgress": "!!!Syncing {syncingProgress}%"
+  "widgets.itemsDropdown.syncingLabelProgress": "Syncing {syncingProgress}%"
 }
