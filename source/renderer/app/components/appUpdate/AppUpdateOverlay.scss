@@ -10,6 +10,7 @@
   font-family: var(--font-regular);
   height: 100vh;
   justify-content: center;
+  padding: 20px 0;
   position: fixed;
   top: 0;
   width: 100vw;
@@ -21,7 +22,8 @@
     font-size: 16px;
     line-height: 1.2;
     margin-bottom: 20px;
-    max-height: 464px;
+    max-height: 210px;
+    min-height: 48px;
     opacity: 0.8;
     overflow-y: scroll;
     padding: 12px 20px;
