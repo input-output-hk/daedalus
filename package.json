@@ -255,7 +255,7 @@
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
     "tcp-port-used": "1.0.1",
-    "trezor-connect": "8.2.4-extended",
+    "trezor-connect": "https://github.com/vacuumlabs/connect/releases/download/8.2.2-rc.1-multisig/trezor-connect-v8.2.2-rc.1-multisig-extended.tgz",
     "unorm": "1.6.0",
     "validator": "13.7.0"
   },
