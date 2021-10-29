@@ -14,7 +14,6 @@ import { get } from 'lodash';
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ImportFromOptions } from '../../../types/walletExportTypes';
