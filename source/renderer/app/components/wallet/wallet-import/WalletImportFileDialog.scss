@@ -47,7 +47,7 @@
 
       &:hover {
         background-color: var(
-          --theme-wallet-import-description-close-hover-background
+          --theme-dialog-set-wallet-password-button-background-color
         );
         border-radius: 50%;
       }
@@ -59,7 +59,10 @@
       width: 12px;
 
       g {
-        stroke: var(--theme-wallet-import-description-close-color);
+        fill: var(--theme-wallet-import-description-close-color);
+        polygon {
+          fill: var(--theme-wallet-import-description-close-color);
+        }
       }
     }
   }

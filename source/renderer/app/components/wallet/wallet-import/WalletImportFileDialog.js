@@ -202,11 +202,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
         defaultThemeOverrides
       >
         <div className={styles.component}>
-          <DialogCloseButton
-            className={styles.closeButton}
-            icon={closeCrossThin}
-            onClose={onClose}
-          />
+          <DialogCloseButton className={styles.closeButton} onClose={onClose} />
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>

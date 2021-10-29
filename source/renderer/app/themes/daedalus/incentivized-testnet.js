@@ -258,7 +258,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-dialog-set-wallet-password-message-color': '#fff',
     '--theme-dialog-set-wallet-password-title-color': '#fafbfc',
     '--theme-dialog-set-wallet-password-button-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(0, 0, 0, 0.1)',
     '--theme-dialog-set-wallet-password-button-background-color-hover': '#fff',
     '--theme-dialog-set-wallet-password-button-border-color': '#fafbfc',
     '--theme-dialog-set-wallet-password-button-color': '#fff',
