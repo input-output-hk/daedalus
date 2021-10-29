@@ -15,6 +15,7 @@
 
 ### Chores
 
+- Updated `trezor-connect` dependency to version `8.2.2` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
 - Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
 

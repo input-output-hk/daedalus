@@ -983,9 +983,9 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.12.5":
-  version "7.12.13"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.13.tgz#0a21452352b02542db0ffb928ac2d3ca7cb6d66d"
+"@babel/runtime@^7.15.4":
+  version "7.15.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.15.4.tgz#fd17d16bfdf878e6dd02d19753a39fa8a8d9c84a"
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -9765,12 +9765,13 @@ just-extend@^4.0.2:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-4.1.1.tgz#158f1fdb01f128c411dc8b286a7b4837b3545282"
 
-keccak@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.1.tgz#ae30a0e94dbe43414f741375cff6d64c8bea0bff"
+keccak@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.2.tgz#4c2c6e8c54e04f2670ee49fa734eb9da152206e0"
   dependencies:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
+    readable-stream "^3.6.0"
 
 keyv@^3.0.0:
   version "3.1.0"
@@ -15797,11 +15798,11 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
 
-trezor-connect@8.2.0-extended:
-  version "8.2.0-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.0-extended.tgz#b33d3c7f4505cb5aee8acc1f8565410a1a811530"
+"trezor-connect@https://github.com/vacuumlabs/connect/releases/download/8.2.2-rc.1-multisig/trezor-connect-v8.2.2-rc.1-multisig-extended.tgz":
+  version "8.2.2-rc.1-multisig-extended"
+  resolved "https://github.com/vacuumlabs/connect/releases/download/8.2.2-rc.1-multisig/trezor-connect-v8.2.2-rc.1-multisig-extended.tgz#a8729e6648c1fa373e1429abae2c4a6e5df48c2d"
   dependencies:
-    "@babel/runtime" "^7.12.5"
+    "@babel/runtime" "^7.15.4"
     "@trezor/blockchain-link" "^1.0.17"
     "@trezor/connect-common" "^0.0.2"
     "@trezor/rollout" "^1.2.0"
@@ -15810,14 +15811,14 @@ trezor-connect@8.2.0-extended:
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
-    events "^3.2.0"
+    events "^3.3.0"
     hd-wallet "9.1.2"
-    keccak "^3.0.1"
+    keccak "^3.0.2"
     node-fetch "^2.6.1"
     parse-uri "^1.0.3"
     tiny-worker "^2.3.0"
     trezor-link "1.7.3"
-    whatwg-fetch "^3.5.0"
+    whatwg-fetch "^3.6.2"
 
 trezor-link@1.7.3:
   version "1.7.3"
@@ -16899,7 +16900,7 @@ whatwg-encoding@^1.0.1:
   dependencies:
     iconv-lite "0.4.24"
 
-whatwg-fetch@>=0.10.0:
+whatwg-fetch@>=0.10.0, whatwg-fetch@^3.6.2:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
 
