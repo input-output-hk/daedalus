@@ -63,7 +63,6 @@ export default class AppStore extends Store {
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
 
     this.actions.app.toggleDiscreetMode.listen(this._toggleDiscreetMode);
-
     this.actions.app.toggleOpenInDiscreetMode.listen(
       this._toggleOpenInDiscreetMode
     );
@@ -164,14 +163,10 @@ export default class AppStore extends Store {
 
   _setupDiscreetMode = async () => {
     await this.getDiscreetModeSettingsRequest.execute();
-
-    const discreetModeSettings = this.getDiscreetModeSettingsRequest.result;
-
-    runInAction(() => {
-      this.openInDiscreetMode = Boolean(discreetModeSettings);
-
-      this.isDiscreetMode =
-        discreetModeSettings === null ? false : discreetModeSettings;
+    const isDiscreetModeEnabled = this.getDiscreetModeSettingsRequest.result;
+    runInAction('Initialize discreet mode variables', () => {
+      this.openInDiscreetMode = isDiscreetModeEnabled;
+      this.isDiscreetMode = isDiscreetModeEnabled;
     });
   };
 
@@ -225,8 +220,7 @@ export default class AppStore extends Store {
   @action _toggleOpenInDiscreetMode = async () => {
     const nextSetting = !this.openInDiscreetMode;
     await this.setDiscreetModeSettingsRequest.execute(nextSetting);
-
-    runInAction(() => {
+    runInAction('Update open in discreet mode settings', () => {
       this.openInDiscreetMode = nextSetting;
     });
   };

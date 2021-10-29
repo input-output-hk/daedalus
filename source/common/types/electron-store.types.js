@@ -11,6 +11,7 @@ export type StorageKey =
   | 'CURRENCY-ACTIVE'
   | 'CURRENCY-SELECTED'
   | 'DATA-LAYER-MIGRATION-ACCEPTANCE'
+  | 'DISCREET-MODE-ENABLED'
   | 'DOWNLOAD-MANAGER'
   | 'HARDWARE-WALLET-DEVICES'
   | 'HARDWARE-WALLETS'
@@ -27,8 +28,7 @@ export type StorageKey =
   | 'USER-TIME-FORMAT'
   | 'WALLET-MIGRATION-STATUS'
   | 'WALLETS'
-  | 'WINDOW-BOUNDS'
-  | 'OPEN-IN-DISCREET-MODE';
+  | 'WINDOW-BOUNDS';
 
 export type StoreMessage = {
   type: StorageType,

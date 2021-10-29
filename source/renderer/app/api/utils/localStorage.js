@@ -494,8 +494,11 @@ export default class LocalStorageApi {
   };
 
   getDiscreetModeSettings = (): Promise<boolean> =>
-    LocalStorageApi.get(keys.DISCREET_MODE_SETTINGS, null);
+    LocalStorageApi.get(keys.DISCREET_MODE_ENABLED, false);
 
   setDiscreetModeSettings = (enabled: boolean): Promise<void> =>
-    LocalStorageApi.set(keys.DISCREET_MODE_SETTINGS, enabled);
+    LocalStorageApi.set(keys.DISCREET_MODE_ENABLED, enabled);
+
+  unsetDiscreetModeSettings = (): Promise<void> =>
+    LocalStorageApi.unset(keys.DISCREET_MODE_ENABLED);
 }
