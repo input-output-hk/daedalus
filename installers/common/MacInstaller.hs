@@ -286,6 +286,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "trezor-connect"
       , "trezor-link"
       , "typeforce"
+      , "util-deprecate"
       , "varuint-bitcoin"
       , "wif"
       ]
