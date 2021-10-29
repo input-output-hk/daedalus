@@ -18,6 +18,7 @@ import {
 import { NUMBER_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
+import { DiscreetToggle } from '../../../source/renderer/app/components/widgets/discreet-mode/DiscreetToggle';
 import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet.js';
@@ -224,6 +225,7 @@ export default class StoryLayout extends Component<Props> {
         isProduction
         isMainnet
       />
+      <DiscreetToggle isOnTopBar onToggle={action('onDiscreetModeToggle')} />
       <NewsFeedIcon
         onNewsFeedIconClick={action('onNewsFeedIconClick')}
         hasNotification={false}

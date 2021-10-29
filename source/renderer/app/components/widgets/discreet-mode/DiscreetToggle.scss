@@ -1,10 +1,14 @@
 .root {
   .button {
+    border-radius: 50%;
     cursor: pointer;
-    opacity: 0.4;
+    height: 44px;
+    width: 44px;
 
     &:hover {
-      opacity: 0.8;
+      background-color: var(
+        --theme-news-feed-icon-toggle-hover-background-color
+      );
     }
   }
 
@@ -17,6 +21,17 @@
     &.hideIcon {
       svg {
         height: 18px;
+      }
+    }
+  }
+
+  &.onTopBar {
+    position: absolute;
+    right: 89px;
+
+    svg {
+      path {
+        fill: var(--theme-node-sync-icon-color);
       }
     }
   }

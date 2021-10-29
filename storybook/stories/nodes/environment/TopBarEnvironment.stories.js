@@ -11,6 +11,7 @@ import WalletTestEnvironmentLabel from '../../../../source/renderer/app/componen
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-ic.inline.svg';
 import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
+import { DiscreetToggle } from '../../../../source/renderer/app/components/widgets/discreet-mode/DiscreetToggle';
 import { isShelleyTestnetTheme } from '../../_support/utils';
 
 const topBarTestEnv = (currentTheme) => (
@@ -29,6 +30,7 @@ const topBarTestEnv = (currentTheme) => (
       isProduction={false}
       isMainnet={false}
     />
+    <DiscreetToggle isOnTopBar onToggle={action('onDiscreetModeToggle')} />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
       hasNotification={false}
@@ -53,6 +55,7 @@ const topBarStagingEnv = (currentTheme) => (
       isProduction={false}
       isMainnet={false}
     />
+    <DiscreetToggle isOnTopBar onToggle={action('onDiscreetModeToggle')} />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
       hasNotification={false}
@@ -71,6 +74,7 @@ const topBarProductionEnv = (currentTheme) => (
     isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
     <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
+    <DiscreetToggle isOnTopBar onToggle={action('onDiscreetModeToggle')} />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
       hasNotification={false}

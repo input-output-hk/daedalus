@@ -26,36 +26,40 @@ const messages = defineMessages({
 });
 
 type Props = {
-  className?: string,
   intl: intlShape.isRequired,
   isDiscreetMode?: Boolean,
+  isOnTopBar?: Boolean,
   onToggle: Function,
 };
 
 export const DiscreetToggle = injectIntl(
-  observer(({ className, intl, isDiscreetMode = true, onToggle }: Props) => {
-    return (
-      <div className={classNames(styles.root, className)}>
-        <PopOver
-          content={
-            <span className={styles.tooltip}>
-              {intl.formatMessage(
-                messages[isDiscreetMode ? 'discreetModeOff' : 'discreetModeOn']
-              )}
-            </span>
-          }
-        >
-          <button className={styles.button} onClick={onToggle}>
-            <SVGInline
-              svg={isDiscreetMode ? hideIcon : revealIcon}
-              className={classNames(
-                styles.icon,
-                isDiscreetMode && styles.hideIcon
-              )}
-            />
-          </button>
-        </PopOver>
-      </div>
-    );
-  })
+  observer(
+    ({ intl, isDiscreetMode = true, isOnTopBar = false, onToggle }: Props) => {
+      return (
+        <div className={classNames(styles.root, isOnTopBar && styles.onTopBar)}>
+          <PopOver
+            content={
+              <span className={styles.tooltip}>
+                {intl.formatMessage(
+                  messages[
+                    isDiscreetMode ? 'discreetModeOff' : 'discreetModeOn'
+                  ]
+                )}
+              </span>
+            }
+          >
+            <button className={styles.button} onClick={onToggle}>
+              <SVGInline
+                svg={isDiscreetMode ? hideIcon : revealIcon}
+                className={classNames(
+                  styles.icon,
+                  isDiscreetMode && styles.hideIcon
+                )}
+              />
+            </button>
+          </PopOver>
+        </div>
+      );
+    }
+  )
 );
