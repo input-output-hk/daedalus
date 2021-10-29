@@ -36,12 +36,13 @@ Daedalus - Cryptocurrency Wallet
 3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
 
 **Notes:**
+
 If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remote key was not OK) try the next steps:
 1. Reinstall nix
-  ```bash
-  $ nix-env -e *
-  $ curl -L https://nixos.org/nix/install | sh
-  ```
+   ```bash
+   $ nix-env -e *
+   $ curl -L https://nixos.org/nix/install | sh
+   ```
 2. Download certificate from https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/ and import to your keychain.
 
 ## Development
