@@ -404,7 +404,6 @@ export default class WalletsStore extends Store {
     const { restoredWallet } = this;
     if (restoredWallet) {
       await this._patchWalletRequestWithNewWallet(restoredWallet);
-      this.goToWalletRoute(restoredWallet.id);
       this.refreshWalletsData();
       this._restoreWalletResetRequests();
       this._restoreWalletResetData();
@@ -426,7 +425,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletClose = () => {
-    const { mnemonics, walletName, spendingPassword } = this;
+    const { mnemonics, walletName, spendingPassword, restoredWallet } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
       this.restoreWalletStep !== null &&
@@ -437,6 +436,9 @@ export default class WalletsStore extends Store {
       this._restoreWalletResetRequests();
       this._restoreWalletResetData();
       this.actions.dialogs.closeActiveDialog.trigger();
+    }
+    if (restoredWallet) {
+      this.goToWalletRoute(restoredWallet.id);
     }
   };
 
