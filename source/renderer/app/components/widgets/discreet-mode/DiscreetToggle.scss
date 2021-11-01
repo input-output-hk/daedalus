@@ -24,17 +24,6 @@
       }
     }
   }
-
-  &.onTopBar {
-    position: absolute;
-    right: 89px;
-
-    svg {
-      path {
-        fill: var(--theme-node-sync-icon-color);
-      }
-    }
-  }
 }
 
 .tooltip {

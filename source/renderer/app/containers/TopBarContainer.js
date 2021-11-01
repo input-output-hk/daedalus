@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import classnames from 'classnames';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import { DiscreetToggle } from '../components/widgets/discreet-mode/DiscreetToggle';
@@ -14,6 +15,8 @@ import { matchRoute } from '../utils/routing';
 
 import { ROUTES } from '../routes-config';
 import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
+
+import topBarStyles from '../components/layout/TopBar.scss';
 
 type Props = InjectedProps;
 
@@ -105,13 +108,24 @@ export default class TopBarContainer extends Component<Props> {
           syncPercentage={syncPercentage}
           hasTadaIcon={shouldShowTadaIcon}
         />
+        <span
+          className={classnames(
+            topBarStyles.rectangle,
+            shouldShowTadaIcon && topBarStyles.hasTadaIcon
+          )}
+        />
+        <DiscreetToggle
+          className={classnames(
+            topBarStyles.discreetModeToggle,
+            shouldShowTadaIcon && topBarStyles.hasTadaIcon
+          )}
+        />
         {shouldShowTadaIcon && (
           <TadaButton
             onClick={onClickTadaButton}
             shouldAnimate={shouldShowTadaIconAnimation}
           />
         )}
-        <DiscreetToggle isOnTopBar />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}
