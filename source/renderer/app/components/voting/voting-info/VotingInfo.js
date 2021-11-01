@@ -20,6 +20,8 @@ import styles from './VotingInfo.scss';
 import downloadAppStoreIcon from '../../../assets/images/voting/download-app-store-icon-ic.inline.svg';
 import downloadPlayStoreIcon from '../../../assets/images/voting/download-play-store-icon-ic.inline.svg';
 
+import CurrentFund from './CurrentFund';
+
 const messages = defineMessages({
   heading: {
     id: 'voting.info.heading',
@@ -318,6 +320,13 @@ export default class VotingInfo extends Component<Props, State> {
             />
           )}
         </BorderedBox>
+        {/* TODO: REMOVE LATER */}
+        <CurrentFund
+          currentLocale={currentLocale}
+          currentDateFormat={currentDateFormat}
+          currentTimeFormat={currentTimeFormat}
+          onExternalLinkClick={onRegisterToVoteClick}
+        />
       </div>
     );
   }

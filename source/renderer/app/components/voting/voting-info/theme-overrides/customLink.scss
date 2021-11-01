@@ -1,0 +1,14 @@
+.root {
+  background-color: var(--theme-button-flat-background-color);
+  border-radius: 5px;
+  color: var(--theme-button-flat-text-color);
+  height: 36px;
+  padding: 8.5px 32.5px;
+  width: 160px;
+
+  &.withIconAfter {
+    &:after {
+      background-color: var(--theme-button-flat-text-color);
+    }
+  }
+}

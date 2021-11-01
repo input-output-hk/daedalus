@@ -19,3 +19,4 @@ export const VOTING_REGISTRATION_CAST_END_DATE = new Date(
 export const VOTING_REGISTRATION_NEW_START_DATE = new Date(
   'Nov 11, 2021, 11:00 UTC'
 );
+export const VOTING_CURRENT_FUND_END_DATE = new Date('Mar 3, 2021, 19:00 UTC');
