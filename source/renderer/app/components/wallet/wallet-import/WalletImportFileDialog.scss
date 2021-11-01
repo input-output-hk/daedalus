@@ -59,10 +59,7 @@
       width: 12px;
 
       g {
-        fill: var(--theme-wallet-import-description-close-color);
-        polygon {
-          fill: var(--theme-wallet-import-description-close-color);
-        }
+        stroke: var(--theme-wallet-import-description-close-color);
       }
     }
   }
