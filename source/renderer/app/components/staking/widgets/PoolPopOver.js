@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { Node } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { useDebouncedCallback } from 'use-debounce';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
 import TooltipPool from './TooltipPool';
@@ -51,15 +52,15 @@ export function PoolPopOver(props: {
     }
   }, [state]);
 
+  const close = useDebouncedCallback(() => {
+    setState((s) => ({ ...s, isHovered: false }));
+    if (props.onClose) props.onClose();
+  }, 200);
 
   // The ref passed to Tippy.js as trigger target
   const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
 
-  const close = () => {
-    setIsHovered(false);
-    if (props.onClose) props.onClose();
-  };
   return (
     <>
       <div
