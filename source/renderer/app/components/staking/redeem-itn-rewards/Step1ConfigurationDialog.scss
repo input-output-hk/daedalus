@@ -56,8 +56,8 @@
     margin-bottom: 20px;
 
     label {
+      color: var(--theme-dialog-fusllsize-title-text-color);
       font-family: var(--font-regular);
-      color: var(--theme-dialog-fullsize-title-text-color);
     }
 
     &:last-child {
