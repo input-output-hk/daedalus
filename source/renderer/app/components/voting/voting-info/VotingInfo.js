@@ -7,18 +7,18 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import SVGInline from 'react-svg-inline';
-import BorderedBox from '../widgets/BorderedBox';
+import BorderedBox from '../../widgets/BorderedBox';
 import {
   VOTING_REGISTRATION_END_DATE,
   VOTING_REGISTRATION_CAST_START_DATE,
   VOTING_REGISTRATION_CAST_END_DATE,
   VOTING_REGISTRATION_NEW_START_DATE,
-} from '../../config/votingConfig';
-import { formattedDateTime } from '../../utils/formatters';
-import type { Locale } from '../../../../common/types/locales.types';
+} from '../../../config/votingConfig';
+import { formattedDateTime } from '../../../utils/formatters';
+import type { Locale } from '../../../../../common/types/locales.types';
 import styles from './VotingInfo.scss';
-import downloadAppStoreIcon from '../../assets/images/voting/download-app-store-icon-ic.inline.svg';
-import downloadPlayStoreIcon from '../../assets/images/voting/download-play-store-icon-ic.inline.svg';
+import downloadAppStoreIcon from '../../../assets/images/voting/download-app-store-icon-ic.inline.svg';
+import downloadPlayStoreIcon from '../../../assets/images/voting/download-play-store-icon-ic.inline.svg';
 
 const messages = defineMessages({
   heading: {

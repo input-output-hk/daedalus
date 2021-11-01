@@ -10,7 +10,7 @@ import VotingRegistrationStepsRegister from '../../../source/renderer/app/compon
 import VotingRegistrationStepsConfirm from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm';
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
-import VotingInfo from '../../../source/renderer/app/components/voting/VotingInfo';
+import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
 import {
   LANGUAGE_OPTIONS,
   DATE_ENGLISH_OPTIONS,

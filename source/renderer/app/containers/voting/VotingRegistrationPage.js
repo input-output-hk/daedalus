@@ -7,7 +7,7 @@ import {
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
 } from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import VotingInfo from '../../components/voting/VotingInfo';
+import VotingInfo from '../../components/voting/voting-info/VotingInfo';
 import VotingNoWallets from '../../components/voting/VotingNoWallets';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import VotingRegistrationDialog from '../../components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog';
