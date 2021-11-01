@@ -242,6 +242,7 @@ export default class StoryLayout extends Component<Props> {
           boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
         )}
         onToggle={action('onDiscreetModeToggle')}
+        isDiscreetMode={boolean('isDiscreetMode', true)}
       />
       {boolean('hasTadaIcon') && (
         <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
