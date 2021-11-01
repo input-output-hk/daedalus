@@ -1,11 +1,21 @@
 // @flow
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { Node } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
 import TooltipPool from './TooltipPool';
 import styles from './PoolPopOver.scss';
+
+type State = {
+  isHovered: boolean,
+  isClicked: boolean,
+};
+
+const initialState: State = {
+  isClicked: false,
+  isHovered: false,
+};
 
 /**
  * Stake pool tooltip component that can be wrapped around
@@ -33,7 +43,15 @@ export function PoolPopOver(props: {
   isGridRewardsView?: boolean,
 }) {
   // Track hover state manually to optimize performance by lazy init pop overs
-  const [isHovered, setIsHovered] = useState(false);
+  const [state, setState] = useState<State>(initialState);
+
+  useEffect(() => {
+    if (!state.isHovered && state.isClicked) {
+      setState({ isHovered: true, isClicked: false });
+    }
+  }, [state]);
+
+
   // The ref passed to Tippy.js as trigger target
   const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
@@ -46,12 +64,15 @@ export function PoolPopOver(props: {
     <>
       <div
         className={styles.triggerTarget}
-        onMouseEnter={() => setIsHovered(true)}
+        onMouseEnter={() => setState((s) => ({ ...s, isHovered: true }))}
+        onClick={() => {
+          setState((s) => ({ ...s, isClicked: true }));
+        }}
         ref={popOverTargetRef}
       >
         {props.children}
       </div>
-      {isHovered ? ( // Init the pop over only when the target is hovered
+      {state.isHovered ? ( // Init the pop over only when the target is hovered
         <PopOver
           interactive
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
