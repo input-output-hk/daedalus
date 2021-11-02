@@ -39,10 +39,8 @@ export function PoolPopOver(props: {
   const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
 
-  const close = (removeHover: boolean) => {
-    if (removeHover) {
-      setIsHovered(false);
-    }
+  const close = (isStillHovered: boolean = false) => {
+    setIsHovered(isStillHovered);
     props.onClose?.();
   };
   return (
@@ -63,8 +61,8 @@ export function PoolPopOver(props: {
           trigger={props.openOnHover ? 'mouseenter' : 'click'}
           placement="auto"
           onShow={() => props.onOpen && props.onOpen(poolId)}
-          onHide={() => close(false)}
-          onClickOutside={() => close(true)}
+          onHide={() => close(true)}
+          onClickOutside={close}
           themeVariables={{
             '--rp-pop-over-bg-color':
               'var(--theme-staking-stake-pool-tooltip-background-color)',
@@ -84,11 +82,11 @@ export function PoolPopOver(props: {
               containerClassName={props.containerClassName}
               currentTheme={props.currentTheme}
               numberOfRankedStakePools={props.numberOfRankedStakePools}
-              onClose={() => close(true)}
+              onClose={close}
               onOpenExternalLink={props.onOpenExternalLink}
               onSelect={() => {
-                close(true);
-                if (props.onSelect) props.onSelect(poolId);
+                close();
+                props.onSelect?.(poolId);
               }}
               showWithSelectButton={props.showWithSelectButton}
               stakePool={props.stakePool}
