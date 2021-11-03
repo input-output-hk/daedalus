@@ -3,7 +3,7 @@
 ## vNext
 
 ### Features
-
+- Implement the catalysts fund7 screen ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
 - Fixed the Delegation popover timeout ([PR 2722](https://github.com/input-output-hk/daedalus/pull/2722))
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
 
