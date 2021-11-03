@@ -56,7 +56,7 @@
     margin-bottom: 20px;
 
     label {
-      color: var(--theme-dialog-fusllsize-title-text-color);
+      color: var(--theme-dialog-fullsize-title-text-color);
       font-family: var(--font-regular);
     }
 
@@ -84,6 +84,40 @@
   @include error-message;
   margin-bottom: 1rem;
   text-align: center;
+}
+
+.closeButton {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  right: 15px;
+  top: 15px;
+  z-index: 1;
+
+  span {
+    border-radius: 50%;
+    height: 44px;
+    width: 44px;
+
+    &:hover {
+      background-color: var(--theme-network-window-icon-close-hover-background);
+    }
+  }
+
+  svg {
+    height: 12px;
+    margin-top: 16px;
+    width: 12px;
+
+    polygon {
+      stroke: var(--theme-network-window-white-color);
+    }
+
+    path {
+      stroke: var(--theme-network-window-white-color);
+    }
+  }
 }
 
 :global {
