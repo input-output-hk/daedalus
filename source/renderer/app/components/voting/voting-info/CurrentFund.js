@@ -1,15 +1,13 @@
 // @flow
 import React from 'react';
 
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import { defineMessages, injectIntl, intlShape } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
 
 import { VOTING_CURRENT_FUND_END_DATE } from '../../../config/votingConfig';
 import { formattedDateTime } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
-
-import customLinkThemeOverrides from './theme-overrides/customLink.scss';
+import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
+import type { Intl } from '../../../types/i18nTypes';
 
 import styles from './CurrentFund.scss';
 
@@ -41,7 +39,7 @@ type Props = {
   currentDateFormat: string,
   currentTimeFormat: string,
   onExternalLinkClick: Function,
-  intl: intlShape.isRequired,
+  intl: Intl,
 };
 
 function CurrentFund({
@@ -68,11 +66,8 @@ function CurrentFund({
         <span className={styles.endDate}>{currentFundEndDate}</span>
       </div>
 
-      <Link
+      <ExternalLinkButton
         label={intl.formatMessage(messages.viewResultsLinkLabel)}
-        skin={LinkSkin}
-        isUnderlined={false}
-        themeOverrides={customLinkThemeOverrides}
         onClick={() => onExternalLinkClick(messages.viewResultsLinkURL)}
       />
     </section>

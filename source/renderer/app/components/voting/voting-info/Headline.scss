@@ -1,0 +1,26 @@
+@import '../votingConfig';
+
+.component {
+  .heading {
+    @extend %accentText;
+    font-size: 19px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .descriptionBox {
+    display: flex;
+    justify-content: space-between;
+
+    .description {
+      @extend %regularText;
+      color: var(--theme-voting-font-color-regular);
+      font-family: var(--font-light);
+      text-align: left;
+
+      & + .description {
+        margin-top: 10px;
+      }
+    }
+  }
+}

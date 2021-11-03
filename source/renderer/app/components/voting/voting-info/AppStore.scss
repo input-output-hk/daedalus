@@ -1,0 +1,66 @@
+@import '../votingConfig';
+
+.component {
+  display: flex;
+  flex-direction: row;
+
+  .appStoreItem {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+    &:first-child {
+      border-right: 1px solid var(--theme-voting-separator-color);
+      padding-right: 30px;
+    }
+
+    &:last-child {
+      margin-left: 30px;
+    }
+
+    .appStoreButton {
+      cursor: pointer;
+
+      > span {
+        display: block;
+        height: 30px;
+      }
+
+      svg {
+        height: 30px;
+        width: 90px;
+
+        &:last-child {
+          width: 100px;
+        }
+
+        path {
+          fill: var(--theme-voting-font-color-regular);
+        }
+      }
+    }
+
+    .qrCode {
+      border: 2px solid var(--theme-receive-qr-code-background-color);
+      margin-top: 10px;
+
+      svg {
+        display: block;
+        height: 75px;
+        width: 75px;
+
+        path:first-child {
+          fill: var(--theme-receive-qr-code-background-color);
+        }
+
+        path:last-child {
+          fill: var(--theme-receive-qr-code-foreground-color);
+        }
+      }
+    }
+
+    canvas {
+      margin-top: 10px;
+    }
+  }
+}

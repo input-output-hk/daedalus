@@ -3,8 +3,8 @@
   border-radius: 5px;
   color: var(--theme-button-flat-text-color);
   height: 36px;
+  min-width: 160px;
   padding: 8.5px 32.5px;
-  width: 160px;
 
   &.withIconAfter {
     &:after {
