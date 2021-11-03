@@ -15,7 +15,6 @@ type Props = {
   currentLocale: Locale,
   currentDateFormat: string,
   currentTimeFormat: string,
-  isRegistrationEnded: boolean,
   onRegisterToVoteClick: Function,
   onExternalLinkClick: Function,
 };

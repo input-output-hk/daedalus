@@ -1,10 +1,8 @@
 // @flow
 import React, { useState } from 'react';
-import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import stringify from 'json-stable-stringify';
 import { VOTING_REGISTRATION_END_DATE } from '../../../config/votingConfig';
 import { formattedDateTime } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';

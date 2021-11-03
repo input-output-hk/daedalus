@@ -3,11 +3,11 @@
 .component {
   .heading {
     @extend %accentText;
+    font-family: var(--font-semibold);
     font-size: 19px;
     margin-bottom: 14px;
     text-align: center;
     text-transform: uppercase;
-    font-family: var(--font-semibold);
   }
 
   .descriptionBox {
