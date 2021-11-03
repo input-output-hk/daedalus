@@ -247,7 +247,7 @@
     "tcp-port-used": "1.0.1",
     "trezor-connect": "8.2.0-extended",
     "unorm": "1.6.0",
-    "validator": "13.1.17"
+    "validator": "13.7.0"
   },
   "devEngines": {
     "node": ">=14.17.0",
