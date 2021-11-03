@@ -106,14 +106,14 @@
 
   .rectangle {
     &.hasTadaIcon {
-      right: 210px;
+      right: 220px;
     }
 
     background-color: var(--theme-node-sync-icon-color);
     height: 12px;
     opacity: 0.3;
     position: absolute;
-    right: 152px;
+    right: 162px;
     width: 1px;
   }
 }
