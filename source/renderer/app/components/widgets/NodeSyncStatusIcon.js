@@ -43,8 +43,6 @@ export default class NodeSyncStatusIcon extends Component<Props> {
     return (
       <div className={componentClasses}>
         <PopOver
-          arrow={false}
-          placement="bottom-end"
           content={intl.formatMessage(messages.blocksSynced, {
             percentage: formattedNumber(percentage),
           })}
