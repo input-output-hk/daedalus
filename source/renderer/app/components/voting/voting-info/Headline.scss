@@ -5,7 +5,9 @@
     @extend %accentText;
     font-size: 19px;
     margin-bottom: 14px;
+    text-align: center;
     text-transform: uppercase;
+    font-family: var(--font-semibold);
   }
 
   .descriptionBox {
@@ -14,9 +16,6 @@
 
     .description {
       @extend %regularText;
-      color: var(--theme-voting-font-color-regular);
-      font-family: var(--font-light);
-      text-align: left;
 
       & + .description {
         margin-top: 10px;

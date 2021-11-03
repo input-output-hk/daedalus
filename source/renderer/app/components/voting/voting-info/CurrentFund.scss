@@ -1,4 +1,7 @@
+@import '../votingConfig';
+
 .component {
+  @extend %regularText;
   align-items: start;
   background-color: var(--theme-button-flat-background-color);
   border-radius: 5px;
@@ -25,17 +28,11 @@
     .endDateText {
       color: var(--theme-button-flat-text-color);
       display: block;
-      font-family: var(--font-regular);
-      font-size: 16px;
-      line-height: 1.38;
     }
 
     .endDate {
       color: var(--theme-button-flat-text-color);
-      font-family: var(--font-semibold);
-      font-size: 16px;
-      font-weight: 500;
-      line-height: 1.38;
+      font-family: var(--font-medium);
     }
   }
 }
