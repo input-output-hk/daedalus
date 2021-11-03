@@ -167,8 +167,8 @@ storiesOf('Voting|Voting Info', module)
   .add('Voting Info', () => (
     <VotingInfo
       currentLocale={LANGUAGE_OPTIONS[0].value}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-      currentTimeFormat={TIME_OPTIONS[0].value}
+      currentDateFormat={DATE_ENGLISH_OPTIONS[3].value}
+      currentTimeFormat={TIME_OPTIONS[2].value}
       isRegistrationEnded={boolean('isRegistrationEnded', false)}
       onRegisterToVoteClick={action('onRegisterToVoteClick')}
       onExternalLinkClick={action('onExternalLinkClick')}

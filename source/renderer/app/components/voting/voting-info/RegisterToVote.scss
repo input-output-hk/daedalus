@@ -1,0 +1,54 @@
+@import '../votingConfig';
+
+.root {
+  @extend %regularText;
+  background-color: var(--theme-button-flat-background-color);
+  border-radius: 5px;
+  padding: 20px;
+
+  .title {
+    font-family: var(--font-bold);
+    font-size: 18px;
+    line-height: 1.33;
+  }
+
+  .dateLabel {
+    display: block;
+    margin-top: 11px;
+  }
+
+  .date {
+    display: block;
+    font-family: var(--font-medium);
+  }
+
+  .separator {
+    background-color: var(--theme-voting-separator-color);
+    height: 1px;
+    margin: 20px 0;
+    width: 100%;
+  }
+
+  .stepsTitle {
+    font-family: var(--font-medium);
+  }
+
+  .checkbox {
+    margin: 11px 20px 11px 0px;
+  }
+
+  .step {
+    display: flex;
+    margin-top: 11px;
+    width: 550px;
+  }
+
+  .button {
+    border-radius: 5px;
+    height: auto;
+    font-size: 14px;
+    margin-top: 20px;
+    padding: 8.5px 26.5px;
+    width: auto;
+  }
+}

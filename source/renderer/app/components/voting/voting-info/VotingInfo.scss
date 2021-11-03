@@ -2,13 +2,6 @@
 
 .component {
   padding: 20px;
-  text-align: center;
-
-  :global {
-    button.SimpleButton_root {
-      width: 415px;
-    }
-  }
 
   .separator {
     margin: 20px 0;
@@ -17,7 +10,6 @@
 
   .bottomContent {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 30px;
 
     .leftContent {
@@ -26,6 +18,7 @@
 
     .rightContent {
       margin-left: 20px;
+      width: 100%;
     }
   }
 

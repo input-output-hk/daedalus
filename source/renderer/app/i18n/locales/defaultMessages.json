@@ -7838,13 +7838,13 @@
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/voting/voting-info/AppStore.js",
         "id": "voting.info.androidAppButtonUrl",
         "start": {
           "column": 23,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -7852,13 +7852,13 @@
         "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/voting/voting-info/AppStore.js",
         "id": "voting.info.appleAppButtonUrl",
         "start": {
           "column": 21,
-          "line": 20
+          "line": 21
         }
       }
     ],
@@ -7871,13 +7871,13 @@
         "description": "Current fund name",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.name",
         "start": {
           "column": 8,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -7885,13 +7885,13 @@
         "description": "Headline for end date",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.headingForEndDate",
         "start": {
           "column": 21,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -7899,13 +7899,13 @@
         "description": "View resuls link label for Fund6",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.viewResultsLinkLabel",
         "start": {
           "column": 24,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -7913,13 +7913,13 @@
         "description": "View results from Fund6",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.viewResultsLinkURL",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 30
         }
       }
     ],
@@ -7932,13 +7932,13 @@
         "description": "Headline Project Catalyst",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/voting/voting-info/Headline.js",
         "id": "voting.catalyst.heading",
         "start": {
           "column": 11,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -7946,13 +7946,13 @@
         "description": "Description Project Catalyst",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/voting/voting-info/Headline.js",
         "id": "voting.catalyst.descriptionRow1",
         "start": {
           "column": 19,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -7960,13 +7960,13 @@
         "description": "Description Project Catalyst",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/voting/voting-info/Headline.js",
         "id": "voting.catalyst.descriptionRow2",
         "start": {
           "column": 19,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -7974,13 +7974,13 @@
         "description": "Learn more link label for registration steps",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/voting/voting-info/Headline.js",
         "id": "voting.info.learnMoreLinkLabel",
         "start": {
           "column": 22,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -7988,17 +7988,106 @@
         "description": "Learn more link url for registration steps",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/voting/voting-info/Headline.js",
         "id": "voting.info.learnMoreLinkUrl",
         "start": {
           "column": 20,
-          "line": 33
+          "line": 34
         }
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/Headline.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fund7",
+        "description": "Regiter to fund name",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "id": "voting.registerToVote.name",
+        "start": {
+          "column": 8,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Snapshot date:",
+        "description": "Voting info snapshot date label",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "id": "voting.registerToVote.dateLabel",
+        "start": {
+          "column": 13,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow these steps below in order to vote",
+        "description": "Steps to follow title",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "id": "voting.registerToVote.stepsTitle",
+        "start": {
+          "column": 14,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Download the Catalyst Voting app on your Android or iOS smartphone.",
+        "description": "First step to follow in order to vote",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "id": "voting.registerToVote.step1CheckBoxLabel",
+        "start": {
+          "column": 22,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Make sure to register and have enough ada at the time of the snapshot.",
+        "description": "Second step to follow in order to vote",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "id": "voting.registerToVote.step2CheckBoxLabel",
+        "start": {
+          "column": 22,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Register to vote",
+        "description": "Button Label for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "id": "voting.registerToVote.registerToVoteButtonLabel",
+        "start": {
+          "column": 15,
+          "line": 41
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.json"
   },
   {
     "descriptors": [

@@ -9,6 +9,7 @@ import styles from './VotingInfo.scss';
 import CurrentFund from './CurrentFund';
 import Headline from './Headline';
 import AppStore from './AppStore';
+import RegisterToVote from './RegisterToVote';
 
 type Props = {
   currentLocale: Locale,
@@ -55,12 +56,11 @@ export default class VotingInfo extends Component<Props> {
               </div>
             </div>
             <div className={styles.rightContent}>
-              <div
-                style={{
-                  width: '549px',
-                  height: '348px',
-                  background: 'rgba(68, 91, 124, 0.1)',
-                }}
+              <RegisterToVote
+                currentLocale={currentLocale}
+                currentDateFormat={currentDateFormat}
+                currentTimeFormat={currentTimeFormat}
+                onRegisterToVoteClick={onRegisterToVoteClick}
               />
             </div>
           </div>
