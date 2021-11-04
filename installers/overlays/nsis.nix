@@ -1,4 +1,4 @@
-{ mkDerivation, base, directory, fetchFromGitHub, process, stdenv
+{ mkDerivation, base, directory, fetchFromGitHub, process, stdenv, lib
 , transformers, uniplate
 }:
 mkDerivation {
@@ -16,5 +16,5 @@ mkDerivation {
   ];
   homepage = "https://github.com/ndmitchell/nsis#readme";
   description = "DSL for producing Windows Installer using NSIS";
-  license = stdenv.lib.licenses.bsd3;
+  license = lib.licenses.bsd3;
 }
