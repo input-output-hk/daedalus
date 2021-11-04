@@ -7,6 +7,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step3FailureDialog.scss';
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   description1NoRewards: {
@@ -74,7 +75,13 @@ export default class Step3FailureDialog extends Component<Props> {
 
     const description = messages.description1NoRewards;
 
-    const closeButton = <DialogCloseButton onClose={onClose} />;
+    const closeButton = (
+      <DialogCloseButton
+        icon={closeCrossThin}
+        className={styles.closeButton}
+        onClose={onClose}
+      />
+    );
 
     return (
       <Dialog

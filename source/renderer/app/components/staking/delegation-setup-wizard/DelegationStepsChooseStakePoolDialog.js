@@ -252,8 +252,8 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     >
       <BackToTopButton
         scrollableElementClassName="Dialog_contentWrapper"
-        buttonTopPosition={100}
-        scrollTopToActivate={100}
+        buttonTopPosition={110}
+        scrollTopToActivate={470}
       />
 
       <div className={commonStyles.delegationStepsIndicatorWrapper}>
