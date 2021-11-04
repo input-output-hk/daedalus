@@ -6,6 +6,10 @@ import {
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
 import { DEFAULT_DECIMAL_PRECISION } from '../config/assetsConfig';
+import {
+  DATE_ENGLISH_LL_MAP_OPTIONS,
+  TIME_LL_MAP_OPTIONS,
+} from '../config/profileConfig';
 import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
@@ -308,3 +312,23 @@ export const formattedDateTime = (
 
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
   '1'.padEnd(decimalPlaces + 1, '0');
+
+export const mapToLongDateTimeFormat = ({
+  currentLocale,
+  currentDateFormat,
+  currentTimeFormat,
+}: {
+  currentLocale: Locale,
+  currentDateFormat: string,
+  currentTimeFormat: string,
+}) => {
+  const mappedDateFormat =
+    currentLocale === LOCALES.english
+      ? DATE_ENGLISH_LL_MAP_OPTIONS[currentDateFormat]
+      : currentDateFormat;
+
+  return {
+    currentDateFormat: mappedDateFormat,
+    currentTimeFormat: TIME_LL_MAP_OPTIONS[currentTimeFormat],
+  };
+};

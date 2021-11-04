@@ -7,7 +7,10 @@ import {
   VOTING_CURRENT_FUND_END_DATE,
   CURRENT_VOTING_FUND_NUMBER,
 } from '../../../config/votingConfig';
-import { formattedDateTime } from '../../../utils/formatters';
+import {
+  formattedDateTime,
+  mapToLongDateTimeFormat,
+} from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import type { Intl } from '../../../types/i18nTypes';
@@ -54,8 +57,11 @@ function CurrentFund({
 }: Props) {
   const currentFundEndDate = formattedDateTime(VOTING_CURRENT_FUND_END_DATE, {
     currentLocale,
-    currentDateFormat,
-    currentTimeFormat,
+    ...mapToLongDateTimeFormat({
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    }),
   });
 
   return (

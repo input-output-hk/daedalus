@@ -4,8 +4,12 @@ import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { VOTING_REGISTRATION_END_DATE } from '../../../config/votingConfig';
-import { formattedDateTime } from '../../../utils/formatters';
+import {
+  formattedDateTime,
+  mapToLongDateTimeFormat,
+} from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
+import { LOCALES } from '../../../../../common/types/locales.types';
 import styles from './RegisterToVote.scss';
 
 const messages = defineMessages({
@@ -62,13 +66,16 @@ function RegisterToVote({
   const [step2, setStep2] = useState(false);
   const castEndDate = formattedDateTime(VOTING_REGISTRATION_END_DATE, {
     currentLocale,
-    currentDateFormat,
-    currentTimeFormat,
+    ...mapToLongDateTimeFormat({
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    }),
   });
 
   return (
     <div className={styles.root}>
-      <span className={styles.title}> {intl.formatMessage(messages.name)}</span>
+      <span className={styles.title}>{intl.formatMessage(messages.name)}</span>
       <span className={styles.dateLabel}>
         {intl.formatMessage(messages.dateLabel)}
       </span>
