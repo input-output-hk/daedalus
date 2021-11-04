@@ -16,7 +16,7 @@ export type LedgerError = {
 };
 
 // Constants
-const UPDATE_DEVICE_INFO_INTERVAL = 5000; // unit: ms
+const UPDATE_DEVICE_INFO_INTERVAL = 500; // unit: ms
 export const LEDGER_STATES: {
   PLUGGED_IN: LedgerState,
   UNLOCKED: LedgerState,
@@ -182,17 +182,7 @@ export class HardwareWalletsHandler {
 
       try {
         changeConnection(
-          {
-            disconnected: true,
-            deviceType: 'ledger',
-            deviceId: null, // Available only when Cardano APP opened
-            deviceModel: 'nanoS', // e.g. nanoS
-            deviceName: 'Ledger Nano S', // e.g. Test Name
-            path: device.path,
-            disconnected: false,
-            // eventType: 'add',
-            error: null
-          },
+          device,
           this.mainWindow
         );
       } catch (e) {

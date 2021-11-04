@@ -230,12 +230,32 @@ class EventObserver {
   }
 }
 
-export const changeConnection = async (data, mainWindow) => {
-  getHardwareWalletConnectionChannel.send(
-    data,
-    // $FlowFixMe
-    mainWindow
-  );
+export const changeConnection = async (device, mainWindow) => {
+  if (!devicesMemo[device.path]) {
+    console.debug('[HW-DEBUG] CONSTRUCTOR ADD');
+    const transport = await TransportNodeHid.open(device.path);
+    const AdaConnection = new AppAda(transport);
+    devicesMemo[device.path] = {
+      device,
+      transport,
+      AdaConnection,
+    };
+    getHardwareWalletConnectionChannel.send(
+      {
+        disconnected: true,
+        deviceType: 'ledger',
+        deviceId: null, // Available only when Cardano APP opened
+        deviceModel: 'nanoS', // e.g. nanoS
+        deviceName: 'Ledger Nano S', // e.g. Test Name
+        path: device.path,
+        disconnected: false,
+        // eventType: 'add',
+        error: null
+      },
+      // $FlowFixMe
+      mainWindow
+    );
+  }
 }
 
 export const handleHardwareWalletRequests = async (
