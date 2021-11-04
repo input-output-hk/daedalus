@@ -4,6 +4,7 @@
 
 ### Features
 - Implement the catalysts fund7 screen ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
+- Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
 - Fixed the Delegation popover timeout ([PR 2722](https://github.com/input-output-hk/daedalus/pull/2722))
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
 
@@ -12,9 +13,11 @@
 - Fixed issues relating to minimum window size in Daedalus ([PR 2719](https://github.com/input-output-hk/daedalus/pull/2719))
 - Updated "Trezor T" image shown on the "Pair a hardware wallet device" dialog ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
 - Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
+- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685))
 
 ### Chores
 
+- Updated README with solution steps for the nix SSL issue ([PR 2727](https://github.com/input-output-hk/daedalus/pull/2727))
 - Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
 

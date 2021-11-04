@@ -11,6 +11,7 @@ import VotingRegistrationStepsConfirm from '../../../source/renderer/app/compone
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
+import { VotingFooterLinks } from '../../../source/renderer/app/components/voting/VotingFooterLinks';
 import {
   LANGUAGE_OPTIONS,
   DATE_ENGLISH_OPTIONS,
@@ -26,6 +27,7 @@ import {
   generateWallet,
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
+import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
 
 const assets = {
   available: [
@@ -165,12 +167,15 @@ storiesOf('Voting|Voting Info', module)
   // ====== Stories ======
 
   .add('Voting Info', () => (
-    <VotingInfo
-      currentLocale={LANGUAGE_OPTIONS[0].value}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[3].value}
-      currentTimeFormat={TIME_OPTIONS[2].value}
-      isRegistrationEnded={boolean('isRegistrationEnded', false)}
-      onRegisterToVoteClick={action('onRegisterToVoteClick')}
-      onExternalLinkClick={action('onExternalLinkClick')}
-    />
+    <VerticalFlexContainer>
+      <VotingInfo
+        currentLocale={LANGUAGE_OPTIONS[0].value}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+        isRegistrationEnded={boolean('isRegistrationEnded', false)}
+        onRegisterToVoteClick={action('onRegisterToVoteClick')}
+        onExternalLinkClick={action('onExternalLinkClick')}
+      />
+      <VotingFooterLinks />
+    </VerticalFlexContainer>
   ));

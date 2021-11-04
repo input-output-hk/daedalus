@@ -118,6 +118,7 @@
   font-size: 12px;
   line-height: 16px;
   opacity: 0.4;
+  overflow: hidden;
 }
 
 .value {
@@ -125,14 +126,16 @@
   font-size: 12px;
   line-height: 16px;
   overflow: visible;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .copyIcon {
-  display: inline-block;
+  &:before {
+    content: '\00a0';
+  }
+  display: inline;
   height: 10px;
   line-height: 0;
-  margin-left: 5px;
   opacity: 0;
   transition: opacity 0s;
 
