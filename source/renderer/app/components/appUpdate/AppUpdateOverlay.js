@@ -18,6 +18,7 @@ import styles from './AppUpdateOverlay.scss';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -355,7 +356,11 @@ export default class AppUpdateOverlay extends Component<Props, State> {
         onClick={!isUpdateDownloaded ? onClose : () => {}}
       >
         {!isUpdateDownloaded && !isAutomaticUpdateFailed && (
-          <DialogCloseButton onClose={onClose} className={styles.closeButton} />
+          <DialogCloseButton
+            onClose={onClose}
+            icon={closeCrossThin}
+            className={styles.closeButton}
+          />
         )}
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
         <span className={styles.subtitle}>

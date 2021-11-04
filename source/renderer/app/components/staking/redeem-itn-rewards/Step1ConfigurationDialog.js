@@ -32,6 +32,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -318,7 +319,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       />
     );
 
-    const closeButton = <DialogCloseButton onClose={onClose} />;
+    const closeButton = (
+      <DialogCloseButton
+        icon={closeCrossThin}
+        className={styles.closeButton}
+        onClose={onClose}
+      />
+    );
 
     return (
       <Dialog

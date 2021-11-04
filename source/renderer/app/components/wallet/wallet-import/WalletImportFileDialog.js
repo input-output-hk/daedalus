@@ -14,12 +14,12 @@ import { get } from 'lodash';
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ImportFromOptions } from '../../../types/walletExportTypes';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -203,8 +203,8 @@ export default class WalletImportFileDialog extends Component<Props, State> {
       >
         <div className={styles.component}>
           <DialogCloseButton
-            className={styles.closeButton}
             icon={closeCrossThin}
+            className={styles.closeButton}
             onClose={onClose}
           />
           <div className={styles.content}>

@@ -221,6 +221,10 @@
   right: 11px;
   top: 46.5px;
 
+  span {
+    display: flex;
+  }
+
   .calculatingFeesSpinnerButton {
     background-color: var(
       --theme-staking-stake-pools-search-clear-button-background-color

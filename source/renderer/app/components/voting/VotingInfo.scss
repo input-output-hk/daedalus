@@ -27,8 +27,11 @@
       > p {
         @extend %regularText;
         color: var(--theme-voting-font-color-regular);
-        font-family: var(--font-medium);
         margin-bottom: 11px;
+
+        b {
+          font-family: var(--font-medium);
+        }
       }
 
       > span {
