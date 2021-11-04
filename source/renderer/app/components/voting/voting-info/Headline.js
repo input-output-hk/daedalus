@@ -23,7 +23,7 @@ const messages = defineMessages({
   descriptionRow2: {
     id: 'voting.catalyst.descriptionRow2',
     defaultMessage:
-      '!!!{worthAmount} worth of ada rewards will be distributed between ada holders who register their vote.',
+      '!!!$1,040,000 worth of ada rewards will be distributed between ada holders who register their vote.',
     description: 'Description Project Catalyst',
   },
   learnMoreLinkLabel: {
