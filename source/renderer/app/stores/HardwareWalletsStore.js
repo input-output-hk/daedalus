@@ -37,6 +37,7 @@ import {
   showAddressChannel,
   getDevicesListChannel,
 } from '../ipc/getHardwareWalletChannel';
+// import { getDebugDataChannel } from '../ipc/getDebugDataChannel';
 import {
   prepareLedgerInput,
   prepareLedgerOutput,
@@ -133,6 +134,7 @@ export const AddressVerificationCheckStatuses: {
   REVERIFY: 'reverify',
 };
 
+const DEBUG_DATA_POLLING_INTERVAL = 1500;
 const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
 const DEFAULT_HW_NAME = 'Hardware Wallet';
 
@@ -236,7 +238,9 @@ export default class HardwareWalletsStore extends Store {
   @observable activeDelegationWalletId: ?string = null;
   @observable activeVotingWalletId: ?string = null;
   @observable votingData: ?VotingDataType = null;
+  // @observable debugData: Object = {};
 
+  // getDebugDataPollingInterval: ?IntervalID = null;
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
 
@@ -254,7 +258,19 @@ export default class HardwareWalletsStore extends Store {
     this.initLedger();
     this.hardwareWalletsLocalDataRequest.execute();
     this.hardwareWalletDevicesRequest.execute();
+
+    /* this.getDebugDataPollingInterval = setInterval(
+      () => this._getDebugData(),
+      DEBUG_DATA_POLLING_INTERVAL
+    ); */
   }
+
+  /* _getDebugData = async () => {
+    const debugData = await getDebugDataChannel.request();
+    runInAction('Update Debug Data', () => {
+      this.debugData = JSON.parse(debugData);
+    });
+  }; */
 
   initTrezor = async () => {
     if (isHardwareWalletSupportEnabled && isTrezorEnabled) {
@@ -290,7 +306,7 @@ export default class HardwareWalletsStore extends Store {
       await this._refreshHardwareWalletDevices();
 
       logger.debug('[HW-DEBUG] HWStore - INIT Ledger listeners');
-      await handleInitLedgerConnectChannel.request();
+      // await handleInitLedgerConnectChannel.request();
       await this.getAvailableDevices({ isTrezor: false });
     }
   };
@@ -2310,6 +2326,7 @@ export default class HardwareWalletsStore extends Store {
   @action _changeHardwareWalletConnectionStatus = async (
     params: HardwareWalletConnectionRequest
   ) => {
+    console.debug('>>> CHANGE received: ', { params })
     const {
       disconnected,
       deviceType,
@@ -2467,12 +2484,20 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletsLocalData();
     await this._refreshHardwareWalletDevices();
 
+    console.debug('>>> CHECK: ', {
+      isListeningForDevice: this.isListeningForDevice,
+      disconnected: !disconnected,
+      eventType,
+      CONNECT: DeviceEvents.CONNECT,
+    })
+
     // Start connection establishing process if devices listener flag is UP
     if (
       this.isListeningForDevice &&
       !disconnected &&
       (!eventType || eventType === DeviceEvents.CONNECT)
     ) {
+      console.debug('>>> Establish CONN');
       runInAction('HardwareWalletsStore:: remove device listener', () => {
         this.isListeningForDevice = false;
       });

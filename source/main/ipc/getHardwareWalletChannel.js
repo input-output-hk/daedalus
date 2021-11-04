@@ -92,7 +92,7 @@ const getCardanoAdaAppChannel: MainIpcChannel<
   getCardanoAdaAppMainResponse
 > = new MainIpcChannel(GET_CARDANO_ADA_APP_CHANNEL);
 
-const getHardwareWalletConnectionChannel: MainIpcChannel<
+export const getHardwareWalletConnectionChannel: MainIpcChannel<
   getHardwareWalletConnectiontMainRequest,
   getHardwareWalletConnectiontRendererResponse
 > = new MainIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
@@ -228,6 +228,14 @@ class EventObserver {
   complete() {
     logger.info('[HW-DEBUG] Ledger NEXT complete');
   }
+}
+
+export const changeConnection = async (data, mainWindow) => {
+  getHardwareWalletConnectionChannel.send(
+    data,
+    // $FlowFixMe
+    mainWindow
+  );
 }
 
 export const handleHardwareWalletRequests = async (

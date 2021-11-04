@@ -49,6 +49,7 @@ import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
+import { HardwareWalletsHandler, logEverywhere } from './utils/handleHardwareWallets';
 
 /* eslint-disable consistent-return */
 
@@ -191,6 +192,20 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
+
+  const hwHandler = new HardwareWalletsHandler(mainWindow);
+  await hwHandler.initialize();
+  logger.info('[HW-HANDLER]:isReady', {
+    isReady: hwHandler.isReady,
+    hwHandler,
+  });
+  logEverywhere(mainWindow, {
+    message: '[HW-HANDLER]:isReady',
+    params: {
+      isReady: hwHandler.isReady,
+      hwHandler,
+    }
+  });
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
