@@ -1058,6 +1058,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#e9f4fe',
     '--theme-voting-separator-color': 'rgba(233, 244, 254, 0.15)',
+    '--theme-voting-footer-separator-color': 'rgba(233, 244, 254, 0.5)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(38, 51, 69, 0.98)',

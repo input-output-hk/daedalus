@@ -1044,6 +1044,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#2d2d2d',
     '--theme-voting-separator-color': 'rgba(45, 45, 45, 0.15)',
+    '--theme-voting-footer-separator-color': 'rgba(94, 96, 102, 0.5)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(255, 255, 255, 0.98)',

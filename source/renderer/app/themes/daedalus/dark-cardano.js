@@ -1045,6 +1045,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#ffffff',
     '--theme-voting-separator-color': 'rgba(255, 255, 255, 0.15)',
+    '--theme-voting-footer-separator-color': 'rgba(255, 255, 255, 0.5)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(42, 43, 60, 0.98)',

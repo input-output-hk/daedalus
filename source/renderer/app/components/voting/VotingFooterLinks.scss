@@ -1,0 +1,27 @@
+.component {
+  align-items: flex-end;
+  display: flex;
+  font-size: 14px;
+  justify-content: center;
+  padding: 0 0 20px 0;
+
+  li {
+    .link {
+      font-size: 14px;
+      line-height: 1.43;
+      opacity: 0.7;
+    }
+    .link:hover {
+      opacity: 1;
+    }
+  }
+
+  li:not(:first-child)::before {
+    background-color: var(--theme-voting-footer-separator-color);
+    content: '';
+    display: inline-flex;
+    height: 11px;
+    margin: 0 20px;
+    width: 1px;
+  }
+}
