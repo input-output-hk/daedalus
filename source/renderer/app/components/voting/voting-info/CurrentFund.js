@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 
 import {
-  VOTING_CURRENT_FUND_END_DATE,
+  VOTING_REGISTRATION_CAST_END_DATE,
   CURRENT_VOTING_FUND_NUMBER,
 } from '../../../config/votingConfig';
 import {
@@ -25,7 +25,7 @@ const messages = defineMessages({
   },
   headingForEndDate: {
     id: 'voting.currentFund.headingForEndDate',
-    defaultMessage: '!!!End date:',
+    defaultMessage: '!!!End of voting:',
     description: 'Headline for end date',
   },
   viewResultsLinkLabel: {
@@ -55,20 +55,23 @@ function CurrentFund({
   onExternalLinkClick,
   intl,
 }: Props) {
-  const currentFundEndDate = formattedDateTime(VOTING_CURRENT_FUND_END_DATE, {
-    currentLocale,
-    ...mapToLongDateTimeFormat({
+  const currentFundEndDate = formattedDateTime(
+    VOTING_REGISTRATION_CAST_END_DATE,
+    {
       currentLocale,
-      currentDateFormat,
-      currentTimeFormat,
-    }),
-  });
+      ...mapToLongDateTimeFormat({
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+      }),
+    }
+  );
 
   return (
     <section className={styles.component}>
       <h1 className={styles.fundName}>
         {intl.formatMessage(messages.name, {
-          currentFundNumber: CURRENT_VOTING_FUND_NUMBER,
+          currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
 

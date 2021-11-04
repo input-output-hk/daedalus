@@ -1,21 +1,24 @@
 // @flow
 import React, { useState } from 'react';
-import { defineMessages, intlShape, injectIntl } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { VOTING_REGISTRATION_END_DATE } from '../../../config/votingConfig';
+import {
+  VOTING_REGISTRATION_END_DATE,
+  NEXT_VOTING_FUND_NUMBER,
+} from '../../../config/votingConfig';
 import {
   formattedDateTime,
   mapToLongDateTimeFormat,
 } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
-import { LOCALES } from '../../../../../common/types/locales.types';
+import type { Intl } from '../../../types/i18nTypes';
 import styles from './RegisterToVote.scss';
 
 const messages = defineMessages({
   name: {
     id: 'voting.registerToVote.name',
-    defaultMessage: '!!!Fund7',
+    defaultMessage: '!!!Fund{nextVotingFundNumber}',
     description: 'Regiter to fund name',
   },
   dateLabel: {
@@ -25,19 +28,18 @@ const messages = defineMessages({
   },
   stepsTitle: {
     id: 'voting.registerToVote.stepsTitle',
-    defaultMessage: '!!!Follow these steps below in order to vote',
+    defaultMessage: '!!!Follow these steps to vote:',
     description: 'Steps to follow title',
   },
   step1CheckBoxLabel: {
     id: 'voting.registerToVote.step1CheckBoxLabel',
-    defaultMessage:
-      '!!!Download the Catalyst Voting app on your Android or iOS smartphone.',
+    defaultMessage: '!!!Download the Catalyst Voting app on your smartphone',
     description: 'First step to follow in order to vote',
   },
   step2CheckBoxLabel: {
     id: 'voting.registerToVote.step2CheckBoxLabel',
     defaultMessage:
-      '!!!Make sure to register and have enough ada at the time of the snapshot.',
+      '!!!Ensure that you register and hold the necessary 500 ada at the time of the snapshot.',
     description: 'Second step to follow in order to vote',
   },
   buttonLabel: {
@@ -51,7 +53,7 @@ type Props = {
   currentLocale: Locale,
   currentDateFormat: string,
   currentTimeFormat: string,
-  intl: intlShape.isRequired,
+  intl: Intl,
   onRegisterToVoteClick: Function,
 };
 
@@ -75,7 +77,11 @@ function RegisterToVote({
 
   return (
     <div className={styles.root}>
-      <span className={styles.title}>{intl.formatMessage(messages.name)}</span>
+      <span className={styles.title}>
+        {intl.formatMessage(messages.name, {
+          nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+        })}
+      </span>
       <span className={styles.dateLabel}>
         {intl.formatMessage(messages.dateLabel)}
       </span>
