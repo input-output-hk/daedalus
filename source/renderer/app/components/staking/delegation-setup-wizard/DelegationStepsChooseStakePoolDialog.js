@@ -1,5 +1,5 @@
 // @flow
-import React, { useRef, useState, useCallback, memo } from 'react';
+import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
 import {
   injectIntl,
   FormattedMessage,
@@ -9,7 +9,7 @@ import {
 import classNames from 'classnames';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-import { find, get } from 'lodash';
+import { find } from 'lodash';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -24,10 +24,12 @@ import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import StakePool from '../../../domains/StakePool';
 import { getMessages } from './DelegationStepsChooseStakePoolDialog.messages';
+import OversaturationText from './OversaturationText';
 
 const messages = getMessages();
 
 type Props = {
+  maxDelegationFunds: number,
   stepsList: Array<string>,
   recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
@@ -49,12 +51,35 @@ const Footer = memo((props: FooterProps) => (
   <div className={styles.retiringPoolFooter}>{props.footerText}</div>
 ));
 
-const DelegationStepsChooseStakePoolDialog = (props: Props) => {
-  const [searchValue, setSearchValue] = useState<string>();
-  const [selectedPoolId, setSelectedPoolId] = useState<string>(
-    props?.selectedPool?.id
-  );
+const getAmountBeforeBeingSaturated = (
+  amountToBeStaked: number,
+  selectedPool: StakePool,
+  maxDelegationFunds: number
+): boolean =>
+  selectedPool.saturation < 100
+    ? ((100 - selectedPool.saturation) * maxDelegationFunds) / 100
+    : 0;
 
+const DelegationStepsChooseStakePoolDialog = (props: Props) => {
+  const {
+    maxDelegationFunds,
+    stepsList,
+    recentStakePools,
+    stakePoolsList,
+    onOpenExternalLink,
+    currentTheme,
+    selectedPool: preselectedPool,
+    selectedWallet,
+    onClose,
+    onBack,
+    intl,
+  } = props;
+
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [selectedPool, setSelectedPool] = useState<?StakePool>(preselectedPool);
+  const [oversaturationWarning, setOversaturationWarning] = useState<string>(
+    ''
+  );
   const stakePoolsScrollElementRef = useRef();
 
   const handleSearch = useCallback((value: string) => {
@@ -66,41 +91,31 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
   });
 
   const handleSelect = useCallback((value: string) => {
-    setSelectedPoolId(value);
+    setSelectedPool(
+      find(stakePoolsList, (stakePool) => stakePool.id === value)
+    );
   });
 
   const onAcceptPool = useCallback(() => {
-    props.onSelectPool(selectedPoolId);
-  }, [selectedPoolId]);
+    props.onSelectPool(selectedPool?.id);
+  }, [selectedPool?.id]);
+
+  useEffect(() => {
+    if (selectedPool?.id) {
+      console.log('TCL: selectedPool ticker => ', selectedPool.ticker);
+      console.log('TCL: selectedPool saturation => ', selectedPool.saturation);
+      console.log('TCL: selectedPool => ', selectedPool);
+
+      setOversaturationWarning('Oversaturated');
+    }
+  }, [selectedPool?.id]);
 
   const {
-    stepsList,
-    recentStakePools,
-    stakePoolsList,
-    onOpenExternalLink,
-    currentTheme,
-    selectedWallet,
-    onClose,
-    onBack,
-    intl,
-  } = props;
-
-  const selectedWalletName = get(selectedWallet, 'name');
-  const selectedPool = find(
-    stakePoolsList,
-    (stakePool) => stakePool.id === selectedPoolId
-  );
-  const lastDelegatedStakePoolId = get(
-    selectedWallet,
-    'lastDelegatedStakePoolId',
-    null
-  );
-  const delegatedStakePoolId = get(
-    selectedWallet,
-    'delegatedStakePoolId',
-    null
-  );
-  const pendingDelegations = get(selectedWallet, 'pendingDelegations', null);
+    name: selectedWalletName,
+    lastDelegatedStakePoolId,
+    delegatedStakePoolId,
+    pendingDelegations,
+  } = selectedWallet;
 
   const hasPendingDelegations =
     pendingDelegations && pendingDelegations.length > 0;
@@ -109,8 +124,9 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     activeStakePoolId = lastDelegatedStakePoolId;
   }
 
-  const selectedPoolTicker = get(selectedPool, 'ticker');
-  const canSubmit = !activeStakePoolId || activeStakePoolId !== selectedPoolId;
+  const selectedPoolTicker = selectedPool?.ticker;
+  const canSubmit =
+    !activeStakePoolId || activeStakePoolId !== selectedPool?.id;
 
   const actions = [
     {
@@ -118,7 +134,7 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
       label: intl.formatMessage(messages.continueButtonLabel),
       onClick: onAcceptPool,
       primary: true,
-      disabled: !selectedPoolId || !canSubmit,
+      disabled: !selectedPool?.id || !canSubmit,
     },
   ];
 
@@ -139,9 +155,9 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     />
   );
 
-  const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
-    stakePoolsList,
-    searchValue
+  const filteredStakePoolsList: Array<StakePool> = useCallback(
+    getFilteredStakePoolsList(stakePoolsList, searchValue),
+    [stakePoolsList, searchValue]
   );
 
   const numberOfRankedStakePools: number = stakePoolsList.filter(
@@ -152,9 +168,9 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     let label;
     // Label when selected wallet already delegating to selected stake pool
     if (
-      selectedPoolId &&
+      selectedPool?.id &&
       activeStakePoolId === delegatedStakePoolId &&
-      delegatedStakePoolId === selectedPoolId
+      delegatedStakePoolId === selectedPool?.id
     ) {
       label = (
         <FormattedHTMLMessage
@@ -166,9 +182,9 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
         />
       );
     } else if (
-      selectedPoolId &&
+      selectedPool?.id &&
       activeStakePoolId === lastDelegatedStakePoolId &&
-      lastDelegatedStakePoolId === selectedPoolId
+      lastDelegatedStakePoolId === selectedPool?.id
     ) {
       label = (
         <FormattedHTMLMessage
@@ -179,7 +195,7 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
           }}
         />
       );
-    } else if (selectedPoolId) {
+    } else if (selectedPool?.id) {
       // Stake pool selected and selected wallet are not delegated to it
       const message = !selectedPool.retiring
         ? messages.selectedStakePoolLabel
@@ -210,7 +226,7 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     delegatedStakePoolId,
     lastDelegatedStakePoolId,
     selectedWalletName,
-    selectedPoolId,
+    selectedPool?.id,
     selectedPoolTicker,
     selectedPool,
   ]);
@@ -250,6 +266,7 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
       </div>
 
       <div className={contentClassName}>
+        <OversaturationText />
         <p className={styles.description}>
           {intl.formatMessage(messages.description)}
         </p>
@@ -279,7 +296,7 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
             currentTheme={currentTheme}
             containerClassName="Dialog_content"
             onSelect={handleSelect}
-            selectedPoolId={selectedPoolId}
+            selectedPoolId={selectedPool?.id}
             numberOfRankedStakePools={numberOfRankedStakePools}
             disabledStakePoolId={activeStakePoolId}
             highlightOnHover
@@ -308,7 +325,7 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
             onOpenExternalLink={onOpenExternalLink}
             currentTheme={currentTheme}
             onSelect={handleSelect}
-            selectedPoolId={selectedPoolId}
+            selectedPoolId={selectedPool?.id}
             containerClassName="Dialog_content"
             numberOfRankedStakePools={numberOfRankedStakePools}
             disabledStakePoolId={activeStakePoolId}

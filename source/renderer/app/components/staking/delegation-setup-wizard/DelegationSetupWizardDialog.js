@@ -124,6 +124,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       case 2:
         content = (
           <DelegationStepsChooseStakePoolDialog
+            maxDelegationFunds={maxDelegationFunds}
             stepsList={stepsList}
             recentStakePools={recentStakePools}
             stakePoolsList={stakePoolsList}
