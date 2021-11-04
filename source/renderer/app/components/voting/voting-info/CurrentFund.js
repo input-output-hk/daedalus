@@ -3,7 +3,10 @@ import React from 'react';
 
 import { defineMessages, injectIntl } from 'react-intl';
 
-import { VOTING_CURRENT_FUND_END_DATE } from '../../../config/votingConfig';
+import {
+  VOTING_CURRENT_FUND_END_DATE,
+  CURRENT_VOTING_FUND_NUMBER,
+} from '../../../config/votingConfig';
 import { formattedDateTime } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
@@ -14,7 +17,7 @@ import styles from './CurrentFund.scss';
 const messages = defineMessages({
   name: {
     id: 'voting.currentFund.name',
-    defaultMessage: '!!!Fund6',
+    defaultMessage: '!!!Fund{currentVotingFundNumber}',
     description: 'Current fund name',
   },
   headingForEndDate: {
@@ -25,12 +28,12 @@ const messages = defineMessages({
   viewResultsLinkLabel: {
     id: 'voting.currentFund.viewResultsLinkLabel',
     defaultMessage: '!!!View results',
-    description: 'View resuls link label for Fund6',
+    description: 'View resuls link label for Fund{currentVotingFundNumber}',
   },
   viewResultsLinkURL: {
     id: 'voting.currentFund.viewResultsLinkURL',
     defaultMessage: '!!!https://TODO',
-    description: 'View results from Fund6',
+    description: 'View results from Fund{currentVotingFundNumber}',
   },
 });
 
@@ -57,7 +60,11 @@ function CurrentFund({
 
   return (
     <section className={styles.component}>
-      <h1 className={styles.fundName}>{intl.formatMessage(messages.name)}</h1>
+      <h1 className={styles.fundName}>
+        {intl.formatMessage(messages.name, {
+          currentFundNumber: CURRENT_VOTING_FUND_NUMBER,
+        })}
+      </h1>
 
       <div className={styles.endDateBlock}>
         <span className={styles.endDateText}>

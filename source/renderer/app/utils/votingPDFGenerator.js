@@ -11,7 +11,7 @@ import globalMessages from '../i18n/global-messages';
 const messages = defineMessages({
   title: {
     id: 'voting.votingRegistration.pdf.title',
-    defaultMessage: '!!!Fund{fundNumber} Voting Registration',
+    defaultMessage: '!!!Fund{nextVotingFundNumber} Voting Registration',
     description: 'PDF title',
   },
   walletNameLabel: {
@@ -73,7 +73,7 @@ export const votingPDFGenerator = async ({
 
   // Generate the filePath
   const localizedFileName = intl.formatMessage(messages.filename);
-  const prefix = `fund${fundNumber}-${localizedFileName}-${walletName}`;
+  const prefix = `fund${nextVotingFundNumber}-${localizedFileName}-${walletName}`;
   const name = generateFileNameWithTimestamp({
     prefix,
     extension: '',

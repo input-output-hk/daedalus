@@ -10,7 +10,10 @@ import {
   isValidRepeatPinCode,
 } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
+import {
+  VOTING_REGISTRATION_PIN_CODE_LENGTH,
+  NEXT_VOTING_FUND_NUMBER,
+} from '../../../config/votingConfig';
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
@@ -18,7 +21,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.enterPinCode.step.description',
     defaultMessage:
-      '!!!Please enter a PIN for your Fund6 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.',
+      '!!!Please enter a PIN for your Fund{nextVotingFundNumber} voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.',
     description:
       'Description on the voting registration "enter pin code" step.',
   },
@@ -165,7 +168,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
         containerClassName={styles.component}
       >
         <p className={styles.description}>
-          <FormattedHTMLMessage {...messages.description} />
+          <FormattedHTMLMessage
+            {...messages.description}
+            values={{ fundNumber: NEXT_VOTING_FUND_NUMBER }}
+          />
         </p>
 
         <div className={styles.pinCode}>

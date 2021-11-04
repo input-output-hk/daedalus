@@ -6,6 +6,7 @@ import { set } from 'lodash';
 import { observer } from 'mobx-react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
+import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
 import styles from './VotingRegistrationStepsQrCode.scss';
 
 const messages = defineMessages({
@@ -37,7 +38,7 @@ const messages = defineMessages({
   checkbox2Label: {
     id: 'voting.votingRegistration.qrCode.step.checkbox2Label',
     defaultMessage:
-      '!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund6.',
+      '!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund{nextVotingFundNumber}.',
     description:
       'Second checkbox label on the voting registration "qr code" step.',
   },
@@ -101,7 +102,9 @@ export default class VotingRegistrationStepsQrCode extends Component<
     const qrCodeDescription = intl.formatMessage(messages.qrCodeDescription);
     const qrCodeWarning = <FormattedHTMLMessage {...messages.qrCodeWarning} />;
     const checkbox1Label = intl.formatMessage(messages.checkbox1Label);
-    const checkbox2Label = intl.formatMessage(messages.checkbox2Label);
+    const checkbox2Label = intl.formatMessage(messages.checkbox2Label, {
+      fundNumber: NEXT_VOTING_FUND_NUMBER,
+    });
     const closeButtonLabel = intl.formatMessage(messages.closeButtonLabel);
     const saveAsPdfButtonLabel = intl.formatMessage(
       messages.saveAsPdfButtonLabel

@@ -2,7 +2,8 @@
 const { isDev } = global.environment;
 
 export const IS_VOTING_REGISTRATION_AVAILABLE = true;
-export const VOTING_FUND_NUMBER = 6;
+export const CURRENT_VOTING_FUND_NUMBER = 6;
+export const NEXT_VOTING_FUND_NUMBER = CURRENT_VOTING_FUND_NUMBER + 1;
 export const VOTING_REGISTRATION_MIN_WALLET_FUNDS = 500; // 500 ADA | unit: ADA
 export const VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT = 1; // 1 ADA | unit: ADA
 export const VOTING_REGISTRATION_PIN_CODE_LENGTH = 4;

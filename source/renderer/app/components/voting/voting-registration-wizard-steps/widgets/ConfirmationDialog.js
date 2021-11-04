@@ -4,19 +4,20 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../../widgets/Dialog';
+import { NEXT_VOTING_FUND_NUMBER } from '../../../../config/votingConfig';
 import styles from './ConfirmationDialog.scss';
 
 const messages = defineMessages({
   headline: {
     id: 'voting.votingRegistration.dialog.confirmation.headline',
-    defaultMessage: '!!!Cancel Fund6 voting registration?',
+    defaultMessage: '!!!Cancel Fund{nextVotingFundNumber} voting registration?',
     description:
       'Headline for the voting registration cancellation confirmation dialog.',
   },
   content: {
     id: 'voting.votingRegistration.dialog.confirmation.content',
     defaultMessage:
-      '!!!Are you sure that you want to cancel Fund6 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.',
+      '!!!Are you sure that you want to cancel Fund{nextVotingFundNumber} voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.',
     description:
       'Content for the voting registration cancellation confirmation dialog.',
   },
@@ -76,12 +77,18 @@ export default class ConfirmationDialog extends Component<Props> {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(messages.headline)}
+        title={intl.formatMessage(messages.headline, {
+          fundNumber: NEXT_VOTING_FUND_NUMBER,
+        })}
         actions={actions}
         closeOnOverlayClick={false}
         onClose={onConfirm}
       >
-        <p>{intl.formatMessage(messages.content)}</p>
+        <p>
+          {intl.formatMessage(messages.content, {
+            fundNumber: NEXT_VOTING_FUND_NUMBER,
+          })}
+        </p>
       </Dialog>
     );
   }

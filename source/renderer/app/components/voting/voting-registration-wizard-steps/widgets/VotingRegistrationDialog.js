@@ -11,11 +11,12 @@ import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import type { DialogActions } from '../../../widgets/Dialog';
+import { NEXT_VOTING_FUND_NUMBER } from '../../../../config/votingConfig';
 
 const messages = defineMessages({
   dialogTitle: {
     id: 'voting.votingRegistration.dialog.dialogTitle',
-    defaultMessage: '!!!Register for Fund6 voting',
+    defaultMessage: '!!!Register for Fund{nextVotingFundNumber} voting',
     description: 'Tile "Register to vote" for voting registration',
   },
   subtitle: {
@@ -75,7 +76,9 @@ export default class VotingRegistrationDialog extends Component<Props> {
     return (
       <Dialog
         className={styles.component}
-        title={intl.formatMessage(messages.dialogTitle)}
+        title={intl.formatMessage(messages.dialogTitle, {
+          fundNumber: NEXT_VOTING_FUND_NUMBER,
+        })}
         subtitle={!hideSteps && stepsIndicatorLabel}
         onClose={onClose}
         closeOnOverlayClick={false}
