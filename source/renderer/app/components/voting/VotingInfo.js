@@ -261,7 +261,7 @@ export default class VotingInfo extends Component<Props, State> {
               <p>
                 <b>{bottomContentTitle}</b>
               </p>
-              <FormattedHTMLMessage {...bottomContentDescription} />
+              <FormattedHTMLMessage {...bottomContentDescription} tagName="p" />
               {!isRegistrationEnded && (
                 <Checkbox
                   label={checkboxLabel}
