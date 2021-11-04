@@ -1,11 +1,13 @@
 @import './votingConfig';
 
 .component {
+  flex: 1;
   padding: 20px;
   text-align: center;
 
   :global {
     button.SimpleButton_root {
+      margin-top: 30px;
       width: 415px;
     }
   }
@@ -18,7 +20,6 @@
   .bottomContent {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
 
     .leftContent {
       text-align: left;
@@ -26,8 +27,11 @@
       > p {
         @extend %regularText;
         color: var(--theme-voting-font-color-regular);
-        font-family: var(--font-medium);
         margin-bottom: 11px;
+
+        b {
+          font-family: var(--font-medium);
+        }
       }
 
       > span {
@@ -35,7 +39,7 @@
         display: block;
         font-family: var(--font-light);
         line-height: 1.38;
-        margin: 0 20px 20px 0;
+        margin: 0;
 
         b {
           font-family: var(--font-medium);
