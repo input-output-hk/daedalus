@@ -8499,6 +8499,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "Newsletter",
+        "description": "\"Newsletter\" link for Project Catalyst footer",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.newsletter",
+        "start": {
+          "column": 14,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "Announcements Channel",
+        "description": "\"Announcements Channel\" link for Project Catalyst footer",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.announcements",
+        "start": {
+          "column": 17,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "Community Chat",
+        "description": "\"Community Chat\" link for Project Catalyst footer",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.community",
+        "start": {
+          "column": 13,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "Projects",
+        "description": "\"Projects\" link for Project Catalyst footer",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.projects",
+        "start": {
+          "column": 12,
+          "line": 35
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/VotingFooterLinks.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Register to vote on Fund6",
         "description": "Headline for voting registration steps",
         "end": {
