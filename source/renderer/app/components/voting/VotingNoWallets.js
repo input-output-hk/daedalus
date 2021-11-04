@@ -49,7 +49,7 @@ export default class VotingNoWallets extends Component<Props> {
         <SVGInline svg={icon} className={styles.icon} />
         <h1>
           {intl.formatMessage(messages.headLine, {
-            fundNumber: NEXT_VOTING_FUND_NUMBER,
+            nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
           })}
         </h1>
         <p>

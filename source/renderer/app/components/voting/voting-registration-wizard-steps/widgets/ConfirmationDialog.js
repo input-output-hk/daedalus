@@ -78,7 +78,7 @@ export default class ConfirmationDialog extends Component<Props> {
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.headline, {
-          fundNumber: NEXT_VOTING_FUND_NUMBER,
+          nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
         })}
         actions={actions}
         closeOnOverlayClick={false}
@@ -86,7 +86,7 @@ export default class ConfirmationDialog extends Component<Props> {
       >
         <p>
           {intl.formatMessage(messages.content, {
-            fundNumber: NEXT_VOTING_FUND_NUMBER,
+            nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
           })}
         </p>
       </Dialog>

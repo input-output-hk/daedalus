@@ -80,7 +80,7 @@ export default class VotingUnavailable extends Component<Props> {
     const heading = intl.formatMessage(messages.heading);
     const paragraph1 = intl.formatMessage(messages.paragraph1, {
       currentFundNumber: CURRENT_VOTING_FUND_NUMBER,
-      fundNumber: NEXT_VOTING_FUND_NUMBER,
+      nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
     });
     const link1 = (
       <Link

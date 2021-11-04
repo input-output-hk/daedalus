@@ -62,7 +62,9 @@ export const votingPDFGenerator = async ({
   intl,
 }: Params) => {
   // Consolidate data
-  const title = intl.formatMessage(messages.title, { fundNumber });
+  const title = intl.formatMessage(messages.title, {
+    nextVotingFundNumber: fundNumber,
+  });
   const creationDate = moment().format(
     `${currentDateFormat} ${currentTimeFormat}`
   );

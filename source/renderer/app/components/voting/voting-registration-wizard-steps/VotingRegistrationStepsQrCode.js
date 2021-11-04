@@ -103,7 +103,7 @@ export default class VotingRegistrationStepsQrCode extends Component<
     const qrCodeWarning = <FormattedHTMLMessage {...messages.qrCodeWarning} />;
     const checkbox1Label = intl.formatMessage(messages.checkbox1Label);
     const checkbox2Label = intl.formatMessage(messages.checkbox2Label, {
-      fundNumber: NEXT_VOTING_FUND_NUMBER,
+      nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
     });
     const closeButtonLabel = intl.formatMessage(messages.closeButtonLabel);
     const saveAsPdfButtonLabel = intl.formatMessage(

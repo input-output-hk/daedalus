@@ -77,7 +77,7 @@ export default class VotingRegistrationDialog extends Component<Props> {
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.dialogTitle, {
-          fundNumber: NEXT_VOTING_FUND_NUMBER,
+          nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
         })}
         subtitle={!hideSteps && stepsIndicatorLabel}
         onClose={onClose}

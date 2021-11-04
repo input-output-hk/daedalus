@@ -189,7 +189,7 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ fundNumber: NEXT_VOTING_FUND_NUMBER }}
+            values={{ nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER }}
           />
         </p>
 
