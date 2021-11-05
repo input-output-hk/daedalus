@@ -99,6 +99,10 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     props.onSelectPool(_selectedPool.id);
   });
 
+  useEffect(() => {
+    if (preselectedPool && preselectedPool.id) handleSelect(preselectedPool.id);
+  }, [preselectedPool]);
+
   const onContinue = useCallback(() => {
     props.onContinue();
   }, [props.onContinue]);
