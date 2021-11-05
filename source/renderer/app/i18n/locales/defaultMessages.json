@@ -7970,7 +7970,7 @@
         }
       },
       {
-        "defaultMessage": "!!!${reward} worth of ada rewards will be distributed between ada holders who register their vote.",
+        "defaultMessage": "!!!{reward} worth of ada rewards will be distributed between ada holders who register their vote.",
         "description": "Description Project Catalyst",
         "end": {
           "column": 3,
