@@ -7885,13 +7885,13 @@
         "description": "Current fund name",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 25
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.name",
         "start": {
           "column": 8,
-          "line": 18
+          "line": 21
         }
       },
       {
@@ -7899,13 +7899,13 @@
         "description": "Headline for end date",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.headingForEndDate",
         "start": {
           "column": 21,
-          "line": 23
+          "line": 26
         }
       },
       {
@@ -7913,27 +7913,27 @@
         "description": "View resuls link label for Fund{currentVotingFundNumber}",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 35
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.viewResultsLinkLabel",
         "start": {
           "column": 24,
-          "line": 28
+          "line": 31
         }
       },
       {
-        "defaultMessage": "!!!https://TODO",
+        "defaultMessage": "https://cardano.ideascale.com/a/pages/results",
         "description": "View results from Fund{currentVotingFundNumber}",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 40
         },
         "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
         "id": "voting.currentFund.viewResultsLinkURL",
         "start": {
           "column": 22,
-          "line": 33
+          "line": 36
         }
       }
     ],
@@ -8021,13 +8021,13 @@
         "description": "Regiter to fund name",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 23
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
         "id": "voting.registerToVote.name",
         "start": {
           "column": 8,
-          "line": 16
+          "line": 19
         }
       },
       {
@@ -8035,13 +8035,13 @@
         "description": "Voting info snapshot date label",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 28
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
         "id": "voting.registerToVote.dateLabel",
         "start": {
           "column": 13,
-          "line": 21
+          "line": 24
         }
       },
       {
@@ -8049,13 +8049,13 @@
         "description": "Steps to follow title",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 33
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
         "id": "voting.registerToVote.stepsTitle",
         "start": {
           "column": 14,
-          "line": 26
+          "line": 29
         }
       },
       {
@@ -8063,13 +8063,13 @@
         "description": "First step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 38
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
         "id": "voting.registerToVote.step1CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 31
+          "line": 34
         }
       },
       {
@@ -8077,13 +8077,13 @@
         "description": "Second step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
         "id": "voting.registerToVote.step2CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 36
+          "line": 39
         }
       },
       {
@@ -8091,13 +8091,13 @@
         "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 49
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
         "id": "voting.registerToVote.registerToVoteButtonLabel",
         "start": {
           "column": 15,
-          "line": 42
+          "line": 45
         }
       }
     ],

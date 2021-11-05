@@ -35,7 +35,7 @@ const messages = defineMessages({
   },
   viewResultsLinkURL: {
     id: 'voting.currentFund.viewResultsLinkURL',
-    defaultMessage: '!!!https://TODO',
+    defaultMessage: 'https://cardano.ideascale.com/a/pages/results',
     description: 'View results from Fund{currentVotingFundNumber}',
   },
 });
