@@ -6,15 +6,16 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+import classnames from 'classnames';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
-import styles from './DelegationStepsConfirmationDialog.scss';
+import styles from './OversaturationText.scss';
 
 const messages: { [string]: ReactIntlMessage } = defineMessages({
   oversaturationWarning: {
     id:
       'staking.delegationSetup.confirmation.step.dialog.oversaturationWarning',
     defaultMessage:
-      '!!!The selected stake pool will become oversaturated, which will reduce future rewards for all delegators to that pool.',
+      '!!!The selected stake pool will become oversaturated by {oversaturationPercentage}%, which will reduce future rewards for all delegators to that pool.',
     description:
       'Warning shown if pool is going to be saturated if delegation happens',
   },
@@ -22,17 +23,26 @@ const messages: { [string]: ReactIntlMessage } = defineMessages({
 
 type Props = {
   intl: intlShape,
+  oversaturationPercentage: string,
+  centerText?: boolean,
 };
 
-const OversaturationText = (props: Props) => (
-  <p className={styles.description}>
-    <FormattedHTMLMessage
-      {...messages.oversaturationWarning}
-      values={{
-        oversaturationPercentage: '140%',
-      }}
-    />
-  </p>
-);
+const OversaturationTextComponent = (props: Props) => {
+  const { oversaturationPercentage, centerText } = props;
+  const oversaturationClasses = classnames([
+    styles.component,
+    centerText ? styles.centerText : null,
+  ]);
+  return (
+    <p className={oversaturationClasses}>
+      <FormattedHTMLMessage
+        {...messages.oversaturationWarning}
+        values={{
+          oversaturationPercentage,
+        }}
+      />
+    </p>
+  );
+};
 
-export default injectIntl(OversaturationText);
+export const OversaturationText = injectIntl(OversaturationTextComponent);

@@ -25,6 +25,7 @@ import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import { getMessages } from './DelegationStepsConfirmationDialog.messages';
+import { OversaturationText } from './OversaturationText';
 
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
@@ -43,11 +44,11 @@ type Props = {
   selectedPool: ?StakePool,
   stepsList: Array<string>,
   isSubmitting: boolean,
-  maxDelegationFunds: number,
   hwDeviceStatus: HwDeviceStatus,
   error: ?LocalizableError,
   onExternalLinkClick: Function,
   isTrezor: boolean,
+  oversaturationPercentage: number,
 };
 
 @observer
@@ -126,7 +127,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       hwDeviceStatus,
       onExternalLinkClick,
       isTrezor,
-      maxDelegationFunds,
+      oversaturationPercentage,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
@@ -199,11 +200,12 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
             labelDisabled
           />
         </div>
-
+        {oversaturationPercentage > 0 && (
+          <OversaturationText
+            oversaturationPercentage={oversaturationPercentage.toFixed()}
+          />
+        )}
         <div className={contentClassName}>
-          {maxDelegationFunds}
-          <OversaturationText />
-
           <p className={styles.description}>
             <FormattedHTMLMessage
               {...messages.description}

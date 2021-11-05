@@ -403,7 +403,7 @@
   "staking.delegationSetup.confirmation.step.dialog.depositLabel": "Deposit",
   "staking.delegationSetup.confirmation.step.dialog.description": "Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.",
   "staking.delegationSetup.confirmation.step.dialog.feesLabel": "Fees",
-  "staking.delegationSetup.confirmation.step.dialog.oversaturationWarning": "The selected stake pool will become oversaturated by <span>[{115%}]</span>, which will reduce future rewards for all delegators to that pool.",
+  "staking.delegationSetup.confirmation.step.dialog.oversaturationWarning": "The selected stake pool will become oversaturated by {oversaturationPercentage}%, which will reduce future rewards for all delegators to that pool.",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel": "Spending password",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder": "Enter your password",
   "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel": "Stake pool ID",

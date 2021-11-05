@@ -1,5 +1,5 @@
 // @flow
-import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
+import React, { useRef, useState, useCallback, memo, useMemo } from 'react';
 import {
   injectIntl,
   FormattedMessage,
@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { find } from 'lodash';
+import { observer } from 'mobx-react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -24,12 +25,11 @@ import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import StakePool from '../../../domains/StakePool';
 import { getMessages } from './DelegationStepsChooseStakePoolDialog.messages';
-import OversaturationText from './OversaturationText';
+import { OversaturationText } from './OversaturationText';
 
 const messages = getMessages();
 
 type Props = {
-  maxDelegationFunds: number,
   stepsList: Array<string>,
   recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
@@ -41,6 +41,8 @@ type Props = {
   onBack: Function,
   onSelectPool: Function,
   intl: intlShape.isRequired,
+  onContinue: Function,
+  oversaturationPercentage: number,
 };
 
 type FooterProps = {
@@ -51,18 +53,8 @@ const Footer = memo((props: FooterProps) => (
   <div className={styles.retiringPoolFooter}>{props.footerText}</div>
 ));
 
-const getAmountBeforeBeingSaturated = (
-  amountToBeStaked: number,
-  selectedPool: StakePool,
-  maxDelegationFunds: number
-): boolean =>
-  selectedPool.saturation < 100
-    ? ((100 - selectedPool.saturation) * maxDelegationFunds) / 100
-    : 0;
-
-const DelegationStepsChooseStakePoolDialog = (props: Props) => {
+const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
   const {
-    maxDelegationFunds,
     stepsList,
     recentStakePools,
     stakePoolsList,
@@ -73,13 +65,11 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     onClose,
     onBack,
     intl,
+    oversaturationPercentage,
   } = props;
 
   const [searchValue, setSearchValue] = useState<string>('');
   const [selectedPool, setSelectedPool] = useState<?StakePool>(preselectedPool);
-  const [oversaturationWarning, setOversaturationWarning] = useState<string>(
-    ''
-  );
   const stakePoolsScrollElementRef = useRef();
 
   const handleSearch = useCallback((value: string) => {
@@ -91,31 +81,24 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
   });
 
   const handleSelect = useCallback((value: string) => {
-    setSelectedPool(
-      find(stakePoolsList, (stakePool) => stakePool.id === value)
+    const _selectedPool = find(
+      stakePoolsList,
+      (stakePool) => stakePool.id === value
     );
+    setSelectedPool(_selectedPool);
+    props.onSelectPool(_selectedPool.id);
   });
 
-  const onAcceptPool = useCallback(() => {
-    props.onSelectPool(selectedPool?.id);
-  }, [selectedPool?.id]);
-
-  useEffect(() => {
-    if (selectedPool?.id) {
-      console.log('TCL: selectedPool ticker => ', selectedPool.ticker);
-      console.log('TCL: selectedPool saturation => ', selectedPool.saturation);
-      console.log('TCL: selectedPool => ', selectedPool);
-
-      setOversaturationWarning('Oversaturated');
-    }
-  }, [selectedPool?.id]);
+  const onContinue = useCallback(() => {
+    props.onContinue();
+  }, [props.onContinue]);
 
   const {
     name: selectedWalletName,
     lastDelegatedStakePoolId,
     delegatedStakePoolId,
     pendingDelegations,
-  } = selectedWallet;
+  } = selectedWallet || {};
 
   const hasPendingDelegations =
     pendingDelegations && pendingDelegations.length > 0;
@@ -132,7 +115,7 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     {
       className: 'continueButton',
       label: intl.formatMessage(messages.continueButtonLabel),
-      onClick: onAcceptPool,
+      onClick: onContinue,
       primary: true,
       disabled: !selectedPool?.id || !canSubmit,
     },
@@ -231,18 +214,31 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
     selectedPool,
   ]);
 
+  const footer = useMemo(
+    () => (
+      <>
+        {selectedPool?.retiring && (
+          <Footer
+            footerText={intl.formatMessage(messages.retiringPoolFooter)}
+          />
+        )}
+        {oversaturationPercentage > 0 && (
+          <OversaturationText
+            oversaturationPercentage={oversaturationPercentage.toFixed()}
+            centerText
+          />
+        )}
+      </>
+    ),
+    [selectedPool?.retiring, oversaturationPercentage]
+  );
+
   return (
     <Dialog
       title={intl.formatMessage(messages.title)}
       subtitle={stepsIndicatorLabel}
       actions={actions}
-      footer={
-        selectedPool && selectedPool.retiring ? (
-          <Footer
-            footerText={intl.formatMessage(messages.retiringPoolFooter)}
-          />
-        ) : null
-      }
+      footer={footer}
       closeOnOverlayClick
       onClose={onClose}
       className={dialogClassName}
@@ -266,7 +262,6 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
       </div>
 
       <div className={contentClassName}>
-        <OversaturationText />
         <p className={styles.description}>
           {intl.formatMessage(messages.description)}
         </p>
@@ -338,6 +333,6 @@ const DelegationStepsChooseStakePoolDialog = (props: Props) => {
       </div>
     </Dialog>
   );
-};
+});
 
 export default injectIntl(DelegationStepsChooseStakePoolDialog);

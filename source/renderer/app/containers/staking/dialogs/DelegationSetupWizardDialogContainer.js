@@ -158,7 +158,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   handleSelectPool = (poolId: string) => {
     this._handleCalculateTransactionFee(poolId);
     this.setState({ selectedPoolId: poolId });
-    this.handleContinue();
   };
 
   render() {
