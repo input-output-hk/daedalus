@@ -4,6 +4,7 @@
 
 ### Features
 
+- Added Over-saturation warning in delegation wizard ([PR 2733](https://github.com/input-output-hk/daedalus/pull/2733))
 - Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
 - Fixed the Delegation popover timeout ([PR 2722](https://github.com/input-output-hk/daedalus/pull/2722))
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
