@@ -10,10 +10,14 @@
     text-transform: uppercase;
   }
 
-  .descriptionBox {
+  .content {
     align-items: flex-start;
     display: flex;
     justify-content: space-between;
+
+    .descriptionBlock {
+      flex: 1 0 0;
+    }
 
     .description {
       @extend %regularText;

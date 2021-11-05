@@ -47,8 +47,8 @@ function Headline({ onExternalLinkClick, intl }: Props) {
   return (
     <section className={styles.component}>
       <h1 className={styles.heading}>{intl.formatMessage(messages.heading)}</h1>
-      <div className={styles.descriptionBox}>
-        <div>
+      <div className={styles.content}>
+        <div className={styles.descriptionBlock}>
           <p className={styles.description}>
             {intl.formatMessage(messages.descriptionRow1)}
           </p>
