@@ -49,7 +49,10 @@ function AppStore({
             onAppleStoreLinkClick(appleAppButtonUrl);
           }}
         >
-          <SVGInline svg={downloadAppStoreIcon} />
+          <SVGInline
+            svg={downloadAppStoreIcon}
+            className={styles.appleStoreIcon}
+          />
         </button>
         <div className={styles.qrCode}>
           <QRCode value={appleAppButtonUrl} size={75} renderAs="svg" />
@@ -62,7 +65,10 @@ function AppStore({
             onAndroidStoreLinkClick(androidAppButtonUrl);
           }}
         >
-          <SVGInline svg={downloadPlayStoreIcon} />
+          <SVGInline
+            svg={downloadPlayStoreIcon}
+            className={styles.playStoreIcon}
+          />
         </button>
         <div className={styles.qrCode}>
           <QRCode value={androidAppButtonUrl} size={75} renderAs="svg" />
