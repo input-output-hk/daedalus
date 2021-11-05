@@ -1,5 +1,12 @@
 // @flow
-import React, { useRef, useState, useCallback, memo, useMemo } from 'react';
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  memo,
+  useMemo,
+  useEffect,
+} from 'react';
 import {
   injectIntl,
   FormattedMessage,
@@ -70,6 +77,9 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
 
   const [searchValue, setSearchValue] = useState<string>('');
   const [selectedPool, setSelectedPool] = useState<?StakePool>(preselectedPool);
+  const [filteredStakePoolsList, setFilteredStakePoolsList] = useState<
+    Array<StakePool>
+  >([]);
   const stakePoolsScrollElementRef = useRef();
 
   const handleSearch = useCallback((value: string) => {
@@ -138,10 +148,11 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     />
   );
 
-  const filteredStakePoolsList: Array<StakePool> = useCallback(
-    getFilteredStakePoolsList(stakePoolsList, searchValue),
-    [stakePoolsList, searchValue]
-  );
+  useEffect(() => {
+    setFilteredStakePoolsList(
+      getFilteredStakePoolsList(stakePoolsList, searchValue)
+    );
+  }, [stakePoolsList, searchValue]);
 
   const numberOfRankedStakePools: number = stakePoolsList.filter(
     (stakePool) => IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
@@ -267,11 +278,13 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
         </p>
 
         <div className={styles.selectStakePoolWrapper}>
-          <ThumbSelectedPool
-            stakePool={selectedPool}
-            numberOfRankedStakePools={numberOfRankedStakePools}
-            alreadyDelegated={selectedPool && !canSubmit}
-          />
+          {selectedPool && (
+            <ThumbSelectedPool
+              stakePool={selectedPool}
+              numberOfRankedStakePools={numberOfRankedStakePools}
+              alreadyDelegated={selectedPool && !canSubmit}
+            />
+          )}
 
           <p className={styles.selectStakePoolLabel}>
             {getSelectionPoolLabel()}
