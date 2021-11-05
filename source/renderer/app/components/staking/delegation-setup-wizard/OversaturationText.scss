@@ -1,8 +1,12 @@
 .component {
   color: var(--theme-delegation-steps-choose-wallet-error-message-color);
-  margin: 20px 0;
+  margin: 18px 0 22px;
+  span {
+    line-height: 1.38;
+  }
 }
 
 .centerText {
   text-align: center;
+  margin: 20px 0;
 }
