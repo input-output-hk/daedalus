@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-
+import BigNumber from 'bignumber.js';
 import { defineMessages, injectIntl } from 'react-intl';
 
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
@@ -23,7 +23,7 @@ const messages = defineMessages({
   descriptionRow2: {
     id: 'voting.catalyst.descriptionRow2',
     defaultMessage:
-      '!!!$1,040,000 worth of ada rewards will be distributed between ada holders who register their vote.',
+      '!!!{reward} worth of ada rewards will be distributed between ada holders who register their vote.',
     description: 'Description Project Catalyst',
   },
   learnMoreLinkLabel: {
@@ -53,7 +53,9 @@ function Headline({ onExternalLinkClick, intl }: Props) {
             {intl.formatMessage(messages.descriptionRow1)}
           </p>
           <p className={styles.description}>
-            {intl.formatMessage(messages.descriptionRow2)}
+            {intl.formatMessage(messages.descriptionRow2, {
+              reward: new BigNumber(1040000).toFormat(0),
+            })}
           </p>
         </div>
         <ExternalLinkButton
