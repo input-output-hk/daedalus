@@ -110,14 +110,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       maxDelegationFunds
     );
 
-    console.log(oversaturationPercentage);
-    console.log(
-      'selectedWallet?.availableAmount',
-      selectedWallet?.availableAmount
-    );
-    console.log('selectedPool?.saturation', selectedPool?.saturation);
-    console.log('maxDelegationFunds', maxDelegationFunds);
-
     if (isDisabled) {
       return (
         <DelegationStepsNotAvailableDialog
