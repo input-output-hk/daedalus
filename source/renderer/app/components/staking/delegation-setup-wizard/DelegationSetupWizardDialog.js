@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
-import BigNumber from 'bignumber.js';
 import DelegationStepsSuccessDialog from './DelegationStepsSuccessDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
