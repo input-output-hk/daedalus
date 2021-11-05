@@ -8073,7 +8073,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Ensure that you register and hold the necessary 500 ada at the time of the snapshot.",
+        "defaultMessage": "!!!Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.",
         "description": "Second step to follow in order to vote",
         "end": {
           "column": 3,

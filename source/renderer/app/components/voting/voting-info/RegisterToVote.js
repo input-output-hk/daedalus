@@ -39,7 +39,7 @@ const messages = defineMessages({
   step2CheckBoxLabel: {
     id: 'voting.registerToVote.step2CheckBoxLabel',
     defaultMessage:
-      '!!!Ensure that you register and hold the necessary 500 ada at the time of the snapshot.',
+      '!!!Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.',
     description: 'Second step to follow in order to vote',
   },
   buttonLabel: {
