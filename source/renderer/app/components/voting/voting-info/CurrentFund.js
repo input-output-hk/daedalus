@@ -84,7 +84,9 @@ function CurrentFund({
 
       <ExternalLinkButton
         label={intl.formatMessage(messages.viewResultsLinkLabel)}
-        onClick={() => onExternalLinkClick(messages.viewResultsLinkURL)}
+        onClick={() =>
+          onExternalLinkClick(intl.formatMessage(messages.viewResultsLinkURL))
+        }
       />
     </section>
   );

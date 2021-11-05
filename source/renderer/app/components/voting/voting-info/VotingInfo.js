@@ -45,7 +45,7 @@ export default class VotingInfo extends Component<Props> {
                 currentLocale={currentLocale}
                 currentDateFormat={currentDateFormat}
                 currentTimeFormat={currentTimeFormat}
-                onExternalLinkClick={onRegisterToVoteClick}
+                onExternalLinkClick={onExternalLinkClick}
               />
               <div className={styles.appStoreSpacing}>
                 <AppStore

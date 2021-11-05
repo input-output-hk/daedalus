@@ -39,11 +39,11 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onLearnMoreLinkClick: Function,
+  onExternalLinkClick: Function,
   intl: Intl,
 };
 
-function Headline({ onLearnMoreLinkClick, intl }: Props) {
+function Headline({ onExternalLinkClick, intl }: Props) {
   return (
     <section className={styles.component}>
       <h1 className={styles.heading}>{intl.formatMessage(messages.heading)}</h1>
@@ -58,7 +58,9 @@ function Headline({ onLearnMoreLinkClick, intl }: Props) {
         </div>
         <ExternalLinkButton
           label={intl.formatMessage(messages.learnMoreLinkLabel)}
-          onClick={() => onLearnMoreLinkClick(messages.learnMoreLinkUrl)}
+          onClick={() =>
+            onExternalLinkClick(intl.formatMessage(messages.learnMoreLinkUrl))
+          }
         />
       </div>
     </section>
