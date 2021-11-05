@@ -47,14 +47,30 @@ type Props = {
 };
 
 const getOversaturationPercentage = (
-  amountToBeStaked: BigNumber,
-  currentPoolSaturation: number,
+  selectedWallet: ?Wallet,
+  selectedPool: ?StakePool,
   maxDelegationFunds: number
 ): number => {
+  if (!selectedPool || !selectedWallet) return 0;
+  const {
+    pendingDelegations,
+    delegatedStakePoolId,
+    availableAmount,
+    lastDelegatedStakePoolId,
+  } = selectedWallet;
+
+  const hasPendingDelegations =
+    pendingDelegations && pendingDelegations.length > 0;
+  let activeStakePoolId = delegatedStakePoolId;
+  if (hasPendingDelegations) {
+    activeStakePoolId = lastDelegatedStakePoolId;
+  }
+  if (selectedPool.id === activeStakePoolId) return 0;
+
   const percentageIncrease = Number(
-    (100 / maxDelegationFunds) * amountToBeStaked
+    (100 / maxDelegationFunds) * availableAmount
   );
-  return currentPoolSaturation + percentageIncrease - 100;
+  return selectedPool.saturation + percentageIncrease - 100;
 };
 
 @observer
@@ -105,8 +121,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
 
     const selectedWalletId = get(selectedWallet, 'id', null);
     const oversaturationPercentage = getOversaturationPercentage(
-      selectedWallet?.availableAmount || 0,
-      selectedPool?.saturation || 0,
+      selectedWallet,
+      selectedPool,
       maxDelegationFunds
     );
 
