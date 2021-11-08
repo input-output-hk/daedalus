@@ -50,24 +50,16 @@ const getOversaturationPercentage = (
   selectedPool: ?StakePool,
   maxDelegationFunds: number
 ): number => {
-  if (!selectedPool || !selectedWallet) return 0;
-  const {
-    pendingDelegations,
-    delegatedStakePoolId,
-    availableAmount,
-    lastDelegatedStakePoolId,
-  } = selectedWallet;
-
-  const hasPendingDelegations =
-    pendingDelegations && pendingDelegations.length > 0;
-  let activeStakePoolId = delegatedStakePoolId;
-  if (hasPendingDelegations) {
-    activeStakePoolId = lastDelegatedStakePoolId;
-  }
-  if (selectedPool.id === activeStakePoolId) return 0;
+  if (
+    !selectedPool ||
+    !selectedWallet ||
+    (selectedWallet.delegatedStakePoolId ||
+      selectedWallet.lastDelegatedStakePoolId) === selectedPool.id
+  )
+    return 0;
 
   const percentageIncrease = Number(
-    (100 / maxDelegationFunds) * availableAmount
+    (100 / maxDelegationFunds) * selectedWallet.availableAmount
   );
   return selectedPool.saturation + percentageIncrease - 100;
 };
