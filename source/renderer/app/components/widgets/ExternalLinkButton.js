@@ -1,9 +1,7 @@
 // @flow
 import React from 'react';
-
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-
 import styles from './ExternalLinkButton.scss';
 
 type Props = {

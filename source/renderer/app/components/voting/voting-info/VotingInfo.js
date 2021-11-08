@@ -5,7 +5,6 @@ import { intlShape } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import type { Locale } from '../../../../../common/types/locales.types';
 import styles from './VotingInfo.scss';
-
 import CurrentFund from './CurrentFund';
 import Headline from './Headline';
 import AppStore from './AppStore';

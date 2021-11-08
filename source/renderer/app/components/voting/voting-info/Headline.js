@@ -2,7 +2,6 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { defineMessages, injectIntl } from 'react-intl';
-
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import { VOTING_REWARD } from '../../../config/votingConfig';
 import type { Intl } from '../../../types/i18nTypes';
