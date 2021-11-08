@@ -85,6 +85,7 @@
     "@storybook/core": "5.3.14",
     "@storybook/react": "5.3.14",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.3.0",
     "asar": "2.1.0",
     "autodll-webpack-plugin": "0.4.2",
     "axios": "0.21.1",
