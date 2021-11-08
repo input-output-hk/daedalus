@@ -134,7 +134,7 @@
     "mobx-react-devtools": "6.1.1",
     "node-forge": "0.10.0",
     "node-libs-browser": "2.2.1",
-    "node-sass": "6.0.1",
+    "node-sass": "4.14.1",
     "nodemon": "2.0.4",
     "npmlog": "4.1.2",
     "postcss": "7.0.27",
