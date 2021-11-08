@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { defineMessages, injectIntl } from 'react-intl';
 
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
+import { VOTING_REWARD } from '../../../config/votingConfig';
 import type { Intl } from '../../../types/i18nTypes';
 
 import styles from './Headline.scss';
@@ -54,7 +55,7 @@ function Headline({ onExternalLinkClick, intl }: Props) {
           </p>
           <p className={styles.description}>
             {intl.formatMessage(messages.descriptionRow2, {
-              reward: new BigNumber(1040000).toFormat(0),
+              reward: new BigNumber(VOTING_REWARD).toFormat(0),
             })}
           </p>
         </div>
