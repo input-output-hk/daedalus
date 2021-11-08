@@ -11,6 +11,11 @@
       color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
 
+    .Dialog_contentWrapper {
+      margin-left: -4px;
+      padding-left: 4px;
+    }
+
     .Dialog_contentWrapper::-webkit-scrollbar-track {
       margin-top: -8px;
     }

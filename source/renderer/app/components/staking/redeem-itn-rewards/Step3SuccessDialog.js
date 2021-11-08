@@ -10,6 +10,7 @@ import styles from './Step3SuccessDialog.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -78,7 +79,13 @@ export default class Step3SuccessDialog extends Component<Props> {
         onClick: onPDFDownload,
       });
 
-    const closeButton = <DialogCloseButton onClose={onClose} />;
+    const closeButton = (
+      <DialogCloseButton
+        icon={closeCrossThin}
+        className={styles.closeButton}
+        onClose={onClose}
+      />
+    );
 
     return (
       <Dialog

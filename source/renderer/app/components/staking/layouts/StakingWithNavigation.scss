@@ -22,7 +22,8 @@
   flex-direction: column;
   height: calc(100% - 50px);
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: overlay;
+  padding-right: 20px;
   position: relative;
   &::-webkit-scrollbar-thumb {
     &:vertical {

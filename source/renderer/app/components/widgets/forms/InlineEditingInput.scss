@@ -77,12 +77,20 @@
       background-color: var(--theme-button-flat-background-color-active);
     }
 
+    span {
+      align-items: center;
+      align-self: center;
+      display: flex;
+      flex: 1;
+      height: 100%;
+      justify-content: center;
+      justify-self: center;
+    }
+
     .icon {
       svg {
-        height: 12px;
-        position: relative;
-        top: 1px;
-        width: 12px;
+        max-height: 10px;
+        max-width: 10px;
       }
     }
   }
@@ -147,7 +155,6 @@
     .icon {
       animation: spinner 1.5s linear;
       animation-iteration-count: infinite;
-      display: inline-block;
 
       svg g {
         stroke: var(--theme-button-flat-text-color);

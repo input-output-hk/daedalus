@@ -44,6 +44,7 @@
   }
 
   .ranking {
+    font-family: var(--font-bold);
     font-size: 20px;
     font-weight: bold;
     height: 22px;
@@ -133,7 +134,6 @@
   }
 
   .colorBand {
-    border-radius: 0 0 4px 4px;
     bottom: 0;
     display: block;
     height: 5px;

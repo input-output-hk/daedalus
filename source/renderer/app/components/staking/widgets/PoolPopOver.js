@@ -35,13 +35,14 @@ export function PoolPopOver(props: {
 }) {
   // Track hover state manually to optimize performance by lazy init pop overs
   const [isHovered, setIsHovered] = useState(false);
+
   // The ref passed to Tippy.js as trigger target
   const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
 
-  const close = () => {
-    setIsHovered(false);
-    if (props.onClose) props.onClose();
+  const close = (isStillHovered: boolean = false) => {
+    setIsHovered(isStillHovered);
+    props.onClose?.();
   };
   return (
     <>
@@ -61,13 +62,13 @@ export function PoolPopOver(props: {
           trigger={props.openOnHover ? 'mouseenter' : 'click'}
           placement="auto"
           onShow={() => props.onOpen && props.onOpen(poolId)}
-          onHide={close}
+          onHide={() => close(true)}
           onClickOutside={close}
           themeVariables={{
             '--rp-pop-over-bg-color':
               'var(--theme-staking-stake-pool-tooltip-background-color)',
             '--rp-pop-over-box-shadow':
-              '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
+              '0 5px 20px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
             '--rp-pop-over-border-color':
               'var(--theme-staking-stake-pool-tooltip-border-color)',
             '--rp-pop-over-border-radius': '5px',
@@ -86,7 +87,7 @@ export function PoolPopOver(props: {
               onOpenExternalLink={props.onOpenExternalLink}
               onSelect={() => {
                 close();
-                if (props.onSelect) props.onSelect(poolId);
+                props.onSelect?.(poolId);
               }}
               showWithSelectButton={props.showWithSelectButton}
               stakePool={props.stakePool}
