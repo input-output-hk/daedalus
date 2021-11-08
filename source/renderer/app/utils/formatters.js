@@ -9,6 +9,7 @@ import { DEFAULT_DECIMAL_PRECISION } from '../config/assetsConfig';
 import {
   DATE_ENGLISH_LL_MAP_OPTIONS,
   TIME_LL_MAP_OPTIONS,
+  DATE_TIME_SEPARATOR_MAP,
 } from '../config/profileConfig';
 import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
@@ -302,12 +303,9 @@ export const formattedDateTime = (
   const dateTimeMoment = moment(dateTime);
   const dateFormatted = dateTimeMoment.format(currentDateFormat);
   const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+  const dateTimeSeparator = DATE_TIME_SEPARATOR_MAP[currentDateFormat];
 
-  if (currentLocale === LOCALES.english) {
-    return `${dateFormatted}, ${timeFormatted}`;
-  }
-
-  return `${dateFormatted} ${timeFormatted}`;
+  return `${dateFormatted}${dateTimeSeparator}${timeFormatted}`;
 };
 
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>

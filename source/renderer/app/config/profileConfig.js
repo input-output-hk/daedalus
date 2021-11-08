@@ -45,3 +45,20 @@ export const TIME_LL_MAP_OPTIONS = {
   [TIME_OPTIONS[0].value]: 'hh:mm A',
   [TIME_OPTIONS[1].value]: 'HH:mm',
 };
+
+export const DATE_TIME_SEPARATOR_MAP = new Proxy(
+  {
+    ['YYYY年MM月DD日']: '',
+    ['YY/MM/DD']: ' ',
+    ['YYYY/MM/DD']: ' ',
+  },
+  {
+    get: (target, prop, receiver) => {
+      const notSpecified = !(prop in target);
+      if (notSpecified) {
+        return ', ';
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+  }
+);
