@@ -55,7 +55,7 @@ let
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    nodejs = pkgsNodeJS.nodejs-16_x;
+    nodejs = pkgsNodeJS.nodejs-14_x;
     nodePackages = pkgsNodeJS.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
       version = "1.22.4";
