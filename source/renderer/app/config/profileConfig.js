@@ -36,14 +36,14 @@ export const TIME_OPTIONS = [
 ];
 
 export const DATE_ENGLISH_LL_MAP_OPTIONS = {
-  [DATE_ENGLISH_OPTIONS[0].value]: 'MMM D, YYYY',
-  [DATE_ENGLISH_OPTIONS[1].value]: 'D MMM, YYYY',
-  [DATE_ENGLISH_OPTIONS[2].value]: 'YYYY, MMM D',
+  ['MM/DD/YYYY']: 'MMM D, YYYY',
+  ['DD/MM/YYYY']: 'D MMM, YYYY',
+  ['YYYY/MM/DD']: 'YYYY, MMM D',
 };
 
 export const TIME_LL_MAP_OPTIONS = {
-  [TIME_OPTIONS[0].value]: 'hh:mm A',
-  [TIME_OPTIONS[1].value]: 'HH:mm',
+  ['hh:mm:ss A']: 'hh:mm A',
+  ['HH:mm:ss']: 'HH:mm',
 };
 
 export const DATE_TIME_SEPARATOR_MAP = new Proxy(
