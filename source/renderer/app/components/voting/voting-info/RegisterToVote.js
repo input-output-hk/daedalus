@@ -14,7 +14,7 @@ import {
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './RegisterToVote.scss';
-import { registerToVote as messages } from './messages';
+import { messages } from './RegisterToVote.messages';
 
 type Props = {
   currentLocale: Locale,

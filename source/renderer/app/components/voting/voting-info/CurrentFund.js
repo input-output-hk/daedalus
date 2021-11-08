@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
+
 import { injectIntl } from 'react-intl';
+
 import {
   VOTING_REGISTRATION_CAST_END_DATE,
   CURRENT_VOTING_FUND_NUMBER,
@@ -13,7 +15,7 @@ import type { Locale } from '../../../../../common/types/locales.types';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './CurrentFund.scss';
-import { currentFund as messages } from './messages';
+import { messages } from './CurrentFund.messages';
 
 type Props = {
   currentLocale: Locale,

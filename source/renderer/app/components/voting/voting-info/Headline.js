@@ -6,7 +6,7 @@ import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import { VOTING_REWARD } from '../../../config/votingConfig';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './Headline.scss';
-import { headline as messages } from './messages';
+import { messages } from './Headline.messages';
 
 type Props = {
   onExternalLinkClick: Function,

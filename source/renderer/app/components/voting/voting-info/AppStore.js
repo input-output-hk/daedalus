@@ -7,7 +7,7 @@ import downloadAppStoreIcon from '../../../assets/images/voting/download-app-sto
 import downloadPlayStoreIcon from '../../../assets/images/voting/download-play-store-icon-ic.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './AppStore.scss';
-import { appStore as messages } from './messages';
+import { messages } from './AppStore.messages';
 
 type Props = {
   onAppleStoreLinkClick: Function,
