@@ -66,6 +66,7 @@ function RegisterToVote({
 }: Props) {
   const [step1, setStep1] = useState(false);
   const [step2, setStep2] = useState(false);
+  const canRegister = step1 && step2;
   const castEndDate = formattedDateTime(VOTING_REGISTRATION_END_DATE, {
     currentLocale,
     ...mapToLongDateTimeFormat({
@@ -110,7 +111,7 @@ function RegisterToVote({
         className={styles.button}
         onClick={onRegisterToVoteClick}
         label={intl.formatMessage(messages.buttonLabel)}
-        disabled={!(step1 && step2)}
+        disabled={!canRegister}
       />
     </div>
   );
