@@ -8472,16 +8472,30 @@
       },
       {
         "defaultMessage": "!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and use the PIN to complete the voting registration process.",
-        "description": "Qr code description of use on the voting registration \"qr code\" step.",
+        "description": "Part 1 of Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
           "line": 24
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
-        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription1",
         "start": {
-          "column": 21,
+          "column": 22,
           "line": 18
+        }
+      },
+      {
+        "defaultMessage": "Your registration remains valid across all funds. Save and store your QR code and PIN to reconnect your wallet to the voting app if you are  logged out, or want to connect a new device.",
+        "description": "Part 2 of Qr code description of use on the voting registration \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription2",
+        "start": {
+          "column": 22,
+          "line": 25
         }
       },
       {
@@ -8489,13 +8503,13 @@
         "description": "Qr code warning on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 37
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeWarning",
         "start": {
           "column": 17,
-          "line": 25
+          "line": 32
         }
       },
       {
@@ -8503,13 +8517,13 @@
         "description": "First checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 31
+          "line": 38
         }
       },
       {
@@ -8517,13 +8531,13 @@
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 51
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 38
+          "line": 45
         }
       },
       {
@@ -8531,13 +8545,13 @@
         "description": "\"Close\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 57
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 45
+          "line": 52
         }
       },
       {
@@ -8545,13 +8559,13 @@
         "description": "\"Save as PDF\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 63
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel",
         "start": {
           "column": 24,
-          "line": 51
+          "line": 58
         }
       }
     ],
