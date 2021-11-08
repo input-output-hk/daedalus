@@ -1,30 +1,13 @@
 // @flow
 import React from 'react';
-
-import { defineMessages, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import QRCode from 'qrcode.react';
-
 import downloadAppStoreIcon from '../../../assets/images/voting/download-app-store-icon-ic.inline.svg';
 import downloadPlayStoreIcon from '../../../assets/images/voting/download-play-store-icon-ic.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
-
 import styles from './AppStore.scss';
-
-const messages = defineMessages({
-  androidAppButtonUrl: {
-    id: 'voting.info.androidAppButtonUrl',
-    defaultMessage:
-      '!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting',
-    description: '"androidAppButtonUrl" for the Catalyst voting app',
-  },
-  appleAppButtonUrl: {
-    id: 'voting.info.appleAppButtonUrl',
-    defaultMessage:
-      '!!!https://apps.apple.com/in/app/catalyst-voting/id1517473397',
-    description: '"appleAppButtonUrl" for the Catalyst voting app',
-  },
-});
+import { appStore as messages } from './messages';
 
 type Props = {
   onAppleStoreLinkClick: Function,

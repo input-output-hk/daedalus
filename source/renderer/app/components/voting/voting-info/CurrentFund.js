@@ -1,8 +1,6 @@
 // @flow
 import React from 'react';
-
-import { defineMessages, injectIntl } from 'react-intl';
-
+import { injectIntl } from 'react-intl';
 import {
   VOTING_REGISTRATION_CAST_END_DATE,
   CURRENT_VOTING_FUND_NUMBER,
@@ -14,31 +12,8 @@ import {
 import type { Locale } from '../../../../../common/types/locales.types';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import type { Intl } from '../../../types/i18nTypes';
-
 import styles from './CurrentFund.scss';
-
-const messages = defineMessages({
-  name: {
-    id: 'voting.currentFund.name',
-    defaultMessage: '!!!Fund{currentVotingFundNumber}',
-    description: 'Current fund name',
-  },
-  headingForEndDate: {
-    id: 'voting.currentFund.headingForEndDate',
-    defaultMessage: '!!!End of voting:',
-    description: 'Headline for end date',
-  },
-  viewResultsLinkLabel: {
-    id: 'voting.currentFund.viewResultsLinkLabel',
-    defaultMessage: '!!!View results',
-    description: 'View resuls link label for Fund{currentVotingFundNumber}',
-  },
-  viewResultsLinkURL: {
-    id: 'voting.currentFund.viewResultsLinkURL',
-    defaultMessage: 'https://cardano.ideascale.com/a/pages/results',
-    description: 'View results from Fund{currentVotingFundNumber}',
-  },
-});
+import { currentFund as messages } from './messages';
 
 type Props = {
   currentLocale: Locale,

@@ -1,6 +1,6 @@
 // @flow
 import React, { useState } from 'react';
-import { defineMessages, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import {
@@ -14,40 +14,7 @@ import {
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './RegisterToVote.scss';
-
-const messages = defineMessages({
-  name: {
-    id: 'voting.registerToVote.name',
-    defaultMessage: '!!!Fund{nextVotingFundNumber}',
-    description: 'Regiter to fund name',
-  },
-  dateLabel: {
-    id: 'voting.registerToVote.dateLabel',
-    defaultMessage: '!!!Snapshot date:',
-    description: 'Voting info snapshot date label',
-  },
-  stepsTitle: {
-    id: 'voting.registerToVote.stepsTitle',
-    defaultMessage: '!!!Follow these steps to vote:',
-    description: 'Steps to follow title',
-  },
-  step1CheckBoxLabel: {
-    id: 'voting.registerToVote.step1CheckBoxLabel',
-    defaultMessage: '!!!Download the Catalyst Voting app on your smartphone',
-    description: 'First step to follow in order to vote',
-  },
-  step2CheckBoxLabel: {
-    id: 'voting.registerToVote.step2CheckBoxLabel',
-    defaultMessage:
-      '!!!Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.',
-    description: 'Second step to follow in order to vote',
-  },
-  buttonLabel: {
-    id: 'voting.registerToVote.registerToVoteButtonLabel',
-    defaultMessage: '!!!Register to vote',
-    description: 'Button Label for voting registration steps',
-  },
-});
+import { registerToVote as messages } from './messages';
 
 type Props = {
   currentLocale: Locale,
