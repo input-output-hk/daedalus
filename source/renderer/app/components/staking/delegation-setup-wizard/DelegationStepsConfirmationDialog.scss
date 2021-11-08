@@ -76,6 +76,23 @@
     text-align: center;
   }
 
+  .poolFooter {
+    color: var(--theme-staking-stake-pool-retirement-background-color);
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
+    margin: 20px 0;
+    text-align: left;
+
+    .poolFooterContent {
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   :global {
     .LoadingSpinner_component {
       .LoadingSpinner_icon {

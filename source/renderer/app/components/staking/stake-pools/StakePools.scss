@@ -36,8 +36,28 @@
   }
 
   .leftContent {
-    > span:first-child {
+    align-items: center;
+    display: flex;
+
+    .blurText {
       opacity: 0.5;
+    }
+
+    .emptyFilterWarning {
+      align-items: center;
+      display: flex;
+
+      .resetFilter {
+        border-top: 1px solid transparent;
+        font-size: 16px;
+        height: 22px;
+        margin: 0 5px;
+        text-transform: lowercase;
+
+        &::after {
+          display: none;
+        }
+      }
     }
   }
 

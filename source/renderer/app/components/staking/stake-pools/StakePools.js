@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
+import { Link } from 'react-polymorph/lib/components/Link';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
@@ -15,6 +16,12 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import { formattedNumber } from '../../../utils/formatters';
+import {
+  getNumberOfFilterDimensionsApplied,
+  getSmashServerNameFromUrl,
+} from '../../../utils/staking';
+import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
+import { defaultStakePoolFilterOptions } from '../../../stores/StakingStore';
 import StakePool from '../../../domains/StakePool';
 import {
   IS_RANKING_DATA_AVAILABLE,
@@ -22,7 +29,6 @@ import {
 } from '../../../config/stakingConfig';
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
-import { getSmashServerNameFromUrl } from '../../../utils/staking';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -66,6 +72,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Unmoderated',
     description: 'unmoderated message for the Delegation center body section.',
   },
+  emptyFilterWarningPrefix: {
+    id: 'staking.stakePools.filter.emptyFilterWarningPrefix',
+    defaultMessage: '!!!Please select at least one category in the filter or',
+    description: 'Empty filter warning prefix',
+  },
+  emptyFilterWarningSuffix: {
+    id: 'staking.stakePools.filter.emptyFilterWarningSuffix',
+    defaultMessage: '!!!.',
+    description: 'Empty filter warning suffix',
+  },
+  resetFilter: {
+    id: 'staking.stakePools.filter.resetFilter',
+    defaultMessage: '!!!Reset Filter',
+    description: 'Reset Filter link label',
+  },
 });
 
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
@@ -89,6 +110,9 @@ type Props = {
   onSmashSettingsClick: Function,
   smashServerUrl: ?string,
   maxDelegationFunds: number,
+  filterOptions: StakePoolFilterOptionsType,
+  onFilter: Function,
+  populatedFilterOptions: StakePoolFilterOptionsType,
 };
 
 type State = {
@@ -159,6 +183,11 @@ export default class StakePools extends Component<Props, State> {
     onDelegate(poolId);
   };
 
+  resetFilter = () => {
+    const { onFilter } = this.props;
+    onFilter(defaultStakePoolFilterOptions);
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -179,6 +208,9 @@ export default class StakePools extends Component<Props, State> {
       smashServerUrl,
       onSmashSettingsClick,
       maxDelegationFunds,
+      filterOptions,
+      onFilter,
+      populatedFilterOptions,
     } = this.props;
     const {
       search,
@@ -189,15 +221,22 @@ export default class StakePools extends Component<Props, State> {
       isTableHeaderHovered,
     } = this.state;
 
+    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
+      filterOptions
+    );
+
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       search
     );
-
-    const numberOfRankedStakePools: number = stakePoolsList.filter(
+    const numberOfRankedStakePools = filteredStakePoolsList.filter(
       (stakePool) =>
         IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
     ).length;
+
+    const isFilterDisabled =
+      !filteredStakePoolsList.length &&
+      numberOfFilterDimensionsApplied === Object.keys(filterOptions).length;
 
     const listTitleMessage = isFetching
       ? messages.listTitleLoading
@@ -282,12 +321,18 @@ export default class StakePools extends Component<Props, State> {
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
               smashServer={smashServer}
+              filterPopOverProps={{
+                populatedFilterOptions,
+                onFilter,
+                isFilterDisabled,
+                numberOfFilterDimensionsApplied,
+              }}
             />
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
                 <h2 className={styles.listTitle}>
                   <span className={styles.leftContent}>
-                    <span>
+                    <span className={styles.blurText}>
                       {intl.formatMessage(messages.delegatingListTitle)}
                     </span>
                   </span>
@@ -315,13 +360,33 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
-                    <span>
-                      {intl.formatMessage(listTitleMessage)}
-                      {listTitleSearchMessage}
-                      {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: formattedNumber(filteredStakePoolsList.length),
-                      })}
-                    </span>
+                    {numberOfFilterDimensionsApplied === 0 ? (
+                      <span className={styles.emptyFilterWarning}>
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningPrefix
+                          )}
+                        </span>
+                        <Link
+                          className={styles.resetFilter}
+                          onClick={this.resetFilter}
+                          label={intl.formatMessage(messages.resetFilter)}
+                        />
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningSuffix
+                          )}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className={styles.blurText}>
+                        {intl.formatMessage(listTitleMessage)}
+                        {listTitleSearchMessage}
+                        {intl.formatMessage(messages.listTitleStakePools, {
+                          pools: formattedNumber(filteredStakePoolsList.length),
+                        })}
+                      </span>
+                    )}
                     {tinyLoadingSpinner}
                   </span>
                   {smashSettings}
@@ -347,13 +412,33 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
-                    <span>
-                      {intl.formatMessage(listTitleMessage)}
-                      {listTitleSearchMessage}
-                      {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: formattedNumber(filteredStakePoolsList.length),
-                      })}
-                    </span>
+                    {numberOfFilterDimensionsApplied === 0 ? (
+                      <span className={styles.emptyFilterWarning}>
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningPrefix
+                          )}
+                        </span>
+                        <Link
+                          className={styles.resetFilter}
+                          onClick={this.resetFilter}
+                          label={intl.formatMessage(messages.resetFilter)}
+                        />
+                        <span className={styles.blurText}>
+                          {intl.formatMessage(
+                            messages.emptyFilterWarningSuffix
+                          )}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className={styles.blurText}>
+                        {intl.formatMessage(listTitleMessage)}
+                        {listTitleSearchMessage}
+                        {intl.formatMessage(messages.listTitleStakePools, {
+                          pools: formattedNumber(filteredStakePoolsList.length),
+                        })}
+                      </span>
+                    )}
                     {tinyLoadingSpinner}
                   </span>
                   {smashSettings}

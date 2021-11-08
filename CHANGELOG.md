@@ -4,6 +4,7 @@
 
 ### Features
 
+- Implemented stake pools filter pop over ([PR 2461](https://github.com/input-output-hk/daedalus/pull/2461))
 - Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
 - Fixed the Delegation popover timeout ([PR 2722](https://github.com/input-output-hk/daedalus/pull/2722))
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
@@ -201,7 +202,7 @@
 
 - Added absolute slot number to Catalyst voting registration transaction metadata ([PR 2476](https://github.com/input-output-hk/daedalus/pull/2476))
 - Improved the transactions and rewards CSV export contents ([PR 2451](https://github.com/input-output-hk/daedalus/pull/2451))
-- Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
+- Implemented Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
 
 ### Fixes
 

@@ -83,10 +83,11 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     return (
       <div key={key} style={style}>
         <div className={styles.tiles}>
-          {stakePools.map((stakePool) => (
+          {stakePools.map((stakePool, ind) => (
             <ThumbPool
               key={stakePool.id}
               stakePool={stakePool}
+              ranking={startIndex + ind + 1}
               onOpenExternalLink={props.onOpenExternalLink}
               highlightOnHover={props.highlightOnHover}
               highlightWithDelay={props.highlightWithDelay}

@@ -35,8 +35,23 @@ import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { isStakePoolInFilterRange } from '../utils/staking';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
+
+export type StakePoolFilterOptionsType = {
+  publicPoolsWithOffChainData?: boolean,
+  retiringPools?: boolean,
+  privatePools?: boolean,
+  poolsWithoutOffChainData?: boolean,
+};
+
+export const defaultStakePoolFilterOptions = {
+  publicPoolsWithOffChainData: true,
+  retiringPools: false,
+  privatePools: false,
+  poolsWithoutOffChainData: false,
+};
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
@@ -66,6 +81,9 @@ export default class StakingStore extends Store {
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
   @observable stakingInfoWasOpen: boolean = false;
+
+  /* ----------  Stake Pools Filter  ---------- */
+  @observable filterOptions: ?StakePoolFilterOptionsType = null;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -114,8 +132,10 @@ export default class StakingStore extends Store {
       this._setSelectedDelegationWalletId
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
+    stakingActions.filterStakePools.listen(this._updateFilterOptions);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
+    networkStatusActions.restartNode.listen(this._clearFilterOptions);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
@@ -475,6 +495,25 @@ export default class StakingStore extends Store {
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
+  @computed get all(): Array<StakePool> {
+    const { recentStakePools } = this;
+    const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
+    return !orderedStakePools.length && recentStakePools.length
+      ? recentStakePools
+      : orderedStakePools;
+  }
+
+  @computed get allFiltered(): Array<StakePool> {
+    const { recentFiltered } = this;
+    const orderedStakePools = orderBy(this.stakePools, 'ranking', 'asc');
+    const allFiltered = orderedStakePools.filter((stakePool) =>
+      isStakePoolInFilterRange(this.filterOptions, stakePool)
+    );
+    return !allFiltered.length && recentFiltered.length
+      ? recentFiltered
+      : allFiltered;
+  }
+
   @computed get recentStakePools(): Array<StakePool> {
     const delegatedStakePools = [];
     map(this.stores.wallets.all, (wallet) => {
@@ -502,6 +541,24 @@ export default class StakingStore extends Store {
     });
     const orderedStakePools = orderBy(delegatedStakePools, 'ranking', 'asc');
     return orderedStakePools;
+  }
+
+  @computed get recentFiltered(): Array<StakePool> {
+    return this.recentStakePools.filter((stakePool) =>
+      isStakePoolInFilterRange(this.filterOptions, stakePool)
+    );
+  }
+
+  @computed get populatedFilterOptions(): StakePoolFilterOptionsType {
+    return this.filterOptions || defaultStakePoolFilterOptions;
+  }
+
+  @computed get hasAnyFiltered(): boolean {
+    return this.stakePools ? this.stakePools.length > 0 : false;
+  }
+
+  @computed get totalFilteredAvailable(): number {
+    return this.stakePools ? this.stakePools.length : 0;
   }
 
   @computed get isStakingDelegationCountdown(): boolean {
@@ -586,6 +643,16 @@ export default class StakingStore extends Store {
 
   @action _resetIsRanking = () => {
     this.isRanking = false;
+  };
+
+  @action _updateFilterOptions = (
+    filterOptions: StakePoolFilterOptionsType
+  ) => {
+    this.filterOptions = filterOptions;
+  };
+
+  @action _clearFilterOptions = () => {
+    this.filterOptions = defaultStakePoolFilterOptions;
   };
 
   // For testing only

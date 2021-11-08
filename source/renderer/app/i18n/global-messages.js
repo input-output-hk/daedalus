@@ -124,6 +124,11 @@ export default defineMessages({
     defaultMessage: '!!!Save',
     description: 'The word "save" reused at several places (like save buttons)',
   },
+  show: {
+    id: 'global.labels.show',
+    defaultMessage: '!!!Show',
+    description: 'The word "show" reused at several places (like save buttons)',
+  },
   languageEnglish: {
     id: 'global.language.english',
     defaultMessage: '!!!English',

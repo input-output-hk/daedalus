@@ -26,6 +26,7 @@ export function ThumbPool(props: {
   selectOnClick?: boolean,
   showWithSelectButton?: boolean,
   stakePool: StakePool,
+  ranking: number,
   containerClassName: string,
   numberOfRankedStakePools: number,
   disabledStakePoolId: ?string,
@@ -36,8 +37,9 @@ export function ThumbPool(props: {
     isSelected,
     numberOfRankedStakePools,
     stakePool,
+    ranking,
   } = props;
-  const { ranking, id } = stakePool;
+  const { id } = stakePool;
   const color = getColorFromRange(ranking, numberOfRankedStakePools);
   const isDisabled = props.disabledStakePoolId === id;
   const [isHighlighted, setIsHighlighted] = useState(false);
@@ -52,11 +54,13 @@ export function ThumbPool(props: {
   const content = isSelected ? (
     <ThumbSelectedPool
       stakePool={stakePool}
+      ranking={ranking}
       numberOfRankedStakePools={numberOfRankedStakePools}
     />
   ) : (
     <ThumbPoolContent
       stakePool={stakePool}
+      ranking={ranking}
       isGridRewardsView={isGridRewardsView}
       numberOfRankedStakePools={numberOfRankedStakePools}
     />
@@ -74,6 +78,7 @@ export function ThumbPool(props: {
         openWithDelay={props.highlightWithDelay}
         onSelect={props.onSelect}
         stakePool={stakePool}
+        ranking={ranking}
         containerClassName={props.containerClassName}
         numberOfRankedStakePools={numberOfRankedStakePools}
         showWithSelectButton={props.showWithSelectButton}

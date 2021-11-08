@@ -122,6 +122,9 @@ export const StakePoolsStory = (props: Props) => {
       smashServerUrl="https://smash.cardano-mainnet.iohk.io"
       maxDelegationFunds={maxDelegationFunds}
       selectedDelegationWalletId={selectedWallet}
+      filterOptions={{}}
+      populatedFilterOptions={{}}
+      onFilter={() => null}
     />
   );
 };

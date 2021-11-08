@@ -47,6 +47,9 @@ export default class StakePoolsListPage extends Component<Props> {
 
   render() {
     const {
+      actions: { staking: stakingActions },
+    } = this.props;
+    const {
       uiDialogs,
       staking,
       app,
@@ -58,7 +61,7 @@ export default class StakePoolsListPage extends Component<Props> {
     const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
-      stakePools,
+      allFiltered,
       selectedDelegationWalletId,
       stake,
       fetchingStakePoolsFailed,
@@ -67,8 +70,11 @@ export default class StakePoolsListPage extends Component<Props> {
       smashServerUrl,
       maxDelegationFunds,
       isFetchingStakePools,
+      filterOptions,
+      populatedFilterOptions,
     } = staking;
-    const { all } = wallets;
+    const { filterStakePools } = stakingActions;
+    const { all: allWallets } = wallets;
     const isLoading = !isSynced || fetchingStakePoolsFailed;
     const isRanking =
       !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
@@ -76,9 +82,9 @@ export default class StakePoolsListPage extends Component<Props> {
     return (
       <Fragment>
         <StakePools
-          wallets={all}
+          wallets={allWallets}
           currentLocale={currentLocale}
-          stakePoolsList={stakePools}
+          stakePoolsList={allFiltered}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}
@@ -94,6 +100,9 @@ export default class StakePoolsListPage extends Component<Props> {
           smashServerUrl={smashServerUrl}
           onSmashSettingsClick={this.handleSmashSettingsClick}
           maxDelegationFunds={maxDelegationFunds}
+          filterOptions={filterOptions || {}}
+          populatedFilterOptions={populatedFilterOptions}
+          onFilter={filterStakePools.trigger}
         />
         {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (

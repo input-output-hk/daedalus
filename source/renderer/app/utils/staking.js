@@ -5,6 +5,10 @@ import {
   SMASH_SERVER_TYPES,
 } from '../config/stakingConfig';
 import type { SmashServerType } from '../types/stakingTypes';
+import type { StakePoolFilterOptionsType } from '../stores/StakingStore';
+import StakePool from '../domains/StakePool';
+
+const HIGH_PROFIT_MARGIN_BASE = 50;
 
 export const getSmashServerNameFromUrl = (smashServerUrl: string): string =>
   reduce(
@@ -49,4 +53,60 @@ export const getUrlParts = (
   } catch (error) {
     return {};
   }
+};
+
+export const getNumberOfFilterDimensionsApplied = (
+  filterOptions: ?StakePoolFilterOptionsType
+) => {
+  const {
+    publicPoolsWithOffChainData = true,
+    retiringPools = false,
+    privatePools = false,
+    poolsWithoutOffChainData = false,
+  } = filterOptions || {};
+  let result = 0;
+
+  if (publicPoolsWithOffChainData) {
+    result++;
+  }
+  if (retiringPools) {
+    result++;
+  }
+  if (privatePools) {
+    result++;
+  }
+  if (poolsWithoutOffChainData) {
+    result++;
+  }
+
+  return result;
+};
+
+export const isStakePoolInFilterRange = (
+  filterOptions: ?StakePoolFilterOptionsType,
+  stakePool: StakePool
+) => {
+  const {
+    publicPoolsWithOffChainData = true,
+    retiringPools = false,
+    privatePools = false,
+    poolsWithoutOffChainData = false,
+  } = filterOptions || {};
+
+  if (
+    (!stakePool.hasNoOffChainData &&
+      !stakePool.isPrivate &&
+      !publicPoolsWithOffChainData) ||
+    (stakePool.isRetiring && !retiringPools) ||
+    (stakePool.isPrivate && !privatePools) ||
+    (stakePool.hasNoOffChainData && !poolsWithoutOffChainData)
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+export const hasStakePoolHighProfitMargin = (stakePool: StakePool) => {
+  return stakePool.profitMargin > HIGH_PROFIT_MARGIN_BASE;
 };

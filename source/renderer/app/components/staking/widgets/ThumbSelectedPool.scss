@@ -40,6 +40,25 @@
       text-align: center;
     }
 
+    .id {
+      align-items: center;
+      background-color: var(
+        --theme-staking-stake-pool-tooltip-neutral-background-color
+      );
+      border-radius: 3px;
+      color: var(
+        --theme-delegation-steps-choose-stake-pool-selected-ticker-color
+      );
+      display: flex;
+      font-family: var(--font-semibold);
+      font-size: 11px;
+      height: 22px;
+      justify-content: center;
+      line-height: 1.27;
+      margin: 0 3.5px;
+      text-align: center;
+    }
+
     .icon {
       margin-top: 10px;
       text-align: center;

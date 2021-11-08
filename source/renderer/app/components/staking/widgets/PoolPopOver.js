@@ -28,6 +28,7 @@ export function PoolPopOver(props: {
   openWithDelay?: boolean,
   showWithSelectButton?: boolean,
   stakePool: StakePool,
+  ranking: number,
   containerClassName: string,
   numberOfRankedStakePools: number,
   isGridRewardsView?: boolean,
@@ -90,6 +91,7 @@ export function PoolPopOver(props: {
               }}
               showWithSelectButton={props.showWithSelectButton}
               stakePool={props.stakePool}
+              ranking={props.ranking}
               isGridRewardsView={props.isGridRewardsView}
             />
           }

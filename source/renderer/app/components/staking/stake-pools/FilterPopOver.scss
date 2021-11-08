@@ -1,0 +1,144 @@
+.component {
+  background-color: var(--theme-staking-stake-pools-filter-modal-bg-color);
+  flex: initial;
+  font-family: var(--font-regular);
+  padding: 20px 10px 10px 10px;
+  position: relative;
+  width: 320px;
+
+  .title {
+    align-items: center;
+    color: var(--theme-dialog-text-color);
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10px;
+
+    .titleText {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      line-height: 1.38;
+    }
+
+    .titleLink {
+      background: var(
+        --theme-staking-stake-pools-filter-title-button-background-color
+      );
+      border-radius: 4px;
+      color: var(--theme-staking-stake-pools-filter-title-button-text-color);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 500;
+      height: 20px;
+      line-height: 1.5;
+      margin-left: 10px;
+      padding: 0 8px;
+      position: relative;
+      text-transform: uppercase;
+      user-select: none;
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.5;
+
+        &:after {
+          display: none;
+        }
+      }
+
+      &:disabled:hover {
+        background: var(
+          --theme-staking-stake-pools-filter-title-button-background-color
+        );
+      }
+
+      &:hover {
+        background: var(
+          --theme-staking-stake-pools-filter-title-button-background-color-hover
+        );
+      }
+
+      &:active {
+        background: var(
+          --theme-staking-stake-pools-filter-title-button-background-color-active
+        );
+      }
+    }
+  }
+
+  .content {
+    color: var(--theme-dialog-text-color);
+
+    .fields {
+      display: flex;
+      flex-direction: column;
+      margin: 20px 10px 0;
+
+      :global {
+        .TinyCheckbox_component {
+          margin-bottom: 17px;
+        }
+      }
+    }
+
+    .action {
+      margin-top: 8px;
+    }
+  }
+}
+
+.triggerButton {
+  margin-left: 7px;
+  margin-right: 11px;
+
+  :global {
+    button.flat {
+      .FilterPopOver_actionLabel {
+        color: var(--theme-button-flat-text-color);
+      }
+
+      .FilterPopOver_filterIcon {
+        g {
+          stroke: var(--theme-button-flat-text-color);
+        }
+      }
+    }
+  }
+
+  .actionButton {
+    border-radius: 2px;
+    display: flex;
+    height: 28px;
+    margin: 0;
+    padding: 0 12px;
+
+    .actionLabel {
+      color: var(--theme-staking-stake-pools-filter-button-color);
+      font-family: var(--font-regular);
+      font-size: 14px;
+      line-height: 1.36;
+      margin-right: 12px;
+
+      .numberIndicator {
+        margin-left: 5px;
+      }
+    }
+
+    .filterIcon {
+      align-items: center;
+      display: flex;
+      height: 11px;
+      justify-content: center;
+      width: 11px;
+
+      svg {
+        height: 11px;
+        width: 11px;
+      }
+
+      g {
+        stroke: var(--theme-staking-stake-pools-filter-button-color);
+      }
+    }
+  }
+}

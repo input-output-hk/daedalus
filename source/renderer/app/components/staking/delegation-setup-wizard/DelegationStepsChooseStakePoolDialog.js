@@ -22,6 +22,11 @@ import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import Wallet from '../../../domains/Wallet';
 import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
+import type { StakePoolFilterOptionsType } from '../../../stores/StakingStore';
+import {
+  getNumberOfFilterDimensionsApplied,
+  hasStakePoolHighProfitMargin,
+} from '../../../utils/staking';
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
@@ -115,9 +120,24 @@ const messages = defineMessages({
     id:
       'staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter',
     defaultMessage:
-      '!!!The stake pool you have selected is about to be retired. If you continue the delegation process, you will need to delegate your stake to another pool at least one complete epoch before the current pool’s retirement date to avoid losing rewards.',
+      '!!!The stake pool you have selected is about to be retired. If you delegate to this pool, you will need to redelegate your wallet to a different pool at least one entire epoch before the current pool’s retirement date to avoid losing rewards.',
     description:
       'Retiring Pool Footer label on the delegation setup "choose wallet" step dialog.',
+  },
+  privatePoolFooter: {
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.privatePoolFooter',
+    defaultMessage:
+      '!!!The stake pool you have selected is private as its margin is 100%. If you delegate to this pool, all rewards will go to the stake pool, and you will not earn delegation rewards.',
+    description:
+      'Private Pool Footer label on the delegation setup "choose wallet" step dialog.',
+  },
+  highProfitMarginPoolFooter: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.highProfitMarginPoolFooter',
+    defaultMessage:
+      '!!!The stake pool you have selected has a high margin of {profitMarginPercentage}%. You could earn more  rewards by delegating to a different pool. Delegating to pools with high margins is not a concern if they are charity pools or if you are supporting a pool for different reasons.',
+    description:
+      'High Profit Margin Pool Footer label on the delegation setup "choose wallet" step dialog.',
   },
 });
 
@@ -132,6 +152,9 @@ type Props = {
   onClose: Function,
   onBack: Function,
   onSelectPool: Function,
+  filterOptions: StakePoolFilterOptionsType,
+  onFilter: Function,
+  populatedFilterOptions: StakePoolFilterOptionsType,
 };
 
 type State = {
@@ -177,6 +200,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       selectedWallet,
       onClose,
       onBack,
+      filterOptions,
+      onFilter,
+      populatedFilterOptions,
     } = this.props;
     const { searchValue, selectedPoolId } = this.state;
     const selectedWalletName = get(selectedWallet, 'name');
@@ -217,12 +243,38 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       },
     ];
 
-    const footer =
-      selectedPool && selectedPool.retiring ? (
-        <div className={styles.retiringPoolFooter}>
+    const retiringFooter =
+      selectedPool && selectedPool.isRetiring ? (
+        <div className={styles.poolFooterContent}>
           {intl.formatMessage(messages.retiringPoolFooter)}
         </div>
       ) : null;
+    const privateFooter =
+      selectedPool && selectedPool.isPrivate ? (
+        <div className={styles.poolFooterContent}>
+          {intl.formatMessage(messages.privatePoolFooter)}
+        </div>
+      ) : null;
+    const highProfitMarginFooter =
+      selectedPool &&
+      !selectedPool.isPrivate &&
+      hasStakePoolHighProfitMargin(selectedPool) ? (
+        <div className={styles.poolFooterContent}>
+          <FormattedHTMLMessage
+            {...messages.highProfitMarginPoolFooter}
+            values={{
+              profitMarginPercentage: selectedPool.profitMargin,
+            }}
+          />
+        </div>
+      ) : null;
+    const footer = (
+      <div className={styles.poolFooter}>
+        {retiringFooter}
+        {privateFooter}
+        {highProfitMarginFooter}
+      </div>
+    );
 
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
@@ -299,10 +351,17 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       />
     );
 
+    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
+      filterOptions
+    );
+
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       searchValue
     );
+
+    const isFilterDisabled =
+      !filteredStakePoolsList.length && !numberOfFilterDimensionsApplied;
 
     const numberOfRankedStakePools: number = stakePoolsList.filter(
       (stakePool) =>
@@ -345,6 +404,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           <div className={styles.selectStakePoolWrapper}>
             <ThumbSelectedPool
               stakePool={selectedPool}
+              ranking={selectedPool.ranking}
               numberOfRankedStakePools={numberOfRankedStakePools}
               alreadyDelegated={selectedPool && !canSubmit}
             />
@@ -386,6 +446,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onClearSearch={this.handleClearSearch}
               scrollableElementClassName="Dialog_content"
               disabledStakePoolId={activeStakePoolId}
+              filterPopOverProps={{
+                populatedFilterOptions,
+                onFilter,
+                isFilterDisabled,
+                numberOfFilterDimensionsApplied,
+              }}
             />
           </div>
 
