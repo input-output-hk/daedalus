@@ -307,7 +307,7 @@ export const formattedDateTime = (
     return `${dateFormatted}, ${timeFormatted}`;
   }
 
-  return `${dateFormatted}${timeFormatted}`;
+  return `${dateFormatted} ${timeFormatted}`;
 };
 
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
