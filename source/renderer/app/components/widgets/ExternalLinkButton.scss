@@ -1,17 +1,29 @@
-.root {
-  background-color: var(--theme-button-flat-background-color);
-  border-radius: 5px;
-  color: var(--theme-button-flat-text-color);
+.overrideButton {
   font-size: 14px;
   font-weight: 500;
-  height: auto;
+  height: 36px;
   line-height: 1.43;
   min-width: 160px;
-  padding: 8.5px 32.5px;
+  padding: 8px 32px;
+  width: auto;
+}
 
-  &.withIconAfter {
-    &:after {
-      background-color: var(--theme-button-flat-text-color);
+.labelBlock {
+  display: flex;
+  justify-content: center;
+
+  & .externalLinkIcon {
+    margin-left: 4px;
+  }
+}
+
+.externalLinkIcon {
+  & > svg {
+    height: 8px;
+    width: 8px;
+
+    & > path {
+      fill: currentColor;
     }
   }
 }

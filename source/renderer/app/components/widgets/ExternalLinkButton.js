@@ -1,7 +1,11 @@
 // @flow
 import React from 'react';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+
+import classnames from 'classnames';
+import { Button } from 'react-polymorph/lib/components/Button';
+import SVGInline from 'react-svg-inline';
+import externalLinkIcon from '../../assets/images/external-link-ic.inline.svg';
+
 import styles from './ExternalLinkButton.scss';
 
 type Props = {
@@ -10,12 +14,20 @@ type Props = {
 };
 
 export function ExternalLinkButton({ label, onClick }: Props) {
+  const buttonStyles = classnames(['flat', styles.overrideButton]);
+
   return (
-    <Link
-      label={label}
-      skin={LinkSkin}
-      isUnderlined={false}
-      themeOverrides={styles}
+    <Button
+      label={
+        <div className={styles.labelBlock}>
+          {label}
+          <SVGInline
+            svg={externalLinkIcon}
+            className={styles.externalLinkIcon}
+          />
+        </div>
+      }
+      className={buttonStyles}
       onClick={onClick}
     />
   );
