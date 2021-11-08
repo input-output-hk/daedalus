@@ -7852,13 +7852,13 @@
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 10
         },
-        "file": "source/renderer/app/components/voting/voting-info/AppStore.js",
+        "file": "source/renderer/app/components/voting/voting-info/AppStore.messages.js",
         "id": "voting.info.androidAppButtonUrl",
         "start": {
           "column": 23,
-          "line": 15
+          "line": 5
         }
       },
       {
@@ -7866,17 +7866,17 @@
         "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 16
         },
-        "file": "source/renderer/app/components/voting/voting-info/AppStore.js",
+        "file": "source/renderer/app/components/voting/voting-info/AppStore.messages.js",
         "id": "voting.info.appleAppButtonUrl",
         "start": {
           "column": 21,
-          "line": 21
+          "line": 11
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-info/AppStore.json"
+    "path": "source/renderer/app/components/voting/voting-info/AppStore.messages.json"
   },
   {
     "descriptors": [
@@ -7885,13 +7885,13 @@
         "description": "Current fund name",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 9
         },
-        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
         "id": "voting.currentFund.name",
         "start": {
           "column": 8,
-          "line": 21
+          "line": 5
         }
       },
       {
@@ -7899,13 +7899,13 @@
         "description": "Headline for end date",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 14
         },
-        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
         "id": "voting.currentFund.headingForEndDate",
         "start": {
           "column": 21,
-          "line": 26
+          "line": 10
         }
       },
       {
@@ -7913,13 +7913,13 @@
         "description": "View resuls link label for Fund{currentVotingFundNumber}",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 19
         },
-        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
         "id": "voting.currentFund.viewResultsLinkLabel",
         "start": {
           "column": 24,
-          "line": 31
+          "line": 15
         }
       },
       {
@@ -7927,17 +7927,17 @@
         "description": "View results from Fund{currentVotingFundNumber}",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 24
         },
-        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.js",
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
         "id": "voting.currentFund.viewResultsLinkURL",
         "start": {
           "column": 22,
-          "line": 36
+          "line": 20
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-info/CurrentFund.json"
+    "path": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.json"
   },
   {
     "descriptors": [
@@ -7946,13 +7946,13 @@
         "description": "Headline Project Catalyst",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 9
         },
-        "file": "source/renderer/app/components/voting/voting-info/Headline.js",
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
         "id": "voting.catalyst.heading",
         "start": {
           "column": 11,
-          "line": 12
+          "line": 5
         }
       },
       {
@@ -7960,13 +7960,13 @@
         "description": "Description Project Catalyst",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 15
         },
-        "file": "source/renderer/app/components/voting/voting-info/Headline.js",
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
         "id": "voting.catalyst.descriptionRow1",
         "start": {
           "column": 19,
-          "line": 17
+          "line": 10
         }
       },
       {
@@ -7974,13 +7974,13 @@
         "description": "Description Project Catalyst",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 21
         },
-        "file": "source/renderer/app/components/voting/voting-info/Headline.js",
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
         "id": "voting.catalyst.descriptionRow2",
         "start": {
           "column": 19,
-          "line": 23
+          "line": 16
         }
       },
       {
@@ -7988,13 +7988,13 @@
         "description": "Learn more link label for registration steps",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 26
         },
-        "file": "source/renderer/app/components/voting/voting-info/Headline.js",
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
         "id": "voting.info.learnMoreLinkLabel",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 22
         }
       },
       {
@@ -8002,17 +8002,17 @@
         "description": "Learn more link url for registration steps",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 31
         },
-        "file": "source/renderer/app/components/voting/voting-info/Headline.js",
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
         "id": "voting.info.learnMoreLinkUrl",
         "start": {
           "column": 20,
-          "line": 34
+          "line": 27
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-info/Headline.json"
+    "path": "source/renderer/app/components/voting/voting-info/Headline.messages.json"
   },
   {
     "descriptors": [
@@ -8021,13 +8021,13 @@
         "description": "Regiter to fund name",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 10
         },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.name",
         "start": {
           "column": 8,
-          "line": 19
+          "line": 6
         }
       },
       {
@@ -8035,13 +8035,13 @@
         "description": "Voting info snapshot date label",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 15
         },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.dateLabel",
         "start": {
           "column": 13,
-          "line": 24
+          "line": 11
         }
       },
       {
@@ -8049,13 +8049,13 @@
         "description": "Steps to follow title",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 20
         },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.stepsTitle",
         "start": {
           "column": 14,
-          "line": 29
+          "line": 16
         }
       },
       {
@@ -8063,13 +8063,13 @@
         "description": "First step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 25
         },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.step1CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 34
+          "line": 21
         }
       },
       {
@@ -8077,13 +8077,13 @@
         "description": "Second step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 31
         },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.step2CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 39
+          "line": 26
         }
       },
       {
@@ -8091,17 +8091,17 @@
         "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 36
         },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.js",
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.registerToVoteButtonLabel",
         "start": {
           "column": 15,
-          "line": 45
+          "line": 32
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.json"
+    "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.json"
   },
   {
     "descriptors": [

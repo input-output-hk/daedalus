@@ -63,16 +63,16 @@ function RegisterToVote({
           className={styles.checkbox}
           checked={step1}
           onChange={setStep1}
+          label={intl.formatMessage(messages.step1CheckBoxLabel)}
         />
-        <span>{intl.formatMessage(messages.step1CheckBoxLabel)}</span>
       </div>
       <div className={styles.step}>
         <Checkbox
           className={styles.checkbox}
           checked={step2}
+          label={intl.formatMessage(messages.step2CheckBoxLabel)}
           onChange={setStep2}
         />
-        <span>{intl.formatMessage(messages.step2CheckBoxLabel)}</span>
       </div>
       <Button
         className={styles.button}
