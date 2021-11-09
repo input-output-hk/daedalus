@@ -33,10 +33,6 @@
     font-family: var(--font-medium);
   }
 
-  .checkbox {
-    margin: 11px 20px 11px 0px;
-  }
-
   .step {
     align-items: center;
     display: flex;
@@ -49,7 +45,7 @@
     font-size: 14px;
     height: auto;
     margin-top: 20px;
-    padding: 8.5px 26.5px;
-    width: auto;
+    padding: 8px 26.5px;
+    width: 160px;
   }
 }
