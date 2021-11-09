@@ -18,14 +18,14 @@ const messages = defineMessages({
   qrCodeDescription1: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeDescription1',
     defaultMessage:
-      '!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and use the PIN to complete the voting registration process.',
+      '!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and enter your PIN to complete the voting registration process.',
     description:
       'Part 1 of Qr code description of use on the voting registration "qr code" step.',
   },
   qrCodeDescription2: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeDescription2',
     defaultMessage:
-      '!!!Your registration remains valid across all funds. Save and store your QR code and PIN to reconnect your wallet to the voting app if you are  logged out, or want to connect a new device.',
+      '!!!Your registration remains valid across all Catalyst funding rounds. Ensure that you save your QR code and PIN so you can reconnect your wallet to the voting app if you are logged out, or if you want to connect a new device.',
     description:
       'Part 2 of Qr code description of use on the voting registration "qr code" step.',
   },
