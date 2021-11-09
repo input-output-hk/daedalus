@@ -37,7 +37,7 @@ const messages = defineMessages({
 });
 
 type Params = {
-  fundNumber: number,
+  nextVotingFundNumber: number,
   qrCode: string,
   walletName: string,
   currentLocale: string,
@@ -50,7 +50,7 @@ type Params = {
 };
 
 export const votingPDFGenerator = async ({
-  fundNumber,
+  nextVotingFundNumber,
   qrCode,
   walletName,
   currentLocale,
@@ -63,7 +63,7 @@ export const votingPDFGenerator = async ({
 }: Params) => {
   // Consolidate data
   const title = intl.formatMessage(messages.title, {
-    nextVotingFundNumber: fundNumber,
+    nextVotingFundNumber,
   });
   const creationDate = moment().format(
     `${currentDateFormat} ${currentTimeFormat}`
@@ -75,7 +75,7 @@ export const votingPDFGenerator = async ({
 
   // Generate the filePath
   const localizedFileName = intl.formatMessage(messages.filename);
-  const prefix = `fund${fundNumber}-${localizedFileName}-${walletName}`;
+  const prefix = `fund${nextVotingFundNumber}-${localizedFileName}-${walletName}`;
   const name = generateFileNameWithTimestamp({
     prefix,
     extension: '',
