@@ -202,7 +202,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         </div>
         {oversaturationPercentage > 0 && (
           <OversaturationText
-            oversaturationPercentage={oversaturationPercentage.toFixed()}
+            oversaturationPercentage={oversaturationPercentage.toFixed(2)}
           />
         )}
         <div className={contentClassName}>

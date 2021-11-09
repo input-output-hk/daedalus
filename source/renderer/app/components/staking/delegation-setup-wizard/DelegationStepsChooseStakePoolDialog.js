@@ -239,7 +239,7 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
         )}
         {oversaturationPercentage > 0 && (
           <OversaturationText
-            oversaturationPercentage={oversaturationPercentage.toFixed()}
+            oversaturationPercentage={oversaturationPercentage.toFixed(2)}
             centerText
           />
         )}
