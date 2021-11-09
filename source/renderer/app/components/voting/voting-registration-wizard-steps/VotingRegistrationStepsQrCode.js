@@ -25,7 +25,7 @@ const messages = defineMessages({
   qrCodeDescription2: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeDescription2',
     defaultMessage:
-      'Your registration remains valid across all funds. Save and store your QR code and PIN to reconnect your wallet to the voting app if you are  logged out, or want to connect a new device.',
+      '!!!Your registration remains valid across all funds. Save and store your QR code and PIN to reconnect your wallet to the voting app if you are  logged out, or want to connect a new device.',
     description:
       'Part 2 of Qr code description of use on the voting registration "qr code" step.',
   },
