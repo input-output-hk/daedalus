@@ -1,9 +1,7 @@
 // @flow
 import React from 'react';
 import type { ComponentType, Element } from 'react';
-
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-
 import stylesOverride from './PatchCheckbox.scss';
 
 type Props = {

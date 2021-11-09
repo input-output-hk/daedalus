@@ -1,8 +1,6 @@
 // @flow
 import React from 'react';
-
 import { injectIntl } from 'react-intl';
-
 import {
   VOTING_REGISTRATION_CAST_END_DATE,
   CURRENT_VOTING_FUND_NUMBER,
