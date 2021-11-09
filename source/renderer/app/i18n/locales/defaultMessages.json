@@ -8040,13 +8040,13 @@
         "description": "Regiter to fund name",
         "end": {
           "column": 3,
-          "line": 10
+          "line": 9
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.name",
         "start": {
           "column": 8,
-          "line": 6
+          "line": 5
         }
       },
       {
@@ -8054,13 +8054,13 @@
         "description": "Voting info snapshot date label",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 14
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.dateLabel",
         "start": {
           "column": 13,
-          "line": 11
+          "line": 10
         }
       },
       {
@@ -8068,13 +8068,13 @@
         "description": "Steps to follow title",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 19
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.stepsTitle",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 15
         }
       },
       {
@@ -8082,13 +8082,13 @@
         "description": "First step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.step1CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -8096,13 +8096,13 @@
         "description": "Second step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.step2CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -8110,13 +8110,13 @@
         "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.registerToVoteButtonLabel",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 31
         }
       }
     ],
