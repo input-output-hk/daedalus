@@ -162,7 +162,11 @@ const onAppReady = async () => {
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
   await cardanoNode?.start();
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode, () =>
+    buildAppMenus(mainWindow, cardanoNode, locale, {
+      isNavigationEnabled: true,
+    })
+  );
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
       handleCheckDiskSpace();

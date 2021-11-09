@@ -19,7 +19,8 @@ import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.ty
 
 export const handleDiskSpace = (
   mainWindow: BrowserWindow,
-  cardanoNode: CardanoNode
+  cardanoNode: CardanoNode,
+  enableMenus: Function
 ): Function => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
@@ -106,6 +107,7 @@ export const handleDiskSpace = (
             );
             if (cardanoNode._startupTries > 0) await cardanoNode.restart();
             else await cardanoNode.start();
+            enableMenus();
           } catch (error) {
             logger.error(
               '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
