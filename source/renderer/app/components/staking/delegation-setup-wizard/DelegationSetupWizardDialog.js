@@ -53,8 +53,8 @@ const getOversaturationPercentage = (
   if (
     !selectedPool ||
     !selectedWallet ||
-    (selectedWallet.delegatedStakePoolId ||
-      selectedWallet.lastDelegatedStakePoolId) === selectedPool.id
+    (selectedWallet.lastDelegatedStakePoolId ||
+      selectedWallet.delegatedStakePoolId) === selectedPool.id
   )
     return 0;
 
