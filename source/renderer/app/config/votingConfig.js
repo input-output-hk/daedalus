@@ -20,4 +20,4 @@ export const VOTING_REGISTRATION_CAST_END_DATE = new Date(
 export const VOTING_REGISTRATION_NEW_START_DATE = new Date(
   'Nov 11, 2021, 11:00 UTC'
 );
-export const VOTING_REWARD = 1040000;
+export const VOTING_REWARD = 1040000; // 1,040,000 USD | Unit: dollar
