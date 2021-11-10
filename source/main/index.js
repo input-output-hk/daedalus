@@ -153,7 +153,7 @@ const onAppReady = async () => {
   await installChromeExtensions(isDev);
 
   // Detect locale
-  let locale = getLocale(network);
+  const locale = getLocale(network);
   mainWindow = createMainWindow(
     locale,
     restoreSavedWindowBounds(screen, requestElectronStore)
