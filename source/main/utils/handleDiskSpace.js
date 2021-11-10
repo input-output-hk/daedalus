@@ -77,7 +77,7 @@ export const handleDiskSpace = (
         diskSpaceMissing: prettysize(diskSpaceMissing),
         diskSpaceRecommended: prettysize(diskSpaceRecommended),
         diskSpaceAvailable: prettysize(diskSpaceAvailable),
-        hadNotEnoughSpaceLeft: isNotEnoughDiskSpace,
+        hadNotEnoughSpaceLeft,
       };
 
       const NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED =
@@ -90,8 +90,9 @@ export const handleDiskSpace = (
         cardanoNode._startupTries === 0;
 
       const CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE =
+        !isNotEnoughDiskSpace &&
         cardanoNode.state !== CardanoNodeStates.STOPPED &&
-        response.hadNotEnoughSpaceLeft;
+        hadNotEnoughSpaceLeft;
 
       switch (true) {
         case NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED:
