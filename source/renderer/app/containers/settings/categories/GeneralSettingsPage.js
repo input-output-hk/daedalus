@@ -17,10 +17,6 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
 
     updateUserLocalSetting.trigger({ param, value });
     if (param === 'locale') {
-      console.log(
-        '=> categories.js => handleSelectItem => isNavigationEnable',
-        isNavigationEnabled
-      );
       await rebuildApplicationMenu.send({
         isNavigationEnabled,
       });

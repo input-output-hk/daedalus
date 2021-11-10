@@ -25,10 +25,6 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
 
     if (param === 'locale') {
-      console.log(
-        '=> profile.js => handleSelectItem => isNavigationEnable',
-        isNavigationEnabled
-      );
       await rebuildApplicationMenu.send({
         isNavigationEnabled,
       });
