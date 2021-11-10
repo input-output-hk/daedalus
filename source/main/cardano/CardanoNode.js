@@ -76,7 +76,6 @@ export type CardanoNodeConfig = {
   syncTolerance: string,
   cliBin: string, // Path to cardano-cli executable
   isStaging: boolean,
-  isFlight: boolean,
   metadataUrl?: string,
 };
 
@@ -292,7 +291,6 @@ export class CardanoNode {
       syncTolerance,
       cliBin,
       isStaging,
-      isFlight,
       metadataUrl,
     } = config;
 
@@ -379,7 +377,6 @@ export class CardanoNode {
             walletLogFile,
             cliBin,
             isStaging,
-            isFlight,
             metadataUrl,
           });
 

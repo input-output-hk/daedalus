@@ -35,7 +35,6 @@ export type WalletOptions = {
   walletLogFile: WriteStream,
   cliBin: string,
   isStaging: boolean,
-  isFlight: boolean,
   metadataUrl?: string,
 };
 
@@ -54,7 +53,6 @@ export async function CardanoWalletLauncher(
     walletLogFile,
     cliBin,
     isStaging,
-    isFlight,
     metadataUrl,
   } = walletOptions;
   // TODO: Update launcher config to pass number
@@ -144,13 +142,9 @@ export async function CardanoWalletLauncher(
       // RTS flags:
       // 1) "-H4G -M6553M -c70"  16.0% peak RSS reduction and a sub-percentile CPU regression
       // 2) "-H4G -M6553M"       18.5% peak RSS reduction and a second-best CPU regression
-      // eslint-disable-next-line no-case-declarations
-      const rtsFlags = isFlight
-        ? ['-H4G', '-M6553M']
-        : ['-H4G', '-M6553M', '-c70'];
-      nodeConfig.rtsOpts = rtsFlags;
+      nodeConfig.rtsOpts = ['-H4G', '-M6553M', '-c70'];
       logger.info('Launching Cardano Node with RTS flags', {
-        rtsFlags,
+        rtsFlags: nodeConfig.rtsOpts,
       });
 
       merge(launcherConfig, {
