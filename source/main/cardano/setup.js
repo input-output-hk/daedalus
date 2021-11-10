@@ -34,10 +34,25 @@ import {
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
-const startCardanoNode = (
-  node: CardanoNode,
-  launcherConfig: LauncherConfig
-) => {
+const restartCardanoNode = async (node: CardanoNode) => {
+  try {
+    await node.restart();
+  } catch (error) {
+    logger.error('Could not restart CardanoNode', { error });
+  }
+};
+
+/**
+ * Configures, starts and manages the CardanoNode responding to node
+ * state changes, app events and IPC messages coming from the renderer.
+ *
+ * @param launcherConfig {LauncherConfig}
+ * @param mainWindow
+ */
+export const setupCardanoNode = (
+  launcherConfig: LauncherConfig,
+  mainWindow: BrowserWindow
+): CardanoNode => {
   const {
     logsPrefix,
     nodeImplementation,
@@ -70,28 +85,7 @@ const startCardanoNode = (
     killTimeout: NODE_KILL_TIMEOUT,
     updateTimeout: NODE_UPDATE_TIMEOUT,
   };
-  return node.start(config);
-};
 
-const restartCardanoNode = async (node: CardanoNode) => {
-  try {
-    await node.restart();
-  } catch (error) {
-    logger.error('Could not restart CardanoNode', { error });
-  }
-};
-
-/**
- * Configures, starts and manages the CardanoNode responding to node
- * state changes, app events and IPC messages coming from the renderer.
- *
- * @param launcherConfig {LauncherConfig}
- * @param mainWindow
- */
-export const setupCardanoNode = (
-  launcherConfig: LauncherConfig,
-  mainWindow: BrowserWindow
-): CardanoNode => {
   const cardanoNode = new CardanoNode(
     logger,
     {
@@ -100,9 +94,9 @@ export const setupCardanoNode = (
       exec,
       readFileSync,
       createWriteStream,
-      broadcastTlsConfig: (config: ?TlsConfig) => {
+      broadcastTlsConfig: (tlsConfig: ?TlsConfig) => {
         if (!mainWindow.isDestroyed())
-          cardanoTlsConfigChannel.send(config, mainWindow);
+          cardanoTlsConfigChannel.send(tlsConfig, mainWindow);
       },
       broadcastStateChange: (state: CardanoNodeState) => {
         if (!mainWindow.isDestroyed())
@@ -127,10 +121,9 @@ export const setupCardanoNode = (
       },
       onError: () => {},
       onUnrecoverable: () => {},
-    }
+    },
+    config
   );
-
-  startCardanoNode(cardanoNode, launcherConfig);
 
   getCachedCardanoStatusChannel.onRequest(() => {
     logger.info('ipcMain: Received request from renderer for cardano status', {

@@ -3,6 +3,7 @@
 ## vNext
 
 ### Features
+
 - Implemented "Catalyst Fund7" voting registration changes ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
 - Added Over-saturation warning in delegation wizard ([PR 2733](https://github.com/input-output-hk/daedalus/pull/2733))
 - Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
@@ -18,6 +19,7 @@
 
 ### Chores
 
+- Improves the Daedalus startup by avoiding unnecessary cardano-node restarts ([PR 2716](https://github.com/input-output-hk/daedalus/pull/2716))
 - Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2734](https://github.com/input-output-hk/daedalus/pull/2734))
 - Updated README with solution steps for the nix SSL issue ([PR 2727](https://github.com/input-output-hk/daedalus/pull/2727))
 - Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
