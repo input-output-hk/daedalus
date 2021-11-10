@@ -296,12 +296,17 @@ export default class ProfileStore extends Store {
   _acceptTermsOfUse = async () => {
     await this.setTermsOfUseAcceptanceRequest.execute();
     await this.getTermsOfUseAcceptanceRequest.execute();
-    await enableApplicationMenuNavigationChannel.send();
+    console.log('=> ProfileStore::_acceptTermsOfUse()');
+    // await enableApplicationMenuNavigationChannel.send();
   };
 
   _getTermsOfUseAcceptance = async () => {
     await this.getTermsOfUseAcceptanceRequest.execute();
+    console.log('=> ProfileStore::_acceptTermsOfUse()');
     if (this.getTermsOfUseAcceptanceRequest.result) {
+      console.log('=> condition this.getTermsOfUseAcceptanceRequest.result=', {
+        result: this.getTermsOfUseAcceptanceRequest?.result,
+      });
       await enableApplicationMenuNavigationChannel.send();
     }
   };

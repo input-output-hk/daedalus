@@ -208,6 +208,7 @@ const onAppReady = async () => {
     await safeExit();
   });
 
+  console.log('=> index.js Disabling menus');
   buildAppMenus(mainWindow, cardanoNode, locale, {
     isNavigationEnabled: false,
   });
@@ -226,6 +227,10 @@ const onAppReady = async () => {
     (data) =>
       new Promise((resolve) => {
         locale = getLocale(network);
+        console.log(
+          '=> index.js calling buildAppMenus => isNavigationEnabled =',
+          data.isNavigationEnabled
+        );
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: data.isNavigationEnabled,
         });
