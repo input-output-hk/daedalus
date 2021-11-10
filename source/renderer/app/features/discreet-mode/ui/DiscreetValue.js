@@ -3,21 +3,20 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import type { Node } from 'react';
 
-import { useDiscreetModeFeature } from '../context';
-import { SENSITIVE_DATA_SYMBOL } from '../config';
-import { defaultReplacer } from '../replacers/defaultReplacer';
-import type { ReplacerFn } from '../types';
+import { useDiscreetModeFeature } from '../index';
 
 type Props = {
   children: Node,
-  replacer: ReplacerFn,
 };
 
-function DiscreetValue({ children, replacer = defaultReplacer() }: Props) {
+function DiscreetValue({ children }: Props) {
   const feature = useDiscreetModeFeature();
-  return (
-    <>{replacer(feature.isDiscreetMode, SENSITIVE_DATA_SYMBOL, children)}</>
-  );
+
+  if (feature.isDiscreetMode) {
+    return <span>***</span>;
+  }
+
+  return <>{children}</>;
 }
 
 export default observer(DiscreetValue);
