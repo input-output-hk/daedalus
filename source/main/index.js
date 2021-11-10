@@ -187,22 +187,6 @@ const onAppReady = async () => {
       })
   );
 
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
-  const onMainError = (error: string) => {
-    if (error.indexOf('ENOSPC') > -1) {
-      handleCheckDiskSpace();
-      return false;
-    }
-  };
-  mainErrorHandler(onMainError);
-  await handleCheckDiskSpace();
-  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
-
-  if (isWatchMode) {
-    // Connect to electron-connect server which restarts / reloads windows on file changes
-    client.create(mainWindow);
-  }
-
   setStateSnapshotLogChannel.onReceive(
     (data: SetStateSnapshotLogMainResponse) => {
       return Promise.resolve(logStateSnapshot(data));
@@ -224,6 +208,22 @@ const onAppReady = async () => {
   );
 
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
+
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
+  const onMainError = (error: string) => {
+    if (error.indexOf('ENOSPC') > -1) {
+      handleCheckDiskSpace();
+      return false;
+    }
+  };
+  mainErrorHandler(onMainError);
+  await handleCheckDiskSpace();
+  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
+
+  if (isWatchMode) {
+    // Connect to electron-connect server which restarts / reloads windows on file changes
+    client.create(mainWindow);
+  }
 
   mainWindow.on('close', async (event) => {
     logger.info(
