@@ -460,7 +460,7 @@ export class CardanoNode {
       this._reset();
       return Promise.resolve();
     } catch (error) {
-      _log.error('CardanoNode#stop: cardano-node did not stop correctly', {
+      console.error('CardanoNode#stop: cardano-node did not stop correctly', {
         error,
       });
       try {

@@ -86,21 +86,24 @@ export const handleDiskSpace = (
         cardanoNode.state !== CardanoNodeStates.STOPPED;
 
       const CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME =
+        !isNotEnoughDiskSpace &&
         cardanoNode.state === CardanoNodeStates.STOPPED &&
         cardanoNode._startupTries === 0;
 
       const CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE =
         !isNotEnoughDiskSpace &&
         cardanoNode.state !== CardanoNodeStates.STOPPED &&
+        cardanoNode.state !== CardanoNodeStates.STOPPING &&
         hadNotEnoughSpaceLeft;
 
+      console.log('=> cardanoNode.state = ', cardanoNode.state);
       switch (true) {
         case NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED:
           try {
-            logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
+            console.log('[DISK-SPACE-DEBUG] Stopping cardano node');
             await cardanoNode.stop();
           } catch (error) {
-            logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
+            console.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
           }
           break;
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
@@ -108,14 +111,14 @@ export const handleDiskSpace = (
           break;
         case CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE:
           try {
-            logger.info(
+            console.log(
               '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
             );
             if (cardanoNode._startupTries > 0) await cardanoNode.restart();
             else await cardanoNode.start();
             response.hadNotEnoughSpaceLeft = false;
           } catch (error) {
-            logger.error(
+            console.error(
               '[DISK-SPACE-DEBUG] Daedalus tried to restart, but failed',
               error
             );
