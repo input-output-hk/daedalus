@@ -161,12 +161,7 @@ const onAppReady = async () => {
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
-  await cardanoNode?.start();
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode, () =>
-    buildAppMenus(mainWindow, cardanoNode, locale, {
-      isNavigationEnabled: true,
-    })
-  );
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
       handleCheckDiskSpace();

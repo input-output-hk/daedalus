@@ -456,6 +456,7 @@ export class CardanoNode {
       if (_node) await _node.stop(_config.shutdownTimeout / 1000);
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
       await this._storeProcessStates();
+      this._changeToState(CardanoNodeStates.STOPPED);
       this._reset();
       return Promise.resolve();
     } catch (error) {
