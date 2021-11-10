@@ -4109,186 +4109,186 @@
         "defaultMessage": "!!!Choose a stake pool",
         "description": "Title \"Choose a stake pool\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 33
+          "column": 5,
+          "line": 13
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
         "start": {
-          "column": 9,
-          "line": 28
+          "column": 11,
+          "line": 8
         }
       },
       {
         "defaultMessage": "!!!Currently selected stake pool:",
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 39
+          "column": 5,
+          "line": 19
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
         "start": {
-          "column": 15,
-          "line": 34
+          "column": 17,
+          "line": 14
         }
       },
       {
         "defaultMessage": "!!!Select a stake pool to receive your delegated funds in the <span>{selectedWalletName}<span> wallet.",
         "description": "Select / Selected pool section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 47
+          "column": 5,
+          "line": 27
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel",
         "start": {
-          "column": 24,
-          "line": 40
+          "column": 26,
+          "line": 20
         }
       },
       {
         "defaultMessage": "!!!You have selected [{selectedPoolTicker}] stake pool to delegate to for <span>{selectedWalletName}</span> wallet.",
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 55
+          "column": 5,
+          "line": 35
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel",
         "start": {
-          "column": 26,
-          "line": 48
+          "column": 28,
+          "line": 28
         }
       },
       {
         "defaultMessage": "!!!The [{selectedPoolTicker}] stake pool which you have selected to delegate your <span>{selectedWalletName}</span> wallet funds is about to retire.",
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 63
+          "column": 5,
+          "line": 43
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabelRetiring",
         "start": {
-          "column": 34,
-          "line": 56
+          "column": 36,
+          "line": 36
         }
       },
       {
         "defaultMessage": "!!!You are already delegating <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>",
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 71
+          "column": 5,
+          "line": 51
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel",
         "start": {
-          "column": 27,
-          "line": 64
+          "column": 29,
+          "line": 44
         }
       },
       {
         "defaultMessage": "!!!You are already pending delegation <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>",
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 79
+          "column": 5,
+          "line": 59
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel",
         "start": {
-          "column": 31,
-          "line": 72
+          "column": 33,
+          "line": 52
         }
       },
       {
         "defaultMessage": "!!!Choose one of your recent stake pool choices:",
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 85
+          "column": 5,
+          "line": 66
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel",
         "start": {
-          "column": 20,
-          "line": 80
+          "column": 22,
+          "line": 60
         }
       },
       {
         "defaultMessage": "!!!Or select a stake pool from the list of all available stake pools:",
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 92
+          "column": 5,
+          "line": 74
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
-          "column": 20,
-          "line": 86
+          "column": 22,
+          "line": 67
         }
       },
       {
         "defaultMessage": "!!!Search stake pools",
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 99
+          "column": 5,
+          "line": 81
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
-          "column": 26,
-          "line": 93
+          "column": 28,
+          "line": 75
         }
       },
       {
         "defaultMessage": "!!!Continue",
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 106
+          "column": 5,
+          "line": 88
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
-          "column": 23,
-          "line": 100
+          "column": 25,
+          "line": 82
         }
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
         "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 113
+          "column": 5,
+          "line": 95
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
-          "column": 22,
-          "line": 107
+          "column": 24,
+          "line": 89
         }
       },
       {
         "defaultMessage": "!!!The stake pool you have selected is about to be retired. If you continue the delegation process, you will need to delegate your stake to another pool at least one complete epoch before the current pool’s retirement date to avoid losing rewards.",
         "description": "Retiring Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 121
+          "column": 5,
+          "line": 103
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter",
         "start": {
-          "column": 22,
-          "line": 114
+          "column": 24,
+          "line": 96
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.json"
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.json"
   },
   {
     "descriptors": [
@@ -4427,172 +4427,172 @@
         "defaultMessage": "!!!Confirm Delegation",
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 42
+          "column": 5,
+          "line": 13
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
-          "column": 9,
-          "line": 37
+          "column": 11,
+          "line": 8
         }
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
         "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 48
+          "column": 5,
+          "line": 19
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
-          "column": 22,
-          "line": 43
+          "column": 24,
+          "line": 14
         }
       },
       {
         "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.",
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 55
+          "column": 5,
+          "line": 26
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
-          "column": 15,
-          "line": 49
+          "column": 17,
+          "line": 20
         }
       },
       {
         "defaultMessage": "!!!Stake pool ID",
         "description": "Stake pool ID label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 61
+          "column": 5,
+          "line": 32
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel",
         "start": {
-          "column": 20,
-          "line": 56
+          "column": 22,
+          "line": 27
         }
       },
       {
         "defaultMessage": "!!!Fees",
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 67
+          "column": 5,
+          "line": 38
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
-          "column": 13,
-          "line": 62
+          "column": 15,
+          "line": 33
         }
       },
       {
         "defaultMessage": "!!!Deposit",
         "description": "Deposit label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 73
+          "column": 5,
+          "line": 44
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.depositLabel",
         "start": {
-          "column": 16,
-          "line": 68
+          "column": 18,
+          "line": 39
         }
       },
       {
         "defaultMessage": "!!!Spending password",
         "description": "Placeholder for \"spending password\"",
         "end": {
-          "column": 3,
-          "line": 79
+          "column": 5,
+          "line": 50
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
-          "column": 31,
-          "line": 74
+          "column": 33,
+          "line": 45
         }
       },
       {
         "defaultMessage": "!!!Spending password",
         "description": "Label for \"spending password\"",
         "end": {
-          "column": 3,
-          "line": 85
+          "column": 5,
+          "line": 56
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
-          "column": 25,
-          "line": 80
+          "column": 27,
+          "line": 51
         }
       },
       {
         "defaultMessage": "!!!Confirm",
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 91
+          "column": 5,
+          "line": 62
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
-          "column": 22,
-          "line": 86
+          "column": 24,
+          "line": 57
         }
       },
       {
         "defaultMessage": "!!!Cancel",
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 97
+          "column": 5,
+          "line": 68
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
-          "column": 21,
-          "line": 92
+          "column": 23,
+          "line": 63
         }
       },
       {
         "defaultMessage": "!!!Calculating fees",
         "description": "\"Calculating fees\" message in the \"confirmation\" dialog.",
         "end": {
-          "column": 3,
-          "line": 102
+          "column": 5,
+          "line": 73
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
         "start": {
-          "column": 19,
-          "line": 98
+          "column": 21,
+          "line": 69
         }
       },
       {
         "defaultMessage": "!!!Calculating deposit",
         "description": "\"Calculating deposit\" message in the \"confirmation\" dialog.",
         "end": {
-          "column": 3,
-          "line": 107
+          "column": 5,
+          "line": 79
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit",
         "start": {
-          "column": 22,
-          "line": 103
+          "column": 24,
+          "line": 74
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.json"
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.json"
   },
   {
     "descriptors": [
@@ -4818,6 +4818,25 @@
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!The selected stake pool will become oversaturated by {oversaturationPercentage}%, which will reduce future rewards for all delegators to that pool.",
+        "description": "Warning shown if pool is going to be saturated if delegation happens",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/OversaturationText.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.oversaturationWarning",
+        "start": {
+          "column": 25,
+          "line": 14
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/OversaturationText.json"
   },
   {
     "descriptors": [
@@ -7848,6 +7867,264 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
+        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/components/voting/voting-info/AppStore.messages.js",
+        "id": "voting.info.androidAppButtonUrl",
+        "start": {
+          "column": 23,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!https://apps.apple.com/in/app/catalyst-voting/id1517473397",
+        "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/voting/voting-info/AppStore.messages.js",
+        "id": "voting.info.appleAppButtonUrl",
+        "start": {
+          "column": 21,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/AppStore.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fund{currentVotingFundNumber}",
+        "description": "Current fund name",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
+        "id": "voting.currentFund.name",
+        "start": {
+          "column": 8,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!End of voting:",
+        "description": "Headline for end date",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
+        "id": "voting.currentFund.headingForEndDate",
+        "start": {
+          "column": 21,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!View results",
+        "description": "View resuls link label for Fund{currentVotingFundNumber}",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
+        "id": "voting.currentFund.viewResultsLinkLabel",
+        "start": {
+          "column": 24,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "https://cardano.ideascale.com/a/pages/results",
+        "description": "View results from Fund{currentVotingFundNumber}",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.js",
+        "id": "voting.currentFund.viewResultsLinkURL",
+        "start": {
+          "column": 22,
+          "line": 20
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/CurrentFund.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Project Catalyst",
+        "description": "Headline Project Catalyst",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.catalyst.heading",
+        "start": {
+          "column": 11,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Decide which innovative ideas for Cardano will receive funding.",
+        "description": "Description Project Catalyst",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.catalyst.descriptionRow1",
+        "start": {
+          "column": 19,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!{reward} worth of ada rewards will be distributed between ada holders who register their vote.",
+        "description": "Description Project Catalyst",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.catalyst.descriptionRow2",
+        "start": {
+          "column": 19,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more link label for registration steps",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.info.learnMoreLinkLabel",
+        "start": {
+          "column": 22,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!https://cardano.ideascale.com/a/index",
+        "description": "Learn more link url for registration steps",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.info.learnMoreLinkUrl",
+        "start": {
+          "column": 20,
+          "line": 27
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/Headline.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fund{nextVotingFundNumber}",
+        "description": "Regiter to fund name",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.name",
+        "start": {
+          "column": 8,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Snapshot date:",
+        "description": "Voting info snapshot date label",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.dateLabel",
+        "start": {
+          "column": 13,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow these steps to vote:",
+        "description": "Steps to follow title",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.stepsTitle",
+        "start": {
+          "column": 14,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Download the Catalyst Voting app on your smartphone",
+        "description": "First step to follow in order to vote",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.step1CheckBoxLabel",
+        "start": {
+          "column": 22,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.",
+        "description": "Second step to follow in order to vote",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.step2CheckBoxLabel",
+        "start": {
+          "column": 22,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Register to vote",
+        "description": "Button Label for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.registerToVoteButtonLabel",
+        "start": {
+          "column": 15,
+          "line": 31
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!You can only use one wallet when registering. To maximize rewards and voting power, choose the wallet with the largest balance.",
         "description": "Description on the voting registration \"choose wallet\" step.",
         "end": {
@@ -8096,17 +8373,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please enter a PIN for your Fund6 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
+        "defaultMessage": "!!!Please enter a PIN for your Fund{nextVotingFundNumber} voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 27
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.description",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 21
         }
       },
       {
@@ -8114,13 +8391,13 @@
         "description": "Reminder on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 33
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.reminder",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 28
         }
       },
       {
@@ -8128,13 +8405,13 @@
         "description": "Label for pin code input on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.enterPinCodeLabel",
         "start": {
           "column": 21,
-          "line": 31
+          "line": 34
         }
       },
       {
@@ -8142,13 +8419,13 @@
         "description": "Label for repeat pin code on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel",
         "start": {
           "column": 22,
-          "line": 37
+          "line": 40
         }
       },
       {
@@ -8156,13 +8433,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 50
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode",
         "start": {
           "column": 18,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -8170,13 +8447,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 56
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode",
         "start": {
           "column": 24,
-          "line": 48
+          "line": 51
         }
       },
       {
@@ -8184,13 +8461,13 @@
         "description": "Label for continue button on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 62
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 54
+          "line": 57
         }
       }
     ],
@@ -8203,27 +8480,41 @@
         "description": "Qr code title on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeTitle",
         "start": {
           "column": 15,
-          "line": 12
+          "line": 13
         }
       },
       {
-        "defaultMessage": "!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and use the PIN to complete the voting registration process.",
-        "description": "Qr code description of use on the voting registration \"qr code\" step.",
+        "defaultMessage": "!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and enter your PIN to complete the voting registration process.",
+        "description": "Part 1 of Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
-        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription1",
         "start": {
-          "column": 21,
-          "line": 17
+          "column": 22,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Your registration remains valid across all Catalyst funding rounds. Ensure that you save your QR code and PIN so you can reconnect your wallet to the voting app if you are logged out, or if you want to connect a new device.",
+        "description": "Part 2 of Qr code description of use on the voting registration \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription2",
+        "start": {
+          "column": 22,
+          "line": 25
         }
       },
       {
@@ -8231,13 +8522,13 @@
         "description": "Qr code warning on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 37
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeWarning",
         "start": {
           "column": 17,
-          "line": 24
+          "line": 32
         }
       },
       {
@@ -8245,27 +8536,27 @@
         "description": "First checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 30
+          "line": 38
         }
       },
       {
-        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund6.",
+        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund{nextVotingFundNumber}.",
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 51
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 37
+          "line": 45
         }
       },
       {
@@ -8273,13 +8564,13 @@
         "description": "\"Close\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 57
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 52
         }
       },
       {
@@ -8287,13 +8578,13 @@
         "description": "\"Save as PDF\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 63
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel",
         "start": {
           "column": 24,
-          "line": 50
+          "line": 58
         }
       }
     ],
@@ -8302,17 +8593,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund6 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
+        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund{nextVotingFundNumber} voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -8320,13 +8611,13 @@
         "description": "Label for continue button on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -8334,13 +8625,13 @@
         "description": "Fees label on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.feesLabel",
         "start": {
           "column": 13,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -8348,13 +8639,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -8362,13 +8653,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -8376,13 +8667,13 @@
         "description": "\"Calculating fees\" message in the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.calculatingFees",
         "start": {
           "column": 19,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -8390,13 +8681,13 @@
         "description": "\"Learn more\" link on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learnMoreLink",
         "start": {
           "column": 17,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -8404,13 +8695,13 @@
         "description": "Learn more\" link URL on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learntMoreLinkUrl",
         "start": {
           "column": 21,
-          "line": 64
+          "line": 65
         }
       }
     ],
@@ -8419,31 +8710,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cancel Fund6 voting registration?",
+        "defaultMessage": "!!!Cancel Fund{nextVotingFundNumber} voting registration?",
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.headline",
         "start": {
           "column": 12,
-          "line": 10
+          "line": 11
         }
       },
       {
-        "defaultMessage": "!!!Are you sure that you want to cancel Fund6 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
+        "defaultMessage": "!!!Are you sure that you want to cancel Fund{nextVotingFundNumber} voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.content",
         "start": {
           "column": 11,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -8451,13 +8742,13 @@
         "description": "\"Cancel registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -8465,13 +8756,13 @@
         "description": "\"Continue registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.button.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 30
+          "line": 31
         }
       }
     ],
@@ -8480,17 +8771,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register for Fund6 voting",
+        "defaultMessage": "!!!Register for Fund{nextVotingFundNumber} voting",
         "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog.js",
         "id": "voting.votingRegistration.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -8498,13 +8789,13 @@
         "description": "Sub title for voting registration",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog.js",
         "id": "voting.votingRegistration.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 21
+          "line": 22
         }
       }
     ],
@@ -8574,274 +8865,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register to vote on Fund6",
-        "description": "Headline for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.heading",
-        "start": {
-          "column": 11,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!Fund6 Voting Registration Ended",
-        "description": "Headline for ended voting registration",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.headingForEndedRegistration",
-        "start": {
-          "column": 31,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund6 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund6, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund6 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
-        "description": "Description for ended voting registration",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.descriptionForEndedRegistration",
-        "start": {
-          "column": 35,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!Decide which innovative ideas for Cardano will receive funding.",
-        "description": "Info step title 2 for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.stepTitle1",
-        "start": {
-          "column": 14,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!$520.000 worth of ada rewards will be distributed between ada holders who register their vote.",
-        "description": "Info step title 2 for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.stepTitle2",
-        "start": {
-          "column": 14,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Please read the",
-        "description": "Learn more link previous label",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMorePreviousLabel",
-        "start": {
-          "column": 26,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!for more information.",
-        "description": "Learn more link next label",
-        "end": {
-          "column": 3,
-          "line": 61
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreNextLabel",
-        "start": {
-          "column": 22,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Learn more link label for registration steps",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkLabel",
-        "start": {
-          "column": 22,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!Fund6 FAQs",
-        "description": "Learn more link label for ended registration",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkLabelForEndedRegistration",
-        "start": {
-          "column": 42,
-          "line": 67
-        }
-      },
-      {
-        "defaultMessage": "!!!https://cardano.ideascale.com/a/index",
-        "description": "Learn more link url for registration steps",
-        "end": {
-          "column": 3,
-          "line": 76
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkUrl",
-        "start": {
-          "column": 20,
-          "line": 72
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763",
-        "description": "Learn more link url for ended registration",
-        "end": {
-          "column": 3,
-          "line": 82
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkUrlForEndedRegistration",
-        "start": {
-          "column": 40,
-          "line": 77
-        }
-      },
-      {
-        "defaultMessage": "!!!Download the Catalyst Voting app on your smartphone",
-        "description": "bottomContentTitle for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 87
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.bottomContentTitle",
-        "start": {
-          "column": 22,
-          "line": 83
-        }
-      },
-      {
-        "defaultMessage": "!!!To register to vote for Catalyst Fund6 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
-        "description": "bottomContentDescription for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 93
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.bottomContentDescription",
-        "start": {
-          "column": 28,
-          "line": 88
-        }
-      },
-      {
-        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund6 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
-        "description": "bottomContentDescription for ended registration",
-        "end": {
-          "column": 3,
-          "line": 99
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.bottomContentDescriptionForEndedRegistration",
-        "start": {
-          "column": 48,
-          "line": 94
-        }
-      },
-      {
-        "defaultMessage": "!!!I have installed the Catalyst Voting app",
-        "description": "checkboxLabel for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 104
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.checkboxLabel",
-        "start": {
-          "column": 17,
-          "line": 100
-        }
-      },
-      {
-        "defaultMessage": "!!!Register to vote",
-        "description": "Button Label for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 109
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.buttonLabel",
-        "start": {
-          "column": 15,
-          "line": 105
-        }
-      },
-      {
-        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
-        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
-        "end": {
-          "column": 3,
-          "line": 115
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.androidAppButtonUrl",
-        "start": {
-          "column": 23,
-          "line": 110
-        }
-      },
-      {
-        "defaultMessage": "!!!https://apps.apple.com/in/app/catalyst-voting/id1517473397",
-        "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
-        "end": {
-          "column": 3,
-          "line": 121
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.appleAppButtonUrl",
-        "start": {
-          "column": 21,
-          "line": 116
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/VotingInfo.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Voting registration for Fund6 is not available as you currently do not have any Shelley-compatible wallets.",
+        "defaultMessage": "!!!Voting registration for Fund{nextVotingFundNumber} is not available as you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the voting info page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/voting/VotingNoWallets.js",
         "id": "voting.info.noWallets.headLine",
         "start": {
           "column": 12,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -8849,13 +8883,13 @@
         "description": "\"No wallets\" instructions on the voting info page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/voting/VotingNoWallets.js",
         "id": "voting.info.noWallets.instructions",
         "start": {
           "column": 16,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -8863,13 +8897,13 @@
         "description": "Label for \"Create New Wallet\" button on the voting info page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/VotingNoWallets.js",
         "id": "voting.info.noWallets.createWalletButtonLabel",
         "start": {
           "column": 27,
-          "line": 24
+          "line": 25
         }
       }
     ],
@@ -8882,27 +8916,27 @@
         "description": "Headline for the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 25
         },
         "file": "source/renderer/app/components/voting/VotingUnavailable.js",
         "id": "voting.unavailable.heading",
         "start": {
           "column": 11,
-          "line": 17
+          "line": 21
         }
       },
       {
-        "defaultMessage": "!!!Project Catalyst Fund5 has now ended. Fund6 is currently in preparation, voting registration is not available yet.",
+        "defaultMessage": "!!!Project Catalyst Fund{currentVotingFundNumber} has now ended. Fund{nextVotingFundNumber} is currently in preparation, voting registration is not available yet.",
         "description": "First paragraph on the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 31
         },
         "file": "source/renderer/app/components/voting/VotingUnavailable.js",
         "id": "voting.unavailable.paragraph1",
         "start": {
           "column": 14,
-          "line": 22
+          "line": 26
         }
       },
       {
@@ -8910,13 +8944,13 @@
         "description": "Second paragraph on the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 37
         },
         "file": "source/renderer/app/components/voting/VotingUnavailable.js",
         "id": "voting.unavailable.paragraph2",
         "start": {
           "column": 14,
-          "line": 28
+          "line": 32
         }
       },
       {
@@ -8924,13 +8958,13 @@
         "description": "First link text on the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 42
         },
         "file": "source/renderer/app/components/voting/VotingUnavailable.js",
         "id": "voting.unavailable.link1Text",
         "start": {
           "column": 13,
-          "line": 34
+          "line": 38
         }
       },
       {
@@ -8938,13 +8972,13 @@
         "description": "Second link text on the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 47
         },
         "file": "source/renderer/app/components/voting/VotingUnavailable.js",
         "id": "voting.unavailable.link2Text",
         "start": {
           "column": 13,
-          "line": 39
+          "line": 43
         }
       },
       {
@@ -8952,13 +8986,13 @@
         "description": "First link URL on the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 52
         },
         "file": "source/renderer/app/components/voting/VotingUnavailable.js",
         "id": "voting.unavailable.link1Url",
         "start": {
           "column": 12,
-          "line": 44
+          "line": 48
         }
       },
       {
@@ -8966,13 +9000,13 @@
         "description": "Second link URL on the \"Voting unavailable\" screen",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 57
         },
         "file": "source/renderer/app/components/voting/VotingUnavailable.js",
         "id": "voting.unavailable.link2Url",
         "start": {
           "column": 12,
-          "line": 49
+          "line": 53
         }
       }
     ],
@@ -18747,7 +18781,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Fund{fundNumber} Voting Registration",
+        "defaultMessage": "!!!Fund{nextVotingFundNumber} Voting Registration",
         "description": "PDF title",
         "end": {
           "column": 3,
