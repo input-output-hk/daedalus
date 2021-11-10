@@ -162,6 +162,7 @@ export default class WalletTransactions extends Component<Props, State> {
               dateFormat: currentDateFormat,
               onFilter: this.onFilter,
               numberFormat: currentNumberFormat,
+              isDisabled: isFilterDisabled,
             }}
           />
           {walletTransactions}
