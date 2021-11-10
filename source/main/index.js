@@ -161,6 +161,32 @@ const onAppReady = async () => {
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
+
+  buildAppMenus(mainWindow, cardanoNode, locale, {
+    isNavigationEnabled: false,
+  });
+
+  enableApplicationMenuNavigationChannel.onReceive(
+    () =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isNavigationEnabled: true,
+        });
+        resolve();
+      })
+  );
+
+  rebuildApplicationMenu.onReceive(
+    (data) =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isNavigationEnabled: data.isNavigationEnabled,
+        });
+        mainWindow.updateTitle(locale);
+        resolve();
+      })
+  );
+
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -170,7 +196,6 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
-
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
   if (isWatchMode) {
@@ -207,37 +232,6 @@ const onAppReady = async () => {
     event.preventDefault();
     await safeExit();
   });
-
-  console.log('=> index.js Disabling menus');
-  buildAppMenus(mainWindow, cardanoNode, locale, {
-    isNavigationEnabled: false,
-  });
-
-  await enableApplicationMenuNavigationChannel.onReceive(
-    () =>
-      new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: true,
-        });
-        resolve();
-      })
-  );
-
-  await rebuildApplicationMenu.onReceive(
-    (data) =>
-      new Promise((resolve) => {
-        locale = getLocale(network);
-        console.log(
-          '=> index.js calling buildAppMenus => isNavigationEnabled =',
-          data.isNavigationEnabled
-        );
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: data.isNavigationEnabled,
-        });
-        mainWindow.updateTitle(locale);
-        resolve();
-      })
-  );
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
