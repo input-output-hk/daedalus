@@ -1,0 +1,29 @@
+.overrideButton {
+  font-size: 14px;
+  font-weight: 500;
+  height: 36px;
+  line-height: 1.43;
+  min-width: 160px;
+  padding: 8px 32px;
+  width: auto;
+}
+
+.labelBlock {
+  display: flex;
+  justify-content: center;
+
+  & .externalLinkIcon {
+    margin-left: 4px;
+  }
+}
+
+.externalLinkIcon {
+  & > svg {
+    height: 8px;
+    width: 8px;
+
+    & > path {
+      fill: currentColor;
+    }
+  }
+}

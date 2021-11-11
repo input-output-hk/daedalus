@@ -7,13 +7,14 @@ import {
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
 } from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import VotingInfo from '../../components/voting/VotingInfo';
+import VotingInfo from '../../components/voting/voting-info/VotingInfo';
 import VotingNoWallets from '../../components/voting/VotingNoWallets';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import VotingRegistrationDialog from '../../components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
+import { VotingFooterLinks } from '../../components/voting/VotingFooterLinks';
 
 type Props = InjectedProps;
 
@@ -26,61 +27,67 @@ export default class VotingRegistrationPage extends Component<Props> {
     this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
   };
 
-  render() {
-    const { actions, stores } = this.props;
-    const { app, networkStatus, uiDialogs, wallets, voting, profile } = stores;
-    const { openExternalLink } = app;
+  getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
+    const { app, networkStatus, wallets, voting, profile } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { isRegistrationEnded } = voting;
-    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
-
-    const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
-      VotingRegistrationDialog
-    );
+    const { openExternalLink } = app;
 
     if (
       !IS_VOTING_REGISTRATION_AVAILABLE ||
       (!isSynced && !isVotingRegistrationDialogOpen)
     ) {
       return (
-        <Layout>
-          <VerticalFlexContainer>
-            <VotingUnavailable
-              syncPercentage={syncPercentage}
-              isVotingRegistrationAvailable={IS_VOTING_REGISTRATION_AVAILABLE}
-              onExternalLinkClick={openExternalLink}
-            />
-          </VerticalFlexContainer>
-        </Layout>
+        <VotingUnavailable
+          syncPercentage={syncPercentage}
+          isVotingRegistrationAvailable={IS_VOTING_REGISTRATION_AVAILABLE}
+          onExternalLinkClick={openExternalLink}
+        />
       );
     }
 
     if (!wallets.allWallets.length) {
       return (
-        <Layout>
-          <VotingNoWallets
-            onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
-            minVotingFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
-          />
-        </Layout>
+        <VotingNoWallets
+          onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
+          minVotingFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
+        />
       );
     }
+
+    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
+    return (
+      <VotingInfo
+        currentLocale={currentLocale}
+        currentDateFormat={currentDateFormat}
+        currentTimeFormat={currentTimeFormat}
+        isRegistrationEnded={isRegistrationEnded}
+        onRegisterToVoteClick={() =>
+          this.props.actions.dialogs.open.trigger({
+            dialog: VotingRegistrationDialog,
+          })
+        }
+        onExternalLinkClick={openExternalLink}
+      />
+    );
+  };
+
+  render() {
+    const { stores } = this.props;
+    const { app, uiDialogs } = stores;
+    const { openExternalLink } = app;
+
+    const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
+      VotingRegistrationDialog
+    );
+
+    const innerContent = this.getInnerContent(isVotingRegistrationDialogOpen);
 
     return (
       <Layout>
         <VerticalFlexContainer>
-          <VotingInfo
-            currentLocale={currentLocale}
-            currentDateFormat={currentDateFormat}
-            currentTimeFormat={currentTimeFormat}
-            isRegistrationEnded={isRegistrationEnded}
-            onRegisterToVoteClick={() =>
-              actions.dialogs.open.trigger({
-                dialog: VotingRegistrationDialog,
-              })
-            }
-            onExternalLinkClick={openExternalLink}
-          />
+          {innerContent}
+          <VotingFooterLinks onClickExternalLink={openExternalLink} />
         </VerticalFlexContainer>
 
         {isVotingRegistrationDialogOpen && (
