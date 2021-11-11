@@ -68,6 +68,7 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     onOpenExternalLink,
     currentTheme,
     selectedPool: preselectedPool,
+    onContinue,
     selectedWallet,
     onClose,
     onBack,
@@ -103,9 +104,9 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     if (preselectedPool && preselectedPool.id) handleSelect(preselectedPool.id);
   }, [preselectedPool]);
 
-  const onContinue = useCallback(() => {
-    props.onContinue();
-  }, [props.onContinue]);
+  // const onContinue = useCallback(() => {
+  //   props.onContinue();
+  // }, [props.onContinue]);
 
   const {
     name: selectedWalletName,
