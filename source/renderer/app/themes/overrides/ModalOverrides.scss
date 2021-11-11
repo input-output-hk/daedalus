@@ -1,9 +1,8 @@
 @import '../mixins/overlay-backdrop';
 
 .overlay {
-  @include overlay-backrop;
-  overflow: hidden;
   z-index: 100;
+  @include overlay-backrop;
 }
 
 .modal {
@@ -22,11 +21,5 @@
         color: var(--theme-dialog-choice-tabs-text-color-active);
       }
     }
-  }
-}
-
-:global {
-  .ReactModal__Body--open {
-    overflow: hidden;
   }
 }

@@ -11,6 +11,7 @@ import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePo
 import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
+
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
@@ -25,7 +26,6 @@ type Props = {
   onSelectWallet: Function,
   onSelectPool: Function,
   isWalletAcceptable: Function,
-  maxDelegationFunds: number,
   stepsList: Array<string>,
   wallets: Array<Wallet>,
   minDelegationFunds: number,
@@ -43,25 +43,6 @@ type Props = {
   getStakePoolById: Function,
   hwDeviceStatus: HwDeviceStatus,
   isTrezor: boolean,
-};
-
-const getOversaturationPercentage = (
-  selectedWallet: ?Wallet,
-  selectedPool: ?StakePool,
-  maxDelegationFunds: number
-): number => {
-  if (
-    !selectedPool ||
-    !selectedWallet ||
-    (selectedWallet.lastDelegatedStakePoolId ||
-      selectedWallet.delegatedStakePoolId) === selectedPool.id
-  )
-    return 0;
-
-  const percentageIncrease = Number(
-    (100 / maxDelegationFunds) * selectedWallet.availableAmount
-  );
-  return selectedPool.saturation + percentageIncrease - 100;
 };
 
 @observer
@@ -107,15 +88,9 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       getStakePoolById,
       hwDeviceStatus,
       isTrezor,
-      maxDelegationFunds,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
-    const oversaturationPercentage = getOversaturationPercentage(
-      selectedWallet,
-      selectedPool,
-      maxDelegationFunds
-    );
 
     if (isDisabled) {
       return (
@@ -157,8 +132,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onClose={onClose}
             onBack={onBack}
             onSelectPool={onSelectPool}
-            onContinue={onContinue}
-            oversaturationPercentage={oversaturationPercentage}
           />
         );
         break;
@@ -177,7 +150,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             hwDeviceStatus={hwDeviceStatus}
             onExternalLinkClick={onOpenExternalLink}
             isTrezor={isTrezor}
-            oversaturationPercentage={oversaturationPercentage}
           />
         );
         break;

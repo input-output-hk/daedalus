@@ -403,7 +403,6 @@
   "staking.delegationSetup.confirmation.step.dialog.depositLabel": "デポジット",
   "staking.delegationSetup.confirmation.step.dialog.description": "<span>{selectedWalletName}</span>ウォレットの委任先が<span>「{selectedPoolTicker}」</span>ステークプールであることを確認してください。",
   "staking.delegationSetup.confirmation.step.dialog.feesLabel": "手数料",
-  "staking.delegationSetup.confirmation.step.dialog.oversaturationWarning": "選択したステークプールに委任すると飽和率が{oversaturationPercentage}%になり、このプールへのすべての委任者が今後受け取る報酬が減少します。",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel": "送信時パスワード",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder": "パスワードを入力してください",
   "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel": "ステークプールID",
