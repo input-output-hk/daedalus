@@ -314,7 +314,7 @@
   "settings.menu.support.link.label": "Support",
   "settings.menu.termsOfUse.link.label": "Terms of service",
   "settings.menu.wallets.link.label": "Wallets",
-  "settings.security.discreetMode.description": "This mode hides all sensetive data from your screen, replacing it with astericses",
+  "settings.security.discreetMode.description": "This mode hides all sensitive data from your screen, replacing it with astericses",
   "settings.security.discreetMode.title": "Discreet mode",
   "settings.security.openInDiscreetMode.description": "Daedalus will start with discreet mode ON",
   "settings.security.openInDiscreetMode.title": "Start app in discreet mode",
