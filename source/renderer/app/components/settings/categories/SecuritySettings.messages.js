@@ -11,19 +11,19 @@ export default defineMessages({
   discreetModeDescription: {
     id: 'settings.security.discreetMode.description',
     defaultMessage:
-      '!!!This mode hides all sensitive data from your screen, replacing it with astericses',
+      '!!!This mode uses asterisks to hide sensitive data on the screen',
     description:
       'Description for the "Discreet mode" setting in the security category.',
   },
   openInDiscreetModeTitle: {
     id: 'settings.security.openInDiscreetMode.title',
-    defaultMessage: '!!!Start app in discreet mode',
+    defaultMessage: '!!!Start the application in Discreet mode',
     description:
       'Title for the "Open in discreet mode" setting in the security category.',
   },
   openInDiscreetModeDescription: {
     id: 'settings.security.openInDiscreetMode.description',
-    defaultMessage: '!!!Daedalus will start with discreet mode ON',
+    defaultMessage: '!!!Daedalus will start with Discreet mode enabled',
     description:
       'Description for the "Open in discreet mode" setting in the security category.',
   },
