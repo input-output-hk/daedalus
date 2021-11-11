@@ -2870,6 +2870,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Discreet mode",
+        "description": "Title for the \"Discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.discreetMode.title",
+        "start": {
+          "column": 21,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!This mode hides all sensetive data from your screen, replacing it with astericses",
+        "description": "Description for the \"Discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.discreetMode.description",
+        "start": {
+          "column": 27,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Start app in discreet mode",
+        "description": "Title for the \"Open in discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.openInDiscreetMode.title",
+        "start": {
+          "column": 27,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus will start with discreet mode ON",
+        "description": "Description for the \"Open in discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.openInDiscreetMode.description",
+        "start": {
+          "column": 33,
+          "line": 24
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/SecuritySettings.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!The {link} is an off-chain metadata server that enables the fast loading of stake pool details. Stake pools are also curated and each server has a different curation policy.",
         "description": "description for the Stake Pools settings page.",
         "end": {
@@ -3351,12 +3412,26 @@
         "description": "Label for the \"General\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 9
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.general.link.label",
         "start": {
           "column": 11,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Security",
+        "description": "Label for the \"Security\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
+        "id": "settings.menu.security.link.label",
+        "start": {
+          "column": 12,
           "line": 10
         }
       },
@@ -3367,7 +3442,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.wallets.link.label",
         "start": {
           "column": 11,
@@ -3381,7 +3456,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.stakePools.link.label",
         "start": {
           "column": 14,
@@ -3395,7 +3470,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.support.link.label",
         "start": {
           "column": 11,
@@ -3409,7 +3484,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
@@ -3423,7 +3498,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.display.link.label",
         "start": {
           "column": 11,
@@ -3431,7 +3506,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/settings/menu/SettingsMenu.json"
+    "path": "source/renderer/app/components/settings/menu/SettingsMenu.messages.json"
   },
   {
     "descriptors": [

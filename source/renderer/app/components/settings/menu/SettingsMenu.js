@@ -1,43 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import SettingsMenuItem from './SettingsMenuItem';
 import styles from './SettingsMenu.scss';
 import { ROUTES } from '../../../routes-config';
-
-const messages = defineMessages({
-  general: {
-    id: 'settings.menu.general.link.label',
-    defaultMessage: '!!!General',
-    description: 'Label for the "General" link in the settings menu.',
-  },
-  wallets: {
-    id: 'settings.menu.wallets.link.label',
-    defaultMessage: '!!!Wallets',
-    description: 'Label for the "Wallets" link in the settings menu.',
-  },
-  stakePools: {
-    id: 'settings.menu.stakePools.link.label',
-    defaultMessage: '!!!Stake Pools',
-    description: 'Label for the "Support" link in the settings menu.',
-  },
-  support: {
-    id: 'settings.menu.support.link.label',
-    defaultMessage: '!!!Support',
-    description: 'Label for the "Support" link in the settings menu.',
-  },
-  termsOfUse: {
-    id: 'settings.menu.termsOfUse.link.label',
-    defaultMessage: '!!!Terms of service',
-    description: 'Label for the "Terms of service" link in the settings menu.',
-  },
-  display: {
-    id: 'settings.menu.display.link.label',
-    defaultMessage: '!!!Themes',
-    description: 'Label for the "Themes" link in the settings menu.',
-  },
-});
+import messages from './SettingsMenu.messages';
 
 type Props = {
   isFlight: boolean,
@@ -63,6 +31,12 @@ export default class SettingsMenu extends Component<Props> {
             onClick={() => onItemClick(ROUTES.SETTINGS.GENERAL)}
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
+          />
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.security)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.SECURITY)}
+            active={isActiveItem(ROUTES.SETTINGS.SECURITY)}
+            className="security"
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.wallets)}
