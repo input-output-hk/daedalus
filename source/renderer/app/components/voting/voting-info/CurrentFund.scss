@@ -1,0 +1,38 @@
+@import '../votingConfig';
+
+.component {
+  @extend %regularText;
+  align-items: start;
+  background-color: var(--theme-button-flat-background-color);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  height: 175px;
+  padding: 20px;
+  width: 271px;
+
+  .fundName {
+    color: var(--theme-button-flat-text-color);
+    font-family: var(--font-bold);
+    font-size: 18px;
+    line-height: 1.33;
+  }
+
+  .endDateBlock {
+    align-items: start;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-top: 11px;
+
+    .endDateText {
+      color: var(--theme-button-flat-text-color);
+      display: block;
+    }
+
+    .endDate {
+      color: var(--theme-button-flat-text-color);
+      font-family: var(--font-medium);
+    }
+  }
+}

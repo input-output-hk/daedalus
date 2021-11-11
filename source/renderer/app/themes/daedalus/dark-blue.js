@@ -439,7 +439,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-incident-overlay-button-color': '#e9f4fe',
     '--theme-news-feed-incident-overlay-scrollbar-thumb-background':
       'rgba(233, 244, 254, 0.3)',
-    '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hove':
+    '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hover':
       'rgba(233, 244, 254, 0.5)',
     '--theme-news-feed-incident-overlay-content-list-color':
       'rgba(233, 244, 254, 0.7)',
@@ -455,7 +455,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-incident-grey-overlay-button-color': '#ffffff',
     '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background':
       'rgba(255, 255, 255, 0.3)',
-    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hove':
+    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hover':
       'rgba(255, 255, 255, 0.5)',
     '--theme-news-feed-incident-grey-overlay-content-list-color':
       'rgba(255, 255, 255, 0.7)',
@@ -465,7 +465,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-incident-red-overlay-button-color': '#ffffff',
     '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background':
       'rgba(255, 255, 255, 0.3)',
-    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hove':
+    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hover':
       'rgba(255, 255, 255, 0.5)',
     '--theme-news-feed-incident-red-overlay-content-list-color':
       'rgba(255, 255, 255, 0.7)',
@@ -584,6 +584,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--rp-autocomplete-required-words-color': 'rgba(233, 244, 254, 0.5)',
+    '--rp-autocomplete-required-words-invert-color': 'rgba(233, 244, 254, 0.5)',
     '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
@@ -1015,6 +1016,13 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-header-background-color': '#263345',
     '--theme-transactions-header-texct-color': '#e9f4fe80',
   },
+  tokens: {
+    '--theme-tokens-list-header-text-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-tokens-list-header-expanded-background-color':
+      'rgba(233, 244, 254, 0.05)',
+    '--theme-tokens-list-header-expanded-background-color-hover':
+      'rgba(233, 244, 254, 0.03)',
+  },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',
     '--theme-uploader-border-color': 'rgba(233, 244, 254, 0.3)',
@@ -1050,6 +1058,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#e9f4fe',
     '--theme-voting-separator-color': 'rgba(233, 244, 254, 0.15)',
+    '--theme-voting-footer-separator-color': 'rgba(233, 244, 254, 0.5)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(38, 51, 69, 0.98)',

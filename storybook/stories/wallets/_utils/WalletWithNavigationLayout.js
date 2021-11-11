@@ -19,6 +19,7 @@ const walletStories = {
   send: 'Wallets|Send',
   receive: 'Wallets|Receive',
   transactions: 'Wallets|Transactions',
+  tokens: 'Wallets|Tokens',
   summary: 'Wallets|Summary',
   settings: 'Wallets|Settings',
 };

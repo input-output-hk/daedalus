@@ -1,6 +1,6 @@
 { mkDerivation, base, bytestring, containers, deepseq, doctest
 , gauge, ghc-prim, Glob, hashable, hedgehog, microlens
-, microlens-mtl, mtl, safe-exceptions, stdenv, stm, tasty
+, microlens-mtl, mtl, safe-exceptions, stdenv, lib, stm, tasty
 , tasty-hedgehog, text, transformers, unordered-containers
 , utf8-string, vector, lib
 }:

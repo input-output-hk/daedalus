@@ -112,12 +112,14 @@ export default class WalletSettings extends Component<Props> {
               )}
               hasSearch
             />
-            <div className={styles.disclaimer}>
-              <FormattedHTMLMessage
-                {...messages.currencyDisclaimer}
-                values={{ currencyApiName: currencyConfig.name }}
-              />
-            </div>
+            {currencyList.length > 0 && currencySelected && (
+              <div className={styles.disclaimer}>
+                <FormattedHTMLMessage
+                  {...messages.currencyDisclaimer}
+                  values={{ currencyApiName: currencyConfig.name }}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>

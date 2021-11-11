@@ -6,6 +6,11 @@ import {
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
 import { DEFAULT_DECIMAL_PRECISION } from '../config/assetsConfig';
+import {
+  DATE_ENGLISH_LL_MAP_OPTIONS,
+  TIME_LL_MAP_OPTIONS,
+  DATE_TIME_SEPARATOR_MAP,
+} from '../config/profileConfig';
 import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
@@ -49,12 +54,7 @@ export const formattedTokenWalletAmount = (
   isShort?: boolean
 ): string => {
   const { ticker } = metadata || {};
-  const decimalPrecision = decimals || DEFAULT_DECIMAL_PRECISION;
-  const divider = parseInt(
-    getMultiplierFromDecimalPlaces(decimalPrecision),
-    10
-  );
-  let formattedAmount = amount.dividedBy(divider);
+  let formattedAmount = formattedTokenDecimals(amount, decimals);
   if (isShort) {
     if (formattedAmount.isGreaterThanOrEqualTo(1000)) {
       /*
@@ -62,6 +62,8 @@ export const formattedTokenWalletAmount = (
        * E.G.: 1,000,000 prints '1M'
        */
       formattedAmount = shortNumber(formattedAmount);
+    } else if (formattedAmount.isZero()) {
+      return '0';
     } else if (formattedAmount.isLessThan(0.01)) {
       /*
        * Short formatting for < 0.01
@@ -82,6 +84,18 @@ export const formattedTokenWalletAmount = (
     formattedAmount += ` ${ticker}`;
   }
   return formattedAmount;
+};
+
+export const formattedTokenDecimals = (
+  amount: BigNumber,
+  decimals: ?number
+): BigNumber => {
+  const decimalPrecision = decimals || DEFAULT_DECIMAL_PRECISION;
+  const divider = parseInt(
+    getMultiplierFromDecimalPlaces(decimalPrecision),
+    10
+  );
+  return amount.dividedBy(divider);
 };
 
 // Symbol   Name                Scientific Notation
@@ -289,13 +303,30 @@ export const formattedDateTime = (
   const dateTimeMoment = moment(dateTime);
   const dateFormatted = dateTimeMoment.format(currentDateFormat);
   const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+  const dateTimeSeparator = DATE_TIME_SEPARATOR_MAP[currentDateFormat];
 
-  if (currentLocale === LOCALES.english) {
-    return `${dateFormatted}, ${timeFormatted}`;
-  }
-
-  return `${dateFormatted}${timeFormatted}`;
+  return `${dateFormatted}${dateTimeSeparator}${timeFormatted}`;
 };
 
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
   '1'.padEnd(decimalPlaces + 1, '0');
+
+export const mapToLongDateTimeFormat = ({
+  currentLocale,
+  currentDateFormat,
+  currentTimeFormat,
+}: {
+  currentLocale: Locale,
+  currentDateFormat: string,
+  currentTimeFormat: string,
+}) => {
+  const mappedDateFormat =
+    currentLocale === LOCALES.english
+      ? DATE_ENGLISH_LL_MAP_OPTIONS[currentDateFormat]
+      : currentDateFormat;
+
+  return {
+    currentDateFormat: mappedDateFormat,
+    currentTimeFormat: TIME_LL_MAP_OPTIONS[currentTimeFormat],
+  };
+};

@@ -6,6 +6,7 @@ import type {
   FormatMessageContextParams,
   Logger,
 } from '../../common/types/logging.types';
+import { toJS } from '../../common/utils/helper';
 
 const appName = 'daedalus';
 const electronProcess = 'ipcMain';
@@ -28,7 +29,7 @@ const environmentData = {
 const logToLevel = (level: string) => (message: string, data: ?Object) =>
   log[level](formatContext({ ...messageContext, level }), {
     message,
-    data,
+    data: toJS(data),
     environmentData,
   });
 

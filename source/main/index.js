@@ -35,7 +35,6 @@ import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
-import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import type {
   GenerateWalletMigrationReportRendererRequest,
   SetStateSnapshotLogMainResponse,
@@ -54,7 +53,7 @@ import {
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
-let cardanoNode: ?CardanoNode;
+let cardanoNode: CardanoNode;
 
 const {
   isDev,
@@ -154,52 +153,39 @@ const onAppReady = async () => {
   await installChromeExtensions(isDev);
 
   // Detect locale
-  let locale = getLocale(network);
+  const locale = getLocale(network);
   mainWindow = createMainWindow(
     locale,
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  const onCheckDiskSpace = ({
-    isNotEnoughDiskSpace,
-  }: CheckDiskSpaceResponse) => {
-    if (cardanoNode) {
-      if (isNotEnoughDiskSpace) {
-        if (
-          cardanoNode.state !== CardanoNodeStates.STOPPING &&
-          cardanoNode.state !== CardanoNodeStates.STOPPED
-        ) {
-          try {
-            cardanoNode.stop();
-          } catch (e) {} // eslint-disable-line
-        }
-      } else if (
-        cardanoNode.state !== CardanoNodeStates.STARTING &&
-        cardanoNode.state !== CardanoNodeStates.RUNNING
-      ) {
-        cardanoNode.restart();
-      }
-    }
-  };
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow, onCheckDiskSpace);
-  const onMainError = (error: string) => {
-    if (error.indexOf('ENOSPC') > -1) {
-      handleCheckDiskSpace();
-      return false;
-    }
-  };
-  mainErrorHandler(onMainError);
-  await handleCheckDiskSpace();
-
-  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
-
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
-  if (isWatchMode) {
-    // Connect to electron-connect server which restarts / reloads windows on file changes
-    client.create(mainWindow);
-  }
+  buildAppMenus(mainWindow, cardanoNode, locale, {
+    isNavigationEnabled: false,
+  });
+
+  enableApplicationMenuNavigationChannel.onReceive(
+    () =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isNavigationEnabled: true,
+        });
+        resolve();
+      })
+  );
+
+  rebuildApplicationMenu.onReceive(
+    (data) =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isNavigationEnabled: data.isNavigationEnabled,
+        });
+        mainWindow.updateTitle(locale);
+        resolve();
+      })
+  );
 
   setStateSnapshotLogChannel.onReceive(
     (data: SetStateSnapshotLogMainResponse) => {
@@ -223,6 +209,22 @@ const onAppReady = async () => {
 
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
+  const onMainError = (error: string) => {
+    if (error.indexOf('ENOSPC') > -1) {
+      handleCheckDiskSpace();
+      return false;
+    }
+  };
+  mainErrorHandler(onMainError);
+  await handleCheckDiskSpace();
+  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
+
+  if (isWatchMode) {
+    // Connect to electron-connect server which restarts / reloads windows on file changes
+    client.create(mainWindow);
+  }
+
   mainWindow.on('close', async (event) => {
     logger.info(
       'mainWindow received <close> event. Safe exiting Daedalus now.'
@@ -230,32 +232,6 @@ const onAppReady = async () => {
     event.preventDefault();
     await safeExit();
   });
-
-  buildAppMenus(mainWindow, cardanoNode, locale, {
-    isNavigationEnabled: false,
-  });
-
-  await enableApplicationMenuNavigationChannel.onReceive(
-    () =>
-      new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: true,
-        });
-        resolve();
-      })
-  );
-
-  await rebuildApplicationMenu.onReceive(
-    (data) =>
-      new Promise((resolve) => {
-        locale = getLocale(network);
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: data.isNavigationEnabled,
-        });
-        mainWindow.updateTitle(locale);
-        resolve();
-      })
-  );
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows

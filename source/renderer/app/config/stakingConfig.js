@@ -60,7 +60,7 @@ export const MIN_DELEGATION_FUNDS_LOG = Math.log(MIN_DELEGATION_FUNDS);
 export const INITIAL_DELEGATION_FUNDS = 1000;
 export const INITIAL_DELEGATION_FUNDS_LOG = Math.log(INITIAL_DELEGATION_FUNDS);
 export const INITIAL_DESIRED_POOLS_NUMBER = 150;
-export const CIRCULATING_SUPPLY = 31736470500;
+export const CIRCULATING_SUPPLY = 33284769718;
 export const ALL_WALLETS_SELECTION_ID = '0';
 
 // Dimensions
@@ -117,5 +117,6 @@ export const DELEGATION_ACTIONS: {
 export const IS_GRID_REWARDS_VIEW_AVAILABLE = !isMainnet && !isFlight;
 export const IS_RANKING_DATA_AVAILABLE = true;
 export const IS_SATURATION_DATA_AVAILABLE = true;
+export const IS_STAKING_INFO_PAGE_AVAILABLE = false;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds

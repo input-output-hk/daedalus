@@ -13,7 +13,10 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 export default class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
-  handleContinue = () => this.props.actions.wallets.restoreWallet.trigger();
+  handleContinue = () => {
+    this.props.actions.wallets.restoreWallet.trigger();
+    this.props.actions.wallets.restoreWalletEnd.trigger();
+  };
 
   handleChange = (param: string, field: Object) =>
     this.props.actions.wallets.restoreWalletSetConfig.trigger({

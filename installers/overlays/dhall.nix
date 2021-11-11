@@ -5,7 +5,7 @@
 , generic-random, haskeline, http-client, http-client-tls
 , http-types, lens-family-core, megaparsec, memory, mockery, mtl
 , network-uri, optparse-applicative, parsers, prettyprinter
-, prettyprinter-ansi-terminal, profunctors, QuickCheck
+, prettyprinter-ansi-terminal, profunctors, QuickCheck, lib
 , quickcheck-instances, repline, scientific, semigroups, serialise
 , spoon, stdenv, tasty, tasty-expected-failure, tasty-hunit
 , tasty-quickcheck, template-haskell, text, th-lift-instances
