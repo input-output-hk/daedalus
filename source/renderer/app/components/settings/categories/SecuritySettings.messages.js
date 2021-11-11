@@ -11,7 +11,7 @@ export default defineMessages({
   discreetModeDescription: {
     id: 'settings.security.discreetMode.description',
     defaultMessage:
-      '!!!This mode hides all sensetive data from your screen, replacing it with astericses',
+      '!!!This mode hides all sensitive data from your screen, replacing it with astericses',
     description:
       'Description for the "Discreet mode" setting in the security category.',
   },

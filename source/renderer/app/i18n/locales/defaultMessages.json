@@ -2884,7 +2884,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This mode hides all sensetive data from your screen, replacing it with astericses",
+        "defaultMessage": "!!!This mode hides all sensitive data from your screen, replacing it with astericses",
         "description": "Description for the \"Discreet mode\" setting in the security category.",
         "end": {
           "column": 3,
