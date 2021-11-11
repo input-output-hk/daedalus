@@ -33,6 +33,13 @@ import {
 import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import { introspectAddressChannel } from '../ipc/introspect-address';
 import { saveQRCodeImageChannel } from '../ipc/saveQRCodeImageChannel';
+import {
+  TESTNET_MAGIC,
+  SELFNODE_MAGIC,
+  STAGING_MAGIC,
+  MAINNET_MAGIC,
+  ALONZO_PURPLE_MAGIC,
+} from '../../../common/types/cardano-node.types';
 import type { AddressStyle } from '../../../common/types/address-introspection.types';
 import type { AssetToken } from '../api/assets/types';
 import type {
@@ -54,7 +61,6 @@ import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
-import { NetworkMagics } from '../../../common/types/cardano-node.types';
 
 /* eslint-disable consistent-return */
 
@@ -1025,12 +1031,28 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = async (address: string) => {
-    const { network } = this.environment;
-    const expectedNetworkTag = get(NetworkMagics, [network]);
+    const {
+      isMainnet,
+      isSelfnode,
+      isStaging,
+      isTestnet,
+      isAlonzoPurple,
+    } = this.environment;
+    let expectedNetworkTag: ?Array<?number> | ?number;
     const validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
     this.isAddressFromSameWallet = false;
 
-    if (!expectedNetworkTag) {
+    if (isMainnet) {
+      expectedNetworkTag = MAINNET_MAGIC;
+    } else if (isStaging) {
+      expectedNetworkTag = STAGING_MAGIC;
+    } else if (isTestnet) {
+      expectedNetworkTag = TESTNET_MAGIC;
+    } else if (isAlonzoPurple) {
+      expectedNetworkTag = ALONZO_PURPLE_MAGIC;
+    } else if (isSelfnode) {
+      expectedNetworkTag = SELFNODE_MAGIC;
+    } else {
       throw new Error('Unexpected environment');
     }
     try {

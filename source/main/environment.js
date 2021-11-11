@@ -7,7 +7,6 @@ import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
   evaluateNetwork,
   checkIsAlonzoPurple,
-  checkIsShelleyQA,
   checkIsDev,
   checkIsTest,
   checkIsProduction,
@@ -35,7 +34,6 @@ const isMainnet = checkIsMainnet(NETWORK);
 const isStaging = checkIsStaging(NETWORK);
 const isTestnet = checkIsTestnet(NETWORK);
 const isAlonzoPurple = checkIsAlonzoPurple(NETWORK);
-const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
@@ -77,7 +75,6 @@ export const environment: Environment = Object.assign(
     isStaging,
     isTestnet,
     isAlonzoPurple,
-    isShelleyQA,
     isSelfnode,
     isDevelopment,
     isWatchMode,
