@@ -30,7 +30,7 @@ let
       });
     };
   };
-  pkgs = localLib.iohkNix.pkgsDefault;
+  pkgs = import sources.nixpkgs {};
   pkgsNodeJS = import sources.nixpkgs { inherit system config; };
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
