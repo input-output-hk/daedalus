@@ -2884,11 +2884,11 @@
         }
       },
       {
-        "defaultMessage": "!!!This mode uses asterisks to hide sensitive data on the screen",
+        "defaultMessage": "!!!This mode uses asterisks to hide sensitive data",
         "description": "Description for the \"Discreet mode\" setting in the security category.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 16
         },
         "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
         "id": "settings.security.discreetMode.description",
@@ -2902,17 +2902,17 @@
         "description": "Title for the \"Open in discreet mode\" setting in the security category.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
         "id": "settings.security.openInDiscreetMode.title",
         "start": {
           "column": 27,
-          "line": 18
+          "line": 17
         }
       },
       {
-        "defaultMessage": "!!!Daedalus will start with Discreet mode enabled",
+        "defaultMessage": "!!!Daedalus will start with Discreet mode enabled by default",
         "description": "Description for the \"Open in discreet mode\" setting in the security category.",
         "end": {
           "column": 3,
@@ -2922,7 +2922,7 @@
         "id": "settings.security.openInDiscreetMode.description",
         "start": {
           "column": 33,
-          "line": 24
+          "line": 23
         }
       }
     ],
