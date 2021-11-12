@@ -38,6 +38,7 @@ import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
+import { DiscreetValue } from '../../features/discreet-mode';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -780,8 +781,10 @@ export default class WalletSendForm extends Component<Props, State> {
               <Fragment>
                 {walletAmount && (
                   <div className={styles.amountTokenTotal}>
-                    {intl.formatMessage(messages.ofLabel)}&nbsp;
-                    {formattedWalletAmount(walletAmount)}
+                    {intl.formatMessage(messages.ofLabel)}{' '}
+                    <DiscreetValue>
+                      {formattedWalletAmount(walletAmount)}
+                    </DiscreetValue>
                   </div>
                 )}
                 <div className={styles.adaAmountLabel}>

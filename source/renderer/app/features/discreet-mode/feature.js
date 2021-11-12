@@ -4,6 +4,7 @@ import { observable, action, runInAction } from 'mobx';
 import { Feature } from '../../utils/mobx-features/feature';
 import Request from '../../stores/lib/LocalizedRequest';
 import { DiscreetModeApi } from './api';
+import { SENSITIVE_DATA_SYMBOL } from './config';
 
 export class DiscreetMode extends Feature {
   api: DiscreetModeApi;
@@ -50,4 +51,20 @@ export class DiscreetMode extends Feature {
       this.openInDiscreetMode = nextSetting;
     });
   };
+
+  hideSensitiveData(data: string) {
+    if (!this.isDiscreetMode) {
+      return data;
+    }
+
+    const content = data.split(' ');
+
+    if (content.length <= 1) {
+      return SENSITIVE_DATA_SYMBOL;
+    }
+
+    const tickerSymbol = content.pop();
+
+    return `${SENSITIVE_DATA_SYMBOL} ${tickerSymbol}`;
+  }
 }

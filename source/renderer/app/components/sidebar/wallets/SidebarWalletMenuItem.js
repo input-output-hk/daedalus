@@ -10,6 +10,7 @@ import ProgressBar from '../../widgets/ProgressBar';
 import styles from './SidebarWalletMenuItem.scss';
 import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
+import { DiscreetValue } from '../../../features/discreet-mode';
 
 type Props = {
   title: string,
@@ -77,7 +78,11 @@ export default class SidebarWalletMenuItem extends Component<Props> {
               </div>
             )}
           </div>
-          <div className={styles.info}>{isRestoreActive ? '-' : info}</div>
+          <div className={styles.info}>
+            <DiscreetValue ticker={{ show: true }}>
+              {isRestoreActive ? '-' : info}
+            </DiscreetValue>
+          </div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
           {showLegacyBadge && (
             <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />

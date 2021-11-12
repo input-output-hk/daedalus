@@ -1,9 +1,10 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import ItemsDropdown from './ItemsDropdown';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { AssetToken } from '../../../api/assets/types';
+import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
 import styles from './AssetsDropdown.scss';
 
@@ -18,6 +19,7 @@ import styles from './AssetsDropdown.scss';
  */
 type Props = {
   assets?: Array<$Shape<AssetToken>>,
+  onSearch?: Function,
 };
 
 export const onSearchAssetsDropdown = (
@@ -44,31 +46,29 @@ export const onSearchAssetsDropdown = (
   });
 };
 
-export default class AssetsDropdown extends Component<Props> {
-  static defaultProps = {
-    onSearch: onSearchAssetsDropdown,
+export default function AssetsDropdown({
+  assets = [],
+  onSearch = onSearchAssetsDropdown,
+  ...props
+}: Props) {
+  const discreetModeFeature = useDiscreetModeFeature();
+  const ItemsDropdownProps = {
+    ...omit(props, ['wallets', 'options']),
+    onSearch,
   };
-
-  render() {
-    const { assets = [] } = this.props;
-    const props = omit(this.props, ['wallets', 'options']);
-    const formattedOptions = assets.map((asset) => {
-      const { uniqueId: value, metadata, quantity, decimals } = asset;
-      const detail = formattedTokenWalletAmount(quantity, metadata, decimals);
-      return {
-        label: (
-          <Asset
-            asset={asset}
-            className={styles.assetToken}
-            hidePopOver
-            small
-          />
-        ),
-        detail,
-        value,
-        asset,
-      };
-    });
-    return <ItemsDropdown options={formattedOptions} {...props} />;
-  }
+  const formattedOptions = assets.map((asset) => {
+    const { uniqueId: value, metadata, quantity, decimals } = asset;
+    const detail = discreetModeFeature.hideSensitiveData(
+      formattedTokenWalletAmount(quantity, metadata, decimals)
+    );
+    return {
+      label: (
+        <Asset asset={asset} className={styles.assetToken} hidePopOver small />
+      ),
+      detail,
+      value,
+      asset,
+    };
+  });
+  return <ItemsDropdown options={formattedOptions} {...ItemsDropdownProps} />;
 }

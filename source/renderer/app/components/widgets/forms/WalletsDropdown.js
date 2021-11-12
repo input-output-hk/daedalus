@@ -1,8 +1,9 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import WalletsDropdownLabel from './WalletsDropdownLabel';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import Wallet from '../../../domains/Wallet';
 import ItemsDropdown from './ItemsDropdown';
 
@@ -16,10 +17,11 @@ import ItemsDropdown from './ItemsDropdown';
  *
  */
 type Props = {
+  className?: string,
   getStakePoolById: Function,
   numberOfStakePools: number,
+  onSearch?: Function,
   wallets?: Array<$Shape<Wallet>>,
-  className?: string,
 };
 
 export const onSearchWalletsDropdown = (
@@ -33,37 +35,50 @@ export const onSearchWalletsDropdown = (
   });
 };
 
-export default class WalletsDropdown extends Component<Props> {
-  static defaultProps = {
-    onSearch: onSearchWalletsDropdown,
+export default function WalletsDropdown({
+  className,
+  getStakePoolById,
+  numberOfStakePools,
+  onSearch = onSearchWalletsDropdown,
+  wallets = [],
+  ...props
+}: Props) {
+  const discreetModeFeature = useDiscreetModeFeature();
+  const itemsDropdownProps = {
+    ...omit(props, ['wallets', 'options']),
+    onSearch,
   };
-  render() {
-    const { wallets = [], className } = this.props;
-    const props = omit(this.props, ['wallets', 'options']);
-    const formattedOptions = wallets.map((wallet) => {
-      const {
-        id: value,
-        amount,
-        isRestoring,
-        isSyncing,
-        restorationProgress: syncingProgress,
-      } = wallet;
-      const detail = !isRestoring ? formattedWalletAmount(amount) : null;
-      return {
-        label: <WalletsDropdownLabel wallet={wallet} {...props} />,
-        detail,
-        value,
-        walletName: wallet.name,
-        isSyncing,
-        syncingProgress,
-      };
-    });
-    return (
-      <ItemsDropdown
-        className={className}
-        options={formattedOptions}
-        {...props}
-      />
-    );
-  }
+  const formattedOptions = wallets.map((wallet) => {
+    const {
+      id: value,
+      amount,
+      isRestoring,
+      isSyncing,
+      restorationProgress: syncingProgress,
+    } = wallet;
+    const detail = !isRestoring
+      ? discreetModeFeature.hideSensitiveData(formattedWalletAmount(amount))
+      : null;
+    return {
+      label: (
+        <WalletsDropdownLabel
+          wallet={wallet}
+          getStakePoolById={getStakePoolById}
+          numberOfStakePools={numberOfStakePools}
+        />
+      ),
+      detail,
+      value,
+      walletName: wallet.name,
+      isSyncing,
+      syncingProgress,
+    };
+  });
+  return (
+    <ItemsDropdown
+      className={className}
+      options={formattedOptions}
+      {...itemsDropdownProps}
+    />
+  );
 }

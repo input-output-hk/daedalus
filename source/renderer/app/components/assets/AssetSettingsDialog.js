@@ -18,6 +18,7 @@ import {
   DEFAULT_DECIMAL_PRECISION,
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
+import { DiscreetValue } from '../../features/discreet-mode';
 
 const messages = defineMessages({
   title: {
@@ -180,16 +181,22 @@ export default class AssetSettingsDialog extends Component<Props, State> {
           <div className={styles.label}>
             {intl.formatMessage(messages.unformattedBalanceLabel)}
           </div>
-          <p>{formattedTokenWalletAmount(asset.quantity, null, 0)}</p>
+          <p>
+            <DiscreetValue>
+              {formattedTokenWalletAmount(asset.quantity, null, 0)}
+            </DiscreetValue>
+          </p>
           <div className={styles.label}>
             {intl.formatMessage(messages.formattedBalanceLabel)}
           </div>
           <p>
-            {formattedTokenWalletAmount(
-              asset.quantity,
-              asset.metadata,
-              decimals
-            )}
+            <DiscreetValue>
+              {formattedTokenWalletAmount(
+                asset.quantity,
+                asset.metadata,
+                decimals
+              )}
+            </DiscreetValue>
           </p>
           <Select
             options={options}

@@ -11,6 +11,7 @@ import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
+import { DiscreetValue } from '../../features/discreet-mode';
 
 type Props = {
   onLeftIconClick?: ?Function,
@@ -67,10 +68,12 @@ export default class TopBar extends Component<Props> {
           )}
         </span>
         <span className={styles.walletAmount}>
-          {
-            // show currency and use long format
-            isRestoreActive ? '-' : formattedWalletAmount(activeWallet.amount)
-          }
+          <DiscreetValue ticker={{ show: true }}>
+            {
+              // show currency and use long format
+              isRestoreActive ? '-' : formattedWalletAmount(activeWallet.amount)
+            }
+          </DiscreetValue>
         </span>
       </span>
     ) : null;
