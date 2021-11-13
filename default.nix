@@ -314,7 +314,7 @@ let
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
-    yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
+    yaml2json = pkgs.haskell.lib.addExtraLibrary (pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe") pkgs.haskellPackages.optparse-applicative;
 
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
