@@ -1,6 +1,6 @@
 { mkDerivation, base, bytestring, containers, deepseq, doctest
 , gauge, ghc-prim, Glob, hashable, hedgehog, microlens
-, microlens-mtl, mtl, safe-exceptions, stdenv, lib, stm, tasty
+, microlens-mtl, mtl, safe-exceptions, stdenv, stm, tasty
 , tasty-hedgehog, text, transformers, unordered-containers
 , utf8-string, vector
 }:
@@ -22,5 +22,5 @@ mkDerivation {
   ];
   homepage = "https://github.com/serokell/universum";
   description = "Custom prelude used in Serokell";
-  license = lib.licenses.mit;
+  license = stdenv.lib.licenses.mit;
 }

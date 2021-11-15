@@ -138,15 +138,6 @@ export async function CardanoWalletLauncher(
       logger.info('Launching Wallet with --token-metadata-server flag', {
         tokenMetadataServer,
       });
-
-      // RTS flags:
-      // 1) "-H4G -M6553M -c70"  16.0% peak RSS reduction and a sub-percentile CPU regression
-      // 2) "-H4G -M6553M"       18.5% peak RSS reduction and a second-best CPU regression
-      nodeConfig.rtsOpts = ['-H4G', '-M6553M', '-c70'];
-      logger.info('Launching Cardano Node with RTS flags', {
-        rtsFlags: nodeConfig.rtsOpts,
-      });
-
       merge(launcherConfig, {
         nodeConfig,
         tlsConfiguration,

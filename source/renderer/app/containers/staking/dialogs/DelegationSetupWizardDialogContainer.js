@@ -12,6 +12,7 @@ import {
 } from '../../../config/stakingConfig';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -155,9 +156,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.handleContinue();
   };
 
-  handleSelectPool = (poolId: string) => {
-    this._handleCalculateTransactionFee(poolId);
+  handleChoosePool = (poolId: string) => {
     this.setState({ selectedPoolId: poolId });
+  };
+
+  handleSelectPool = (pool: StakePool) => {
+    this._handleCalculateTransactionFee(pool.id);
+    this.handleContinue();
   };
 
   render() {
@@ -230,6 +235,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onContinue={this.handleContinue}
         onSelectWallet={this.handleSelectWallet}
         onSelectPool={this.handleSelectPool}
+        onThumbPoolSelect={this.handleChoosePool}
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}

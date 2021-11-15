@@ -1,7 +1,7 @@
 { mkDerivation, aeson, base, bytestring, containers, directory
 , filepath, foldl, github, Glob, hspec, lens-aeson, managed
 , megaparsec, microlens, network-uri, nsis, optional-args
-, optparse-applicative, optparse-generic, split, lib
+, optparse-applicative, optparse-generic, split, stdenv
 , system-filepath, temporary, text, turtle, universum, raw-strings-qq
 , unordered-containers, wreq, yaml, zip-archive
 }:
@@ -30,6 +30,5 @@ mkDerivation {
     system-filepath temporary text turtle universum yaml
   ];
   description = "Daedalus Installer Builder";
-
-  license = lib.licenses.asl20;
+  license = stdenv.lib.licenses.asl20;
 }

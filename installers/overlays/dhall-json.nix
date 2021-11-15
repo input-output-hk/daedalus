@@ -1,7 +1,7 @@
 { mkDerivation, aeson, aeson-pretty, ansi-terminal, base
 , bytestring, containers, dhall, exceptions, filepath, libyaml
 , optparse-applicative, prettyprinter, prettyprinter-ansi-terminal
-, scientific, stdenv, tasty, tasty-hunit, text, lib
+, scientific, stdenv, tasty, tasty-hunit, text
 , unordered-containers, vector, yaml
 }:
 mkDerivation {
@@ -25,5 +25,5 @@ mkDerivation {
     aeson base bytestring dhall tasty tasty-hunit text
   ];
   description = "Convert between Dhall and JSON or YAML";
-  license = lib.licenses.bsd3;
+  license = stdenv.lib.licenses.bsd3;
 }
