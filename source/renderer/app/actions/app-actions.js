@@ -19,4 +19,8 @@ export default class AppActions {
   // Daedalus Diagnostics dialog actions
   closeDaedalusDiagnosticsDialog: Action<any> = new Action();
   openDaedalusDiagnosticsDialog: Action<any> = new Action();
+
+  // Discreet mode actions
+  toggleDiscreetMode: Action<any> = new Action();
+  toggleOpenInDiscreetMode: Action<any> = new Action();
 }
