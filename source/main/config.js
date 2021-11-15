@@ -51,7 +51,6 @@ export type NodeConfig = {
     topologyFile: string,
   },
   signingKey?: string,
-  rtsOpts?: Array<string>,
 };
 
 /**

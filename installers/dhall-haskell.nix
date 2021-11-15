@@ -4,7 +4,7 @@
 , fetchgit, filepath, formatting, haskeline, http-client
 , http-client-tls, insert-ordered-containers, lens-family-core
 , memory, mtl, optparse-generic, parsers, prettyprinter
-, prettyprinter-ansi-terminal, repline, scientific, stdenv, tasty, lib
+, prettyprinter-ansi-terminal, repline, scientific, stdenv, tasty
 , tasty-hunit, text, text-format, transformers, trifecta, unordered-containers
 , vector
 }:
@@ -35,5 +35,5 @@ mkDerivation {
     tasty-hunit text vector text-format
   ];
   description = "A configuration language guaranteed to terminate";
-  license = lib.licenses.bsd3;
+  license = stdenv.lib.licenses.bsd3;
 }

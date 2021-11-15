@@ -20,7 +20,6 @@
 
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
 - Improved the Daedalus startup by avoiding unnecessary Cardano Node restarts ([PR 2716](https://github.com/input-output-hk/daedalus/pull/2716))
-- Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2734](https://github.com/input-output-hk/daedalus/pull/2734))
 - Updated README with solution steps for the nix SSL issue ([PR 2727](https://github.com/input-output-hk/daedalus/pull/2727))
 - Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))

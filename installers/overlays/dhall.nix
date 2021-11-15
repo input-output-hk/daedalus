@@ -5,7 +5,7 @@
 , generic-random, haskeline, http-client, http-client-tls
 , http-types, lens-family-core, megaparsec, memory, mockery, mtl
 , network-uri, optparse-applicative, parsers, prettyprinter
-, prettyprinter-ansi-terminal, profunctors, QuickCheck, lib
+, prettyprinter-ansi-terminal, profunctors, QuickCheck
 , quickcheck-instances, repline, scientific, semigroups, serialise
 , spoon, stdenv, tasty, tasty-expected-failure, tasty-hunit
 , tasty-quickcheck, template-haskell, text, th-lift-instances
@@ -40,5 +40,5 @@ mkDerivation {
     base bytestring containers directory gauge serialise text
   ];
   description = "A configuration language guaranteed to terminate";
-  license = lib.licenses.bsd3;
+  license = stdenv.lib.licenses.bsd3;
 }
