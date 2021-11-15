@@ -12,6 +12,7 @@ let
     passthru = { inherit test; };
   } ''
     export HOME=$NIX_BUILD_TOP
+    go env -w GO111MODULE=off
     mkdir -p $out/bin
     cp ${./darwin-launcher.go} darwin-launcher.go
     CGO_ENABLED=0 go build -a -o $out/bin/darwin-launcher
