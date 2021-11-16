@@ -36,7 +36,7 @@ const NotificationPopOver = ({
           <div className={styles.contentFooter}>
             <Button
               label={dismissLabel}
-              className={classNames(styles.dismissButton)}
+              className={styles.dismissButton}
               onClick={onDismiss}
             />
           </div>

@@ -12,6 +12,7 @@
   }
 
   .dismissButton {
+    background-color: rgba(250, 251, 252, 0.2);
     border-radius: 4px;
     font-family: var(--font-medium);
     font-size: 10px;
@@ -21,6 +22,10 @@
     padding: 4px 8px;
     text-transform: uppercase;
     width: auto;
+
+    &:hover {
+      background-color: rgba(250, 251, 252, 0.3);
+    }
   }
 
   &[data-placement='top'] {
