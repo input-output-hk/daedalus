@@ -20,6 +20,7 @@ import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shar
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
+import DiscreetToggle from '../../../source/renderer/app/components/widgets/discreet-mode/DiscreetToggle';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -202,5 +203,11 @@ storiesOf('Common|Widgets', module)
     <div>
       <NormalSwitch onChange={action('onChange')} />
       <NormalSwitch onChange={action('onChange')} checked />
+    </div>
+  ))
+  .add('DiscreetToggle', () => (
+    <div style={{ padding: 10 }}>
+      <DiscreetToggle onToggle={action('onChange')} isDiscreetMode />
+      <DiscreetToggle onToggle={action('onChange')} isDiscreetMode={false} />
     </div>
   ));

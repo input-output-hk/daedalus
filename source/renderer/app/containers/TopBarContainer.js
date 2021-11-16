@@ -1,8 +1,10 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { observer, inject } from 'mobx-react';
+import classnames from 'classnames';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
+import DiscreetToggle from '../components/widgets/discreet-mode/DiscreetToggle';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
@@ -12,109 +14,121 @@ import menuIconClosed from '../assets/images/menu-ic.inline.svg';
 import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
+import topBarStyles from '../components/layout/TopBar.scss';
+import { useDiscreetModeFeature } from '../features/discreet-mode';
 
-type Props = InjectedProps;
+const TopBarContainer = (
+  { actions, stores }: InjectedProps = { actions: null, stores: null }
+) => {
+  const {
+    sidebar,
+    app,
+    networkStatus,
+    wallets,
+    newsFeed,
+    appUpdate,
+    staking,
+  } = stores;
+  const {
+    isSynced,
+    syncPercentage,
+    isShelleyActivated,
+    isAlonzoActivated,
+    isAlonzoPending,
+  } = networkStatus;
+  const { stakingInfoWasOpen } = staking;
+  const shouldShowTadaIconAnimation = isAlonzoActivated && !stakingInfoWasOpen;
+  const shouldShowTadaIcon =
+    IS_TADA_ICON_AVAILABLE && (isAlonzoPending || isAlonzoActivated);
 
-@inject('stores', 'actions')
-@observer
-export default class TopBarContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
+  const {
+    currentRoute,
+    environment: { isMainnet, network },
+    openExternalLink,
+  } = app;
+  const walletRoutesMatch = matchRoute(
+    `${ROUTES.WALLETS.ROOT}/:id(*page)`,
+    currentRoute
+  );
+  const showSubMenuToggle = isWalletRoute && hasAnyWallets;
+  const activeWallet = walletRoutesMatch && active != null ? active : null;
+  const leftIconSVG = sidebar.isShowingSubMenus
+    ? menuIconOpened
+    : menuIconClosed;
+  const leftIcon = showSubMenuToggle ? leftIconSVG : null;
+  const testnetLabel = !isMainnet ? (
+    <WalletTestEnvironmentLabel network={network} />
+  ) : null;
 
-  render() {
-    const { actions, stores } = this.props;
-    const {
-      sidebar,
-      app,
-      networkStatus,
-      wallets,
-      newsFeed,
-      appUpdate,
-      staking,
-    } = stores;
-    const {
-      isSynced,
-      syncPercentage,
-      isShelleyActivated,
-      isAlonzoActivated,
-      isAlonzoPending,
-    } = networkStatus;
-    const { stakingInfoWasOpen } = staking;
-    const shouldShowTadaIconAnimation =
-      isAlonzoActivated && !stakingInfoWasOpen;
-    const shouldShowTadaIcon =
-      IS_TADA_ICON_AVAILABLE && (isAlonzoPending || isAlonzoActivated);
+  const onWalletAdd = () => {
+    actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.ADD,
+    });
+  };
 
-    const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
-    const {
-      currentRoute,
-      environment: { isMainnet, network },
-      openExternalLink,
-    } = app;
-    const walletRoutesMatch = matchRoute(
-      `${ROUTES.WALLETS.ROOT}/:id(*page)`,
-      currentRoute
-    );
-    const showSubMenuToggle = isWalletRoute && hasAnyWallets;
-    const activeWallet = walletRoutesMatch && active != null ? active : null;
-    const leftIconSVG = sidebar.isShowingSubMenus
-      ? menuIconOpened
-      : menuIconClosed;
-    const leftIcon = showSubMenuToggle ? leftIconSVG : null;
-    const testnetLabel = !isMainnet ? (
-      <WalletTestEnvironmentLabel network={network} />
-    ) : null;
+  const onClickTadaButton = () => {
+    actions.router.goToRoute.trigger({
+      route: ROUTES.STAKING.INFO,
+    });
+  };
 
-    const onWalletAdd = () => {
-      actions.router.goToRoute.trigger({
-        route: ROUTES.WALLETS.ADD,
-      });
-    };
+  const onTransferFunds = (sourceWalletId: string) =>
+    actions.wallets.transferFundsSetSourceWalletId.trigger({
+      sourceWalletId,
+    });
 
-    const onClickTadaButton = () => {
-      actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.INFO,
-      });
-    };
+  const { unread } = newsFeed.newsFeedData;
+  const { displayAppUpdateNewsItem } = appUpdate;
 
-    const onTransferFunds = (sourceWalletId: string) =>
-      actions.wallets.transferFundsSetSourceWalletId.trigger({
-        sourceWalletId,
-      });
+  const hasUnreadNews = unread.length > 0;
 
-    const { unread } = newsFeed.newsFeedData;
-    const { displayAppUpdateNewsItem } = appUpdate;
+  const discreetModeFeature = useDiscreetModeFeature();
 
-    const hasUnreadNews = unread.length > 0;
-
-    return (
-      <TopBar
-        leftIcon={leftIcon}
-        onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
-        activeWallet={activeWallet}
-        onTransferFunds={onTransferFunds}
-        hasRewardsWallets={hasRewardsWallets}
-        onWalletAdd={onWalletAdd}
-        onLearnMore={openExternalLink}
-        isShelleyActivated={isShelleyActivated}
-      >
-        {testnetLabel}
-        <NodeSyncStatusIcon
-          isSynced={isSynced}
-          syncPercentage={syncPercentage}
-          hasTadaIcon={shouldShowTadaIcon}
-        />
-        {shouldShowTadaIcon && (
-          <TadaButton
-            onClick={onClickTadaButton}
-            shouldAnimate={shouldShowTadaIconAnimation}
-          />
+  return (
+    <TopBar
+      leftIcon={leftIcon}
+      onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
+      activeWallet={activeWallet}
+      onTransferFunds={onTransferFunds}
+      hasRewardsWallets={hasRewardsWallets}
+      onWalletAdd={onWalletAdd}
+      onLearnMore={openExternalLink}
+      isShelleyActivated={isShelleyActivated}
+    >
+      {testnetLabel}
+      <NodeSyncStatusIcon
+        isSynced={isSynced}
+        syncPercentage={syncPercentage}
+        hasTadaIcon={shouldShowTadaIcon}
+      />
+      <span
+        className={classnames(
+          topBarStyles.rectangle,
+          shouldShowTadaIcon && topBarStyles.hasTadaIcon
         )}
-        <NewsFeedIcon
-          onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
-          hasNotification={hasUnreadNews}
-          hasUpdate={displayAppUpdateNewsItem}
+      />
+      <DiscreetToggle
+        className={classnames(
+          topBarStyles.discreetModeToggle,
+          shouldShowTadaIcon && topBarStyles.hasTadaIcon
+        )}
+        isDiscreetMode={discreetModeFeature.isDiscreetMode}
+        onToggle={discreetModeFeature.toggleDiscreetMode}
+      />
+      {shouldShowTadaIcon && (
+        <TadaButton
+          onClick={onClickTadaButton}
+          shouldAnimate={shouldShowTadaIconAnimation}
         />
-      </TopBar>
-    );
-  }
-}
+      )}
+      <NewsFeedIcon
+        onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
+        hasNotification={hasUnreadNews}
+        hasUpdate={displayAppUpdateNewsItem}
+      />
+    </TopBar>
+  );
+};
+
+export default inject('stores', 'actions')(observer(TopBarContainer));

@@ -1237,6 +1237,8 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName} amount",
   "wallet.transferFunds.dialog2.title": "Transfer funds",
   "wallet.transferFunds.dialog2.total.label": "Total",
+  "widgets.discreetToggle.off": "Toggle discreet mode off",
+  "widgets.discreetToggle.on": "Toggle discreet mode on",
   "widgets.itemsDropdown.syncingLabel": "Syncing",
   "widgets.itemsDropdown.syncingLabelProgress": "Syncing {syncingProgress}%"
 }

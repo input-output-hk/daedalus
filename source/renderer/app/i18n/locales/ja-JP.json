@@ -1237,6 +1237,8 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName}の額",
   "wallet.transferFunds.dialog2.title": "資金を移す",
   "wallet.transferFunds.dialog2.total.label": "合計",
+  "widgets.discreetToggle.off": "ディスクリートモードオフ",
+  "widgets.discreetToggle.on": "ディスクリートモードオン",
   "widgets.itemsDropdown.syncingLabel": "同期",
   "widgets.itemsDropdown.syncingLabelProgress": "同期中 {syncingProgress}%"
 }

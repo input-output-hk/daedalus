@@ -88,4 +88,32 @@
     position: absolute;
     width: calc(100% - 140px);
   }
+
+  .discreetModeToggle {
+    position: absolute;
+    right: 91px;
+
+    &.hasTadaIcon {
+      right: 149px;
+    }
+
+    svg {
+      path {
+        fill: var(--theme-node-sync-icon-color);
+      }
+    }
+  }
+
+  .rectangle {
+    &.hasTadaIcon {
+      right: 220px;
+    }
+
+    background-color: var(--theme-node-sync-icon-color);
+    height: 12px;
+    opacity: 0.3;
+    position: absolute;
+    right: 162px;
+    width: 1px;
+  }
 }
