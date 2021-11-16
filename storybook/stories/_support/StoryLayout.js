@@ -25,7 +25,7 @@ import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
-import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
+import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/types';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 
 // Empty screen elements

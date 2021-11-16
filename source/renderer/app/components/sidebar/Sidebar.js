@@ -1,17 +1,17 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
-import { find } from 'lodash';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
+import { shouldShowWalletSubMenu } from './helpers';
 import SidebarCategory from './SidebarCategory';
 import SidebarCategoryNetworkInfo from './SidebarCategoryNetworkInfo';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig';
 import { ROUTES } from '../../routes-config';
+import type { SidebarMenus } from './types';
 import type { networkType } from '../../types/networkTypes';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
-import type { SidebarWalletType } from '../../types/sidebarTypes';
 
 type Props = {
   menus: SidebarMenus,
@@ -25,97 +25,67 @@ type Props = {
   isShelleyActivated: boolean,
 };
 
-export type SidebarMenus = {
-  wallets: ?{
-    items: Array<SidebarWalletType>,
-    activeWalletId: ?string,
-    actions: {
-      onWalletItemClick: Function,
-    },
-  },
+const getCategoryContent = (categoryName: string, network) => {
+  if (categoryName === 'NETWORK_INFO') {
+    return <SidebarCategoryNetworkInfo network={network} />;
+  }
+  return null;
 };
 
-@observer
-export default class Sidebar extends Component<Props> {
-  static defaultProps = {
-    isShowingSubMenus: false,
-  };
+const Sidebar = ({
+  menus,
+  categories,
+  activeSidebarCategory,
+  pathname,
+  isShowingSubMenus = false,
+  onAddWallet,
+  isShelleyActivated,
+  onActivateCategory,
+  network,
+}: Props) => {
+  const hasSubMenu = shouldShowWalletSubMenu({
+    activeSidebarCategory,
+    walletRoute: CATEGORIES_BY_NAME.WALLETS.route,
+    menus,
+  });
+  const isMinimized = !isShowingSubMenus || !hasSubMenu;
+  const sidebarStyles = classNames(
+    styles.component,
+    isMinimized && styles.minimized
+  );
 
-  render() {
-    const {
-      menus,
-      categories,
-      activeSidebarCategory,
-      pathname,
-      isShowingSubMenus,
-      onAddWallet,
-      isShelleyActivated,
-      onActivateCategory,
-    } = this.props;
+  return (
+    <div className={sidebarStyles}>
+      <div className={styles.minimized}>
+        {categories.map((category: SidebarCategoryInfo) => {
+          const content = getCategoryContent(category.name, network);
+          const isActive = activeSidebarCategory === category.route;
 
-    let subMenu = null;
-
-    const walletsCategory = find(categories, {
-      name: CATEGORIES_BY_NAME.WALLETS.name,
-    });
-    const walletsCategoryRoute = walletsCategory ? walletsCategory.route : null;
-
-    if (
-      menus &&
-      menus.wallets &&
-      menus.wallets.items &&
-      activeSidebarCategory === walletsCategoryRoute
-    ) {
-      subMenu = (
+          return (
+            <SidebarCategory
+              category={category}
+              isActive={isActive}
+              onClick={onActivateCategory}
+              content={content}
+            />
+          );
+        })}
+      </div>
+      {hasSubMenu && (
         <SidebarWalletsMenu
-          wallets={menus.wallets ? menus.wallets.items : []}
+          wallets={menus?.wallets?.items || []}
           onAddWallet={onAddWallet}
-          onWalletItemClick={
-            menus.wallets && menus.wallets.actions
-              ? menus.wallets.actions.onWalletItemClick
-              : null
-          }
+          onWalletItemClick={menus?.wallets?.actions?.onWalletItemClick || null}
           isActiveWallet={(id) =>
-            id === (menus.wallets ? menus.wallets.activeWalletId : null)
+            id === (menus?.wallets?.activeWalletId || null)
           }
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
           isShelleyActivated={isShelleyActivated}
           visible={isShowingSubMenus}
         />
-      );
-    }
+      )}
+    </div>
+  );
+};
 
-    const sidebarStyles = classNames([
-      styles.component,
-      !isShowingSubMenus || subMenu == null ? styles.minimized : null,
-    ]);
-
-    return (
-      <div className={sidebarStyles}>
-        <div className={styles.minimized}>
-          {categories.map((category: SidebarCategoryInfo) => {
-            const content = this.getCategoryContent(category.name);
-            const isActive = activeSidebarCategory === category.route;
-            return (
-              <SidebarCategory
-                key={category.name}
-                category={category}
-                isActive={isActive}
-                onClick={onActivateCategory}
-                content={content}
-              />
-            );
-          })}
-        </div>
-        {subMenu}
-      </div>
-    );
-  }
-
-  getCategoryContent = (categoryName: string) => {
-    if (categoryName === 'NETWORK_INFO') {
-      return <SidebarCategoryNetworkInfo network={this.props.network} />;
-    }
-    return null;
-  };
-}
+export default observer(Sidebar);
