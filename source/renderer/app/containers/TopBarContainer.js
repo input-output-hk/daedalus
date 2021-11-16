@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
-import { DiscreetToggleTopBar } from '../features/discreet-mode';
+import DiscreetToggle from '../components/widgets/discreet-mode/DiscreetToggle';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
@@ -15,6 +15,7 @@ import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
 import topBarStyles from '../components/layout/TopBar.scss';
+import { useDiscreetModeFeature } from '../features/discreet-mode';
 
 const TopBarContainer = (
   { actions, stores }: InjectedProps = { actions: null, stores: null }
@@ -82,6 +83,8 @@ const TopBarContainer = (
 
   const hasUnreadNews = unread.length > 0;
 
+  const discreetModeFeature = useDiscreetModeFeature();
+
   return (
     <TopBar
       leftIcon={leftIcon}
@@ -105,7 +108,14 @@ const TopBarContainer = (
           shouldShowTadaIcon && topBarStyles.hasTadaIcon
         )}
       />
-      <DiscreetToggleTopBar hasTadaIcon={shouldShowTadaIcon} />
+      <DiscreetToggle
+        className={classnames(
+          topBarStyles.discreetModeToggle,
+          shouldShowTadaIcon && topBarStyles.hasTadaIcon
+        )}
+        isDiscreetMode={discreetModeFeature.isDiscreetMode}
+        onToggle={discreetModeFeature.toggleDiscreetMode}
+      />
       {shouldShowTadaIcon && (
         <TadaButton
           onClick={onClickTadaButton}
