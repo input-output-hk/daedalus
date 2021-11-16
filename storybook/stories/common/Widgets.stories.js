@@ -20,7 +20,7 @@ import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shar
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
-import DiscreetToggle from '../../../source/renderer/app/components/widgets/discreet-mode/DiscreetToggle';
+import DiscreetToggle from '../../../source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',

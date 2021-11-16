@@ -20,7 +20,7 @@ import { NUMBER_OPTIONS } from '../../../source/renderer/app/config/profileConfi
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
-import DiscreetToggle from '../../../source/renderer/app/components/widgets/discreet-mode/DiscreetToggle';
+import DiscreetToggle from '../../../source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle';
 import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet.js';
