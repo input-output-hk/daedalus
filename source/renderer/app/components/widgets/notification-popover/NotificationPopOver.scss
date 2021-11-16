@@ -39,6 +39,22 @@
     }
   }
 
+  &[data-placement='left'] {
+    :global {
+      .tippy-arrow::after {
+        right: 4px;
+      }
+    }
+  }
+
+  &[data-placement='bottom'] {
+    :global {
+      .tippy-arrow::after {
+        top: 4px;
+      }
+    }
+  }
+
   :global {
     .tippy-arrow::after {
       background-color: #ea4c5b;
