@@ -1,10 +1,15 @@
 # Changelog
 
-## 4.5.0
+## vNext
 
 ### Features
 
 - Support of apple aarch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
+
+## 4.5.0
+
+### Features
+
 - Implemented "Catalyst Fund7" voting registration changes ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
 - Added "Over-saturation" warning in the delegation wizard ([PR 2733](https://github.com/input-output-hk/daedalus/pull/2733), [PR 2738](https://github.com/input-output-hk/daedalus/pull/2738))
 - Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))

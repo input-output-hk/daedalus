@@ -2,7 +2,7 @@
 , gauge, ghc-prim, Glob, hashable, hedgehog, microlens
 , microlens-mtl, mtl, safe-exceptions, stdenv, lib, stm, tasty
 , tasty-hedgehog, text, transformers, unordered-containers
-, utf8-string, vector, lib
+, utf8-string, vector
 }:
 mkDerivation {
   pname = "universum";
