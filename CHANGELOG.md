@@ -83,7 +83,7 @@
 - Fixed issues relating to minimum window size in Daedalus ([PR 2719](https://github.com/input-output-hk/daedalus/pull/2719))
 - Updated "Trezor T" image shown on the "Pair a hardware wallet device" dialog ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
 - Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
-- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685), [PR 2744](https://github.com/input-output-hk/daedalus/pull/2744))
+- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685), [PR 2745](https://github.com/input-output-hk/daedalus/pull/2745))
 
 ### Chores
 
