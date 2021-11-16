@@ -16632,39 +16632,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Toggle discreet mode on",
-        "description": "Text for the tooltip on \"discreet mode\" button when mode is on",
-        "end": {
-          "column": 3,
-          "line": 10
-        },
-        "file": "source/renderer/app/components/widgets/discreet-mode/DiscreetToggle.messages.js",
-        "id": "widgets.discreetToggle.on",
-        "start": {
-          "column": 18,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Toggle discreet mode off",
-        "description": "Text for the tooltip on \"discreet mode\" button when mode is off",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/widgets/discreet-mode/DiscreetToggle.messages.js",
-        "id": "widgets.discreetToggle.off",
-        "start": {
-          "column": 19,
-          "line": 11
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/discreet-mode/DiscreetToggle.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!change",
         "description": "Label \"change\" on inline editing inputs in inactive state.",
         "end": {
@@ -17572,6 +17539,39 @@
       }
     ],
     "path": "source/renderer/app/containers/wallet/WalletSummaryPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Toggle discreet mode on",
+        "description": "Text for the tooltip on \"discreet mode\" button when mode is on",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle.messages.js",
+        "id": "widgets.discreetToggle.on",
+        "start": {
+          "column": 18,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Toggle discreet mode off",
+        "description": "Text for the tooltip on \"discreet mode\" button when mode is off",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle.messages.js",
+        "id": "widgets.discreetToggle.off",
+        "start": {
+          "column": 19,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle.messages.json"
   },
   {
     "descriptors": [
