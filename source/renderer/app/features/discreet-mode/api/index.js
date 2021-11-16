@@ -16,4 +16,13 @@ export class DiscreetModeApi {
 
   unsetDiscreetModeSettings = async () =>
     this.localStorage.unset(storageKeys.DISCREET_MODE_ENABLED);
+
+  getDiscreetModeSettingsTooltip = (): Promise<boolean> =>
+    this.localStorage.get(storageKeys.DISCREET_MODE_SETTINGS_TOOLTIP, true);
+
+  setDiscreetModeSettingsTooltip = (enabled: boolean): Promise<void> =>
+    this.localStorage.set(storageKeys.DISCREET_MODE_SETTINGS_TOOLTIP, enabled);
+
+  unsetDiscreetModeSettingsTooltip = (): Promise<void> =>
+    this.localStorage.unset(storageKeys.DISCREET_MODE_SETTINGS_TOOLTIP);
 }
