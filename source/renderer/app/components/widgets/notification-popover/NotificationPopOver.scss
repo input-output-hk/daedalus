@@ -1,0 +1,60 @@
+.popOverRoot {
+  pointer-events: all;
+  width: 218px;
+
+  .content {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    font-size: 14px;
+    line-height: 1.36;
+    font-family: var(--font-regular);
+  }
+
+  .dismissButton {
+    height: auto;
+    padding: 4px 8px;
+    width: auto;
+    font-family: var(--font-medium);
+    text-transform: uppercase;
+    border-radius: 4px;
+    line-height: 1.2;
+    font-size: 10px;
+    margin-top: 6px;
+  }
+
+  &[data-placement='top'] {
+    :global {
+      .tippy-arrow::after {
+        bottom: 4px;
+      }
+    }
+  }
+
+  &[data-placement='right'] {
+    :global {
+      .tippy-arrow::after {
+        left: 4px;
+      }
+    }
+  }
+
+  :global {
+    .tippy-arrow::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #ea4c5b;
+    }
+  }
+}
+
+.targetRoot {
+  position: relative;
+
+  &.inline {
+    display: inline;
+  }
+}
