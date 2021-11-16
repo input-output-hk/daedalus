@@ -4,8 +4,8 @@ import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { intlShape, injectIntl } from 'react-intl';
-import revealIcon from '../../../assets/images/reveal-key.inline.svg';
-import hideIcon from '../../../assets/images/hide-key.inline.svg';
+import revealIcon from '../../../../assets/images/reveal-key.inline.svg';
+import hideIcon from '../../../../assets/images/hide-key.inline.svg';
 import styles from './DiscreetToggle.scss';
 import { messages } from './DiscreetToggle.messages';
 
