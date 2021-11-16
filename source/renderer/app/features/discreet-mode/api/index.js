@@ -1,14 +1,20 @@
 // @flow
-import LocalStorageApi from '../../../api/utils/localStorage';
+import { localStorageBridge } from '../../../api/utils/localStorageBridge';
 import { STORAGE_KEYS as storageKeys } from '../../../../../common/config/electron-store.config';
 
 export class DiscreetModeApi {
-  getDiscreetModeSettings = (): Promise<boolean> =>
-    LocalStorageApi.get(storageKeys.DISCREET_MODE_ENABLED, false);
+  getDiscreetModeSettings = async (): Promise<boolean> => {
+    const localStorage = await localStorageBridge();
+    return localStorage.get(storageKeys.DISCREET_MODE_ENABLED, false);
+  };
 
-  setDiscreetModeSettings = (enabled: boolean): Promise<void> =>
-    LocalStorageApi.set(storageKeys.DISCREET_MODE_ENABLED, enabled);
+  setDiscreetModeSettings = async (enabled: boolean): Promise<void> => {
+    const localStorage = await localStorageBridge();
+    localStorage.set(storageKeys.DISCREET_MODE_ENABLED, enabled);
+  };
 
-  unsetDiscreetModeSettings = (): Promise<void> =>
-    LocalStorageApi.unset(storageKeys.DISCREET_MODE_ENABLED);
+  unsetDiscreetModeSettings = async (): Promise<void> => {
+    const localStorage = await localStorageBridge();
+    localStorage.unset(storageKeys.DISCREET_MODE_ENABLED);
+  };
 }

@@ -27,16 +27,18 @@ storiesOf('Discreet Mode|Discreet Value', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator((story) => <StoryProvider>{story()}</StoryProvider>)
-
+  .addDecorator((story) => (
+    <DiscreetModeFeatureProvider>{story()}</DiscreetModeFeatureProvider>
+  ))
   .add('Discreet mode disabled', () => (
-    <DiscreetModeFeatureProvider>
+    <>
       <DiscreetValue>123</DiscreetValue>
       <Toggle knob={boolean('Toogle discreet mode', false)} />
-    </DiscreetModeFeatureProvider>
+    </>
   ))
   .add('Discreet mode enabled', () => (
-    <DiscreetModeFeatureProvider>
+    <>
       <DiscreetValue>123</DiscreetValue>
       <Toggle knob={boolean('Toogle discreet mode', true)} />
-    </DiscreetModeFeatureProvider>
+    </>
   ));
