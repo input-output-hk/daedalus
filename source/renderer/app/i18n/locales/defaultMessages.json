@@ -3628,6 +3628,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!I GOT THIS",
+        "description": "Label of settings sidebar category popover notification dismiss button",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.js",
+        "id": "sidebar.category.settings.notification.dismissLabel",
+        "start": {
+          "column": 16,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!New discreet mode settings are available in Security tab",
+        "description": "Label of settings sidebar category popover notification",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.js",
+        "id": "sidebar.category.settings.notification.label",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {

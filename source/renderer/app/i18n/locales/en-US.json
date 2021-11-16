@@ -352,6 +352,8 @@
   "settings.wallets.currency.poweredBy.label": "Powered by ",
   "settings.wallets.currency.selectLabel": "Select currency",
   "settings.wallets.currency.titleLabel": "Display ada balances in other currency",
+  "sidebar.category.settings.notification.dismissLabel": "!!!I GOT THIS",
+  "sidebar.category.settings.notification.label": "!!!New discreet mode settings are available in Security tab",
   "sidebar.wallets.addWallet": "Add wallet",
   "staking.countdown.learnMore.linkUrl": "https://iohk.zendesk.com/hc/en-us",
   "staking.delegationCenter.bodyTitle": "Wallets",

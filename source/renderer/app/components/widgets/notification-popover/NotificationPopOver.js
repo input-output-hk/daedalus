@@ -10,6 +10,7 @@ type Props = {
   children: Node,
   className?: string,
   content: Node,
+  dismissLabel: string,
   inline?: boolean,
   onDismiss?: Function,
   offset?: [number, number],
@@ -19,6 +20,7 @@ const NotificationPopOver = ({
   children,
   className,
   content,
+  dismissLabel,
   inline = false,
   onDismiss = () => {},
   offset,
@@ -33,7 +35,7 @@ const NotificationPopOver = ({
           {content}
           <div className={styles.contentFooter}>
             <Button
-              label="I got this"
+              label={dismissLabel}
               className={classNames(styles.dismissButton)}
               onClick={onDismiss}
             />
