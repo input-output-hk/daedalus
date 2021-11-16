@@ -671,10 +671,9 @@ export default class WalletsStore extends Store {
     return unscrambledRecoveryPhrase;
   };
 
-  _restore = async () => {
-    runInAction('begin wallet restore', () => {
-      this.isRestoring = true;
-    });
+  @action _restore = async () => {
+    this.isRestoring = true;
+
     // Pause polling in order to avoid fetching data for wallet we are about to restore
     // so that we remain on the "Add wallet" screen until user closes the TADA screen
     await this._pausePolling();
