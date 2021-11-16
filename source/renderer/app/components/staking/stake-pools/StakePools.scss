@@ -28,6 +28,7 @@
   h2 {
     color: var(--theme-staking-stake-pools-title-color);
     display: flex;
+    font-family: var(--font-regular);
     justify-content: space-between;
     line-height: 1.38;
     margin: 20px 0 10px;
@@ -41,9 +42,11 @@
   }
 
   .smashSettings {
+    align-items: center;
     cursor: pointer;
     display: flex;
     font-size: 16px;
+    line-height: 23px;
     > span:first-child {
       color: var(--theme-staking-stake-pools-title-color);
       display: inline-block;

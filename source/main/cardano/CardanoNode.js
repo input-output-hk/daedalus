@@ -240,11 +240,18 @@ export class CardanoNode {
    * @param log
    * @param actions
    * @param transitions
+   * @param config {CardanoNodeConfig}
    */
-  constructor(log: Logger, actions: Actions, transitions: StateTransitions) {
+  constructor(
+    log: Logger,
+    actions: Actions,
+    transitions: StateTransitions,
+    config: CardanoNodeConfig
+  ) {
     this._log = log;
     this._actions = actions;
     this._transitionListeners = transitions;
+    this._config = config;
   }
 
   /**
@@ -254,14 +261,10 @@ export class CardanoNode {
    * Asks the node to reply with the current port.
    * Transitions into STARTING state.
    *
-   * @param config {CardanoNodeConfig}
    * @param isForced {boolean}
    * @returns {Promise<void>} resolves if the node could be started, rejects with error otherwise.
    */
-  start = async (
-    config: CardanoNodeConfig,
-    isForced: boolean = false
-  ): Promise<void> => {
+  start = async (isForced: boolean = false): Promise<void> => {
     const { _log } = this;
 
     // Guards
@@ -273,28 +276,12 @@ export class CardanoNode {
       });
       return Promise.reject(new Error('CardanoNode: Cannot be started'));
     }
-    if (this._isUnrecoverable(config) && !isForced) {
+    if (this._isUnrecoverable(this._config) && !isForced) {
       _log.error('CardanoNode#start: Too many startup retries', {
         startupTries: this._startupTries,
       });
       return Promise.reject(new Error('CardanoNode: Too many startup retries'));
     }
-
-    // Setup
-    const {
-      // startupTimeout,
-      nodeConfig,
-      stateDir,
-      cluster,
-      tlsPath,
-      configPath,
-      syncTolerance,
-      cliBin,
-      isStaging,
-      metadataUrl,
-    } = config;
-
-    this._config = config;
 
     this._startupTries++;
     this._changeToState(CardanoNodeStates.STARTING);
@@ -313,7 +300,7 @@ export class CardanoNode {
         },
         {
           size: '5M',
-          path: config.logFilePath,
+          path: this._config.logFilePath,
           maxFiles: 4,
         }
       );
@@ -328,7 +315,7 @@ export class CardanoNode {
         },
         {
           size: '5M',
-          path: config.logFilePath,
+          path: this._config.logFilePath,
           maxFiles: 4,
         }
       );
@@ -356,7 +343,7 @@ export class CardanoNode {
             { error }
           );
           const { code, signal } = error || {};
-          this._handleCardanoNodeError(code, signal);
+          await this._handleCardanoNodeError(code, signal);
           reject(
             new Error(
               'CardanoNode#start: Unable to initialize cardano-launcher'
@@ -366,18 +353,10 @@ export class CardanoNode {
       } else {
         try {
           const node = await CardanoWalletLauncher({
+            ...this._config,
             nodeImplementation,
-            nodeConfig,
-            cluster,
-            stateDir,
-            tlsPath,
-            configPath,
-            syncTolerance,
             nodeLogFile,
             walletLogFile,
-            cliBin,
-            isStaging,
-            metadataUrl,
           });
 
           this._node = node;
@@ -424,7 +403,7 @@ export class CardanoNode {
               });
               resolve();
             })
-            .catch((exitStatus) => {
+            .catch(async (exitStatus) => {
               _log.error(
                 'CardanoNode#start: Error while spawning cardano-node',
                 {
@@ -432,7 +411,7 @@ export class CardanoNode {
                 }
               );
               const { code, signal } = exitStatus.wallet || {};
-              this._handleCardanoNodeError(code, signal);
+              await this._handleCardanoNodeError(code, signal);
               reject(
                 new Error(
                   'CardanoNode#start: Error while spawning cardano-node'
@@ -447,7 +426,7 @@ export class CardanoNode {
             }
           );
           const { code, signal } = error || {};
-          this._handleCardanoNodeError(code, signal);
+          await this._handleCardanoNodeError(code, signal);
           reject(
             new Error(
               'CardanoNode#start: Unable to initialize cardano-launcher'
@@ -477,6 +456,7 @@ export class CardanoNode {
       if (_node) await _node.stop(_config.shutdownTimeout / 1000);
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
       await this._storeProcessStates();
+      this._changeToState(CardanoNodeStates.STOPPED);
       this._reset();
       return Promise.resolve();
     } catch (error) {
@@ -529,7 +509,7 @@ export class CardanoNode {
    * @returns {Promise<void>} resolves if the node could be restarted, rejects with error otherwise.
    */
   async restart(isForced: boolean = false): Promise<void> {
-    const { _log, _config } = this;
+    const { _log } = this;
     try {
       // Stop cardano nicely if it is still awake
       if (this._isConnected()) {
@@ -546,14 +526,13 @@ export class CardanoNode {
         });
         safeExitWithCode(0);
       } else {
-        await this.start(_config, isForced);
+        await this.start(isForced);
       }
     } catch (error) {
-      _log.error('CardanoNode#restart: Could not restart cardano-node', {
-        error,
-      });
+      _log.error('CardanoNode#restart: Could not restart cardano-node', error);
       if (this._state !== CardanoNodeStates.UNRECOVERABLE) {
-        this._changeToState(CardanoNodeStates.ERRORED);
+        const { code, signal } = error || {};
+        this._changeToState(CardanoNodeStates.ERRORED, code, signal);
       }
       return Promise.reject(error);
     }
@@ -706,7 +685,12 @@ export class CardanoNode {
     } else {
       this._changeToState(CardanoNodeStates.ERRORED);
       this._transitionListeners.onError(code, signal);
-      await this.restart();
+      try {
+        _log.info('CardanoNode: restarting');
+        await this.restart();
+      } catch (error) {
+        _log.error('CardanoNode: cannot be restarted', error);
+      }
     }
   };
 
@@ -780,6 +764,8 @@ export class CardanoNode {
         return _transitionListeners.onUpdated();
       case CardanoNodeStates.CRASHED:
         return _transitionListeners.onCrashed(...args);
+      case CardanoNodeStates.ERRORED:
+        return _transitionListeners.onError(...args);
       case CardanoNodeStates.UNRECOVERABLE:
         return _transitionListeners.onUnrecoverable();
       default:

@@ -22,10 +22,7 @@ export const generateFieldPanel = (labels: any, values: any, index: number) => {
   const labelStr = labels[index];
   const valueStr = value.toString();
   let zeroValues = '';
-  if (
-    (index === 1 && valueStr.length < values[index + 1].toString().length) ||
-    (index === 0 && valueStr.length < EPOCH_MAX_LENGTH)
-  ) {
+  if (index === 1 && valueStr.length < values[index + 1].toString().length) {
     const zerosToAdd =
       index === 1
         ? parseInt(values[index + 1].toString().length, 10) -

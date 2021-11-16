@@ -145,6 +145,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Copy the stake pool ID',
     description: 'copyId tooltip label',
   },
+  copiedIdTooltipLabel: {
+    id: 'staking.stakePools.tooltip.copiedIdTooltipLabel',
+    defaultMessage: '!!!Copied',
+    description: 'copyId tooltip label copied',
+  },
   noDataDashTooltipLabel: {
     id: 'staking.stakePools.noDataDashTooltip',
     defaultMessage: '!!!Data not available yet',
@@ -445,6 +450,9 @@ export default class PoolPopOverContent extends Component<Props, State> {
       : {
           background: this.props.color,
         };
+    const stakePoolAddressHoverCopy = idCopyFeedback
+      ? intl.formatMessage(messages.copiedIdTooltipLabel)
+      : intl.formatMessage(messages.copyIdTooltipLabel);
 
     const delegateButtonClassnames = classnames([
       styles.delegateButton,
@@ -491,9 +499,10 @@ export default class PoolPopOverContent extends Component<Props, State> {
             key="id"
             content={
               <div className={styles.tooltipWithHTMLContent}>
-                {intl.formatMessage(messages.copyIdTooltipLabel)}
+                {stakePoolAddressHoverCopy}
               </div>
             }
+            hideOnClick={false}
           >
             <div
               className={styles.id}

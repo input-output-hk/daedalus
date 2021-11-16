@@ -7,10 +7,12 @@
   width: 580px;
 
   & > .title {
+    align-self: center;
     font-family: var(--font-medium);
     font-size: 18px;
     letter-spacing: 1px;
     line-height: 1.39;
+    max-width: calc(100% - 80px);
     text-align: center;
     text-transform: uppercase;
   }
