@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import { shouldShowWalletSubMenu } from './helpers';
 import SidebarCategory from './SidebarCategory';
+import SidebarCategoryWrapper from './SidebarCategoryWrapper';
 import SidebarCategoryNetworkInfo from './SidebarCategoryNetworkInfo';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig';
@@ -62,12 +63,17 @@ const Sidebar = ({
           const isActive = activeSidebarCategory === category.route;
 
           return (
-            <SidebarCategory
-              category={category}
-              isActive={isActive}
-              onClick={onActivateCategory}
-              content={content}
-            />
+            <SidebarCategoryWrapper
+              key={category.name}
+              categoryName={category.name}
+            >
+              <SidebarCategory
+                category={category}
+                isActive={isActive}
+                onClick={onActivateCategory}
+                content={content}
+              />
+            </SidebarCategoryWrapper>
           );
         })}
       </div>
