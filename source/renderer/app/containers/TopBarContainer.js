@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
-import DiscreetToggle from '../components/widgets/discreet-mode/DiscreetToggle';
+import DiscreetToggle from '../features/discreet-mode/ui/discreet-toggle/DiscreetToggle';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
