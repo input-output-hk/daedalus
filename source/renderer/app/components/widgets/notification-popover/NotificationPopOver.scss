@@ -3,24 +3,24 @@
   width: 218px;
 
   .content {
-    display: flex;
     align-items: flex-end;
+    display: flex;
     flex-direction: column;
+    font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.36;
-    font-family: var(--font-regular);
   }
 
   .dismissButton {
-    height: auto;
-    padding: 4px 8px;
-    width: auto;
-    font-family: var(--font-medium);
-    text-transform: uppercase;
     border-radius: 4px;
-    line-height: 1.2;
+    font-family: var(--font-medium);
     font-size: 10px;
+    height: auto;
+    line-height: 1.2;
     margin-top: 6px;
+    padding: 4px 8px;
+    text-transform: uppercase;
+    width: auto;
   }
 
   &[data-placement='top'] {
@@ -41,12 +41,12 @@
 
   :global {
     .tippy-arrow::after {
+      background-color: #ea4c5b;
+      border-radius: 50%;
       content: '';
+      height: 8px;
       position: absolute;
       width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #ea4c5b;
     }
   }
 }
