@@ -174,15 +174,15 @@ export default class StoryProvider extends Component<Props> {
 
   render() {
     return (
-      <DiscreetModeFeatureProvider>
-        <Provider
-          stores={this.stores}
-          actions={actions}
-          storiesProps={this.storiesProps}
-        >
+      <Provider
+        stores={this.stores}
+        actions={actions}
+        storiesProps={this.storiesProps}
+      >
+        <DiscreetModeFeatureProvider>
           {this.props.children}
-        </Provider>
-      </DiscreetModeFeatureProvider>
+        </DiscreetModeFeatureProvider>
+      </Provider>
     );
   }
 }
