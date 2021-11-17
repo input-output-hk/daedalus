@@ -17549,7 +17549,7 @@
           "column": 3,
           "line": 10
         },
-        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle.messages.js",
+        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.js",
         "id": "widgets.discreetToggle.on",
         "start": {
           "column": 18,
@@ -17563,7 +17563,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle.messages.js",
+        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.js",
         "id": "widgets.discreetToggle.off",
         "start": {
           "column": 19,
@@ -17571,7 +17571,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle.messages.json"
+    "path": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.json"
   },
   {
     "descriptors": [
