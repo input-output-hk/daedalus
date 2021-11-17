@@ -65,7 +65,9 @@ function AssetAmount({
           visible={decimals ? undefined : false}
           className={styles.unformattedAmount}
         >
-          {content}
+          <DiscreetValue ticker={{ show: Boolean(ticker), symbol: ticker }}>
+            {content}
+          </DiscreetValue>
         </PopOver>
       ) : (
         <span>
