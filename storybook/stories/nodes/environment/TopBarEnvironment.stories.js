@@ -15,7 +15,7 @@ import WalletTestEnvironmentLabel from '../../../../source/renderer/app/componen
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-ic.inline.svg';
 import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
-import DiscreetToggle from '../../../../source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetToggle';
+import DiscreetToggleTopBar from '../../../../source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar';
 import { isShelleyTestnetTheme } from '../../_support/utils';
 
 const topBarTestEnv = (currentTheme) => (
@@ -38,13 +38,7 @@ const topBarTestEnv = (currentTheme) => (
     <span
       className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
     />
-    <DiscreetToggle
-      className={classNames(
-        topBarStyles.discreetModeToggle,
-        topBarStyles.hasTadaIcon
-      )}
-      onToggle={action('onDiscreetModeToggle')}
-    />
+    <DiscreetToggleTopBar hasTadaIcon />
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
@@ -74,13 +68,7 @@ const topBarStagingEnv = (currentTheme) => (
     <span
       className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
     />
-    <DiscreetToggle
-      className={classNames(
-        topBarStyles.discreetModeToggle,
-        topBarStyles.hasTadaIcon
-      )}
-      onToggle={action('onDiscreetModeToggle')}
-    />
+    <DiscreetToggleTopBar hasTadaIcon />
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
@@ -109,13 +97,7 @@ const topBarProductionEnv = (currentTheme) => (
     <span
       className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
     />
-    <DiscreetToggle
-      className={classNames(
-        topBarStyles.discreetModeToggle,
-        topBarStyles.hasTadaIcon
-      )}
-      onToggle={action('onDiscreetModeToggle')}
-    />
+    <DiscreetToggleTopBar hasTadaIcon />
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}

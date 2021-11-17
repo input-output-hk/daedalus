@@ -30,7 +30,7 @@
       display: flex;
       flex-direction: column;
       font-family: var(--font-regular);
-      max-width: 60%;
+      max-width: 45%;
       text-align: center;
       user-select: text;
 
@@ -100,21 +100,6 @@
     position: absolute;
     right: 162px;
     width: 1px;
-  }
-
-  .discreetModeToggle {
-    position: absolute;
-    right: 91px;
-
-    &.hasTadaIcon {
-      right: 149px;
-    }
-
-    svg {
-      path {
-        fill: var(--theme-node-sync-icon-color);
-      }
-    }
   }
 
   .rectangle {
