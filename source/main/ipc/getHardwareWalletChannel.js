@@ -754,6 +754,7 @@ export const handleHardwareWalletRequests = async (
       auxiliaryData,
       devicePath,
       signingMode,
+      additionalWitnessPaths,
     } = params;
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
     deviceConnection = devicePath
@@ -766,6 +767,7 @@ export const handleHardwareWalletRequests = async (
       }
       const signedTransaction = await deviceConnection.signTransaction({
         signingMode,
+        additionalWitnessPaths,
         tx: {
           network: {
             networkId,

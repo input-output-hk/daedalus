@@ -4,7 +4,10 @@ import type { StakePoolProps } from '../../../domains/StakePool';
 
 const searchFields = ['id', 'ticker', 'name'];
 
-const stakePoolsListSearch = (stakePool: StakePoolProps, rawSearch: string) => {
+const stakePoolsListSearch = (
+  stakePool: StakePoolProps,
+  rawSearch: string
+): boolean => {
   const search = rawSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
   let pass = !search;
   searchFields.forEach((field: string) => {

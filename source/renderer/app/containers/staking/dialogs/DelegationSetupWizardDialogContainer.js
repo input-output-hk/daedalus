@@ -158,7 +158,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   handleSelectPool = (poolId: string) => {
     this._handleCalculateTransactionFee(poolId);
     this.setState({ selectedPoolId: poolId });
-    this.handleContinue();
   };
 
   render() {
@@ -190,6 +189,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       joinStakePoolRequest,
       getStakePoolById,
       isDelegationTransactionPending,
+      maxDelegationFunds,
     } = staking;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const selectedPool = find(stakePools, (pool) => pool.id === selectedPoolId);
@@ -216,6 +216,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         isDisabled={activeStep === 1 && !acceptableWallets}
         isWalletAcceptable={this.handleIsWalletAcceptable}
+        maxDelegationFunds={maxDelegationFunds}
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}

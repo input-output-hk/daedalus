@@ -18,6 +18,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -185,7 +186,13 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       ],
     };
 
-    const closeButton = <DialogCloseButton onClose={onClose} />;
+    const closeButton = (
+      <DialogCloseButton
+        icon={closeCrossThin}
+        className={styles.closeButton}
+        onClose={onClose}
+      />
+    );
 
     return (
       <Dialog

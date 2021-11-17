@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import {
   defineMessages,
@@ -11,6 +11,10 @@ import BigNumber from 'bignumber.js';
 import { Link } from 'react-polymorph/lib/components/Link';
 import globalMessages from '../../i18n/global-messages';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import {
+  CURRENT_VOTING_FUND_NUMBER,
+  NEXT_VOTING_FUND_NUMBER,
+} from '../../config/votingConfig';
 import styles from './VotingUnavailable.scss';
 
 const messages = defineMessages({
@@ -22,7 +26,7 @@ const messages = defineMessages({
   paragraph1: {
     id: 'voting.unavailable.paragraph1',
     defaultMessage:
-      '!!!Project Catalyst Fund5 has now ended. Fund6 is currently in preparation, voting registration is not available yet.',
+      '!!!Project Catalyst Fund{currentVotingFundNumber} has now ended. Fund{nextVotingFundNumber} is currently in preparation, voting registration is not available yet.',
     description: 'First paragraph on the "Voting unavailable" screen',
   },
   paragraph2: {
@@ -74,7 +78,10 @@ export default class VotingUnavailable extends Component<Props> {
     } = this.props;
 
     const heading = intl.formatMessage(messages.heading);
-    const paragraph1 = intl.formatMessage(messages.paragraph1);
+    const paragraph1 = intl.formatMessage(messages.paragraph1, {
+      currentFundNumber: CURRENT_VOTING_FUND_NUMBER,
+      nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+    });
     const link1 = (
       <Link
         className={styles.link}

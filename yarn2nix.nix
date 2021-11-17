@@ -153,6 +153,7 @@ yarn2nix.mkYarnPackage {
     dup secp256k1
     dup usb
     dup @ledgerhq
+    dup electron-chromedriver
 
     # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
