@@ -16,7 +16,7 @@ export function WalletAmount({ amount, walletAmount }: Props) {
     <FormattedHTMLMessage
       {...walletAmount}
       values={{
-        amount: discreetModeFeature.hideSensitiveData(amount),
+        amount: discreetModeFeature.hideOrShowSensitiveData(amount),
       }}
     />
   );

@@ -2,7 +2,6 @@
 import React from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import WalletsDropdownLabel from './WalletsDropdownLabel';
-import { formattedWalletAmount } from '../../../utils/formatters';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import Wallet from '../../../domains/Wallet';
 import ItemsDropdown from './ItemsDropdown';
@@ -57,7 +56,7 @@ export default function WalletsDropdown({
       restorationProgress: syncingProgress,
     } = wallet;
     const detail = !isRestoring
-      ? discreetModeFeature.hideSensitiveData(formattedWalletAmount(amount))
+      ? discreetModeFeature.hideOrShowWalletAmount({ amount })
       : null;
     return {
       label: (

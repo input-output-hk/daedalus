@@ -26,7 +26,6 @@ import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
-  formattedWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
@@ -38,7 +37,7 @@ import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
-import { DiscreetValue } from '../../features/discreet-mode';
+import { DiscreetWalletAmount } from '../../features/discreet-mode';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -782,9 +781,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 {walletAmount && (
                   <div className={styles.amountTokenTotal}>
                     {intl.formatMessage(messages.ofLabel)}{' '}
-                    <DiscreetValue>
-                      {formattedWalletAmount(walletAmount)}
-                    </DiscreetValue>
+                    <DiscreetWalletAmount amount={walletAmount} />
                   </div>
                 )}
                 <div className={styles.adaAmountLabel}>

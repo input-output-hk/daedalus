@@ -2,7 +2,6 @@
 import React from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import ItemsDropdown from './ItemsDropdown';
-import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { AssetToken } from '../../../api/assets/types';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
@@ -58,9 +57,11 @@ export default function AssetsDropdown({
   };
   const formattedOptions = assets.map((asset) => {
     const { uniqueId: value, metadata, quantity, decimals } = asset;
-    const detail = discreetModeFeature.hideSensitiveData(
-      formattedTokenWalletAmount(quantity, metadata, decimals)
-    );
+    const detail = discreetModeFeature.hideOrShowTokenWalletAmount({
+      amount: quantity,
+      metadata,
+      decimals,
+    });
     return {
       label: (
         <Asset asset={asset} className={styles.assetToken} hidePopOver small />

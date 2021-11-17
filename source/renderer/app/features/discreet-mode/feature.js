@@ -1,8 +1,13 @@
 // @flow
-
+import BigNumber from 'bignumber.js';
 import { observable, action, runInAction } from 'mobx';
 import { Feature } from '../../utils/mobx-features/feature';
 import Request from '../../stores/lib/LocalizedRequest';
+import type { AssetMetadata } from '../../api/assets/types';
+import {
+  formattedWalletAmount,
+  formattedTokenWalletAmount,
+} from '../../utils/formatters';
 import { DiscreetModeApi } from './api';
 import { SENSITIVE_DATA_SYMBOL } from './config';
 
@@ -52,19 +57,55 @@ export class DiscreetMode extends Feature {
     });
   };
 
-  hideSensitiveData(data: string) {
+  hideOrShowTokenWalletAmount({
+    amount,
+    metadata,
+    decimals,
+    isShort,
+  }: {
+    amount: BigNumber,
+    metadata?: ?AssetMetadata,
+    decimals: ?number,
+    isShort?: boolean,
+  }) {
+    if (!this.isDiscreetMode) {
+      return formattedTokenWalletAmount(amount, metadata, decimals, isShort);
+    }
+
+    const { ticker } = metadata || {};
+
+    if (!ticker) {
+      return SENSITIVE_DATA_SYMBOL;
+    }
+
+    return `${SENSITIVE_DATA_SYMBOL} ${ticker}`;
+  }
+
+  hideOrShowWalletAmount({
+    amount,
+    withCurrency = true,
+    long = true,
+  }: {
+    amount: BigNumber,
+    withCurrency?: boolean,
+    long?: boolean,
+  }) {
+    if (!this.isDiscreetMode) {
+      return formattedWalletAmount(amount, withCurrency, long);
+    }
+
+    if (!withCurrency) {
+      return SENSITIVE_DATA_SYMBOL;
+    }
+
+    return `${SENSITIVE_DATA_SYMBOL} ADA`;
+  }
+
+  hideOrShowSensitiveData(data: string | number) {
     if (!this.isDiscreetMode) {
       return data;
     }
 
-    const content = data.split(' ');
-
-    if (content.length <= 1) {
-      return SENSITIVE_DATA_SYMBOL;
-    }
-
-    const tickerSymbol = content.pop();
-
-    return `${SENSITIVE_DATA_SYMBOL} ${tickerSymbol}`;
+    return SENSITIVE_DATA_SYMBOL;
   }
 }

@@ -6,12 +6,8 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './AssetAmount.scss';
-import { formattedTokenWalletAmount } from '../../utils/formatters';
 import type { AssetMetadata } from '../../api/assets/types';
-import {
-  useDiscreetModeFeature,
-  DiscreetValue,
-} from '../../features/discreet-mode';
+import { useDiscreetModeFeature } from '../../features/discreet-mode';
 
 const messages = defineMessages({
   unformattedAmount: {
@@ -43,10 +39,13 @@ function AssetAmount({
   if (isLoading) return '-';
   const componentStyles = classnames([styles.component, className]);
   const content = !isLoading
-    ? formattedTokenWalletAmount(amount, metadata, decimals, isShort)
+    ? discreetModeFeature.hideOrShowTokenWalletAmount({
+        amount,
+        metadata,
+        decimals,
+        isShort,
+      })
     : '-';
-
-  const { ticker } = metadata || {};
 
   return (
     <div className={componentStyles}>
@@ -56,25 +55,21 @@ function AssetAmount({
             <FormattedHTMLMessage
               {...messages.unformattedAmount}
               values={{
-                amount: discreetModeFeature.hideSensitiveData(
-                  formattedTokenWalletAmount(amount, null, 0)
-                ),
+                amount: discreetModeFeature.hideOrShowTokenWalletAmount({
+                  amount,
+                  metadata: null,
+                  decimals: 0,
+                }),
               }}
             />
           }
           visible={decimals ? undefined : false}
           className={styles.unformattedAmount}
         >
-          <DiscreetValue ticker={{ show: Boolean(ticker), symbol: ticker }}>
-            {content}
-          </DiscreetValue>
+          {content}
         </PopOver>
       ) : (
-        <span>
-          <DiscreetValue ticker={{ show: Boolean(ticker), symbol: ticker }}>
-            {content}
-          </DiscreetValue>
-        </span>
+        <span>{content}</span>
       )}
     </div>
   );

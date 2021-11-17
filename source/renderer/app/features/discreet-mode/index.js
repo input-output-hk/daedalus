@@ -1,4 +1,8 @@
 // @flow
 
 export { useDiscreetModeFeature, DiscreetModeFeatureProvider } from './context';
-export { DiscreetValue } from './ui';
+export {
+  DiscreetValue,
+  DiscreetTokenWalletAmount,
+  DiscreetWalletAmount,
+} from './ui';

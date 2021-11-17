@@ -10,11 +10,11 @@ import ProgressBar from '../../widgets/ProgressBar';
 import styles from './SidebarWalletMenuItem.scss';
 import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
-import { DiscreetValue } from '../../../features/discreet-mode';
+import { DiscreetWalletAmount } from '../../../features/discreet-mode';
 
 type Props = {
   title: string,
-  info: string,
+  amount: number,
   active: boolean,
   className: string,
   onClick: Function,
@@ -33,7 +33,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
   render() {
     const {
       title,
-      info,
+      amount,
       active,
       className,
       onClick,
@@ -79,9 +79,11 @@ export default class SidebarWalletMenuItem extends Component<Props> {
             )}
           </div>
           <div className={styles.info}>
-            <DiscreetValue ticker={{ show: true }}>
-              {isRestoreActive ? '-' : info}
-            </DiscreetValue>
+            {isRestoreActive ? (
+              '-'
+            ) : (
+              <DiscreetWalletAmount amount={amount} withCurrency long={false} />
+            )}
           </div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
           {showLegacyBadge && (

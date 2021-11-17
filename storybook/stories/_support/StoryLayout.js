@@ -136,7 +136,7 @@ export default class StoryLayout extends Component<Props> {
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
-      info: `${wallet.amount} ADA`,
+      amount: wallet.amount,
       isConnected: true,
       hasPassword: wallet.hasPassword,
       isNotResponding:
