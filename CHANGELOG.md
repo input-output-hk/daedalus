@@ -2,6 +2,12 @@
 
 ## vNext
 
+## Chores
+
+- Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
+
+## 4.5.0
+
 ### Features
 
 - Implemented "Catalyst Fund7" voting registration changes ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
