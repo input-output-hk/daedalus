@@ -2,42 +2,46 @@
 import React from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
-import { injectIntl, FormattedHTMLMessage } from 'react-intl';
+import { FormattedHTMLMessage } from 'react-intl';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig';
-import NotificationPopOver from '../widgets/notification-popover/NotificationPopOver';
 import { useDiscreetModeFeature } from '../../features/discreet-mode';
+import NotificationDot from '../widgets/notification-dot/NotificationDot';
 import { messages } from './SidebarCategoryWrapper.messages';
-import type { Intl } from '../../types/i18nTypes';
 import styles from './SidebarCategoryWrapper.scss';
 
 type Props = {
   children: Node,
   categoryName: string,
-  intl: Intl,
 };
 
-const SidebarCategoryWrapper = ({ children, categoryName, intl }: Props) => {
-  const discreetModeFeature = useDiscreetModeFeature();
-
-  if (categoryName === CATEGORIES_BY_NAME.SETTINGS.name) {
+const SidebarCategoryWrapper = ({ children, categoryName }: Props) => {
+  const { isNotificationEnabled } = useDiscreetModeFeature();
+  if (
+    categoryName === CATEGORIES_BY_NAME.SETTINGS.name &&
+    isNotificationEnabled
+  ) {
     return (
-      <NotificationPopOver
-        className={styles.popOver}
-        visible={discreetModeFeature.isSettingsTooltipEnabled}
-        dismissLabel={intl.formatMessage(messages.dismissLabel)}
-        content={<FormattedHTMLMessage {...messages.label} />}
+      <PopOver
         placement="right"
-        offset={[-10, -5]}
-        onDismiss={() =>
-          discreetModeFeature.setDiscreetModeSettingsTooltip(false)
+        className={styles.popOver}
+        content={
+          <div className={styles.content}>
+            <FormattedHTMLMessage {...messages.label} />
+          </div>
         }
       >
-        {children}
-      </NotificationPopOver>
+        <NotificationDot
+          enabled={isNotificationEnabled}
+          dotClassName={styles.dot}
+        >
+          {children}
+        </NotificationDot>
+      </PopOver>
     );
   }
 
   return children;
 };
 
-export default injectIntl(observer(SidebarCategoryWrapper));
+export default observer(SidebarCategoryWrapper);

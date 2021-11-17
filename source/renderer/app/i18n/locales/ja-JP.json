@@ -352,7 +352,6 @@
   "settings.wallets.currency.poweredBy.label": "提供：",
   "settings.wallets.currency.selectLabel": "通貨を選択してください",
   "settings.wallets.currency.titleLabel": "ADA残高を別の通貨で表示する",
-  "sidebar.category.settings.notification.dismissLabel": "!!!I GOT THIS",
   "sidebar.category.settings.notification.label": "!!!New discreet mode settings are available in Security tab",
   "sidebar.wallets.addWallet": "ウォレット追加",
   "staking.countdown.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja",

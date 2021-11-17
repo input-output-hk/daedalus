@@ -1,0 +1,12 @@
+.root {
+  position: relative;
+
+  .dot {
+    background-color: #ea4c5b;
+    border-radius: 50%;
+    content: '';
+    height: 8px;
+    position: absolute;
+    width: 8px;
+  }
+}
