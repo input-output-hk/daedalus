@@ -9,7 +9,11 @@
   width: 240px;
 
   .dot {
-    left: 10px;
-    top: 10px;
+    right: 142px;
+    top: 22px;
+
+    &.dotJp {
+      right: 108px;
+    }
   }
 }

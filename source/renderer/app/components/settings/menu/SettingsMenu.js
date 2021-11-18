@@ -2,6 +2,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+import classnames from 'classnames';
 import SettingsMenuItem from './SettingsMenuItem';
 import styles from './SettingsMenu.scss';
 import { ROUTES } from '../../../routes-config';
@@ -9,15 +10,23 @@ import messages from './SettingsMenu.messages';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import NotificationDot from '../../widgets/notification-dot/NotificationDot';
 import type { Intl } from '../../../types/i18nTypes';
+import type { Locale } from '../../../../../common/types/locales.types';
 
 type Props = {
   intl: Intl,
   isFlight: boolean,
   isActiveItem: Function,
+  currentLocale: Locale,
   onItemClick: Function,
 };
 
-const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
+const SettingsMenu = ({
+  intl,
+  currentLocale,
+  onItemClick,
+  isActiveItem,
+  isFlight,
+}: Props) => {
   const {
     isNotificationEnabled,
     setDiscreetModeNotification,
@@ -33,7 +42,10 @@ const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
         />
         <NotificationDot
           enabled={isNotificationEnabled}
-          dotClassName={styles.dot}
+          dotClassName={classnames(
+            styles.dot,
+            currentLocale === 'ja-JP' && styles.dotJp
+          )}
         >
           <SettingsMenuItem
             label={intl.formatMessage(messages.security)}
