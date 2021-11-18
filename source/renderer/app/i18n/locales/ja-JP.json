@@ -138,7 +138,7 @@
   "dapp.transaction.request.transactionFee.label": "トランザクション手数料",
   "dapp.transaction.request.walletsDropdown.addWalletLabel": "+ ウォレット追加",
   "dapp.transaction.request.walletsDropdown.placeholder": "ウォレットを選択してください",
-  "discreetMode.discreetToggle.description": "!!!You can turn auto discreet mode in <b>Settings</b>.",
+  "discreetMode.discreetToggle.description": "!!!You can toggle auto discreet mode in <b>Settings</b>.",
   "discreetMode.discreetToggle.off": "ディスクリートモードオフ.",
   "discreetMode.discreetToggle.on": "ディスクリートモードオン.",
   "environment.apiName.cardano": "Cardano",

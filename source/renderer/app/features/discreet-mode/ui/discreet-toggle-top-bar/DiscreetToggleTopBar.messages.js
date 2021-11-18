@@ -16,7 +16,7 @@ export const messages = defineMessages({
   },
   description: {
     id: 'discreetMode.discreetToggle.description',
-    defaultMessage: '!!!You can turn auto discreet mode in <b>Settings</b>.',
+    defaultMessage: '!!!You can toggle auto discreet mode in <b>Settings</b>.',
     description: 'Text for the tooltip on "discreet mode" button description',
   },
 });
