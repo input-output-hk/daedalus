@@ -27,7 +27,11 @@
   }
 }
 
-.tooltip {
-  font-family: var(--font-light);
-  font-size: 14px;
+.popOverRoot {
+  width: 220px;
+
+  .content {
+    font-family: var(--font-light);
+    font-size: 14px;
+  }
 }

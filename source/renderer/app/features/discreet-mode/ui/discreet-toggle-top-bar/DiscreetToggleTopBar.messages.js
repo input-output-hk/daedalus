@@ -2,16 +2,21 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
-  discreetModeOn: {
-    id: 'widgets.discreetToggle.on',
-    defaultMessage: '!!!Toggle discreet mode on',
+  on: {
+    id: 'discreetMode.discreetToggle.on',
+    defaultMessage: '!!!Toggle discreet mode on.',
     description:
       'Text for the tooltip on "discreet mode" button when mode is on',
   },
-  discreetModeOff: {
-    id: 'widgets.discreetToggle.off',
-    defaultMessage: '!!!Toggle discreet mode off',
+  off: {
+    id: 'discreetMode.discreetToggle.off',
+    defaultMessage: '!!!Toggle discreet mode off.',
     description:
       'Text for the tooltip on "discreet mode" button when mode is off',
+  },
+  description: {
+    id: 'discreetMode.discreetToggle.description',
+    defaultMessage: '!!!You can turn auto discreet mode in <b>Settings</b>.',
+    description: 'Text for the tooltip on "discreet mode" button description',
   },
 });

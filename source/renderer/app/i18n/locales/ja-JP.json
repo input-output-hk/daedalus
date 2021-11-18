@@ -138,6 +138,9 @@
   "dapp.transaction.request.transactionFee.label": "トランザクション手数料",
   "dapp.transaction.request.walletsDropdown.addWalletLabel": "+ ウォレット追加",
   "dapp.transaction.request.walletsDropdown.placeholder": "ウォレットを選択してください",
+  "discreetMode.discreetToggle.description": "!!!You can turn auto discreet mode in <b>Settings</b>.",
+  "discreetMode.discreetToggle.off": "ディスクリートモードオフ.",
+  "discreetMode.discreetToggle.on": "ディスクリートモードオン.",
   "environment.apiName.cardano": "Cardano",
   "environment.currency.ada": "ADA",
   "environment.network.alonzo_purple": "Alonzo Purple",
@@ -352,7 +355,7 @@
   "settings.wallets.currency.poweredBy.label": "提供：",
   "settings.wallets.currency.selectLabel": "通貨を選択してください",
   "settings.wallets.currency.titleLabel": "ADA残高を別の通貨で表示する",
-  "sidebar.category.settings.notification.label": "!!!New discreet mode settings are available in Security tab",
+  "sidebar.category.settings.notification.label": "!!!New discreet mode settings are available in Security tab.",
   "sidebar.wallets.addWallet": "ウォレット追加",
   "staking.countdown.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja",
   "staking.delegationCenter.bodyTitle": "ウォレット",
@@ -1243,8 +1246,6 @@
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName}の額",
   "wallet.transferFunds.dialog2.title": "資金を移す",
   "wallet.transferFunds.dialog2.total.label": "合計",
-  "widgets.discreetToggle.off": "ディスクリートモードオフ",
-  "widgets.discreetToggle.on": "ディスクリートモードオン",
   "widgets.itemsDropdown.syncingLabel": "同期",
   "widgets.itemsDropdown.syncingLabelProgress": "同期中 {syncingProgress}%"
 }

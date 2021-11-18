@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import styles from './DiscreetToggleTopBar.scss';
 import { messages } from './DiscreetToggleTopBar.messages';
 import { useDiscreetModeFeature } from '../../context';
@@ -32,11 +32,11 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
     >
       <PopOver
         visible={visible || isSettingsTooltipEnabled}
+        className={styles.popOverRoot}
         content={
-          <span className={styles.tooltip}>
-            {intl.formatMessage(
-              messages[isDiscreetMode ? 'discreetModeOff' : 'discreetModeOn']
-            )}
+          <span className={styles.content}>
+            {`${intl.formatMessage(messages[isDiscreetMode ? 'off' : 'on'])} `}
+            <FormattedHTMLMessage {...messages.description} />
           </span>
         }
       >
