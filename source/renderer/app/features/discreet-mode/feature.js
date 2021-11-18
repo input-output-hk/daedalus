@@ -87,7 +87,7 @@ export class DiscreetMode extends Feature {
 
   @action setDiscreetModeNotification = async (enabled: boolean) => {
     await this.setDiscreetModeNotificationRequest.execute(enabled);
-    runInAction('Update discreet mode settings tooltip', () => {
+    runInAction('Update discreet mode notification', () => {
       this.isNotificationEnabled = enabled;
     });
   };
