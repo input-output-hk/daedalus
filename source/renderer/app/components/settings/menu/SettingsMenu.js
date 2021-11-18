@@ -7,7 +7,7 @@ import SettingsMenuItem from './SettingsMenuItem';
 import styles from './SettingsMenu.scss';
 import { ROUTES } from '../../../routes-config';
 import messages from './SettingsMenu.messages';
-import { useDiscreetModeFeature } from '../../../features/discreet-mode';
+import { DiscreetModeFeatureInject } from '../../../features/discreet-mode';
 import NotificationDot from '../../widgets/notification-dot/NotificationDot';
 import type { Intl } from '../../../types/i18nTypes';
 import type { Locale } from '../../../../../common/types/locales.types';
@@ -27,10 +27,6 @@ const SettingsMenu = ({
   isActiveItem,
   isFlight,
 }: Props) => {
-  const {
-    isNotificationEnabled,
-    setDiscreetModeNotification,
-  } = useDiscreetModeFeature();
   return (
     <div>
       <div className={styles.component}>
@@ -40,23 +36,29 @@ const SettingsMenu = ({
           active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
           className="general"
         />
-        <NotificationDot
-          enabled={isNotificationEnabled}
-          dotClassName={classnames(
-            styles.dot,
-            currentLocale === 'ja-JP' && styles.dotJp
+        <DiscreetModeFeatureInject>
+          {({ isNotificationEnabled, setDiscreetModeNotification }) => (
+            <NotificationDot
+              enabled={isNotificationEnabled}
+              dotClassName={classnames(
+                styles.dot,
+                currentLocale === 'ja-JP' && styles.dotJp
+              )}
+            >
+              <SettingsMenuItem
+                label={intl.formatMessage(messages.security)}
+                onClick={() => {
+                  if (isNotificationEnabled) {
+                    setDiscreetModeNotification(false);
+                  }
+                  onItemClick(ROUTES.SETTINGS.SECURITY);
+                }}
+                active={isActiveItem(ROUTES.SETTINGS.SECURITY)}
+                className="security"
+              />
+            </NotificationDot>
           )}
-        >
-          <SettingsMenuItem
-            label={intl.formatMessage(messages.security)}
-            onClick={() => {
-              setDiscreetModeNotification(false);
-              onItemClick(ROUTES.SETTINGS.SECURITY);
-            }}
-            active={isActiveItem(ROUTES.SETTINGS.SECURITY)}
-            className="security"
-          />
-        </NotificationDot>
+        </DiscreetModeFeatureInject>
         <SettingsMenuItem
           label={intl.formatMessage(messages.wallets)}
           onClick={() => onItemClick(ROUTES.SETTINGS.WALLETS)}

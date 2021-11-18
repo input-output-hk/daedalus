@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
 import type { Node } from 'react';
-import { observer } from 'mobx-react';
 import { FormattedHTMLMessage } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig';
-import { useDiscreetModeFeature } from '../../features/discreet-mode';
 import NotificationDot from '../widgets/notification-dot/NotificationDot';
+import DiscreetModeFeatureInject from '../../features/discreet-mode/ui/DiscreetModeFeatureInject';
+
 import { messages } from './SidebarCategoryWrapper.messages';
 import styles from './SidebarCategoryWrapper.scss';
 
@@ -16,11 +16,7 @@ type Props = {
 };
 
 const SidebarCategoryWrapper = ({ children, categoryName }: Props) => {
-  const { isNotificationEnabled } = useDiscreetModeFeature();
-  if (
-    categoryName === CATEGORIES_BY_NAME.SETTINGS.name &&
-    isNotificationEnabled
-  ) {
+  if (categoryName === CATEGORIES_BY_NAME.SETTINGS.name) {
     return (
       <PopOver
         placement="right"
@@ -31,12 +27,16 @@ const SidebarCategoryWrapper = ({ children, categoryName }: Props) => {
           </div>
         }
       >
-        <NotificationDot
-          enabled={isNotificationEnabled}
-          dotClassName={styles.dot}
-        >
-          {children}
-        </NotificationDot>
+        <DiscreetModeFeatureInject>
+          {({ isNotificationEnabled }) => (
+            <NotificationDot
+              enabled={isNotificationEnabled}
+              dotClassName={styles.dot}
+            >
+              {children}
+            </NotificationDot>
+          )}
+        </DiscreetModeFeatureInject>
       </PopOver>
     );
   }
@@ -44,4 +44,4 @@ const SidebarCategoryWrapper = ({ children, categoryName }: Props) => {
   return children;
 };
 
-export default observer(SidebarCategoryWrapper);
+export default SidebarCategoryWrapper;
