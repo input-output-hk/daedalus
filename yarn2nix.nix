@@ -150,6 +150,7 @@ yarn2nix.mkYarnPackage {
 
     dup keccak
     dup node-hid
+    dup tiny-secp256k1
     dup usb
     dup @ledgerhq
     dup electron-chromedriver
