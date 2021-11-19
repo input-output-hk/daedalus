@@ -11,6 +11,7 @@ import { DiscreetModeFeatureInject } from '../../../features/discreet-mode';
 import NotificationDot from '../../widgets/notification-dot/NotificationDot';
 import type { Intl } from '../../../types/i18nTypes';
 import type { Locale } from '../../../../../common/types/locales.types';
+import TriggerOnRouteLeave from './TriggerOnRouteLeave';
 
 type Props = {
   intl: Intl,
@@ -38,26 +39,28 @@ const SettingsMenu = ({
         />
         <DiscreetModeFeatureInject>
           {({ isNotificationEnabled, setDiscreetModeNotification }) => (
-            <NotificationDot
-              enabled={isNotificationEnabled}
-              dotClassName={classnames(
-                styles.dot,
-                currentLocale === 'ja-JP' && styles.jp,
-                isActiveItem(ROUTES.SETTINGS.SECURITY) && styles.active
-              )}
-            >
-              <SettingsMenuItem
-                label={intl.formatMessage(messages.security)}
-                onClick={() => {
-                  if (isNotificationEnabled) {
-                    setDiscreetModeNotification(false);
-                  }
-                  onItemClick(ROUTES.SETTINGS.SECURITY);
-                }}
-                active={isActiveItem(ROUTES.SETTINGS.SECURITY)}
-                className="security"
+            <>
+              <TriggerOnRouteLeave
+                enabled={isNotificationEnabled}
+                isOnRoute={isActiveItem(ROUTES.SETTINGS.SECURITY)}
+                onLeave={() => setDiscreetModeNotification(false)}
               />
-            </NotificationDot>
+              <NotificationDot
+                enabled={isNotificationEnabled}
+                dotClassName={classnames(
+                  styles.dot,
+                  currentLocale === 'ja-JP' && styles.jp,
+                  isActiveItem(ROUTES.SETTINGS.SECURITY) && styles.active
+                )}
+              >
+                <SettingsMenuItem
+                  label={intl.formatMessage(messages.security)}
+                  onClick={() => onItemClick(ROUTES.SETTINGS.SECURITY)}
+                  active={isActiveItem(ROUTES.SETTINGS.SECURITY)}
+                  className="security"
+                />
+              </NotificationDot>
+            </>
           )}
         </DiscreetModeFeatureInject>
         <SettingsMenuItem
