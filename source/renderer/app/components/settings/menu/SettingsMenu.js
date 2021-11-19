@@ -42,7 +42,8 @@ const SettingsMenu = ({
               enabled={isNotificationEnabled}
               dotClassName={classnames(
                 styles.dot,
-                currentLocale === 'ja-JP' && styles.dotJp
+                currentLocale === 'ja-JP' && styles.jp,
+                isActiveItem(ROUTES.SETTINGS.SECURITY) && styles.active
               )}
             >
               <SettingsMenuItem

@@ -9,10 +9,14 @@
   width: 240px;
 
   .dot {
-    right: 142px;
+    right: 140px;
     top: 22px;
 
-    &.dotJp {
+    &.active {
+      right: 134px;
+    }
+
+    &.jp {
       right: 108px;
     }
   }
