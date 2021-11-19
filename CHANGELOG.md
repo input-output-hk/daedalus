@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.5.1
+
+### Fixes
+
+- Fixed Daedalus 4.5.0 Windows deployment issue
+
 ## 4.5.0
 
 ### Features
