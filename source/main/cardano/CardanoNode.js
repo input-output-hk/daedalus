@@ -961,7 +961,11 @@ export class CardanoNode {
     new Promise((resolve, reject) => {
       try {
         // saves current port/pid in file system
-        store.set(identifier, data);
+        if (data !== undefined) {
+          store.set(identifier, data);
+        } else {
+          store.delete(identifier);
+        }
         this._log.info(`CardanoNode: ${identifier} stored successfully`);
         resolve();
       } catch (error) {
