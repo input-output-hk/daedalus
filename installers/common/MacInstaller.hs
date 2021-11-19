@@ -259,7 +259,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "get-intrinsic"
       , "has"
       , "has-symbols"
-      , "hd-wallet"
       , "ieee754"
       , "inherits"
       , "int64-buffer"
