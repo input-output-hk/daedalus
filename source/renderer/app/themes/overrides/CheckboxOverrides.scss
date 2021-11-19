@@ -1,12 +1,13 @@
 .root {
   .check {
+    border-radius: 3px;
     height: var(--rp-checkbox-size);
     width: var(--rp-checkbox-size);
 
     &::after {
       height: calc(22 / 2 * 1px);
       margin-left: 1px;
-      margin-top: var(--rp-checkbox-check-vertical-offset, -2px);
+      margin-top: var(--rp-checkbox-check-vertical-offset, -3px);
       width: calc(22 / 5 * 1px);
     }
   }
