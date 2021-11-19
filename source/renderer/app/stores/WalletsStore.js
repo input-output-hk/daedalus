@@ -429,7 +429,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWalletClose = () => {
     this._resumePolling();
-    const { mnemonics, walletName, spendingPassword, restoredWallet } = this;
+    const { mnemonics, walletName, spendingPassword } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
       this.restoreWalletStep !== null &&
