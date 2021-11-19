@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Fixed automatic closing of the wallet "Restoration" dialog during restoration of a first wallet in UI
 - Fixed Daedalus 4.5.0 Windows deployment issue
 
 ## 4.5.0
