@@ -265,8 +265,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "get-intrinsic"
       , "has"
       , "has-symbols"
-      , "hash.js"
-      , "hmac-drbg"
       , "ieee754"
       , "inherits"
       , "int64-buffer"
