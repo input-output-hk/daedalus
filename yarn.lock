@@ -2796,15 +2796,6 @@
     cross-fetch "^3.1.4"
     runtypes "^5.0.1"
 
-"@trezor/transport@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@trezor/transport/-/transport-1.0.1.tgz#bf0d11a44d1220fe1486e7679370920f9f60afa4"
-  dependencies:
-    bytebuffer "^5.0.1"
-    json-stable-stringify "^1.0.1"
-    long "^4.0.0"
-    protobufjs "^6.11.2"
-
 "@trezor/utxo-lib@1.0.0-beta.10":
   version "1.0.0-beta.10"
   resolved "https://registry.yarnpkg.com/@trezor/utxo-lib/-/utxo-lib-1.0.0-beta.10.tgz#93f16ce607d94e50f8338a75ca8a3710f106c20e"
@@ -4651,6 +4642,10 @@ big-integer@1.6.36:
 big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
+
+bigi@^1.1.0, bigi@^1.4.1:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/bigi/-/bigi-1.4.2.tgz#9c665a95f88b8b08fc05cfd731f561859d725825"
 
 bignumber.js@9.0.1, bignumber.js@^9.0.0, bignumber.js@^9.0.1:
   version "9.0.1"
@@ -6543,12 +6538,6 @@ debug@^3.2.7:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.3.1:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
-  dependencies:
-    ms "2.1.2"
-
 decamelize-keys@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/decamelize-keys/-/decamelize-keys-1.1.0.tgz#d171a87933252807eb3cb61dc1c1445d078df2d9"
@@ -7054,6 +7043,13 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
+
+ecurve@^1.0.3:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/ecurve/-/ecurve-1.0.6.tgz#dfdabbb7149f8d8b78816be5a7d5b83fcf6de797"
+  dependencies:
+    bigi "^1.1.0"
+    safe-buffer "^5.0.1"
 
 edge-paths@^2.1.0:
   version "2.2.1"
@@ -12613,10 +12609,6 @@ nan@^2.12.1:
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.1.tgz#d7be34dfa3105b91494c3147089315eff8874b01"
 
-nan@^2.13.2:
-  version "2.15.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
-
 nanoassert@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/nanoassert/-/nanoassert-1.1.0.tgz#4f3152e09540fde28c76f44b19bbcd1d5a42478d"
@@ -17428,21 +17420,19 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
 
-"trezor-connect@https://github.com/vacuumlabs/connect/releases/download/8.2.2-rc.1-multisig/trezor-connect-v8.2.2-rc.1-multisig-extended.tgz":
-  version "8.2.2-rc.1-multisig-extended"
-  resolved "https://github.com/vacuumlabs/connect/releases/download/8.2.2-rc.1-multisig/trezor-connect-v8.2.2-rc.1-multisig-extended.tgz#a8729e6648c1fa373e1429abae2c4a6e5df48c2d"
+trezor-connect@8.2.3-beta.3:
+  version "8.2.3-beta.3"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.3-beta.3.tgz#5f397a95839ed39472cbaf1b1d3cbaacc04a2530"
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@trezor/blockchain-link" "^1.0.17"
-    "@trezor/connect-common" "^0.0.3"
-    "@trezor/rollout" "^1.2.1"
-    "@trezor/transport" "1.0.1"
+    "@trezor/connect-common" "^0.0.2"
+    "@trezor/rollout" "^1.2.0"
     "@trezor/utxo-lib" "1.0.0-beta.10"
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
     events "^3.3.0"
-    hd-wallet "9.1.2"
     keccak "^3.0.2"
     node-fetch "^2.6.1"
     parse-uri "^1.0.3"
@@ -18730,10 +18720,6 @@ ws@^3.1.0:
 ws@^7.2.0, ws@^7.2.3, ws@^7.4.0:
   version "7.5.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.2.tgz#09cc8fea3bec1bc5ed44ef51b42f945be36900f6"
-
-ws@^7.4.6:
-  version "7.5.6"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.6.tgz#e59fc509fb15ddfb65487ee9765c5a51dec5fe7b"
 
 x-is-string@^0.1.0:
   version "0.1.0"
