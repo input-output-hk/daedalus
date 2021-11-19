@@ -428,6 +428,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletClose = () => {
+    this._resumePolling();
     const { mnemonics, walletName, spendingPassword, restoredWallet } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
@@ -439,9 +440,6 @@ export default class WalletsStore extends Store {
       this._restoreWalletResetRequests();
       this._restoreWalletResetData();
       this.actions.dialogs.closeActiveDialog.trigger();
-    }
-    if (restoredWallet) {
-      this.goToWalletRoute(restoredWallet.id);
     }
   };
 
@@ -707,7 +705,6 @@ export default class WalletsStore extends Store {
         this.restoreWalletStep = 3;
       });
     } finally {
-      this._resumePolling();
       runInAction('end wallet restore', () => {
         this.isRestoring = false;
       });
