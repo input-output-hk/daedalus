@@ -266,7 +266,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "json-stable-stringify"
       , "keccak"
       , "long"
-      , "merkle-lib"
       , "ms"
       , "nanoassert"
       , "node-fetch"
