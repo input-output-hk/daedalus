@@ -13,6 +13,7 @@ import {
 } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
+import styles from './RegisterToVote.scss';
 import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './RegisterToVote.scss';
