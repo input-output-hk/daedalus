@@ -236,6 +236,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "base-x"
       , "base64-js"
       , "bchaddrjs"
+      , "bech32"
       , "big-integer"
       , "bigi"
       , "bignumber.js"
