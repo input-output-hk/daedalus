@@ -283,6 +283,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "tiny-worker"
       , "trezor-connect"
       , "trezor-link"
+      , "tiny-secp256k1"
       , "typeforce"
       , "util-deprecate"
       , "varuint-bitcoin"
