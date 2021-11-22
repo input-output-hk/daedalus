@@ -243,6 +243,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "bip66"
       , "bitcoin-ops"
       , "blake2b"
+      , "blake-hash"
       , "blake2b-wasm"
       , "bs58"
       , "bs58check"
