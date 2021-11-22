@@ -20,7 +20,7 @@ import { NUMBER_OPTIONS } from '../../../source/renderer/app/config/profileConfi
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
-import DiscreetToggleTopBar from '../../../source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar';
+import { DiscreetToggleTopBar } from '../../../source/renderer/app/features';
 import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet.js';
@@ -236,12 +236,7 @@ export default class StoryLayout extends Component<Props> {
           boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
         )}
       />
-      <DiscreetToggle
-        className={classNames(
-          topBarStyles.discreetModeToggle,
-          boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
-        )}
-      />
+      <DiscreetToggleTopBar hasTadaIcon={boolean('hasTadaIcon')} />
       {boolean('hasTadaIcon') && (
         <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
       )}

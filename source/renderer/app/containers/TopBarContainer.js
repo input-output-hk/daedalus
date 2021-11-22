@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
-import DiscreetToggleTopBar from '../features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar';
+import { DiscreetToggleTopBar } from '../features/discreet-mode';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
@@ -105,12 +105,7 @@ const TopBarContainer = (
           shouldShowTadaIcon && topBarStyles.hasTadaIcon
         )}
       />
-      <DiscreetToggle
-        className={classnames(
-          topBarStyles.discreetModeToggle,
-          shouldShowTadaIcon && topBarStyles.hasTadaIcon
-        )}
-      />
+      <DiscreetToggleTopBar hasTadaIcon={shouldShowTadaIcon} />
       {shouldShowTadaIcon && (
         <TadaButton
           onClick={onClickTadaButton}
