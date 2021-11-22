@@ -8,7 +8,10 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import actions from '../../../source/renderer/app/actions';
 import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet.js';
-import { DiscreetModeFeatureProvider } from '../../../source/renderer/app/features';
+import {
+  DiscreetModeFeatureProvider,
+  BrowserLocalStorageBridge,
+} from '../../../source/renderer/app/features';
 
 type Props = {
   children: Node,
@@ -179,9 +182,11 @@ export default class StoryProvider extends Component<Props> {
         actions={actions}
         storiesProps={this.storiesProps}
       >
-        <DiscreetModeFeatureProvider>
-          {this.props.children}
-        </DiscreetModeFeatureProvider>
+        <BrowserLocalStorageBridge>
+          <DiscreetModeFeatureProvider>
+            {this.props.children}
+          </DiscreetModeFeatureProvider>
+        </BrowserLocalStorageBridge>
       </Provider>
     );
   }

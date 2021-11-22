@@ -7,6 +7,7 @@ import {
   getFeatureFromContext,
   useFeature,
 } from '../../utils/mobx-features/hooks';
+import { useLocalStorageFeature } from '../local-storage';
 
 import { DiscreetMode } from './feature';
 import { DiscreetModeApi } from './api';
@@ -20,8 +21,9 @@ interface Props {
 }
 
 export const DiscreetModeFeatureProvider = ({ children }: Props) => {
+  const localStorageFeature = useLocalStorageFeature();
   const [discreetModeFeature] = useState<DiscreetMode>(() => {
-    const feature = new DiscreetMode(new DiscreetModeApi());
+    const feature = new DiscreetMode(new DiscreetModeApi(localStorageFeature));
     window.daedalus = merge(window.daedalus, {
       features: {
         discreetModeFeature: feature,

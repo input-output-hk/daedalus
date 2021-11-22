@@ -2,6 +2,7 @@
 import { observable, action, runInAction } from 'mobx';
 import { Feature } from '../../utils/mobx-features/feature';
 import Request from '../../stores/lib/LocalizedRequest';
+
 import { DiscreetModeApi } from './api';
 import { SENSITIVE_DATA_SYMBOL } from './config';
 import { defaultReplacer } from './replacers/defaultReplacer';
@@ -12,11 +13,13 @@ export class DiscreetMode extends Feature {
   @observable isDiscreetMode: boolean = false;
   @observable openInDiscreetMode: boolean = false;
 
-  @observable getDiscreetModeSettingsRequest: Request<Promise<boolean>> =
-    new Request(this.api.getDiscreetModeSettings);
+  @observable getDiscreetModeSettingsRequest: Request<
+    Promise<boolean>
+  > = new Request(this.api.getDiscreetModeSettings);
 
-  @observable setDiscreetModeSettingsRequest: Request<Promise<boolean>> =
-    new Request(this.api.setDiscreetModeSettings);
+  @observable setDiscreetModeSettingsRequest: Request<
+    Promise<boolean>
+  > = new Request(this.api.setDiscreetModeSettings);
 
   constructor(api: DiscreetModeApi) {
     super();
