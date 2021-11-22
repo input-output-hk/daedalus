@@ -4,7 +4,7 @@
 
 ### Chores
 
-- Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2734](https://github.com/input-output-hk/daedalus/pull/2734), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
+- Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2735](https://github.com/input-output-hk/daedalus/pull/2735), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
 
 ## 4.5.1
 
