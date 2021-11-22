@@ -288,6 +288,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "semver-compare"
       , "tiny-worker"
       , "trezor-connect"
+      , "trezor-link"
       , "tiny-secp256k1"
       , "typeforce"
       , "util-deprecate"
