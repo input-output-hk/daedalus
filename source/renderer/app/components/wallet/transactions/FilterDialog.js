@@ -103,6 +103,7 @@ export type FilterDialogProps = {
   defaultFilterOptions: TransactionFilterOptionsType,
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
+  isDisabled: boolean,
   triggerElement?: Element<*>,
 };
 
@@ -474,12 +475,13 @@ export default class FilterDialog extends Component<FilterDialogProps> {
 
   render() {
     const { intl } = this.context;
-    const { defaultFilterOptions, triggerElement } = this.props;
+    const { defaultFilterOptions, triggerElement, isDisabled } = this.props;
 
     return (
       <PopOver
         arrow={false}
         interactive
+        disabled={isDisabled}
         trigger="click"
         appendTo={document.body}
         onShow={(instance) => {

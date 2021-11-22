@@ -7,12 +7,13 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './VotingNoWallets.scss';
 import icon from '../../assets/images/attention-big-thin.inline.svg';
+import { NEXT_VOTING_FUND_NUMBER } from '../../config/votingConfig';
 
 const messages = defineMessages({
   headLine: {
     id: 'voting.info.noWallets.headLine',
     defaultMessage:
-      '!!!Voting registration for Fund6 is not available as you currently do not have any Shelley-compatible wallets.',
+      '!!!Voting registration for Fund{nextVotingFundNumber} is not available as you currently do not have any Shelley-compatible wallets.',
     description: '"No wallets" headLine on the voting info page.',
   },
   instructions: {
@@ -46,7 +47,11 @@ export default class VotingNoWallets extends Component<Props> {
     return (
       <div className={styles.component}>
         <SVGInline svg={icon} className={styles.icon} />
-        <h1>{intl.formatMessage(messages.headLine)}</h1>
+        <h1>
+          {intl.formatMessage(messages.headLine, {
+            nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+          })}
+        </h1>
         <p>
           {intl.formatMessage(messages.instructions, {
             minVotingFunds: new BigNumber(minVotingFunds).toFormat(0),

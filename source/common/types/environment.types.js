@@ -12,6 +12,7 @@ export type Environment = {
   isStaging: boolean,
   isTestnet: boolean,
   isAlonzoPurple: boolean,
+  isShelleyQA: boolean,
   isSelfnode: boolean,
   isDevelopment: boolean,
   isWatchMode: boolean,

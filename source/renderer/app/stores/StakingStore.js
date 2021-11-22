@@ -291,6 +291,7 @@ export default class StakingStore extends Store {
       if (isHardwareWallet) {
         joinTransaction = await this.stores.hardwareWallets._sendMoney({
           isDelegationTransaction: true,
+          selectedWalletId: walletId,
         });
       } else {
         joinTransaction = await this.joinStakePoolRequest.execute({
@@ -327,6 +328,7 @@ export default class StakingStore extends Store {
       if (isHardwareWallet) {
         quitTransaction = await this.stores.hardwareWallets._sendMoney({
           isDelegationTransaction: true,
+          selectedWalletId: walletId,
         });
       } else {
         quitTransaction = await this.quitStakePoolRequest.execute({

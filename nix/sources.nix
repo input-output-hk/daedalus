@@ -134,5 +134,6 @@ let
       # The "pkgs" (evaluated nixpkgs) to use for e.g. non-builtin fetchers
       inherit pkgs;
     };
+
 in
 mkSources (mkConfig {}) // { __functor = _: settings: mkSources (mkConfig settings); }
