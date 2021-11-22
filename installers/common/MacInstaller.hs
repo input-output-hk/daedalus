@@ -270,6 +270,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "keccak"
       , "long"
       , "ms"
+      , "minimalistic-assert"
       , "nanoassert"
       , "node-fetch"
       , "object-keys"
