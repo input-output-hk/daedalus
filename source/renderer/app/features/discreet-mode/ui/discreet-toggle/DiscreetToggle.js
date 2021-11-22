@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import revealIcon from '../../../../assets/images/reveal-key.inline.svg';
@@ -26,4 +27,4 @@ const DiscreetToggle = ({ className }: Props) => {
   );
 };
 
-export default DiscreetToggle;
+export default injectIntl(observer(DiscreetToggle));

@@ -1,21 +1,14 @@
 // @flow
 import React from 'react';
-import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
-import type { AssetMetadata } from '../../../api/assets/types';
-import { useDiscreetModeFeature } from '../context';
+import {
+  discreetWalletTokenAmount,
+  DiscreetWalletTokenAmountProps,
+} from '../replacers/discreetWalletTokenAmount';
+import DiscreetValue from './DiscreetValue';
 
-type Props = {
-  amount: BigNumber,
-  metadata?: ?AssetMetadata,
-  decimals: ?number,
-  isShort?: boolean,
-};
-
-function DiscreetTokenWalletAmount(props: Props) {
-  const feature = useDiscreetModeFeature();
-
-  return <>{feature.hideOrShowTokenWalletAmount(props)}</>;
+function DiscreetTokenWalletAmount(props: DiscreetWalletTokenAmountProps) {
+  return <DiscreetValue replacer={discreetWalletTokenAmount(props)} />;
 }
 
 export default observer(DiscreetTokenWalletAmount);

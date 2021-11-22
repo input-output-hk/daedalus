@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
+import { discreetWalletTokenAmount } from '../../../features/discreet-mode/replacers/discreetWalletTokenAmount';
 import ItemsDropdown from './ItemsDropdown';
 import type { AssetToken } from '../../../api/assets/types';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
@@ -57,10 +58,12 @@ export default function AssetsDropdown({
   };
   const formattedOptions = assets.map((asset) => {
     const { uniqueId: value, metadata, quantity, decimals } = asset;
-    const detail = discreetModeFeature.hideOrShowTokenWalletAmount({
-      amount: quantity,
-      metadata,
-      decimals,
+    const detail = discreetModeFeature.discreetValue({
+      replacer: discreetWalletTokenAmount({
+        amount: quantity,
+        metadata,
+        decimals,
+      }),
     });
     return {
       label: (

@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
+import { discreetWalletTokenAmount } from '../../features/discreet-mode/replacers/discreetWalletTokenAmount';
 import styles from './AssetAmount.scss';
 import type { AssetMetadata } from '../../api/assets/types';
 import { useDiscreetModeFeature } from '../../features/discreet-mode';
@@ -39,11 +40,13 @@ function AssetAmount({
   if (isLoading) return '-';
   const componentStyles = classnames([styles.component, className]);
   const content = !isLoading
-    ? discreetModeFeature.hideOrShowTokenWalletAmount({
-        amount,
-        metadata,
-        decimals,
-        isShort,
+    ? discreetModeFeature.discreetValue({
+        replacer: discreetWalletTokenAmount({
+          amount,
+          metadata,
+          decimals,
+          isShort,
+        }),
       })
     : '-';
 
@@ -55,10 +58,12 @@ function AssetAmount({
             <FormattedHTMLMessage
               {...messages.unformattedAmount}
               values={{
-                amount: discreetModeFeature.hideOrShowTokenWalletAmount({
-                  amount,
-                  metadata: null,
-                  decimals: 0,
+                amount: discreetModeFeature.discreetValue({
+                  replacer: discreetWalletTokenAmount({
+                    amount,
+                    metadata: null,
+                    decimals: 0,
+                  }),
                 }),
               }}
             />

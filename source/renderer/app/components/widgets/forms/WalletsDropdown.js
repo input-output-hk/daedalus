@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
+import { observer } from 'mobx-react';
 import { omit, filter, escapeRegExp } from 'lodash';
+import { discreetWalletAmount } from '../../../features/discreet-mode/replacers/discreetWalletAmount';
 import WalletsDropdownLabel from './WalletsDropdownLabel';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import Wallet from '../../../domains/Wallet';
@@ -34,7 +36,7 @@ export const onSearchWalletsDropdown = (
   });
 };
 
-export default function WalletsDropdown({
+function WalletsDropdown({
   className,
   getStakePoolById,
   numberOfStakePools,
@@ -56,7 +58,9 @@ export default function WalletsDropdown({
       restorationProgress: syncingProgress,
     } = wallet;
     const detail = !isRestoring
-      ? discreetModeFeature.hideOrShowWalletAmount({ amount })
+      ? discreetModeFeature.discreetValue({
+          replacer: discreetWalletAmount({ amount }),
+        })
       : null;
     return {
       label: (
@@ -81,3 +85,5 @@ export default function WalletsDropdown({
     />
   );
 }
+
+export default observer(WalletsDropdown);

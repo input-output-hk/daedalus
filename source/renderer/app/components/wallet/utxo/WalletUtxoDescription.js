@@ -21,7 +21,7 @@ export function WalletUtxoDescription({
     <FormattedHTMLMessage
       {...description}
       values={{
-        formattedWalletAmount: discreetModeFeature.hideOrShowSensitiveData(
+        formattedWalletAmount: discreetModeFeature.discreetValue(
           formattedWalletAmount
         ),
         walletUtxosAmount,
