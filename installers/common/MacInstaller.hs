@@ -258,6 +258,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "create-hmac"
       , "cross-fetch"
       , "define-properties"
+      , "ecurve"
       , "elliptic"
       , "es-abstract"
       , "function-bind"
