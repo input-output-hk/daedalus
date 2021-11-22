@@ -268,6 +268,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "hmac-drbg"
       , "ieee754"
       , "inherits"
+      , "int64-buffer"
       , "js-chain-libs-node"
       , "json-stable-stringify"
       , "keccak"
