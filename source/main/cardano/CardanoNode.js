@@ -794,7 +794,7 @@ export class CardanoNode {
    * @private
    */
   _canBeStarted = async (): Promise<boolean> => {
-    if (this._isConnected()) {
+    if (this._isConnected() || this.state === CardanoNodeStates.STARTING) {
       return false;
     }
     try {

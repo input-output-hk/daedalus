@@ -43,6 +43,7 @@ type Props = {
   getStakePoolById: Function,
   hwDeviceStatus: HwDeviceStatus,
   isTrezor: boolean,
+  onThumbPoolSelect: Function,
 };
 
 const getOversaturationPercentage = (
@@ -108,6 +109,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       hwDeviceStatus,
       isTrezor,
       maxDelegationFunds,
+      onThumbPoolSelect,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -156,9 +158,10 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             selectedPool={selectedPool}
             onClose={onClose}
             onBack={onBack}
-            onSelectPool={onSelectPool}
-            onContinue={onContinue}
+            onSelectPool={onThumbPoolSelect}
+            onContinue={onSelectPool}
             oversaturationPercentage={oversaturationPercentage}
+            onThumbPoolSelect={onThumbPoolSelect}
           />
         );
         break;
