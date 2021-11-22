@@ -1,65 +1,10 @@
 # Changelog
 
-## 4.8.0
-
-### Features
-
-- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
-- Improved UI/UX of RTS flags settings ([PR 2842](https://github.com/input-output-hk/daedalus/pull/2842), [PR 2846](https://github.com/input-output-hk/daedalus/pull/2846))
-- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827), [PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+## vNext
 
 ### Chores
 
-- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
-- Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
-
-### Fixes
-
-- Fixed blockain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
-
-## 4.7.0
-
-### Features
-
-- Updated Catalyst dates ([PR 2812](https://github.com/input-output-hk/daedalus/pull/2812))
-
-### Fixes
-
-- Fixed immediate language updates of application top menu bar ([PR 2813](https://github.com/input-output-hk/daedalus/pull/2813))
-- Fixed receiver address validation by disallowing rewards addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
-
-### Chores
-
-- Integrated Chromatic for visual regression testing ([PR 2776](https://github.com/input-output-hk/daedalus/pull/2776))
-- Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
-- Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
-- Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))
-
-## 4.6.0
-
-### Features
-
-- Implement catalyst state snapshot phase ([PR 2771](https://github.com/input-output-hk/daedalus/pull/2771))
-- Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724), [PR 2725](https://github.com/input-output-hk/daedalus/pull/2725), [PR 2742](https://github.com/input-output-hk/daedalus/pull/2742), [PR 2740](https://github.com/input-output-hk/daedalus/pull/2740), [PR 2756](https://github.com/input-output-hk/daedalus/pull/2756))
-- Updated slider component to only execute onAfterChange if slider had moved ([PR 2766](https://github.com/input-output-hk/daedalus/pull/2766))
-
-### Fixes
-
-- Fixed app update for specific platform ([PR 2759](https://github.com/input-output-hk/daedalus/pull/2759))
-- Fixed checkbox tick offset ([PR 2751](https://github.com/input-output-hk/daedalus/pull/2751))
-
-### Chores
-
-- Improve startup and shutdown messages ([PR 2770](https://github.com/input-output-hk/daedalus/pull/2770))
-- Updated `cardano-wallet` to version `2021-11-11` ([PR 2765](https://github.com/input-output-hk/daedalus/pull/2765))
-- Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
-- Updated `cardano-launcher` to version `0.20211105.1`
-
-## 4.5.2
-
-### Fixes
-
-- Fixed Cardano Node starting/stopping issues
+- Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2734](https://github.com/input-output-hk/daedalus/pull/2734), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
 
 ## 4.5.1
 
@@ -89,7 +34,6 @@
 
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
 - Improved the Daedalus startup by avoiding unnecessary Cardano Node restarts ([PR 2716](https://github.com/input-output-hk/daedalus/pull/2716))
-- Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2734](https://github.com/input-output-hk/daedalus/pull/2734), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
 - Updated README with solution steps for the nix SSL issue ([PR 2727](https://github.com/input-output-hk/daedalus/pull/2727))
 - Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))

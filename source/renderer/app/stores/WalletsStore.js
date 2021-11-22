@@ -674,6 +674,7 @@ export default class WalletsStore extends Store {
 
   @action _restore = async () => {
     this.isRestoring = true;
+
     // Pause polling in order to avoid fetching data for wallet we are about to restore
     // so that we remain on the "Add wallet" screen until user closes the TADA screen
     await this._pausePolling();
@@ -707,7 +708,6 @@ export default class WalletsStore extends Store {
         this.restoreWalletStep = 3;
       });
     } finally {
-      this._resumePolling();
       runInAction('end wallet restore', () => {
         this.isRestoring = false;
       });
