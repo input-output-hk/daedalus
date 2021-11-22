@@ -245,6 +245,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "blake2b"
       , "blake-hash"
       , "blake2b-wasm"
+      , "bn.js"
       , "bs58"
       , "bs58check"
       , "bytebuffer-old-fixed-webpack"
