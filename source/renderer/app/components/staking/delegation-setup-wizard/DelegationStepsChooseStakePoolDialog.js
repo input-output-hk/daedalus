@@ -50,6 +50,7 @@ type Props = {
   intl: intlShape.isRequired,
   onContinue: Function,
   oversaturationPercentage: number,
+  onThumbPoolSelect: Function,
 };
 
 type FooterProps = {
@@ -90,22 +91,25 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     setSearchValue('');
   });
 
-  const handleSelect = useCallback((value: string) => {
-    const _selectedPool = find(
-      stakePoolsList,
-      (stakePool) => stakePool.id === value
-    );
-    setSelectedPool(_selectedPool);
-    props.onSelectPool(_selectedPool.id);
-  });
+  const handleSelect = useCallback(
+    (value: string) => {
+      const _selectedPool = find(
+        stakePoolsList,
+        (stakePool) => stakePool.id === value
+      );
+      setSelectedPool(_selectedPool);
+      props.onThumbPoolSelect(_selectedPool.id);
+    },
+    [props.onThumbPoolSelect, stakePoolsList]
+  );
 
   useEffect(() => {
     if (preselectedPool && preselectedPool.id) handleSelect(preselectedPool.id);
   }, [preselectedPool]);
 
   const onContinue = useCallback(() => {
-    props.onContinue();
-  }, [props.onContinue]);
+    props.onContinue(selectedPool);
+  }, [props.onContinue, selectedPool]);
 
   const {
     name: selectedWalletName,

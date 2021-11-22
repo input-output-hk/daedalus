@@ -172,6 +172,8 @@ export default class WalletsStore extends Store {
 
   /* ----------  Delete Wallet  ---------- */
   @observable isDeleting: boolean = false;
+  /* ----------  Restore Wallet  ---------- */
+  @observable isRestoring: boolean = false;
 
   /* ----------  Paper Wallet  ---------- */
   @observable createPaperWalletCertificateStep = 0;
@@ -404,6 +406,7 @@ export default class WalletsStore extends Store {
     const { restoredWallet } = this;
     if (restoredWallet) {
       await this._patchWalletRequestWithNewWallet(restoredWallet);
+      this.goToWalletRoute(restoredWallet.id);
       this.refreshWalletsData();
       this._restoreWalletResetRequests();
       this._restoreWalletResetData();
@@ -425,7 +428,8 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletClose = () => {
-    const { mnemonics, walletName, spendingPassword, restoredWallet } = this;
+    this._resumePolling();
+    const { mnemonics, walletName, spendingPassword } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
       this.restoreWalletStep !== null &&
@@ -436,9 +440,6 @@ export default class WalletsStore extends Store {
       this._restoreWalletResetRequests();
       this._restoreWalletResetData();
       this.actions.dialogs.closeActiveDialog.trigger();
-    }
-    if (restoredWallet) {
-      this.goToWalletRoute(restoredWallet.id);
     }
   };
 
@@ -668,11 +669,12 @@ export default class WalletsStore extends Store {
     return unscrambledRecoveryPhrase;
   };
 
-  _restore = async () => {
+  @action _restore = async () => {
+    this.isRestoring = true;
+
     // Pause polling in order to avoid fetching data for wallet we are about to restore
     // so that we remain on the "Add wallet" screen until user closes the TADA screen
     await this._pausePolling();
-
     // Reset restore requests to clear previous errors
     this._restoreWalletResetRequests();
 
@@ -702,8 +704,10 @@ export default class WalletsStore extends Store {
         this.restoredWallet = restoredWallet;
         this.restoreWalletStep = 3;
       });
-    } catch (error) {
-      this._resumePolling();
+    } finally {
+      runInAction('end wallet restore', () => {
+        this.isRestoring = false;
+      });
     }
   };
 

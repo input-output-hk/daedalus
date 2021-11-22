@@ -15,7 +15,6 @@ export default class ConfigurationDialogContainer extends Component<Props> {
 
   handleContinue = () => {
     this.props.actions.wallets.restoreWallet.trigger();
-    this.props.actions.wallets.restoreWalletEnd.trigger();
   };
 
   handleChange = (param: string, field: Object) =>
@@ -28,14 +27,19 @@ export default class ConfigurationDialogContainer extends Component<Props> {
     const { onClose, onBack, stores } = this.props;
     const { wallets, profile } = stores;
     const { currentLocale } = profile;
-    const { error, isExecuting } = wallets.restoreRequest;
-    const { walletName, spendingPassword, repeatPassword } = wallets;
+    const { error } = wallets.restoreRequest;
+    const {
+      walletName,
+      spendingPassword,
+      repeatPassword,
+      isRestoring,
+    } = wallets;
     const {
       error: certificateError,
     } = stores.wallets.getWalletRecoveryPhraseFromCertificateRequest;
     return (
       <ConfigurationDialog
-        isSubmitting={isExecuting}
+        isSubmitting={isRestoring}
         onClose={onClose}
         onContinue={this.handleContinue}
         onChange={this.handleChange}
