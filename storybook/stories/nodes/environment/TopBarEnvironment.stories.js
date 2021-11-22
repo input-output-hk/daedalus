@@ -38,7 +38,16 @@ const topBarTestEnv = (currentTheme) => (
     <span
       className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
     />
+<<<<<<< HEAD
     <DiscreetToggleTopBar hasTadaIcon />
+=======
+    <DiscreetToggle
+      className={classNames(
+        topBarStyles.discreetModeToggle,
+        topBarStyles.hasTadaIcon
+      )}
+    />
+>>>>>>> d76f4da9d ([DDW-814] Directly use discreet mode feature in toggle)
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
@@ -68,7 +77,12 @@ const topBarStagingEnv = (currentTheme) => (
     <span
       className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
     />
-    <DiscreetToggleTopBar hasTadaIcon />
+    <DiscreetToggle
+      className={classNames(
+        topBarStyles.discreetModeToggle,
+        topBarStyles.hasTadaIcon
+      )}
+    />
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
@@ -97,7 +111,16 @@ const topBarProductionEnv = (currentTheme) => (
     <span
       className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
     />
+<<<<<<< HEAD
     <DiscreetToggleTopBar hasTadaIcon />
+=======
+    <DiscreetToggle
+      className={classNames(
+        topBarStyles.discreetModeToggle,
+        topBarStyles.hasTadaIcon
+      )}
+    />
+>>>>>>> d76f4da9d ([DDW-814] Directly use discreet mode feature in toggle)
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}

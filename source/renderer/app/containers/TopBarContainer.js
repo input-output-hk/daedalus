@@ -105,7 +105,12 @@ const TopBarContainer = (
           shouldShowTadaIcon && topBarStyles.hasTadaIcon
         )}
       />
-      <DiscreetToggleTopBar hasTadaIcon={shouldShowTadaIcon} />
+      <DiscreetToggle
+        className={classnames(
+          topBarStyles.discreetModeToggle,
+          shouldShowTadaIcon && topBarStyles.hasTadaIcon
+        )}
+      />
       {shouldShowTadaIcon && (
         <TadaButton
           onClick={onClickTadaButton}

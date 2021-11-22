@@ -203,4 +203,10 @@ storiesOf('Common|Widgets', module)
       <NormalSwitch onChange={action('onChange')} />
       <NormalSwitch onChange={action('onChange')} checked />
     </div>
+  ))
+  .add('DiscreetToggle', () => (
+    <div style={{ padding: 10 }}>
+      <DiscreetToggle />
+      <DiscreetToggle />
+    </div>
   ));
