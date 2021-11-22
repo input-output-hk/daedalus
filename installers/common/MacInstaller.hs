@@ -257,6 +257,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "cross-fetch"
       , "define-properties"
       , "ecurve"
+      , "elliptic"
       , "es-abstract"
       , "function-bind"
       , "get-intrinsic"
