@@ -4,7 +4,6 @@
   "version": "4.5.1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
-  "license": "Apache-2.0",
   "scripts": {
     "build": "gulp build",
     "build:electron": "electron-rebuild -w usb --useCache -s --debug",
