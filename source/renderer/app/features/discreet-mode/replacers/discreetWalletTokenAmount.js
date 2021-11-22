@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js';
 import type { AssetMetadata } from '../../../api/assets/types';
 import { formattedTokenWalletAmount } from '../../../utils/formatters';
-import { DiscreetValueReplacer } from '../types';
+import type { DiscreetValueReplacer } from '../types';
 
 export type DiscreetWalletTokenAmountProps = {
   amount: BigNumber,

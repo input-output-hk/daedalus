@@ -1,7 +1,7 @@
 // @flow
 import BigNumber from 'bignumber.js';
 import { formattedWalletAmount } from '../../../utils/formatters';
-import { DiscreetValueReplacer } from '../types';
+import type { DiscreetValueReplacer } from '../types';
 
 export type DiscreetWalletAmountProps = {
   amount: BigNumber,

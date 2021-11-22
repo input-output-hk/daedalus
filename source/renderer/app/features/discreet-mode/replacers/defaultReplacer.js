@@ -1,6 +1,9 @@
 // @flow
-export function defaultReplacer() {
-  return (isDiscreetMode, symbol: string, value: any) => {
+
+import type { DiscreetValueReplacer } from '../types';
+
+export const defaultReplacer: DiscreetValueReplacer = () => {
+  return (isDiscreetMode, symbol, value) => {
     return isDiscreetMode ? symbol : value;
   };
-}
+};

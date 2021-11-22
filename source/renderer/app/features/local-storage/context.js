@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import { merge } from 'lodash/fp';
 import { getFeatureFromContext } from '../../utils/mobx-features/hooks';
 
-import { LocalStorageApi } from './types';
+import type { LocalStorageApi } from './types';
 
 export const localStorageContext = React.createContext<LocalStorageApi | null>(
   null

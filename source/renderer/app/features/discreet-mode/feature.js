@@ -6,7 +6,7 @@ import Request from '../../stores/lib/LocalizedRequest';
 import { DiscreetModeApi } from './api';
 import { SENSITIVE_DATA_SYMBOL } from './config';
 import { defaultReplacer } from './replacers/defaultReplacer';
-import type { DiscreetValueReplacer } from './types';
+import type { ReplacerFn } from './types';
 
 export class DiscreetMode extends Feature {
   api: DiscreetModeApi;
@@ -56,7 +56,7 @@ export class DiscreetMode extends Feature {
     replacer = defaultReplacer(),
     value,
   }: {
-    replacer: DiscreetValueReplacer,
+    replacer?: ReplacerFn,
     value?: any,
   }) {
     return replacer(this.isDiscreetMode, SENSITIVE_DATA_SYMBOL, value);
