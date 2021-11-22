@@ -273,7 +273,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "long"
       , "ms"
       , "minimalistic-assert"
-      , "minimalistic-crypto-utils"
       , "nanoassert"
       , "node-fetch"
       , "object-keys"
