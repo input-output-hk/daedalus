@@ -11,7 +11,7 @@
   top: 0;
   transition: margin-right 400ms ease;
   width: 460px;
-  z-index: 20;
+  z-index: 99999;
 
   &.noTransition {
     transition: none;
