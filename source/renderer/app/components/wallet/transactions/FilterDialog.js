@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component, createRef } from 'react';
-import type { Element, ElementRef } from 'react';
+import type { Element, ElementRef, Config } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import { isEqual, pick } from 'lodash';
@@ -9,7 +9,11 @@ import { defineMessages, intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import {
+  DECIMAL_PLACES_IN_ADA,
+  MIN_DISCREET_MODE_INPUT_FIELD_VALUE,
+  MAX_DISCREET_MODE_INPUT_FIELD_VALUE,
+} from '../../../config/numbersConfig';
 import {
   calculateDateRange,
   validateFilterForm,
@@ -19,6 +23,8 @@ import {
   DateRangeTypes,
   emptyTransactionFilterOptions,
 } from '../../../stores/TransactionsStore';
+import { withDiscreetMode } from '../../../features/discreet-mode';
+import type { DiscreetModeFeature } from '../../../features/discreet-mode';
 import { NUMBER_FORMATS } from '../../../../../common/types/number.types';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
 import TinySelect from '../../widgets/forms/TinySelect';
@@ -96,7 +102,9 @@ const messages = defineMessages({
   },
 });
 
-export type FilterDialogProps = {
+type InjectedProps = {| discreetModeFeature: DiscreetModeFeature |};
+
+export type FilterDialogProps = {|
   locale: string,
   dateFormat: string,
   numberFormat: string,
@@ -105,10 +113,11 @@ export type FilterDialogProps = {
   onFilter: Function,
   isDisabled: boolean,
   triggerElement?: Element<*>,
-};
+  ...InjectedProps,
+|};
 
 @observer
-export default class FilterDialog extends Component<FilterDialogProps> {
+class FilterDialog extends Component<FilterDialogProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -183,12 +192,12 @@ export default class FilterDialog extends Component<FilterDialogProps> {
         fromAmount: {
           type: 'number',
           label: '',
-          value: fromAmount,
+          value: this.getFromAmountValue(fromAmount),
         },
         toAmount: {
           type: 'number',
           label: '',
-          value: toAmount,
+          value: this.getToAmountValue(toAmount),
         },
       },
     });
@@ -209,7 +218,10 @@ export default class FilterDialog extends Component<FilterDialogProps> {
     }
   };
 
-  fillFormFields = (filterOptions: TransactionFilterOptionsType) => {
+  fillFormFields = (
+    filterOptions: TransactionFilterOptionsType,
+    reset?: boolean
+  ) => {
     const {
       dateRange,
       fromDate,
@@ -223,13 +235,33 @@ export default class FilterDialog extends Component<FilterDialogProps> {
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromDate').set(fromDate);
     this.form.select('toDate').set(toDate);
-    this.form.select('fromAmount').set(fromAmount);
-    this.form.select('toAmount').set(toAmount);
+    this.form
+      .select('fromAmount')
+      .set(reset ? fromAmount : this.getFromAmountValue(fromAmount));
+    this.form
+      .select('toAmount')
+      .set(reset ? toAmount : this.getToAmountValue(toAmount));
     this.form.select('incomingChecked').set(incomingChecked);
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
 
-  resetForm = () => this.fillFormFields(emptyTransactionFilterOptions);
+  getFromAmountValue = (fromAmount: number) => {
+    const { discreetModeFeature } = this.props;
+
+    return discreetModeFeature.isDiscreetMode
+      ? MIN_DISCREET_MODE_INPUT_FIELD_VALUE
+      : fromAmount;
+  };
+
+  getToAmountValue = (toAmount: number) => {
+    const { discreetModeFeature } = this.props;
+
+    return discreetModeFeature.isDiscreetMode
+      ? MAX_DISCREET_MODE_INPUT_FIELD_VALUE
+      : toAmount;
+  };
+
+  resetForm = () => this.fillFormFields(emptyTransactionFilterOptions, true);
 
   generateDefaultFilterOptions = () =>
     this.fillFormFields(this.props.defaultFilterOptions);
@@ -475,7 +507,14 @@ export default class FilterDialog extends Component<FilterDialogProps> {
 
   render() {
     const { intl } = this.context;
-    const { defaultFilterOptions, triggerElement, isDisabled } = this.props;
+    const {
+      defaultFilterOptions,
+      triggerElement,
+      isDisabled,
+      discreetModeFeature,
+    } = this.props;
+
+    console.log('discreetModeFeature', discreetModeFeature.isDiscreetMode);
 
     return (
       <PopOver
@@ -550,3 +589,5 @@ export default class FilterDialog extends Component<FilterDialogProps> {
     );
   }
 }
+
+export default withDiscreetMode<Config<Props, InjectedProps>>(FilterDialog);

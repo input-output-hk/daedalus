@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import type { AbstractComponent } from 'react';
+import { observer } from 'mobx-react';
 import { useDiscreetModeFeature } from '../context';
 import { DiscreetMode } from '../feature';
 
@@ -23,5 +24,5 @@ export function withDiscreetMode<Config>(
     WrappedComponent
   )})`;
 
-  return WithDiscreetMode;
+  return observer(WithDiscreetMode);
 }
