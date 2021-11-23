@@ -38,12 +38,19 @@ const SettingsMenu = ({
           className="general"
         />
         <DiscreetModeFeatureInject>
-          {({ isNotificationEnabled, setDiscreetModeNotification }) => (
+          {({
+            isNotificationEnabled,
+            setDiscreetModeNotification,
+            setDiscreetModeSettingsTooltip,
+          }) => (
             <>
               <TriggerOnRouteLeave
                 enabled={isNotificationEnabled}
                 isOnRoute={isActiveItem(ROUTES.SETTINGS.SECURITY)}
-                onLeave={() => setDiscreetModeNotification(false)}
+                onLeave={() => {
+                  setDiscreetModeNotification(false);
+                  setDiscreetModeSettingsTooltip(false);
+                }}
               />
               <NotificationDot
                 enabled={isNotificationEnabled}
