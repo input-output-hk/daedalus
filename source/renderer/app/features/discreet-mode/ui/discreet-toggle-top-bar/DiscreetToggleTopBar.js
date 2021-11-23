@@ -31,6 +31,7 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
       onMouseLeave={() => setVisible(false)}
     >
       <PopOver
+        appendTo="parent"
         visible={visible || isSettingsTooltipEnabled}
         className={styles.popOverRoot}
         content={
