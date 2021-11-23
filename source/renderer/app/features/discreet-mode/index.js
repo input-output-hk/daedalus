@@ -1,5 +1,7 @@
 // @flow
 
+import type { DiscreetMode } from './feature';
+
 export { useDiscreetModeFeature, DiscreetModeFeatureProvider } from './context';
 export {
   DiscreetValue,
@@ -7,4 +9,7 @@ export {
   DiscreetWalletAmount,
   DiscreetToggle,
   DiscreetToggleTopBar,
+  withDiscreetMode,
 } from './ui';
+
+export type DiscreetModeFeature = DiscreetMode;

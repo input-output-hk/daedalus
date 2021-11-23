@@ -5,3 +5,4 @@ export { default as DiscreetTokenWalletAmount } from './DiscreetTokenWalletAmoun
 export { default as DiscreetWalletAmount } from './DiscreetWalletAmount';
 export { default as DiscreetToggle } from './discreet-toggle/DiscreetToggle';
 export { default as DiscreetToggleTopBar } from './discreet-toggle-top-bar/DiscreetToggleTopBar';
+export { withDiscreetMode } from './withDiscreetMode';

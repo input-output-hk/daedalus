@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Config } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -11,6 +12,7 @@ import {
   generateThousands,
   formattedWalletAmount,
   toFixedUserFormat,
+  formattedAmountToBigNumber,
 } from '../../../utils/formatters';
 import {
   getFilteredWallets,
@@ -27,6 +29,8 @@ import {
   ALL_WALLETS_SELECTION_ID,
   IS_RANKING_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+import { withDiscreetMode } from '../../../features/discreet-mode';
+import type { DiscreetModeFeature } from '../../../features/discreet-mode';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
 import Slider from '../../widgets/Slider';
@@ -108,7 +112,9 @@ const messages = defineMessages({
   },
 });
 
-type Props = {
+type InjectedProps = {| discreetModeFeature: DiscreetModeFeature |};
+
+type Props = {|
   wallets: Array<Wallet>,
   onOpenExternalLink: Function,
   updateDelegatingStake: Function,
@@ -121,7 +127,8 @@ type Props = {
   getStakePoolById: Function,
   maxDelegationFunds: number,
   maxDelegationFundsLog: number,
-};
+  ...InjectedProps,
+|};
 
 type State = {
   sliderValue: number,
@@ -129,7 +136,7 @@ type State = {
 };
 
 @observer
-export default class StakePoolsRanking extends Component<Props, State> {
+class StakePoolsRanking extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -148,10 +155,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
   componentDidMount() {
     const { stake } = this.props;
     if (stake) {
-      const hasDecimal = stake - Math.floor(stake);
-      const displayValue = hasDecimal
-        ? formattedWalletAmount(new BigNumber(stake), false)
-        : toFixedUserFormat(stake, 0);
+      const displayValue = this.getDisplayValue(stake);
       this.setState({
         sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
         displayValue,
@@ -167,6 +171,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
     }
   }
 
+  getDisplayValue = (value: number) => {
+    const hasDecimal = value - Math.floor(value);
+    return hasDecimal
+      ? formattedWalletAmount(new BigNumber(value), false)
+      : toFixedUserFormat(value, 0);
+  };
+
   onSelectedWalletChange = (selectedWalletId: string) => {
     const {
       wallets,
@@ -174,6 +185,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       rankStakePools,
       selectedDelegationWalletId,
       maxDelegationFunds,
+      discreetModeFeature,
     } = this.props;
     const selectedWallet = wallets.find(
       (wallet) => wallet.id === selectedWalletId
@@ -189,13 +201,16 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
     let amountValue = 0;
     let sliderValue = 0;
-    if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
+    if (discreetModeFeature.isDiscreetMode) {
+      amountValue = formattedAmountToBigNumber(this.state.displayValue);
+    } else if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
       amountValue = Math.min(
         getAllAmounts(wallets).toNumber(),
         maxDelegationFunds
       );
     } else if (selectedWallet) {
-      amountValue = selectedWallet.amount.toNumber();
+      // amountValue = selectedWallet.amount.toNumber();
+      amountValue = MIN_DELEGATION_FUNDS;
     }
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
@@ -204,10 +219,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     // Prevent ranking stake pools if selected wallet and slider value remains unchanged
     if (!wasSelectedWalletChanged && !hasSliderValueChanged) return;
 
-    const displayValue = formattedWalletAmount(
-      new BigNumber(amountValue),
-      false
-    );
+    const displayValue = this.getDisplayValue(amountValue);
     this.setState({ sliderValue, displayValue });
     updateDelegatingStake(selectedWalletId, amountValue);
     rankStakePools();
@@ -415,3 +427,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     );
   }
 }
+
+export default withDiscreetMode<Config<Props, InjectedProps>>(
+  StakePoolsRanking
+);
