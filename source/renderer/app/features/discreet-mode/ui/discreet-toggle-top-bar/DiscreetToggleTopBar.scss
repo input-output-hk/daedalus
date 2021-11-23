@@ -29,6 +29,7 @@
 
 .popOverRoot {
   width: 210px;
+  pointer-events: all;
 
   .content {
     font-family: var(--font-light);
