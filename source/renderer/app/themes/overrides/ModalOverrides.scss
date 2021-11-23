@@ -3,7 +3,7 @@
 .overlay {
   @include overlay-backrop;
   overflow: hidden;
-  z-index: 100;
+  z-index: 99999;
 }
 
 .modal {
