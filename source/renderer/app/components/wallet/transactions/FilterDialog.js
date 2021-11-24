@@ -253,7 +253,7 @@ class FilterDialog extends Component<Props> {
     const { discreetModeFeature } = this.props;
 
     return discreetModeFeature.isDiscreetMode
-      ? MIN_DISCREET_MODE_INPUT_FIELD_VALUE
+      ? MIN_DISCREET_MODE_INPUT_FIELD_VALUE.toString()
       : fromAmount;
   };
 
@@ -261,14 +261,24 @@ class FilterDialog extends Component<Props> {
     const { discreetModeFeature } = this.props;
 
     return discreetModeFeature.isDiscreetMode
-      ? MAX_DISCREET_MODE_INPUT_FIELD_VALUE
+      ? MAX_DISCREET_MODE_INPUT_FIELD_VALUE.toString()
       : toAmount;
   };
 
   resetForm = () => this.fillFormFields(emptyTransactionFilterOptions, true);
 
+  getDefaultFilterOptions = (): TransactionFilterOptionsType => {
+    const { defaultFilterOptions } = this.props;
+
+    return {
+      ...defaultFilterOptions,
+      fromAmount: this.getFromAmountValue(defaultFilterOptions.fromAmount),
+      toAmount: this.getToAmountValue(defaultFilterOptions.toAmount),
+    };
+  };
+
   generateDefaultFilterOptions = () =>
-    this.fillFormFields(this.props.defaultFilterOptions);
+    this.fillFormFields(this.getDefaultFilterOptions());
 
   isFormValuesEqualTo = (
     comparedFilterOptions: TransactionFilterOptionsType
@@ -511,14 +521,7 @@ class FilterDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      defaultFilterOptions,
-      triggerElement,
-      isDisabled,
-      discreetModeFeature,
-    } = this.props;
-
-    console.log('discreetModeFeature', discreetModeFeature.isDiscreetMode);
+    const { triggerElement, isDisabled } = this.props;
 
     return (
       <PopOver
@@ -563,7 +566,9 @@ class FilterDialog extends Component<Props> {
                 <button
                   className={styles.titleLink}
                   onClick={this.generateDefaultFilterOptions}
-                  disabled={this.isFormValuesEqualTo(defaultFilterOptions)}
+                  disabled={this.isFormValuesEqualTo(
+                    this.getDefaultFilterOptions()
+                  )}
                 >
                   {intl.formatMessage(messages.allTransactions)}
                 </button>
