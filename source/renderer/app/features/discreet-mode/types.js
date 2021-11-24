@@ -6,4 +6,8 @@ export type ReplacerFn = (
   value: any
 ) => string;
 
-export type DiscreetValueReplacer = (args: any) => ReplacerFn;
+type ReplacerProps = {
+  [string]: any,
+};
+
+export type DiscreetValueReplacer = (props: ReplacerProps) => ReplacerFn;
