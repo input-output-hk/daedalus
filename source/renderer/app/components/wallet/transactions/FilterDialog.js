@@ -113,11 +113,15 @@ export type FilterDialogProps = {|
   onFilter: Function,
   isDisabled: boolean,
   triggerElement?: Element<*>,
+|};
+
+type Props = {|
+  ...FilterDialogProps,
   ...InjectedProps,
 |};
 
 @observer
-class FilterDialog extends Component<FilterDialogProps> {
+class FilterDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -126,7 +130,7 @@ class FilterDialog extends Component<FilterDialogProps> {
   form: ReactToolboxMobxForm;
   popoverTippyInstance: ElementRef<*> = createRef();
 
-  constructor(props: FilterDialogProps, context: Object) {
+  constructor(props: Props, context: Object) {
     super(props);
 
     const {
@@ -245,7 +249,7 @@ class FilterDialog extends Component<FilterDialogProps> {
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
 
-  getFromAmountValue = (fromAmount: number) => {
+  getFromAmountValue = (fromAmount?: string) => {
     const { discreetModeFeature } = this.props;
 
     return discreetModeFeature.isDiscreetMode
@@ -253,7 +257,7 @@ class FilterDialog extends Component<FilterDialogProps> {
       : fromAmount;
   };
 
-  getToAmountValue = (toAmount: number) => {
+  getToAmountValue = (toAmount?: string) => {
     const { discreetModeFeature } = this.props;
 
     return discreetModeFeature.isDiscreetMode

@@ -215,9 +215,18 @@ class StakePoolsRanking extends Component<Props, State> {
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
     const hasSliderValueChanged = sliderValue !== this.state.sliderValue;
+    const currentAmountValue = Math.max(
+      formattedAmountToBigNumber(this.state.displayValue),
+      MIN_DELEGATION_FUNDS
+    );
+    const hasAmountValueChanged = amountValue !== currentAmountValue;
 
     // Prevent ranking stake pools if selected wallet and slider value remains unchanged
-    if (!wasSelectedWalletChanged && !hasSliderValueChanged) return;
+    if (
+      (!wasSelectedWalletChanged && !hasSliderValueChanged) ||
+      (!hasAmountValueChanged && !hasSliderValueChanged)
+    )
+      return;
 
     const displayValue = this.getDisplayValue(amountValue);
     this.setState({ sliderValue, displayValue });

@@ -13272,13 +13272,13 @@
         "description": "All Transactions button label.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.allTransactions",
         "start": {
           "column": 19,
-          "line": 32
+          "line": 38
         }
       },
       {
@@ -13286,13 +13286,13 @@
         "description": "Reset Filter button label.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.resetFilter",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 43
         }
       },
       {
@@ -13300,13 +13300,13 @@
         "description": "Incoming filter type.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.incoming",
         "start": {
           "column": 12,
-          "line": 42
+          "line": 48
         }
       },
       {
@@ -13314,13 +13314,13 @@
         "description": "Outgoing filter type.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.outgoing",
         "start": {
           "column": 12,
-          "line": 47
+          "line": 53
         }
       },
       {
@@ -13328,13 +13328,13 @@
         "description": "Date range of filter.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.dateRange",
         "start": {
           "column": 13,
-          "line": 52
+          "line": 58
         }
       },
       {
@@ -13342,13 +13342,13 @@
         "description": "Select time range indication of filter.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.selectTimeRange",
         "start": {
           "column": 19,
-          "line": 57
+          "line": 63
         }
       },
       {
@@ -13356,13 +13356,13 @@
         "description": "Last 7 days range of filter.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 72
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.last7Days",
         "start": {
           "column": 13,
-          "line": 62
+          "line": 68
         }
       },
       {
@@ -13370,13 +13370,13 @@
         "description": "Last 30 days range of filter.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.last30Days",
         "start": {
           "column": 14,
-          "line": 67
+          "line": 73
         }
       },
       {
@@ -13384,13 +13384,13 @@
         "description": "Last 90 days range of filter.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.last90Days",
         "start": {
           "column": 14,
-          "line": 72
+          "line": 78
         }
       },
       {
@@ -13398,13 +13398,13 @@
         "description": "This year date range of filter.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.thisYear",
         "start": {
           "column": 12,
-          "line": 77
+          "line": 83
         }
       },
       {
@@ -13412,13 +13412,13 @@
         "description": "Custom date range of filter.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.custom",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 88
         }
       },
       {
@@ -13426,13 +13426,13 @@
         "description": "Amount range of filter.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.amountRange",
         "start": {
           "column": 15,
-          "line": 87
+          "line": 93
         }
       },
       {
@@ -13440,13 +13440,13 @@
         "description": "Filter button label.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.apply",
         "start": {
           "column": 9,
-          "line": 92
+          "line": 98
         }
       }
     ],
