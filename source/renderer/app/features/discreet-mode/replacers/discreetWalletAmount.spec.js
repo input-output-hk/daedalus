@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js';
 import { discreetWalletAmount } from './discreetWalletAmount';
 
-describe('Discreet mode default replacer', () => {
+describe('discreetWalletAmount replacer', () => {
 
   it('should replace the given amount with the sensitive data symbol', () => {
     const amount = new BigNumber(1);

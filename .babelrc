@@ -25,12 +25,5 @@
   ],
   "ignore": [
     "node_modules"
-  ],
-  "env": {
-    "test": {
-      "presets": [
-        [ "@babel/preset-env", { "targets": { "node": "current" }}]
-      ]
-    }
-  }
+  ]
 }
