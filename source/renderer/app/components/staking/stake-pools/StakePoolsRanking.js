@@ -12,7 +12,6 @@ import {
   generateThousands,
   formattedWalletAmount,
   toFixedUserFormat,
-  formattedAmountToBigNumber,
 } from '../../../utils/formatters';
 import {
   getFilteredWallets,
@@ -155,7 +154,10 @@ class StakePoolsRanking extends Component<Props, State> {
   componentDidMount() {
     const { stake } = this.props;
     if (stake) {
-      const displayValue = this.getDisplayValue(stake);
+      const hasDecimal = stake - Math.floor(stake);
+      const displayValue = hasDecimal
+        ? formattedWalletAmount(new BigNumber(stake), false)
+        : toFixedUserFormat(stake, 0);
       this.setState({
         sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
         displayValue,
@@ -171,13 +173,6 @@ class StakePoolsRanking extends Component<Props, State> {
     }
   }
 
-  getDisplayValue = (value: number) => {
-    const hasDecimal = value - Math.floor(value);
-    return hasDecimal
-      ? formattedWalletAmount(new BigNumber(value), false)
-      : toFixedUserFormat(value, 0);
-  };
-
   onSelectedWalletChange = (selectedWalletId: string) => {
     const {
       wallets,
@@ -185,7 +180,6 @@ class StakePoolsRanking extends Component<Props, State> {
       rankStakePools,
       selectedDelegationWalletId,
       maxDelegationFunds,
-      discreetModeFeature,
     } = this.props;
     const selectedWallet = wallets.find(
       (wallet) => wallet.id === selectedWalletId
@@ -201,34 +195,25 @@ class StakePoolsRanking extends Component<Props, State> {
 
     let amountValue = 0;
     let sliderValue = 0;
-    if (discreetModeFeature.isDiscreetMode) {
-      amountValue = formattedAmountToBigNumber(this.state.displayValue);
-    } else if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
+    if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
       amountValue = Math.min(
         getAllAmounts(wallets).toNumber(),
         maxDelegationFunds
       );
     } else if (selectedWallet) {
-      // amountValue = selectedWallet.amount.toNumber();
-      amountValue = MIN_DELEGATION_FUNDS;
+      amountValue = selectedWallet.amount.toNumber();
     }
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
     const hasSliderValueChanged = sliderValue !== this.state.sliderValue;
-    const currentAmountValue = Math.max(
-      formattedAmountToBigNumber(this.state.displayValue),
-      MIN_DELEGATION_FUNDS
-    );
-    const hasAmountValueChanged = amountValue !== currentAmountValue;
 
     // Prevent ranking stake pools if selected wallet and slider value remains unchanged
-    if (
-      (!wasSelectedWalletChanged && !hasSliderValueChanged) ||
-      (!hasAmountValueChanged && !hasSliderValueChanged)
-    )
-      return;
+    if (!wasSelectedWalletChanged && !hasSliderValueChanged) return;
 
-    const displayValue = this.getDisplayValue(amountValue);
+    const displayValue = formattedWalletAmount(
+      new BigNumber(amountValue),
+      false
+    );
     this.setState({ sliderValue, displayValue });
     updateDelegatingStake(selectedWalletId, amountValue);
     rankStakePools();
@@ -321,6 +306,7 @@ class StakePoolsRanking extends Component<Props, State> {
       rankStakePools,
       maxDelegationFunds,
       maxDelegationFundsLog,
+      discreetModeFeature,
     } = this.props;
     const { sliderValue, displayValue } = this.state;
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
@@ -337,6 +323,10 @@ class StakePoolsRanking extends Component<Props, State> {
       return null;
     }
 
+    const shouldDisplayWalletsDropdown =
+      !discreetModeFeature.isDiscreetMode &&
+      getFilteredWallets(wallets).length > 0;
+
     return (
       <div className={styles.component}>
         <div className={styles.upper}>
@@ -346,7 +336,7 @@ class StakePoolsRanking extends Component<Props, State> {
                 <FormattedHTMLMessage {...messages.rankingDescription} />
               </div>
             </div>
-            {getFilteredWallets(wallets).length > 0 ? (
+            {shouldDisplayWalletsDropdown ? (
               <div className={styles.row}>
                 <div className={styles.col}>{walletSelectionStart}</div>
                 <div className={walletSelectorContainerClasses}>
