@@ -38,13 +38,14 @@ const getDiskCheckReport = async (
     new Promise((resolve, reject) => {
       checkDiskSpace(path)
         .then(({ free, size }) => {
-          logger.error('[DISK-SPACE-DEBUG] Disk space check completed', {
+          logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
             free,
             size,
           });
           resolve({
             ...initialReport,
             diskSpaceAvailableRaw: free,
+            diskSpaceAvailable: prettysize(free),
             diskTotalSpace: size,
           });
         })
@@ -125,7 +126,6 @@ export const handleDiskSpace = (
       response.diskSpaceRequired = prettysize(diskSpaceRequired);
       response.diskSpaceMissing = prettysize(diskSpaceMissing);
       response.diskSpaceRecommended = prettysize(diskSpaceRecommended);
-      response.diskSpaceAvailable = prettysize(response?.diskSpaceAvailableRaw);
       response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceLeft;
     }
 
@@ -182,7 +182,6 @@ export const handleDiskSpace = (
         // Reset to default check interval
         diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL;
       }
-      // TODO: What do we do here ? Errors checking disk space is already handled
     }
     await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
     return response;
@@ -204,7 +203,7 @@ export const handleDiskSpace = (
 
   getDiskSpaceStatusChannel.onReceive(async () => {
     const diskReport = await getDiskCheckReport(stateDirectoryPath);
-    getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
+    await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
     return diskReport;
   });
 
