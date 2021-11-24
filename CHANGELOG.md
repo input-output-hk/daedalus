@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.5.2
+
+### Fixes
+
+- Fixed Cardano Node starting/stopping issues
+
 ## 4.5.1
 
 ### Fixes

@@ -172,6 +172,7 @@ export default class NetworkStatusStore extends Store {
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
+    this._checkDiskSpace();
 
     this._getStateDirectoryPath();
 
