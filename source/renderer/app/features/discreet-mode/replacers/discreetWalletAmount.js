@@ -14,7 +14,7 @@ export const discreetWalletAmount: DiscreetValueReplacer = ({
   amount,
   withCurrency = true,
   long = true,
-  currency = 'ADA'
+  currency = 'ADA',
 }: DiscreetWalletAmountProps) => {
   return (isDiscreetMode, replacement) => {
     if (!isDiscreetMode) {
