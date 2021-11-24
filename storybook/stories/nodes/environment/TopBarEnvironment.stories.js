@@ -15,7 +15,7 @@ import WalletTestEnvironmentLabel from '../../../../source/renderer/app/componen
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-ic.inline.svg';
 import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
-import { DiscreetToggleTopBar } from '../../../../source/renderer/app/features';
+import DiscreetToggleTopBar from '../../../../source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar';
 import { isShelleyTestnetTheme } from '../../_support/utils';
 
 const topBarTestEnv = (currentTheme) => (

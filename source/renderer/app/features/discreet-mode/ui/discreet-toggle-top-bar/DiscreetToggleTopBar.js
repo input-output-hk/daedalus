@@ -7,7 +7,7 @@ import { injectIntl } from 'react-intl';
 import styles from './DiscreetToggleTopBar.scss';
 import { messages } from './DiscreetToggleTopBar.messages';
 import { useDiscreetModeFeature } from '../../context';
-import DiscreetToggle from '../discreet-toggle/DiscreetToggle';
+import { DiscreetModeToggle } from '../discreet-toggle/DiscreetModeToggle';
 import type { Intl } from '../../../../types/i18nTypes';
 
 type Props = {
@@ -32,7 +32,7 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
           </span>
         }
       >
-        <DiscreetToggle className={styles.discreetToggle} />
+        <DiscreetModeToggle className={styles.discreetToggle} />
       </PopOver>
     </div>
   );

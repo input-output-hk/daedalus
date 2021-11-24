@@ -7,7 +7,7 @@ export {
   DiscreetValue,
   DiscreetTokenWalletAmount,
   DiscreetWalletAmount,
-  DiscreetToggle,
+  DiscreetModeToggle,
   DiscreetToggleTopBar,
   withDiscreetMode,
 } from './ui';

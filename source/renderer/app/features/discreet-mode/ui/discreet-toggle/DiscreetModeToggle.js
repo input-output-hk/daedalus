@@ -7,9 +7,9 @@ import classNames from 'classnames';
 import revealIcon from '../../../../assets/images/reveal-key.inline.svg';
 import hideIcon from '../../../../assets/images/hide-key.inline.svg';
 import { useDiscreetModeFeature } from '../../context';
-import styles from './DiscreetToggle.scss';
+import styles from './DiscreetModeToggle.scss';
 
-export const DiscreetToggleButton = ({
+export const DiscreetModeToggleComponent = ({
   className,
   isDiscreetMode,
   onToggle,
@@ -32,10 +32,10 @@ type Props = {
   className: string,
 };
 
-const DiscreetToggleContainer = ({ className }: Props) => {
+const DiscreetModeToggleContainer = ({ className }: Props) => {
   const { isDiscreetMode, toggleDiscreetMode } = useDiscreetModeFeature();
   return (
-    <DiscreetToggleButton
+    <DiscreetModeToggleComponent
       className={className}
       isDiscreetMode={isDiscreetMode}
       onToggle={toggleDiscreetMode}
@@ -43,4 +43,6 @@ const DiscreetToggleContainer = ({ className }: Props) => {
   );
 };
 
-export default injectIntl(observer(DiscreetToggleContainer));
+export const DiscreetModeToggle = injectIntl(
+  observer(DiscreetModeToggleContainer)
+);

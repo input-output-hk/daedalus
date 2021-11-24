@@ -25,11 +25,14 @@ const Toggle = observer(({ knob }: { knob: boolean }) => {
 
 storiesOf('Discreet Mode|Discreet Asset Amount', module)
   .addDecorator(withKnobs)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator((story) => <StoryProvider>{story()}</StoryProvider>)
   .addDecorator((story) => (
-    <DiscreetModeFeatureProvider>{story()}</DiscreetModeFeatureProvider>
+    <StoryDecorator>
+      <StoryProvider>
+        <DiscreetModeFeatureProvider>{story()}</DiscreetModeFeatureProvider>
+      </StoryProvider>
+    </StoryDecorator>
   ))
+
   .add('Discreet mode disabled', () => (
     <>
       <DiscreetValue>123</DiscreetValue>
