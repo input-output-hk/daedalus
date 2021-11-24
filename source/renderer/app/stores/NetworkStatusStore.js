@@ -1,42 +1,42 @@
 // @flow
-import { observable, action, computed, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual, includes, get } from 'lodash';
+import { get, includes, isEqual } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
   ALLOWED_TIME_DIFFERENCE,
-  NETWORK_STATUS_POLL_INTERVAL,
-  NETWORK_CLOCK_POLL_INTERVAL,
-  MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
+  MAX_ALLOWED_STALL_DURATION,
+  NETWORK_CLOCK_POLL_INTERVAL,
+  NETWORK_STATUS_POLL_INTERVAL,
 } from '../config/timingConfig';
 import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
-  restartCardanoNodeChannel,
   getCachedCardanoStatusChannel,
+  restartCardanoNodeChannel,
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
-import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
-import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
-import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel';
-import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import type {
-  GetNetworkInfoResponse,
-  GetNetworkClockResponse,
-  GetNetworkParametersResponse,
-  NextEpoch,
-  FutureEpoch,
-  TipInfo,
-} from '../api/network/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
   TlsConfig,
 } from '../../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
+import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
+import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel';
+import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
+import type {
+  FutureEpoch,
+  GetNetworkClockResponse,
+  GetNetworkInfoResponse,
+  GetNetworkParametersResponse,
+  NextEpoch,
+  TipInfo,
+} from '../api/network/types';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
@@ -238,8 +238,8 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
-  _checkDiskSpace(diskSpaceRequired?: number) {
-    getDiskSpaceStatusChannel.send(diskSpaceRequired);
+  _checkDiskSpace() {
+    getDiskSpaceStatusChannel.send();
   }
 
   _getStateDirectoryPath = async () => {

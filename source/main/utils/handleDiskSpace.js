@@ -5,13 +5,13 @@ import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
 import { logger } from './logging';
 import {
-  DISK_SPACE_REQUIRED,
-  DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
   DISK_SPACE_CHECK_LONG_INTERVAL,
   DISK_SPACE_CHECK_MEDIUM_INTERVAL,
   DISK_SPACE_CHECK_SHORT_INTERVAL,
-  DISK_SPACE_RECOMMENDED_PERCENTAGE,
   DISK_SPACE_CHECK_TIMEOUT,
+  DISK_SPACE_RECOMMENDED_PERCENTAGE,
+  DISK_SPACE_REQUIRED,
+  DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
   stateDirectoryPath,
 } from '../config';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
@@ -22,13 +22,16 @@ const getDiskCheckReport = async (
   path: string,
   timeout: number = DISK_SPACE_CHECK_TIMEOUT
 ): Promise<CheckDiskSpaceResponse> => {
-  const initialReport = {
+  const initialReport: CheckDiskSpaceResponse = {
     isNotEnoughDiskSpace: false,
     diskSpaceRequired: '',
     diskSpaceMissing: '',
     diskSpaceRecommended: '',
     diskSpaceAvailable: '',
     hadNotEnoughSpaceLeft: false,
+    diskSpaceAvailableRaw: 0,
+    diskTotalSpaceRaw: 0,
+    isError: false,
   };
 
   return Promise.race([
@@ -43,7 +46,6 @@ const getDiskCheckReport = async (
             ...initialReport,
             diskSpaceAvailableRaw: free,
             diskTotalSpace: size,
-            diskSpaceAvailable: prettysize(free),
           });
         })
         .catch((error) => {
@@ -57,7 +59,7 @@ const getDiskCheckReport = async (
     // Timeout promise
     new Promise((resolve) => {
       setTimeout(() => {
-        resolve();
+        resolve({ ...initialReport, isError: true });
       }, timeout);
     }),
   ]);
@@ -77,73 +79,72 @@ export const handleDiskSpace = (
   ): Promise<CheckDiskSpaceResponse> => {
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
 
-    try {
-      const response = await getDiskCheckReport(stateDirectoryPath);
+    const response = await getDiskCheckReport(stateDirectoryPath);
 
-      if (response.diskSpaceAvailableRaw) {
-        const diskSpaceMissing = Math.max(
-          diskSpaceRequired - response.diskSpaceAvailableRaw,
-          0
-        );
-        const diskSpaceRecommended =
-          (response.diskTotalSpaceRaw * DISK_SPACE_RECOMMENDED_PERCENTAGE) /
-          100;
-        const diskSpaceRequiredMargin =
-          diskSpaceRequired -
-          (diskSpaceRequired * DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE) / 100;
+    if (!response || response.isError) {
+      logger.info(
+        '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway'
+      );
+    } else {
+      const diskSpaceMissing = Math.max(
+        diskSpaceRequired - response.diskSpaceAvailableRaw,
+        0
+      );
+      const diskSpaceRecommended =
+        (response.diskTotalSpaceRaw * DISK_SPACE_RECOMMENDED_PERCENTAGE) / 100;
+      const diskSpaceRequiredMargin =
+        diskSpaceRequired -
+        (diskSpaceRequired * DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE) / 100;
 
-        if (response.diskSpaceAvailableRaw <= diskSpaceRequiredMargin) {
-          if (!isNotEnoughDiskSpace) {
-            // State change: transitioning from enough to not-enough disk space
-            setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
-            isNotEnoughDiskSpace = true;
-          }
-        } else if (response.diskSpaceAvailableRaw >= diskSpaceRequired) {
-          const newDiskSpaceCheckIntervalLength =
-            response.diskSpaceAvailableRaw >= diskSpaceRequired * 2
-              ? DISK_SPACE_CHECK_LONG_INTERVAL
-              : DISK_SPACE_CHECK_MEDIUM_INTERVAL;
-          if (isNotEnoughDiskSpace) {
-            // State change: transitioning from not-enough to enough disk space
-            setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
-            isNotEnoughDiskSpace = false;
-          } else if (
-            newDiskSpaceCheckIntervalLength !== diskSpaceCheckIntervalLength
-          ) {
-            // Interval change: transitioning from medium to long interval (or vice versa)
-            // This is a special case in which we adjust the disk space check polling interval:
-            // - more than 2x of available space than required: LONG interval
-            // - less than 2x of available space than required: MEDIUM interval
-            setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
-          }
+      if (response.diskSpaceAvailableRaw <= diskSpaceRequiredMargin) {
+        if (!isNotEnoughDiskSpace) {
+          // State change: transitioning from enough to not-enough disk space
+          setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
+          isNotEnoughDiskSpace = true;
         }
-        response.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
-        response.diskSpaceRequired = prettysize(diskSpaceRequired);
-        response.diskSpaceMissing = prettysize(diskSpaceMissing);
-        response.diskSpaceRecommended = prettysize(diskSpaceRecommended);
-        response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceLeft;
-      } else {
-        logger.info(
-          '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway'
-        );
+      } else if (response.diskSpaceAvailableRaw >= diskSpaceRequired) {
+        const newDiskSpaceCheckIntervalLength =
+          response.diskSpaceAvailableRaw >= diskSpaceRequired * 2
+            ? DISK_SPACE_CHECK_LONG_INTERVAL
+            : DISK_SPACE_CHECK_MEDIUM_INTERVAL;
+        if (isNotEnoughDiskSpace) {
+          // State change: transitioning from not-enough to enough disk space
+          setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
+          isNotEnoughDiskSpace = false;
+        } else if (
+          newDiskSpaceCheckIntervalLength !== diskSpaceCheckIntervalLength
+        ) {
+          // Interval change: transitioning from medium to long interval (or vice versa)
+          // This is a special case in which we adjust the disk space check polling interval:
+          // - more than 2x of available space than required: LONG interval
+          // - less than 2x of available space than required: MEDIUM interval
+          setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
+        }
       }
+      response.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
+      response.diskSpaceRequired = prettysize(diskSpaceRequired);
+      response.diskSpaceMissing = prettysize(diskSpaceMissing);
+      response.diskSpaceRecommended = prettysize(diskSpaceRecommended);
+      response.diskSpaceAvailable = prettysize(response?.diskSpaceAvailableRaw);
+      response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceLeft;
+    }
 
-      const NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED =
-        isNotEnoughDiskSpace &&
-        cardanoNode.state !== CardanoNodeStates.STOPPING &&
-        cardanoNode.state !== CardanoNodeStates.STOPPED;
+    const NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED =
+      isNotEnoughDiskSpace &&
+      cardanoNode.state !== CardanoNodeStates.STOPPING &&
+      cardanoNode.state !== CardanoNodeStates.STOPPED;
 
-      const CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME =
-        !isNotEnoughDiskSpace &&
-        cardanoNode.state === CardanoNodeStates.STOPPED &&
-        cardanoNode._startupTries === 0;
+    const CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME =
+      !isNotEnoughDiskSpace &&
+      cardanoNode.state === CardanoNodeStates.STOPPED &&
+      cardanoNode._startupTries === 0;
 
-      const CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE =
-        !isNotEnoughDiskSpace &&
-        cardanoNode.state !== CardanoNodeStates.STOPPED &&
-        cardanoNode.state !== CardanoNodeStates.STOPPING &&
-        hadNotEnoughSpaceLeft;
-
+    const CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE =
+      !isNotEnoughDiskSpace &&
+      cardanoNode.state !== CardanoNodeStates.STOPPED &&
+      cardanoNode.state !== CardanoNodeStates.STOPPING &&
+      hadNotEnoughSpaceLeft;
+    try {
       switch (true) {
         case NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED:
           try {
@@ -173,8 +174,6 @@ export const handleDiskSpace = (
           break;
         default:
       }
-      await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
-      return response;
     } catch (error) {
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
       // Remove diskSpaceCheckInterval if set
@@ -185,6 +184,8 @@ export const handleDiskSpace = (
       }
       // TODO: What do we do here ? Errors checking disk space is already handled
     }
+    await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
+    return response;
   };
 
   let hadNotEnoughSpaceLeft: boolean = false;
@@ -202,8 +203,9 @@ export const handleDiskSpace = (
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
 
   getDiskSpaceStatusChannel.onReceive(async () => {
-    const report = await getDiskCheckReport(stateDirectoryPath);
-    await getDiskSpaceStatusChannel.send(report, mainWindow.webContents);
+    const diskReport = await getDiskCheckReport(stateDirectoryPath);
+    getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
+    return diskReport;
   });
 
   return handleCheckDiskSpace;
