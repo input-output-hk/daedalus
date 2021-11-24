@@ -164,6 +164,8 @@ export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: m
 export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
+export const DISK_SPACE_CHECK_TIMEOUT = 5000; // Timeout for checking disks pace
+
 export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
 
 // Used if token metadata server URL is not defined in launcher config
