@@ -23,6 +23,7 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
     setDiscreetModeSettingsTooltip,
   } = useDiscreetModeFeature();
   const [visible, setVisible] = useState(false);
+  const isPopOverVisible = visible || isSettingsTooltipEnabled;
 
   return (
     <div
@@ -32,11 +33,12 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
     >
       <PopOver
         appendTo="parent"
-        visible={visible || isSettingsTooltipEnabled}
+        visible={isPopOverVisible}
         className={styles.popOverRoot}
         content={
           <span className={styles.content}>
-            {`${intl.formatMessage(messages[isDiscreetMode ? 'off' : 'on'])} `}
+            {intl.formatMessage(messages[isDiscreetMode ? 'off' : 'on'])}
+            {` `}
             <FormattedHTMLMessage {...messages.description} />
           </span>
         }
