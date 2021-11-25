@@ -5,11 +5,13 @@ import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
 import { logger } from './logging';
 import {
+  DISK_SPACE_CHECK_DONT_BOTHER_ME_INTERVAL,
   DISK_SPACE_CHECK_LONG_INTERVAL,
   DISK_SPACE_CHECK_MEDIUM_INTERVAL,
   DISK_SPACE_CHECK_SHORT_INTERVAL,
   DISK_SPACE_RECOMMENDED_PERCENTAGE,
   DISK_SPACE_REQUIRED,
+  DISK_SPACE_CHECK_TIMEOUT,
   DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
   stateDirectoryPath,
 } from '../config';
@@ -18,7 +20,8 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
 
 const getDiskCheckReport = async (
-  path: string
+  path: string,
+  timeout: number = DISK_SPACE_CHECK_TIMEOUT
 ): Promise<CheckDiskSpaceResponse> => {
   const initialReport: CheckDiskSpaceResponse = {
     isNotEnoughDiskSpace: false,
@@ -32,22 +35,37 @@ const getDiskCheckReport = async (
     isError: false,
   };
 
-  try {
-    const { free, size } = await checkDiskSpace(path);
-    logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
-      free,
-      size,
-    });
-    return {
-      ...initialReport,
-      diskSpaceAvailableRaw: free,
-      diskSpaceAvailable: prettysize(free),
-      diskTotalSpace: size,
-    };
-  } catch (error) {
-    logger.error('[DISK-SPACE-DEBUG] Error getting diskCheckReport', error);
-    return { ...initialReport, isError: true };
-  }
+  return Promise.race([
+    // Disk space check promise
+    new Promise((resolve) => {
+      checkDiskSpace(path)
+        .then(({ free, size }) => {
+          logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
+            free,
+            size,
+          });
+          resolve({
+            ...initialReport,
+            diskSpaceAvailableRaw: free,
+            diskSpaceAvailable: prettysize(free),
+            diskTotalSpace: size,
+          });
+        })
+        .catch((error) => {
+          logger.error(
+            '[DISK-SPACE-DEBUG] Error getting diskCheckReport',
+            error
+          );
+          resolve({ ...initialReport, isError: true });
+        });
+    }),
+    // Timeout promise
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ ...initialReport, isError: true });
+      }, timeout);
+    }),
+  ]);
 };
 
 export const handleDiskSpace = (
@@ -70,6 +88,7 @@ export const handleDiskSpace = (
       logger.info(
         '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway'
       );
+      resetInterval(DISK_SPACE_CHECK_DONT_BOTHER_ME_INTERVAL);
     } else {
       const diskSpaceMissing = Math.max(
         diskSpaceRequired - response.diskSpaceAvailableRaw,
@@ -160,15 +179,19 @@ export const handleDiskSpace = (
       }
     } catch (error) {
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
-      // Remove diskSpaceCheckInterval if set
-      if (diskSpaceCheckInterval) {
-        clearInterval(diskSpaceCheckInterval);
-        // Reset to default check interval
-        diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL;
-      }
+      resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
     await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
     return response;
+  };
+
+  const resetInterval = (interval: number) => {
+    // Remove diskSpaceCheckInterval if set
+    if (diskSpaceCheckInterval) {
+      clearInterval(diskSpaceCheckInterval);
+      // Reset to default check interval
+      diskSpaceCheckIntervalLength = interval;
+    }
   };
 
   let hadNotEnoughSpaceLeft: boolean = false;
