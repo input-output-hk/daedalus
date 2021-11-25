@@ -78,9 +78,9 @@ trap 'catch $?' EXIT
 function pause() {
     # ALLOW SCRIPT EXECUTION TO PAUSE IF -p FLAG SET SO THAT INDIVIDUAL STEPS CAN BE COMMITTED AS SEPARATE STEPS
     if [ "$PAUSE_AFTER_STAGE" = true ];
-        then 
+        then
             read -p $"🚀 ${STEP}. ${1^^}, you may wish to commit the changes at this point. Press any key to resume ..."
-        else 
+        else
             echo -e "\033[K🚀 ${STEP}. ${1^^}"
     fi
 }
@@ -134,6 +134,7 @@ function remove_flow_files() {
 }
 
 function remove_packages() {
+    # TODO find a way to avoid errors when packages are already uninstalled --silent isn't working
     yarn remove @babel/preset-flow eslint-plugin-flowtype flow-bin gulp-flow-remove-types babel-eslint --silent
     pause "un-install flow packages"
 }
@@ -278,10 +279,10 @@ function convert_js_to_ts() {
         do
             folder=${MIGRATION_FOLDERS[migration_folder]}
             (
-                ls ./$folder/**/**/*.js | 
+                ls ./$folder/**/**/*.js |
                     while read line;
                     do
-                        if [[ ! $line =~ webpack.config.js$ ]]; then 
+                        if [[ ! $line =~ webpack.config.js$ ]]; then
                             git mv -- $line ${line%.js}.ts;
                         fi
                     done
@@ -298,7 +299,7 @@ function convert_ts_to_tsx() {
                 find ./$folder -type f -name "*.ts" |
                     xargs grep 'import React[ ,]' |
                     cut -d: -f1 |
-                    uniq | 
+                    uniq |
                     while read line; do git mv -- $line ${line%.ts}.tsx; done
         ) & spin_while_executing
         done
@@ -328,12 +329,12 @@ function gulpfile_remove_flowRemoveTypes_references() {
 
 function change_wallet_import_exports() {
     sed -i 's/module\.exports = {/export \{/' ./utils/api-importer/mnemonics.ts
-    pause "updaate mnemonicss export"
+    pause "update mnemonics export"
 }
 
 function gulpfile_change_js_to_js_references() {
     sed -i "s/.js/.ts/" ./gulpfile.js
-    pause "updat gulpfile"
+    pause "update gulpfile"
 }
 
 function change_theme_js_references() {
@@ -407,6 +408,8 @@ function replace_in_all_folders() {
 }
 
 function convert_flow_code() {
+    sed -i '46i // @ts-ignore ' ./utils/create-news-verification-hashes/index.ts
+
     (
         for migration_folder in ${!MIGRATION_FOLDERS[@]}
             do
@@ -425,21 +428,21 @@ function reignore() {
         --sources="./storybook/**/*" \
         --sources="./tests/**/*" \
         --sources="./translations/**/*" \
-        --sources="./utils/**/*" 
+        --sources="./utils/**/*"
     pause "ts-migration add @ts-ignore or @ts-expect-error"
 }
 
 migration_functions=(
     gulpfile_remove_flowRemoveTypes_references
-    gulpfile_change_js_to_js_references 
+    gulpfile_change_js_to_js_references
     change_app_themeVars_reference
-    change_theme_js_references 
+    change_theme_js_references
     remove_storybook_register_import
     change_wallet_import_exports
     update_packager
     replace_in_all_folders
     convert_flow_code
-    re-ignore # Litter codebase with ts-error or ts-ignore annotations
+    reignore # Litter codebase with ts-error or ts-ignore annotations
 )
 
 function lockfile_fix() {
