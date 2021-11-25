@@ -2,16 +2,13 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import classnames from 'classnames';
 import SettingsMenuItem from './SettingsMenuItem';
 import styles from './SettingsMenu.scss';
 import { ROUTES } from '../../../routes-config';
 import messages from './SettingsMenu.messages';
-import { DiscreetModeFeatureInject } from '../../../features/discreet-mode';
-import NotificationDot from '../../widgets/notification-dot/NotificationDot';
 import type { Intl } from '../../../types/i18nTypes';
 import type { Locale } from '../../../../../common/types/locales.types';
-import TriggerOnRouteLeave from './TriggerOnRouteLeave';
+import SecurityMenuItem from './SecurityMenuItem';
 
 type Props = {
   intl: Intl,
@@ -37,39 +34,11 @@ const SettingsMenu = ({
           active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
           className="general"
         />
-        <DiscreetModeFeatureInject>
-          {({
-            isNotificationEnabled,
-            setDiscreetModeNotification,
-            setDiscreetModeSettingsTooltip,
-          }) => (
-            <>
-              <TriggerOnRouteLeave
-                enabled={isNotificationEnabled}
-                isOnRoute={isActiveItem(ROUTES.SETTINGS.SECURITY)}
-                onLeave={() => {
-                  setDiscreetModeNotification(false);
-                  setDiscreetModeSettingsTooltip(false);
-                }}
-              />
-              <NotificationDot
-                enabled={isNotificationEnabled}
-                dotClassName={classnames(
-                  styles.dot,
-                  currentLocale === 'ja-JP' && styles.jp,
-                  isActiveItem(ROUTES.SETTINGS.SECURITY) && styles.active
-                )}
-              >
-                <SettingsMenuItem
-                  label={intl.formatMessage(messages.security)}
-                  onClick={() => onItemClick(ROUTES.SETTINGS.SECURITY)}
-                  active={isActiveItem(ROUTES.SETTINGS.SECURITY)}
-                  className="security"
-                />
-              </NotificationDot>
-            </>
-          )}
-        </DiscreetModeFeatureInject>
+        <SecurityMenuItem
+          isActiveItem={isActiveItem}
+          currentLocale={currentLocale}
+          onClick={onItemClick}
+        />
         <SettingsMenuItem
           label={intl.formatMessage(messages.wallets)}
           onClick={() => onItemClick(ROUTES.SETTINGS.WALLETS)}
