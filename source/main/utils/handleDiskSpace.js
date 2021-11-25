@@ -8,7 +8,6 @@ import {
   DISK_SPACE_CHECK_LONG_INTERVAL,
   DISK_SPACE_CHECK_MEDIUM_INTERVAL,
   DISK_SPACE_CHECK_SHORT_INTERVAL,
-  DISK_SPACE_CHECK_TIMEOUT,
   DISK_SPACE_RECOMMENDED_PERCENTAGE,
   DISK_SPACE_REQUIRED,
   DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
@@ -19,8 +18,7 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
 
 const getDiskCheckReport = async (
-  path: string,
-  timeout: number = DISK_SPACE_CHECK_TIMEOUT
+  path: string
 ): Promise<CheckDiskSpaceResponse> => {
   const initialReport: CheckDiskSpaceResponse = {
     isNotEnoughDiskSpace: false,
@@ -34,36 +32,22 @@ const getDiskCheckReport = async (
     isError: false,
   };
 
-  return Promise.race([
-    new Promise((resolve, reject) => {
-      checkDiskSpace(path)
-        .then(({ free, size }) => {
-          logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
-            free,
-            size,
-          });
-          resolve({
-            ...initialReport,
-            diskSpaceAvailableRaw: free,
-            diskSpaceAvailable: prettysize(free),
-            diskTotalSpace: size,
-          });
-        })
-        .catch((error) => {
-          logger.error(
-            '[DISK-SPACE-DEBUG] Error getting diskCheckReport',
-            error
-          );
-          reject();
-        });
-    }),
-    // Timeout promise
-    new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ ...initialReport, isError: true });
-      }, timeout);
-    }),
-  ]);
+  try {
+    const { free, size } = await checkDiskSpace(path);
+    logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
+      free,
+      size,
+    });
+    return {
+      ...initialReport,
+      diskSpaceAvailableRaw: free,
+      diskSpaceAvailable: prettysize(free),
+      diskTotalSpace: size,
+    };
+  } catch (error) {
+    logger.error('[DISK-SPACE-DEBUG] Error getting diskCheckReport', error);
+    return { ...initialReport, isError: true };
+  }
 };
 
 export const handleDiskSpace = (
@@ -82,7 +66,7 @@ export const handleDiskSpace = (
 
     const response = await getDiskCheckReport(stateDirectoryPath);
 
-    if (!response || response.isError) {
+    if (response.isError) {
       logger.info(
         '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway'
       );
