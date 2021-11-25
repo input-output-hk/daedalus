@@ -420,6 +420,11 @@ function convert_flow_code() {
 
 function reignore() {
     npx ts-migrate migrate . \
+        --sources="./scripts/**/*" \
+        --sources="./source/**/*" \
+        --sources="./storybook/**/*" \
+        --sources="./tests/**/*" \
+        --sources="./translations/**/*" \
         --sources="./utils/**/*" 
     pause "ts-migration add @ts-ignore or @ts-expect-error"
 }
