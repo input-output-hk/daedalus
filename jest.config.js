@@ -85,7 +85,11 @@ module.exports = {
   // ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  moduleNameMapper: {
+    // Jest does not support WASM imports from ESM modules
+    // https://github.com/facebook/jest/issues/9430
+    '^@iohk-jormungandr/wallet-js$': 'identity-obj-proxy',
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -121,7 +125,7 @@ module.exports = {
   // rootDir: undefined,
 
   // A list of paths to directories that Jest should use to search for files in
-  roots: ['<rootDir>/tests'],
+  roots: ['<rootDir>/tests', '<rootDir>/source'],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",

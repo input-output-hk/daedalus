@@ -1,14 +1,19 @@
 // @flow
-import LocalStorageApi from '../../../api/utils/localStorage';
 import { STORAGE_KEYS as storageKeys } from '../../../../../common/config/electron-store.config';
+import type { LocalStorageApi } from '../../local-storage';
 
 export class DiscreetModeApi {
-  getDiscreetModeSettings = (): Promise<boolean> =>
-    LocalStorageApi.get(storageKeys.DISCREET_MODE_ENABLED, false);
+  localStorage: LocalStorageApi;
+  constructor(localStorage: LocalStorageApi) {
+    this.localStorage = localStorage;
+  }
 
-  setDiscreetModeSettings = (enabled: boolean): Promise<void> =>
-    LocalStorageApi.set(storageKeys.DISCREET_MODE_ENABLED, enabled);
+  getDiscreetModeSettings = () =>
+    this.localStorage.get(storageKeys.DISCREET_MODE_ENABLED, false);
 
-  unsetDiscreetModeSettings = (): Promise<void> =>
-    LocalStorageApi.unset(storageKeys.DISCREET_MODE_ENABLED);
+  setDiscreetModeSettings = (enabled: boolean) =>
+    this.localStorage.set(storageKeys.DISCREET_MODE_ENABLED, enabled);
+
+  unsetDiscreetModeSettings = async () =>
+    this.localStorage.unset(storageKeys.DISCREET_MODE_ENABLED);
 }

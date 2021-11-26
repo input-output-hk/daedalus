@@ -19,11 +19,7 @@ export const DiscreetModeToggleComponent = ({
   onToggle: () => void,
 }) => {
   return (
-    <button
-      className={classNames(styles.root, className)}
-      onClick={onToggle}
-      aria-label="discreetModeToggle"
-    >
+    <button className={classNames(styles.root, className)} onClick={onToggle}>
       <SVGInline
         svg={isDiscreetMode ? hideIcon : revealIcon}
         className={classNames(styles.icon, isDiscreetMode && styles.hideIcon)}
