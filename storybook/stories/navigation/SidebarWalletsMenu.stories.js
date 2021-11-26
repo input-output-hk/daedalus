@@ -35,7 +35,7 @@ storiesOf('Navigation|Wallets Menu', module)
         {
           id: '1',
           title: 'Main wallet',
-          info: 'ADA',
+          amount: 0,
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,
@@ -48,7 +48,7 @@ storiesOf('Navigation|Wallets Menu', module)
         {
           id: '2',
           title: 'House rent',
-          info: '274912874,35 ADA',
+          amount: 274912874.35,
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,
@@ -61,7 +61,7 @@ storiesOf('Navigation|Wallets Menu', module)
         {
           id: '3',
           title: 'Mining',
-          info: '0,0004924712 BTC',
+          amount: 0.0004924712,
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,
@@ -74,7 +74,7 @@ storiesOf('Navigation|Wallets Menu', module)
         {
           id: '4',
           title: 'Shopping wallet',
-          info: 'ADA',
+          amount: 0,
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,

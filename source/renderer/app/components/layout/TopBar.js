@@ -9,8 +9,8 @@ import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
-import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
+import { DiscreetWalletAmount } from '../../features/discreet-mode';
 
 type Props = {
   onLeftIconClick?: ?Function,
@@ -69,7 +69,11 @@ export default class TopBar extends Component<Props> {
         <span className={styles.walletAmount}>
           {
             // show currency and use long format
-            isRestoreActive ? '-' : formattedWalletAmount(activeWallet.amount)
+            isRestoreActive ? (
+              '-'
+            ) : (
+              <DiscreetWalletAmount amount={activeWallet.amount} />
+            )
           }
         </span>
       </span>

@@ -9,6 +9,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryHeader.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import { DiscreetValue } from '../../../features/discreet-mode';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -77,7 +78,7 @@ export default class WalletSummaryHeader extends Component<Props> {
             <div>
               <div className={walletNameStyles}>{wallet.name}</div>
               <div className={walletAmountStyles}>
-                {walletAmount}
+                <DiscreetValue>{walletAmount}</DiscreetValue>
                 <span className={styles.currencyCode}>
                   {intl.formatMessage(globalMessages.adaUnit)}
                 </span>

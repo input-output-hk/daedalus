@@ -1,30 +1,47 @@
 // @flow
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { storiesOf } from '@storybook/react';
+import { observer } from 'mobx-react';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
+import StoryDecorator from '../../../../../../storybook/stories/_support/StoryDecorator';
+import StoryProvider from '../../../../../../storybook/stories/_support/StoryProvider';
 import {
   DiscreetModeFeatureProvider,
   useDiscreetModeFeature,
 } from '../context';
 import DiscreetValue from './DiscreetValue';
 
-function Toggle({ knob }: { knob: boolean }) {
+const Toggle = observer(({ knob }: { knob: boolean }) => {
   const feature = useDiscreetModeFeature();
 
-  if (feature.isDiscreetMode !== knob) {
-    feature.toggleDiscreetMode();
-  }
+  useLayoutEffect(() => {
+    if (knob !== feature.isDiscreetMode) {
+      feature.toggleDiscreetMode();
+    }
+  }, [knob, feature.isDiscreetMode]);
 
   return null;
-}
+});
 
-storiesOf('Discreet Mode|Discreet Value', module)
+storiesOf('Discreet Mode|Discreet Asset Amount', module)
   .addDecorator(withKnobs)
-  .add('Main', () => (
-    <DiscreetModeFeatureProvider>
-      <>
-        <DiscreetValue>123</DiscreetValue>
-        <Toggle knob={boolean('Toggle', false)} />
-      </>
-    </DiscreetModeFeatureProvider>
+  .addDecorator((story) => (
+    <StoryDecorator>
+      <StoryProvider>
+        <DiscreetModeFeatureProvider>{story()}</DiscreetModeFeatureProvider>
+      </StoryProvider>
+    </StoryDecorator>
+  ))
+
+  .add('Discreet mode disabled', () => (
+    <>
+      <DiscreetValue>123</DiscreetValue>
+      <Toggle knob={boolean('Toogle discreet mode', false)} />
+    </>
+  ))
+  .add('Discreet mode enabled', () => (
+    <>
+      <DiscreetValue>123</DiscreetValue>
+      <Toggle knob={boolean('Toogle discreet mode', true)} />
+    </>
   ));

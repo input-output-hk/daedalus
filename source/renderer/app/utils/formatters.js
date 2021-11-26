@@ -19,7 +19,8 @@ import type { AssetMetadata } from '../api/assets/types';
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
-  long: boolean = true
+  long: boolean = true,
+  currency: string = 'ADA'
 ): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
@@ -32,7 +33,7 @@ export const formattedWalletAmount = (
     formattedAmount = formattedAmount.split('.').join(decimalSeparator);
   }
   if (withCurrency) {
-    formattedAmount = `${formattedAmount} ADA`;
+    formattedAmount = `${formattedAmount} ${currency}`;
   }
   return formattedAmount.toString();
 };
