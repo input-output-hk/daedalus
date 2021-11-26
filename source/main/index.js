@@ -28,6 +28,7 @@ import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
+import { getRtsFlags } from './utils/getRtsFlags';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
@@ -160,7 +161,9 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
+  const rtsFlags = getRtsFlags(network);
+
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, rtsFlags);
 
   buildAppMenus(mainWindow, cardanoNode, locale, {
     isNavigationEnabled: false,

@@ -51,7 +51,8 @@ const restartCardanoNode = async (node: CardanoNode) => {
  */
 export const setupCardanoNode = (
   launcherConfig: LauncherConfig,
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow,
+  rtsFlags: Array<string>
 ): CardanoNode => {
   const {
     logsPrefix,
@@ -79,6 +80,7 @@ export const setupCardanoNode = (
     cliBin,
     isStaging,
     metadataUrl,
+    rtsFlags,
     startupTimeout: NODE_STARTUP_TIMEOUT,
     startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
     shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,
