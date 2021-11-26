@@ -10,6 +10,7 @@ import NotificationDot from '../../widgets/notification-dot/NotificationDot';
 import { ROUTES } from '../../../routes-config';
 import { useTriggerOnRouteLeave } from './hooks';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
+import type { Intl } from '../../../types/i18nTypes';
 
 type Props = {
   intl: Intl,
