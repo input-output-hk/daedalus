@@ -32,5 +32,5 @@ export const useTriggerOnRouteLeave = ({
         onLeave();
       }
     };
-  }, [isOnRoute]);
+  }, [isOnRoute, wasOnRoute]);
 };
