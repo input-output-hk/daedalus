@@ -14,6 +14,12 @@ Daedalus - Cryptocurrency Wallet
 
 [Yarn](https://yarnpkg.com/lang/en/docs/install) is required to install `npm` dependencies to build Daedalus.
 
+### XCode (MacOS)
+
+[Xcode](https://developer.apple.com/xcode/) is required to build Daedalus codebase dependencies.
+
+**Note**: It is not enough to install Xcode Command Line Tools.
+
 ### Nix
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
