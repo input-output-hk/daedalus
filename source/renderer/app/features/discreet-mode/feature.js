@@ -1,9 +1,12 @@
 // @flow
-
 import { observable, action, runInAction } from 'mobx';
 import { Feature } from '../../utils/mobx-features/feature';
 import Request from '../../stores/lib/LocalizedRequest';
+
 import { DiscreetModeApi } from './api';
+import { SENSITIVE_DATA_SYMBOL } from './config';
+import { defaultReplacer } from './replacers/defaultReplacer';
+import type { ReplacerFn } from './types';
 
 export class DiscreetMode extends Feature {
   api: DiscreetModeApi;
@@ -20,13 +23,11 @@ export class DiscreetMode extends Feature {
 
   constructor(api: DiscreetModeApi) {
     super();
-
     this.api = api;
   }
 
   async start() {
     super.start();
-
     await this._setupDiscreetMode();
   }
 
@@ -50,4 +51,14 @@ export class DiscreetMode extends Feature {
       this.openInDiscreetMode = nextSetting;
     });
   };
+
+  discreetValue({
+    replacer = defaultReplacer(),
+    value,
+  }: {
+    replacer?: ReplacerFn,
+    value?: any,
+  }) {
+    return replacer(this.isDiscreetMode, SENSITIVE_DATA_SYMBOL, value);
+  }
 }
