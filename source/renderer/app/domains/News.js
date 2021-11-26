@@ -85,9 +85,6 @@ class NewsCollection {
         ''
       );
       const targetPlatforms = get(newsItem, ['target', 'platforms']);
-      const isAppUpdateItem = newsItem.type === NewsTypes.UPDATE;
-      const hasValidItemLabelDeclaration =
-        isAppUpdateItem || (!isAppUpdateItem && newsItem.action.label);
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
@@ -98,7 +95,7 @@ class NewsCollection {
         newsItem.id &&
         newsItem.title &&
         newsItem.content &&
-        hasValidItemLabelDeclaration &&
+        // newsItem.action.label &&
         newsItem.date
       );
     });
@@ -116,6 +113,7 @@ class NewsCollection {
       'date',
       'desc'
     );
+
     runInAction(() => {
       this.all = orderedNewsWithoutAppUpdates;
       this.allWithAppUpdates = orderedNewsWithAppUpdates;

@@ -140,7 +140,7 @@
       },
       "target": {
         "daedalusVersion": ">=3.0.0",
-        "platforms":["win32", "darwin", "linux"]
+        "platforms":["win32"]
       },
       "action": {
         "label": {
@@ -166,7 +166,7 @@
       },
       "target": {
         "daedalusVersion": ">=4.4.0",
-        "platforms":["win32", "darwin", "linux"]
+        "platforms":["win32"]
       },
       "action": {
         "label": {
