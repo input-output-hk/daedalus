@@ -408,7 +408,8 @@ function replace_in_all_folders() {
 }
 
 function convert_flow_code() {
-    sed -i '46i // @ts-ignore ' ./utils/create-news-verification-hashes/index.ts
+    sed -i '25i (() => {' ./utils/create-news-verification-hashes/index.ts
+    sed -i '93i })()' ./utils/create-news-verification-hashes/index.ts
 
     (
         for migration_folder in ${!MIGRATION_FOLDERS[@]}
