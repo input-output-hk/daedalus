@@ -23,11 +23,6 @@ const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'OPEN_DIAGNOSTIC_DIALOG',
 ];
 
-/* type FakedNews = {
-  updatedAt: number,
-  items
-} */
-
 export default class NewsFeedStore extends Store {
   @observable rawNews: ?Array<NewsItem> = null;
   @observable newsUpdatedAt: ?Date = null;
