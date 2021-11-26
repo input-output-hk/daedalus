@@ -79,7 +79,7 @@ const topBarProductionEnv = (currentTheme) => (
   </TopBar>
 );
 
-storiesOf('Nodes|Environment', module)
+storiesOf('Nodes/Environment', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
   // ====== Stories ======

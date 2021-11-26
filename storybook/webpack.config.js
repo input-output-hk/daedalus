@@ -4,15 +4,11 @@ const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = async ({ config }) => {
   const [jsxRule] = config.module.rules;
-  jsxRule.use.unshift('thread-loader');
+  // jsxRule.use.unshift('thread-loader');
+
   // Use Auto DLL plugin for faster development builds
+
   if (!isCi) {
-    const [htmlWebpackPlugin] = config.plugins;
-    const { templateParameters } = htmlWebpackPlugin.options;
-    htmlWebpackPlugin.options.templateParameters = (...args) =>
-      Object.assign(templateParameters.call(null, ...args), {
-        dlls: ['./vendor.dll.js'],
-      });
     config.plugins.push(
       new AutoDllPlugin({
         inject: true,

@@ -10,12 +10,12 @@ import {
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
 
-storiesOf('Settings|Language', module)
+storiesOf('Settings/Language', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
-  .add('Select Language - initial', ({ locale }: { locale: string }) => (
+  .add('Select Language - initial', (_, { locale }: { locale: string }) => (
     <div>
       <InitialSettings
         onSubmit={action('submit')}
@@ -28,7 +28,7 @@ storiesOf('Settings|Language', module)
     </div>
   ))
 
-  .add('Select Language - submitting', ({ locale }: { locale: string }) => (
+  .add('Select Language - submitting', (_, { locale }: { locale: string }) => (
     <div>
       <InitialSettings
         onSubmit={action('submit')}

@@ -33,7 +33,7 @@ const coreInfo = {
     '/Users/daedalus/Library/Application Support/Daedalus Demo',
 };
 
-storiesOf('Nodes|Status', module)
+storiesOf('Nodes/Status', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 

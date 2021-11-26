@@ -94,11 +94,14 @@ export const StakingUndelegateConfirmationStory = (props: {
   />
 );
 
-export const StakingUndelegateConfirmationResultStory = ({
-  locale,
-}: {
-  locale: string,
-}) => (
+export const StakingUndelegateConfirmationResultStory = (
+  _,
+  {
+    locale,
+  }: {
+    locale: string,
+  }
+) => (
   <UndelegateWalletSuccessDialog
     walletName="Darko's ADA"
     slotLength={null}

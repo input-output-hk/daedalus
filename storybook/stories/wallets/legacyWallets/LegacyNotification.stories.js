@@ -6,13 +6,14 @@ import { withKnobs, boolean, text } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LegacyNotification from '../../../../source/renderer/app/components/notifications/LegacyNotification';
 
-storiesOf('Wallets|Legacy Wallets', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
+const decorators = [
+  withKnobs,
+  (story) => <StoryDecorator>{story()}</StoryDecorator>,
+];
 
-  // ====== Stories ======
-
-  .add('Legacy Notification', () => (
+storiesOf('Wallets/Legacy Wallets', module).add(
+  'Legacy Notification',
+  () => (
     <div>
       <LegacyNotification
         activeWalletName={text('activeWalletName', 'Josephine')}
@@ -22,4 +23,6 @@ storiesOf('Wallets|Legacy Wallets', module)
         onWalletAdd={action('onWalletAdd')}
       />
     </div>
-  ));
+  ),
+  { decorators }
+);

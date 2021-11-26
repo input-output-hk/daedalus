@@ -112,16 +112,15 @@ const transactionTokens = [
   },
 ];
 
+const decorators = [
+  withKnobs,
+  (story) => <StoryDecorator>{story()}</StoryDecorator>,
+];
+
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Transactions', module)
-  .addDecorator(withKnobs)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
-
-  // ====== Stories ======
-
-  .add('Transaction', () => {
+storiesOf('Wallets/Transactions', module).add(
+  'Transaction',
+  () => {
     const direction = select(
       'direction',
       {
@@ -218,4 +217,6 @@ storiesOf('Wallets|Transactions', module)
         onCopyAssetParam={action('onCopyAssetParam')}
       />
     );
-  });
+  },
+  { decorators }
+);

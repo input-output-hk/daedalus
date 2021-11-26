@@ -16,19 +16,19 @@ type Props = {
 };
 
 const walletStories = {
-  send: 'Wallets|Send',
-  receive: 'Wallets|Receive',
-  transactions: 'Wallets|Transactions',
-  tokens: 'Wallets|Tokens',
-  summary: 'Wallets|Summary',
-  settings: 'Wallets|Settings',
+  send: 'Wallets/Send',
+  receive: 'Wallets/Receive',
+  transactions: 'Wallets/Transactions',
+  tokens: 'Wallets/Tokens',
+  summary: 'Wallets/Summary',
+  settings: 'Wallets/Settings',
 };
 
 export default class WalletWithNavigationLayout extends Component<Props> {
   static defaultProps = { stores: null, storiesProps: null };
 
   getItemFromContext = (context: contextType) => {
-    return context.kind.replace('Wallets|', '').toLocaleLowerCase();
+    return context.kind.replace('Wallets/', '').toLocaleLowerCase();
   };
 
   render() {
@@ -36,7 +36,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
     const activeWallet = get(stores, ['wallets', 'active']);
     const { hasPassword, isLegacy, isNotResponding } = activeWallet;
     const contextItem = context.kind
-      .replace('Wallets|', '')
+      .replace('Wallets/', '')
       .toLocaleLowerCase();
 
     return (

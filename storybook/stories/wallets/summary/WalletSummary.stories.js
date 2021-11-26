@@ -162,7 +162,7 @@ const walletAssets = assets.total.map((assetTotal) => {
 });
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Summary', module)
+storiesOf('Wallets/Summary', module)
   .addDecorator(WalletsWrapper)
   .add('Wallet Summary', ({ locale }: { locale: string }) => {
     const currencyState = select(

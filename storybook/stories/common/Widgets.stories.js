@@ -76,7 +76,7 @@ const messages = defineMessages({
   },
 });
 
-storiesOf('Common|Widgets', module)
+storiesOf('Common/Widgets', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();
@@ -134,43 +134,46 @@ storiesOf('Common|Widgets', module)
     </div>
   ))
 
-  .add('BigButtonForDialogs', (props: { locale: string }) => (
-    <div>
-      <div style={{ width: '300px', height: '200px', display: 'flex' }}>
-        <BigButtonForDialogs
-          description={intl[props.locale].formatMessage(
-            messages.createNewWallet
-          )}
-          label={intl[props.locale].formatMessage(messages.create)}
-          icon={createIcon}
-          onClick={() => {}}
-        />
+  .add('BigButtonForDialogs', (_, props: { locale: string }) => {
+    console.log('_', _);
+    return (
+      <div>
+        <div style={{ width: '300px', height: '200px', display: 'flex' }}>
+          <BigButtonForDialogs
+            description={intl[props.locale].formatMessage(
+              messages.createNewWallet
+            )}
+            label={intl[props.locale].formatMessage(messages.create)}
+            icon={createIcon}
+            onClick={() => {}}
+          />
+        </div>
+        <div style={{ width: '300px', height: '200px', display: 'flex' }}>
+          <BigButtonForDialogs
+            description={intl[props.locale].formatMessage(
+              messages.joinSharedWallet
+            )}
+            label={intl[props.locale].formatMessage(messages.join)}
+            icon={joinSharedIcon}
+            onClick={() => {}}
+            isDisabled
+          />
+        </div>
+        <div style={{ width: '300px', height: '200px', display: 'flex' }}>
+          <BigButtonForDialogs
+            description={intl[props.locale].formatMessage(
+              messages.importExistingWallet
+            )}
+            label={intl[props.locale].formatMessage(messages.import)}
+            icon={importIcon}
+            onClick={() => {}}
+          />
+        </div>
       </div>
-      <div style={{ width: '300px', height: '200px', display: 'flex' }}>
-        <BigButtonForDialogs
-          description={intl[props.locale].formatMessage(
-            messages.joinSharedWallet
-          )}
-          label={intl[props.locale].formatMessage(messages.join)}
-          icon={joinSharedIcon}
-          onClick={() => {}}
-          isDisabled
-        />
-      </div>
-      <div style={{ width: '300px', height: '200px', display: 'flex' }}>
-        <BigButtonForDialogs
-          description={intl[props.locale].formatMessage(
-            messages.importExistingWallet
-          )}
-          label={intl[props.locale].formatMessage(messages.import)}
-          icon={importIcon}
-          onClick={() => {}}
-        />
-      </div>
-    </div>
-  ))
+    );
+  })
 
-  .add('MnemonicInputWidget - 9 words', (props: { locale: string }) => {
+  .add('MnemonicInputWidget - 9 words', (_, props: { locale: string }) => {
     const tokens = observable(['', '', '', '', '', '', '', '', '']);
     return (
       <div style={{ padding: 20 }}>
@@ -187,11 +190,11 @@ storiesOf('Common|Widgets', module)
 
   .add('TinySwitch', () => <TinySwitch />)
 
-  .add('TinySwitch - short label', (props: { locale: string }) => (
+  .add('TinySwitch - short label', (_, props: { locale: string }) => (
     <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
   ))
 
-  .add('ButtonLink', (props: { locale: string }) => (
+  .add('ButtonLink', (_, props: { locale: string }) => (
     <ButtonLink
       label={intl[props.locale].formatMessage(messages.save)}
       onClick={action('onClick')}

@@ -4,18 +4,21 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
+import StoryDecorator from '../_support/StoryDecorator';
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
 
-storiesOf('Decentralization | Countdown', module)
-  .addDecorator(withKnobs)
+const decorators = [
+  withKnobs,
+  (story) => <StoryDecorator>{story()}</StoryDecorator>,
+];
 
-  // ====== Stories ======
-
-  .add('Countdown party', () => {
+storiesOf('Decentralization / Countdown', module).add(
+  'Countdown party',
+  () => {
     const isAlonzoActivated = boolean('isAlonzoActivated', false);
     const date = isAlonzoActivated
       ? new Date().getTime() - 100000000
@@ -67,4 +70,6 @@ storiesOf('Decentralization | Countdown', module)
         />
       </div>
     );
-  });
+  },
+  { decorators }
+);

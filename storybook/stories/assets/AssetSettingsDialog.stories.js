@@ -19,7 +19,7 @@ const asset = {
   metadata: null,
 };
 
-storiesOf('Assets|AssetSettingsDialog', module)
+storiesOf('Assets/AssetSettingsDialog', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 

@@ -31,7 +31,7 @@ const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
 /* eslint-disable consistent-return */
-storiesOf('Settings|General', module)
+storiesOf('Settings/General', module)
   .addDecorator(SettingsWrapper)
 
   // ====== Stories ======
@@ -106,7 +106,7 @@ storiesOf('Settings|General', module)
       }}
     />
   ))
-  .add('Terms of Service', (props) => {
+  .add('Terms of Service', (_, props) => {
     const termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/${props.locale}.md`);
     return (
       <TermsOfUseSettings

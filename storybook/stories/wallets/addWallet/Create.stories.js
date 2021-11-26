@@ -8,7 +8,7 @@ import WalletCreateDialog from '../../../../source/renderer/app/components/walle
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
-storiesOf('Wallets|Add Wallet', module)
+storiesOf('Wallets/Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Create - New process', () => <CreateWalletScreens />)
   .add('Create - Old process', ({ locale }: { locale: string }) => {

@@ -6,14 +6,20 @@ import { storiesOf } from '@storybook/react';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
-import WalletSettingsScreen from './WalletSettingsScreen.stories.js';
+import { WalletSettingsScreen } from './WalletSettingsScreen.stories.js';
 import './WalletDelete.stories';
 import './WalletUnpair.stories';
 import './WalletRecoveryPhraseVerification.stories';
 import './WalletPublicKey.stories';
 import './PublicKeyQRCode.stories';
 
+const decorators = [WalletsWrapper];
+
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Settings', module)
-  .addDecorator(WalletsWrapper)
-  .add('Wallet Settings', (props) => <WalletSettingsScreen {...props} />);
+storiesOf('Wallets/Settings', module).add(
+  'Wallet Settings',
+  (_, props) => <WalletSettingsScreen {...props} />,
+  {
+    decorators,
+  }
+);

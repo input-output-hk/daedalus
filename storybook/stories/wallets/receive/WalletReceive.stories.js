@@ -20,7 +20,7 @@ const onToggleSubMenus = {
   remove: action('onToggleSubMenus:remove'),
 };
 
-storiesOf('Wallets|Receive', module)
+storiesOf('Wallets/Receive', module)
   .addDecorator(WalletsWrapper)
   .add('Receive - sequential', ({ locale }: { locale: string }) => {
     const showDialog = boolean('showDialog', false);

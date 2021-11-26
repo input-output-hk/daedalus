@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 
 import SystemTimeError from '../../../../source/renderer/app/components/loading/system-time-error/SystemTimeError';
 
-export const SystemTimeErrorStory = ({ locale }: { locale: string }) => (
+export const SystemTimeErrorStory = (_, { locale }: { locale: string }) => (
   <SystemTimeError
     localTimeDifference={number('localTimeDifference', 0)}
     currentLocale={locale}

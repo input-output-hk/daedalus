@@ -79,7 +79,7 @@ const WALLETS = [
 
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
 
-storiesOf('Voting|Voting Registration Wizard', module)
+storiesOf('Voting/Voting Registration Wizard', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
@@ -160,7 +160,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
     />
   ));
 
-storiesOf('Voting|Voting Info', module)
+storiesOf('Voting/Voting Info', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 

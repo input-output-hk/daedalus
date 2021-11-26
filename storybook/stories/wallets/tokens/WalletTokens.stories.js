@@ -157,33 +157,31 @@ const walletTokens = {
   ],
 };
 
-storiesOf('Wallets|Tokens', module)
-  .addDecorator(WalletsWrapper)
-  .addDecorator(withKnobs)
+const decorators = [withKnobs, WalletsWrapper];
 
-  // ====== Stories ======
-  .add(
-    'WalletTokens',
-    withState({ favorites: {} }, (store) => (
-      <WalletTokens
-        assets={boolean('Has Tokens', true) ? assets : []}
-        assetSettingsDialogWasOpened
-        currentLocale="en-US"
-        isLoadingAssets={boolean('isLoadingAssets', false)}
-        onAssetSettings={action('onAssetSettings')}
-        onCopyAssetParam={action('onCopyAssetParam')}
-        onOpenAssetSend={action('onOpenAssetSend')}
-        searchValue={text('searchValue', '')}
-        wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
-        onToggleFavorite={({ uniqueId }: { uniqueId: string }) => {
-          const { favorites } = store.state;
-          const newState = {
-            ...favorites,
-            [uniqueId]: !favorites[uniqueId],
-          };
-          store.set({ favorites: newState });
-        }}
-        tokenFavorites={store.state.favorites}
-      />
-    ))
-  );
+storiesOf('Wallets/Tokens', module).add(
+  'WalletTokens',
+  withState({ favorites: {} }, (store) => (
+    <WalletTokens
+      assets={boolean('Has Tokens', true) ? assets : []}
+      assetSettingsDialogWasOpened
+      currentLocale="en-US"
+      isLoadingAssets={boolean('isLoadingAssets', false)}
+      onAssetSettings={action('onAssetSettings')}
+      onCopyAssetParam={action('onCopyAssetParam')}
+      onOpenAssetSend={action('onOpenAssetSend')}
+      searchValue={text('searchValue', '')}
+      wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
+      onToggleFavorite={({ uniqueId }: { uniqueId: string }) => {
+        const { favorites } = store.state;
+        const newState = {
+          ...favorites,
+          [uniqueId]: !favorites[uniqueId],
+        };
+        store.set({ favorites: newState });
+      }}
+      tokenFavorites={store.state.favorites}
+    />
+  )),
+  { decorators }
+);

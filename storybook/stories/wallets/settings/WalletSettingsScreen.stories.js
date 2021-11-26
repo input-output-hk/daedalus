@@ -145,7 +145,7 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-export default (props: { locale: Locale }) => {
+export const WalletSettingsScreen = (props: { locale: Locale }) => {
   const { locale } = props;
 
   const { type, status } = select(
