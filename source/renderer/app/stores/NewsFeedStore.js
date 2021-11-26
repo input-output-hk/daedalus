@@ -16,7 +16,7 @@ import type {
   MarkNewsAsReadResponse,
 } from '../api/news/types';
 
-const { isTest, isDev } = global.environment;
+const { isTest } = global.environment;
 
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'DOWNLOAD_LOGS',
@@ -216,16 +216,22 @@ export default class NewsFeedStore extends Store {
     }
   };
 
-  @action setFakedNewsfeed = () => {
-    if (isDev) {
-      if (this.pollingNewsIntervalId) {
-        clearInterval(this.pollingNewsIntervalId);
-        this.pollingNewsIntervalId = null;
-      }
-      const rawNews = require('../config/news.dummy.json');
-      this.rawNews = get(rawNews, 'items', []);
-      this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
+  @action setFakedNewsfeed = (params: { isAutomaticUpdateTest: ?boolean }) => {
+    const { isAutomaticUpdateTest } = params;
+    this.rawNews = [];
+    // TODO: Restrict to `isDev` env once tested
+    if (this.pollingNewsIntervalId) {
+      clearInterval(this.pollingNewsIntervalId);
+      this.pollingNewsIntervalId = null;
     }
+    let rawNews;
+    if (isAutomaticUpdateTest) {
+      rawNews = require('../config/newsfeed-files/news-automatic-update.dummy.json');
+    } else {
+      rawNews = require('../config/news.dummy.json');
+    }
+    this.rawNews = get(rawNews, 'items', []);
+    this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
   };
 
   @computed get newsFeedData(): News.NewsCollection {
@@ -269,7 +275,6 @@ export default class NewsFeedStore extends Store {
         return newsfeedItem;
       });
     }
-
     return new News.NewsCollection(news);
   }
 
