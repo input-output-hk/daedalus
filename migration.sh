@@ -123,7 +123,7 @@ function remove_node_modules() {
 
 prerequisite_functions=(
     enable_globstar
-    remove_node_modules
+    #remove_node_modules
 )
 
 
@@ -216,8 +216,9 @@ function change_webpack_configuration() {
     pause "change_webpack_configuration"
 }
 
-function remove_flow_from_eslintrc() {
+function update_eslintrc() {
     sed -i "s/flowtype/@typescript-eslint/g" ./.eslintrc
+    sed -i "74i\"react/jsx-first-prop-new-line\": \"always\"," ./.eslintrc
     pause "remove flow from eslintrc"
 }
 
@@ -272,7 +273,7 @@ configuration_functions=(
     update_prettierignore
     create_tsconfig
     change_webpack_configuration
-    remove_flow_from_eslintrc
+    update_eslintrc
     add_declaration_dts
 )
 
@@ -379,6 +380,12 @@ function update_packager() {
     pause "update paackager"
 }
 
+function update_DelegationStepsConfirmationDialog() {
+    sed -i "32i import { ReactIntlMessage } from '../../../types/i18nTypes';" ./source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.tsx
+    sed -i "s/\(const messages\)\( = {\)/\1: Record<string, ReactIntlMessage\2/g" ./source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.tsx
+    pause "update type for intl message in DelegationStepsConfirmationDialog"
+}
+
 function remove_storybook_register_import() {
     perl -i -pe "s/(import '.\/addons\/DaedalusMenu\/register';)/\/\/\1/" ./storybook/addons.ts
     pause "update storybook import"
@@ -444,6 +451,7 @@ migration_functions=(
     remove_storybook_register_import
     change_wallet_import_exports
     update_packager
+    update_DelegationStepsConfirmationDialog
     replace_in_all_folders
     convert_flow_code
     reignore # Litter codebase with ts-error or ts-ignore annotations
