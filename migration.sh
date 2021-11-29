@@ -117,7 +117,7 @@ function enable_globstar() {
 }
 
 function remove_node_modules() {
-    rm -rf node_modules #& spin_while_executing # START FROM FRESH TO AVOID PACKAGE CONFLICTS
+    rm -rf node_modules & spin_while_executing # START FROM FRESH TO AVOID PACKAGE CONFLICTS
     pause "remove node modules"
 }
 
@@ -135,12 +135,12 @@ function remove_flow_files() {
 
 function remove_packages() {
     # TODO find a way to avoid errors when packages are already uninstalled --silent isn't working
-    yarn remove @babel/preset-flow eslint-plugin-flowtype flow-bin gulp-flow-remove-types babel-eslint --silent
+    yarn remove @babel/preset-flow eslint-plugin-flowtype flow-bin gulp-flow-remove-types babel-eslint
     pause "un-install flow packages"
 }
 
 function add_type_packages() {
-    yarn add -D @types/react @types/aes-js @types/qrcode.react @types/react-copy-to-clipboard @types/react-svg-inline @types/node --silent
+    yarn add -D @types/react @types/aes-js @types/qrcode.react @types/react-copy-to-clipboard @types/react-svg-inline @types/node ts-migrate babel-eslint @typescript-eslint/eslint-plugin
     # Might need @types/react-dom @types/electron
     pause "add @type packages"
 }
@@ -185,6 +185,8 @@ function create_tsconfig() {
         --noEmitOnError \
         --jsx react
         #moduleResolution node
+
+    # EXCLUDE NODE_MODULES FROM TSC
     pause '.tsconfig generation'
 }
 
@@ -419,17 +421,18 @@ function convert_flow_code() {
                 npx @khanacademy/flow-to-ts --inline-utility-types --write -o ts "./${folder}/**/*.ts"
             done
     ) & spin_while_executing
+    yarn prettier:format # Fixing prettier ensures ts-migrate fixes will be on the correct line
     pause "convert flow code"
 }
 
 function reignore() {
-    npx ts-migrate migrate . \
-        --sources="./scripts/**/*" \
-        --sources="./source/**/*" \
-        --sources="./storybook/**/*" \
-        --sources="./tests/**/*" \
-        --sources="./translations/**/*" \
-        --sources="./utils/**/*"
+    # One folder at a time or we run out of memory
+    ts-migrate migrate . --sources="./scripts/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
+    ts-migrate migrate . --sources="./source/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
+    ts-migrate migrate . --sources="./storybook/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
+    ts-migrate migrate . --sources="./tests/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
+    ts-migrate migrate . --sources="./translations/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
+    ts-migrate migrate . --sources="./utils/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
     pause "ts-migration add @ts-ignore or @ts-expect-error"
 }
 
@@ -447,7 +450,9 @@ migration_functions=(
 )
 
 function lockfile_fix() {
+    yarn remove ts-migrate babel-eslint @typescript-eslint/eslint-plugin
     yarn lockfile:fix
+    pause "lockfile fixed"
 }
 
 cleanup_functions=(
