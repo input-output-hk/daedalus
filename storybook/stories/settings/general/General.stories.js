@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import { findKey } from 'lodash';
-import { boolean, number } from '@storybook/addon-knobs';
+import addons from '@storybook/addons';
+import { boolean, number, CHANGE } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withState } from '@dump247/storybook-state';
@@ -22,10 +23,15 @@ import DisplaySettings from '../../../../source/renderer/app/components/settings
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
+import SecuritySettings from '../../../../source/renderer/app/components/settings/categories/SecuritySettings';
 
 // Assets and helpers
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
+
+const changeControl = (name: string, value: boolean) => {
+  addons.getChannel().emit(CHANGE, { name, value });
+};
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
@@ -121,5 +127,17 @@ storiesOf('Settings|General', module)
       onSupportRequestClick={action('onSupportRequestClick')}
       onDownloadLogs={action('onDownloadLogs')}
       disableDownloadLogs={boolean('disableDownloadLogs', false)}
+    />
+  ))
+  .add('Security', () => (
+    <SecuritySettings
+      discreetMode={boolean('discreetMode', false)}
+      openDiscreetMode={boolean('openDiscreetMode', false)}
+      onDiscreetModeToggle={() =>
+        changeControl('discreetMode', !boolean('discreetMode'))
+      }
+      onOpenDiscreetModeToggle={() =>
+        changeControl('openDiscreetMode', !boolean('openDiscreetMode'))
+      }
     />
   ));
