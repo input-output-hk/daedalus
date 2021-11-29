@@ -1,2 +1,3 @@
 [build]
   environment = { YARN_VERSION = "1.22.4", NODE_VERSION = "14.17.0" }
+  command = "yarn --frozen-lock && yarn add @storybook/semver && yarn storybook:build"  
