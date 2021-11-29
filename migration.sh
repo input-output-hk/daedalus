@@ -218,7 +218,7 @@ function change_webpack_configuration() {
 
 function update_eslintrc() {
     sed -i "s/flowtype/@typescript-eslint/g" ./.eslintrc
-    sed -i "74i\"react/jsx-first-prop-new-line\": \"multiline-multiprop\"," ./.eslintrc
+    sed -i "74i\"react/jsx-first-prop-new-line\": [1, \"multiline-multiprop\"]," ./.eslintrc
     pause "remove flow from eslintrc"
 }
 
