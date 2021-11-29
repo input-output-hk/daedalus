@@ -1,47 +1,72 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const AutoDllPlugin = require('autodll-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const DevMainPlugin = require('../../scripts/webpack/DevMainPlugin');
 
-// Process env flags from buildkite
-const isTestEnv = process.env.NODE_ENV === 'test';
-const isCi = process.env.CI && process.env.CI !== '';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-cheap-module-source-map',
-  entry: './source/renderer/index.js',
-  optimization: {
-    // https://github.com/webpack/webpack/issues/7470
-    nodeEnv: false,
+  entry: {
+    index: './source/renderer/index.js',
   },
   output: {
-    path: path.join(__dirname, './dist/renderer'),
-    filename: 'index.js',
+    path: path.join(process.cwd(), 'dist/renderer'),
+    assetModuleFilename: 'assets/[hash][ext][query]',
   },
-  // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
-  target: isTestEnv ? 'electron-renderer' : 'web',
-  cache: true,
+  mode: isDevelopment ? 'development' : 'production',
+  target: 'web',
+  devtool: false,
+  cache: {
+    type: 'filesystem',
+  },
+  optimization: {
+    minimize: false,
+  },
+  devServer: {
+    hot: true,
+    static: {
+      directory: path.join(__dirname, '../../dist'),
+    },
+    client: {
+      overlay: true,
+      progress: true,
+    },
+    devMiddleware: {
+      writeToDisk: true,
+    },
+  },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         include: /source/,
         exclude: /source\/main/,
-        use: (isCi ? [] : ['cache-loader', 'thread-loader']).concat([
-          'babel-loader',
-        ]),
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheCompression: false,
+              cacheDirectory: true,
+              plugins: [
+                isDevelopment && require.resolve('react-refresh/babel'),
+              ].filter(Boolean),
+            },
+          },
+        ],
       },
       {
         test: /\.scss/,
         use: [
-          MiniCssExtractPlugin.loader,
+          isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
+              modules: {
+                localIdentName: '[name]_[local]',
+              },
               sourceMap: true,
-              modules: true,
-              localIdentName: '[name]_[local]',
               importLoaders: true,
             },
           },
@@ -67,41 +92,36 @@ module.exports = {
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
         exclude: /\.inline\.svg$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'assets/',
-          },
-        },
+        type: 'asset/resource',
       },
       {
         test: /\.md$/,
-        use: [
-          { loader: 'html-loader', options: { importLoaders: true } },
-          { loader: 'markdown-loader?gfm=false' },
-        ],
+        use: ['html-loader', 'markdown-loader?gfm=false'],
       },
     ],
   },
+  resolve: {
+    alias: {
+      process: 'process/browser',
+      path: 'path-browserify',
+      crypto: 'crypto-browserify',
+      stream: 'stream-browserify',
+      http: 'stream-http',
+      https: 'https-browserify',
+      buffer: 'buffer',
+    },
+  },
+  experiments: {
+    syncWebAssembly: true,
+  },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'styles.css',
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
     }),
     new webpack.DefinePlugin(
       Object.assign(
-        {
-          'process.env.API_VERSION': JSON.stringify(
-            process.env.API_VERSION || 'dev'
-          ),
-          'process.env.NETWORK': JSON.stringify(
-            process.env.NETWORK || 'development'
-          ),
-          'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
-          'process.env.BUILD_NUMBER': JSON.stringify(
-            process.env.BUILD_NUMBER || 'dev'
-          ),
-        },
+        {},
         process.env.NODE_ENV === 'production'
           ? {
               // Only bake in NODE_ENV value for production builds.
@@ -110,43 +130,22 @@ module.exports = {
           : {}
       )
     ),
-    new AutoDllPlugin({
-      inherit: !isCi,
-      filename: 'vendor.dll.js',
-      context: path.join(__dirname, '..'),
-      entry: {
-        vendor: [
-          'aes-js',
-          'bignumber.js',
-          'bip39',
-          'blakejs',
-          'bs58',
-          'classnames',
-          'es6-error',
-          'history',
-          'humanize-duration',
-          'lodash',
-          'mobx',
-          'mobx-react',
-          'mobx-react-form',
-          'mobx-react-router',
-          'moment',
-          'pbkdf2',
-          'qrcode.react',
-          'react',
-          'react-copy-to-clipboard',
-          'react-datetime',
-          'react-dom',
-          'react-router',
-          'react-router-dom',
-          'react-svg-inline',
-          'recharts',
-          'route-parser',
-          'safe-buffer',
-          'unorm',
-          'validator',
-        ],
-      },
+    new webpack.EnvironmentPlugin({
+      API_VERSION: 'dev',
+      NETWORK: 'development',
+      MOBX_DEV_TOOLS: 'false',
+      BUILD_NUMBER: 'dev',
     }),
+    new HtmlWebpackPlugin({
+      template: 'source/renderer/index.ejs',
+      inject: 'body',
+      scriptLoading: 'blocking',
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
+    isDevelopment && new ReactRefreshWebpackPlugin(),
+    isDevelopment && new DevMainPlugin(),
   ].filter(Boolean),
+
 };

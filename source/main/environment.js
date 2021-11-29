@@ -1,7 +1,7 @@
 // @flow
 import os from 'os';
 import { get, includes, uniq } from 'lodash';
-import { version } from '../../package.json';
+import packageJson from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
@@ -53,7 +53,7 @@ const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
-const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
+const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS === 'true' || false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
@@ -91,7 +91,7 @@ export const environment: Environment = Object.assign(
     cpu,
     ram,
     installerVersion: INSTALLER_VERSION,
-    version,
+    version: packageJson.version,
     isWindows,
     isMacOS,
     isLinux,

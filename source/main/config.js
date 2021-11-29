@@ -111,9 +111,8 @@ export const windowOptions: WindowOptionsType = {
   useContentSize: true,
 };
 
-export const launcherConfig: LauncherConfig = readLauncherConfig(
-  LAUNCHER_CONFIG
-);
+export const launcherConfig: LauncherConfig =
+  readLauncherConfig(LAUNCHER_CONFIG);
 export const {
   cluster,
   nodeImplementation,

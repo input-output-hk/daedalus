@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaFeatures": {
       "legacyDecorators": true
@@ -9,10 +9,7 @@
     "airbnb",
     "plugin:flowtype/recommended",
     "plugin:react/recommended",
-    "prettier",
-    "prettier/babel",
-    "prettier/flowtype",
-    "prettier/react"
+    "prettier"
   ],
   "env": {
     "browser": true,

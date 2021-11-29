@@ -7,6 +7,7 @@
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    ["@babel/plugin-proposal-private-property-in-object", { "loose": true }],
     [
       "@babel/plugin-proposal-private-methods",
       {
@@ -15,7 +16,9 @@
     ],
     ["@babel/plugin-proposal-optional-chaining"],
     ["@babel/plugin-proposal-object-rest-spread", {}],
-    ["@babel/plugin-transform-runtime", {}],
+    ["@babel/plugin-transform-runtime", {
+      "useESModules": true
+    }],
     ["@babel/plugin-proposal-unicode-property-regex", { "useUnicodeFlag": false }],
     ["react-intl", {
       "messagesDir": "./translations/messages/",
