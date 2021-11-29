@@ -218,7 +218,7 @@ function change_webpack_configuration() {
 
 function update_eslintrc() {
     sed -i "s/flowtype/@typescript-eslint/g" ./.eslintrc
-    sed -i "74i\"react/jsx-first-prop-new-line\": \"always\"," ./.eslintrc
+    sed -i "74i\"react/jsx-first-prop-new-line\": \"multiline-multiprop\"," ./.eslintrc
     pause "remove flow from eslintrc"
 }
 
@@ -382,7 +382,7 @@ function update_packager() {
 
 function update_DelegationStepsConfirmationDialog() {
     sed -i "32i import { ReactIntlMessage } from '../../../types/i18nTypes';" ./source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.tsx
-    sed -i "s/\(const messages\)\( = {\)/\1: Record<string, ReactIntlMessage\2/g" ./source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.tsx
+    sed -i "s/\(const messages\)\( = {\)/\1: Record<string, ReactIntlMessage>\2/g" ./source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.tsx
     pause "update type for intl message in DelegationStepsConfirmationDialog"
 }
 
