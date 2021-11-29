@@ -95,7 +95,7 @@ export const StakingUndelegateConfirmationStory = (props: {
 );
 
 export const StakingUndelegateConfirmationResultStory = (
-  _,
+  _: any,
   {
     locale,
   }: {
