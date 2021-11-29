@@ -4,11 +4,15 @@ import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 import type { ElementRef } from 'react';
 import { AutoSizer, List, WindowScroller } from 'react-virtualized';
-import { hideAll } from 'tippy.js';
+import { Instance } from 'tippy.js';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { ThumbPool } from '../widgets/ThumbPool';
+
+type TippyElement = Element & {
+  _tippy: Instance,
+};
 
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
@@ -16,11 +20,16 @@ const POOL_THUMB_SIZE = 80;
 const POOL_THUMB_GRID_GAP = 10;
 
 /**
- * Utility function to programmatically hide all pop overs
+ * Utility function to programmatically hide the active pop over
  * This is used to hide the pool tooltips on scrolling the list
  */
-function hideAllPopOvers() {
-  hideAll();
+function hidePoolPopOver() {
+  const popOver: TippyElement | null = (document.querySelector('.PoolPopOver')
+    ?.parentElement: any);
+
+  if (popOver) {
+    popOver?._tippy.hide();
+  }
 }
 
 /**
@@ -57,12 +66,12 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
       ? props.scrollElementRef.current
       : null;
     if (scrollContainer !== null) {
-      scrollContainer.addEventListener('scroll', hideAllPopOvers, true);
+      scrollContainer.addEventListener('scroll', hidePoolPopOver, true);
     }
     setTimeout(() => setIsLoading(false));
     return () => {
       if (scrollContainer !== null) {
-        scrollContainer.removeEventListener('scroll', hideAllPopOvers);
+        scrollContainer.removeEventListener('scroll', hidePoolPopOver);
       }
     };
   });
