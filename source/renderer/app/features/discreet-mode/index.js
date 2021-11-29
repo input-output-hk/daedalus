@@ -10,6 +10,7 @@ export {
   DiscreetModeToggle,
   DiscreetToggleTopBar,
   withDiscreetMode,
+  DiscreetModeFeatureInject,
 } from './ui';
 
 export type DiscreetModeFeature = DiscreetMode;

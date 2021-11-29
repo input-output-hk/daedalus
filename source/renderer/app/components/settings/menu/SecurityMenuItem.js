@@ -14,11 +14,17 @@ import type { Intl } from '../../../types/i18nTypes';
 
 type Props = {
   intl: Intl,
+  currentLocale: string,
   isActiveItem: Function,
   onClick: Function,
 };
 
-const SecurityMenuItem = ({ intl, isActiveItem, onClick }: Props) => {
+const SecurityMenuItem = ({
+  intl,
+  isActiveItem,
+  currentLocale,
+  onClick,
+}: Props) => {
   const {
     isNotificationEnabled,
     setDiscreetModeNotification,
@@ -28,6 +34,7 @@ const SecurityMenuItem = ({ intl, isActiveItem, onClick }: Props) => {
     setDiscreetModeNotification(false);
     setDiscreetModeSettingsTooltip(false);
   };
+  const isJapanese = currentLocale === 'ja-JP';
   const isActive = isActiveItem(ROUTES.SETTINGS.SECURITY);
 
   useTriggerOnRouteLeave({
@@ -39,7 +46,11 @@ const SecurityMenuItem = ({ intl, isActiveItem, onClick }: Props) => {
   return (
     <NotificationDot
       enabled={isNotificationEnabled}
-      dotClassName={classnames(styles.dot, isActive && styles.active)}
+      dotClassName={classnames(
+        styles.dot,
+        isActive && styles.active,
+        isJapanese && styles.jp
+      )}
     >
       <SettingsMenuItem
         active={isActive}

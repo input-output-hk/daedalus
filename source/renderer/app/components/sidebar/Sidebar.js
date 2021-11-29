@@ -26,10 +26,12 @@ type Props = {
   isShelleyActivated: boolean,
 };
 
-const getCategoryContent = (categoryName: string, network) =>
-  categoryName === 'NETWORK_INFO' ? (
-    <SidebarCategoryNetworkInfo network={network} />
-  ) : null;
+const getCategoryContent = (categoryName: string, network) => {
+  if (categoryName === 'NETWORK_INFO') {
+    return <SidebarCategoryNetworkInfo network={network} />;
+  }
+  return null;
+};
 
 const Sidebar = ({
   menus,
@@ -79,8 +81,10 @@ const Sidebar = ({
         <SidebarWalletsMenu
           wallets={menus?.wallets?.items || []}
           onAddWallet={onAddWallet}
-          onWalletItemClick={menus?.wallets?.actions?.onWalletItemClick}
-          isActiveWallet={(id) => id === menus?.wallets?.activeWalletId}
+          onWalletItemClick={menus?.wallets?.actions?.onWalletItemClick || null}
+          isActiveWallet={(id) =>
+            id === (menus?.wallets?.activeWalletId || null)
+          }
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
           isShelleyActivated={isShelleyActivated}
           visible={isShowingSubMenus}

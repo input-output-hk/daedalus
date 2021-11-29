@@ -33,6 +33,8 @@ const reset = async () => {
   await unset(keys.CURRENCY_SELECTED);
   await unset(keys.DATA_LAYER_MIGRATION_ACCEPTANCE);
   await unset(keys.DISCREET_MODE_ENABLED);
+  await unset(keys.DISCREET_MODE_SETTINGS_TOOLTIP);
+  await unset(keys.DISCREET_MODE_NOTIFICATION);
   await unset(keys.DOWNLOAD_MANAGER);
   await unset(keys.HARDWARE_WALLET_DEVICES);
   await unset(keys.HARDWARE_WALLETS);

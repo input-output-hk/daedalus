@@ -1,5 +1,8 @@
 .root {
+  align-items: center;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 
   .icon {
     display: inline-block;
@@ -8,6 +11,7 @@
 
     &.hideIcon {
       height: 18px;
+      transform: translateY(0.5px);
     }
   }
 }
