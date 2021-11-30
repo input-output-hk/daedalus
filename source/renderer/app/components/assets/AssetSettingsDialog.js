@@ -181,11 +181,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
             {intl.formatMessage(messages.unformattedBalanceLabel)}
           </div>
           <p>
-            <DiscreetTokenWalletAmount
-              amount={asset.quantity}
-              metadata={null}
-              decimals={0}
-            />
+            <DiscreetTokenWalletAmount amount={asset.quantity} decimals={0} />
           </p>
           <div className={styles.label}>
             {intl.formatMessage(messages.formattedBalanceLabel)}
