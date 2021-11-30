@@ -119,8 +119,9 @@ const onAppReady = async () => {
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTime = new Date().toISOString();
-  // first checks for japanese locale, otherwise returns english
+  // first checks for Japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();
+  const userLocale = getLocale(network);
 
   const systemInfo = logSystemInfo({
     cardanoNodeVersion,
@@ -150,29 +151,30 @@ const onAppReady = async () => {
     cwd: process.cwd(),
   });
 
+  logger.info('System and user locale', { systemLocale, userLocale });
+
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
 
-  // Detect locale
-  const locale = getLocale(network);
+  logger.info('Setting up Main Window...');
   mainWindow = createMainWindow(
-    locale,
+    userLocale,
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   const rtsFlags = getRtsFlags(network);
-
+  logger.info('Setting up Cardano Node...');
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow, rtsFlags);
 
-  buildAppMenus(mainWindow, cardanoNode, locale, {
+  buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
   });
 
   enableApplicationMenuNavigationChannel.onReceive(
     () =>
       new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, locale, {
+        buildAppMenus(mainWindow, cardanoNode, userLocale, {
           isNavigationEnabled: true,
         });
         resolve();
@@ -182,10 +184,10 @@ const onAppReady = async () => {
   rebuildApplicationMenu.onReceive(
     (data) =>
       new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, locale, {
+        buildAppMenus(mainWindow, cardanoNode, userLocale, {
           isNavigationEnabled: data.isNavigationEnabled,
         });
-        mainWindow.updateTitle(locale);
+        mainWindow.updateTitle(userLocale);
         resolve();
       })
   );
