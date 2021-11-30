@@ -7,24 +7,16 @@ import styles from './SettingsMenu.scss';
 import { ROUTES } from '../../../routes-config';
 import messages from './SettingsMenu.messages';
 import type { Intl } from '../../../types/i18nTypes';
-import type { Locale } from '../../../../../common/types/locales.types';
 import SecurityMenuItem from './SecurityMenuItem';
 
 type Props = {
   intl: Intl,
   isFlight: boolean,
   isActiveItem: Function,
-  currentLocale: Locale,
   onItemClick: Function,
 };
 
-const SettingsMenu = ({
-  intl,
-  currentLocale,
-  onItemClick,
-  isActiveItem,
-  isFlight,
-}: Props) => {
+const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
   return (
     <div>
       <div className={styles.component}>
@@ -34,11 +26,7 @@ const SettingsMenu = ({
           active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
           className="general"
         />
-        <SecurityMenuItem
-          isActiveItem={isActiveItem}
-          currentLocale={currentLocale}
-          onClick={onItemClick}
-        />
+        <SecurityMenuItem isActiveItem={isActiveItem} onClick={onItemClick} />
         <SettingsMenuItem
           label={intl.formatMessage(messages.wallets)}
           onClick={() => onItemClick(ROUTES.SETTINGS.WALLETS)}

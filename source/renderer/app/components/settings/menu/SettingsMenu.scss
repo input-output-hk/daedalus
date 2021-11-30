@@ -16,7 +16,7 @@
       right: 134px;
     }
 
-    &.jp {
+    &:lang(ja-JP) {
       right: 108px;
     }
   }
