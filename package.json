@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -111,7 +111,7 @@
     "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "6.12.0",
     "eslint-formatter-pretty": "4.0.0",
-    "eslint-import-resolver-webpack": "^0.13.1",
+    "eslint-import-resolver-webpack": "0.13.1",
     "eslint-plugin-flowtype": "5.2.0",
     "eslint-plugin-import": "2.23.3",
     "eslint-plugin-jsx-a11y": "6.3.1",
@@ -182,7 +182,7 @@
     "cardano-js": "0.4.7",
     "cardano-launcher": "0.20210215.0",
     "cbor": "5.0.2",
-    "check-disk-space": "2.1.0",
+    "check-disk-space": "3.0.1",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
     "csv-stringify": "5.5.1",

@@ -159,10 +159,12 @@ export const NODE_UPDATE_TIMEOUT = isTest ? 10000 : 5 * 60 * 1000; // 5 minutes 
 
 export const DISK_SPACE_REQUIRED = 2 * 1073741274; // 2 GB | unit: bytes
 export const DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE = 10; // 10% of the available disk space
+export const DISK_SPACE_CHECK_DONT_BOTHER_ME_INTERVAL = Number.MAX_SAFE_INTEGER; // Maximum interval
 export const DISK_SPACE_CHECK_LONG_INTERVAL = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
 export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
 export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
+export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks pace
 
 export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
 
