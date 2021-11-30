@@ -8,6 +8,12 @@
 - Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
 - Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2735](https://github.com/input-output-hk/daedalus/pull/2735), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
 
+## 4.5.2
+
+### Fixes
+
+- Fixed Cardano Node starting/stopping issues
+
 ## 4.5.1
 
 ### Fixes
@@ -30,7 +36,7 @@
 - Fixed issues relating to minimum window size in Daedalus ([PR 2719](https://github.com/input-output-hk/daedalus/pull/2719))
 - Updated "Trezor T" image shown on the "Pair a hardware wallet device" dialog ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
 - Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
-- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685), [PR 2745](https://github.com/input-output-hk/daedalus/pull/2745))
+- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685), [PR 2744](https://github.com/input-output-hk/daedalus/pull/2744))
 
 ### Chores
 
