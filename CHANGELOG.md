@@ -4,6 +4,7 @@
 
 ## Chores
 
+- Updated `cardano-wallet` to version `2021-11-11` ([PR 2764](https://github.com/input-output-hk/daedalus/pull/2764))
 - Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
 
 ## 4.5.0
