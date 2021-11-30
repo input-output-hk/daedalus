@@ -183,7 +183,8 @@ function create_tsconfig() {
         --resolveJsonModule \
         --useDefineForClassFields \
         --noEmitOnError \
-        --jsx react
+        --jsx react \
+        --noFallthroughCasesInSwitch
         #moduleResolution node
 
     # EXCLUDE NODE_MODULES FROM TSC
@@ -377,7 +378,7 @@ function update_packager() {
     #update ./scripts/package.ts
     perl -i -pe "s/(const DEFAULT_OPTS)( = {)/\$1:any\$2/g" ./scripts/package.ts
     perl -i -pe "s/(packager\(opts),\s(cb\))/\$1).then(\$2.catch(e=>console.error(e))/g" ./scripts/package.ts
-    pause "update paackager"
+    pause "update packager"
 }
 
 function update_DelegationStepsConfirmationDialog() {
@@ -419,7 +420,6 @@ function replace_in_all_folders() {
 function convert_flow_code() {
     sed -i '25i (() => {' ./utils/create-news-verification-hashes/index.ts
     sed -i '93i })()' ./utils/create-news-verification-hashes/index.ts
-
     (
         for migration_folder in ${!MIGRATION_FOLDERS[@]}
             do
@@ -433,14 +433,9 @@ function convert_flow_code() {
 }
 
 function reignore() {
-    # One folder at a time or we run out of memory
-    ts-migrate migrate . --sources="./scripts/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
-    ts-migrate migrate . --sources="./source/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
-    ts-migrate migrate . --sources="./storybook/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
-    ts-migrate migrate . --sources="./tests/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
-    ts-migrate migrate . --sources="./translations/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
-    ts-migrate migrate . --sources="./utils/**/*.ts{,x}" --sources "node_modules/**/*.d.ts" --sources "./declarations.d.ts"
-    pause "ts-migration add @ts-ignore or @ts-expect-error"
+    # Need to use node script because CLI doesn't expose options
+    ts-node ./migrate.ts & spin_while_executing
+    pause "ts-migration add @ts-ignore"
 }
 
 migration_functions=(
@@ -455,15 +450,21 @@ migration_functions=(
     replace_in_all_folders
     convert_flow_code
     reignore # Litter codebase with ts-error or ts-ignore annotations
+    # MANUAL TASK UPDATE UTILS
 )
 
+function tsc_check() {
+    tsc --noEmit
+}
+
 function lockfile_fix() {
-    yarn remove ts-migrate babel-eslint @typescript-eslint/eslint-plugin
+    #yarn remove ts-migrate babel-eslint @typescript-eslint/eslint-plugin
     yarn lockfile:fix
     pause "lockfile fixed"
 }
 
 cleanup_functions=(
+    tsc_check
     lockfile_fix
 )
 
