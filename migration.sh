@@ -3,7 +3,7 @@
 : '
 This file is designed to assist in the migration of flow to typescript
 This script pauses after completion of each step so that incremental changes can be commited
-After this you will still need to complete the following steps:
+In order to maintain git histories, you MUST commit after the convert to TS/TSX step
 
 Sections of the codebase to migrate
 > Source
@@ -438,6 +438,18 @@ function reignore() {
     pause "ts-migration add @ts-ignore"
 }
 
+function update_api_importer_functions() {
+    (
+        find ./utils/api-importer -type f -name "*.ts" -or -name "*.tsx" |
+        while read line;
+        do
+           perl -0777 -i -pe "s/const(.*) = require\(('.*')\);/import\$1 from \$2/g" $line
+            perl -0777 -i -pe "s/((async )function\s?)([^\.])([\w|,|\s|-|_|\$]*)(.+?\{)((.|\n)*)\n\}\n\n((function\s?)([^\.])([\w|,|\s|-|_|\$]*)(.+?\{)((.|\n)*)\n\})\n\nmain\(\);/(\$2() => {\n\$8\$6\n})();/U" $line
+        done
+    ) & spin_while_executing
+    pause "update api importer functions"
+}
+
 function update_ts_ignore_annotations() {
     (
         for migration_folder in ${!MIGRATION_FOLDERS[@]}
@@ -463,6 +475,7 @@ migration_functions=(
     update_packager
     update_DelegationStepsConfirmationDialog
     replace_in_all_folders
+    update_api_importer_functions
     convert_flow_code
     reignore # Litter codebase with ts-error or ts-ignore annotations
     update_ts_ignore_annotations
