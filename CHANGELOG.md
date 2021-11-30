@@ -4,7 +4,7 @@
 
 ### Chores
 
-- Updated `cardano-wallet` to version `2021-11-11` ([PR 2764](https://github.com/input-output-hk/daedalus/pull/2764))
+- Updated `cardano-wallet` to version `2021-11-11` ([PR 2765](https://github.com/input-output-hk/daedalus/pull/2765))
 - Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
 - Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2735](https://github.com/input-output-hk/daedalus/pull/2735), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
 
