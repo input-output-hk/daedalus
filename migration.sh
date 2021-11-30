@@ -224,7 +224,7 @@ function update_eslintrc() {
 }
 
 function add_declaration_dts() {
-    touch declarations.d.ts
+    touch declaration.d.ts
     echo "declare module '*.svg' {
   const content: any;
   export default content;
@@ -261,7 +261,7 @@ declare global {
 }
 
 export {};
-" > declarations.d.ts
+" > declaration.d.ts
     pause "create declaration file"
 }
 
@@ -438,6 +438,21 @@ function reignore() {
     pause "ts-migration add @ts-ignore"
 }
 
+function update_ts_ignore_annotations() {
+    (
+        for migration_folder in ${!MIGRATION_FOLDERS[@]}
+            do
+                folder=${MIGRATION_FOLDERS[migration_folder]}
+                find ./$folder -type f -name "*.ts" -or -name "*.tsx" |
+                while read line;
+                do
+                    perl -0777 -i -pe "s/((>)(\n\s+)(\/\/( @ts-ignore.*))/\$1\$2{/*\$4 */}/g" $line
+                done
+            done
+    ) & spin_while_executing
+    pause "update @ts-ignore annotations in components"
+}
+
 migration_functions=(
     gulpfile_remove_flowRemoveTypes_references
     gulpfile_change_js_to_js_references
@@ -450,6 +465,7 @@ migration_functions=(
     replace_in_all_folders
     convert_flow_code
     reignore # Litter codebase with ts-error or ts-ignore annotations
+    update_ts_ignore_annotations
     # MANUAL TASK UPDATE UTILS
 )
 
