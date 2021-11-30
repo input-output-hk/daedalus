@@ -12967,13 +12967,13 @@
         "description": "Number of tokens title on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 14
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 15,
-          "line": 12
+          "line": 10
         }
       },
       {
@@ -12981,13 +12981,13 @@
         "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textTop",
         "start": {
           "column": 20,
-          "line": 17
+          "line": 15
         }
       },
       {
@@ -12995,13 +12995,13 @@
         "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textBottom",
         "start": {
           "column": 23,
-          "line": 22
+          "line": 20
         }
       },
       {
@@ -13009,13 +13009,13 @@
         "description": "\"Learn more\" label or button in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkLabel",
         "start": {
           "column": 22,
-          "line": 27
+          "line": 25
         }
       },
       {
@@ -13023,13 +13023,13 @@
         "description": "\"Learn more\" link URL in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 33
+          "line": 31
         }
       }
     ],
