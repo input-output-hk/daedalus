@@ -187,6 +187,7 @@ function create_tsconfig() {
         --noFallthroughCasesInSwitch
         #moduleResolution node
 
+    sed -i "101i,\"exclude\": [\"node_modules\"]" ./tsconfig.json
     # EXCLUDE NODE_MODULES FROM TSC
     pause '.tsconfig generation'
 }
@@ -438,13 +439,18 @@ function reignore() {
     pause "ts-migration add @ts-ignore"
 }
 
+function update_translation_runner() {
+    perl -0777 -i -pe "s/const(.*) = require\(('.*')\).*;/import\$1 from \$2;/g" ./translations/translation-runner.ts
+    pause "update translation runner"
+}
+
 function update_api_importer_functions() {
     (
         find ./utils/api-importer -type f -name "*.ts" -or -name "*.tsx" |
         while read line;
         do
-           perl -0777 -i -pe "s/const(.*) = require\(('.*')\);/import\$1 from \$2/g" $line
-            perl -0777 -i -pe "s/((async )function\s?)([^\.])([\w|,|\s|-|_|\$]*)(.+?\{)((.|\n)*)\n\}\n\n((function\s?)([^\.])([\w|,|\s|-|_|\$]*)(.+?\{)((.|\n)*)\n\})\n\nmain\(\);/(\$2() => {\n\$8\$6\n})();/U" $line
+            perl -0777 -i -pe "s/const(.*) = require\(('.*')\);/import\$1 from \$2;/g" $line
+            perl -0777 -i -pe "s/((async )function\s?)([^\.])([\w|,|\s|-|_|\\$]*)(.+?\{)((.|\n)*)\n\}\n\n((function\s?)([^\.])([\w|,|\s|-|_|\\$]*)(.+?\{)((.|\n)*)\n\})\n\nmain\(\);/(\$2() => {\n\$8\$6\n})();/" $line
         done
     ) & spin_while_executing
     pause "update api importer functions"
@@ -475,11 +481,11 @@ migration_functions=(
     update_packager
     update_DelegationStepsConfirmationDialog
     replace_in_all_folders
+    update_translation_runner
     update_api_importer_functions
     convert_flow_code
     reignore # Litter codebase with ts-error or ts-ignore annotations
     update_ts_ignore_annotations
-    # MANUAL TASK UPDATE UTILS
 )
 
 function tsc_check() {
