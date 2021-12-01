@@ -68,3 +68,22 @@
     cursor: default;
   }
 }
+
+.walletSortControls {
+  align-items: center;
+  bottom: $sidebar-button-height;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+  position: absolute;
+  width: 100%;
+
+  .walletSortOffset {
+    margin-right: 12px;
+  }
+}
+
+.walletSearchContainer {
+  margin-bottom: 10px;
+  padding: 0 20px;
+}

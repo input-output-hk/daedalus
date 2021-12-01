@@ -206,6 +206,7 @@
     "glob": "7.1.6",
     "graceful-fs": "4.2.4",
     "gulp": "4.0.2",
+    "highlight-words": "1.2.0",
     "history": "4.10.1",
     "humanize-duration": "3.23.1",
     "inquirer": "7.3.3",

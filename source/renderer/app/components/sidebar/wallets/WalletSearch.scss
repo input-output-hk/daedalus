@@ -1,0 +1,71 @@
+.component {
+  align-items: center;
+
+  border-bottom: 1px solid rgba(250, 251, 252, 0.1);
+  display: flex;
+  position: relative;
+
+  &:focus,
+  &:active,
+  &:focus-within {
+    border-bottom-color: rgba(250, 251, 252, 0.5);
+
+    .searchIcon {
+      path {
+        fill: var(--theme-sidebar-menu-add-button-text-color);
+      }
+    }
+  }
+}
+
+.searchIcon {
+  bottom: 6px;
+  position: absolute;
+  svg {
+    height: 15px;
+    width: 15px;
+  }
+
+  &.highlight {
+    path {
+      fill: var(--theme-sidebar-menu-add-button-text-color);
+    }
+  }
+}
+
+.input {
+  border-radius: 4px;
+
+  input {
+    background: none;
+    border: none;
+    color: var(--theme-sidebar-menu-add-button-text-color);
+
+    padding-bottom: 6px;
+    padding-left: 25px;
+
+    &:focus {
+      border-bottom-color: rgba(250, 251, 252, 0.5);
+    }
+  }
+}
+
+.clearButton {
+  border-radius: 3px;
+  bottom: 4px;
+  cursor: pointer;
+  height: 28px;
+  position: absolute;
+  right: 0;
+  width: 28px;
+  &:hover {
+    opacity: 0.8;
+  }
+  svg {
+    height: 8px;
+    width: 8px;
+    polygon {
+      fill: var(--theme-bordered-box-text-color);
+    }
+  }
+}

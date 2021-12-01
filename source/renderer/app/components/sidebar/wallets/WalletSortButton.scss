@@ -1,0 +1,63 @@
+.walletSortButtonContainer {
+  position: relative;
+
+  .walletSortButton {
+    align-items: center;
+    background-color: var(--theme-sidebar-sort-button-background-color);
+    display: flex;
+    font-size: 11px;
+    height: 22px;
+    line-height: 1.45;
+    padding: 3px 8px;
+    width: auto;
+
+    &.walletSortButtonActive,
+    &:hover {
+      background-color: var(
+        --theme-sidebar-sort-button-active-background-color
+      );
+    }
+  }
+}
+
+.walletSortButtonActive {
+  opacity: 1;
+}
+
+.walletSortOrderArrowContainer {
+  align-items: center;
+  background-color: var(--theme-sidebar-menu-background-color);
+
+  border-radius: 4px;
+
+  display: flex;
+  height: 12px;
+  justify-content: center;
+  position: absolute;
+  right: -6px;
+  top: -2px;
+
+  width: 12px;
+  z-index: 1;
+}
+
+.walletSortOrderArrow {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+
+  > svg {
+    height: 10px;
+    width: 6px;
+
+    path {
+      stroke: var(--theme-sidebar-menu-add-button-text-color);
+    }
+  }
+}
+
+.walletSortOrderArrowAsc {
+  transform: rotate(-180deg);
+}

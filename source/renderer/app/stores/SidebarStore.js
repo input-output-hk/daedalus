@@ -1,15 +1,26 @@
 // @flow
 import { action, computed, observable } from 'mobx';
-import { get } from 'lodash';
-import Store from './lib/Store';
+import { get, orderBy } from 'lodash';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
-import type { SidebarWalletType } from '../types/sidebarTypes';
+import type {
+  SidebarWalletType,
+  WalletSortByOptions,
+  WalletSortOrderOptions,
+} from '../types/sidebarTypes';
+import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
+import type Wallet from '../domains/Wallet';
+import Store from './lib/Store';
 
 export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
+  @observable walletSortConfig: {
+    sortBy: WalletSortByOptions,
+    sortOrder: WalletSortOrderOptions,
+  } = { sortBy: WalletSortBy.Date, sortOrder: WalletSortOrder.Desc };
+  @observable searchValue: string = '';
 
   setup() {
     const { sidebar: sidebarActions } = this.actions;
@@ -19,6 +30,8 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
+    sidebarActions.changeWalletSortType.listen(this._onChangeWalletSortType);
+    sidebarActions.searchValueUpdated.listen(this._onSearchValueUpdated);
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
       this._syncSidebarItemsWithShelleyActivation,
@@ -37,7 +50,8 @@ export default class SidebarStore extends Store {
       hardwareWallets,
     } = this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
-    return wallets.all.map((wallet) => {
+    const sortedWallets = this._sortWallets(wallets.all);
+    return sortedWallets.map((wallet) => {
       const isHardwareWalletDisconnected = get(
         hardwareWalletsConnectionData,
         [wallet.id, 'disconnected'],
@@ -61,6 +75,57 @@ export default class SidebarStore extends Store {
       };
     });
   }
+
+  _sortWallets = (wallets: Wallet[]): Wallet[] => {
+    const { sortBy, sortOrder } = this.walletSortConfig;
+
+    type IndexedWallet = { wallet: Wallet, index: number };
+
+    const walletsWithIndex: IndexedWallet[] = wallets.map(
+      (w: Wallet, index: number) => ({ wallet: w, index })
+    );
+
+    const amountWeight = ({ wallet }: IndexedWallet) =>
+      wallet.amount.toNumber();
+
+    const creationDateWeight = ({ index }: IndexedWallet) => index;
+
+    const nameWeight = ({ wallet }: IndexedWallet) => wallet.name;
+
+    const doOrderBy = (fn: Array<(fn: IndexedWallet) => string | number>) => {
+      return orderBy(
+        walletsWithIndex,
+        fn,
+        fn.map(() => sortOrder)
+      ).map(({ wallet }) => wallet);
+    };
+
+    switch (sortBy) {
+      case WalletSortBy.Date:
+        return doOrderBy([creationDateWeight]);
+      case WalletSortBy.Balance:
+        return doOrderBy([amountWeight, nameWeight, creationDateWeight]);
+      case WalletSortBy.Name:
+        return doOrderBy([nameWeight, amountWeight, creationDateWeight]);
+      case WalletSortBy.None:
+      default:
+        return wallets;
+    }
+  };
+
+  @action _onChangeWalletSortType = ({
+    sortBy,
+    sortOrder,
+  }: {
+    sortBy: WalletSortByOptions,
+    sortOrder: WalletSortOrderOptions,
+  }) => {
+    this.walletSortConfig = { sortOrder, sortBy };
+  };
+
+  @action _onSearchValueUpdated = (searchValue: string) => {
+    this.searchValue = searchValue;
+  };
 
   @action _configureCategories = () => {
     const {
