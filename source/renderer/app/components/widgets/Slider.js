@@ -104,9 +104,9 @@ export default class Slider extends Component<Props, State> {
         </div>
         <RcSlider
           {...rest}
-          onBeforeChange={(e) => this.setState({ initialValue: e })}
-          onAfterChange={(e) => {
-            if (e !== this.state.initialValue && rest.onAfterChange) {
+          onBeforeChange={(e: number) => this.setState({ initialValue: e })}
+          onAfterChange={(e: number) => {
+            if (e !== this.state.initialValue && !!rest.onAfterChange) {
               rest.onAfterChange(e);
             }
           }}
