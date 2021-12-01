@@ -48,7 +48,9 @@ export default class App extends Component<{
       !isNodeStopping && // Daedalus is not shutting down
       !isNodeStopped; // Daedalus is not shutting down
 
-    document.documentElement.lang = locale;
+    if (document.documentElement) {
+      document.documentElement.lang = locale;
+    }
 
     return (
       <Fragment>
