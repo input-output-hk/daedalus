@@ -5,10 +5,16 @@ import { intlShape } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import type { Locale } from '../../../../../common/types/locales.types';
 import styles from './VotingInfo.scss';
-import CurrentFund from './CurrentFund';
+import UpcomingFund from './UpcomingFund';
+import VotingOpen from './VotingOpen';
 import Headline from './Headline';
 import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
+import {
+  VOTING_SNAPSHOT_DATE,
+  VOTING_CAST_START_DATE,
+  VOTING_CAST_END_DATE,
+} from '../../../config/votingConfig';
 
 type Props = {
   currentLocale: Locale,
@@ -40,11 +46,10 @@ export default class VotingInfo extends Component<Props> {
           <hr className={styles.separator} />
           <div className={styles.bottomContent}>
             <div className={styles.leftContent}>
-              <CurrentFund
+              <VotingOpen
                 currentLocale={currentLocale}
                 currentDateFormat={currentDateFormat}
                 currentTimeFormat={currentTimeFormat}
-                onExternalLinkClick={onExternalLinkClick}
               />
               <div className={styles.appStoreSpacing}>
                 <AppStore

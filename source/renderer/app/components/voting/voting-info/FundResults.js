@@ -2,7 +2,7 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import {
-  VOTING_REGISTRATION_CAST_END_DATE,
+  VOTING_CAST_END_DATE,
   CURRENT_VOTING_FUND_NUMBER,
 } from '../../../config/votingConfig';
 import {
@@ -12,8 +12,8 @@ import {
 import type { Locale } from '../../../../../common/types/locales.types';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import type { Intl } from '../../../types/i18nTypes';
-import styles from './CurrentFund.scss';
-import { messages } from './CurrentFund.messages';
+import styles from './CurrentPhase.scss';
+import { messages } from './FundResults.messages';
 
 type Props = {
   currentLocale: Locale,
@@ -23,38 +23,38 @@ type Props = {
   intl: Intl,
 };
 
-function CurrentFund({
+function FundResults({
   currentLocale,
   currentDateFormat,
   currentTimeFormat,
   onExternalLinkClick,
   intl,
 }: Props) {
-  const currentFundEndDate = formattedDateTime(
-    VOTING_REGISTRATION_CAST_END_DATE,
-    {
-      currentLocale,
-      ...mapToLongDateTimeFormat({
-        currentLocale,
-        currentDateFormat,
-        currentTimeFormat,
-      }),
-    }
-  );
+  const mappedFormats = mapToLongDateTimeFormat({
+    currentLocale,
+    currentDateFormat,
+    currentTimeFormat,
+  });
+
+  const endDate = formattedDateTime(VOTING_CAST_END_DATE, {
+    currentLocale,
+    currentDateFormat: mappedFormats.currentDateFormat,
+    currentTimeFormat: mappedFormats.currentTimeFormat,
+  });
 
   return (
-    <section className={styles.component}>
+    <section className={styles.root}>
       <h1 className={styles.fundName}>
-        {intl.formatMessage(messages.name, {
+        {intl.formatMessage(messages.currentFundName, {
           currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
 
-      <div className={styles.endDateBlock}>
-        <span className={styles.endDateText}>
-          {intl.formatMessage(messages.headingForEndDate)}
+      <div className={styles.block}>
+        <span className={styles.label}>
+          {intl.formatMessage(messages.date)}
         </span>
-        <span className={styles.endDate}>{currentFundEndDate}</span>
+        <span className={styles.value}>{endDate}</span>
       </div>
 
       <ExternalLinkButton
@@ -67,4 +67,4 @@ function CurrentFund({
   );
 }
 
-export default injectIntl(CurrentFund);
+export default injectIntl(FundResults);

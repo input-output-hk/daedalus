@@ -177,7 +177,6 @@ storiesOf('Voting|Voting Info', module)
         currentLocale={LANGUAGE_OPTIONS[0].value}
         currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
         currentTimeFormat={TIME_OPTIONS[0].value}
-        isRegistrationEnded={boolean('isRegistrationEnded', false)}
         onRegisterToVoteClick={action('onRegisterToVoteClick')}
         onExternalLinkClick={action('onExternalLinkClick')}
       />

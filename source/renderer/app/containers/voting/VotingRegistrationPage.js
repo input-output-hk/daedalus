@@ -28,9 +28,8 @@ export default class VotingRegistrationPage extends Component<Props> {
   };
 
   getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
-    const { app, networkStatus, wallets, voting, profile } = this.props.stores;
+    const { app, networkStatus, wallets, profile } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
-    const { isRegistrationEnded } = voting;
     const { openExternalLink } = app;
 
     if (
@@ -61,7 +60,6 @@ export default class VotingRegistrationPage extends Component<Props> {
         currentLocale={currentLocale}
         currentDateFormat={currentDateFormat}
         currentTimeFormat={currentTimeFormat}
-        isRegistrationEnded={isRegistrationEnded}
         onRegisterToVoteClick={() =>
           this.props.actions.dialogs.open.trigger({
             dialog: VotingRegistrationDialog,

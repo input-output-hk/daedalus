@@ -11,11 +11,14 @@ import {
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
+  // VOTING_SNAPSHOT_DATE,
+  // VOTING_CAST_START_DATE,
+  // VOTING_CAST_END_DATE,
+  // VOTING_RESULTS_DATE,
+  VOTING_PHASE_CHECK_INTERVAL,
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   NEXT_VOTING_FUND_NUMBER,
-  VOTING_REGISTRATION_END_DATE,
-  VOTING_REGISTRATION_END_CHECK_INTERVAL,
 } from '../config/votingConfig';
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
@@ -38,6 +41,8 @@ export type VotingDataType = {
   absoluteSlotNumber: number,
 };
 
+export type VotingPhase = 'Snapshot' | 'Voting' | 'Tallying' | 'Results';
+
 export default class VotingStore extends Store {
   @observable registrationStep: number = 1;
   @observable selectedWalletId: ?string = null;
@@ -48,10 +53,10 @@ export default class VotingStore extends Store {
   @observable votingRegistrationKey: ?VotingRegistrationKeyType = null;
   @observable qrCode: ?string = null;
   @observable isConfirmationDialogOpen: boolean = false;
-  @observable isRegistrationEnded: boolean = false;
+  @observable votingPhase: VotingPhase = 'Snapshot';
 
   transactionPollingInterval: ?IntervalID = null;
-  registrationEndCheckInterval: ?IntervalID = null;
+  votingPhaseInterval: ?IntervalID = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -66,7 +71,7 @@ export default class VotingStore extends Store {
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
-    this._initializeRegistrationEndCheckInterval();
+    this._initializeVotingPhaseInterval();
   }
 
   // REQUESTS
@@ -127,8 +132,7 @@ export default class VotingStore extends Store {
     this.signMetadataRequest.reset();
     if (this.transactionPollingInterval)
       clearInterval(this.transactionPollingInterval);
-    if (this.registrationEndCheckInterval)
-      clearInterval(this.registrationEndCheckInterval);
+    if (this.votingPhaseInterval) clearInterval(this.votingPhaseInterval);
   };
 
   @action _startTransactionPolling = () => {
@@ -139,12 +143,14 @@ export default class VotingStore extends Store {
     }, VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL);
   };
 
-  @action _initializeRegistrationEndCheckInterval = () => {
-    if (this.registrationEndCheckInterval)
-      clearInterval(this.registrationEndCheckInterval);
-    this.registrationEndCheckInterval = setInterval(() => {
-      this._checkVotingRegistrationEnd();
-    }, VOTING_REGISTRATION_END_CHECK_INTERVAL);
+  @action _initializeVotingPhaseInterval = () => {
+    if (this.votingPhaseInterval) {
+      clearInterval(this.votingPhaseInterval);
+    }
+
+    this.votingPhaseInterval = setInterval(() => {
+      this._checkVotingPhase();
+    }, VOTING_PHASE_CHECK_INTERVAL);
   };
 
   @action _setVotingRegistrationKey = (value: VotingRegistrationKeyType) => {
@@ -433,8 +439,8 @@ export default class VotingStore extends Store {
     }
   };
 
-  @action _checkVotingRegistrationEnd = () => {
-    this.isRegistrationEnded = new Date() >= VOTING_REGISTRATION_END_DATE;
+  @action _checkVotingPhase = () => {
+    this.votingPhase = 'Snapshot';
   };
 
   _generateVotingRegistrationKey = async () => {

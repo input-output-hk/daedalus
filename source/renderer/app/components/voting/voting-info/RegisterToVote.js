@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import {
-  VOTING_REGISTRATION_END_DATE,
+  VOTING_NEW_SNAPSHOT_DATE,
   NEXT_VOTING_FUND_NUMBER,
 } from '../../../config/votingConfig';
 import {
@@ -34,7 +34,7 @@ function RegisterToVote({
   const [step1, setStep1] = useState(false);
   const [step2, setStep2] = useState(false);
   const canRegister = step1 && step2;
-  const castEndDate = formattedDateTime(VOTING_REGISTRATION_END_DATE, {
+  const castEndDate = formattedDateTime(VOTING_NEW_SNAPSHOT_DATE, {
     currentLocale,
     ...mapToLongDateTimeFormat({
       currentLocale,
@@ -54,7 +54,7 @@ function RegisterToVote({
         {intl.formatMessage(messages.dateLabel)}
       </span>
       <span className={styles.date}>{castEndDate}</span>
-      <div className={styles.separator} />
+      <hr />
       <span className={styles.stepsTitle}>
         {intl.formatMessage(messages.stepsTitle)}
       </span>

@@ -1,13 +1,12 @@
 @import '../votingConfig';
 
-.component {
+.root {
   @extend %regularText;
   align-items: start;
   background-color: var(--theme-button-flat-background-color);
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  height: 175px;
   padding: 20px;
   width: 271px;
 
@@ -16,23 +15,32 @@
     font-family: var(--font-bold);
     font-size: 18px;
     line-height: 1.33;
+    margin-bottom: 11px;
   }
 
-  .endDateBlock {
+  .block {
     align-items: start;
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
-    margin-top: 11px;
 
-    .endDateText {
+    .label {
       color: var(--theme-button-flat-text-color);
       display: block;
     }
 
-    .endDate {
+    .value {
       color: var(--theme-button-flat-text-color);
       font-family: var(--font-medium);
     }
+
+    & + .block {
+      margin-top: 11px;
+    }
+  }
+
+  .rectangle {
+    background-color: var(--theme-voting-separator-color);
+    height: 1px;
+    opacity: 0.15;
   }
 }
