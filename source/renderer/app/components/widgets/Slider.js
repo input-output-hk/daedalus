@@ -45,19 +45,20 @@ type Props = {
   ariaValueTextFormatterForHandle?: Function,
 };
 
-export const Slider = observer((props: Props) => {
-  const [initialValue, setInitialValue] = useState<number | null>(null);
-  const {
-    showTooltip,
-    minTooltip,
-    maxTooltip,
-    minDisplayValue,
-    maxDisplayValue,
-    displayValue,
-    showRawValue,
-    ...rest
-  } = props;
-  const { min, max, value } = rest;
+type State = {
+  initialValue: number,
+};
+
+@observer
+export default class Slider extends Component<Props, State> {
+  static defaultProps = {
+    min: 0,
+    max: 100,
+    value: 0,
+  };
+  state: State = {
+    initialValue: 0,
+  };
 
   const valueMarkLeftPosition =
     max === min ? `0` : `${((value - min) / (max - min)) * 100}%`;
@@ -87,25 +88,19 @@ export const Slider = observer((props: Props) => {
             shortNumber(maxDisplayValue || max)
           )}
         </div>
-      </div>
-      <RcSlider
-        {...rest}
-        onBeforeChange={(e: number) => {
-          if (!initialValue) setInitialValue(e);
-        }}
-        onChange={(e: number) => {
-          rest.onChange(e);
-        }}
-        onAfterChange={(e: number) => {
-          if (e !== initialValue && !!rest.onAfterChange) {
-            rest.onAfterChange(e);
-          }
-          setInitialValue(null);
-        }}
-      />
-      <div className={styles.lowerMarks}>
-        <div className={styles.valueMark} style={valueMarkStyle}>
-          {formattedValue}
+        <RcSlider
+          {...rest}
+          onBeforeChange={(e) => this.setState({ initialValue: e })}
+          onAfterChange={(e) => {
+            if (e !== this.state.initialValue && rest.onAfterChange) {
+              rest.onAfterChange(e);
+            }
+          }}
+        />
+        <div className={styles.lowerMarks}>
+          <div className={styles.valueMark} style={valueMarkStyle}>
+            {formattedValue}
+          </div>
         </div>
       </div>
     </div>
