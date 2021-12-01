@@ -196,12 +196,12 @@ class FilterDialog extends Component<Props> {
         fromAmount: {
           type: 'number',
           label: '',
-          value: this.getFromAmountValue(fromAmount),
+          value: fromAmount,
         },
         toAmount: {
           type: 'number',
           label: '',
-          value: this.getToAmountValue(toAmount),
+          value: toAmount,
         },
       },
     });
