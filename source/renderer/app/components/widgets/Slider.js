@@ -45,12 +45,19 @@ type Props = {
   ariaValueTextFormatterForHandle?: Function,
 };
 
+type State = {
+  initialValue: number,
+};
+
 @observer
-export default class Slider extends Component<Props> {
+export default class Slider extends Component<Props, State> {
   static defaultProps = {
     min: 0,
     max: 100,
     value: 0,
+  };
+  state: State = {
+    initialValue: 0,
   };
 
   render() {
@@ -95,7 +102,15 @@ export default class Slider extends Component<Props> {
             )}
           </div>
         </div>
-        <RcSlider {...rest} />
+        <RcSlider
+          {...rest}
+          onBeforeChange={(e) => this.setState({ initialValue: e })}
+          onAfterChange={(e) => {
+            if (e !== this.state.initialValue && rest.onAfterChange) {
+              rest.onAfterChange(e);
+            }
+          }}
+        />
         <div className={styles.lowerMarks}>
           <div className={styles.valueMark} style={valueMarkStyle}>
             {formattedValue}
