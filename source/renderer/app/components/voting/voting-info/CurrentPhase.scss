@@ -38,7 +38,9 @@
     }
   }
 
-  .resultsButton {
-    margin-top: 20px;
+  .rectangle {
+    background-color: var(--theme-voting-separator-color);
+    height: 1px;
+    opacity: 0.15;
   }
 }

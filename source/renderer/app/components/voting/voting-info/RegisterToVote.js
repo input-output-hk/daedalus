@@ -57,7 +57,7 @@ function RegisterToVote({
         {intl.formatMessage(messages.dateLabel)}
       </span>
       <span className={styles.date}>{castEndDate}</span>
-      <hr className={votingStyles.separator} />
+      <hr />
       <span className={styles.stepsTitle}>
         {intl.formatMessage(messages.stepsTitle)}
       </span>

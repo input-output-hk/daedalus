@@ -11,9 +11,10 @@ import {
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
-  VOTING_CAST_START_DATE,
-  VOTING_CAST_END_DATE,
-  VOTING_RESULTS_DATE,
+  // VOTING_SNAPSHOT_DATE,
+  // VOTING_CAST_START_DATE,
+  // VOTING_CAST_END_DATE,
+  // VOTING_RESULTS_DATE,
   VOTING_PHASE_CHECK_INTERVAL,
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
@@ -40,13 +41,7 @@ export type VotingDataType = {
   absoluteSlotNumber: number,
 };
 
-export type FundPhase = 'snapshot' | 'voting' | 'tallying' | 'results';
-export const FundPhases: EnumMap<string, FundPhase> = {
-  SNAPSHOT: 'snapshot',
-  VOTING: 'voting',
-  TALLYING: 'tallying',
-  RESULTS: 'results',
-};
+export type VotingPhase = 'Snapshot' | 'Voting' | 'Tallying' | 'Results';
 
 export default class VotingStore extends Store {
   @observable registrationStep: number = 1;
@@ -58,10 +53,10 @@ export default class VotingStore extends Store {
   @observable votingRegistrationKey: ?VotingRegistrationKeyType = null;
   @observable qrCode: ?string = null;
   @observable isConfirmationDialogOpen: boolean = false;
-  @observable fundPhase: FundPhase = FundPhases.SNAPSHOT;
+  @observable votingPhase: VotingPhase = 'Snapshot';
 
   transactionPollingInterval: ?IntervalID = null;
-  fundPhaseInterval: ?IntervalID = null;
+  votingPhaseInterval: ?IntervalID = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -76,7 +71,7 @@ export default class VotingStore extends Store {
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
-    this._initializeFundPhaseInterval();
+    this._initializeVotingPhaseInterval();
   }
 
   // REQUESTS
@@ -137,10 +132,7 @@ export default class VotingStore extends Store {
     this.signMetadataRequest.reset();
     if (this.transactionPollingInterval) {
       clearInterval(this.transactionPollingInterval);
-    }
-    if (this.fundPhaseInterval) {
-      clearInterval(this.fundPhaseInterval);
-    }
+    if (this.votingPhaseInterval) clearInterval(this.votingPhaseInterval);
   };
 
   @action _startTransactionPolling = () => {
@@ -151,13 +143,13 @@ export default class VotingStore extends Store {
     }, VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL);
   };
 
-  @action _initializeFundPhaseInterval = () => {
-    if (this.fundPhaseInterval) {
-      clearInterval(this.fundPhaseInterval);
+  @action _initializeVotingPhaseInterval = () => {
+    if (this.votingPhaseInterval) {
+      clearInterval(this.votingPhaseInterval);
     }
 
-    this.fundPhaseInterval = setInterval(() => {
-      this._checkFundPhase(new Date());
+    this.votingPhaseInterval = setInterval(() => {
+      this._checkVotingPhase();
     }, VOTING_PHASE_CHECK_INTERVAL);
   };
 
@@ -447,19 +439,8 @@ export default class VotingStore extends Store {
     }
   };
 
-  @action _checkFundPhase = (now: Date) => {
-    const phaseValidation = {
-      [FundPhases.SNAPSHOT]: (date: Date) => date < VOTING_CAST_START_DATE,
-      [FundPhases.VOTING]: (date: Date) =>
-        now >= VOTING_CAST_START_DATE && date < VOTING_CAST_END_DATE,
-      [FundPhases.TALLYING]: (date: Date) =>
-        now >= VOTING_CAST_END_DATE && date < VOTING_RESULTS_DATE,
-      [FundPhases.RESULTS]: (date: Date) => date >= VOTING_RESULTS_DATE,
-    };
-    this.fundPhase =
-      Object.keys(FundPhases)
-        .map((key) => FundPhases[key])
-        .find((phase) => phaseValidation[phase](now)) || FundPhases.SNAPSHOT;
+  @action _checkVotingPhase = () => {
+    this.votingPhase = 'Snapshot';
   };
 
   _generateVotingRegistrationKey = async () => {
