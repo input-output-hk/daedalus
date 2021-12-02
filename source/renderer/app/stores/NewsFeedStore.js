@@ -16,7 +16,7 @@ import type {
   MarkNewsAsReadResponse,
 } from '../api/news/types';
 
-const { isTest, version } = global.environment;
+const { isTest, version, isDev } = global.environment;
 
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'DOWNLOAD_LOGS',
@@ -43,7 +43,7 @@ export default class NewsFeedStore extends Store {
   );
   @observable openedAlert: ?News.News = null;
   @observable fetchLocalNews: boolean = false;
-  @observable rawNewsJsonQA: GetNewsResponse;
+  @observable rawNewsJsonQA: ?GetNewsResponse = null;
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;
@@ -64,7 +64,7 @@ export default class NewsFeedStore extends Store {
   @action getNews = async (params?: { isInit: boolean }) => {
     let rawNews;
     try {
-      if (this.rawNewsJsonQA) {
+      if (this.rawNewsJsonQA && isDev) {
         rawNews = this.rawNewsJsonQA;
       } else {
         rawNews = await this.getNewsRequest.execute().promise;
@@ -224,25 +224,25 @@ export default class NewsFeedStore extends Store {
     isAutomaticUpdateTest: ?boolean,
     appVersion?: string,
   }) => {
-    const { isAutomaticUpdateTest, appVersion } = params;
+    if (isDev) {
+      const { isAutomaticUpdateTest, appVersion } = params;
 
-    // TODO: Restrict to `isDev` env once tested
+      // Fake appVersion for news ONLY so we can check multiple cases
+      global.environment.version = appVersion || version;
 
-    // Fake appVersion for news ONLY so we can check multiple cases
-    global.environment.version = appVersion || version;
-
-    if (this.pollingNewsIntervalId) {
-      clearInterval(this.pollingNewsIntervalId);
-      this.pollingNewsIntervalId = null;
+      if (this.pollingNewsIntervalId) {
+        clearInterval(this.pollingNewsIntervalId);
+        this.pollingNewsIntervalId = null;
+      }
+      let rawNewsJsonQA;
+      if (isAutomaticUpdateTest) {
+        rawNewsJsonQA = require('../config/newsfeed-files/news-automatic-update.dummy.json');
+      } else {
+        rawNewsJsonQA = require('../config/news.dummy.json');
+      }
+      this.rawNewsJsonQA = rawNewsJsonQA;
+      this.getNews({ isInit: true });
     }
-    let rawNewsJsonQA;
-    if (isAutomaticUpdateTest) {
-      rawNewsJsonQA = require('../config/newsfeed-files/news-automatic-update.dummy.json');
-    } else {
-      rawNewsJsonQA = require('../config/news.dummy.json');
-    }
-    this.rawNewsJsonQA = rawNewsJsonQA;
-    this.getNews({ isInit: true });
   };
 
   @computed get newsFeedData(): News.NewsCollection {
@@ -250,7 +250,7 @@ export default class NewsFeedStore extends Store {
     const readNews = this.getReadNewsRequest.result;
     let news = [];
 
-    if (this.getNewsRequest.wasExecuted || this.rawNewsJsonQA) {
+    if (this.getNewsRequest.wasExecuted || (this.rawNewsJsonQA && isDev)) {
       news = map(this.rawNews, (item) => {
         // Match old and new newsfeed JSON format
         const mainIdentificator = item.id || item.date;
