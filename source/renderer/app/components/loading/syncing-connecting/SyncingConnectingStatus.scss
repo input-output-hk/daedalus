@@ -15,16 +15,13 @@
 .headline {
   font-family: var(--font-regular);
   font-size: 18px;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
 
 .description {
-  color: var(--theme-connecting-description-color);
   font-family: var(--font-regular);
   font-size: 16px;
-  line-height: 22px;
-  margin: 0 auto;
-  max-width: 580px;
+  line-height: 1.38;
 }
 
 .connecting {

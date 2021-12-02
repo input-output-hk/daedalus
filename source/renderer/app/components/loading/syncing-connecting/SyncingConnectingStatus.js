@@ -18,7 +18,7 @@ const messages = defineMessages({
   startingDescription: {
     id: 'loading.screen.startingCardanoDescription',
     defaultMessage:
-      '!!!This process validates the integrity of local blockchain data.',
+      '!!!This process validates the integrity of local blockchain data and could take several minutes.',
     description: 'Message "Starting Cardano node" on the loading screen.',
   },
   stopping: {
@@ -29,7 +29,7 @@ const messages = defineMessages({
   stoppingDescription: {
     id: 'loading.screen.stoppingCardanoDescription',
     defaultMessage:
-      '!!!This process updates the databases and could take several minutes.<br />To preserve data integrity, please wait until this process is complete.',
+      '!!!This process closes the databases and could take several minutes. To preserve data integrity, please allow it to complete.',
     description: 'Message "Stopping Cardano node" on the loading screen.',
   },
   stopped: {
@@ -131,10 +131,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isConnected,
     } = this.props;
     let connectingMessage;
-    if (isConnected) {
-      connectingMessage = messages.loadingWalletData;
-      return { connectingMessage };
-    }
     let connectingDescription;
     switch (cardanoNodeState) {
       case null:
@@ -191,6 +187,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       default:
         return messages.validatingChunk;
     }
+    return { connectingMessage, connectingDescription };
   };
 
   render() {
@@ -228,13 +225,11 @@ export default class SyncingConnectingStatus extends Component<Props> {
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
           {intl.formatMessage(connectingMessage, {
-            verificationProgress: blockSync.progress,
+            verificationProgress,
           })}
         </h1>
         <div className={styles.description}>
-          {connectingDescription && (
-            <FormattedHTMLMessage {...connectingDescription} />
-          )}
+          {connectingDescription && intl.formatMessage(connectingDescription)}
         </div>
       </div>
     );
