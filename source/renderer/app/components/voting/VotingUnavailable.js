@@ -77,55 +77,17 @@ export default class VotingUnavailable extends Component<Props> {
       onExternalLinkClick,
     } = this.props;
 
-    const heading = intl.formatMessage(messages.heading);
-    const paragraph1 = intl.formatMessage(messages.paragraph1, {
-      currentFundNumber: CURRENT_VOTING_FUND_NUMBER,
-      nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
-    });
-    const link1 = (
-      <Link
-        className={styles.link}
-        label={intl.formatMessage(messages.link1Text)}
-        onClick={() =>
-          onExternalLinkClick(intl.formatMessage(messages.link1Url))
-        }
-      />
-    );
-    const link2 = (
-      <Link
-        className={styles.link}
-        label={intl.formatMessage(messages.link2Text)}
-        onClick={() =>
-          onExternalLinkClick(intl.formatMessage(messages.link2Url))
-        }
-      />
-    );
-
     return (
       <div className={styles.component}>
-        {isVotingRegistrationAvailable ? (
-          <>
-            <LoadingSpinner big />
-            <div className={styles.description}>
-              <FormattedHTMLMessage
-                {...globalMessages.featureUnavailableWhileSyncing}
-                values={{
-                  syncPercentage: new BigNumber(syncPercentage).toFormat(2),
-                }}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <h1>{heading}</h1>
-            <p>{paragraph1}</p>
-            <FormattedMessage
-              {...messages.paragraph2}
-              values={{ link1, link2 }}
-              tagName="p"
-            />
-          </>
-        )}
+        <LoadingSpinner big />
+        <div className={styles.description}>
+          <FormattedHTMLMessage
+            {...globalMessages.featureUnavailableWhileSyncing}
+            values={{
+              syncPercentage: new BigNumber(syncPercentage).toFormat(2),
+            }}
+          />
+        </div>
       </div>
     );
   }

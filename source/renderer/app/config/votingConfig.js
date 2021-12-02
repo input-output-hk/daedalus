@@ -1,7 +1,6 @@
 // @flow
 const { isDev } = global.environment;
 
-export const IS_VOTING_REGISTRATION_AVAILABLE = true;
 export const CURRENT_VOTING_FUND_NUMBER = 7;
 export const NEXT_VOTING_FUND_NUMBER = CURRENT_VOTING_FUND_NUMBER + 1;
 export const VOTING_REGISTRATION_MIN_WALLET_FUNDS = 500; // 500 ADA | unit: ADA
