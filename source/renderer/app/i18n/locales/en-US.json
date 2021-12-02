@@ -240,7 +240,7 @@
   "loading.screen.stoppedCardanoMessage": "Cardano node stopped",
   "loading.screen.stoppingCardanoDescription": "This process updates the databases and could take several minutes.<br />To preserve data integrity, please wait until this process is complete.",
   "loading.screen.stoppingCardanoMessage": "Stopping Cardano node",
-  "loading.screen.stoppingCardanoDescription": "This process closes the databases and could take several minutes. To preserve data integrity, please allow it to complete.",
+  "loading.screen.stoppingCardanoDescription": "This process closes the databases and could take several minutes.<br />To preserve data integrity, please allow it to complete.",
   "loading.screen.unrecoverableCardanoMessage": "Unable to start Cardano node. Please submit a support request.",
   "loading.screen.updatedCardanoMessage": "Cardano node updated",
   "loading.screen.updatingCardanoMessage": "Updating Cardano node",
