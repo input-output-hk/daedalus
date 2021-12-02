@@ -142,16 +142,10 @@ export async function CardanoWalletLauncher(
       });
 
       // RTS flags:
-      // 1) "-H4G -M6553M -c70"  16.0% peak RSS reduction and a sub-percentile CPU regression
-      // 2) "-H4G -M6553M"       18.5% peak RSS reduction and a second-best CPU regression
-      if (!!rtsFlags && rtsFlags?.length > 0) {
-        nodeConfig.rtsOpts = rtsFlags;
-        logger.info('Launching Cardano Node with RTS flags', {
-          rtsFlags,
-        });
-      } else {
-        logger.info('Launching Cardano Node without RTS flags');
-      }
+      nodeConfig.rtsOpts = [];
+      logger.info('Launching Cardano Node with RTS flags', {
+        rtsFlags: nodeConfig.rtsOpts,
+      });
 
       merge(launcherConfig, {
         nodeConfig,
