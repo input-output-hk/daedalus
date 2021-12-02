@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
   CURRENT_VOTING_FUND_NUMBER,
@@ -16,7 +15,7 @@ import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './CurrentPhase.scss';
 import { messages } from './SnapshotPhase.messages';
-import { messages as votingMessages } from './VotingInfo.messages';
+import { messages as currentPhase } from './CurrentPhase.messages';
 
 type Props = {
   currentLocale: Locale,
@@ -37,18 +36,18 @@ function SnapshotPhase({
     currentTimeFormat,
   });
 
-  const snapshotDate = formattedDateTime(VOTING_SNAPSHOT_DATE, {
+  const upcomingFundSnapshotDate = formattedDateTime(VOTING_SNAPSHOT_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
     currentTimeFormat: mappedFormats.currentTimeFormat,
   });
 
-  const startDate = formattedDateTime(VOTING_CAST_START_DATE, {
+  const upcomingFundStartDate = formattedDateTime(VOTING_CAST_START_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
 
-  const endDate = formattedDateTime(VOTING_CAST_END_DATE, {
+  const upcomingFundEndDate = formattedDateTime(VOTING_CAST_END_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
@@ -56,26 +55,26 @@ function SnapshotPhase({
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>
-        {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(currentPhase.currentFundName, {
+          currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
       <div className={styles.block}>
         <span className={styles.label}>
           {intl.formatMessage(messages.snapshotDateLabel)}
         </span>
-        <span className={styles.value}>{snapshotDate}</span>
+        <span className={styles.value}>{upcomingFundSnapshotDate}</span>
       </div>
       <div className={styles.block}>
         <span className={styles.label}>
           {intl.formatMessage(messages.votingDateLabel)}
         </span>
         <span className={styles.value}>
-          {startDate} – {endDate}
+          {upcomingFundStartDate} – {upcomingFundEndDate}
         </span>
       </div>
     </section>
   );
 }
 
-export default injectIntl(observer(SnapshotPhase));
+export default injectIntl(SnapshotPhase);

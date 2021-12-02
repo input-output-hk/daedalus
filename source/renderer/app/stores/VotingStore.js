@@ -11,7 +11,6 @@ import {
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
-  VOTING_SNAPSHOT_DATE,
   VOTING_CAST_START_DATE,
   VOTING_CAST_END_DATE,
   VOTING_RESULTS_DATE,

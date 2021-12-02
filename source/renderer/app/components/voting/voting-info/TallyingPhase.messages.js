@@ -9,7 +9,7 @@ export const messages = defineMessages({
   },
   resultsLabel: {
     id: 'voting.tallyingPhase.resultsLabel',
-    defaultMessage: '!!!Check back for results on:',
+    defaultMessage: '!!!Check back for results:',
     description: 'Results date label',
   },
 });

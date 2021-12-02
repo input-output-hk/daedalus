@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
   VOTING_CAST_END_DATE,
@@ -13,9 +12,9 @@ import {
 import type { Locale } from '../../../../../common/types/locales.types';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import type { Intl } from '../../../types/i18nTypes';
-import { messages } from './ResultsPhase.messages';
-import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './CurrentPhase.scss';
+import { messages } from './ResultsPhase.messages';
+import { messages as currentPhaseMessages } from './CurrentPhase.messages';
 
 type Props = {
   currentLocale: Locale,
@@ -47,8 +46,8 @@ function ResultsPhase({
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>
-        {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(currentPhaseMessages.currentFundName, {
+          currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
 
@@ -71,4 +70,4 @@ function ResultsPhase({
   );
 }
 
-export default injectIntl(observer(ResultsPhase));
+export default injectIntl(ResultsPhase);

@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
   CURRENT_VOTING_FUND_NUMBER,
@@ -15,7 +14,7 @@ import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './CurrentPhase.scss';
 import { messages } from './TallyingPhase.messages';
-import { messages as votingMessages } from './VotingInfo.messages';
+import { messages as currentPhaseMessages } from './CurrentPhase.messages';
 
 type Props = {
   currentLocale: Locale,
@@ -49,8 +48,8 @@ function TallyingPhase({
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>
-        {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(currentPhaseMessages.currentFundName, {
+          currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
       <div className={styles.block}>
@@ -69,4 +68,4 @@ function TallyingPhase({
   );
 }
 
-export default injectIntl(observer(TallyingPhase));
+export default injectIntl(TallyingPhase);

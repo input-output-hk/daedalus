@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
   CURRENT_VOTING_FUND_NUMBER,
@@ -13,10 +12,9 @@ import {
 } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
-import { messages } from './VotingPhase.messages';
-import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './CurrentPhase.scss';
-import votingStyles from './VotingInfo.scss';
+import { messages } from './VotingPhase.messages';
+import { messages as currentPhase } from './CurrentPhase.messages';
 
 type Props = {
   currentLocale: Locale,
@@ -50,8 +48,8 @@ function VotingPhase({
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>
-        {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(currentPhase.currentFundName, {
+          currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
       <div className={styles.block}>
@@ -62,7 +60,7 @@ function VotingPhase({
           {startDate} – {endDate}
         </span>
       </div>
-      <hr className={votingStyles.separator} />
+      <hr />
       <div className={styles.block}>
         <span className={styles.value}>
           {intl.formatMessage(messages.instruction)}
@@ -72,4 +70,4 @@ function VotingPhase({
   );
 }
 
-export default injectIntl(observer(VotingPhase));
+export default injectIntl(VotingPhase);
