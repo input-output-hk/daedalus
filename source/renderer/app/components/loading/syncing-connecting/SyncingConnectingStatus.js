@@ -12,9 +12,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Starting Cardano node',
     description: 'Message "Starting Cardano node" on the loading screen.',
   },
+  startingDescription: {
+    id: 'loading.screen.startingCardanoDescription',
+    defaultMessage:
+      '!!!This process validates the integrity of local blockchain data and could take several minutes.',
+    description: 'Message "Starting Cardano node" on the loading screen.',
+  },
   stopping: {
     id: 'loading.screen.stoppingCardanoMessage',
     defaultMessage: '!!!Stopping Cardano node',
+    description: 'Message "Stopping Cardano node" on the loading screen.',
+  },
+  stoppingDescription: {
+    id: 'loading.screen.stoppingCardanoDescription',
+    defaultMessage:
+      '!!!This process closes the databases and could take several minutes. To preserve data integrity, please allow it to complete.',
     description: 'Message "Stopping Cardano node" on the loading screen.',
   },
   stopped: {
@@ -101,14 +113,17 @@ export default class SyncingConnectingStatus extends Component<Props> {
     } = this.props;
     if (isConnected) return messages.loadingWalletData;
     let connectingMessage;
+    let connectingDescription;
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:
         connectingMessage = messages.starting;
+        connectingDescription = messages.startingDescription;
         break;
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
         connectingMessage = messages.stopping;
+        connectingDescription = messages.stoppingDescription;
         break;
       case CardanoNodeStates.STOPPED:
         connectingMessage = messages.stopped;
@@ -141,7 +156,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
     if (isVerifyingBlockchain && isConnectingMessage) {
       return messages.verifyingBlockchain;
     }
-    return connectingMessage;
+    return { connectingMessage, connectingDescription };
   };
 
   render() {
@@ -170,13 +185,21 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
+    const {
+      connectingMessage,
+      connectingDescription,
+    } = this._getConnectingMessage();
+
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {intl.formatMessage(this._getConnectingMessage(), {
+          {intl.formatMessage(connectingMessage, {
             verificationProgress,
           })}
         </h1>
+        <div className={styles.description}>
+          {connectingDescription && intl.formatMessage(connectingDescription)}
+        </div>
       </div>
     );
   }
