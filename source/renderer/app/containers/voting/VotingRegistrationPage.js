@@ -25,7 +25,7 @@ export default class VotingRegistrationPage extends Component<Props> {
   };
 
   getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
-    const { app, networkStatus, wallets, profile } = this.props.stores;
+    const { app, networkStatus, wallets, profile, voting } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { openExternalLink } = app;
 
@@ -50,6 +50,7 @@ export default class VotingRegistrationPage extends Component<Props> {
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     return (
       <VotingInfo
+        fundPhase={voting.fundPhase}
         currentLocale={currentLocale}
         currentDateFormat={currentDateFormat}
         currentTimeFormat={currentTimeFormat}

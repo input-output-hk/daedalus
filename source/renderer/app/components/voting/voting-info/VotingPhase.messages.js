@@ -2,13 +2,13 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
-  periodLabel: {
-    id: 'voting.votingOpen.periodLabel',
+  dateLabel: {
+    id: 'voting.votingOpenPhase.dateLabel',
     defaultMessage: '!!!Voting period is open:',
-    description: 'Voting period label',
+    description: 'Voting date label',
   },
   instruction: {
-    id: 'voting.votingOpen.instruction',
+    id: 'voting.votingOpenPhase.instruction',
     defaultMessage: '!!!Use mobile app to vote',
     description: 'Voting instruction',
   },
