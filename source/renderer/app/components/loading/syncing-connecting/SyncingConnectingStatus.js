@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import styles from './SyncingConnectingStatus.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
@@ -198,7 +198,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
           })}
         </h1>
         <div className={styles.description}>
-          {connectingDescription && intl.formatMessage(connectingDescription)}
+          {connectingDescription && (
+            <FormattedHTMLMessage {...connectingDescription} />
+          )}
         </div>
       </div>
     );
