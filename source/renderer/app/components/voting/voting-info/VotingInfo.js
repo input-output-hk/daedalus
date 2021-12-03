@@ -12,7 +12,8 @@ import TallyingPhase from './TallyingPhase';
 import Headline from './Headline';
 import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
-import { FundPhase, FundPhases } from '../../../stores/VotingStore';
+import { FundPhases } from '../../../stores/VotingStore';
+import type { FundPhase } from '../../../stores/VotingStore';
 
 type Props = {
   currentLocale: Locale,
