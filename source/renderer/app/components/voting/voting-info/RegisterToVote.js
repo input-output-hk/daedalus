@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import {
   VOTING_REGISTRATION_END_DATE,
   NEXT_VOTING_FUND_NUMBER,
@@ -13,7 +14,6 @@ import {
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './RegisterToVote.scss';
-import { PatchCheckbox } from '../widgets/PatchCheckbox';
 import { messages } from './RegisterToVote.messages';
 
 type Props = {
@@ -59,7 +59,7 @@ function RegisterToVote({
         {intl.formatMessage(messages.stepsTitle)}
       </span>
       <div className={styles.step}>
-        <PatchCheckbox
+        <Checkbox
           className={styles.checkbox}
           checked={step1}
           onChange={setStep1}
@@ -67,7 +67,7 @@ function RegisterToVote({
         />
       </div>
       <div className={styles.step}>
-        <PatchCheckbox
+        <Checkbox
           className={styles.checkbox}
           checked={step2}
           label={intl.formatMessage(messages.step2CheckBoxLabel)}
