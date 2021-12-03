@@ -26,6 +26,7 @@ import type { AssetToken } from '../../../api/assets/types';
 import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
 import { filterAssets } from '../../../utils/assets';
+import { DiscreetWalletAmount } from '../../../features/discreet-mode';
 
 /* eslint-disable consistent-return */
 
@@ -567,7 +568,10 @@ export default class Transaction extends Component<Props, State> {
                 </div>
                 {data.amount && (
                   <div className={styles.amount}>
-                    {formattedWalletAmount(data.amount, false)}
+                    <DiscreetWalletAmount
+                      amount={data.amount}
+                      withCurrency={false}
+                    />
                     <span>{intl.formatMessage(globalMessages.adaUnit)}</span>
                   </div>
                 )}
@@ -644,7 +648,11 @@ export default class Transaction extends Component<Props, State> {
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
                     <div className={styles.depositRow}>
                       <div className={styles.depositValue}>
-                        {formattedWalletAmount(data.deposit, false)}&nbsp;
+                        <DiscreetWalletAmount
+                          amount={data.deposit}
+                          withCurrency={false}
+                        />
+                        &nbsp;
                         <span>
                           {intl.formatMessage(globalMessages.adaUnit)}
                         </span>

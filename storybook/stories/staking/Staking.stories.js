@@ -221,9 +221,26 @@ storiesOf('Decentralization | Staking', module)
     }
   )
 
-  .add('Delegation Wizard', (props) => <StakingDelegationSteps {...props} />, {
-    id: 'wizard',
-  })
+  .add(
+    'Delegation Wizard',
+    (props) => {
+      const oversaturationPercentage = number('Oversaturation Percentage', 0, {
+        min: 0,
+        max: 1000,
+        step: 1,
+        range: true,
+      });
+      return (
+        <StakingDelegationSteps
+          {...props}
+          oversaturationPercentage={oversaturationPercentage}
+        />
+      );
+    },
+    {
+      id: 'wizard',
+    }
+  )
   .add(
     'Delegation Wizard - Delegation Not Available',
     (props) => <StakingDelegationSteps {...props} isDisabled />,

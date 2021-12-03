@@ -15,7 +15,6 @@ import {
   TESTNET,
   WINDOWS,
   networkPrettyNames,
-  SHELLEY_QA,
 } from '../types/environment.types';
 
 /* ==================================================================

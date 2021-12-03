@@ -5,12 +5,14 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
+import StoryProvider from '../_support/StoryProvider';
 import VotingRegistrationStepsChooseWallet from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsChooseWallet';
 import VotingRegistrationStepsRegister from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister';
 import VotingRegistrationStepsConfirm from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm';
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
-import VotingInfo from '../../../source/renderer/app/components/voting/VotingInfo';
+import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
+import { VotingFooterLinks } from '../../../source/renderer/app/components/voting/VotingFooterLinks';
 import {
   LANGUAGE_OPTIONS,
   DATE_ENGLISH_OPTIONS,
@@ -26,6 +28,7 @@ import {
   generateWallet,
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
+import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
 
 const assets = {
   available: [
@@ -78,7 +81,11 @@ const WALLETS = [
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
 
 storiesOf('Voting|Voting Registration Wizard', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => (
+    <StoryProvider>
+      <StoryDecorator>{story()}</StoryDecorator>
+    </StoryProvider>
+  ))
   .addDecorator(withKnobs)
 
   // ====== Stories ======
@@ -165,12 +172,15 @@ storiesOf('Voting|Voting Info', module)
   // ====== Stories ======
 
   .add('Voting Info', () => (
-    <VotingInfo
-      currentLocale={LANGUAGE_OPTIONS[0].value}
-      currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-      currentTimeFormat={TIME_OPTIONS[0].value}
-      isRegistrationEnded={boolean('isRegistrationEnded', false)}
-      onRegisterToVoteClick={action('onRegisterToVoteClick')}
-      onExternalLinkClick={action('onExternalLinkClick')}
-    />
+    <VerticalFlexContainer>
+      <VotingInfo
+        currentLocale={LANGUAGE_OPTIONS[0].value}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+        isRegistrationEnded={boolean('isRegistrationEnded', false)}
+        onRegisterToVoteClick={action('onRegisterToVoteClick')}
+        onExternalLinkClick={action('onExternalLinkClick')}
+      />
+      <VotingFooterLinks />
+    </VerticalFlexContainer>
   ));

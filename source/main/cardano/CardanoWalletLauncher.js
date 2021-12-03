@@ -138,6 +138,13 @@ export async function CardanoWalletLauncher(
       logger.info('Launching Wallet with --token-metadata-server flag', {
         tokenMetadataServer,
       });
+
+      // RTS flags:
+      nodeConfig.rtsOpts = [];
+      logger.info('Launching Cardano Node with RTS flags', {
+        rtsFlags: nodeConfig.rtsOpts,
+      });
+
       merge(launcherConfig, {
         nodeConfig,
         tlsConfiguration,

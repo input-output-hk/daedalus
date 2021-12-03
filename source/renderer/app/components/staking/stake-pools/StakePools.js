@@ -26,7 +26,7 @@ import LoadingStakePools from '../widgets/LoadingStakePools';
 const messages = defineMessages({
   delegatingListTitle: {
     id: 'staking.stakePools.delegatingListTitle',
-    defaultMessage: '!!!Staking pools you are delegating to',
+    defaultMessage: '!!!Stake pools to which you are delegating',
     description: '"delegatingListTitle" for the Stake Pools page.',
   },
   listTitle: {

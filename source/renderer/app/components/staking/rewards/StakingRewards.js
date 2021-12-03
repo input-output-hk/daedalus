@@ -18,6 +18,7 @@ import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 import Ellipsis from '../../widgets/Ellipsis';
 import LoadingStakePools from '../widgets/LoadingStakePools';
+import { RewardAmount } from './RewardAmount';
 
 const messages = defineMessages({
   title: {
@@ -297,7 +298,11 @@ export default class StakingRewards extends Component<Props, State> {
                           <Ellipsis string={rewardsAddress} />
                         </td>
                         <td className={styles.rewardAmount}>
-                          {isRestoring ? '-' : rewardAmount}
+                          {isRestoring ? (
+                            '-'
+                          ) : (
+                            <RewardAmount amount={rewardAmount} />
+                          )}
                         </td>
                         <td className={styles.actions}>
                           {!isRestoring && (

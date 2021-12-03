@@ -435,7 +435,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-incident-overlay-button-color': '#fafbfc',
     '--theme-news-feed-incident-overlay-scrollbar-thumb-background':
       'rgba(250, 251, 252, 0.3)',
-    '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hove':
+    '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hover':
       'rgba(250, 251, 252, 0.5)',
     '--theme-news-feed-incident-overlay-content-list-color':
       'rgba(250, 251, 252, 0.7)',
@@ -451,7 +451,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-incident-grey-overlay-button-color': '#ffffff',
     '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background':
       'rgba(255, 255, 255, 0.3)',
-    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hove':
+    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hover':
       'rgba(255, 255, 255, 0.5)',
     '--theme-news-feed-incident-grey-overlay-content-list-color':
       'rgba(255, 255, 255, 0.7)',
@@ -461,7 +461,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-incident-red-overlay-button-color': '#ffffff',
     '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background':
       'rgba(255, 255, 255, 0.3)',
-    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hove':
+    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hover':
       'rgba(255, 255, 255, 0.5)',
     '--theme-news-feed-incident-red-overlay-content-list-color':
       'rgba(255, 255, 255, 0.7)',
@@ -579,6 +579,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
     '--rp-autocomplete-required-words-color': 'rgba(94, 96, 102, 0.5)',
+    '--rp-autocomplete-required-words-invert-color': 'rgba(255, 255, 255, 0.5)',
     '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
@@ -1051,6 +1052,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#5e6066',
     '--theme-voting-separator-color': 'rgba(94, 96, 102, 0.15)',
+    '--theme-voting-footer-separator-color': 'rgba(94, 96, 102, 0.5)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(36, 62, 98, 0.98)',

@@ -13,7 +13,7 @@ import walletUtils from '../utils/walletUtils';
 import {
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
-  VOTING_FUND_NUMBER,
+  NEXT_VOTING_FUND_NUMBER,
   VOTING_REGISTRATION_END_DATE,
   VOTING_REGISTRATION_END_CHECK_INTERVAL,
 } from '../config/votingConfig';
@@ -380,13 +380,13 @@ export default class VotingStore extends Store {
       currentDateFormat,
       currentTimeFormat,
     } = this.stores.profile;
-    const fundNumber = VOTING_FUND_NUMBER;
+    const nextVotingFundNumber = NEXT_VOTING_FUND_NUMBER;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
     try {
       await votingPDFGenerator({
-        fundNumber,
+        nextVotingFundNumber,
         qrCode,
         walletName,
         currentLocale,

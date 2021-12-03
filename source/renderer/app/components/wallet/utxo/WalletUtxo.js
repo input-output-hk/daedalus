@@ -23,6 +23,7 @@ import Cursor from './WalletUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletUtxo.scss';
 import type { TickProps } from './WalletUtxoTick';
+import { WalletUtxoDescription } from './WalletUtxoDescription';
 
 export const messages = defineMessages({
   title: {
@@ -163,12 +164,10 @@ export default class WalletUtxo extends Component<Props, State> {
             {!isLoadingInitialUtxoData && !isEmpty ? (
               <Fragment>
                 <p>
-                  <FormattedHTMLMessage
-                    {...messages.description}
-                    values={{
-                      formattedWalletAmount,
-                      walletUtxosAmount,
-                    }}
+                  <WalletUtxoDescription
+                    description={messages.description}
+                    formattedWalletAmount={formattedWalletAmount}
+                    walletUtxosAmount={walletUtxosAmount}
                   />{' '}
                   {findOutMoreLink}
                 </p>

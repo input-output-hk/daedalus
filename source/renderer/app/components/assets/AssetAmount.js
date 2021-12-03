@@ -1,13 +1,14 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
+import { discreetWalletTokenAmount } from '../../features/discreet-mode/replacers/discreetWalletTokenAmount';
 import styles from './AssetAmount.scss';
-import { formattedTokenWalletAmount } from '../../utils/formatters';
 import type { AssetMetadata } from '../../api/assets/types';
+import { useDiscreetModeFeature } from '../../features/discreet-mode';
 
 const messages = defineMessages({
   unformattedAmount: {
@@ -26,47 +27,57 @@ type Props = {
   isShort?: boolean,
 };
 
-@observer
-export default class AssetAmount extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
+function AssetAmount({
+  amount,
+  metadata,
+  decimals,
+  isLoading,
+  className,
+  isShort,
+}: Props) {
+  const discreetModeFeature = useDiscreetModeFeature();
 
-  render() {
-    const {
-      amount,
-      metadata,
-      decimals,
-      isLoading,
-      className,
-      isShort,
-    } = this.props;
-    if (isLoading) return '-';
-    const componentStyles = classnames([styles.component, className]);
-    const content = !isLoading
-      ? formattedTokenWalletAmount(amount, metadata, decimals, isShort)
-      : '-';
-    return (
-      <div className={componentStyles}>
-        {decimals ? (
-          <PopOver
-            content={
-              <FormattedHTMLMessage
-                {...messages.unformattedAmount}
-                values={{
-                  amount: formattedTokenWalletAmount(amount, null, 0),
-                }}
-              />
-            }
-            visible={decimals ? undefined : false}
-            className={styles.unformattedAmount}
-          >
-            {content}
-          </PopOver>
-        ) : (
-          <span>{content}</span>
-        )}
-      </div>
-    );
-  }
+  if (isLoading) return '-';
+  const componentStyles = classnames([styles.component, className]);
+  const content = !isLoading
+    ? discreetModeFeature.discreetValue({
+        replacer: discreetWalletTokenAmount({
+          amount,
+          metadata,
+          decimals,
+          isShort,
+        }),
+      })
+    : '-';
+
+  return (
+    <div className={componentStyles}>
+      {decimals ? (
+        <PopOver
+          content={
+            <FormattedHTMLMessage
+              {...messages.unformattedAmount}
+              values={{
+                amount: discreetModeFeature.discreetValue({
+                  replacer: discreetWalletTokenAmount({
+                    amount,
+                    metadata: null,
+                    decimals: 0,
+                  }),
+                }),
+              }}
+            />
+          }
+          visible={decimals ? undefined : false}
+          className={styles.unformattedAmount}
+        >
+          {content}
+        </PopOver>
+      ) : (
+        <span>{content}</span>
+      )}
+    </div>
+  );
 }
+
+export default observer(AssetAmount);
