@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { observer } from 'mobx-react';
-import { injectIntl } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import type { Locale } from '../../../../../common/types/locales.types';
 import styles from './VotingInfo.scss';
@@ -74,4 +73,4 @@ const VotingInfo = ({
   );
 };
 
-export default injectIntl(observer(VotingInfo));
+export default observer(VotingInfo);
