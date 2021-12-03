@@ -16,8 +16,6 @@ Daedalus - Cryptocurrency Wallet
 
 ### Nix
 
-[Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
-
 1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS Catalina)
 2. Employ the signed IOHK binary cache:
    ```bash
@@ -33,7 +31,12 @@ Daedalus - Cryptocurrency Wallet
    cores = 0     # the builder will use all available CPU cores
    extra-sandbox-paths = /System/Library/Frameworks
    ```
-3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
+3. Install Daedlus with Nix imperatively by running the following command in the root of this repo.
+   ```bash
+   nix-env -if . -A daedalus
+   ```
+
+4. Alternatively, run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
 
 **Notes:**
 
