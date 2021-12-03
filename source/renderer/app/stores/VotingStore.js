@@ -449,17 +449,17 @@ export default class VotingStore extends Store {
 
   @action _checkFundPhase = (now: Date) => {
     const phaseValidation = {
-      [FundPhases.SNAPSHOT]: now < VOTING_CAST_START_DATE,
-      [FundPhases.VOTING]:
-        now >= VOTING_CAST_START_DATE && now <= VOTING_CAST_END_DATE,
-      [FundPhases.TALLYING]:
-        now > VOTING_CAST_END_DATE && now < VOTING_RESULTS_DATE,
-      [FundPhases.RESULTS]: now >= VOTING_RESULTS_DATE,
+      [FundPhases.SNAPSHOT]: (date: Date) => date < VOTING_CAST_START_DATE,
+      [FundPhases.VOTING]: (date: Date) =>
+        now >= VOTING_CAST_START_DATE && date < VOTING_CAST_END_DATE,
+      [FundPhases.TALLYING]: (date: Date) =>
+        now >= VOTING_CAST_END_DATE && date < VOTING_RESULTS_DATE,
+      [FundPhases.RESULTS]: (date: Date) => date >= VOTING_RESULTS_DATE,
     };
     this.fundPhase =
       Object.keys(FundPhases)
-        .map((phase) => FundPhases[phase])
-        .find((phase) => phaseValidation[phase]) || FundPhases.SNAPSHOT;
+        .map((key) => FundPhases[key])
+        .find((phase) => phaseValidation[phase](now)) || FundPhases.SNAPSHOT;
   };
 
   _generateVotingRegistrationKey = async () => {
