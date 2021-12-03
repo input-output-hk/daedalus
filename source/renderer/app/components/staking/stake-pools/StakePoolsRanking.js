@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Config } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -27,9 +28,11 @@ import {
   ALL_WALLETS_SELECTION_ID,
   IS_RANKING_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+import { withDiscreetMode } from '../../../features/discreet-mode';
+import type { DiscreetModeFeature } from '../../../features/discreet-mode';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
-import Slider from '../../widgets/Slider';
+import { Slider } from '../../widgets/Slider';
 import styles from './StakePoolsRanking.scss';
 
 const messages = defineMessages({
@@ -108,7 +111,9 @@ const messages = defineMessages({
   },
 });
 
-type Props = {
+type InjectedProps = {| discreetModeFeature: DiscreetModeFeature |};
+
+type Props = {|
   wallets: Array<Wallet>,
   onOpenExternalLink: Function,
   updateDelegatingStake: Function,
@@ -121,7 +126,8 @@ type Props = {
   getStakePoolById: Function,
   maxDelegationFunds: number,
   maxDelegationFundsLog: number,
-};
+  ...InjectedProps,
+|};
 
 type State = {
   sliderValue: number,
@@ -129,7 +135,7 @@ type State = {
 };
 
 @observer
-export default class StakePoolsRanking extends Component<Props, State> {
+class StakePoolsRanking extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -300,6 +306,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       rankStakePools,
       maxDelegationFunds,
       maxDelegationFundsLog,
+      discreetModeFeature,
     } = this.props;
     const { sliderValue, displayValue } = this.state;
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
@@ -316,6 +323,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
       return null;
     }
 
+    const shouldDisplayWalletsDropdown =
+      !discreetModeFeature.isDiscreetMode &&
+      getFilteredWallets(wallets).length > 0;
+
     return (
       <div className={styles.component}>
         <div className={styles.upper}>
@@ -325,7 +336,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                 <FormattedHTMLMessage {...messages.rankingDescription} />
               </div>
             </div>
-            {getFilteredWallets(wallets).length > 0 ? (
+            {shouldDisplayWalletsDropdown ? (
               <div className={styles.row}>
                 <div className={styles.col}>{walletSelectionStart}</div>
                 <div className={walletSelectorContainerClasses}>
@@ -415,3 +426,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     );
   }
 }
+
+export default withDiscreetMode<Config<Props, InjectedProps>>(
+  StakePoolsRanking
+);

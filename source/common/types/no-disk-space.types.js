@@ -6,4 +6,7 @@ export type CheckDiskSpaceResponse = {
   diskSpaceRecommended: string,
   diskSpaceAvailable: string,
   hadNotEnoughSpaceLeft: boolean,
+  diskSpaceAvailableRaw: number,
+  diskTotalSpaceRaw: number,
+  isError: boolean,
 };

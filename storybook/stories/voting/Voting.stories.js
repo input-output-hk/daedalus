@@ -5,6 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
+import StoryProvider from '../_support/StoryProvider';
 import VotingRegistrationStepsChooseWallet from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsChooseWallet';
 import VotingRegistrationStepsRegister from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister';
 import VotingRegistrationStepsConfirm from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm';
@@ -80,7 +81,11 @@ const WALLETS = [
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
 
 storiesOf('Voting|Voting Registration Wizard', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => (
+    <StoryProvider>
+      <StoryDecorator>{story()}</StoryDecorator>
+    </StoryProvider>
+  ))
   .addDecorator(withKnobs)
 
   // ====== Stories ======

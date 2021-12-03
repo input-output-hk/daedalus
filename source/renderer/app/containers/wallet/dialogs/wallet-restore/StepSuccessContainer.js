@@ -16,10 +16,10 @@ export default class SuccessDialogContainer extends Component<Props> {
   render() {
     const { stores, actions } = this.props;
     const { walletKindDaedalus, walletKindYoroi } = stores.wallets;
-    const { restoreWalletClose } = actions.wallets;
+    const { restoreWalletEnd } = actions.wallets;
     return (
       <SuccessDialog
-        onClose={() => restoreWalletClose.trigger()}
+        onClose={() => restoreWalletEnd.trigger()}
         walletKindDaedalus={walletKindDaedalus}
         walletKindYoroi={walletKindYoroi}
       />
