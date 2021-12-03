@@ -7,6 +7,15 @@
 - Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
 - Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2735](https://github.com/input-output-hk/daedalus/pull/2735), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
 
+### Features
+
+- Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724), [PR 2725](https://github.com/input-output-hk/daedalus/pull/2725), [PR 2742](https://github.com/input-output-hk/daedalus/pull/2742), [PR 2740](https://github.com/input-output-hk/daedalus/pull/2740), [PR 2756](https://github.com/input-output-hk/daedalus/pull/2756))
+- Updated slider component to only execute onAfterChange if slider had moved ([PR 2766](https://github.com/input-output-hk/daedalus/pull/2766))
+
+### Fixes
+
+- Fixed app update for specific platform ([PR 2759](https://github.com/input-output-hk/daedalus/pull/2759))
+
 ## 4.5.2
 
 ### Fixes
@@ -25,7 +34,6 @@
 
 ### Features
 
-- Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724), [PR 2725](https://github.com/input-output-hk/daedalus/pull/2725), [PR 2742](https://github.com/input-output-hk/daedalus/pull/2742), [PR 2740](https://github.com/input-output-hk/daedalus/pull/2740), [PR 2756](https://github.com/input-output-hk/daedalus/pull/2756))
 - Implemented "Catalyst Fund7" voting registration changes ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
 - Added "Over-saturation" warning in the delegation wizard ([PR 2733](https://github.com/input-output-hk/daedalus/pull/2733), [PR 2738](https://github.com/input-output-hk/daedalus/pull/2738))
 - Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
