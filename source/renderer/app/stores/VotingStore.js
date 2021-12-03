@@ -457,8 +457,9 @@ export default class VotingStore extends Store {
       [FundPhases.RESULTS]: now >= VOTING_RESULTS_DATE,
     };
     this.fundPhase =
-      Object.values(FundPhases).find((phase) => phaseValidation[phase]) ||
-      FundPhases.SNAPSHOT;
+      Object.keys(FundPhases)
+        .map((phase) => FundPhases[phase])
+        .find((phase) => phaseValidation[phase]) || FundPhases.SNAPSHOT;
   };
 
   _generateVotingRegistrationKey = async () => {
