@@ -53,7 +53,8 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
-3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
+3. Run `yarn start` from a second `nix-shell` instance (running step 1 from a terminal instance)
+4. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
    - Byron wallets: `yarn byron:wallet:importer`
    - Shelley wallets: `yarn shelley:wallet:importer`
    - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
@@ -82,31 +83,37 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 
 1. Run `yarn nix:mainnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Run `yarn start` from a second `nix-shell` instance (running step 1 from a terminal instance)
 
 #### Flight
 
 1. Run `yarn nix:flight` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Run `yarn start` from a second `nix-shell` instance (running step 1 from a terminal instance)
 
 #### Testnet
 
 1. Run `yarn nix:testnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Run `yarn start` from a second `nix-shell` instance (running step 1 from a terminal instance)
 
 #### Staging
 
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Run `yarn start` from a second `nix-shell` instance (running step 1 from a terminal instance)
 
 #### Shelley QA
 
 1. Run `yarn nix:shelley_qa` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Run `yarn start` from a second `nix-shell` instance (running step 1 from a terminal instance)
 
 #### Alonzo Purple
 
 1. Run `yarn nix:alonzo_purple` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Run `yarn start` from a second `nix-shell` instance (running step 1 from a terminal instance)
 
 #### Native token metadata server
 
