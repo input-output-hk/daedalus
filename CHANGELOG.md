@@ -12,6 +12,10 @@
 - Updated slider component to only execute onAfterChange if slider had moved ([PR 2766](https://github.com/input-output-hk/daedalus/pull/2766))
 - Fixed app update for specific platform ([PR 2759](https://github.com/input-output-hk/daedalus/pull/2759))
 
+### Fixes
+
+- Fixed checkbox tick offset ([PR 2751](https://github.com/input-output-hk/daedalus/pull/2751))
+
 ## 4.5.2
 
 ### Fixes
