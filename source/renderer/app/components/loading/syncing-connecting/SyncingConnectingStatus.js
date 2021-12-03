@@ -26,7 +26,7 @@ const messages = defineMessages({
   stoppingDescription: {
     id: 'loading.screen.stoppingCardanoDescription',
     defaultMessage:
-      '!!!This process closes the databases and could take several minutes. To preserve data integrity, please allow it to complete.',
+      '!!!This process updates the databases and could take several minutes.<br />To preserve data integrity, please wait until this process is complete.',
     description: 'Message "Stopping Cardano node" on the loading screen.',
   },
   stopped: {
