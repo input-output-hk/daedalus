@@ -29,7 +29,7 @@ import {
 } from '../../../config/stakingConfig';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
-import Slider from '../../widgets/Slider';
+import { Slider } from '../../widgets/Slider';
 import styles from './StakePoolsRanking.scss';
 
 const messages = defineMessages({
