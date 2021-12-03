@@ -173,7 +173,7 @@
     "utf-8-validate": "5.0.2",
     "webdriverio": "5.18.7",
     "webpack": "5.52.1",
-    "webpack-cli": "4.8.0",
+    "webpack-cli": "4.9.1",
     "webpack-dev-server": "4.4.0",
     "webpack-stream": "7.0.0",
     "ws": "7.3.1",
