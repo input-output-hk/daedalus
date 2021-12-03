@@ -2,9 +2,34 @@
 
 ## vNext
 
+### Chores
+
+- Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
+- Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2735](https://github.com/input-output-hk/daedalus/pull/2735), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
+
 ### Features
 
 - Support of apple aarch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
+- Updated slider component to only execute onAfterChange if slider had moved ([PR 2766](https://github.com/input-output-hk/daedalus/pull/2766))
+- Fixed app update for specific platform ([PR 2759](https://github.com/input-output-hk/daedalus/pull/2759))
+
+### Fixes
+
+- Fixed checkbox tick offset ([PR 2751](https://github.com/input-output-hk/daedalus/pull/2751))
+
+## 4.5.2
+
+### Fixes
+
+- Fixed Cardano Node starting/stopping issues
+
+## 4.5.1
+
+### Fixes
+
+- Fixed cardano-node startup race condition
+- Fixed automatic closing of the wallet "Restoration" dialog during restoration of a first wallet in UI
+- Fixed Daedalus 4.5.0 Windows deployment issue
 
 ## 4.5.0
 

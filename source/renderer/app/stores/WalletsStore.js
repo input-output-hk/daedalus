@@ -428,7 +428,8 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletClose = () => {
-    const { mnemonics, walletName, spendingPassword, restoredWallet } = this;
+    this._resumePolling();
+    const { mnemonics, walletName, spendingPassword } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
       this.restoreWalletStep !== null &&
@@ -439,9 +440,6 @@ export default class WalletsStore extends Store {
       this._restoreWalletResetRequests();
       this._restoreWalletResetData();
       this.actions.dialogs.closeActiveDialog.trigger();
-    }
-    if (restoredWallet) {
-      this.goToWalletRoute(restoredWallet.id);
     }
   };
 
@@ -673,10 +671,10 @@ export default class WalletsStore extends Store {
 
   @action _restore = async () => {
     this.isRestoring = true;
+
     // Pause polling in order to avoid fetching data for wallet we are about to restore
     // so that we remain on the "Add wallet" screen until user closes the TADA screen
     await this._pausePolling();
-
     // Reset restore requests to clear previous errors
     this._restoreWalletResetRequests();
 
@@ -707,7 +705,6 @@ export default class WalletsStore extends Store {
         this.restoreWalletStep = 3;
       });
     } finally {
-      this._resumePolling();
       runInAction('end wallet restore', () => {
         this.isRestoring = false;
       });
