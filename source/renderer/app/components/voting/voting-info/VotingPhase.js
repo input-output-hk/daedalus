@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
   CURRENT_VOTING_FUND_NUMBER,
@@ -70,4 +71,4 @@ function VotingPhase({
   );
 }
 
-export default injectIntl(VotingPhase);
+export default injectIntl(observer(VotingPhase));

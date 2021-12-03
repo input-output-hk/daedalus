@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
   VOTING_CAST_END_DATE,
@@ -70,4 +71,4 @@ function ResultsPhase({
   );
 }
 
-export default injectIntl(ResultsPhase);
+export default injectIntl(observer(ResultsPhase));
