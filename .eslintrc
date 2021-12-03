@@ -15,7 +15,8 @@
   "env": {
     "browser": true,
     "mocha": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "rules": {
     "class-methods-use-this": 0,
