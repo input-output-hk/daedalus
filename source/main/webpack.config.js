@@ -19,7 +19,6 @@ module.exports = {
   optimization: {
     minimize: false,
   },
-  cache: false,
   module: {
     rules: [
       {

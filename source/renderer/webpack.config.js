@@ -18,7 +18,6 @@ module.exports = {
   mode: isDevelopment ? 'development' : 'production',
   target: 'web',
   devtool: 'source-map',
-  cache: false,
   optimization: {
     minimize: false,
   },
