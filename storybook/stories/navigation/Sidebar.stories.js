@@ -4,12 +4,14 @@ import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
+import BigNumber from 'bignumber.js';
 import {
   DEVELOPMENT,
   TESTNET,
   STAGING,
 } from '../../../source/common/types/environment.types';
 import StoryDecorator from '../_support/StoryDecorator';
+import StoryProvider from '../_support/StoryProvider';
 import { isShelleyTestnetTheme } from '../_support/utils';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import {
@@ -23,7 +25,7 @@ const sidebarMenus = observable({
       {
         id: '1',
         title: 'First',
-        info: '100 ADA',
+        amount: new BigNumber(100),
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
@@ -32,7 +34,7 @@ const sidebarMenus = observable({
       {
         id: '2',
         title: 'Second',
-        info: '200 ADA',
+        amount: new BigNumber(200),
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
@@ -41,7 +43,7 @@ const sidebarMenus = observable({
       {
         id: '3',
         title: 'Third',
-        info: '300 ADA',
+        amount: new BigNumber(300),
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
@@ -108,7 +110,11 @@ const sidebarMenusHardware = observable({
 let emptyMenus;
 
 storiesOf('Navigation|Sidebar', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => (
+    <StoryProvider>
+      <StoryDecorator>{story()}</StoryDecorator>
+    </StoryProvider>
+  ))
   .addDecorator(withKnobs)
   // ====== Stories ======
   .add('No Category', (props: { currentTheme: string }) => (
