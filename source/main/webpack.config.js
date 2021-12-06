@@ -19,9 +19,7 @@ module.exports = {
   optimization: {
     minimize: false,
   },
-  cache: {
-    type: 'filesystem',
-  },
+  cache: false,
   module: {
     rules: [
       {
