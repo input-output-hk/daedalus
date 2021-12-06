@@ -8665,7 +8665,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Check back for results:",
+        "defaultMessage": "!!!Check back for results on:",
         "description": "Results date label",
         "end": {
           "column": 3,
@@ -8684,7 +8684,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting period is open:",
+        "defaultMessage": "!!!Voting period open between:",
         "description": "Voting date label",
         "end": {
           "column": 3,

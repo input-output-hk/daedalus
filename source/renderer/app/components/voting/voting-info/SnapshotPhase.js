@@ -37,18 +37,18 @@ function SnapshotPhase({
     currentTimeFormat,
   });
 
-  const upcomingFundSnapshotDate = formattedDateTime(VOTING_SNAPSHOT_DATE, {
+  const snapshotDate = formattedDateTime(VOTING_SNAPSHOT_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
     currentTimeFormat: mappedFormats.currentTimeFormat,
   });
 
-  const upcomingFundStartDate = formattedDateTime(VOTING_CAST_START_DATE, {
+  const startDate = formattedDateTime(VOTING_CAST_START_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
 
-  const upcomingFundEndDate = formattedDateTime(VOTING_CAST_END_DATE, {
+  const endDate = formattedDateTime(VOTING_CAST_END_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
@@ -64,14 +64,14 @@ function SnapshotPhase({
         <span className={styles.label}>
           {intl.formatMessage(messages.snapshotDateLabel)}
         </span>
-        <span className={styles.value}>{upcomingFundSnapshotDate}</span>
+        <span className={styles.value}>{snapshotDate}</span>
       </div>
       <div className={styles.block}>
         <span className={styles.label}>
           {intl.formatMessage(messages.votingDateLabel)}
         </span>
         <span className={styles.value}>
-          {upcomingFundStartDate} – {upcomingFundEndDate}
+          {startDate} – {endDate}
         </span>
       </div>
     </section>

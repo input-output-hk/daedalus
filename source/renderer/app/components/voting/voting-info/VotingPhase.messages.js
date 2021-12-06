@@ -4,7 +4,7 @@ import { defineMessages } from 'react-intl';
 export const messages = defineMessages({
   dateLabel: {
     id: 'voting.votingOpenPhase.dateLabel',
-    defaultMessage: '!!!Voting period is open:',
+    defaultMessage: '!!!Voting period open between:',
     description: 'Voting date label',
   },
   instruction: {
