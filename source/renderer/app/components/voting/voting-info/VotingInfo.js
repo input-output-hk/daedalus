@@ -51,6 +51,7 @@ const VotingInfo = ({
               currentLocale={currentLocale}
               currentDateFormat={currentDateFormat}
               currentTimeFormat={currentTimeFormat}
+              onExternalLinkClick={onExternalLinkClick}
             />
             <div className={styles.appStoreSpacing}>
               <AppStore
