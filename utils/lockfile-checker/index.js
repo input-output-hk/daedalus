@@ -16,7 +16,7 @@ lodash.map(json.object, (entry, key) => {
   }
 });
 
-const dependencyNamesToRemove = ['@types/react-syntax-highlighter', '@types/npmlog', '@types/reactcss', '@types/uglify-js', '@types/parse-json', '@types/html-minifier-terser', '@types/minimist', 'blake2b-wasm@https://github.com/BitGo/blake2b-wasm', 'blake2b@https://github.com/BitGo/blake2b'];
+const dependencyNamesToRemove = ['@types/react-syntax-highlighter', '@types/npmlog', '@types/reactcss', '@types/uglify-js', '@types/parse-json', '@types/html-minifier-terser', '@types/minimist', 'blake2b-wasm@https://github.com/BitGo/blake2b-wasm', 'blake2b@https://github.com/BitGo/blake2b', '@types/aria-query', '@types/istanbul-lib-report'];
 const dependenciesToRemove = Object.keys(json.object).filter(key => dependencyNamesToRemove.find(name => key.includes(name)));
 const affectedDependencies = Object.keys(json.object).filter(key => {
   const { dependencies } = json.object[key];

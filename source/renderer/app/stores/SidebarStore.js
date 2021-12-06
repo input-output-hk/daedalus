@@ -4,7 +4,6 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
-import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
@@ -50,7 +49,7 @@ export default class SidebarStore extends Store {
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
+        amount: wallet.amount,
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,
