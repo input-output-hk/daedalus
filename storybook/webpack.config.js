@@ -83,7 +83,13 @@ module.exports = async ({ config }) => {
                 importLoaders: true,
               },
             },
-            { loader: 'fast-sass-loader', options: { sourceMap: !isCi } },
+            {
+              loader: 'sass-loader',
+              options: {
+                implementation: require.resolve('sass'),
+                sourceMap: !isCi,
+              },
+            },
           ],
         },
         {
