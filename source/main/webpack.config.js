@@ -15,7 +15,7 @@ module.exports = {
   },
   mode: isDevelopment ? 'development' : 'production',
   target: 'electron-main',
-  devtool: false,
+  devtool: 'source-map',
   optimization: {
     minimize: false,
   },

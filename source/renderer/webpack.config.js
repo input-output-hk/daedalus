@@ -17,7 +17,7 @@ module.exports = {
   },
   mode: isDevelopment ? 'development' : 'production',
   target: 'web',
-  devtool: false,
+  devtool: 'source-map',
   cache: {
     type: 'filesystem',
   },
@@ -32,9 +32,6 @@ module.exports = {
     client: {
       overlay: true,
       progress: true,
-    },
-    devMiddleware: {
-      writeToDisk: true,
     },
   },
   module: {
@@ -101,14 +98,15 @@ module.exports = {
     ],
   },
   resolve: {
-    alias: {
-      process: 'process/browser',
-      path: 'path-browserify',
-      crypto: 'crypto-browserify',
-      stream: 'stream-browserify',
-      http: 'stream-http',
-      https: 'https-browserify',
-      buffer: 'buffer',
+    fallback: {
+      process: require.resolve('process/browser'),
+      path: require.resolve('path-browserify'),
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      url: require.resolve('url'),
+      buffer: require.resolve('buffer/'), // https://www.npmjs.com/package/buffer#usage
     },
   },
   experiments: {
@@ -147,5 +145,4 @@ module.exports = {
     isDevelopment && new ReactRefreshWebpackPlugin(),
     isDevelopment && new DevMainPlugin(),
   ].filter(Boolean),
-
 };

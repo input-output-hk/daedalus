@@ -197,9 +197,8 @@ const onAppReady = async () => {
   );
 
   generateWalletMigrationReportChannel.onReceive(
-    (data: GenerateWalletMigrationReportRendererRequest) => {
-      return Promise.resolve(generateWalletMigrationReport(data));
-    }
+    (data: GenerateWalletMigrationReportRendererRequest) =>
+      Promise.resolve(generateWalletMigrationReport(data))
   );
 
   getStateDirectoryPathChannel.onRequest(() =>
