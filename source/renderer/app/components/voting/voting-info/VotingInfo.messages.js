@@ -2,9 +2,9 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
-  currentFundName: {
-    id: 'voting.currentPhase.fundName',
-    defaultMessage: '!!!Fund{currentVotingFundNumber}',
+  fundName: {
+    id: 'voting.fundName',
+    defaultMessage: '!!!Fund{votingFundNumber}',
     description: 'Current fund name',
   },
 });

@@ -13,8 +13,10 @@ import {
 } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
-import styles from './RegisterToVote.scss';
 import { messages } from './RegisterToVote.messages';
+import { messages as votingMessages } from './VotingInfo.messages';
+import styles from './RegisterToVote.scss';
+import votingStyles from './VotingInfo.scss';
 
 type Props = {
   currentLocale: Locale,
@@ -46,15 +48,15 @@ function RegisterToVote({
   return (
     <div className={styles.root}>
       <span className={styles.title}>
-        {intl.formatMessage(messages.name, {
-          nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(votingMessages.fundName, {
+          votingFundNumber: NEXT_VOTING_FUND_NUMBER,
         })}
       </span>
       <span className={styles.dateLabel}>
         {intl.formatMessage(messages.dateLabel)}
       </span>
       <span className={styles.date}>{castEndDate}</span>
-      <hr />
+      <hr className={votingStyles.separator} />
       <span className={styles.stepsTitle}>
         {intl.formatMessage(messages.stepsTitle)}
       </span>

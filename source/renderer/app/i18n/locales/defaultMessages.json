@@ -7994,25 +7994,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Fund{currentVotingFundNumber}",
-        "description": "Current fund name",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/voting/voting-info/CurrentPhase.messages.js",
-        "id": "voting.currentPhase.fundName",
-        "start": {
-          "column": 19,
-          "line": 5
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/CurrentPhase.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Project Catalyst",
         "description": "Headline Project Catalyst",
         "end": {
@@ -8088,31 +8069,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Fund{nextVotingFundNumber}",
-        "description": "Regiter to fund name",
+        "defaultMessage": "!!!Snapshot date:",
+        "description": "Voting info snapshot date label",
         "end": {
           "column": 3,
           "line": 9
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
-        "id": "voting.registerToVote.name",
-        "start": {
-          "column": 8,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Snapshot date:",
-        "description": "Voting info snapshot date label",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.dateLabel",
         "start": {
           "column": 13,
-          "line": 10
+          "line": 5
         }
       },
       {
@@ -8120,13 +8087,13 @@
         "description": "Steps to follow title",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 14
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.stepsTitle",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 10
         }
       },
       {
@@ -8134,13 +8101,13 @@
         "description": "First step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 19
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.step1CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 20
+          "line": 15
         }
       },
       {
@@ -8148,13 +8115,13 @@
         "description": "Second step to follow in order to vote",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 25
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.step2CheckBoxLabel",
         "start": {
           "column": 22,
-          "line": 25
+          "line": 20
         }
       },
       {
@@ -8162,13 +8129,13 @@
         "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
         "id": "voting.registerToVote.registerToVoteButtonLabel",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 26
         }
       }
     ],
@@ -8192,7 +8159,7 @@
       },
       {
         "defaultMessage": "!!!View results",
-        "description": "View resuls link label for Fund{currentVotingFundNumber}",
+        "description": "View results link label",
         "end": {
           "column": 3,
           "line": 14
@@ -8206,7 +8173,7 @@
       },
       {
         "defaultMessage": "https://cardano.ideascale.com/a/pages/results",
-        "description": "View results from Fund{currentVotingFundNumber}",
+        "description": "View results link",
         "end": {
           "column": 3,
           "line": 19
@@ -8286,6 +8253,25 @@
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fund{votingFundNumber}",
+        "description": "Current fund name",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.js",
+        "id": "voting.fundName",
+        "start": {
+          "column": 12,
+          "line": 5
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.json"
   },
   {
     "descriptors": [

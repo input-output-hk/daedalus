@@ -10,11 +10,11 @@ export const messages = defineMessages({
   viewResultsLinkLabel: {
     id: 'voting.resultsPhase.viewResultsLinkLabel',
     defaultMessage: '!!!View results',
-    description: 'View resuls link label for Fund{currentVotingFundNumber}',
+    description: 'View results link label',
   },
   viewResultsLinkURL: {
     id: 'voting.resultsPhase.viewResultsLinkURL',
     defaultMessage: 'https://cardano.ideascale.com/a/pages/results',
-    description: 'View results from Fund{currentVotingFundNumber}',
+    description: 'View results link',
   },
 });

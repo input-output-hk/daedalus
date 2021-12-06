@@ -13,9 +13,9 @@ import {
 import type { Locale } from '../../../../../common/types/locales.types';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import type { Intl } from '../../../types/i18nTypes';
-import styles from './CurrentPhase.scss';
 import { messages } from './ResultsPhase.messages';
-import { messages as currentPhaseMessages } from './CurrentPhase.messages';
+import { messages as votingMessages } from './VotingInfo.messages';
+import styles from './CurrentPhase.scss';
 
 type Props = {
   currentLocale: Locale,
@@ -47,8 +47,8 @@ function ResultsPhase({
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>
-        {intl.formatMessage(currentPhaseMessages.currentFundName, {
-          currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(votingMessages.fundName, {
+          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
 
