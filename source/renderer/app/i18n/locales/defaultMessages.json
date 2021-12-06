@@ -8387,21 +8387,162 @@
         }
       },
       {
-        "defaultMessage": "!!!Register to vote",
-        "description": "Button Label for voting registration steps",
+        "defaultMessage": "!!!Project Catalyst",
+        "description": "Headline Project Catalyst",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
+        "id": "voting.resultsPhase.endDateLabel",
+        "start": {
+          "column": 16,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!View results",
+        "description": "View results link label",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
+        "id": "voting.resultsPhase.viewResultsLinkLabel",
+        "start": {
+          "column": 24,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "https://cardano.ideascale.com/a/pages/results",
+        "description": "View results link",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
+        "id": "voting.resultsPhase.viewResultsLinkURL",
+        "start": {
+          "column": 22,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Snapshot date:",
+        "description": "Snapshot date label",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.js",
+        "id": "voting.snapshotPhase.snapshotDateLabel",
+        "start": {
+          "column": 21,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Next voting period:",
+        "description": "Next voting date label",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.js",
+        "id": "voting.snapshotPhase.votingDateLabel",
+        "start": {
+          "column": 19,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Snapshot date:",
+        "description": "Voting info snapshot date label",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.js",
+        "id": "voting.tallyingPhase.resultsLabel",
+        "start": {
+          "column": 13,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow these steps to vote:",
+        "description": "Steps to follow title",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.stepsTitle",
+        "start": {
+          "column": 14,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Fund{votingFundNumber}",
+        "description": "Current fund name",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.js",
+        "id": "voting.fundName",
+        "start": {
+          "column": 22,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Voting period open between:",
+        "description": "Voting date label",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.js",
+        "id": "voting.votingOpenPhase.dateLabel",
+        "start": {
+          "column": 22,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Use mobile app to vote",
+        "description": "Voting instruction",
         "end": {
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
-        "id": "voting.registerToVote.registerToVoteButtonLabel",
+        "file": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.js",
+        "id": "voting.votingOpenPhase.instruction",
         "start": {
           "column": 15,
           "line": 26
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.json"
+    "path": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.json"
   },
   {
     "descriptors": [
@@ -8534,152 +8675,6 @@
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Voting period open between:",
-        "description": "Voting date label",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.js",
-        "id": "voting.votingOpenPhase.dateLabel",
-        "start": {
-          "column": 13,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Use mobile app to vote",
-        "description": "Voting instruction",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.js",
-        "id": "voting.votingOpenPhase.instruction",
-        "start": {
-          "column": 15,
-          "line": 10
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!End of voting:",
-        "description": "Headline for end date",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
-        "id": "voting.resultsPhase.endDateLabel",
-        "start": {
-          "column": 16,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!View results",
-        "description": "View resuls link label for Fund{currentVotingFundNumber}",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
-        "id": "voting.resultsPhase.viewResultsLinkLabel",
-        "start": {
-          "column": 24,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "https://cardano.ideascale.com/a/pages/results",
-        "description": "View results from Fund{currentVotingFundNumber}",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
-        "id": "voting.resultsPhase.viewResultsLinkURL",
-        "start": {
-          "column": 22,
-          "line": 15
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Snapshot date:",
-        "description": "Snapshot date label",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.js",
-        "id": "voting.snapshotPhase.snapshotDateLabel",
-        "start": {
-          "column": 21,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Next voting period:",
-        "description": "Next voting date label",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.js",
-        "id": "voting.snapshotPhase.votingDateLabel",
-        "start": {
-          "column": 19,
-          "line": 10
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Voting ended:",
-        "description": "Voting end date label",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.js",
-        "id": "voting.tallyingPhase.endDateLabel",
-        "start": {
-          "column": 16,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Check back for results on:",
-        "description": "Results date label",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.js",
-        "id": "voting.tallyingPhase.resultsLabel",
-        "start": {
-          "column": 16,
-          "line": 10
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.json"
   },
   {
     "descriptors": [

@@ -660,7 +660,7 @@
   "voting.catalystFooterLinks.community": "コミュニティチャット",
   "voting.catalystFooterLinks.newsletter": "ニュースレター",
   "voting.catalystFooterLinks.projects": "プロジェクト",
-  "voting.currentPhase.fundName": "Fund{currentVotingFundNumber}",
+  "voting.fundName": "Fund{votingFundNumber}",
   "voting.info.androidAppButtonUrl": "https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
   "voting.info.appleAppButtonUrl": "https://apps.apple.com/in/app/catalyst-voting/id1517473397",
   "voting.info.learnMoreLinkLabel": "もっと知る",

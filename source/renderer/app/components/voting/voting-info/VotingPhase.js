@@ -13,9 +13,10 @@ import {
 } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
-import styles from './CurrentPhase.scss';
 import { messages } from './VotingPhase.messages';
-import { messages as currentPhase } from './CurrentPhase.messages';
+import { messages as votingMessages } from './VotingInfo.messages';
+import styles from './CurrentPhase.scss';
+import votingStyles from './VotingInfo.scss';
 
 type Props = {
   currentLocale: Locale,
@@ -49,8 +50,8 @@ function VotingPhase({
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>
-        {intl.formatMessage(currentPhase.currentFundName, {
-          currentVotingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(votingMessages.fundName, {
+          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
         })}
       </h1>
       <div className={styles.block}>
@@ -61,7 +62,7 @@ function VotingPhase({
           {startDate} – {endDate}
         </span>
       </div>
-      <hr />
+      <hr className={votingStyles.separator} />
       <div className={styles.block}>
         <span className={styles.value}>
           {intl.formatMessage(messages.instruction)}
