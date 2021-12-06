@@ -132,6 +132,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
     } = this.props;
     let connectingMessage;
     let connectingDescription;
+    if (isConnected) {
+      connectingMessage = messages.loadingWalletData;
+      return { connectingMessage, connectingDescription };
+    }
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:
@@ -171,21 +175,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
     if (isTlsCertInvalid && isConnectingMessage) {
       connectingMessage = messages.tlsCertificateNotValidError;
     } else if (isVerifyingBlockchain && isConnectingMessage) {
-      connectingMessage = this.getBlockSyncMessage();
-      connectingDescription = messages.startingDescription;
-    }
-    return { connectingMessage, connectingDescription };
-  };
-
-  getBlockSyncMessage = () => {
-    switch (this.props.blockSync.type) {
-      case 'replayedBlock':
-        return messages.verifyingBlockchain;
-      case 'pushingLedger':
-        return messages.pushingLedgerState;
-      case 'validatingChunk':
-      default:
-        return messages.validatingChunk;
+      connectingMessage = messages.verifyingBlockchain;
     }
     return { connectingMessage, connectingDescription };
   };
