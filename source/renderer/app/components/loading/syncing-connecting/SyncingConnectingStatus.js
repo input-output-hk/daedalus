@@ -111,9 +111,12 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isTlsCertInvalid,
       isConnected,
     } = this.props;
-    if (isConnected) return messages.loadingWalletData;
     let connectingMessage;
     let connectingDescription;
+    if (isConnected) {
+      connectingMessage = messages.loadingWalletData;
+      return { connectingMessage, connectingDescription };
+    }
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:
@@ -151,10 +154,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
       connectingMessage === messages.connecting ||
       connectingMessage === messages.reconnecting;
     if (isTlsCertInvalid && isConnectingMessage) {
-      return messages.tlsCertificateNotValidError;
-    }
-    if (isVerifyingBlockchain && isConnectingMessage) {
-      return messages.verifyingBlockchain;
+      connectingMessage = messages.tlsCertificateNotValidError;
+    } else if (isVerifyingBlockchain && isConnectingMessage) {
+      connectingMessage = messages.verifyingBlockchain;
     }
     return { connectingMessage, connectingDescription };
   };
