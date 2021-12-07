@@ -103,7 +103,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
 
     const sortOrderByType = {
       [WalletSortBy.Name]: WalletSortOrder.Asc,
-      [WalletSortBy.Date]: WalletSortOrder.Desc,
+      [WalletSortBy.Date]: WalletSortOrder.Asc,
       [WalletSortBy.Balance]: WalletSortOrder.Desc,
     };
 

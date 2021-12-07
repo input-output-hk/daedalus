@@ -19,7 +19,7 @@ export default class SidebarStore extends Store {
   @observable walletSortConfig: {
     sortBy: WalletSortByOptions,
     sortOrder: WalletSortOrderOptions,
-  } = { sortBy: WalletSortBy.Date, sortOrder: WalletSortOrder.Desc };
+  } = { sortBy: WalletSortBy.Date, sortOrder: WalletSortOrder.Asc };
   @observable searchValue: string = '';
 
   setup() {
