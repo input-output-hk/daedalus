@@ -157,6 +157,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       connectingMessage = messages.tlsCertificateNotValidError;
     } else if (isVerifyingBlockchain && isConnectingMessage) {
       connectingMessage = messages.verifyingBlockchain;
+      connectingDescription = messages.startingDescription;
     }
     return { connectingMessage, connectingDescription };
   };
