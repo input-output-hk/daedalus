@@ -4,18 +4,23 @@ class ManageElectronProcessPlugin {
 
   apply(compiler) {
     if (compiler.options.watch) {
-      let electron = null;
+      let electronMainProcess = null;
+      let isMainProcessBeingRestarted = false;
       compiler.hooks.done.tap(
         'RestartElectronPlugin',
         () => {
-          if (electron === null) {
-            electron = exec("yarn electron .");
-            electron.once('close', () => {
-              electron = null;
+          if (electronMainProcess === null) {
+            electronMainProcess = exec("yarn electron .");
+            electronMainProcess.once('close', () => {
+              electronMainProcess = null;
+              if (isMainProcessBeingRestarted) {
+                electronMainProcess = exec("yarn electron .");
+                isMainProcessBeingRestarted = false;
+              }
             });
-          } else {
-            electron.kill();
-            electron = exec("yarn electron .");
+          } else if (!isMainProcessBeingRestarted) {
+            isMainProcessBeingRestarted = true;
+            electronMainProcess.kill();
           }
         }
       );
