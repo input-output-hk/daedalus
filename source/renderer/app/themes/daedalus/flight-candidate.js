@@ -157,7 +157,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-connecting-background-color7': 'rgba(54, 55, 77, 0.91)',
     '--theme-connecting-background-color8': 'rgba(54, 55, 77, 1)',
     '--theme-connecting-text-color': '#ffffff',
-    '--theme-connecting-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-connecting-description-color': 'rgba(250, 251, 252, 0.7)',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#ffffff',
