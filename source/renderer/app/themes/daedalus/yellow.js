@@ -162,7 +162,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-connecting-background-color7': 'rgba(255, 185, 35, 0.91)',
     '--theme-connecting-background-color8': 'rgba(255, 185, 35, 1)',
     '--theme-connecting-text-color': '#2d2d2d',
-    '--theme-connecting-description-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-connecting-description-color': 'rgba(45, 45, 45, 0.7)',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#2d2d2d',
