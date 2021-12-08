@@ -1,7 +1,0 @@
-.root {
-  .check {
-    &::after {
-      margin-top: var(--rp-checkbox-check-vertical-offset, -3px) !important;
-    }
-  }
-}

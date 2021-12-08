@@ -55,6 +55,7 @@ export function PoolPopOver(props: {
       {isHovered ? ( // Init the pop over only when the target is hovered
         <PopOver
           interactive
+          className="PoolPopOver"
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
           duration={0}
           appendTo={document.body}

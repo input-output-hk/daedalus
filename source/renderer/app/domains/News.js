@@ -43,8 +43,6 @@ export type NewsTypesStateType = {
   read: Array<News>,
 };
 
-const { version, platform } = global.environment;
-
 class News {
   @observable id: number;
   @observable title: string;
@@ -75,18 +73,21 @@ class News {
 
 class NewsCollection {
   @observable all: Array<News> = [];
-  @observable update: ?News = null;
+  @observable allWithAppUpdates: Array<News> = [];
 
   constructor(data: Array<News>) {
+    const { version, platform } = global.environment;
     // Filter news by platform and versions
-    const filteredNews = filter(data, (newsItem) => {
+    const filteredNewsWithAppUpdates = filter(data, (newsItem) => {
       const availableTargetVersionRange = get(
         newsItem,
         ['target', 'daedalusVersion'],
         ''
       );
       const targetPlatforms = get(newsItem, ['target', 'platforms']);
-
+      const isAppUpdateItem = newsItem.type === NewsTypes.UPDATE;
+      const hasValidItemLabelDeclaration =
+        isAppUpdateItem || (!isAppUpdateItem && newsItem.action.label);
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
@@ -94,20 +95,30 @@ class NewsCollection {
               includePrerelease: true,
             }))) &&
         (platform === 'browser' || includes(targetPlatforms, platform)) &&
-        newsItem.type !== NewsTypes.UPDATE &&
         newsItem.id &&
         newsItem.title &&
         newsItem.content &&
-        newsItem.action.label &&
+        hasValidItemLabelDeclaration &&
         newsItem.date
       );
     });
-    const orderedNews = orderBy(filteredNews, 'date', 'desc');
-    const update = data.filter((item) => item.type === NewsTypes.UPDATE)[0];
-
+    const filteredNewsWithoutAppUpdates = filter(
+      filteredNewsWithAppUpdates,
+      (newsItem) => newsItem.type !== NewsTypes.UPDATE
+    );
+    const orderedNewsWithoutAppUpdates = orderBy(
+      filteredNewsWithoutAppUpdates,
+      'date',
+      'desc'
+    );
+    const orderedNewsWithAppUpdates = orderBy(
+      filteredNewsWithAppUpdates,
+      'date',
+      'desc'
+    );
     runInAction(() => {
-      this.all = orderedNews;
-      this.update = update;
+      this.all = orderedNewsWithoutAppUpdates;
+      this.allWithAppUpdates = orderedNewsWithAppUpdates;
     });
   }
 
@@ -177,9 +188,11 @@ class NewsCollection {
     return orderBy(read, 'date', 'asc');
   }
 
-  // @computed get update(): News | null {
-  //   return this.all.filter(item => item.type === NewsTypes.UPDATE)[0];
-  // }
+  @computed get update(): News | null {
+    return this.allWithAppUpdates.filter(
+      (item) => item.type === NewsTypes.UPDATE
+    )[0];
+  }
 }
 
 export default {

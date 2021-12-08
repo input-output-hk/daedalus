@@ -7,6 +7,7 @@ import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 import { select, boolean } from '@storybook/addon-knobs';
+import classNames from 'classnames';
 import { isShelleyTestnetTheme } from './utils';
 
 // Assets and helpers
@@ -18,11 +19,13 @@ import {
 import { NUMBER_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
+import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
+import { DiscreetToggleTopBar } from '../../../source/renderer/app/features';
 import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
-import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
+import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/types';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 
 // Empty screen elements
@@ -31,6 +34,8 @@ import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
 import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
+
+import topBarStyles from '../../../source/renderer/app/components/layout/TopBar.scss';
 
 export type StoriesProps = {
   wallets: Array<Wallet>,
@@ -131,7 +136,7 @@ export default class StoryLayout extends Component<Props> {
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
-      info: `${wallet.amount} ADA`,
+      amount: wallet.amount,
       isConnected: true,
       hasPassword: wallet.hasPassword,
       isNotResponding:
@@ -223,7 +228,18 @@ export default class StoryLayout extends Component<Props> {
         syncPercentage={100}
         isProduction
         isMainnet
+        {...(boolean('hasTadaIcon', true) ? { hasTadaIcon: true } : {})}
       />
+      <span
+        className={classNames(
+          topBarStyles.rectangle,
+          boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
+        )}
+      />
+      <DiscreetToggleTopBar hasTadaIcon={boolean('hasTadaIcon')} />
+      {boolean('hasTadaIcon') && (
+        <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
+      )}
       <NewsFeedIcon
         onNewsFeedIconClick={action('onNewsFeedIconClick')}
         hasNotification={false}
