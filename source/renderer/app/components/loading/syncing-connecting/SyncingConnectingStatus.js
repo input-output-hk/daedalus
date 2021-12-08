@@ -103,7 +103,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  _getConnectingMessage = () => {
+  _getConnectingMessage = (): {
+    connectingMessage: string,
+    connectingDescription?: string,
+  } => {
     const {
       cardanoNodeState,
       hasBeenConnected,
@@ -112,11 +115,11 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isConnected,
     } = this.props;
     let connectingMessage;
-    let connectingDescription;
     if (isConnected) {
       connectingMessage = messages.loadingWalletData;
-      return { connectingMessage, connectingDescription };
+      return { connectingMessage };
     }
+    let connectingDescription;
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:
