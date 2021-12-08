@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, number } from '@storybook/addon-knobs';
+import { withKnobs, boolean, number, select } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
@@ -12,6 +12,7 @@ import VotingRegistrationStepsConfirm from '../../../source/renderer/app/compone
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
+import { FundPhases } from '../../../source/renderer/app/stores/VotingStore';
 import { VotingFooterLinks } from '../../../source/renderer/app/components/voting/VotingFooterLinks';
 import {
   LANGUAGE_OPTIONS,
@@ -174,10 +175,15 @@ storiesOf('Voting|Voting Info', module)
   .add('Voting Info', () => (
     <VerticalFlexContainer>
       <VotingInfo
+        fundPhase={select('Fund phase', [
+          FundPhases.SNAPSHOT,
+          FundPhases.VOTING,
+          FundPhases.TALLYING,
+          FundPhases.RESULTS,
+        ])}
         currentLocale={LANGUAGE_OPTIONS[0].value}
         currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
         currentTimeFormat={TIME_OPTIONS[0].value}
-        isRegistrationEnded={boolean('isRegistrationEnded', false)}
         onRegisterToVoteClick={action('onRegisterToVoteClick')}
         onExternalLinkClick={action('onExternalLinkClick')}
       />

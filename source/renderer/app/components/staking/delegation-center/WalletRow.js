@@ -82,22 +82,16 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   delegatedStakePool?: ?StakePool,
-  numberOfStakePools: number,
   numberOfRankedStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
   getStakePoolById: Function,
   nextEpochNumber: number,
   futureEpochNumber: number,
-  onSelect?: Function,
-  selectedPoolId?: ?number,
-  isListActive?: boolean,
   currentTheme: string,
   onOpenExternalLink: Function,
   showWithSelectButton?: boolean,
   containerClassName: string,
-  setListActive?: Function,
-  listName?: string,
 };
 
 type WalletRowState = {
