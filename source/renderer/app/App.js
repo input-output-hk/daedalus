@@ -1,7 +1,6 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
-import { spy } from 'mobx';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
@@ -31,9 +30,6 @@ export default class App extends Component<{
   history: Object,
 }> {
   componentDidMount() {
-    spy((event) => {
-      console.log(event);
-    });
     // Loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
   }
