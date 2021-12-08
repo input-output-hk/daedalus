@@ -238,7 +238,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "bchaddrjs"
       , "bech32"
       , "big-integer"
-      , "bigi"
       , "bignumber.js"
       , "bip66"
       , "bitcoin-ops"
