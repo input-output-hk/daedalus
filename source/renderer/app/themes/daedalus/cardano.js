@@ -166,7 +166,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-connecting-background-color7': 'rgba(32, 34, 37, 0.91)',
     '--theme-connecting-background-color8': 'rgba(32, 34, 37, 1)',
     '--theme-connecting-text-color': '#fff',
-    '--theme-connecting-description-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-connecting-description-color': 'rgba(255, 255, 255, 0.7)',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#5e6066',
