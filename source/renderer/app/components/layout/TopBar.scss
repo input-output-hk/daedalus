@@ -30,7 +30,7 @@
       display: flex;
       flex-direction: column;
       font-family: var(--font-regular);
-      max-width: 60%;
+      overflow: hidden;
       text-align: center;
       user-select: text;
 
@@ -64,6 +64,7 @@
     align-items: center;
     cursor: pointer;
     display: flex;
+    flex-shrink: 0;
     height: 50px;
     justify-content: center;
     width: 50px;
@@ -82,23 +83,15 @@
   .topBarTitle {
     align-items: center;
     display: flex;
-    flex-grow: 1;
     justify-content: center;
-    left: 70px;
-    position: absolute;
-    width: calc(100% - 230px);
+    margin: auto;
+    min-width: 0;
+    padding-left: 26px;
   }
 
   .rectangle {
-    &.hasTadaIcon {
-      right: 220px;
-    }
-
-    background-color: var(--theme-node-sync-icon-color);
+    border-right: 1px solid var(--theme-node-sync-icon-color);
     height: 12px;
     opacity: 0.3;
-    position: absolute;
-    right: 162px;
-    width: 1px;
   }
 }

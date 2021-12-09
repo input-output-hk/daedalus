@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import classnames from 'classnames';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import { DiscreetToggleTopBar } from '../features/discreet-mode';
@@ -94,18 +93,9 @@ const TopBarContainer = (
       isShelleyActivated={isShelleyActivated}
     >
       {testnetLabel}
-      <NodeSyncStatusIcon
-        isSynced={isSynced}
-        syncPercentage={syncPercentage}
-        hasTadaIcon={shouldShowTadaIcon}
-      />
-      <span
-        className={classnames(
-          topBarStyles.rectangle,
-          shouldShowTadaIcon && topBarStyles.hasTadaIcon
-        )}
-      />
-      <DiscreetToggleTopBar hasTadaIcon={shouldShowTadaIcon} />
+      <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
+      <span className={topBarStyles.rectangle} />
+      <DiscreetToggleTopBar />
       {shouldShowTadaIcon && (
         <TadaButton
           onClick={onClickTadaButton}

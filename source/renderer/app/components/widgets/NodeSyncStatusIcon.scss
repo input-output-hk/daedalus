@@ -1,11 +1,6 @@
 .component {
+  margin: 0 40px;
   overflow: visible;
-  position: absolute;
-  right: 202px;
-
-  &.hasTadaIcon {
-    right: 260px;
-  }
 
   &:hover {
     .info {
