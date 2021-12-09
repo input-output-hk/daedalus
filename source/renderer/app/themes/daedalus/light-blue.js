@@ -165,6 +165,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-connecting-background-color7': 'rgba(28, 62, 101, 0.91)',
     '--theme-connecting-background-color8': 'rgba(28, 62, 101, 1)',
     '--theme-connecting-text-color': '#fff',
+    '--theme-connecting-description-color': 'rgba(250, 251, 252, 0.7)',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#5e6066',

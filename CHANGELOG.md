@@ -4,12 +4,14 @@
 
 ### Chores
 
+- Improve startup and shutdown messages ([PR 2770](https://github.com/input-output-hk/daedalus/pull/2770))
 - Updated `cardano-wallet` to version `2021-11-11` ([PR 2765](https://github.com/input-output-hk/daedalus/pull/2765))
 - Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
 - Updated `cardano-launcher` to version `0.20211105.1` and added Cardano Node RTS flags which improve resource usage ([PR 2735](https://github.com/input-output-hk/daedalus/pull/2735), [PR 2741](https://github.com/input-output-hk/daedalus/pull/2741))
 
 ### Features
 
+- Implement catalyst state snapshot phase ([PR 2771](https://github.com/input-output-hk/daedalus/pull/2771))
 - Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724), [PR 2725](https://github.com/input-output-hk/daedalus/pull/2725), [PR 2742](https://github.com/input-output-hk/daedalus/pull/2742), [PR 2740](https://github.com/input-output-hk/daedalus/pull/2740), [PR 2756](https://github.com/input-output-hk/daedalus/pull/2756))
 - Updated slider component to only execute onAfterChange if slider had moved ([PR 2766](https://github.com/input-output-hk/daedalus/pull/2766))
 
