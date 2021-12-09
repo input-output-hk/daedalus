@@ -34,6 +34,8 @@ export const MAX_HUMAN_ADDRESS_LENGTH = 150;
 export const KEY_PREFIXES = {
   // ...add more keys if needed
   PUBLIC_KEY_WITH_CHAIN_CODE: 'acct_xvk', // Ed25519 public key with chain code
+  STAKE_ADDRESS_TESTNET: 'stake_test',
+  STAKE_ADDRESS: 'stake',
 };
 
 // Helpers
