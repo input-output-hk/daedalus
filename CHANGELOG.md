@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 4.6.0
 
 ### Features
 
