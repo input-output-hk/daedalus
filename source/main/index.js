@@ -156,8 +156,7 @@ const onAppReady = async () => {
   await installChromeExtensions(isDev);
 
   logger.info('Setting up Main Window...');
-  mainWindow = createMainWindow(
-    userLocale,
+  mainWindow = createMainWindow(userLocale, () =>
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);

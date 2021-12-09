@@ -37,12 +37,15 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
+export const createMainWindow = (
+  locale: string,
+  getWindowBounds: () => ?Rectangle
+) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
-    ...windowBounds,
+    ...getWindowBounds(),
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
@@ -149,6 +152,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
    * window constructor above was buggy (height was not correctly applied)
    */
   window.on('ready-to-show', () => {
+    const windowBounds = getWindowBounds();
     if (windowBounds) {
       window.setBounds(windowBounds);
     }
