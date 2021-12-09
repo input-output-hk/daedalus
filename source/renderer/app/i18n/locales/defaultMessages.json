@@ -3745,7 +3745,7 @@
         }
       },
       {
-        "defaultMessage": "!!!A-Z",
+        "defaultMessage": "!!!A – Z",
         "description": "Label for the \"Name\" sort button",
         "end": {
           "column": 3,

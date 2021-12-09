@@ -3,18 +3,43 @@
 
   .walletSortButton {
     align-items: center;
-    background-color: var(--theme-sidebar-sort-button-background-color);
+    background-color: rgba(
+      var(--theme-sidebar-sort-button-background-color),
+      0.1
+    );
+    color: var(--theme-sidebar-menu-add-button-text-color);
     display: flex;
     font-size: 11px;
     height: 22px;
     line-height: 1.45;
+    opacity: 0.3;
     padding: 3px 8px;
     width: auto;
 
     &.walletSortButtonActive,
+    &:hover,
+    &:active {
+      opacity: 1;
+    }
+
+    &.walletSortButtonActive {
+      background-color: rgba(
+        var(--theme-sidebar-sort-button-background-color),
+        0.1
+      );
+    }
+
     &:hover {
-      background-color: var(
-        --theme-sidebar-sort-button-active-background-color
+      background-color: rgba(
+        var(--theme-sidebar-sort-button-background-color),
+        0.05
+      );
+    }
+
+    &:active {
+      background-color: rgba(
+        var(--theme-sidebar-sort-button-background-color),
+        0.12
       );
     }
   }

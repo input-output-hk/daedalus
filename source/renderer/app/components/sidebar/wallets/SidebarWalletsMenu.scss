@@ -24,18 +24,16 @@
 }
 
 .wallets {
-  height: calc(100% - #{$sidebar-button-height});
+  flex: 1 1 auto;
 }
 
 .addWalletButton {
   @include button;
   align-items: center;
   background-color: var(--theme-sidebar-menu-add-button-background-color);
-  bottom: 0;
   color: var(--theme-sidebar-menu-add-button-text-color);
   display: flex;
   height: $sidebar-button-height;
-  position: absolute;
   width: $sidebar-width - $sidebar-minimized-category-width;
 
   &:hover {
@@ -71,11 +69,10 @@
 
 .walletSortControls {
   align-items: center;
-  bottom: $sidebar-button-height;
   display: flex;
   justify-content: center;
   margin-bottom: 14px;
-  position: absolute;
+  margin-top: 14px;
   width: 100%;
 
   .walletSortOffset {
@@ -84,6 +81,8 @@
 }
 
 .walletSearchContainer {
-  margin-bottom: 10px;
+  align-items: center;
+  display: flex;
+  height: 84px;
   padding: 0 20px;
 }

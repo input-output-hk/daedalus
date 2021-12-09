@@ -3,6 +3,7 @@ import type {
   SidebarWalletType,
   WalletSortByOptions,
   WalletSortOrderOptions,
+  WalletSortConfig,
 } from '../../types/sidebarTypes';
 
 export type SidebarMenus = {
@@ -17,10 +18,7 @@ export type SidebarMenus = {
       }) => void,
       onSearch: (term: string) => void,
     },
-    walletSortConfig: {
-      sortBy: WalletSortByOptions,
-      sortOrder: WalletSortOrderOptions,
-    },
+    walletSortConfig: WalletSortConfig,
     searchValue: string,
   },
 };

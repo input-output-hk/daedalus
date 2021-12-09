@@ -364,7 +364,7 @@
   "sidebar.wallets.sortByBalanceTooltip": "残高で並べ替える",
   "sidebar.wallets.sortByDateButton": "日付",
   "sidebar.wallets.sortByDateTooltip": "作成日で並べ替える",
-  "sidebar.wallets.sortByNameButton": "A-Z",
+  "sidebar.wallets.sortByNameButton": "A – Z",
   "sidebar.wallets.sortByNameTooltip": "ウォレット名で並べ替える",
   "staking.countdown.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja",
   "staking.delegationCenter.bodyTitle": "ウォレット",

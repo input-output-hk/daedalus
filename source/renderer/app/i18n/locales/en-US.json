@@ -364,7 +364,7 @@
   "sidebar.wallets.sortByBalanceTooltip": "Sort by balance",
   "sidebar.wallets.sortByDateButton": "Date",
   "sidebar.wallets.sortByDateTooltip": "Sort by creation date",
-  "sidebar.wallets.sortByNameButton": "A-Z",
+  "sidebar.wallets.sortByNameButton": "A – Z",
   "sidebar.wallets.sortByNameTooltip": "Sort by name",
   "staking.countdown.learnMore.linkUrl": "https://iohk.zendesk.com/hc/en-us",
   "staking.delegationCenter.bodyTitle": "Wallets",

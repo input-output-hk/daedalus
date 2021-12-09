@@ -7,6 +7,7 @@ import type {
   SidebarWalletType,
   WalletSortByOptions,
   WalletSortOrderOptions,
+  WalletSortConfig,
 } from '../types/sidebarTypes';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import type Wallet from '../domains/Wallet';
@@ -16,10 +17,10 @@ export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
-  @observable walletSortConfig: {
-    sortBy: WalletSortByOptions,
-    sortOrder: WalletSortOrderOptions,
-  } = { sortBy: WalletSortBy.Date, sortOrder: WalletSortOrder.Asc };
+  @observable walletSortConfig: WalletSortConfig = {
+    sortBy: WalletSortBy.Date,
+    sortOrder: WalletSortOrder.Asc,
+  };
   @observable searchValue: string = '';
 
   setup() {
@@ -50,7 +51,10 @@ export default class SidebarStore extends Store {
       hardwareWallets,
     } = this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
-    const sortedWallets = this._sortWallets(wallets.all);
+    const sortedWallets = [
+      ...this._sortWallets(wallets.all.filter((w) => !w.isLegacy)),
+      ...this._sortWallets(wallets.all.filter((w) => w.isLegacy)),
+    ];
     return sortedWallets.map((wallet) => {
       const isHardwareWalletDisconnected = get(
         hardwareWalletsConnectionData,
@@ -85,14 +89,7 @@ export default class SidebarStore extends Store {
       (w: Wallet, index: number) => ({ wallet: w, index })
     );
 
-    const amountWeight = ({ wallet }: IndexedWallet) =>
-      wallet.amount.toNumber();
-
-    const creationDateWeight = ({ index }: IndexedWallet) => index;
-
-    const nameWeight = ({ wallet }: IndexedWallet) => wallet.name;
-
-    const doOrderBy = (fn: Array<(fn: IndexedWallet) => string | number>) => {
+    const doOrderBy = (fn: string[]) => {
       return orderBy(
         walletsWithIndex,
         fn,
@@ -102,11 +99,11 @@ export default class SidebarStore extends Store {
 
     switch (sortBy) {
       case WalletSortBy.Date:
-        return doOrderBy([creationDateWeight]);
+        return doOrderBy(['wallet.amount']);
       case WalletSortBy.Balance:
-        return doOrderBy([amountWeight, nameWeight, creationDateWeight]);
+        return doOrderBy(['wallet.amount', 'wallet.name', 'index']);
       case WalletSortBy.Name:
-        return doOrderBy([nameWeight, amountWeight, creationDateWeight]);
+        return doOrderBy(['wallet.name', 'wallet.amount', 'index']);
       case WalletSortBy.None:
       default:
         return wallets;

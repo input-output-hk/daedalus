@@ -1,25 +1,25 @@
 .component {
   align-items: center;
 
-  border-bottom: 1px solid rgba(250, 251, 252, 0.1);
+  border-bottom: 1px solid var(--theme-sidebar-search-field-border-color);
   display: flex;
   position: relative;
 
   &:focus,
   &:active,
-  &:focus-within {
-    border-bottom-color: rgba(250, 251, 252, 0.5);
+  &:focus-within,
+  &.hasValue {
+    border-bottom-color: var(--theme-sidebar-search-field-border-color-active);
 
     .searchIcon {
-      path {
-        fill: var(--theme-sidebar-menu-add-button-text-color);
-      }
+      color: var(--theme-sidebar-menu-add-button-text-color);
     }
   }
 }
 
 .searchIcon {
   bottom: 6px;
+  color: var(--theme-sidebar-search-field-border-color);
   position: absolute;
   svg {
     height: 15px;
@@ -27,9 +27,7 @@
   }
 
   &.highlight {
-    path {
-      fill: var(--theme-sidebar-menu-add-button-text-color);
-    }
+    color: var(--theme-sidebar-menu-add-button-text-color);
   }
 }
 
@@ -43,10 +41,6 @@
 
     padding-bottom: 6px;
     padding-left: 25px;
-
-    &:focus {
-      border-bottom-color: rgba(250, 251, 252, 0.5);
-    }
   }
 }
 
@@ -65,7 +59,7 @@
     height: 8px;
     width: 8px;
     polygon {
-      fill: var(--theme-bordered-box-text-color);
+      fill: var(--theme-sidebar-menu-add-button-text-color);
     }
   }
 }

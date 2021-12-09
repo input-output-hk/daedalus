@@ -6,6 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { map, noop } from 'lodash';
+import Fuse from 'fuse.js';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
@@ -47,7 +48,7 @@ const messages = defineMessages({
   },
   sortByNameButton: {
     id: 'sidebar.wallets.sortByNameButton',
-    defaultMessage: '!!!A-Z',
+    defaultMessage: '!!!A – Z',
     description: 'Label for the "Name" sort button',
   },
   sortByNameTooltip: {
@@ -113,14 +114,19 @@ export default class SidebarWalletsMenu extends Component<Props> {
     });
   };
 
-  getWallets = (
+  filterWalletsBySearchValue = (
     searchValue: string,
     wallets: SidebarWalletType[]
   ): SidebarWalletType[] => {
     if (searchValue.length > 0) {
-      return wallets.filter((w) =>
-        w.title.toLowerCase().includes(searchValue.toLowerCase())
-      );
+      const fuse = new Fuse(wallets, {
+        keys: ['title'],
+        threshold: 0.6,
+        includeScore: true,
+      });
+
+      const result = fuse.search(searchValue);
+      return result.map((r) => r.item);
     }
 
     return wallets;
@@ -146,7 +152,10 @@ export default class SidebarWalletsMenu extends Component<Props> {
       isAddWalletButtonActive ? styles.active : null,
     ]);
 
-    const filteredWallets = this.getWallets(searchValue, wallets);
+    const filteredWallets = this.filterWalletsBySearchValue(
+      searchValue,
+      wallets
+    );
 
     return (
       <SidebarSubMenu visible={this.props.visible}>

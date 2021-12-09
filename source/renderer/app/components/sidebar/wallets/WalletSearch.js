@@ -31,7 +31,13 @@ const WalletSearchComponent = ({
 }: Props) => {
   const hasValue = !!searchValue.length;
   return (
-    <label htmlFor="sideBarwalletSearch" className={styles.component}>
+    <label
+      htmlFor="sideBarwalletSearch"
+      className={classNames({
+        [styles.component]: true,
+        [styles.hasValue]: hasValue,
+      })}
+    >
       <SVGInline
         svg={searchIcon}
         className={classNames({
@@ -43,14 +49,12 @@ const WalletSearchComponent = ({
         id="sideBarwalletSearch"
         className={styles.input}
         onChange={onSearch}
+        spellCheck={false}
         value={searchValue}
         placeholder={intl.formatMessage(messages.placeholder)}
       />
       {hasValue && (
-        <button
-          className={classNames([styles.clearButton, 'flat'])}
-          onClick={() => onSearch('')}
-        >
+        <button className={styles.clearButton} onClick={() => onSearch('')}>
           <SVGInline svg={crossIcon} />
         </button>
       )}

@@ -785,9 +785,10 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#898ee6',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
-    '--theme-sidebar-sort-button-active-background-color':
-      'rgba(250, 251, 252, 0.1)',
-    '--theme-sidebar-sort-button-background-color': 'rgba(250, 251, 252, 0.03)',
+    '--theme-sidebar-sort-button-background-color': '255, 255, 255',
+    '--theme-sidebar-search-field-border-color': 'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-search-field-border-color-active':
+      'rgba(255, 255, 255, 0.5)',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(42, 43, 60, 0.96)',

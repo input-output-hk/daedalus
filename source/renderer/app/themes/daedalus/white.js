@@ -789,9 +789,9 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#29b595',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
-    '--theme-sidebar-sort-button-active-background-color':
-      'rgba(250, 251, 252, 0.1)',
-    '--theme-sidebar-sort-button-background-color': 'rgba(250, 251, 252, 0.03)',
+    '--theme-sidebar-sort-button-background-color': '45, 45, 45',
+    '--theme-sidebar-search-field-border-color': 'rgba(45, 45, 45, 0.1)',
+    '--theme-sidebar-search-field-border-color-active': 'rgba(45, 45, 45, 0.5)',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(255, 255, 255, 0.96)',

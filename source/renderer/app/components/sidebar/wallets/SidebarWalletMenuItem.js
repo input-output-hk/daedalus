@@ -72,7 +72,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
 
     const chunks = highlightWords({
       text: title,
-      query: searchValue,
+      query: `/(${searchValue.split('').join('|')})/i`,
     });
 
     return (
@@ -80,17 +80,14 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         <div className={styles.meta}>
           <div className={styles.topContainer}>
             <div className={styles.title}>
-              {chunks.map(({ text, match, key }) =>
-                match ? (
-                  <span className={styles.searchMatch} key={key}>
-                    {text}
-                  </span>
-                ) : (
-                  <span key={key} className={styles.searchUnmatch}>
-                    {text}
-                  </span>
-                )
-              )}
+              {chunks.map(({ text, match, key }) => (
+                <span
+                  key={key}
+                  className={match ? styles.searchMatch : styles.searchUnmatch}
+                >
+                  {text}
+                </span>
+              ))}
             </div>
             {isHardwareWallet && (
               <div className={styles.hardwareWalletsIconWrapper}>
