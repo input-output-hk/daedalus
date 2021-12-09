@@ -2,7 +2,6 @@
 import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
-import { client } from 'electron-connect';
 import EventEmitter from 'events';
 import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
@@ -58,7 +57,6 @@ let cardanoNode: CardanoNode;
 const {
   isDev,
   isTest,
-  isWatchMode,
   isBlankScreenFixActive,
   isSelfnode,
   network,
@@ -220,11 +218,6 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
-
-  if (isWatchMode) {
-    // Connect to electron-connect server which restarts / reloads windows on file changes
-    client.create(mainWindow);
-  }
 
   mainWindow.on('close', async (event) => {
     logger.info(
