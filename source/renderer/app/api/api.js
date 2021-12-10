@@ -799,6 +799,7 @@ export default class AdaApi {
       isLegacy,
       assets,
       withdrawal = TransactionWithdrawal,
+      hasAssetsRemainingAfterTransaction,
     } = request;
 
     try {
@@ -836,6 +837,22 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::createTransaction error', { error });
+      const adaToProceedRegex = /(?:.*I need approximately (.*) ada to proceed.*)/;
+      if (
+        error.code === 'cannot_cover_fee' &&
+        hasAssetsRemainingAfterTransaction &&
+        adaToProceedRegex.test(error.message)
+      ) {
+        const adaToRemain = Math.ceil(
+          Number(error.message.replace(adaToProceedRegex, '$1'))
+        );
+        throw new ApiError()
+          .set('cannotLeaveWalletEmpty', true, {
+            adaToRemain,
+          })
+          .result();
+      }
+
       throw new ApiError(error)
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')

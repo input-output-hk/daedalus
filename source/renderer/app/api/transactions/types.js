@@ -136,6 +136,7 @@ export type CreateTransactionRequest = {
   isLegacy: boolean,
   assets?: ApiTokens,
   withdrawal?: 'self' | Array<string>,
+  hasAssetsRemainingAfterTransaction?: boolean,
 };
 
 export type DeleteTransactionRequest = {

@@ -111,4 +111,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!This URL is not a valid SMASH server',
     description: '"This URL is not a valid SMASH server" error message',
   },
+  cannotLeaveWalletEmpty: {
+    id: 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens',
+    defaultMessage:
+      '!!!Balance after transaction would not be enough to support tokens in wallet. A minimum of {adaToRemain} ADA must remain.',
+    description:
+      '"Balance after transaction would not be enough to support tokens',
+  },
 });

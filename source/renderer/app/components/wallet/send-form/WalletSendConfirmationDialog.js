@@ -115,11 +115,15 @@ export default class WalletSendConfirmationDialog extends Component<
           isHardwareWallet,
         } = this.props;
         const { passphrase } = form.values();
+        const hasAssetsRemainingAfterTransaction =
+          this.props.allAvailableTokens?.length &&
+          this.props.allAvailableTokens.length > 0;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
+          hasAssetsRemainingAfterTransaction,
         };
         this.props.onSubmit(transactionData);
       },
@@ -235,7 +239,7 @@ export default class WalletSendConfirmationDialog extends Component<
           onExternalLinkClick={onExternalLinkClick}
         />
       ) : (
-        intl.formatMessage(error)
+        <FormattedHTMLMessage {...error} />
       );
     }
 

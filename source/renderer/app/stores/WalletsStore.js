@@ -717,12 +717,14 @@ export default class WalletsStore extends Store {
     passphrase,
     assets,
     assetsAmounts: assetsAmountsStr,
+    hasAssetsRemainingAfterTransaction,
   }: {
     receiver: string,
     amount: string,
     passphrase: string,
     assets?: Array<AssetToken>,
     assetsAmounts?: Array<string>,
+    hasAssetsRemainingAfterTransaction?: boolean,
   }) => {
     const assetsAmounts = assetsAmountsStr
       ? assetsAmountsStr.map((assetAmount) => new BigNumber(assetAmount))
@@ -748,6 +750,7 @@ export default class WalletsStore extends Store {
       walletId: wallet.id,
       isLegacy: wallet.isLegacy,
       assets: formattedAssets,
+      hasAssetsRemainingAfterTransaction,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();

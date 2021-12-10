@@ -285,6 +285,20 @@
           "column": 22,
           "line": 109
         }
+      },
+      {
+        "defaultMessage": "!!!Balance after transaction would not be enough to support tokens in wallet. A minimum of {adaToRemain} ADA must remain.",
+        "description": "\"Balance after transaction would not be enough to support tokens",
+        "end": {
+          "column": 3,
+          "line": 120
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens",
+        "start": {
+          "column": 26,
+          "line": 114
+        }
       }
     ],
     "path": "source/renderer/app/api/errors.json"
