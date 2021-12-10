@@ -464,7 +464,7 @@ function update_ts_ignore_annotations() {
                 find ./$folder -type f -name "*.ts" -or -name "*.tsx" |
                 while read line;
                 do
-                    perl -0777 -i -pe "s/((>)(\n\s+)(\/\/( @ts-ignore.*))/\$1\$2{/*\$4 */}/g" $line
+                    perl -0777 -i -pe "s/(>)(\n\s+)(\/\/( @ts-ignore.*))/\$1\$2{/*\$4 */}/g" $line
                 done
             done
     ) & spin_while_executing
