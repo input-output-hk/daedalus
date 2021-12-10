@@ -7,7 +7,6 @@ import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 import { select, boolean } from '@storybook/addon-knobs';
-import classNames from 'classnames';
 import { isShelleyTestnetTheme } from './utils';
 
 // Assets and helpers
@@ -228,15 +227,9 @@ export default class StoryLayout extends Component<Props> {
         syncPercentage={100}
         isProduction
         isMainnet
-        {...(boolean('hasTadaIcon', true) ? { hasTadaIcon: true } : {})}
       />
-      <span
-        className={classNames(
-          topBarStyles.rectangle,
-          boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
-        )}
-      />
-      <DiscreetToggleTopBar hasTadaIcon={boolean('hasTadaIcon')} />
+      <span className={topBarStyles.rectangle} />
+      <DiscreetToggleTopBar />
       {boolean('hasTadaIcon') && (
         <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
       )}

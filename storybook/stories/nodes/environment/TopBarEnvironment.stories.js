@@ -3,7 +3,6 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
-import classNames from 'classnames';
 import StoryDecorator from '../../_support/StoryDecorator';
 import StoryProvider from '../../_support/StoryProvider';
 import SidebarLayout from '../../../../source/renderer/app/components/layout/SidebarLayout';
@@ -33,12 +32,9 @@ const topBarTestEnv = (currentTheme) => (
       syncPercentage={100}
       isProduction={false}
       isMainnet={false}
-      hasTadaIcon
     />
-    <span
-      className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
-    />
-    <DiscreetToggleTopBar hasTadaIcon />
+    <span className={topBarStyles.rectangle} />
+    <DiscreetToggleTopBar />
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
@@ -63,12 +59,9 @@ const topBarStagingEnv = (currentTheme) => (
       syncPercentage={100}
       isProduction={false}
       isMainnet={false}
-      hasTadaIcon
     />
-    <span
-      className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
-    />
-    <DiscreetToggleTopBar hasTadaIcon />
+    <span className={topBarStyles.rectangle} />
+    <DiscreetToggleTopBar />
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
@@ -87,17 +80,9 @@ const topBarProductionEnv = (currentTheme) => (
     isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
     isAlonzoActivated={boolean('isAlonzoActivated', false)}
   >
-    <NodeSyncStatusIcon
-      isSynced
-      syncPercentage={100}
-      isProduction
-      isMainnet
-      hasTadaIcon
-    />
-    <span
-      className={classNames(topBarStyles.rectangle, topBarStyles.hasTadaIcon)}
-    />
-    <DiscreetToggleTopBar hasTadaIcon />
+    <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
+    <span className={topBarStyles.rectangle} />
+    <DiscreetToggleTopBar />
     <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}

@@ -42,7 +42,6 @@ storiesOf('Decentralization | Countdown', module)
             syncPercentage={100}
             isProduction
             isMainnet
-            hasTadaIcon={isAlonzoActivated}
           />
           {isAlonzoActivated && (
             <TadaButton
