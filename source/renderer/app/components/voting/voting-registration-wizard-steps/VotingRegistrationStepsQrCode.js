@@ -4,9 +4,9 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import QRCode from 'qrcode.react';
 import { set } from 'lodash';
 import { observer } from 'mobx-react';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
-import { PatchCheckbox } from '../widgets/PatchCheckbox';
 import styles from './VotingRegistrationStepsQrCode.scss';
 
 const messages = defineMessages({
@@ -173,13 +173,13 @@ export default class VotingRegistrationStepsQrCode extends Component<
         </div>
         <hr className={styles.separator} />
         <div className={styles.checkboxes}>
-          <PatchCheckbox
+          <Checkbox
             label={checkbox1Label}
             onChange={() => this.toggleAcceptance('isCheckbox1Accepted')}
             className={styles.checkbox}
             checked={isCheckbox1Accepted}
           />
-          <PatchCheckbox
+          <Checkbox
             label={checkbox2Label}
             onChange={() => this.toggleAcceptance('isCheckbox2Accepted')}
             className={styles.checkbox}

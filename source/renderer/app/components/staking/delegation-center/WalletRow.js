@@ -2,7 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -23,6 +23,7 @@ import {
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
+import { WalletAmount } from './widgets';
 
 const messages = defineMessages({
   walletAmount: {
@@ -81,22 +82,16 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   delegatedStakePool?: ?StakePool,
-  numberOfStakePools: number,
   numberOfRankedStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
   getStakePoolById: Function,
   nextEpochNumber: number,
   futureEpochNumber: number,
-  onSelect?: Function,
-  selectedPoolId?: ?number,
-  isListActive?: boolean,
   currentTheme: string,
   onOpenExternalLink: Function,
   showWithSelectButton?: boolean,
   containerClassName: string,
-  setListActive?: Function,
-  listName?: string,
 };
 
 type WalletRowState = {
@@ -303,11 +298,9 @@ export default class WalletRow extends Component<Props, WalletRowState> {
           </div>
           <div className={styles.description}>
             {!isRestoring ? (
-              <FormattedMessage
-                {...messages.walletAmount}
-                values={{
-                  amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
-                }}
+              <WalletAmount
+                walletAmount={messages.walletAmount}
+                amount={amount.toFormat(DECIMAL_PLACES_IN_ADA)}
               />
             ) : (
               '-'
