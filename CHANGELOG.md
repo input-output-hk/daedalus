@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Refactor topbar to use relative position ([PR 2782](https://github.com/input-output-hk/daedalus/pull/2782))
+
 ## 4.6.0
 
 ### Features
