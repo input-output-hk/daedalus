@@ -10,10 +10,7 @@ import TransferFundsPage from './wallet/TransferFundsPage';
 import AssetSettingsDialogContainer from './assets/AssetSettingsDialogContainer';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
-import type {
-  WalletSortByOptions,
-  WalletSortOrderOptions,
-} from '../types/sidebarTypes';
+import type { WalletSortConfig } from '../types/sidebarTypes';
 
 @inject('stores', 'actions')
 @observer
@@ -62,19 +59,10 @@ export default class MainLayout extends Component<InjectedContainerProps> {
               onWalletItemClick: (walletId: string) => {
                 actions.sidebar.walletSelected.trigger({ walletId });
               },
-              onWalletSortBy: ({
-                sortBy,
-                sortOrder,
-              }: {
-                sortBy: WalletSortByOptions,
-                sortOrder: WalletSortOrderOptions,
-              }) => {
-                actions.sidebar.changeWalletSortType.trigger({
-                  sortBy,
-                  sortOrder,
-                });
+              onWalletSortBy: ({ sortBy }: WalletSortConfig) => {
+                sidebar.onChangeWalletSortType(sortBy);
               },
-              onSearch: actions.sidebar.searchValueUpdated.trigger,
+              onSearch: sidebar.onSearchValueUpdated,
             },
             walletSortConfig: {
               sortBy: sidebar.walletSortConfig.sortBy,

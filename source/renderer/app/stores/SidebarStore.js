@@ -1,16 +1,15 @@
 // @flow
 import { action, computed, observable } from 'mobx';
-import { get, orderBy } from 'lodash';
+import { get } from 'lodash';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
 import type {
   SidebarWalletType,
-  WalletSortByOptions,
-  WalletSortOrderOptions,
   WalletSortConfig,
+  WalletSortByOptions,
 } from '../types/sidebarTypes';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
-import type Wallet from '../domains/Wallet';
+import { changeWalletSorting, sortWallets } from '../utils/walletSorting';
 import Store from './lib/Store';
 
 export default class SidebarStore extends Store {
@@ -31,8 +30,6 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
-    sidebarActions.changeWalletSortType.listen(this._onChangeWalletSortType);
-    sidebarActions.searchValueUpdated.listen(this._onSearchValueUpdated);
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
       this._syncSidebarItemsWithShelleyActivation,
@@ -51,10 +48,17 @@ export default class SidebarStore extends Store {
       hardwareWallets,
     } = this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
-    const sortedWallets = [
-      ...this._sortWallets(wallets.all.filter((w) => !w.isLegacy)),
-      ...this._sortWallets(wallets.all.filter((w) => w.isLegacy)),
-    ];
+    const shelleyWallets = sortWallets({
+      wallets: wallets.all.filter((w) => !w.isLegacy),
+      sortOrder: this.walletSortConfig.sortOrder,
+      sortBy: this.walletSortConfig.sortBy,
+    });
+    const byronWallets = sortWallets({
+      wallets: wallets.all.filter((w) => w.isLegacy),
+      sortOrder: this.walletSortConfig.sortOrder,
+      sortBy: this.walletSortConfig.sortBy,
+    });
+    const sortedWallets = [...shelleyWallets, ...byronWallets];
     return sortedWallets.map((wallet) => {
       const isHardwareWalletDisconnected = get(
         hardwareWalletsConnectionData,
@@ -80,47 +84,15 @@ export default class SidebarStore extends Store {
     });
   }
 
-  _sortWallets = (wallets: Wallet[]): Wallet[] => {
-    const { sortBy, sortOrder } = this.walletSortConfig;
-
-    type IndexedWallet = { wallet: Wallet, index: number };
-
-    const walletsWithIndex: IndexedWallet[] = wallets.map(
-      (w: Wallet, index: number) => ({ wallet: w, index })
-    );
-
-    const doOrderBy = (fn: string[]) => {
-      return orderBy(
-        walletsWithIndex,
-        fn,
-        fn.map(() => sortOrder)
-      ).map(({ wallet }) => wallet);
-    };
-
-    switch (sortBy) {
-      case WalletSortBy.Date:
-        return doOrderBy(['wallet.amount']);
-      case WalletSortBy.Balance:
-        return doOrderBy(['wallet.amount', 'wallet.name', 'index']);
-      case WalletSortBy.Name:
-        return doOrderBy(['wallet.name', 'wallet.amount', 'index']);
-      case WalletSortBy.None:
-      default:
-        return wallets;
-    }
+  @action onChangeWalletSortType = (sortBy: WalletSortByOptions) => {
+    this.walletSortConfig = changeWalletSorting({
+      sortBy,
+      sortOrder: this.walletSortConfig.sortOrder,
+      currentSortBy: this.walletSortConfig.sortBy,
+    });
   };
 
-  @action _onChangeWalletSortType = ({
-    sortBy,
-    sortOrder,
-  }: {
-    sortBy: WalletSortByOptions,
-    sortOrder: WalletSortOrderOptions,
-  }) => {
-    this.walletSortConfig = { sortOrder, sortBy };
-  };
-
-  @action _onSearchValueUpdated = (searchValue: string) => {
+  @action onSearchValueUpdated = (searchValue: string) => {
     this.searchValue = searchValue;
   };
 

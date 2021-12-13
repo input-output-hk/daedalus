@@ -88,29 +88,13 @@ export default class SidebarWalletsMenu extends Component<Props> {
 
   walletSort = (sortBy: WalletSortByOptions) => {
     const {
-      sortBy: currentSortBy,
-      sortOrder,
+      sortOrder = WalletSortOrder.asc,
       onWalletSortBy = noop,
     } = this.props;
-    if (sortBy === currentSortBy) {
-      return onWalletSortBy({
-        sortBy,
-        sortOrder:
-          sortOrder === WalletSortOrder.Asc
-            ? WalletSortOrder.Desc
-            : WalletSortOrder.Asc,
-      });
-    }
-
-    const sortOrderByType = {
-      [WalletSortBy.Name]: WalletSortOrder.Asc,
-      [WalletSortBy.Date]: WalletSortOrder.Asc,
-      [WalletSortBy.Balance]: WalletSortOrder.Desc,
-    };
 
     return onWalletSortBy({
       sortBy,
-      sortOrder: sortOrderByType[sortBy],
+      sortOrder,
     });
   };
 
