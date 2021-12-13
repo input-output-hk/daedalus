@@ -461,14 +461,19 @@ function update_ts_ignore_annotations() {
         for migration_folder in ${!MIGRATION_FOLDERS[@]}
             do
                 folder=${MIGRATION_FOLDERS[migration_folder]}
-                find ./$folder -type f -name "*.ts" -or -name "*.tsx" |
+                find ./$folder -type f -name "*.tsx" |
                 while read line;
                 do
-                    perl -0777 -i -pe "s/[^=](>)([\n|\r]\s*)(\/\/( \@ts-ignore.*))/\$1\$2\{\/*\$4 *\/\}/g" $line
+                    perl -0777 -i -pe "s/([^A-z]<?\/?.*[^=]>)([\n|\r]\s*)(\/\/( \@ts-ignore.*))/\$1\$2\{\/*\$4 *\/\}/g" $line
                 done
             done
     ) & spin_while_executing
     pause "update @ts-ignore annotations in components"
+}
+
+function ts-ignore-TransferFunds() {
+    sed -i "36i\ \t\t\t// @ts-ignore" ./storybook/stories/wallets/legacyWallets/TransferFunds.stories.tsx
+    pause "update @ts-ignore annotations in TransferFunds.stories.tsx"
 }
 
 migration_functions=(
@@ -486,6 +491,7 @@ migration_functions=(
     convert_flow_code
     reignore # Litter codebase with ts-error or ts-ignore annotations
     update_ts_ignore_annotations
+    ts-ignore-TransferFunds
 )
 
 function tsc_check() {
