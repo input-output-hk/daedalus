@@ -1,22 +1,23 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import TinyButton from '../../widgets/forms/TinyButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/filter-... Remove this comment to see the full error message
 import filterIcon from '../../../assets/images/filter-dis-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './FilterButton.scss' or its co... Remove this comment to see the full error message
 import styles from './FilterButton.scss';
 
 type Props = {
-  disabled: boolean,
-  numberOfFilterDimensionsApplied: number,
-  onClick?: Function,
+  disabled: boolean;
+  numberOfFilterDimensionsApplied: number;
+  onClick?: (...args: Array<any>) => any;
 };
 
 @observer
-export default class FilterButton extends Component<Props> {
+class FilterButton extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -38,7 +39,6 @@ export default class FilterButton extends Component<Props> {
       </>
     );
     const buttonClasses = classNames(['primary', styles.actionButton]);
-
     return (
       <div className={styles.component}>
         <TinyButton
@@ -52,3 +52,5 @@ export default class FilterButton extends Component<Props> {
     );
   }
 }
+
+export default FilterButton;

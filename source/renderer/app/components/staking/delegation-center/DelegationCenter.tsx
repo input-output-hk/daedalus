@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import DelegationCenterHeader from './DelegationCenterHeader';
@@ -11,29 +10,29 @@ import type {
 } from '../../../api/network/types';
 
 type Props = {
-  wallets: Array<Wallet>,
-  numberOfStakePools: number,
-  numberOfRankedStakePools: number,
-  onDelegate: Function,
-  onUndelegate: Function,
-  networkTip: ?TipInfo,
-  epochLength: ?number,
-  nextEpoch: ?NextEpoch,
-  futureEpoch: ?FutureEpoch,
-  getStakePoolById: Function,
-  isLoading: boolean,
-  currentLocale: string,
-  isEpochsInfoAvailable: boolean,
-  isListActive?: boolean,
-  currentTheme: string,
-  onOpenExternalLink: Function,
-  containerClassName: string,
-  setListActive?: Function,
-  listName?: string,
+  wallets: Array<Wallet>;
+  numberOfStakePools: number;
+  numberOfRankedStakePools: number;
+  onDelegate: (...args: Array<any>) => any;
+  onUndelegate: (...args: Array<any>) => any;
+  networkTip: TipInfo | null | undefined;
+  epochLength: number | null | undefined;
+  nextEpoch: NextEpoch | null | undefined;
+  futureEpoch: FutureEpoch | null | undefined;
+  getStakePoolById: (...args: Array<any>) => any;
+  isLoading: boolean;
+  currentLocale: string;
+  isEpochsInfoAvailable: boolean;
+  isListActive?: boolean;
+  currentTheme: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  containerClassName: string;
+  setListActive?: (...args: Array<any>) => any;
+  listName?: string;
 };
 
 @observer
-export default class DelegationCenter extends Component<Props> {
+class DelegationCenter extends Component<Props> {
   render() {
     const {
       wallets,
@@ -56,7 +55,6 @@ export default class DelegationCenter extends Component<Props> {
       setListActive,
       listName,
     } = this.props;
-
     return (
       <Fragment>
         {isEpochsInfoAvailable && (
@@ -89,3 +87,5 @@ export default class DelegationCenter extends Component<Props> {
     );
   }
 }
+
+export default DelegationCenter;

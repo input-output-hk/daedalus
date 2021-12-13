@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
@@ -7,7 +6,9 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ReportIssue.scss' or its cor... Remove this comment to see the full error message
 import styles from './ReportIssue.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/link-ic... Remove this comment to see the full error message
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
@@ -43,14 +44,12 @@ const messages = defineMessages({
     description: 'Link to connectivity issue article page',
   },
 });
-
 type Props = {
-  onIssueClick: Function,
-  onOpenExternalLink: Function,
-  onDownloadLogs: Function,
-  disableDownloadLogs: boolean,
+  onIssueClick: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onDownloadLogs: (...args: Array<any>) => any;
+  disableDownloadLogs: boolean;
 };
-
 export default class ReportIssue extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -64,7 +63,6 @@ export default class ReportIssue extends Component<Props> {
       onDownloadLogs,
       disableDownloadLogs,
     } = this.props;
-
     const reportIssueButtonClasses = classNames([
       'primary',
       'reportIssueButton',
@@ -79,9 +77,7 @@ export default class ReportIssue extends Component<Props> {
       styles.downloadLogsButton,
       disableDownloadLogs ? styles.disabled : null,
     ]);
-
     const readArticleButtonUrl = messages.connectivityIssueArticleUrl;
-
     return (
       <div className={styles.component}>
         <h1 className={styles.reportIssueText}>

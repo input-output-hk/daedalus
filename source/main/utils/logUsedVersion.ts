@@ -1,10 +1,10 @@
-// @flow
 import fs from 'fs';
 
 export const logUsedVersion = async (version: string, logFilePath: string) => {
   let usedVersions = null;
   const currentVersionData = {
-    version, // e.g. "0.13.2"
+    version,
+    // e.g. "0.13.2"
     date: new Date().toISOString(), // e.g. "2018-12-11T144501.0177"
   };
 
@@ -16,6 +16,7 @@ export const logUsedVersion = async (version: string, logFilePath: string) => {
     const isAlreadyLogged = versionsData.some(
       (item) => item.version === version
     );
+
     // Add current version if it has not yet been saved
     if (!isAlreadyLogged) {
       versionsData.push(currentVersionData);
@@ -29,6 +30,7 @@ export const logUsedVersion = async (version: string, logFilePath: string) => {
       };
     }
   }
+
   if (usedVersions) {
     await fs.promises.writeFile(logFilePath, JSON.stringify(usedVersions));
   }

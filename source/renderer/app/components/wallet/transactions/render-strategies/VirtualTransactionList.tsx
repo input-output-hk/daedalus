@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -10,18 +10,17 @@ import type { ScrollContextType } from '../WalletTransactionsList';
 import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import type { Row } from '../types';
 import { TransactionInfo, TransactionsGroup } from '../types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VirtualTransactionList.scss'... Remove this comment to see the full error message
 import styles from './VirtualTransactionList.scss';
 
 type Props = {
-  getExpandedTransactions: () => Map<string, WalletTransaction>,
-  renderRow: (Row) => Node,
-  rows: Row[],
-  isLoadingSpinnerShown?: boolean,
-  isSyncingSpinnerShown?: boolean,
+  getExpandedTransactions: () => Map<string, WalletTransaction>;
+  renderRow: (arg0: Row) => Node;
+  rows: Row[];
+  isLoadingSpinnerShown?: boolean;
+  isSyncingSpinnerShown?: boolean;
 };
-
 type RowHeight = number;
-
 const GROUP_DATE_HEIGHT = 26;
 const TX_CONTRACTED_ROW_HEIGHT = 86;
 const TX_EXPANDED_ROW_BASE_HEIGHT = 260 + 16;
@@ -31,7 +30,7 @@ const TX_ADDRESS_SELECTOR = '.Transaction_address';
 const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
-export class VirtualTransactionList extends Component<Props> {
+class VirtualTransactionList extends Component<Props> {
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
@@ -39,7 +38,6 @@ export class VirtualTransactionList extends Component<Props> {
   visibleExpandedTx: Array<WalletTransaction> = [];
   overscanStartIndex: number;
   overscanStopIndex: number;
-
   static defaultProps = {
     isLoadingSpinnerShown: false,
     isSyncingSpinnerShown: false,
@@ -76,6 +74,7 @@ export class VirtualTransactionList extends Component<Props> {
   updateAddressesAndIdHeights = (): void => {
     const firstTxAddress = document.querySelector(TX_ADDRESS_SELECTOR);
     const firstTxId = document.querySelector(TX_ID_SELECTOR);
+
     if (
       firstTxAddress instanceof HTMLElement &&
       firstTxId instanceof HTMLElement
@@ -95,6 +94,7 @@ export class VirtualTransactionList extends Component<Props> {
     const { addresses } = tx;
     const txAddressesCount = addresses.from.length + addresses.to.length;
     const txAddressesHeight = txAddressesCount * txSingleAddressHeight;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isLastInGroup' does not exist on type 'R... Remove this comment to see the full error message
     const txBottomMargin = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 1;
     return (
       TX_EXPANDED_ROW_BASE_HEIGHT +
@@ -108,6 +108,7 @@ export class VirtualTransactionList extends Component<Props> {
    * Gets an Info contracted row height
    */
   estimateHeightOfTxContractedRow = (row: Row): number => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isLastInGroup' does not exist on type 'R... Remove this comment to see the full error message
     const txBottomMargin = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
     return TX_CONTRACTED_ROW_HEIGHT + txBottomMargin;
   };
@@ -128,11 +129,13 @@ export class VirtualTransactionList extends Component<Props> {
       ? this.estimateHeightOfTxExpandedRow(row, tx)
       : this.estimateHeightOfTxContractedRow(row);
     this.recomputeVirtualRowHeights();
+
     // In case transaction has just been manually expanded we need to schedule
     // another row height calculation if the transaction still isn't fully
     // expanded in the moment of the initial execution of this method
     if (isExpanded && wasToggled) {
       const isFullyExpanded = this.checkIfTxContentIsFullyExpanded(tx);
+
       if (isFullyExpanded) {
         const estimatedHeight = rowHeights[txIndex];
         this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
@@ -148,11 +151,14 @@ export class VirtualTransactionList extends Component<Props> {
   estimateRowHeight = (row: Row): number => {
     if (row instanceof TransactionInfo) {
       const expandedTxMap = this.props.getExpandedTransactions();
+
       if (expandedTxMap.has(row.tx.id)) {
         return this.estimateHeightOfTxExpandedRow(row, row.tx);
       }
+
       return this.estimateHeightOfTxContractedRow(row);
     }
+
     return GROUP_DATE_HEIGHT;
   };
 
@@ -170,13 +176,18 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Measures the exact height of a rendered tx content DOM element.
    */
-  measureTxContentHeight = (tx: WalletTransaction): ?number => {
+  measureTxContentHeight = (
+    tx: WalletTransaction
+  ): number | null | undefined => {
     const txRow = this.getTxRowElementById(tx.id);
+
     if (txRow) {
       const txElement = txRow.firstChild;
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'ChildNode' is not assignable to ... Remove this comment to see the full error message
       const style = window.getComputedStyle(txElement, null);
       return parseInt(style.getPropertyValue('height'), 10);
     }
+
     return null;
   };
 
@@ -204,19 +215,20 @@ export class VirtualTransactionList extends Component<Props> {
     const { rows } = this.props;
     const txIndex = this.findIndexForTx(tx);
     const txInfo = rows[txIndex];
+
     if (txInfo instanceof TransactionInfo) {
       const margin = txInfo.isLastInGroup
         ? TX_LAST_IN_GROUP_MARGIN
         : TX_BOTTOM_BORDER_MARGIN;
       const requiredHeight = txContentHeight + margin;
       const estimationError = Math.abs(estimatedHeight - requiredHeight);
+
       if (estimationError > 1) {
         this.rowHeights[txIndex] = requiredHeight;
         this.recomputeVirtualRowHeights();
       }
     }
   };
-
   updateVisibleExpandedTxRowHeights = () => {
     const expandedTxMap = this.props.getExpandedTransactions();
     // This is needed because a spreaded Map results in an array of [key, value]
@@ -260,40 +272,43 @@ export class VirtualTransactionList extends Component<Props> {
     overscanStartIndex,
     overscanStopIndex,
   }: {
-    overscanStartIndex: number,
-    overscanStopIndex: number,
+    overscanStartIndex: number;
+    overscanStopIndex: number;
   }) => {
     this.overscanStartIndex = overscanStartIndex;
     this.overscanStopIndex = overscanStopIndex;
     this.updateVisibleExpandedTxRowHeights();
   };
-
   rowRenderer = ({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
+    key,
+    // Unique key within array of rows
+    index,
+    // Index of row within collection
     style, // Style object to be applied to row (to position it)
   }: {
-    key: string,
-    index: number,
-    style: string,
+    key: string;
+    index: number;
+    style: string;
   }) => (
+    // @ts-ignore ts-migrate(2559) FIXME: Type 'string' has no properties in common with typ... Remove this comment to see the full error message
     <div key={key} style={style} className={styles.row}>
       {this.props.renderRow(this.props.rows[index])}
     </div>
   );
-
   onListScroll = (
     context: ScrollContextType,
-    { scrollTop }: { scrollTop: number }
+    {
+      scrollTop,
+    }: {
+      scrollTop: number;
+    }
   ) => {
     context.setIsScrolling(scrollTop > 10);
   };
 
   // =============== REACT LIFECYCLE ================= //
-
   render() {
     const { rows, isLoadingSpinnerShown, isSyncingSpinnerShown } = this.props;
-
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
 
@@ -307,7 +322,6 @@ export class VirtualTransactionList extends Component<Props> {
       isLoadingSpinnerShown ? styles.withLoadingSpinner : null,
       isSyncingSpinnerShown ? styles.withSyncingSpinner : null,
     ]);
-
     return (
       <WalletTransactionsListScrollContext.Consumer>
         {(context) => (
@@ -335,7 +349,9 @@ export class VirtualTransactionList extends Component<Props> {
                     this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT
                   }
                   rowRenderer={this.rowRenderer}
-                  style={{ overflowY: 'scroll' }}
+                  style={{
+                    overflowY: 'scroll',
+                  }}
                   onScroll={(param) => this.onListScroll(context, param)}
                 />
               )}
@@ -346,3 +362,5 @@ export class VirtualTransactionList extends Component<Props> {
     );
   }
 }
+
+export { VirtualTransactionList };

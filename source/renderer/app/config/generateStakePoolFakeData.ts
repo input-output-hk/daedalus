@@ -2,14 +2,16 @@
  * It generates stake pool dummy json content
  * Command to run: node source/renderer/app/config/generateStakePoolFakeData.js
  */
-
 const faker = require('faker');
+
 // const fs = require('fs');
 const path = require('path');
+
 const BigNumber = require('bignumber.js');
 
 function generatStakePoolsFakeData() {
   const stakePools = [];
+
   for (let i = 1; i <= 300; i++) {
     const relativeStake = faker.random.number(100);
     const cost = new BigNumber(faker.random.number(100));
@@ -50,13 +52,15 @@ function generatStakePoolsFakeData() {
       ticker,
     });
   }
+
   return stakePools;
 }
 
 const fakeStakePools = generatStakePoolsFakeData();
 // @TODO - remove flow fix and move fs to main process
+
 /* eslint-disable no-undef */
-// $FlowFixMe
+// @ts-ignore
 fs.writeFileSync(
   `${path.join(__dirname, '/')}stakingStakePools.dummy.json`,
   JSON.stringify(fakeStakePools, null, '\t')

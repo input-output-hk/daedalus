@@ -1,12 +1,15 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { LegacyAdaWallet, LegacyWalletInitData } from '../types';
 import { request } from '../../utils/request';
 
 export const restoreLegacyWallet = (
   config: RequestConfig,
-  { walletInitData }: { walletInitData: LegacyWalletInitData },
-  type?: string = ''
+  {
+    walletInitData,
+  }: {
+    walletInitData: LegacyWalletInitData;
+  },
+  type: string = ''
 ): Promise<LegacyAdaWallet> => {
   const queryParams = {};
   return request(

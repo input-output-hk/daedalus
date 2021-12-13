@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import QRCode from 'qrcode.react';
@@ -10,7 +9,9 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import Dialog from '../../widgets/Dialog';
 import { getNetworkExplorerUrl } from '../../../utils/network';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CompletionDialog.scss' or it... Remove this comment to see the full error message
 import styles from './CompletionDialog.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import InlineNotification from '../../notifications/InlineNotification';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
@@ -68,43 +69,42 @@ const messages = defineMessages({
       '"Paper wallet create certificate completion dialog" finish button label.',
   },
 });
-
 type Props = {
-  walletCertificateAddress: string,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  copyAddressNotificationDuration: number,
-  network: string,
+  walletCertificateAddress: string;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  copyAddressNotificationDuration: number;
+  network: string;
 };
-
 type State = {
-  showCopyNotification: boolean,
+  showCopyNotification: boolean;
 };
 
 @observer
-export default class CompletionDialog extends Component<Props, State> {
+class CompletionDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     network: DEVELOPMENT,
   };
-
   state = {
     showCopyNotification: false,
   };
-
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   copyNotificationTimeout: TimeoutID;
-
   onShowCopyNotification = () => {
     const { copyAddressNotificationDuration } = this.props;
     const timeInSeconds = copyAddressNotificationDuration * 1000;
     clearTimeout(this.copyNotificationTimeout);
-
-    this.setState({ showCopyNotification: true });
+    this.setState({
+      showCopyNotification: true,
+    });
     this.copyNotificationTimeout = setTimeout(
-      () => this.setState({ showCopyNotification: false }),
+      () =>
+        this.setState({
+          showCopyNotification: false,
+        }),
       timeInSeconds
     );
   };
@@ -119,7 +119,6 @@ export default class CompletionDialog extends Component<Props, State> {
     } = this.props;
     const { showCopyNotification } = this.state;
     const dialogClasses = classnames([styles.component, 'completionDialog']);
-
     const actions = [
       {
         className: 'finishButton',
@@ -131,7 +130,6 @@ export default class CompletionDialog extends Component<Props, State> {
     const cardanoExplorerLink = `${getNetworkExplorerUrl(
       network
     )}/address/${walletCertificateAddress}`;
-
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
       ? document.documentElement.style.getPropertyValue(
@@ -143,7 +141,6 @@ export default class CompletionDialog extends Component<Props, State> {
           '--theme-receive-qr-code-foreground-color'
         )
       : '#000';
-
     return (
       <Dialog
         className={dialogClasses}
@@ -207,3 +204,5 @@ export default class CompletionDialog extends Component<Props, State> {
     );
   }
 }
+
+export default CompletionDialog;

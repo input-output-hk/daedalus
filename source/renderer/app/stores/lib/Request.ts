@@ -1,4 +1,3 @@
-// @flow
 import { observable, action, computed, isObservableArray } from 'mobx';
 import { isEqual } from 'lodash/fp';
 import ExtendableError from 'es6-error';
@@ -9,31 +8,32 @@ class NotExecutedYetError extends ExtendableError {
 }
 
 export type ApiCallType = {
-  args: Array<any>,
-  result: any,
+  args: Array<any>;
+  result: any;
 };
-
 export default class Request<Result, Error> {
-  @observable result: ?Result = null;
-  @observable error: ?Error = null;
-  @observable isExecuting: boolean = false;
-  @observable isError: boolean = false;
-  @observable wasExecuted: boolean = false;
-
-  promise: ?Promise<Result> = null;
-
-  _method: Function;
+  @observable
+  result: Result | null | undefined = null;
+  @observable
+  error: Error | null | undefined = null;
+  @observable
+  isExecuting: boolean = false;
+  @observable
+  isError: boolean = false;
+  @observable
+  wasExecuted: boolean = false;
+  promise: Promise<Result> | null | undefined = null;
+  _method: (...args: Array<any>) => any;
   _isWaitingForResponse: boolean = false;
-  _currentApiCall: ?ApiCallType = null;
+  _currentApiCall: ApiCallType | null | undefined = null;
 
-  constructor(method: Function) {
+  constructor(method: (...args: Array<any>) => any) {
     this._method = method;
   }
 
   execute(...callArgs: Array<any>): Request<Result, Error> {
     // Do not continue if this request is already loading
     if (this._isWaitingForResponse) return this;
-
     // This timeout is necessary to avoid warnings from mobx
     // regarding triggering actions as side-effect of getters
     setTimeout(
@@ -42,11 +42,11 @@ export default class Request<Result, Error> {
       }),
       0
     );
-
     // Issue api call & save it as promise that is handled to update the results of the operation
     this.promise = new Promise((resolve, reject) => {
       if (!this._method)
         reject(new ReferenceError('Request method not defined'));
+
       this._method(...callArgs)
         .then((result) => {
           setTimeout(
@@ -56,11 +56,12 @@ export default class Request<Result, Error> {
                 isObservableArray(this.result) &&
                 Array.isArray(result)
               ) {
-                // $FlowFixMe
+                // @ts-ignore
                 this.result.replace(result);
               } else {
                 this.result = result;
               }
+
               if (this._currentApiCall) this._currentApiCall.result = result;
               this.isExecuting = false;
               this.wasExecuted = true;
@@ -87,9 +88,11 @@ export default class Request<Result, Error> {
           })
         );
     });
-
     this._isWaitingForResponse = true;
-    this._currentApiCall = { args: callArgs, result: null };
+    this._currentApiCall = {
+      args: callArgs,
+      result: null,
+    };
     return this;
   }
 
@@ -101,7 +104,8 @@ export default class Request<Result, Error> {
     );
   }
 
-  @computed get isExecutingFirstTime(): boolean {
+  @computed
+  get isExecutingFirstTime(): boolean {
     return !this.wasExecuted && this.isExecuting;
   }
 
@@ -126,7 +130,7 @@ export default class Request<Result, Error> {
    *
    * @returns {Promise}
    */
-  patch(modify: Function): Promise<Request<Result, Error>> {
+  patch(modify: (...args: Array<any>) => any): Promise<Request<Result, Error>> {
     return new Promise((resolve) => {
       setTimeout(
         action(() => {
@@ -140,7 +144,8 @@ export default class Request<Result, Error> {
     });
   }
 
-  @action reset(): Request<Result, Error> {
+  @action
+  reset(): Request<Result, Error> {
     this.result = null;
     this.error = null;
     this.isError = false;

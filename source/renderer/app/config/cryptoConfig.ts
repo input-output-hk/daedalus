@@ -1,4 +1,3 @@
-// @flow
 // Cryptographic constants go here
 export const RECOVERY_PHRASE_VERIFICATION_WORD_COUNT = [12, 15, 18, 24];
 export const LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT = 12;

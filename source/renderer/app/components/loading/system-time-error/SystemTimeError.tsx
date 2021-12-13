@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
@@ -6,9 +5,11 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/attenti... Remove this comment to see the full error message
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import { ALLOWED_TIME_DIFFERENCE } from '../../../config/timingConfig';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SystemTimeError.scss' or its... Remove this comment to see the full error message
 import styles from './SystemTimeError.scss';
 
 const messages = defineMessages({
@@ -65,18 +66,17 @@ const messages = defineMessages({
       'Text of "Continue without clock synchronization checks" button',
   },
 });
-
 type Props = {
-  localTimeDifference: ?number,
-  currentLocale: string,
-  onExternalLinkClick: Function,
-  onCheckTheTimeAgain: Function,
-  onContinueWithoutClockSyncCheck: Function,
-  isCheckingSystemTime: boolean,
+  localTimeDifference: number | null | undefined;
+  currentLocale: string;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onCheckTheTimeAgain: (...args: Array<any>) => any;
+  onContinueWithoutClockSyncCheck: (...args: Array<any>) => any;
+  isCheckingSystemTime: boolean;
 };
 
 @observer
-export default class SystemTimeError extends Component<Props> {
+class SystemTimeError extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -91,11 +91,9 @@ export default class SystemTimeError extends Component<Props> {
       onContinueWithoutClockSyncCheck,
       onExternalLinkClick,
     } = this.props;
-
     const supportPortalLinkUrl = intl.formatMessage(
       messages.supportPortalLinkUrl
     );
-
     const supportPortalLink = (
       <Link
         className={styles.supportPortalLink}
@@ -104,7 +102,6 @@ export default class SystemTimeError extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     const isNTPServiceReachable = !!localTimeDifference;
     const allowedTimeDifferenceInSeconds = ALLOWED_TIME_DIFFERENCE / 1000000;
     const rawTimeOffset = (localTimeDifference || 0) / 1000;
@@ -119,7 +116,6 @@ export default class SystemTimeError extends Component<Props> {
         },
       },
     });
-
     return (
       <div className={styles.component}>
         <SVGInline svg={attentionIcon} className={styles.icon} />
@@ -138,7 +134,9 @@ export default class SystemTimeError extends Component<Props> {
             <p>
               <FormattedMessage
                 {...messages.overlayTextP2}
-                values={{ supportPortalLink }}
+                values={{
+                  supportPortalLink,
+                }}
               />
             </p>
 
@@ -158,14 +156,19 @@ export default class SystemTimeError extends Component<Props> {
             <p>
               <FormattedMessage
                 {...messages.ntpUnreachableTextP1}
-                values={{ timeOffset }}
+                values={{
+                  timeOffset,
+                }}
               />
             </p>
 
             <p>
               <FormattedMessage
                 {...messages.ntpUnreachableTextP2}
-                values={{ supportPortalLink, allowedTimeDifferenceInSeconds }}
+                values={{
+                  supportPortalLink,
+                  allowedTimeDifferenceInSeconds,
+                }}
               />
             </p>
 
@@ -184,3 +187,5 @@ export default class SystemTimeError extends Component<Props> {
     );
   }
 }
+
+export default SystemTimeError;

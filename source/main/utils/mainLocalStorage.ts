@@ -1,4 +1,3 @@
-// @flow
 import { mergeWith, omit } from 'lodash';
 import {
   STORAGE_TYPES,
@@ -18,13 +17,17 @@ import { requestElectronStore } from '../ipc/electronStoreConversation';
 
 export const downloadManagerLocalStorage = {
   get: async (id: string): Promise<DownloadLocalDataResponse> => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'info' does not exist on type '{}'.
     const { info, data } =
       (await requestElectronStore({
         type: STORAGE_TYPES.GET,
         key: STORAGE_KEYS.DOWNLOAD_MANAGER,
         id,
       })) || {};
-    return { info, data };
+    return {
+      info,
+      data,
+    };
   },
   getAll: async () => {
     const info = await requestElectronStore({
@@ -38,7 +41,10 @@ export const downloadManagerLocalStorage = {
     requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      data: { info, data },
+      data: {
+        info,
+        data,
+      },
       id,
     });
   },
@@ -55,7 +61,10 @@ export const downloadManagerLocalStorage = {
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      data: { info, data },
+      data: {
+        info,
+        data,
+      },
       id,
     });
     return data;
@@ -63,10 +72,12 @@ export const downloadManagerLocalStorage = {
   setAllPaused: async () => {
     const downloads = await downloadManagerLocalStorage.getAll();
     const downloadsArray = Object.keys(downloads);
+
     for (let index = 0; index < downloadsArray.length; index++) {
       const downloadId = downloadsArray[index];
       const { data } = downloads[downloadId];
       const { state, progress } = data;
+
       if (state === DOWNLOAD_STATES.DOWNLOADING && progress < 100) {
         await downloadManagerLocalStorage.setData(
           {
@@ -85,6 +96,7 @@ export const downloadManagerLocalStorage = {
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       data: omit(localDownloadsData, id),
     });
     await requestElectronStore({

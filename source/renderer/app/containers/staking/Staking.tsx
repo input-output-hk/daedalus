@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
@@ -17,8 +16,11 @@ type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class Staking extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+class Staking extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   componentDidMount() {
     this.handleDelegationRoute();
@@ -44,11 +46,13 @@ export default class Staking extends Component<Props> {
 
     return true;
   };
-
   isActiveNavItem = (page: string, item: NavDropdownProps) => {
     const { app } = this.props.stores;
     const { options } = item;
+
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'length' does not exist on type 'never'.
     if (options && options.length) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'forEach' does not exist on type 'never'.
       options.forEach((option) => {
         if (
           app.currentRoute &&
@@ -58,16 +62,18 @@ export default class Staking extends Component<Props> {
         }
       });
     }
+
     const screenRoute = buildRoute(ROUTES.STAKING.PAGE, {
       page,
     });
     return app.currentRoute === screenRoute;
   };
-
   handleNavItemClick = (page: string) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.PAGE,
-      params: { page },
+      params: {
+        page,
+      },
     });
   };
 
@@ -84,11 +90,9 @@ export default class Staking extends Component<Props> {
     } = networkStatus;
     const { isStakingDelegationCountdown } = staking;
     const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
-
     const isDelegationWizardOpen = uiDialogs.isOpen(
       DelegationSetupWizardDialog
     );
-
     const isUndelegationWizardOpen = uiDialogs.isOpen(
       UndelegateWalletConfirmationDialog
     );
@@ -121,3 +125,5 @@ export default class Staking extends Component<Props> {
     );
   }
 }
+
+export default Staking;

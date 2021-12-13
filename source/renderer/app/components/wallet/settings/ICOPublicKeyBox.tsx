@@ -1,7 +1,7 @@
-// @flow
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSettings.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSettings.scss';
 import PublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import ICOPublicKeyDialog from './ICOPublicKeyDialog';
@@ -9,7 +9,7 @@ import PublicKeyField from './PublicKeyField';
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-export const messages: { [string]: ReactIntlMessage } = defineMessages({
+export const messages: Record<string, ReactIntlMessage> = defineMessages({
   publicKey: {
     id: 'wallet.settings.icoPublicKey',
     defaultMessage: '!!!ICO public key',
@@ -33,13 +33,12 @@ export const messages: { [string]: ReactIntlMessage } = defineMessages({
     description: 'Show QR code tooltip.',
   },
 });
-
 type Props = {
-  publicKey: ?string,
-  locale: Locale,
-  onCopyICOPublicKey: Function,
-  openDialogAction: Function,
-  intl: intlShape.isRequired,
+  publicKey: string | null | undefined;
+  locale: Locale;
+  onCopyICOPublicKey: (...args: Array<any>) => any;
+  openDialogAction: (...args: Array<any>) => any;
+  intl: intlShape.isRequired;
 };
 
 const ICOPublicKeyBox = (props: Props) => {
@@ -50,7 +49,6 @@ const ICOPublicKeyBox = (props: Props) => {
     openDialogAction,
     intl,
   } = props;
-
   return (
     <>
       <BorderedBox className={styles.walletPublicKeyBox}>
@@ -60,10 +58,14 @@ const ICOPublicKeyBox = (props: Props) => {
           locale={locale}
           onCopyPublicKey={onCopyICOPublicKey}
           onShowQRCode={() =>
-            openDialogAction({ dialog: PublicKeyQRCodeDialog })
+            openDialogAction({
+              dialog: PublicKeyQRCodeDialog,
+            })
           }
           onOpenWalletKeyDialog={() =>
-            openDialogAction({ dialog: ICOPublicKeyDialog })
+            openDialogAction({
+              dialog: ICOPublicKeyDialog,
+            })
           }
           messages={messages}
         />

@@ -1,4 +1,3 @@
-// @flow
 import { GENERATE_FILE_META_CHANNEL } from '../../../common/ipc/api';
 import type {
   GenerateFileMetaMainResponse,

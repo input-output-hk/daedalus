@@ -1,10 +1,9 @@
-// @flow
 import { defineMessages } from 'react-intl';
 import globalMessages from '../../../i18n/global-messages';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
 export const getMessages = () => {
-  const messages: { [string]: ReactIntlMessage } = defineMessages({
+  const messages: Record<string, ReactIntlMessage> = defineMessages({
     dialogTitle: {
       id: 'wallet.send.confirmationDialog.title',
       defaultMessage: '!!!Confirm transaction',

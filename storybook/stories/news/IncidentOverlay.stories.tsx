@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { select, withKnobs } from '@storybook/addon-knobs';
@@ -11,6 +10,7 @@ import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profil
 storiesOf('News|Overlays', module)
   .addDecorator((story) => (
     <StoryDecorator>
+      {/* @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ action: { label: string; url: ... Remove this comment to see the full error message */}
       {story({
         action: {
           label: 'Read More',
@@ -43,10 +43,7 @@ storiesOf('News|Overlays', module)
   ))
   .add('Incident - Themed', (props) => (
     <IncidentOverlay
-      incident={{
-        ...props,
-        color: 'theme-default',
-      }}
+      incident={{ ...props, color: 'theme-default' }}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(
@@ -58,10 +55,7 @@ storiesOf('News|Overlays', module)
   ))
   .add('Incident - Grey', (props) => (
     <IncidentOverlay
-      incident={{
-        ...props,
-        color: 'grey',
-      }}
+      incident={{ ...props, color: 'grey' }}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(

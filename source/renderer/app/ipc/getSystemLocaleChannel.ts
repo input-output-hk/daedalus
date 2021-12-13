@@ -1,4 +1,3 @@
-// @flow
 import { GET_SYSTEM_LOCALE_CHANNEL } from '../../../common/ipc/api';
 import type {
   GetSystemLocaleRendererRequest,

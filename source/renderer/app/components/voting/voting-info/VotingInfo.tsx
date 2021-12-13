@@ -1,8 +1,8 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import BorderedBox from '../../widgets/BorderedBox';
 import type { Locale } from '../../../../../common/types/locales.types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingInfo.scss' or its corr... Remove this comment to see the full error message
 import styles from './VotingInfo.scss';
 import ResultsPhase from './ResultsPhase';
 import SnapshotPhase from './SnapshotPhase';
@@ -15,14 +15,13 @@ import { FundPhases } from '../../../stores/VotingStore';
 import type { FundPhase } from '../../../stores/VotingStore';
 
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  fundPhase: FundPhase,
-  onRegisterToVoteClick: Function,
-  onExternalLinkClick: Function,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  fundPhase: FundPhase;
+  onRegisterToVoteClick: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
-
 const phaseToComponentMap = {
   [FundPhases.SNAPSHOT]: SnapshotPhase,
   [FundPhases.VOTING]: VotingPhase,
@@ -39,7 +38,6 @@ const VotingInfo = ({
   onExternalLinkClick,
 }: Props) => {
   const PhaseComponent = phaseToComponentMap[fundPhase || FundPhases.SNAPSHOT];
-
   return (
     <div className={styles.component}>
       <BorderedBox>

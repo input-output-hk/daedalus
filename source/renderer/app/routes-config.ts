@@ -1,4 +1,3 @@
-// @flow
 export const ROUTES = {
   ROOT: '/',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',

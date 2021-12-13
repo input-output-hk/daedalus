@@ -1,21 +1,21 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NavButton.scss' or its corre... Remove this comment to see the full error message
 import styles from './NavButton.scss';
 
 type Props = {
-  label: string,
-  icon?: string,
-  isActive: boolean,
-  onClick: Function,
-  className?: string,
-  hasNotification?: boolean,
+  label: string;
+  icon?: string;
+  isActive: boolean;
+  onClick: (...args: Array<any>) => any;
+  className?: string;
+  hasNotification?: boolean;
 };
 
 @observer
-export default class NavButton extends Component<Props> {
+class NavButton extends Component<Props> {
   render() {
     const { isActive, icon, onClick, className, hasNotification } = this.props;
     const componentClasses = classnames([
@@ -38,3 +38,5 @@ export default class NavButton extends Component<Props> {
     );
   }
 }
+
+export default NavButton;

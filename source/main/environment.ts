@@ -1,4 +1,3 @@
-// @flow
 import os from 'os';
 import { get, includes, uniq } from 'lodash';
 import { version } from '../../package.json';
@@ -24,7 +23,6 @@ import {
 /* ==================================================================
 =                           Evaluations                             =
 ================================================================== */
-
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
 const NETWORK = evaluateNetwork(process.env.NETWORK);
@@ -42,6 +40,7 @@ const isWatchMode = process.env.IS_WATCH_MODE;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const NODE_VERSION = '1.30.1'; // TODO: pick up this value from process.env
+
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -61,7 +60,7 @@ const isLinux = checkIsLinux(PLATFORM);
 /* ==================================================================
 =                       Compose environment                         =
 ================================================================== */
-
+// @ts-ignore ts-migrate(2322) FIXME: Type '{ network: string; apiVersion: string; nodeV... Remove this comment to see the full error message
 export const environment: Environment = Object.assign(
   {},
   {

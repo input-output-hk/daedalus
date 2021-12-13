@@ -1,4 +1,3 @@
-// @flow
 import {
   utils,
   TxOutputDestinationType,
@@ -16,7 +15,6 @@ import {
 } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { AddressStyles } from '../domains/WalletAddress';
-
 // Types
 import type {
   CoinSelectionInput,
@@ -32,69 +30,60 @@ import type {
 import type { AddressStyle } from '../api/addresses/types';
 
 export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
-
 export type ShelleyTxInputType = {
-  coins: number,
-  address: string,
-  txid: string,
-  outputNo: number,
-  encodeCBOR: Function,
+  coins: number;
+  address: string;
+  txid: string;
+  outputNo: number;
+  encodeCBOR: (...args: Array<any>) => any;
 };
-
 export type ShelleyTxOutputType = {
-  address: string,
-  coins: number | [number, Map<Buffer, Map<Buffer, number>>],
-  isChange: boolean,
-  spendingPath: ?BIP32Path,
-  stakingPath: ?BIP32Path,
-  encodeCBOR: Function,
+  address: string;
+  coins: number | [number, Map<Buffer, Map<Buffer, number>>];
+  isChange: boolean;
+  spendingPath: BIP32Path | null | undefined;
+  stakingPath: BIP32Path | null | undefined;
+  encodeCBOR: (...args: Array<any>) => any;
 };
-
 export type ShelleyFeeType = {
-  fee: number,
-  encodeCBOR: Function,
+  fee: number;
+  encodeCBOR: (...args: Array<any>) => any;
 };
-
 export type ShelleyTtlType = {
-  ttl: number,
-  encodeCBOR: Function,
+  ttl: number;
+  encodeCBOR: (...args: Array<any>) => any;
 };
-
 export type ShelleyTxWitnessType = {
-  publicKey: string,
-  signature: Buffer,
-  encodeCBOR: Function,
+  publicKey: string;
+  signature: Buffer;
+  encodeCBOR: (...args: Array<any>) => any;
 };
-
 export type ShelleyTxAuxType = {
-  getId: Function,
-  inputs: Array<ShelleyTxInputType>,
-  outputs: Array<ShelleyTxOutputType>,
-  fee: ShelleyFeeType,
-  ttl: ShelleyTtlType,
-  certs: Array<?Certificate>,
-  withdrawals: ?ShelleyTxWithdrawalsType,
-  encodeCBOR: Function,
+  getId: (...args: Array<any>) => any;
+  inputs: Array<ShelleyTxInputType>;
+  outputs: Array<ShelleyTxOutputType>;
+  fee: ShelleyFeeType;
+  ttl: ShelleyTtlType;
+  certs: Array<Certificate | null | undefined>;
+  withdrawals: ShelleyTxWithdrawalsType | null | undefined;
+  encodeCBOR: (...args: Array<any>) => any;
 };
-
 export type ShelleyTxWithdrawalsType = {
-  withdrawals: Array<CoinSelectionWithdrawal>,
-  encodeCBOR: Function,
+  withdrawals: Array<CoinSelectionWithdrawal>;
+  encodeCBOR: (...args: Array<any>) => any;
 };
-
 export type TxAuxiliaryData = {
-  nonce: number,
-  rewardDestinationAddress: RewardDestinationAddressType,
-  stakePubKey: string,
-  type: 'CATALYST_VOTING',
-  votingPubKey: string,
+  nonce: number;
+  rewardDestinationAddress: RewardDestinationAddressType;
+  stakePubKey: string;
+  type: 'CATALYST_VOTING';
+  votingPubKey: string;
 };
-
 export type RewardDestinationAddressType = {
-  address: string, // type of "address.id"
-  stakingPath: BIP32Path,
+  address: string;
+  // type of "address.id"
+  stakingPath: BIP32Path;
 };
-
 // Constants
 export const HARDENED_THRESHOLD = 0x80000000;
 export const derivationScheme = {
@@ -102,7 +91,6 @@ export const derivationScheme = {
   ed25519Mode: 2,
   keyfileVersion: '2.0.0',
 };
-
 // Constructors
 export const ShelleyTxWitnessShelley = (
   publicKey: Buffer,
@@ -111,13 +99,13 @@ export const ShelleyTxWitnessShelley = (
   function encodeCBOR(encoder: any) {
     return encoder.pushAny([publicKey, signature]);
   }
+
   return {
     publicKey,
     signature,
     encodeCBOR,
   };
 };
-
 export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   const { address, amount, id, index } = utxoInput;
   const coins = amount.quantity;
@@ -136,25 +124,28 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
     encodeCBOR,
   };
 };
-
 export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
   const policyIdMap = new Map<Buffer, Map<Buffer, number>>();
   const tokenObject = groupTokensByPolicyId(assets);
   Object.entries(tokenObject).forEach(([policyId, tokens]) => {
     const assetMap = new Map<Buffer, number>();
+
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     _.map(tokens, (token) => {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'assetName' does not exist on type 'unkno... Remove this comment to see the full error message
       assetMap.set(Buffer.from(token.assetName, 'hex'), token.quantity);
     });
+
     policyIdMap.set(Buffer.from(policyId, 'hex'), assetMap);
   });
   return policyIdMap;
 };
-
 export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
   const tokenObjectEntries = Object.entries(tokenObject);
 
   const tokenBundle = _.map(tokenObjectEntries, ([policyId, tokens]) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type 'unknown'.
     const tokensList = tokens.map(({ assetName, quantity }) => ({
       assetNameHex: assetName,
       amount: quantity.toString(),
@@ -164,9 +155,9 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
       tokens: tokensList,
     };
   });
+
   return tokenBundle;
 };
-
 export const ShelleyTxOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
@@ -196,15 +187,15 @@ export const ShelleyTxOutput = (
     encodeCBOR,
   };
 };
-
 export const ShelleyTxCert = (cert: {
-  type: string,
-  accountAddress: string,
-  pool: ?string,
+  type: string;
+  accountAddress: string;
+  pool: string | null | undefined;
 }) => {
   const { type, accountAddress, pool } = cert;
   let hash;
   let poolHash;
+
   if (pool) {
     poolHash = utils.buf_to_hex(utils.bech32_decodeAddress(pool));
     hash = Buffer.from(poolHash, 'hex');
@@ -222,6 +213,7 @@ export const ShelleyTxCert = (cert: {
     };
     return encoder.pushAny(encodedCertsTypes[type]);
   }
+
   return {
     address: accountAddress,
     type,
@@ -230,25 +222,26 @@ export const ShelleyTxCert = (cert: {
     encodeCBOR,
   };
 };
-
 export const ShelleyTxWithdrawal = (
   withdrawals: Array<CoinSelectionWithdrawal>
 ) => {
   function encodeCBOR(encoder: any) {
     const withdrawalMap = new Map();
+
     _.map(withdrawals, (withdrawal) => {
       const rewardAccount = utils.bech32_decodeAddress(withdrawal.stakeAddress);
       const coin = withdrawal.amount.quantity;
       withdrawalMap.set(rewardAccount, coin);
     });
+
     return encoder.pushAny(withdrawalMap);
   }
+
   return {
     withdrawals,
     encodeCBOR,
   };
 };
-
 export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
@@ -263,7 +256,6 @@ export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
     },
   };
 };
-
 export const prepareLedgerWithdrawal = (
   withdrawal: CoinSelectionWithdrawal
 ) => {
@@ -275,38 +267,38 @@ export const prepareLedgerWithdrawal = (
     amount: withdrawal.amount.quantity.toString(),
   };
 };
-
 export const ShelleyFee = (fee: number) => {
   function encodeCBOR(encoder: any) {
     return encoder.pushAny(fee);
   }
+
   return {
     fee,
     encodeCBOR,
   };
 };
-
 export const ShelleyTtl = (ttl: number) => {
   function encodeCBOR(encoder: any) {
     return encoder.pushAny(ttl);
   }
+
   return {
     ttl,
     encodeCBOR,
   };
 };
-
 export const ShelleyTxAux = (
   inputs: Array<ShelleyTxInputType>,
   outputs: Array<ShelleyTxOutputType>,
   fee: ShelleyFeeType,
   ttl: ShelleyTtlType,
-  certs: Array<?Certificate>,
-  withdrawals: ?ShelleyTxWithdrawalsType,
-  auxiliaryData: ?TxAuxiliaryData,
-  auxiliaryDataHash: ?string
+  certs: Array<Certificate | null | undefined>,
+  withdrawals: ShelleyTxWithdrawalsType | null | undefined,
+  auxiliaryData: TxAuxiliaryData | null | undefined,
+  auxiliaryDataHash: string | null | undefined
 ) => {
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
+
   function getId() {
     return blake2b(
       encode(
@@ -320,8 +312,7 @@ export const ShelleyTxAux = (
           auxiliaryData,
           auxiliaryDataHash
         )
-      )
-      // 32
+      ) // 32
     ).toString('hex');
   }
 
@@ -350,11 +341,10 @@ export const ShelleyTxAux = (
     encodeCBOR,
   };
 };
-
 export const ShelleySignedTransactionStructured = (
   txAux: ShelleyTxAuxType,
   witnesses: Map<number, ShelleyTxWitnessType>,
-  txAuxiliaryData: ?CborizedVotingRegistrationMetadata
+  txAuxiliaryData: CborizedVotingRegistrationMetadata | null | undefined
 ) => {
   function getId() {
     return txAux.getId();
@@ -372,14 +362,15 @@ export const ShelleySignedTransactionStructured = (
     encodeCBOR,
   };
 };
-
-export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
+export const CachedDeriveXpubFactory = (
+  deriveXpubHardenedFn: (...args: Array<any>) => any
+) => {
   const derivedXpubs = {};
   let xpubMemo;
 
   const deriveXpub = async (
     absDerivationPath: Array<number>,
-    xpubHex: ?string
+    xpubHex: string | null | undefined
   ) => {
     if (xpubHex) xpubMemo = xpubHex;
     const memoKey = JSON.stringify(absDerivationPath);
@@ -393,6 +384,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
         ? await deriveXpubHardenedFn(xpubMemo)
         : await deriveXpubNonhardenedFn(absDerivationPath);
     }
+
     /*
      * the derivedXpubs map stores promises instead of direct results
      * to deal with concurrent requests to derive the same xpub
@@ -403,6 +395,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
   const deriveXpubNonhardenedFn = async (derivationPath) => {
     const lastIndex = derivationPath.slice(-1)[0];
     const parentXpub = await deriveXpub(derivationPath.slice(0, -1), null);
+
     try {
       const parentXpubHex = utils.buf_to_hex(parentXpub);
       const derivedXpub = await deriveXpubChannel.request({
@@ -410,7 +403,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
         lastIndex,
         derivationScheme: derivationScheme.ed25519Mode,
       });
-      // $FlowFixMe
+      // @ts-ignore
       return utils.hex_to_buf(derivedXpub);
     } catch (e) {
       throw e;
@@ -419,12 +412,10 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
 
   return deriveXpub;
 };
-
 // Helpers
 export const indexIsHardened = (index: number) => {
   return index >= HARDENED_THRESHOLD;
 };
-
 export const prepareLedgerInput = (input: CoinSelectionInput) => {
   return {
     txHashHex: input.id,
@@ -432,14 +423,13 @@ export const prepareLedgerInput = (input: CoinSelectionInput) => {
     path: derivationPathToLedgerPath(input.derivationPath),
   };
 };
-
 export const prepareLedgerOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
 ) => {
   const isChange = output.derivationPath !== null;
-
   let tokenBundle = [];
+
   if (output.assets) {
     tokenBundle = prepareTokenBundle(output.assets);
   }
@@ -460,6 +450,7 @@ export const prepareLedgerOutput = (
       tokenBundle,
     };
   }
+
   return {
     destination: {
       type: TxOutputDestinationType.THIRD_PARTY,
@@ -474,11 +465,11 @@ export const prepareLedgerOutput = (
     tokenBundle,
   };
 };
-
 export const prepareLedgerAuxiliaryData = (
   txAuxiliaryData: TxAuxiliaryData
 ) => {
   const { votingPubKey, rewardDestinationAddress, type } = txAuxiliaryData;
+
   if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
     return {
       type: TxAuxiliaryDataType.CATALYST_REGISTRATION,
@@ -495,15 +486,14 @@ export const prepareLedgerAuxiliaryData = (
       },
     };
   }
+
   // Regular tx has no voting metadata
   return null;
 };
-
 export type CborizedVotingRegistrationMetadata = [
   Map<number, Map<number, Buffer | number>>,
   []
 ];
-
 export const cborizeTxVotingRegistration = ({
   votingPubKey,
   stakePubKey,
@@ -520,11 +510,11 @@ export const cborizeTxVotingRegistration = ({
     ]),
   ];
 };
-
 export const cborizeTxAuxiliaryVotingData = (
   txAuxiliaryData: TxAuxiliaryData,
   signatureHex: string
 ) => [
+  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
   new Map<number, Map<number, Buffer | number>>([
     cborizeTxVotingRegistration(txAuxiliaryData),
     [
@@ -534,7 +524,6 @@ export const cborizeTxAuxiliaryVotingData = (
   ]),
   [],
 ];
-
 export const prepareTxAux = ({
   txInputs,
   txOutputs,
@@ -545,20 +534,19 @@ export const prepareTxAux = ({
   txAuxiliaryData,
   txAuxiliaryDataHash,
 }: {
-  txInputs: Array<ShelleyTxInputType>,
-  txOutputs: Array<ShelleyTxOutputType>,
-  txAuxiliaryData?: TxAuxiliaryData,
-  txAuxiliaryDataHash?: string,
-  fee: number,
-  ttl: number,
-  certificates: Array<?Certificate>,
-  withdrawals: ?ShelleyTxWithdrawalsType,
+  txInputs: Array<ShelleyTxInputType>;
+  txOutputs: Array<ShelleyTxOutputType>;
+  txAuxiliaryData?: TxAuxiliaryData;
+  txAuxiliaryDataHash?: string;
+  fee: number;
+  ttl: number;
+  certificates: Array<Certificate | null | undefined>;
+  withdrawals: ShelleyTxWithdrawalsType | null | undefined;
 }) => {
   const txFee = ShelleyFee(fee);
   const txTtl = ShelleyTtl(ttl);
   const txCerts = certificates;
   const txWithdrawals = withdrawals;
-
   return ShelleyTxAux(
     txInputs,
     txOutputs,
@@ -570,11 +558,10 @@ export const prepareTxAux = ({
     txAuxiliaryDataHash
   );
 };
-
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
-  txWitnesses: any, // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
-  txAuxiliaryData: ?CborizedVotingRegistrationMetadata
+  txWitnesses: any,
+  txAuxiliaryData: CborizedVotingRegistrationMetadata | null | undefined
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { set } from 'lodash';
 import styles from './DaedalusMenuStyles';
@@ -10,15 +9,13 @@ import {
 } from '../../stories/_support/config';
 
 /* eslint-disable no-restricted-globals */
-
 type Props = {
-  api: Object,
+  api: Record<string, any>;
 };
-
 export type DaedalusMenuState = {
-  themeName?: string,
-  localeName?: string,
-  osName?: string,
+  themeName?: string;
+  localeName?: string;
+  osName?: string;
 };
 
 class DaedalusMenu extends Component<Props, DaedalusMenuState> {
@@ -44,35 +41,34 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
   }
 
   sendUpdateParam = (param: string, value: string) => {
-    this.props.api.emit('daedalusMenu/updateParam', { param, value });
+    this.props.api.emit('daedalusMenu/updateParam', {
+      param,
+      value,
+    });
   };
-
-  handleUpdateParam = ({ param, value }: Object) => {
+  handleUpdateParam = ({ param, value }: Record<string, any>) => {
     const query = set({}, param, value);
     this.setState(query);
     this.setHashParam(param, value);
     sessionStorage.setItem(param, value);
     this.props.api.setQueryParams(query);
   };
-
   setHashParam = (param: string, value: string) => {
     const hash = this.params;
     hash.delete('path');
     hash.set(param, value);
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'URLSearchParams' is not assignable to type '... Remove this comment to see the full error message
     parent.window.location.hash = hash;
   };
-
   handleSetParam = (param: string, value: string) => {
     const query = set({}, param, value);
     this.setState(query);
     this.setHashParam(param, value);
-    sessionStorage.setItem(param, value);
-    // updateParam(query);
+    sessionStorage.setItem(param, value); // updateParam(query);
   };
 
   render() {
     const { themeName, localeName, osName } = this.state;
-
     return (
       <div style={styles.component}>
         <span style={styles.separator} />
@@ -125,4 +121,5 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
     );
   }
 }
+
 export default DaedalusMenu;

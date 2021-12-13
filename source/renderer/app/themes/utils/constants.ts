@@ -1,4 +1,3 @@
-// @flow
 import { createBackgroundShades, createErrorShades } from './createShades';
 import {
   createReactPolymorphTheme,
@@ -19,19 +18,17 @@ export const DEFAULT_FONTS = {
   thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
   ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
 };
-
 export const THEME_LOGGING_COLORS = {
-  'cardano.js': '#2cbb69',
-  'dark-blue.js': '#2874a6',
-  'dark-cardano.js': '#1fc1c3',
-  'flight-candidate.js': '#ffb923',
-  'incentivized-testnet.js': '#f69ab2',
-  'light-blue.js': '#33c4ff',
-  'shelley-testnet.js': '#898ee6',
-  'white.js': '#29b595',
-  'yellow.js': '#fdcd68',
+  'cardano.ts': '#2cbb69',
+  'dark-blue.ts': '#2874a6',
+  'dark-cardano.ts': '#1fc1c3',
+  'flight-candidate.ts': '#ffb923',
+  'incentivized-testnet.ts': '#f69ab2',
+  'light-blue.ts': '#33c4ff',
+  'shelley-testnet.ts': '#898ee6',
+  'white.ts': '#29b595',
+  'yellow.ts': '#fdcd68',
 };
-
 const CREATE_THEME_MOCK_PARAMS: PartialThemeParts = {
   colors: {
     border: '#eee',
@@ -48,7 +45,6 @@ const CREATE_THEME_MOCK_PARAMS: PartialThemeParts = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_CARDANO_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -65,7 +61,6 @@ const CREATE_CARDANO_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -82,7 +77,6 @@ const CREATE_DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -99,7 +93,6 @@ const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_FLIGHT_CANDIDATE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -116,7 +109,6 @@ const CREATE_FLIGHT_CANDIDATE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -133,7 +125,6 @@ const CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -150,7 +141,6 @@ const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_SHELLEY_TESTNET_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -167,7 +157,6 @@ const CREATE_SHELLEY_TESTNET_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_WHITE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -184,7 +173,6 @@ const CREATE_WHITE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -201,19 +189,17 @@ const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 export const CREATE_THEME_PARAMS = [
-  ['cardano.js', CREATE_CARDANO_THEME_PARAMS],
-  ['dark-blue.js', CREATE_DARK_BLUE_THEME_PARAMS],
-  ['dark-cardano.js', CREATE_DARK_CARDANO_THEME_PARAMS],
-  ['flight-candidate.js', CREATE_FLIGHT_CANDIDATE_THEME_PARAMS],
-  ['incentivized-testnet.js', CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS],
-  ['light-blue.js', CREATE_LIGHT_BLUE_THEME_PARAMS],
-  ['shelley-testnet.js', CREATE_SHELLEY_TESTNET_THEME_PARAMS],
-  ['white.js', CREATE_WHITE_THEME_PARAMS],
-  ['yellow.js', CREATE_YELLOW_THEME_PARAMS],
+  ['cardano.ts', CREATE_CARDANO_THEME_PARAMS],
+  ['dark-blue.ts', CREATE_DARK_BLUE_THEME_PARAMS],
+  ['dark-cardano.ts', CREATE_DARK_CARDANO_THEME_PARAMS],
+  ['flight-candidate.ts', CREATE_FLIGHT_CANDIDATE_THEME_PARAMS],
+  ['incentivized-testnet.ts', CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS],
+  ['light-blue.ts', CREATE_LIGHT_BLUE_THEME_PARAMS],
+  ['shelley-testnet.ts', CREATE_SHELLEY_TESTNET_THEME_PARAMS],
+  ['white.ts', CREATE_WHITE_THEME_PARAMS],
+  ['yellow.ts', CREATE_YELLOW_THEME_PARAMS],
 ];
-
 export const CREATE_THEME_OBJ = {
   ...createReactPolymorphTheme(CREATE_THEME_MOCK_PARAMS),
   ...createDaedalusComponentsTheme(CREATE_THEME_MOCK_PARAMS),

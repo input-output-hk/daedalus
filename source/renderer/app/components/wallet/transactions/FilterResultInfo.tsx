@@ -1,7 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './FilterResultInfo.scss' or it... Remove this comment to see the full error message
 import styles from './FilterResultInfo.scss';
 
 const messages = defineMessages({
@@ -12,25 +12,28 @@ const messages = defineMessages({
     description: 'Filter result info.',
   },
 });
-
 type Props = {
-  filtered: number,
-  total: number,
+  filtered: number;
+  total: number;
 };
 
 @observer
-export default class FilterResultInfo extends Component<Props> {
+class FilterResultInfo extends Component<Props> {
   render() {
     const { filtered, total } = this.props;
     const resultInfo = (
       <div className={styles.resultInfo}>
         <FormattedHTMLMessage
           {...messages.resultInfo}
-          values={{ filtered, total }}
+          values={{
+            filtered,
+            total,
+          }}
         />
       </div>
     );
-
     return <div className={styles.component}>{resultInfo}</div>;
   }
 }
+
+export default FilterResultInfo;

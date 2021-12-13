@@ -1,13 +1,9 @@
-// @flow
 import { autorun } from 'mobx';
 
 type Fn = () => void;
-
 export class Reaction {
   reaction: Fn;
-
   isRunning: boolean = false;
-
   dispose: Fn | null = null;
 
   constructor(reaction: Fn) {
@@ -28,6 +24,5 @@ export class Reaction {
     }
   }
 }
-
 export const createReactions = (reactions: Array<Fn>): Array<Reaction> =>
   reactions.map((r) => new Reaction(r));

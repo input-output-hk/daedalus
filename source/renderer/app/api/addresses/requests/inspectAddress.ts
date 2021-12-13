@@ -1,4 +1,3 @@
-// @flow
 import { request } from '../../utils/request';
 import type { RequestConfig } from '../../common/types';
 import type { InspectAddressResponse } from '../types';

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { take } from 'lodash';
 import { observer, inject } from 'mobx-react';
@@ -23,35 +22,39 @@ export const messages = defineMessages({
       'Message shown when wallet has no transactions on wallet summary page.',
   },
 });
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSummaryPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+class WalletSummaryPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   handleShowMoreTransaction = (walletId: string) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { id: walletId, page: 'transactions' },
+      params: {
+        id: walletId,
+        page: 'transactions',
+      },
     });
   };
-
   handleCurrencySettingsClick = () => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.SETTINGS.WALLETS,
     });
   };
-
   handleViewAllButtonClick = (walletId: string) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { id: walletId, page: 'tokens' },
+      params: {
+        id: walletId,
+        page: 'tokens',
+      },
     });
   };
 
@@ -92,13 +95,11 @@ export default class WalletSummaryPage extends Component<Props> {
     const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-
     const walletTokens = wallet.assets.total;
     const assetTokens = getAssetTokens(all, walletTokens).sort(
       sortAssets('token', 'asc')
@@ -135,6 +136,7 @@ export default class WalletSummaryPage extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           getUrlByType={getUrlByType}
           onShowMoreTransactions={this.handleShowMoreTransaction}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
@@ -157,6 +159,7 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isLoadingAssets={isLoadingAssets}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
           currentLocale={currentLocale}
           currencyIsActive={isActive}
@@ -180,3 +183,5 @@ export default class WalletSummaryPage extends Component<Props> {
     );
   }
 }
+
+export default WalletSummaryPage;

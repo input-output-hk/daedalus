@@ -1,4 +1,3 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import React from 'react';
@@ -16,10 +15,10 @@ import { DateRangeTypes } from '../stores/TransactionsStore';
 import { formattedWalletAmount } from './formatters';
 
 const cbor = require('cbor');
+
 const bs58 = require('bs58');
 
 const AMOUNT_RAW_LENGTH_LIMIT = 10;
-
 export const generateFilterOptions = (
   transactions: Array<WalletTransaction>
 ) => {
@@ -38,7 +37,6 @@ export const generateFilterOptions = (
     amounts.length > 0 ? BigNumber.max(...amounts).toString() : '';
   const incomingChecked = true;
   const outgoingChecked = true;
-
   return {
     dateRange,
     fromDate,
@@ -49,13 +47,13 @@ export const generateFilterOptions = (
     outgoingChecked,
   };
 };
-
 export const isTransactionDateInFilterRange = (
   fromDate: string,
   toDate: string,
   transaction: WalletTransaction
 ) => {
   const { date } = transaction;
+
   if (!date) {
     return true;
   }
@@ -66,10 +64,8 @@ export const isTransactionDateInFilterRange = (
   const compareTo = toDate
     ? date.getTime() <= moment(toDate).endOf('day').valueOf()
     : true;
-
   return compareFrom && compareTo;
 };
-
 export const isTransactionAmountInFilterRange = (
   fromAmount: string,
   toAmount: string,
@@ -90,16 +86,15 @@ export const isTransactionAmountInFilterRange = (
   const compareTo = toAmount
     ? amount.absoluteValue().isLessThanOrEqualTo(max)
     : true;
-
   return compareFrom && compareTo;
 };
-
 export const isTransactionTypeInFilterRange = (
   incomingChecked: boolean,
   outgoingChecked: boolean,
   transaction: WalletTransaction
 ) => {
   const { type } = transaction;
+
   if (
     (!incomingChecked && type === TransactionTypes.INCOME) ||
     (!outgoingChecked && type === TransactionTypes.EXPEND)
@@ -109,7 +104,6 @@ export const isTransactionTypeInFilterRange = (
 
   return true;
 };
-
 export const isTransactionTitleInFilterRange = (
   searchTerm: string,
   transaction: WalletTransaction
@@ -120,9 +114,8 @@ export const isTransactionTitleInFilterRange = (
 
   return transaction.title.search(new RegExp(searchTerm, 'i')) !== -1;
 };
-
 export const isTransactionInFilterRange = (
-  filterOptions: ?TransactionFilterOptionsType,
+  filterOptions: TransactionFilterOptionsType | null | undefined,
   transaction: WalletTransaction
 ) => {
   const {
@@ -134,7 +127,6 @@ export const isTransactionInFilterRange = (
     incomingChecked = true,
     outgoingChecked = true,
   } = filterOptions || {};
-
   return !!(
     isTransactionTitleInFilterRange(searchTerm, transaction) &&
     isTransactionDateInFilterRange(fromDate, toDate, transaction) &&
@@ -146,9 +138,8 @@ export const isTransactionInFilterRange = (
     )
   );
 };
-
 export const getNumberOfFilterDimensionsApplied = (
-  filterOptions: ?TransactionFilterOptionsType
+  filterOptions: TransactionFilterOptionsType | null | undefined
 ) => {
   const {
     searchTerm,
@@ -165,22 +156,27 @@ export const getNumberOfFilterDimensionsApplied = (
   if (searchTerm) {
     result++;
   }
+
   if (dateRange && (fromDate || toDate)) {
     result++;
   }
+
   if (fromAmount || toAmount) {
     result++;
   }
+
   if (!incomingChecked || !outgoingChecked) {
     result++;
   }
 
   return result;
 };
-
 export const calculateDateRange = (
   dateRange: string,
-  dateRangeFromTo: { fromDate: string, toDate: string }
+  dateRangeFromTo: {
+    fromDate: string;
+    toDate: string;
+  }
 ) => {
   const { fromDate: fromValue, toDate: toValue } = dateRangeFromTo;
   let fromDate = null;
@@ -204,13 +200,16 @@ export const calculateDateRange = (
     } else {
       fromDate = moment();
     }
+
     fromDate = fromDate.format('YYYY-MM-DD');
     toDate = moment().format('YYYY-MM-DD');
   }
 
-  return { fromDate, toDate };
+  return {
+    fromDate,
+    toDate,
+  };
 };
-
 export const formatDateValue = (
   date: string,
   defaultDate: string,
@@ -218,19 +217,18 @@ export const formatDateValue = (
 ) => {
   if (!date) {
     const formattedDefaultDate = moment(defaultDate).format(dateFormat);
-
     return <span className="undefined">{formattedDefaultDate}</span>;
   }
 
   return moment(date).format(dateFormat);
 };
-
 export const formatAmountValue = (
   amount: string,
   defaultAmount: string,
   shrinkIfLong?: boolean
 ) => {
   let inputAmount = amount || defaultAmount;
+
   if (inputAmount === '.') {
     inputAmount = '0';
   } else if (inputAmount[0] === '.') {
@@ -245,18 +243,19 @@ export const formatAmountValue = (
     shrinkIfLong && inputAmount.length > AMOUNT_RAW_LENGTH_LIMIT
       ? formattedWalletAmount(amountBigNumber, false, false)
       : amountBigNumber.toFormat();
-
   return <span className={amountClassName}>{content}</span>;
 };
-
 export const validateFilterForm = (values: {
-  fromDate: string,
-  toDate: string,
-  fromAmount: string,
-  toAmount: string,
+  fromDate: string;
+  toDate: string;
+  fromAmount: string;
+  toAmount: string;
 }) => {
   const { fromDate, toDate, fromAmount, toAmount } = values;
-  const invalidFields = { toDate: false, toAmount: false };
+  const invalidFields = {
+    toDate: false,
+    toAmount: false,
+  };
 
   if (
     fromDate &&
@@ -265,6 +264,7 @@ export const validateFilterForm = (values: {
   ) {
     invalidFields.toDate = true;
   }
+
   if (
     fromAmount &&
     toAmount &&
@@ -281,14 +281,17 @@ export const validateFilterForm = (values: {
 
 class List {
   constructor(xs) {
-    // $FlowFixMe
+    // @ts-ignore
     this.elems = xs;
   }
+
   encodeCBOR(encoder) {
     encoder.push(rawBuffer('9F')); // Begin Indefinite list
-    // $FlowFixMe
+
+    // @ts-ignore
     this.elems.forEach((el) => encoder.pushAny(el));
     encoder.push(rawBuffer('FF')); // Break Indefinite list
+
     return true;
   }
 }
@@ -297,7 +300,6 @@ export const thDataHexGenerator = (txData: CoinSelectionsResponse) => {
   const txDataHex = encodeTransaction(txData).toString('hex');
   return txDataHex;
 };
-
 export const encodeSignedTransaction = ({
   txDataHex,
   witnesses,

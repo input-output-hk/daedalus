@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import ValidateDialog from '../../../../components/wallet/wallet-create/ValidateDialog';
@@ -10,7 +9,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class ValidateDialogContainer extends Component<Props> {
+class ValidateDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -19,8 +18,11 @@ export default class ValidateDialogContainer extends Component<Props> {
       <ValidateDialog
         onClose={onClose}
         onContinue={onContinue}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onBack={onBack}
       />
     );
   }
 }
+
+export default ValidateDialogContainer;

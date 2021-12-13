@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
@@ -10,7 +9,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletTransactionsPage extends Component<Props> {
+class WalletTransactionsPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { app, wallets, addresses, profile, assets } = stores;
@@ -40,9 +39,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { transactions: transactionActions } = this.props.actions;
     const { filterTransactions, requestCSVFile } = transactionActions;
     const { onCopyAssetParam } = actions.assets;
-
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-
     const { getAsset } = assets;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
@@ -82,3 +79,5 @@ export default class WalletTransactionsPage extends Component<Props> {
     );
   }
 }
+
+export default WalletTransactionsPage;

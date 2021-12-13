@@ -1,10 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { orderBy } from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsTable.scss' or its... Remove this comment to see the full error message
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -120,7 +120,6 @@ const messages = defineMessages({
     description: 'Table header "Retiring" label on stake pools list view page',
   },
 });
-
 export const defaultTableOrdering = {
   ranking: 'asc',
   ticker: 'asc',
@@ -132,33 +131,29 @@ export const defaultTableOrdering = {
   pledge: 'asc',
   retiring: 'asc',
 };
-
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
-
 type Props = {
-  stakePoolsList: Array<StakePool>,
-  listName?: string,
-  isListActive?: boolean,
-  currentTheme: string,
-  setListActive?: Function,
-  showWithSelectButton?: boolean,
-  onSelect?: Function,
-  containerClassName: string,
-  numberOfRankedStakePools: number,
-  selectedPoolId?: ?number,
-  onOpenExternalLink: Function,
-  currentLocale: string,
-  onTableHeaderMouseEnter: Function,
-  onTableHeaderMouseLeave: Function,
+  stakePoolsList: Array<StakePool>;
+  listName?: string;
+  isListActive?: boolean;
+  currentTheme: string;
+  setListActive?: (...args: Array<any>) => any;
+  showWithSelectButton?: boolean;
+  onSelect?: (...args: Array<any>) => any;
+  containerClassName: string;
+  numberOfRankedStakePools: number;
+  selectedPoolId?: number | null | undefined;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  currentLocale: string;
+  onTableHeaderMouseEnter: (...args: Array<any>) => any;
+  onTableHeaderMouseLeave: (...args: Array<any>) => any;
 };
-
 type State = {
-  isPreloading: boolean,
-  stakePoolsOrder: string,
-  stakePoolsSortBy: string,
+  isPreloading: boolean;
+  stakePoolsOrder: string;
+  stakePoolsSortBy: string;
 };
-
 const initialState = {
   isPreloading: true,
   stakePoolsOrder: 'asc',
@@ -166,28 +161,26 @@ const initialState = {
 };
 
 @observer
-export class StakePoolsTable extends Component<Props, State> {
+class StakePoolsTable extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isListActive: true,
     showWithSelectButton: false,
   };
-
   state = { ...initialState };
-
-  scrollableDomElement: ?HTMLElement = null;
-
-  searchInput: ?HTMLElement = null;
-
+  scrollableDomElement: HTMLElement | null | undefined = null;
+  searchInput: HTMLElement | null | undefined = null;
   _isMounted = false;
 
   componentDidMount() {
     this._isMounted = true;
     setTimeout(() => {
-      if (this._isMounted) this.setState({ isPreloading: false });
+      if (this._isMounted)
+        this.setState({
+          isPreloading: false,
+        });
     }, 0);
   }
 
@@ -201,9 +194,11 @@ export class StakePoolsTable extends Component<Props, State> {
   handleSort = (newSortBy: string) => {
     const { stakePoolsOrder, stakePoolsSortBy } = this.state;
     let newOrder = defaultTableOrdering[newSortBy];
+
     if (newSortBy === stakePoolsSortBy) {
       newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
     }
+
     this.setState({
       stakePoolsOrder: newOrder,
       stakePoolsSortBy: newSortBy,
@@ -228,34 +223,36 @@ export class StakePoolsTable extends Component<Props, State> {
     const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
-
     if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
       return (
         <div className={styles.preloadingBlockWrapper}>
           <LoadingSpinner big />
         </div>
       );
-
     const sortedStakePoolList = orderBy(
       stakePoolsList.map((stakePool) => {
         let calculatedPledge;
         let calculatedCost;
         let formattedTicker;
+
         if (stakePoolsSortBy === 'ticker') {
           formattedTicker = stakePool.ticker
             .replace(/[^\w\s]/gi, '')
             .toLowerCase();
         }
+
         if (stakePoolsSortBy === 'pledge') {
           const formattedPledgeValue = stakePool.pledge.toFixed(2);
           calculatedPledge = Number(
             parseFloat(formattedPledgeValue).toFixed(2)
           );
         }
+
         if (stakePoolsSortBy === 'cost') {
           const formattedCostValue = stakePool.cost.toFixed(2);
           calculatedCost = Number(parseFloat(formattedCostValue).toFixed(2));
         }
+
         return {
           ...stakePool,
           calculatedPledge,
@@ -269,9 +266,9 @@ export class StakePoolsTable extends Component<Props, State> {
         'calculatedCost',
         stakePoolsSortBy,
       ],
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       [stakePoolsOrder, stakePoolsOrder, stakePoolsOrder, stakePoolsOrder]
     );
-
     const availableTableHeaders = [
       {
         name: 'ranking',
@@ -374,7 +371,6 @@ export class StakePoolsTable extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderRetiring),
       },
     ];
-
     return (
       <div>
         <div className={componentClasses}>
@@ -400,6 +396,7 @@ export class StakePoolsTable extends Component<Props, State> {
                   }
                 >
                   <StakePoolsTableBody
+                    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                     sortedStakePoolList={sortedStakePoolList}
                     numberOfRankedStakePools={numberOfRankedStakePools}
                     currentTheme={currentTheme}
@@ -422,3 +419,5 @@ export class StakePoolsTable extends Component<Props, State> {
     );
   }
 }
+
+export { StakePoolsTable };

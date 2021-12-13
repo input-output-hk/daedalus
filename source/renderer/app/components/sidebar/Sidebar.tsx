@@ -1,7 +1,7 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Sidebar.scss' or its corresp... Remove this comment to see the full error message
 import styles from './Sidebar.scss';
 import { shouldShowWalletSubMenu } from './helpers';
 import SidebarCategory from './SidebarCategory';
@@ -15,15 +15,15 @@ import type { networkType } from '../../types/networkTypes';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 
 type Props = {
-  menus: SidebarMenus,
-  categories: Array<SidebarCategoryInfo>,
-  activeSidebarCategory: string,
-  isShowingSubMenus: boolean,
-  pathname: string,
-  network: networkType,
-  onActivateCategory: Function,
-  onAddWallet: Function,
-  isShelleyActivated: boolean,
+  menus: SidebarMenus;
+  categories: Array<SidebarCategoryInfo>;
+  activeSidebarCategory: string;
+  isShowingSubMenus: boolean;
+  pathname: string;
+  network: networkType;
+  onActivateCategory: (...args: Array<any>) => any;
+  onAddWallet: (...args: Array<any>) => any;
+  isShelleyActivated: boolean;
 };
 
 const getCategoryContent = (categoryName: string, network) =>
@@ -52,14 +52,12 @@ const Sidebar = ({
     styles.component,
     isMinimized && styles.minimized
   );
-
   return (
     <div className={sidebarStyles}>
       <div className={styles.minimized}>
         {categories.map((category: SidebarCategoryInfo) => {
           const content = getCategoryContent(category.name, network);
           const isActive = activeSidebarCategory === category.route;
-
           return (
             <SidebarCategoryWrapper
               key={category.name}

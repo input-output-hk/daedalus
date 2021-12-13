@@ -1,4 +1,3 @@
-// @flow
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 import { OPEN_EXTERNAL_URL_CHANNEL } from '../../../common/ipc/api';
 import type {

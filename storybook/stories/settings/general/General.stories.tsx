@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { findKey } from 'lodash';
 import addons from '@storybook/addons';
@@ -15,7 +14,6 @@ import {
 } from '../../../../source/renderer/app/config/profileConfig';
 import { updateParam } from '../../../addons/DaedalusMenu';
 import { locales, themesIds } from '../../_support/config';
-
 // Screens
 import ProfileSettingsForm from '../../../../source/renderer/app/components/widgets/forms/ProfileSettingsForm';
 import StakePoolsSettings from '../../../../source/renderer/app/components/settings/categories/StakePoolsSettings';
@@ -24,13 +22,15 @@ import SupportSettings from '../../../../source/renderer/app/components/settings
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 import SecuritySettings from '../../../../source/renderer/app/components/settings/categories/SecuritySettings';
-
 // Assets and helpers
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
 
 const changeControl = (name: string, value: boolean) => {
-  addons.getChannel().emit(CHANGE, { name, value });
+  addons.getChannel().emit(CHANGE, {
+    name,
+    value,
+  });
 };
 
 const getParamName = (obj, itemName): any =>
@@ -38,10 +38,7 @@ const getParamName = (obj, itemName): any =>
 
 /* eslint-disable consistent-return */
 storiesOf('Settings|General', module)
-  .addDecorator(SettingsWrapper)
-
-  // ====== Stories ======
-
+  .addDecorator(SettingsWrapper) // ====== Stories ======
   .add('General', () => (
     <ProfileSettingsForm
       isSubmitting={boolean('isSubmitting', false)}
@@ -73,11 +70,15 @@ storiesOf('Settings|General', module)
       (store) => (
         <WalletsSettings
           currencySelected={store.state.currencySelected}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           currencyRate={0.321}
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
           currencyList={getLocalizedCurrenciesList(currenciesList, 'en-US')}
           currencyIsActive
           onSelectCurrency={(code) =>
-            store.set({ currencySelected: currenciesList[code] })
+            store.set({
+              currencySelected: currenciesList[code],
+            })
           }
           onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
           onOpenExternalLink={action('onOpenExternalLink')}
@@ -114,6 +115,7 @@ storiesOf('Settings|General', module)
   ))
   .add('Terms of Service', (props) => {
     const termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/${props.locale}.md`);
+
     return (
       <TermsOfUseSettings
         localizedTermsOfUse={termsOfUseSource}
@@ -134,9 +136,11 @@ storiesOf('Settings|General', module)
       discreetMode={boolean('discreetMode', false)}
       openDiscreetMode={boolean('openDiscreetMode', false)}
       onDiscreetModeToggle={() =>
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
         changeControl('discreetMode', !boolean('discreetMode'))
       }
       onOpenDiscreetModeToggle={() =>
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
         changeControl('openDiscreetMode', !boolean('openDiscreetMode'))
       }
     />

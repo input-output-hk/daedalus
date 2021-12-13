@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import {
   defineMessages,
@@ -9,7 +8,9 @@ import {
 import classNames from 'classnames';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsChooseWalletD... Remove this comment to see the full error message
 import styles from './DelegationStepsChooseWalletDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -81,24 +82,21 @@ const messages = defineMessages({
       'Label for continue button on the delegation setup "choose wallet" step dialog.',
   },
 });
-
 type Props = {
-  numberOfStakePools: number,
-  onClose: Function,
-  onSelectWallet: Function,
-  onBack: Function,
-  wallets: Array<Wallet>,
-  stepsList: Array<string>,
-  minDelegationFunds: number,
-  selectedWalletId: ?string,
-  isWalletAcceptable: Function,
-  getStakePoolById: Function,
+  numberOfStakePools: number;
+  onClose: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
+  stepsList: Array<string>;
+  minDelegationFunds: number;
+  selectedWalletId: string | null | undefined;
+  isWalletAcceptable: (...args: Array<any>) => any;
+  getStakePoolById: (...args: Array<any>) => any;
 };
-
 type State = {
-  selectedWalletId: ?string,
+  selectedWalletId: string | null | undefined;
 };
-
 export default class DelegationStepsChooseWalletDialog extends Component<
   Props,
   State
@@ -106,15 +104,14 @@ export default class DelegationStepsChooseWalletDialog extends Component<
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     selectedWalletId: this.props.selectedWalletId,
   };
-
   onWalletChange = (selectedWalletId: string) => {
-    this.setState({ selectedWalletId });
+    this.setState({
+      selectedWalletId,
+    });
   };
-
   onSelectWallet = () => {
     const { selectedWalletId } = this.state;
     this.props.onSelectWallet(selectedWalletId);
@@ -133,14 +130,12 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
-
-    const selectedWallet: ?Wallet = wallets.find(
+    const selectedWallet: Wallet | null | undefined = wallets.find(
       (wallet: Wallet) => wallet && wallet.id === selectedWalletId
     );
-
     const { amount, reward, isRestoring } = selectedWallet || {};
-
     let errorMessage;
+
     if (selectedWallet && !isWalletAcceptable(amount, reward)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
@@ -155,22 +150,21 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...errorMessage}
-          values={{ minDelegationFunds }}
+          values={{
+            minDelegationFunds,
+          }}
         />
       </p>
     );
-
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
       styles.delegationStepsChooseWalletDialogWrapper,
     ]);
     const contentClassName = classNames([commonStyles.content, styles.content]);
-
     const walletSelectClasses = classNames([
       styles.walletSelect,
       error ? styles.error : null,
     ]);
-
     const actions = [
       {
         className: 'continueButton',
@@ -180,7 +174,6 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         disabled: !selectedWalletId || !!error,
       },
     ];
-
     const stepsIndicatorLabel = (
       <FormattedMessage
         {...messages.stepIndicatorLabel}
@@ -190,7 +183,6 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         }}
       />
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -215,11 +207,14 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           <p className={styles.description}>
             <FormattedHTMLMessage
               {...messages.description}
-              values={{ minDelegationFunds }}
+              values={{
+                minDelegationFunds,
+              }}
             />
           </p>
           <WalletsDropdown
             className={walletSelectClasses}
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
             label={intl.formatMessage(messages.selectWalletInputLabel)}
             numberOfStakePools={numberOfStakePools}
             wallets={wallets}

@@ -1,8 +1,6 @@
-// @flow
 import { themes } from '@storybook/theming';
 
 const { light: styles } = themes;
-
 export default {
   component: {
     fontFamily: styles.fontBase,

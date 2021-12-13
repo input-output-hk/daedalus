@@ -1,4 +1,3 @@
-// @flow
 import type { BrowserWindow } from 'electron';
 import compressLogsApi from './compress-logs';
 import downloadLogsApi from './download-logs';

@@ -1,4 +1,3 @@
-// @flow
 import { GET_BLOCK_REPLAY_STATUS_CHANNEL } from '../../../common/ipc/api';
 import type {
   GetBlockReplayProgressRendererRequest,

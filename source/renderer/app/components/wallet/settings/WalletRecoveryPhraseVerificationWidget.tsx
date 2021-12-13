@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { camelCase } from 'lodash';
@@ -9,9 +8,13 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
 import iconOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
 import iconWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
 import iconNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseVerifica... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseVerificationWidget.scss';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES as statuses,
@@ -123,18 +126,17 @@ export const messages = defineMessages({
       'Label for the recoveryPhraseVerificationButton on wallet settings.',
   },
 });
-
 export type Props = {
-  creationDate: Date,
-  recoveryPhraseVerificationDate: ?Date,
-  onVerify: Function,
-  wordCount: number,
-  locale: string,
-  isLegacy: boolean,
+  creationDate: Date;
+  recoveryPhraseVerificationDate: Date | null | undefined;
+  onVerify: (...args: Array<any>) => any;
+  wordCount: number;
+  locale: string;
+  isLegacy: boolean;
 };
 
 @observer
-export default class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
+class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -204,6 +206,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       const replacement = this.context.intl
         .formatMessage(messages.timeUntilWarningReplacement)
         .split(',');
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
       timeUntilWarning = timeUntilWarning.replace(...replacement);
     }
 
@@ -234,26 +237,24 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       creationDate,
       recoveryPhraseVerificationDate,
     });
-
     const statusStyle = camelCase(`status ${recoveryPhraseVerificationStatus}`);
     const statusStyles = classnames([styles.status, styles[statusStyle]]);
-
     let statusButtonType = 'flat';
     if (recoveryPhraseVerificationStatus === statuses.WARNING)
       statusButtonType = 'primary';
     else if (recoveryPhraseVerificationStatus === statuses.NOTIFICATION)
       statusButtonType = 'attention';
-
     const statusButtonStyles = classnames([
       styles.statusButton,
       statusButtonType,
     ]);
-
     return (
       <div className={styles.component}>
         <h2>{intl.formatMessage(messages.title)}</h2>
         <div className={styles.description}>
-          {intl.formatMessage(messages.description, { wordCount })}
+          {intl.formatMessage(messages.description, {
+            wordCount,
+          })}
           {isLegacy && (
             <>
               &nbsp;
@@ -294,3 +295,5 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
     );
   }
 }
+
+export default WalletRecoveryPhraseVerificationWidget;

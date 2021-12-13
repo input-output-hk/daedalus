@@ -1,4 +1,3 @@
-// @flow
 import log from 'electron-log-daedalus';
 import { environment } from '../environment';
 import { formatContext } from '../../common/utils/logging';
@@ -11,14 +10,12 @@ import { toJS } from '../../common/utils/helper';
 const appName = 'daedalus';
 const electronProcess = 'ipcMain';
 const { network, os, platformVersion, version } = environment;
-
 const messageContext: FormatMessageContextParams = {
   appName,
   electronProcess,
   network,
   level: '',
 };
-
 const environmentData = {
   network,
   os,
@@ -26,7 +23,10 @@ const environmentData = {
   version,
 };
 
-const logToLevel = (level: string) => (message: string, data: ?Object) =>
+const logToLevel = (level: string) => (
+  message: string,
+  data: Record<string, any> | null | undefined
+) =>
   log[level](formatContext({ ...messageContext, level }), {
     message,
     data: toJS(data),

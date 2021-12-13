@@ -1,10 +1,10 @@
-// @flow
 import React from 'react';
 import classnames from 'classnames';
 import { FormattedHTMLMessage, injectIntl, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DeleteWalletConfirmationDial... Remove this comment to see the full error message
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
@@ -12,35 +12,32 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import DeleteWalletConfirmation from './DeleteWalletConfirmation';
 
 export type WalletSettingRemoveMessages = {
-  dialogTitle: Message,
-  confirmButtonLabel: Message,
-  confirmationQuestion: $Exact<Message>,
-  confirmBackupNotice: Message,
-  enterRecoveryWordLabel: Message,
+  dialogTitle: Message;
+  confirmButtonLabel: Message;
+  confirmationQuestion: Message;
+  confirmBackupNotice: Message;
+  enterRecoveryWordLabel: Message;
 };
-
 type Message = {
-  id: string,
-  defaultMessage: string,
-  description: string,
+  id: string;
+  defaultMessage: string;
+  description: string;
 };
-
 type Props = {
-  walletName: string,
-  countdownFn: Function,
-  isBackupNoticeAccepted: boolean,
-  confirmationValue: string,
-  onAcceptBackupNotice: Function,
-  onContinue: Function,
-  onCancel: Function,
-  onConfirmationValueChange: Function,
-  isSubmitting: boolean,
-  isTest: boolean,
-  isUnpair: boolean,
-  messages: WalletSettingRemoveMessages,
-  intl: intlShape.isRequired,
+  walletName: string;
+  countdownFn: (...args: Array<any>) => any;
+  isBackupNoticeAccepted: boolean;
+  confirmationValue: string;
+  onAcceptBackupNotice: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
+  onConfirmationValueChange: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  isTest: boolean;
+  isUnpair: boolean;
+  messages: WalletSettingRemoveMessages;
+  intl: intlShape.isRequired;
 };
-
 const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
   const {
     countdownFn,
@@ -57,31 +54,29 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
     messages,
     intl,
   } = props;
-
   const countdownRemaining = countdownFn(isTest ? 0 : DELETE_WALLET_COUNTDOWN);
   const countdownDisplay =
     !isUnpair && countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
   const isCountdownFinished = countdownRemaining <= 0;
   const isWalletNameConfirmationCorrect =
-    confirmationValue.normalize('NFKC') === walletName.normalize('NFKC'); // Always normalize non-breaking space into regular space.
+    confirmationValue.normalize('NFKC') === walletName.normalize('NFKC');
+  // Always normalize non-breaking space into regular space.
   const isDisabled =
     !isUnpair &&
     (!isCountdownFinished ||
       !isBackupNoticeAccepted ||
       !isWalletNameConfirmationCorrect);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const handleSubmit = React.useCallback(() => !isDisabled && onContinue());
-
   const buttonClasses = classnames([
     'attention',
     isSubmitting ? styles.isSubmitting : null,
   ]);
-
   const buttonLabel = !isSubmitting ? (
     `${intl.formatMessage(messages.confirmButtonLabel)} ${countdownDisplay}`
   ) : (
     <LoadingSpinner />
   );
-
   const actions = [
     {
       label: intl.formatMessage(globalMessages.cancel),
@@ -95,7 +90,6 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
       primary: true,
     },
   ];
-
   return (
     <Dialog
       title={intl.formatMessage(messages.dialogTitle)}
@@ -109,7 +103,9 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
       <FormattedHTMLMessage
         tagName="p"
         {...messages.confirmationQuestion}
-        values={{ walletName }}
+        values={{
+          walletName,
+        }}
       />
 
       {!isUnpair && (
@@ -126,5 +122,4 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
     </Dialog>
   );
 });
-
 export default injectIntl(WalletSettingsRemoveConfirmationDialog);

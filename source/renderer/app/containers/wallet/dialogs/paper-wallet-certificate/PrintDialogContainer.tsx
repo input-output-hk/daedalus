@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import PrintDialog from '../../../../components/wallet/paper-wallet-certificate/PrintDialog';
@@ -8,14 +7,13 @@ type Props = InjectedDialogContainerProps;
 
 @inject('actions')
 @observer
-export default class PrintDialogContainer extends Component<Props> {
+class PrintDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   onContinue = () => {
     this.props.actions.wallets.updateCertificateStep.trigger();
   };
@@ -26,3 +24,5 @@ export default class PrintDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default PrintDialogContainer;

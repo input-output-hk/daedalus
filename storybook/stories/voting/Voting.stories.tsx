@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -65,7 +64,6 @@ const assets = {
     },
   ],
 };
-
 const WALLETS = [
   generateWallet('Wallet 1', '100000000000000', assets, 0),
   generateWallet(
@@ -78,19 +76,14 @@ const WALLETS = [
     'syncing'
   ),
 ];
-
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
-
 storiesOf('Voting|Voting Registration Wizard', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
     </StoryProvider>
   ))
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Voting Registration - Step 1', () => (
     <VotingRegistrationStepsChooseWallet
       onClose={action('onClose')}
@@ -105,7 +98,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       getStakePoolById={action('getStakePoolById')}
     />
   ))
-
   .add('Voting Registration - Step 2', () => (
     <VotingRegistrationStepsRegister
       onClose={action('onClose')}
@@ -120,6 +112,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
           })
         )
       }
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
       isSubmitting={boolean('isSubmitting')}
       onConfirm={action('onConfirm')}
       onExternalLinkClick={action('onExternalLinkClick')}
@@ -129,7 +122,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       selectedWallet={WALLETS[0]}
     />
   ))
-
   .add('Voting Registration - Step 3', () => (
     <VotingRegistrationStepsConfirm
       onClose={action('onClose')}
@@ -146,7 +138,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       transactionError={boolean('transactionError', false)}
     />
   ))
-
   .add('Voting Registration - Step 4', () => (
     <VotingRegistrationStepsEnterPinCode
       onClose={action('onClose')}
@@ -155,7 +146,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       onSetPinCode={action('onSetPinCode')}
     />
   ))
-
   .add('Voting Registration - Step 5', () => (
     <VotingRegistrationStepsQrCode
       onClose={action('onClose')}
@@ -165,22 +155,20 @@ storiesOf('Voting|Voting Registration Wizard', module)
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
     />
   ));
-
 storiesOf('Voting|Voting Info', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Voting Info', () => (
     <VerticalFlexContainer>
       <VotingInfo
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 3-4 arguments, but got 2.
         fundPhase={select('Fund phase', [
           FundPhases.SNAPSHOT,
           FundPhases.VOTING,
           FundPhases.TALLYING,
           FundPhases.RESULTS,
         ])}
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'Locale'.
         currentLocale={LANGUAGE_OPTIONS[0].value}
         currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
         currentTimeFormat={TIME_OPTIONS[0].value}

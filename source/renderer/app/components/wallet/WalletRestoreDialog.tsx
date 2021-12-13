@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
@@ -26,6 +25,7 @@ import {
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRestoreDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletRestoreDialog.scss';
 import { submitOnEnter } from '../../utils/form';
 import {
@@ -37,6 +37,7 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/info-icon.... Remove this comment to see the full error message
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
@@ -194,37 +195,31 @@ const messages = defineMessages({
     description: 'Tooltip for the password input in the wallet dialog.',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  onSubmit: Function,
-  onCancel: Function,
-  isSubmitting: boolean,
-  mnemonicValidator: Function,
-  error?: ?LocalizableError,
-  suggestedMnemonics: Array<string>,
-  onChoiceChange: ?Function,
+  onSubmit: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  mnemonicValidator: (...args: Array<any>) => any;
+  error?: LocalizableError | null | undefined;
+  suggestedMnemonics: Array<string>;
+  onChoiceChange: ((...args: Array<any>) => any) | null | undefined;
 };
-
 type State = {
-  walletType: string,
+  walletType: string;
 };
 
 @observer
-export default class WalletRestoreDialog extends Component<Props, State> {
+class WalletRestoreDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     error: null,
   };
-
   state = {
     walletType: WALLET_RESTORE_TYPES.LEGACY, // regular | certificate | legacy | yoroi
   };
-
   recoveryPhraseAutocomplete: Autocomplete;
 
   componentDidUpdate() {
@@ -234,6 +229,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         walletName: {
@@ -282,9 +278,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
+
               if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
+                repeatPasswordField.validate({
+                  showErrors: true,
+                });
               }
+
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
@@ -317,52 +317,54 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { onSubmit } = this.props;
         const { recoveryPhrase, walletName, spendingPassword } = form.values();
-        const walletData: Object = {
+        const walletData: Record<string, any> = {
           recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
           spendingPassword,
         };
-
         walletData.type = this.state.walletType;
-
         onSubmit(walletData);
       },
       onError: () =>
-        handleFormErrors('.SimpleFormField_error', { focusElement: true }),
+        handleFormErrors('.SimpleFormField_error', {
+          focusElement: true,
+        }),
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'each' does not exist on type 'ReactToolb... Remove this comment to see the full error message
     form.each((field) => {
       field.debouncedValidation.cancel();
     });
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'reset' does not exist on type 'ReactTool... Remove this comment to see the full error message
     form.reset();
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'showErrors' does not exist on type 'Reac... Remove this comment to see the full error message
     form.showErrors(false);
   };
-
   resetMnemonics = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     recoveryPhraseField.debouncedValidation.cancel();
     recoveryPhraseField.reset();
     recoveryPhraseField.showErrors(false);
-
     // Autocomplete has to be reset manually
     this.recoveryPhraseAutocomplete.clear();
   };
@@ -372,23 +374,23 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const { form } = this;
     const { walletType } = this.state;
     const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
-
     const dialogClasses = classnames([
       styles.component,
       styles.dialogWithCertificateRestore,
       'WalletRestoreDialog',
     ]);
-
     const walletNameFieldClasses = classnames([
       'walletName',
       styles.walletName,
     ]);
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletNameField = form.$('walletName');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatedPasswordField = form.$('repeatPassword');
-
     const label = this.isCertificate()
       ? this.context.intl.formatMessage(messages.restorePaperWalletButtonLabel)
       : this.context.intl.formatMessage(messages.importButtonLabel);
@@ -401,22 +403,18 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         onClick: this.submit,
       },
     ];
-
     const regularTabClasses = classnames([
       'regularTab',
       this.isRegular() || this.isLegacy() ? styles.activeButton : '',
     ]);
-
     const certificateTabClasses = classnames([
       'certificateTab',
       this.isCertificate() ? styles.activeButton : '',
     ]);
-
     const yoroiTabClasses = classnames([
       'yoroiTab',
       this.isYoroi() ? styles.activeButton : '',
     ]);
-
     return (
       <Dialog
         className={dialogClasses}
@@ -673,9 +671,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   onSelectWalletType = (walletType: string, shouldResetForm?: boolean) => {
     const { onChoiceChange, isSubmitting } = this.props;
     if (isSubmitting) return;
-    this.setState({ walletType });
+    this.setState({
+      walletType,
+    });
     if (shouldResetForm) this.resetForm();
     this.resetMnemonics();
     if (onChoiceChange) onChoiceChange();
   };
 }
+
+export default WalletRestoreDialog;

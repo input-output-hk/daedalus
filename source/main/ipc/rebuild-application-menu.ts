@@ -1,4 +1,3 @@
-// @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { REBUILD_APP_MENU_CHANNEL } from '../../common/ipc/api';
 import type {

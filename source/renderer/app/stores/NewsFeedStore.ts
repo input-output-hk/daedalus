@@ -1,4 +1,3 @@
-// @flow
 import { observable, action, runInAction, computed } from 'mobx';
 import { map, get, find } from 'lodash';
 import Store from './lib/Store';
@@ -17,20 +16,21 @@ import type {
 } from '../api/news/types';
 
 const { isTest, version, isDev } = global.environment;
-
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'DOWNLOAD_LOGS',
   'OPEN_DIAGNOSTIC_DIALOG',
 ];
-
 export default class NewsFeedStore extends Store {
-  @observable rawNews: ?Array<NewsItem> = null;
-  @observable newsUpdatedAt: ?Date = null;
-  @observable fetchingNewsFailed = false;
-  @observable getNewsRequest: Request<GetNewsResponse> = new Request(
-    this.api.ada.getNews
-  );
-  @observable getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
+  @observable
+  rawNews: Array<NewsItem> | null | undefined = null;
+  @observable
+  newsUpdatedAt: Date | null | undefined = null;
+  @observable
+  fetchingNewsFailed = false;
+  @observable
+  getNewsRequest: Request<GetNewsResponse> = new Request(this.api.ada.getNews);
+  @observable
+  getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
     this.api.localStorage.getReadNews
   );
   @observable
@@ -41,17 +41,26 @@ export default class NewsFeedStore extends Store {
   markNewsAsUnreadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsUnread
   );
-  @observable openedAlert: ?News.News = null;
-  @observable fetchLocalNews: boolean = false;
-  @observable rawNewsJsonQA: ?GetNewsResponse = null;
-
-  pollingNewsIntervalId: ?IntervalID = null;
-  pollingNewsOnErrorIntervalId: ?IntervalID = null;
-  pollingNewsOnIncidentIntervalId: ?IntervalID = null;
+  @observable
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
+  openedAlert: News.News | null | undefined = null;
+  @observable
+  fetchLocalNews: boolean = false;
+  @observable
+  rawNewsJsonQA: GetNewsResponse | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  pollingNewsIntervalId: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  pollingNewsOnErrorIntervalId: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  pollingNewsOnIncidentIntervalId: IntervalID | null | undefined = null;
 
   setup() {
     // Fetch news on app start
-    this.getNews({ isInit: true });
+    this.getNews({
+      isInit: true,
+    });
+
     if (!isTest) {
       // Refetch news every 30 mins
       this.pollingNewsIntervalId = setInterval(
@@ -61,14 +70,17 @@ export default class NewsFeedStore extends Store {
     }
   }
 
-  @action getNews = async (params?: { isInit: boolean }) => {
+  @action
+  getNews = async (params?: { isInit: boolean }) => {
     let rawNews;
+
     try {
       if (this.rawNewsJsonQA && isDev) {
         rawNews = this.rawNewsJsonQA;
       } else {
         rawNews = await this.getNewsRequest.execute().promise;
       }
+
       const hasIncident = find(
         rawNews.items,
         (news) => news.type === NewsTypes.INCIDENT
@@ -80,11 +92,14 @@ export default class NewsFeedStore extends Store {
           rawNews.items,
           (news) => news.type === NewsTypes.ALERT && news.repeatOnStartup
         );
+
         if (repeatableNews) {
           const mainIdentificator = repeatableNews.id || repeatableNews.date;
           // Mark Alert as unread in LC if "repeatOnStartup" parameter set
+          // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
           await this.markNewsAsUnreadRequest.execute(mainIdentificator);
           // Get all read news to force @computed change
+          // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
           await this.getReadNewsRequest.execute();
         }
       }
@@ -143,6 +158,7 @@ export default class NewsFeedStore extends Store {
           clearInterval(this.pollingNewsIntervalId);
           this.pollingNewsIntervalId = null;
         }
+
         if (this.pollingNewsOnIncidentIntervalId) {
           clearInterval(this.pollingNewsOnIncidentIntervalId);
           this.pollingNewsOnIncidentIntervalId = null;
@@ -156,9 +172,11 @@ export default class NewsFeedStore extends Store {
           );
         }
       }
+
       this._setFetchingNewsFailed(true);
     }
 
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getReadNewsRequest.execute();
 
     if (rawNews) {
@@ -168,35 +186,40 @@ export default class NewsFeedStore extends Store {
       });
     }
   };
-
-  @action markNewsAsRead = async (newsId: number[]) => {
+  @action
+  markNewsAsRead = async (newsId: number[]) => {
     // Set news timestamp to LC
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.markNewsAsReadRequest.execute(newsId);
     // Get all read news to force @computed change
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getReadNewsRequest.execute();
   };
-
-  @action openAlert = (newsId: number) => {
+  @action
+  openAlert = (newsId: number) => {
     if (this.getNewsRequest.wasExecuted) {
       const alertToOpen = this.newsFeedData.alerts.all.find(
         (newsItem) => newsItem.id === newsId
       );
+
       if (alertToOpen) {
         this.openedAlert = alertToOpen;
       }
     }
   };
-
-  @action closeOpenedAlert = () => {
+  @action
+  closeOpenedAlert = () => {
     this.openedAlert = null;
   };
-
-  @action _setFetchingNewsFailed = (fetchingNewsFailed: boolean) => {
+  @action
+  _setFetchingNewsFailed = (fetchingNewsFailed: boolean) => {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
-
-  @action proceedNewsAction = (newsItem: News.News, e: MouseEvent) => {
+  @action
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
+  proceedNewsAction = (newsItem: News.News, e: MouseEvent) => {
     const { url, route, event } = newsItem.action;
+
     if (url) {
       this.stores.app.openExternalLink(url, e);
     } else if (
@@ -204,29 +227,35 @@ export default class NewsFeedStore extends Store {
       newsItem.type !== NewsTypes.INCIDENT &&
       newsItem.type !== NewsTypes.ALERT
     ) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.app.closeNewsFeed.trigger();
-      this.actions.router.goToRoute.trigger({ route });
+      this.actions.router.goToRoute.trigger({
+        route,
+      });
     } else if (event && AVAILABLE_NEWSFEED_EVENT_ACTIONS.includes(event)) {
       switch (event) {
         case 'OPEN_DIAGNOSTIC_DIALOG':
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
           this.actions.app.openDaedalusDiagnosticsDialog.trigger();
           break;
+
         case 'DOWNLOAD_LOGS':
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
           this.actions.app.downloadLogs.trigger();
           break;
+
         default:
           break;
       }
     }
   };
-
-  @action setFakedNewsfeed = (params: {
-    isAutomaticUpdateTest: ?boolean,
-    appVersion?: string,
+  @action
+  setFakedNewsfeed = (params: {
+    isAutomaticUpdateTest: boolean | null | undefined;
+    appVersion?: string;
   }) => {
     if (isDev) {
       const { isAutomaticUpdateTest, appVersion } = params;
-
       // Fake appVersion for news ONLY so we can check multiple cases
       global.environment.version = appVersion || version;
 
@@ -234,18 +263,25 @@ export default class NewsFeedStore extends Store {
         clearInterval(this.pollingNewsIntervalId);
         this.pollingNewsIntervalId = null;
       }
+
       let rawNewsJsonQA;
+
       if (isAutomaticUpdateTest) {
         rawNewsJsonQA = require('../config/newsfeed-files/news-automatic-update.dummy.json');
       } else {
         rawNewsJsonQA = require('../config/news.dummy.json');
       }
+
       this.rawNewsJsonQA = rawNewsJsonQA;
-      this.getNews({ isInit: true });
+      this.getNews({
+        isInit: true,
+      });
     }
   };
 
-  @computed get newsFeedData(): News.NewsCollection {
+  @computed
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
+  get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
     let news = [];
@@ -253,6 +289,7 @@ export default class NewsFeedStore extends Store {
     if (this.getNewsRequest.wasExecuted || (this.rawNewsJsonQA && isDev)) {
       news = map(this.rawNews, (item) => {
         // Match old and new newsfeed JSON format
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'id' does not exist on type 'NewsItem'.
         const mainIdentificator = item.id || item.date;
         let newsfeedItem = {
           ...item,
@@ -266,12 +303,15 @@ export default class NewsFeedStore extends Store {
             event: get(item, ['action', 'event', currentLocale]),
           },
           date: get(item, ['publishedAt', currentLocale], item.date),
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'includes' does not exist on type 'GetRea... Remove this comment to see the full error message
           read: readNews.includes(mainIdentificator),
         };
+
         // Exclude "color" parameter from news that are not incidents
         if (item.type === NewsTypes.INCIDENT) {
           newsfeedItem = {
             ...newsfeedItem,
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ color: any; id: any; title: string; conten... Remove this comment to see the full error message
             color: get(item, 'color', IncidentColors.RED),
           };
         }
@@ -280,16 +320,20 @@ export default class NewsFeedStore extends Store {
         if (item.type === NewsTypes.ALERT) {
           newsfeedItem = {
             ...newsfeedItem,
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ repeatOnStartup: any; id: any; title: stri... Remove this comment to see the full error message
             repeatOnStartup: get(item, 'repeatOnStartup', false),
           };
         }
+
         return newsfeedItem;
       });
     }
+
     return new News.NewsCollection(news);
   }
 
-  @computed get isLoadingNews() {
+  @computed
+  get isLoadingNews() {
     return this.fetchingNewsFailed || !this.rawNews;
   }
 }

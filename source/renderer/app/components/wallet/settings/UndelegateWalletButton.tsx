@@ -1,7 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UndelegateWalletButton.scss'... Remove this comment to see the full error message
 import styles from './UndelegateWalletButton.scss';
 
 const messages = defineMessages({
@@ -11,12 +11,10 @@ const messages = defineMessages({
     description: 'Label for the undelegate button on wallet settings',
   },
 });
-
 type Props = {
-  disabled?: boolean,
-  onUndelegate: Function,
+  disabled?: boolean;
+  onUndelegate: (...args: Array<any>) => any;
 };
-
 export default class UndelegateWalletButton extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -1,9 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ConfirmationDialog.scss' or ... Remove this comment to see the full error message
 import styles from './ConfirmationDialog.scss';
 
 const messages = defineMessages({
@@ -33,14 +33,13 @@ const messages = defineMessages({
       '"Abort" button label for the wallet restoration cancellation confirmation dialog.',
   },
 });
-
 type Props = {
-  onConfirm: Function,
-  onCancel: Function,
+  onConfirm: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
 };
 
 @observer
-export default class ConfirmationDialog extends Component<Props> {
+class ConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -48,15 +47,11 @@ export default class ConfirmationDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onConfirm, onCancel } = this.props;
-
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
-
     const confirmButtonClasses = classnames([
-      'confirmButton',
-      // 'attention',
+      'confirmButton', // 'attention',
       styles.confirmButton,
     ]);
-
     const actions = [
       {
         className: 'cancelButton',
@@ -70,7 +65,6 @@ export default class ConfirmationDialog extends Component<Props> {
         onClick: onConfirm,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -84,3 +78,5 @@ export default class ConfirmationDialog extends Component<Props> {
     );
   }
 }
+
+export default ConfirmationDialog;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -12,6 +11,7 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactions.scss' or ... Remove this comment to see the full error message
 import styles from './WalletTransactions.scss';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
 
@@ -22,49 +22,47 @@ export const messages = defineMessages({
     description: 'Message shown when wallet has no transactions yet.',
   },
 });
-
 type Props = {
-  activeWallet: ?Wallet,
-  currentDateFormat: string,
-  currentLocale: string,
-  currentTimeFormat: string,
-  currentNumberFormat: string,
-  defaultFilterOptions: TransactionFilterOptionsType,
-  deletePendingTransaction: Function,
-  filterOptions: TransactionFilterOptionsType,
-  getUrlByType: Function,
-  hasMoreToLoad: boolean,
-  isDeletingTransaction: boolean,
-  isLoadingTransactions: boolean,
-  onFilter: Function,
-  onLoadMore: Function,
-  onOpenExternalLink: Function,
-  onRequestCSVFile: Function,
-  populatedFilterOptions: TransactionFilterOptionsType,
-  totalAvailable: number,
-  transactions: Array<WalletTransaction>,
-  hasAssetsEnabled: boolean,
-  getAsset: Function,
-  isInternalAddress: Function,
-  onCopyAssetParam: Function,
+  activeWallet: Wallet | null | undefined;
+  currentDateFormat: string;
+  currentLocale: string;
+  currentTimeFormat: string;
+  currentNumberFormat: string;
+  defaultFilterOptions: TransactionFilterOptionsType;
+  deletePendingTransaction: (...args: Array<any>) => any;
+  filterOptions: TransactionFilterOptionsType;
+  getUrlByType: (...args: Array<any>) => any;
+  hasMoreToLoad: boolean;
+  isDeletingTransaction: boolean;
+  isLoadingTransactions: boolean;
+  onFilter: (...args: Array<any>) => any;
+  onLoadMore: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onRequestCSVFile: (...args: Array<any>) => any;
+  populatedFilterOptions: TransactionFilterOptionsType;
+  totalAvailable: number;
+  transactions: Array<WalletTransaction>;
+  hasAssetsEnabled: boolean;
+  getAsset: (...args: Array<any>) => any;
+  isInternalAddress: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
 };
-
 type State = {
-  isScrolling: boolean,
+  isScrolling: boolean;
 };
 
 @observer
-export default class WalletTransactions extends Component<Props, State> {
+class WalletTransactions extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isScrolling: false,
   };
-
-  setIsScrolling = (isScrolling: boolean) => this.setState({ isScrolling });
-
+  setIsScrolling = (isScrolling: boolean) =>
+    this.setState({
+      isScrolling,
+    });
   onFilter = (filterOptions: TransactionFilterOptionsType) => {
     this.props.onFilter(filterOptions);
   };
@@ -96,19 +94,15 @@ export default class WalletTransactions extends Component<Props, State> {
       isInternalAddress,
       onCopyAssetParam,
     } = this.props;
-
     // Guard against potential null values
     if (!filterOptions || !activeWallet) return null;
-
     let walletTransactions = null;
     // const { searchLimit } = filterOptions;
     const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
       filterOptions
     );
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-
     const isRestoreActive = activeWallet && activeWallet.isRestoring;
-
     const isFilterDisabled =
       !transactions.length && !numberOfFilterDimensionsApplied;
 
@@ -125,6 +119,7 @@ export default class WalletTransactions extends Component<Props, State> {
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={isLoadingTransactions}
           isRestoreActive={isRestoreActive}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onLoadMore={onLoadMore}
           hasMoreToLoad={hasMoreToLoad}
           walletId={activeWallet.id}
@@ -146,7 +141,9 @@ export default class WalletTransactions extends Component<Props, State> {
 
     return (
       <WalletTransactionsListScrollContext.Provider
-        value={{ setIsScrolling: this.setIsScrolling }}
+        value={{
+          setIsScrolling: this.setIsScrolling,
+        }}
       >
         <div className={styles.component}>
           <WalletTransactionsHeader
@@ -171,3 +168,5 @@ export default class WalletTransactions extends Component<Props, State> {
     );
   }
 }
+
+export default WalletTransactions;

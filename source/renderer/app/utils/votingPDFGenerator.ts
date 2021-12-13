@@ -1,4 +1,3 @@
-// @flow
 import moment from 'moment';
 import path from 'path';
 import { defineMessages } from 'react-intl';
@@ -35,20 +34,18 @@ const messages = defineMessages({
     description: 'PDF author',
   },
 });
-
 type Params = {
-  nextVotingFundNumber: number,
-  qrCode: string,
-  walletName: string,
-  currentLocale: string,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  desktopDirectoryPath: string,
-  network: Network,
-  isMainnet: boolean,
-  intl: Object,
+  nextVotingFundNumber: number;
+  qrCode: string;
+  walletName: string;
+  currentLocale: string;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  desktopDirectoryPath: string;
+  network: Network;
+  isMainnet: boolean;
+  intl: Record<string, any>;
 };
-
 export const votingPDFGenerator = async ({
   nextVotingFundNumber,
   qrCode,
@@ -72,7 +69,6 @@ export const votingPDFGenerator = async ({
   const networkLabel = intl.formatMessage(messages.networkLabel);
   const networkName = intl.formatMessage(globalMessages[`network_${network}`]);
   const author = intl.formatMessage(messages.author);
-
   // Generate the filePath
   const localizedFileName = intl.formatMessage(messages.filename);
   const prefix = `fund${nextVotingFundNumber}-${localizedFileName}-${walletName}`;
@@ -97,7 +93,6 @@ export const votingPDFGenerator = async ({
   };
   const dialogPath = await showSaveDialogChannel.send(params);
   const filePath = dialogPath.filePath || '';
-
   await generateVotingPDFChannel.send({
     title,
     currentLocale,

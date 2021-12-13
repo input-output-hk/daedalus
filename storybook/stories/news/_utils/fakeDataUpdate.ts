@@ -1,4 +1,3 @@
-// @flow
 import inc from 'semver/functions/inc';
 import { version as currentVersion } from '../../../../package.json';
 import News from '../../../../source/renderer/app/domains/News';
@@ -6,7 +5,6 @@ import type { NewsItem } from '../../../../source/renderer/app/api/news/types';
 
 export const version = currentVersion;
 export const availableAppVersion = inc(version, 'minor');
-
 const commonUpdateData = {
   target: {
     daedalusVersion: version,
@@ -36,7 +34,6 @@ const commonUpdateData = {
   type: 'software-update',
   id: 'dswkljhfksdhfksdhf',
 };
-
 export const updateEN = {
   title: `Daedalus ${availableAppVersion} update`,
   content:
@@ -47,7 +44,6 @@ export const updateEN = {
   },
   ...commonUpdateData,
 };
-
 export const updateJP = {
   title: `Daedalus${availableAppVersion}アップデート`,
   content:
@@ -58,22 +54,25 @@ export const updateJP = {
   },
   ...commonUpdateData,
 };
-
 export const update = {
   'en-US': updateEN,
   'ja-JP': updateJP,
 };
-
 export const getNewsUpdateItem = (
   read?: boolean,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   locale: string
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
 ): News.News => {
   const date = new Date().getTime();
   return new News.News({
     id: date,
     title: update[locale].title,
     content: update[locale].content,
-    target: { daedalusVersion: version, platform: 'darwin' },
+    target: {
+      daedalusVersion: version,
+      platform: 'darwin',
+    },
     action: {
       label: 'Visit daedalus.io',
       url: 'https://daedalus.io',
@@ -83,7 +82,6 @@ export const getNewsUpdateItem = (
     read: read || false,
   });
 };
-
 export const newsFeedApiItemUpdate: NewsItem = {
   title: {
     'en-US': updateEN.title,

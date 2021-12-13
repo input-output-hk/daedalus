@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletsSettings from '../../../components/settings/categories/WalletsSettings';
@@ -6,13 +5,16 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class WalletsSettingsPage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
-
-  handleSelectCurrency = (code: string) => {
-    this.props.actions.currency.setCurrencySelected.trigger({ code });
+class WalletsSettingsPage extends Component<InjectedProps> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
   };
-
+  handleSelectCurrency = (code: string) => {
+    this.props.actions.currency.setCurrencySelected.trigger({
+      code,
+    });
+  };
   handleToggleCurrencyIsActive = () =>
     this.props.actions.currency.toggleCurrencyIsActive.trigger();
 
@@ -29,6 +31,7 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
     return (
       <WalletsSettings
         currencySelected={selected}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currencyRate={rate}
         currencyList={currencyList}
         currencyIsActive={isActive}
@@ -40,3 +43,5 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default WalletsSettingsPage;

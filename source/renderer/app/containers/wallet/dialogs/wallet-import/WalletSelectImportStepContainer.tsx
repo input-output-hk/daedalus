@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { map } from 'lodash';
@@ -11,27 +10,20 @@ import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injec
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
-
 type State = {
-  existingWalletsCount: number,
+  existingWalletsCount: number;
 };
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSelectImportStepContainer extends Component<
-  Props,
-  State
-> {
+class WalletSelectImportStepContainer extends Component<Props, State> {
   static defaultProps = DefaultProps;
-
   state = {
     existingWalletsCount: this.props.stores.wallets.all.length,
   };
-
-  onWalletNameChange = (params: { index: number, name: string }) => {
+  onWalletNameChange = (params: { index: number; name: string }) => {
     this.props.actions.walletMigration.updateWalletName.trigger(params);
   };
-
   onToggleWalletImportSelection = (params: { index: number }) => {
     this.props.actions.walletMigration.toggleWalletImportSelection.trigger(
       params
@@ -41,15 +33,12 @@ export default class WalletSelectImportStepContainer extends Component<
   render() {
     const { onClose, onContinue, stores } = this.props;
     const { walletMigration, app } = stores;
-
     const {
       exportedWallets,
       pendingImportWalletsCount,
       isRestorationRunning,
     } = walletMigration;
-
     const { openExternalLink } = app;
-
     let walletsCount =
       this.state.existingWalletsCount + pendingImportWalletsCount;
     map(exportedWallets, (wallet) => {
@@ -60,9 +49,7 @@ export default class WalletSelectImportStepContainer extends Component<
         walletsCount++;
       }
     });
-
     const isMaxNumberOfWalletsReached = walletsCount >= MAX_ADA_WALLETS_COUNT;
-
     return (
       <WalletSelectImportDialog
         onClose={onClose}
@@ -79,3 +66,5 @@ export default class WalletSelectImportStepContainer extends Component<
     );
   }
 }
+
+export default WalletSelectImportStepContainer;

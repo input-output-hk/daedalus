@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import TransferFundsStep1Container from './dialogs/transfer-funds/TransferFundsStep1Container';
@@ -9,8 +8,11 @@ type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class TransferFundsPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+class TransferFundsPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { actions, stores } = this.props;
@@ -24,11 +26,13 @@ export default class TransferFundsPage extends Component<Props> {
     const { transferFundsStep } = walletsStore;
     if (!transferFundsStep) return null;
     let Container;
+
     if (transferFundsStep === 1) {
       Container = TransferFundsStep1Container;
     } else {
       Container = TransferFundsStep2Container;
     }
+
     return (
       <Container
         onContinue={() => transferFundsNextStep.trigger()}
@@ -38,3 +42,5 @@ export default class TransferFundsPage extends Component<Props> {
     );
   }
 }
+
+export default TransferFundsPage;

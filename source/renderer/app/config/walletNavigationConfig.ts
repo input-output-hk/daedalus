@@ -1,4 +1,3 @@
-// @flow
 export const WALLET_NAV_IDS = {
   SUMMARY: 'summary',
   SEND: 'send',
@@ -7,5 +6,4 @@ export const WALLET_NAV_IDS = {
   TOKENS: 'tokens',
   SETTINGS: 'settings',
 };
-
 export const LEGACY_WALLET_EXCLUDED_NAV_ITEMS = [WALLET_NAV_IDS.RECEIVE];

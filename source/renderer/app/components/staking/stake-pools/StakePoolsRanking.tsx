@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Config'.
 import type { Config } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -33,6 +33,7 @@ import type { DiscreetModeFeature } from '../../../features/discreet-mode';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
 import { Slider } from '../../widgets/Slider';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsRanking.scss' or i... Remove this comment to see the full error message
 import styles from './StakePoolsRanking.scss';
 
 const messages = defineMessages({
@@ -110,28 +111,26 @@ const messages = defineMessages({
     description: 'Learn more action of ranking panel.',
   },
 });
-
-type InjectedProps = {| discreetModeFeature: DiscreetModeFeature |};
-
-type Props = {|
-  wallets: Array<Wallet>,
-  onOpenExternalLink: Function,
-  updateDelegatingStake: Function,
-  rankStakePools: Function,
-  selectedDelegationWalletId?: ?string,
-  stake?: ?number,
-  isLoading: boolean,
-  isRanking: boolean,
-  numberOfStakePools: number,
-  getStakePoolById: Function,
-  maxDelegationFunds: number,
-  maxDelegationFundsLog: number,
-  ...InjectedProps,
-|};
-
+type InjectedProps = {
+  discreetModeFeature: DiscreetModeFeature;
+};
+type Props = InjectedProps & {
+  wallets: Array<Wallet>;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  updateDelegatingStake: (...args: Array<any>) => any;
+  rankStakePools: (...args: Array<any>) => any;
+  selectedDelegationWalletId?: string | null | undefined;
+  stake?: number | null | undefined;
+  isLoading: boolean;
+  isRanking: boolean;
+  numberOfStakePools: number;
+  getStakePoolById: (...args: Array<any>) => any;
+  maxDelegationFunds: number;
+  maxDelegationFundsLog: number;
+};
 type State = {
-  sliderValue: number,
-  displayValue: string,
+  sliderValue: number;
+  displayValue: string;
 };
 
 @observer
@@ -139,11 +138,9 @@ class StakePoolsRanking extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     wallets: [],
   };
-
   state = {
     sliderValue: Math.round(
       INITIAL_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
@@ -153,6 +150,7 @@ class StakePoolsRanking extends Component<Props, State> {
 
   componentDidMount() {
     const { stake } = this.props;
+
     if (stake) {
       const hasDecimal = stake - Math.floor(stake);
       const displayValue = hasDecimal
@@ -168,6 +166,7 @@ class StakePoolsRanking extends Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     const { selectedDelegationWalletId: prevWalletId } = prevProps;
     const { selectedDelegationWalletId: currentWalletId } = this.props;
+
     if (prevWalletId !== currentWalletId && currentWalletId) {
       this.onSelectedWalletChange(currentWalletId);
     }
@@ -188,13 +187,12 @@ class StakePoolsRanking extends Component<Props, State> {
     const isAllWalletsSelected = selectedWalletId === ALL_WALLETS_SELECTION_ID;
     const wasSelectedWalletChanged =
       selectedWalletId !== selectedDelegationWalletId;
-
     // Prevent ranking stake pools if we don't have data for the selected wallet ready
     if (wasSelectedWalletChanged && !isAllWalletsSelected && !hasSelectedWallet)
       return;
-
     let amountValue = 0;
     let sliderValue = 0;
+
     if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
       amountValue = Math.min(
         getAllAmounts(wallets).toNumber(),
@@ -203,22 +201,23 @@ class StakePoolsRanking extends Component<Props, State> {
     } else if (selectedWallet) {
       amountValue = selectedWallet.amount.toNumber();
     }
+
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
     const hasSliderValueChanged = sliderValue !== this.state.sliderValue;
-
     // Prevent ranking stake pools if selected wallet and slider value remains unchanged
     if (!wasSelectedWalletChanged && !hasSliderValueChanged) return;
-
     const displayValue = formattedWalletAmount(
       new BigNumber(amountValue),
       false
     );
-    this.setState({ sliderValue, displayValue });
+    this.setState({
+      sliderValue,
+      displayValue,
+    });
     updateDelegatingStake(selectedWalletId, amountValue);
     rankStakePools();
   };
-
   onSliderChange = (sliderValue: number) => {
     const {
       updateDelegatingStake,
@@ -226,6 +225,7 @@ class StakePoolsRanking extends Component<Props, State> {
       maxDelegationFundsLog,
     } = this.props;
     let amountValue = null;
+
     if (
       sliderValue ===
       Math.round(MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO)
@@ -240,11 +240,14 @@ class StakePoolsRanking extends Component<Props, State> {
         Math.exp(sliderValue / RANKING_SLIDER_RATIO)
       );
     }
+
     const displayValue = toFixedUserFormat(amountValue, 0);
-    this.setState({ sliderValue, displayValue });
+    this.setState({
+      sliderValue,
+      displayValue,
+    });
     updateDelegatingStake(null, amountValue);
   };
-
   generateInfo = () => {
     const { intl } = this.context;
     const { wallets, selectedDelegationWalletId } = this.props;
@@ -264,7 +267,6 @@ class StakePoolsRanking extends Component<Props, State> {
       styles.col,
     ]);
     const learnMoreUrl = intl.formatMessage(messages.rankingLearnMoreUrl);
-
     let walletSelectionStart = null;
     let walletSelectionEnd = null;
 
@@ -326,7 +328,6 @@ class StakePoolsRanking extends Component<Props, State> {
     const shouldDisplayWalletsDropdown =
       !discreetModeFeature.isDiscreetMode &&
       getFilteredWallets(wallets).length > 0;
-
     return (
       <div className={styles.component}>
         <div className={styles.upper}>
@@ -342,6 +343,7 @@ class StakePoolsRanking extends Component<Props, State> {
                 <div className={walletSelectorContainerClasses}>
                   <WalletsDropdown
                     className={walletSelectorClasses}
+                    // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; placeholder: any; wallets:... Remove this comment to see the full error message
                     placeholder={intl.formatMessage(
                       messages.rankingSelectWallet
                     )}
@@ -356,7 +358,9 @@ class StakePoolsRanking extends Component<Props, State> {
                           const selectionInput = document.querySelector(
                             '.StakePoolsRanking_walletSelectorContainer input'
                           );
+
                           if (selectionInput) {
+                            // @ts-ignore ts-migrate(2339) FIXME: Property 'click' does not exist on type 'Element'.
                             selectionInput.click();
                           }
                         }}
@@ -374,6 +378,7 @@ class StakePoolsRanking extends Component<Props, State> {
           </div>
           {false ? ( // eslint-disable-line
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={learnMoreButtonClasses}
               onClick={() => onOpenExternalLink(learnMoreUrl)}
               skin={ButtonSkin}

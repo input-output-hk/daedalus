@@ -1,4 +1,3 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import STAKE_POOLS from './stakingStakePools.dummy.json';
 

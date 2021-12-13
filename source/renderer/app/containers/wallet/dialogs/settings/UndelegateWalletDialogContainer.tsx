@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { get, find } from 'lodash';
@@ -12,27 +11,23 @@ import {
   DELEGATION_DEPOSIT,
 } from '../../../../config/stakingConfig';
 
-type Props = {
-  ...InjectedProps,
-  onExternalLinkClick: Function,
+type Props = InjectedProps & {
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
-
 type State = {
-  stakePoolQuitFee: ?DelegationCalculateFeeResponse,
+  stakePoolQuitFee: DelegationCalculateFeeResponse | null | undefined;
 };
 
 @inject('actions', 'stores')
 @observer
-export default class UndelegateWalletDialogContainer extends Component<
-  Props,
-  State
-> {
-  static defaultProps = { actions: null, stores: null };
-
+class UndelegateWalletDialogContainer extends Component<Props, State> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   state = {
     stakePoolQuitFee: null,
   };
-
   _isMounted = false;
 
   componentDidMount() {
@@ -56,15 +51,14 @@ export default class UndelegateWalletDialogContainer extends Component<
   async _handleCalculateTransactionFee() {
     const { staking, wallets, hardwareWallets } = this.props.stores;
     const { calculateDelegationFee } = staking;
-
     const selectedWallet = find(
       wallets.allWallets,
       (wallet) => wallet.id === this.selectedWalletId
     );
     const { lastDelegatedStakePoolId, delegatedStakePoolId } = selectedWallet;
     const poolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
-
     let stakePoolQuitFee;
+
     if (selectedWallet.isHardwareWallet) {
       const coinsSelection = await hardwareWallets.selectDelegationCoins({
         walletId: this.selectedWalletId,
@@ -72,12 +66,19 @@ export default class UndelegateWalletDialogContainer extends Component<
         delegationAction: DELEGATION_ACTIONS.QUIT,
       });
       const { deposits, depositsReclaimed, fee } = coinsSelection;
-      stakePoolQuitFee = { deposits, depositsReclaimed, fee };
-      hardwareWallets.initiateTransaction({ walletId: this.selectedWalletId });
+      stakePoolQuitFee = {
+        deposits,
+        depositsReclaimed,
+        fee,
+      };
+      hardwareWallets.initiateTransaction({
+        walletId: this.selectedWalletId,
+      });
     } else {
       stakePoolQuitFee = await calculateDelegationFee({
         walletId: this.selectedWalletId,
       });
+
       // @TODO Remove this when api returns depositsReclaimed value
       if (stakePoolQuitFee) {
         stakePoolQuitFee.depositsReclaimed = new BigNumber(DELEGATION_DEPOSIT);
@@ -85,7 +86,9 @@ export default class UndelegateWalletDialogContainer extends Component<
     }
 
     if (this._isMounted && stakePoolQuitFee) {
-      this.setState({ stakePoolQuitFee });
+      this.setState({
+        stakePoolQuitFee,
+      });
     }
   }
 
@@ -114,19 +117,14 @@ export default class UndelegateWalletDialogContainer extends Component<
     } = hardwareWallets;
     const { stakePoolQuitFee } = this.state;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
-
     const walletToBeUndelegated = getWalletById(this.selectedWalletId);
     if (!walletToBeUndelegated) return null;
-
     const isTrezor = checkIsTrezorByWalletId(walletToBeUndelegated.id);
-
     const { name: walletName } = walletToBeUndelegated;
-
     const {
       lastDelegatedStakePoolId,
       delegatedStakePoolId,
     } = walletToBeUndelegated;
-
     const stakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
 
     if (
@@ -153,7 +151,6 @@ export default class UndelegateWalletDialogContainer extends Component<
     const delegatedStakePool = getStakePoolById(stakePoolId);
     const stakePoolName = get(delegatedStakePool, 'name', '');
     const stakePoolTicker = get(delegatedStakePool, 'ticker');
-
     return (
       <UndelegateWalletConfirmationDialog
         selectedWallet={walletToBeUndelegated}
@@ -191,3 +188,5 @@ export default class UndelegateWalletDialogContainer extends Component<
     );
   }
 }
+
+export default UndelegateWalletDialogContainer;

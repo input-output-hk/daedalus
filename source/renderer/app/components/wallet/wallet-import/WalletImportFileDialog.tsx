@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
@@ -11,14 +10,17 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import { get } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletImportFileDialog.scss'... Remove this comment to see the full error message
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message
 import penIcon from '../../../assets/images/pen.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ImportFromOptions } from '../../../types/walletExportTypes';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
@@ -90,34 +92,30 @@ const messages = defineMessages({
     description: "Daedalus 'secret.key' file",
   },
 });
-
 type Props = {
-  exportErrors: string,
-  isSubmitting: boolean,
-  onOpen: Function,
-  onContinue: Function,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  onSelectExportSourcePath: Function,
-  onResetExportSourcePath: Function,
-  exportSourcePath: string,
-  defaultExportSourcePath: string,
+  exportErrors: string;
+  isSubmitting: boolean;
+  onOpen: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onSelectExportSourcePath: (...args: Array<any>) => any;
+  onResetExportSourcePath: (...args: Array<any>) => any;
+  exportSourcePath: string;
+  defaultExportSourcePath: string;
 };
-
 type State = {
-  importFrom: ImportFromOption,
+  importFrom: ImportFromOption;
 };
 
 @observer
-export default class WalletImportFileDialog extends Component<Props, State> {
+class WalletImportFileDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     importFrom: ImportFromOptions.STATE_DIR,
   };
-
   importPathInput: Input;
 
   componentDidMount() {
@@ -127,7 +125,9 @@ export default class WalletImportFileDialog extends Component<Props, State> {
   onSetImportFromOption = (importFrom: ImportFromOption) => {
     if (this.state.importFrom !== importFrom) {
       this.props.onResetExportSourcePath();
-      this.setState({ importFrom });
+      this.setState({
+        importFrom,
+      });
     }
   };
 
@@ -141,7 +141,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
 
   isImportFromStateDir = (importFrom: ImportFromOption) =>
     importFrom === ImportFromOptions.STATE_DIR;
-
   isImportFromSecretFile = (importFrom: ImportFromOption) =>
     importFrom === ImportFromOptions.SECRET_FILE;
 
@@ -158,7 +157,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
       exportSourcePath,
       defaultExportSourcePath,
     } = this.props;
-
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
     const stateFolderLabel = intl.formatMessage(messages.stateFolderLabel);
@@ -172,16 +170,15 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     const noWalletError = intl.formatMessage(
       messages[`${importFrom}NoWallets`]
     );
+
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
     const error = exportErrors !== '';
-
     const inputClasses = classNames([
       styles.stateFolderInput,
       error ? styles.error : null,
     ]);
-
     const buttonClasses = classNames(styles.actionButton, [
       isSubmitting ||
       error ||
@@ -189,12 +186,12 @@ export default class WalletImportFileDialog extends Component<Props, State> {
         ? styles.disabled
         : null,
     ]);
-
     return (
       <Dialog
         className={styles.dialog}
         closeOnOverlayClick={false}
         onClose={onClose}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
@@ -258,7 +255,11 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                 />
                 <Button
                   className={styles.selectStateDirectoryButton}
-                  onClick={() => onSelectExportSourcePath({ importFrom })}
+                  onClick={() =>
+                    onSelectExportSourcePath({
+                      importFrom,
+                    })
+                  }
                   label={<SVGInline svg={penIcon} className={styles.penIcon} />}
                   skin={ButtonSkin}
                 />
@@ -290,3 +291,5 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     );
   }
 }
+
+export default WalletImportFileDialog;

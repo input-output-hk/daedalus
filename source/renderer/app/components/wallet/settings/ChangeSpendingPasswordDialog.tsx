@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -17,9 +16,11 @@ import {
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ChangeSpendingPasswordDialog... Remove this comment to see the full error message
 import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/info-ic... Remove this comment to see the full error message
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
@@ -84,34 +85,32 @@ const messages = defineMessages({
     description: 'Tooltip for the password input in the wallet dialog.',
   },
 });
-
 type Props = {
-  currentPasswordValue: string,
-  newPasswordValue: string,
-  repeatedPasswordValue: string,
-  onSave: Function,
-  onCancel: Function,
-  onDataChange: Function,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
-  isSpendingPasswordSet: boolean,
-  walletName: string,
-  currentLocale: string,
+  currentPasswordValue: string;
+  newPasswordValue: string;
+  repeatedPasswordValue: string;
+  onSave: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
+  onDataChange: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
+  isSpendingPasswordSet: boolean;
+  walletName: string;
+  currentLocale: string;
 };
 
 @observer
-export default class ChangeSpendingPasswordDialog extends Component<Props> {
+class ChangeSpendingPasswordDialog extends Component<Props> {
   static defaultProps = {
     currentPasswordValue: '',
     newPasswordValue: '',
     repeatedPasswordValue: '',
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         currentPassword: {
@@ -132,6 +131,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                   ),
                 ];
               }
+
               return [true];
             },
           ],
@@ -188,7 +188,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
@@ -196,8 +198,8 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { currentPassword, spendingPassword } = form.values();
@@ -210,11 +212,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       onError: () => {},
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   handleDataChange = (key: string, value: string) => {
-    this.props.onDataChange({ [key]: value });
+    this.props.onDataChange({
+      [key]: value,
+    });
   };
 
   render() {
@@ -232,28 +234,26 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       styles.dialog,
       isSpendingPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
     ]);
-
     const confirmButtonClasses = classnames([
       'confirmButton',
       isSubmitting ? styles.isSubmitting : null,
     ]);
-
     const spendingPasswordClasses = classnames([
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const currentPasswordField = form.$('currentPassword');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const newPasswordField = form.$('spendingPassword');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatedPasswordField = form.$('repeatPassword');
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     const canSubmit = !isSubmitting && form.isValid;
-
     const currentPasswordError =
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Localizabl... Remove this comment to see the full error message
       canSubmit && error && error.code === 'wrong_encryption_passphrase';
-
     const actions = [
       {
         className: confirmButtonClasses,
@@ -263,7 +263,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <Dialog
         title={intl.formatMessage(
@@ -272,7 +271,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               ? 'dialogTitleSetPassword'
               : 'dialogTitleChangePassword'
           ],
-          { walletName }
+          {
+            walletName,
+          }
         )}
         subtitle={walletName}
         actions={actions}
@@ -338,3 +339,5 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     );
   }
 }
+
+export default ChangeSpendingPasswordDialog;

@@ -1,4 +1,3 @@
-// @flow
 import { times } from 'lodash-es/util';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
@@ -6,14 +5,13 @@ import type { ElementRef } from 'react';
 import { AutoSizer, List, WindowScroller } from 'react-virtualized';
 import { Instance } from 'tippy.js';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsList.scss' or its ... Remove this comment to see the full error message
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { ThumbPool } from '../widgets/ThumbPool';
-
 type TippyElement = Element & {
-  _tippy: Instance,
+  _tippy: Instance;
 };
-
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
 const POOL_THUMB_SIZE = 80;
@@ -24,8 +22,8 @@ const POOL_THUMB_GRID_GAP = 10;
  * This is used to hide the pool tooltips on scrolling the list
  */
 function hidePoolPopOver() {
-  const popOver: TippyElement | null = (document.querySelector('.PoolPopOver')
-    ?.parentElement: any);
+  const popOver: TippyElement | null = document.querySelector('.PoolPopOver')
+    ?.parentElement as any;
 
   if (popOver) {
     popOver?._tippy.hide();
@@ -38,24 +36,22 @@ function hidePoolPopOver() {
  * initial rendering performance) or StakePoolTiles (if there are only
  * a few stake pools OR if the simulated "preloading" is done)
  */
-
 type StakePoolsListProps = {
-  stakePoolsList: Array<StakePool>,
-  onOpenExternalLink: Function,
-  currentTheme: string,
-  highlightOnHover?: boolean,
-  highlightWithDelay?: boolean,
-  onSelect?: (poolId: string) => void,
-  selectOnClick?: boolean,
-  showWithSelectButton?: boolean,
-  containerClassName: string,
-  numberOfRankedStakePools: number,
-  selectedPoolId?: ?string,
-  disabledStakePoolId?: ?string,
-  isGridRewardsView?: boolean,
-  scrollElementRef?: ?ElementRef<*>,
+  stakePoolsList: Array<StakePool>;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  currentTheme: string;
+  highlightOnHover?: boolean;
+  highlightWithDelay?: boolean;
+  onSelect?: (poolId: string) => void;
+  selectOnClick?: boolean;
+  showWithSelectButton?: boolean;
+  containerClassName: string;
+  numberOfRankedStakePools: number;
+  selectedPoolId?: string | null | undefined;
+  disabledStakePoolId?: string | null | undefined;
+  isGridRewardsView?: boolean;
+  scrollElementRef?: ElementRef<any> | null | undefined;
 };
-
 export const StakePoolsList = observer((props: StakePoolsListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -63,11 +59,14 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     // Note: do not use window here otherwise the pool description cannot be
     // scrolled anymore because it closes the pop over immediately.
     const scrollContainer = props.scrollElementRef
-      ? props.scrollElementRef.current
+      ? // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
+        props.scrollElementRef.current
       : null;
+
     if (scrollContainer !== null) {
       scrollContainer.addEventListener('scroll', hidePoolPopOver, true);
     }
+
     setTimeout(() => setIsLoading(false));
     return () => {
       if (scrollContainer !== null) {
@@ -75,6 +74,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
       }
     };
   });
+
   if (props.stakePoolsList.length > PRELOADER_THRESHOLD && isLoading) {
     return (
       <div className={styles.preloadingBlockWrapper}>
@@ -82,6 +82,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
       </div>
     );
   }
+
   const stakePoolsCount = props.stakePoolsList.length;
 
   function rowRenderer(itemsPerRow, { index, key, style }) {
@@ -123,8 +124,10 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
   return (
     <WindowScroller
       scrollElement={
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
         props.scrollElementRef && props.scrollElementRef.current
-          ? props.scrollElementRef.current
+          ? // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
+            props.scrollElementRef.current
           : window
       }
     >
@@ -134,6 +137,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             if (!stakePoolsCount || !width) {
               return null;
             }
+
             const itemsPerRow = Math.floor(
               width / (POOL_THUMB_SIZE + POOL_THUMB_GRID_GAP)
             );
@@ -159,7 +163,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     </WindowScroller>
   );
 });
-
+// @ts-ignore ts-migrate(2339) FIXME: Property 'defaultProps' does not exist on type '(p... Remove this comment to see the full error message
 StakePoolsList.defaultProps = {
   showWithSelectButton: false,
   highlightWithDelay: false,

@@ -1,4 +1,3 @@
-// @flow
 import { GET_STATE_DIRECTORY_PATH_CHANNEL } from '../../../common/ipc/api';
 import type {
   GetStateDirectoryPathRendererRequest,

@@ -1,9 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CountdownWidget from '../../widgets/CountdownWidget';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingCountdown.scss' or it... Remove this comment to see the full error message
 import styles from './StakingCountdown.scss';
 import ButtonLink from '../../widgets/ButtonLink';
 
@@ -30,15 +30,14 @@ const messages = defineMessages({
     description: 'Button Label for the Decentralisation notification.',
   },
 });
-
 type Props = {
-  redirectToStakingInfo?: Function,
-  startDateTime: string,
-  onLearnMoreClick: Function,
+  redirectToStakingInfo?: (...args: Array<any>) => any;
+  startDateTime: string;
+  onLearnMoreClick: (...args: Array<any>) => any;
 };
 
 @observer
-export default class StakingCountdown extends Component<Props> {
+class StakingCountdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -67,6 +66,7 @@ export default class StakingCountdown extends Component<Props> {
           />
           {showLearnMoreButton && (
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={styles.learnMoreButton}
               onClick={onLearnMoreClick}
               skin={ButtonSkin}
@@ -81,3 +81,5 @@ export default class StakingCountdown extends Component<Props> {
     );
   }
 }
+
+export default StakingCountdown;

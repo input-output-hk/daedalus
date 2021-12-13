@@ -5,9 +5,15 @@
 /** Build file to package the app for release */
 
 const os = require('os');
+
 const packager = require('electron-packager');
+
 const del = require('del');
-const {exec} = require('child_process');
+
+const {
+  exec
+} = require('child_process');
+
 const pkg = require('../package.json');
 
 /**
@@ -19,32 +25,16 @@ const argv = require('minimist')(process.argv.slice(2));
 const appName = argv.name || argv.n || pkg.productName;
 const shouldUseAsar = argv.asar || argv.a || false;
 const shouldBuildAll = argv.all || false;
-
-const DEFAULT_OPTS = {
+const DEFAULT_OPTS: any = {
   dir: './',
   name: appName,
   asar: shouldUseAsar,
-  ignore: [
-    /^\/.buildkite($|\/)/,
-    /^\/.storybook($|\/)/,
-    /^\/flow($|\/)/,
-    /^\/installers\/.*exe/,
-    /^\/logs($|\/)/,
-    /^\/node_modules($|\/)/,
-    /^\/scripts($|\/)/,
-    /^\/source($|\/)/,
-    /^\/storybook($|\/)/,
-    /^\/tests($|\/)/,
-    /^\/tests-report($|\/)/,
-    /^\/tls($|\/)/,
-    /^\/translations($|\/)/,
-  ],
+  ignore: [/^\/.buildkite($|\/)/, /^\/.storybook($|\/)/, /^\/flow($|\/)/, /^\/installers\/.*exe/, /^\/logs($|\/)/, /^\/node_modules($|\/)/, /^\/scripts($|\/)/, /^\/source($|\/)/, /^\/storybook($|\/)/, /^\/tests($|\/)/, /^\/tests-report($|\/)/, /^\/tls($|\/)/, /^\/translations($|\/)/]
 };
-
 const icon = argv.icon || argv.i || 'installers/icons/electron';
 if (icon) DEFAULT_OPTS.icon = icon;
-
 const version = argv.version || argv.v;
+
 if (version) {
   DEFAULT_OPTS.version = version;
   startPack();
@@ -55,6 +45,7 @@ if (version) {
     } else {
       DEFAULT_OPTS.version = stdout.split('electron@')[1].replace(/\s/g, '').split('├')[0];
     }
+
     startPack();
   });
 }
@@ -72,7 +63,6 @@ async function startPack() {
       // build for all platforms
       const archs = ['ia32', 'x64'];
       const platforms = ['linux', 'win32', 'darwin'];
-
       platforms.forEach(plat => {
         archs.forEach(arch => {
           pack(plat, arch, log(plat, arch));
@@ -98,28 +88,22 @@ async function startPack() {
 function pack(plat, arch, cb) {
   // there is no darwin ia32 electron
   if (plat === 'darwin' && arch === 'ia32') return;
-
   const iconObj = {
-    icon:
-      DEFAULT_OPTS.icon +
-      (() => {
-        let extension = '.png';
-        if (plat === 'darwin') extension = '.iconset';
-        if (plat === 'win32') extension = '.ico';
-
-        return extension;
-      })(),
+    icon: DEFAULT_OPTS.icon + (() => {
+      let extension = '.png';
+      if (plat === 'darwin') extension = '.iconset';
+      if (plat === 'win32') extension = '.ico';
+      return extension;
+    })()
   };
-
   const opts = Object.assign({}, DEFAULT_OPTS, iconObj, {
     platform: plat,
     arch,
     prune: false,
     'app-version': pkg.version || DEFAULT_OPTS.version,
-    out: `release/${plat}-${arch}`,
+    out: `release/${plat}-${arch}`
   });
-
-  packager(opts, cb);
+  packager(opts).then(cb).catch(e => console.error(e));
 }
 
 /**
@@ -129,7 +113,7 @@ function pack(plat, arch, cb) {
  * @return {Function}
  */
 function log(plat, arch) {
-  return (err) => {
+  return err => {
     if (err) return console.error(err);
     // eslint-disable-next-line no-console
     console.log(`${plat}-${arch} finished!`);

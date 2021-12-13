@@ -1,4 +1,3 @@
-// @flow
 import { GENERATE_CSV_CHANNEL } from '../../../common/ipc/api';
 import type {
   GenerateCsvMainResponse,

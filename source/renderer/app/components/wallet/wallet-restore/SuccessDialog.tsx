@@ -1,9 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/tada-ic... Remove this comment to see the full error message
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SuccessDialog.scss' or its c... Remove this comment to see the full error message
 import styles from './SuccessDialog.scss';
 import type {
   WalletDaedalusKind,
@@ -42,13 +43,11 @@ const messages = defineMessages({
       'Description "line 3" on the wallet restore "success" step dialog.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  walletKindDaedalus: ?WalletDaedalusKind,
-  walletKindYoroi: ?WalletYoroiKind,
+  onClose: (...args: Array<any>) => any;
+  walletKindDaedalus: WalletDaedalusKind | null | undefined;
+  walletKindYoroi: WalletYoroiKind | null | undefined;
 };
-
 export default class SuccessDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -57,7 +56,6 @@ export default class SuccessDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose, walletKindDaedalus, walletKindYoroi } = this.props;
-
     const isDaedalusBalanceWallet =
       walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_12_WORD ||
       walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_27_WORD;
@@ -67,7 +65,6 @@ export default class SuccessDialog extends Component<Props> {
       walletKindYoroi === WALLET_YOROI_KINDS.BYRON_15_WORD;
     const isYoroiRewardsWallet =
       walletKindYoroi === WALLET_YOROI_KINDS.SHELLEY_15_WORD;
-
     return (
       <WalletRestoreDialog
         actions={[

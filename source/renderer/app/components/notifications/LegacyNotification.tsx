@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
@@ -7,6 +6,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import ButtonLink from '../widgets/ButtonLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './LegacyNotification.scss' or ... Remove this comment to see the full error message
 import styles from './LegacyNotification.scss';
 
 const messages = defineMessages({
@@ -78,31 +78,28 @@ const messages = defineMessages({
     description: '"Learn more" link URL',
   },
 });
-
 type Props = {
-  activeWalletName: string,
-  onLearnMore: Function,
-  onTransferFunds: Function,
-  hasRewardsWallets?: boolean,
-  onWalletAdd?: Function,
+  activeWalletName: string;
+  onLearnMore: (...args: Array<any>) => any;
+  onTransferFunds: (...args: Array<any>) => any;
+  hasRewardsWallets?: boolean;
+  onWalletAdd?: (...args: Array<any>) => any;
 };
 
 @observer
-export default class LegacyNotification extends Component<Props> {
+class LegacyNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   onLearnMore = () => {
     const { intl } = this.context;
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
     this.props.onLearnMore(learnMoreLinkUrl);
   };
-
   getValue = (
     messageHasRewardsWallets: string,
     messageNoRewardsWallets: string,
-    _values?: Object
+    _values?: Record<string, any>
   ) => {
     const { hasRewardsWallets, activeWalletName } = this.props;
     const message = hasRewardsWallets
@@ -129,7 +126,6 @@ export default class LegacyNotification extends Component<Props> {
         hasIconAfter={false}
       />
     );
-
     const title = getValue(messages.moveFundsTitle, messages.addWalletTitle);
     const description1 = getValue(
       messages.moveFundsDescriptionLine1,
@@ -144,7 +140,6 @@ export default class LegacyNotification extends Component<Props> {
     );
     const buttonLabel = getValue(messages.actionMove, messages.addWallet);
     const buttonAction = hasRewardsWallets ? onTransferFunds : onWalletAdd;
-
     return (
       <div className={styles.component}>
         <div className={styles.title}>{title}</div>
@@ -155,6 +150,7 @@ export default class LegacyNotification extends Component<Props> {
         <div className={styles.actions}>
           {showLearnMoreButton && (
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={styles.actionLearnMore}
               onClick={onLearnMore}
               skin={ButtonSkin}
@@ -177,3 +173,5 @@ export default class LegacyNotification extends Component<Props> {
     );
   }
 }
+
+export default LegacyNotification;

@@ -1,4 +1,3 @@
-// @flow
 import Reaction from './Reaction';
 import type { ActionsMap } from '../../actions/index';
 import type { StoresMap } from '../index';
@@ -10,7 +9,6 @@ export default class Store {
   api: Api;
   actions: ActionsMap;
   environment: Environment = global.environment;
-
   _reactions: Array<Reaction> = [];
 
   constructor(api: Api, actions: ActionsMap) {
@@ -18,7 +16,7 @@ export default class Store {
     this.actions = actions;
   }
 
-  registerReactions(reactions: Array<Function>) {
+  registerReactions(reactions: Array<(...args: Array<any>) => any>) {
     reactions.forEach((reaction) =>
       this._reactions.push(new Reaction(reaction))
     );
@@ -32,6 +30,7 @@ export default class Store {
 
   initialize() {
     this.setup();
+
     this._reactions.forEach((reaction) => reaction.start());
   }
 

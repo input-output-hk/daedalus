@@ -1,9 +1,7 @@
-// @flow
 import { Component } from 'react';
 import { computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-
 // Assets and helpers
 import {
   generateTransaction,
@@ -13,26 +11,23 @@ import {
 import {
   generateFilterOptions,
   isTransactionInFilterRange,
-} from '../../../../source/renderer/app/utils/transaction.js';
+} from '../../../../source/renderer/app/utils/transaction';
 import {
   TransactionStates,
   TransactionTypes,
 } from '../../../../source/renderer/app/domains/WalletTransaction';
-
 import { emptyTransactionFilterOptions } from '../../../../source/renderer/app/stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
 import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
-  getStory: Function,
-  locale: string,
-  transactionsOption: string,
+  getStory: (...args: Array<any>) => any;
+  locale: string;
+  transactionsOption: string;
 };
-
 type State = {
-  filterOptions: TransactionFilterOptionsType,
+  filterOptions: TransactionFilterOptionsType;
 };
-
 const assets = [
   {
     id: generateHash(),
@@ -63,11 +58,11 @@ const assets = [
     uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
   },
 ];
-
 export default class WalletsTransactionsWrapper extends Component<
   Props,
   State
 > {
+  // @ts-ignore ts-migrate(2416) FIXME: Property 'state' in type 'WalletsTransactionsWrapp... Remove this comment to see the full error message
   state = {
     filterOptions: generateFilterOptions(this.transactions),
   };
@@ -405,20 +400,27 @@ export default class WalletsTransactionsWrapper extends Component<
       ? this.transactionsWithAssetsOptions[transactionsOption]
       : this.transactionsOptions[transactionsOption];
     return transactionsList.filter((transaction) =>
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ dateRange: string; fromDate: s... Remove this comment to see the full error message
       isTransactionInFilterRange(filterOptions, transaction)
     );
   }
 
-  @computed get defaultFilterOptions(): TransactionFilterOptionsType {
+  @computed
+  get defaultFilterOptions(): TransactionFilterOptionsType {
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ dateRange: string; fromDate: string; toDat... Remove this comment to see the full error message
     return generateFilterOptions(this.transactions);
   }
 
-  @computed get populatedFilterOptions(): TransactionFilterOptionsType {
+  @computed
+  get populatedFilterOptions(): TransactionFilterOptionsType {
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ dateRange: string; fromDate: string; toDat... Remove this comment to see the full error message
     return this.state.filterOptions || emptyTransactionFilterOptions;
   }
 
   onFilter = (filterOptions: TransactionFilterOptionsType) => {
-    this.setState({ filterOptions });
+    this.setState({
+      filterOptions,
+    });
   };
 
   render() {

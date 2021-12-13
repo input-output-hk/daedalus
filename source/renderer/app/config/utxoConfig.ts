@@ -1,4 +1,3 @@
-// @flow
 export const PRETTY_WALLET_AMOUNTS = [
   '0.00001',
   '0.0001',

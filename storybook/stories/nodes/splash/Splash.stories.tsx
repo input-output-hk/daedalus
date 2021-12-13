@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import SplashNetworkFlight from '../../../../source/renderer/app/components/splash/SplashNetworkFlight';

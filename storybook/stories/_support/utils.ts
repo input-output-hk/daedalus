@@ -1,4 +1,3 @@
-// @flow
 import hash from 'hash.js';
 import faker from 'faker';
 import JSONBigInt from 'json-bigint';
@@ -79,7 +78,6 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
         ]
       }
     }`);
-
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
   return hash
@@ -87,7 +85,6 @@ export const generateHash = () => {
     .update(now + random(0.1, 0.9))
     .digest('hex');
 };
-
 export const generatePolicyIdHash = () => {
   const now = new Date().valueOf().toString();
   return hash
@@ -109,13 +106,16 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
-  assets?: WalletTokens = { available: [], total: [] },
-  reward?: number = 0,
+  assets: WalletTokens = {
+    available: [],
+    total: [],
+  },
+  reward: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
-  isHardwareWallet?: boolean = false,
-  id?: string = generateHash()
+  status: SyncStateStatus = WalletSyncStateStatuses.READY,
+  isHardwareWallet: boolean = false,
+  id: string = generateHash()
 ) =>
   new Wallet({
     id,
@@ -128,7 +128,11 @@ export const generateWallet = (
     name,
     hasPassword: hasPassword || false,
     passwordUpdateDate: new Date(),
-    syncState: { status, ...statusProgress(status) },
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ progress: { quantity: number; unit: string... Remove this comment to see the full error message
+    syncState: {
+      status,
+      ...statusProgress(status),
+    },
     isLegacy: false,
     isHardwareWallet,
     discovery: 'random',
@@ -138,12 +142,12 @@ export const generateWallet = (
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
-
 export const generateAssetDomain = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
-  metadata?: AssetMetadata = {}
+  // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
+  metadata: AssetMetadata = {}
 ): Asset =>
   new Asset({
     policyId,
@@ -154,15 +158,14 @@ export const generateAssetDomain = (
     recommendedDecimals: null,
     uniqueId: `${policyId}${assetName}`,
   });
-
 export const generateAssetToken = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
   quantity: number,
-  metadata: ?AssetMetadata,
-  decimals: ?number,
-  recommendedDecimals: ?number
+  metadata: AssetMetadata | null | undefined,
+  decimals: number | null | undefined,
+  recommendedDecimals: number | null | undefined
 ): AssetToken => ({
   policyId,
   assetName,
@@ -173,7 +176,6 @@ export const generateAssetToken = (
   recommendedDecimals,
   uniqueId: `${policyId}${assetName}`,
 });
-
 export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
@@ -185,7 +187,7 @@ export const generateTransaction = (
   noWithdrawals: boolean = true,
   fee: BigNumber = new BigNumber(faker.finance.amount()),
   assets?: Tokens,
-  metadata?: TransactionMetadata = EXAMPLE_METADATA
+  metadata: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
@@ -222,34 +224,29 @@ export const generateTransaction = (
     },
     metadata,
   });
-
 export const generateRandomTransaction = (index: number) =>
   generateTransaction(
     TransactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
     new BigNumber(faker.random.number(5))
   );
-
 export const generateMultipleTransactions = (
   amount: number
 ): WalletTransaction[] =>
   Array.from(Array(amount).keys()).map((key: number) =>
     generateRandomTransaction(Math.round(Math.random() * key))
   );
-
 export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
     used,
     spendingPath: "1852'/1815'/0'/0/19",
   });
-
 export const promise = (returnValue: any): (() => Promise<any>) => () =>
   new Promise((resolve) => {
     setTimeout(() => {
       resolve(returnValue);
     }, 2000);
   });
-
 export const isShelleyTestnetTheme = (currentTheme: string) =>
   currentTheme === 'shelley-testnet';

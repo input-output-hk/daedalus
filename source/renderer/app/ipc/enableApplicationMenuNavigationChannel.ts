@@ -1,4 +1,3 @@
-// @flow
 import { ENABLE_APPLICATION_MENU_NAVIGATION_CHANNEL } from '../../../common/ipc/api';
 import type {
   EnableApplicationMenuNavigationMainResponse,

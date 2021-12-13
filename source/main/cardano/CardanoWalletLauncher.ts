@@ -1,4 +1,3 @@
-// @flow
 import { merge } from 'lodash';
 import path from 'path';
 import * as fs from 'fs-extra';
@@ -24,26 +23,27 @@ import { logger } from '../utils/logging';
 import type { CardanoNodeImplementations } from '../../common/types/cardano-node.types';
 
 export type WalletOptions = {
-  nodeImplementation: CardanoNodeImplementations,
-  nodeConfig: NodeConfig,
-  cluster: string,
-  stateDir: string,
-  tlsPath: string,
-  configPath: string,
-  syncTolerance: string,
-  nodeLogFile: WriteStream,
-  walletLogFile: WriteStream,
-  cliBin: string,
-  isStaging: boolean,
-  metadataUrl?: string,
+  nodeImplementation: CardanoNodeImplementations;
+  nodeConfig: NodeConfig;
+  cluster: string;
+  stateDir: string;
+  tlsPath: string;
+  configPath: string;
+  syncTolerance: string;
+  nodeLogFile: WriteStream;
+  walletLogFile: WriteStream;
+  cliBin: string;
+  isStaging: boolean;
+  metadataUrl?: string;
 };
-
 export async function CardanoWalletLauncher(
   walletOptions: WalletOptions
+  // @ts-ignore ts-migrate(1064) FIXME: The return type of an async function or method mus... Remove this comment to see the full error message
 ): Launcher {
   const {
     nodeImplementation,
-    nodeConfig, // For cardano-node / byron only!
+    nodeConfig,
+    // For cardano-node / byron only!
     cluster,
     stateDir,
     tlsPath,
@@ -57,7 +57,6 @@ export async function CardanoWalletLauncher(
   } = walletOptions;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
-
   // Shared launcher config (node implementations agnostic)
   const launcherConfig = {
     networkName: cluster,
@@ -76,16 +75,15 @@ export async function CardanoWalletLauncher(
     },
     installSignalHandlers: false,
   };
-
   // TLS configuration used only for cardano-node
   const tlsConfiguration = {
     caCert: path.join(tlsPath, 'server/ca.crt'),
     svCert: path.join(tlsPath, 'server/server.crt'),
     svKey: path.join(tlsPath, 'server/server.key'),
   };
-
   // Prepare development TLS files
   const { isProduction } = environment;
+
   if (
     !isProduction &&
     nodeImplementation === CardanoNodeImplementationOptions.CARDANO
@@ -94,10 +92,12 @@ export async function CardanoWalletLauncher(
   }
 
   let tokenMetadataServer;
-
   // This switch statement handles any node specific
   // configuration, prior to spawning the child process
-  logger.info('Node implementation', { nodeImplementation });
+  logger.info('Node implementation', {
+    nodeImplementation,
+  });
+
   switch (nodeImplementation) {
     case CardanoNodeImplementationOptions.CARDANO:
       if (cluster === SELFNODE) {
@@ -115,19 +115,26 @@ export async function CardanoWalletLauncher(
         nodeConfig.network.configFile = selfnodeConfigPath;
         nodeConfig.network.genesisFile = selfnodeGenesisPath;
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
-        merge(launcherConfig, { apiPort: 8088 });
+        merge(launcherConfig, {
+          apiPort: 8088,
+        });
       }
+
       if (cluster === MAINNET) {
         launcherConfig.networkName = MAINNET;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('Launching Wallet with --mainnet flag');
       } else if (isStaging) {
         launcherConfig.networkName = STAGING;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('Launching Wallet with --staging flag');
       } else {
         // All clusters not flagged as staging except for Mainnet are treated as "Testnets"
         launcherConfig.networkName = TESTNET;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('Launching Wallet with --testnet flag');
       }
+
       if (MOCK_TOKEN_METADATA_SERVER_PORT) {
         tokenMetadataServer = `${MOCK_TOKEN_METADATA_SERVER_URL}:${MOCK_TOKEN_METADATA_SERVER_PORT}`;
       } else if (metadataUrl) {
@@ -135,22 +142,22 @@ export async function CardanoWalletLauncher(
       } else {
         tokenMetadataServer = FALLBACK_TOKEN_METADATA_SERVER_URL;
       }
+
       logger.info('Launching Wallet with --token-metadata-server flag', {
         tokenMetadataServer,
       });
-
       // RTS flags:
       nodeConfig.rtsOpts = [];
       logger.info('Launching Cardano Node with RTS flags', {
         rtsFlags: nodeConfig.rtsOpts,
       });
-
       merge(launcherConfig, {
         nodeConfig,
         tlsConfiguration,
         tokenMetadataServer,
       });
       break;
+
     default:
       break;
   }
@@ -159,6 +166,6 @@ export async function CardanoWalletLauncher(
     walletOptions,
     launcherConfig,
   });
-
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ networkName: string; stateDir:... Remove this comment to see the full error message
   return new cardanoLauncher.Launcher(launcherConfig, logger);
 }

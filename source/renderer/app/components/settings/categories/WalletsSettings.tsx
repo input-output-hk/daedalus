@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { map } from 'lodash';
@@ -6,6 +5,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletsSettings.scss' or its... Remove this comment to see the full error message
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
 import globalMessages from '../../../i18n/global-messages';
@@ -45,18 +45,17 @@ const messages = defineMessages({
       'currencyPoweredByLabel for the Currency settings in the Wallets settings page.',
   },
 });
-
 type Props = {
-  currencySelected: ?LocalizedCurrency,
-  currencyList: Array<any>,
-  currencyIsActive: boolean,
-  onSelectCurrency: Function,
-  onToggleCurrencyIsActive: Function,
-  onOpenExternalLink: Function,
+  currencySelected: LocalizedCurrency | null | undefined;
+  currencyList: Array<any>;
+  currencyIsActive: boolean;
+  onSelectCurrency: (...args: Array<any>) => any;
+  onToggleCurrencyIsActive: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
 };
 
 @observer
-export default class WalletSettings extends Component<Props> {
+class WalletSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -71,12 +70,10 @@ export default class WalletSettings extends Component<Props> {
       onToggleCurrencyIsActive,
       onOpenExternalLink,
     } = this.props;
-
     const currencyOptions = map(currencyList, ({ code, name }) => ({
       label: `${code.toUpperCase()} - ${name}`,
       value: code,
     }));
-
     return (
       <div className={styles.component}>
         <div className={styles.label}>
@@ -87,6 +84,7 @@ export default class WalletSettings extends Component<Props> {
           <NormalSwitch
             checked={currencyIsActive}
             onChange={onToggleCurrencyIsActive}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             className={styles.switch}
           />
         </div>
@@ -116,7 +114,9 @@ export default class WalletSettings extends Component<Props> {
               <div className={styles.disclaimer}>
                 <FormattedHTMLMessage
                   {...messages.currencyDisclaimer}
-                  values={{ currencyApiName: currencyConfig.name }}
+                  values={{
+                    currencyApiName: currencyConfig.name,
+                  }}
                 />
               </div>
             )}
@@ -126,3 +126,5 @@ export default class WalletSettings extends Component<Props> {
     );
   }
 }
+
+export default WalletSettings;

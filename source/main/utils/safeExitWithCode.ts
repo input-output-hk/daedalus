@@ -1,4 +1,3 @@
-// @flow
 import { app } from 'electron';
 import log from 'electron-log-daedalus';
 

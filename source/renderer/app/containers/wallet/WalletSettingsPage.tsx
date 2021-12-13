@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
@@ -25,9 +24,11 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSettingsPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+class WalletSettingsPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleCopyWalletPublicKey = (walletPublicKey: string) => {
     const { wallets } = this.props.actions;
     const publicKey = ellipsis(
@@ -35,9 +36,10 @@ export default class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-    wallets.copyWalletPublicKey.trigger({ publicKey });
+    wallets.copyWalletPublicKey.trigger({
+      publicKey,
+    });
   };
-
   handleCopyICOPublicKey = (icoPublicKey: string) => {
     const { wallets } = this.props.actions;
     const publicKey = ellipsis(
@@ -45,12 +47,15 @@ export default class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-    wallets.copyICOPublicKey.trigger({ publicKey });
+    wallets.copyICOPublicKey.trigger({
+      publicKey,
+    });
   };
-
   handleDelegateClick = () => {
     const { goToRoute } = this.props.actions.router;
-    goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
+    goToRoute.trigger({
+      route: ROUTES.STAKING.DELEGATION_CENTER,
+    });
   };
 
   render() {
@@ -71,7 +76,6 @@ export default class WalletSettingsPage extends Component<Props> {
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
-
     const { isLegacy, isHardwareWallet } = activeWallet;
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
     const { actions } = this.props;
@@ -102,7 +106,6 @@ export default class WalletSettingsPage extends Component<Props> {
     const wordCount = activeWallet.isRandom
       ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
       : WALLET_RECOVERY_PHRASE_WORD_COUNT;
-
     return (
       <VerticalFlexContainer>
         <WalletSettings
@@ -121,6 +124,7 @@ export default class WalletSettingsPage extends Component<Props> {
           isLegacy={isLegacy}
           walletId={activeWallet.id}
           walletName={activeWallet.name}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           delegationStakePoolStatus={activeWallet.delegationStakePoolStatus}
           lastDelegationStakePoolStatus={
             activeWallet.lastDelegationStakePoolStatus
@@ -138,9 +142,16 @@ export default class WalletSettingsPage extends Component<Props> {
           showExportLink={!isProduction}
           lastUpdatedField={lastUpdatedWalletField}
           onFieldValueChange={(field, value) =>
-            updateWalletField.trigger({ field, value })
+            updateWalletField.trigger({
+              field,
+              value,
+            })
           }
-          onStartEditing={(field) => startEditingWalletField.trigger({ field })}
+          onStartEditing={(field) =>
+            startEditingWalletField.trigger({
+              field,
+            })
+          }
           onStopEditing={stopEditingWalletField.trigger}
           onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
@@ -166,6 +177,7 @@ export default class WalletSettingsPage extends Component<Props> {
           undelegateWalletDialogContainer={
             <UndelegateWalletDialogContainer
               onExternalLinkClick={app.openExternalLink}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               isTrezor={isHardwareWallet && isTrezor}
             />
           }
@@ -181,3 +193,5 @@ export default class WalletSettingsPage extends Component<Props> {
     );
   }
 }
+
+export default WalletSettingsPage;

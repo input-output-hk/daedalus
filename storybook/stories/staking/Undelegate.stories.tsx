@@ -1,10 +1,8 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
 import { number, boolean } from '@storybook/addon-knobs';
-
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import {
   generateHash,
@@ -49,12 +47,12 @@ const assets = {
     },
   ],
 };
-
 const generalWallet = generateWallet(
   'Wallet 1',
   '1000000000',
   assets,
   0,
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   STAKE_POOLS[0]
 );
 const hardwareWallet = generateWallet(
@@ -62,15 +60,15 @@ const hardwareWallet = generateWallet(
   '10000000',
   assets,
   0,
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   STAKE_POOLS[0],
   false,
   'ready',
   true
 );
-
 export const StakingUndelegateConfirmationStory = (props: {
-  unknownStakePool?: boolean,
-  isHardwareWallet?: boolean,
+  unknownStakePool?: boolean;
+  isHardwareWallet?: boolean;
 }) => (
   <UndelegateWalletConfirmationDialog
     selectedWallet={props.isHardwareWallet ? hardwareWallet : generalWallet}
@@ -93,14 +91,14 @@ export const StakingUndelegateConfirmationStory = (props: {
     isTrezor={boolean('isTrezor', false)}
   />
 );
-
 export const StakingUndelegateConfirmationResultStory = ({
   locale,
 }: {
-  locale: string,
+  locale: string;
 }) => (
   <UndelegateWalletSuccessDialog
     walletName="Darko's ADA"
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     slotLength={null}
     onClose={() => null}
     currentLocale={locale}

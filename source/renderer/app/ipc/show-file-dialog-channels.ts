@@ -1,4 +1,3 @@
-// @flow
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 import {
   SHOW_OPEN_DIALOG_CHANNEL,
@@ -16,7 +15,6 @@ RendererIpcChannel<
   ShowOpenDialogMainResponse,
   ShowOpenDialogRendererRequest
 > = new RendererIpcChannel(SHOW_OPEN_DIALOG_CHANNEL);
-
 export const showSaveDialogChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   ShowSaveDialogMainResponse,

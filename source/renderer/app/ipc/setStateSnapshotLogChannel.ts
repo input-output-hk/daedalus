@@ -1,4 +1,3 @@
-// @flow
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 import { SET_STATE_SNAPSHOT_LOG_CHANNEL } from '../../../common/ipc/api';
 import type {

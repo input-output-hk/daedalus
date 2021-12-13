@@ -1,7 +1,5 @@
-// @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
-
 //  ==== light-blue theme output for Daedalus and react-polymorph components === //
 export const LIGHT_BLUE_THEME_OUTPUT = {
   aboutWindow: {
@@ -1119,9 +1117,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-widgets-itemsDropdown-option-label-text-color': '#5e6066',
   },
 };
-
 const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   config: LIGHT_BLUE_THEME_OUTPUT,
 };
-
 export default createTheme(LIGHT_BLUE_THEME_PARAMS);

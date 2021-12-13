@@ -1,6 +1,4 @@
-// @flow
 import BigNumber from 'bignumber.js';
-
 import AssetDomain from '../../domains/Asset';
 
 /**
@@ -15,20 +13,20 @@ import AssetDomain from '../../domains/Asset';
  *
  */
 export type ApiAsset = {
-  policy_id: string,
-  asset_name: string,
-  fingerprint: string,
-  metadata?: ?AssetMetadata,
+  policy_id: string;
+  asset_name: string;
+  fingerprint: string;
+  metadata?: AssetMetadata | null | undefined;
 };
 export type ApiAssets = Array<ApiAsset>;
 export type Asset = {
-  assetName: string,
-  decimals: ?number,
-  fingerprint: string,
-  metadata?: ?AssetMetadata,
-  policyId: string,
-  recommendedDecimals: ?number,
-  uniqueId: string,
+  assetName: string;
+  decimals: number | null | undefined;
+  fingerprint: string;
+  metadata?: AssetMetadata | null | undefined;
+  policyId: string;
+  recommendedDecimals: number | null | undefined;
+  uniqueId: string;
 };
 
 /**
@@ -42,24 +40,23 @@ export type Asset = {
  *
  */
 export type ApiToken = {
-  policy_id: string,
-  asset_name: string,
-  quantity: number,
-  address?: ?string,
+  policy_id: string;
+  asset_name: string;
+  quantity: number;
+  address?: string | null | undefined;
 };
 export type ApiTokens = Array<ApiToken>;
 export type Token = {
-  policyId: string,
-  assetName: string,
-  quantity: BigNumber,
-  address?: ?string,
-  uniqueId: string,
+  policyId: string;
+  assetName: string;
+  quantity: BigNumber;
+  address?: string | null | undefined;
+  uniqueId: string;
 };
-
 export type Tokens = Array<Token>;
 export type WalletTokens = {
-  available: Tokens,
-  total: Tokens,
+  available: Tokens;
+  total: Tokens;
 };
 
 /**
@@ -70,34 +67,25 @@ export type WalletTokens = {
  * It has all the data combined: quantity, address, fingerprint, metadata, etc.
  *
  */
-export type AssetToken = {
-  ...$Exact<Token>,
-  ...$Exact<Asset>,
-};
-
+export type AssetToken = Token & Asset;
 export type AssetMetadata = {
-  name: string,
-  description: string,
-  ticker?: string,
-  decimals?: number, // [0 .. 255]
-  url?: string,
-  logo?: string,
+  name: string;
+  description: string;
+  ticker?: string;
+  decimals?: number;
+  // [0 .. 255]
+  url?: string;
+  logo?: string;
 };
-
-export type StoredAssetMetadata = {
-  [uniqueId: string]: AssetMetadata,
-};
-
+export type StoredAssetMetadata = Record<string, AssetMetadata>;
 export type GetUnknownAssetRequest = {
-  walletId: string,
-  policyId: string,
+  walletId: string;
+  policyId: string;
 };
-
 export type GetAssetsRequest = {
-  walletId: string,
+  walletId: string;
 };
-
 export type GetAssetsResponse = {
-  assets: Array<AssetDomain>,
-  total: number,
+  assets: Array<AssetDomain>;
+  total: number;
 };

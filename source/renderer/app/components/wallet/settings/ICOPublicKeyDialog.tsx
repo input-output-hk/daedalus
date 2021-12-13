@@ -1,9 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyDialog.scss' or its... Remove this comment to see the full error message
 import styles from './PublicKeyDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
@@ -15,7 +15,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { isValidSpendingPassword } from '../../../utils/validations';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-const messages: { [string]: ReactIntlMessage } = defineMessages({
+const messages: Record<string, ReactIntlMessage> = defineMessages({
   title: {
     id: 'wallet.settings.icoPublicKeyDialog.title',
     defaultMessage: '!!!Reveal ICO public key',
@@ -33,29 +33,30 @@ const messages: { [string]: ReactIntlMessage } = defineMessages({
     description: 'Description on the reveal ICO Id dialog.',
   },
 });
-
 type Props = {
-  onRevealPublicKey: Function,
-  onClose: Function,
-  error: ?LocalizableError,
-  hasReceivedICOPublicKey: boolean,
-  walletName: string,
+  onRevealPublicKey: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  error: LocalizableError | null | undefined;
+  hasReceivedICOPublicKey: boolean;
+  walletName: string;
 };
 
 @observer
-export default class ICOPublicKeyDialog extends Component<Props> {
+class ICOPublicKeyDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   componentDidUpdate() {
     const { hasReceivedICOPublicKey, onClose } = this.props;
+
     if (hasReceivedICOPublicKey) {
       onClose();
     }
   }
 
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -77,6 +78,7 @@ export default class ICOPublicKeyDialog extends Component<Props> {
                   ),
                 ];
               }
+
               return [true];
             },
           ],
@@ -84,36 +86,41 @@ export default class ICOPublicKeyDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
         const { onRevealPublicKey } = this.props;
-        onRevealPublicKey({ spendingPassword });
+        onRevealPublicKey({
+          spendingPassword,
+        });
       },
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
     const { intl } = this.context;
     const { onClose, error, walletName } = this.props;
     const { form } = this;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const actions = [
       {
         label: intl.formatMessage(messages.buttonLabel),
         onClick: this.submit,
         primary: true,
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
         disabled: !this.form.isValid,
       },
     ];
@@ -142,3 +149,5 @@ export default class ICOPublicKeyDialog extends Component<Props> {
     );
   }
 }
+
+export default ICOPublicKeyDialog;

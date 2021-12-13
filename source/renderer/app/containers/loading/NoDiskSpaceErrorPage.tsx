@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedStoresProps } from '../../types/injectedPropsType';
@@ -8,8 +7,10 @@ type Props = InjectedStoresProps;
 
 @inject('stores')
 @observer
-export default class NoDiskSpaceErrorPage extends Component<Props> {
-  static defaultProps = { stores: null };
+class NoDiskSpaceErrorPage extends Component<Props> {
+  static defaultProps = {
+    stores: null,
+  };
 
   render() {
     const { stores } = this.props;
@@ -18,7 +19,6 @@ export default class NoDiskSpaceErrorPage extends Component<Props> {
       diskSpaceMissing,
       diskSpaceRecommended,
     } = stores.networkStatus;
-
     return (
       <NoDiskSpaceError
         diskSpaceRequired={diskSpaceRequired}
@@ -28,3 +28,5 @@ export default class NoDiskSpaceErrorPage extends Component<Props> {
     );
   }
 }
+
+export default NoDiskSpaceErrorPage;

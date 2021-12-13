@@ -1,11 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import ProfileSettingsForm from '../../widgets/forms/ProfileSettingsForm';
 import type { ProfileSettingsFormProps } from '../../widgets/forms/ProfileSettingsForm';
 
 @observer
-export default class GeneralSettings extends Component<ProfileSettingsFormProps> {
+class GeneralSettings extends Component<ProfileSettingsFormProps> {
   render() {
     const {
       onChangeItem,
@@ -27,3 +26,5 @@ export default class GeneralSettings extends Component<ProfileSettingsFormProps>
     );
   }
 }
+
+export default GeneralSettings;

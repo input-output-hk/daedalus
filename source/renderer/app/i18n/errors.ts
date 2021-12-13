@@ -8,7 +8,6 @@ export class InvalidMnemonicError extends LocalizableError {
     });
   }
 }
-
 export class InvalidEmailError extends LocalizableError {
   constructor() {
     super({
@@ -17,7 +16,6 @@ export class InvalidEmailError extends LocalizableError {
     });
   }
 }
-
 export class FieldRequiredError extends LocalizableError {
   constructor() {
     super({
@@ -26,7 +24,6 @@ export class FieldRequiredError extends LocalizableError {
     });
   }
 }
-
 export class WalletSupportRequestLogsCompressError extends LocalizableError {
   constructor() {
     super({
@@ -35,7 +32,6 @@ export class WalletSupportRequestLogsCompressError extends LocalizableError {
     });
   }
 }
-
 export class WalletPaperWalletOpenPdfError extends LocalizableError {
   constructor() {
     super({
@@ -45,7 +41,6 @@ export class WalletPaperWalletOpenPdfError extends LocalizableError {
     });
   }
 }
-
 export class WalletRewardsOpenCsvError extends LocalizableError {
   constructor() {
     super({

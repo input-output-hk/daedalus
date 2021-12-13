@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { map, omit } from 'lodash';
@@ -14,6 +13,7 @@ import {
 } from 'react-intl';
 import { getSmashServerIdFromUrl, getUrlParts } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsSettings.scss' or ... Remove this comment to see the full error message
 import styles from './StakePoolsSettings.scss';
 import {
   SMASH_SERVERS_LIST,
@@ -21,6 +21,7 @@ import {
   SMASH_URL_VALIDATOR,
 } from '../../../config/stakingConfig';
 import type { SmashServerType } from '../../../types/stakingTypes';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -134,28 +135,25 @@ const messages = defineMessages({
       'invalidUrlParameter for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
 });
-
 type Props = {
-  smashServerUrl: ?string,
-  smashServerUrlError?: ?LocalizableError,
-  onSelectSmashServerUrl: Function,
-  onResetSmashServerError: Function,
-  isLoading: boolean,
-  onOpenExternalLink: Function,
-  isSyncing: boolean,
-  syncPercentage: number,
+  smashServerUrl: string | null | undefined;
+  smashServerUrlError?: LocalizableError | null | undefined;
+  onSelectSmashServerUrl: (...args: Array<any>) => any;
+  onResetSmashServerError: (...args: Array<any>) => any;
+  isLoading: boolean;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  isSyncing: boolean;
+  syncPercentage: number;
 };
-
 type State = {
-  editingSmashServerUrl: ?string,
-  successfullyUpdated: boolean,
-  wasLoading: boolean,
+  editingSmashServerUrl: string | null | undefined;
+  successfullyUpdated: boolean;
+  wasLoading: boolean;
 };
-
 const { isSelfnode } = global.environment;
 
 @observer
-export default class StakePoolsSettings extends Component<Props, State> {
+class StakePoolsSettings extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -193,22 +191,21 @@ export default class StakePoolsSettings extends Component<Props, State> {
       this.props.onSelectSmashServerUrl(url);
     }
   };
-
   handleOnSelectSmashServerType = (smashServerType: SmashServerType) => {
     const { onSelectSmashServerUrl, onResetSmashServerError } = this.props;
     onResetSmashServerError();
     let editingSmashServerUrl = '';
+
     if (smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
       editingSmashServerUrl = SMASH_SERVERS_LIST[smashServerType].url;
       onSelectSmashServerUrl(editingSmashServerUrl);
     }
+
     this.setState({
       editingSmashServerUrl,
     });
   };
-
   handleIsValid = (url: string) => url === '' || SMASH_URL_VALIDATOR.test(url);
-
   handleErrorMessage = (value: string) => {
     const { intl } = this.context;
     let errorMessage = messages.invalidUrl;
@@ -218,14 +215,12 @@ export default class StakePoolsSettings extends Component<Props, State> {
       errorMessage = messages.invalidUrlParameter;
     return intl.formatMessage(errorMessage);
   };
-
   smashSelectMessages = {
     iohk: <FormattedHTMLMessage {...messages.smashSelectIOHKServer} />,
     direct: this.context.intl.formatMessage(messages.smashSelectDirect),
     custom: this.context.intl.formatMessage(messages.smashSelectCustomServer),
     none: null,
   };
-
   renderSmashTypeDropdown = () => {
     const { isSyncing } = this.props;
     const { intl } = this.context;
@@ -259,6 +254,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
         </div>
       );
     }
+
     return (
       <Select
         label={
@@ -282,7 +278,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
       />
     );
   };
-
   renderSmashCustomServerInput = () => {
     const { smashServerUrlError, isLoading, isSyncing } = this.props;
     const { intl } = this.context;
@@ -293,7 +288,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
     const errorMessage = smashServerUrlError
       ? intl.formatMessage(smashServerUrlError)
       : null;
-
     const smashServerUrlStyles = classnames([
       styles.smashServerUrl,
       isSyncing ? styles.syncing : null,
@@ -302,6 +296,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
     if (smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
       return null;
     }
+
     return (
       <InlineEditingInput
         className={smashServerUrlStyles}
@@ -318,7 +313,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
       />
     );
   };
-
   renderBottomContent = () => {
     const { onOpenExternalLink, isSyncing, syncPercentage } = this.props;
     const { intl } = this.context;
@@ -381,7 +375,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
   render() {
     const { onOpenExternalLink } = this.props;
     const { intl } = this.context;
-
     return (
       <div className={styles.component}>
         <div className={styles.description}>
@@ -410,3 +403,5 @@ export default class StakePoolsSettings extends Component<Props, State> {
     );
   }
 }
+
+export default StakePoolsSettings;

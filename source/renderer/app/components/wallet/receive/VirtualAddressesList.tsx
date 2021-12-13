@@ -1,14 +1,14 @@
-// @flow
 import React, { Component } from 'react';
 import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import WalletAddress from '../../../domains/WalletAddress';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VirtualAddressesList.scss' o... Remove this comment to see the full error message
 import styles from './VirtualAddressesList.scss';
 
 type Props = {
-  rows: Array<WalletAddress>,
-  renderRow: Function,
+  rows: Array<WalletAddress>;
+  renderRow: (...args: Array<any>) => any;
 };
 
 /**
@@ -21,13 +21,12 @@ type Props = {
  */
 const BREAKPOINT_1_LINE = 1108;
 const BREAKPOINT_2_LINES = 635;
-
 const ADDRESS_LINE_HEIGHT = 22;
 const ADDRESS_LINE_PADDING = 21;
 const ADDRESS_SELECTOR = '.Address';
 
 @observer
-export class VirtualAddressesList extends Component<Props> {
+class VirtualAddressesList extends Component<Props> {
   list: List;
   listWidth: number = 0;
   addressHeight: number = 0;
@@ -54,6 +53,7 @@ export class VirtualAddressesList extends Component<Props> {
     const { list, addressHeight } = this;
     if (!list) return;
     const firstAddress = document.querySelector(ADDRESS_SELECTOR);
+
     if (firstAddress instanceof HTMLElement) {
       this.addressHeight = firstAddress.offsetHeight;
     } else {
@@ -64,6 +64,7 @@ export class VirtualAddressesList extends Component<Props> {
       // the update and hope that DOM is rendered then (for exact measurements)
       setTimeout(this.updateRowHeights, 100);
     }
+
     if (addressHeight !== this.addressHeight) {
       list.recomputeRowHeights(0);
     }
@@ -76,19 +77,21 @@ export class VirtualAddressesList extends Component<Props> {
     this.listWidth = width;
     this.updateRowHeights();
   };
-
   rowRenderer = ({
-    index, // Index of row
-    key, // Unique key within array of rendered rows
+    index,
+    // Index of row
+    key,
+    // Unique key within array of rendered rows
     style, // Style object to be applied to row (to position it);
   }: {
-    index: number,
-    key: string,
-    style: string,
+    index: number;
+    key: string;
+    style: string;
   }) => {
     const { rows, renderRow } = this.props;
     const address = rows[index];
     return (
+      // @ts-ignore ts-migrate(2559) FIXME: Type 'string' has no properties in common with typ... Remove this comment to see the full error message
       <div key={key} style={style} className={styles.address}>
         {renderRow(address, index)}
       </div>
@@ -112,7 +115,9 @@ export class VirtualAddressesList extends Component<Props> {
               rowCount={rows.length}
               rowHeight={() => this.addressHeight}
               rowRenderer={this.rowRenderer}
-              style={{ overflowY: 'scroll' }}
+              style={{
+                overflowY: 'scroll',
+              }}
             />
           )}
         </AutoSizer>
@@ -120,3 +125,5 @@ export class VirtualAddressesList extends Component<Props> {
     );
   }
 }
+
+export { VirtualAddressesList };

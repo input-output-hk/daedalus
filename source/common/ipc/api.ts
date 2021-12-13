@@ -1,4 +1,3 @@
-// @flow
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
@@ -70,25 +69,21 @@ import type {
  * Complex types are referenced from common/types to keep this api readable.
  * ==================================================================
  */
-
 export const GET_LOGS_CHANNEL = 'GET_LOGS_CHANNEL';
 export type GetLogsRendererRequest = void;
 export type GetLogsMainResponse = LogFiles;
-
 export const COMPRESS_LOGS_CHANNEL = 'COMPRESS_LOGS_CHANNEL';
 export type CompressLogsRendererRequest = {
   logs: LogFiles;
   compressedFileName: string;
 };
 export type CompressLogsMainResponse = string;
-
 export const DOWNLOAD_LOGS_CHANNEL = 'DOWNLOAD_LOGS_CHANNEL';
 export type DownloadLogsRendererRequest = {
   compressedLogsFilePath: string;
   destinationPath: string;
 };
 export type DownloadLogsMainResponse = void;
-
 export const GET_GPU_STATUS_CHANNEL = 'GET_GPU_STATUS_CHANNEL';
 export type GetGPUStatusRendererRequest = void;
 export type GetGPUStatusMainResponse = GpuStatus;
@@ -149,7 +144,9 @@ export type SetStateSnapshotLogMainResponse = StateSnapshotLogParams;
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder
  */
 export const LOAD_ASSET_CHANNEL = 'LoadAssetChannel';
-export type LoadAssetRendererRequest = { fileName: string };
+export type LoadAssetRendererRequest = {
+  fileName: string;
+};
 export type LoadAssetMainResponse = string;
 
 /**
@@ -254,7 +251,7 @@ export type CardanoStateRendererResponse = CardanoNodeState;
  */
 export const CARDANO_TLS_CONFIG_CHANNEL = 'CARDANO_TLS_CONFIG_CHANNEL';
 export type CardanoTlsConfigRendererRequest = void;
-export type CardanoTlsConfigMainResponse = ?TlsConfig;
+export type CardanoTlsConfigMainResponse = TlsConfig | null | undefined;
 
 /**
  * Channel where renderer can request a cardano-node restart
@@ -277,14 +274,20 @@ export type CardanoFaultInjectionMainResponse = void;
 export const GET_CACHED_CARDANO_STATUS_CHANNEL =
   'GET_CACHED_CARDANO_STATUS_CHANNEL';
 export type GetCachedCardanoStatusRendererRequest = void;
-export type GetCachedCardanoStatusMainResponse = ?CardanoStatus;
+export type GetCachedCardanoStatusMainResponse =
+  | CardanoStatus
+  | null
+  | undefined;
 
 /**
  * Channel where renderer and main process can exchange cardano-node status info
  */
 export const SET_CACHED_CARDANO_STATUS_CHANNEL =
   'SET_CACHED_CARDANO_STATUS_CHANNEL';
-export type SetCachedCardanoStatusRendererRequest = ?CardanoStatus;
+export type SetCachedCardanoStatusRendererRequest =
+  | CardanoStatus
+  | null
+  | undefined;
 export type SetCachedCardanoStatusMainResponse = void;
 
 /**
@@ -407,39 +410,35 @@ export type ManageAppUpdateMainResponse = {
     progress?: number;
     code?: number;
     error?: Error;
-    info?: Object;
+    info?: Record<string, any>;
   };
 };
-
 export type DeriveXpubRendererRequestType = {
   parentXpubHex: string;
   lastIndex: number;
   derivationScheme: number;
 };
-
 export type StakingBlockchainPointer = {
   blockIndex: number;
   txIndex: number;
   certificateIndex: number;
 };
-
 export type deriveAddressRendererRequestType = {
-  devicePath: ?string;
+  devicePath: string | null | undefined;
   addressType: number;
   networkId: number;
   protocolMagic: number;
   spendingPathStr: string;
-  stakingPathStr: ?string;
+  stakingPathStr: string | null | undefined;
   isTrezor: boolean;
 };
-
 export type showAddressRendererRequestType = {
-  devicePath: ?string;
+  devicePath: string | null | undefined;
   addressType: number;
   networkId: number;
   protocolMagic: number;
   spendingPathStr: string;
-  stakingPathStr: ?string;
+  stakingPathStr: string | null | undefined;
   isTrezor: boolean;
 };
 
@@ -464,53 +463,44 @@ export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
 export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
 export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
-
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
 export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
 export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
-
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
-export type getCardanoAdaAppRendererRequest = { path: ?string };
+export type getCardanoAdaAppRendererRequest = {
+  path: string | null | undefined;
+};
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
-
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
 export type getHardwareWalletConnectiontMainRequest = HardwareWalletConnectionRequest;
-export type getHardwareWalletConnectiontRendererResponse = Object;
-
+export type getHardwareWalletConnectiontRendererResponse = Record<string, any>;
 export const SIGN_TRANSACTION_LEDGER_CHANNEL =
   'SIGN_TRANSACTION_LEDGER_CHANNEL';
 export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
 export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
-
 export const SIGN_TRANSACTION_TREZOR_CHANNEL =
   'SIGN_TRANSACTION_TREZOR_CHANNEL';
 export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
 export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
-
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;
 export type handleInitTrezorConnectMainResponse = void;
-
 export const GET_INIT_LEDGER_CONNECT_CHANNEL =
   'GET_INIT_LEDGER_CONNECT_CHANNEL';
 export type handleInitLedgerConnectRendererRequest = void;
 export type handleInitLedgerConnectMainResponse = void;
-
 export const DERIVE_XPUB_CHANNEL = 'DERIVE_XPUB_CHANNEL';
 export type deriveXpubRendererRequest = DeriveXpubRendererRequestType;
 export type deriveXpubMainResponse = string;
-
 export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
 export type resetTrezorActionRendererRequest = void;
 export type resetTrezorActionMainResponse = void;
-
 export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
 export type deriveAddressRendererRequest = deriveAddressRendererRequestType;
 export type deriveAddressMainResponse = string;
-
 export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
 export type showAddressRendererRequest = showAddressRendererRequestType;
 export type showAddressMainResponse = void;

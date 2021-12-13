@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
@@ -29,8 +28,11 @@ const messages: WalletSettingRemoveMessages = defineMessages({
 
 @inject('actions', 'stores')
 @observer
-export default class UnpairWalletDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+class UnpairWalletDialogContainer extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { actions, stores } = this.props;
@@ -42,13 +44,11 @@ export default class UnpairWalletDialogContainer extends Component<Props> {
     const {
       environment: { isTest },
     } = app;
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error(
         'Active wallet required for DeleteWalletDialogContainer.'
       );
-
     return (
       <WalletSettingsActionConfirmationDialog
         isTest={isTest}
@@ -60,7 +60,9 @@ export default class UnpairWalletDialogContainer extends Component<Props> {
         messages={Object.freeze(messages)}
         onAcceptBackupNotice={() =>
           updateDataForActiveDialog.trigger({
-            data: { isBackupNoticeAccepted: true },
+            data: {
+              isBackupNoticeAccepted: true,
+            },
           })
         }
         onContinue={() => {
@@ -76,7 +78,9 @@ export default class UnpairWalletDialogContainer extends Component<Props> {
         confirmationValue={dialogData.confirmationValue}
         onConfirmationValueChange={(confirmationValue) =>
           updateDataForActiveDialog.trigger({
-            data: { confirmationValue },
+            data: {
+              confirmationValue,
+            },
           })
         }
         isSubmitting={isDeleting}
@@ -84,3 +88,5 @@ export default class UnpairWalletDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default UnpairWalletDialogContainer;

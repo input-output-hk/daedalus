@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransferFundsStep1Dialog.scs... Remove this comment to see the full error message
 import styles from './TransferFundsStep1Dialog.scss';
 import Wallet from '../../../domains/Wallet';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -33,20 +33,18 @@ const messages = defineMessages({
     description: 'buttonLabel in the transfer funds form.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onContinue: Function,
-  onSetSourceWallet: Function,
-  targetWalletId: string,
-  sourceWallet: $Shape<Wallet>,
-  wallets: Array<$Shape<Wallet>>,
-  numberOfStakePools: number,
-  getStakePoolById: Function,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
+  onClose: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onSetSourceWallet: (...args: Array<any>) => any;
+  targetWalletId: string;
+  sourceWallet: Partial<Wallet>;
+  wallets: Array<Partial<Wallet>>;
+  numberOfStakePools: number;
+  getStakePoolById: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
 };
-
 export default class TransferFundsStep1Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -66,9 +64,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
       isSubmitting,
       error,
     } = this.props;
-
     const onClick = error ? onClose : onContinue;
-
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
@@ -98,6 +94,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           />
         </div>
         <WalletsDropdown
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ label: any; wallets: Partial<Wallet>[]; on... Remove this comment to see the full error message
           label={intl.formatMessage(messages.targetWallet)}
           wallets={wallets}
           onChange={onSetSourceWallet}

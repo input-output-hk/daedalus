@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
@@ -7,27 +6,29 @@ import ReactMarkdown from 'react-markdown';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import ButtonLink from '../widgets/ButtonLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AlertsOverlay.scss' or its c... Remove this comment to see the full error message
 import styles from './AlertsOverlay.scss';
 
 type State = {
-  showOverlay: boolean,
+  showOverlay: boolean;
 };
-
 type Props = {
-  alerts: Array<News.News>,
-  onCloseOpenAlert: Function,
-  onMarkNewsAsRead: Function,
-  onOpenExternalLink: Function,
-  onProceedNewsAction: Function,
-  allAlertsCount: number,
-  hideCounter?: boolean,
-  currentDateFormat: string,
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
+  alerts: Array<News.News>;
+  onCloseOpenAlert: (...args: Array<any>) => any;
+  onMarkNewsAsRead: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onProceedNewsAction: (...args: Array<any>) => any;
+  allAlertsCount: number;
+  hideCounter?: boolean;
+  currentDateFormat: string;
 };
 
 @observer
-export default class AlertsOverlay extends Component<Props, State> {
+class AlertsOverlay extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -38,11 +39,13 @@ export default class AlertsOverlay extends Component<Props, State> {
   localizedDateFormat: 'MM/DD/YYYY';
 
   componentDidMount() {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type '"MM/DD/YY... Remove this comment to see the full error message
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
-  contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
+  contentClickHandler(event: React.MouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
+
     if (linkUrl) {
       event.preventDefault();
       this.props.onOpenExternalLink(linkUrl);
@@ -51,24 +54,27 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   onClose = () => {
     const { alerts, onMarkNewsAsRead, onCloseOpenAlert } = this.props;
+
     if (alerts.length <= 1) {
       onMarkNewsAsRead([alerts[0].id]);
       onCloseOpenAlert();
-      this.setState({ showOverlay: false });
+      this.setState({
+        showOverlay: false,
+      });
       return;
     }
+
     onMarkNewsAsRead([alerts[0].id]);
   };
-
-  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
+  onProceedNewsAction = (event: React.MouseEvent<HTMLElement>) => {
     const { onProceedNewsAction, alerts } = this.props;
     onProceedNewsAction(alerts[0], event);
   };
-
-  renderAction = (action: Object) => {
+  renderAction = (action: Record<string, any>) => {
     if (action && (action.url || action.event)) {
       return (
         <ButtonLink
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           className={styles.actionBtn}
           onClick={this.onProceedNewsAction}
           skin={ButtonSkin}
@@ -81,11 +87,13 @@ export default class AlertsOverlay extends Component<Props, State> {
         />
       );
     }
+
     return null;
   };
-
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   renderCounter = (alerts: Array<News.News>) => {
     const { allAlertsCount, hideCounter } = this.props;
+
     if (!hideCounter && allAlertsCount > 1) {
       return (
         <span className={styles.counter}>
@@ -93,6 +101,7 @@ export default class AlertsOverlay extends Component<Props, State> {
         </span>
       );
     }
+
     return null;
   };
 
@@ -128,3 +137,5 @@ export default class AlertsOverlay extends Component<Props, State> {
     );
   }
 }
+
+export default AlertsOverlay;

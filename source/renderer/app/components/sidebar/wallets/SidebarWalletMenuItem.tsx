@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -7,29 +6,31 @@ import LegacyBadge, {
   LEGACY_BADGE_MODES,
 } from '../../notifications/LegacyBadge';
 import ProgressBar from '../../widgets/ProgressBar';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarWalletMenuItem.scss' ... Remove this comment to see the full error message
 import styles from './SidebarWalletMenuItem.scss';
 import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import { DiscreetWalletAmount } from '../../../features/discreet-mode';
 
 type Props = {
-  title: string,
-  amount: number,
-  active: boolean,
-  className: string,
-  onClick: Function,
-  isRestoreActive?: boolean,
-  isShelleyActivated: boolean,
-  restoreProgress?: number,
-  isLegacy: boolean,
-  isNotResponding: boolean,
-  hasNotification: boolean,
-  isHardwareWalletDisconnected?: boolean,
-  isHardwareWallet: boolean,
+  title: string;
+  amount: number;
+  active: boolean;
+  className: string;
+  onClick: (...args: Array<any>) => any;
+  isRestoreActive?: boolean;
+  isShelleyActivated: boolean;
+  restoreProgress?: number;
+  isLegacy: boolean;
+  isNotResponding: boolean;
+  hasNotification: boolean;
+  isHardwareWalletDisconnected?: boolean;
+  isHardwareWallet: boolean;
 };
 
 @observer
-export default class SidebarWalletMenuItem extends Component<Props> {
+class SidebarWalletMenuItem extends Component<Props> {
   render() {
     const {
       title,
@@ -46,9 +47,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isHardwareWalletDisconnected,
       isHardwareWallet,
     } = this.props;
-
     const showLegacyBadge = isLegacy && isShelleyActivated;
-
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
@@ -57,7 +56,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
     ]);
-
     const hwIconStyles = classNames([
       styles.hardwareWalletsIcon,
       isHardwareWallet &&
@@ -66,7 +64,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         ? styles.disconnected
         : styles.connected,
     ]);
-
     return (
       <button className={componentStyles} onClick={onClick}>
         <div className={styles.meta}>
@@ -82,6 +79,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
             {isRestoreActive ? (
               '-'
             ) : (
+              // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'BigNumber... Remove this comment to see the full error message
               <DiscreetWalletAmount amount={amount} withCurrency long={false} />
             )}
           </div>
@@ -94,3 +92,5 @@ export default class SidebarWalletMenuItem extends Component<Props> {
     );
   }
 }
+
+export default SidebarWalletMenuItem;

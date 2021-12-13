@@ -1,41 +1,35 @@
-// @flow
 import { debounce } from 'lodash-es/function';
 import {
   STORAGE_KEYS,
   STORAGE_TYPES,
 } from '../../common/config/electron-store.config';
 import type { StoreMessage } from '../../common/types/electron-store.types';
-
 interface Rectangle {
   x: number;
   y: number;
   width: number;
   height: number;
 }
-
 interface Window {
   getBounds(): Rectangle;
-  on(event: string, handler: Function): void;
+  on(event: string, handler: (...args: Array<any>) => any): void;
 }
-
 interface Display {
   workArea: Rectangle;
 }
-
 interface Screen {
   getDisplayMatching(rect: Rectangle): Display;
   workArea: Rectangle;
 }
+type SendStoreRequest = (request: StoreMessage) => unknown;
 
-type SendStoreRequest = (request: StoreMessage) => mixed;
-
-function maybeRectangle(data: any): ?Rectangle {
+function maybeRectangle(data: any): Rectangle | null | undefined {
   return data != null &&
     typeof data.x === 'number' &&
     typeof data.y === 'number' &&
     typeof data.width === 'number' &&
     typeof data.height === 'number'
-    ? (data: Rectangle)
+    ? (data as Rectangle)
     : null;
 }
 
@@ -79,7 +73,7 @@ function getCenteredRectInBounds(
 export function restoreSavedWindowBounds(
   screen: Screen,
   sendStoreRequest: SendStoreRequest
-): ?Rectangle {
+): Rectangle | null | undefined {
   const savedBounds = maybeRectangle(
     sendStoreRequest({
       type: STORAGE_TYPES.GET,
@@ -87,21 +81,22 @@ export function restoreSavedWindowBounds(
     })
   );
   if (!savedBounds) return null;
-
   const closestDisplay = screen.getDisplayMatching(savedBounds);
   const displayBounds = closestDisplay.workArea;
+
   if (isWithinBounds(savedBounds, displayBounds)) {
     // scenario 1: Size and position of Daedalus are persisted
     return savedBounds;
   }
+
   // scenario 2: Size is persisted and position changes (center window)
   if (isFittingIntoBounds(savedBounds, displayBounds)) {
     return getCenteredRectInBounds(savedBounds, displayBounds);
   }
+
   // scenario 3: Size and position change (fit to screen)
   return displayBounds;
 }
-
 export function saveWindowBoundsOnSizeAndPositionChange(
   window: Window,
   sendStoreRequest: SendStoreRequest,

@@ -1,4 +1,3 @@
-// @flow
 import { includes, sortBy } from 'lodash';
 import fs from 'fs';
 import path from 'path';
@@ -19,9 +18,7 @@ import type {
   GetLogsMainResponse,
 } from '../../common/ipc/api';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
-
 // IpcChannel<Incoming, Outgoing>
-
 export const getLogsChannel: MainIpcChannel<
   GetLogsRendererRequest,
   GetLogsMainResponse
@@ -64,16 +61,19 @@ export default () => {
   getLogsChannel.onRequest(() => {
     // check if pub folder exists and create array of log file names
     const logFiles: Array<string> = [];
+
     if (fs.existsSync(pubLogsFolderPath)) {
       const files = fs.readdirSync(pubLogsFolderPath).sort().reverse();
-
       let nodeLogsIncluded = 0;
       let walletLogsIncluded = 0;
       let launcherLogsIncluded = 0;
+
       for (let i = 0; i < files.length; i++) {
         const currentFile = path.join(pubLogsFolderPath, files[i]);
+
         if (fs.statSync(currentFile).isFile()) {
           const fileName = path.basename(currentFile);
+
           if (isFileAllowed(fileName)) {
             logFiles.push(fileName);
           } else if (isFileNodeLog(fileName, nodeLogsIncluded)) {
@@ -98,7 +98,6 @@ export default () => {
         return nameSegments.shift() + nameSegments.join('').length;
       }),
     };
-
     return Promise.resolve(logs);
   });
 };

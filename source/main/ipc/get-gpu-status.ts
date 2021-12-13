@@ -1,4 +1,3 @@
-// @flow
 import { app } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import type {
@@ -11,7 +10,6 @@ export const getGPUStatusChannel: MainIpcChannel<
   GetGPUStatusRendererRequest,
   GetGPUStatusMainResponse
 > = new MainIpcChannel(GET_GPU_STATUS_CHANNEL);
-
 export default () => {
   getGPUStatusChannel.onRequest(() =>
     Promise.resolve(app.getGPUFeatureStatus())

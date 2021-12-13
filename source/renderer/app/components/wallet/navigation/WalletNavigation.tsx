@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { includes } from 'lodash';
@@ -58,17 +57,16 @@ const messages = defineMessages({
     description: 'Label for the "More" nav button in the wallet navigation.',
   },
 });
-
 type Props = {
-  activeItem: string,
-  isActiveNavItem: Function,
-  isLegacy: boolean,
-  onNavItemClick: Function,
-  hasNotification?: boolean,
+  activeItem: string;
+  isActiveNavItem: (...args: Array<any>) => any;
+  isLegacy: boolean;
+  onNavItemClick: (...args: Array<any>) => any;
+  hasNotification?: boolean;
 };
 
 @observer
-export default class WalletNavigation extends Component<Props> {
+class WalletNavigation extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -82,6 +80,7 @@ export default class WalletNavigation extends Component<Props> {
       hasNotification,
     } = this.props;
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2322) FIXME: Type '({ id: string; label: any; type?: undefined;... Remove this comment to see the full error message
     const items: Array<NavButtonProps | NavDropdownProps> = [
       {
         id: WALLET_NAV_IDS.SUMMARY,
@@ -134,3 +133,5 @@ export default class WalletNavigation extends Component<Props> {
     );
   }
 }
+
+export default WalletNavigation;

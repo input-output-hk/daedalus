@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { TransferFundsRequest, TransferFundsResponse } from '../types';
 import { request } from '../../utils/request';
@@ -15,5 +14,8 @@ export const transferFunds = (
       ...config,
     },
     {},
-    { passphrase, addresses: targetWalletAddresses }
+    {
+      passphrase,
+      addresses: targetWalletAddresses,
+    }
   );

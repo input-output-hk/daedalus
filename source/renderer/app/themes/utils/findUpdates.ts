@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// @flow
 import { isEmpty } from 'lodash';
 import chalk from 'chalk';
 import { EXISTING_THEME_OUTPUTS_OBJ } from '../daedalus/index';
@@ -22,12 +21,14 @@ const logDifferences = ({
 
 // Checks for properties/CSS vars on createThemeObj that don't exist on existing themes
 export const findUpdates = (
-  createThemeOutputs: Array<[string, Object]>
+  createThemeOutputs: Array<[string, Record<string, any>]>
 ): PendingThemesUpdates => {
   const pendingThemesUpdates = createThemeOutputs.reduce(
-    (defsToAdd: Object, themeOutput: [string, Object]) => {
+    (
+      defsToAdd: Record<string, any>,
+      themeOutput: [string, Record<string, any>]
+    ) => {
       const [fileName, themeObj] = themeOutput;
-
       const missingDefs = {
         ...findMissingDefinitions(
           themeObj,
@@ -35,9 +36,11 @@ export const findUpdates = (
         ),
         ...findMissingCSSVars(themeObj, EXISTING_THEME_OUTPUTS_OBJ[fileName]),
       };
+
       if (!isEmpty(missingDefs)) {
         defsToAdd[fileName] = missingDefs;
       }
+
       return defsToAdd;
     },
     {}

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -10,7 +9,11 @@ import WalletSelectImportDialog from '../../../../source/renderer/app/components
 import { isValidWalletName } from '../../../../source/renderer/app/utils/validations';
 import { WalletImportStatuses } from '../../../../source/renderer/app/types/walletExportTypes';
 
-const getWallet = (index: number, hasName: boolean, statusSelect?: Object) => ({
+const getWallet = (
+  index: number,
+  hasName: boolean,
+  statusSelect?: Record<string, any>
+) => ({
   encrypted_root_private_key: '',
   name: hasName ? `Wallet ${index}` : null,
   id: `wallet-${index}`,
@@ -33,6 +36,7 @@ storiesOf('Wallets|Import File', module)
         exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         defaultExportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         exportErrors=""
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         pendingImportWalletsCount={1}
         onOpen={action('onOpen')}
         onContinue={action('onContinue')}
@@ -51,6 +55,7 @@ storiesOf('Wallets|Import File', module)
     );
     const namedWallets = [
       ...Array(number('Wallets with name', 5)),
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
     ].map((x, index: number) => getWallet(index, true, statusSelect));
     const unnamedWallets = [
       ...Array(number('Wallets with no name', 5)),
@@ -59,8 +64,7 @@ storiesOf('Wallets|Import File', module)
       <VerticalFlexContainer>
         <WalletSelectImportDialog
           isSubmitting={boolean('isSubmitting', false)}
-          nameValidator={(name) => isValidWalletName(name)}
-          // $FlowFixMe
+          nameValidator={(name) => isValidWalletName(name)} // @ts-ignore
           exportedWallets={[...namedWallets, ...unnamedWallets]}
           pendingImportWalletsCount={number('pendingImportWalletsCount', 0)}
           onContinue={action('onContinue')}

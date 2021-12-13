@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletNoTokens.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletNoTokens.scss';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 
@@ -36,15 +36,14 @@ const messages = defineMessages({
       '"Learn more" link URL in the Wallets Summary No Tokens component',
   },
 });
-
 type Props = {
-  isLoadingAssets: boolean,
-  onExternalLinkClick: Function,
-  numberOfAssets: number,
+  isLoadingAssets: boolean;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  numberOfAssets: number;
 };
 
 @observer
-export default class WalletSummaryNoTokens extends Component<Props> {
+class WalletSummaryNoTokens extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -52,7 +51,6 @@ export default class WalletSummaryNoTokens extends Component<Props> {
   render() {
     const { isLoadingAssets, onExternalLinkClick, numberOfAssets } = this.props;
     const { intl } = this.context;
-
     return (
       <>
         {!isLoadingAssets && (
@@ -82,3 +80,5 @@ export default class WalletSummaryNoTokens extends Component<Props> {
     );
   }
 }
+
+export default WalletSummaryNoTokens;

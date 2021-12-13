@@ -1,20 +1,18 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 // import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsIntroDialog.s... Remove this comment to see the full error message
 import styles from './DelegationStepsIntroDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 // import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
-
 type Props = {
-  onClose: Function,
-  onContinue: Function,
-  // onLearnMoreClick: Function,
+  onClose: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any; // onLearnMoreClick: Function,
 };
-
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.intro.step.dialog.title',
@@ -65,7 +63,6 @@ const messages = defineMessages({
       'Label for continue button on the delegation setup "intro" dialog.',
   },
 });
-
 export default class DelegationStepsIntroDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -75,10 +72,8 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
     const { intl } = this.context;
     const {
       onClose,
-      onContinue,
-      // onLearnMoreClick,
+      onContinue, // onLearnMoreClick,
     } = this.props;
-
     const actions = [
       {
         className: 'closeButton',
@@ -92,13 +87,11 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
       styles.delegationStepsIntroDialogWrapper,
     ]);
     const contentClassName = classNames([commonStyles.content, styles.content]);
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -113,10 +106,10 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
             {intl.formatMessage(messages.description)}
           </p>
           {/*
-            <button className={styles.link} onClick={onLearnMoreClick}>
-              {intl.formatMessage(messages.learnMoreButtonLabel)}
-              <SVGInline svg={externalLinkIcon} />
-            </button>
+           <button className={styles.link} onClick={onLearnMoreClick}>
+             {intl.formatMessage(messages.learnMoreButtonLabel)}
+             <SVGInline svg={externalLinkIcon} />
+           </button>
           */}
           <div className={styles.stepsExplanation}>
             <ol>

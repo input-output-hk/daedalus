@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
@@ -62,7 +61,6 @@ const sidebarMenus = observable({
   },
   hardwareWallets: null,
 });
-
 const sidebarMenusHardware = observable({
   wallets: null,
   hardwareWallets: {
@@ -106,23 +104,22 @@ const sidebarMenusHardware = observable({
     },
   },
 });
-
 let emptyMenus;
-
 storiesOf('Navigation|Sidebar', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
     </StoryProvider>
   ))
-  .addDecorator(withKnobs)
-  // ====== Stories ======
+  .addDecorator(withKnobs) // ====== Stories ======
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('No Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory=""
       onActivateCategory={action('onActivateCategory')}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ menus: any; categories: { name: string; ic... Remove this comment to see the full error message
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       onOpenDialog={action('openDialog')}
@@ -133,12 +130,14 @@ storiesOf('Navigation|Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Wallets Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
       onActivateCategory={action('onActivateCategory')}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ menus: any; categories: { name: string; ic... Remove this comment to see the full error message
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       onOpenDialog={action('openDialog')}
@@ -149,6 +148,7 @@ storiesOf('Navigation|Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Wallet Selected', (props: { currentTheme: string }) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -156,6 +156,7 @@ storiesOf('Navigation|Sidebar', module)
       menus={sidebarMenus}
       onActivateCategory={action('onActivateCategory')}
       isShowingSubMenus
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ categories: { name: string; icon: any; rou... Remove this comment to see the full error message
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       onOpenDialog={action('openDialog')}
@@ -166,6 +167,7 @@ storiesOf('Navigation|Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Hardware Wallet Selected', (props: { currentTheme: string }) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -173,6 +175,7 @@ storiesOf('Navigation|Sidebar', module)
       menus={sidebarMenusHardware}
       onActivateCategory={action('onActivateCategory')}
       isShowingSubMenus
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ categories: { name: string; icon: any; rou... Remove this comment to see the full error message
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       onOpenDialog={action('openDialog')}
@@ -183,12 +186,14 @@ storiesOf('Navigation|Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Delegation Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[2].route}
       onActivateCategory={action('onActivateCategory')}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ menus: any; categories: { name: string; ic... Remove this comment to see the full error message
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       onOpenDialog={action('openDialog')}
@@ -201,12 +206,14 @@ storiesOf('Navigation|Sidebar', module)
   ))
   .add(
     'Decentralization Progress Category',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
     (props: { currentTheme: string }) => (
       <Sidebar
         menus={emptyMenus}
         categories={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN}
         activeSidebarCategory={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN[1].route}
         onActivateCategory={action('onActivateCategory')}
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{ menus: any; categories: { name: string; ic... Remove this comment to see the full error message
         isDialogOpen={() => false}
         onAddWallet={action('onAddWallet')}
         onOpenDialog={action('openDialog')}
@@ -218,12 +225,14 @@ storiesOf('Navigation|Sidebar', module)
       />
     )
   )
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Network label', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory=""
       onActivateCategory={action('onActivateCategory')}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ menus: any; categories: { name: string; ic... Remove this comment to see the full error message
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       onOpenDialog={action('openDialog')}

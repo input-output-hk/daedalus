@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import HashDialog from '../../../../components/wallet/wallet-create/HashDialog';
@@ -10,7 +9,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class HashDialogContainer extends Component<Props> {
+class HashDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -18,3 +17,5 @@ export default class HashDialogContainer extends Component<Props> {
     return <HashDialog onClose={onClose} onContinue={onContinue} />;
   }
 }
+
+export default HashDialogContainer;

@@ -1,4 +1,3 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 
@@ -17,7 +16,6 @@ export const bigNumberComparator = (
 
   return 0;
 };
-
 export const stringComparator = (
   stringA: string,
   stringB: string,
@@ -33,7 +31,6 @@ export const stringComparator = (
 
   return 0;
 };
-
 export const dateComparator = (
   dateA: string,
   dateB: string,

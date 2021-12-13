@@ -1,4 +1,3 @@
-// @flow
 import mkdirp from 'mkdirp';
 import fs from 'fs';
 

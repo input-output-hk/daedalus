@@ -1,4 +1,3 @@
-// @flow
 import { GENERATE_QRCODE_CHANNEL } from '../../../common/ipc/api';
 import type {
   GenerateQRCodeMainResponse,
