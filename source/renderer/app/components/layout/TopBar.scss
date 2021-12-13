@@ -4,14 +4,9 @@
   display: flex;
   height: 84px;
   padding: 0 26px;
-  position: relative;
   z-index: 100;
 
   &.withoutWallet {
-    /* background: var(--theme-topbar-background-color)
-      url('../../assets/images/header-logo.svg') no-repeat center !important;
-    background-size: 61px !important; */
-
     .headerLogo {
       margin: auto;
       width: 61px;
@@ -25,24 +20,21 @@
 
   &.withWallet {
     .walletInfo {
-      align-items: center;
       color: var(--theme-topbar-wallet-info-color);
       display: flex;
       flex-direction: column;
       font-family: var(--font-regular);
-      max-width: 60%;
+      overflow: hidden;
       text-align: center;
       user-select: text;
 
       .walletName {
         -webkit-box-orient: vertical;
         color: var(--theme-topbar-wallet-name-color);
-        display: inline;
         font-size: 21px;
         line-height: 25px;
         margin-bottom: 4px;
         overflow: hidden;
-        position: relative;
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 100%;
@@ -64,8 +56,10 @@
     align-items: center;
     cursor: pointer;
     display: flex;
+    flex-shrink: 0;
     height: 50px;
     justify-content: center;
+    margin-right: 26px;
     width: 50px;
 
     .sidebarIcon {
@@ -80,25 +74,14 @@
   }
 
   .topBarTitle {
-    align-items: center;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    left: 70px;
-    position: absolute;
-    width: calc(100% - 230px);
+    margin: auto;
+    min-width: 0;
   }
 
   .rectangle {
-    &.hasTadaIcon {
-      right: 220px;
-    }
-
-    background-color: var(--theme-node-sync-icon-color);
+    border-right: 1px solid var(--theme-node-sync-icon-color);
     height: 12px;
+    margin-right: 28px;
     opacity: 0.3;
-    position: absolute;
-    right: 162px;
-    width: 1px;
   }
 }

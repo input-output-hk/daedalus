@@ -1,7 +1,5 @@
 .component {
-  position: absolute;
-  right: 29px;
-  top: 20px;
+  position: relative;
 
   &.notificationDot {
     @extend .dot;

@@ -21,7 +21,6 @@ const messages = defineMessages({
 type Props = {
   isSynced: boolean,
   syncPercentage: number,
-  hasTadaIcon?: boolean,
 };
 
 export default class NodeSyncStatusIcon extends Component<Props> {
@@ -30,13 +29,12 @@ export default class NodeSyncStatusIcon extends Component<Props> {
   };
 
   render() {
-    const { isSynced, syncPercentage, hasTadaIcon } = this.props;
+    const { isSynced, syncPercentage } = this.props;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
       isSynced ? styles.synced : styles.syncing,
-      hasTadaIcon ? styles.hasTadaIcon : null,
     ]);
     const percentage = syncPercentage.toFixed(syncPercentage === 100 ? 0 : 2);
 
