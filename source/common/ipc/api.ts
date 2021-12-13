@@ -77,15 +77,15 @@ export type GetLogsMainResponse = LogFiles;
 
 export const COMPRESS_LOGS_CHANNEL = 'COMPRESS_LOGS_CHANNEL';
 export type CompressLogsRendererRequest = {
-  logs: LogFiles,
-  compressedFileName: string,
+  logs: LogFiles;
+  compressedFileName: string;
 };
 export type CompressLogsMainResponse = string;
 
 export const DOWNLOAD_LOGS_CHANNEL = 'DOWNLOAD_LOGS_CHANNEL';
 export type DownloadLogsRendererRequest = {
-  compressedLogsFilePath: string,
-  destinationPath: string,
+  compressedLogsFilePath: string;
+  destinationPath: string;
 };
 export type DownloadLogsMainResponse = void;
 
@@ -172,8 +172,8 @@ export type OpenLocalDirectoryMainResponse = void;
 export const SUBMIT_BUG_REPORT_REQUEST_CHANNEL =
   'SUBMIT_BUG_REPORT_REQUEST_CHANNEL';
 export type SubmitBugReportRendererRequest = {
-  httpOptions: BugReportRequestHttpOptions,
-  requestPayload?: BugReportRequestPayload,
+  httpOptions: BugReportRequestHttpOptions;
+  requestPayload?: BugReportRequestPayload;
 };
 export type SubmitBugReportRequestMainResponse = void;
 
@@ -182,7 +182,7 @@ export type SubmitBugReportRequestMainResponse = void;
  */
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 export type RebuildAppMenuRendererRequest = {
-  isNavigationEnabled: boolean,
+  isNavigationEnabled: boolean;
 };
 export type RebuildAppMenuMainResponse = void;
 
@@ -292,12 +292,12 @@ export type SetCachedCardanoStatusMainResponse = void;
  */
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
 export type ExportWalletsRendererRequest = {
-  exportSourcePath: string,
-  locale: string,
+  exportSourcePath: string;
+  locale: string;
 };
 export type ExportWalletsMainResponse = {
-  wallets: Array<ExportedByronWallet>,
-  errors: string,
+  wallets: Array<ExportedByronWallet>;
+  errors: string;
 };
 
 /**
@@ -397,50 +397,50 @@ export type CheckFileExistsMainResponse = boolean;
  */
 export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
 export type ManageAppUpdateRendererRequest = {
-  filePath: string,
-  hash: string,
+  filePath: string;
+  hash: string;
 };
 export type ManageAppUpdateMainResponse = {
-  status: 'progress' | 'success' | 'error',
+  status: 'progress' | 'success' | 'error';
   data: {
-    message?: string,
-    progress?: number,
-    code?: number,
-    error?: Error,
-    info?: Object,
-  },
+    message?: string;
+    progress?: number;
+    code?: number;
+    error?: Error;
+    info?: Object;
+  };
 };
 
 export type DeriveXpubRendererRequestType = {
-  parentXpubHex: string,
-  lastIndex: number,
-  derivationScheme: number,
+  parentXpubHex: string;
+  lastIndex: number;
+  derivationScheme: number;
 };
 
 export type StakingBlockchainPointer = {
-  blockIndex: number,
-  txIndex: number,
-  certificateIndex: number,
+  blockIndex: number;
+  txIndex: number;
+  certificateIndex: number;
 };
 
 export type deriveAddressRendererRequestType = {
-  devicePath: ?string,
-  addressType: number,
-  networkId: number,
-  protocolMagic: number,
-  spendingPathStr: string,
-  stakingPathStr: ?string,
-  isTrezor: boolean,
+  devicePath: ?string;
+  addressType: number;
+  networkId: number;
+  protocolMagic: number;
+  spendingPathStr: string;
+  stakingPathStr: ?string;
+  isTrezor: boolean;
 };
 
 export type showAddressRendererRequestType = {
-  devicePath: ?string,
-  addressType: number,
-  networkId: number,
-  protocolMagic: number,
-  spendingPathStr: string,
-  stakingPathStr: ?string,
-  isTrezor: boolean,
+  devicePath: ?string;
+  addressType: number;
+  networkId: number;
+  protocolMagic: number;
+  spendingPathStr: string;
+  stakingPathStr: ?string;
+  isTrezor: boolean;
 };
 
 /**

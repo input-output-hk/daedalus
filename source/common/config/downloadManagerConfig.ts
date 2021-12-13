@@ -7,7 +7,7 @@ import type {
 } from '../types/downloadManager.types';
 
 export const ALLOWED_DOWNLOAD_DIRECTORIES: {
-  [key: string]: AllowedDownloadDirectories,
+  [key: string]: AllowedDownloadDirectories;
 } = {
   DOWNLOADS: 'downloads',
   DESKTOP: 'desktop',
@@ -16,7 +16,7 @@ export const ALLOWED_DOWNLOAD_DIRECTORIES: {
 
 // DH_STATES in 'node-downloader-helper/src';
 export const DOWNLOAD_STATES: {
-  [key: string]: DownloadState,
+  [key: string]: DownloadState;
 } = {
   IDLE: 'IDLE',
   SKIPPED: 'SKIPPED',
@@ -31,7 +31,7 @@ export const DOWNLOAD_STATES: {
 };
 
 export const DOWNLOAD_EVENT_TYPES: {
-  [key: string]: DownloadEventType,
+  [key: string]: DownloadEventType;
 } = {
   START: 'start',
   DOWNLOAD: 'download',

@@ -2,7 +2,7 @@
 import type { StorageType, StorageKey } from '../types/electron-store.types';
 
 export const STORAGE_TYPES: {
-  [key: string]: StorageType,
+  [key: string]: StorageType;
 } = {
   GET: 'get',
   SET: 'set',
@@ -11,7 +11,7 @@ export const STORAGE_TYPES: {
 };
 
 export const STORAGE_KEYS: {
-  [key: string]: StorageKey,
+  [key: string]: StorageKey;
 } = {
   APP_AUTOMATIC_UPDATE_FAILED: 'APP-AUTOMATIC-UPDATE-FAILED',
   APP_UPDATE_COMPLETED: 'APP-UPDATE-COMPLETED',
