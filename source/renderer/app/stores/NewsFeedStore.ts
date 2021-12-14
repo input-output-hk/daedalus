@@ -328,7 +328,6 @@ export default class NewsFeedStore extends Store {
         return newsfeedItem;
       });
     }
-
     return new News.NewsCollection(news);
   }
 

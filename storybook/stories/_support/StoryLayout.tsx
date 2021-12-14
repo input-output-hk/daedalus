@@ -41,6 +41,8 @@ import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.i
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/c... Remove this comment to see the full error message
 import topBarStyles from '../../../source/renderer/app/components/layout/TopBar.scss';
 
+import topBarStyles from '../../../source/renderer/app/components/layout/TopBar.scss';
+
 export type StoriesProps = {
   wallets: Array<Wallet>;
   activeWalletId: string;

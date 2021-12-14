@@ -217,6 +217,11 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
+    const {
+      connectingMessage,
+      connectingDescription,
+    } = this._getConnectingMessage();
+
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>

@@ -2233,6 +2233,20 @@
         }
       },
       {
+        "defaultMessage": "!!!This process validates the integrity of local blockchain data and could take several minutes.",
+        "description": "Message \"Starting Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
+        "id": "loading.screen.startingCardanoDescription",
+        "start": {
+          "column": 23,
+          "line": 15
+        }
+      },
+      {
         "defaultMessage": "!!!Stopping Cardano node",
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
@@ -3891,6 +3905,25 @@
       }
     ],
     "path": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!New discreet mode settings are available in <b>Security</b> tab.",
+        "description": "Label of settings sidebar category popover notification",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.js",
+        "id": "sidebar.category.settings.notification.label",
+        "start": {
+          "column": 9,
+          "line": 5
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.json"
   },
   {
     "descriptors": [
@@ -13605,7 +13638,7 @@
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeaderRewards.js",
         "id": "wallet.summary.header.rewardsSummary",
@@ -14864,13 +14897,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 216
+          "line": 217
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.tsx",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 212
+          "line": 213
         }
       },
       {
@@ -14878,13 +14911,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 221
+          "line": 222
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.tsx",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 217
+          "line": 218
         }
       },
       {
@@ -14892,13 +14925,13 @@
         "description": "Transaction state \"failed\"",
         "end": {
           "column": 3,
-          "line": 226
+          "line": 227
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.tsx",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 222
+          "line": 223
         }
       },
       {

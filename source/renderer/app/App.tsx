@@ -57,6 +57,10 @@ class App extends Component<{
       document.documentElement.lang = locale;
     }
 
+    if (document.documentElement) {
+      document.documentElement.lang = locale;
+    }
+
     return (
       <Fragment>
         {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
