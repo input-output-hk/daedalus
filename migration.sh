@@ -134,8 +134,12 @@ function remove_flow_files() {
 }
 
 function remove_packages() {
-    # TODO find a way to avoid errors when packages are already uninstalled --silent isn't working
-    yarn remove @babel/preset-flow eslint-plugin-flowtype flow-bin gulp-flow-remove-types babel-eslint
+    # TODO find a better way to avoid errors when packages are already uninstalled
+    grep -wq './package.json' -e '@babel/preset-flow' && yarn remove @babel/preset-flow
+    grep -wq './package.json' -e 'eslint-plugin-flowtype' && yarn remove eslint-plugin-flowtype
+    grep -wq './package.json' -e 'flow-bin' && yarn remove flow-bin
+    grep -wq './package.json' -e 'gulp-flow-remove-types' && yarn remove gulp-flow-remove-types
+    grep -wq './package.json' -e 'babel-eslint' && yarn remove babel-eslint
     pause "un-install flow packages"
 }
 
