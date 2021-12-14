@@ -787,9 +787,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-sidebar-category-networkInfo-background-color': '#eb2256',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
     '--theme-sidebar-sort-button-background-color': '255, 255, 255',
-    '--theme-sidebar-search-field-border-color': 'rgba(255, 255, 255, 0.1)',
-    '--theme-sidebar-search-field-border-color-active':
-      'rgba(255, 255, 255, 0.5)',
+    '--theme-sidebar-search-field-border-color': '255, 255, 255',
   },
   splash: {
     '--theme-splash-network-background-color': '#121326',

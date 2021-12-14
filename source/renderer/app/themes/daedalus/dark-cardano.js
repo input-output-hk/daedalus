@@ -787,9 +787,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-sidebar-category-networkInfo-background-color': '#1fc1c3',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
     '--theme-sidebar-sort-button-background-color': '250, 251, 252',
-    '--theme-sidebar-search-field-border-color': 'rgba(255, 255, 255, 0.1)',
-    '--theme-sidebar-search-field-border-color-active':
-      'rgba(255, 255, 255, 0.5)',
+    '--theme-sidebar-search-field-border-color': '255, 255, 255',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(42, 43, 60, 0.96)',

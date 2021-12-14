@@ -796,9 +796,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-category-networkInfo-background-color': '#fafbfc',
     '--theme-sidebar-category-networkInfo-text-color': '#5e6066',
     '--theme-sidebar-sort-button-background-color': '250, 251, 252',
-    '--theme-sidebar-search-field-border-color': 'rgba(250, 251, 252, 0.1)',
-    '--theme-sidebar-search-field-border-color-active':
-      'rgba(250, 251, 252, 0.5)',
+    '--theme-sidebar-search-field-border-color': '250, 251, 252',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(36, 62, 98, 0.96)',

@@ -803,9 +803,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-category-networkInfo-background-color': '#536370',
     '--theme-sidebar-category-networkInfo-text-color': '#e9f4fe',
     '--theme-sidebar-sort-button-background-color': '250, 251, 252',
-    '--theme-sidebar-search-field-border-color': 'rgba(233, 244, 254, 0.1)',
-    '--theme-sidebar-search-field-border-color-active':
-      'rgba(233, 244, 254, 0.5)',
+    '--theme-sidebar-search-field-border-color': '233, 244, 254',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(38, 51, 69, 0.96)',

@@ -1,7 +1,10 @@
+$inactive-color: rgba(var(--theme-sidebar-search-field-border-color), 0.1);
+$active-color: rgba(var(--theme-sidebar-search-field-border-color), 0.5);
+
 .component {
   align-items: center;
 
-  border-bottom: 1px solid var(--theme-sidebar-search-field-border-color);
+  border-bottom: 1px solid $inactive-color;
   display: flex;
   position: relative;
 
@@ -9,7 +12,7 @@
   &:active,
   &:focus-within,
   &.hasValue {
-    border-bottom-color: var(--theme-sidebar-search-field-border-color-active);
+    border-bottom-color: $active-color;
 
     .searchIcon {
       color: var(--theme-sidebar-menu-add-button-text-color);
@@ -19,7 +22,7 @@
 
 .searchIcon {
   bottom: 6px;
-  color: var(--theme-sidebar-search-field-border-color);
+  color: $inactive-color;
   position: absolute;
   svg {
     height: 15px;
@@ -27,7 +30,7 @@
   }
 
   &.highlight {
-    color: var(--theme-sidebar-menu-add-button-text-color);
+    color: $active-color;
   }
 }
 
@@ -41,6 +44,10 @@
 
     padding-bottom: 6px;
     padding-left: 25px;
+
+    &::placeholder {
+      color: rgba(var(--theme-sidebar-search-field-border-color), 0.3);
+    }
   }
 }
 
