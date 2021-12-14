@@ -15,6 +15,11 @@ import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import '!style-loader!css-loader!sass-loader!./themes/index.global.scss'; // eslint-disable-line
 import { setupApi } from './api/index';
+import LocalStorageApi from './api/utils/localStorage';
+import {
+  DiscreetModeFeatureProvider,
+  LocalStorageFeatureProvider,
+} from './features';
 
 // run MobX in strict mode
 configure({
@@ -50,7 +55,11 @@ const initializeDaedalus = () => {
   const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error('No #root element found.');
   render(
-    <App stores={stores} actions={actions} history={history} />,
+    <LocalStorageFeatureProvider localStorage={LocalStorageApi}>
+      <DiscreetModeFeatureProvider>
+        <App stores={stores} actions={actions} history={history} />
+      </DiscreetModeFeatureProvider>
+    </LocalStorageFeatureProvider>,
     rootElement
   );
 };

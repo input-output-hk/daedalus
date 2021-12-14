@@ -1,0 +1,185 @@
+{
+  "updatedAt": 1637233200000,
+  "items": [
+    {
+      "title": {
+        "en-US": "NEW Daedalus 5.1.0 update",
+        "ja-JP": "最新更新版Daedalus 5.1.0配信"
+      },
+      "content": {
+        "en-US": "Daedalus 5.1.0 for the Cardano mainnet has an improved voting screen layout, which now includes continuous registration for Catalyst projects and footer links. The update also adds a pool over-saturation warning.\n\nPlease read the [release notes](https://iohk.zendesk.com/hc/en-us/articles/4409360119449) for more information.",
+        "ja-JP": "Cardanoメインネット用Daedalus 5.1.0は、投票画面のレイアウトを改良し、Catalystプロジェクトとフッターのリンクに継続登録を追加しました。この更新ではさらに、プールの過剰飽和警告も追加されました。\n\n詳細は[リリースノート](https://iohk.zendesk.com/hc/ja/articles/4409360119449)をご覧ください。"
+      },
+      "target": {
+        "daedalusVersion": ">=2.3.0 <5.1.0",
+        "platforms":["win32","darwin","linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "",
+          "ja-JP": ""
+        },
+        "url": {
+          "en-US": "",
+          "ja-JP": ""
+        }
+      },
+      "date": 1637233200000,
+      "type": "software-update",
+      "softwareUpdate": {
+        "linux": {
+          "version": "5.1.0",
+          "hash": "611adbfe653ca8c559e3733559590851018d6914800ac3460854f457651e9c10",
+          "url": "https://update-cardano-mainnet.iohk.io/daedalus-4.5.0-mainnet-19689.bin"
+        },
+        "darwin": {
+          "version": "5.1.0",
+          "hash": "2c2e7e46719cf56505a6acaaac8da80345cc3b9c16ed2129489f55dc3f4969e2",
+          "url": "https://update-cardano-mainnet.iohk.io/daedalus-4.5.0-mainnet-19689.pkg"
+        },
+        "win32": {
+          "version": "5.1.0",
+          "hash": "2c2e7e46719cf56505a6acaaac8da80345cc3b9c16ed2129489f55dc3f4969e2",
+          "url": "https://update-cardano-mainnet.iohk.io/daedalus-4.5.0-mainnet-19689.pkg"
+        }
+      }
+    },
+    {
+      "title": {
+        "en-US": "NEW Daedalus 5.1.1 update",
+        "ja-JP": "最新更新版Daedalus 5.1.1配信"
+      },
+      "content": {
+        "en-US": "Daedalus 5.1.1 for the Cardano mainnet has an improved voting screen layout, which now includes continuous registration for Catalyst projects and footer links. The update also adds a pool over-saturation warning.\n\nPlease read the [release notes](https://iohk.zendesk.com/hc/en-us/articles/4409360119449) for more information.",
+        "ja-JP": "Cardanoメインネット用Daedalus 5.1.1は、投票画面のレイアウトを改良し、Catalystプロジェクトとフッターのリンクに継続登録を追加しました。この更新ではさらに、プールの過剰飽和警告も追加されました。\n\n詳細は[リリースノート](https://iohk.zendesk.com/hc/ja/articles/4409360119449)をご覧ください。"
+      },
+      "target": {
+        "daedalusVersion": ">=5.1.0 <5.1.1",
+        "platforms":["win32"]
+      },
+      "action": {
+        "label": {
+          "en-US": "",
+          "ja-JP": ""
+        },
+        "url": {
+          "en-US": "",
+          "ja-JP": ""
+        }
+      },
+      "date": 1637233200001,
+      "type": "software-update",
+      "softwareUpdate": {
+        "win32": {
+          "version": "5.1.1",
+          "hash": "50af385a0c12f86fc812e08eda8741f4ccd32367ed421fcaf4cbcea2c57e1b4e",
+          "url": "https://update-cardano-mainnet.iohk.io/daedalus-4.5.1-mainnet-19689.exe"
+        }
+      }
+    },
+    {
+      "title": {
+        "en-US": "Daedalus 5.1.0 - Release notes",
+        "ja-JP": "Daedalus 5.1.0 - リリースノート"
+      },
+      "content": {
+        "en-US": "Daedalus 5.1.0 for the Cardano mainnet has an improved voting screen layout, which now includes continuous registration for Catalyst projects and footer links. The update also adds a pool over-saturation warning.",
+        "ja-JP": "Cardanoメインネット用Daedalus 5.1.0は、投票画面のレイアウトを改良し、Catalystプロジェクトとフッターのリンクに継続登録を追加しました。この更新ではさらに、プールの過剰飽和警告も追加されました。"
+      },
+      "target": {
+        "daedalusVersion": "5.1.0",
+        "platforms":["darwin","win32","linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Release notes",
+          "ja-JP": "リリースノート"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/4409360119449",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/4409360119449"
+        }
+      },
+      "date": 1637233200000,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "Daedalus 5.1.1 - Release notes",
+        "ja-JP": "Daedalus 5.1.1 - リリースノート"
+      },
+      "content": {
+        "en-US": "Daedalus 5.1.1 for the Cardano mainnet has an improved voting screen layout, which now includes continuous registration for Catalyst projects and footer links. The update also adds a pool over-saturation warning.",
+        "ja-JP": "Cardanoメインネット用Daedalus 5.1.1は、投票画面のレイアウトを改良し、Catalystプロジェクトとフッターのリンクに継続登録を追加しました。この更新ではさらに、プールの過剰飽和警告も追加されました。"
+      },
+      "target": {
+        "daedalusVersion": "5.1.1",
+        "platforms":["darwin","win32","linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Release notes",
+          "ja-JP": "リリースノート"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/4409360119449",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/4409360119449"
+        }
+      },
+      "date": 1637233200001,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "Stay safe from scammers - some important advice",
+        "ja-JP": "詐欺にご注意ください - 重要なアドバイス"
+      },
+      "content": {
+        "en-US": "Read the post on how to stay safe and spot potential Daedalus and Cardano scams.",
+        "ja-JP": "安全性に注意する方法、そして、DaedalusとCardanoの詐欺の可能性を見抜く方法についての記事をご覧ください。"
+      },
+      "target": {
+        "daedalusVersion": ">=3.0.0",
+        "platforms":["win32", "darwin", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Read the post",
+          "ja-JP": "記事を読む(英語のみ)"
+        },
+        "url": {
+          "en-US": "https://www.reddit.com/r/cardano/comments/lccorg/psa_there_is_no_such_thing_as_cardano_giveaways/",
+          "ja-JP": "https://www.reddit.com/r/cardano/comments/lccorg/psa_there_is_no_such_thing_as_cardano_giveaways/"
+        }
+      },
+      "date": 1613757600000,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "Catalyst Fund6 Results and Feedback",
+        "ja-JP": "Catalyst Fund6の結果とフィードバック"
+      },
+      "content": {
+        "en-US": "Fund6 is now finished, congratulations to all who were successful. For more details, read the [funded proposal results](https://mailchi.mp/iohk/g6qpccne38-674338).\n\nWe would now like to invite you to complete the [Fund6 exit survey](https://forms.gle/7FYP2MRaGrVDAUh87). Please let us know what you felt went well, where we could improve, and share any other ideas with us.\n\nHelp us understand where we should focus our attention and how to prioritize our future actions. We value your feedback.\n\nThank you for taking the time to improve the governance processes for Cardano.",
+        "ja-JP": "Fund6は終了しました。良い結果を得た皆様、おめでとうございます。詳細は、[資金調達対象となる提案の結果](https://mailchi.mp/iohk/g6qpccne38-674338)をご覧ください。\n\n皆様には、[Fund6に関するアンケート](https://forms.gle/7FYP2MRaGrVDAUh87)へのご協力をお願いいたします。良かった点、改善すべき点、その他ご意見をお聞かせください。\n\n皆様からの貴重なご意見は、どこに焦点を置くべきか、今後のアクションの優先順位についての理解を深める助けとなります。\n\nCardanoガバナンスプロセスの向上にお時間をいただき、ありがとうございます。"
+      },
+      "target": {
+        "daedalusVersion": ">=4.4.0",
+        "platforms":["win32", "darwin", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Fund6 Feedback Form",
+          "ja-JP": "Fund6フィードバックフォーム"
+        },
+        "url": {
+          "en-US": "https://forms.gle/7FYP2MRaGrVDAUh87",
+          "ja-JP": "https://forms.gle/7FYP2MRaGrVDAUh87"
+        }
+      },
+      "date": 1636383600000,
+      "type": "announcement"
+    }
+  ]
+}

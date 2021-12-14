@@ -30,7 +30,7 @@ let
       });
     };
   };
-  pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
+  pkgs = import sources.nixpkgs { inherit system config; };
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
@@ -51,6 +51,7 @@ let
   ostable.x86_64-darwin = "macos64";
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
+    inherit (pkgs) hello cabal2nix;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
@@ -313,7 +314,7 @@ let
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
-    yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
+    yaml2json = pkgs.haskell.lib.addExtraLibrary (pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe") pkgs.haskellPackages.optparse-applicative;
 
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 

@@ -2,10 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
-import {
-  IS_VOTING_REGISTRATION_AVAILABLE,
-  VOTING_REGISTRATION_MIN_WALLET_FUNDS,
-} from '../../config/votingConfig';
+import { VOTING_REGISTRATION_MIN_WALLET_FUNDS } from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import VotingInfo from '../../components/voting/voting-info/VotingInfo';
 import VotingNoWallets from '../../components/voting/VotingNoWallets';
@@ -28,19 +25,14 @@ export default class VotingRegistrationPage extends Component<Props> {
   };
 
   getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
-    const { app, networkStatus, wallets, voting, profile } = this.props.stores;
+    const { app, networkStatus, wallets, profile, voting } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
-    const { isRegistrationEnded } = voting;
     const { openExternalLink } = app;
 
-    if (
-      !IS_VOTING_REGISTRATION_AVAILABLE ||
-      (!isSynced && !isVotingRegistrationDialogOpen)
-    ) {
+    if (!isSynced && !isVotingRegistrationDialogOpen) {
       return (
         <VotingUnavailable
           syncPercentage={syncPercentage}
-          isVotingRegistrationAvailable={IS_VOTING_REGISTRATION_AVAILABLE}
           onExternalLinkClick={openExternalLink}
         />
       );
@@ -58,10 +50,10 @@ export default class VotingRegistrationPage extends Component<Props> {
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     return (
       <VotingInfo
+        fundPhase={voting.fundPhase}
         currentLocale={currentLocale}
         currentDateFormat={currentDateFormat}
         currentTimeFormat={currentTimeFormat}
-        isRegistrationEnded={isRegistrationEnded}
         onRegisterToVoteClick={() =>
           this.props.actions.dialogs.open.trigger({
             dialog: VotingRegistrationDialog,

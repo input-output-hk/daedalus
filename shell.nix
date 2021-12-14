@@ -2,7 +2,7 @@
 , config ? {}
 , nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
-, pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
+, pkgs ? import (import ./nix/sources.nix).nixpkgs { inherit system config; }
 , cluster ? "selfnode"
 , systemStart ? null
 , autoStartBackend ? systemStart != null

@@ -1,5 +1,5 @@
-{ stdenv, libXScrnSaver, makeWrapper, fetchurl, unzip, atomEnv, libuuid, at-spi2-atk, at_spi2_core, libxshmfence,
-  libdrm, libxkbcommon, mesa }:
+{ stdenv, lib, makeWrapper, fetchurl, unzip, atomEnv, libuuid, at-spi2-atk, at_spi2_core, libxshmfence,
+  libxkbcommon }:
 
 let
   version = "13.1.1";
@@ -7,7 +7,7 @@ let
 
   throwSystem = throw "Unsupported system: ${stdenv.hostPlatform.system}";
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Cross platform desktop application shell";
     homepage = https://github.com/electron/electron;
     license = licenses.mit;
@@ -48,15 +48,8 @@ let
 
       patchelf \
         --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-        --set-rpath "${atomEnv.libPath}:${stdenv.lib.makeLibraryPath [ libuuid at-spi2-atk at_spi2_core ]}:$out/lib/electron" \
+        --set-rpath "${atomEnv.libPath}:${lib.makeLibraryPath [ libuuid at-spi2-atk at_spi2_core libxshmfence libxkbcommon ]}:$out/lib/electron" \
         $out/lib/electron/electron
-
-      wrapProgram $out/lib/electron/electron \
-        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libXScrnSaver ]}/libXss.so.1 \
-        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libdrm ]}/libdrm.so.2 \
-        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libxkbcommon ]}/libxkbcommon.so.0 \
-        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ mesa ]}/libgbm.so.1 \
-        --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libxshmfence ]}/libxshmfence.so.1
     '';
   };
 

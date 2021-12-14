@@ -2,11 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import classnames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletNoTokens.scss';
-import ButtonLink from '../../widgets/ButtonLink';
+import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -55,11 +53,6 @@ export default class WalletSummaryNoTokens extends Component<Props> {
     const { isLoadingAssets, onExternalLinkClick, numberOfAssets } = this.props;
     const { intl } = this.context;
 
-    const buttonClassNames = classnames([
-      styles.noTokensLearnMoreLinkUrl,
-      'flat',
-    ]);
-
     return (
       <>
         {!isLoadingAssets && (
@@ -74,22 +67,14 @@ export default class WalletSummaryNoTokens extends Component<Props> {
                 <p>{intl.formatMessage(messages.learnMoreTextTop)}</p>
                 <p>{intl.formatMessage(messages.learnMoreTextBottom)}</p>
               </div>
-              <div className={styles.noTokensRightContainer}>
-                <ButtonLink
-                  className={buttonClassNames}
-                  label={intl.formatMessage(messages.learnMoreLinkLabel)}
-                  skin={ButtonSkin}
-                  onClick={() =>
-                    onExternalLinkClick(
-                      intl.formatMessage(messages.learnMoreLinkUrl)
-                    )
-                  }
-                  linkProps={{
-                    hasIconBefore: false,
-                    hasIconAfter: true,
-                  }}
-                />
-              </div>
+              <ExternalLinkButton
+                label={intl.formatMessage(messages.learnMoreLinkLabel)}
+                onClick={() =>
+                  onExternalLinkClick(
+                    intl.formatMessage(messages.learnMoreLinkUrl)
+                  )
+                }
+              />
             </div>
           </BorderedBox>
         </div>
