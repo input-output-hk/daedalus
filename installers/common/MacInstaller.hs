@@ -279,7 +279,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "object-keys"
       , "object.values"
       , "parse-uri"
-      , "protobufjs"
       , "pushdata-bitcoin"
       , "randombytes"
       , "regenerator-runtime"
