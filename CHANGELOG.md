@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
+
 ## 4.6.0
 
 ### Features
@@ -15,7 +21,6 @@
 
 ### Chores
 
-- Updated `trezor-connect` dependency to version `8.2.3` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
 - Improve startup and shutdown messages ([PR 2770](https://github.com/input-output-hk/daedalus/pull/2770))
 - Updated `cardano-wallet` to version `2021-11-11` ([PR 2765](https://github.com/input-output-hk/daedalus/pull/2765))
 - Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
