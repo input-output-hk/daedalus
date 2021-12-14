@@ -232,6 +232,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     externalYarn :: [FilePath]
     externalYarn =
       [ "@babel"
+      , "@protobufjs"
       , "@trezor"
       , "base-x"
       , "base64-js"
@@ -279,6 +280,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "object-keys"
       , "object.values"
       , "parse-uri"
+      , "protobufjs"
       , "pushdata-bitcoin"
       , "randombytes"
       , "regenerator-runtime"
