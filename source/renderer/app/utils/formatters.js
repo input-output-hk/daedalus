@@ -19,7 +19,8 @@ import type { AssetMetadata } from '../api/assets/types';
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
-  long: boolean = true
+  long: boolean = true,
+  currency: string = 'ADA'
 ): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
@@ -32,7 +33,7 @@ export const formattedWalletAmount = (
     formattedAmount = formattedAmount.split('.').join(decimalSeparator);
   }
   if (withCurrency) {
-    formattedAmount = `${formattedAmount} ADA`;
+    formattedAmount = `${formattedAmount} ${currency}`;
   }
   return formattedAmount.toString();
 };
@@ -286,26 +287,29 @@ export const formattedSize = (size: string): string => {
   return formattedResult;
 };
 
+type CurrentFormats = {
+  currentLocale: Locale,
+  currentDateFormat: string,
+  currentTimeFormat?: string,
+};
+
 export const formattedDateTime = (
   dateTime: Date,
-  {
-    currentLocale,
-    currentDateFormat,
-    currentTimeFormat,
-  }: {
-    currentLocale: Locale,
-    currentDateFormat: string,
-    currentTimeFormat: string,
-  }
+  { currentLocale, currentDateFormat, currentTimeFormat }: CurrentFormats
 ) => {
   moment.locale(momentLocales[currentLocale]);
 
   const dateTimeMoment = moment(dateTime);
   const dateFormatted = dateTimeMoment.format(currentDateFormat);
-  const timeFormatted = dateTimeMoment.format(currentTimeFormat);
-  const dateTimeSeparator = DATE_TIME_SEPARATOR_MAP[currentDateFormat];
 
-  return `${dateFormatted}${dateTimeSeparator}${timeFormatted}`;
+  if (currentTimeFormat) {
+    const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+    const dateTimeSeparator = DATE_TIME_SEPARATOR_MAP[currentDateFormat];
+
+    return `${dateFormatted}${dateTimeSeparator}${timeFormatted}`;
+  }
+
+  return dateFormatted;
 };
 
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
@@ -315,11 +319,7 @@ export const mapToLongDateTimeFormat = ({
   currentLocale,
   currentDateFormat,
   currentTimeFormat,
-}: {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-}) => {
+}: CurrentFormats) => {
   const mappedDateFormat =
     currentLocale === LOCALES.english
       ? DATE_ENGLISH_LL_MAP_OPTIONS[currentDateFormat]

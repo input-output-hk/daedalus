@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import {
-  VOTING_REGISTRATION_END_DATE,
+  VOTING_NEW_SNAPSHOT_DATE,
   NEXT_VOTING_FUND_NUMBER,
 } from '../../../config/votingConfig';
 import {
@@ -12,9 +13,10 @@ import {
 } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
-import styles from './RegisterToVote.scss';
-import { PatchCheckbox } from '../widgets/PatchCheckbox';
 import { messages } from './RegisterToVote.messages';
+import { messages as votingMessages } from './VotingInfo.messages';
+import styles from './RegisterToVote.scss';
+import votingStyles from './VotingInfo.scss';
 
 type Props = {
   currentLocale: Locale,
@@ -34,7 +36,7 @@ function RegisterToVote({
   const [step1, setStep1] = useState(false);
   const [step2, setStep2] = useState(false);
   const canRegister = step1 && step2;
-  const castEndDate = formattedDateTime(VOTING_REGISTRATION_END_DATE, {
+  const castEndDate = formattedDateTime(VOTING_NEW_SNAPSHOT_DATE, {
     currentLocale,
     ...mapToLongDateTimeFormat({
       currentLocale,
@@ -46,20 +48,20 @@ function RegisterToVote({
   return (
     <div className={styles.root}>
       <span className={styles.title}>
-        {intl.formatMessage(messages.name, {
-          nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+        {intl.formatMessage(votingMessages.fundName, {
+          votingFundNumber: NEXT_VOTING_FUND_NUMBER,
         })}
       </span>
       <span className={styles.dateLabel}>
         {intl.formatMessage(messages.dateLabel)}
       </span>
       <span className={styles.date}>{castEndDate}</span>
-      <div className={styles.separator} />
+      <hr className={votingStyles.separator} />
       <span className={styles.stepsTitle}>
         {intl.formatMessage(messages.stepsTitle)}
       </span>
       <div className={styles.step}>
-        <PatchCheckbox
+        <Checkbox
           className={styles.checkbox}
           checked={step1}
           onChange={setStep1}
@@ -67,7 +69,7 @@ function RegisterToVote({
         />
       </div>
       <div className={styles.step}>
-        <PatchCheckbox
+        <Checkbox
           className={styles.checkbox}
           checked={step2}
           label={intl.formatMessage(messages.step2CheckBoxLabel)}
