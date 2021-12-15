@@ -23,7 +23,6 @@ export type ApiAsset = {
 export type ApiAssets = Array<ApiAsset>;
 export type Asset = {
   assetName: string,
-  assetNameASCII: string,
   decimals: ?number,
   fingerprint: string,
   metadata?: ?AssetMetadata,
