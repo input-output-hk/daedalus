@@ -13057,13 +13057,13 @@
         "description": "No results on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 9
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
         "id": "wallet.tokens.list.search.noResults",
         "start": {
           "column": 13,
-          "line": 20
+          "line": 5
         }
       },
       {
@@ -13071,13 +13071,13 @@
         "description": "Search Results on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 14
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
         "id": "wallet.tokens.list.search.searchResults",
         "start": {
           "column": 17,
-          "line": 25
+          "line": 10
         }
       },
       {
@@ -13085,13 +13085,13 @@
         "description": "Amount header on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 19
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
         "id": "wallet.tokens.list.column.amount",
         "start": {
           "column": 16,
-          "line": 30
+          "line": 15
         }
       },
       {
@@ -13099,13 +13099,13 @@
         "description": "Token header on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 24
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
         "id": "wallet.tokens.list.column.token",
         "start": {
           "column": 15,
-          "line": 35
+          "line": 20
         }
       },
       {
@@ -13113,17 +13113,17 @@
         "description": "View all button label on the WalletTokensList",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 29
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
         "id": "wallet.tokens.list.viewAllButton.label",
         "start": {
           "column": 22,
-          "line": 40
+          "line": 25
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.json"
+    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.json"
   },
   {
     "descriptors": [

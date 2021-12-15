@@ -1,6 +1,6 @@
 // @flow
 import React, { useState, useMemo, useCallback } from 'react';
-import { defineMessages, intlShape, injectIntl } from 'react-intl';
+import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
@@ -13,36 +13,9 @@ import LoadingSpinner from '../../../widgets/LoadingSpinner';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletNoTokens from '../WalletNoTokens';
 import sortIcon from '../../../../assets/images/ascending.inline.svg';
+import { messages } from './WalletTokensList.messages';
 import type { AssetToken } from '../../../../api/assets/types';
 import type { SortBy, SortDirection } from '../../../../utils/assets';
-
-const messages = defineMessages({
-  noResults: {
-    id: 'wallet.tokens.list.search.noResults',
-    defaultMessage: '!!!No results matching your query',
-    description: 'No results on the WalletTokensList',
-  },
-  searchResults: {
-    id: 'wallet.tokens.list.search.searchResults',
-    defaultMessage: '!!!Search Results',
-    description: 'Search Results on the WalletTokensList',
-  },
-  columnAmount: {
-    id: 'wallet.tokens.list.column.amount',
-    defaultMessage: '!!!Amount',
-    description: 'Amount header on the WalletTokensList',
-  },
-  columnToken: {
-    id: 'wallet.tokens.list.column.token',
-    defaultMessage: '!!!Token',
-    description: 'Token header on the WalletTokensList',
-  },
-  viewAllButtonLabel: {
-    id: 'wallet.tokens.list.viewAllButton.label',
-    defaultMessage: '!!!View all tokens',
-    description: 'View all button label on the WalletTokensList',
-  },
-});
 
 type Props = {
   assets: Array<AssetToken>,
