@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Features
+
+- Increased the maximum number of wallets limit to 100 and optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
+
 ## 4.6.0
 
 ### Features

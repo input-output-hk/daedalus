@@ -1160,6 +1160,7 @@ export default class WalletsStore extends Store {
         this.stores.addresses.lastGeneratedAddress = null;
         if (this.active) {
           this.activeValue = formattedWalletAmount(this.active.amount);
+          this.refreshWalletsData();
           if (this.active && this.active.isHardwareWallet) {
             const {
               hardwareWalletsConnectionData,
