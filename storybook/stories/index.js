@@ -12,6 +12,9 @@ import './nodes';
 import './staking/Staking.stories';
 import './staking/CountdownParty.stories';
 
+// dApps
+import './dapps/TransactionRequest.stories';
+
 // Voting
 import './voting/Voting.stories';
 
@@ -33,6 +36,13 @@ import './navigation/Sidebar.stories';
 import './navigation/SidebarCategory.stories';
 import './navigation/SidebarWalletsMenu.stories';
 
+// Notifications
+import './notifications/Notifications.stories';
+
 // Common
 import './common/Widgets.stories';
 import './common/ItemsDropdown.stories';
+
+// Discreet Mode
+import '../../source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetModeToggle.story';
+import '../../source/renderer/app/features/discreet-mode/ui/DiscreetValue.story';

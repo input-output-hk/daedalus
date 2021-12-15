@@ -1,0 +1,31 @@
+@import '../votingConfig';
+
+.component {
+  flex: 1 0 0;
+  padding: 20px;
+
+  .separator {
+    border: 1px solid var(--theme-voting-separator-color);
+    border-bottom-width: 0;
+    margin: 20px 0;
+    width: 100%;
+  }
+
+  .bottomContent {
+    display: flex;
+
+    .leftContent {
+      max-width: 271px;
+    }
+
+    .rightContent {
+      margin-left: 20px;
+      width: 100%;
+    }
+  }
+
+  .appStoreSpacing {
+    margin-top: 30px;
+    padding: 0 20px;
+  }
+}

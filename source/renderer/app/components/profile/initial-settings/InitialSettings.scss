@@ -1,17 +1,25 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
-  align-items: center;
+  align-self: center;
   display: flex;
-  height: 100%;
-  justify-content: center;
+  flex: 1;
+  flex-direction: column;
+  justify-self: center;
+}
+
+.component::before,
+.component::after {
+  content: '';
+  display: block;
+  flex: 1;
+  min-height: 20px;
 }
 
 .centeredBox {
   background-color: var(--theme-bordered-box-background-color);
   border: var(--theme-bordered-box-border);
   border-radius: 4px;
-  overflow: visible;
   padding: 30px 30px 20px;
   width: 620px;
 }

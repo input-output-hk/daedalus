@@ -5,7 +5,6 @@ export type NotificationId =
   | 'copyWalletPublicKey'
   | 'copyICOPublicKey'
   | 'copyAddress'
-  | 'copyAssetItem'
   | 'copyStateDirectoryPath'
   | 'downloadAddressPDFSuccess'
   | 'downloadLogsProgress'
@@ -13,7 +12,8 @@ export type NotificationId =
   | 'downloadQRCodeImageSuccess'
   | 'downloadVotingPDFSuccess'
   | 'downloadRewardsCSVSuccess'
-  | 'downloadTransactionsCSVSuccess';
+  | 'downloadTransactionsCSVSuccess'
+  | 'copyAssetParam';
 
 export type NotificationConfig = {
   id: NotificationId,

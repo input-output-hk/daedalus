@@ -1,7 +1,113 @@
-Changelog
-=========
+# Changelog
 
-## vNext
+## 4.6.0
+
+### Features
+
+- Implement catalyst state snapshot phase ([PR 2771](https://github.com/input-output-hk/daedalus/pull/2771))
+- Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724), [PR 2725](https://github.com/input-output-hk/daedalus/pull/2725), [PR 2742](https://github.com/input-output-hk/daedalus/pull/2742), [PR 2740](https://github.com/input-output-hk/daedalus/pull/2740), [PR 2756](https://github.com/input-output-hk/daedalus/pull/2756))
+- Updated slider component to only execute onAfterChange if slider had moved ([PR 2766](https://github.com/input-output-hk/daedalus/pull/2766))
+
+### Fixes
+
+- Fixed app update for specific platform ([PR 2759](https://github.com/input-output-hk/daedalus/pull/2759))
+- Fixed checkbox tick offset ([PR 2751](https://github.com/input-output-hk/daedalus/pull/2751))
+
+### Chores
+
+- Improve startup and shutdown messages ([PR 2770](https://github.com/input-output-hk/daedalus/pull/2770))
+- Updated `cardano-wallet` to version `2021-11-11` ([PR 2765](https://github.com/input-output-hk/daedalus/pull/2765))
+- Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
+- Updated `cardano-launcher` to version `0.20211105.1`
+
+## 4.5.2
+
+### Fixes
+
+- Fixed Cardano Node starting/stopping issues
+
+## 4.5.1
+
+### Fixes
+
+- Fixed cardano-node startup race condition
+- Fixed automatic closing of the wallet "Restoration" dialog during restoration of a first wallet in UI
+- Fixed Daedalus 4.5.0 Windows deployment issue
+
+## 4.5.0
+
+### Features
+
+- Implemented "Catalyst Fund7" voting registration changes ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
+- Added "Over-saturation" warning in the delegation wizard ([PR 2733](https://github.com/input-output-hk/daedalus/pull/2733), [PR 2738](https://github.com/input-output-hk/daedalus/pull/2738))
+- Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
+
+### Fixes
+
+- Fixed the Delegation popover timeout ([PR 2722](https://github.com/input-output-hk/daedalus/pull/2722))
+- Fixed issues relating to minimum window size in Daedalus ([PR 2719](https://github.com/input-output-hk/daedalus/pull/2719))
+- Updated "Trezor T" image shown on the "Pair a hardware wallet device" dialog ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
+- Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
+- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685), [PR 2744](https://github.com/input-output-hk/daedalus/pull/2744))
+
+### Chores
+
+- Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
+- Improved the Daedalus startup by avoiding unnecessary Cardano Node restarts ([PR 2716](https://github.com/input-output-hk/daedalus/pull/2716))
+- Updated README with solution steps for the nix SSL issue ([PR 2727](https://github.com/input-output-hk/daedalus/pull/2727))
+- Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
+- Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
+
+## 4.4.1
+
+### Fixes
+
+- Updated Electron package to the version which includes a fix for crashes on Windows
+
+## 4.4.0
+
+### Features
+
+- Implemented the wallet Tokens dedicated screen ([PR 2671](https://github.com/input-output-hk/daedalus/pull/2671), [PR 2701](https://github.com/input-output-hk/daedalus/pull/2701), [PR 2703](https://github.com/input-output-hk/daedalus/pull/2703))
+
+### Fixes
+
+- Fixed wallet settings screen - no space at the bottom when scrolled down ([PR 2686](https://github.com/input-output-hk/daedalus/pull/2686))
+- Fixed the missing text for the DAPP static screens ([PR 2693](https://github.com/input-output-hk/daedalus/pull/2693))
+
+### Chores
+
+- Added the possibility to unpair a hardware wallet from Daedalus ([PR 2676](https://github.com/input-output-hk/daedalus/pull/2676))
+
+## 4.3.2
+
+### Features
+
+- Implemented static screens for signing dApp interaction transactions ([PR 2626](https://github.com/input-output-hk/daedalus/pull/2626))
+
+### Fixes
+
+- Fixed font used for unavailable staking while updating messages ([PR 2680](https://github.com/input-output-hk/daedalus/pull/2680))
+- Fixed crash when Yubikey is connected ([PR 2673](https://github.com/input-output-hk/daedalus/pull/2673))
+- Updated Electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
+- Fixed some Japanese translations for the external currencies ([PR 2667](https://github.com/input-output-hk/daedalus/pull/2667))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-09-29` which includes `cardano-node` 1.30.1
+- Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
+
+## 4.3.1
+
+### Fixes
+
+- Covered Trezor firmware breaking changes ([PR 2629](https://github.com/input-output-hk/daedalus/pull/2629))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-09-09`
+
+## 4.3.0
 
 ### Features
 
@@ -17,6 +123,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `9ae2d48b` which enables hardware wallet support in Alonzo era ([PR 2663](https://github.com/input-output-hk/daedalus/issues/2663))
 - Updated `cardano-wallet` to version `2021-08-27` which includes `cardano-node` 1.29.0 ([PR 2650](https://github.com/input-output-hk/daedalus/pull/2650))
 - Updated `cardano-wallet` to version `2021-08-11` which includes `cardano-node` alonzo-purple-1.0.1 ([PR 2641](https://github.com/input-output-hk/daedalus/pull/2641))
 - Updated `cardano-wallet` to version `2021-07-30` which includes `cardano-node` 1.28.0 ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
@@ -1078,7 +1185,7 @@ Changelog
 - Fixed paper wallet certificate restoration ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
 - Reduce layout re-renderings ([PR 1595](https://github.com/input-output-hk/daedalus/pull/1595))
 - Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
-- Fixed flat button color  ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
+- Fixed flat button color ([PR 1586](https://github.com/input-output-hk/daedalus/pull/1586))
 
 ## 0.15.1
 
@@ -1480,6 +1587,7 @@ Changelog
 ## 0.9.1
 
 ### Features
+
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes
@@ -1827,15 +1935,15 @@ Changelog
 
 - Added wallet creation screen that appears when there is no wallet yet
 - Updated to the latest design specs and refactor to
-[react-toolbox](http://react-toolbox.com/) instead of
-material-ui for the UI components. This gives us much better style
-customization and theming options.
+  [react-toolbox](http://react-toolbox.com/) instead of
+  material-ui for the UI components. This gives us much better style
+  customization and theming options.
 - Cleaned up the boilerplate app menus
 - Added basic form validations using [mobx-react-form](https://github.com/foxhound87/mobx-react-form)
 - Added i18n support with [react-intl](https://github.com/yahoo/react-intl)
 - Added wallet send / receive / transactions screens
 - Form submitting UX updated to the design specifications with introduction of button loading spinners
-and support for submitting the form with enter key
+  and support for submitting the form with enter key
 - Added cut, copy & paste application menu items and keyboard shortcuts
 
 ### Fixes

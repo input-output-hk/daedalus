@@ -11,6 +11,7 @@ import styles from './WalletSummaryCurrency.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletCurrencyAmount } from '../../../utils/formatters';
 import type { Currency } from '../../../types/currencyTypes';
+import { DiscreetValue } from '../../../features/discreet-mode';
 
 const messages = defineMessages({
   currencyTitle: {
@@ -94,14 +95,14 @@ export default class WalletSummaryCurrency extends Component<Props> {
           {intl.formatMessage(messages.currencyTitle)}
         </div>
         <div className={styles.currencyWalletAmount}>
-          {currencyWalletAmount}
+          <DiscreetValue>{currencyWalletAmount}</DiscreetValue>
           <span className={styles.currencyCode}>
             {' '}
             {currencyWalletAmountSymbol}
           </span>
         </div>
         <div className={styles.currencyRate}>
-          1 {intl.formatMessage(globalMessages.unitAda)} = {currencyRate || '–'}{' '}
+          1 {intl.formatMessage(globalMessages.adaUnit)} = {currencyRate || '–'}{' '}
           {currencyWalletAmountSymbol}
         </div>
         <button className={buttonStyles} onClick={onCurrencySettingClick}>

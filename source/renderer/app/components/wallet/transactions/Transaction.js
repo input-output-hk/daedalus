@@ -26,6 +26,7 @@ import type { AssetToken } from '../../../api/assets/types';
 import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
 import { filterAssets } from '../../../utils/assets';
+import { DiscreetWalletAmount } from '../../../features/discreet-mode';
 
 /* eslint-disable consistent-return */
 
@@ -264,7 +265,7 @@ type Props = {
   hasAssetsEnabled: boolean,
   isInternalAddress: Function,
   isLoadingAssets: boolean,
-  onCopyAssetItem: Function,
+  onCopyAssetParam: Function,
 };
 
 type State = {
@@ -486,7 +487,7 @@ export default class Transaction extends Component<Props, State> {
       isDeletingTransaction,
       currentTimeFormat,
       isLoadingAssets,
-      onCopyAssetItem,
+      onCopyAssetParam,
     } = this.props;
 
     const { intl } = this.context;
@@ -515,10 +516,10 @@ export default class Transaction extends Component<Props, State> {
 
     const transactionsType = this.hasAssets
       ? intl.formatMessage(messages.multipleTokens)
-      : intl.formatMessage(globalMessages.currency);
+      : intl.formatMessage(globalMessages.adaUnit);
     const typeOfTransaction = this.hasAssets
       ? intl.formatMessage(headerStateTranslations[state])
-      : intl.formatMessage(globalMessages.currency);
+      : intl.formatMessage(globalMessages.adaUnit);
 
     const getIconType = (txState) => {
       switch (txState) {
@@ -567,8 +568,11 @@ export default class Transaction extends Component<Props, State> {
                 </div>
                 {data.amount && (
                   <div className={styles.amount}>
-                    {formattedWalletAmount(data.amount, false)}
-                    <span>{intl.formatMessage(globalMessages.currency)}</span>
+                    <DiscreetWalletAmount
+                      amount={data.amount}
+                      withCurrency={false}
+                    />
+                    <span>{intl.formatMessage(globalMessages.adaUnit)}</span>
                   </div>
                 )}
               </div>
@@ -576,7 +580,9 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.details}>
                 <div className={styles.type}>
                   {intl.formatMessage(messages.type, { typeOfTransaction })},{' '}
-                  {moment(data.date).format(currentTimeFormat)}
+                  {moment(data.date)
+                    .locale(intl.locale)
+                    .format(currentTimeFormat)}
                 </div>
                 {this.renderTxnStateTag()}
               </div>
@@ -630,7 +636,7 @@ export default class Transaction extends Component<Props, State> {
                       <div className={styles.transactionFeeValue}>
                         {formattedWalletAmount(data.fee, false)}&nbsp;
                         <span>
-                          {intl.formatMessage(globalMessages.unitAda)}
+                          {intl.formatMessage(globalMessages.adaUnit)}
                         </span>
                       </div>
                     </div>
@@ -642,9 +648,13 @@ export default class Transaction extends Component<Props, State> {
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
                     <div className={styles.depositRow}>
                       <div className={styles.depositValue}>
-                        {formattedWalletAmount(data.deposit, false)}&nbsp;
+                        <DiscreetWalletAmount
+                          amount={data.deposit}
+                          withCurrency={false}
+                        />
+                        &nbsp;
                         <span>
-                          {intl.formatMessage(globalMessages.unitAda)}
+                          {intl.formatMessage(globalMessages.adaUnit)}
                         </span>
                       </div>
                     </div>
@@ -694,7 +704,7 @@ export default class Transaction extends Component<Props, State> {
                             </span>
                             <Asset
                               asset={asset}
-                              onCopyAssetItem={onCopyAssetItem}
+                              onCopyAssetParam={onCopyAssetParam}
                               className={styles.assetToken}
                             />
                           </h3>

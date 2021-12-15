@@ -262,6 +262,7 @@ export type LedgerSignTransactionRequest = {
   validityIntervalStartStr?: ?string, // It is disabled for now
   signingMode: string,
   auxiliaryData: ?LedgerAuxiliaryDataType,
+  additionalWitnessPaths: Array<?BIP32Path>,
 };
 
 export type TrezorSignTransactionRequest = {
@@ -276,6 +277,7 @@ export type TrezorSignTransactionRequest = {
   reset?: boolean,
   devicePath: string,
   validityIntervalStartStr?: string,
+  signingMode: number,
   auxiliaryData: ?TrezorAuxiliaryDataType,
 };
 
@@ -289,11 +291,29 @@ export type LedgerSignTransactionResponse = {
   },
 };
 
+export type TrezorWitness = {|
+  type: number,
+  pubKey: string,
+  signature: string,
+  chainCode: ?string,
+|};
+
+export type TrezorSerializedTxPayload = {|
+  serializedTx: string,
+|};
+
+export type TrezorRawTxPayload = {
+  witnesses: Array<TrezorWitness>,
+  auxiliaryDataSupplement?: {
+    type: number,
+    auxiliaryDataHash: string,
+    catalystSignature: string,
+  },
+};
+
 export type TrezorSignTransactionResponse = {
   success: boolean,
-  payload: {
-    serializedTx: string,
-  },
+  payload: TrezorSerializedTxPayload | TrezorRawTxPayload,
 };
 
 export type HardwareWalletConnectionRequest = {

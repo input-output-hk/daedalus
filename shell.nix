@@ -2,7 +2,7 @@
 , config ? {}
 , nodeImplementation ? "cardano"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
-, pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
+, pkgs ? import (import ./nix/sources.nix).nixpkgs { inherit system config; }
 , cluster ? "selfnode"
 , systemStart ? null
 , autoStartBackend ? systemStart != null
@@ -113,9 +113,9 @@ let
       ln -svf $(type -P cardano-wallet)
       ln -svf $(type -P cardano-cli)
       mkdir -p ${BUILDTYPE}/
-      ln -sv $PWD/node_modules/usb/build/${BUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
-      ln -sv $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID.node ${BUILDTYPE}/
-      ln -sv $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
+      ln -svf $PWD/node_modules/usb/build/${BUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
+      ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID.node ${BUILDTYPE}/
+      ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}

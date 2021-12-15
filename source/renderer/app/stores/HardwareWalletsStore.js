@@ -12,7 +12,6 @@ import { HwDeviceStatuses } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { toJS } from '../../../common/utils/helper';
 import {
-  HW_SHELLEY_CONFIG,
   SHELLEY_PURPOSE_INDEX,
   ADA_COIN_TYPE,
   MINIMAL_TREZOR_FIRMWARE_VERSION,
@@ -21,6 +20,7 @@ import {
   isHardwareWalletSupportEnabled,
   isTrezorEnabled,
   isLedgerEnabled,
+  getHardwareWalletsNetworkConfig,
 } from '../config/hardwareWalletsConfig';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
@@ -59,6 +59,7 @@ import {
   prepareTrezorCertificate,
   prepareTrezorWithdrawal,
   prepareTrezorAuxiliaryData,
+  TrezorTransactionSigningMode,
 } from '../utils/shelleyTrezor';
 import {
   DeviceModels,
@@ -94,6 +95,7 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
   HardwareWalletConnectionRequest,
   Witness,
+  TrezorWitness,
 } from '../../../common/types/hardware-wallets.types';
 
 import { logger } from '../utils/logging';
@@ -157,6 +159,9 @@ const useCardanoAppInterval = (
     address,
     addressVerification
   );
+
+const { network, isDev } = global.environment;
+const hardwareWalletsNetworkConfig = getHardwareWalletsNetworkConfig(network);
 
 export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
@@ -260,7 +265,7 @@ export default class HardwareWalletsStore extends Store {
 
   initLedger = async () => {
     logger.debug(
-      `[HW-DEBUG] HWStore - initLedger() | isHardwareWalletSupportEnabled=${isHardwareWalletSupportEnabled} isLedgerEnabled=${isLedgerEnabled}`
+      `[HW-DEBUG] HWStore - initLedger() | isHardwareWalletSupportEnabled=${isHardwareWalletSupportEnabled.toString()} isLedgerEnabled=${isLedgerEnabled.toString()}`
     );
     if (isHardwareWalletSupportEnabled && isLedgerEnabled) {
       logger.debug('[HW-DEBUG] HWStore - start ledger');
@@ -1129,7 +1134,6 @@ export default class HardwareWalletsStore extends Store {
   }) => {
     logger.debug('[HW-DEBUG] - VERIFY Address');
     const { address, path, isTrezor } = params;
-    const { isMainnet } = this.environment;
 
     this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS;
     this.tempAddressToVerify = params;
@@ -1137,15 +1141,11 @@ export default class HardwareWalletsStore extends Store {
       const derivedAddress = await deriveAddressChannel.request({
         devicePath: path,
         isTrezor,
-        addressType: AddressType.BASE,
+        addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
 
       if (derivedAddress === address.id) {
@@ -1237,21 +1237,16 @@ export default class HardwareWalletsStore extends Store {
   }) => {
     logger.debug('[HW-DEBUG] - SHOW Address');
     const { address, path, isTrezor } = params;
-    const { isMainnet } = this.environment;
 
     try {
       await showAddressChannel.request({
         devicePath: path,
         isTrezor,
-        addressType: AddressType.BASE,
+        addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
       runInAction(
         'HardwareWalletsStore:: Address show process finished',
@@ -1675,27 +1670,95 @@ export default class HardwareWalletsStore extends Store {
       throw new Error(`Missing Coins Selection for wallet: ${walletId}`);
     }
 
-    const { inputs, outputs, fee, certificates, withdrawals } = coinSelection;
+    const {
+      inputs,
+      outputs,
+      fee: flatFee,
+      certificates,
+      withdrawals,
+    } = coinSelection;
 
+    logger.debug('[HW-DEBUG] HWStore - sign transaction Trezor: ', {
+      walletId,
+    });
+
+    const hardwareWalletConnectionData = get(
+      this.hardwareWalletsConnectionData,
+      walletId
+    );
+
+    // Guard against potential null value
+    if (!hardwareWalletConnectionData)
+      throw new Error('Wallet not paired or Device not connected');
+
+    const publicKeyHex = get(hardwareWalletConnectionData, [
+      'extendedPublicKey',
+      'publicKeyHex',
+    ]);
+    const chainCodeHex = get(hardwareWalletConnectionData, [
+      'extendedPublicKey',
+      'chainCodeHex',
+    ]);
+    const xpubHex = `${publicKeyHex}${chainCodeHex}`;
+
+    const unsignedTxInputs = [];
     const inputsData = map(inputs, (input) => {
+      const shelleyTxInput = ShelleyTxInputFromUtxo(input);
+      unsignedTxInputs.push(shelleyTxInput);
       return prepareTrezorInput(input);
     });
 
-    const outputsData = map(outputs, (output) => {
-      return prepareTrezorOutput(output);
-    });
+    const unsignedTxOutputs = [];
+    const outputsData = [];
+    for (const output of outputs) {
+      const {
+        address_style: addressStyle,
+      } = await this.stores.addresses._inspectAddress({
+        addressId: output.address,
+      });
+      const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
+      unsignedTxOutputs.push(shelleyTxOutput);
+      const ledgerOutput = prepareTrezorOutput(output);
+      outputsData.push(ledgerOutput);
+    }
 
-    const withdrawalsData = map(withdrawals, (withdrawal) => {
-      return prepareTrezorWithdrawal(withdrawal);
+    // Construct certificates
+    const unsignedTxCerts = [];
+    const _certificatesData = map(certificates, async (certificate) => {
+      const accountAddress = await this._getRewardAccountAddress(
+        walletId,
+        certificate.rewardAccountPath
+      );
+      const shelleyTxCert = ShelleyTxCert({
+        accountAddress,
+        pool: certificate.pool,
+        type: CERTIFICATE_TYPE[certificate.certificateType],
+      });
+      unsignedTxCerts.push(shelleyTxCert);
+      return prepareTrezorCertificate(certificate);
     });
+    const certificatesData = await Promise.all(_certificatesData);
 
-    const certificatesData = map(certificates, (certificate) =>
-      prepareTrezorCertificate(certificate)
+    // Construct Withdrawals
+    const _withdrawalsData = map(withdrawals, async (withdrawal) =>
+      prepareTrezorWithdrawal(withdrawal)
     );
+    const withdrawalsData = await Promise.all(_withdrawalsData);
 
+    let unsignedTxAuxiliaryData = null;
     let auxiliaryData = null;
     if (this.votingData) {
-      const { votingKey, nonce } = this.votingData;
+      const { stakeAddress, stakeKey, votingKey, nonce } = this.votingData;
+      unsignedTxAuxiliaryData = {
+        nonce, // unique increaseable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
+        rewardDestinationAddress: {
+          address: stakeAddress,
+          stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
+        },
+        stakePubKey: stakeKey,
+        type: CATALYST_VOTING_REGISTRATION_TYPE,
+        votingPubKey: votingKey,
+      };
       auxiliaryData = prepareTrezorAuxiliaryData({
         votingKey,
         nonce: nonce.toString(),
@@ -1745,7 +1808,7 @@ export default class HardwareWalletsStore extends Store {
       });
     }
 
-    const { isMainnet } = this.environment;
+    const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
     const absoluteSlotNumber = this._getAbsoluteSlotNumber();
 
@@ -1753,33 +1816,86 @@ export default class HardwareWalletsStore extends Store {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
         outputs: outputsData,
-        fee: formattedAmountToLovelace(fee.toString()).toString(),
+        fee: fee.toString(),
         ttl: ttl.toString(),
         validityIntervalStartStr: absoluteSlotNumber.toString(),
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         devicePath: recognizedDevicePath,
+        signingMode: TrezorTransactionSigningMode.ORDINARY_TRANSACTION,
         auxiliaryData,
       });
 
-      if (!signedTransaction.success) {
+      if (signedTransaction && !signedTransaction.success) {
         throw signedTransaction.payload;
       }
+      // Compatible with old firmwares
+      const serializedTx = get(signedTransaction, ['payload', 'serializedTx']);
 
-      runInAction(
-        'HardwareWalletsStore:: transaction successfully signed',
-        () => {
-          this.txBody = signedTransaction.payload.serializedTx;
-          this.hwDeviceStatus =
-            HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
-        }
+      if (serializedTx) {
+        runInAction(
+          'HardwareWalletsStore:: transaction successfully signed',
+          () => {
+            this.txBody = serializedTx;
+            this.hwDeviceStatus =
+              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+          }
+        );
+        return;
+      }
+
+      const unsignedTxWithdrawals =
+        withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
+
+      // Prepare unsigned transaction structure for serialzation
+      let txAuxData = {
+        txInputs: unsignedTxInputs,
+        txOutputs: unsignedTxOutputs,
+        fee,
+        ttl,
+        certificates: unsignedTxCerts,
+        withdrawals: unsignedTxWithdrawals,
+      };
+
+      let txAuxiliaryData = null;
+      const auxiliaryDataSupplement = get(signedTransaction, [
+        'payload',
+        'auxiliaryDataSupplement',
+      ]);
+      if (unsignedTxAuxiliaryData && auxiliaryDataSupplement) {
+        txAuxData = {
+          ...txAuxData,
+          txAuxiliaryData: unsignedTxAuxiliaryData,
+          txAuxiliaryDataHash: auxiliaryDataSupplement.auxiliaryDataHash,
+        };
+        txAuxiliaryData = cborizeTxAuxiliaryVotingData(
+          unsignedTxAuxiliaryData,
+          auxiliaryDataSupplement.catalystSignature
+        );
+      }
+
+      const unsignedTx = prepareTxAux(txAuxData);
+      const witnesses = get(signedTransaction, ['payload', 'witnesses'], []);
+      const signedWitnesses = await this._signWitnesses(witnesses, xpubHex);
+      const txWitnesses = new Map();
+      if (signedWitnesses.length > 0) {
+        txWitnesses.set(0, signedWitnesses);
+      }
+
+      // Prepare serialized transaction with unsigned data and signed witnesses
+      const txBody = await prepareBody(
+        unsignedTx,
+        txWitnesses,
+        txAuxiliaryData
       );
+
+      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+        this.txBody = txBody;
+        this.activeDevicePath = null;
+      });
     } catch (error) {
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
@@ -1788,7 +1904,6 @@ export default class HardwareWalletsStore extends Store {
           this.isTransactionInitiated = false;
         }
       );
-      // @TODO - Maybe we should handle this case as separated message in tx dialog
       if (error.code === 'Device_CallInProgress') {
         throw new Error('Device is busy - reconnect device and try again');
       }
@@ -1796,7 +1911,10 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _signWitnesses = async (witnesses: Array<Witness>, xpubHex: string) => {
+  _signWitnesses = async (
+    witnesses: Array<TrezorWitness | Witness>,
+    xpubHex: string
+  ) => {
     const signedWitnesses = [];
     for (const witness of witnesses) {
       const signedWitness = await this.ShelleyWitness(witness, xpubHex);
@@ -1805,11 +1923,25 @@ export default class HardwareWalletsStore extends Store {
     return signedWitnesses;
   };
 
-  ShelleyWitness = async (witness: Witness, xpubHex: string) => {
-    const xpub = await this._deriveXpub(witness.path, xpubHex);
-    const publicKey = xpub.slice(0, 32);
-    const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
-    return ShelleyTxWitnessShelley(publicKey, signature);
+  ShelleyWitness = async (
+    witness: TrezorWitness | Witness,
+    xpubHex: string
+  ) => {
+    let publicKey;
+    let witnessSignatureHex;
+    if (witness.pubKey && witness.signature) {
+      publicKey = Buffer.from(witness.pubKey, 'hex');
+      witnessSignatureHex = witness.signature;
+    } else if (witness.path && witness.witnessSignatureHex) {
+      const xpub = await this._deriveXpub(witness.path, xpubHex);
+      publicKey = xpub.slice(0, 32);
+      witnessSignatureHex = witness.witnessSignatureHex;
+    }
+    if (witnessSignatureHex && publicKey) {
+      const signature = Buffer.from(witnessSignatureHex, 'hex');
+      return ShelleyTxWitnessShelley(publicKey, signature);
+    }
+    return null;
   };
 
   _deriveXpub = CachedDeriveXpubFactory(async (xpubHex) => {
@@ -1917,7 +2049,6 @@ export default class HardwareWalletsStore extends Store {
 
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
-    const { isMainnet } = this.environment;
 
     let unsignedTxAuxiliaryData = null;
     if (this.votingData) {
@@ -1945,15 +2076,12 @@ export default class HardwareWalletsStore extends Store {
         fee: fee.toString(),
         ttl: ttl.toString(),
         validityIntervalStartStr: null,
-        networkId: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: isMainnet
-          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
-          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        networkId: hardwareWalletsNetworkConfig.networkId,
+        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
         certificates: certificatesData,
         withdrawals: withdrawalsData,
         signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
+        additionalWitnessPaths: [],
         auxiliaryData,
         devicePath,
       });
@@ -1974,6 +2102,7 @@ export default class HardwareWalletsStore extends Store {
       let txAuxiliaryData = null;
       if (
         unsignedTxAuxiliaryData &&
+        signedTransaction &&
         signedTransaction.auxiliaryDataSupplement
       ) {
         txAuxData = {
@@ -1991,10 +2120,8 @@ export default class HardwareWalletsStore extends Store {
 
       const unsignedTx = prepareTxAux(txAuxData);
 
-      const signedWitnesses = await this._signWitnesses(
-        signedTransaction.witnesses,
-        xpubHex
-      );
+      const witnesses = get(signedTransaction, 'witnesses', []);
+      const signedWitnesses = await this._signWitnesses(witnesses, xpubHex);
       const txWitnesses = new Map();
       if (signedWitnesses.length > 0) {
         txWitnesses.set(0, signedWitnesses);
@@ -2185,7 +2312,6 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
-    console.debug(params);
 
     // Handle Trezor Bridge instance checker
     if (error && deviceType === DeviceTypes.TREZOR) {
@@ -2573,7 +2699,7 @@ export default class HardwareWalletsStore extends Store {
 
   // For testing / development ONLY
   _resetHardwareWallets = async () => {
-    if (global.environment.isDev) {
+    if (isDev) {
       await Promise.all(
         this.stores.wallets.all.map(async (wallet) => {
           if (wallet.isHardwareWallet) {

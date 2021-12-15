@@ -1,14 +1,14 @@
 // @flow
 import React from 'react';
-import { text, boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, number, select, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { defineMessages } from 'react-intl';
 import {
-  generateWallet,
   generateHash,
   generatePolicyIdHash,
+  generateWallet,
 } from '../../_support/utils';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import type { Locale } from '../../../../source/common/types/locales.types';
@@ -19,14 +19,14 @@ import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/compon
 import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
-import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import WalletSettingsRemoveConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import {
-  RECOVERY_PHRASE_VERIFICATION_TIMES,
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
+  RECOVERY_PHRASE_VERIFICATION_TIMES,
   RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
@@ -87,12 +87,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -101,12 +103,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -214,7 +218,7 @@ export default (props: { locale: Locale }) => {
             changePasswordId
           );
         }
-        if (dialog === DeleteWalletConfirmationDialog) {
+        if (dialog === WalletSettingsRemoveConfirmationDialog) {
           return boolean('Delete Wallet - Show dialog', false, deleteWalletId);
         }
         if (dialog === WalletRecoveryPhraseStep1Dialog) {
@@ -355,9 +359,9 @@ export default (props: { locale: Locale }) => {
         />
       }
       deleteWalletDialogContainer={
-        <DeleteWalletConfirmationDialog
+        <WalletSettingsRemoveConfirmationDialog
           walletName={text(
-            'DeleteWalletConfirmationDialog: Wallet Name',
+            'WalletSettingsRemoveConfirmationDialog: Wallet Name',
             'Wallet To Delete',
             deleteWalletId
           )}
@@ -383,6 +387,40 @@ export default (props: { locale: Locale }) => {
           )}
           isSubmitting={boolean(
             'Delete Wallet - isSubmitting',
+            false,
+            deleteWalletId
+          )}
+        />
+      }
+      unpairWalletDialogContainer={
+        <WalletSettingsRemoveConfirmationDialog
+          walletName={text(
+            'WalletSettingsRemoveConfirmationDialog: Wallet Name',
+            'Wallet To Unpair',
+            deleteWalletId
+          )}
+          hasWalletFunds={boolean('hasWalletFunds', false, basicSettingsId)}
+          countdownFn={() =>
+            number('Unpair Wallet Countdown', 9, deleteWalletId)
+          }
+          isBackupNoticeAccepted={boolean(
+            'isBackupNoticeAccepted',
+            false,
+            basicSettingsId
+          )}
+          onAcceptBackupNotice={action('Unpair Wallet - onAcceptBackupNotice')}
+          onContinue={action('Unpair Wallet - onContinue')}
+          onCancel={action('Unpair Wallet - onCancel')}
+          confirmationValue={text(
+            'Unpair Wallet Confirmation Value',
+            'Wallet name',
+            deleteWalletId
+          )}
+          onConfirmationValueChange={action(
+            'Unpair Wallet - onConfirmationValueChange'
+          )}
+          isSubmitting={boolean(
+            'Unpair Wallet - isSubmitting',
             false,
             deleteWalletId
           )}

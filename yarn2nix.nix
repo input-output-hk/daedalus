@@ -33,11 +33,11 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "13.1.0";
+  windowsElectronVersion = "13.1.1";
   electronPath = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}";
   windowsElectron = fetchurl {
     url = "${electronPath}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "dea5e784471828dedb294801f0d35a11459b2a940b6b60ed80c2c19eccd4d8f2";
+    sha256 = "2f8932aec40882381e839eee34998f9b1d48292f425735d8dc9a45cc3d75cb41";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
@@ -49,7 +49,7 @@ let
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
-    sha256 = "eb80aa2631401d9646d9eb70bfcfc8cb47408bf2ac1baedcaaf324afb7529ac0";
+    sha256 = "25bfc02a19d7eac9191f4735868891e87c9352222d73a931699b47229e3380cd";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -123,7 +123,7 @@ yarn2nix.mkYarnPackage {
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
 
     mkdir -pv $out/resources/app/node_modules
-    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic,base64-js,ieee754} $out/resources/app/node_modules
+    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic,base64-js,ieee754,cbor-web} $out/resources/app/node_modules
 
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
@@ -153,6 +153,7 @@ yarn2nix.mkYarnPackage {
     dup secp256k1
     dup usb
     dup @ledgerhq
+    dup electron-chromedriver
 
     # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
@@ -166,7 +167,7 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
-    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic,base64-js,ieee754} $out/share/daedalus/node_modules/
+    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic,base64-js,ieee754,cbor-web} $out/share/daedalus/node_modules/
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build

@@ -12,6 +12,7 @@ import WalletsSettingsPage from './containers/settings/categories/WalletsSetting
 import StakePoolsSettingsPage from './containers/settings/categories/StakePoolsSettingsPage';
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
+import SecuritySettingsPage from './containers/settings/categories/SecuritySettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
@@ -30,9 +31,11 @@ import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
+import WalletTokensPage from './containers/wallet/WalletTokensPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
+import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -64,14 +67,15 @@ export const Routes = withRouter(() => (
               path={ROUTES.WALLETS.SUMMARY}
               component={WalletSummaryPage}
             />
-            <Route
-              path={ROUTES.WALLETS.TRANSACTIONS}
-              component={WalletTransactionsPage}
-            />
             <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
             <Route
               path={ROUTES.WALLETS.RECEIVE}
               component={WalletReceivePage}
+            />
+            <Route path={ROUTES.WALLETS.TOKENS} component={WalletTokensPage} />
+            <Route
+              path={ROUTES.WALLETS.TRANSACTIONS}
+              component={WalletTransactionsPage}
             />
             <Route
               path={ROUTES.WALLETS.SETTINGS}
@@ -111,6 +115,10 @@ export const Routes = withRouter(() => (
               path={ROUTES.SETTINGS.DISPLAY}
               component={DisplaySettingsPage}
             />
+            <Route
+              path={ROUTES.SETTINGS.SECURITY}
+              component={SecuritySettingsPage}
+            />
           </Settings>
         </Route>
         <Route
@@ -143,7 +151,9 @@ export const Routes = withRouter(() => (
               component={StakingRewardsPage}
             />
             <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
-            <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+            {IS_STAKING_INFO_PAGE_AVAILABLE && (
+              <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+            )}
           </Staking>
           <Route
             path={ROUTES.REDEEM_ITN_REWARDS}

@@ -16,37 +16,37 @@ import type { Asset as AssetProps } from '../../api/assets/types';
 
 const messages = defineMessages({
   fingerprintItem: {
-    id: 'assets.assetToken.item.fingerprint',
+    id: 'assets.assetToken.param.fingerprint',
     defaultMessage: '!!!Fingerprint',
     description: '"fingerprint" item.',
   },
   policyIdItem: {
-    id: 'assets.assetToken.item.policyId',
+    id: 'assets.assetToken.param.policyId',
     defaultMessage: '!!!Policy Id',
     description: '"policyId" item.',
   },
   assetNameItem: {
-    id: 'assets.assetToken.item.assetName',
+    id: 'assets.assetToken.param.assetName',
     defaultMessage: '!!!Asset name',
     description: '"assetName" item.',
   },
   nameItem: {
-    id: 'assets.assetToken.item.name',
+    id: 'assets.assetToken.param.name',
     defaultMessage: '!!!Name',
     description: '"name" item.',
   },
   tickerItem: {
-    id: 'assets.assetToken.item.ticker',
+    id: 'assets.assetToken.param.ticker',
     defaultMessage: '!!!Ticker',
     description: '"ticker" item.',
   },
   descriptionItem: {
-    id: 'assets.assetToken.item.description',
+    id: 'assets.assetToken.param.description',
     defaultMessage: '!!!Description',
     description: '"description" item.',
   },
   blank: {
-    id: 'assets.assetToken.item.blank',
+    id: 'assets.assetToken.param.blank',
     defaultMessage: '!!!Blank',
     description: '"Blank" item value.',
   },
@@ -74,7 +74,7 @@ type Props = {
   asset: AssetProps,
   small?: boolean,
   hidePopOver?: boolean,
-  onCopyAssetItem?: Function,
+  onCopyAssetParam?: Function,
   onClickSettings?: Function,
   assetSettingsDialogWasOpened?: ?boolean,
   anyAssetWasHovered?: ?boolean,
@@ -84,6 +84,7 @@ type Props = {
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
   metadataNameChars?: number,
+  hasError?: boolean,
 };
 
 type State = {
@@ -175,12 +176,14 @@ export default class Asset extends Component<Props, State> {
       small,
       fullFingerprint,
       hasWarning,
+      hasError,
     } = this.props;
     const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.pill,
       small ? styles.small : null,
+      hasError ? styles.error : null,
     ]);
     let warningPopOverMessage;
     if (hasWarning) {
@@ -218,7 +221,7 @@ export default class Asset extends Component<Props, State> {
   renderPillPopOverContainer = () => {
     const {
       asset,
-      onCopyAssetItem,
+      onCopyAssetParam,
       assetSettingsDialogWasOpened,
       anyAssetWasHovered,
     } = this.props;
@@ -226,7 +229,7 @@ export default class Asset extends Component<Props, State> {
     const popOverContent = (
       <AssetContent
         asset={asset}
-        onCopyAssetItem={onCopyAssetItem}
+        onCopyAssetParam={onCopyAssetParam}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         anyAssetWasHovered={anyAssetWasHovered}
         className={styles.popOverContent}

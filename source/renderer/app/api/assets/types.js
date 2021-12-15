@@ -53,7 +53,7 @@ export type Token = {
   assetName: string,
   quantity: BigNumber,
   address?: ?string,
-  uniqueId?: string,
+  uniqueId: string,
 };
 
 export type Tokens = Array<Token>;
@@ -77,8 +77,8 @@ export type AssetToken = {
 
 export type AssetMetadata = {
   name: string,
-  ticker: string,
   description: string,
+  ticker?: string,
   decimals?: number, // [0 .. 255]
   url?: string,
   logo?: string,

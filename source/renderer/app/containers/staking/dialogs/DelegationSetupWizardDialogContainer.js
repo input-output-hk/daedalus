@@ -12,6 +12,7 @@ import {
 } from '../../../config/stakingConfig';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -155,9 +156,12 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.handleContinue();
   };
 
-  handleSelectPool = (poolId: string) => {
-    this._handleCalculateTransactionFee(poolId);
+  handleChoosePool = (poolId: string) => {
     this.setState({ selectedPoolId: poolId });
+  };
+
+  handleSelectPool = (pool: StakePool) => {
+    this._handleCalculateTransactionFee(pool.id);
     this.handleContinue();
   };
 
@@ -190,6 +194,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       joinStakePoolRequest,
       getStakePoolById,
       isDelegationTransactionPending,
+      maxDelegationFunds,
     } = staking;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const selectedPool = find(stakePools, (pool) => pool.id === selectedPoolId);
@@ -216,6 +221,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         isDisabled={activeStep === 1 && !acceptableWallets}
         isWalletAcceptable={this.handleIsWalletAcceptable}
+        maxDelegationFunds={maxDelegationFunds}
         selectedWallet={selectedWallet}
         selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
@@ -229,6 +235,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onContinue={this.handleContinue}
         onSelectWallet={this.handleSelectWallet}
         onSelectPool={this.handleSelectPool}
+        onThumbPoolSelect={this.handleChoosePool}
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}

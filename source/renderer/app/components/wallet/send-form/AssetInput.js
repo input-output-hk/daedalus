@@ -11,9 +11,9 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import AmountInputSkin from '../skins/AmountInputSkin';
 import AssetsDropdown from '../../widgets/forms/AssetsDropdown';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
-import { formattedTokenWalletAmount } from '../../../utils/formatters';
 import type { NumberFormat } from '../../../../../common/types/number.types';
 import type { AssetToken } from '../../../api/assets/types';
+import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import styles from './AssetInput.scss';
 import messages from './messages';
 
@@ -125,7 +125,11 @@ export default class AssetInput extends Component<Props> {
           <div className={styles.amountTokenTotal}>
             {intl.formatMessage(messages.ofLabel)}
             {` `}
-            {formattedTokenWalletAmount(quantity, metadata, decimals)}
+            <DiscreetTokenWalletAmount
+              amount={quantity}
+              metadata={metadata}
+              decimals={decimals}
+            />
           </div>
         )}
         <NumericInput

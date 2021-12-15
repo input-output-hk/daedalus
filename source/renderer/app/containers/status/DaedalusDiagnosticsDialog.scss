@@ -22,4 +22,17 @@
   &:focus {
     outline: none;
   }
+
+  :global {
+    *::-webkit-scrollbar-thumb {
+      background-color: var(
+        --theme-splash-network-scrollbar-thumb-background
+      ) !important;
+      &:hover {
+        background-color: var(
+          --theme-splash-network-scrollbar-thumb-background-hover
+        ) !important;
+      }
+    }
+  }
 }

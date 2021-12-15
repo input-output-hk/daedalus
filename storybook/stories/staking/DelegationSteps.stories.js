@@ -30,12 +30,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -44,12 +46,14 @@ const assets = {
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
     {
       id: generateHash(),
       policyId: generatePolicyIdHash(),
+      uniqueId: generatePolicyIdHash(),
       assetName: '',
       quantity: new BigNumber(200),
     },
@@ -100,6 +104,7 @@ type Props = {
   currentTheme: string,
   locale: string,
   isDisabled?: boolean,
+  oversaturationPercentage: number,
 };
 
 type State = {
@@ -149,7 +154,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
           find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
         }
         onSelectWallet={this.onContinue}
-        onBack={action('onBack')}
+        onBack={this.onBack}
         wallets={WALLETS}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         selectedWalletId={null}
@@ -165,10 +170,12 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onOpenExternalLink={action('onOpenExternalLink')}
         currentTheme={this.props.currentTheme}
         onClose={action('onClose')}
-        onBack={action('onBack')}
-        onSelectPool={this.onContinue}
+        onBack={this.onBack}
+        onContinue={this.onContinue}
+        onSelectPool={() => {}}
         selectedPool={null}
         selectedWallet={WALLETS[0]}
+        oversaturationPercentage={this.props.oversaturationPercentage}
       />,
       <DelegationStepsConfirmationDialog
         key="DelegationStepsConfirmationDialog"
@@ -183,12 +190,14 @@ export class StakingDelegationSteps extends Component<Props, State> {
         selectedWallet={WALLETS[0]}
         onConfirm={this.onContinue}
         onClose={action('onClose')}
-        onBack={action('onBack')}
+        onBack={this.onBack}
         error={null}
         isHardwareWallet={false}
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
         onExternalLinkClick={action('onOpenExternalLink')}
         isTrezor={boolean('isTrezor', false)}
+        maxDelegationFunds={63000000}
+        oversaturationPercentage={this.props.oversaturationPercentage}
       />,
       <DelegationStepsSuccessDialog
         key="DelegationStepsSuccessDialog"
@@ -206,6 +215,13 @@ export class StakingDelegationSteps extends Component<Props, State> {
     const { currentStep } = this.state;
     let nextStep = currentStep + 1;
     if (nextStep > NUMBER_OF_STEPS - 1) nextStep = 0;
+    this.setState({ currentStep: nextStep });
+  };
+
+  onBack = () => {
+    const { currentStep } = this.state;
+    let nextStep = currentStep - 1;
+    if (nextStep < NUMBER_OF_STEPS - 1) nextStep = 0;
     this.setState({ currentStep: nextStep });
   };
 

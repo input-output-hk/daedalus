@@ -23,6 +23,7 @@
 }
 
 .list {
+  margin-bottom: -9px;
   overflow: visible !important;
 
   :global(.ReactVirtualized__Grid__innerScrollContainer) {
