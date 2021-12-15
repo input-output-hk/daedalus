@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import styles from './WalletTokens.scss';
 import Wallet from '../../../../domains/Wallet';
 import WalletTokensList from '../wallet-tokens-list/WalletTokensList';
-import WalletTokensSearch from '../WalletTokensSearch';
+import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
 import LoadingSpinner from '../../../widgets/LoadingSpinner';
 import type { AssetToken } from '../../../../api/assets/types';
 import { TOGGLE_TOKEN_FAVORITE_TIMEOUT } from '../../../../config/timingConfig';

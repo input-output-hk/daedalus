@@ -6,8 +6,8 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import styles from './WalletTokensSearch.scss';
-import searchIcon from '../../../assets/images/search.inline.svg';
-import crossIcon from '../../../assets/images/close-cross.inline.svg';
+import searchIcon from '../../../../assets/images/search.inline.svg';
+import crossIcon from '../../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
   placeholder: {
