@@ -179,7 +179,7 @@ function update_prettierignore() {
 
 function create_tsconfig() {
     tsc --init \
-        --target es2015 \
+        --target es2019 \
         --jsx react \
         --sourceMap \
         --lib dom \
