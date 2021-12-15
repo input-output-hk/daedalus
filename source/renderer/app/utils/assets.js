@@ -73,6 +73,7 @@ export const getAssetToken = (
   {
     policyId,
     assetName,
+    assetNameASCII,
     fingerprint,
     metadata,
     decimals,
@@ -83,6 +84,7 @@ export const getAssetToken = (
 ): AssetToken => ({
   policyId,
   assetName,
+  assetNameASCII,
   quantity,
   address,
   fingerprint,
@@ -251,11 +253,18 @@ export const searchAssets = (
     return assets;
   }
   return filter(assets, (asset) => {
-    const { policyId, assetName, fingerprint, metadata } = asset;
+    const {
+      policyId,
+      assetName,
+      assetNameASCII,
+      fingerprint,
+      metadata,
+    } = asset;
     const { name, ticker, description } = metadata || {};
     const checkList = [
       policyId,
       assetName,
+      assetNameASCII,
       fingerprint,
       metadata,
       name,
