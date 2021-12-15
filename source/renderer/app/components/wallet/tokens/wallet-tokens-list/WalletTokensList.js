@@ -11,7 +11,7 @@ import Wallet from '../../../../domains/Wallet';
 import BorderedBox from '../../../widgets/BorderedBox';
 import LoadingSpinner from '../../../widgets/LoadingSpinner';
 import WalletToken from '../wallet-token/WalletToken';
-import WalletNoTokens from '../WalletNoTokens';
+import WalletNoTokens from '../wallet-no-tokens/WalletNoTokens';
 import sortIcon from '../../../../assets/images/ascending.inline.svg';
 import { messages } from './WalletTokensList.messages';
 import type { AssetToken } from '../../../../api/assets/types';
