@@ -296,13 +296,13 @@
         "description": "\"title\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.title",
         "start": {
           "column": 9,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -310,13 +310,13 @@
         "description": "\"subtitle\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.subtitle",
         "start": {
           "column": 12,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -324,13 +324,13 @@
         "description": "\"checkboxLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -338,13 +338,13 @@
         "description": "\"buttonLaunchInstallerLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.button.launchInstaller.label",
         "start": {
           "column": 30,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -352,13 +352,13 @@
         "description": "\"buttonInstallUpdateLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.button.installUpdate.label",
         "start": {
           "column": 28,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -366,13 +366,13 @@
         "description": "\"manualUpdateLinkLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.postponeInstall.link.label",
         "start": {
           "column": 28,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -380,13 +380,13 @@
         "description": "\"installingUpdateLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.installingUpdate.link.label",
         "start": {
           "column": 25,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -394,13 +394,13 @@
         "description": "\"downloadProgressLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadProgressLabel",
         "start": {
           "column": 25,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -408,13 +408,13 @@
         "description": "\"downloadTimeLeft\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadTimeLeft",
         "start": {
           "column": 20,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -422,13 +422,13 @@
         "description": "\"downloadProgressData\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 75
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadProgressData",
         "start": {
           "column": 24,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -436,13 +436,13 @@
         "description": "\"manualUpdateDescriptionError\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.description.error",
         "start": {
           "column": 32,
-          "line": 75
+          "line": 76
         }
       },
       {
@@ -450,13 +450,13 @@
         "description": "\"manualUpdateDescriptionErrorLinux\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.description.errorLinux",
         "start": {
           "column": 37,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -464,13 +464,13 @@
         "description": "\"manualUpdateDescriptionAction\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.description.action",
         "start": {
           "column": 33,
-          "line": 87
+          "line": 88
         }
       },
       {
@@ -478,13 +478,13 @@
         "description": "\"manualUpdateButtonLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 97
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.label",
         "start": {
           "column": 27,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -492,13 +492,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Mainnet",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 103
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.url.mainnet",
         "start": {
           "column": 35,
-          "line": 97
+          "line": 98
         }
       },
       {
@@ -506,13 +506,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Flight",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 108
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.url.flight",
         "start": {
           "column": 34,
-          "line": 103
+          "line": 104
         }
       },
       {
@@ -520,13 +520,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Testnet",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 115
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.url.testnet",
         "start": {
           "column": 35,
-          "line": 108
+          "line": 109
         }
       }
     ],
@@ -684,13 +684,13 @@
         "description": "Unformatted amount",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/assets/AssetAmount.js",
         "id": "assets.assetAmount.unformattedAmount",
         "start": {
           "column": 21,
-          "line": 13
+          "line": 14
         }
       }
     ],
@@ -1223,11 +1223,11 @@
         }
       },
       {
-        "defaultMessage": "!!!Unable to detect your hardware wallet device.",
+        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Connect failed\" device state",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.connecting.failed",
@@ -1241,13 +1241,13 @@
         "description": "\"Connect the IOHK Trezor 1 device\" device state",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.connecting.known",
         "start": {
           "column": 20,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -1255,13 +1255,13 @@
         "description": "\"Launch Cardano application on your device\" device state",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.launching_cardano_app",
         "start": {
           "column": 25,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -1269,13 +1269,13 @@
         "description": "\"Confirm exporting your public key on your device\" device state",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exporting_public_key",
         "start": {
           "column": 24,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -1283,27 +1283,27 @@
         "description": "\"Exporting public key failed\" device state",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exporting_public_key_failed",
         "start": {
           "column": 31,
-          "line": 44
+          "line": 45
         }
       },
       {
-        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process",
+        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
         "start": {
           "column": 27,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -1311,13 +1311,13 @@
         "description": "\"Enter passphrase if needed\" device sub-state",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.enterPassphrase",
         "start": {
           "column": 19,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -1325,13 +1325,13 @@
         "description": "\"Device ready\" device state",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.ready",
         "start": {
           "column": 9,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -1339,13 +1339,13 @@
         "description": "\"Confirm the transaction using the IOHK Trezor 1 device\" device state",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction",
         "start": {
           "column": 25,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -1353,13 +1353,13 @@
         "description": "\"Transaction verification and signing failed\" device state",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 78
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_failed",
         "start": {
           "column": 32,
-          "line": 73
+          "line": 74
         }
       },
       {
@@ -1367,13 +1367,13 @@
         "description": "\"Transaction verified and signed\" device state",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_succeeded",
         "start": {
           "column": 35,
-          "line": 78
+          "line": 79
         }
       },
       {
@@ -1381,13 +1381,13 @@
         "description": "\"Trezor Bridge not installed! {instructionsLink}\" device state",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 89
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure",
         "start": {
           "column": 25,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -1395,13 +1395,13 @@
         "description": "Trezor Bridge installation instructions link label",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label",
         "start": {
           "column": 36,
-          "line": 89
+          "line": 90
         }
       },
       {
@@ -1409,13 +1409,13 @@
         "description": "URL for the \"Trezor Bridge\" update",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 100
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url",
         "start": {
           "column": 34,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -1423,13 +1423,13 @@
         "description": "\"Unsupported firmware!\" device state",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 105
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_firmware",
         "start": {
           "column": 18,
-          "line": 100
+          "line": 101
         }
       },
       {
@@ -1437,13 +1437,13 @@
         "description": "Firmware update installation instructions link label",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 110
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.label",
         "start": {
           "column": 29,
-          "line": 105
+          "line": 106
         }
       },
       {
@@ -1451,13 +1451,13 @@
         "description": "URL for the \"Firmware Update\"",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 116
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.url",
         "start": {
           "column": 27,
-          "line": 110
+          "line": 111
         }
       },
       {
@@ -1465,13 +1465,13 @@
         "description": "\"The device is not supported!\" device state",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 121
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.unsupported_device",
         "start": {
           "column": 22,
-          "line": 116
+          "line": 117
         }
       },
       {
@@ -1479,13 +1479,13 @@
         "description": "\"Unsupported firmware!\" device state",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 126
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version",
         "start": {
           "column": 29,
-          "line": 121
+          "line": 122
         }
       },
       {
@@ -1493,13 +1493,13 @@
         "description": "Firmware update installation instructions link label",
         "end": {
           "column": 3,
-          "line": 130
+          "line": 131
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.label",
         "start": {
           "column": 40,
-          "line": 126
+          "line": 127
         }
       },
       {
@@ -1507,13 +1507,13 @@
         "description": "URL for the \"Firmware Update\"",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 137
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.url",
         "start": {
           "column": 38,
-          "line": 131
+          "line": 132
         }
       },
       {
@@ -1521,13 +1521,13 @@
         "description": "\"Verify receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 142
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address",
         "start": {
           "column": 21,
-          "line": 137
+          "line": 138
         }
       },
       {
@@ -1535,13 +1535,13 @@
         "description": "\"Confirm receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 147
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_confirmation",
         "start": {
           "column": 34,
-          "line": 142
+          "line": 143
         }
       },
       {
@@ -1549,13 +1549,13 @@
         "description": "\"Address verification failed\" device state",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 152
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_failed",
         "start": {
           "column": 28,
-          "line": 147
+          "line": 148
         }
       },
       {
@@ -1563,13 +1563,13 @@
         "description": "\"Address verification aborted\" device state",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 157
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_aborted",
         "start": {
           "column": 29,
-          "line": 152
+          "line": 153
         }
       },
       {
@@ -1577,13 +1577,13 @@
         "description": "\"Address verified\" device state",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 162
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_succeeded",
         "start": {
           "column": 31,
-          "line": 157
+          "line": 158
         }
       }
     ],
@@ -2055,17 +2055,45 @@
         }
       },
       {
+        "defaultMessage": "!!!This process validates the integrity of local blockchain data and could take several minutes.",
+        "description": "Message \"Starting Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
+        "id": "loading.screen.startingCardanoDescription",
+        "start": {
+          "column": 23,
+          "line": 15
+        }
+      },
+      {
         "defaultMessage": "!!!Stopping Cardano node",
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 25
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 15
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!This process updates the databases and could take several minutes.<br />To preserve data integrity, please wait until this process is complete.",
+        "description": "Message \"Stopping Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
+        "id": "loading.screen.stoppingCardanoDescription",
+        "start": {
+          "column": 23,
+          "line": 26
         }
       },
       {
@@ -2073,13 +2101,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 36
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 20
+          "line": 32
         }
       },
       {
@@ -2087,13 +2115,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 41
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 37
         }
       },
       {
@@ -2101,13 +2129,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 46
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 42
         }
       },
       {
@@ -2115,13 +2143,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 51
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 35
+          "line": 47
         }
       },
       {
@@ -2129,13 +2157,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 58
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 40
+          "line": 52
         }
       },
       {
@@ -2143,13 +2171,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 63
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 47
+          "line": 59
         }
       },
       {
@@ -2157,13 +2185,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 69
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 52
+          "line": 64
         }
       },
       {
@@ -2171,13 +2199,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 74
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 58
+          "line": 70
         }
       },
       {
@@ -2185,13 +2213,13 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 79
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 63
+          "line": 75
         }
       },
       {
@@ -2199,13 +2227,13 @@
         "description": "Message \"Verifying the blockchain (65% complete) ...\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 86
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.verifyingBlockchainMessage",
         "start": {
           "column": 23,
-          "line": 68
+          "line": 80
         }
       }
     ],
@@ -2870,6 +2898,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Discreet mode",
+        "description": "Title for the \"Discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.discreetMode.title",
+        "start": {
+          "column": 21,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!This mode uses asterisks to hide sensitive data",
+        "description": "Description for the \"Discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.discreetMode.description",
+        "start": {
+          "column": 27,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Start the application in Discreet mode",
+        "description": "Title for the \"Open in discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.openInDiscreetMode.title",
+        "start": {
+          "column": 27,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus will start with Discreet mode enabled by default",
+        "description": "Description for the \"Open in discreet mode\" setting in the security category.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/settings/categories/SecuritySettings.messages.js",
+        "id": "settings.security.openInDiscreetMode.description",
+        "start": {
+          "column": 33,
+          "line": 23
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/SecuritySettings.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!The {link} is an off-chain metadata server that enables the fast loading of stake pool details. Stake pools are also curated and each server has a different curation policy.",
         "description": "description for the Stake Pools settings page.",
         "end": {
@@ -3351,12 +3440,26 @@
         "description": "Label for the \"General\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 9
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.general.link.label",
         "start": {
           "column": 11,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Security",
+        "description": "Label for the \"Security\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
+        "id": "settings.menu.security.link.label",
+        "start": {
+          "column": 12,
           "line": 10
         }
       },
@@ -3367,7 +3470,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.wallets.link.label",
         "start": {
           "column": 11,
@@ -3381,7 +3484,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.stakePools.link.label",
         "start": {
           "column": 14,
@@ -3395,7 +3498,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.support.link.label",
         "start": {
           "column": 11,
@@ -3409,7 +3512,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
@@ -3423,7 +3526,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.messages.js",
         "id": "settings.menu.display.link.label",
         "start": {
           "column": 11,
@@ -3431,7 +3534,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/settings/menu/SettingsMenu.json"
+    "path": "source/renderer/app/components/settings/menu/SettingsMenu.messages.json"
   },
   {
     "descriptors": [
@@ -3549,6 +3652,25 @@
       }
     ],
     "path": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!New discreet mode settings are available in <b>Security</b> tab.",
+        "description": "Label of settings sidebar category popover notification",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.js",
+        "id": "sidebar.category.settings.notification.label",
+        "start": {
+          "column": 9,
+          "line": 5
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.json"
   },
   {
     "descriptors": [
@@ -3979,13 +4101,13 @@
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -3993,13 +4115,13 @@
         "description": "Undelegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -4007,13 +4129,13 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -4021,13 +4143,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEpoch",
         "start": {
           "column": 26,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -4035,13 +4157,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards",
         "start": {
           "column": 35,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -4049,13 +4171,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -4063,13 +4185,13 @@
         "description": "Redelegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.redelegate",
         "start": {
           "column": 14,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -4077,13 +4199,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -4091,13 +4213,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 73
+          "line": 74
         }
       }
     ],
@@ -4109,186 +4231,186 @@
         "defaultMessage": "!!!Choose a stake pool",
         "description": "Title \"Choose a stake pool\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 33
+          "column": 5,
+          "line": 13
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
         "start": {
-          "column": 9,
-          "line": 28
+          "column": 11,
+          "line": 8
         }
       },
       {
         "defaultMessage": "!!!Currently selected stake pool:",
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 39
+          "column": 5,
+          "line": 19
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
         "start": {
-          "column": 15,
-          "line": 34
+          "column": 17,
+          "line": 14
         }
       },
       {
         "defaultMessage": "!!!Select a stake pool to receive your delegated funds in the <span>{selectedWalletName}<span> wallet.",
         "description": "Select / Selected pool section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 47
+          "column": 5,
+          "line": 27
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel",
         "start": {
-          "column": 24,
-          "line": 40
+          "column": 26,
+          "line": 20
         }
       },
       {
         "defaultMessage": "!!!You have selected [{selectedPoolTicker}] stake pool to delegate to for <span>{selectedWalletName}</span> wallet.",
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 55
+          "column": 5,
+          "line": 35
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel",
         "start": {
-          "column": 26,
-          "line": 48
+          "column": 28,
+          "line": 28
         }
       },
       {
         "defaultMessage": "!!!The [{selectedPoolTicker}] stake pool which you have selected to delegate your <span>{selectedWalletName}</span> wallet funds is about to retire.",
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 63
+          "column": 5,
+          "line": 43
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabelRetiring",
         "start": {
-          "column": 34,
-          "line": 56
+          "column": 36,
+          "line": 36
         }
       },
       {
         "defaultMessage": "!!!You are already delegating <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>",
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 71
+          "column": 5,
+          "line": 51
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel",
         "start": {
-          "column": 27,
-          "line": 64
+          "column": 29,
+          "line": 44
         }
       },
       {
         "defaultMessage": "!!!You are already pending delegation <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>",
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 79
+          "column": 5,
+          "line": 59
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel",
         "start": {
-          "column": 31,
-          "line": 72
+          "column": 33,
+          "line": 52
         }
       },
       {
         "defaultMessage": "!!!Choose one of your recent stake pool choices:",
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 85
+          "column": 5,
+          "line": 66
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel",
         "start": {
-          "column": 20,
-          "line": 80
+          "column": 22,
+          "line": 60
         }
       },
       {
         "defaultMessage": "!!!Or select a stake pool from the list of all available stake pools:",
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 92
+          "column": 5,
+          "line": 74
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
-          "column": 20,
-          "line": 86
+          "column": 22,
+          "line": 67
         }
       },
       {
         "defaultMessage": "!!!Search stake pools",
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 99
+          "column": 5,
+          "line": 81
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
-          "column": 26,
-          "line": 93
+          "column": 28,
+          "line": 75
         }
       },
       {
         "defaultMessage": "!!!Continue",
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
-          "column": 3,
-          "line": 106
+          "column": 5,
+          "line": 88
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
-          "column": 23,
-          "line": 100
+          "column": 25,
+          "line": 82
         }
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
         "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 113
+          "column": 5,
+          "line": 95
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
-          "column": 22,
-          "line": 107
+          "column": 24,
+          "line": 89
         }
       },
       {
         "defaultMessage": "!!!The stake pool you have selected is about to be retired. If you continue the delegation process, you will need to delegate your stake to another pool at least one complete epoch before the current pool’s retirement date to avoid losing rewards.",
         "description": "Retiring Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 121
+          "column": 5,
+          "line": 103
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter",
         "start": {
-          "column": 22,
-          "line": 114
+          "column": 24,
+          "line": 96
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.json"
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.messages.json"
   },
   {
     "descriptors": [
@@ -4427,172 +4549,172 @@
         "defaultMessage": "!!!Confirm Delegation",
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 42
+          "column": 5,
+          "line": 13
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
-          "column": 9,
-          "line": 37
+          "column": 11,
+          "line": 8
         }
       },
       {
         "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
         "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 48
+          "column": 5,
+          "line": 19
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
-          "column": 22,
-          "line": 43
+          "column": 24,
+          "line": 14
         }
       },
       {
         "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.",
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 55
+          "column": 5,
+          "line": 26
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
-          "column": 15,
-          "line": 49
+          "column": 17,
+          "line": 20
         }
       },
       {
         "defaultMessage": "!!!Stake pool ID",
         "description": "Stake pool ID label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 61
+          "column": 5,
+          "line": 32
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel",
         "start": {
-          "column": 20,
-          "line": 56
+          "column": 22,
+          "line": 27
         }
       },
       {
         "defaultMessage": "!!!Fees",
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 67
+          "column": 5,
+          "line": 38
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
-          "column": 13,
-          "line": 62
+          "column": 15,
+          "line": 33
         }
       },
       {
         "defaultMessage": "!!!Deposit",
         "description": "Deposit label on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 73
+          "column": 5,
+          "line": 44
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.depositLabel",
         "start": {
-          "column": 16,
-          "line": 68
+          "column": 18,
+          "line": 39
         }
       },
       {
         "defaultMessage": "!!!Spending password",
         "description": "Placeholder for \"spending password\"",
         "end": {
-          "column": 3,
-          "line": 79
+          "column": 5,
+          "line": 50
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
-          "column": 31,
-          "line": 74
+          "column": 33,
+          "line": 45
         }
       },
       {
         "defaultMessage": "!!!Spending password",
         "description": "Label for \"spending password\"",
         "end": {
-          "column": 3,
-          "line": 85
+          "column": 5,
+          "line": 56
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
-          "column": 25,
-          "line": 80
+          "column": 27,
+          "line": 51
         }
       },
       {
         "defaultMessage": "!!!Confirm",
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 91
+          "column": 5,
+          "line": 62
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
-          "column": 22,
-          "line": 86
+          "column": 24,
+          "line": 57
         }
       },
       {
         "defaultMessage": "!!!Cancel",
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
-          "column": 3,
-          "line": 97
+          "column": 5,
+          "line": 68
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
-          "column": 21,
-          "line": 92
+          "column": 23,
+          "line": 63
         }
       },
       {
         "defaultMessage": "!!!Calculating fees",
         "description": "\"Calculating fees\" message in the \"confirmation\" dialog.",
         "end": {
-          "column": 3,
-          "line": 102
+          "column": 5,
+          "line": 73
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
         "start": {
-          "column": 19,
-          "line": 98
+          "column": 21,
+          "line": 69
         }
       },
       {
         "defaultMessage": "!!!Calculating deposit",
         "description": "\"Calculating deposit\" message in the \"confirmation\" dialog.",
         "end": {
-          "column": 3,
-          "line": 107
+          "column": 5,
+          "line": 79
         },
-        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit",
         "start": {
-          "column": 22,
-          "line": 103
+          "column": 24,
+          "line": 74
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.json"
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.json"
   },
   {
     "descriptors": [
@@ -4818,6 +4940,25 @@
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!The selected stake pool will become oversaturated by {oversaturationPercentage}%, which will reduce future rewards for all delegators to that pool.",
+        "description": "Warning shown if pool is going to be saturated if delegation happens",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/OversaturationText.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.oversaturationWarning",
+        "start": {
+          "column": 25,
+          "line": 14
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/OversaturationText.json"
   },
   {
     "descriptors": [
@@ -5164,13 +5305,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog.js",
         "id": "staking.redeemItnRewards.noWallets.description",
         "start": {
           "column": 15,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -5178,13 +5319,13 @@
         "description": "addWalletButtonLabel for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog.js",
         "id": "staking.redeemItnRewards.noWallets.addWalletButtonLabel",
         "start": {
           "column": 24,
-          "line": 18
+          "line": 19
         }
       }
     ],
@@ -5197,13 +5338,13 @@
         "description": "Title for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.title",
         "start": {
           "column": 9,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -5211,13 +5352,13 @@
         "description": "closeButtonLabel for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.closeButton.label",
         "start": {
           "column": 20,
-          "line": 19
+          "line": 20
         }
       }
     ],
@@ -5230,13 +5371,13 @@
         "description": "Title for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.title",
         "start": {
           "column": 9,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -5244,13 +5385,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description1",
         "start": {
           "column": 16,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -5258,13 +5399,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description2",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -5272,13 +5413,13 @@
         "description": "descriptionItnLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkLabel",
         "start": {
           "column": 27,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -5286,13 +5427,13 @@
         "description": "descriptionItnLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkUrl",
         "start": {
           "column": 25,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -5300,13 +5441,13 @@
         "description": "recoveryPhraseLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseLabel",
         "start": {
           "column": 23,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -5314,13 +5455,13 @@
         "description": "walletsDropdownLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.walletsDropdownLabel",
         "start": {
           "column": 24,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -5328,13 +5469,13 @@
         "description": "checkbox1Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -5342,13 +5483,13 @@
         "description": "checkbox2Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 89
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -5356,13 +5497,13 @@
         "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.continueButton.label",
         "start": {
           "column": 23,
-          "line": 89
+          "line": 90
         }
       },
       {
@@ -5370,13 +5511,13 @@
         "description": "learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.label",
         "start": {
           "column": 22,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -5384,13 +5525,13 @@
         "description": "learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 105
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.url",
         "start": {
           "column": 20,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -5398,13 +5539,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 105
+          "line": 106
         }
       },
       {
@@ -5412,13 +5553,13 @@
         "description": "Placeholder \"Select Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 117
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.selectWalletInputPlaceholder",
         "start": {
           "column": 32,
-          "line": 111
+          "line": 112
         }
       },
       {
@@ -5426,13 +5567,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 123
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.noResults",
         "start": {
           "column": 13,
-          "line": 117
+          "line": 118
         }
       },
       {
@@ -5440,13 +5581,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 123
+          "line": 124
         }
       }
     ],
@@ -5459,13 +5600,13 @@
         "description": "title for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.title",
         "start": {
           "column": 9,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -5473,13 +5614,13 @@
         "description": "walletToLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.walletToLabel",
         "start": {
           "column": 17,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -5487,13 +5628,13 @@
         "description": "walletToName for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.walletToName",
         "start": {
           "column": 16,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -5501,13 +5642,13 @@
         "description": "transactionFees for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.transactionFees",
         "start": {
           "column": 19,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -5515,13 +5656,13 @@
         "description": "spendingPasswordLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -5529,13 +5670,13 @@
         "description": "spendingPasswordPlaceholder for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -5543,13 +5684,13 @@
         "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -5557,13 +5698,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.backButtonLabel",
         "start": {
           "column": 19,
-          "line": 61
+          "line": 62
         }
       }
     ],
@@ -5576,13 +5717,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description1NoRewards",
         "start": {
           "column": 25,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -5590,13 +5731,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description2InvalidWallet",
         "start": {
           "column": 29,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -5604,13 +5745,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description3Generic",
         "start": {
           "column": 23,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -5618,13 +5759,13 @@
         "description": "backButtonLabel for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.backButtonLabel",
         "start": {
           "column": 19,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -5632,13 +5773,13 @@
         "description": "closeWindowLinkLabel for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.closeWindowLinkLabel",
         "start": {
           "column": 24,
-          "line": 35
+          "line": 36
         }
       }
     ],
@@ -5651,13 +5792,13 @@
         "description": "title for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
         "id": "staking.redeemItnRewards.step3.success.title",
         "start": {
           "column": 9,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -5665,13 +5806,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
         "id": "staking.redeemItnRewards.step3.success.description",
         "start": {
           "column": 15,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -5679,13 +5820,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
         "id": "staking.redeemItnRewards.step3.success.openWalletButtonLabel",
         "start": {
           "column": 25,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -5693,13 +5834,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
         "id": "staking.redeemItnRewards.step3.success.downloadPDFButtonLabel",
         "start": {
           "column": 26,
-          "line": 31
+          "line": 32
         }
       }
     ],
@@ -5712,13 +5853,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -5726,13 +5867,13 @@
         "description": "Filename prefix for the \"Export CSV\" on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.csvFilenamePrefix",
         "start": {
           "column": 21,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -5740,13 +5881,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -5754,13 +5895,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -5768,13 +5909,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -5782,13 +5923,13 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -5796,13 +5937,13 @@
         "description": "Table header \"Rewards address\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.rewardsAddress",
         "start": {
           "column": 29,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -5810,13 +5951,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -5824,13 +5965,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -5838,13 +5979,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -5852,13 +5993,13 @@
         "description": "View in explorer button label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.actionViewInExplorer",
         "start": {
           "column": 24,
-          "line": 82
+          "line": 83
         }
       }
     ],
@@ -5867,7 +6008,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Staking pools you are delegating to",
+        "defaultMessage": "!!!Stake pools to which you are delegating",
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
@@ -5988,13 +6129,13 @@
         "description": "All wallets item of dropdown.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWallets",
         "start": {
           "column": 21,
-          "line": 36
+          "line": 39
         }
       },
       {
@@ -6002,13 +6143,13 @@
         "description": "All wallets description after dropdown.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsEnd",
         "start": {
           "column": 24,
-          "line": 41
+          "line": 44
         }
       },
       {
@@ -6016,13 +6157,13 @@
         "description": "All wallets description before dropdown.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsStart",
         "start": {
           "column": 26,
-          "line": 46
+          "line": 49
         }
       },
       {
@@ -6030,13 +6171,13 @@
         "description": "Ranking description.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingDescription",
         "start": {
           "column": 22,
-          "line": 52
+          "line": 55
         }
       },
       {
@@ -6044,13 +6185,13 @@
         "description": "Ranking learn more url.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
-          "line": 58
+          "line": 61
         }
       },
       {
@@ -6058,13 +6199,13 @@
         "description": "One wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletEnd",
         "start": {
           "column": 23,
-          "line": 63
+          "line": 66
         }
       },
       {
@@ -6072,13 +6213,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 68
+          "line": 71
         }
       },
       {
@@ -6086,13 +6227,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 81
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 74
+          "line": 77
         }
       },
       {
@@ -6100,13 +6241,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 79
+          "line": 82
         }
       },
       {
@@ -6114,13 +6255,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 91
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 84
+          "line": 87
         }
       },
       {
@@ -6128,13 +6269,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 96
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 89
+          "line": 92
         }
       },
       {
@@ -6142,13 +6283,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 101
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 94
+          "line": 97
         }
       },
       {
@@ -6156,13 +6297,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 106
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 99
+          "line": 102
         }
       },
       {
@@ -6170,13 +6311,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 104
+          "line": 107
         }
       }
     ],
@@ -6199,7 +6340,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Staking pools you are delegating to",
+        "defaultMessage": "!!!Stake pools to which you are delegating",
         "description": "\"delegatingListTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
@@ -6825,17 +6966,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Data not available yet",
-        "description": "Data not available yet label",
+        "defaultMessage": "!!!Copied",
+        "description": "copyId tooltip label copied",
         "end": {
           "column": 3,
           "line": 148
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.copiedIdTooltipLabel",
+        "start": {
+          "column": 24,
+          "line": 144
+        }
+      },
+      {
+        "defaultMessage": "!!!Data not available yet",
+        "description": "Data not available yet label",
+        "end": {
+          "column": 3,
+          "line": 153
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
-          "line": 144
+          "line": 149
         }
       }
     ],
@@ -7834,6 +7989,354 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
+        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/components/voting/voting-info/AppStore.messages.js",
+        "id": "voting.info.androidAppButtonUrl",
+        "start": {
+          "column": 23,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!https://apps.apple.com/in/app/catalyst-voting/id1517473397",
+        "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/voting/voting-info/AppStore.messages.js",
+        "id": "voting.info.appleAppButtonUrl",
+        "start": {
+          "column": 21,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/AppStore.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Project Catalyst",
+        "description": "Headline Project Catalyst",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.catalyst.heading",
+        "start": {
+          "column": 11,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Decide which innovative ideas for Cardano will receive funding.",
+        "description": "Description Project Catalyst",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.catalyst.descriptionRow1",
+        "start": {
+          "column": 19,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!{reward} worth of ada rewards will be distributed between ada holders who register their vote.",
+        "description": "Description Project Catalyst",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.catalyst.descriptionRow2",
+        "start": {
+          "column": 19,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more link label for registration steps",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.info.learnMoreLinkLabel",
+        "start": {
+          "column": 22,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!https://cardano.ideascale.com/a/index",
+        "description": "Learn more link url for registration steps",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/voting/voting-info/Headline.messages.js",
+        "id": "voting.info.learnMoreLinkUrl",
+        "start": {
+          "column": 20,
+          "line": 27
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/Headline.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Snapshot date:",
+        "description": "Voting info snapshot date label",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.dateLabel",
+        "start": {
+          "column": 13,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow these steps to vote:",
+        "description": "Steps to follow title",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.stepsTitle",
+        "start": {
+          "column": 14,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Download the Catalyst Voting app on your smartphone",
+        "description": "First step to follow in order to vote",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.step1CheckBoxLabel",
+        "start": {
+          "column": 22,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.",
+        "description": "Second step to follow in order to vote",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.step2CheckBoxLabel",
+        "start": {
+          "column": 22,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Register to vote",
+        "description": "Button Label for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.js",
+        "id": "voting.registerToVote.registerToVoteButtonLabel",
+        "start": {
+          "column": 15,
+          "line": 26
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!End of voting:",
+        "description": "Headline for end date",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
+        "id": "voting.resultsPhase.endDateLabel",
+        "start": {
+          "column": 16,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!View results",
+        "description": "View results link label",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
+        "id": "voting.resultsPhase.viewResultsLinkLabel",
+        "start": {
+          "column": 24,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "https://cardano.ideascale.com/a/pages/results",
+        "description": "View results link",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.js",
+        "id": "voting.resultsPhase.viewResultsLinkURL",
+        "start": {
+          "column": 22,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Snapshot date:",
+        "description": "Snapshot date label",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.js",
+        "id": "voting.snapshotPhase.snapshotDateLabel",
+        "start": {
+          "column": 21,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Next voting period:",
+        "description": "Next voting date label",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.js",
+        "id": "voting.snapshotPhase.votingDateLabel",
+        "start": {
+          "column": 19,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Voting ended:",
+        "description": "Voting end date label",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.js",
+        "id": "voting.tallyingPhase.endDateLabel",
+        "start": {
+          "column": 16,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Check back for results on:",
+        "description": "Results date label",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.js",
+        "id": "voting.tallyingPhase.resultsLabel",
+        "start": {
+          "column": 16,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fund{votingFundNumber}",
+        "description": "Current fund name",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.js",
+        "id": "voting.fundName",
+        "start": {
+          "column": 12,
+          "line": 5
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Voting period open between:",
+        "description": "Voting date label",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.js",
+        "id": "voting.votingOpenPhase.dateLabel",
+        "start": {
+          "column": 13,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Use mobile app to vote",
+        "description": "Voting instruction",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.js",
+        "id": "voting.votingOpenPhase.instruction",
+        "start": {
+          "column": 15,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!You can only use one wallet when registering. To maximize rewards and voting power, choose the wallet with the largest balance.",
         "description": "Description on the voting registration \"choose wallet\" step.",
         "end": {
@@ -8082,17 +8585,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please enter a PIN for your Fund6 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
+        "defaultMessage": "!!!Please enter a PIN for your Fund{nextVotingFundNumber} voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 27
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.description",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 21
         }
       },
       {
@@ -8100,13 +8603,13 @@
         "description": "Reminder on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 33
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.reminder",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 28
         }
       },
       {
@@ -8114,13 +8617,13 @@
         "description": "Label for pin code input on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.enterPinCodeLabel",
         "start": {
           "column": 21,
-          "line": 31
+          "line": 34
         }
       },
       {
@@ -8128,13 +8631,13 @@
         "description": "Label for repeat pin code on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel",
         "start": {
           "column": 22,
-          "line": 37
+          "line": 40
         }
       },
       {
@@ -8142,13 +8645,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 50
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode",
         "start": {
           "column": 18,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -8156,13 +8659,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 56
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode",
         "start": {
           "column": 24,
-          "line": 48
+          "line": 51
         }
       },
       {
@@ -8170,13 +8673,13 @@
         "description": "Label for continue button on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 62
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 54
+          "line": 57
         }
       }
     ],
@@ -8189,27 +8692,41 @@
         "description": "Qr code title on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeTitle",
         "start": {
           "column": 15,
-          "line": 12
+          "line": 13
         }
       },
       {
-        "defaultMessage": "!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and use the PIN to complete the voting registration process.",
-        "description": "Qr code description of use on the voting registration \"qr code\" step.",
+        "defaultMessage": "!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and enter your PIN to complete the voting registration process.",
+        "description": "Part 1 of Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
-        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription1",
         "start": {
-          "column": 21,
-          "line": 17
+          "column": 22,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Your registration remains valid across all Catalyst funding rounds. Ensure that you save your QR code and PIN so you can reconnect your wallet to the voting app if you are logged out, or if you want to connect a new device.",
+        "description": "Part 2 of Qr code description of use on the voting registration \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription2",
+        "start": {
+          "column": 22,
+          "line": 25
         }
       },
       {
@@ -8217,13 +8734,13 @@
         "description": "Qr code warning on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 37
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeWarning",
         "start": {
           "column": 17,
-          "line": 24
+          "line": 32
         }
       },
       {
@@ -8231,27 +8748,27 @@
         "description": "First checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 30
+          "line": 38
         }
       },
       {
-        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund6.",
+        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund{nextVotingFundNumber}.",
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 51
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 37
+          "line": 45
         }
       },
       {
@@ -8259,13 +8776,13 @@
         "description": "\"Close\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 57
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 52
         }
       },
       {
@@ -8273,13 +8790,13 @@
         "description": "\"Save as PDF\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 63
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel",
         "start": {
           "column": 24,
-          "line": 50
+          "line": 58
         }
       }
     ],
@@ -8288,17 +8805,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund6 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
+        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund{nextVotingFundNumber} voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -8306,13 +8823,13 @@
         "description": "Label for continue button on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -8320,13 +8837,13 @@
         "description": "Fees label on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.feesLabel",
         "start": {
           "column": 13,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -8334,13 +8851,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -8348,13 +8865,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -8362,13 +8879,13 @@
         "description": "\"Calculating fees\" message in the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.calculatingFees",
         "start": {
           "column": 19,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -8376,13 +8893,13 @@
         "description": "\"Learn more\" link on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learnMoreLink",
         "start": {
           "column": 17,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -8390,13 +8907,13 @@
         "description": "Learn more\" link URL on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learntMoreLinkUrl",
         "start": {
           "column": 21,
-          "line": 64
+          "line": 65
         }
       }
     ],
@@ -8405,31 +8922,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cancel Fund6 voting registration?",
+        "defaultMessage": "!!!Cancel Fund{nextVotingFundNumber} voting registration?",
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.headline",
         "start": {
           "column": 12,
-          "line": 10
+          "line": 11
         }
       },
       {
-        "defaultMessage": "!!!Are you sure that you want to cancel Fund6 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
+        "defaultMessage": "!!!Are you sure that you want to cancel Fund{nextVotingFundNumber} voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.content",
         "start": {
           "column": 11,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -8437,13 +8954,13 @@
         "description": "\"Cancel registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -8451,13 +8968,13 @@
         "description": "\"Continue registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.button.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 30
+          "line": 31
         }
       }
     ],
@@ -8466,17 +8983,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register for Fund6 voting",
+        "defaultMessage": "!!!Register for Fund{nextVotingFundNumber} voting",
         "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog.js",
         "id": "voting.votingRegistration.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -8484,13 +9001,13 @@
         "description": "Sub title for voting registration",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog.js",
         "id": "voting.votingRegistration.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 21
+          "line": 22
         }
       }
     ],
@@ -8499,274 +9016,78 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register to vote on Fund6",
-        "description": "Headline for voting registration steps",
+        "defaultMessage": "Newsletter",
+        "description": "\"Newsletter\" link for Project Catalyst footer",
         "end": {
           "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.heading",
-        "start": {
-          "column": 11,
           "line": 24
+        },
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.newsletter",
+        "start": {
+          "column": 14,
+          "line": 20
         }
       },
       {
-        "defaultMessage": "!!!Fund6 Voting Registration Ended",
-        "description": "Headline for ended voting registration",
+        "defaultMessage": "Announcements Channel",
+        "description": "\"Announcements Channel\" link for Project Catalyst footer",
         "end": {
           "column": 3,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.headingForEndedRegistration",
-        "start": {
-          "column": 31,
           "line": 29
+        },
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.announcements",
+        "start": {
+          "column": 17,
+          "line": 25
         }
       },
       {
-        "defaultMessage": "!!!<p>Voting registration for Project Catalyst Fund6 has been completed. The voting snapshot took place on <b>{snapshotDate}</b>.</p><p>If you have registered to vote on Fund6, you can cast your vote using the Catalyst Voting mobile app between <b>{castStartDate}</b> and <b>{castEndDate}</b>.</p><p>Fund6 registration will start on <b>{newRegistrationStartDate}</b>.</p>",
-        "description": "Description for ended voting registration",
+        "defaultMessage": "Community Chat",
+        "description": "\"Community Chat\" link for Project Catalyst footer",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.community",
+        "start": {
+          "column": 13,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "Projects",
+        "description": "\"Projects\" link for Project Catalyst footer",
         "end": {
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.descriptionForEndedRegistration",
+        "file": "source/renderer/app/components/voting/VotingFooterLinks.js",
+        "id": "voting.catalystFooterLinks.projects",
         "start": {
-          "column": 35,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!Decide which innovative ideas for Cardano will receive funding.",
-        "description": "Info step title 2 for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.stepTitle1",
-        "start": {
-          "column": 14,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!$520.000 worth of ada rewards will be distributed between ada holders who register their vote.",
-        "description": "Info step title 2 for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.stepTitle2",
-        "start": {
-          "column": 14,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Please read the",
-        "description": "Learn more link previous label",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMorePreviousLabel",
-        "start": {
-          "column": 26,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!for more information.",
-        "description": "Learn more link next label",
-        "end": {
-          "column": 3,
-          "line": 61
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreNextLabel",
-        "start": {
-          "column": 22,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Learn more link label for registration steps",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkLabel",
-        "start": {
-          "column": 22,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!Fund6 FAQs",
-        "description": "Learn more link label for ended registration",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkLabelForEndedRegistration",
-        "start": {
-          "column": 42,
-          "line": 67
-        }
-      },
-      {
-        "defaultMessage": "!!!https://cardano.ideascale.com/a/index",
-        "description": "Learn more link url for registration steps",
-        "end": {
-          "column": 3,
-          "line": 76
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkUrl",
-        "start": {
-          "column": 20,
-          "line": 72
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/900006490763",
-        "description": "Learn more link url for ended registration",
-        "end": {
-          "column": 3,
-          "line": 82
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.learnMoreLinkUrlForEndedRegistration",
-        "start": {
-          "column": 40,
-          "line": 77
-        }
-      },
-      {
-        "defaultMessage": "!!!Download the Catalyst Voting app on your smartphone",
-        "description": "bottomContentTitle for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 87
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.bottomContentTitle",
-        "start": {
-          "column": 22,
-          "line": 83
-        }
-      },
-      {
-        "defaultMessage": "!!!To register to vote for Catalyst Fund6 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
-        "description": "bottomContentDescription for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 93
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.bottomContentDescription",
-        "start": {
-          "column": 28,
-          "line": 88
-        }
-      },
-      {
-        "defaultMessage": "!!!To cast your vote on Project Catalyst Fund6 proposals, you need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
-        "description": "bottomContentDescription for ended registration",
-        "end": {
-          "column": 3,
-          "line": 99
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.bottomContentDescriptionForEndedRegistration",
-        "start": {
-          "column": 48,
-          "line": 94
-        }
-      },
-      {
-        "defaultMessage": "!!!I have installed the Catalyst Voting app",
-        "description": "checkboxLabel for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 104
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.checkboxLabel",
-        "start": {
-          "column": 17,
-          "line": 100
-        }
-      },
-      {
-        "defaultMessage": "!!!Register to vote",
-        "description": "Button Label for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 109
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.buttonLabel",
-        "start": {
-          "column": 15,
-          "line": 105
-        }
-      },
-      {
-        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
-        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
-        "end": {
-          "column": 3,
-          "line": 115
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.androidAppButtonUrl",
-        "start": {
-          "column": 23,
-          "line": 110
-        }
-      },
-      {
-        "defaultMessage": "!!!https://apps.apple.com/in/app/catalyst-voting/id1517473397",
-        "description": "\"appleAppButtonUrl\" for the Catalyst voting app",
-        "end": {
-          "column": 3,
-          "line": 121
-        },
-        "file": "source/renderer/app/components/voting/VotingInfo.js",
-        "id": "voting.info.appleAppButtonUrl",
-        "start": {
-          "column": 21,
-          "line": 116
+          "column": 12,
+          "line": 35
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/VotingInfo.json"
+    "path": "source/renderer/app/components/voting/VotingFooterLinks.json"
   },
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting registration for Fund6 is not available as you currently do not have any Shelley-compatible wallets.",
+        "defaultMessage": "!!!Voting registration for Fund{nextVotingFundNumber} is not available as you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the voting info page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/voting/VotingNoWallets.js",
         "id": "voting.info.noWallets.headLine",
         "start": {
           "column": 12,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -8774,13 +9095,13 @@
         "description": "\"No wallets\" instructions on the voting info page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/voting/VotingNoWallets.js",
         "id": "voting.info.noWallets.instructions",
         "start": {
           "column": 16,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -8788,120 +9109,17 @@
         "description": "Label for \"Create New Wallet\" button on the voting info page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/VotingNoWallets.js",
         "id": "voting.info.noWallets.createWalletButtonLabel",
         "start": {
           "column": 27,
-          "line": 24
+          "line": 25
         }
       }
     ],
     "path": "source/renderer/app/components/voting/VotingNoWallets.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Project Catalyst voting registration",
-        "description": "Headline for the \"Voting unavailable\" screen",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.heading",
-        "start": {
-          "column": 11,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Project Catalyst Fund5 has now ended. Fund6 is currently in preparation, voting registration is not available yet.",
-        "description": "First paragraph on the \"Voting unavailable\" screen",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.paragraph1",
-        "start": {
-          "column": 14,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Join our {link1} and {link2} Telegram channels for the latest updates (English language only).",
-        "description": "Second paragraph on the \"Voting unavailable\" screen",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.paragraph2",
-        "start": {
-          "column": 14,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Catalyst Announcements",
-        "description": "First link text on the \"Voting unavailable\" screen",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.link1Text",
-        "start": {
-          "column": 13,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!Project Catalyst Chat",
-        "description": "Second link text on the \"Voting unavailable\" screen",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.link2Text",
-        "start": {
-          "column": 13,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!https://t.me/cardanocatalyst",
-        "description": "First link URL on the \"Voting unavailable\" screen",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.link1Url",
-        "start": {
-          "column": 12,
-          "line": 44
-        }
-      },
-      {
-        "defaultMessage": "!!!https://t.me/ProjectCatalystChat",
-        "description": "Second link URL on the \"Voting unavailable\" screen",
-        "end": {
-          "column": 3,
-          "line": 53
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.link2Url",
-        "start": {
-          "column": 12,
-          "line": 49
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/VotingUnavailable.json"
   },
   {
     "descriptors": [
@@ -12684,13 +12902,13 @@
         "description": "\"Currency - title\" label on Wallet summary currency page",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
         "id": "wallet.summary.currency.title",
         "start": {
           "column": 17,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -12698,13 +12916,13 @@
         "description": "\"Currency - last fetched\" label on Wallet summary currency page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
         "id": "wallet.summary.currency.lastFetched",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -12712,13 +12930,13 @@
         "description": "\"Currency - Fetching\" label on Wallet summary currency page",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
         "id": "wallet.summary.currency.isFetchingRate",
         "start": {
           "column": 26,
-          "line": 27
+          "line": 28
         }
       }
     ],
@@ -12731,13 +12949,13 @@
         "description": "\"Number of transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.js",
         "id": "wallet.summary.header.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -12745,13 +12963,13 @@
         "description": "\"Number of pending transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.js",
         "id": "wallet.summary.header.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 19
+          "line": 20
         }
       }
     ],
@@ -12764,13 +12982,13 @@
         "description": "Number of tokens title on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 14
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 15,
-          "line": 12
+          "line": 10
         }
       },
       {
@@ -12778,13 +12996,13 @@
         "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textTop",
         "start": {
           "column": 20,
-          "line": 17
+          "line": 15
         }
       },
       {
@@ -12792,13 +13010,13 @@
         "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textBottom",
         "start": {
           "column": 23,
-          "line": 22
+          "line": 20
         }
       },
       {
@@ -12806,13 +13024,13 @@
         "description": "\"Learn more\" label or button in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkLabel",
         "start": {
           "column": 22,
-          "line": 27
+          "line": 25
         }
       },
       {
@@ -12820,13 +13038,13 @@
         "description": "\"Learn more\" link URL in the Wallets Summary No Tokens component",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 33
+          "line": 31
         }
       }
     ],
@@ -13163,13 +13381,13 @@
         "description": "All Transactions button label.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.allTransactions",
         "start": {
           "column": 19,
-          "line": 32
+          "line": 38
         }
       },
       {
@@ -13177,13 +13395,13 @@
         "description": "Reset Filter button label.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.resetFilter",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 43
         }
       },
       {
@@ -13191,13 +13409,13 @@
         "description": "Incoming filter type.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.incoming",
         "start": {
           "column": 12,
-          "line": 42
+          "line": 48
         }
       },
       {
@@ -13205,13 +13423,13 @@
         "description": "Outgoing filter type.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.outgoing",
         "start": {
           "column": 12,
-          "line": 47
+          "line": 53
         }
       },
       {
@@ -13219,13 +13437,13 @@
         "description": "Date range of filter.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.dateRange",
         "start": {
           "column": 13,
-          "line": 52
+          "line": 58
         }
       },
       {
@@ -13233,13 +13451,13 @@
         "description": "Select time range indication of filter.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.selectTimeRange",
         "start": {
           "column": 19,
-          "line": 57
+          "line": 63
         }
       },
       {
@@ -13247,13 +13465,13 @@
         "description": "Last 7 days range of filter.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 72
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.last7Days",
         "start": {
           "column": 13,
-          "line": 62
+          "line": 68
         }
       },
       {
@@ -13261,13 +13479,13 @@
         "description": "Last 30 days range of filter.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.last30Days",
         "start": {
           "column": 14,
-          "line": 67
+          "line": 73
         }
       },
       {
@@ -13275,13 +13493,13 @@
         "description": "Last 90 days range of filter.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.last90Days",
         "start": {
           "column": 14,
-          "line": 72
+          "line": 78
         }
       },
       {
@@ -13289,13 +13507,13 @@
         "description": "This year date range of filter.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.thisYear",
         "start": {
           "column": 12,
-          "line": 77
+          "line": 83
         }
       },
       {
@@ -13303,13 +13521,13 @@
         "description": "Custom date range of filter.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.custom",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 88
         }
       },
       {
@@ -13317,13 +13535,13 @@
         "description": "Amount range of filter.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.amountRange",
         "start": {
           "column": 15,
-          "line": 87
+          "line": 93
         }
       },
       {
@@ -13331,13 +13549,13 @@
         "description": "Filter button label.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/transactions/FilterDialog.js",
         "id": "wallet.transaction.filter.apply",
         "start": {
           "column": 9,
-          "line": 92
+          "line": 98
         }
       }
     ],
@@ -13369,13 +13587,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -13383,13 +13601,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -13397,13 +13615,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -13411,13 +13629,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -13425,13 +13643,13 @@
         "description": "Transaction Metadata.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionMetadata",
         "start": {
           "column": 23,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -13439,13 +13657,13 @@
         "description": "",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionMetadataDescription",
         "start": {
           "column": 34,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -13453,13 +13671,13 @@
         "description": "Transaction metadata label",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataLabel",
         "start": {
           "column": 17,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -13467,13 +13685,13 @@
         "description": "Transaction metadata disclaimer",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataDisclaimer",
         "start": {
           "column": 22,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -13481,13 +13699,13 @@
         "description": "Transaction metadata confirmation toggle",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataConfirmationLabel",
         "start": {
           "column": 29,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -13495,13 +13713,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -13509,13 +13727,13 @@
         "description": "Label \"{transactionsType} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -13523,13 +13741,13 @@
         "description": "Label \"{transactionsType} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 91
+          "line": 92
         }
       },
       {
@@ -13537,13 +13755,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 96
+          "line": 97
         }
       },
       {
@@ -13551,13 +13769,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 101
+          "line": 102
         }
       },
       {
@@ -13565,13 +13783,13 @@
         "description": "From rewards",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.rewards.from",
         "start": {
           "column": 15,
-          "line": 106
+          "line": 107
         }
       },
       {
@@ -13579,13 +13797,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 116
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 111
+          "line": 112
         }
       },
       {
@@ -13593,13 +13811,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 116
+          "line": 117
         }
       },
       {
@@ -13607,13 +13825,13 @@
         "description": "Receiver",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 126
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.receiverLabel",
         "start": {
           "column": 17,
-          "line": 121
+          "line": 122
         }
       },
       {
@@ -13621,13 +13839,13 @@
         "description": "Token label",
         "end": {
           "column": 3,
-          "line": 130
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assetLabel",
         "start": {
           "column": 14,
-          "line": 126
+          "line": 127
         }
       },
       {
@@ -13635,13 +13853,13 @@
         "description": "Transaction fee",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 136
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionFee",
         "start": {
           "column": 18,
-          "line": 131
+          "line": 132
         }
       },
       {
@@ -13649,13 +13867,13 @@
         "description": "Deposit",
         "end": {
           "column": 3,
-          "line": 140
+          "line": 141
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.deposit",
         "start": {
           "column": 11,
-          "line": 136
+          "line": 137
         }
       },
       {
@@ -13663,13 +13881,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 145
+          "line": 146
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 141
+          "line": 142
         }
       },
       {
@@ -13677,13 +13895,13 @@
         "description": "Multiple tokens.",
         "end": {
           "column": 3,
-          "line": 150
+          "line": 151
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.multipleTokens",
         "start": {
           "column": 18,
-          "line": 146
+          "line": 147
         }
       },
       {
@@ -13691,13 +13909,13 @@
         "description": "Tokens sent.",
         "end": {
           "column": 3,
-          "line": 155
+          "line": 156
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.tokensSent",
         "start": {
           "column": 14,
-          "line": 151
+          "line": 152
         }
       },
       {
@@ -13705,13 +13923,13 @@
         "description": "Tokens received.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 161
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.tokensReceived",
         "start": {
           "column": 18,
-          "line": 156
+          "line": 157
         }
       },
       {
@@ -13719,13 +13937,13 @@
         "description": "\"Fetching token data...\" message.",
         "end": {
           "column": 3,
-          "line": 165
+          "line": 166
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.fetchingTokenData",
         "start": {
           "column": 21,
-          "line": 161
+          "line": 162
         }
       },
       {
@@ -13733,13 +13951,13 @@
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
-          "line": 171
+          "line": 172
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnNote",
         "start": {
           "column": 24,
-          "line": 166
+          "line": 167
         }
       },
       {
@@ -13747,13 +13965,13 @@
         "description": "Link to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 176
+          "line": 177
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnSupportArticle",
         "start": {
           "column": 34,
-          "line": 172
+          "line": 173
         }
       },
       {
@@ -13761,13 +13979,13 @@
         "description": "Url to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 183
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleUrl",
         "start": {
           "column": 21,
-          "line": 177
+          "line": 178
         }
       },
       {
@@ -13775,13 +13993,13 @@
         "description": "Input Addresses label.",
         "end": {
           "column": 3,
-          "line": 187
+          "line": 188
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.noInputAddressesLabel",
         "start": {
           "column": 25,
-          "line": 183
+          "line": 184
         }
       },
       {
@@ -13789,13 +14007,13 @@
         "description": "Unresolved Input Addresses link label.",
         "end": {
           "column": 3,
-          "line": 192
+          "line": 193
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkLabel",
         "start": {
           "column": 37,
-          "line": 188
+          "line": 189
         }
       },
       {
@@ -13803,13 +14021,13 @@
         "description": "Unresolved Input Addresses additional label.",
         "end": {
           "column": 3,
-          "line": 197
+          "line": 198
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel",
         "start": {
           "column": 43,
-          "line": 193
+          "line": 194
         }
       },
       {
@@ -13817,13 +14035,13 @@
         "description": "Note to cancel a transaction that has been failed",
         "end": {
           "column": 3,
-          "line": 203
+          "line": 204
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.failed.cancelFailedTxnNote",
         "start": {
           "column": 23,
-          "line": 198
+          "line": 199
         }
       },
       {
@@ -13831,13 +14049,13 @@
         "description": "Link to support article for removing a failed transaction",
         "end": {
           "column": 3,
-          "line": 208
+          "line": 209
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.failed.cancelFailedTxnSupportArticle",
         "start": {
           "column": 33,
-          "line": 204
+          "line": 205
         }
       },
       {
@@ -13845,13 +14063,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 216
+          "line": 217
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 212
+          "line": 213
         }
       },
       {
@@ -13859,13 +14077,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 221
+          "line": 222
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 217
+          "line": 218
         }
       },
       {
@@ -13873,13 +14091,13 @@
         "description": "Transaction state \"failed\"",
         "end": {
           "column": 3,
-          "line": 226
+          "line": 227
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 222
+          "line": 223
         }
       },
       {
@@ -13887,13 +14105,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 234
+          "line": 235
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmedHeading",
         "start": {
           "column": 26,
-          "line": 230
+          "line": 231
         }
       },
       {
@@ -13901,13 +14119,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 239
+          "line": 240
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pendingHeading",
         "start": {
           "column": 31,
-          "line": 235
+          "line": 236
         }
       },
       {
@@ -13915,13 +14133,13 @@
         "description": "Transaction state \"failed\"",
         "end": {
           "column": 3,
-          "line": 244
+          "line": 245
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failedHeading",
         "start": {
           "column": 30,
-          "line": 240
+          "line": 241
         }
       }
     ],
@@ -14267,13 +14485,13 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -14281,13 +14499,13 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -14295,13 +14513,13 @@
         "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.emptyWallet",
         "start": {
           "column": 15,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -14309,13 +14527,13 @@
         "description": "\"Find out more\" link on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLink",
         "start": {
           "column": 19,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -14323,13 +14541,13 @@
         "description": "\"Find out more\" link URL on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLinkUrl",
         "start": {
           "column": 22,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -14337,13 +14555,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -14351,13 +14569,13 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -14365,13 +14583,13 @@
         "description": "Number of pending transactions for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.pendingTransactions",
         "start": {
           "column": 23,
-          "line": 66
+          "line": 67
         }
       }
     ],
@@ -16682,13 +16900,13 @@
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/widgets/NodeSyncStatusIcon.js",
         "id": "cardano.node.sync.status.blocksSynced",
         "start": {
           "column": 16,
-          "line": 12
+          "line": 13
         }
       }
     ],
@@ -16996,13 +17214,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -17010,13 +17228,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -17024,13 +17242,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -17038,13 +17256,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 33
+          "line": 34
         }
       }
     ],
@@ -17430,6 +17648,53 @@
       }
     ],
     "path": "source/renderer/app/containers/wallet/WalletSummaryPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Toggle discreet mode on.",
+        "description": "Text for the tooltip on \"discreet mode\" button when mode is on",
+        "end": {
+          "column": 3,
+          "line": 10
+        },
+        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.js",
+        "id": "discreetMode.discreetToggle.on",
+        "start": {
+          "column": 6,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Toggle discreet mode off.",
+        "description": "Text for the tooltip on \"discreet mode\" button when mode is off",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.js",
+        "id": "discreetMode.discreetToggle.off",
+        "start": {
+          "column": 7,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!You can toggle auto discreet mode in <b>Settings</b>.",
+        "description": "Text for the tooltip on \"discreet mode\" button description",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.js",
+        "id": "discreetMode.discreetToggle.description",
+        "start": {
+          "column": 15,
+          "line": 17
+        }
+      }
+    ],
+    "path": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.json"
   },
   {
     "descriptors": [
@@ -18672,7 +18937,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Fund{fundNumber} Voting Registration",
+        "defaultMessage": "!!!Fund{nextVotingFundNumber} Voting Registration",
         "description": "PDF title",
         "end": {
           "column": 3,

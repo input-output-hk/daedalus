@@ -23,6 +23,7 @@ import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import ButtonLink from '../../widgets/ButtonLink';
+import { RewardAmount } from './RewardAmount';
 
 const messages = defineMessages({
   title: {
@@ -393,7 +394,11 @@ export default class StakingRewards extends Component<Props, State> {
                           )}
                         </td>
                         <td className={styles.rewardAmount}>
-                          {isRestoring ? '-' : rewardAmount}
+                          {isRestoring ? (
+                            '-'
+                          ) : (
+                            <RewardAmount amount={rewardAmount} />
+                          )}
                           {isRestoring && (
                             <div className={styles.syncingProgress}>
                               <PopOver

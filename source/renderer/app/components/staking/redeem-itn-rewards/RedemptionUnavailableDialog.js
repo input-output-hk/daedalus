@@ -8,6 +8,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './RedemptionUnavailableDialog.scss';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -38,7 +39,13 @@ export default class RedemptionUnavailableDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, syncPercentage } = this.props;
 
-    const closeButton = <DialogCloseButton onClose={onClose} />;
+    const closeButton = (
+      <DialogCloseButton
+        icon={closeCrossThin}
+        className={styles.closeButton}
+        onClose={onClose}
+      />
+    );
 
     return (
       <Dialog

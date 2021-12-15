@@ -1,10 +1,10 @@
 .component {
   overflow: visible;
   position: absolute;
-  right: 100px;
+  right: 202px;
 
   &.hasTadaIcon {
-    right: 162px;
+    right: 260px;
   }
 
   &:hover {
@@ -24,24 +24,6 @@
         fill: var(--theme-node-sync-icon-color);
       }
     }
-  }
-
-  .info {
-    background-color: var(--theme-node-sync-info-message-background-color);
-    border-radius: 4px;
-    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
-    color: var(--theme-node-sync-info-message-text-color);
-    font-family: var(--font-light);
-    font-size: 14px;
-    opacity: 0;
-    padding: 10px;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    text-align: right;
-    top: calc(100% + 10px);
-    transition: opacity, 200ms;
-    white-space: nowrap;
   }
 
   &.syncing {

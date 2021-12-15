@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "6626489542ce442a8451fb46fb5339346e62b4ee",
-        "sha256": "0n1vgbz3m73v33462ifg3qas9djwlpcvi1m0qxc7j15l3w5qhlw5",
+        "rev": "dac16ba7e3bf64bf5474497656932fd342c3b720",
+        "sha256": "012lnp5rah4qyl8r0v04d0rz28b1rdaz6flhjrahf45b9gx7mny1",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/6626489542ce442a8451fb46fb5339346e62b4ee.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/dac16ba7e3bf64bf5474497656932fd342c3b720.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {
@@ -101,10 +101,22 @@
         "homepage": "",
         "owner": "input-output-hk",
         "repo": "nix-bundle",
-        "rev": "acf3b142c1fa332d4f9050e7cdfb3c3f8091e78b",
-        "sha256": "0pcc8bh1x3shr6k2h8zw05n0apm5ppx6nk07xp89ljldah4mmc6c",
+        "rev": "a43e9280628d6e7fcc2f89257106f5262d531bc7",
+        "sha256": "10qgincrs8fjdl16mld6lzd69syhyzwx65lcbz4widnkdvhlwh3i",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nix-bundle/archive/acf3b142c1fa332d4f9050e7cdfb3c3f8091e78b.tar.gz",
+        "url": "https://github.com/input-output-hk/nix-bundle/archive/a43e9280628d6e7fcc2f89257106f5262d531bc7.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixos-unstable",
+        "description": "Nix Packages collection",
+        "homepage": "",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b67e752c29f18a0ca5534a07661366d6a2c2e649",
+        "sha256": "1n47f7r8cm9pcsz7vl4nxjfvs0fgzvcmjda5h0inz3yx9vghp5xm",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/b67e752c29f18a0ca5534a07661366d6a2c2e649.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-nsis": {
