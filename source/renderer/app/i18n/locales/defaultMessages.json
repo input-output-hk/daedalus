@@ -12978,6 +12978,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Tokens",
+        "description": "Number of tokens title on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "id": "wallet.summary.assets.tokensTitle",
+        "start": {
+          "column": 15,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Want to find out more about native tokens?",
+        "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "id": "wallet.summary.noTokens.learnMore.textTop",
+        "start": {
+          "column": 20,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Start by visiting the IOHK blog for a useful primer.",
+        "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "id": "wallet.summary.noTokens.learnMore.textBottom",
+        "start": {
+          "column": 23,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "\"Learn more\" label or button in the Wallets Summary No Tokens component",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "id": "wallet.summary.noTokens.learnMore.linkLabel",
+        "start": {
+          "column": 22,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.io/en/blog/posts/2021/02/04/native-tokens-to-bring-new-utility-to-life-on-cardano/",
+        "description": "\"Learn more\" link URL in the Wallets Summary No Tokens component",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "id": "wallet.summary.noTokens.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 31
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Send",
         "description": "Send button on Wallet summary assets page",
         "end": {
@@ -13128,77 +13203,21 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Tokens",
-        "description": "Number of tokens title on Wallet summary assets page",
+        "defaultMessage": "!!!Search tokens",
+        "description": "Search placeholder for the Wallet Tokens search",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 17
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
-        "id": "wallet.summary.assets.tokensTitle",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-search/WalletTokensSearch.js",
+        "id": "wallet.tokens.search.placeholder",
         "start": {
           "column": 15,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!Want to find out more about native tokens?",
-        "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
-        "id": "wallet.summary.noTokens.learnMore.textTop",
-        "start": {
-          "column": 20,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Start by visiting the IOHK blog for a useful primer.",
-        "description": "\"Learn more\" text in the Wallets Summary No Tokens component",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
-        "id": "wallet.summary.noTokens.learnMore.textBottom",
-        "start": {
-          "column": 23,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "\"Learn more\" label or button in the Wallets Summary No Tokens component",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
-        "id": "wallet.summary.noTokens.learnMore.linkLabel",
-        "start": {
-          "column": 22,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.io/en/blog/posts/2021/02/04/native-tokens-to-bring-new-utility-to-life-on-cardano/",
-        "description": "\"Learn more\" link URL in the Wallets Summary No Tokens component",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
-        "id": "wallet.summary.noTokens.learnMore.linkUrl",
-        "start": {
-          "column": 20,
-          "line": 31
+          "line": 13
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/tokens/WalletNoTokens.json"
+    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-search/WalletTokensSearch.json"
   },
   {
     "descriptors": [
@@ -13209,7 +13228,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.tokens.list.favorites.title",
         "start": {
           "column": 22,
@@ -13223,7 +13242,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.tokens.list.tokens.title",
         "start": {
           "column": 19,
@@ -13237,7 +13256,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 18,
@@ -13245,26 +13264,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/tokens/WalletTokens.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Search tokens",
-        "description": "Search placeholder for the Wallet Tokens search",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokensSearch.js",
-        "id": "wallet.tokens.search.placeholder",
-        "start": {
-          "column": 15,
-          "line": 13
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/WalletTokensSearch.json"
+    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.json"
   },
   {
     "descriptors": [
