@@ -6,6 +6,7 @@ import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../../_support/StoryDecorator';
+import StoryProvider from '../../_support/StoryProvider';
 
 import {
   generateAssetToken,
@@ -154,7 +155,11 @@ const walletTokens: WalletTokens = {
 };
 
 storiesOf('Wallets|Tokens', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => (
+    <StoryProvider>
+      <StoryDecorator>{story()}</StoryDecorator>
+    </StoryProvider>
+  ))
   .addDecorator(withKnobs)
 
   // ====== Stories ======

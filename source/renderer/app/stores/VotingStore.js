@@ -11,11 +11,13 @@ import {
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
+  VOTING_CAST_START_DATE,
+  VOTING_CAST_END_DATE,
+  VOTING_RESULTS_DATE,
+  VOTING_PHASE_CHECK_INTERVAL,
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
-  VOTING_FUND_NUMBER,
-  VOTING_REGISTRATION_END_DATE,
-  VOTING_REGISTRATION_END_CHECK_INTERVAL,
+  NEXT_VOTING_FUND_NUMBER,
 } from '../config/votingConfig';
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
@@ -38,6 +40,14 @@ export type VotingDataType = {
   absoluteSlotNumber: number,
 };
 
+export type FundPhase = 'snapshot' | 'voting' | 'tallying' | 'results';
+export const FundPhases: EnumMap<string, FundPhase> = {
+  SNAPSHOT: 'snapshot',
+  VOTING: 'voting',
+  TALLYING: 'tallying',
+  RESULTS: 'results',
+};
+
 export default class VotingStore extends Store {
   @observable registrationStep: number = 1;
   @observable selectedWalletId: ?string = null;
@@ -48,10 +58,10 @@ export default class VotingStore extends Store {
   @observable votingRegistrationKey: ?VotingRegistrationKeyType = null;
   @observable qrCode: ?string = null;
   @observable isConfirmationDialogOpen: boolean = false;
-  @observable isRegistrationEnded: boolean = false;
+  @observable fundPhase: FundPhase = FundPhases.SNAPSHOT;
 
   transactionPollingInterval: ?IntervalID = null;
-  registrationEndCheckInterval: ?IntervalID = null;
+  fundPhaseInterval: ?IntervalID = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -66,7 +76,7 @@ export default class VotingStore extends Store {
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
-    this._initializeRegistrationEndCheckInterval();
+    this._initializeFundPhaseInterval();
   }
 
   // REQUESTS
@@ -125,10 +135,12 @@ export default class VotingStore extends Store {
     this.getWalletPublicKeyRequest.reset();
     this.createVotingRegistrationTransactionRequest.reset();
     this.signMetadataRequest.reset();
-    if (this.transactionPollingInterval)
+    if (this.transactionPollingInterval) {
       clearInterval(this.transactionPollingInterval);
-    if (this.registrationEndCheckInterval)
-      clearInterval(this.registrationEndCheckInterval);
+    }
+    if (this.fundPhaseInterval) {
+      clearInterval(this.fundPhaseInterval);
+    }
   };
 
   @action _startTransactionPolling = () => {
@@ -139,12 +151,14 @@ export default class VotingStore extends Store {
     }, VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL);
   };
 
-  @action _initializeRegistrationEndCheckInterval = () => {
-    if (this.registrationEndCheckInterval)
-      clearInterval(this.registrationEndCheckInterval);
-    this.registrationEndCheckInterval = setInterval(() => {
-      this._checkVotingRegistrationEnd();
-    }, VOTING_REGISTRATION_END_CHECK_INTERVAL);
+  @action _initializeFundPhaseInterval = () => {
+    if (this.fundPhaseInterval) {
+      clearInterval(this.fundPhaseInterval);
+    }
+
+    this.fundPhaseInterval = setInterval(() => {
+      this._checkFundPhase(new Date());
+    }, VOTING_PHASE_CHECK_INTERVAL);
   };
 
   @action _setVotingRegistrationKey = (value: VotingRegistrationKeyType) => {
@@ -380,13 +394,13 @@ export default class VotingStore extends Store {
       currentDateFormat,
       currentTimeFormat,
     } = this.stores.profile;
-    const fundNumber = VOTING_FUND_NUMBER;
+    const nextVotingFundNumber = NEXT_VOTING_FUND_NUMBER;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
     try {
       await votingPDFGenerator({
-        fundNumber,
+        nextVotingFundNumber,
         qrCode,
         walletName,
         currentLocale,
@@ -433,8 +447,19 @@ export default class VotingStore extends Store {
     }
   };
 
-  @action _checkVotingRegistrationEnd = () => {
-    this.isRegistrationEnded = new Date() >= VOTING_REGISTRATION_END_DATE;
+  @action _checkFundPhase = (now: Date) => {
+    const phaseValidation = {
+      [FundPhases.SNAPSHOT]: (date: Date) => date < VOTING_CAST_START_DATE,
+      [FundPhases.VOTING]: (date: Date) =>
+        now >= VOTING_CAST_START_DATE && date < VOTING_CAST_END_DATE,
+      [FundPhases.TALLYING]: (date: Date) =>
+        now >= VOTING_CAST_END_DATE && date < VOTING_RESULTS_DATE,
+      [FundPhases.RESULTS]: (date: Date) => date >= VOTING_RESULTS_DATE,
+    };
+    this.fundPhase =
+      Object.keys(FundPhases)
+        .map((key) => FundPhases[key])
+        .find((phase) => phaseValidation[phase](now)) || FundPhases.SNAPSHOT;
   };
 
   _generateVotingRegistrationKey = async () => {

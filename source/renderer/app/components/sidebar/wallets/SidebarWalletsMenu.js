@@ -67,7 +67,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
             {map(wallets, (wallet) => (
               <SidebarWalletMenuItem
                 title={wallet.title}
-                info={wallet.info}
+                amount={wallet.amount}
                 active={isActiveWallet(wallet.id)}
                 onClick={() => onWalletItemClick(wallet.id)}
                 key={wallet.id}

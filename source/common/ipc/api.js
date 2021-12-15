@@ -111,7 +111,7 @@ export type ToggleUiPartRendererResponse = void;
  * Channel for checking the disk space available
  */
 export const GET_DISK_SPACE_STATUS_CHANNEL = 'GetDiskSpaceStatusChannel';
-export type GetDiskSpaceStatusRendererRequest = number | any;
+export type GetDiskSpaceStatusRendererRequest = void;
 export type GetDiskSpaceStatusMainResponse = CheckDiskSpaceResponse;
 
 /**

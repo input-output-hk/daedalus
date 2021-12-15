@@ -10,6 +10,7 @@
   font-family: var(--font-regular);
   height: 100vh;
   justify-content: center;
+  padding: 20px 0;
   position: fixed;
   top: 0;
   width: 100vw;
@@ -21,7 +22,8 @@
     font-size: 16px;
     line-height: 1.2;
     margin-bottom: 20px;
-    max-height: 464px;
+    max-height: 210px;
+    min-height: 48px;
     opacity: 0.8;
     overflow-y: scroll;
     padding: 12px 20px;
@@ -139,7 +141,6 @@
 
           &:after {
             border-color: var(--theme-news-overlay-update-background-color);
-            margin: -3px 0 0;
           }
         }
 
@@ -232,19 +233,38 @@
   }
 
   .closeButton {
-    border-radius: 50%;
-    height: 44px;
-    opacity: 0.5;
-    right: 10px;
-    top: 10px;
-    width: 44px;
-    z-index: 999;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    right: 15px;
+    top: 15px;
+    z-index: 1;
 
-    &:hover {
-      background-color: var(
-        --theme-news-overlay-update-content-background-color
-      );
-      opacity: 0.8;
+    span {
+      border-radius: 50%;
+      height: 44px;
+      width: 44px;
+
+      &:hover {
+        background-color: var(
+          --theme-network-window-icon-close-hover-background
+        );
+      }
+    }
+
+    svg {
+      height: 12px;
+      margin-top: 16px;
+      width: 12px;
+
+      polygon {
+        stroke: var(--theme-network-window-white-color);
+      }
+
+      path {
+        stroke: var(--theme-network-window-white-color);
+      }
     }
   }
 }

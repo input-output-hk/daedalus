@@ -7,6 +7,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './NoWalletsDialog.scss';
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   description: {
@@ -38,7 +39,13 @@ export default class NoWalletsDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onAddWallet } = this.props;
 
-    const closeButton = <DialogCloseButton onClose={onClose} />;
+    const closeButton = (
+      <DialogCloseButton
+        icon={closeCrossThin}
+        className={styles.closeButton}
+        onClose={onClose}
+      />
+    );
 
     return (
       <Dialog

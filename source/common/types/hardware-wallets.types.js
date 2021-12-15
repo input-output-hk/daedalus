@@ -262,6 +262,7 @@ export type LedgerSignTransactionRequest = {
   validityIntervalStartStr?: ?string, // It is disabled for now
   signingMode: string,
   auxiliaryData: ?LedgerAuxiliaryDataType,
+  additionalWitnessPaths: Array<?BIP32Path>,
 };
 
 export type TrezorSignTransactionRequest = {

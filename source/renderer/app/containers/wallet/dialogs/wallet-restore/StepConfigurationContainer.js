@@ -13,7 +13,9 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 export default class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
-  handleContinue = () => this.props.actions.wallets.restoreWallet.trigger();
+  handleContinue = () => {
+    this.props.actions.wallets.restoreWallet.trigger();
+  };
 
   handleChange = (param: string, field: Object) =>
     this.props.actions.wallets.restoreWalletSetConfig.trigger({
@@ -25,14 +27,19 @@ export default class ConfigurationDialogContainer extends Component<Props> {
     const { onClose, onBack, stores } = this.props;
     const { wallets, profile } = stores;
     const { currentLocale } = profile;
-    const { error, isExecuting } = wallets.restoreRequest;
-    const { walletName, spendingPassword, repeatPassword } = wallets;
+    const { error } = wallets.restoreRequest;
+    const {
+      walletName,
+      spendingPassword,
+      repeatPassword,
+      isRestoring,
+    } = wallets;
     const {
       error: certificateError,
     } = stores.wallets.getWalletRecoveryPhraseFromCertificateRequest;
     return (
       <ConfigurationDialog
-        isSubmitting={isExecuting}
+        isSubmitting={isRestoring}
         onClose={onClose}
         onContinue={this.handleContinue}
         onChange={this.handleChange}
