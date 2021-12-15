@@ -179,17 +179,24 @@ function update_prettierignore() {
 
 function create_tsconfig() {
     tsc --init \
-        --noImplicitAny false \
-        --noImplicitThis false \
-        --strict false \
+        --target es2015 \
+        --jsx react \
+        --sourceMap \
+        --lib dom \
+        --strict \
+        --noImplicitAny \
+        --noImplicitThis \
+        --alwaysStrict \
+        --moduleResolution node \
         --allowSyntheticDefaultImports \
-        --experimentalDecorators \
+        --esModuleInterop \
+        --forceConsistentCasingInFileNames \
         --resolveJsonModule \
+        --experimentalDecorators \
+        --emitDecoratorMetadata \
         --useDefineForClassFields \
         --noEmitOnError \
-        --jsx react \
         --noFallthroughCasesInSwitch
-        #moduleResolution node
 
     sed -i "101i,\"exclude\": [\"node_modules\"]" ./tsconfig.json
     # EXCLUDE NODE_MODULES FROM TSC
