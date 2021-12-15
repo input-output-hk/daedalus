@@ -64,6 +64,24 @@
   }
 }
 
+.minimumAmountNotice {
+  align-items: center;
+  background-color: var(--rp-input-bg-color-disabled);
+  border-radius: 4px;
+  color: var(--theme-button-flat-text-color);
+  display: flex;
+  font-family: var(--font-regular);
+  font-style: italic;
+  height: 50px;
+  margin: 20px 0 30px 0;
+  padding: 14px 20px;
+  width: 100%;
+
+  b {
+    font-weight: 600;
+  }
+}
+
 .assetInput,
 .receiverInput,
 .estimatedFeeInput,

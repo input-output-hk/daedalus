@@ -11176,6 +11176,48 @@
           "column": 24,
           "line": 129
         }
+      },
+      {
+        "defaultMessage": "UPDATE",
+        "description": "Label for the \"UPDATE\" button responsible to set minimum amount required for transaction .",
+        "end": {
+          "column": 3,
+          "line": 140
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.asset.updateAdaAmountButton",
+        "start": {
+          "column": 25,
+          "line": 135
+        }
+      },
+      {
+        "defaultMessage": "to the minimum of {minimumAda} ADA required",
+        "description": "Description for the \"UPDATE\" button when ADA amount is less than required",
+        "end": {
+          "column": 3,
+          "line": 146
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.updateAdaAmountDescription",
+        "start": {
+          "column": 30,
+          "line": 141
+        }
+      },
+      {
+        "defaultMessage": "<b>Note:</b> the ada field was updated because this transaction requires a minimum of {minimumAda} ADA.",
+        "description": "Minimum amount update notice",
+        "end": {
+          "column": 3,
+          "line": 152
+        },
+        "file": "source/renderer/app/components/wallet/send-form/messages.js",
+        "id": "wallet.send.form.minimumAmountNote",
+        "start": {
+          "column": 23,
+          "line": 147
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/send-form/messages.json"
