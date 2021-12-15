@@ -101,14 +101,6 @@ function spin_while_executing() {
 
 ## TODOS
 # figure out do we need ts-loader vs babel-loader??
-# typescript emit files for build?
-# dependencyNamesToRemove??
-
-# Check if check:all function still passes
-function check_all() {
-    yarn check:all
-    pause "check:all success! the project is not broken"
-}
 
 # PRE-REQUISITE FUNCTIONS
 function enable_globstar() {
@@ -123,7 +115,7 @@ function remove_node_modules() {
 
 prerequisite_functions=(
     enable_globstar
-    #remove_node_modules
+    remove_node_modules
 )
 
 
@@ -134,7 +126,6 @@ function remove_flow_files() {
 }
 
 function remove_packages() {
-    # TODO find a better way to avoid errors when packages are already uninstalled
     grep -wq './package.json' -e '@babel/preset-flow' && yarn remove @babel/preset-flow
     grep -wq './package.json' -e 'eslint-plugin-flowtype' && yarn remove eslint-plugin-flowtype
     grep -wq './package.json' -e 'flow-bin' && yarn remove flow-bin
@@ -143,18 +134,12 @@ function remove_packages() {
     pause "un-install flow packages"
 }
 
-function add_type_packages() {
-    yarn add -D @types/react @types/aes-js @types/qrcode.react @types/react-copy-to-clipboard @types/react-svg-inline @types/node ts-migrate babel-eslint @typescript-eslint/eslint-plugin
-    # Might need @types/react-dom @types/electron
-    pause "add @type packages"
-}
-
 function install_packages() {
     yarn install
     # INSTALL TS PACKAGES
-    yarn add typescript ts-node ts-loader@8.2.0 @babel/plugin-transform-typescript @babel/preset-typescript
-    add_type_packages
-    pause "install typescript packages"
+    yarn add -D ts-node ts-loader@8.2.0 @babel/plugin-transform-typescript @babel/preset-typescript @types/react @types/aes-js @types/qrcode.react @types/react-copy-to-clipboard @types/react-svg-inline @types/node ts-migrate babel-eslint @typescript-eslint/eslint-plugin typescript @typescript-eslint/parser
+    # Might need @types/react-dom @types/electron
+    pause "install required packages"
 }
 
 function update_babelrc() {
@@ -165,7 +150,7 @@ function update_babelrc() {
 function update_package_json() {
     sed -i 's/"flow:test": "flow; test $? -eq 0 -o $? -eq 2"/"compile": "tsc --noEmit"/' ./package.json
     sed -i 's/flow:test/compile/' ./package.json
-    sed -i "s/\(\"lint\".*\)\(.js\)/\1.ts,*.tsx/g" ./package.json
+    sed -i "s/\(\"lint\".*\)\(\*.js\)/\1 --ext .ts,.tsx/g" ./package.json
     sed -i "s/\(.js\)\(['|\"| ][^:]\)/.ts\2/g" ./package.json
     sed -i 's/\/main\/index.ts/\/main\/index.js/' ./package.json
     sed -i "s/\(\"\|\s\)node /\1ts-node /g" ./package.json
@@ -174,7 +159,7 @@ function update_package_json() {
 
 function update_prettierignore() {
     sed -i "s/\\!\\*\\.js$/!*.ts\\n!*.tsx/" ./.prettierignore
-    pause "update pretter ignore"
+    pause "update prettier ignore"
 }
 
 function create_tsconfig() {
@@ -191,8 +176,7 @@ function create_tsconfig() {
         --noFallthroughCasesInSwitch
         #moduleResolution node
 
-    sed -i "101i,\"exclude\": [\"node_modules\"]" ./tsconfig.json
-    # EXCLUDE NODE_MODULES FROM TSC
+    sed -i "101i,\"exclude\": [\"node_modules\"]" ./tsconfig.json #Speeds up compilation
     pause '.tsconfig generation'
 }
 
@@ -224,7 +208,11 @@ function change_webpack_configuration() {
 
 function update_eslintrc() {
     sed -i "s/flowtype/@typescript-eslint/g" ./.eslintrc
-    sed -i "74i\"react/jsx-first-prop-new-line\": [1, \"multiline-multiprop\"]," ./.eslintrc
+    sed -i "s/babel-eslint/@typescript-eslint\/parser/" ./.eslintrc
+    # These are the additional rules we need to prevent lint stage failing, update rules to use warn flag, so we don't forget about them
+    sed -i "74i\ \t\t\"react/jsx-first-prop-new-line\": [1, \"multiline-multiprop\"],\n\t\t\"@typescript-eslint/ban-ts-comment\": 1,\n\t\t\"@typescript-eslint/no-empty-function\": 1,\n\t\t\"@typescript-eslint/ban-types\": 1,\n\t\t\"import/no-unresolved\": 1,\n\t\t\"@typescript-eslint/no-var-requires\": 1,\n\t\t\"camelcase\": 1,\n\t\t\"no-empty\": 1,\n\t\t\"@typescript-eslint/no-explicit-any\": 1,\n\t\t\"no-shadow\": 1,\n\t\t\"react/no-did-update-set-state\": 1," ./.eslintrc
+    sed -i "/import\/resolver/d" ./.eslintrc
+    sed -i "102i\ \t\t\"import/resolver\": {\n\t\t\t\"node\": {\n\t\t\t\t\"extensions\": [\".js\", \".jsx\",\".ts\", \".tsx\"]\n\t\t\t}\n\t\t}" ./.eslintrc
     pause "remove flow from eslintrc"
 }
 
@@ -320,17 +308,6 @@ conversion_functions=(
     convert_ts_to_tsx
 )
 
-#44 CURRENTLY UNUSED
-function switch_flow_maybe_type_in_function_parameters_to_typescript_optional() {
-    for migration_folder in ${!MIGRATION_FOLDERS[@]}
-        do
-            folder=${MIGRATION_FOLDERS[migration_folder]}
-            # FIND + REPLACE CLASSES WITH DEFAULT EXPORT (e.g GeneralSettingsPage.js)
-            find "./$folder" -type f -name "*.ts" -exec perl -0777 -i -pe "s/(?!const(\w+))\??:\s\?(\w+[,|\)|;])/\$1?: \$2/g" {} + #& spin_while_executing
-        done
-    pause "flow maybe types converted to typescript optional"
-}
-
 function gulpfile_remove_flowRemoveTypes_references() {
     sed -i "/flowRemoveTypes/d" ./gulpfile.js
     pause "gulpfile remove flowRemoveTypes references"
@@ -405,14 +382,12 @@ function replace_in_all_folders() {
                 find ./$folder -type f -name "*.ts" -or -name "*.tsx" |
                 while read line;
                 do
-                    # remove maybe types and use optionals
-                    #perl -i -pe "s/(?!const(\w+))\??:\s\?(\w+[,|\)|;])/\$1?: \$2/g" $line
-                    #lift aannotations
+                    #lift annotations
                     perl -0777 -i -pe "s/((@.*\n?)+)((export\sdefault\s)((class\s(\w+))(.*\n*)*))/\$1\$5\n\$4\$7/" $line
                     # FIND CLASSES WITHOUT DEFAULT EXPORT (e.g StakePoolsTableBody.js)
                     perl -0777 -i -pe "s/((@.*\n?)+)((export\s)((class\s(\w+))(.*\n*)*))/\$1\$5\n\$4\{ \$7 \}/" $line
                     # require to import
-                    #perl -0777 -i -pe "s/[^ ](const|var)\s(\{?\n?((?!argv).+)\}?)\s=\srequire\(('.*')\).*;/\nimport \$2 from \$4;/g" $line
+                    perl -0777 -i -pe "s/[^\s](const|var)\s(\{?\n?((?!argv).+)\}?)\s=\srequire\(('.*')\).*;/\nimport * as \$2 from \$4;/g" $line
                     sed -i "/declare var daedalus: Daedalus;/d" $line
                     sed -i "/import type { Daedalus }/d" $line
                     sed -i 's/$FlowFixMe/@ts-ignore/g' $line
@@ -429,6 +404,7 @@ function convert_flow_code() {
         for migration_folder in ${!MIGRATION_FOLDERS[@]}
             do
                 folder=${MIGRATION_FOLDERS[migration_folder]}
+                # Does npx run on CI?
                 npx @khanacademy/flow-to-ts --inline-utility-types --write -o tsx "./${folder}/**/*.tsx"
                 npx @khanacademy/flow-to-ts --inline-utility-types --write -o ts "./${folder}/**/*.ts"
             done
@@ -438,6 +414,40 @@ function convert_flow_code() {
 }
 
 function reignore() {
+    # Create Node script
+    touch migrate.ts
+    echo "import path from 'path';
+import { tsIgnorePlugin, eslintFixPlugin } from 'ts-migrate-plugins';
+import { migrate, MigrateConfig } from 'ts-migrate-server';
+
+// get input files folder
+const inputDir = path.resolve(__dirname);
+
+// create new migration config and add ts-ignore plugin with options
+const config = new MigrateConfig()
+  .addPlugin(eslintFixPlugin, { fix: true, useEslintrc: true })
+  .addPlugin(tsIgnorePlugin, {
+    useTsIgnore: true,
+  });
+// run migration
+(async () => {
+  const exitCode = await migrate({
+    rootDir: inputDir,
+    tsConfigDir: path.resolve(__dirname),
+    config,
+    sources: [
+      './scripts/**/*.ts{,x}',
+      './source/**/*.ts{,x}',
+      './storybook/**/*.ts{,x}',
+      './tests/**/*.ts{,x}',
+      './translations/**/*.ts{,x}',
+      './utils/**/*.ts{,x}',
+      './declarations.d.ts',
+    ],
+  });
+  process.exit(exitCode);
+})();
+" > migrate.ts
     # Need to use node script because CLI doesn't expose options
     ts-node ./migrate.ts & spin_while_executing
     pause "ts-migration add @ts-ignore"
@@ -502,15 +512,28 @@ function tsc_check() {
     tsc --noEmit
 }
 
+function destroy_migrate_ts() {
+    rm ./migrate.ts
+}
+
 function lockfile_fix() {
-    #yarn remove ts-migrate babel-eslint @typescript-eslint/eslint-plugin
+    yarn remove ts-migrate
+    yarn prettier:format & spin_while_executing # Needs a final run
     yarn lockfile:fix
     pause "lockfile fixed"
 }
 
+# Check if check:all function still passes
+function check_all() {
+    yarn check:all
+    echo "✅ check:all success! the project is not broken"
+}
+
 cleanup_functions=(
+    destroy_migrate_ts # We no longer need the ts-node migration script
     tsc_check
     lockfile_fix
+    check_all
 )
 
 function loop() {
@@ -529,6 +552,10 @@ function loop() {
 if [ "$RUN_STAGE" != "UNSET" ];
     then
         enable_globstar
+        # Keep track of the last executed command
+        STEP=$(($step+1))
+        CURRENT_COMMAND=$RUN_STAGE
+        trap 'LAST_COMMAND=${CURRENT_COMMAND^^}' DEBUG
         $RUN_STAGE
     else
         echo -e "__Pre-requisite Steps__"
