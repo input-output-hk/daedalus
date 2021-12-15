@@ -4,7 +4,7 @@ import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './WalletTokens.scss';
 import Wallet from '../../../domains/Wallet';
-import WalletTokensList from './WalletTokensList';
+import WalletTokensList from './wallet-tokens-list/WalletTokensList';
 import WalletTokensSearch from './WalletTokensSearch';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AssetToken } from '../../../api/assets/types';

@@ -5,16 +5,16 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
-import { searchAssets, sortAssets } from '../../../utils/assets';
+import { searchAssets, sortAssets } from '../../../../utils/assets';
 import styles from './WalletTokensList.scss';
-import Wallet from '../../../domains/Wallet';
-import BorderedBox from '../../widgets/BorderedBox';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
-import WalletToken from './wallet-token/WalletToken';
-import WalletNoTokens from './WalletNoTokens';
-import sortIcon from '../../../assets/images/ascending.inline.svg';
-import type { AssetToken } from '../../../api/assets/types';
-import type { SortBy, SortDirection } from '../../../utils/assets';
+import Wallet from '../../../../domains/Wallet';
+import BorderedBox from '../../../widgets/BorderedBox';
+import LoadingSpinner from '../../../widgets/LoadingSpinner';
+import WalletToken from '../wallet-token/WalletToken';
+import WalletNoTokens from '../WalletNoTokens';
+import sortIcon from '../../../../assets/images/ascending.inline.svg';
+import type { AssetToken } from '../../../../api/assets/types';
+import type { SortBy, SortDirection } from '../../../../utils/assets';
 
 const messages = defineMessages({
   noResults: {
