@@ -1,0 +1,56 @@
+.footer {
+  border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
+  color: var(--theme-widgets-asset-token-text-color);
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
+
+  .amount {
+    display: flex;
+    line-height: 1;
+    padding: 9px 0 0 8px;
+
+    .amountLabel {
+      font-family: var(--font-medium);
+      font-size: 12px;
+      line-height: 1.33;
+      text-align: right;
+      white-space: nowrap;
+      width: 70px;
+    }
+
+    .amountValue {
+      font-family: var(--font-light);
+      font-size: 12px;
+      line-height: 16px;
+      margin-left: 10px;
+      white-space: normal;
+      word-break: break-all;
+      word-wrap: break-word;
+    }
+  }
+
+  .footerButtons {
+    margin: auto 0;
+    white-space: nowrap;
+
+    .button {
+      height: 36px;
+      margin-left: 12px;
+      width: 120px;
+
+      &.disabled {
+        opacity: 0.4;
+      }
+    }
+
+    .settingsButton {
+      svg {
+        height: 9px;
+        margin-left: 6px;
+        width: 11px;
+      }
+    }
+  }
+}

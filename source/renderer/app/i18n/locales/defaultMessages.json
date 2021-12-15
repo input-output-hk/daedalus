@@ -13057,13 +13057,13 @@
         "description": "Send button on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 8
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
         "id": "wallet.summary.asset.tokenSendButton",
         "start": {
           "column": 19,
-          "line": 21
+          "line": 4
         }
       },
       {
@@ -13071,13 +13071,13 @@
         "description": "Amount label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 13
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
         "id": "wallet.summary.asset.amountLabel",
         "start": {
           "column": 15,
-          "line": 26
+          "line": 9
         }
       },
       {
@@ -13085,13 +13085,13 @@
         "description": "Settings label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 18
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
         "id": "wallet.summary.asset.settings.button.label",
         "start": {
           "column": 23,
-          "line": 31
+          "line": 14
         }
       },
       {
@@ -13099,13 +13099,13 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 24
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
         "id": "assets.warning.available",
         "start": {
           "column": 35,
-          "line": 36
+          "line": 19
         }
       },
       {
@@ -13113,17 +13113,17 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 30
         },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
         "id": "assets.warning.notUsing",
         "start": {
           "column": 34,
-          "line": 42
+          "line": 25
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/tokens/WalletToken.json"
+    "path": "source/renderer/app/components/wallet/tokens/WalletToken.messages.json"
   },
   {
     "descriptors": [
