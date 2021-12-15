@@ -12978,6 +12978,156 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Send",
+        "description": "Send button on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "id": "wallet.summary.asset.tokenSendButton",
+        "start": {
+          "column": 19,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount label on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "id": "wallet.summary.asset.amountLabel",
+        "start": {
+          "column": 15,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Settings",
+        "description": "Settings label on Wallet summary assets page",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "id": "wallet.summary.asset.settings.button.label",
+        "start": {
+          "column": 23,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "id": "assets.warning.available",
+        "start": {
+          "column": 35,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
+        "description": "Asset settings recommended pop over content",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "id": "assets.warning.notUsing",
+        "start": {
+          "column": 34,
+          "line": 25
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!No results matching your query",
+        "description": "No results on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "id": "wallet.tokens.list.search.noResults",
+        "start": {
+          "column": 13,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Search Results",
+        "description": "Search Results on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "id": "wallet.tokens.list.search.searchResults",
+        "start": {
+          "column": 17,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount header on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "id": "wallet.tokens.list.column.amount",
+        "start": {
+          "column": 16,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token header on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "id": "wallet.tokens.list.column.token",
+        "start": {
+          "column": 15,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!View all tokens",
+        "description": "View all button label on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.js",
+        "id": "wallet.tokens.list.viewAllButton.label",
+        "start": {
+          "column": 22,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Tokens",
         "description": "Number of tokens title on Wallet summary assets page",
         "end": {
@@ -13053,81 +13203,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Send",
-        "description": "Send button on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 8
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
-        "id": "wallet.summary.asset.tokenSendButton",
-        "start": {
-          "column": 19,
-          "line": 4
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Amount label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
-        "id": "wallet.summary.asset.amountLabel",
-        "start": {
-          "column": 15,
-          "line": 9
-        }
-      },
-      {
-        "defaultMessage": "!!!Settings",
-        "description": "Settings label on Wallet summary assets page",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
-        "id": "wallet.summary.asset.settings.button.label",
-        "start": {
-          "column": 23,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!Recommended configuration for decimal places for this native token is available.",
-        "description": "Asset settings recommended pop over content",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
-        "id": "assets.warning.available",
-        "start": {
-          "column": 35,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!You are not using the recommended decimal place configuration for this native token.",
-        "description": "Asset settings recommended pop over content",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletToken.messages.js",
-        "id": "assets.warning.notUsing",
-        "start": {
-          "column": 34,
-          "line": 25
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/WalletToken.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Favorites",
         "description": "Favorites list title label",
         "end": {
@@ -13171,81 +13246,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/tokens/WalletTokens.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!No results matching your query",
-        "description": "No results on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
-        "id": "wallet.tokens.list.search.noResults",
-        "start": {
-          "column": 13,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Search Results",
-        "description": "Search Results on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
-        "id": "wallet.tokens.list.search.searchResults",
-        "start": {
-          "column": 17,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Amount header on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
-        "id": "wallet.tokens.list.column.amount",
-        "start": {
-          "column": 16,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token header on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
-        "id": "wallet.tokens.list.column.token",
-        "start": {
-          "column": 15,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!View all tokens",
-        "description": "View all button label on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
-        "id": "wallet.tokens.list.viewAllButton.label",
-        "start": {
-          "column": 22,
-          "line": 40
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/WalletTokensList.json"
   },
   {
     "descriptors": [

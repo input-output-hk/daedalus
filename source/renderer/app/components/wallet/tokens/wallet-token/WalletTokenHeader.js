@@ -5,12 +5,12 @@ import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import styles from './WalletTokenHeader.scss';
-import Asset from '../../assets/Asset';
-import AssetAmount from '../../assets/AssetAmount';
-import type { AssetToken } from '../../../api/assets/types';
-import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
-import starNotFilledIcon from '../../../assets/images/star-not-filled.inline.svg';
-import starFilledIcon from '../../../assets/images/star-filled.inline.svg';
+import Asset from '../../../assets/Asset';
+import AssetAmount from '../../../assets/AssetAmount';
+import type { AssetToken } from '../../../../api/assets/types';
+import arrow from '../../../../assets/images/collapse-arrow-small.inline.svg';
+import starNotFilledIcon from '../../../../assets/images/star-not-filled.inline.svg';
+import starFilledIcon from '../../../../assets/images/star-filled.inline.svg';
 import { isRecommendedDecimal } from './helpers';
 
 type Props = {

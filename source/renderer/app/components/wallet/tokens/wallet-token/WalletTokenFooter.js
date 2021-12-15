@@ -7,9 +7,9 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import styles from './WalletTokenFooter.scss';
-import AssetAmount from '../../assets/AssetAmount';
-import type { AssetToken } from '../../../api/assets/types';
-import warningIcon from '../../../assets/images/asset-token-warning-ic.inline.svg';
+import AssetAmount from '../../../assets/AssetAmount';
+import type { AssetToken } from '../../../../api/assets/types';
+import warningIcon from '../../../../assets/images/asset-token-warning-ic.inline.svg';
 import { messages } from './WalletToken.messages';
 import { isRecommendedDecimal } from './helpers';
 

@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './WalletToken.scss';
-import AssetContent from '../../assets/AssetContent';
-import type { AssetToken } from '../../../api/assets/types';
+import AssetContent from '../../../assets/AssetContent';
+import type { AssetToken } from '../../../../api/assets/types';
 import WalletTokenFooter from './WalletTokenFooter';
 import WalletTokenHeader from './WalletTokenHeader';
 
