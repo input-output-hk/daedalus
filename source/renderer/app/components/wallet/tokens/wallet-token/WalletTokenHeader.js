@@ -17,12 +17,13 @@ type Props = {
   anyAssetWasHovered: boolean,
   asset: AssetToken,
   assetSettingsDialogWasOpened: boolean,
+  fullFingerprint?: boolean,
   isExpanded: boolean,
   isFavorite: boolean,
   isLoading: boolean,
   onClick: Function,
   onCopyAssetParam: Function,
-  onToggleFavorite: Function,
+  onToggleFavorite?: Function,
 };
 
 const WalletTokenHeader = (props: Props) => {
@@ -30,6 +31,7 @@ const WalletTokenHeader = (props: Props) => {
     anyAssetWasHovered,
     asset,
     assetSettingsDialogWasOpened,
+    fullFingerprint = true,
     isExpanded,
     isFavorite,
     isLoading,
@@ -43,21 +45,29 @@ const WalletTokenHeader = (props: Props) => {
   const rootStyles = classNames(styles.root, isExpanded && styles.isExpanded);
   const favoriteIconStyles = classNames(
     styles.favoriteIcon,
-    props.isFavorite && styles.isFavorite
+    isFavorite && styles.isFavorite
   );
 
   return (
     <div className={rootStyles} onClick={onClick}>
-      <button
-        className={favoriteIconStyles}
-        onClick={(event) => {
-          event.persist();
-          event.stopPropagation();
-          onToggleFavorite({ uniqueId, isFavorite });
-        }}
-      >
-        <SVGInline className={styles.warningIcon} svg={starIcon} />
-      </button>
+      {onToggleFavorite ? (
+        <button
+          className={favoriteIconStyles}
+          onClick={(event) => {
+            event.persist();
+            event.stopPropagation();
+            onToggleFavorite({ uniqueId, isFavorite });
+          }}
+        >
+          <SVGInline svg={starIcon} />
+        </button>
+      ) : (
+        isFavorite && (
+          <button className={favoriteIconStyles}>
+            <SVGInline svg={starIcon} />
+          </button>
+        )
+      )}
 
       <Asset
         asset={asset}
@@ -67,7 +77,7 @@ const WalletTokenHeader = (props: Props) => {
         anyAssetWasHovered={anyAssetWasHovered}
         className={styles.asset}
         hidePopOver
-        fullFingerprint
+        fullFingerprint={fullFingerprint}
         hasWarning={hasWarning}
       />
       <AssetAmount

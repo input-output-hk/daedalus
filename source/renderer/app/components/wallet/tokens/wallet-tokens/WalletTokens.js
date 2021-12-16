@@ -123,10 +123,12 @@ const WalletTokens = observer((props: Props) => {
   return (
     <div className={styles.component}>
       {hasTokens && (
-        <WalletTokensSearch
-          searchValue={searchValue}
-          onSearch={setSearchValue}
-        />
+        <div className={styles.searchContainer}>
+          <WalletTokensSearch
+            searchValue={searchValue}
+            onSearch={setSearchValue}
+          />
+        </div>
       )}
       {!!favoriteTokensList.length && (
         <WalletTokensList

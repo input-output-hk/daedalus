@@ -17,8 +17,8 @@ type Props = {
   asset: AssetToken,
   intl: intlShape.isRequired,
   isLoading: boolean,
-  onAssetSettings: Function,
-  onOpenAssetSend: Function,
+  onAssetSettings?: Function,
+  onOpenAssetSend?: Function,
 };
 
 const WalletTokenFooter = (props: Props) => {
@@ -47,41 +47,48 @@ const WalletTokenFooter = (props: Props) => {
         </div>
       </div>
       <div className={styles.footerButtons}>
-        <PopOver
-          content={
-            hasWarning &&
-            intl.formatMessage(warningPopOverMessage, {
-              recommendedDecimals,
-            })
-          }
-        >
+        {onAssetSettings && (
+          <PopOver
+            content={
+              hasWarning &&
+              intl.formatMessage(warningPopOverMessage, {
+                recommendedDecimals,
+              })
+            }
+          >
+            <Button
+              className={classNames([
+                'flat',
+                styles.button,
+                styles.settingsButton,
+              ])}
+              label={
+                <>
+                  {intl.formatMessage(messages.settingsButtonLabel)}
+                  {hasWarning && (
+                    <SVGInline
+                      className={styles.warningIcon}
+                      svg={warningIcon}
+                    />
+                  )}
+                </>
+              }
+              onClick={() => onAssetSettings({ asset })}
+            />
+          </PopOver>
+        )}
+        {onOpenAssetSend && (
           <Button
             className={classNames([
-              'flat',
+              'primary',
               styles.button,
-              styles.settingsButton,
+              asset.quantity.isZero() && styles.disabled,
             ])}
-            label={
-              <>
-                {intl.formatMessage(messages.settingsButtonLabel)}
-                {hasWarning && (
-                  <SVGInline className={styles.warningIcon} svg={warningIcon} />
-                )}
-              </>
-            }
-            onClick={() => onAssetSettings({ asset })}
+            onClick={() => onOpenAssetSend(asset)}
+            label={intl.formatMessage(messages.tokenSendButton)}
+            disabled={asset.quantity.isZero()}
           />
-        </PopOver>
-        <Button
-          className={classNames([
-            'primary',
-            styles.button,
-            asset.quantity.isZero() && styles.disabled,
-          ])}
-          onClick={() => onOpenAssetSend(asset)}
-          label={intl.formatMessage(messages.tokenSendButton)}
-          disabled={asset.quantity.isZero()}
-        />
+        )}
       </div>
     </div>
   );

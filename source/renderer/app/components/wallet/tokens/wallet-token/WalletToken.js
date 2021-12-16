@@ -12,14 +12,15 @@ type Props = {
   anyAssetWasHovered: boolean,
   asset: AssetToken,
   assetSettingsDialogWasOpened: boolean,
+  fullFingerprint?: boolean,
   isFavorite: boolean,
   isInsertingAsset: boolean,
   isLoading: boolean,
   isRemovingAsset: boolean,
-  onAssetSettings: Function,
-  onCopyAssetParam: Function,
-  onOpenAssetSend: Function,
-  onToggleFavorite: Function,
+  onAssetSettings?: Function,
+  onCopyAssetParam?: Function,
+  onOpenAssetSend?: Function,
+  onToggleFavorite?: Function,
 };
 
 const WalletToken = observer((props: Props) => {
@@ -27,6 +28,7 @@ const WalletToken = observer((props: Props) => {
     anyAssetWasHovered,
     asset,
     assetSettingsDialogWasOpened,
+    fullFingerprint = true,
     isFavorite,
     isLoading,
     onAssetSettings,
@@ -54,6 +56,7 @@ const WalletToken = observer((props: Props) => {
         isFavorite={isFavorite}
         isExpanded={isExpanded}
         isLoading={isLoading}
+        fullFingerprint={fullFingerprint}
         anyAssetWasHovered={anyAssetWasHovered}
         onClick={toggleIsExpanded}
         onCopyAssetParam={onCopyAssetParam}

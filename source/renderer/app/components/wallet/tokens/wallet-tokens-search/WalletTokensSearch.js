@@ -22,7 +22,8 @@ type Props = {
   onSearch: Function,
   searchValue: string,
 };
-const WalletTokensSearch = observer((props: Props) => {
+
+const WalletTokensSearch = (props: Props) => {
   const { searchValue, onSearch, intl } = props;
   return (
     <div className={styles.component}>
@@ -43,6 +44,6 @@ const WalletTokensSearch = observer((props: Props) => {
       )}
     </div>
   );
-});
+};
 
-export default injectIntl(WalletTokensSearch);
+export default injectIntl(observer(WalletTokensSearch));
