@@ -39,10 +39,12 @@ export const filterAssets = (
 export const getZeroToken = ({
   policyId,
   assetName,
+  assetNameASCII,
   uniqueId,
 }: Asset): Token => ({
   policyId,
   assetName,
+  assetNameASCII,
   uniqueId,
   quantity: new BigNumber(0),
 });
@@ -122,12 +124,13 @@ export const getAssetTokenFromToken = (
   asset: Token,
   getAsset: Function
 ): AssetToken => {
-  const { policyId, assetName, quantity, address } = asset;
+  const { policyId, assetName, assetNameASCII, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
     getAsset(policyId, assetName) || {};
   return {
     policyId,
     assetName,
+    assetNameASCII,
     quantity,
     address,
     fingerprint,
