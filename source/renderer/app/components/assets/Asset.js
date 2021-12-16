@@ -223,7 +223,6 @@ export default class Asset extends Component<Props, State> {
       asset,
       onCopyAssetParam,
       assetSettingsDialogWasOpened,
-      anyAssetWasHovered,
     } = this.props;
     const pillContent = this.renderPillContent();
     const popOverContent = (
@@ -231,7 +230,6 @@ export default class Asset extends Component<Props, State> {
         asset={asset}
         onCopyAssetParam={onCopyAssetParam}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-        anyAssetWasHovered={anyAssetWasHovered}
         className={styles.popOverContent}
         highlightFingerprint
       />
