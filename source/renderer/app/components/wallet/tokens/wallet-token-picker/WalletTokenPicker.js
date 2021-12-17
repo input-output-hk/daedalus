@@ -36,12 +36,25 @@ const WalletTokenPicker = ({ intl, assets, tokenFavorites }: Props) => {
     scrollPosition !== ScrollPositionEnum.TOP && styles.scrollTop
   );
 
+  const actions = [
+    {
+      label: intl.formatMessage(messages.cancelButtonLabel),
+      onClick: () => {},
+    },
+    {
+      label: intl.formatMessage(messages.addButtonLabel),
+      primary: true,
+      disabled: false,
+      onClick: () => {},
+    },
+  ];
+
   return (
     <Dialog
       className={styles.dialog}
       title={intl.formatMessage(messages.title)}
       closeOnOverlayClick
-      theme
+      actions={actions}
     >
       <div className={styles.root}>
         <WalletTokensSearch
