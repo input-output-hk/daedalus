@@ -22,11 +22,10 @@
       cursor: pointer;
       font-family: var(--font-regular);
       font-size: 14px;
-      margin-left: 6px;
       line-height: 1.43;
-      padding: 4px;
-      white-space: nowrap;
+      margin-left: 6px;
       padding: 0 6px;
+      white-space: nowrap;
     }
   }
 
@@ -51,8 +50,8 @@
   }
 
   .checkbox {
-    margin-right: 20px;
     align-self: flex-start;
+    margin-right: 20px;
     margin-top: 14px;
   }
 
@@ -61,8 +60,8 @@
   }
 
   .tokenHeader {
-    padding-top: 14px;
     padding-bottom: 14px;
+    padding-top: 14px;
   }
 }
 

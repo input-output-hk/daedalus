@@ -7,14 +7,7 @@ import {
   maxTokensArrayToIdMap,
   MAX_TOKENS,
 } from './helpers';
-import type { ScrollPosition } from './helpers';
-import type { AssetToken } from '../../../../api/assets/types';
-
-type UseCheckboxes = {
-  assets: Array<AssetToken>,
-};
-
-type CheckBoxes = { [key: string]: boolean };
+import type { ScrollPosition, UseCheckboxes, CheckBoxes } from './types';
 
 export const useSearch = () => {
   const [searchValue, setSearchValue] = useState<string>('');

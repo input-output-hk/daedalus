@@ -1,8 +1,8 @@
 .root {
   cursor: pointer;
   display: flex;
-  padding-top: 7px;
   padding-bottom: 7px;
+  padding-top: 7px;
 
   &.isExpanded {
     background-color: var(--theme-tokens-list-header-expanded-background-color);

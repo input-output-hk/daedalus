@@ -1,9 +1,8 @@
 // @flow
+import type { ScrollPosition, CheckBoxes } from './types';
 import type { AssetToken } from '../../../../api/assets/types';
 
 export const MAX_TOKENS = 30;
-
-export type ScrollPosition = 'top' | 'middle' | 'bottom';
 
 export const ScrollPositionEnum: EnumMap<string, ScrollPosition> = {
   TOP: 'top',
