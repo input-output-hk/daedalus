@@ -18,9 +18,11 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
 
   if (isScrollAtTop(element)) {
     return ScrollPositionEnum.TOP;
-  } else if (isScrollAtBottom(element)) {
-    return ScrollPositionEnum.BOTTOM;
-  } else {
-    return ScrollPositionEnum.MIDDLE;
   }
+
+  if (isScrollAtBottom(element)) {
+    return ScrollPositionEnum.BOTTOM;
+  }
+
+  return ScrollPositionEnum.MIDDLE;
 };

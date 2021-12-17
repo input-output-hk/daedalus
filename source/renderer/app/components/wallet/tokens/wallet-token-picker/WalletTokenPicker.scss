@@ -1,19 +1,19 @@
 .root {
   .toolbar {
+    border-bottom: 1px solid rgba(94, 96, 102, 0.5);
     display: flex;
     height: 40px;
     padding: 0 20px;
-    border-bottom: 1px solid rgba(94, 96, 102, 0.5);
 
     &.scrollTop {
       box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.25);
     }
 
     .count {
-      margin-left: auto;
       font-family: var(--font-light);
       font-size: 14px;
       line-height: 1.43;
+      margin-left: auto;
     }
   }
 
