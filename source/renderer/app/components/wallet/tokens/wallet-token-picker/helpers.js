@@ -1,4 +1,8 @@
 // @flow
+import type { AssetToken } from '../../../../api/assets/types';
+
+export const MAX_TOKENS = 30;
+
 export type ScrollPosition = 'top' | 'middle' | 'bottom';
 
 export const ScrollPositionEnum: EnumMap<string, ScrollPosition> = {
@@ -26,3 +30,13 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
 
   return ScrollPositionEnum.MIDDLE;
 };
+
+export const maxTokensArrayToIdMap = (assets: Array<AssetToken>) => ({
+  ...assets.slice(0, MAX_TOKENS).reduce(
+    (acc, asset) => ({
+      ...acc,
+      [asset.uniqueId]: true,
+    }),
+    ({}: CheckBoxes)
+  ),
+});

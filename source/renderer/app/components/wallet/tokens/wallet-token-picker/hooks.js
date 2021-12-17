@@ -1,8 +1,20 @@
 // @flow
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
-import { ScrollPositionEnum, getScrollPosition } from './helpers';
+import {
+  ScrollPositionEnum,
+  getScrollPosition,
+  maxTokensArrayToIdMap,
+  MAX_TOKENS,
+} from './helpers';
 import type { ScrollPosition } from './helpers';
+import type { AssetToken } from '../../../../api/assets/types';
+
+type UseCheckboxes = {
+  assets: Array<AssetToken>,
+};
+
+type CheckBoxes = { [key: string]: boolean };
 
 export const useSearch = () => {
   const [searchValue, setSearchValue] = useState<string>('');
@@ -10,6 +22,26 @@ export const useSearch = () => {
   return {
     searchValue,
     setSearchValue,
+  };
+};
+
+export const useCheckboxes = ({ assets }: UseCheckboxes) => {
+  const [checkboxes, setCheckboxes] = useState<CheckBoxes>({});
+  const checkedCount = Object.values(checkboxes).filter(Boolean).length;
+
+  return {
+    checkboxes,
+    checkedCount,
+    checkFirst30: () => setCheckboxes(() => maxTokensArrayToIdMap(assets)),
+    toggleCheckbox: (assetId: string) => {
+      const newValue = !checkboxes[assetId];
+      if (checkedCount < MAX_TOKENS || !newValue) {
+        setCheckboxes({
+          ...checkboxes,
+          [assetId]: newValue,
+        });
+      }
+    },
   };
 };
 
@@ -22,7 +54,7 @@ export const useScrollPosition = () => {
     const position: ScrollPosition = getScrollPosition(evt.target);
     setScrollPosition(position);
   };
-  const debounced = useCallback(debounce(onScroll, 100, { leading: true }), []);
+  const debounced = useCallback(debounce(onScroll, 50, { leading: true }), []);
 
   useEffect(() => {
     scrollableRef?.current?.addEventListener('scroll', debounced);

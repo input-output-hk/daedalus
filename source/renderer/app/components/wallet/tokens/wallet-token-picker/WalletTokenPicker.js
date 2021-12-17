@@ -3,11 +3,12 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import Dialog from '../../../widgets/Dialog';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
-import { ScrollPositionEnum } from './helpers';
-import { useSearch, useScrollPosition } from './hooks';
+import { ScrollPositionEnum, MAX_TOKENS } from './helpers';
+import { useSearch, useCheckboxes, useScrollPosition } from './hooks';
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
 import type { Intl } from '../../../../types/i18nTypes';
@@ -22,6 +23,14 @@ type Props = {
 const WalletTokenPicker = ({ intl, assets, tokenFavorites }: Props) => {
   const { searchValue, setSearchValue } = useSearch();
   const { scrollableRef, scrollPosition } = useScrollPosition();
+  const {
+    checkedCount,
+    checkboxes,
+    toggleCheckbox,
+    checkFirst30,
+  } = useCheckboxes({
+    assets,
+  });
   const toolbarStyles = classNames(
     styles.toolbar,
     scrollPosition !== ScrollPositionEnum.TOP && styles.scrollTop
@@ -40,18 +49,32 @@ const WalletTokenPicker = ({ intl, assets, tokenFavorites }: Props) => {
           onSearch={setSearchValue}
         />
         <div className={toolbarStyles}>
-          <span className={styles.count}>2 of 30 max tokens</span>
+          <span className={styles.count}>
+            {intl.formatMessage(messages.checkedCountLabel, {
+              checkedCount,
+              maxTokens: MAX_TOKENS,
+            })}
+          </span>
+          <button className={styles.selectButton} onClick={checkFirst30}>
+            {intl.formatMessage(messages.select30label)}
+          </button>
         </div>
-        <div className={styles.tokens} ref={scrollableRef}>
+        <div className={styles.list} ref={scrollableRef}>
           {assets.map((asset) => (
-            <WalletToken
-              key={asset.uniqueId}
-              asset={asset}
-              className={styles.token}
-              headerClassName={styles.tokenHeader}
-              fullFingerprint={false}
-              isFavorite={tokenFavorites[asset.uniqueId]}
-            />
+            <div className={styles.listItem} key={asset.uniqueId}>
+              <Checkbox
+                className={styles.checkbox}
+                checked={checkboxes[asset.uniqueId]}
+                onChange={() => toggleCheckbox(asset.uniqueId)}
+              />
+              <WalletToken
+                asset={asset}
+                className={styles.token}
+                headerClassName={styles.tokenHeader}
+                fullFingerprint={false}
+                isFavorite={tokenFavorites[asset.uniqueId]}
+              />
+            </div>
           ))}
         </div>
       </div>
