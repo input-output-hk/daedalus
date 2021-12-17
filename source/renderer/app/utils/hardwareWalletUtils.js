@@ -6,6 +6,7 @@ import { HARDENED } from '../config/hardwareWalletsConfig';
 
 // Types
 import type { CoinSelectionAssetsType } from '../api/transactions/types';
+import type { AddressType } from '../../../common/types/address-introspection.types';
 
 export type PathRoleIdentityType =
   | 'utxo_external'
@@ -34,11 +35,14 @@ export const MAX_HUMAN_ADDRESS_LENGTH = 150;
 export const KEY_PREFIXES = {
   // ...add more keys if needed
   PUBLIC_KEY_WITH_CHAIN_CODE: 'acct_xvk', // Ed25519 public key with chain code
-  STAKE_ADDRESS_TESTNET: 'stake_test',
-  STAKE_ADDRESS: 'stake',
 };
 
 // Helpers
+
+const receiverAddressTypes: AddressType[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+
+export const isReceiverAddressType = (addressType: AddressType) =>
+  receiverAddressTypes.includes(addressType);
 
 // [1852H, 1815H, 0H] => m/1852'/1815'/0'
 export const derivationPathToString = (derivationPath: Array<string>) => {

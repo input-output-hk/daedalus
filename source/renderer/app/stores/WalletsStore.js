@@ -20,7 +20,7 @@ import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
 import {
   bech32EncodePublicKey,
-  KEY_PREFIXES,
+  isReceiverAddressType,
 } from '../utils/hardwareWalletUtils';
 import {
   WalletPaperWalletOpenPdfError,
@@ -1043,12 +1043,10 @@ export default class WalletsStore extends Store {
     try {
       const response = await introspectAddressChannel.send({ input: address });
 
-      const addressIsStakeAddress =
-        !response.introspection.spending_key_hash &&
-        (address.startsWith(KEY_PREFIXES.STAKE_ADDRESS_TESTNET) ||
-          address.startsWith(KEY_PREFIXES.STAKE_ADDRESS));
-
-      if (response === 'Invalid' || addressIsStakeAddress) {
+      if (
+        response === 'Invalid' ||
+        !isReceiverAddressType(response.introspection.address_type)
+      ) {
         return false;
       }
 

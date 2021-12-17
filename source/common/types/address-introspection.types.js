@@ -6,6 +6,8 @@ export type IntrospectAddressRequest = {
 
 export type AddressStyle = 'Byron' | 'Icarus' | 'Jormungandr' | 'Shelley';
 
+export type AddressType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 14 | 15;
+
 export type ChainPointer = {
   slot_num: number,
   transaction_index: number,
@@ -28,7 +30,7 @@ export type IcarusAddress = AddressBase & {
 };
 
 export type JormungandrAddress = AddressBase & {
-  address_type: 'single' | 'group' | 'account' | 'multisig',
+  address_type: AddressType,
   account_key?: string,
   merkle_root?: string,
   spending_key?: string,
