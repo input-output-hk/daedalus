@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Fixed receiver address validation by disallowing stake addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
+
 ## 4.6.0
 
 ### Features
@@ -10,7 +16,6 @@
 
 ### Fixes
 
-- Fixed receiver address validation by disallowing stake addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
 - Fixed app update for specific platform ([PR 2759](https://github.com/input-output-hk/daedalus/pull/2759))
 - Fixed checkbox tick offset ([PR 2751](https://github.com/input-output-hk/daedalus/pull/2751))
 
