@@ -47,6 +47,8 @@ const WalletTokenPicker = ({ intl, assets, tokenFavorites }: Props) => {
             <WalletToken
               key={asset.uniqueId}
               asset={asset}
+              className={styles.token}
+              headerClassName={styles.tokenHeader}
               fullFingerprint={false}
               isFavorite={tokenFavorites[asset.uniqueId]}
             />

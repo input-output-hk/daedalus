@@ -17,6 +17,7 @@ type Props = {
   anyAssetWasHovered: boolean,
   asset: AssetToken,
   assetSettingsDialogWasOpened: boolean,
+  className?: String,
   fullFingerprint?: boolean,
   isExpanded: boolean,
   isFavorite: boolean,
@@ -31,6 +32,7 @@ const WalletTokenHeader = (props: Props) => {
     anyAssetWasHovered,
     asset,
     assetSettingsDialogWasOpened,
+    className,
     fullFingerprint = true,
     isExpanded,
     isFavorite,
@@ -42,7 +44,11 @@ const WalletTokenHeader = (props: Props) => {
   const { decimals, uniqueId, recommendedDecimals } = asset;
   const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
   const hasWarning = isRecommendedDecimal({ decimals, recommendedDecimals });
-  const rootStyles = classNames(styles.root, isExpanded && styles.isExpanded);
+  const rootStyles = classNames(
+    styles.root,
+    isExpanded && styles.isExpanded,
+    className
+  );
   const favoriteIconStyles = classNames(
     styles.favoriteIcon,
     isFavorite && styles.isFavorite
@@ -50,7 +56,7 @@ const WalletTokenHeader = (props: Props) => {
 
   return (
     <div className={rootStyles} onClick={onClick}>
-      {onToggleFavorite ? (
+      {onToggleFavorite && (
         <button
           className={favoriteIconStyles}
           onClick={(event) => {
@@ -61,12 +67,6 @@ const WalletTokenHeader = (props: Props) => {
         >
           <SVGInline svg={starIcon} />
         </button>
-      ) : (
-        isFavorite && (
-          <button className={favoriteIconStyles}>
-            <SVGInline svg={starIcon} />
-          </button>
-        )
       )}
 
       <Asset

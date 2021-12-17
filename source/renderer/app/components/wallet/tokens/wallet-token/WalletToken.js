@@ -12,6 +12,8 @@ type Props = {
   anyAssetWasHovered: boolean,
   asset: AssetToken,
   assetSettingsDialogWasOpened: boolean,
+  className?: string,
+  headerClassName?: string,
   fullFingerprint?: boolean,
   isFavorite: boolean,
   isInsertingAsset: boolean,
@@ -28,6 +30,8 @@ const WalletToken = observer((props: Props) => {
     anyAssetWasHovered,
     asset,
     assetSettingsDialogWasOpened,
+    className,
+    headerClassName,
     fullFingerprint = true,
     isFavorite,
     isLoading,
@@ -46,13 +50,15 @@ const WalletToken = observer((props: Props) => {
     styles.component,
     isExpanded && styles.isExpanded,
     isInsertingAsset && styles.inserting,
-    isRemovingAsset && styles.removing
+    isRemovingAsset && styles.removing,
+    className
   );
 
   return (
     <div className={componentStyles}>
       <WalletTokenHeader
         asset={asset}
+        className={headerClassName}
         isFavorite={isFavorite}
         isExpanded={isExpanded}
         isLoading={isLoading}

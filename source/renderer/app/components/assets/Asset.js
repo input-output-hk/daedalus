@@ -195,7 +195,7 @@ export default class Asset extends Component<Props, State> {
     return (
       <div className={contentStyles}>
         <div className={styles.fingerprint}>
-          {fullFingerprint ? fingerprint : ellipsis(fingerprint || '', 9, 4)}
+          {fullFingerprint ? fingerprint : ellipsis(fingerprint || '', 12, 12)}
         </div>
         {name && (
           <div className={styles.metadataName}>
