@@ -15,6 +15,7 @@ export type ChainPointer = {
 };
 
 export type AddressBase = {
+  address_type: AddressType,
   address_style: AddressStyle,
   network_tag: number | null,
   stake_reference: 'none' | 'by pointer' | 'by value',
@@ -30,7 +31,6 @@ export type IcarusAddress = AddressBase & {
 };
 
 export type JormungandrAddress = AddressBase & {
-  address_type: AddressType,
   account_key?: string,
   merkle_root?: string,
   spending_key?: string,
