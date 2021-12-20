@@ -72,13 +72,15 @@
   display: flex;
   font-family: var(--font-regular);
   font-style: italic;
+  font-weight: 300;
   height: 50px;
   margin: 20px 0 30px 0;
   padding: 14px 20px;
   width: 100%;
 
   b {
-    font-weight: 600;
+    font-family: var(--font-medium);
+    font-weight: 500;
   }
 }
 

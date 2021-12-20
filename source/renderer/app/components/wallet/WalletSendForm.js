@@ -514,11 +514,12 @@ export default class WalletSendForm extends Component<Props, State> {
                 minimumAda
               );
               if (hasUpdatedMinimumAdaValue) {
-                return this.setState({
+                this.setState({
                   ...nextState,
                   hasUpdatedMinimumAdaValue: true,
                   minimumAda: new BigNumber(minimumAda),
                 });
+                return;
               }
             }
             nextState = {
@@ -565,6 +566,9 @@ export default class WalletSendForm extends Component<Props, State> {
   updateAdaAmount = async () => {
     try {
       this.trySetMinimumAdaAmount(this.state.minimumAda.toFormat());
+      return this.setState({
+        hasUpdatedMinimumAdaValue: false,
+      });
     } catch (err) {
       return false;
     }
