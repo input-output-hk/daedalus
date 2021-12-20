@@ -13053,6 +13053,109 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Add tokens",
+        "description": "Token picker title",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.title",
+        "start": {
+          "column": 9,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!All tokens",
+        "description": "Label for all tokens option",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.allTokensLabel",
+        "start": {
+          "column": 18,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Favorites",
+        "description": "Label for favorite tokens option",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.favoriteTokensLabel",
+        "start": {
+          "column": 23,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Select first 30",
+        "description": "Label for select first 30 button label",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.check30FirstLabel",
+        "start": {
+          "column": 21,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!{checkedCount} of {maxTokens} max tokens",
+        "description": "Label of selected tokens count",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.checkedCountLabel",
+        "start": {
+          "column": 21,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Label of cancel button",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.cancelButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Add",
+        "description": "Label of add button",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.addButtonLabel",
+        "start": {
+          "column": 18,
+          "line": 34
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Send",
         "description": "Send button on Wallet summary assets page",
         "end": {
@@ -13226,13 +13329,13 @@
         "description": "Favorites list title label",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.tokens.list.favorites.title",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -13240,13 +13343,13 @@
         "description": "Favorites list title label",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.tokens.list.tokens.title",
         "start": {
           "column": 19,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -13254,13 +13357,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 18,
-          "line": 24
+          "line": 25
         }
       }
     ],

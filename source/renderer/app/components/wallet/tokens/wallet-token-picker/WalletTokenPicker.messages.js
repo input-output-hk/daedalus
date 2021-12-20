@@ -6,8 +6,18 @@ export const messages = defineMessages({
     defaultMessage: '!!!Add tokens',
     description: 'Token picker title',
   },
-  select30label: {
-    id: 'wallet.token.picker.select30label',
+  allTokensLabel: {
+    id: 'wallet.token.picker.allTokensLabel',
+    defaultMessage: '!!!All tokens',
+    description: 'Label for all tokens option',
+  },
+  favoriteTokensLabel: {
+    id: 'wallet.token.picker.favoriteTokensLabel',
+    defaultMessage: '!!!Favorites',
+    description: 'Label for favorite tokens option',
+  },
+  check30FirstLabel: {
+    id: 'wallet.token.picker.check30FirstLabel',
     defaultMessage: '!!!Select first 30',
     description: 'Label for select first 30 button label',
   },

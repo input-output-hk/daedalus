@@ -1,14 +1,12 @@
 // @flow
-import type { ScrollPosition, CheckBoxes } from './types';
-import type { AssetToken } from '../../../../api/assets/types';
-
-export const MAX_TOKENS = 30;
-
-export const ScrollPositionEnum: EnumMap<string, ScrollPosition> = {
-  TOP: 'top',
-  MIDDLE: 'middle',
-  BOTTOM: 'bottom',
-};
+import { messages } from './WalletTokenPicker.messages';
+import {
+  MAX_TOKENS,
+  ScrollPositionEnum,
+  FilterSelectOptionsEnum,
+} from './const';
+import type { Intl } from '../../../../types/i18nTypes';
+import type { ScrollPosition, CheckBoxes, FilterAssets, Assets } from './types';
 
 const isScrollAtTop = (element: HTMLElement) => element.scrollTop === 0;
 const isScrollAtBottom = (element: HTMLElement) =>
@@ -30,7 +28,7 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
   return ScrollPositionEnum.MIDDLE;
 };
 
-export const maxTokensArrayToIdMap = (assets: Array<AssetToken>) => ({
+export const maxTokensArrayToIdMap = (assets: Assets) => ({
   ...assets.slice(0, MAX_TOKENS).reduce(
     (acc, asset) => ({
       ...acc,
@@ -39,3 +37,26 @@ export const maxTokensArrayToIdMap = (assets: Array<AssetToken>) => ({
     ({}: CheckBoxes)
   ),
 });
+
+export const filterSelectOptions = (intl: Intl) => [
+  {
+    label: intl.formatMessage(messages.allTokensLabel),
+    value: FilterSelectOptionsEnum.ALL,
+  },
+  {
+    label: intl.formatMessage(messages.favoriteTokensLabel),
+    value: FilterSelectOptionsEnum.FAVORITES,
+  },
+];
+
+export const filterAssets = ({
+  assets,
+  filter,
+  tokenFavorites,
+}: FilterAssets): Assets => {
+  return assets.filter((asset) => {
+    return filter === FilterSelectOptionsEnum.FAVORITES
+      ? tokenFavorites[asset.uniqueId]
+      : true;
+  });
+};

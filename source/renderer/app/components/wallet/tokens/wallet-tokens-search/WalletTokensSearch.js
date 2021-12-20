@@ -29,7 +29,6 @@ const WalletTokensSearch = (props: Props) => {
     <div className={styles.component}>
       <SVGInline svg={searchIcon} className={styles.searchIcon} />
       <Input
-        className={styles.spendingPassword}
         onChange={onSearch}
         value={searchValue}
         placeholder={intl.formatMessage(messages.placeholder)}

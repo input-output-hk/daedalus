@@ -1,22 +1,25 @@
 // @flow
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
+import { searchAssets } from '../../../../utils/assets';
 import {
+  MAX_TOKENS,
   ScrollPositionEnum,
+  FilterSelectOptionsEnum,
+} from './const';
+import {
+  filterAssets,
   getScrollPosition,
   maxTokensArrayToIdMap,
-  MAX_TOKENS,
 } from './helpers';
-import type { ScrollPosition, UseCheckboxes, CheckBoxes } from './types';
-
-export const useSearch = () => {
-  const [searchValue, setSearchValue] = useState<string>('');
-
-  return {
-    searchValue,
-    setSearchValue,
-  };
-};
+import type {
+  Assets,
+  FilterSelectOptions,
+  ScrollPosition,
+  UseCheckboxes,
+  UseFilters,
+  CheckBoxes,
+} from './types';
 
 export const useCheckboxes = ({ assets }: UseCheckboxes) => {
   const [checkboxes, setCheckboxes] = useState<CheckBoxes>({});
@@ -25,7 +28,7 @@ export const useCheckboxes = ({ assets }: UseCheckboxes) => {
   return {
     checkboxes,
     checkedCount,
-    checkFirst30: () => setCheckboxes(() => maxTokensArrayToIdMap(assets)),
+    check30First: () => setCheckboxes(() => maxTokensArrayToIdMap(assets)),
     toggleCheckbox: (assetId: string) => {
       const newValue = !checkboxes[assetId];
       if (checkedCount < MAX_TOKENS || !newValue) {
@@ -35,6 +38,32 @@ export const useCheckboxes = ({ assets }: UseCheckboxes) => {
         });
       }
     },
+  };
+};
+
+export const useFilters = ({ assets, tokenFavorites }: UseFilters) => {
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [currentAssets, setCurrentAssets] = useState<Assets>(assets);
+  const [filterOption, setFilterOption] = useState<FilterSelectOptions>(
+    FilterSelectOptionsEnum.ALL
+  );
+
+  useEffect(() => {
+    const searchedAssets = searchAssets(searchValue, assets);
+    const filterdAssets = filterAssets({
+      assets: searchedAssets,
+      filter: filterOption,
+      tokenFavorites,
+    });
+    setCurrentAssets(filterdAssets);
+  }, [assets, searchValue, filterOption]);
+
+  return {
+    searchValue,
+    setSearchValue,
+    currentAssets,
+    filterOption,
+    setFilterOption,
   };
 };
 

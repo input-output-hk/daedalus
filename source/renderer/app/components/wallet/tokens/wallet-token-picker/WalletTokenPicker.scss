@@ -8,6 +8,42 @@
       box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.25);
     }
 
+    .filterSelect {
+      font-family: var(--font-medium);
+      font-size: 16px;
+      line-height: 1.38;
+    }
+
+    :global {
+      .SimpleInput_customValueBlock {
+        height: auto;
+        padding-right: 10px;
+      }
+
+      .SimpleBubble_bubble {
+        width: 170px;
+      }
+
+      .SimpleInput_customValueWrapper .SimpleInput_input {
+        border: none;
+        height: auto;
+        padding: 0;
+        width: 120px;
+      }
+
+      .SelectOverrides_selectInput {
+        align-items: baseline;
+        display: flex;
+        position: relative;
+
+        &:after {
+          bottom: 0;
+          left: 0;
+          position: relative;
+        }
+      }
+    }
+
     .count {
       font-family: var(--font-light);
       font-size: 14px;
@@ -15,7 +51,7 @@
       margin-left: auto;
     }
 
-    .selectButton {
+    .check30First {
       background: var(--theme-widgets-asset-token-fingerprint-background-color);
       border-radius: 3px;
       color: var(--theme-widgets-asset-token-text-color);
@@ -30,7 +66,7 @@
   }
 
   .list {
-    max-height: 450px;
+    height: 450px;
     overflow-y: auto;
   }
 

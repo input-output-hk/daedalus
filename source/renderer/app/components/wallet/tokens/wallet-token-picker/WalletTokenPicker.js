@@ -4,13 +4,15 @@ import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Select } from 'react-polymorph/lib/components/Select';
 import Dialog from '../../../widgets/Dialog';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
-import { ScrollPositionEnum, MAX_TOKENS } from './helpers';
-import { useSearch, useCheckboxes, useScrollPosition } from './hooks';
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
+import { filterSelectOptions } from './helpers';
+import { useFilters, useCheckboxes, useScrollPosition } from './hooks';
+import { MAX_TOKENS, ScrollPositionEnum } from './const';
 import type { Intl } from '../../../../types/i18nTypes';
 import type { AssetToken } from '../../../../api/assets/types';
 
@@ -18,16 +20,33 @@ type Props = {
   intl: Intl,
   assets: Array<AssetToken>,
   tokenFavorites: Object,
+  onAdd: Function,
+  onCancel: Function,
 };
 
-const WalletTokenPicker = ({ intl, assets, tokenFavorites }: Props) => {
-  const { searchValue, setSearchValue } = useSearch();
+const WalletTokenPicker = ({
+  intl,
+  assets,
+  tokenFavorites,
+  onAdd,
+  onCancel,
+}: Props) => {
   const { scrollableRef, scrollPosition } = useScrollPosition();
+  const {
+    searchValue,
+    setSearchValue,
+    currentAssets,
+    filterOption,
+    setFilterOption,
+  } = useFilters({
+    assets,
+    tokenFavorites,
+  });
   const {
     checkedCount,
     checkboxes,
     toggleCheckbox,
-    checkFirst30,
+    check30First,
   } = useCheckboxes({
     assets,
   });
@@ -35,17 +54,16 @@ const WalletTokenPicker = ({ intl, assets, tokenFavorites }: Props) => {
     styles.toolbar,
     scrollPosition !== ScrollPositionEnum.TOP && styles.scrollTop
   );
-
   const actions = [
     {
       label: intl.formatMessage(messages.cancelButtonLabel),
-      onClick: () => {},
+      onClick: onCancel,
     },
     {
       label: intl.formatMessage(messages.addButtonLabel),
       primary: true,
-      disabled: false,
-      onClick: () => {},
+      disabled: !checkedCount,
+      onClick: () => onAdd(checkboxes),
     },
   ];
 
@@ -62,18 +80,25 @@ const WalletTokenPicker = ({ intl, assets, tokenFavorites }: Props) => {
           onSearch={setSearchValue}
         />
         <div className={toolbarStyles}>
+          <Select
+            value={filterOption}
+            onChange={setFilterOption}
+            className={styles.filterSelect}
+            options={filterSelectOptions(intl)}
+            selectionRenderer={(option) => option.label}
+          />
           <span className={styles.count}>
             {intl.formatMessage(messages.checkedCountLabel, {
               checkedCount,
               maxTokens: MAX_TOKENS,
             })}
           </span>
-          <button className={styles.selectButton} onClick={checkFirst30}>
-            {intl.formatMessage(messages.select30label)}
+          <button className={styles.check30First} onClick={check30First}>
+            {intl.formatMessage(messages.check30FirstLabel)}
           </button>
         </div>
         <div className={styles.list} ref={scrollableRef}>
-          {assets.map((asset) => (
+          {currentAssets.map((asset) => (
             <div className={styles.listItem} key={asset.uniqueId}>
               <Checkbox
                 className={styles.checkbox}
