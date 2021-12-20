@@ -81,7 +81,6 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
-  showRemoveAssetButton: { [uniqueId: string]: boolean },
   selectedAssetUniqueIds: Array<string>,
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
@@ -100,7 +99,6 @@ export default class WalletSendForm extends Component<Props, State> {
     feeCalculationRequestQue: 0,
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
-    showRemoveAssetButton: {},
     selectedAssetUniqueIds: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
@@ -226,7 +224,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
     this.setState({
       minimumAda: new BigNumber(0),
-      showRemoveAssetButton: {},
       isResetButtonDisabled: true,
     });
   };
@@ -535,22 +532,6 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  showRemoveAssetButton = (uniqueId: string) => {
-    const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[uniqueId] = true;
-    this.setState({
-      showRemoveAssetButton,
-    });
-  };
-
-  hideRemoveAssetButton = (uniqueId: string) => {
-    const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[uniqueId] = false;
-    this.setState({
-      showRemoveAssetButton,
-    });
-  };
-
   addAssetRow = (uniqueId: string) => {
     this.addAssetFields(uniqueId);
     this.updateFormFields(false, uniqueId);
@@ -686,7 +667,6 @@ export default class WalletSendForm extends Component<Props, State> {
       adaAmount: adaAmountField,
       receiver: receiverField,
       assetFields,
-      assetsDropdown,
     } = formFields.receiver;
 
     const assetsSeparatorBasicHeight = 140;
@@ -836,22 +816,12 @@ export default class WalletSendForm extends Component<Props, State> {
                       uniqueId={uniqueId}
                       index={index}
                       getAssetByUniqueId={this.getAssetByUniqueId}
-                      availableAssets={this.availableAssets}
                       assetFields={assetFields}
-                      assetsDropdown={assetsDropdown}
                       addFocusableField={this.addFocusableField}
-                      removeAssetButtonVisible={
-                        this.state.showRemoveAssetButton
-                      }
-                      showRemoveAssetButton={this.showRemoveAssetButton}
-                      hideRemoveAssetButton={this.hideRemoveAssetButton}
                       currentNumberFormat={this.getCurrentNumberFormat()}
                       removeAssetRow={this.removeAssetRow}
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
-                      onChangeAsset={(newUniqueId) =>
-                        this.onChangeAsset(uniqueId, newUniqueId)
-                      }
                       autoFocus={this._isAutoFocusEnabled}
                     />
                   )

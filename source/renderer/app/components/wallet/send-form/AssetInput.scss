@@ -2,7 +2,7 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
-  position: relative;
+  display: flex;
 
   .amountTokenTotal {
     color: var(--theme-input-right-floating-text-color);
@@ -19,142 +19,91 @@
   }
 
   .removeAssetButton {
-    border-radius: 5px;
-    box-sizing: border-box;
+    align-items: center;
+    border-radius: 3px;
+    color: var(--theme-staking-stake-pools-search-clear-button-color);
     cursor: pointer;
-    display: inline-block;
-    font-family: var(--font-semibold);
-    font-size: 10px;
-    font-weight: 500;
-    height: 20px;
-    letter-spacing: 0.5px;
-    line-height: 20px;
-    margin: 1px 0 0 10px;
-    padding: 0 8px;
-    text-transform: uppercase;
-    vertical-align: top;
-    width: auto;
+    display: flex;
+    height: 28px;
+    justify-content: center;
+    width: 28px;
   }
 
   .rightContent {
+    align-items: center;
     bottom: 0;
     display: inline-flex;
     height: 48px;
     position: absolute;
-    right: 0;
+    right: 20px;
+    top: 34px;
   }
 
-  .clearAssetContainer {
-    bottom: 0.5px;
-    display: flex;
-    float: right;
-    height: 48px;
-    justify-content: flex-end;
-    line-height: 48px;
-    padding-left: 20px;
+  .inputBlock {
+    flex: 1 1 auto;
     position: relative;
-    right: 10px;
-    width: 50px;
+  }
+}
 
-    .clearAssetButton {
+.clearAssetContainer {
+  align-items: center;
+  display: flex;
+  height: 48px;
+
+  .clearAssetButton {
+    background-color: var(
+      --theme-staking-stake-pools-search-clear-button-background-color
+    );
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+
+    &:hover {
       background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
+        --theme-staking-stake-pools-search-clear-button-hover-background-color
       );
-      border-radius: 3px;
-      cursor: pointer;
-      height: 28px;
-      width: 28px;
+    }
 
-      &:hover {
-        background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
-        );
-      }
+    .clearReceiverIcon {
+      > svg {
+        position: relative;
+        top: 0.5px;
+        width: 10px;
 
-      .clearReceiverIcon {
-        > svg {
-          position: relative;
-          top: 0.5px;
-          width: 10px;
-
-          > g > g {
-            fill: var(--theme-staking-stake-pools-search-clear-button-color);
-          }
+        > g > g {
+          fill: var(--theme-staking-stake-pools-search-clear-button-color);
         }
       }
     }
   }
 
-  .separator {
-    background: var(--rp-input-border-color);
-    height: 20px;
-    left: 15px;
-    position: relative;
-    top: 15px;
-    width: 1px;
+  & + .ticker {
+    margin-left: 10px;
   }
+}
 
-  .assetsDropdownWrapper {
-    display: flex;
-    position: relative;
-    width: auto;
+.ticker {
+  color: var(--theme-input-placeholder-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 300;
+  z-index: 1;
+}
 
-    > div {
-      width: 100%;
-    }
+.removeAssetBlock {
+  align-items: center;
+  display: flex;
+  height: 48px;
+  margin: 34px 11px 0 11px;
+}
 
-    .assetsDropdown {
-      input {
-        border: none;
-        height: 48px;
-      }
+.removeIcon {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 
-      :global {
-        .SimpleSelect_selectInput.SelectOverrides_selectInput
-          .WalletsDropdownOption_component {
-          max-width: 100%;
-        }
-
-        .SimpleSelect_selectInput.SelectOverrides_selectInput
-          .WalletsDropdownOption_selected
-          .WalletsDropdownOption_topRow {
-          justify-content: flex-end;
-        }
-
-        .SimpleSelect_selectInput.SelectOverrides_selectInput
-          .WalletsDropdownOption_label {
-          .Asset_content {
-            margin-right: 24.5px;
-          }
-        }
-
-        .ItemDropdownOption_selected {
-          .ItemDropdownOption_label {
-            margin-top: 5px;
-          }
-          .ItemDropdownOption_detail {
-            display: none !important;
-          }
-        }
-
-        .SimpleOptions_option {
-          padding: 6px 15px;
-        }
-
-        .OptionsOverrides_options {
-          left: auto !important;
-          min-width: 289px;
-          right: 41px !important;
-        }
-
-        .SimpleBubble_root:not(.SimpleBubble_openUpward) .SimpleBubble_bubble {
-          border-radius: 2px;
-        }
-
-        .SelectOverrides_selectInput .SimpleInput_customValueBlock {
-          background: transparent;
-        }
-      }
-    }
+  & > svg {
+    height: 2px;
   }
 }
