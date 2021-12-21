@@ -30,7 +30,7 @@
     "cucumber:rerun": "yarn cucumber tests-report/@rerun.txt",
     "cucumber:rerun:fail-fast": "yarn cucumber tests-report/@rerun.txt --fail-fast",
     "debug": "gulp debug",
-    "package": "tsc ./scripts.package.ts gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill ./scripts/package.js",
+    "package": "tsc ./scripts/package.ts gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill ./scripts/package.js",
     "package:all": "yarn package --all",
     "cleanup": "mop -v",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source storybook utils *.ts,*.tsx",
