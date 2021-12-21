@@ -29,7 +29,7 @@ Daedalus - Cryptocurrency Wallet
    build-users-group = nixbld
 
    max-jobs = auto
-   cores = 0                                         # the builder will use all available CPU cores
+   cores = 0
    sandbox = false
 
    require-sigs = true
