@@ -1,4 +1,5 @@
 // @flow
+import xor from 'lodash/xor';
 import { messages } from './WalletTokenPicker.messages';
 import {
   MAX_TOKENS,
@@ -6,7 +7,13 @@ import {
   FilterSelectOptionsEnum,
 } from './const';
 import type { Intl } from '../../../../types/i18nTypes';
-import type { ScrollPosition, CheckBoxes, FilterAssets, Assets } from './types';
+import type {
+  Assets,
+  BooleanMap,
+  FilterAssets,
+  ScrollPosition,
+  GetMaxTokensIdsMap,
+} from './types';
 
 const isScrollAtTop = (element: HTMLElement) => element.scrollTop === 0;
 const isScrollAtBottom = (element: HTMLElement) =>
@@ -28,15 +35,24 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
   return ScrollPositionEnum.MIDDLE;
 };
 
-export const maxTokensArrayToIdMap = (assets: Assets) => ({
-  ...assets.slice(0, MAX_TOKENS).reduce(
-    (acc, asset) => ({
-      ...acc,
-      [asset.uniqueId]: true,
-    }),
-    ({}: CheckBoxes)
-  ),
-});
+export const getMaxTokensIdsMap = ({
+  assetIds,
+  previousCheckedIds,
+}: GetMaxTokensIdsMap) => {
+  const enabledIds = xor(assetIds, previousCheckedIds);
+  return enabledIds
+    .slice(0, MAX_TOKENS - previousCheckedIds.length)
+    .reduce((acc: BooleanMap, element) => ({ ...acc, [element]: true }), {});
+};
+
+export const getAssetIds = (assets: Assets) =>
+  assets.map<string>(({ uniqueId }) => uniqueId);
+
+export const getCheckedIds = (checkBoxes: BooleanMap) =>
+  Object.entries(checkBoxes).reduce(
+    (acc: Array<string>, [id, checked]) => (checked ? [...acc, id] : acc),
+    []
+  );
 
 export const filterSelectOptions = (intl: Intl) => [
   {

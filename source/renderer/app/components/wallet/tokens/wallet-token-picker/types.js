@@ -5,21 +5,27 @@ export type ScrollPosition = 'top' | 'middle' | 'bottom';
 
 export type FilterSelectOptions = 'all' | 'favorites';
 
-export type CheckBoxes = { [key: string]: boolean };
-
 export type Assets = Array<AssetToken>;
+
+export type BooleanMap = { [key: string]: boolean };
 
 export type FilterAssets = {
   assets: Assets,
   filter: FilterSelectOptions,
-  tokenFavorites: { [key: string]: boolean },
+  tokenFavorites: BooleanMap,
 };
 
 export type UseCheckboxes = {
   assets: Assets,
+  previousCheckedIds: Array<string>,
 };
 
 export type UseFilters = {
   assets: Assets,
-  tokenFavorites: { [key: string]: boolean },
+  tokenFavorites: BooleanMap,
+};
+
+export type GetMaxTokensIdsMap = {
+  assetIds: Array<string>,
+  previousCheckedIds: Array<string>,
 };

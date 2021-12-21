@@ -91,6 +91,12 @@
     margin-top: 14px;
   }
 
+  :global {
+    .SimpleCheckbox_disabled {
+      opacity: 0.3;
+    }
+  }
+
   .token {
     flex: 1;
   }

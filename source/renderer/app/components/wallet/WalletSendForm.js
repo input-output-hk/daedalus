@@ -856,6 +856,7 @@ export default class WalletSendForm extends Component<Props, State> {
       isResetButtonDisabled,
       isTransactionFeeCalculated,
       isTokenPickerOpen,
+      selectedAssetUniqueIds,
     } = this.state;
     const {
       assets,
@@ -962,6 +963,7 @@ export default class WalletSendForm extends Component<Props, State> {
         {isTokenPickerOpen && (
           <WalletTokenPicker
             assets={assets}
+            previousCheckedIds={selectedAssetUniqueIds}
             tokenFavorites={tokenFavorites}
             onCancel={() => {
               this.setState({ isTokenPickerOpen: false });

@@ -20,6 +20,7 @@ type Props = {
   intl: Intl,
   assets: Array<AssetToken>,
   tokenFavorites: Object,
+  previousCheckedIds?: Array<string>,
   onAdd: Function,
   onCancel: Function,
 };
@@ -28,6 +29,7 @@ const WalletTokenPicker = ({
   intl,
   assets,
   tokenFavorites,
+  previousCheckedIds = [],
   onAdd,
   onCancel,
 }: Props) => {
@@ -44,11 +46,14 @@ const WalletTokenPicker = ({
   });
   const {
     checkboxes,
-    checkedCheckboxes,
+    checkedCount,
+    checkedIds,
+    disabledIdsSet,
     toggleCheckbox,
     check30First,
   } = useCheckboxes({
     assets,
+    previousCheckedIds,
   });
   const toolbarStyles = classNames(
     styles.toolbar,
@@ -62,8 +67,8 @@ const WalletTokenPicker = ({
     {
       label: intl.formatMessage(messages.addButtonLabel),
       primary: true,
-      disabled: !checkedCheckboxes.length,
-      onClick: () => onAdd(checkedCheckboxes),
+      disabled: !checkedIds.length,
+      onClick: () => onAdd(checkedIds),
     },
   ];
 
@@ -89,7 +94,7 @@ const WalletTokenPicker = ({
           />
           <span className={styles.count}>
             {intl.formatMessage(messages.checkedCountLabel, {
-              checkedCount: checkedCheckboxes.length,
+              checkedCount,
               maxTokens: MAX_TOKENS,
             })}
           </span>
@@ -102,8 +107,12 @@ const WalletTokenPicker = ({
             <div className={styles.listItem} key={asset.uniqueId}>
               <Checkbox
                 className={styles.checkbox}
-                checked={checkboxes[asset.uniqueId]}
+                checked={
+                  checkboxes[asset.uniqueId] ||
+                  disabledIdsSet.has(asset.uniqueId)
+                }
                 onChange={() => toggleCheckbox(asset.uniqueId)}
+                disabled={disabledIdsSet.has(asset.uniqueId)}
               />
               <WalletToken
                 asset={asset}
