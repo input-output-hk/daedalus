@@ -4,7 +4,7 @@ export type IntrospectAddressRequest = {
   input: string,
 };
 
-export type AddressStyle = 'Byron' | 'Icarus' | 'Jormungandr' | 'Shelley';
+export type AddressStyle = 'Byron' | 'Icarus' | 'Shelley';
 
 export type AddressType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 14 | 15;
 
@@ -30,13 +30,6 @@ export type IcarusAddress = AddressBase & {
   address_root: string,
 };
 
-export type JormungandrAddress = AddressBase & {
-  account_key?: string,
-  merkle_root?: string,
-  spending_key?: string,
-  stake_key?: string,
-};
-
 export type ShelleyAddress = AddressBase & {
   pointer?: ChainPointer,
   script_hash?: string,
@@ -47,10 +40,6 @@ export type ShelleyAddress = AddressBase & {
 
 export type IntrospectAddressResponse =
   | {
-      introspection:
-        | ByronAddress
-        | IcarusAddress
-        | JormungandrAddress
-        | ShelleyAddress,
+      introspection: ByronAddress | IcarusAddress | ShelleyAddress,
     }
   | 'Invalid';
