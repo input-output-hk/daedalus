@@ -6,7 +6,7 @@
 
 const os = require('os');
 
-import packager = require('electron-packager');
+const packager = require('electron-packager');
 
 const del = require('del');
 
