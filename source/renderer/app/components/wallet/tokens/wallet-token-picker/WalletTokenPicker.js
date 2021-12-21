@@ -33,7 +33,7 @@ const WalletTokenPicker = ({
   onAdd,
   onCancel,
 }: Props) => {
-  const { scrollableRef, scrollPosition } = useScrollPosition();
+  const { onScroll, scrollPosition } = useScrollPosition();
   const {
     searchValue,
     setSearchValue,
@@ -102,7 +102,7 @@ const WalletTokenPicker = ({
             {intl.formatMessage(messages.check30FirstLabel)}
           </button>
         </div>
-        <div className={styles.list} ref={scrollableRef}>
+        <div className={styles.list} onScroll={onScroll}>
           {currentAssets.map((asset) => (
             <div className={styles.listItem} key={asset.uniqueId}>
               <Checkbox

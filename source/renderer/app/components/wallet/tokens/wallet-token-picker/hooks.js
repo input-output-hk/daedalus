@@ -1,5 +1,5 @@
 // @flow
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
 import { searchAssets } from '../../../../utils/assets';
 import {
@@ -92,25 +92,22 @@ export const useFilters = ({ assets, tokenFavorites }: UseFilters) => {
 };
 
 export const useScrollPosition = () => {
-  const scrollableRef = useRef<HTMLElement | null>(null);
   const [scrollPosition, setScrollPosition] = useState<ScrollPosition>(
     ScrollPositionEnum.TOP
   );
+  const setPosition = (target: EventTarget) =>
+    setScrollPosition(getScrollPosition(target));
+  const debouncedSetPosition = useCallback(
+    debounce(setPosition, 100, { leading: true }),
+    [setPosition]
+  );
   const onScroll = (evt: Event) => {
-    const position: ScrollPosition = getScrollPosition(evt.target);
-    setScrollPosition(position);
+    evt.persist();
+    debouncedSetPosition(evt.target);
   };
-  const debounced = useCallback(debounce(onScroll, 50, { leading: true }), []);
-
-  useEffect(() => {
-    scrollableRef?.current?.addEventListener('scroll', debounced);
-    return () => {
-      scrollableRef?.current?.removeEventListener('scroll', debounced);
-    };
-  }, [scrollableRef.current]);
 
   return {
-    scrollableRef,
     scrollPosition,
+    onScroll,
   };
 };
