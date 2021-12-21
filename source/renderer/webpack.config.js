@@ -3,7 +3,29 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const DevMainPlugin = require('../../scripts/webpack/DevMainPlugin');
+
+class DevMainPlugin {
+  apply(compiler) {
+    let mainCompilation = null;
+    compiler.hooks.done.tap('DevMainPlugin', () => {
+      if (mainCompilation === null) {
+        mainCompilation = exec(
+          'yarn dev:main',
+          null,
+          (error, stderr, stdout) => {
+            console.log(stdout);
+            console.error(error, stderr);
+          }
+        );
+        mainCompilation.once('close', () => {
+          mainCompilation = null;
+        });
+      }
+    });
+  }
+}
+
+const { exec } = require('child_process');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 

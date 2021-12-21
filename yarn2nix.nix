@@ -1,5 +1,6 @@
-{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, git, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, libsass, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , libcap
+, ncurses
 , libgcrypt
 , libgpgerror
 , libidn2
@@ -51,6 +52,10 @@ let
     url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
     sha256 = "25bfc02a19d7eac9191f4735868891e87c9352222d73a931699b47229e3380cd";
   };
+  node-gyp = fetchurl {
+    url = "https://nodejs.org/download/release/v16.13.0/node-v16.13.0-headers.tar.gz";
+    sha256 = "9abfc6dcd32bce3b9a978b8c23b8bb48a562c94919feba489f9bb9d4bbeeae66";
+  };
   filter = name: type: let
     baseName = baseNameOf (toString name);
     sansPrefix = lib.removePrefix (toString ./.) name;
@@ -82,6 +87,10 @@ let
     echo ______ gyp wrapper
     ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
   '';
+  hackNode16 = writeShellScriptBin "node-gyp" ''
+    echo ______ gyp wrapper
+    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
+  '';
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
@@ -93,7 +102,7 @@ yarn2nix.mkYarnPackage {
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   BUILDTYPE = "Release";
-  extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);
+  extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else [ ]);
   installPhase = let
     nukeAllRefs = ''
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
@@ -177,6 +186,10 @@ yarn2nix.mkYarnPackage {
       $STRIP $file
       patchelf --shrink-rpath $file
     done
+
+    echo " ======================================== "
+    git --version
+    echo " ======================================== "
   '';
   #allowedReferences = [ "out" ];
   #allowedRequisites = [
@@ -202,13 +215,6 @@ yarn2nix.mkYarnPackage {
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
   pkgConfig = {
-    node-sass = {
-      buildInputs = [ python2 ];
-      postInstall = ''
-        yarn --offline run build
-        rm build/config.gypi
-      '';
-    };
     flow-bin = {
       postInstall = ''
         flow_ver=${origPackage.devDependencies."flow-bin"}
