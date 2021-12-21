@@ -13329,13 +13329,13 @@
         "description": "Favorites list title label",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.tokens.list.favorites.title",
         "start": {
           "column": 22,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -13343,13 +13343,13 @@
         "description": "Favorites list title label",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.tokens.list.tokens.title",
         "start": {
           "column": 19,
-          "line": 20
+          "line": 19
         }
       },
       {
@@ -13357,13 +13357,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 18,
-          "line": 25
+          "line": 24
         }
       }
     ],

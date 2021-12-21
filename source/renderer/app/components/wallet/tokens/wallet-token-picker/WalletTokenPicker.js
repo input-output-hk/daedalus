@@ -43,8 +43,8 @@ const WalletTokenPicker = ({
     tokenFavorites,
   });
   const {
-    checkedCount,
     checkboxes,
+    checkedCheckboxes,
     toggleCheckbox,
     check30First,
   } = useCheckboxes({
@@ -62,8 +62,8 @@ const WalletTokenPicker = ({
     {
       label: intl.formatMessage(messages.addButtonLabel),
       primary: true,
-      disabled: !checkedCount,
-      onClick: () => onAdd(checkboxes),
+      disabled: !checkedCheckboxes.length,
+      onClick: () => onAdd(checkedCheckboxes),
     },
   ];
 
@@ -89,7 +89,7 @@ const WalletTokenPicker = ({
           />
           <span className={styles.count}>
             {intl.formatMessage(messages.checkedCountLabel, {
-              checkedCount,
+              checkedCount: checkedCheckboxes.length,
               maxTokens: MAX_TOKENS,
             })}
           </span>

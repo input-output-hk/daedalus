@@ -241,6 +241,7 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
@@ -265,6 +266,7 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
@@ -289,6 +291,7 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
@@ -313,6 +316,7 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
     />
   ))
   .add('Send - With Assets', () => (
@@ -340,6 +344,7 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
     />
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => {

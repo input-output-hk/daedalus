@@ -38,6 +38,7 @@ import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
+import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -62,6 +63,7 @@ type Props = {
   onUnsetActiveAsset: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
+  tokenFavorites: { [key: string]: boolean },
 };
 
 type State = {
@@ -85,6 +87,7 @@ type State = {
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
   isTransactionFeeCalculated: boolean,
+  isTokenPickerOpen: boolean,
 };
 
 @observer
@@ -103,6 +106,7 @@ export default class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
+    isTokenPickerOpen: false,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -832,7 +836,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
                 onClick={() => {
-                  this.addAssetRow(this.availableAssets[0].uniqueId);
+                  this.setState({ isTokenPickerOpen: true });
                 }}
               />
             </div>
@@ -851,14 +855,17 @@ export default class WalletSendForm extends Component<Props, State> {
       transactionFeeError,
       isResetButtonDisabled,
       isTransactionFeeCalculated,
+      isTokenPickerOpen,
     } = this.state;
     const {
+      assets,
       currencyMaxFractionalDigits,
       hwDeviceStatus,
       isHardwareWallet,
       isDialogOpen,
       isRestoreActive,
       onExternalLinkClick,
+      tokenFavorites,
     } = this.props;
 
     const receiverField = form.$('receiver');
@@ -951,6 +958,20 @@ export default class WalletSendForm extends Component<Props, State> {
             formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
+
+        {isTokenPickerOpen && (
+          <WalletTokenPicker
+            assets={assets}
+            tokenFavorites={tokenFavorites}
+            onCancel={() => {
+              this.setState({ isTokenPickerOpen: false });
+            }}
+            onAdd={(checked) => {
+              this.setState({ isTokenPickerOpen: false });
+              checked.forEach(this.addAssetRow);
+            }}
+          />
+        )}
       </div>
     );
   }

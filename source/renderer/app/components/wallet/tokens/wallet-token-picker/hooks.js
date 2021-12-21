@@ -23,15 +23,19 @@ import type {
 
 export const useCheckboxes = ({ assets }: UseCheckboxes) => {
   const [checkboxes, setCheckboxes] = useState<CheckBoxes>({});
-  const checkedCount = Object.values(checkboxes).filter(Boolean).length;
+  const checkedCheckboxes = Object.entries(checkboxes).reduce(
+    (acc: Array<string>, [uniqueId, checked]) =>
+      checked ? [...acc, uniqueId] : acc,
+    []
+  );
 
   return {
     checkboxes,
-    checkedCount,
+    checkedCheckboxes,
     check30First: () => setCheckboxes(() => maxTokensArrayToIdMap(assets)),
     toggleCheckbox: (assetId: string) => {
       const newValue = !checkboxes[assetId];
-      if (checkedCount < MAX_TOKENS || !newValue) {
+      if (checkedCheckboxes.length < MAX_TOKENS || !newValue) {
         setCheckboxes({
           ...checkboxes,
           [assetId]: newValue,
