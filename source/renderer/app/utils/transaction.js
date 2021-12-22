@@ -301,7 +301,7 @@ export const thDataHexGenerator = (txData: CoinSelectionsResponse) => {
 export const encodeSignedTransaction = ({
   txDataHex,
   witnesses,
-}: ByronEncodeSignedTransactionRequest) => {
+}: ByronEncodeSignedTransactionRequest) =>
   //  {
   //    txDataHex: '01f54c866c778568c01b9e4c0a2cbab29e0af285623404e0ef922c6b63f9b222',
   //    witnesses: [
@@ -314,16 +314,13 @@ export const encodeSignedTransaction = ({
   //      }
   //    ]
   //  }
-  return Buffer.concat([
+  Buffer.concat([
     rawBuffer('82'),
     rawBuffer(txDataHex),
     cbor.encode(witnesses.map(encodeWitness)),
   ]).toString('hex');
-};
 
-const rawBuffer = (str) => {
-  return Buffer.from(str, 'hex');
-};
+const rawBuffer = (str) => Buffer.from(str, 'hex');
 
 const encodeWitness = ({
   signature,
@@ -336,29 +333,25 @@ const encodeWitness = ({
   return [0, new cbor.Tagged(24, cbor.encode(witness))];
 };
 
-const encodeTransaction = (data) => {
-  return cbor.encode([
+const encodeTransaction = (data) =>
+  cbor.encode([
     encodeTransactionInputs(data.inputs),
     encodeTransactionOutputs(data.outputs),
     {}, // always empty in Byron
   ]);
-};
 
-const encodeTransactionInputs = (inps) => {
-  return new List(
+const encodeTransactionInputs = (inps) =>
+  new List(
     inps.map((i) => [0, new cbor.Tagged(24, encodeTransactionInput(i))])
   );
-};
 
-const encodeTransactionInput = ({ id, index }) => {
-  return cbor.encode([rawBuffer(id), index]);
-};
+const encodeTransactionInput = ({ id, index }) =>
+  cbor.encode([rawBuffer(id), index]);
 
-const encodeTransactionOutputs = (outs) => {
-  return new List(
+const encodeTransactionOutputs = (outs) =>
+  new List(
     outs.map((o) => [encodeTransactionAddress(o.address), o.amount.quantity])
   );
-};
 
 const encodeTransactionAddress = (addr) => {
   const bytes = bs58.decode(addr);

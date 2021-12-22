@@ -11,20 +11,18 @@ type Props = {
   syncPercentage: number,
 };
 
-const VotingUnavailable = ({ syncPercentage }: Props) => {
-  return (
-    <div className={styles.component}>
-      <LoadingSpinner big />
-      <div className={styles.description}>
-        <FormattedHTMLMessage
-          {...globalMessages.featureUnavailableWhileSyncing}
-          values={{
-            syncPercentage: formattedNumber(syncPercentage, 2),
-          }}
-        />
-      </div>
+const VotingUnavailable = ({ syncPercentage }: Props) => (
+  <div className={styles.component}>
+    <LoadingSpinner big />
+    <div className={styles.description}>
+      <FormattedHTMLMessage
+        {...globalMessages.featureUnavailableWhileSyncing}
+        values={{
+          syncPercentage: formattedNumber(syncPercentage, 2),
+        }}
+      />
     </div>
-  );
-};
+  </div>
+);
 
 export default observer(VotingUnavailable);

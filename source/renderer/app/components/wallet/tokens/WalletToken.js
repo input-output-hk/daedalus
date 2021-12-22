@@ -221,8 +221,8 @@ const WalletToken = observer((props: Props) => {
     );
   }, [asset, onOpenAssetSend, onAssetSettings, intl]);
 
-  const footer = useMemo(() => {
-    return (
+  const footer = useMemo(
+    () => (
       <div className={styles.footer}>
         <dl>
           <dt>{intl.formatMessage(messages.amountLabel)}</dt>
@@ -239,8 +239,9 @@ const WalletToken = observer((props: Props) => {
         </dl>
         {buttons}
       </div>
-    );
-  }, [asset, isLoading, intl, buttons]);
+    ),
+    [asset, isLoading, intl, buttons]
+  );
 
   const { isInsertingAsset, isRemovingAsset } = props;
   const componentStyles = classNames(styles.component, {

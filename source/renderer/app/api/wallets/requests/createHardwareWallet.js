@@ -11,8 +11,8 @@ type WalletInitData = {
 export const createHardwareWallet = (
   config: RequestConfig,
   { walletInitData }: { walletInitData: WalletInitData }
-): Promise<AdaWallet> => {
-  return request(
+): Promise<AdaWallet> =>
+  request(
     {
       method: 'POST',
       path: '/v2/wallets',
@@ -21,4 +21,3 @@ export const createHardwareWallet = (
     {},
     walletInitData
   );
-};

@@ -26,35 +26,27 @@ export default class WalletSendPage extends Component<Props> {
     isHardwareWallet: boolean,
     selectedAssets?: ApiTokens,
   }) => {
-    const {
-      walletId,
-      address,
-      amount,
-      isHardwareWallet,
-      selectedAssets,
-    } = params;
+    const { walletId, address, amount, isHardwareWallet, selectedAssets } =
+      params;
     let fee;
     let minimumAda;
     if (isHardwareWallet) {
-      const coinsSelection = await this.props.stores.hardwareWallets.selectCoins(
-        {
+      const coinsSelection =
+        await this.props.stores.hardwareWallets.selectCoins({
           walletId,
           address,
           amount,
           assets: selectedAssets,
-        }
-      );
+        });
       fee = coinsSelection.fee;
     } else {
-      ({
-        fee,
-        minimumAda,
-      } = await this.props.stores.transactions.calculateTransactionFee({
-        walletId,
-        address,
-        amount,
-        assets: selectedAssets,
-      }));
+      ({ fee, minimumAda } =
+        await this.props.stores.transactions.calculateTransactionFee({
+          walletId,
+          address,
+          amount,
+          assets: selectedAssets,
+        }));
     }
     return { fee, minimumAda };
   };
@@ -73,9 +65,8 @@ export default class WalletSendPage extends Component<Props> {
     }
   };
 
-  getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) => {
-    return allAssets.find((asset) => asset.uniqueId === uniqueId);
-  };
+  getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) =>
+    allAssets.find((asset) => asset.uniqueId === uniqueId);
 
   render() {
     const { stores, actions } = this.props;

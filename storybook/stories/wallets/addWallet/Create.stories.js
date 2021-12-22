@@ -11,12 +11,10 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 storiesOf('Wallets|Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Create - New process', () => <CreateWalletScreens />)
-  .add('Create - Old process', ({ locale }: { locale: string }) => {
-    return (
-      <WalletCreateDialog
-        onSubmit={action('onSubmit')}
-        onCancel={action('onCancel')}
-        currentLocale={locale}
-      />
-    );
-  });
+  .add('Create - Old process', ({ locale }: { locale: string }) => (
+    <WalletCreateDialog
+      onSubmit={action('onSubmit')}
+      onCancel={action('onCancel')}
+      currentLocale={locale}
+    />
+  ));

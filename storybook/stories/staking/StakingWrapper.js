@@ -43,9 +43,7 @@ export default (story, context) => {
             <StakingWithNavigation
               isActiveNavItem={(item) => item === getItemFromContext()}
               activeItem={getItemFromContext()}
-              onNavItemClick={linkTo(context.kind, (item) => {
-                return pageNames[item];
-              })}
+              onNavItemClick={linkTo(context.kind, (item) => pageNames[item])}
             >
               {storyWithKnobs}
             </StakingWithNavigation>

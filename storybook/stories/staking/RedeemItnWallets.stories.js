@@ -149,31 +149,25 @@ export const Step3SuccessDialogStory = () => {
     />
   );
 };
-export const Step3FailureDialogStory = () => {
-  return (
-    <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
-  );
-};
+export const Step3FailureDialogStory = () => (
+  <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
+);
 
-export const NoWalletsDialogDialogStory = () => {
-  return (
-    <NoWalletsDialog
-      onClose={action('onClose')}
-      onAddWallet={action('onAddWallet')}
-    />
-  );
-};
+export const NoWalletsDialogDialogStory = () => (
+  <NoWalletsDialog
+    onClose={action('onClose')}
+    onAddWallet={action('onAddWallet')}
+  />
+);
 
-export const RedemptionUnavailableDialogDialogStory = () => {
-  return (
-    <RedemptionUnavailableDialog
-      onClose={action('onClose')}
-      syncPercentage={number('syncPercentage', 37, {
-        range: true,
-        min: 0,
-        max: 100,
-        step: 1,
-      })}
-    />
-  );
-};
+export const RedemptionUnavailableDialogDialogStory = () => (
+  <RedemptionUnavailableDialog
+    onClose={action('onClose')}
+    syncPercentage={number('syncPercentage', 37, {
+      range: true,
+      min: 0,
+      max: 100,
+      step: 1,
+    })}
+  />
+);

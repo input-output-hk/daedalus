@@ -28,13 +28,12 @@ type Props = {
 export const onSearchWalletsDropdown = (
   searchValue: string,
   options: Array<any>
-) => {
-  return filter(options, (option) => {
+) =>
+  filter(options, (option) => {
     const { walletName, detail } = option;
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
     return [walletName, detail].some((item) => regex.test(item));
   });
-};
 
 function WalletsDropdown({
   className,

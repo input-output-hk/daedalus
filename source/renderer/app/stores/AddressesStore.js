@@ -46,13 +46,12 @@ export default class AddressesStore extends Store {
       const { walletId, passphrase } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
 
-      const address: WalletAddress = await this.createByronWalletAddressRequest.execute(
-        {
+      const address: WalletAddress =
+        await this.createByronWalletAddressRequest.execute({
           addressIndex: accountIndex,
           passphrase,
           walletId,
-        }
-      ).promise;
+        }).promise;
 
       if (address != null) {
         this._refreshAddresses();
@@ -163,13 +162,11 @@ export default class AddressesStore extends Store {
     this.error = null;
   };
 
-  isInternalAddress = (address: string): boolean => {
-    return findIndex(this.all, { id: address }) > -1;
-  };
+  isInternalAddress = (address: string): boolean =>
+    findIndex(this.all, { id: address }) > -1;
 
-  getAddressIndex = (address: string): number => {
-    return this.all.length - findIndex(this.all, { id: address }) - 1;
-  };
+  getAddressIndex = (address: string): number =>
+    this.all.length - findIndex(this.all, { id: address }) - 1;
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
     // $FlowFixMe

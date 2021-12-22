@@ -20,39 +20,34 @@ const SecuritySettings = ({
   openDiscreetMode,
   onDiscreetModeToggle,
   onOpenDiscreetModeToggle,
-}: Props) => {
-  return (
-    <div className={styles.root}>
-      <div className={styles.setting}>
-        <div className={styles.title}>
-          {intl.formatMessage(messages.discreetModeTitle)}
-        </div>
-        <div className={styles.settingContent}>
-          <p className={styles.description}>
-            {intl.formatMessage(messages.discreetModeDescription)}
-          </p>
-          <NormalSwitch
-            checked={discreetMode}
-            onChange={onDiscreetModeToggle}
-          />
-        </div>
+}: Props) => (
+  <div className={styles.root}>
+    <div className={styles.setting}>
+      <div className={styles.title}>
+        {intl.formatMessage(messages.discreetModeTitle)}
       </div>
-      <div className={styles.setting}>
-        <div className={styles.title}>
-          {intl.formatMessage(messages.openInDiscreetModeTitle)}
-        </div>
-        <div className={styles.settingContent}>
-          <p className={styles.description}>
-            {intl.formatMessage(messages.openInDiscreetModeDescription)}
-          </p>
-          <NormalSwitch
-            checked={openDiscreetMode}
-            onChange={onOpenDiscreetModeToggle}
-          />
-        </div>
+      <div className={styles.settingContent}>
+        <p className={styles.description}>
+          {intl.formatMessage(messages.discreetModeDescription)}
+        </p>
+        <NormalSwitch checked={discreetMode} onChange={onDiscreetModeToggle} />
       </div>
     </div>
-  );
-};
+    <div className={styles.setting}>
+      <div className={styles.title}>
+        {intl.formatMessage(messages.openInDiscreetModeTitle)}
+      </div>
+      <div className={styles.settingContent}>
+        <p className={styles.description}>
+          {intl.formatMessage(messages.openInDiscreetModeDescription)}
+        </p>
+        <NormalSwitch
+          checked={openDiscreetMode}
+          onChange={onOpenDiscreetModeToggle}
+        />
+      </div>
+    </div>
+  </div>
+);
 
 export default injectIntl(SecuritySettings);

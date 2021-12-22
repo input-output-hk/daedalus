@@ -68,8 +68,8 @@ export type SelectCoinsResponseType = {
 export const selectCoins = (
   config: RequestConfig,
   { walletId, data }: SelectCoinsRequestType
-): Promise<SelectCoinsResponseType> => {
-  return request(
+): Promise<SelectCoinsResponseType> =>
+  request(
     {
       method: 'POST',
       path: `/v2/wallets/${walletId}/coin-selections/random`,
@@ -78,4 +78,3 @@ export const selectCoins = (
     {},
     data
   );
-};

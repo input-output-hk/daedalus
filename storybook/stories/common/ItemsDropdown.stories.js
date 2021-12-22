@@ -215,13 +215,11 @@ storiesOf('Common|ItemsDropdown', module)
 
   .add(
     'Assets',
-    withState({ assetId: assets[0].fingerprint }, (store) => {
-      return (
-        <AssetsDropdown
-          assets={assets}
-          value={store.state.assetId}
-          onChange={(assetId) => store.set({ assetId })}
-        />
-      );
-    })
+    withState({ assetId: assets[0].fingerprint }, (store) => (
+      <AssetsDropdown
+        assets={assets}
+        value={store.state.assetId}
+        onChange={(assetId) => store.set({ assetId })}
+      />
+    ))
   );

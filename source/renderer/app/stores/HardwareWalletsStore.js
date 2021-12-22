@@ -401,14 +401,10 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
     isVotingRegistrationTransaction: boolean,
   }) => {
-    const {
-      transactionId,
-      walletId,
-      isVotingRegistrationTransaction,
-    } = request;
-    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
-      walletId
-    ).result;
+    const { transactionId, walletId, isVotingRegistrationTransaction } =
+      request;
+    const recentTransactionsResponse =
+      this.stores.transactions._getTransactionsRecentRequest(walletId).result;
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
       : [];
@@ -1711,11 +1707,10 @@ export default class HardwareWalletsStore extends Store {
     const unsignedTxOutputs = [];
     const outputsData = [];
     for (const output of outputs) {
-      const {
-        address_style: addressStyle,
-      } = await this.stores.addresses._inspectAddress({
-        addressId: output.address,
-      });
+      const { address_style: addressStyle } =
+        await this.stores.addresses._inspectAddress({
+          addressId: output.address,
+        });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
       const ledgerOutput = prepareTrezorOutput(output);
@@ -1944,9 +1939,9 @@ export default class HardwareWalletsStore extends Store {
     return null;
   };
 
-  _deriveXpub = CachedDeriveXpubFactory(async (xpubHex) => {
-    return Buffer.from(xpubHex, 'hex');
-  });
+  _deriveXpub = CachedDeriveXpubFactory(async (xpubHex) =>
+    Buffer.from(xpubHex, 'hex')
+  );
 
   _getRewardAccountAddress = async (walletId: string, path: Array<string>) => {
     const pathParams = getParamsFromPath(path);
@@ -2013,11 +2008,10 @@ export default class HardwareWalletsStore extends Store {
     const unsignedTxOutputs = [];
     const outputsData = [];
     for (const output of outputs) {
-      const {
-        address_style: addressStyle,
-      } = await this.stores.addresses._inspectAddress({
-        addressId: output.address,
-      });
+      const { address_style: addressStyle } =
+        await this.stores.addresses._inspectAddress({
+          addressId: output.address,
+        });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
       const ledgerOutput = prepareLedgerOutput(output, addressStyle);
@@ -2631,12 +2625,11 @@ export default class HardwareWalletsStore extends Store {
 
   _getHardwareWalletDeviceInfoByWalletId = (
     walletId: string
-  ): HardwareWalletLocalData => {
-    return find(
+  ): HardwareWalletLocalData =>
+    find(
       this.hardwareWalletsConnectionData,
       (connectionData) => connectionData.id === walletId
     );
-  };
 
   _setHardwareWalletLocalData = async ({
     walletId,

@@ -315,9 +315,8 @@ class FilterDialog extends Component<Props> {
     }
   };
 
-  isValidFromDate = (date: Object) => {
-    return date.isSameOrBefore(moment().endOf('day'));
-  };
+  isValidFromDate = (date: Object) =>
+    date.isSameOrBefore(moment().endOf('day'));
 
   isValidToDate = (date: Object) => {
     const { fromDate } = this.form.values();

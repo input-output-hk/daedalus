@@ -68,16 +68,8 @@ export default class PinCode extends Component<Props> {
   }
 
   generatePinCodeInput = () => {
-    const {
-      id,
-      name,
-      type,
-      autoFocus,
-      length,
-      error,
-      value,
-      disabled,
-    } = this.props;
+    const { id, name, type, autoFocus, length, error, value, disabled } =
+      this.props;
 
     const pinCodeClasses = classNames([
       styles.pinCode,
@@ -86,36 +78,34 @@ export default class PinCode extends Component<Props> {
 
     return (
       <div className={styles.pinCodeInput}>
-        {map(Array(length).fill(), (action, key) => {
-          return (
-            <NumericInput
-              ref={(input) => {
-                if (
-                  !Object.prototype.hasOwnProperty.call(this.inputsRef, key) ||
-                  this.inputsRef[key] !== input
-                )
-                  this.inputsRef[key] = input;
-              }}
-              id={id}
-              name={name}
-              type={type}
-              className={pinCodeClasses}
-              label={null}
-              key={key}
-              themeId={IDENTIFIERS.INPUT}
-              skin={InputSkin}
-              onChange={(number) => this.onChange(number, key)}
-              value={value ? value[key] : undefined}
-              autoFocus={autoFocus && key === 0}
-              disabled={
-                disabled ||
-                (key !== 0 &&
-                  (!value ||
-                    !Object.prototype.hasOwnProperty.call(value, key - 1)))
-              }
-            />
-          );
-        })}
+        {map(Array(length).fill(), (action, key) => (
+          <NumericInput
+            ref={(input) => {
+              if (
+                !Object.prototype.hasOwnProperty.call(this.inputsRef, key) ||
+                this.inputsRef[key] !== input
+              )
+                this.inputsRef[key] = input;
+            }}
+            id={id}
+            name={name}
+            type={type}
+            className={pinCodeClasses}
+            label={null}
+            key={key}
+            themeId={IDENTIFIERS.INPUT}
+            skin={InputSkin}
+            onChange={(number) => this.onChange(number, key)}
+            value={value ? value[key] : undefined}
+            autoFocus={autoFocus && key === 0}
+            disabled={
+              disabled ||
+              (key !== 0 &&
+                (!value ||
+                  !Object.prototype.hasOwnProperty.call(value, key - 1)))
+            }
+          />
+        ))}
       </div>
     );
   };

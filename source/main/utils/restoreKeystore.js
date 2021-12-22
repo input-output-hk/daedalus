@@ -16,8 +16,8 @@ export type WalletId = string;
 
 export const decodeKeystore = async (
   bytes: Buffer
-): Promise<EncryptedSecretKeys> => {
-  return cbor.decodeAll(bytes).then((obj) => {
+): Promise<EncryptedSecretKeys> =>
+  cbor.decodeAll(bytes).then((obj) => {
     /**
      * The original 'UserSecret' from cardano-sl looks like this:
      *
@@ -52,7 +52,6 @@ export const decodeKeystore = async (
     const usWalletSet = obj[0][3].map((x) => toEncryptedSecretKey(x[0]));
     return usKeys.concat(usWalletSet);
   });
-};
 
 const toEncryptedSecretKey = ([encryptedPayload, passphraseHash]: [
   Buffer,

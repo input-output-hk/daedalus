@@ -11,13 +11,9 @@ export type DiscreetWalletTokenAmountProps = {
   isShort?: boolean,
 };
 
-export const discreetWalletTokenAmount: DiscreetValueReplacer = ({
-  amount,
-  metadata,
-  decimals,
-  isShort,
-}: DiscreetWalletTokenAmountProps) => {
-  return (isDiscreetMode, replacement) => {
+export const discreetWalletTokenAmount: DiscreetValueReplacer =
+  ({ amount, metadata, decimals, isShort }: DiscreetWalletTokenAmountProps) =>
+  (isDiscreetMode, replacement) => {
     if (!isDiscreetMode) {
       return formattedTokenWalletAmount(amount, metadata, decimals, isShort);
     }
@@ -27,4 +23,3 @@ export const discreetWalletTokenAmount: DiscreetValueReplacer = ({
     }
     return `${replacement} ${ticker}`;
   };
-};

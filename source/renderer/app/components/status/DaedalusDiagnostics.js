@@ -407,17 +407,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     }
   }
 
-  getSectionRow = (messageId: string, content?: Node) => {
-    return (
-      <div className={styles.layoutRow}>
-        <div className={styles.sectionTitle}>
-          <span>{this.context.intl.formatMessage(messages[messageId])}</span>
-          {content}
-          <hr />
-        </div>
+  getSectionRow = (messageId: string, content?: Node) => (
+    <div className={styles.layoutRow}>
+      <div className={styles.sectionTitle}>
+        <span>{this.context.intl.formatMessage(messages[messageId])}</span>
+        {content}
+        <hr />
       </div>
-    );
-  };
+    </div>
+  );
 
   getRow = (messageId: string, value: Node | boolean) => {
     const { intl } = this.context;

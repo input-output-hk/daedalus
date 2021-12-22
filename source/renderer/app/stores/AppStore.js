@@ -69,9 +69,8 @@ export default class AppStore extends Store {
     openExternalUrlChannel.send(url);
   }
 
-  isActiveDialog = (dialog: ApplicationDialog): boolean => {
-    return this.activeDialog === dialog;
-  };
+  isActiveDialog = (dialog: ApplicationDialog): boolean =>
+    this.activeDialog === dialog;
 
   @action _toggleNewsFeed = () => {
     this.newsFeedIsOpen = !this.newsFeedIsOpen;

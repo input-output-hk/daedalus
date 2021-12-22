@@ -186,8 +186,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
           'WalletSelectImportDialog_topWrapper'
         );
         if (checkboxes[index] && topWrapper.length) {
-          const checkboxTopOffset = checkboxes[index].getBoundingClientRect()
-            .top;
+          const checkboxTopOffset =
+            checkboxes[index].getBoundingClientRect().top;
           const topWrapperTopOffset = topWrapper[0].getBoundingClientRect().top;
           const topPart = topWrapperTopOffset + 121;
           const spaceForTooltip = checkboxTopOffset - topPart;
@@ -254,31 +254,29 @@ export default class WalletSelectImportDialog extends Component<Props> {
     placeholderMessage: string,
     nameValidator: Function,
     onWalletNameChange: Function
-  ) => {
-    return (
-      <InlineEditingSmallInput
-        isActive={false}
-        className={styles.walletsInputFieldInner}
-        isDisabled={
-          wallet.import.status === WalletImportStatuses.COMPLETED ||
-          wallet.import.status === WalletImportStatuses.EXISTS ||
-          wallet.import.status === WalletImportStatuses.RUNNING
-        }
-        inputFieldValue={wallet.name || ''}
-        placeholder={placeholderMessage}
-        isValid={nameValidator}
-        validationErrorMessage={validationMessage}
-        onSubmit={(name: string) =>
-          onWalletNameChange({
-            index: wallet.index,
-            name,
-          })
-        }
-        maxLength={40}
-        successfullyUpdated
-      />
-    );
-  };
+  ) => (
+    <InlineEditingSmallInput
+      isActive={false}
+      className={styles.walletsInputFieldInner}
+      isDisabled={
+        wallet.import.status === WalletImportStatuses.COMPLETED ||
+        wallet.import.status === WalletImportStatuses.EXISTS ||
+        wallet.import.status === WalletImportStatuses.RUNNING
+      }
+      inputFieldValue={wallet.name || ''}
+      placeholder={placeholderMessage}
+      isValid={nameValidator}
+      validationErrorMessage={validationMessage}
+      onSubmit={(name: string) =>
+        onWalletNameChange({
+          index: wallet.index,
+          name,
+        })
+      }
+      maxLength={40}
+      successfullyUpdated
+    />
+  );
 
   render() {
     const { intl } = this.context;

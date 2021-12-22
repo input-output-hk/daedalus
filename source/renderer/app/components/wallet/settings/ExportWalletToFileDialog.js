@@ -100,7 +100,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
           ),
           value: '',
           validators: [
-            () => {
+            () =>
               // if (field.value === '') {
               //   return [
               //     false,
@@ -109,8 +109,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
               //     ),
               //   ];
               // }
-              return [true];
-            },
+              [true],
           ],
         },
       },

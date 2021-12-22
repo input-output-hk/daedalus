@@ -56,9 +56,7 @@ export default class AssetInput extends Component<Props> {
     this.rightContentRef = React.createRef();
   }
 
-  hasAssetValue = (asset: Field) => {
-    return get(asset, 'value', false);
-  };
+  hasAssetValue = (asset: Field) => get(asset, 'value', false);
 
   generateInputFieldStyle = () => {
     const { current: rightContentDom } = this.rightContentRef;

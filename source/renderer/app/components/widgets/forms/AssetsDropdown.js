@@ -25,8 +25,8 @@ type Props = {
 export const onSearchAssetsDropdown = (
   searchValue: string,
   options: Array<any>
-) => {
-  return filter(options, ({ asset }) => {
+) =>
+  filter(options, ({ asset }) => {
     if (searchValue.length < 3) {
       return true;
     }
@@ -44,7 +44,6 @@ export const onSearchAssetsDropdown = (
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
     return checkList.some((item) => regex.test(item));
   });
-};
 
 export default function AssetsDropdown({
   assets = [],

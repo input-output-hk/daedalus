@@ -38,74 +38,78 @@ type Props = {
 };
 
 const assetDetails = {
-  '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c': generateAssetToken(
-    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
-    '',
-    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
-    100,
-    {
-      name: 'MakerDAO',
-      ticker: 'DAI',
-      description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-  '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAssetToken(
-    '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
-    '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
-    100,
-    {
-      name: 'TrueUSD',
-      ticker: 'TUSD',
-      description: 'Test description',
-      unit: {
-        name: 'TUSD',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-  '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAssetToken(
-    '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
-    '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
-    100,
-    {
-      name: 'Tether',
-      ticker: 'USDT',
-      description: 'Test description',
-      unit: {
-        name: 'USDT',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-  '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b': generateAssetToken(
-    '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
-    '',
-    'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
-    100,
-    {
-      name: 'USD Coin',
-      ticker: 'USDC',
-      description: 'Test description',
-      unit: {
-        name: 'USDC',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
+  '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c':
+    generateAssetToken(
+      '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      '',
+      'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+      100,
+      {
+        name: 'MakerDAO',
+        ticker: 'DAI',
+        description: 'Test description',
+        unit: {
+          name: 'DAI',
+          decimals: 6,
+        },
+        url: 'http://example.com',
+        logo: '',
+      }
+    ),
+  '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
+    generateAssetToken(
+      '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      '',
+      'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
+      100,
+      {
+        name: 'TrueUSD',
+        ticker: 'TUSD',
+        description: 'Test description',
+        unit: {
+          name: 'TUSD',
+          decimals: 6,
+        },
+        url: 'http://example.com',
+        logo: '',
+      }
+    ),
+  '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
+    generateAssetToken(
+      '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      '',
+      'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
+      100,
+      {
+        name: 'Tether',
+        ticker: 'USDT',
+        description: 'Test description',
+        unit: {
+          name: 'USDT',
+          decimals: 6,
+        },
+        url: 'http://example.com',
+        logo: '',
+      }
+    ),
+  '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b':
+    generateAssetToken(
+      '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      '',
+      'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
+      100,
+      {
+        name: 'USD Coin',
+        ticker: 'USDC',
+        description: 'Test description',
+        unit: {
+          name: 'USDC',
+          decimals: 6,
+        },
+        url: 'http://example.com',
+        logo: '',
+      }
+    ),
 };
 
 const assets = {
@@ -197,9 +201,7 @@ storiesOf('Wallets|Transactions', module)
         formattedWalletAmount={formattedWalletAmount}
         getUrlByType={action('getUrlByType')}
         hasMoreToLoad={false}
-        isInternalAddress={() => {
-          return true;
-        }}
+        isInternalAddress={() => true}
         isDeletingTransaction={false}
         isLoadingTransactions={false}
         onFilter={onFilter}
@@ -239,9 +241,7 @@ storiesOf('Wallets|Transactions', module)
         formattedWalletAmount={formattedWalletAmount}
         getUrlByType={action('getUrlByType')}
         hasMoreToLoad={false}
-        isInternalAddress={() => {
-          return true;
-        }}
+        isInternalAddress={() => true}
         isDeletingTransaction={false}
         isLoadingTransactions={false}
         onFilter={onFilter}

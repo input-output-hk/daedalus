@@ -17,20 +17,18 @@ export const DiscreetModeToggleComponent = ({
   className?: string,
   isDiscreetMode: boolean,
   onToggle: () => void,
-}) => {
-  return (
-    <button
-      className={classNames(styles.root, className)}
-      onClick={onToggle}
-      aria-label="discreetModeToggle"
-    >
-      <SVGInline
-        svg={isDiscreetMode ? hideIcon : revealIcon}
-        className={classNames(styles.icon, isDiscreetMode && styles.hideIcon)}
-      />
-    </button>
-  );
-};
+}) => (
+  <button
+    className={classNames(styles.root, className)}
+    onClick={onToggle}
+    aria-label="discreetModeToggle"
+  >
+    <SVGInline
+      svg={isDiscreetMode ? hideIcon : revealIcon}
+      className={classNames(styles.icon, isDiscreetMode && styles.hideIcon)}
+    />
+  </button>
+);
 
 type Props = {
   className: string,

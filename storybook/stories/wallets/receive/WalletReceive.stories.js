@@ -66,53 +66,51 @@ storiesOf('Wallets|Receive', module)
   })
   .add(
     'Receive - sequential with address verification',
-    ({ locale }: { locale: string }) => {
-      return (
-        <VerticalFlexContainer>
-          <WalletReceiveSequential
-            walletAddresses={[
-              ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
-                generateAddress(true)
-              ),
-              ...Array.from(Array(number('Addresses', 10))).map(() =>
-                generateAddress()
-              ),
-            ]}
-            onShareAddress={action('onShareAddress')}
-            onCopyAddress={action('onCopyAddress')}
-            isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
-            currentLocale={locale}
-            onToggleSubMenus={onToggleSubMenus}
-            isShowingSubMenus
-            onToggleUsedAddresses={action('onToggleUsedAddresses')}
-            showUsed={boolean('showUsed', false)}
-          />
-          <WalletReceiveDialog
-            address={generateAddress()}
-            onCopyAddress={action('onCopyAddress')}
-            onDownloadPDF={action('onDownloadPDF')}
-            onSaveQRCodeImage={action('onSaveQRCodeImage')}
-            onClose={action('onClose')}
-            hwDeviceStatus={select(
-              'Address verification state',
-              {
-                Verify: HwDeviceStatuses.VERIFYING_ADDRESS,
-                Verified: HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
-                Errored: HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
-              },
-              HwDeviceStatuses.VERIFYING_ADDRESS
-            )}
-            isHardwareWallet
-            walletName="Ledger Nano S"
-            isAddressDerived={false}
-            isAddressChecked={false}
-            onChangeVerificationStatus={action('onChangeVerificationStatus')}
-            onSupportRequestClick={action('onSupportRequestClick')}
-            isTrezor={boolean('isTrezor', false)}
-          />
-        </VerticalFlexContainer>
-      );
-    }
+    ({ locale }: { locale: string }) => (
+      <VerticalFlexContainer>
+        <WalletReceiveSequential
+          walletAddresses={[
+            ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
+              generateAddress(true)
+            ),
+            ...Array.from(Array(number('Addresses', 10))).map(() =>
+              generateAddress()
+            ),
+          ]}
+          onShareAddress={action('onShareAddress')}
+          onCopyAddress={action('onCopyAddress')}
+          isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
+          currentLocale={locale}
+          onToggleSubMenus={onToggleSubMenus}
+          isShowingSubMenus
+          onToggleUsedAddresses={action('onToggleUsedAddresses')}
+          showUsed={boolean('showUsed', false)}
+        />
+        <WalletReceiveDialog
+          address={generateAddress()}
+          onCopyAddress={action('onCopyAddress')}
+          onDownloadPDF={action('onDownloadPDF')}
+          onSaveQRCodeImage={action('onSaveQRCodeImage')}
+          onClose={action('onClose')}
+          hwDeviceStatus={select(
+            'Address verification state',
+            {
+              Verify: HwDeviceStatuses.VERIFYING_ADDRESS,
+              Verified: HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
+              Errored: HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
+            },
+            HwDeviceStatuses.VERIFYING_ADDRESS
+          )}
+          isHardwareWallet
+          walletName="Ledger Nano S"
+          isAddressDerived={false}
+          isAddressChecked={false}
+          onChangeVerificationStatus={action('onChangeVerificationStatus')}
+          onSupportRequestClick={action('onSupportRequestClick')}
+          isTrezor={boolean('isTrezor', false)}
+        />
+      </VerticalFlexContainer>
+    )
   )
   .add('Receive - random', () => {
     const isSidebarExpanded = boolean('isSidebarExpanded', false);

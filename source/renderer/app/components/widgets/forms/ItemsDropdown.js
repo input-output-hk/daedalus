@@ -36,13 +36,12 @@ export type ItemDropdownProps = {
 export const onSearchItemsDropdown = (
   searchValue: string,
   options: Array<any>
-) => {
-  return filter(options, (option) => {
+) =>
+  filter(options, (option) => {
     const { label, detail, value } = option;
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
     return regex.test(label) || regex.test(detail) || regex.test(value);
   });
-};
 
 export default class ItemsDropdown extends Component<ItemDropdownProps> {
   static contextTypes = {

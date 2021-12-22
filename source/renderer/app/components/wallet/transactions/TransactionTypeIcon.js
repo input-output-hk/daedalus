@@ -58,11 +58,9 @@ export default class TransactionTypeIcon extends Component<Props> {
     </div>
   );
 
-  renderFailedIcon = () => {
-    return (
-      <SVGInline svg={pendingIcon} className={styles.transactionTypeIcon} />
-    );
-  };
+  renderFailedIcon = () => (
+    <SVGInline svg={pendingIcon} className={styles.transactionTypeIcon} />
+  );
 
   renderIcon = (icon: string) => {
     let iconType;

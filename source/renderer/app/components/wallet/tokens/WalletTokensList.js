@@ -99,9 +99,10 @@ const WalletTokensList = observer((props: Props) => {
     wallet,
   } = props;
   const isRestoreActive = wallet.isRestoring;
-  const sortedAssets = useMemo(() => {
-    return [...assets].sort(sortAssets(sortBy, sortDirection));
-  }, [assets, sortBy, sortDirection]);
+  const sortedAssets = useMemo(
+    () => [...assets].sort(sortAssets(sortBy, sortDirection)),
+    [assets, sortBy, sortDirection]
+  );
   const filteredAssets = searchAssets(searchValue, sortedAssets) || [];
   const hasSearch =
     !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
@@ -139,16 +140,14 @@ const WalletTokensList = observer((props: Props) => {
     },
     [sortDirection, hasSorting, sortBy]
   );
-  const onSortByToken = useCallback(() => onSortBy('token'), [
-    sortDirection,
-    sortBy,
-    hasSorting,
-  ]);
-  const onSortByAmount = useCallback(() => onSortBy('quantity'), [
-    sortDirection,
-    sortBy,
-    hasSorting,
-  ]);
+  const onSortByToken = useCallback(
+    () => onSortBy('token'),
+    [sortDirection, sortBy, hasSorting]
+  );
+  const onSortByAmount = useCallback(
+    () => onSortBy('quantity'),
+    [sortDirection, sortBy, hasSorting]
+  );
   const hasTokens = assets.length || isLoadingAssets;
 
   if (!hasTokens)
@@ -174,24 +173,22 @@ const WalletTokensList = observer((props: Props) => {
       </p>
     );
   } else {
-    content = filteredAssets.map((asset) => {
-      return (
-        <WalletToken
-          key={asset.uniqueId}
-          asset={asset}
-          onOpenAssetSend={onOpenAssetSend}
-          onCopyAssetParam={onCopyAssetParam}
-          onAssetSettings={onAssetSettings}
-          anyAssetWasHovered
-          isLoading={isRestoreActive}
-          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
-          onToggleFavorite={onToggleFavorite}
-          isFavorite={tokenFavorites[asset.uniqueId]}
-          isInsertingAsset={insertingAssetUniqueId === asset.uniqueId}
-          isRemovingAsset={removingAssetUniqueId === asset.uniqueId}
-        />
-      );
-    });
+    content = filteredAssets.map((asset) => (
+      <WalletToken
+        key={asset.uniqueId}
+        asset={asset}
+        onOpenAssetSend={onOpenAssetSend}
+        onCopyAssetParam={onCopyAssetParam}
+        onAssetSettings={onAssetSettings}
+        anyAssetWasHovered
+        isLoading={isRestoreActive}
+        assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+        onToggleFavorite={onToggleFavorite}
+        isFavorite={tokenFavorites[asset.uniqueId]}
+        isInsertingAsset={insertingAssetUniqueId === asset.uniqueId}
+        isRemovingAsset={removingAssetUniqueId === asset.uniqueId}
+      />
+    ));
   }
 
   return (

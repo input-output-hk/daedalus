@@ -17,12 +17,14 @@ export const useFeature = (feature: Feature) => {
     feature.start();
   }, []);
 
-  useEffect(() => {
-    // Stop store on unmount
-    return () => {
-      feature.stop();
-    };
-  }, []);
+  useEffect(
+    () =>
+      // Stop store on unmount
+      () => {
+        feature.stop();
+      },
+    []
+  );
 };
 
 /**

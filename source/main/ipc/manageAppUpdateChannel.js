@@ -18,10 +18,8 @@ import { launcherConfig } from '../config';
 
 // IpcChannel<Incoming, Outgoing>
 
-const manageAppUpdateChannel: MainIpcChannel<
-  Request,
-  Response
-> = new MainIpcChannel(MANAGE_APP_UPDATE);
+const manageAppUpdateChannel: MainIpcChannel<Request, Response> =
+  new MainIpcChannel(MANAGE_APP_UPDATE);
 
 const logPrefix = 'appUpdateInstall';
 
@@ -80,8 +78,8 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     return true;
   };
 
-  const installUpdate = async (filePath) => {
-    return new Promise((resolve, reject) => {
+  const installUpdate = async (filePath) =>
+    new Promise((resolve, reject) => {
       const { name: functionPrefix } = installUpdate;
       response(null, functionPrefix, 'installation begin.');
       const { updateRunnerBin } = launcherConfig;
@@ -156,7 +154,6 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
         return resolve(response(true, functionPrefix));
       });
     });
-  };
 
   manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {
     const functionPrefix = 'onRequest';

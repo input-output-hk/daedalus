@@ -10,12 +10,10 @@ import StakingRewards from '../../../source/renderer/app/components/staking/rewa
 // Dummy data initialization
 import REWARDS from '../../../source/renderer/app/config/stakingRewards.dummy.json';
 
-const rewards = map(REWARDS, (reward) => {
-  return {
-    ...reward,
-    reward: new BigNumber(reward.reward),
-  };
-});
+const rewards = map(REWARDS, (reward) => ({
+  ...reward,
+  reward: new BigNumber(reward.reward),
+}));
 
 export const StakingRewardsStory = () => (
   <StakingRewards

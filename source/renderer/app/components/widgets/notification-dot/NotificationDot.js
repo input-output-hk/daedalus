@@ -16,13 +16,11 @@ const NotificationDot = ({
   className,
   dotClassName,
   enabled = false,
-}: Props) => {
-  return (
-    <div className={classNames(styles.root, className)}>
-      {enabled && <span className={classNames(styles.dot, dotClassName)} />}
-      {children}
-    </div>
-  );
-};
+}: Props) => (
+  <div className={classNames(styles.root, className)}>
+    {enabled && <span className={classNames(styles.dot, dotClassName)} />}
+    {children}
+  </div>
+);
 
 export default NotificationDot;

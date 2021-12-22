@@ -124,7 +124,7 @@ export default class WalletFileImportDialog extends Component<Props> {
           ),
           value: '',
           validators: [
-            () => {
+            () =>
               // const repeatPasswordField = form.$('repeatPassword');
               // if (repeatPasswordField.value.length > 0) {
               //   repeatPasswordField.validate({ showErrors: true });
@@ -135,8 +135,7 @@ export default class WalletFileImportDialog extends Component<Props> {
               //     globalMessages.invalidSpendingPassword
               //   ),
               // ];
-              return [true]; // @API TODO - missing API v2 endpoint and password declaration
-            },
+              [true], // @API TODO - missing API v2 endpoint and password declaration
           ],
         },
         repeatPassword: {
@@ -147,7 +146,7 @@ export default class WalletFileImportDialog extends Component<Props> {
           ),
           value: '',
           validators: [
-            () => {
+            () =>
               // const spendingPassword = form.$('spendingPassword').value;
               // if (spendingPassword.length === 0) return [true];
               // return [
@@ -156,8 +155,7 @@ export default class WalletFileImportDialog extends Component<Props> {
               //     globalMessages.invalidRepeatPassword
               //   ),
               // ];
-              return [true]; // @API TODO - missing API v2 endpoint and password declaration
-            },
+              [true], // @API TODO - missing API v2 endpoint and password declaration
           ],
         },
       },

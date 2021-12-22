@@ -188,9 +188,8 @@ const onAppReady = async () => {
   );
 
   setStateSnapshotLogChannel.onReceive(
-    (data: SetStateSnapshotLogMainResponse) => {
-      return Promise.resolve(logStateSnapshot(data));
-    }
+    (data: SetStateSnapshotLogMainResponse) =>
+      Promise.resolve(logStateSnapshot(data))
   );
 
   generateWalletMigrationReportChannel.onReceive(
