@@ -31,6 +31,7 @@ export default class AppStore extends Store {
 
     // About dialog actions
     this.actions.app.closeAboutDialog.listen(() => {
+      console.log('the one and only change');
       this._closeActiveDialog();
     });
     this.actions.app.openAboutDialog.listen(() => {
