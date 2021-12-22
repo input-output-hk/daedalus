@@ -1,15 +1,16 @@
-// @flow
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import React from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSettings.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSettings.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import BorderedBox from '../../widgets/BorderedBox';
 import WalletSettingsRemoveButton from './WalletSettingsRemoveButton';
 import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
 
-export const messages: { [string]: ReactIntlMessage } = defineMessages({
+export const messages: Record<string, ReactIntlMessage> = defineMessages({
   deleteWalletHeader: {
     id: 'wallet.settings.deleteWallet.header',
     defaultMessage: '!!!Delete wallet',
@@ -33,15 +34,13 @@ export const messages: { [string]: ReactIntlMessage } = defineMessages({
     description: 'Label for the delete button on wallet settings',
   },
 });
-
 type Props = {
-  openDialogAction: Function,
-  isDialogOpen: Function,
-  deleteWalletDialogContainer: Node,
-  onBlockForm: Function,
-  intl: intlShape.isRequired,
+  openDialogAction: (...args: Array<any>) => any;
+  isDialogOpen: (...args: Array<any>) => any;
+  deleteWalletDialogContainer: Node;
+  onBlockForm: (...args: Array<any>) => any;
+  intl: intlShape.isRequired;
 };
-
 const DeleteWallet = observer(
   ({
     openDialogAction,
@@ -51,7 +50,6 @@ const DeleteWallet = observer(
     intl,
   }: Props) => {
     const label = intl.formatMessage(messages.deleteButton);
-
     return (
       <>
         <BorderedBox className={styles.deleteWalletBox}>
@@ -65,6 +63,7 @@ const DeleteWallet = observer(
             </div>
             <WalletSettingsRemoveButton
               label={label}
+              // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
               onClick={React.useCallback(() => {
                 onBlockForm();
                 openDialogAction({
@@ -81,5 +80,4 @@ const DeleteWallet = observer(
     );
   }
 );
-
 export default injectIntl(DeleteWallet);

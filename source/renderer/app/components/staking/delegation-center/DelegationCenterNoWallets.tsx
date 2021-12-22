@@ -1,11 +1,12 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterNoWallets.sc... Remove this comment to see the full error message
 import styles from './DelegationCenterNoWallets.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/attenti... Remove this comment to see the full error message
 import icon from '../../../assets/images/attention-big-thin.inline.svg';
 
 const messages = defineMessages({
@@ -28,12 +29,10 @@ const messages = defineMessages({
       'Label for "Create New Wallet" button on the Delegation centre Page.',
   },
 });
-
 type Props = {
-  onGoToCreateWalletClick: Function,
-  minDelegationFunds: number,
+  onGoToCreateWalletClick: (...args: Array<any>) => any;
+  minDelegationFunds: number;
 };
-
 export default class DelegationCenterNoWallets extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -42,7 +41,6 @@ export default class DelegationCenterNoWallets extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onGoToCreateWalletClick, minDelegationFunds } = this.props;
-
     return (
       <div className={styles.component}>
         <SVGInline svg={icon} className={styles.icon} />

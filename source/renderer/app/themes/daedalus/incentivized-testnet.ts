@@ -1,7 +1,5 @@
-// @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
-
 //  ==== incentivized-testnet theme output for Daedalus and react-polymorph components === //
 export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   aboutWindow: {
@@ -1114,9 +1112,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-widgets-itemsDropdown-option-label-text-color': '#ffffff',
   },
 };
-
 const INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
   config: INCENTIVIZED_TESTNET_THEME_OUTPUT,
 };
-
 export default createTheme(INCENTIVIZED_TESTNET_THEME_PARAMS);

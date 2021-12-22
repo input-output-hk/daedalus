@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
@@ -6,11 +5,14 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import checkIcon from '../../assets/images/hardware-wallet/check.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import clearIcon from '../../assets/images/hardware-wallet/close-cross-red.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './HardwareWalletStatus.scss' o... Remove this comment to see the full error message
 import styles from './HardwareWalletStatus.scss';
 
 const messages = defineMessages({
@@ -161,24 +163,21 @@ const messages = defineMessages({
     description: '"Address verified" device state',
   },
 });
-
 type Props = {
-  hwDeviceStatus: HwDeviceStatus,
-  onExternalLinkClick?: Function,
-  walletName?: string,
-  isTrezor: boolean,
+  hwDeviceStatus: HwDeviceStatus;
+  onExternalLinkClick?: (...args: Array<any>) => any;
+  walletName?: string;
+  isTrezor: boolean;
 };
-
 type State = {
-  hwDeviceStatus: HwDeviceStatus,
+  hwDeviceStatus: HwDeviceStatus;
 };
 
 @observer
-export default class HardwareWalletStatus extends Component<Props, State> {
+class HardwareWalletStatus extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     hwDeviceStatus: this.props.hwDeviceStatus,
   };
@@ -194,11 +193,15 @@ export default class HardwareWalletStatus extends Component<Props, State> {
         setTimeout(() => {
           // Status remains unchanged in 1.5s - set as new status
           if (nextProps.hwDeviceStatus === this.props.hwDeviceStatus) {
-            this.setState({ hwDeviceStatus: nextProps.hwDeviceStatus });
+            this.setState({
+              hwDeviceStatus: nextProps.hwDeviceStatus,
+            });
           }
         }, 4000);
       } else {
-        this.setState({ hwDeviceStatus: nextProps.hwDeviceStatus });
+        this.setState({
+          hwDeviceStatus: nextProps.hwDeviceStatus,
+        });
       }
     }
   }
@@ -207,7 +210,6 @@ export default class HardwareWalletStatus extends Component<Props, State> {
     const { intl } = this.context;
     const { onExternalLinkClick, walletName, isTrezor } = this.props;
     const { hwDeviceStatus } = this.state;
-
     const isLoading =
       hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
       hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP ||
@@ -215,12 +217,10 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
-
     const isReady =
       hwDeviceStatus === HwDeviceStatuses.READY ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED;
-
     const hasErrored =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED ||
       hwDeviceStatus === HwDeviceStatuses.CONNECTING_FAILED ||
@@ -231,24 +231,22 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_FAILED ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
-
     const hasPassphraseLabel =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS;
-
     const componentClasses = classnames([
       styles.component,
       isReady ? styles.isReady : null,
       hasErrored ? styles.isError : null,
     ]);
-
     const hasInstructionsLink =
       hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
       hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
       hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE;
     let instructionsLink;
     let label;
+
     if (hasInstructionsLink && onExternalLinkClick) {
       // @TODO - add Ledger firmware update support article links
       instructionsLink = (
@@ -276,7 +274,12 @@ export default class HardwareWalletStatus extends Component<Props, State> {
           ? `${hwDeviceStatus}_known`
           : hwDeviceStatus;
       label = (
-        <FormattedMessage {...messages[message]} values={{ walletName }} />
+        <FormattedMessage
+          {...messages[message]}
+          values={{
+            walletName,
+          }}
+        />
       );
     } else {
       label = intl.formatMessage(messages[hwDeviceStatus]);
@@ -290,7 +293,9 @@ export default class HardwareWalletStatus extends Component<Props, State> {
               {hasInstructionsLink && instructionsLink ? (
                 <FormattedMessage
                   {...messages[hwDeviceStatus]}
-                  values={{ instructionsLink }}
+                  values={{
+                    instructionsLink,
+                  }}
                 />
               ) : (
                 label
@@ -321,3 +326,5 @@ export default class HardwareWalletStatus extends Component<Props, State> {
     );
   }
 }
+
+export default HardwareWalletStatus;

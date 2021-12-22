@@ -1,7 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SyncingConnectingStatus.scss... Remove this comment to see the full error message
 import styles from './SyncingConnectingStatus.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
@@ -85,27 +85,24 @@ const messages = defineMessages({
       'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
   },
 });
-
 type Props = {
-  cardanoNodeState: ?CardanoNodeState,
-  verificationProgress: number,
-  hasLoadedCurrentLocale: boolean,
-  hasBeenConnected: boolean,
-  isTlsCertInvalid: boolean,
-  isConnected: boolean,
-  isNodeStopping: boolean,
-  isNodeStopped: boolean,
-  isVerifyingBlockchain: boolean,
+  cardanoNodeState: CardanoNodeState | null | undefined;
+  verificationProgress: number;
+  hasLoadedCurrentLocale: boolean;
+  hasBeenConnected: boolean;
+  isTlsCertInvalid: boolean;
+  isConnected: boolean;
+  isNodeStopping: boolean;
+  isNodeStopped: boolean;
+  isVerifyingBlockchain: boolean;
 };
-
 export default class SyncingConnectingStatus extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   _getConnectingMessage = (): {
-    connectingMessage: string,
-    connectingDescription?: string,
+    connectingMessage: string;
+    connectingDescription?: string;
   } => {
     const {
       cardanoNodeState,
@@ -115,54 +112,72 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isConnected,
     } = this.props;
     let connectingMessage;
+
     if (isConnected) {
       connectingMessage = messages.loadingWalletData;
-      return { connectingMessage };
+      return {
+        connectingMessage,
+      };
     }
+
     let connectingDescription;
+
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:
         connectingMessage = messages.starting;
         connectingDescription = messages.startingDescription;
         break;
+
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
         connectingMessage = messages.stopping;
         connectingDescription = messages.stoppingDescription;
         break;
+
       case CardanoNodeStates.STOPPED:
         connectingMessage = messages.stopped;
         break;
+
       case CardanoNodeStates.UPDATING:
         connectingMessage = messages.updating;
         break;
+
       case CardanoNodeStates.UPDATED:
         connectingMessage = messages.updated;
         break;
+
       case CardanoNodeStates.CRASHED:
       case CardanoNodeStates.ERRORED:
         connectingMessage = messages.crashed;
         break;
+
       case CardanoNodeStates.UNRECOVERABLE:
         connectingMessage = messages.unrecoverable;
         break;
+
       default:
         // also covers CardanoNodeStates.RUNNING state
         connectingMessage = hasBeenConnected
           ? messages.reconnecting
           : messages.connecting;
     }
+
     const isConnectingMessage =
       connectingMessage === messages.connecting ||
       connectingMessage === messages.reconnecting;
+
     if (isTlsCertInvalid && isConnectingMessage) {
       connectingMessage = messages.tlsCertificateNotValidError;
     } else if (isVerifyingBlockchain && isConnectingMessage) {
       connectingMessage = messages.verifyingBlockchain;
       connectingDescription = messages.startingDescription;
     }
-    return { connectingMessage, connectingDescription };
+
+    return {
+      connectingMessage,
+      connectingDescription,
+    };
   };
 
   render() {
@@ -175,17 +190,13 @@ export default class SyncingConnectingStatus extends Component<Props> {
       hasLoadedCurrentLocale,
       verificationProgress,
     } = this.props;
-
     if (!hasLoadedCurrentLocale) return null;
-
     const showEllipsis =
       !isConnected && (isNodeStopped || (isTlsCertInvalid && !isNodeStopping));
-
     const componentStyles = classNames([
       styles.component,
       isConnected ? styles.syncing : styles.connecting,
     ]);
-
     const headlineStyles = classNames([
       styles.headline,
       showEllipsis ? styles.withoutAnimation : null,

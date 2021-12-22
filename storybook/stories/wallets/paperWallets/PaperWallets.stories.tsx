@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -11,10 +10,7 @@ import VerificationDialog from '../../../../source/renderer/app/components/walle
 import CompletionDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
 
 storiesOf('Wallets|Paper Wallets', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-
-  // ====== Stories ======
-
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Instructions', () => (
     <div>
       <InstructionsDialog
@@ -22,11 +18,11 @@ storiesOf('Wallets|Paper Wallets', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onPrint={action('onPrint')}
         onClose={action('onClose')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onContinue={action('onContinue')}
       />
     </div>
   ))
-
   .add('Verify', () => (
     <div>
       <PrintDialog
@@ -35,7 +31,6 @@ storiesOf('Wallets|Paper Wallets', module)
       />
     </div>
   ))
-
   .add('Complete Mnemonics', () => (
     <div>
       <SecuringPasswordDialog
@@ -45,9 +40,9 @@ storiesOf('Wallets|Paper Wallets', module)
       />
     </div>
   ))
-
   .add('Confirm Mnemonics', () => (
     <div>
+      {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
       <VerificationDialog
         walletCertificatePassword="flugenheimer"
         walletCertificateRecoveryPhrase={wordlist}
@@ -59,12 +54,12 @@ storiesOf('Wallets|Paper Wallets', module)
       />
     </div>
   ))
-
   .add('Completion', () => (
     <div>
       <CompletionDialog
         walletCertificateAddress="WalletCertificateAddress"
         onClose={action('onClose')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onBack={action('onBack')}
         onContinue={action('onContinue')}
         onOpenExternalLink={action('onOpenExternalLink')}

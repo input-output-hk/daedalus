@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -9,8 +8,11 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class LoadingSyncingConnectingPage extends Component<Props> {
-  static defaultProps = { stores: null, actions: null };
+class LoadingSyncingConnectingPage extends Component<Props> {
+  static defaultProps = {
+    stores: null,
+    actions: null,
+  };
 
   render() {
     const {
@@ -42,7 +44,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = newsFeed.newsFeedData;
     const hasNotification = unread.length > 0;
-
     return (
       <SyncingConnecting
         cardanoNodeState={cardanoNodeState}
@@ -54,6 +55,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isSyncProgressStalling={isSyncProgressStalling}
         isNodeStopping={isNodeStopping}
         isNodeStopped={isNodeStopped}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
         hasNotification={hasNotification}
@@ -89,17 +91,14 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     );
     this.props.stores.app.openExternalLink(supportUrl);
   };
-
   handleOpenExternalLink = (articleUrl: string) => {
     this.props.stores.app.openExternalLink(articleUrl);
   };
-
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
     app.setIsDownloadingLogs.trigger(true);
   };
-
   openDaedalusDiagnosticsDialog = () => {
     const {
       actions: { app },
@@ -107,3 +106,5 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     app.openDaedalusDiagnosticsDialog.trigger();
   };
 }
+
+export default LoadingSyncingConnectingPage;

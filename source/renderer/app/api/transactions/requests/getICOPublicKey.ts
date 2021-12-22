@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { ICOPublicKeyParams, Transaction } from '../types';
 import { request } from '../../utils/request';

@@ -1,9 +1,9 @@
-// @flow
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DiscreetToggleTopBar.scss' o... Remove this comment to see the full error message
 import styles from './DiscreetToggleTopBar.scss';
 import { messages } from './DiscreetToggleTopBar.messages';
 import { useDiscreetModeFeature } from '../../context';
@@ -11,8 +11,8 @@ import { DiscreetModeToggleComponent } from '../discreet-toggle/DiscreetModeTogg
 import type { Intl } from '../../../../types/i18nTypes';
 
 type Props = {
-  intl: Intl,
-  hasTadaIcon?: boolean,
+  intl: Intl;
+  hasTadaIcon?: boolean;
 };
 
 const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
@@ -24,7 +24,6 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
   } = useDiscreetModeFeature();
   const [visible, setVisible] = useState(false);
   const isPopOverVisible = visible || isSettingsTooltipEnabled;
-
   return (
     <div
       className={classnames(styles.root, hasTadaIcon && styles.hasTadaIcon)}
@@ -48,6 +47,7 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
           isDiscreetMode={isDiscreetMode}
           onToggle={() => {
             toggleDiscreetMode();
+
             if (isSettingsTooltipEnabled) {
               setDiscreetModeSettingsTooltip(false);
             }

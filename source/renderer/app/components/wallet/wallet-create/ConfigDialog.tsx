@@ -1,13 +1,12 @@
-// @flow
 import React, { Component } from 'react';
 import WalletCreateDialog from './WalletCreateDialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletCreateStyles.scss' or ... Remove this comment to see the full error message
 import commonStyles from './WalletCreateStyles.scss';
 
 type Props = {
-  onContinue: Function,
-  onClose: Function,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
 };
-
 export default class ConfigDialog extends Component<Props> {
   render() {
     const { onContinue, onClose } = this.props;

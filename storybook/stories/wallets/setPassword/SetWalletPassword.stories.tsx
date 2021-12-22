@@ -1,9 +1,7 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { boolean, withKnobs } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
-
 // Screens
 import SetWalletPassword from '../../../../source/renderer/app/components/wallet/settings/SetWalletPassword';
 import StoryDecorator from '../../_support/StoryDecorator';
@@ -50,7 +48,6 @@ const assets = {
     },
   ],
 };
-
 const WALLETS = [
   generateWallet(
     'First Wallet',
@@ -61,11 +58,8 @@ const WALLETS = [
     false
   ),
 ];
-
 const activeWallet: Wallet = WALLETS[0];
-
-let walletPasswordIsOpen: boolean = false;
-
+let walletPasswordIsOpen = false;
 storiesOf('Wallets|Set Password', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>

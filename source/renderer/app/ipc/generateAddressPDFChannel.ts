@@ -1,4 +1,3 @@
-// @flow
 import { GENERATE_ADDRESS_PDF_CHANNEL } from '../../../common/ipc/api';
 import type {
   GenerateAddressPDFMainResponse,

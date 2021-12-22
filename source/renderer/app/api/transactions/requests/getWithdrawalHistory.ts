@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { Transactions } from '../types';
 import { request } from '../../utils/request';
@@ -13,6 +12,8 @@ export const getWithdrawalHistory = (
       path: `/v2/wallets/${walletId}/transactions`,
       ...config,
     },
-    { minWithdrawal: 1 },
+    {
+      minWithdrawal: 1,
+    },
     null
   );

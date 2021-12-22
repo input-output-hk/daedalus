@@ -1,28 +1,25 @@
-// @flow
 import { isString } from 'lodash';
 import uuid from 'uuid';
 
 export type IpcSender = {
-  send: (channel: string, conversationId: string, ...args: Array<any>) => void,
+  send: (channel: string, conversationId: string, ...args: Array<any>) => void;
 };
-
 export type IpcEvent = {
-  sender: IpcSender,
+  sender: IpcSender;
 };
-
 export type IpcReceiver = {
   on: (
     channel: string,
-    (
+    arg1: (
       event: IpcEvent,
       conversationId: string,
       ...args: Array<any>
     ) => Promise<any> | void
-  ) => void,
+  ) => void;
   removeListener: (
     channel: string,
     listener: (...args: Array<any>) => void
-  ) => void,
+  ) => void;
 };
 
 /**
@@ -37,6 +34,7 @@ export class IpcConversation<Incoming, Outgoing> {
    * Here we track the created instances.
    */
   static _instances = {};
+
   /**
    * The channel name
    * @private
@@ -47,11 +45,14 @@ export class IpcConversation<Incoming, Outgoing> {
     if (!isString(channelName) || channelName === '') {
       throw new Error(`Invalid channel name ${channelName} provided`);
     }
+
     // Enforce the singleton pattern based on the channel name
     const existingChannel = IpcConversation._instances[channelName];
+
     if (existingChannel) {
       throw new Error(`IPC channel "${channelName}" already exists.`);
     }
+
     IpcConversation._instances[channelName] = this;
     this._channelName = channelName;
   }
@@ -68,6 +69,7 @@ export class IpcConversation<Incoming, Outgoing> {
   ): Promise<Incoming> {
     return new Promise((resolve, reject) => {
       const conversationId = uuid();
+
       const handler = (
         event,
         messageId: string,
@@ -76,15 +78,18 @@ export class IpcConversation<Incoming, Outgoing> {
       ) => {
         // Only handle messages with matching conversation id!
         if (messageId !== conversationId) return;
+
         // Simulate promise rejection over IPC (since it's not possible to throw over IPC)
         if (isOk) {
           resolve(response);
         } else {
           reject(response);
         }
+
         // Cleanup the lister once the request cycle is finished
         receiver.removeListener(this._channelName, handler);
       };
+
       receiver.on(this._channelName, handler);
       sender.send(this._channelName, conversationId, message);
     });
@@ -95,7 +100,7 @@ export class IpcConversation<Incoming, Outgoing> {
    * from the other side.
    */
   onRequest(
-    handler: (Incoming) => Promise<Outgoing>,
+    handler: (arg0: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver
   ): void {
     receiver.on(

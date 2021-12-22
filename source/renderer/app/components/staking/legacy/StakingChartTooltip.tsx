@@ -1,13 +1,12 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import StakingChartTooltipItem from './StakingChartTooltipItem';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingChartTooltip.scss' or... Remove this comment to see the full error message
 import styles from './StakingChartTooltip.scss';
 
 const dateFormat = 'YYYY-MM-DD-HH:mm';
-
 const messages = defineMessages({
   slot: {
     id: 'staking.chart.tooltip.slot.label',
@@ -40,20 +39,19 @@ const messages = defineMessages({
     description: '"shares" label on staking chart tooltip.',
   },
 });
-
 type Props = {
-  slot: number,
-  time: Date,
-  hash: string,
-  numberOfTransactions: number,
-  mpcPhase: string,
-  commitments: string,
-  openings: string,
-  shares: string,
+  slot: number;
+  time: Date;
+  hash: string;
+  numberOfTransactions: number;
+  mpcPhase: string;
+  commitments: string;
+  openings: string;
+  shares: string;
 };
 
 @observer
-export default class StakingChartTooltip extends Component<Props> {
+class StakingChartTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -106,3 +104,5 @@ export default class StakingChartTooltip extends Component<Props> {
     );
   }
 }
+
+export default StakingChartTooltip;

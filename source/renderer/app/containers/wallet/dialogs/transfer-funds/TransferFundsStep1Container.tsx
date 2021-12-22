@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import TransferFundsStep1Dialog from '../../../../components/wallet/transfer-funds/TransferFundsStep1Dialog';
@@ -10,7 +9,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class TransferFundsStep1Container extends Component<Props> {
+class TransferFundsStep1Container extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -36,7 +35,9 @@ export default class TransferFundsStep1Container extends Component<Props> {
         onClose={onClose}
         onContinue={onContinue}
         onSetSourceWallet={(targetWalletId: string) =>
-          transferFundsSetTargetWalletId.trigger({ targetWalletId })
+          transferFundsSetTargetWalletId.trigger({
+            targetWalletId,
+          })
         }
         numberOfStakePools={stakePools.length}
         getStakePoolById={getStakePoolById}
@@ -46,3 +47,5 @@ export default class TransferFundsStep1Container extends Component<Props> {
     );
   }
 }
+
+export default TransferFundsStep1Container;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
@@ -17,13 +16,16 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class VotingRegistrationPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
-  handleGoToCreateWalletClick = () => {
-    this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
+class VotingRegistrationPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
   };
-
+  handleGoToCreateWalletClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.ADD,
+    });
+  };
   getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
     const { app, networkStatus, wallets, profile, voting } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
@@ -33,6 +35,7 @@ export default class VotingRegistrationPage extends Component<Props> {
       return (
         <VotingUnavailable
           syncPercentage={syncPercentage}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ syncPercentage: any; onExternalLinkClick: ... Remove this comment to see the full error message
           onExternalLinkClick={openExternalLink}
         />
       );
@@ -68,13 +71,10 @@ export default class VotingRegistrationPage extends Component<Props> {
     const { stores } = this.props;
     const { app, uiDialogs } = stores;
     const { openExternalLink } = app;
-
     const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
       VotingRegistrationDialog
     );
-
     const innerContent = this.getInnerContent(isVotingRegistrationDialogOpen);
-
     return (
       <Layout>
         <VerticalFlexContainer>
@@ -89,3 +89,5 @@ export default class VotingRegistrationPage extends Component<Props> {
     );
   }
 }
+
+export default VotingRegistrationPage;

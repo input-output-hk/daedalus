@@ -1,4 +1,3 @@
-// @flow
 import { SUBMIT_BUG_REPORT_REQUEST_CHANNEL } from '../../../common/ipc/api';
 import type {
   SubmitBugReportRequestMainResponse,

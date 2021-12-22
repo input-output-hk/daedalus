@@ -1,11 +1,10 @@
-// @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.js';
+import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy';
 import Wallet, {
   WalletDelegationStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -19,8 +18,9 @@ import type {
 } from '../../../source/renderer/app/api/network/types';
 import { generateHash, generatePolicyIdHash } from '../_support/utils';
 
-const walletSyncedStateReady = { status: 'ready' };
-
+const walletSyncedStateReady = {
+  status: 'ready',
+};
 const walletSyncedStateRestoring = {
   status: 'syncing',
   progress: {
@@ -28,29 +28,23 @@ const walletSyncedStateRestoring = {
     unit: 'percentage',
   },
 };
-
 const networkTip: TipInfo = {
   epoch: 1232,
   slot: 123,
   absoluteSlotNumber: 15000000,
 };
-
 const nextEpochDate = new Date();
 nextEpochDate.setDate(nextEpochDate.getDate() + 1);
-
 const futureEpochDate = new Date();
 futureEpochDate.setDate(futureEpochDate.getDate() + 2);
-
 const nextEpoch: NextEpoch = {
   epochNumber: 1233,
   epochStart: nextEpochDate.toUTCString(),
 };
-
 const futureEpoch: NextEpoch = {
   epochNumber: 1234,
   epochStart: futureEpochDate.toUTCString(),
 };
-
 // Dummy data initialization
 const wallets = [
   new Wallet({
@@ -63,6 +57,7 @@ const wallets = [
     assets: {
       available: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -72,6 +67,7 @@ const wallets = [
       ],
       total: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -84,6 +80,7 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 24,
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ status: string; }' is not assignable to ty... Remove this comment to see the full error message
     syncState: walletSyncedStateReady,
     delegatedStakePoolId: null,
     lastDelegationStakePoolId: STAKE_POOLS[250].id,
@@ -114,6 +111,7 @@ const wallets = [
     assets: {
       available: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -123,6 +121,7 @@ const wallets = [
       ],
       total: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -135,6 +134,7 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 24,
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ status: string; }' is not assignable to ty... Remove this comment to see the full error message
     syncState: walletSyncedStateReady,
     delegatedStakePoolId: STAKE_POOLS[250].id,
     lastDelegationStakePoolId: STAKE_POOLS[0].id,
@@ -165,6 +165,7 @@ const wallets = [
     assets: {
       available: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -174,6 +175,7 @@ const wallets = [
       ],
       total: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -186,6 +188,7 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 35,
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ status: string; }' is not assignable to ty... Remove this comment to see the full error message
     syncState: walletSyncedStateReady,
     delegatedStakePoolId: STAKE_POOLS[0].id,
     lastDelegationStakePoolId: null,
@@ -215,6 +218,7 @@ const wallets = [
     assets: {
       available: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -224,6 +228,7 @@ const wallets = [
       ],
       total: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -236,6 +241,7 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 0,
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ status: string; progress: { quantity: numb... Remove this comment to see the full error message
     syncState: walletSyncedStateRestoring,
     delegationStakePoolStatus: WalletDelegationStatuses.NOT_DELEGATING,
     delegatedStakePoolId: null,
@@ -256,6 +262,7 @@ const wallets = [
     assets: {
       available: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -265,6 +272,7 @@ const wallets = [
       ],
       total: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -277,6 +285,7 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 0,
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ status: string; progress: { quantity: numb... Remove this comment to see the full error message
     syncState: walletSyncedStateRestoring,
     delegationStakePoolStatus: WalletDelegationStatuses.DELEGATING,
     delegatedStakePoolId: '90000',
@@ -297,6 +306,7 @@ const wallets = [
     assets: {
       available: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -306,6 +316,7 @@ const wallets = [
       ],
       total: [
         {
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; uniqueId: st... Remove this comment to see the full error message
           id: generateHash(),
           policyId: generatePolicyIdHash(),
           uniqueId: generatePolicyIdHash(),
@@ -318,6 +329,7 @@ const wallets = [
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 35,
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ status: string; }' is not assignable to ty... Remove this comment to see the full error message
     syncState: walletSyncedStateReady,
     delegatedStakePoolId: STAKE_POOLS[0].id,
     lastDelegationStakePoolId: '90000',
@@ -339,17 +351,16 @@ const wallets = [
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
   }),
 ];
-
 export const StakingDelegationCenterStory = ({
   locale,
   isLoading,
   isEpochsInfoAvailable,
   currentTheme,
 }: {
-  locale: string,
-  isLoading: boolean,
-  isEpochsInfoAvailable: boolean,
-  currentTheme: string,
+  locale: string;
+  isLoading: boolean;
+  isEpochsInfoAvailable: boolean;
+  currentTheme: string;
 }) => (
   <DelegationCenter
     wallets={wallets}
@@ -361,6 +372,7 @@ export const StakingDelegationCenterStory = ({
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}
     nextEpoch={nextEpoch}
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     fetchingStakePoolsFailed={isLoading}
     futureEpoch={futureEpoch}
     currentLocale={locale}

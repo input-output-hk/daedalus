@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -22,6 +21,7 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseEntryDia... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
@@ -85,29 +85,28 @@ const messages = defineMessages({
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },
 });
-
 type Props = {
-  enteredPhrase: Array<string>,
-  isValid: boolean,
-  isTermOfflineAccepted: boolean,
-  isTermRecoveryAccepted: boolean,
-  isSubmitting: boolean,
-  onUpdateVerificationPhrase: Function,
-  canFinishBackup: boolean,
-  onAcceptTermOffline: Function,
-  onAcceptTermRecovery: Function,
-  onRestartBackup: Function,
-  onCancelBackup: Function,
-  onFinishBackup: Function,
+  enteredPhrase: Array<string>;
+  isValid: boolean;
+  isTermOfflineAccepted: boolean;
+  isTermRecoveryAccepted: boolean;
+  isSubmitting: boolean;
+  onUpdateVerificationPhrase: (...args: Array<any>) => any;
+  canFinishBackup: boolean;
+  onAcceptTermOffline: (...args: Array<any>) => any;
+  onAcceptTermRecovery: (...args: Array<any>) => any;
+  onRestartBackup: (...args: Array<any>) => any;
+  onCancelBackup: (...args: Array<any>) => any;
+  onFinishBackup: (...args: Array<any>) => any;
 };
 
 @observer
-export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
+class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         recoveryPhrase: {
@@ -132,7 +131,9 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
       },
@@ -155,6 +156,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       onCancelBackup,
       onFinishBackup,
     } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([
       styles.component,
@@ -167,7 +169,6 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         label: buttonLabel,
@@ -176,7 +177,6 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -257,3 +257,5 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     );
   }
 }
+
+export default WalletRecoveryPhraseEntryDialog;

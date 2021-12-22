@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -17,15 +16,16 @@ const messages = defineMessages({
 
 @inject('stores', 'actions')
 @observer
-export default class SupportSettingsPage extends Component<InjectedProps> {
+class SupportSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleSupportRequestClick = async (
-    event: SyntheticEvent<HTMLButtonElement>
+    event: React.SyntheticEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -42,7 +42,6 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     );
     this.props.stores.app.openExternalLink(supportUrl);
   };
-
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
@@ -51,7 +50,6 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
 
   render() {
     const { stores } = this.props;
-
     return (
       <SupportSettings
         onExternalLinkClick={stores.app.openExternalLink}
@@ -64,3 +62,5 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default SupportSettingsPage;

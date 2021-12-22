@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
@@ -9,19 +8,23 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class InitialSettingsPage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
-
+class InitialSettingsPage extends Component<InjectedProps> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   onSubmit = async () => {
     const { actions } = this.props;
     const { finishInitialScreenSettings } = actions.profile;
     finishInitialScreenSettings.trigger();
   };
-
   handleSelectItem = async (param: string, value: string) => {
     const { actions, stores } = this.props;
     const { updateUserLocalSetting } = actions.profile;
-    updateUserLocalSetting.trigger({ param, value });
+    updateUserLocalSetting.trigger({
+      param,
+      value,
+    });
     const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
 
     if (param === 'locale') {
@@ -45,6 +48,7 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     const { isShelleyActivated } = networkStatus;
     const topbar = (
       <TopBar
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currentRoute={currentRoute}
         showSubMenuToggle={false}
         isShelleyActivated={isShelleyActivated}
@@ -66,3 +70,5 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default InitialSettingsPage;

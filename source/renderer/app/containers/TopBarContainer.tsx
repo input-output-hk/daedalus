@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
@@ -9,15 +8,21 @@ import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/menu-opened-i... Remove this comment to see the full error message
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/menu-ic.inlin... Remove this comment to see the full error message
 import menuIconClosed from '../assets/images/menu-ic.inline.svg';
 import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../components/layout/TopBar.sc... Remove this comment to see the full error message
 import topBarStyles from '../components/layout/TopBar.scss';
 
 const TopBarContainer = (
-  { actions, stores }: InjectedProps = { actions: null, stores: null }
+  { actions, stores }: InjectedProps = {
+    actions: null,
+    stores: null,
+  }
 ) => {
   const {
     sidebar,
@@ -39,7 +44,6 @@ const TopBarContainer = (
   const shouldShowTadaIconAnimation = isAlonzoActivated && !stakingInfoWasOpen;
   const shouldShowTadaIcon =
     IS_TADA_ICON_AVAILABLE && (isAlonzoPending || isAlonzoActivated);
-
   const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
   const {
     currentRoute,
@@ -79,9 +83,7 @@ const TopBarContainer = (
 
   const { unread } = newsFeed.newsFeedData;
   const { displayAppUpdateNewsItem } = appUpdate;
-
   const hasUnreadNews = unread.length > 0;
-
   return (
     <TopBar
       leftIcon={leftIcon}

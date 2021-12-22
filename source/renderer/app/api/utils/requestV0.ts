@@ -1,21 +1,20 @@
-// @flow
 import https from 'https';
 import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase, getContentLength } from '.';
 
 export type RequestOptions = {
-  hostname: string,
-  method: string,
-  path: string,
-  port: number,
-  ca: Uint8Array,
-  cert: Uint8Array,
-  key: Uint8Array,
+  hostname: string;
+  method: string;
+  path: string;
+  port: number;
+  ca: Uint8Array;
+  cert: Uint8Array;
+  key: Uint8Array;
   headers?: {
-    'Content-Type': string,
-    'Content-Length': number,
-  },
+    'Content-Type': string;
+    'Content-Length': number;
+  };
 };
 
 function typedRequest<Response>(
@@ -27,8 +26,8 @@ function typedRequest<Response>(
     const options: RequestOptions = Object.assign({}, httpOptions);
     let hasRequestBody = false;
     let requestBody = '';
-
     let queryString = '';
+
     if (queryParams && size(queryParams) > 0) {
       // Handle passphrase
       if (has(queryParams, 'passphrase')) {
@@ -43,6 +42,7 @@ function typedRequest<Response>(
         // Passphrase must be ommited from rest query params
         queryParams = omit(queryParams, 'passphrase');
 
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'boolean' is not assignable to pa... Remove this comment to see the full error message
         if (size(queryParams > 1) && passphrase) {
           queryString += `&${querystring.stringify(queryParams)}`;
         }
@@ -63,11 +63,13 @@ function typedRequest<Response>(
       };
     }
 
-    // $FlowFixMe
+    // @ts-ignore
     const httpsRequest = https.request(options);
+
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
+
     httpsRequest.on('response', (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
@@ -81,6 +83,7 @@ function typedRequest<Response>(
       response.on('end', () => {
         try {
           const parsedBody = JSON.parse(body);
+
           if (has(parsedBody, 'Right')) {
             // "Right" means 200 ok (success) -> also handle if Right: false (boolean response)
             resolve(parsedBody.Right);

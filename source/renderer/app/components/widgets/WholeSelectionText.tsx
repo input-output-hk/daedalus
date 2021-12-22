@@ -1,18 +1,15 @@
-// @flow
 import React, { Component } from 'react';
 
 type Props = {
-  className?: string,
-  text?: ?string,
+  className?: string;
+  text?: string | null | undefined;
 };
-
 export default class WholeSelectionText extends Component<Props> {
   static defaultProps = {
     className: null,
     text: '',
   };
-
-  selectWholeText = (event: SyntheticMouseEvent<HTMLElement>) => {
+  selectWholeText = (event: React.MouseEvent<HTMLElement>) => {
     const { target } = event;
 
     if (target instanceof HTMLElement) {

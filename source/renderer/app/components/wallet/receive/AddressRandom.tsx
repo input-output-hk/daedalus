@@ -1,20 +1,20 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import AddressActions from './AddressActions';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AddressRandom.scss' or its c... Remove this comment to see the full error message
 import styles from './AddressRandom.scss';
 import WalletAddress from '../../../domains/WalletAddress';
 
 type Props = {
-  address: WalletAddress,
-  index: number,
-  onCopyAddress: Function,
-  onShareAddress: Function,
+  address: WalletAddress;
+  index: number;
+  onCopyAddress: (...args: Array<any>) => any;
+  onShareAddress: (...args: Array<any>) => any;
 };
 
 @observer
-export default class AddressRandom extends Component<Props> {
+class AddressRandom extends Component<Props> {
   render() {
     const { address, onCopyAddress, onShareAddress, index } = this.props;
     const addressClasses = classnames([
@@ -37,3 +37,5 @@ export default class AddressRandom extends Component<Props> {
     );
   }
 }
+
+export default AddressRandom;

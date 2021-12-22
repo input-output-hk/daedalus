@@ -1,4 +1,3 @@
-// @flow
 import fs from 'fs';
 import qr from 'qr-image';
 import { MainIpcChannel } from './lib/MainIpcChannel';
@@ -13,12 +12,12 @@ MainIpcChannel<
   GenerateQRCodeRendererRequest,
   GenerateQRCodeMainResponse
 > = new MainIpcChannel(GENERATE_QRCODE_CHANNEL);
-
 export const saveQRCodeImageRequests = () => {
   saveQRCodeImageChannel.onReceive(
     (request: GenerateQRCodeRendererRequest) =>
       new Promise((resolve, reject) => {
         const { address, filePath } = request;
+
         try {
           const qrCodeImage = qr.image(address, {
             type: 'png',

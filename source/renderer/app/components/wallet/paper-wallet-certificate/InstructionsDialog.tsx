@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -9,6 +8,7 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InstructionsDialog.scss' or ... Remove this comment to see the full error message
 import styles from './InstructionsDialog.scss';
 import { handleFormErrors } from '../../../utils/ReactToolboxMobxForm';
 import {
@@ -106,29 +106,29 @@ const messages = defineMessages({
       '"Wallet certificate create instructions dialog" print button label.',
   },
 });
-
 type Props = {
-  inProgress: boolean,
-  network: string,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  onPrint: Function,
-  error?: ?LocalizableError,
+  inProgress: boolean;
+  network: string;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onPrint: (...args: Array<any>) => any;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
-export default class InstructionsDialog extends Component<Props> {
+class InstructionsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     network: DEVELOPMENT,
   };
 
   componentDidUpdate(prevProps: Props) {
     if (!prevProps.error && this.props.error) {
-      handleFormErrors('.InstructionsDialog_error', { focusElement: true });
+      handleFormErrors('.InstructionsDialog_error', {
+        focusElement: true,
+      });
     }
   }
 
@@ -143,12 +143,10 @@ export default class InstructionsDialog extends Component<Props> {
       error,
     } = this.props;
     const dialogClasses = classnames([styles.component, 'instructionsDialog']);
-
     const printButtonClasses = classnames([
       'printButton',
       inProgress ? styles.submitButtonSpinning : null,
     ]);
-
     const actions = [
       {
         className: printButtonClasses,
@@ -169,7 +167,6 @@ export default class InstructionsDialog extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     return (
       <Dialog
         className={dialogClasses}
@@ -209,7 +206,9 @@ export default class InstructionsDialog extends Component<Props> {
               <li>
                 <FormattedMessage
                   {...messages.instructionsListDefinition4}
-                  values={{ link: cardanoExplorerLink }}
+                  values={{
+                    link: cardanoExplorerLink,
+                  }}
                 />
               </li>
               <li>
@@ -228,3 +227,5 @@ export default class InstructionsDialog extends Component<Props> {
     );
   }
 }
+
+export default InstructionsDialog;

@@ -1,4 +1,3 @@
-// @flow
 import { GET_DISK_SPACE_STATUS_CHANNEL } from '../../../common/ipc/api';
 import type {
   GetDiskSpaceStatusRendererRequest,

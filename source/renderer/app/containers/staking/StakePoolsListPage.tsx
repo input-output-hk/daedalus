@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakePools from '../../components/staking/stake-pools/StakePools';
@@ -12,18 +11,23 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakePoolsListPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+class StakePoolsListPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleDelegate = (poolId: string) => {
     const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
-    actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
+    actions.dialogs.open.trigger({
+      dialog: DelegationSetupWizardDialog,
+    });
     updateDataForActiveDialog.trigger({
-      data: { poolId },
+      data: {
+        poolId,
+      },
     });
   };
-
   onUpdateDelegatingStake = (selectedWalletId: string, sliderValue: number) => {
     const {
       actions: { staking: stakingActions },
@@ -31,14 +35,12 @@ export default class StakePoolsListPage extends Component<Props> {
     stakingActions.selectDelegationWallet.trigger(selectedWalletId);
     stakingActions.updateDelegatingStake.trigger(sliderValue);
   };
-
   onRankStakePools = () => {
     const {
       actions: { staking: stakingActions },
     } = this.props;
     stakingActions.rankStakePools.trigger();
   };
-
   handleSmashSettingsClick = () => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.SETTINGS.STAKE_POOLS,
@@ -72,7 +74,6 @@ export default class StakePoolsListPage extends Component<Props> {
     const isLoading = !isSynced || fetchingStakePoolsFailed;
     const isRanking =
       !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
-
     return (
       <Fragment>
         <StakePools
@@ -103,3 +104,5 @@ export default class StakePoolsListPage extends Component<Props> {
     );
   }
 }
+
+export default StakePoolsListPage;

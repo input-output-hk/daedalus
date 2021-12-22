@@ -1,4 +1,3 @@
-// @flow
 import {
   MAINNET,
   TESTNET,
@@ -9,23 +8,20 @@ import {
 } from './environment.types';
 
 export type TlsConfig = {
-  hostname: string,
-  port: number,
-  ca: Uint8Array,
-  cert: Uint8Array,
-  key: Uint8Array,
+  hostname: string;
+  port: number;
+  ca: Uint8Array;
+  cert: Uint8Array;
+  key: Uint8Array;
 };
-
 export type CardanoNodeImplementations = 'cardano' | 'selfnode';
-
 export const CardanoNodeImplementationOptions: {
-  CARDANO: CardanoNodeImplementations,
-  SELFNODE: CardanoNodeImplementations,
+  CARDANO: CardanoNodeImplementations;
+  SELFNODE: CardanoNodeImplementations;
 } = {
   CARDANO: 'cardano',
   SELFNODE: 'selfnode',
 };
-
 export type NetworkNames =
   | 'mainnet'
   | 'testnet'
@@ -35,9 +31,7 @@ export type NetworkNames =
   | 'selfnode'
   | 'development'
   | string;
-
 export type PlatformNames = 'win32' | 'linux' | 'darwin' | string;
-
 export const NetworkNameOptions = {
   mainnet: 'mainnet',
   testnet: 'testnet',
@@ -47,7 +41,6 @@ export const NetworkNameOptions = {
   selfnode: 'selfnode',
   development: 'development',
 };
-
 export type CardanoNodeState =
   | 'starting'
   | 'running'
@@ -60,7 +53,7 @@ export type CardanoNodeState =
   | 'errored'
   | 'unknown'
   | 'unrecoverable';
-
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
   STARTING: 'starting',
   RUNNING: 'running',
@@ -73,7 +66,6 @@ export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
   ERRORED: 'errored',
   UNRECOVERABLE: 'unrecoverable',
 };
-
 export type CardanoPidOptions =
   | 'mainnet-PREVIOUS-CARDANO-PID'
   | 'testnet-PREVIOUS-CARDANO-PID'
@@ -83,28 +75,25 @@ export type CardanoPidOptions =
   | 'selfnode-PREVIOUS-CARDANO-PID'
   | 'development-PREVIOUS-CARDANO-PID'
   | string;
-
 export type CardanoNodeStorageKeys = {
-  PREVIOUS_CARDANO_PID: CardanoPidOptions,
+  PREVIOUS_CARDANO_PID: CardanoPidOptions;
 };
-
 export type CardanoNodeProcessNames =
   | 'cardano-node'
   | 'cardano-node.exe'
   | 'local-cluster'
   | 'local-cluster.exe';
-
 export type ProcessNames = {
-  CARDANO_PROCESS_NAME: CardanoNodeProcessNames,
+  CARDANO_PROCESS_NAME: CardanoNodeProcessNames;
 };
-
-export const CardanoProcessNameOptions: {
-  [CardanoNodeImplementations]: {
-    win32: CardanoNodeProcessNames,
-    linux: CardanoNodeProcessNames,
-    darwin: CardanoNodeProcessNames,
-  },
-} = {
+export const CardanoProcessNameOptions: Record<
+  CardanoNodeImplementations,
+  {
+    win32: CardanoNodeProcessNames;
+    linux: CardanoNodeProcessNames;
+    darwin: CardanoNodeProcessNames;
+  }
+> = {
   cardano: {
     win32: 'cardano-node.exe',
     linux: 'cardano-node',
@@ -126,40 +115,35 @@ export type FaultInjection =
   | 'FInjIgnoreAPI'
   | 'FInjApplyUpdateNoExit'
   | 'FInjApplyUpdateWrongExitCode';
-
 export const FaultInjections: {
-  IgnoreShutdown: FaultInjection,
-  IgnoreApi: FaultInjection,
-  ApplyUpdateNoExit: FaultInjection,
-  ApplyUpdateWrongExitCode: FaultInjection,
+  IgnoreShutdown: FaultInjection;
+  IgnoreApi: FaultInjection;
+  ApplyUpdateNoExit: FaultInjection;
+  ApplyUpdateWrongExitCode: FaultInjection;
 } = {
   IgnoreShutdown: 'FInjIgnoreShutdown',
   IgnoreApi: 'FInjIgnoreAPI',
   ApplyUpdateNoExit: 'FInjApplyUpdateNoExit',
   ApplyUpdateWrongExitCode: 'FInjApplyUpdateWrongExitCode',
 };
-
 export type FaultInjectionIpcResponse = Array<FaultInjection>;
 export type FaultInjectionIpcRequest = [FaultInjection, boolean];
-
 export type CardanoStatus = {
-  isNodeResponding: boolean,
-  isNodeSyncing: boolean,
-  isNodeInSync: boolean,
-  hasBeenConnected: boolean,
-  cardanoNodePID: number,
-  cardanoWalletPID: number,
+  isNodeResponding: boolean;
+  isNodeSyncing: boolean;
+  isNodeInSync: boolean;
+  hasBeenConnected: boolean;
+  cardanoNodePID: number;
+  cardanoWalletPID: number;
 };
-
-export type NetworkMagicType = Array<?number>;
-
+export type NetworkMagicType = Array<number | null | undefined>;
 export const NetworkMagics: {
-  mainnet: NetworkMagicType,
-  testnet: NetworkMagicType,
-  staging: NetworkMagicType,
-  alonzo_purple: NetworkMagicType,
-  shelley_qa: NetworkMagicType,
-  selfnode: NetworkMagicType,
+  mainnet: NetworkMagicType;
+  testnet: NetworkMagicType;
+  staging: NetworkMagicType;
+  alonzo_purple: NetworkMagicType;
+  shelley_qa: NetworkMagicType;
+  selfnode: NetworkMagicType;
 } = {
   // Cardano Mainet network magic
   [MAINNET]: [1, null],

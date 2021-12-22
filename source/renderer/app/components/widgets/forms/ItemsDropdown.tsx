@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { filter, escapeRegExp } from 'lodash';
@@ -7,6 +6,7 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ItemDropdownOption from './ItemDropdownOption';
 import type { ItemDropdown } from './ItemDropdownOption';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ItemsDropdown.scss' or its c... Remove this comment to see the full error message
 import styles from './ItemsDropdown.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -29,10 +29,9 @@ import globalMessages from '../../../i18n/global-messages';
  *
  */
 export type ItemDropdownProps = {
-  options: Array<ItemDropdown>,
-  className?: string,
+  options: Array<ItemDropdown>;
+  className?: string;
 };
-
 export const onSearchItemsDropdown = (
   searchValue: string,
   options: Array<any>
@@ -43,12 +42,10 @@ export const onSearchItemsDropdown = (
     return regex.test(label) || regex.test(detail) || regex.test(value);
   });
 };
-
 export default class ItemsDropdown extends Component<ItemDropdownProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     optionRenderer: (optionProps: ItemDropdown) => (
       <ItemDropdownOption {...optionProps} />
@@ -59,6 +56,7 @@ export default class ItemsDropdown extends Component<ItemDropdownProps> {
     onSearch: onSearchItemsDropdown,
     skin: SelectSkin,
   };
+
   render() {
     const { intl } = this.context;
     const { className } = this.props;

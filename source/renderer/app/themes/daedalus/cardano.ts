@@ -1,7 +1,5 @@
-// @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
-
 //  ==== cardano theme output for Daedalus and react-polymorph components === //
 export const CARDANO_THEME_OUTPUT = {
   aboutWindow: {
@@ -1124,9 +1122,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-widgets-itemsDropdown-option-label-text-color': '#5e6066',
   },
 };
-
 const CARDANO_THEME_PARAMS: CreateThemeParams = {
   config: CARDANO_THEME_OUTPUT,
 };
-
 export default createTheme(CARDANO_THEME_PARAMS);

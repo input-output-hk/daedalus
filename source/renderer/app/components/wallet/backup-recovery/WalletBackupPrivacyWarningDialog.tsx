@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -10,6 +9,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletBackupPrivacyWarningDi... Remove this comment to see the full error message
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({
@@ -47,18 +47,17 @@ const messages = defineMessages({
       'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown',
   },
 });
-
 type Props = {
-  countdownRemaining: number,
-  canPhraseBeShown: boolean,
-  isPrivacyNoticeAccepted: boolean,
-  onAcceptPrivacyNotice: Function,
-  onContinue: Function,
-  onCancelBackup: Function,
+  countdownRemaining: number;
+  canPhraseBeShown: boolean;
+  isPrivacyNoticeAccepted: boolean;
+  onAcceptPrivacyNotice: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onCancelBackup: (...args: Array<any>) => any;
 };
 
 @observer
-export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
+class WalletBackupPrivacyWarningDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -79,7 +78,6 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
       styles.component,
       'WalletBackupPrivacyWarningDialog',
     ]);
-
     const actions = [
       {
         label:
@@ -89,7 +87,6 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -129,3 +126,5 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
     );
   }
 }
+
+export default WalletBackupPrivacyWarningDialog;

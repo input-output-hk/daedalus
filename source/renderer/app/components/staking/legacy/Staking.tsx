@@ -1,13 +1,13 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BlockGenerationInfo from './BlockGenerationInfo';
 import StakingSwitch from './StakingSwitch';
 import StakingSystemState from './StakingSystemState';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Staking.scss' or its corresp... Remove this comment to see the full error message
 import styles from './Staking.scss';
 
 @observer
-export default class Settings extends Component<any> {
+class Settings extends Component<any> {
   render() {
     return (
       <div className={styles.component}>
@@ -24,3 +24,5 @@ export default class Settings extends Component<any> {
     );
   }
 }
+
+export default Settings;

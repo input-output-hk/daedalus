@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -12,6 +11,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSendConfirmationDialog... Remove this comment to see the full error message
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
@@ -26,46 +26,40 @@ import type { AssetToken } from '../../../api/assets/types';
 import globalMessages from '../../../i18n/global-messages';
 
 type Props = {
-  amount: string,
-  receiver: string,
-  wallet: Wallet,
-  totalAmount: BigNumber,
-  allAvailableTokens?: Array<AssetToken>,
-  transactionFee: ?string,
-  onSubmit: Function,
-  amountToNaturalUnits: (amountWithFractions: string) => string,
-  onCancel: Function,
-  isSubmitting: boolean,
-  isFlight: boolean,
-  error: ?LocalizableError,
-  hwDeviceStatus: HwDeviceStatus,
-  isHardwareWallet: boolean,
-  onInitiateTransaction: Function,
-  onExternalLinkClick: Function,
-  isTrezor: boolean,
-  formattedTotalAmount: string,
+  amount: string;
+  receiver: string;
+  wallet: Wallet;
+  totalAmount: BigNumber;
+  allAvailableTokens?: Array<AssetToken>;
+  transactionFee: string | null | undefined;
+  onSubmit: (...args: Array<any>) => any;
+  amountToNaturalUnits: (amountWithFractions: string) => string;
+  onCancel: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  isFlight: boolean;
+  error: LocalizableError | null | undefined;
+  hwDeviceStatus: HwDeviceStatus;
+  isHardwareWallet: boolean;
+  onInitiateTransaction: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  isTrezor: boolean;
+  formattedTotalAmount: string;
 };
-
 type State = {
-  areTermsAccepted: boolean,
+  areTermsAccepted: boolean;
 };
-
 const messages = getMessages();
 
 @observer
-export default class WalletSendConfirmationDialog extends Component<
-  Props,
-  State
-> {
+class WalletSendConfirmationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     areTermsAccepted: false,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         passphrase: {
@@ -78,12 +72,14 @@ export default class WalletSendConfirmationDialog extends Component<
           validators: [
             ({ field }) => {
               if (this.props.isHardwareWallet) return [true];
+
               if (field.value === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -97,15 +93,17 @@ export default class WalletSendConfirmationDialog extends Component<
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const {
@@ -126,14 +124,14 @@ export default class WalletSendConfirmationDialog extends Component<
       onError: () => {},
     });
   };
-
   handleSubmitOnEnter = (event: KeyboardEvent) =>
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
-
   renderConfirmationElement = (
     isHardwareWallet: boolean
-  ): ?React$Element<*> => {
+  ): React.ReactElement<React.ComponentProps<any>, any> | null | undefined => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
@@ -167,12 +165,15 @@ export default class WalletSendConfirmationDialog extends Component<
         />
       );
     }
+
     return null;
   };
-
   onCheckboxClick = (areTermsAccepted: boolean) => {
     const { isHardwareWallet, onInitiateTransaction } = this.props;
-    this.setState({ areTermsAccepted });
+    this.setState({
+      areTermsAccepted,
+    });
+
     if (isHardwareWallet) {
       onInitiateTransaction();
     }
@@ -182,7 +183,9 @@ export default class WalletSendConfirmationDialog extends Component<
     const { form } = this;
     const { intl } = this.context;
     const { areTermsAccepted } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = form.$('passphrase');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
@@ -200,13 +203,11 @@ export default class WalletSendConfirmationDialog extends Component<
       formattedTotalAmount,
       totalAmount,
     } = this.props;
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.sendButtonLabel)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         label: intl.formatMessage(messages.backButtonLabel),
@@ -225,12 +226,14 @@ export default class WalletSendConfirmationDialog extends Component<
           (!areTermsAccepted && isFlight),
       },
     ];
-
     let errorElement = null;
+
     if (error) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'Localiza... Remove this comment to see the full error message
       const errorHasLink = !!error.values.linkLabel;
       errorElement = errorHasLink ? (
         <FormattedHTMLMessageWithLink
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           message={error}
           onExternalLinkClick={onExternalLinkClick}
         />
@@ -319,3 +322,5 @@ export default class WalletSendConfirmationDialog extends Component<
     );
   }
 }
+
+export default WalletSendConfirmationDialog;

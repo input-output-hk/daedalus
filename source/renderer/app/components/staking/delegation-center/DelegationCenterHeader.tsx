@@ -1,8 +1,8 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterHeader.scss'... Remove this comment to see the full error message
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
@@ -47,21 +47,24 @@ const messages = defineMessages({
     description: 'Delegation description for the Delegation center.',
   },
 });
-
 type Props = {
-  networkTip: ?TipInfo,
-  epochLength: ?number,
-  nextEpoch: ?NextEpoch,
-  futureEpoch: ?FutureEpoch,
-  currentLocale: string,
+  networkTip: TipInfo | null | undefined;
+  epochLength: number | null | undefined;
+  nextEpoch: NextEpoch | null | undefined;
+  futureEpoch: FutureEpoch | null | undefined;
+  currentLocale: string;
 };
-type State = { timeUntilFutureEpoch: number };
+type State = {
+  timeUntilFutureEpoch: number;
+};
 
 @observer
-export default class DelegationCenterHeader extends Component<Props, State> {
-  intervalHandler: ?IntervalID = null;
-  state = { timeUntilFutureEpoch: 0 };
-
+class DelegationCenterHeader extends Component<Props, State> {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  intervalHandler: IntervalID | null | undefined = null;
+  state = {
+    timeUntilFutureEpoch: 0,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -77,17 +80,19 @@ export default class DelegationCenterHeader extends Component<Props, State> {
       EPOCH_COUNTDOWN_INTERVAL
     );
   };
-
   updateTimeUntilFutureEpoch = () => {
     const { futureEpoch } = this.props;
     if (!futureEpoch) return;
     const { epochStart } = futureEpoch;
+
     if (epochStart) {
       const timeUntilFutureEpoch = Math.max(
         0,
         new Date(epochStart).getTime() - new Date().getTime()
       );
-      this.setState({ timeUntilFutureEpoch });
+      this.setState({
+        timeUntilFutureEpoch,
+      });
     }
   };
 
@@ -111,14 +116,9 @@ export default class DelegationCenterHeader extends Component<Props, State> {
       currentSlotLabel,
       totalSlotsLabel,
     ];
-
     const values = [epoch, slots, totalSlots];
     const keys = ['epoch', 'slots', 'totalSlots'];
-
-    return labels.map<any>((
-      label: string, // eslint-disable-line
-      index: number
-    ) => (
+    return labels.map<any>((label: string, index: number) => (
       <Fragment key={keys[index]}>
         {generateFieldPanel(labels, values, index)}
       </Fragment>
@@ -147,12 +147,12 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     }
 
     const fieldPanels = this.generateCurrentEpochPanels(
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number | "-"' is not assignable ... Remove this comment to see the full error message
       epoch,
       slot,
       epochLength
     );
     const showNextEpochCountdown = nextEpochNumber > 0;
-
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
@@ -179,3 +179,5 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     );
   }
 }
+
+export default DelegationCenterHeader;

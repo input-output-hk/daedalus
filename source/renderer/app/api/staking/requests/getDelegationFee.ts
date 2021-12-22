@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { GetDelegationFeeRequest } from '../types';
 import type { TransactionFee } from '../../transactions/types';

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -15,10 +14,12 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletReceiveRandom.scss' or... Remove this comment to see the full error message
 import styles from './WalletReceiveRandom.scss';
 import AddressRandom from './AddressRandom';
 import WalletAddress from '../../../domains/WalletAddress';
@@ -66,38 +67,34 @@ const messages = defineMessages({
     description: 'Label for "Copy address" link on the wallet "Receive page"',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  walletAddress: string,
-  isWalletAddressUsed: boolean,
-  walletAddresses: Array<WalletAddress>,
-  onGenerateAddress: Function,
-  onShareAddress: Function,
-  onCopyAddress: Function,
-  isSidebarExpanded: boolean,
-  walletHasPassword: boolean,
-  isSubmitting: boolean,
-  error?: ?LocalizableError,
-  showUsed: boolean,
-  onToggleUsedAddresses: Function,
+  walletAddress: string;
+  isWalletAddressUsed: boolean;
+  walletAddresses: Array<WalletAddress>;
+  onGenerateAddress: (...args: Array<any>) => any;
+  onShareAddress: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  isSidebarExpanded: boolean;
+  walletHasPassword: boolean;
+  isSubmitting: boolean;
+  error?: LocalizableError | null | undefined;
+  showUsed: boolean;
+  onToggleUsedAddresses: (...args: Array<any>) => any;
 };
 
 @observer
-export default class WalletReceiveRandom extends Component<Props> {
+class WalletReceiveRandom extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   passwordField: Input;
-
   toggleUsedAddresses = () => {
     const { onToggleUsedAddresses } = this.props;
     onToggleUsedAddresses();
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -115,6 +112,7 @@ export default class WalletReceiveRandom extends Component<Props> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -122,16 +120,18 @@ export default class WalletReceiveRandom extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
-        validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
+        validationDebounceWait: 0,
+        // Disable debounce to avoid error state after clearing
         validateOnChange: true,
         showErrorsOnBlur: false,
         showErrorsOnClear: false,
       },
     }
   );
-
   renderRow = (address: WalletAddress, index: number) => (
     <AddressRandom
       index={index}
@@ -140,8 +140,8 @@ export default class WalletReceiveRandom extends Component<Props> {
       onShareAddress={this.props.onShareAddress}
     />
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -150,13 +150,10 @@ export default class WalletReceiveRandom extends Component<Props> {
       },
       onError: () => {},
     });
-
     // eslint-disable-next-line no-unused-expressions
     this.passwordField && this.passwordField.focus();
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   getFilteredAddresses = (
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
@@ -178,28 +175,23 @@ export default class WalletReceiveRandom extends Component<Props> {
       showUsed,
     } = this.props;
     const { intl } = this.context;
-
     const walletAddressClasses = classnames([
       styles.hash,
       isWalletAddressUsed ? styles.usedHash : null,
     ]);
-
     const generateAddressWrapperClasses = classnames([
       styles.generateAddressWrapper,
       isSidebarExpanded ? styles.fullWidthOnSmallScreen : null,
     ]);
-
     const generateAddressButtonClasses = classnames([
       'primary',
       'generateAddressButton',
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
       isSubmitting ? styles.spinning : null,
     ]);
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passwordField = form.$('spendingPassword');
-
     const canSubmit = !isSubmitting && passwordField.value;
-
     const generateAddressForm = (
       <div className={generateAddressWrapperClasses}>
         {walletHasPassword && (
@@ -224,7 +216,6 @@ export default class WalletReceiveRandom extends Component<Props> {
         />
       </div>
     );
-
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
       ? document.documentElement.style.getPropertyValue(
@@ -236,7 +227,6 @@ export default class WalletReceiveRandom extends Component<Props> {
           '--theme-receive-qr-code-foreground-color'
         )
       : '#000';
-
     return (
       <div className={styles.component}>
         <BorderedBox fullHeight>
@@ -258,8 +248,7 @@ export default class WalletReceiveRandom extends Component<Props> {
                   <div className={walletAddressClasses}>
                     {walletAddress}
                     <CopyToClipboard
-                      text={walletAddress}
-                      // eslint-disable-next-line react/jsx-no-bind
+                      text={walletAddress} // eslint-disable-next-line react/jsx-no-bind
                       onCopy={onCopyAddress.bind(this, walletAddress)}
                     >
                       <SVGInline
@@ -317,3 +306,5 @@ export default class WalletReceiveRandom extends Component<Props> {
     );
   }
 }
+
+export default WalletReceiveRandom;

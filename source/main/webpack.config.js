@@ -36,26 +36,26 @@ module.exports = {
     'trezor-connect': 'commonjs2 trezor-connect',
   },
   resolve: {
-		extensions: ['.tsx', '.ts', '.js', '.json'],
-	},
-	module: {
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+  },
+  module: {
     rules: [
       {
         test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/renderer/,
         use: (isCi ? [] : ['cache-loader']).concat([
-					{
-						loader: 'babel-loader',
-						options: {
-							presets: [
-								'@babel/preset-env',
-								'@babel/preset-react',
-								'@babel/preset-typescript',
-							],
-						},
-					},
-				]),
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-react',
+                '@babel/preset-typescript',
+              ],
+            },
+          },
+        ]),
       },
       {
         test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,

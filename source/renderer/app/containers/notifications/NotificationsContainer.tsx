@@ -1,10 +1,11 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import Notification from '../../components/notifications/Notification';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/success-sm... Remove this comment to see the full error message
 import successIcon from '../../assets/images/success-small.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/spinner-da... Remove this comment to see the full error message
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import type {
   NotificationConfig,
@@ -16,7 +17,6 @@ const ICONS = {
   successIcon,
   spinnerIcon,
 };
-
 const messages = defineMessages({
   downloadLogsProgress: {
     id: 'notification.downloadLogsProgress',
@@ -98,8 +98,11 @@ const messages = defineMessages({
 
 @inject('stores', 'actions')
 @observer
-export default class NotificationsContainer extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
+class NotificationsContainer extends Component<InjectedProps> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   constructor(props: InjectedProps) {
     super(props);
@@ -167,27 +170,25 @@ export default class NotificationsContainer extends Component<InjectedProps> {
         .copyAssetParamNotification,
     },
   ];
-
-  notificationsData: {
-    [key: NotificationId]: $Exact<NotificationDataProps>,
-  } = {
+  // @ts-ignore ts-migrate(2740) FIXME: Type '{ downloadLogsProgress: { icon: string; hasE... Remove this comment to see the full error message
+  notificationsData: Record<NotificationId, NotificationDataProps> = {
     downloadLogsProgress: {
       icon: 'spinner',
       hasEllipsis: true,
       clickToClose: false,
     },
   };
-
   registerNotifications = () => {
     const { registerNotification } = this.props.actions.notifications;
     this.notificationsConfig.forEach((notificationConfig: NotificationConfig) =>
       registerNotification.trigger(notificationConfig)
     );
   };
-
-  getIcon = (icon?: string = 'success') => (icon ? ICONS[`${icon}Icon`] : icon);
-
-  getLabel = (id: string, labelValues?: ?Object) => {
+  getIcon = (icon = 'success') => (icon ? ICONS[`${icon}Icon`] : icon);
+  getLabel = (
+    id: string,
+    labelValues?: Record<string, any> | null | undefined
+  ) => {
     const values = typeof labelValues === 'object' ? labelValues : {};
     return <FormattedHTMLMessage {...messages[id]} values={values} />;
   };
@@ -201,6 +202,7 @@ export default class NotificationsContainer extends Component<InjectedProps> {
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {
           const isVisible = id in activeNotifications;
           const data = this.notificationsData[id] || {};
+          // @ts-ignore ts-migrate(2525) FIXME: Initializer provides no value for this binding ele... Remove this comment to see the full error message
           const { labelValues, index } = isVisible
             ? activeNotifications[id]
             : {};
@@ -210,7 +212,11 @@ export default class NotificationsContainer extends Component<InjectedProps> {
             <Notification
               key={id}
               {...data}
-              onClose={() => closeNotification.trigger({ id })}
+              onClose={() =>
+                closeNotification.trigger({
+                  id,
+                })
+              }
               icon={this.getIcon(icon)}
               isVisible={isVisible}
               hasSpinner={hasSpinner}
@@ -224,3 +230,5 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     );
   }
 }
+
+export default NotificationsContainer;

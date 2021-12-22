@@ -1,12 +1,9 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-
 // Helpers
 import { defineMessages } from 'react-intl';
 import StoryDecorator from '../../_support/StoryDecorator';
-
 import type { WalletSettingRemoveMessages } from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 // Screens
 import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
@@ -30,12 +27,8 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Question if the user really wants to unpair the wallet.',
   },
 });
-
 storiesOf('Wallets|Settings', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-
-  // ====== Stories ======
-
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Unpair - Accepted', () => (
     <div>
       <WalletSettingsActionConfirmationDialog

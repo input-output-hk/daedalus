@@ -1,17 +1,17 @@
-// @flow
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SecuritySettings.scss' or it... Remove this comment to see the full error message
 import styles from './SecuritySettings.scss';
 import messages from './SecuritySettings.messages';
 import type { Intl } from '../../../types/i18nTypes';
 
 type Props = {
-  intl: Intl,
-  discreetMode: boolean,
-  openDiscreetMode: boolean,
-  onDiscreetModeToggle: () => void,
-  onOpenDiscreetModeToggle: () => void,
+  intl: Intl;
+  discreetMode: boolean;
+  openDiscreetMode: boolean;
+  onDiscreetModeToggle: () => void;
+  onOpenDiscreetModeToggle: () => void;
 };
 
 const SecuritySettings = ({

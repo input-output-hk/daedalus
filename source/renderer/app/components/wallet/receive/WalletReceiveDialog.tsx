@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
@@ -18,15 +17,16 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletReceiveDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletReceiveDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
 import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWalletsStore';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
@@ -136,43 +136,39 @@ const messages = defineMessages({
     description: 'Invalid address "Warning" description',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  address: WalletAddress,
-  isHardwareWallet: boolean,
-  walletName: string,
-  hwDeviceStatus: HwDeviceStatus,
-  isAddressDerived: boolean,
-  isAddressChecked: boolean,
-  onCopyAddress: Function,
-  onDownloadPDF: Function,
-  onSaveQRCodeImage: Function,
-  onClose: Function,
-  onChangeVerificationStatus: Function,
-  onSupportRequestClick: Function,
-  isTrezor: boolean,
+  address: WalletAddress;
+  isHardwareWallet: boolean;
+  walletName: string;
+  hwDeviceStatus: HwDeviceStatus;
+  isAddressDerived: boolean;
+  isAddressChecked: boolean;
+  onCopyAddress: (...args: Array<any>) => any;
+  onDownloadPDF: (...args: Array<any>) => any;
+  onSaveQRCodeImage: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onChangeVerificationStatus: (...args: Array<any>) => any;
+  onSupportRequestClick: (...args: Array<any>) => any;
+  isTrezor: boolean;
 };
-
 type State = {
-  selectedVerificationStatus: ?AddressVerificationCheckStatus,
-  isInvalidAddressConfirmed: boolean,
-  isReverifying: boolean,
+  selectedVerificationStatus: AddressVerificationCheckStatus | null | undefined;
+  isInvalidAddressConfirmed: boolean;
+  isReverifying: boolean;
 };
 
 @observer
-export default class WalletReceiveDialog extends Component<Props, State> {
+class WalletReceiveDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     selectedVerificationStatus: null,
     isInvalidAddressConfirmed: false,
     isReverifying: false,
   };
-
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 1.
   form = new ReactToolboxMobxForm({
     fields: {
       noteInput: {
@@ -182,8 +178,8 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       },
     },
   });
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { noteInput } = form.values();
@@ -195,11 +191,9 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       },
     });
   };
-
   handleChange = (field: { value: string }) => {
     field.value = field.value.replace(/\n/g, '');
   };
-
   constructPaths = (address: WalletAddress) => {
     const hardenedSpendingPath = utils.str_to_path(address.spendingPath);
     const derivationSpendingPath = hardenedPathToDerivationPath(
@@ -210,15 +204,16 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       (constructeSpendingPathChunk, index) => {
         const isChangeablePart =
           index >= derivationSpendingPath.constructed.length - 2;
+
         if (isChangeablePart) {
           return <b key={`chunk-${index}`}>/{constructeSpendingPathChunk}</b>;
         }
+
         return index === 0
           ? constructeSpendingPathChunk
           : `/${constructeSpendingPathChunk}`;
       }
     );
-
     const derivationStakingPath = hardenedPathToDerivationPath(
       HW_SHELLEY_CONFIG.DEFAULT_DERIVATION_PATH
     );
@@ -227,21 +222,21 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       (constructeStakingPathChunk, index) => {
         const isLastIndex =
           index === derivationStakingPath.constructed.length - 1;
+
         if (isLastIndex) {
           return <b key={`chunk-${index}`}>/{constructeStakingPathChunk}</b>;
         }
+
         return index === 0
           ? constructeStakingPathChunk
           : `/${constructeStakingPathChunk}`;
       }
     );
-
     return {
       stakingPath,
       spendingPath,
     };
   };
-
   onChangeVerificationStatus = (status: AddressVerificationCheckStatus) => {
     this.setState({
       selectedVerificationStatus:
@@ -251,7 +246,6 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     });
     this.props.onChangeVerificationStatus(status);
   };
-
   handleConfirmInvalidAddress = (isConfirmed: boolean) => {
     this.setState({
       isInvalidAddressConfirmed: isConfirmed,
@@ -278,6 +272,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       isReverifying,
     } = this.state;
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const noteInputField = this.form.$('noteInput');
     const deviceType = isHardwareWallet && isTrezor ? 'Trezor' : 'Ledger';
     const isSubmitting = false;
@@ -292,8 +287,8 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     );
     const isSupportRequestButton =
       selectedVerificationStatus === AddressVerificationCheckStatuses.INVALID;
-
     let actions;
+
     if (isSupportRequestButton) {
       const supportRequestLinkUrl = intl.formatMessage(
         messages.supportRequestLinkUrl
@@ -333,9 +328,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
           '--theme-receive-qr-code-foreground-color'
         )
       : '#000';
-
     const constructedPaths = this.constructPaths(address);
-
     const verificationOptions = [
       {
         status: AddressVerificationCheckStatuses.VALID,
@@ -352,12 +345,12 @@ export default class WalletReceiveDialog extends Component<Props, State> {
         }),
       },
     ];
-
     const filteredVerificationOptions = filter(
       verificationOptions,
       (option) => {
         const isInvalidOption =
           option.status === AddressVerificationCheckStatuses.INVALID;
+
         if (
           (!selectedVerificationStatus &&
             (!isInvalidOption || (isInvalidOption && isReverifying))) ||
@@ -366,10 +359,10 @@ export default class WalletReceiveDialog extends Component<Props, State> {
         ) {
           return option;
         }
+
         return null;
       }
     );
-
     const showActions =
       !isHardwareWallet ||
       (isHardwareWallet &&
@@ -377,12 +370,10 @@ export default class WalletReceiveDialog extends Component<Props, State> {
           AddressVerificationCheckStatuses.INVALID ||
           selectedVerificationStatus ===
             AddressVerificationCheckStatuses.VALID));
-
     const isAddressConfirmed =
       isAddressChecked &&
       isAddressDerived &&
       selectedVerificationStatus !== null;
-
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
@@ -456,7 +447,9 @@ export default class WalletReceiveDialog extends Component<Props, State> {
               <p className={styles.verificationInstructions}>
                 <FormattedHTMLMessage
                   {...messages.addressVerificationInstructions}
-                  values={{ deviceType }}
+                  values={{
+                    deviceType,
+                  }}
                 />
               </p>
 
@@ -470,11 +463,15 @@ export default class WalletReceiveDialog extends Component<Props, State> {
                     </p>
                   }
                   items={map(filteredVerificationOptions, (option) => ({
+                    // @ts-ignore ts-migrate(2339) FIXME: Property 'status' does not exist on type 'number |... Remove this comment to see the full error message
                     key: option.status,
                     disabled: false,
+                    // @ts-ignore ts-migrate(2339) FIXME: Property 'label' does not exist on type 'number | ... Remove this comment to see the full error message
                     label: option.label,
+                    // @ts-ignore ts-migrate(2339) FIXME: Property 'status' does not exist on type 'number |... Remove this comment to see the full error message
                     selected: option.status === selectedVerificationStatus,
                     onChange: () =>
+                      // @ts-ignore ts-migrate(2339) FIXME: Property 'status' does not exist on type 'number |... Remove this comment to see the full error message
                       this.onChangeVerificationStatus(option.status),
                   }))}
                   verticallyAligned
@@ -489,7 +486,9 @@ export default class WalletReceiveDialog extends Component<Props, State> {
               <Checkbox
                 label={intl.formatMessage(
                   messages.invalidAddressConfirmationLabel,
-                  { deviceType }
+                  {
+                    deviceType,
+                  }
                 )}
                 onChange={this.handleConfirmInvalidAddress}
                 checked={isInvalidAddressConfirmed}
@@ -502,7 +501,9 @@ export default class WalletReceiveDialog extends Component<Props, State> {
                 <p className={styles.warningDescription}>
                   {intl.formatMessage(
                     messages.invalidAddressWarningDescription,
-                    { deviceType }
+                    {
+                      deviceType,
+                    }
                   )}
                 </p>
               </div>
@@ -527,3 +528,5 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     );
   }
 }
+
+export default WalletReceiveDialog;

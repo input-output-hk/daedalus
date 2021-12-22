@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -7,6 +7,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactionsList.scss'... Remove this comment to see the full error message
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -41,60 +42,54 @@ const messages = defineMessages({
     description: 'Syncing transactions message on async wallet restore.',
   },
 });
-
 export type ScrollContextType = {
-  setIsScrolling: Function,
+  setIsScrolling: (...args: Array<any>) => any;
 };
-
-export const WalletTransactionsListScrollContext = React.createContext<ScrollContextType>(
-  { setIsScrolling: () => null }
-);
-
+export const WalletTransactionsListScrollContext = React.createContext<
+  ScrollContextType
+>({
+  setIsScrolling: () => null,
+});
 type Props = {
-  deletePendingTransaction: Function,
-  formattedWalletAmount: Function,
-  hasMoreToLoad: boolean,
-  isLoadingTransactions: boolean,
-  isRestoreActive: boolean,
-  isRenderingAsVirtualList: boolean,
-  onShowMoreTransactions?: Function,
-  onOpenExternalLink: Function,
-  getUrlByType: Function,
-  showMoreTransactionsButton?: boolean,
-  transactions: Array<WalletTransaction>,
-  walletId: string,
-  isDeletingTransaction: boolean,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  hasAssetsEnabled: boolean,
-  getAsset: Function,
-  isInternalAddress: Function,
-  onCopyAssetParam: Function,
+  deletePendingTransaction: (...args: Array<any>) => any;
+  formattedWalletAmount: (...args: Array<any>) => any;
+  hasMoreToLoad: boolean;
+  isLoadingTransactions: boolean;
+  isRestoreActive: boolean;
+  isRenderingAsVirtualList: boolean;
+  onShowMoreTransactions?: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  getUrlByType: (...args: Array<any>) => any;
+  showMoreTransactionsButton?: boolean;
+  transactions: Array<WalletTransaction>;
+  walletId: string;
+  isDeletingTransaction: boolean;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  hasAssetsEnabled: boolean;
+  getAsset: (...args: Array<any>) => any;
+  isInternalAddress: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
 };
-
 type State = {
-  isPreloading: boolean,
+  isPreloading: boolean;
 };
-
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 @observer
-export default class WalletTransactionsList extends Component<Props, State> {
+class WalletTransactionsList extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isRenderingAsVirtualList: false,
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
   };
-
   state = {
     isPreloading: true,
   };
-
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -103,7 +98,10 @@ export default class WalletTransactionsList extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     setTimeout(() => {
-      if (this._isMounted) this.setState({ isPreloading: false });
+      if (this._isMounted)
+        this.setState({
+          isPreloading: false,
+        });
     }, 0);
   }
 
@@ -113,25 +111,32 @@ export default class WalletTransactionsList extends Component<Props, State> {
 
   expandedTransactionIds: Map<string, WalletTransaction> = new Map();
   transactionsShowingMetadata: Map<string, WalletTransaction> = new Map();
-  virtualList: ?VirtualTransactionList;
-  simpleList: ?SimpleTransactionList;
-  loadingSpinner: ?LoadingSpinner;
+  virtualList: VirtualTransactionList | null | undefined;
+  simpleList: SimpleTransactionList | null | undefined;
+  loadingSpinner: LoadingSpinner | null | undefined;
 
   groupTransactionsByDay(
     transactions: Array<WalletTransaction>
   ): Array<TransactionsGroup> {
     const groups: Array<TransactionsGroup> = [];
+
     for (const transaction of transactions) {
       const date = moment(transaction.date);
       let group = groups.find(
         (g) => g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
       );
+
       if (!group) {
-        group = new TransactionsGroup({ date, transactions: [] });
+        group = new TransactionsGroup({
+          date,
+          transactions: [],
+        });
         groups.push(group);
       }
+
       group.transactions.push(transaction);
     }
+
     return groups.sort(
       (a: TransactionsGroup, b: TransactionsGroup) =>
         b.date.valueOf() - a.date.valueOf()
@@ -165,17 +170,17 @@ export default class WalletTransactionsList extends Component<Props, State> {
 
   isTxExpanded = (tx: WalletTransaction) =>
     this.expandedTransactionIds.has(tx.id);
-
   isTxShowingMetadata = (tx: WalletTransaction) =>
     this.transactionsShowingMetadata.has(tx.id);
-
   toggleTransactionExpandedState = (tx: WalletTransaction) => {
     const isExpanded = this.isTxExpanded(tx);
+
     if (isExpanded) {
       this.expandedTransactionIds.delete(tx.id);
     } else {
       this.expandedTransactionIds.set(tx.id, tx);
     }
+
     if (this.virtualList) {
       this.virtualList.updateTxRowHeight(tx, !isExpanded, true);
     } else if (this.simpleList) {
@@ -189,25 +194,23 @@ export default class WalletTransactionsList extends Component<Props, State> {
    */
   onShowMetadata = (tx: WalletTransaction) => {
     this.transactionsShowingMetadata.set(tx.id, tx);
+
     if (this.virtualList) {
       this.virtualList.updateTxRowHeight(tx, true, true);
     } else if (this.simpleList) {
       this.simpleList.forceUpdate();
     }
   };
-
   onShowMoreTransactions = (walletId: string) => {
     if (this.props.onShowMoreTransactions) {
       this.props.onShowMoreTransactions(walletId);
     }
   };
-
   getExpandedTransactions = () => this.expandedTransactionIds;
-
   renderGroup = (data: TransactionsGroup): Node => (
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Moment' is not assignable to par... Remove this comment to see the full error message
     <div className={styles.groupDate}>{this.localizedDate(data.date)}</div>
   );
-
   renderTransaction = (data: TransactionInfo): Node => {
     const {
       deletePendingTransaction,
@@ -229,14 +232,12 @@ export default class WalletTransactionsList extends Component<Props, State> {
       isFirstInGroup ? styles.firstInGroup : null,
       isLastInGroup ? styles.lastInGroup : null,
     ]);
-
     const txTokens = tx.assets;
     const assetTokens = getNonZeroAssetTokens(txTokens, getAsset);
     const totalRawAssets = tx.assets.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = tx.assets.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
-
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
@@ -264,14 +265,15 @@ export default class WalletTransactionsList extends Component<Props, State> {
       </div>
     );
   };
-
   renderItem = (row: Row) => {
     if (row instanceof TransactionsGroup) {
       return this.renderGroup(row);
     }
+
     if (row instanceof TransactionInfo) {
       return this.renderTransaction(row);
     }
+
     return null;
   };
 
@@ -288,7 +290,6 @@ export default class WalletTransactionsList extends Component<Props, State> {
       walletId,
     } = this.props;
     const transactionsGroups = this.groupTransactionsByDay(transactions);
-
     const loadingSpinner =
       (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
         <LoadingSpinner
@@ -297,7 +298,6 @@ export default class WalletTransactionsList extends Component<Props, State> {
           }}
         />
       ) : null;
-
     const syncingTransactionsSpinner = isRestoreActive ? (
       <div className={styles.syncingTransactionsWrapper}>
         <LoadingSpinner big />
@@ -306,12 +306,10 @@ export default class WalletTransactionsList extends Component<Props, State> {
         </p>
       </div>
     ) : null;
-
     const buttonClasses = classnames([
       'primary',
       styles.showMoreTransactionsButton,
     ]);
-
     // Generate flat list with dates in-between
     const rows: Row[] = [];
     transactionsGroups.forEach((group) => {
@@ -331,24 +329,20 @@ export default class WalletTransactionsList extends Component<Props, State> {
         );
       });
     });
-
     const showMoreTxButton = (
       <Button
         className={buttonClasses}
-        label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
-        // eslint-disable-next-line react/jsx-no-bind
+        label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)} // eslint-disable-next-line react/jsx-no-bind
         onClick={this.onShowMoreTransactions.bind(this, walletId)}
         skin={ButtonSkin}
       />
     );
-
     if (isPreloading)
       return (
         <div className={styles.preloadingBlockWrapper}>
           <LoadingSpinner big />
         </div>
       );
-
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
@@ -378,3 +372,5 @@ export default class WalletTransactionsList extends Component<Props, State> {
     );
   }
 }
+
+export default WalletTransactionsList;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { range } from 'lodash';
@@ -9,9 +8,11 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Asset from './Asset';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetSettingsDialog.scss' or... Remove this comment to see the full error message
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
 import type { AssetToken } from '../../api/assets/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
   DEFAULT_DECIMAL_PRECISION,
@@ -69,19 +70,17 @@ const messages = defineMessages({
     description: 'Asset settings recommended pop over content',
   },
 });
-
 type Props = {
-  asset: AssetToken,
-  onSubmit: Function,
-  onCancel: Function,
+  asset: AssetToken;
+  onSubmit: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
 };
-
 type State = {
-  decimals: ?number,
+  decimals: number | null | undefined;
 };
 
 @observer
-export default class AssetSettingsDialog extends Component<Props, State> {
+class AssetSettingsDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -99,14 +98,16 @@ export default class AssetSettingsDialog extends Component<Props, State> {
   }
 
   onSetDecimalPrecision = (decimals: number) => {
-    this.setState({ decimals });
+    this.setState({
+      decimals,
+    });
   };
-
   optionRenderer = (props: { value: number }) => {
     const { value } = props;
     const { intl } = this.context;
     const { recommendedDecimals } = this.props.asset;
     let extraLabel;
+
     if (
       typeof recommendedDecimals === 'number' &&
       recommendedDecimals === value
@@ -115,6 +116,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     } else if (value === DEFAULT_DECIMAL_PRECISION) {
       extraLabel = messages.default;
     }
+
     if (extraLabel) {
       return (
         <div>
@@ -122,9 +124,9 @@ export default class AssetSettingsDialog extends Component<Props, State> {
         </div>
       );
     }
+
     return value;
   };
-
   selectionRenderer = (props: { value: number }) => (
     <div className={styles.selection}>{this.optionRenderer(props)}</div>
   );
@@ -156,6 +158,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     const hasWarning =
       hasRecommendedDecimals && savedDecimals !== recommendedDecimals;
     let warningPopOverMessage;
+
     if (hasWarning) {
       warningPopOverMessage = hasSavedDecimals
         ? messages.warningPopOverNotUsing
@@ -171,6 +174,7 @@ export default class AssetSettingsDialog extends Component<Props, State> {
         closeOnOverlayClick
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         className1={styles.dialog}
       >
         <div>
@@ -223,3 +227,5 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     );
   }
 }
+
+export default AssetSettingsDialog;

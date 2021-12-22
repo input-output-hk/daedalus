@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import SuccessDialog from '../../../../components/wallet/wallet-restore/SuccessDialog';
@@ -10,7 +9,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class SuccessDialogContainer extends Component<Props> {
+class SuccessDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -26,3 +25,5 @@ export default class SuccessDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default SuccessDialogContainer;

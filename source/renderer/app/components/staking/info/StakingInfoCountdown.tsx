@@ -1,9 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingInfoCountdown.scss' o... Remove this comment to see the full error message
 import styles from './StakingInfoCountdown.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 import CountdownWidget from '../../widgets/CountdownWidget';
@@ -43,21 +43,19 @@ const messages = defineMessages({
     description: '"Learn more" link URL in the "Staking Info" screen.',
   },
 });
-
 type Props = {
-  startDateTime: string,
-  isAlonzoActivated: boolean,
-  stakingInfoWasOpen: boolean,
-  onSetStakingInfoWasOpen: Function,
-  onLearnMoreClick: Function,
+  startDateTime: string;
+  isAlonzoActivated: boolean;
+  stakingInfoWasOpen: boolean;
+  onSetStakingInfoWasOpen: (...args: Array<any>) => any;
+  onLearnMoreClick: (...args: Array<any>) => any;
 };
 
 @observer
-export default class StakingInfoCountdown extends Component<Props> {
+class StakingInfoCountdown extends Component<Props> {
   static defaultProps = {
     percentage: 0,
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -76,6 +74,7 @@ export default class StakingInfoCountdown extends Component<Props> {
       isAlonzoActivated,
       stakingInfoWasOpen,
     } = this.props;
+
     if (isAlonzoActivated && !stakingInfoWasOpen) {
       onSetStakingInfoWasOpen();
     }
@@ -105,6 +104,7 @@ export default class StakingInfoCountdown extends Component<Props> {
               format="DD-HH-mm-ss"
             />
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={styles.learnMoreButton}
               onClick={() =>
                 onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
@@ -122,3 +122,5 @@ export default class StakingInfoCountdown extends Component<Props> {
     );
   }
 }
+
+export default StakingInfoCountdown;

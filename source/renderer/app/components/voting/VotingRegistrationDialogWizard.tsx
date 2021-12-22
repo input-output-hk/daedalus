@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
@@ -12,41 +12,40 @@ import VotingRegistrationStepsQrCode from './voting-registration-wizard-steps/Vo
 import StakePool from '../../domains/StakePool';
 import LocalizableError from '../../i18n/LocalizableError';
 import Wallet from '../../domains/Wallet';
-
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
 type Props = {
-  stepsList: Array<string>,
-  activeStep: number,
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
-  onSelectWallet: Function,
-  isWalletAcceptable: Function,
-  wallets: Array<Wallet>,
-  selectedWallet: ?Wallet,
-  onSetPinCode: Function,
-  minVotingRegistrationFunds: number,
-  stakePoolsList: Array<StakePool>,
-  getStakePoolById: Function,
-  transactionFee: ?BigNumber,
-  transactionFeeError: string | Node | null,
-  onSubmit: Function,
-  qrCode: ?string,
-  isTransactionPending: boolean,
-  isTransactionConfirmed: boolean,
-  transactionConfirmations: number,
-  transactionError: ?LocalizableError,
-  isTrezor: boolean,
-  isHardwareWallet: boolean,
-  onDownloadPDF: Function,
-  onRestart: Function,
-  onExternalLinkClick: Function,
-  hwDeviceStatus: HwDeviceStatus,
+  stepsList: Array<string>;
+  activeStep: number;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  isWalletAcceptable: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
+  selectedWallet: Wallet | null | undefined;
+  onSetPinCode: (...args: Array<any>) => any;
+  minVotingRegistrationFunds: number;
+  stakePoolsList: Array<StakePool>;
+  getStakePoolById: (...args: Array<any>) => any;
+  transactionFee: BigNumber | null | undefined;
+  transactionFeeError: string | Node | null;
+  onSubmit: (...args: Array<any>) => any;
+  qrCode: string | null | undefined;
+  isTransactionPending: boolean;
+  isTransactionConfirmed: boolean;
+  transactionConfirmations: number;
+  transactionError: LocalizableError | null | undefined;
+  isTrezor: boolean;
+  isHardwareWallet: boolean;
+  onDownloadPDF: (...args: Array<any>) => any;
+  onRestart: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  hwDeviceStatus: HwDeviceStatus;
 };
 
 @observer
-export default class VotingRegistrationDialogWizard extends Component<Props> {
+class VotingRegistrationDialogWizard extends Component<Props> {
   render() {
     const {
       stepsList,
@@ -77,10 +76,9 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
       isTrezor,
       isHardwareWallet,
     } = this.props;
-
     const selectedWalletId = get(selectedWallet, 'id', null);
-
     let content = null;
+
     switch (activeStep) {
       case 1:
         content = (
@@ -98,6 +96,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
           />
         );
         break;
+
       case 2:
         content = (
           <VotingRegistrationStepsRegister
@@ -118,6 +117,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
           />
         );
         break;
+
       case 3:
         content = (
           <VotingRegistrationStepsConfirm
@@ -133,6 +133,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
           />
         );
         break;
+
       case 4:
         content = (
           <VotingRegistrationStepsEnterPinCode
@@ -143,6 +144,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
           />
         );
         break;
+
       case 5:
         content = (
           <VotingRegistrationStepsQrCode
@@ -154,6 +156,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
           />
         );
         break;
+
       default:
         content = <></>;
     }
@@ -161,3 +164,5 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
     return content;
   }
 }
+
+export default VotingRegistrationDialogWizard;

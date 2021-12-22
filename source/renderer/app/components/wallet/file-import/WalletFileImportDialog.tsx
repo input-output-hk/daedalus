@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -11,12 +10,12 @@ import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import {
-  isValidWalletName,
-  // isValidSpendingPassword,
+  isValidWalletName, // isValidSpendingPassword,
   // isValidRepeatPassword,
 } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletFileImportDialog.scss'... Remove this comment to see the full error message
 import styles from './WalletFileImportDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
@@ -74,21 +73,20 @@ const messages = defineMessages({
       'Placeholder for the "Password" inputs in the wallet file import dialog.',
   },
 });
-
 type Props = {
-  onSubmit: Function,
-  onClose: Function,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
+  onSubmit: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
 };
 
 @observer
-export default class WalletFileImportDialog extends Component<Props> {
+class WalletFileImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         walletFilePath: {
@@ -163,15 +161,17 @@ export default class WalletFileImportDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { walletFilePath, spendingPassword, walletName } = form.values();
@@ -190,12 +190,12 @@ export default class WalletFileImportDialog extends Component<Props> {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletFilePath = form.$('walletFilePath');
     const dialogClasses = classnames([
       styles.component,
       'WalletFileImportDialog',
     ]);
-
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
@@ -205,11 +205,9 @@ export default class WalletFileImportDialog extends Component<Props> {
         onClick: this.submit,
       },
     ];
-
     // const walletNameField = form.$('walletName');
     // const spendingPasswordField = form.$('spendingPassword');
     // const repeatedPasswordField = form.$('repeatPassword');
-
     return (
       <Dialog
         className={dialogClasses}
@@ -233,34 +231,32 @@ export default class WalletFileImportDialog extends Component<Props> {
         </div>
 
         {/* TODO: re-enable when wallet-name
-            support is added to the API endpoint
-
+           support is added to the API endpoint
           <Input
-            className="walletName"
-            {...walletNameField.bind()}
-            error={walletNameField.error}
-            skin={InputSkin}
-          />
-
+           className="walletName"
+           {...walletNameField.bind()}
+           error={walletNameField.error}
+           skin={InputSkin}
+         />
           <div className={styles.spendingPassword}>
-            <div className={styles.spendingPasswordFields}>
-              <Input
-                className="spendingPassword"
-                {...spendingPasswordField.bind()}
-                error={spendingPasswordField.error}
-                skin={InputSkin}
-              />
-              <Input
-                className="repeatedPassword"
-                {...repeatedPasswordField.bind()}
-                error={repeatedPasswordField.error}
-                skin={InputSkin}
-              />
-              <p className={styles.passwordInstructions}>
-                {intl.formatMessage(globalMessages.passwordInstructions)}
-              </p>
-            </div>
-          </div>
+           <div className={styles.spendingPasswordFields}>
+             <Input
+               className="spendingPassword"
+               {...spendingPasswordField.bind()}
+               error={spendingPasswordField.error}
+               skin={InputSkin}
+             />
+             <Input
+               className="repeatedPassword"
+               {...repeatedPasswordField.bind()}
+               error={repeatedPasswordField.error}
+               skin={InputSkin}
+             />
+             <p className={styles.passwordInstructions}>
+               {intl.formatMessage(globalMessages.passwordInstructions)}
+             </p>
+           </div>
+         </div>
         */}
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
@@ -268,3 +264,5 @@ export default class WalletFileImportDialog extends Component<Props> {
     );
   }
 }
+
+export default WalletFileImportDialog;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
@@ -11,23 +10,24 @@ import {
   toFixedUserFormat,
 } from '../../../utils/formatters';
 import { PoolPopOver } from '../widgets/PoolPopOver';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsTable.scss' or its... Remove this comment to see the full error message
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
 
 type TableBodyProps = {
-  sortedStakePoolList: StakePool,
-  numberOfRankedStakePools: number,
-  currentTheme: string,
-  onOpenExternalLink: Function,
-  showWithSelectButton?: boolean,
-  containerClassName: string,
-  onSelect?: (poolId: string) => void,
-  selectedPoolId?: ?number,
+  sortedStakePoolList: StakePool;
+  numberOfRankedStakePools: number;
+  currentTheme: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  showWithSelectButton?: boolean;
+  containerClassName: string;
+  onSelect?: (poolId: string) => void;
+  selectedPoolId?: number | null | undefined;
 };
 
 @observer
-export class StakePoolsTableBody extends Component<TableBodyProps> {
+class StakePoolsTableBody extends Component<TableBodyProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -65,9 +65,7 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
         styles.progressBarContent,
         styles[getSaturationColor(saturation)],
       ]);
-
       const color = getColorFromRange(rank, numberOfRankedStakePools);
-
       return (
         <tr key={key}>
           <td>
@@ -86,7 +84,9 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
               currentTheme={currentTheme}
               onOpenExternalLink={onOpenExternalLink}
               onSelect={onSelect}
+              // @ts-ignore ts-migrate(2339) FIXME: Property 'id' does not exist on type 'string | num... Remove this comment to see the full error message
               isSelected={selectedPoolId === stakePool.id}
+              // @ts-ignore ts-migrate(2322) FIXME: Type 'string | number | boolean | BigNumber | Date... Remove this comment to see the full error message
               stakePool={stakePool}
               containerClassName={containerClassName}
               numberOfRankedStakePools={numberOfRankedStakePools}
@@ -103,7 +103,9 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
                 <div className={styles.progressBarContainer}>
                   <div
                     className={progressBarContentClassnames}
-                    style={{ width: `${parseFloat(saturation).toFixed(2)}%` }}
+                    style={{
+                      width: `${parseFloat(saturation).toFixed(2)}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -129,3 +131,5 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
     });
   }
 }
+
+export { StakePoolsTableBody };

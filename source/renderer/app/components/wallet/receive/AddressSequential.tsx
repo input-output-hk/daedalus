@@ -1,24 +1,24 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import AddressActions from './AddressActions';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AddressSequential.scss' or i... Remove this comment to see the full error message
 import styles from './AddressSequential.scss';
 import WalletAddress from '../../../domains/WalletAddress';
 
 type Props = {
-  address: WalletAddress,
-  onShareAddress: Function,
-  onCopyAddress: Function,
-  shouldRegisterAddressElement: boolean,
-  onRegisterHTMLElements: Function,
-  addressSlice: number,
+  address: WalletAddress;
+  onShareAddress: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  shouldRegisterAddressElement: boolean;
+  onRegisterHTMLElements: (...args: Array<any>) => any;
+  addressSlice: number;
 };
 
 @observer
-export default class AddressSequential extends Component<Props> {
-  addressElement: ?HTMLElement;
-  addressContainerElement: ?HTMLElement;
+class AddressSequential extends Component<Props> {
+  addressElement: HTMLElement | null | undefined;
+  addressContainerElement: HTMLElement | null | undefined;
 
   componentDidMount() {
     if (this.props.shouldRegisterAddressElement) {
@@ -28,6 +28,7 @@ export default class AddressSequential extends Component<Props> {
       );
     }
   }
+
   get rawAddress() {
     return this.props.address.id;
   }
@@ -91,3 +92,5 @@ export default class AddressSequential extends Component<Props> {
     );
   }
 }
+
+export default AddressSequential;

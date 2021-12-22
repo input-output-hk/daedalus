@@ -1,7 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ImageUploadWidget.scss' or i... Remove this comment to see the full error message
 import styles from './ImageUploadWidget.scss';
 
 export const messages = defineMessages({
@@ -16,13 +16,12 @@ export const messages = defineMessages({
     description: 'Label "or click to upload" on the file upload widget.',
   },
 });
-
 type Props = {
-  label: string,
+  label: string;
 };
 
 @observer
-export default class ImageUploadWidget extends Component<Props> {
+class ImageUploadWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -47,3 +46,5 @@ export default class ImageUploadWidget extends Component<Props> {
     );
   }
 }
+
+export default ImageUploadWidget;

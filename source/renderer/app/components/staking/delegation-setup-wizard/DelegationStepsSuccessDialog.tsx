@@ -1,14 +1,16 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsSuccessDialog... Remove this comment to see the full error message
 import styles from './DelegationStepsSuccessDialog.scss';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/tada-ic... Remove this comment to see the full error message
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
@@ -43,25 +45,24 @@ const messages = defineMessages({
       'Label for Close button on the delegation setup "success" step dialog.',
   },
 });
-
 type Props = {
-  delegatedWallet: ?Wallet,
-  delegatedStakePool: ?StakePool,
-  futureEpochStartTime: string,
-  onClose: Function,
-  currentLocale: string,
+  delegatedWallet: Wallet | null | undefined;
+  delegatedStakePool: StakePool | null | undefined;
+  futureEpochStartTime: string;
+  onClose: (...args: Array<any>) => any;
+  currentLocale: string;
+};
+type State = {
+  timeUntilNextEpochStart: number;
 };
 
-type State = { timeUntilNextEpochStart: number };
-
 @observer
-export default class DelegationStepsSuccessDialog extends Component<
-  Props,
-  State
-> {
-  intervalHandler: ?IntervalID = null;
-  state = { timeUntilNextEpochStart: 0 };
-
+class DelegationStepsSuccessDialog extends Component<Props, State> {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  intervalHandler: IntervalID | null | undefined = null;
+  state = {
+    timeUntilNextEpochStart: 0,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -77,14 +78,15 @@ export default class DelegationStepsSuccessDialog extends Component<
       EPOCH_COUNTDOWN_INTERVAL
     );
   };
-
   updateTimeUntilNextEpochStart = () => {
     const { futureEpochStartTime } = this.props;
     const timeUntilNextEpochStart = Math.max(
       0,
       new Date(futureEpochStartTime).getTime() - new Date().getTime()
     );
-    this.setState({ timeUntilNextEpochStart });
+    this.setState({
+      timeUntilNextEpochStart,
+    });
   };
 
   componentWillUnmount() {
@@ -92,6 +94,7 @@ export default class DelegationStepsSuccessDialog extends Component<
       clearInterval(this.intervalHandler);
     }
   }
+
   render() {
     const { intl } = this.context;
     const {
@@ -100,7 +103,6 @@ export default class DelegationStepsSuccessDialog extends Component<
       currentLocale,
       onClose,
     } = this.props;
-
     const actions = [
       {
         className: 'closeButton',
@@ -109,22 +111,18 @@ export default class DelegationStepsSuccessDialog extends Component<
         primary: true,
       },
     ];
-
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
       styles.delegationStepsSuccessDialogWrapper,
     ]);
     const contentClasses = classNames([commonStyles.content, styles.content]);
-
     const delegatedWalletName = get(delegatedWallet, 'name');
     const delegatedStakePoolName = get(delegatedStakePool, 'name');
     const delegatedStakePoolTicker = get(delegatedStakePool, 'ticker');
-
     const timeUntilNextEpochStart = humanizeDurationByLocale(
       this.state.timeUntilNextEpochStart,
       currentLocale
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -149,7 +147,9 @@ export default class DelegationStepsSuccessDialog extends Component<
           <div className={styles.description2}>
             <FormattedHTMLMessage
               {...messages.descriptionLine2}
-              values={{ timeUntilNextEpochStart }}
+              values={{
+                timeUntilNextEpochStart,
+              }}
             />
           </div>
         </div>
@@ -157,3 +157,5 @@ export default class DelegationStepsSuccessDialog extends Component<
     );
   }
 }
+
+export default DelegationStepsSuccessDialog;

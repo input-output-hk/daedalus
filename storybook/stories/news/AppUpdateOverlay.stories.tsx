@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { number, withKnobs, radios, boolean } from '@storybook/addon-knobs';
@@ -11,6 +10,7 @@ import { rangeMap } from '../../../source/renderer/app/utils/numbers';
 storiesOf('News|Overlays', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Update', ({ locale }: { locale: string }) => {
     const scenario = radios(
       'Scenario',
@@ -21,7 +21,6 @@ storiesOf('News|Overlays', module)
       },
       'downloading'
     );
-
     let isUpdateDownloaded = boolean('isUpdateDownloaded', true);
     let isAutomaticUpdateFailed = false;
     let isLinux = boolean('isLinux', false);
@@ -55,17 +54,15 @@ storiesOf('News|Overlays', module)
             step: 1,
           })
         : 0;
-
     const timeLeftNumber = parseInt(
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
       rangeMap(downloadProgress, 0, 100, 30, 1),
       10
     );
-
     const downloadTimeLeft = {
       'EN-US': `${timeLeftNumber} minutes`,
       'JP-JP': `${timeLeftNumber}分`,
     };
-
     return (
       <AppUpdateOverlay
         update={update[locale]}

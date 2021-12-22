@@ -1,4 +1,3 @@
-// @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { GENERATE_WALLET_MIGRATION_REPORT_CHANNEL } from '../../common/ipc/api';
 import type {

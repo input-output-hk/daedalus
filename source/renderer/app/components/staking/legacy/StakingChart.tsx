@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { BarChart, Bar, YAxis, XAxis, Cell, ReferenceLine } from 'recharts';
 import StakingChartTooltip from './StakingChartTooltip';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingChart.scss' or its co... Remove this comment to see the full error message
 import styles from './StakingChart.scss';
 
 class CustomReferenceLine extends ReferenceLine {
@@ -18,22 +18,24 @@ class CustomReferenceLine extends ReferenceLine {
 }
 
 type Props = {
-  width: number,
-  height: number,
-  options: Object,
+  width: number;
+  height: number;
+  options: Record<string, any>;
 };
-
 type State = {
-  isHovered: boolean,
-  hoveredBarData: ?Object,
-  tooltipPos?: ?{
-    left: number,
-    top: number,
-  },
+  isHovered: boolean;
+  hoveredBarData: Record<string, any> | null | undefined;
+  tooltipPos?:
+    | {
+        left: number;
+        top: number;
+      }
+    | null
+    | undefined;
 };
 
 @observer
-export default class StakingChart extends Component<Props, State> {
+class StakingChart extends Component<Props, State> {
   state = {
     isHovered: false,
     hoveredBarData: null,
@@ -57,6 +59,7 @@ export default class StakingChart extends Component<Props, State> {
     const { isHovered, hoveredBarData, tooltipPos } = this.state;
     const refLineSlot = Math.floor(data.length / 2) + 1;
     let tooltip = null;
+
     // TODO: find better way to represent the data records that are behind the reference line
     // for now this is the easiest way to ignore zero-bars in the chart
     if (
@@ -92,14 +95,21 @@ export default class StakingChart extends Component<Props, State> {
             ticks={ticks.slice()}
             domain={['dataMin', 'dataMax + 10']}
           />
+          {/* @ts-ignore ts-migrate(2607) FIXME: JSX element class does not support attributes beca... Remove this comment to see the full error message */}
           <CustomReferenceLine x={refLineSlot} stroke="#5e6066" />
           <Bar
             dataKey="numberOfTransactions"
             onMouseEnter={(barData) =>
-              this.setState({ isHovered: true, hoveredBarData: barData })
+              this.setState({
+                isHovered: true,
+                hoveredBarData: barData,
+              })
             }
             onMouseLeave={() =>
-              this.setState({ isHovered: false, hoveredBarData: null })
+              this.setState({
+                isHovered: false,
+                hoveredBarData: null,
+              })
             }
             minPointSize={2}
             isAnimationActive={false}
@@ -109,15 +119,16 @@ export default class StakingChart extends Component<Props, State> {
               let cursor = 'pointer';
               // eslint-disable-next-line react/no-array-index-key
               if (index === activeIndex) fillColor = '#445b7c';
+
               if (entry.numberOfTransactions === 0) {
                 fillColor = '#e7eaee';
                 cursor = 'default';
               }
+
               return (
                 <Cell
                   cursor={cursor}
-                  fill={fillColor}
-                  // eslint-disable-next-line react/no-array-index-key
+                  fill={fillColor} // eslint-disable-next-line react/no-array-index-key
                   key={`cell-${index}`}
                 />
               );
@@ -129,3 +140,5 @@ export default class StakingChart extends Component<Props, State> {
     );
   }
 }
+
+export default StakingChart;

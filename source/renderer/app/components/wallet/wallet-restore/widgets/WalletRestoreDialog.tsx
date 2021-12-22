@@ -1,11 +1,12 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import Dialog from '../../../widgets/Dialog';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import WalletRestoreSteps from './WalletRestoreSteps';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRestoreDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletRestoreDialog.scss';
 import { RESTORE_WALLET_STEPS } from '../../../../config/walletRestoreConfig';
 import type { DialogActionItems } from '../../../widgets/Dialog';
@@ -28,15 +29,13 @@ const messages = defineMessages({
     description: 'Step couters in the wallet restore dialog.',
   },
 });
-
 type Props = {
-  stepNumber?: number,
-  actions?: DialogActionItems,
-  onClose?: Function,
-  onBack?: Function,
-  children: Node,
+  stepNumber?: number;
+  actions?: DialogActionItems;
+  onClose?: (...args: Array<any>) => any;
+  onBack?: (...args: Array<any>) => any;
+  children: Node;
 };
-
 export default class WalletRestoreDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -64,7 +63,6 @@ export default class WalletRestoreDialog extends Component<Props> {
         }}
       />
     );
-
     return (
       <Dialog
         className={styles.component}

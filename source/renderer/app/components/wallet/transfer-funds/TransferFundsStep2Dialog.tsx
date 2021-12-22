@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -12,6 +11,7 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransferFundsStep2Dialog.scs... Remove this comment to see the full error message
 import styles from './TransferFundsStep2Dialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -79,30 +79,28 @@ const messages = defineMessages({
     description: 'passphraseLabel in the transfer funds form.',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  onFinish: Function,
-  onClose: Function,
-  onBack: Function,
-  onOpenExternalLink: Function,
-  feesAmount: BigNumber,
-  leftoversAmount: BigNumber,
-  sourceWalletAmount: BigNumber,
-  sourceWalletName: string,
-  targetWalletName: string,
-  isSubmitting?: boolean,
-  error?: ?LocalizableError,
+  onFinish: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  feesAmount: BigNumber;
+  leftoversAmount: BigNumber;
+  sourceWalletAmount: BigNumber;
+  sourceWalletName: string;
+  targetWalletName: string;
+  isSubmitting?: boolean;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
-export default class TransferFundsStep2Dialog extends Component<Props> {
+class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -120,6 +118,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -127,15 +126,17 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -144,8 +145,8 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       onError: () => {},
     });
   };
-
   handleSubmitOnEnter = (event: KeyboardEvent) =>
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     this.form.$('spendingPassword').isValid &&
     submitOnEnter(this.submit, event);
 
@@ -163,7 +164,6 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       isSubmitting,
       error,
     } = this.props;
-
     const fees = feesAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const leftovers =
       leftoversAmount && !leftoversAmount.isZero()
@@ -177,14 +177,12 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       sourceWalletAmount,
       false
     );
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = this.form.$('spendingPassword');
-
     const buttonClasses = classnames([
       'confirmButton',
       isSubmitting ? styles.submitButtonSpinning : null,
     ]);
-
     const actions = [
       {
         label: intl.formatMessage(messages.buttonLabel),
@@ -194,7 +192,6 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         disabled: isSubmitting || !spendingPasswordField.isValid,
       },
     ];
-
     return (
       <Dialog
         className={styles.dialog}
@@ -237,7 +234,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
               {intl.formatMessage(messages.leftoversLabel)}
               <Link
                 className={styles.leftoversLearnMoreLink}
-                onClick={(event: SyntheticMouseEvent<HTMLElement>) =>
+                onClick={(event: React.MouseEvent<HTMLElement>) =>
                   onOpenExternalLink(
                     intl.formatMessage(messages.leftoversLearnMoreUrl, event)
                   )
@@ -273,3 +270,5 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
     );
   }
 }
+
+export default TransferFundsStep2Dialog;

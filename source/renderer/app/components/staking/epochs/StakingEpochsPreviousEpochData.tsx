@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -12,6 +11,7 @@ import {
   sortData,
 } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingEpochs.scss' or its c... Remove this comment to see the full error message
 import styles from './StakingEpochs.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -47,31 +47,26 @@ const messages = defineMessages({
     description: '"of" text in table body on staking epochs page',
   },
 });
-
 type Props = {
-  previousEpochData: EpochData,
-  isLoading: boolean,
+  previousEpochData: EpochData;
+  isLoading: boolean;
 };
-
 type State = {
-  previousEpochDataOrder: string,
-  previousEpochDataSortBy: string,
+  previousEpochDataOrder: string;
+  previousEpochDataSortBy: string;
 };
 
 @observer
-export default class StakingEpochsPreviousEpochData extends Component<
-  Props,
-  State
-> {
+class StakingEpochsPreviousEpochData extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isLoading: false,
   };
 
   constructor() {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-2 arguments, but got 0.
     super();
     this.state = {
       previousEpochDataOrder: 'desc',
@@ -88,6 +83,7 @@ export default class StakingEpochsPreviousEpochData extends Component<
     } else {
       newOrder = 'desc';
     }
+
     this.setState({
       previousEpochDataSortBy: newSortBy,
       previousEpochDataOrder: newOrder,
@@ -123,7 +119,6 @@ export default class StakingEpochsPreviousEpochData extends Component<
           const slotsElected = get(row, 'slotsElected', [0, 0]);
           const performance = get(row, 'performance', [0, 0, 0]);
           const sharedRewards = get(row, 'sharedRewards', [0, 0]);
-
           return (
             <tr key={key}>
               <td>
@@ -167,9 +162,9 @@ export default class StakingEpochsPreviousEpochData extends Component<
         })}
       </tbody>
     );
-
     return (
       <StakingEpochsDataTable
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         tableHeaders={tableHeaders}
         tableBody={tableBody}
         order={previousEpochDataOrder}
@@ -179,3 +174,5 @@ export default class StakingEpochsPreviousEpochData extends Component<
     );
   }
 }
+
+export default StakingEpochsPreviousEpochData;

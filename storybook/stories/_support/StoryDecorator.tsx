@@ -1,5 +1,5 @@
-// @flow
 import React, { Component, Children } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
@@ -9,12 +9,12 @@ import { daedalusTheme } from '../../../source/renderer/app/themes/daedalus';
 import { themeOverrides } from '../../../source/renderer/app/themes/overrides';
 
 type Props = {
-  children: Node,
-  propsForChildren?: any,
+  children: Node;
+  propsForChildren?: any;
 };
 
 @observer
-export default class StoryDecorator extends Component<Props> {
+class StoryDecorator extends Component<Props> {
   static defaultProps = {
     propsForChildren: {},
   };
@@ -29,10 +29,17 @@ export default class StoryDecorator extends Component<Props> {
         themeOverrides={themeOverrides}
       >
         {Children.map(children, (child) => {
-          const childProps = child.type === 'div' ? {} : { propsForChildren };
+          const childProps =
+            child.type === 'div'
+              ? {}
+              : {
+                  propsForChildren,
+                };
           return React.cloneElement(child, childProps);
         })}
       </ThemeProvider>
     );
   }
 }
+
+export default StoryDecorator;

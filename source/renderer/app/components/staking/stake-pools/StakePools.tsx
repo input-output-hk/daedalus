@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
@@ -12,6 +11,7 @@ import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePools.scss' or its corr... Remove this comment to see the full error message
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import { formattedNumber } from '../../../utils/formatters';
@@ -20,7 +20,9 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   SMASH_SERVER_TYPES,
 } from '../../../config/stakingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/smash-s... Remove this comment to see the full error message
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
 
@@ -67,39 +69,35 @@ const messages = defineMessages({
     description: 'unmoderated message for the Delegation center body section.',
   },
 });
-
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
-
 type Props = {
-  wallets: Array<Wallet>,
-  currentLocale: string,
-  stakePoolsList: Array<StakePool>,
-  onOpenExternalLink: Function,
-  currentTheme: string,
-  updateDelegatingStake: Function,
-  rankStakePools: Function,
-  selectedDelegationWalletId?: ?string,
-  stake?: ?number,
-  onDelegate: Function,
-  isLoading: boolean,
-  isFetching: boolean,
-  isRanking: boolean,
-  stakePoolsDelegatingList: Array<StakePool>,
-  getStakePoolById: Function,
-  onSmashSettingsClick: Function,
-  smashServerUrl: ?string,
-  maxDelegationFunds: number,
+  wallets: Array<Wallet>;
+  currentLocale: string;
+  stakePoolsList: Array<StakePool>;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  currentTheme: string;
+  updateDelegatingStake: (...args: Array<any>) => any;
+  rankStakePools: (...args: Array<any>) => any;
+  selectedDelegationWalletId?: string | null | undefined;
+  stake?: number | null | undefined;
+  onDelegate: (...args: Array<any>) => any;
+  isLoading: boolean;
+  isFetching: boolean;
+  isRanking: boolean;
+  stakePoolsDelegatingList: Array<StakePool>;
+  getStakePoolById: (...args: Array<any>) => any;
+  onSmashSettingsClick: (...args: Array<any>) => any;
+  smashServerUrl: string | null | undefined;
+  maxDelegationFunds: number;
 };
-
 type State = {
-  search: string,
-  selectedList?: ?string,
-  isGridView: boolean,
-  isGridRewardsView: boolean,
-  isListView: boolean,
-  isTableHeaderHovered: boolean,
+  search: string;
+  selectedList?: string | null | undefined;
+  isGridView: boolean;
+  isGridRewardsView: boolean;
+  isListView: boolean;
+  isTableHeaderHovered: boolean;
 };
-
 const initialState = {
   search: '',
   selectedList: null,
@@ -110,26 +108,26 @@ const initialState = {
 };
 
 @observer
-export default class StakePools extends Component<Props, State> {
-  loadingSpinner: ?LoadingSpinner;
-
+class StakePools extends Component<Props, State> {
+  loadingSpinner: LoadingSpinner | null | undefined;
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = { ...initialState };
-
-  handleSearch = (search: string) => this.setState({ search });
-
-  handleClearSearch = () => this.setState({ search: '' });
-
+  handleSearch = (search: string) =>
+    this.setState({
+      search,
+    });
+  handleClearSearch = () =>
+    this.setState({
+      search: '',
+    });
   handleGridView = () =>
     this.setState({
       isGridView: true,
       isGridRewardsView: false,
       isListView: false,
     });
-
   handleGridRewardsView = () => {
     this.setState({
       isGridView: false,
@@ -137,23 +135,24 @@ export default class StakePools extends Component<Props, State> {
       isListView: false,
     });
   };
-
   handleListView = () =>
     this.setState({
       isGridView: false,
       isGridRewardsView: false,
       isListView: true,
     });
-
   handleSetListActive = (selectedList: string) =>
-    this.setState({ selectedList });
-
+    this.setState({
+      selectedList,
+    });
   handleTableHeaderMouseEnter = () =>
-    this.setState({ isTableHeaderHovered: true });
-
+    this.setState({
+      isTableHeaderHovered: true,
+    });
   handleTableHeaderMouseLeave = () =>
-    this.setState({ isTableHeaderHovered: false });
-
+    this.setState({
+      isTableHeaderHovered: false,
+    });
   onDelegate = (poolId: string) => {
     const { onDelegate } = this.props;
     onDelegate(poolId);
@@ -188,24 +187,19 @@ export default class StakePools extends Component<Props, State> {
       isGridRewardsView,
       isTableHeaderHovered,
     } = this.state;
-
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       search
     );
-
     const numberOfRankedStakePools: number = stakePoolsList.filter(
       (stakePool) =>
         IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
     ).length;
-
     const listTitleMessage = isFetching
       ? messages.listTitleLoading
       : messages.listTitle;
-
     const listTitleSearchMessage =
       !!search.trim().length && intl.formatMessage(messages.listTitleSearch);
-
     const loadingSpinner = (
       <LoadingSpinner
         big
@@ -214,25 +208,23 @@ export default class StakePools extends Component<Props, State> {
         }}
       />
     );
-
     const componentClasses = classnames([
       styles.component,
       isLoading ? styles.isLoading : null,
     ]);
-
     const smashServer = smashServerUrl
       ? getSmashServerNameFromUrl(smashServerUrl)
       : null;
-
     const tinyLoadingSpinner = isFetching && (
       <SVGInline svg={tinySpinnerIcon} className={styles.tinySpinner} />
     );
-
     const smashSettings = (
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
         <span>
           {smashServer && smashServer !== SMASH_SERVER_TYPES.DIRECT
-            ? intl.formatMessage(messages.moderatedBy, { smashServer })
+            ? intl.formatMessage(messages.moderatedBy, {
+                smashServer,
+              })
             : intl.formatMessage(messages.unmoderated)}
         </span>
         <SVGInline
@@ -241,7 +233,6 @@ export default class StakePools extends Component<Props, State> {
         />
       </button>
     );
-
     return (
       <div className={componentClasses}>
         {isLoading ? (
@@ -281,6 +272,7 @@ export default class StakePools extends Component<Props, State> {
               isListView={isListView}
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               smashServer={smashServer}
             />
             {stakePoolsDelegatingList.length > 0 && (
@@ -383,3 +375,5 @@ export default class StakePools extends Component<Props, State> {
     );
   }
 }
+
+export default StakePools;

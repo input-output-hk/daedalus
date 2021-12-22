@@ -1,4 +1,3 @@
-// @flow
 import type { CardanoNodeState, CardanoStatus } from './cardano-node.types';
 import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
@@ -19,149 +18,136 @@ import type { HardwareWalletLocalData } from '../../renderer/app/api/utils/local
 import type { AdaApiStakePool } from '../../renderer/app/api/staking/types';
 
 export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
-
 export type Logger = {
-  debug: (string, ?Object) => void,
-  info: (string, ?Object) => void,
-  error: (string, ?Object) => void,
-  warn: (string, ?Object) => void,
+  debug: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
+  info: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
+  error: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
+  warn: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
 };
-
 export type FormatMessageContextParams = {
-  appName: string,
-  electronProcess: string,
-  level: string,
-  network: string,
+  appName: string;
+  electronProcess: string;
+  level: string;
+  network: string;
 };
-
 type Process = {
-  exe: string,
-  code: string | null,
-  signal: string,
-  err: string | null,
+  exe: string;
+  code: string | null;
+  signal: string;
+  err: string | null;
 };
-
 type Currency = {
-  code?: string,
-  decimalDigits?: number,
-  name?: string,
-  symbolNative: string,
+  code?: string;
+  decimalDigits?: number;
+  name?: string;
+  symbolNative: string;
 };
-
 type BodyData = {
-  response?: Currency[],
-  networkParameters?: GetNetworkParametersApiResponse,
-  networkInfo?: ?NetworkInfoResponse,
-  transactions?: ?(TransferFundsResponse[]),
-  addresses?: ?(Address[]),
-  parameters?: ?GetTransactionsRequest,
-  wallets?: ?AdaWallet,
-  legacyWallets?: ?LegacyAdaWallet,
-  hwLocalData?: ?HardwareWalletLocalData,
-  stakePools?: ?(AdaApiStakePool[]),
-  code?: string,
-  state?: CardanoNodeState,
-  status?: CardanoStatus,
-  name?: string,
-  processName?: string,
-  wallet?: Process,
-  node?: Process,
-  command?: string,
-  args?: string[],
-  shutdownMethod?: string,
-  cwd?: string,
-  apiPort?: number,
-  extraEnv?: ?(string[]),
+  response?: Currency[];
+  networkParameters?: GetNetworkParametersApiResponse;
+  networkInfo?: NetworkInfoResponse | null | undefined;
+  transactions?: TransferFundsResponse[] | null | undefined;
+  addresses?: Address[] | null | undefined;
+  parameters?: GetTransactionsRequest | null | undefined;
+  wallets?: AdaWallet | null | undefined;
+  legacyWallets?: LegacyAdaWallet | null | undefined;
+  hwLocalData?: HardwareWalletLocalData | null | undefined;
+  stakePools?: AdaApiStakePool[] | null | undefined;
+  code?: string;
+  state?: CardanoNodeState;
+  status?: CardanoStatus;
+  name?: string;
+  processName?: string;
+  wallet?: Process;
+  node?: Process;
+  command?: string;
+  args?: string[];
+  shutdownMethod?: string;
+  cwd?: string;
+  apiPort?: number;
+  extraEnv?: string[] | null | undefined;
 };
-
 export type ConstructMessageBodyParams = {
-  at: string,
-  env: string,
-  ns?: Array<?string>,
-  data?: BodyData,
-  app?: Array<?string>,
-  msg: string,
-  pid: number | string,
-  sev: string,
-  thread: number | string,
+  at: string;
+  env: string;
+  ns?: Array<string | null | undefined>;
+  data?: BodyData;
+  app?: Array<string | null | undefined>;
+  msg: string;
+  pid: number | string;
+  sev: string;
+  thread: number | string;
 };
-
 export type MessageBody = {
-  at: string,
-  env: string,
-  ns: Array<?string>,
-  data: BodyData,
-  app: Array<?string>,
-  msg: string,
-  pid: number | string,
-  sev: string,
-  thread: number | string,
+  at: string;
+  env: string;
+  ns: Array<string | null | undefined>;
+  data: BodyData;
+  app: Array<string | null | undefined>;
+  msg: string;
+  pid: number | string;
+  sev: string;
+  thread: number | string;
 };
-
 export type ElectronLoggerMessage = {
-  date: Date,
-  data: LogSystemInfoParams,
-  level: string,
+  date: Date;
+  data: LogSystemInfoParams;
+  level: string;
 };
-
 export type LogSystemInfoParams = {
-  cardanoNodeVersion: string,
-  cardanoWalletVersion: string,
-  cpu: Array<Object>,
-  daedalusVersion: string,
-  isBlankScreenFixActive: boolean,
-  network: string,
-  osName: string,
-  platformVersion: string,
-  ram: string,
-  startTime: string,
+  cardanoNodeVersion: string;
+  cardanoWalletVersion: string;
+  cpu: Array<Record<string, any>>;
+  daedalusVersion: string;
+  isBlankScreenFixActive: boolean;
+  network: string;
+  osName: string;
+  platformVersion: string;
+  ram: string;
+  startTime: string;
 };
-
 export type StateSnapshotLogParams = {
-  systemInfo: SystemInfo,
-  coreInfo: CoreSystemInfo,
-  cardanoNodeState: CardanoNodeState,
-  currentLocale: string,
-  isConnected: boolean,
-  isDev: boolean,
-  isMainnet: boolean,
-  isNodeInSync: boolean,
-  isNodeResponding: boolean,
-  isNodeSyncing: boolean,
-  isStaging: boolean,
-  isSynced: boolean,
-  isTestnet: boolean,
-  currentTime: string,
-  syncPercentage: string,
-  localTip: ?Object,
-  networkTip: ?Object,
+  systemInfo: SystemInfo;
+  coreInfo: CoreSystemInfo;
+  cardanoNodeState: CardanoNodeState;
+  currentLocale: string;
+  isConnected: boolean;
+  isDev: boolean;
+  isMainnet: boolean;
+  isNodeInSync: boolean;
+  isNodeResponding: boolean;
+  isNodeSyncing: boolean;
+  isStaging: boolean;
+  isSynced: boolean;
+  isTestnet: boolean;
+  currentTime: string;
+  syncPercentage: string;
+  localTip: Record<string, any> | null | undefined;
+  networkTip: Record<string, any> | null | undefined;
 };
-
 export type ExportedWalletData = {
-  id: string,
-  name: ?string,
-  hasPassword: boolean,
+  id: string;
+  name: string | null | undefined;
+  hasPassword: boolean;
   import?: {
-    status: WalletImportStatus,
-    error?: string,
-  },
+    status: WalletImportStatus;
+    error?: string;
+  };
 };
-
 export type RestoredWalletData = {
-  id: string,
-  name: string,
-  hasPassword: boolean,
+  id: string;
+  name: string;
+  hasPassword: boolean;
 };
-
 export type WalletMigrationReportData = {
-  exportedWalletsData: Array<ExportedWalletData>,
-  exportedWalletsCount: number,
-  exportErrors: string,
-  restoredWalletsData: Array<RestoredWalletData>,
-  restoredWalletsCount: number,
+  exportedWalletsData: Array<ExportedWalletData>;
+  exportedWalletsCount: number;
+  exportErrors: string;
+  restoredWalletsData: Array<RestoredWalletData>;
+  restoredWalletsCount: number;
   restorationErrors: Array<{
-    error: string,
-    wallet: ExportedWalletData,
-  }>,
-  finalMigrationStatus: WalletMigrationStatus,
+    error: string;
+    wallet: ExportedWalletData;
+  }>;
+  finalMigrationStatus: WalletMigrationStatus;
 };

@@ -1,5 +1,5 @@
-// @flow
 import React, { Component, Children } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
@@ -9,7 +9,6 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean } from '@storybook/addon-knobs';
 import classNames from 'classnames';
 import { isShelleyTestnetTheme } from './utils';
-
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 import {
@@ -23,41 +22,39 @@ import TadaButton from '../../../source/renderer/app/components/widgets/TadaButt
 import { DiscreetToggleTopBar } from '../../../source/renderer/app/features';
 import Wallet, {
   WalletSyncStateStatuses,
-} from '../../../source/renderer/app/domains/Wallet.js';
+} from '../../../source/renderer/app/domains/Wallet';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/types';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
-
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
-
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/c... Remove this comment to see the full error message
 import topBarStyles from '../../../source/renderer/app/components/layout/TopBar.scss';
 
 export type StoriesProps = {
-  wallets: Array<Wallet>,
-  activeWalletId: string,
-  setActiveWalletId: Function,
+  wallets: Array<Wallet>;
+  activeWalletId: string;
+  setActiveWalletId: (...args: Array<any>) => any;
 };
-
 type Props = {
-  activeSidebarCategory: string,
-  currentTheme: string,
-  storiesProps: any | StoriesProps,
-  story?: string,
-  children?: any | Node,
-  stores?: ?{},
+  activeSidebarCategory: string;
+  currentTheme: string;
+  storiesProps: any | StoriesProps;
+  story?: string;
+  children?: any | Node;
+  stores?: {} | null | undefined;
 };
-
 const CATEGORIES_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
-
 const CATEGORIES = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING,
@@ -66,8 +63,11 @@ const CATEGORIES = [
 
 @inject('stores', 'storiesProps')
 @observer
-export default class StoryLayout extends Component<Props> {
-  static defaultProps = { stores: null, storiesProps: null };
+class StoryLayout extends Component<Props> {
+  static defaultProps = {
+    stores: null,
+    storiesProps: null,
+  };
 
   render() {
     const {
@@ -79,7 +79,6 @@ export default class StoryLayout extends Component<Props> {
       children,
     } = this.props;
     const { wallets, activeWalletId, setActiveWalletId } = storiesProps;
-
     const activeWallet: Wallet = wallets[parseInt(activeWalletId, 10)];
     const activeNavItem = story.split(' ')[0].toLowerCase();
     const sidebarMenus = this.getSidebarMenus(
@@ -93,13 +92,17 @@ export default class StoryLayout extends Component<Props> {
         obj[option.label] = option.value;
         return obj;
       }, {}),
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ value: string; label: string; ... Remove this comment to see the full error message
       NUMBER_OPTIONS[0]
     );
     const FORMAT = {
       ...DEFAULT_NUMBER_FORMAT,
+      // @ts-ignore ts-migrate(2538) FIXME: Type 'PropertyKey[]' cannot be used as an index ty... Remove this comment to see the full error message
       ...NUMBER_FORMATS[currentNumberFormat],
     };
-    BigNumber.config({ FORMAT });
+    BigNumber.config({
+      FORMAT,
+    });
     return (
       <div
         style={{
@@ -122,16 +125,19 @@ export default class StoryLayout extends Component<Props> {
           )}
         >
           {Children.map(children, (child) =>
-            React.cloneElement(child, { stores, storiesProps })
+            React.cloneElement(child, {
+              stores,
+              storiesProps,
+            })
           )}
         </SidebarLayout>
       </div>
     );
   }
 
-  @observable isShowingSubMenus =
+  @observable
+  isShowingSubMenus =
     this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
-
   getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
@@ -149,11 +155,10 @@ export default class StoryLayout extends Component<Props> {
       isLegacy: wallet.isLegacy,
       hasNotification: false,
     }));
-
   getSidebarMenus = (
     items: Array<SidebarWalletType>,
     activeWalletId: string,
-    setActiveWalletId: Function
+    setActiveWalletId: (...args: Array<any>) => any
   ) => ({
     wallets: {
       items,
@@ -164,7 +169,6 @@ export default class StoryLayout extends Component<Props> {
       },
     },
   });
-
   getSidebar = (
     story: string,
     activeSidebarCategory: string,
@@ -175,7 +179,6 @@ export default class StoryLayout extends Component<Props> {
       story === 'Decentralization Start Info'
         ? CATEGORIES_COUNTDOWN
         : CATEGORIES;
-
     return (
       <Sidebar
         categories={sidebarCategories}
@@ -183,6 +186,7 @@ export default class StoryLayout extends Component<Props> {
         menus={sidebarMenus}
         isShowingSubMenus={this.isShowingSubMenus}
         onActivateCategory={action('onActivateCategory')}
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{ categories: { name: string; icon: any; rou... Remove this comment to see the full error message
         isDialogOpen={() => false}
         onAddWallet={action('onAddWallet')}
         onOpenDialog={action('onOpenDialog')}
@@ -194,7 +198,6 @@ export default class StoryLayout extends Component<Props> {
       />
     );
   };
-
   getTopbar = (
     activeSidebarCategory: string,
     activeWallet: Wallet,
@@ -202,6 +205,7 @@ export default class StoryLayout extends Component<Props> {
     currentTheme: string
   ) => (
     <TopBar
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       onToggleSidebar={() => {
         runInAction(() => {
           this.isShowingSubMenus = !this.isShowingSubMenus;
@@ -226,17 +230,25 @@ export default class StoryLayout extends Component<Props> {
       <NodeSyncStatusIcon
         isSynced
         syncPercentage={100}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isProduction
         isMainnet
-        {...(boolean('hasTadaIcon', true) ? { hasTadaIcon: true } : {})}
+        {...(boolean('hasTadaIcon', true)
+          ? {
+              hasTadaIcon: true,
+            }
+          : {})}
       />
       <span
         className={classNames(
           topBarStyles.rectangle,
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
           boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
         )}
       />
+      {/* @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1. */}
       <DiscreetToggleTopBar hasTadaIcon={boolean('hasTadaIcon')} />
+      {/* @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1. */}
       {boolean('hasTadaIcon') && (
         <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
       )}
@@ -248,3 +260,5 @@ export default class StoryLayout extends Component<Props> {
     </TopBar>
   );
 }
+
+export default StoryLayout;

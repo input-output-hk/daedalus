@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakingInfoCountdown from '../../components/staking/info/StakingInfoCountdown';
@@ -8,8 +7,11 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakingInfoPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+class StakingInfoPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { stores, actions } = this.props;
@@ -28,3 +30,5 @@ export default class StakingInfoPage extends Component<Props> {
     );
   }
 }
+
+export default StakingInfoPage;

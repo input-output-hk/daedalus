@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import {
   defineMessages,
@@ -16,13 +15,16 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSelectImportDialog.scs... Remove this comment to see the full error message
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/check-w... Remove this comment to see the full error message
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
@@ -114,26 +116,24 @@ const messages = defineMessages({
     description: 'Close window',
   },
 });
-
 type Props = {
-  isSubmitting: boolean,
-  exportedWallets: Array<ExportedByronWallet>,
-  pendingImportWalletsCount: number,
-  onContinue: Function,
-  onWalletNameChange: Function,
-  onToggleWalletImportSelection: Function,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  nameValidator: Function,
-  isMaxNumberOfWalletsReached: boolean,
+  isSubmitting: boolean;
+  exportedWallets: Array<ExportedByronWallet>;
+  pendingImportWalletsCount: number;
+  onContinue: (...args: Array<any>) => any;
+  onWalletNameChange: (...args: Array<any>) => any;
+  onToggleWalletImportSelection: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  nameValidator: (...args: Array<any>) => any;
+  isMaxNumberOfWalletsReached: boolean;
 };
 
 @observer
-export default class WalletSelectImportDialog extends Component<Props> {
+class WalletSelectImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   getWalletStatus = (wallet: ExportedByronWallet) => {
     const { intl } = this.context;
     const importingStatus = intl.formatMessage(messages.importingWallet);
@@ -141,8 +141,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const hasPasswordStatus = intl.formatMessage(messages.passwordProtected);
     const alreadyExistsStatus = intl.formatMessage(messages.walletExists);
     const walletImportedStatus = intl.formatMessage(messages.walletImported);
-
     let walletStatus;
+
     if (wallet.import.status === WalletImportStatuses.RUNNING) {
       walletStatus = importingStatus;
     } else if (wallet.import.status === WalletImportStatuses.EXISTS) {
@@ -154,17 +154,17 @@ export default class WalletSelectImportDialog extends Component<Props> {
     } else {
       walletStatus = hasPasswordStatus;
     }
+
     return walletStatus;
   };
-
   getWalletStatusIcon = (wallet: ExportedByronWallet, index: number) => {
     const {
       nameValidator,
       onToggleWalletImportSelection,
       isMaxNumberOfWalletsReached,
     } = this.props;
-
     let statusIcon;
+
     if (
       wallet.import.status === WalletImportStatuses.UNSTARTED ||
       wallet.import.status === WalletImportStatuses.PENDING ||
@@ -176,21 +176,23 @@ export default class WalletSelectImportDialog extends Component<Props> {
         isMaxNumberOfWalletsReached &&
         wallet.import.status !== WalletImportStatuses.PENDING;
       const disabled = invalidWalletName || walletNotSelectable;
-
       let isOpeningUpward = true;
       const checkboxes = document.getElementsByClassName(
         'SimpleCheckbox_check'
       );
+
       if (checkboxes.length && wallet.hasName) {
         const topWrapper = document.getElementsByClassName(
           'WalletSelectImportDialog_topWrapper'
         );
+
         if (checkboxes[index] && topWrapper.length) {
           const checkboxTopOffset = checkboxes[index].getBoundingClientRect()
             .top;
           const topWrapperTopOffset = topWrapper[0].getBoundingClientRect().top;
           const topPart = topWrapperTopOffset + 121;
           const spaceForTooltip = checkboxTopOffset - topPart;
+
           if (
             (walletNotSelectable && spaceForTooltip < 85) ||
             (invalidWalletName && spaceForTooltip < 27)
@@ -203,13 +205,16 @@ export default class WalletSelectImportDialog extends Component<Props> {
       statusIcon = (
         <Checkbox
           onChange={() => {
-            onToggleWalletImportSelection({ index: wallet.index });
+            onToggleWalletImportSelection({
+              index: wallet.index,
+            });
           }}
           checked={wallet.import.status === WalletImportStatuses.PENDING}
           disabled={disabled}
           skin={CheckboxSkin}
         />
       );
+
       if (disabled) {
         statusIcon = (
           <PopOver
@@ -245,15 +250,15 @@ export default class WalletSelectImportDialog extends Component<Props> {
         />
       );
     }
+
     return statusIcon;
   };
-
   getInlineEditingSmallInput = (
     wallet: ExportedByronWallet,
     validationMessage: string,
     placeholderMessage: string,
-    nameValidator: Function,
-    onWalletNameChange: Function
+    nameValidator: (...args: Array<any>) => any,
+    onWalletNameChange: (...args: Array<any>) => any
   ) => {
     return (
       <InlineEditingSmallInput
@@ -292,15 +297,14 @@ export default class WalletSelectImportDialog extends Component<Props> {
       onWalletNameChange,
       nameValidator,
     } = this.props;
-
     const title = intl.formatMessage(messages.title);
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabel)
     ) : (
       <LoadingSpinner />
     );
-
     const linkLabel = intl.formatMessage(messages.linkLabel);
+
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
@@ -310,28 +314,24 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const walletsWithoutNames = exportedWallets.filter(
       ({ hasName }: ExportedByronWallet) => !hasName
     );
-
     let previousWalletId = '';
     let rowNumber = 1;
-
     const anyWalletWithoutName = walletsWithoutNames.filter(
       (item) =>
         (!item.name || item.name.length < 3) &&
         item.import.status === WalletImportStatuses.PENDING
     );
-
     const isDisabled =
       isSubmitting || anyWalletWithoutName.length || !pendingImportWalletsCount;
-
     const buttonClasses = classNames(styles.actionButton, [
       isDisabled ? styles.disabled : null,
     ]);
-
     return (
       <Dialog
         className={styles.dialog}
         closeOnOverlayClick={false}
         onClose={onClose}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
@@ -383,10 +383,12 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     </div>
                   </div>
                 );
+
                 if (!isDuplicate) {
                   previousWalletId = wallet.id;
                   rowNumber++;
                 }
+
                 return walletRow;
               })}
 
@@ -452,10 +454,12 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     </div>
                   </div>
                 );
+
                 if (!isDuplicate) {
                   previousWalletId = wallet.id;
                   rowNumber++;
                 }
+
                 return walletRow;
               })}
             </div>
@@ -490,3 +494,5 @@ export default class WalletSelectImportDialog extends Component<Props> {
     );
   }
 }
+
+export default WalletSelectImportDialog;

@@ -1,4 +1,3 @@
-// @flow
 import { action, observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { includes, camelCase } from 'lodash';
@@ -45,28 +44,38 @@ import {
 } from '../config/profileConfig';
 
 export default class ProfileStore extends Store {
-  @observable systemLocale: Locale = LOCALES.english;
-  @observable systemNumberFormat: string = NUMBER_OPTIONS[0].value;
-  @observable systemDateFormatEnglish: string = DATE_ENGLISH_OPTIONS[0].value;
-  @observable systemDateFormatJapanese: string = DATE_JAPANESE_OPTIONS[0].value;
-  @observable systemTimeFormat: string = TIME_OPTIONS[0].value;
-
-  @observable getProfileLocaleRequest: Request<string> = new Request(
+  @observable
+  systemLocale: Locale = LOCALES.english;
+  @observable
+  systemNumberFormat: string = NUMBER_OPTIONS[0].value;
+  @observable
+  systemDateFormatEnglish: string = DATE_ENGLISH_OPTIONS[0].value;
+  @observable
+  systemDateFormatJapanese: string = DATE_JAPANESE_OPTIONS[0].value;
+  @observable
+  systemTimeFormat: string = TIME_OPTIONS[0].value;
+  @observable
+  getProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.getUserLocale
   );
-  @observable setProfileLocaleRequest: Request<string> = new Request(
+  @observable
+  setProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.setUserLocale
   );
-  @observable getProfileNumberFormatRequest: Request<string> = new Request(
+  @observable
+  getProfileNumberFormatRequest: Request<string> = new Request(
     this.api.localStorage.getUserNumberFormat
   );
-  @observable setProfileNumberFormatRequest: Request<string> = new Request(
+  @observable
+  setProfileNumberFormatRequest: Request<string> = new Request(
     this.api.localStorage.setUserNumberFormat
   );
-  @observable getProfileDateFormatEnglishRequest: Request<string> = new Request(
+  @observable
+  getProfileDateFormatEnglishRequest: Request<string> = new Request(
     this.api.localStorage.getUserDateFormatEnglish
   );
-  @observable setProfileDateFormatEnglishRequest: Request<string> = new Request(
+  @observable
+  setProfileDateFormatEnglishRequest: Request<string> = new Request(
     this.api.localStorage.setUserDateFormatEnglish
   );
   @observable
@@ -77,16 +86,20 @@ export default class ProfileStore extends Store {
   setProfileDateFormatJapaneseRequest: Request<string> = new Request(
     this.api.localStorage.setUserDateFormatJapanese
   );
-  @observable getProfileTimeFormatRequest: Request<string> = new Request(
+  @observable
+  getProfileTimeFormatRequest: Request<string> = new Request(
     this.api.localStorage.getUserTimeFormat
   );
-  @observable setProfileTimeFormatRequest: Request<string> = new Request(
+  @observable
+  setProfileTimeFormatRequest: Request<string> = new Request(
     this.api.localStorage.setUserTimeFormat
   );
-  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(
+  @observable
+  getTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.getTermsOfUseAcceptance
   );
-  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(
+  @observable
+  setTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
@@ -97,21 +110,31 @@ export default class ProfileStore extends Store {
   setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.setDataLayerMigrationAcceptance
   );
-  @observable getThemeRequest: Request<string> = new Request(
+  @observable
+  getThemeRequest: Request<string> = new Request(
     this.api.localStorage.getUserTheme
   );
-  @observable setThemeRequest: Request<string> = new Request(
+  @observable
+  setThemeRequest: Request<string> = new Request(
     this.api.localStorage.setUserTheme
   );
-  @observable error: ?LocalizableError = null;
-  @observable logFiles: LogFiles = {};
-  @observable compressedLogsFilePath: ?string = null;
-  @observable compressedLogsStatus: CompressedLogStatus = {};
-  @observable desktopDirectoryPath: string = '';
-  @observable isSubmittingBugReport: boolean = false;
-  @observable isInitialScreen: boolean = false;
-  /* eslint-enable max-len */
+  @observable
+  error: LocalizableError | null | undefined = null;
+  @observable
+  // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
+  logFiles: LogFiles = {};
+  @observable
+  compressedLogsFilePath: string | null | undefined = null;
+  @observable
+  compressedLogsStatus: CompressedLogStatus = {};
+  @observable
+  desktopDirectoryPath = '';
+  @observable
+  isSubmittingBugReport = false;
+  @observable
+  isInitialScreen = false;
 
+  /* eslint-enable max-len */
   setup() {
     const { profile: profileActions } = this.actions;
     profileActions.finishInitialScreenSettings.listen(
@@ -128,18 +151,20 @@ export default class ProfileStore extends Store {
     profileActions.downloadLogs.listen(this._downloadLogs);
     profileActions.downloadLogsSuccess.listen(this._toggleDisableDownloadLogs);
     this.actions.app.initAppEnvironment.listen(() => {});
-
     this.registerReactions([
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
-      this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
+      this._redirectToTermsOfUseScreenIfTermsNotAccepted, // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
+
     this._getTermsOfUseAcceptance();
+
     this._getDataLayerMigrationAcceptance();
+
     this._getDesktopDirectoryPath();
+
     this._getSystemLocale();
   }
 
@@ -148,24 +173,31 @@ export default class ProfileStore extends Store {
       ...DEFAULT_NUMBER_FORMAT,
       ...NUMBER_FORMATS[this.currentNumberFormat],
     };
-    BigNumber.config({ FORMAT });
+    BigNumber.config({
+      FORMAT,
+    });
   };
 
-  @computed get currentLocale(): Locale {
+  @computed
+  get currentLocale(): Locale {
     return requestGetterLocale(this.getProfileLocaleRequest, this.systemLocale);
   }
 
-  @computed get hasLoadedCurrentLocale(): boolean {
+  @computed
+  get hasLoadedCurrentLocale(): boolean {
     return hasLoadedRequest(this.getProfileLocaleRequest);
   }
 
-  @computed get isCurrentLocaleSet(): boolean {
+  @computed
+  get isCurrentLocaleSet(): boolean {
     return isRequestSet(this.getProfileLocaleRequest);
   }
 
-  @computed get currentTheme(): string {
+  @computed
+  get currentTheme(): string {
     // Default theme handling
     let systemValue;
+
     if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
     } else {
@@ -173,158 +205,180 @@ export default class ProfileStore extends Store {
         ? THEMES.DARK_CARDANO
         : THEMES.LIGHT_BLUE;
     }
+
     return requestGetter(this.getThemeRequest, systemValue);
   }
 
-  @computed get isCurrentThemeSet(): boolean {
+  @computed
+  get isCurrentThemeSet(): boolean {
     return isRequestSet(this.getThemeRequest);
   }
 
-  @computed get hasLoadedCurrentTheme(): boolean {
+  @computed
+  get hasLoadedCurrentTheme(): boolean {
     return hasLoadedRequest(this.getThemeRequest);
   }
 
-  @computed get currentNumberFormat(): string {
+  @computed
+  get currentNumberFormat(): string {
     return requestGetter(
       this.getProfileNumberFormatRequest,
       this.systemNumberFormat
     );
   }
 
-  @computed get currentDateFormat(): string {
+  @computed
+  get currentDateFormat(): string {
     return this.currentLocale === 'en-US'
       ? this.currentDateEnglishFormat
       : this.currentDateJapaneseFormat;
   }
 
-  @computed get currentDateEnglishFormat(): string {
+  @computed
+  get currentDateEnglishFormat(): string {
     return requestGetter(
       this.getProfileDateFormatEnglishRequest,
       this.systemDateFormatEnglish
     );
   }
 
-  @computed get currentDateJapaneseFormat(): string {
+  @computed
+  get currentDateJapaneseFormat(): string {
     return requestGetter(
       this.getProfileDateFormatJapaneseRequest,
       this.systemDateFormatJapanese
     );
   }
 
-  @computed get currentTimeFormat(): string {
+  @computed
+  get currentTimeFormat(): string {
     return requestGetter(
       this.getProfileTimeFormatRequest,
       this.systemTimeFormat
     );
   }
 
-  @computed get currentTimeFormatShort(): string {
+  @computed
+  get currentTimeFormatShort(): string {
     return this.currentTimeFormat.replace(':ss', '');
   }
 
-  @computed get termsOfUse(): string {
+  @computed
+  get termsOfUse(): string {
     return require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`);
   }
 
-  @computed get hasLoadedTermsOfUseAcceptance(): boolean {
+  @computed
+  get hasLoadedTermsOfUseAcceptance(): boolean {
     return (
       this.getTermsOfUseAcceptanceRequest.wasExecuted &&
       this.getTermsOfUseAcceptanceRequest.result !== null
     );
   }
 
-  @computed get areTermsOfUseAccepted(): boolean {
+  @computed
+  get areTermsOfUseAccepted(): boolean {
+    // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
-  @computed get hasLoadedDataLayerMigrationAcceptance(): boolean {
+  @computed
+  get hasLoadedDataLayerMigrationAcceptance(): boolean {
     return (
       this.getDataLayerMigrationAcceptanceRequest.wasExecuted &&
       this.getDataLayerMigrationAcceptanceRequest.result !== null
     );
   }
 
-  @computed get isDataLayerMigrationAccepted(): boolean {
+  @computed
+  get isDataLayerMigrationAccepted(): boolean {
+    // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
 
-  @computed get isProfilePage(): boolean {
+  @computed
+  get isProfilePage(): boolean {
     const { currentRoute } = this.stores.app;
     return includes(ROUTES.PROFILE, currentRoute);
   }
 
-  @computed get isSettingsPage(): boolean {
+  @computed
+  get isSettingsPage(): boolean {
     const { currentRoute } = this.stores.app;
     return includes(ROUTES.SETTINGS, currentRoute);
   }
 
   _finishInitialScreenSettings = action(() => {
     this._consolidateUserSettings();
+
     this.isInitialScreen = false;
   });
-
   _consolidateUserSettings = () => {
     PROFILE_SETTINGS.forEach((param: string) => {
-      this._updateUserLocalSetting({ param });
+      this._updateUserLocalSetting({
+        param,
+      });
     });
   };
-
   _updateUserLocalSetting = async ({
     param,
     value,
   }: {
-    param: string,
-    value?: string,
+    param: string;
+    value?: string;
   }) => {
     // In case `value` is missing, it consolidates in the localstorage the default value
     const consolidatedValue =
-      value || (this: any)[camelCase(['current', param])];
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string[]' is not assignable to p... Remove this comment to see the full error message
+      value || (this as any)[camelCase(['current', param])];
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'set' does not exist on type 'LocalizedRe... Remove this comment to see the full error message
     const { set, get } = getRequestKeys(param, this.currentLocale);
-    await (this: any)[set].execute(consolidatedValue);
-    await (this: any)[get].execute();
+    await (this as any)[set].execute(consolidatedValue);
+    await (this as any)[get].execute();
+
     if (param === 'numberFormat') {
       // Force re-rendering of the sidebar in order to apply new number format
       this.stores.wallets.refreshWalletsData();
     }
   };
-
   _updateTheme = async ({ theme }: { theme: string }) => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setThemeRequest.execute(theme);
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getThemeRequest.execute();
   };
-
   _acceptTermsOfUse = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setTermsOfUseAcceptanceRequest.execute();
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
     await enableApplicationMenuNavigationChannel.send();
   };
-
   _getTermsOfUseAcceptance = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
+
     if (this.getTermsOfUseAcceptanceRequest.result) {
       await enableApplicationMenuNavigationChannel.send();
     }
   };
-
   _acceptDataLayerMigration = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setDataLayerMigrationAcceptanceRequest.execute();
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
-
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();
   };
-
   _getDesktopDirectoryPath = async () => {
     this._onReceiveDesktopDirectoryPath(
       await getDesktopDirectoryPathChannel.request()
     );
   };
-
   _getSystemLocale = async () => {
     this._onReceiveSystemLocale(await getSystemLocaleChannel.request());
   };
-
   _redirectToInitialSettingsIfNoLocaleSet = () => {
     if (
       (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) ||
@@ -338,10 +392,10 @@ export default class ProfileStore extends Store {
       });
     }
   };
-
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
     const termsOfUseNotAccepted =
       this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
+
     if (
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
@@ -352,15 +406,14 @@ export default class ProfileStore extends Store {
       });
     }
   };
-
   _isOnTermsOfUsePage = () =>
     this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
-
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotAccepted =
       this.hasLoadedDataLayerMigrationAcceptance &&
       !this.isDataLayerMigrationAccepted;
+
     if (
       isConnected &&
       this.isCurrentLocaleSet &&
@@ -380,13 +433,11 @@ export default class ProfileStore extends Store {
       }
     }
   };
-
   _redirectToMainUiAfterTermsAreAccepted = () => {
     if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
       this._redirectToRoot();
     }
   };
-
   _redirectToMainUiAfterDataLayerMigrationIsAccepted = () => {
     if (
       this.isDataLayerMigrationAccepted &&
@@ -395,32 +446,34 @@ export default class ProfileStore extends Store {
       this._redirectToRoot();
     }
   };
-
   _isOnDataLayerMigrationPage = () =>
     this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
-
   _redirectToRoot = () => {
-    this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
+    this.actions.router.goToRoute.trigger({
+      route: ROUTES.ROOT,
+    });
   };
-
   _setLogFiles = action((files: LogFiles) => {
     this.logFiles = files;
   });
-
   _getLogs = async () => {
     const { isDownloading } = this.compressedLogsStatus;
     await this._setStateSnapshotLog();
     const logs = await getLogsChannel.request();
+
     this._setLogFiles(logs);
+
     if (isDownloading || this.isSubmittingBugReport) {
-      this._compressLogs({ logs });
+      this._compressLogs({
+        logs,
+      });
     }
   };
-
   _compressLogs = action(async ({ logs }) => {
     const {
       fileName = generateFileNameWithTimestamp(),
     } = this.compressedLogsStatus;
+
     try {
       const outputPath = await compressLogsChannel.request({
         logs: toJS(logs),
@@ -429,8 +482,13 @@ export default class ProfileStore extends Store {
       runInAction('ProfileStore::_compressLogs:success', () => {
         this.compressedLogsFilePath = outputPath;
         const { isDownloading, destination } = this.compressedLogsStatus;
+
         if (isDownloading) {
-          this._downloadLogs({ destination, fileName });
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ destination: string; fileName:... Remove this comment to see the full error message
+          this._downloadLogs({
+            destination,
+            fileName,
+          });
         }
       });
     } catch (error) {
@@ -440,7 +498,6 @@ export default class ProfileStore extends Store {
       });
     }
   });
-
   _getLogsAndCompress = action(async () => {
     this.compressedLogsStatus = {
       fileName: generateFileNameWithTimestamp(),
@@ -448,7 +505,6 @@ export default class ProfileStore extends Store {
     this.isSubmittingBugReport = true;
     await this._getLogs();
   });
-
   _downloadLogs = action(async ({ fileName, destination, fresh }) => {
     this.compressedLogsStatus = {
       isDownloading: true,
@@ -464,6 +520,7 @@ export default class ProfileStore extends Store {
           destinationPath: destination,
         });
         this.actions.profile.downloadLogsSuccess.trigger(false);
+
         this._reset();
       } catch (error) {
         throw error;
@@ -473,10 +530,10 @@ export default class ProfileStore extends Store {
       this._getLogs();
     }
   });
-
   // Collect all relevant state snapshot params and send them for log file creation
   _setStateSnapshotLog = async () => {
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('ProfileStore: Requesting state snapshot log file creation');
       const { networkStatus } = this.stores;
       const {
@@ -495,7 +552,6 @@ export default class ProfileStore extends Store {
         localTip,
         networkTip,
       } = networkStatus;
-
       const {
         build,
         network,
@@ -514,7 +570,6 @@ export default class ProfileStore extends Store {
         platformVersion,
         ram,
       } = this.environment;
-
       const systemInfo = {
         platform: os,
         platformVersion,
@@ -522,7 +577,6 @@ export default class ProfileStore extends Store {
         ram: formattedBytesToSize(ram),
         availableDiskSpace: diskSpaceAvailable,
       };
-
       const coreInfo = {
         daedalusVersion: version,
         daedalusBuildNumber: build,
@@ -537,7 +591,6 @@ export default class ProfileStore extends Store {
         cardanoNetwork: network,
         daedalusStateDirectoryPath: stateDirectoryPath,
       };
-
       const stateSnapshotData: StateSnapshotLogParams = {
         systemInfo,
         coreInfo,
@@ -555,13 +608,18 @@ export default class ProfileStore extends Store {
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
         localTip: localTip
-          ? { epoch: localTip.epoch, slot: localTip.slot }
+          ? {
+              epoch: localTip.epoch,
+              slot: localTip.slot,
+            }
           : localTip,
         networkTip: networkTip
-          ? { epoch: networkTip.epoch, slot: networkTip.slot }
+          ? {
+              epoch: networkTip.epoch,
+              slot: networkTip.slot,
+            }
           : networkTip,
       };
-
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
       logger.error('ProfileStore: State snapshot log file creation failed', {
@@ -569,7 +627,6 @@ export default class ProfileStore extends Store {
       });
     }
   };
-
   _toggleDisableDownloadLogs = action(
     async ({ isDownloadNotificationVisible }) => {
       this.actions.app.setIsDownloadingLogs.trigger(
@@ -577,16 +634,16 @@ export default class ProfileStore extends Store {
       );
     }
   );
-
-  @action _onReceiveSystemLocale = (systemLocale: Locale) => {
+  @action
+  _onReceiveSystemLocale = (systemLocale: Locale) => {
     this.systemLocale = systemLocale;
   };
-
-  @action _onReceiveDesktopDirectoryPath = (desktopDirectoryPath: string) => {
+  @action
+  _onReceiveDesktopDirectoryPath = (desktopDirectoryPath: string) => {
     this.desktopDirectoryPath = desktopDirectoryPath;
   };
-
-  @action _reset = () => {
+  @action
+  _reset = () => {
     this.error = null;
     this.compressedLogsFilePath = null;
     this.compressedLogsStatus = {};

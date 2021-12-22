@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -13,15 +12,16 @@ import {
 } from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CurrentPhase.scss' or its co... Remove this comment to see the full error message
 import styles from './CurrentPhase.scss';
 import { messages } from './TallyingPhase.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  intl: Intl,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  intl: Intl;
 };
 
 function TallyingPhase({
@@ -35,17 +35,14 @@ function TallyingPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-
   const endDated = formattedDateTime(VOTING_CAST_END_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-
   const resultsDate = formattedDateTime(VOTING_RESULTS_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>

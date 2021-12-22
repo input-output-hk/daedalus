@@ -1,6 +1,6 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -8,24 +8,26 @@ import { IS_BYRON_WALLET_MIGRATION_ENABLED } from '../../config/walletsConfig';
 import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TopBar.scss' or its correspo... Remove this comment to see the full error message
 import styles from './TopBar.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/header-log... Remove this comment to see the full error message
 import headerLogo from '../../assets/images/header-logo.inline.svg';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 
 type Props = {
-  onLeftIconClick?: ?Function,
-  leftIcon?: ?string,
-  children?: ?Node,
-  activeWallet?: ?Wallet,
-  onTransferFunds?: Function,
-  onWalletAdd?: Function,
-  hasRewardsWallets?: boolean,
-  onLearnMore?: Function,
-  isShelleyActivated: boolean,
+  onLeftIconClick?: ((...args: Array<any>) => any) | null | undefined;
+  leftIcon?: string | null | undefined;
+  children?: Node | null | undefined;
+  activeWallet?: Wallet | null | undefined;
+  onTransferFunds?: (...args: Array<any>) => any;
+  onWalletAdd?: (...args: Array<any>) => any;
+  hasRewardsWallets?: boolean;
+  onLearnMore?: (...args: Array<any>) => any;
+  isShelleyActivated: boolean;
 };
 
 @observer
-export default class TopBar extends Component<Props> {
+class TopBar extends Component<Props> {
   render() {
     const {
       onLeftIconClick,
@@ -42,7 +44,6 @@ export default class TopBar extends Component<Props> {
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
-
     const hasLegacyNotification =
       activeWallet &&
       activeWallet.isLegacy &&
@@ -50,14 +51,11 @@ export default class TopBar extends Component<Props> {
       activeWallet.amount.gt(0) &&
       !activeWallet.isRestoring &&
       ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
-
     const onTransferFundsFn =
       onTransferFunds && activeWallet
         ? () => onTransferFunds(activeWallet.id)
         : () => {};
-
     const isRestoreActive = activeWallet ? activeWallet.isRestoring : false;
-
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
         <span className={styles.walletName}>
@@ -78,11 +76,9 @@ export default class TopBar extends Component<Props> {
         </span>
       </span>
     ) : null;
-
     const leftIconSVG = leftIcon && (
       <SVGInline svg={leftIcon} className={styles.sidebarIcon} />
     );
-
     return (
       <header>
         <div className={topBarStyles}>
@@ -113,3 +109,5 @@ export default class TopBar extends Component<Props> {
     );
   }
 }
+
+export default TopBar;

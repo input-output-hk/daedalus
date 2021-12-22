@@ -1,9 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CancelTransactionConfirmatio... Remove this comment to see the full error message
 import styles from './CancelTransactionConfirmationDialog.scss';
 
 const messages = defineMessages({
@@ -40,15 +40,14 @@ const messages = defineMessages({
       '"Confirm" button label for the pending transaction cancellation confirmation dialog.',
   },
 });
-
 type Props = {
-  isSubmitting: boolean,
-  onConfirm: Function,
-  onCancel: Function,
+  isSubmitting: boolean;
+  onConfirm: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
 };
 
 @observer
-export default class CancelTransactionConfirmationDialog extends Component<Props> {
+class CancelTransactionConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -56,16 +55,13 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
   render() {
     const { intl } = this.context;
     const { isSubmitting, onConfirm, onCancel } = this.props;
-
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
-
     const confirmButtonClasses = classnames([
       'confirmButton',
       'attention',
       styles.confirmButton,
       isSubmitting ? styles.isSubmitting : null,
     ]);
-
     const actions = [
       {
         className: 'cancelButton',
@@ -81,7 +77,6 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
         onClick: onConfirm,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -98,3 +93,5 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
     );
   }
 }
+
+export default CancelTransactionConfirmationDialog;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
@@ -9,8 +8,10 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
 import { TransactionMetadataView } from './metadata/TransactionMetadataView';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Transaction.scss' or its cor... Remove this comment to see the full error message
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collaps... Remove this comment to see the full error message
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import {
   TransactionStates,
@@ -29,7 +30,6 @@ import { filterAssets } from '../../../utils/assets';
 import { DiscreetWalletAmount } from '../../../features/discreet-mode';
 
 /* eslint-disable consistent-return */
-
 const messages = defineMessages({
   card: {
     id: 'wallet.transaction.type.card',
@@ -208,7 +208,6 @@ const messages = defineMessages({
     description: 'Link to support article for removing a failed transaction',
   },
 });
-
 const stateTranslations = defineMessages({
   [TransactionStates.OK]: {
     id: 'wallet.transaction.state.confirmed',
@@ -226,7 +225,6 @@ const stateTranslations = defineMessages({
     description: 'Transaction state "failed"',
   },
 });
-
 const headerStateTranslations = defineMessages({
   [TransactionStates.OK]: {
     id: 'wallet.transaction.state.confirmedHeading',
@@ -244,40 +242,36 @@ const headerStateTranslations = defineMessages({
     description: 'Transaction state "failed"',
   },
 });
-
 type Props = {
-  data: WalletTransaction,
-  deletePendingTransaction: Function,
-  state: TransactionState,
-  isExpanded: boolean,
-  isRestoreActive: boolean,
-  isLastInList: boolean,
-  isShowingMetadata: boolean,
-  formattedWalletAmount: Function,
-  onDetailsToggled: ?Function,
-  onOpenExternalLink: Function,
-  onShowMetadata: () => void,
-  getUrlByType: Function,
-  currentTimeFormat: string,
-  walletId: string,
-  isDeletingTransaction: boolean,
-  assetTokens: Array<AssetToken>,
-  hasAssetsEnabled: boolean,
-  isInternalAddress: Function,
-  isLoadingAssets: boolean,
-  onCopyAssetParam: Function,
+  data: WalletTransaction;
+  deletePendingTransaction: (...args: Array<any>) => any;
+  state: TransactionState;
+  isExpanded: boolean;
+  isRestoreActive: boolean;
+  isLastInList: boolean;
+  isShowingMetadata: boolean;
+  formattedWalletAmount: (...args: Array<any>) => any;
+  onDetailsToggled: ((...args: Array<any>) => any) | null | undefined;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onShowMetadata: () => void;
+  getUrlByType: (...args: Array<any>) => any;
+  currentTimeFormat: string;
+  walletId: string;
+  isDeletingTransaction: boolean;
+  assetTokens: Array<AssetToken>;
+  hasAssetsEnabled: boolean;
+  isInternalAddress: (...args: Array<any>) => any;
+  isLoadingAssets: boolean;
+  onCopyAssetParam: (...args: Array<any>) => any;
 };
-
 type State = {
-  showConfirmationDialog: boolean,
-  showUnmoderatedMetadata: boolean,
+  showConfirmationDialog: boolean;
+  showUnmoderatedMetadata: boolean;
 };
-
 export default class Transaction extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     showConfirmationDialog: false,
     showUnmoderatedMetadata: false,
@@ -305,52 +299,50 @@ export default class Transaction extends Component<Props, State> {
     const supportArticleUrl = intl.formatMessage(messages.supportArticleUrl);
     return onOpenExternalLink(supportArticleUrl);
   };
-
   deletePendingTransaction = async () => {
     const { data, walletId } = this.props;
     const { id: transactionId, state } = data;
+
     if (
       state !== TransactionStates.PENDING &&
       state !== TransactionStates.FAILED
     ) {
       return this.hideConfirmationDialog();
     }
+
     await this.props.deletePendingTransaction({
       walletId,
       transactionId,
     });
     return this.hideConfirmationDialog();
   };
-
   showConfirmationDialog = () => {
-    this.setState({ showConfirmationDialog: true });
+    this.setState({
+      showConfirmationDialog: true,
+    });
   };
-
   hideConfirmationDialog = () => {
-    this.setState({ showConfirmationDialog: false });
+    this.setState({
+      showConfirmationDialog: false,
+    });
   };
-
   getTimePending = (txnDate: Date): number => {
     // right now (milliseconds) minus txn created_at date (milliseconds)
     const NOW = moment().valueOf();
     const TXN_CREATED_AT = moment(txnDate).valueOf();
     return NOW - TXN_CREATED_AT;
   };
-
   hasExceededPendingTimeLimit = (): boolean => {
     const {
       data: { date },
       isRestoreActive,
       state,
     } = this.props;
-
     const isPendingTxn = state === TransactionStates.PENDING;
     if (!isPendingTxn || isRestoreActive || !date) return false;
-
     const TOTAL_TIME_PENDING = this.getTimePending(date);
     return TOTAL_TIME_PENDING > PENDING_TIME_LIMIT;
   };
-
   renderCancelPendingTxnContent = () => {
     const { data } = this.props;
     const { state } = data;
@@ -389,17 +381,15 @@ export default class Transaction extends Component<Props, State> {
         </Fragment>
       );
     }
+
     return null;
   };
-
   renderTxnStateTag = () => {
     const { intl } = this.context;
     const { state } = this.props;
-
     const styleLabel = this.hasExceededPendingTimeLimit()
       ? `${state}WarningLabel`
       : `${state}Label`;
-
     return (
       <div className={styles[styleLabel]}>
         {intl.formatMessage(stateTranslations[state])}
@@ -418,19 +408,21 @@ export default class Transaction extends Component<Props, State> {
       isInternalAddress,
       hasAssetsEnabled,
     } = this.props;
+
     if (!hasAssetsEnabled) {
       return [];
     }
+
     return filterAssets(assetTokens, data.type, isInternalAddress);
   }
 
-  includesUnresolvedAddresses = (addresses: Array<?string>) =>
+  includesUnresolvedAddresses = (addresses: Array<string | null | undefined>) =>
     includes(addresses, null);
-
-  addressesList = (addresses: Array<?string>): any => {
+  addressesList = (addresses: Array<string | null | undefined>): any => {
     const { intl } = this.context;
     const { onOpenExternalLink, getUrlByType, data } = this.props;
     const type = this.hasAssets ? data.type : null;
+
     if (addresses && addresses.length > 0) {
       const hasUnresolvedAddresses = this.includesUnresolvedAddresses(
         addresses
@@ -453,8 +445,7 @@ export default class Transaction extends Component<Props, State> {
         </div>
       ) : (
         addresses.map((address, addressIndex) => (
-          <div
-            // eslint-disable-next-line react/no-array-index-key
+          <div // eslint-disable-next-line react/no-array-index-key
             key={`${data.id}-from-${address || ''}-${addressIndex}`}
             className={styles.addressRow}
           >
@@ -471,6 +462,7 @@ export default class Transaction extends Component<Props, State> {
         ))
       );
     }
+
     return <span>{intl.formatMessage(messages.noInputAddressesLabel)}</span>;
   };
 
@@ -489,31 +481,25 @@ export default class Transaction extends Component<Props, State> {
       isLoadingAssets,
       onCopyAssetParam,
     } = this.props;
-
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
-
     const componentStyles = classNames([
       styles.component,
       isExpanded ? 'Transaction_expanded' : null,
     ]);
-
     const contentStyles = classNames([
       styles.content,
       isLastInList ? styles.last : null,
       isExpanded ? styles.contentExpanded : null,
     ]);
-
     const detailsStyles = classNames([
       styles.details,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
     ]);
-
     const arrowStyles = classNames([
       styles.arrow,
       isExpanded ? styles.arrowExpanded : null,
     ]);
-
     const transactionsType = this.hasAssets
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.adaUnit);
@@ -525,15 +511,16 @@ export default class Transaction extends Component<Props, State> {
       switch (txState) {
         case TransactionStates.PENDING:
           return TransactionStates.PENDING;
+
         case TransactionStates.FAILED:
           return TransactionStates.FAILED;
+
         default:
           return data.type;
       }
     };
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
-
     const assetsSeparatorStyles = classNames([
       styles.assetsSeparator,
       isExpanded ? styles.expanded : null,
@@ -542,7 +529,6 @@ export default class Transaction extends Component<Props, State> {
     const assetsSeparatorCalculatedHeight = this.assetsList.length
       ? assetsSeparatorBasicHeight * this.assetsList.length - 15
       : assetsSeparatorBasicHeight;
-
     return (
       <Fragment>
         <div
@@ -561,7 +547,9 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.header}>
                 <div className={styles.title}>
                   {data.type === TransactionTypes.EXPEND
-                    ? intl.formatMessage(messages.sent, { transactionsType })
+                    ? intl.formatMessage(messages.sent, {
+                        transactionsType,
+                      })
                     : intl.formatMessage(messages.received, {
                         transactionsType,
                       })}
@@ -579,7 +567,10 @@ export default class Transaction extends Component<Props, State> {
 
               <div className={styles.details}>
                 <div className={styles.type}>
-                  {intl.formatMessage(messages.type, { typeOfTransaction })},{' '}
+                  {intl.formatMessage(messages.type, {
+                    typeOfTransaction,
+                  })}
+                  ,{' '}
                   {moment(data.date)
                     .locale(intl.locale)
                     .format(currentTimeFormat)}
@@ -604,8 +595,7 @@ export default class Transaction extends Component<Props, State> {
                   <>
                     <h2>{intl.formatMessage(messages.fromRewards)}</h2>
                     {data.addresses.withdrawals.map((address, addressIndex) => (
-                      <div
-                        // eslint-disable-next-line react/no-array-index-key
+                      <div // eslint-disable-next-line react/no-array-index-key
                         key={`${data.id}-to-${address}-${addressIndex}`}
                         className={styles.addressRow}
                       >
@@ -684,8 +674,7 @@ export default class Transaction extends Component<Props, State> {
                       </div>
                     ) : (
                       this.assetsList.map((asset, assetIndex) => (
-                        <div
-                          // eslint-disable-next-line react/no-array-index-key
+                        <div // eslint-disable-next-line react/no-array-index-key
                           key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
                           className={styles.assetContainer}
                         >
@@ -760,7 +749,9 @@ export default class Transaction extends Component<Props, State> {
                           )}
                           onClick={(e) => {
                             e.preventDefault();
-                            this.setState({ showUnmoderatedMetadata: true });
+                            this.setState({
+                              showUnmoderatedMetadata: true,
+                            });
                           }}
                         />
                       </>

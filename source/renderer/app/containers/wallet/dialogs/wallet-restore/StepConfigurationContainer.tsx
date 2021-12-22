@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import ConfigurationDialog from '../../../../components/wallet/wallet-restore/ConfigurationDialog';
@@ -10,14 +9,12 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class ConfigurationDialogContainer extends Component<Props> {
+class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
-
   handleContinue = () => {
     this.props.actions.wallets.restoreWallet.trigger();
   };
-
-  handleChange = (param: string, field: Object) =>
+  handleChange = (param: string, field: Record<string, any>) =>
     this.props.actions.wallets.restoreWalletSetConfig.trigger({
       param,
       value: field.value,
@@ -53,3 +50,5 @@ export default class ConfigurationDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default ConfigurationDialogContainer;

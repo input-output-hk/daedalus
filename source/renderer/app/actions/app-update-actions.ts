@@ -1,7 +1,4 @@
-// @flow
-import Action from './lib/Action';
-
-// ======= APP UPDATE ACTIONS =======
+import Action from './lib/Action'; // ======= APP UPDATE ACTIONS =======
 
 export default class AppUpdateActions {
   installUpdate: Action<any> = new Action();

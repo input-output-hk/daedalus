@@ -1,10 +1,9 @@
-// @flow
 import { defineMessages } from 'react-intl';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';
 
 export const getMessages = () => {
-  const messages: { [string]: ReactIntlMessage } = defineMessages({
+  const messages: Record<string, ReactIntlMessage> = defineMessages({
     title: {
       id: 'staking.delegationSetup.chooseStakePool.step.dialog.title',
       defaultMessage: '!!!Choose a stake pool',

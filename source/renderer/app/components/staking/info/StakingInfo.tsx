@@ -1,9 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingInfo.scss' or its cor... Remove this comment to see the full error message
 import styles from './StakingInfo.scss';
 
 const messages = defineMessages({
@@ -37,30 +37,30 @@ const messages = defineMessages({
     description: '"Learn more" link URL in the staking info page',
   },
 });
-
 type Props = {
-  percentage: number,
-  onLearnMoreClick: Function,
+  percentage: number;
+  onLearnMoreClick: (...args: Array<any>) => any;
 };
-type State = { progressLabelClassName: string };
+type State = {
+  progressLabelClassName: string;
+};
 
 @observer
-export default class StakingInfo extends Component<Props, State> {
+class StakingInfo extends Component<Props, State> {
   static defaultProps = {
     percentage: 0,
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   progressRef: any;
 
   constructor(props: Props) {
     super(props);
-
     this.progressRef = React.createRef();
-    this.state = { progressLabelClassName: styles.progressLabelWhite };
+    this.state = {
+      progressLabelClassName: styles.progressLabelWhite,
+    };
   }
 
   componentDidMount() {
@@ -82,8 +82,9 @@ export default class StakingInfo extends Component<Props, State> {
       progressComponent.clientWidth >= 50
         ? styles.progressLabelWhite
         : styles.progressLabel;
-
-    this.setState({ progressLabelClassName });
+    this.setState({
+      progressLabelClassName,
+    });
   };
 
   render() {
@@ -102,7 +103,9 @@ export default class StakingInfo extends Component<Props, State> {
           <div className={styles.description}>
             <FormattedMessage
               {...messages.percentage}
-              values={{ percentage }}
+              values={{
+                percentage,
+              }}
             />
           </div>
           <div className={styles.progressBar}>
@@ -110,7 +113,9 @@ export default class StakingInfo extends Component<Props, State> {
               <div
                 className={styles.progress}
                 ref={this.progressRef}
-                style={{ width: `${percentage}%` }}
+                style={{
+                  width: `${percentage}%`,
+                }}
               >
                 <div className={progressLabelClassName}>{percentage}%</div>
               </div>
@@ -118,6 +123,7 @@ export default class StakingInfo extends Component<Props, State> {
           </div>
           {showLearnMoreButton && (
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={styles.learnMoreButton}
               onClick={() =>
                 onLearnMoreClick(intl.formatMessage(messages.learnMoreLinkUrl))
@@ -134,3 +140,5 @@ export default class StakingInfo extends Component<Props, State> {
     );
   }
 }
+
+export default StakingInfo;

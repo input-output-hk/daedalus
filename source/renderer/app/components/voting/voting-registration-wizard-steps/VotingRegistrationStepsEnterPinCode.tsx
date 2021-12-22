@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
@@ -14,6 +13,7 @@ import {
   VOTING_REGISTRATION_PIN_CODE_LENGTH,
   NEXT_VOTING_FUND_NUMBER,
 } from '../../../config/votingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsEnter... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
@@ -61,21 +61,20 @@ const messages = defineMessages({
       'Label for continue button on the voting registration "enter pin code" step.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  onSetPinCode: Function,
+  onClose: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  onSetPinCode: (...args: Array<any>) => any;
 };
 
 @observer
-export default class VotingRegistrationStepsEnterPinCode extends Component<Props> {
+class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         pinCode: {
@@ -90,7 +89,6 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
               repeatPinCodeField.validate({
                 showErrors: isRepeatPinCodeFieldSet,
               });
-
               return [
                 isValidPinCode(value, VOTING_REGISTRATION_PIN_CODE_LENGTH),
                 this.context.intl.formatMessage(messages.invalidPinCode),
@@ -117,15 +115,17 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { pinCode } = form.values();
@@ -138,25 +138,24 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
-
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const pinCodeField = form.$('pinCode');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatPinCodeField = form.$('repeatPinCode');
     const pinCodeFieldProps = pinCodeField.bind();
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
-
     const actions = [
       {
         label: buttonLabel,
         onClick: this.submit,
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
         disabled: !form.isValid,
         primary: true,
       },
     ];
-
     return (
       <VotingRegistrationDialog
         onClose={() => {
@@ -170,7 +169,9 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER }}
+            values={{
+              nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+            }}
           />
         </p>
 
@@ -198,3 +199,5 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     );
   }
 }
+
+export default VotingRegistrationStepsEnterPinCode;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -10,6 +9,7 @@ import StakingEpochsCurrentEpochData from './StakingEpochsCurrentEpochData';
 import StakingEpochsPreviousEpochData from './StakingEpochsPreviousEpochData';
 import { SELECTED_EPOCH_OPTIONS, humanizeDurationToShort } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingEpochs.scss' or its c... Remove this comment to see the full error message
 import styles from './StakingEpochs.scss';
 
 const messages = defineMessages({
@@ -24,35 +24,32 @@ const messages = defineMessages({
     description: 'Headline for the previous epoch.',
   },
 });
-
 type Props = {
-  currentEpochName: string,
-  currentEpochData: EpochData,
-  currentEpochEndDateTime: string,
-  currentEpochProgress: number,
-  previousEpochName: string,
-  previousEpochData: EpochData,
-  isLoading: boolean,
+  currentEpochName: string;
+  currentEpochData: EpochData;
+  currentEpochEndDateTime: string;
+  currentEpochProgress: number;
+  previousEpochName: string;
+  previousEpochData: EpochData;
+  isLoading: boolean;
 };
-
 type State = {
-  selectedEpoch: string,
-  duration: string,
+  selectedEpoch: string;
+  duration: string;
 };
-
 const { CURRENT_EPOCH, PREVIOUS_EPOCH } = SELECTED_EPOCH_OPTIONS;
 
 @observer
-export default class StakingEpochs extends Component<Props, State> {
+class StakingEpochs extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isLoading: false,
   };
 
   constructor() {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-2 arguments, but got 0.
     super();
     this.state = {
       selectedEpoch: CURRENT_EPOCH,
@@ -63,14 +60,15 @@ export default class StakingEpochs extends Component<Props, State> {
   componentDidMount() {
     const { intl } = this.context;
     const { currentEpochEndDateTime } = this.props;
-
     this.setState({
       duration: humanizeDurationToShort(intl.locale, currentEpochEndDateTime),
     });
   }
 
   onSelectedEpochChange = (selectedEpoch: string) =>
-    this.setState({ selectedEpoch });
+    this.setState({
+      selectedEpoch,
+    });
 
   render() {
     const {
@@ -124,11 +122,15 @@ export default class StakingEpochs extends Component<Props, State> {
                 <div className={styles.progressBarContainer}>
                   <div
                     className={styles.progress}
-                    style={{ width: `${currentEpochProgress}%` }}
+                    style={{
+                      width: `${currentEpochProgress}%`,
+                    }}
                   >
                     <div
                       className={styles.overlapProgressLabel}
-                      style={{ left: `${10000 / currentEpochProgress}%` }}
+                      style={{
+                        left: `${10000 / currentEpochProgress}%`,
+                      }}
                     >
                       {duration}
                     </div>
@@ -158,3 +160,5 @@ export default class StakingEpochs extends Component<Props, State> {
     );
   }
 }
+
+export default StakingEpochs;

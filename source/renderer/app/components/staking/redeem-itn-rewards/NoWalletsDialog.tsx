@@ -1,12 +1,14 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NoWalletsDialog.scss' or its... Remove this comment to see the full error message
 import styles from './NoWalletsDialog.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/sad-wal... Remove this comment to see the full error message
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
@@ -23,14 +25,13 @@ const messages = defineMessages({
       'addWalletButtonLabel for Redeem Incentivized Testnet - Step 3',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onAddWallet: Function,
+  onClose: (...args: Array<any>) => any;
+  onAddWallet: (...args: Array<any>) => any;
 };
 
 @observer
-export default class NoWalletsDialog extends Component<Props> {
+class NoWalletsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -38,7 +39,6 @@ export default class NoWalletsDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose, onAddWallet } = this.props;
-
     const closeButton = (
       <DialogCloseButton
         icon={closeCrossThin}
@@ -46,7 +46,6 @@ export default class NoWalletsDialog extends Component<Props> {
         onClose={onClose}
       />
     );
-
     return (
       <Dialog
         actions={[
@@ -71,3 +70,5 @@ export default class NoWalletsDialog extends Component<Props> {
     );
   }
 }
+
+export default NoWalletsDialog;

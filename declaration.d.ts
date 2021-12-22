@@ -9,18 +9,18 @@ declare module '*.scss' {
 }
 
 type Daedalus = {
-    actions: ActionsMap,
-    api: Api,
-    environment: Object,
-    reset: Function,
-    stores: StoresMap,
-    translations: Object,
-    utils: {
-      crypto: {
-        generateMnemonic: Function
-      }
-    },
+  actions: ActionsMap;
+  api: Api;
+  environment: Object;
+  reset: Function;
+  stores: StoresMap;
+  translations: Object;
+  utils: {
+    crypto: {
+      generateMnemonic: Function;
+    };
   };
+};
 
 //declare type EnumMap<K: string, V, O: Object = *> = O & { [K]: V & <O, K> };
 
@@ -34,4 +34,3 @@ declare global {
 }
 
 export {};
-

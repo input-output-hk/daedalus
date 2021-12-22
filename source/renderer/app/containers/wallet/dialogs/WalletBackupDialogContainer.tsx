@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletBackupDialog from '../../../components/wallet/WalletBackupDialog';
@@ -8,14 +7,13 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletBackupDialogContainer extends Component<Props> {
+class WalletBackupDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   onCancelBackup = () => {
     this.props.onClose();
     this.props.actions.walletBackup.cancelWalletBackup.trigger();
@@ -46,22 +44,17 @@ export default class WalletBackupDialogContainer extends Component<Props> {
     const { createWalletRequest } = stores.wallets;
     const canFinishBackup =
       isRecoveryPhraseValid && isTermOfflineAccepted && isTermRecoveryAccepted;
-
     return (
-      <WalletBackupDialog
-        // Global props for all dialogs
+      <WalletBackupDialog // Global props for all dialogs
         currentStep={currentStep}
-        onCancelBackup={this.onCancelBackup}
-        // Props for WalletBackupPrivacyWarningDialog
+        onCancelBackup={this.onCancelBackup} // Props for WalletBackupPrivacyWarningDialog
         canPhraseBeShown={isPrivacyNoticeAccepted && countdownRemaining === 0}
         isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
         countdownRemaining={countdownRemaining}
         onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup.trigger}
-        onContinue={continueToRecoveryPhraseForWalletBackup.trigger}
-        // Props for WalletRecoveryPhraseDisplayDialog
+        onContinue={continueToRecoveryPhraseForWalletBackup.trigger} // Props for WalletRecoveryPhraseDisplayDialog
         recoveryPhrase={recoveryPhrase.join(' ')}
-        onStartWalletBackup={startWalletBackup.trigger}
-        // Props for WalletRecoveryPhraseEntryDialog
+        onStartWalletBackup={startWalletBackup.trigger} // Props for WalletRecoveryPhraseEntryDialog
         isTermOfflineAccepted={isTermOfflineAccepted}
         enteredPhrase={enteredPhrase}
         canFinishBackup={canFinishBackup}
@@ -81,3 +74,5 @@ export default class WalletBackupDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletBackupDialogContainer;

@@ -1,21 +1,21 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ProgressBarLarge.scss' or it... Remove this comment to see the full error message
 import styles from './ProgressBarLarge.scss';
 
 type Props = {
-  progress: number,
-  showProgressLabel?: boolean,
-  leftLabel?: string,
-  rightLabel1?: string,
-  rightLabel2?: string,
-  isDarkMode?: boolean,
-  loading?: boolean,
+  progress: number;
+  showProgressLabel?: boolean;
+  leftLabel?: string;
+  rightLabel1?: string;
+  rightLabel2?: string;
+  isDarkMode?: boolean;
+  loading?: boolean;
 };
 
 @observer
-export default class ProgressBarLarge extends Component<Props> {
+class ProgressBarLarge extends Component<Props> {
   static defaultProps = {
     progress: 0,
   };
@@ -30,21 +30,17 @@ export default class ProgressBarLarge extends Component<Props> {
       isDarkMode,
       loading,
     } = this.props;
-
     const isComplete = progress >= 100;
-
     const progressStyles = classnames([
       styles.progress,
       isComplete ? styles.isComplete : null,
       isDarkMode ? styles.progressDarkMode : styles.progressLightMode,
       loading ? styles.loading : null,
     ]);
-
     const progressBarContainerStyles = classnames([
       styles.progressBarContainer,
       loading ? styles.loading : null,
     ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.content}>
@@ -55,7 +51,12 @@ export default class ProgressBarLarge extends Component<Props> {
         </div>
         <div className={progressBarContainerStyles}>
           {!loading && (
-            <div className={progressStyles} style={{ width: `${progress}%` }}>
+            <div
+              className={progressStyles}
+              style={{
+                width: `${progress}%`,
+              }}
+            >
               {showProgressLabel && (
                 <div className={styles.progressLabel}>{progress}%</div>
               )}
@@ -66,3 +67,5 @@ export default class ProgressBarLarge extends Component<Props> {
     );
   }
 }
+
+export default ProgressBarLarge;

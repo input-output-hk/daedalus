@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import SecuringPasswordDialog from '../../../../components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
@@ -8,14 +7,13 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class SecuringPasswordDialogContainer extends Component<Props> {
+class SecuringPasswordDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   onContinue = () => {
     this.props.actions.wallets.updateCertificateStep.trigger();
   };
@@ -23,9 +21,11 @@ export default class SecuringPasswordDialogContainer extends Component<Props> {
   render() {
     const { wallets } = this.props.stores;
     const { additionalMnemonicWords } = wallets;
+
     if (!additionalMnemonicWords) {
       throw new Error('Prop additionalMnemonicWords is required but was null.');
     }
+
     return (
       <SecuringPasswordDialog
         additionalMnemonics={additionalMnemonicWords}
@@ -35,3 +35,5 @@ export default class SecuringPasswordDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default SecuringPasswordDialogContainer;

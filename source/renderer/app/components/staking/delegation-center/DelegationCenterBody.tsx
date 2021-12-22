@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -6,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterBody.scss' o... Remove this comment to see the full error message
 import styles from './DelegationCenterBody.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { FutureEpoch, NextEpoch } from '../../../api/network/types';
@@ -28,29 +28,27 @@ const messages = defineMessages({
       'Loading stake pool message for the Delegation center body section.',
   },
 });
-
 type Props = {
-  wallets: Array<Wallet>,
-  numberOfStakePools: number,
-  numberOfRankedStakePools: number,
-  onDelegate: Function,
-  onUndelegate: Function,
-  getStakePoolById: Function,
-  isLoading: boolean,
-  nextEpoch: ?NextEpoch,
-  futureEpoch: ?FutureEpoch,
-  isListActive?: boolean,
-  currentTheme: string,
-  onOpenExternalLink: Function,
-  containerClassName: string,
-  setListActive?: Function,
-  listName?: string,
+  wallets: Array<Wallet>;
+  numberOfStakePools: number;
+  numberOfRankedStakePools: number;
+  onDelegate: (...args: Array<any>) => any;
+  onUndelegate: (...args: Array<any>) => any;
+  getStakePoolById: (...args: Array<any>) => any;
+  isLoading: boolean;
+  nextEpoch: NextEpoch | null | undefined;
+  futureEpoch: FutureEpoch | null | undefined;
+  isListActive?: boolean;
+  currentTheme: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  containerClassName: string;
+  setListActive?: (...args: Array<any>) => any;
+  listName?: string;
 };
 
 @observer
-export default class DelegationCenterBody extends Component<Props> {
-  loadingSpinner: ?LoadingSpinner;
-
+class DelegationCenterBody extends Component<Props> {
+  loadingSpinner: LoadingSpinner | null | undefined;
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -74,14 +72,10 @@ export default class DelegationCenterBody extends Component<Props> {
       setListActive,
       listName,
     } = this.props;
-
     const title = intl.formatMessage(messages.bodyTitle);
-
     const currentEpochTitle = intl.formatMessage(messages.currentEpochTitle);
-
     const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
     const futureEpochNumber = get(futureEpoch, 'epochNumber', 0);
-
     const loadingSpinner = (
       <LoadingSpinner
         big
@@ -90,12 +84,10 @@ export default class DelegationCenterBody extends Component<Props> {
         }}
       />
     );
-
     const componentClasses = classnames([
       styles.component,
       isLoading ? styles.isLoading : null,
     ]);
-
     return (
       <div className={componentClasses}>
         {isLoading ? (
@@ -120,6 +112,7 @@ export default class DelegationCenterBody extends Component<Props> {
                 <WalletRow
                   key={wallet.id}
                   wallet={wallet}
+                  // @ts-ignore ts-migrate(2322) FIXME: Type '{ key: string; wallet: Wallet; numberOfStake... Remove this comment to see the full error message
                   numberOfStakePools={numberOfStakePools}
                   numberOfRankedStakePools={numberOfRankedStakePools}
                   onDelegate={() => onDelegate(wallet.id)}
@@ -145,3 +138,5 @@ export default class DelegationCenterBody extends Component<Props> {
     );
   }
 }
+
+export default DelegationCenterBody;

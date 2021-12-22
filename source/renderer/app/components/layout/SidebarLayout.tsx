@@ -1,19 +1,20 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarLayout.scss' or its c... Remove this comment to see the full error message
 import styles from './SidebarLayout.scss';
 
 type Props = {
-  children: any | Node,
-  sidebar: Node,
-  topbar: Node,
-  notification?: ?Node,
-  contentDialogs?: ?Array<Node>,
+  children: any | Node;
+  sidebar: Node;
+  topbar: Node;
+  notification?: Node | null | undefined;
+  contentDialogs?: Array<Node> | null | undefined;
 };
 
 @observer
-export default class SidebarLayout extends Component<Props> {
+class SidebarLayout extends Component<Props> {
   static defaultProps = {
     children: null,
   };
@@ -26,7 +27,6 @@ export default class SidebarLayout extends Component<Props> {
       notification,
       contentDialogs,
     } = this.props;
-
     return (
       <div className={styles.component}>
         <div className={styles.sidebar}>{sidebar}</div>
@@ -42,3 +42,5 @@ export default class SidebarLayout extends Component<Props> {
     );
   }
 }
+
+export default SidebarLayout;

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import { discreetWalletTokenAmount } from '../../../features/discreet-mode/replacers/discreetWalletTokenAmount';
@@ -6,6 +5,7 @@ import ItemsDropdown from './ItemsDropdown';
 import type { AssetToken } from '../../../api/assets/types';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetsDropdown.scss' or its ... Remove this comment to see the full error message
 import styles from './AssetsDropdown.scss';
 
 /**
@@ -18,10 +18,9 @@ import styles from './AssetsDropdown.scss';
  *
  */
 type Props = {
-  assets?: Array<$Shape<AssetToken>>,
-  onSearch?: Function,
+  assets?: Array<Partial<AssetToken>>;
+  onSearch?: (...args: Array<any>) => any;
 };
-
 export const onSearchAssetsDropdown = (
   searchValue: string,
   options: Array<any>
@@ -30,6 +29,7 @@ export const onSearchAssetsDropdown = (
     if (searchValue.length < 3) {
       return true;
     }
+
     const { policyId, assetName, fingerprint, metadata } = asset;
     const { name, ticker, description } = metadata || {};
     const checkList = [
@@ -45,7 +45,6 @@ export const onSearchAssetsDropdown = (
     return checkList.some((item) => regex.test(item));
   });
 };
-
 export default function AssetsDropdown({
   assets = [],
   onSearch = onSearchAssetsDropdown,
@@ -67,6 +66,7 @@ export default function AssetsDropdown({
     });
     return {
       label: (
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         <Asset asset={asset} className={styles.assetToken} hidePopOver small />
       ),
       detail,

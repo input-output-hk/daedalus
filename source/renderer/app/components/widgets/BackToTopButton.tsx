@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import { throttle } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './BackToTopButton.scss' or its... Remove this comment to see the full error message
 import styles from './BackToTopButton.scss';
 
 const messages = defineMessages({
@@ -12,40 +12,32 @@ const messages = defineMessages({
     description: '"backToTop" button label.',
   },
 });
-
 type Props = {
-  scrollableElementClassName: string,
-  buttonTopPosition: number,
-  scrollTopToActivate: number,
-  isForceHidden?: boolean,
+  scrollableElementClassName: string;
+  buttonTopPosition: number;
+  scrollTopToActivate: number;
+  isForceHidden?: boolean;
 };
-
 type State = {
-  isActive: boolean,
+  isActive: boolean;
 };
-
 export default class BackToTopButton extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     scrollTopToActivate: 20,
     buttonTopPosition: 20,
     isForceHidden: false,
   };
-
   state = {
     isActive: false,
   };
-
   _isMounted = false;
-
-  scrollableDomElement: ?HTMLElement = null;
+  scrollableDomElement: HTMLElement | null | undefined = null;
 
   componentDidMount() {
     this._isMounted = true;
-
     setTimeout(() => {
       if (this._isMounted) {
         this.scrollableDomElement = document.querySelector(
@@ -60,6 +52,7 @@ export default class BackToTopButton extends Component<Props, State> {
           })
         );
       }
+
       return null;
     }, 0);
   }
@@ -76,22 +69,28 @@ export default class BackToTopButton extends Component<Props, State> {
         this.getIsBackToTopActive
       );
     }
+
     return null;
   }
 
   getIsBackToTopActive = () => {
     const { isActive } = this.state;
     const { scrollTopToActivate } = this.props;
+
     if (this.scrollableDomElement instanceof HTMLElement && this._isMounted) {
       const scrollPosition = this.scrollableDomElement.scrollTop;
+
       if (scrollPosition > scrollTopToActivate && !isActive) {
-        this.setState({ isActive: true });
+        this.setState({
+          isActive: true,
+        });
       } else if (scrollPosition <= scrollTopToActivate && isActive) {
-        this.setState({ isActive: false });
+        this.setState({
+          isActive: false,
+        });
       }
     }
   };
-
   backToTop = () => {
     if (this.scrollableDomElement instanceof HTMLElement) {
       this.scrollableDomElement.scrollTop = 0;
@@ -106,12 +105,12 @@ export default class BackToTopButton extends Component<Props, State> {
       [styles.isActive]: isActive,
     });
     const top = isActive ? buttonTopPosition : buttonTopPosition - 10;
-
     if (isForceHidden) return null;
-
     return (
       <button
-        style={{ top }}
+        style={{
+          top,
+        }}
         className={componentStyles}
         onClick={this.backToTop}
       >

@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
-// @flow
 import { has, isEmpty } from 'lodash';
 import chalk from 'chalk';
-import { EXISTING_THEME_OUTPUTS } from '../daedalus/index.js';
+import { EXISTING_THEME_OUTPUTS } from '../daedalus/index';
 import { THEME_LOGGING_COLORS } from './constants';
 import type { LogDifferencesParams } from '../types';
 
@@ -20,11 +19,14 @@ const logDifferences = ({
 };
 
 // Checks for properties/CSS vars on existing themes that don't exist on createThemeObj
-export const checkCreateTheme = (createThemeObj: Object) => {
+export const checkCreateTheme = (createThemeObj: Record<string, any>) => {
   const missingDefinitions = EXISTING_THEME_OUTPUTS.reduce(
-    (defsToAdd: Object, themeOutput: [string, Object]) => {
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+    (
+      defsToAdd: Record<string, any>,
+      themeOutput: [string, Record<string, any>]
+    ) => {
       const [fileName, themeObj] = themeOutput;
-
       const missingDefs = {
         ...findMissingDefinitions(themeObj, createThemeObj),
         ...findMissingCSSVars(themeObj, createThemeObj),
@@ -44,6 +46,7 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     if (themeName && !isEmpty(missingDefinitions[themeName])) {
       logDifferences({
         color: THEME_LOGGING_COLORS[themeName],
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'string | { aboutWindow: { '--theme-about-win... Remove this comment to see the full error message
         missingDefs: missingDefinitions[themeName],
         themeName,
       });
@@ -60,11 +63,10 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     );
   }
 };
-
 export const findMissingDefinitions = (
-  basis: Object,
-  target: Object
-): Object => {
+  basis: Record<string, any>,
+  target: Record<string, any>
+): Record<string, any> => {
   const targetMissingDefs = {};
 
   for (const basisEntry in basis) {
@@ -72,10 +74,13 @@ export const findMissingDefinitions = (
       targetMissingDefs[basisEntry] = basis[basisEntry];
     }
   }
+
   return targetMissingDefs;
 };
-
-export const findMissingCSSVars = (basis: Object, target: Object): Object => {
+export const findMissingCSSVars = (
+  basis: Record<string, any>,
+  target: Record<string, any>
+): Record<string, any> => {
   const missingCSSVariables = {};
 
   for (const basisEntry in target) {
@@ -90,5 +95,6 @@ export const findMissingCSSVars = (basis: Object, target: Object): Object => {
       }
     }
   }
+
   return missingCSSVariables;
 };

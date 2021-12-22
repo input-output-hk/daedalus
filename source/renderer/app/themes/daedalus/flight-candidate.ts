@@ -1,7 +1,5 @@
-// @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
-
 //  ==== flight-candidate theme output for Daedalus and react-polymorph components === //
 export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
   aboutWindow: {
@@ -1112,9 +1110,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-widgets-itemsDropdown-option-label-text-color': '#ffffff',
   },
 };
-
 const FLIGHT_CANDIDATE_THEME_PARAMS: CreateThemeParams = {
   config: FLIGHT_CANDIDATE_THEME_OUTPUT,
 };
-
 export default createTheme(FLIGHT_CANDIDATE_THEME_PARAMS);

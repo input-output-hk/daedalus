@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import SystemTimeError from '../../components/loading/system-time-error/SystemTimeError';
@@ -8,8 +7,11 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class SystemTimeErrorPage extends Component<Props> {
-  static defaultProps = { stores: null, actions: null };
+class SystemTimeErrorPage extends Component<Props> {
+  static defaultProps = {
+    stores: null,
+    actions: null,
+  };
 
   render() {
     const { actions, stores } = this.props;
@@ -36,3 +38,5 @@ export default class SystemTimeErrorPage extends Component<Props> {
     );
   }
 }
+
+export default SystemTimeErrorPage;

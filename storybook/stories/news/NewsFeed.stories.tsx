@@ -1,4 +1,3 @@
-// @flow
 // eslint-disable-file no-unused-vars
 import React from 'react';
 // import { omit } from 'lodash';
@@ -18,17 +17,14 @@ const updateDownloadProgressOptions = {
   max: 100,
   step: 1,
 };
-
 storiesOf('News|NewsFeed', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
-
-  // ====== Stories ======
-
+  )) // ====== Stories ======
   .add('Empty', () => (
     <div>
       <NewsFeed
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onGoToRoute={action('onGoToRoute')}
         isLoadingNews={false}
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
@@ -45,10 +41,10 @@ storiesOf('News|NewsFeed', module)
       />
     </div>
   ))
-
   .add('Fetching', () => (
     <div>
       <NewsFeed
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onGoToRoute={action('onGoToRoute')}
         isLoadingNews
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
@@ -65,7 +61,7 @@ storiesOf('News|NewsFeed', module)
       />
     </div>
   ))
-
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Fetched', ({ locale }: { locale: string }) => {
     const displayAppUpdateNewsItem = boolean('displayAppUpdateNewsItem', true);
     const updateDownloadProgress = displayAppUpdateNewsItem
@@ -85,6 +81,7 @@ storiesOf('News|NewsFeed', module)
     return (
       <div>
         <NewsFeed
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onGoToRoute={action('onGoToRoute')}
           isLoadingNews={false}
           onMarkNewsAsRead={action('onMarkNewsAsRead')}

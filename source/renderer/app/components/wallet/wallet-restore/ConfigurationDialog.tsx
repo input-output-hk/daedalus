@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -9,6 +8,7 @@ import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ConfigurationDialog.scss' or... Remove this comment to see the full error message
 import styles from './ConfigurationDialog.scss';
 import ReactToolboxMobxForm, {
   handleFormErrors,
@@ -22,6 +22,7 @@ import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/info-ic... Remove this comment to see the full error message
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
@@ -79,26 +80,24 @@ const messages = defineMessages({
     description: 'Tooltip for the password input in the create wallet dialog.',
   },
 });
-
 type Props = {
-  isSubmitting: boolean,
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
-  onChange: Function,
-  walletName: string,
-  spendingPassword: string,
-  repeatPassword: string,
-  error?: ?LocalizableError,
-  currentLocale: string,
+  isSubmitting: boolean;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onChange: (...args: Array<any>) => any;
+  walletName: string;
+  spendingPassword: string;
+  repeatPassword: string;
+  error?: LocalizableError | null | undefined;
+  currentLocale: string;
 };
 
 @observer
-export default class ConfigurationDialog extends Component<Props> {
+class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     error: null,
   };
@@ -110,6 +109,7 @@ export default class ConfigurationDialog extends Component<Props> {
   }
 
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         walletName: {
@@ -182,15 +182,17 @@ export default class ConfigurationDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { onContinue } = this.props;
@@ -198,19 +200,22 @@ export default class ConfigurationDialog extends Component<Props> {
         onContinue(walletName, spendingPassword);
       },
       onError: () =>
-        handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
+        handleFormErrors('.ConfigurationDialog_error', {
+          focusElement: true,
+        }),
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'each' does not exist on type 'ReactToolb... Remove this comment to see the full error message
     form.each((field) => {
       field.debouncedValidation.cancel();
     });
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'reset' does not exist on type 'ReactTool... Remove this comment to see the full error message
     form.reset();
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'showErrors' does not exist on type 'Reac... Remove this comment to see the full error message
     form.showErrors(false);
   };
 
@@ -218,31 +223,30 @@ export default class ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack, error, isSubmitting, currentLocale } = this.props;
     const { form } = this;
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletNameField = form.$('walletName');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatPasswordField = form.$('repeatPassword');
-
     const walletNameFieldClasses = classnames([
       styles.walletName,
       'walletName',
     ]);
-
     const spendingPasswordClasses = classnames([
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.continueButtonLabel)
     ) : (
       <LoadingSpinner />
     );
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     const canSubmit = !isSubmitting && form.isValid;
-
     return (
       <WalletRestoreDialog
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         className={styles.dialogComponent}
         stepNumber={2}
         actions={[
@@ -307,3 +311,5 @@ export default class ConfigurationDialog extends Component<Props> {
     );
   }
 }
+
+export default ConfigurationDialog;

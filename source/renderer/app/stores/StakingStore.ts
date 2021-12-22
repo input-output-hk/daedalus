@@ -1,4 +1,3 @@
-// @flow
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
@@ -39,54 +38,77 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
-  @observable isDelegationTransactionPending = false;
-  @observable fetchingStakePoolsFailed = false;
-  @observable selectedDelegationWalletId = null;
-  @observable stake = INITIAL_DELEGATION_FUNDS;
-  @observable isRanking = false;
-  @observable smashServerUrl: ?string = null;
-  @observable smashServerUrlError: ?LocalizableError = null;
-  @observable smashServerLoading: boolean = false;
+  @observable
+  isDelegationTransactionPending = false;
+  @observable
+  fetchingStakePoolsFailed = false;
+  @observable
+  selectedDelegationWalletId = null;
+  @observable
+  stake = INITIAL_DELEGATION_FUNDS;
+  @observable
+  isRanking = false;
+  @observable
+  smashServerUrl: string | null | undefined = null;
+  @observable
+  smashServerUrlError: LocalizableError | null | undefined = null;
+  @observable
+  smashServerLoading = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
-  @observable redeemStep: ?RedeemItnRewardsStep = null;
-  @observable redeemRecoveryPhrase: ?Array<string> = null;
-  @observable redeemWallet: ?Wallet = null;
-  @observable walletName: ?string = null;
-  @observable transactionFees: ?BigNumber = null;
-  @observable redeemedRewards: ?BigNumber = null;
-  @observable isSubmittingReedem: boolean = false;
-  @observable isCalculatingReedemFees: boolean = false;
-  @observable redeemSuccess: ?boolean = null;
-  @observable configurationStepError: ?LocalizableError = null;
-  @observable confirmationStepError: ?LocalizableError = null;
+  @observable
+  redeemStep: RedeemItnRewardsStep | null | undefined = null;
+  @observable
+  redeemRecoveryPhrase: Array<string> | null | undefined = null;
+  @observable
+  redeemWallet: Wallet | null | undefined = null;
+  @observable
+  walletName: string | null | undefined = null;
+  @observable
+  transactionFees: BigNumber | null | undefined = null;
+  @observable
+  redeemedRewards: BigNumber | null | undefined = null;
+  @observable
+  isSubmittingReedem = false;
+  @observable
+  isCalculatingReedemFees = false;
+  @observable
+  redeemSuccess: boolean | null | undefined = null;
+  @observable
+  configurationStepError: LocalizableError | null | undefined = null;
+  @observable
+  confirmationStepError: LocalizableError | null | undefined = null;
 
   /* ----------  Stake Pools Fetching Tracker  ---------- */
-  @observable isFetchingStakePools: boolean = false;
-  @observable numberOfStakePoolsFetched: number = 0;
-  @observable cyclesWithoutIncreasingStakePools: number = 0;
-  @observable stakingInfoWasOpen: boolean = false;
-
-  pollingStakePoolsInterval: ?IntervalID = null;
-  refreshPolling: ?IntervalID = null;
-  delegationCheckTimeInterval: ?IntervalID = null;
+  @observable
+  isFetchingStakePools = false;
+  @observable
+  numberOfStakePoolsFetched = 0;
+  @observable
+  cyclesWithoutIncreasingStakePools = 0;
+  @observable
+  stakingInfoWasOpen = false;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  pollingStakePoolsInterval: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  refreshPolling: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  delegationCheckTimeInterval: IntervalID | null | undefined = null;
   adaValue: BigNumber = new BigNumber(82650.15);
-  percentage: number = 14;
-  stakePoolsFetchTrackerInterval: ?IntervalID = null;
-
-  _delegationFeeCalculationWalletId: ?string = null;
+  percentage = 14;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  stakePoolsFetchTrackerInterval: IntervalID | null | undefined = null;
+  _delegationFeeCalculationWalletId: string | null | undefined = null;
 
   setup() {
     const {
       staking: stakingActions,
       networkStatus: networkStatusActions,
     } = this.actions;
-
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
       STAKE_POOLS_FAST_INTERVAL
     );
-
     // Redeem ITN Rewards actions
     stakingActions.onRedeemStart.listen(this._onRedeemStart);
     stakingActions.onConfigurationContinue.listen(
@@ -98,7 +120,6 @@ export default class StakingStore extends Store {
     stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
     stakingActions.onResultContinue.listen(this._onResultContinue);
     stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
-
     stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
     stakingActions.goToStakingDelegationCenterPage.listen(
       this._goToStakingDelegationCenterPage
@@ -116,49 +137,54 @@ export default class StakingStore extends Store {
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
-
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
 
     this._startStakePoolsFetchTracker();
+
     this._getStakingInfoWasOpen();
   }
 
   // REQUESTS
-  @observable joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
+  @observable
+  joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
     this.api.ada.joinStakePool
   );
-  @observable quitStakePoolRequest: Request<QuitStakePoolRequest> = new Request(
+  @observable
+  quitStakePoolRequest: Request<QuitStakePoolRequest> = new Request(
     this.api.ada.quitStakePool
   );
-  @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
+  @observable
+  stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
   @observable
-  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
-    this.api.ada.calculateDelegationFee
-  );
+  calculateDelegationFeeRequest: Request<
+    DelegationCalculateFeeResponse
+  > = new Request(this.api.ada.calculateDelegationFee);
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
-  @observable getRedeemItnRewardsFeeRequest: Request<any> = new Request(
+  @observable
+  getRedeemItnRewardsFeeRequest: Request<any> = new Request(
     this.api.ada.getRedeemItnRewardsFee
   );
-  @observable requestRedeemItnRewardsRequest: Request<any> = new Request(
+  @observable
+  requestRedeemItnRewardsRequest: Request<any> = new Request(
     this.api.ada.requestRedeemItnRewards
   );
-  @observable getSmashSettingsRequest: Request<any> = new Request(
+  @observable
+  getSmashSettingsRequest: Request<any> = new Request(
     this.api.ada.getSmashSettings
   );
   @observable
   updateSmashSettingsRequest: Request<PoolMetadataSource> = new Request(
     this.api.ada.updateSmashSettings
   );
-
   // =================== PUBLIC API ==================== //
-
-  @action _getSmashSettingsRequest = async () => {
+  @action
+  _getSmashSettingsRequest = async () => {
     this.smashServerLoading = true;
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     let smashServerUrl: string = await this.getSmashSettingsRequest.execute();
-
     const localSmashServer = await this.api.localStorage.getSmashServer();
 
     // If the server wasn't set, sets it for IOHK
@@ -171,6 +197,7 @@ export default class StakingStore extends Store {
       smashServerUrl = this.environment.isSelfnode
         ? SMASH_SERVERS_LIST.direct.url
         : SMASH_SERVERS_LIST.iohk.url;
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.updateSmashSettingsRequest.execute(smashServerUrl);
     }
 
@@ -179,37 +206,40 @@ export default class StakingStore extends Store {
       this.smashServerLoading = false;
     });
   };
-
-  @action _setSelectedDelegationWalletId = (walletId: string) => {
+  @action
+  _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
   };
-
-  @action _setStake = (stake: number) => {
+  @action
+  _setStake = (stake: number) => {
     this.stake = stake;
   };
-
-  @action _rankStakePools = () => {
+  @action
+  _rankStakePools = () => {
     this.isRanking = true;
     this.getStakePoolsData();
   };
-
-  @action _selectSmashServerUrl = async ({
+  @action
+  _selectSmashServerUrl = async ({
     smashServerUrl,
   }: {
-    smashServerUrl: string,
+    smashServerUrl: string;
   }) => {
     if (smashServerUrl && smashServerUrl !== this.smashServerUrl) {
       try {
         this.smashServerUrlError = null;
         // Retrieves the API update
         this.smashServerLoading = true;
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
         // Resets the Stake Pools list request
         this.stakePoolsRequest.reset();
         // Refreshes the Stake Pools list
         this.getStakePoolsData();
+
         // Starts the SPs fetch tracker
         this._startStakePoolsFetchTracker();
+
         // Updates the Smash Server URL
         runInAction(() => {
           this.smashServerUrl = smashServerUrl;
@@ -226,9 +256,10 @@ export default class StakingStore extends Store {
       }
     }
   };
-
-  @action _startStakePoolsFetchTracker = () => {
+  @action
+  _startStakePoolsFetchTracker = () => {
     this._stopStakePoolsFetchTracker();
+
     this.isFetchingStakePools = true;
     this.stakePoolsFetchTrackerInterval = setInterval(
       this._stakePoolsFetchTracker,
@@ -236,22 +267,23 @@ export default class StakingStore extends Store {
     );
     this.getStakePoolsData(true);
   };
-
-  @action _getStakingInfoWasOpen = async () => {
+  @action
+  _getStakingInfoWasOpen = async () => {
     const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
     runInAction(() => {
       this.stakingInfoWasOpen = stakingInfoWasOpen;
     });
   };
-
-  @action _setStakingInfoWasOpen = () => {
+  @action
+  _setStakingInfoWasOpen = () => {
     this.stakingInfoWasOpen = true;
     this.api.localStorage.setStakingInfoWasOpen();
   };
-
-  @action _stakePoolsFetchTracker = () => {
+  @action
+  _stakePoolsFetchTracker = () => {
     const lastNumberOfStakePoolsFetched = this.numberOfStakePoolsFetched;
     this.numberOfStakePoolsFetched = this.stakePools.length;
+
     if (
       lastNumberOfStakePoolsFetched === this.numberOfStakePoolsFetched &&
       this.numberOfStakePoolsFetched > 0
@@ -260,53 +292,58 @@ export default class StakingStore extends Store {
     } else {
       this.cyclesWithoutIncreasingStakePools = 0;
     }
+
     if (
       this.cyclesWithoutIncreasingStakePools >= STAKE_POOLS_FETCH_TRACKER_CYCLES
     ) {
       this._stopStakePoolsFetchTracker();
     }
   };
-
-  @action _stopStakePoolsFetchTracker = () => {
+  @action
+  _stopStakePoolsFetchTracker = () => {
     clearInterval(this.stakePoolsFetchTrackerInterval);
     this.numberOfStakePoolsFetched = 0;
     this.cyclesWithoutIncreasingStakePools = 0;
     this.isFetchingStakePools = false;
     this.getStakePoolsData();
   };
-
-  @action _resetSmashServerError = () => {
+  @action
+  _resetSmashServerError = () => {
     this.smashServerUrlError = null;
     this.smashServerLoading = false;
   };
-
-  @action _joinStakePool = async (request: JoinStakePoolRequest) => {
+  @action
+  _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
-
     // Set join transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
       let joinTransaction;
+
       if (isHardwareWallet) {
         joinTransaction = await this.stores.hardwareWallets._sendMoney({
           isDelegationTransaction: true,
           selectedWalletId: walletId,
         });
       } else {
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         joinTransaction = await this.joinStakePoolRequest.execute({
           walletId,
           stakePoolId,
           passphrase,
         });
       }
+
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,
         STAKE_POOL_TRANSACTION_CHECK_INTERVAL,
-        { transactionId: joinTransaction.id, walletId }
+        {
+          transactionId: joinTransaction.id,
+          walletId,
+        }
       );
-
       // Reset transaction state check interval after 30 seconds
       setTimeout(() => {
         this.resetStakePoolTransactionChecker();
@@ -316,21 +353,22 @@ export default class StakingStore extends Store {
       throw error;
     }
   };
-
-  @action _quitStakePool = async (request: QuitStakePoolRequest) => {
+  @action
+  _quitStakePool = async (request: QuitStakePoolRequest) => {
     const { walletId, passphrase, isHardwareWallet } = request;
-
     // Set quit transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
       let quitTransaction;
+
       if (isHardwareWallet) {
         quitTransaction = await this.stores.hardwareWallets._sendMoney({
           isDelegationTransaction: true,
           selectedWalletId: walletId,
         });
       } else {
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         quitTransaction = await this.quitStakePoolRequest.execute({
           walletId,
           passphrase,
@@ -341,9 +379,11 @@ export default class StakingStore extends Store {
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,
         STAKE_POOL_TRANSACTION_CHECK_INTERVAL,
-        { transactionId: quitTransaction.id, walletId }
+        {
+          transactionId: quitTransaction.id,
+          walletId,
+        }
       );
-
       // Reset transaction state check interval after 30 seconds
       setTimeout(() => {
         this.resetStakePoolTransactionChecker();
@@ -353,20 +393,21 @@ export default class StakingStore extends Store {
       throw error;
     }
   };
-
   // Check stake pool transaction state and reset pending state when transction is "in_ledger"
-  @action checkDelegationTransaction = (request: {
-    transactionId: string,
-    walletId: string,
+  @action
+  checkDelegationTransaction = (request: {
+    transactionId: string;
+    walletId: string;
   }) => {
     const { transactionId, walletId } = request;
+
     const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
       walletId
     ).result;
+
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
       : [];
-
     // Return stake pool transaction when state is not "PENDING"
     const stakePoolTransaction = find(
       recentTransactions,
@@ -379,24 +420,25 @@ export default class StakingStore extends Store {
       this.resetStakePoolTransactionChecker();
     }
   };
-
   // Reset "PENDING" state, transaction state check poller and refresh wallets data
-  @action resetStakePoolTransactionChecker = () => {
+  @action
+  resetStakePoolTransactionChecker = () => {
     if (this.delegationCheckTimeInterval) {
       clearInterval(this.delegationCheckTimeInterval);
       this.delegationCheckTimeInterval = null;
     }
+
     // this.stores.hardwareWallets._resetTransaction();
     this.stores.wallets.refreshWalletsData();
     this.isDelegationTransactionPending = false;
   };
-
-  @action _requestCSVFile = async ({
+  @action
+  _requestCSVFile = async ({
     fileContent,
     filenamePrefix: prefix,
   }: {
-    fileContent: CsvFileContent,
-    filenamePrefix: string,
+    fileContent: CsvFileContent;
+    filenamePrefix: string;
   }) => {
     const {
       actions: { wallets },
@@ -417,18 +459,18 @@ export default class StakingStore extends Store {
       ],
     };
     const { filePath } = await showSaveDialogChannel.send(params);
-
     // if cancel button is clicked or path is empty
     if (!filePath) return;
-
-    await wallets.generateCsv.trigger({ fileContent, filePath });
-
+    await wallets.generateCsv.trigger({
+      fileContent,
+      filePath,
+    });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.staking.requestCSVFileSuccess.trigger();
   };
-
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
-  ): Promise<?DelegationCalculateFeeResponse> => {
+  ): Promise<DelegationCalculateFeeResponse | null | undefined> => {
     const { walletId } = delegationFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
     this._delegationFeeCalculationWalletId = walletId;
@@ -440,6 +482,7 @@ export default class StakingStore extends Store {
     }
 
     if (this.calculateDelegationFeeRequest.isExecuting) {
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.calculateDelegationFeeRequest;
     }
 
@@ -459,39 +502,46 @@ export default class StakingStore extends Store {
   };
 
   // GETTERS
-
-  @computed get currentRoute(): string {
+  @computed
+  get currentRoute(): string {
     return this.stores.router.location.pathname;
   }
 
-  @computed get isStakingPage(): boolean {
+  @computed
+  get isStakingPage(): boolean {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
   }
 
-  @computed get maxDelegationFunds(): number {
+  @computed
+  get maxDelegationFunds(): number {
     const { desiredPoolNumber } = this.stores.networkStatus;
     return Math.round(CIRCULATING_SUPPLY / desiredPoolNumber);
   }
 
-  @computed get stakePools(): Array<StakePool> {
+  @computed
+  get stakePools(): Array<StakePool> {
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
-  @computed get recentStakePools(): Array<StakePool> {
+  @computed
+  get recentStakePools(): Array<StakePool> {
     const delegatedStakePools = [];
     map(this.stores.wallets.all, (wallet) => {
       const hasPendingDelegations =
         wallet.pendingDelegations && wallet.pendingDelegations.length > 0;
       let lastDelegatedStakePoolId = wallet.delegatedStakePoolId;
+
       if (hasPendingDelegations) {
         lastDelegatedStakePoolId = wallet.lastDelegatedStakePoolId;
       }
+
       if (lastDelegatedStakePoolId) {
         const delegatingStakePoolExistInList = find(
           delegatedStakePools,
           (delegatedStakePool) =>
             delegatedStakePool.id === lastDelegatedStakePoolId
         );
+
         if (!delegatingStakePoolExistInList) {
           const delegatingStakePool = find(
             this.stakePools,
@@ -506,62 +556,75 @@ export default class StakingStore extends Store {
     return orderedStakePools;
   }
 
-  @computed get isStakingDelegationCountdown(): boolean {
+  @computed
+  get isStakingDelegationCountdown(): boolean {
     return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
   }
 
-  @computed get rewards(): Array<Reward> {
+  @computed
+  get rewards(): Array<Reward> {
     const { wallets } = this.stores;
     return wallets.allWallets.map(this._transformWalletToReward);
   }
 
-  @action showCountdown(): boolean {
+  @action
+  showCountdown(): boolean {
     const { isShelleyPending } = this.stores.networkStatus;
     return isShelleyPending;
   }
 
-  @action getStakePoolsData = async (isSmash?: boolean) => {
+  @action
+  getStakePoolsData = async (isSmash?: boolean) => {
     const {
       isConnected,
       isSynced,
       isShelleyActivated,
     } = this.stores.networkStatus;
+
     if (!isShelleyActivated || !isConnected || !isSynced) {
       this._resetIsRanking();
+
       return;
     }
 
     try {
       const stakeInBigNumber = new BigNumber(this.stake);
       const stakeInLovelace = parseInt(
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message
         stakeInBigNumber.times(LOVELACES_PER_ADA),
         10
       );
       await this.stakePoolsRequest.execute(stakeInLovelace).promise;
+
       this._resetPolling(isSmash ? 'smash' : 'regular');
     } catch (error) {
       this._resetPolling('failed');
     }
+
     this._resetIsRanking();
   };
-
-  @action _resetPolling = (type?: 'regular' | 'failed' | 'kill' | 'smash') => {
+  @action
+  _resetPolling = (type?: 'regular' | 'failed' | 'kill' | 'smash') => {
     if (type === 'kill') {
       this.fetchingStakePoolsFailed = true;
+
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);
         this.pollingStakePoolsInterval = null;
       }
+
       if (this.refreshPolling) {
         clearInterval(this.refreshPolling);
         this.refreshPolling = null;
       }
     } else if (type === 'failed') {
       this.fetchingStakePoolsFailed = true;
+
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);
         this.pollingStakePoolsInterval = null;
       }
+
       if (!this.refreshPolling) {
         this.refreshPolling = setInterval(
           this.getStakePoolsData,
@@ -570,10 +633,12 @@ export default class StakingStore extends Store {
       }
     } else {
       this.fetchingStakePoolsFailed = false;
+
       if (this.refreshPolling) {
         clearInterval(this.refreshPolling);
         this.refreshPolling = null;
       }
+
       clearInterval(this.pollingStakePoolsInterval);
       const isSmash = type === 'smash';
       const interval = isSmash
@@ -585,13 +650,13 @@ export default class StakingStore extends Store {
       );
     }
   };
-
-  @action _resetIsRanking = () => {
+  @action
+  _resetIsRanking = () => {
     this.isRanking = false;
   };
-
   // For testing only
-  @action _setFakePoller = (forceLoading: boolean) => {
+  @action
+  _setFakePoller = (forceLoading: boolean) => {
     const { stores, environment } = this;
     const { networkStatus, wallets } = stores;
     const { isConnected } = networkStatus;
@@ -605,10 +670,12 @@ export default class StakingStore extends Store {
           clearInterval(this.refreshPolling);
           this.refreshPolling = null;
         }
+
         if (this.pollingStakePoolsInterval) {
           clearInterval(this.pollingStakePoolsInterval);
           this.pollingStakePoolsInterval = null;
         }
+
         this.fetchingStakePoolsFailed = true;
         return;
       }
@@ -616,6 +683,7 @@ export default class StakingStore extends Store {
       // Regular fetching way with faked response that throws error.
       if ((_pollingBlocked || !isConnected) && !this.refreshPolling) {
         this._resetPolling('failed');
+
         return;
       }
 
@@ -628,18 +696,20 @@ export default class StakingStore extends Store {
       }
     }
   };
-
   // For testing only
-  @action _setFakedStakePools = () => {
+  @action
+  _setFakedStakePools = () => {
     if (this.environment.isDev) {
       if (this.refreshPolling) {
         clearInterval(this.refreshPolling);
         this.refreshPolling = null;
       }
+
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);
         this.pollingStakePoolsInterval = null;
       }
+
       const newStakePools = [
         this.stakePoolsRequest.result[1],
         this.stakePoolsRequest.result[2],
@@ -652,7 +722,6 @@ export default class StakingStore extends Store {
   /* =================================================
   =            Redeem ITN Rewards - Begin            =
   ================================================= */
-
   get nextStep() {
     return {
       configuration: steps.CONFIRMATION,
@@ -677,32 +746,35 @@ export default class StakingStore extends Store {
     };
   }
 
-  @action _goToConfigurationStep = () => {
+  @action
+  _goToConfigurationStep = () => {
     this.redeemStep = steps.CONFIGURATION;
   };
-
-  @action _goToConfirmationStep = () => {
+  @action
+  _goToConfirmationStep = () => {
     this.redeemStep = steps.CONFIRMATION;
   };
-
-  @action _goToResultStep = () => {
+  @action
+  _goToResultStep = () => {
     this.redeemStep = steps.RESULT;
   };
-
-  @action _onCalculateRedeemWalletFees = async ({
+  @action
+  _onCalculateRedeemWalletFees = async ({
     walletId,
     recoveryPhrase,
   }: {
-    walletId: string,
-    recoveryPhrase: Array<string>,
+    walletId: string;
+    recoveryPhrase: Array<string>;
   }) => {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
     this.redeemRecoveryPhrase = recoveryPhrase;
     this.isCalculatingReedemFees = true;
+
     try {
       const [address] = await this.stores.addresses.getAddressesByWalletId(
         walletId
       );
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: this.redeemWallet,
         recoveryPhrase,
@@ -721,14 +793,14 @@ export default class StakingStore extends Store {
       });
     }
   };
-
-  @action _onRedeemStart = () => {
+  @action
+  _onRedeemStart = () => {
     this.configurationStepError = null;
     this.confirmationStepError = null;
     this.redeemStep = steps.CONFIGURATION;
   };
-
-  @action _onConfigurationContinue = () => {
+  @action
+  _onConfigurationContinue = () => {
     if (this.transactionFees && this.redeemRecoveryPhrase) {
       this.redeemStep = steps.CONFIRMATION;
       this.confirmationStepError = null;
@@ -738,21 +810,23 @@ export default class StakingStore extends Store {
       this.redeemStep = steps.RESULT;
     }
   };
-
-  @action _onConfirmationContinue = async ({
+  @action
+  _onConfirmationContinue = async ({
     spendingPassword,
   }: {
-    spendingPassword: string,
+    spendingPassword: string;
   }) => {
     const { redeemRecoveryPhrase: recoveryPhrase, redeemWallet } = this;
     this.isSubmittingReedem = true;
     if (!redeemWallet) throw new Error('Redeem wallet required');
     if (!recoveryPhrase) throw new Error('RecoveryPhrase required');
     const { id: walletId } = redeemWallet;
+
     try {
       const [address] = await this.stores.addresses.getAddressesByWalletId(
         walletId
       );
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
         {
           address: address.id,
@@ -772,6 +846,7 @@ export default class StakingStore extends Store {
       runInAction(() => {
         this.confirmationStepError = error;
         this.isSubmittingReedem = false;
+
         if (error.id !== 'api.errors.IncorrectPasswordError') {
           this.redeemSuccess = false;
           this.redeemStep = steps.RESULT;
@@ -779,16 +854,17 @@ export default class StakingStore extends Store {
       });
     }
   };
-
-  @action _onResultContinue = () => {
+  @action
+  _onResultContinue = () => {
     if (!this.redeemWallet) throw new Error('Redeem wallet require');
     const { id } = this.redeemWallet;
     this.stores.wallets.goToWalletRoute(id);
     this.redeemStep = null;
+
     this._resetRedeemItnRewards();
   };
-
-  @action _resetRedeemItnRewards = () => {
+  @action
+  _resetRedeemItnRewards = () => {
     this.isSubmittingReedem = false;
     this.isCalculatingReedemFees = false;
     this.redeemSuccess = null;
@@ -799,38 +875,36 @@ export default class StakingStore extends Store {
     this.configurationStepError = null;
     this.confirmationStepError = null;
   };
-
-  @action _closeRedeemDialog = () => {
+  @action
+  _closeRedeemDialog = () => {
     this._resetRedeemItnRewards();
+
     this.redeemStep = null;
   };
-
   // ================= REACTIONS ==================
-
   _pollOnSync = () => {
     const { isSynced, isShelleyActivated } = this.stores.networkStatus;
+
     if (isSynced && isShelleyActivated) {
       this.getStakePoolsData();
     } else {
       this._resetIsRanking();
+
       this._resetPolling('kill');
     }
   };
 
   /* ====  End of Redeem ITN Rewards  ===== */
-
   _goToStakingInfoPage = () => {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.INFO,
     });
   };
-
   _goToStakingDelegationCenterPage = () => {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.DELEGATION_CENTER,
     });
   };
-
   _transformWalletToReward = (inputWallet: Wallet) => {
     const {
       id: walletId,
@@ -844,9 +918,14 @@ export default class StakingStore extends Store {
     const reward = rewards.plus(withdrawals[walletId]);
     const rewardsAddress = stakeAddresses[walletId];
     const syncingProgress = get(syncState, 'progress.quantity', '');
-    return { wallet, reward, isRestoring, syncingProgress, rewardsAddress };
+    return {
+      wallet,
+      reward,
+      isRestoring,
+      syncingProgress,
+      rewardsAddress,
+    };
   };
-
   getStakePoolById = (stakePoolId: string) =>
     this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
 }

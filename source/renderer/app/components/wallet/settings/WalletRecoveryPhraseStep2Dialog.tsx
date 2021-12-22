@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -14,6 +13,7 @@ import {
 } from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseStepDial... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -60,32 +60,26 @@ export const messages = defineMessages({
       'Error message shown when invalid recovery phrase was entered.',
   },
 });
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  expectedWordCount: number | Array<number>,
-  walletName: string,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  expectedWordCount: number | Array<number>;
+  walletName: string;
 };
-
 type State = {
-  isVerifying: boolean,
+  isVerifying: boolean;
 };
 
 @observer
-export default class WalletRecoveryPhraseStep2Dialog extends Component<
-  Props,
-  State
-> {
+class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isVerifying: false,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         recoveryPhrase: {
@@ -105,7 +99,9 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
       },
@@ -117,9 +113,9 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
     const { intl } = this.context;
     const { onClose, onContinue, expectedWordCount, walletName } = this.props;
     const { isVerifying } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
-
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
@@ -133,17 +129,19 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
         onClick: () => {
-          this.setState({ isVerifying: true });
-          onContinue({ recoveryPhrase });
+          this.setState({
+            isVerifying: true,
+          });
+          onContinue({
+            recoveryPhrase,
+          });
         },
         disabled: !canSubmit,
       },
     ];
-
     const maxSelections = Array.isArray(expectedWordCount)
       ? Math.max(...expectedWordCount)
       : expectedWordCount;
-
     return (
       <Dialog
         className={styles.dialog}
@@ -195,3 +193,5 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
     );
   }
 }
+
+export default WalletRecoveryPhraseStep2Dialog;

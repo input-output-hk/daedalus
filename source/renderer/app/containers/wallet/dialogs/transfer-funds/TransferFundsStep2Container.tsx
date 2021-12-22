@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import TransferFundsStep2Dialog from '../../../../components/wallet/transfer-funds/TransferFundsStep2Dialog';
@@ -10,9 +9,8 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class TransferFundsStep2Container extends Component<Props> {
+class TransferFundsStep2Container extends Component<Props> {
   static defaultProps = DefaultProps;
-
   onClose = () => {
     const { onClose } = this.props;
     const { transferFundsRequest } = this.props.stores.wallets;
@@ -36,11 +34,12 @@ export default class TransferFundsStep2Container extends Component<Props> {
       transferFundsLeftovers,
       transferFundsRequest,
     } = stores.wallets;
-
     const { openExternalLink } = stores.app;
 
     const onFinish = (spendingPassword) =>
-      actions.wallets.transferFunds.trigger({ spendingPassword });
+      actions.wallets.transferFunds.trigger({
+        spendingPassword,
+      });
 
     const sourceWallet = allLegacyWallets.find(
       ({ id }) => id === transferFundsSourceWalletId
@@ -55,11 +54,9 @@ export default class TransferFundsStep2Container extends Component<Props> {
       !transferFundsLeftovers
     )
       return null;
-
     const sourceWalletName = sourceWallet.name;
     const sourceWalletAmount = sourceWallet.amount;
     const targetWalletName = targetWallet.name;
-
     return (
       <TransferFundsStep2Dialog
         feesAmount={transferFundsFee}
@@ -71,9 +68,14 @@ export default class TransferFundsStep2Container extends Component<Props> {
         onBack={onBack}
         onClose={this.onClose}
         onFinish={onFinish}
-        isSubmitting={false /* transferFundsRequest.isExecuting */}
+        isSubmitting={
+          false
+          /* transferFundsRequest.isExecuting */
+        }
         error={transferFundsRequest.error}
       />
     );
   }
 }
+
+export default TransferFundsStep2Container;
