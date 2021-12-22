@@ -16,6 +16,7 @@ import type {
 } from './types';
 
 const isScrollAtTop = (element: HTMLElement) => element.scrollTop === 0;
+
 const isScrollAtBottom = (element: HTMLElement) =>
   element.scrollHeight - element.scrollTop === element.clientHeight;
 

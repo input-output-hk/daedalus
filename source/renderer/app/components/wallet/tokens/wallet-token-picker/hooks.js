@@ -101,7 +101,7 @@ export const useScrollPosition = () => {
     debounce(setPosition, 100, { leading: true }),
     [setPosition]
   );
-  const onScroll = (evt: Event) => {
+  const onScroll = (evt: SyntheticMouseEvent<HTMLElement>) => {
     evt.persist();
     debouncedSetPosition(evt.target);
   };

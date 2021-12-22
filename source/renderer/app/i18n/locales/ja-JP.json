@@ -1147,7 +1147,7 @@
   "wallet.summary.transactionsList.syncingTransactionsMessage": "ウォレットのトランザクション履歴は現在ブロックチェーンと同期中です。",
   "wallet.summary.transactionsList.todayLabel": "今日",
   "wallet.summary.transactionsList.yesterdayLabel": "昨日",
-  "wallet.token.picker.addButtonLabel": "!!!Add",
+  "wallet.token.picker.addButtonLabel": "キャンセル",
   "wallet.token.picker.allTokensLabel": "!!!All tokens",
   "wallet.token.picker.cancelButtonLabel": "!!!Cancel",
   "wallet.token.picker.check30FirstLabel": "!!!Select first 30",
