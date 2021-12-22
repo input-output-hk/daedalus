@@ -34,11 +34,11 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "13.1.1";
+  windowsElectronVersion = "13.6.3";
   electronPath = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}";
   windowsElectron = fetchurl {
     url = "${electronPath}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "2f8932aec40882381e839eee34998f9b1d48292f425735d8dc9a45cc3d75cb41";
+    sha256 = "18085a2509447fef8896daeee96a12f48f8e60a4d5ec4cfab44d8d59b9d89a72";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
@@ -50,7 +50,7 @@ let
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
-    sha256 = "25bfc02a19d7eac9191f4735868891e87c9352222d73a931699b47229e3380cd";
+    sha256 = "f8567511857ab62659505ba5158b6ad69afceb512105a3251d180fe47f44366c";
   };
   node-gyp = fetchurl {
     url = "https://nodejs.org/download/release/v16.13.0/node-v16.13.0-headers.tar.gz";
