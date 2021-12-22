@@ -293,10 +293,9 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'relativeStake',
         value: (
           <div className={styles.defaultColor}>
-            <span className={styles.defaultColorContent}>{`${toFixedUserFormat(
-              relativeStake,
-              2
-            )}%`}</span>
+            <span className={styles.defaultColorContent}>
+              {`${toFixedUserFormat(relativeStake, 2)}%`}
+            </span>
           </div>
         ),
       },

@@ -202,9 +202,8 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
   constructPaths = (address: WalletAddress) => {
     const hardenedSpendingPath = utils.str_to_path(address.spendingPath);
-    const derivationSpendingPath = hardenedPathToDerivationPath(
-      hardenedSpendingPath
-    );
+    const derivationSpendingPath =
+      hardenedPathToDerivationPath(hardenedSpendingPath);
     const spendingPath = map(
       derivationSpendingPath.constructed,
       (constructeSpendingPathChunk, index) => {
