@@ -263,7 +263,6 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged",
       "pre-push": "yarn check:all"
     }
   },
