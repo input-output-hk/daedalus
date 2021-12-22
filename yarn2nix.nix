@@ -41,12 +41,17 @@ let
     sha256 = "18085a2509447fef8896daeee96a12f48f8e60a4d5ec4cfab44d8d59b9d89a72";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
+  checksums = fetchurl {
+    url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
+    sha256 = "36252994ffddaa6ca71f664df7b90956a324cd22ce2e2dc94754ff3961e23a20";
+  };
   electron-cache = runCommand "electron-cache" {} ''
-    # newer style
-    mkdir -p $out/${electronPathHash}/
-    ln -sv ${windowsElectron} $out/${electronPathHash}/electron-v${windowsElectronVersion}-win32-x64.zip
+    mkdir $out
+    # we simulate the cache that is used when calling yarn package and the cache is located $HOME/.cache/electron
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt
     mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
     ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
@@ -162,7 +167,6 @@ yarn2nix.mkYarnPackage {
     dup secp256k1
     dup usb
     dup @ledgerhq
-    dup electron-chromedriver
 
     # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
