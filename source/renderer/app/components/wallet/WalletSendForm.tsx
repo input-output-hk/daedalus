@@ -716,7 +716,7 @@ class WalletSendForm extends Component<Props, State> {
       receiver: receiverField,
       assetFields,
       assetsDropdown,
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     } = formFields.receiver;
     const assetsSeparatorBasicHeight = 140;
     const assetsSeparatorCalculatedHeight = selectedAssetUniqueIds.length

@@ -433,8 +433,8 @@ export default class VotingStore extends Store {
     const {
       confirmations,
       state,
-    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    }: WalletTransaction = await this.getTransactionRequest.execute({
+    }: // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
+    WalletTransaction = await this.getTransactionRequest.execute({
       walletId: this.selectedWalletId,
       transactionId: this.transactionId,
     });

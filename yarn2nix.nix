@@ -58,7 +58,6 @@ let
       baseName == "package.json" ||
       baseName == "gulpfile.js" ||
       (lib.hasPrefix "/source" sansPrefix) ||
-      (lib.hasPrefix "/flow" sansPrefix) ||
       baseName == ".babelrc" ||
       sansPrefix == "/scripts" ||
       sansPrefix == "/scripts/package.js" ||
@@ -207,12 +206,6 @@ yarn2nix.mkYarnPackage {
       postInstall = ''
         yarn --offline run build
         rm build/config.gypi
-      '';
-    };
-    flow-bin = {
-      postInstall = ''
-        flow_ver=${origPackage.devDependencies."flow-bin"}
-        patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
       '';
     };
     electron-rebuild = {

@@ -29,12 +29,12 @@ export class DiscreetMode extends Feature {
   @observable
   getDiscreetModeSettingsTooltipRequest: Request<
     Promise<boolean>
-  // @ts-ignore ts-migrate(2729) FIXME: Property 'api' is used before its initialization.
+    // @ts-ignore ts-migrate(2729) FIXME: Property 'api' is used before its initialization.
   > = new Request(this.api.getDiscreetModeSettingsTooltip);
   @observable
   setDiscreetModeSettingsTooltipRequest: Request<
     Promise<boolean>
-  // @ts-ignore ts-migrate(2729) FIXME: Property 'api' is used before its initialization.
+    // @ts-ignore ts-migrate(2729) FIXME: Property 'api' is used before its initialization.
   > = new Request(this.api.setDiscreetModeSettingsTooltip);
   @observable
   getDiscreetModeNotificationRequest: Request<Promise<boolean>> = new Request(
