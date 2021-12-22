@@ -59,6 +59,7 @@ storiesOf('Wallets|Tokens', module)
   .add('WalletTokenPicker', () => (
     <WalletTokenPicker
       assets={assets}
+      walletName="My Wallet"
       tokenFavorites={{ [assets[0].uniqueId]: true }}
       onAdd={() => {}}
       onCancel={() => {}}

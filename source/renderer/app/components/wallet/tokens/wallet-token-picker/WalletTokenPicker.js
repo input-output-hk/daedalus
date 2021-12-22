@@ -18,6 +18,7 @@ import type { Props } from './types';
 const WalletTokenPicker = ({
   intl,
   assets,
+  walletName,
   tokenFavorites,
   previousCheckedIds = [],
   onAdd,
@@ -66,6 +67,7 @@ const WalletTokenPicker = ({
     <Dialog
       className={styles.dialog}
       title={intl.formatMessage(messages.title)}
+      subtitle={walletName}
       closeOnOverlayClick
       actions={actions}
     >

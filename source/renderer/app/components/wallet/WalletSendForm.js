@@ -64,6 +64,7 @@ type Props = {
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
   tokenFavorites: { [key: string]: boolean },
+  walletName: string,
 };
 
 type State = {
@@ -867,6 +868,7 @@ export default class WalletSendForm extends Component<Props, State> {
       isRestoreActive,
       onExternalLinkClick,
       tokenFavorites,
+      walletName,
     } = this.props;
 
     const receiverField = form.$('receiver');
@@ -965,6 +967,7 @@ export default class WalletSendForm extends Component<Props, State> {
             assets={assets}
             previousCheckedIds={selectedAssetUniqueIds}
             tokenFavorites={tokenFavorites}
+            walletName={walletName}
             onCancel={() => {
               this.setState({ isTokenPickerOpen: false });
             }}

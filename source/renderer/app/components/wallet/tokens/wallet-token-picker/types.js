@@ -5,6 +5,7 @@ import type { AssetToken } from '../../../../api/assets/types';
 export type Props = {
   intl: Intl,
   assets: Array<AssetToken>,
+  walletName: string,
   tokenFavorites: Object,
   previousCheckedIds?: Array<string>,
   onAdd: Function,
