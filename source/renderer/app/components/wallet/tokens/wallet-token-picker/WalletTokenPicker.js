@@ -47,7 +47,7 @@ const WalletTokenPicker = ({
   });
   const toolbarStyles = classNames(
     styles.toolbar,
-    scrollPosition !== ScrollPositionEnum.TOP && styles.scrollTop
+    scrollPosition !== ScrollPositionEnum.TOP && styles.scrollNotTop
   );
   const actions = [
     {
