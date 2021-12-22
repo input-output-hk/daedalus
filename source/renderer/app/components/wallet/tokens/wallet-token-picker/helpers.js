@@ -77,3 +77,6 @@ export const filterAssets = ({
       : true;
   });
 };
+
+export const getCheckMaxLabel = (assets: Assets) =>
+  assets.length > MAX_TOKENS ? 'checkMaxFirstLabel' : 'checkAllLabel';

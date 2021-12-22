@@ -10,20 +10,10 @@ import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
-import { filterSelectOptions } from './helpers';
+import { filterSelectOptions, getCheckMaxLabel } from './helpers';
 import { useFilters, useCheckboxes, useScrollPosition } from './hooks';
 import { MAX_TOKENS, ScrollPositionEnum } from './const';
-import type { Intl } from '../../../../types/i18nTypes';
-import type { AssetToken } from '../../../../api/assets/types';
-
-type Props = {
-  intl: Intl,
-  assets: Array<AssetToken>,
-  tokenFavorites: Object,
-  previousCheckedIds?: Array<string>,
-  onAdd: Function,
-  onCancel: Function,
-};
+import type { Props } from './types';
 
 const WalletTokenPicker = ({
   intl,
@@ -50,7 +40,7 @@ const WalletTokenPicker = ({
     checkedIds,
     disabledIdsSet,
     toggleCheckbox,
-    check30First,
+    checkMax,
   } = useCheckboxes({
     assets,
     previousCheckedIds,
@@ -98,13 +88,15 @@ const WalletTokenPicker = ({
               maxTokens: MAX_TOKENS,
             })}
           </span>
-          <button className={styles.check30First} onClick={check30First}>
-            {intl.formatMessage(messages.check30FirstLabel)}
+          <button className={styles.checkMax} onClick={checkMax}>
+            {intl.formatMessage(messages[getCheckMaxLabel(assets)], {
+              maxTokens: MAX_TOKENS,
+            })}
           </button>
         </div>
         <div className={styles.list} onScroll={onScroll}>
           {currentAssets.map((asset) => (
-            <div className={styles.listItem} key={asset.uniqueId}>
+            <div key={asset.uniqueId} className={styles.listItem}>
               <Checkbox
                 className={styles.checkbox}
                 checked={

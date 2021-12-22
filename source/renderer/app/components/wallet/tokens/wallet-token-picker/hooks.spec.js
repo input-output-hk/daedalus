@@ -69,7 +69,7 @@ describe('WalletTokenPicker hooks', () => {
     }
   );
 
-  const check30FirstCases = [
+  const checkMaxCases = [
     // testId, [assets, previousCheckedIds], alreadyChecked, expected [checkedCount, checkedIds]
     [
       'less than 30 assets',
@@ -97,8 +97,8 @@ describe('WalletTokenPicker hooks', () => {
     ],
   ];
 
-  test.each(check30FirstCases)(
-    'useCheckboxes toogle check30First for %s',
+  test.each(checkMaxCases)(
+    'useCheckboxes toogle checkMax for %s',
     (testId, [assets, previousCheckedIds], alreadyChecked, expected) => {
       const hook = setup(useCheckboxes, {
         assets,
@@ -112,7 +112,7 @@ describe('WalletTokenPicker hooks', () => {
       }
 
       act(() => {
-        hook.check30First();
+        hook.checkMax();
       });
 
       expect(hook.checkedCount).toBe(expected[0]);

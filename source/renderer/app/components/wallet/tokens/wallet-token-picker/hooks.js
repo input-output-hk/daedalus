@@ -34,7 +34,7 @@ export const useCheckboxes = ({
     previousCheckedIds,
   ]);
   const checkedCount = checkedIds.length + disabledIdsSet.size;
-  const check30First = useCallback(() => {
+  const checkMax = useCallback(() => {
     setCheckboxes(
       getMaxTokensIdsMap({
         assetIds,
@@ -60,7 +60,7 @@ export const useCheckboxes = ({
     checkedCount,
     checkedIds,
     disabledIdsSet,
-    check30First,
+    checkMax,
     toggleCheckbox,
   };
 };

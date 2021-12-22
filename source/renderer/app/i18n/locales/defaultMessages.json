@@ -13095,31 +13095,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Select first 30",
-        "description": "Label for select first 30 button label",
+        "defaultMessage": "!!!Select first {maxTokens}",
+        "description": "Label for select first max button label",
         "end": {
           "column": 3,
           "line": 23
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.check30FirstLabel",
+        "id": "wallet.token.picker.checkMaxFirstLabel",
         "start": {
-          "column": 21,
+          "column": 22,
           "line": 19
         }
       },
       {
-        "defaultMessage": "!!!{checkedCount} of {maxTokens} max tokens",
-        "description": "Label of selected tokens count",
+        "defaultMessage": "!!!Select all",
+        "description": "Label for select all button label",
         "end": {
           "column": 3,
           "line": 28
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.checkAllLabel",
+        "start": {
+          "column": 17,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!{checkedCount} out of {maxTokens} tokens",
+        "description": "Label of selected tokens count",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
         "id": "wallet.token.picker.checkedCountLabel",
         "start": {
           "column": 21,
-          "line": 24
+          "line": 29
         }
       },
       {
@@ -13127,13 +13141,13 @@
         "description": "Label of cancel button",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
         "id": "wallet.token.picker.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 29
+          "line": 34
         }
       },
       {
@@ -13141,13 +13155,13 @@
         "description": "Label of add button",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
         "id": "wallet.token.picker.addButtonLabel",
         "start": {
           "column": 18,
-          "line": 34
+          "line": 39
         }
       }
     ],

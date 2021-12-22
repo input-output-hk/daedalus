@@ -16,14 +16,19 @@ export const messages = defineMessages({
     defaultMessage: '!!!Favorites',
     description: 'Label for favorite tokens option',
   },
-  check30FirstLabel: {
-    id: 'wallet.token.picker.check30FirstLabel',
-    defaultMessage: '!!!Select first 30',
-    description: 'Label for select first 30 button label',
+  checkMaxFirstLabel: {
+    id: 'wallet.token.picker.checkMaxFirstLabel',
+    defaultMessage: '!!!Select first {maxTokens}',
+    description: 'Label for select first max button label',
+  },
+  checkAllLabel: {
+    id: 'wallet.token.picker.checkAllLabel',
+    defaultMessage: '!!!Select all',
+    description: 'Label for select all button label',
   },
   checkedCountLabel: {
     id: 'wallet.token.picker.checkedCountLabel',
-    defaultMessage: '!!!{checkedCount} of {maxTokens} max tokens',
+    defaultMessage: '!!!{checkedCount} out of {maxTokens} tokens',
     description: 'Label of selected tokens count',
   },
   cancelButtonLabel: {
