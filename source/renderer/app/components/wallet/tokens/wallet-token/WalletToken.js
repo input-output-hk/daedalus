@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './WalletToken.scss';
@@ -43,15 +43,19 @@ const WalletToken = observer((props: Props) => {
     isRemovingAsset,
   } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const toggleIsExpanded = () => {
+  const toggleIsExpanded = useCallback(() => {
     setIsExpanded(!isExpanded);
-  };
-  const componentStyles = classNames(
-    styles.component,
-    isExpanded && styles.isExpanded,
-    isInsertingAsset && styles.inserting,
-    isRemovingAsset && styles.removing,
-    className
+  }, [setIsExpanded, isExpanded]);
+  const componentStyles = useMemo(
+    () =>
+      classNames(
+        styles.component,
+        isExpanded && styles.isExpanded,
+        isInsertingAsset && styles.inserting,
+        isRemovingAsset && styles.removing,
+        className
+      ),
+    [className, styles, isExpanded, isInsertingAsset, isRemovingAsset]
   );
 
   return (
