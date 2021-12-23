@@ -4,7 +4,7 @@
 
 ### Features
 
-- Implement new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
+- Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
 
 ### Fixes
 
