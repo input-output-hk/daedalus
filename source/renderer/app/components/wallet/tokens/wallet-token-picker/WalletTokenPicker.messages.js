@@ -29,7 +29,7 @@ export const messages = defineMessages({
   },
   checkedCountLabel: {
     id: 'wallet.token.picker.checkedCountLabel',
-    defaultMessage: '!!!{checkedCount} out of {maxTokens} tokens',
+    defaultMessage: '!!!{checkedCount} out of {maxTokens} tokens.',
     description: 'Label of selected tokens count',
   },
   cancelButtonLabel: {
