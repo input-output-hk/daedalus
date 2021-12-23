@@ -87,7 +87,7 @@ const WalletTokenPicker = ({
           <span className={styles.count}>
             {intl.formatMessage(messages.checkedCountLabel, {
               checkedCount,
-              maxTokens: MAX_TOKENS,
+              maxTokens: Math.min(MAX_TOKENS, assets.length),
             })}
           </span>
           <button className={styles.checkMax} onClick={checkMax}>
