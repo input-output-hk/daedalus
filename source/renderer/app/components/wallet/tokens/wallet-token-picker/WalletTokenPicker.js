@@ -8,6 +8,8 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import Dialog from '../../../widgets/Dialog';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
+import DialogCloseButton from '../../../widgets/DialogCloseButton';
+
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
 import { filterSelectOptions, getCheckMaxLabel } from './helpers';
@@ -70,6 +72,8 @@ const WalletTokenPicker = ({
       subtitle={walletName}
       closeOnOverlayClick
       actions={actions}
+      onClose={onCancel}
+      closeButton={<DialogCloseButton />}
     >
       <div className={styles.root}>
         <WalletTokensSearch
