@@ -113,4 +113,10 @@
 
 .dialog {
   overflow-y: hidden;
+
+  :global {
+    .Dialog_contentWrapper {
+      overflow-y: hidden;
+    }
+  }
 }
