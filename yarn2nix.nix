@@ -190,10 +190,6 @@ yarn2nix.mkYarnPackage {
       $STRIP $file
       patchelf --shrink-rpath $file
     done
-
-    echo " ======================================== "
-    git --version
-    echo " ======================================== "
   '';
   #allowedReferences = [ "out" ];
   #allowedRequisites = [
