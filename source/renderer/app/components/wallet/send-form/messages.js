@@ -147,7 +147,13 @@ export default defineMessages({
   minimumAmountNotice: {
     id: 'wallet.send.form.minimumAmountNote',
     defaultMessage:
-      '<b>Note:</b> the ada field was updated because this transaction requires a minimum of {minimumAda} ADA.',
+      '<b>Note:</b> the ada field was automatically updated because this transaction requires a minimum of {minimumAda} ADA.',
     description: 'Minimum amount update notice',
+  },
+  restoredAdaAmount: {
+    id: 'wallet.send.form.restoredAdaAmount',
+    defaultMessage:
+      '<b>Note:</b> the ada field was automatically updated to {adaAmount} ADA because now it fulfills the minimum amount of {minimumAda} ADA for the transaction.',
+    description: 'Restored ada amount to original user input',
   },
 });

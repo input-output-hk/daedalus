@@ -24,7 +24,10 @@ import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/
 import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
-import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
+import type {
+  WalletTokens,
+  AssetToken,
+} from '../../../../source/renderer/app/api/assets/types';
 
 const allAssets = [
   generateAssetToken(
@@ -185,37 +188,39 @@ const confirmationTokensAmounts = confirmationTokens.map(
   (token) => `${token.quantity}`
 );
 
-const sendFormAssetData = walletTokens.total.map((assetTotal) => {
-  const assetData = allAssets.find(
-    (item) => item.policyId === assetTotal.policyId
-  );
-  let fingerprint;
-  if (!assetData || !assetData.fingerprint) {
-    fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
-      0,
-      44
+export const sendFormAssetData: AssetToken[] = walletTokens.total.map(
+  (assetTotal) => {
+    const assetData = allAssets.find(
+      (item) => item.policyId === assetTotal.policyId
     );
-  } else {
-    fingerprint = assetData.fingerprint;
-  }
+    let fingerprint;
+    if (!assetData || !assetData.fingerprint) {
+      fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
+        0,
+        44
+      );
+    } else {
+      fingerprint = assetData.fingerprint;
+    }
 
-  return {
-    policyId: assetTotal.policyId,
-    assetName: assetTotal.assetName,
-    uniqueId: assetTotal.policyId + assetTotal.assetName,
-    fingerprint,
-    quantity: assetTotal.quantity,
-    decimals: 0,
-    recommendedDecimals: null,
-    metadata: assetData
-      ? assetData.metadata
-      : {
-          name: '',
-          ticker: '',
-          description: '',
-        },
-  };
-});
+    return {
+      policyId: assetTotal.policyId,
+      assetName: assetTotal.assetName,
+      uniqueId: assetTotal.policyId + assetTotal.assetName,
+      fingerprint,
+      quantity: assetTotal.quantity,
+      decimals: 0,
+      recommendedDecimals: null,
+      metadata: assetData
+        ? assetData.metadata
+        : {
+            name: '',
+            ticker: '',
+            description: '',
+          },
+    };
+  }
+);
 
 storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)

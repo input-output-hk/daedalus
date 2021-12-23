@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
 import { intlShape, FormattedHTMLMessage } from 'react-intl';
-import { filter, get, indexOf, omit, map, without } from 'lodash';
+import { filter, get, indexOf, omit, map, without, isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -41,6 +41,15 @@ import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
+
+type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
+
+const AdaInputStateType: EnumMap<string, AdaInputState> = {
+  Restored: 'restored',
+  Updated: 'updated',
+  None: 'none',
+  Reset: 'reset',
+};
 
 type Props = {
   currencyMaxIntegerDigits: number,
@@ -81,6 +90,7 @@ type State = {
     },
   },
   minimumAda: BigNumber,
+  adaAmountInputTrack: BigNumber,
   feeCalculationRequestQue: number,
   transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
@@ -88,12 +98,9 @@ type State = {
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
   isTransactionFeeCalculated: boolean,
-<<<<<<< HEAD
   isTokenPickerOpen: boolean,
-=======
   isCalculatingTransactionFee: boolean,
-  hasUpdatedMinimumAdaValue: boolean,
->>>>>>> a5ab5aa23 ([DDW-860] Send screen improvements)
+  adaInputState: AdaInputState,
 };
 
 @observer
@@ -105,6 +112,7 @@ export default class WalletSendForm extends Component<Props, State> {
   state = {
     formFields: {},
     minimumAda: new BigNumber(0),
+    adaAmountInputTrack: new BigNumber(0),
     feeCalculationRequestQue: 0,
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
@@ -112,12 +120,9 @@ export default class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
-<<<<<<< HEAD
     isTokenPickerOpen: false,
-=======
     isCalculatingTransactionFee: false,
-    hasUpdatedMinimumAdaValue: false,
->>>>>>> a5ab5aa23 ([DDW-860] Send screen improvements)
+    adaInputState: AdaInputStateType.None,
   };
 
   // We need to track the mounted state in order to avoid calling
@@ -232,7 +237,9 @@ export default class WalletSendForm extends Component<Props, State> {
 
     this.setState({
       minimumAda: new BigNumber(0),
+      adaAmountInputTrack: new BigNumber(0),
       isResetButtonDisabled: true,
+      adaInputState: AdaInputStateType.None,
     });
   };
 
@@ -469,17 +476,27 @@ export default class WalletSendForm extends Component<Props, State> {
         !this.selectedAssetsAmounts.includes(emptyAssetFieldValue)
       ) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
+        const adaAmountValue = new BigNumber(adaAmountField.value || 0);
         const nextState = {
           isTransactionFeeCalculated: true,
           minimumAda: minimumAdaValue,
           transactionFee: fee,
           transactionFeeError: null,
           isCalculatingTransactionFee: false,
-          hasUpdatedMinimumAdaValue: this.state.hasUpdatedMinimumAdaValue,
+          adaInputState: this.state.adaInputState,
         };
-        if (minimumAdaValue.gte(adaAmount) && shouldUpdateMinimumAdaAmount) {
-          nextState.hasUpdatedMinimumAdaValue = await this.trySetMinimumAdaAmount(
-            minimumAdaValue.toFormat()
+
+        if (shouldUpdateMinimumAdaAmount) {
+          const adaInputState = await this.checkAdaInputState(
+            adaAmountValue,
+            minimumAdaValue
+          );
+
+          nextState.adaInputState = adaInputState;
+          this.trySetMinimumAdaAmount(
+            adaInputState,
+            adaAmountValue,
+            minimumAdaValue
           );
         }
         this.setState(nextState);
@@ -510,17 +527,23 @@ export default class WalletSendForm extends Component<Props, State> {
               : messages.minAdaRequiredWithNoAssetTooltip;
             values = { minimumAda };
             if (shouldUpdateMinimumAdaAmount) {
-              const hasUpdatedMinimumAdaValue = await this.trySetMinimumAdaAmount(
-                minimumAda
+              const minimumAdaValue = new BigNumber(minimumAda);
+              const adaAmountValue = new BigNumber(adaAmountField.value || 0);
+              const adaInputState = await this.checkAdaInputState(
+                adaAmountValue,
+                minimumAdaValue
               );
-              if (hasUpdatedMinimumAdaValue) {
-                this.setState({
-                  ...nextState,
-                  hasUpdatedMinimumAdaValue: true,
-                  minimumAda: new BigNumber(minimumAda),
-                });
-                return;
-              }
+              this.trySetMinimumAdaAmount(
+                adaInputState,
+                adaAmountValue,
+                minimumAdaValue
+              );
+              this.setState({
+                ...nextState,
+                adaInputState,
+                minimumAda: new BigNumber(minimumAda),
+              });
+              return;
             }
             nextState = {
               ...nextState,
@@ -550,28 +573,92 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  trySetMinimumAdaAmount = async (minimumAda: string) => {
-    const isValid = await this.props.validateAmount(
-      formattedAmountToNaturalUnits(minimumAda)
-    );
-
-    if (!isValid) {
-      return false;
+  checkAdaInputState = async (
+    adaAmount: BigNumber,
+    minimumAda: BigNumber
+  ): Promise<AdaInputState> => {
+    const {
+      adaAmountInputTrack,
+      selectedAssetUniqueIds,
+      adaInputState,
+    } = this.state;
+    if (
+      adaAmountInputTrack.gt(minimumAda) &&
+      adaInputState === AdaInputStateType.Updated
+    ) {
+      return AdaInputStateType.Restored;
     }
 
-    this.form.$('adaAmount').onChange(minimumAda);
-    return true;
+    if (
+      adaAmountInputTrack.lt(minimumAda) &&
+      !isEmpty(selectedAssetUniqueIds)
+    ) {
+      const isValid = await this.props.validateAmount(
+        formattedAmountToNaturalUnits(minimumAda.toFormat())
+      );
+
+      if (!isValid) {
+        return AdaInputStateType.None;
+      }
+
+      return AdaInputStateType.Updated;
+    }
+
+    if (isEmpty(selectedAssetUniqueIds)) {
+      return AdaInputStateType.Reset;
+    }
+
+    return AdaInputStateType.None;
+  };
+
+  trySetMinimumAdaAmount = (
+    adaInputState: AdaInputState,
+    adaAmount: BigNumber,
+    minimumAda: BigNumber
+  ) => {
+    const { formFields } = this.state;
+    const { adaAmount: adaAmountField } = formFields.receiver;
+
+    switch (adaInputState) {
+      case 'updated':
+        adaAmountField.onChange(minimumAda.toFormat());
+        break;
+      case 'restored':
+      case 'reset':
+        adaAmountField.onChange(this.state.adaAmountInputTrack.toFormat());
+        break;
+      case 'none':
+      default:
+    }
   };
 
   updateAdaAmount = async () => {
-    try {
-      this.trySetMinimumAdaAmount(this.state.minimumAda.toFormat());
-      return this.setState({
-        hasUpdatedMinimumAdaValue: false,
-      });
-    } catch (err) {
-      return false;
+    const { minimumAda } = this.state;
+    const formattedMinimumAda = minimumAda.toFormat();
+    const isValid = await this.props.validateAmount(
+      formattedAmountToNaturalUnits(formattedMinimumAda)
+    );
+
+    if (!isValid) {
+      return;
     }
+
+    this.form.$('adaAmount').onChange(formattedMinimumAda);
+    this.setState({
+      adaInputState: 'none',
+      adaAmountInputTrack: minimumAda,
+    });
+  };
+
+  onAdaAmountFieldChange = (value: string) => {
+    const { formFields } = this.state;
+    const { adaAmount: adaAmountField } = formFields.receiver;
+
+    adaAmountField.onChange(value);
+
+    this.setState({
+      adaAmountInputTrack: new BigNumber(value),
+    });
   };
 
   isAdaAmountLessThanMinimumRequired = () => {
@@ -608,21 +695,25 @@ export default class WalletSendForm extends Component<Props, State> {
     const { receiver } = formFields;
     const assetFields = omit(receiver.assetFields, uniqueId);
     const assetsDropdown = omit(receiver.assetsDropdown, uniqueId);
-    this.setState({
-      selectedAssetUniqueIds: without(selectedAssetUniqueIds, uniqueId),
-      formFields: {
-        ...formFields,
-        receiver: {
-          ...receiver,
-          assetFields,
-          assetsDropdown,
+    this.setState(
+      {
+        selectedAssetUniqueIds: without(selectedAssetUniqueIds, uniqueId),
+        formFields: {
+          ...formFields,
+          receiver: {
+            ...receiver,
+            assetFields,
+            assetsDropdown,
+          },
         },
       },
-    });
-    this.removeAssetFields(uniqueId);
-    setTimeout(() => {
-      this.calculateTransactionFee();
-    });
+      () => {
+        this.removeAssetFields(uniqueId);
+        setTimeout(() => {
+          this.calculateTransactionFee(true);
+        });
+      }
+    );
   };
 
   addAssetFields = (uniqueId: string) => {
@@ -779,6 +870,8 @@ export default class WalletSendForm extends Component<Props, State> {
               this.addFocusableField(field);
             }}
             className="receiver"
+            data-testid="receiver"
+            aria-labelledby={receiverField.bind().label}
             error={receiverFieldError}
             onChange={(value) => {
               receiverField.onChange(value || '');
@@ -836,22 +929,22 @@ export default class WalletSendForm extends Component<Props, State> {
                     this.addFocusableField(field);
                   }}
                   className="adaAmount"
-                  value={adaAmountField.value}
                   bigNumberFormat={this.getCurrentNumberFormat()}
                   decimalPlaces={currencyMaxFractionalDigits}
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
-                  onChange={(value) => {
-                    adaAmountField.onChange(value);
-                  }}
+                  onChange={this.onAdaAmountFieldChange}
                   currency={globalMessages.adaUnit}
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                   autoFocus={this._isAutoFocusEnabled}
                 />
-                <div className={styles.minAdaRequired}>
+                <div
+                  className={styles.minAdaRequired}
+                  data-testid="minimumAdaRequiredMsg"
+                >
                   {this.isAdaAmountLessThanMinimumRequired() ? (
                     <>
                       <Button
@@ -1009,12 +1102,29 @@ export default class WalletSendForm extends Component<Props, State> {
                   </div>
                 )}
               </div>
-              {this.state.hasUpdatedMinimumAdaValue && (
-                <div className={styles.minimumAmountNotice}>
+              {this.state.adaInputState === AdaInputStateType.Updated && (
+                <div
+                  className={styles.minimumAmountNotice}
+                  data-testid="WalletSendForm::minimumAmountNotice::updated"
+                >
                   <FormattedHTMLMessage
                     {...messages.minimumAmountNotice}
                     values={{
                       minimumAda: minimumAdaValue,
+                    }}
+                  />
+                </div>
+              )}
+              {this.state.adaInputState === AdaInputStateType.Restored && (
+                <div
+                  className={styles.minimumAmountNotice}
+                  data-testid="WalletSendForm::minimumAmountNotice::restored"
+                >
+                  <FormattedHTMLMessage
+                    {...messages.restoredAdaAmount}
+                    values={{
+                      minimumAda: minimumAdaValue,
+                      adaAmount: adaAmountField.value,
                     }}
                   />
                 </div>
