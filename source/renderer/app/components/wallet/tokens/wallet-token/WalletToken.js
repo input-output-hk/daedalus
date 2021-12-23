@@ -14,6 +14,7 @@ type Props = {
   assetSettingsDialogWasOpened: boolean,
   className?: string,
   headerClassName?: string,
+  footerClassName?: string,
   fullFingerprint?: boolean,
   isFavorite: boolean,
   isInsertingAsset: boolean,
@@ -32,6 +33,7 @@ const WalletToken = observer((props: Props) => {
     assetSettingsDialogWasOpened,
     className,
     headerClassName,
+    footerClassName,
     fullFingerprint = true,
     isFavorite,
     isLoading,
@@ -81,6 +83,7 @@ const WalletToken = observer((props: Props) => {
         />
         <WalletTokenFooter
           asset={asset}
+          className={footerClassName}
           isLoading={isLoading}
           onAssetSettings={onAssetSettings}
           onOpenAssetSend={onOpenAssetSend}

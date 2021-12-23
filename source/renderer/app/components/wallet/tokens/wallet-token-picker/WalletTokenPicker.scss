@@ -103,11 +103,20 @@
 
   .token {
     flex: 1;
+
+    &:global(.WalletToken_isExpanded) {
+      padding-bottom: 14px;
+    }
   }
 
   .tokenHeader {
     padding-bottom: 14px;
     padding-top: 14px;
+  }
+
+  .tokenFooter {
+    margin-top: 14px;
+    padding-top: 5px;
   }
 }
 

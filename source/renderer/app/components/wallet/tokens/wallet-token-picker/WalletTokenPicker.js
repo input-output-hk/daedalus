@@ -116,6 +116,7 @@ const WalletTokenPicker = ({
                 asset={asset}
                 className={styles.token}
                 headerClassName={styles.tokenHeader}
+                footerClassName={styles.tokenFooter}
                 fullFingerprint={false}
                 isFavorite={tokenFavorites[asset.uniqueId]}
               />

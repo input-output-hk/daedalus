@@ -1,4 +1,4 @@
-.footer {
+.root {
   border-top: 1px solid var(--theme-wallet-settings-section-separator-color);
   color: var(--theme-widgets-asset-token-text-color);
   display: flex;
@@ -31,7 +31,7 @@
     }
   }
 
-  .footerButtons {
+  .buttons {
     margin: auto 0;
     white-space: nowrap;
 

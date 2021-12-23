@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import styles from './WalletTokenFooter.scss';
 import AssetAmount from '../../../assets/AssetAmount';
@@ -15,6 +15,7 @@ import { isRecommendedDecimal } from './helpers';
 
 type Props = {
   asset: AssetToken,
+  className?: string,
   intl: intlShape.isRequired,
   isLoading: boolean,
   onAssetSettings?: Function,
@@ -22,7 +23,14 @@ type Props = {
 };
 
 const WalletTokenFooter = (props: Props) => {
-  const { asset, intl, isLoading, onAssetSettings, onOpenAssetSend } = props;
+  const {
+    asset,
+    className,
+    intl,
+    isLoading,
+    onAssetSettings,
+    onOpenAssetSend,
+  } = props;
   const { recommendedDecimals, decimals } = asset;
   const hasWarning = isRecommendedDecimal({ decimals, recommendedDecimals });
   const warningPopOverMessage =
@@ -31,7 +39,7 @@ const WalletTokenFooter = (props: Props) => {
       : messages.settingsWarningPopOverAvailable;
 
   return (
-    <div className={styles.footer}>
+    <div className={classNames(styles.root, className)}>
       <div className={styles.amount}>
         <span className={styles.amountLabel}>
           {intl.formatMessage(messages.amountLabel)}
@@ -46,7 +54,7 @@ const WalletTokenFooter = (props: Props) => {
           />
         </div>
       </div>
-      <div className={styles.footerButtons}>
+      <div className={styles.buttons}>
         {onAssetSettings && (
           <PopOver
             content={
