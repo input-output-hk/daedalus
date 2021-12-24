@@ -87,6 +87,7 @@ const WalletTokenPicker = ({
             className={styles.filterSelect}
             options={filterSelectOptions(intl)}
             selectionRenderer={(option) => option.label}
+            optionHeight={34}
           />
           <span className={styles.count}>
             {intl.formatMessage(messages.checkedCountLabel, {

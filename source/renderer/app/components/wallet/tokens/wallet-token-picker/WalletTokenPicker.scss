@@ -17,6 +17,12 @@
       font-family: var(--font-medium);
       font-size: 16px;
       line-height: 1.38;
+
+      :global {
+        .SimpleOptions_option {
+          padding: 6px 12px;
+        }
+      }
     }
 
     :global {
@@ -26,7 +32,8 @@
       }
 
       .SimpleBubble_bubble {
-        width: 170px;
+        border: none;
+        width: 90px;
       }
 
       .SimpleInput_customValueWrapper .SimpleInput_input {
