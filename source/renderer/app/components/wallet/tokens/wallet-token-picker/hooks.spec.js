@@ -69,7 +69,7 @@ describe('WalletTokenPicker hooks', () => {
     }
   );
 
-  const checkMaxCases = [
+  const toogleAllFnCases = [
     // testId, [assets, previousCheckedIds], alreadyChecked, expected [checkedCount, checkedIds]
     [
       'less than 30 assets',
@@ -97,8 +97,8 @@ describe('WalletTokenPicker hooks', () => {
     ],
   ];
 
-  test.each(checkMaxCases)(
-    'useCheckboxes toogle checkMax for %s',
+  test.each(toogleAllFnCases)(
+    'useCheckboxes toogle toogleAllFn for %s',
     (testId, [assets, previousCheckedIds], alreadyChecked, expected) => {
       const hook = setup(useCheckboxes, {
         assets,
@@ -112,7 +112,7 @@ describe('WalletTokenPicker hooks', () => {
       }
 
       act(() => {
-        hook.checkMax();
+        hook.toogleAllFn();
       });
 
       expect(hook.checkedCount).toBe(expected[0]);
