@@ -94,12 +94,13 @@ export default class AssetInput extends Component<Props> {
           {quantity.isPositive() && (
             <div className={styles.amountTokenTotal}>
               {intl.formatMessage(messages.ofLabel)}
-              {` `}
-              <DiscreetTokenWalletAmount
-                amount={quantity}
-                metadata={metadata}
-                decimals={decimals}
-              />
+              <span className={styles.amountValue}>
+                <DiscreetTokenWalletAmount
+                  amount={quantity}
+                  metadata={metadata}
+                  decimals={decimals}
+                />
+              </span>
             </div>
           )}
           <NumericInput
