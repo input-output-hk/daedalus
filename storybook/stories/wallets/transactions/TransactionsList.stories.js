@@ -150,10 +150,9 @@ const assets = {
 const getAsset = (policyId: string, assetName: string): ?Asset =>
   assetDetails[`${policyId}${assetName}`];
 
-/* eslint-disable consistent-return */
-storiesOf('Wallets|Transactions', module)
-  .addDecorator(withKnobs)
-  .addDecorator((getStory, props) => {
+const decorators = [
+  withKnobs,
+  (getStory, props) => {
     const transactionsOption = select(
       'Transactions',
       {
@@ -166,6 +165,7 @@ storiesOf('Wallets|Transactions', module)
       },
       'groupedByDays'
     );
+
     return (
       <WalletsTransactionsWrapper
         {...props}
@@ -173,87 +173,107 @@ storiesOf('Wallets|Transactions', module)
         getStory={getStory}
       />
     );
-  })
-  .addDecorator(WalletsWrapper)
+  },
+  WalletsWrapper,
+];
 
-  // ====== Stories ======
+/* eslint-disable consistent-return */
+storiesOf('Wallets/Transactions', module)
+  .add(
+    'Transactions List',
+    (_, context: Props) => {
+      const {
+        defaultFilterOptions,
+        filterOptions,
+        locale,
+        onFilter,
+        populatedFilterOptions,
+        transactions,
+        totalAvailable,
+      } = context;
 
-  .add('Transactions List', (props: Props) => {
-    const {
-      defaultFilterOptions,
-      filterOptions,
-      locale,
-      onFilter,
-      populatedFilterOptions,
-      transactions,
-      totalAvailable,
-    } = props;
-    return (
-      <WalletTransactions
-        activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
-        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-        currentLocale={locale}
-        currentNumberFormat={NUMBER_OPTIONS[0].value}
-        currentTimeFormat={TIME_OPTIONS[0].value}
-        defaultFilterOptions={defaultFilterOptions}
-        filterOptions={filterOptions}
-        deletePendingTransaction={action('deletePendingTransaction')}
-        formattedWalletAmount={formattedWalletAmount}
-        getUrlByType={action('getUrlByType')}
-        hasMoreToLoad={false}
-        isInternalAddress={() => true}
-        isDeletingTransaction={false}
-        isLoadingTransactions={false}
-        onFilter={onFilter}
-        onLoadMore={action('onLoadMore')}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        onRequestCSVFile={action('onRequestCSVFile')}
-        populatedFilterOptions={populatedFilterOptions}
-        totalAvailable={totalAvailable}
-        transactions={transactions}
-        hasAssetsEnabled={false}
-        getAsset={getAsset}
-        onCopyAssetParam={() => {}}
-      />
-    );
-  })
-  .add('Wallet Tokens Transactions List', (props: Props) => {
-    const {
-      defaultFilterOptions,
-      filterOptions,
-      locale,
-      onFilter,
-      populatedFilterOptions,
-      transactions,
-      totalAvailable,
-    } = props;
-    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    return (
-      <WalletTransactions
-        activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
-        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-        currentLocale={locale}
-        currentNumberFormat={NUMBER_OPTIONS[0].value}
-        currentTimeFormat={TIME_OPTIONS[0].value}
-        defaultFilterOptions={defaultFilterOptions}
-        filterOptions={filterOptions}
-        deletePendingTransaction={action('deletePendingTransaction')}
-        formattedWalletAmount={formattedWalletAmount}
-        getUrlByType={action('getUrlByType')}
-        hasMoreToLoad={false}
-        isInternalAddress={() => true}
-        isDeletingTransaction={false}
-        isLoadingTransactions={false}
-        onFilter={onFilter}
-        onLoadMore={action('onLoadMore')}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        onRequestCSVFile={action('onRequestCSVFile')}
-        populatedFilterOptions={populatedFilterOptions}
-        totalAvailable={totalAvailable}
-        transactions={transactions}
-        hasAssetsEnabled={hasAssetsEnabled}
-        getAsset={getAsset}
-        onCopyAssetParam={() => {}}
-      />
-    );
-  });
+      return (
+        <>
+          <WalletTransactions
+            activeWallet={generateWallet(
+              'Wallet name',
+              '45119903750165',
+              assets
+            )}
+            currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+            currentLocale={locale}
+            currentNumberFormat={NUMBER_OPTIONS[0].value}
+            currentTimeFormat={TIME_OPTIONS[0].value}
+            defaultFilterOptions={defaultFilterOptions}
+            filterOptions={filterOptions}
+            deletePendingTransaction={action('deletePendingTransaction')}
+            formattedWalletAmount={formattedWalletAmount}
+            getUrlByType={action('getUrlByType')}
+            hasMoreToLoad={false}
+            isInternalAddress={() => {
+              return true;
+            }}
+            isDeletingTransaction={false}
+            isLoadingTransactions={false}
+            onFilter={onFilter}
+            onLoadMore={action('onLoadMore')}
+            onOpenExternalLink={action('onOpenExternalLink')}
+            onRequestCSVFile={action('onRequestCSVFile')}
+            populatedFilterOptions={populatedFilterOptions}
+            totalAvailable={totalAvailable}
+            transactions={transactions}
+            hasAssetsEnabled={false}
+            getAsset={getAsset}
+            onCopyAssetParam={() => {}}
+          />
+        </>
+      );
+    },
+    { decorators }
+  )
+  .add(
+    'Wallet Tokens Transactions List',
+    (_, context: Props) => {
+      const {
+        defaultFilterOptions,
+        filterOptions,
+        locale,
+        onFilter,
+        populatedFilterOptions,
+        transactions,
+        totalAvailable,
+      } = context;
+      const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
+      return (
+        <WalletTransactions
+          activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
+          currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+          currentLocale={locale}
+          currentNumberFormat={NUMBER_OPTIONS[0].value}
+          currentTimeFormat={TIME_OPTIONS[0].value}
+          defaultFilterOptions={defaultFilterOptions}
+          filterOptions={filterOptions}
+          deletePendingTransaction={action('deletePendingTransaction')}
+          formattedWalletAmount={formattedWalletAmount}
+          getUrlByType={action('getUrlByType')}
+          hasMoreToLoad={false}
+          isInternalAddress={() => {
+            return true;
+          }}
+          isDeletingTransaction={false}
+          isLoadingTransactions={false}
+          onFilter={onFilter}
+          onLoadMore={action('onLoadMore')}
+          onOpenExternalLink={action('onOpenExternalLink')}
+          onRequestCSVFile={action('onRequestCSVFile')}
+          populatedFilterOptions={populatedFilterOptions}
+          totalAvailable={totalAvailable}
+          transactions={transactions}
+          hasAssetsEnabled={hasAssetsEnabled}
+          getAsset={getAsset}
+          onCopyAssetParam={() => {}}
+        />
+      );
+    },
+    { decorators }
+  );

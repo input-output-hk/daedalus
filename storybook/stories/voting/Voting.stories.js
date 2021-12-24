@@ -81,12 +81,8 @@ const WALLETS = [
 
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
 
-storiesOf('Voting|Voting Registration Wizard', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
+storiesOf('Voting/Voting Registration Wizard', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
@@ -166,7 +162,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
     />
   ));
 
-storiesOf('Voting|Voting Info', module)
+storiesOf('Voting/Voting Info', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
@@ -175,15 +171,10 @@ storiesOf('Voting|Voting Info', module)
   .add('Voting Info', () => (
     <VerticalFlexContainer>
       <VotingInfo
-        fundPhase={select('Fund phase', [
-          FundPhases.SNAPSHOT,
-          FundPhases.VOTING,
-          FundPhases.TALLYING,
-          FundPhases.RESULTS,
-        ])}
         currentLocale={LANGUAGE_OPTIONS[0].value}
         currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
         currentTimeFormat={TIME_OPTIONS[0].value}
+        isRegistrationEnded={boolean('isRegistrationEnded', false)}
         onRegisterToVoteClick={action('onRegisterToVoteClick')}
         onExternalLinkClick={action('onExternalLinkClick')}
       />

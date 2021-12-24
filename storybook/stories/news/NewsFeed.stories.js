@@ -19,7 +19,7 @@ const updateDownloadProgressOptions = {
   step: 1,
 };
 
-storiesOf('News|NewsFeed', module)
+storiesOf('News/NewsFeed', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
@@ -66,7 +66,7 @@ storiesOf('News|NewsFeed', module)
     </div>
   ))
 
-  .add('Fetched', ({ locale }: { locale: string }) => {
+  .add('Fetched', (_, { locale }: { locale: string }) => {
     const displayAppUpdateNewsItem = boolean('displayAppUpdateNewsItem', true);
     const updateDownloadProgress = displayAppUpdateNewsItem
       ? number('updateDownloadProgress', 30, updateDownloadProgressOptions)

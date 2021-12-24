@@ -91,31 +91,30 @@ const decorator = (story, context) => {
   );
 };
 
-storiesOf('Decentralization | Countdown', module)
-  .addDecorator(decorator)
-  .add(
-    pageNames.countdown,
-    () => (
-      <div>
-        <StakingCountdown
-          startDateTime={startDateTimeKnob(
-            'Decentralization Start DateTime',
-            defaultStartDateTime
-          )}
-          onLearnMoreClick={action('onLearnMoreClick')}
-        />
-      </div>
-    ),
-    { id: 'countdown' }
-  );
+storiesOf('Decentralization / Countdown', module).add(
+  pageNames.countdown,
+  () => (
+    <div>
+      <StakingCountdown
+        startDateTime={startDateTimeKnob(
+          'Decentralization Start DateTime',
+          defaultStartDateTime
+        )}
+        onLearnMoreClick={action('onLearnMoreClick')}
+      />
+    </div>
+  ),
+  { id: 'countdown' },
+  { decorators: [decorator] }
+);
 
-storiesOf('Decentralization | Staking', module)
+storiesOf('Decentralization / Staking', module)
   .addDecorator(decorator)
   // ====== Stories ======
 
   .add(
     pageNames['delegation-center'],
-    (props) => (
+    (_, props) => (
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
     ),
     {
@@ -125,7 +124,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Center - Loading',
-    (props) => (
+    (_, props) => (
       <StakingDelegationCenterStory
         {...props}
         isLoading
@@ -139,7 +138,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Center - Not an Shelley era',
-    (props) => (
+    (_, props) => (
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
     ),
     {
@@ -158,7 +157,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     `${pageNames['stake-pools']} - Loading`,
-    (props) => <StakePoolsStory {...props} isLoading />,
+    (_, props) => <StakePoolsStory {...props} isLoading />,
     {
       id: 'stake-pools-loading',
     }
@@ -217,7 +216,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Wizard',
-    (props) => {
+    (_, props) => {
       const oversaturationPercentage = number('Oversaturation Percentage', 0, {
         min: 0,
         max: 1000,
@@ -237,14 +236,14 @@ storiesOf('Decentralization | Staking', module)
   )
   .add(
     'Delegation Wizard - Delegation Not Available',
-    (props) => <StakingDelegationSteps {...props} isDisabled />,
+    (_, props) => <StakingDelegationSteps {...props} isDisabled />,
     {
       id: 'wizard',
     }
   )
   .add(
     'Undelegate Confirmation',
-    (props) => (
+    (_, props) => (
       <StakingUndelegateConfirmationStory
         {...props}
         isHardwareWallet={boolean('isHardwareWallet', false)}
@@ -257,7 +256,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Undelegate Confirmation - unknownn stake pool',
-    (props) => (
+    (_, props) => (
       <StakingUndelegateConfirmationStory {...props} unknownStakePool />
     ),
     {
@@ -273,7 +272,7 @@ storiesOf('Decentralization | Staking', module)
     }
   );
 
-storiesOf('Decentralization | Redeem ITN Rewards', module)
+storiesOf('Decentralization / Redeem ITN Rewards', module)
   .addDecorator(decorator)
   // ====== Stories ======
 

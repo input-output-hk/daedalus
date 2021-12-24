@@ -8,7 +8,7 @@ import IncidentOverlay from '../../../source/renderer/app/components/news/Incide
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 
-storiesOf('News|Overlays', module)
+storiesOf('News/Overlays', module)
   .addDecorator((story) => (
     <StoryDecorator>
       {story({
@@ -29,7 +29,7 @@ storiesOf('News|Overlays', module)
     </StoryDecorator>
   ))
   .addDecorator(withKnobs)
-  .add('Incident Overlay', (props) => (
+  .add('Incident Overlay', (_, props) => (
     <IncidentOverlay
       incident={props}
       onOpenExternalLink={action('onOpenExternalLink')}
@@ -41,7 +41,7 @@ storiesOf('News|Overlays', module)
       )}
     />
   ))
-  .add('Incident - Themed', (props) => (
+  .add('Incident - Themed', (_, props) => (
     <IncidentOverlay
       incident={{
         ...props,
@@ -56,7 +56,7 @@ storiesOf('News|Overlays', module)
       )}
     />
   ))
-  .add('Incident - Grey', (props) => (
+  .add('Incident - Grey', (_, props) => (
     <IncidentOverlay
       incident={{
         ...props,

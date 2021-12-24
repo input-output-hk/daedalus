@@ -24,7 +24,7 @@ const getWallet = (index: number, hasName: boolean, statusSelect?: Object) => ({
   },
 });
 
-storiesOf('Wallets|Import File', module)
+storiesOf('Wallets/Import File', module)
   .addDecorator(WalletsWrapper)
   .add('Step 1 - Import File', () => (
     <VerticalFlexContainer>
@@ -49,12 +49,12 @@ storiesOf('Wallets|Import File', module)
       WalletImportStatuses,
       WalletImportStatuses.PENDING
     );
-    const namedWallets = [
-      ...Array(number('Wallets with name', 5)),
-    ].map((x, index: number) => getWallet(index, true, statusSelect));
-    const unnamedWallets = [
-      ...Array(number('Wallets with no name', 5)),
-    ].map((x, index: number) => getWallet(index, false));
+    const namedWallets = [...Array(number('Wallets with name', 5))].map(
+      (x, index: number) => getWallet(index, true, statusSelect)
+    );
+    const unnamedWallets = [...Array(number('Wallets with no name', 5))].map(
+      (x, index: number) => getWallet(index, false)
+    );
     return (
       <VerticalFlexContainer>
         <WalletSelectImportDialog

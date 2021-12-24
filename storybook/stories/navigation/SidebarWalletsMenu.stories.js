@@ -7,7 +7,7 @@ import { isShelleyTestnetTheme } from '../_support/utils';
 import WalletsWrapper from '../wallets/_utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
 
-storiesOf('Navigation|Wallets Menu', module)
+storiesOf('Navigation/Wallets Menu', module)
   .addDecorator((story) => (
     <StoryDecorator>
       <div style={{ width: '200px' }}>{story()}</div>

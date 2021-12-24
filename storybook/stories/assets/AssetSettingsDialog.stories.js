@@ -5,7 +5,6 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, number } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
-import StoryProvider from '../_support/StoryProvider';
 import AssetSettingsDialog from '../../../source/renderer/app/components/assets/AssetSettingsDialog';
 
 const asset = {
@@ -20,12 +19,8 @@ const asset = {
   metadata: null,
 };
 
-storiesOf('Assets|AssetSettingsDialog', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
+storiesOf('Assets/AssetSettingsDialog', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
   // ====== Stories ======

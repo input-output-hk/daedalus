@@ -8,7 +8,7 @@ import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../_support/StoryDecorator';
 import DappTransactionRequest from '../../../source/renderer/app/components/dapp/DappTransactionRequest';
 import Notification from '../../../source/renderer/app/components/notifications/Notification';
-import StoryProvider, { WALLETS_V2 } from '../_support/StoryProvider';
+import { WALLETS_V2 } from '../_support/StoryProvider';
 import { generateAssetToken } from '../_support/utils';
 
 const allAssets = [
@@ -37,12 +37,8 @@ const allAssets = [
   ),
 ];
 
-storiesOf('dApps|TransactionRequest', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
+storiesOf('dApps/TransactionRequest', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
   // ====== Stories ======

@@ -217,7 +217,7 @@ const sendFormAssetData = walletTokens.total.map((assetTotal) => {
   };
 });
 
-storiesOf('Wallets|Send', module)
+storiesOf('Wallets/Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send - No Assets', () => (
     <WalletSendForm

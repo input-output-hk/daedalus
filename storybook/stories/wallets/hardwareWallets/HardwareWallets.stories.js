@@ -32,7 +32,7 @@ const trezorDevice = {
   firmwareVersion: MINIMAL_TREZOR_FIRMWARE_VERSION,
 };
 
-storiesOf('Wallets|Hardware Wallets', module)
+storiesOf('Wallets/Hardware Wallets', module)
   .addDecorator(HardwareWalletsWrapper)
 
   // ====== Stories ======

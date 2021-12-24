@@ -10,11 +10,11 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 // Components
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 
-storiesOf('Wallets|Settings', module)
-  .addDecorator(WalletsWrapper)
-  .addDecorator(withKnobs)
+const decorators = [withKnobs, WalletsWrapper];
 
-  .add('Public Key - Spending Password', () => (
+storiesOf('Wallets/Settings', module).add(
+  'Public Key - Spending Password',
+  () => (
     <WalletPublicKeyDialog
       onRevealPublicKey={action('onRevealPublicKey')}
       onClose={action('onCancel')}
@@ -22,4 +22,6 @@ storiesOf('Wallets|Settings', module)
       error={null}
       walletName={'Test Wallet'}
     />
-  ));
+  ),
+  { decorators }
+);

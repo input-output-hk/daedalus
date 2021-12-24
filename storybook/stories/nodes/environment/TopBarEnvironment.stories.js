@@ -107,12 +107,8 @@ const topBarProductionEnv = (currentTheme) => (
   </TopBar>
 );
 
-storiesOf('Nodes|Environment', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
+storiesOf('Nodes/Environment', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
   // ====== Stories ======
   .add('Testnet', (props: { currentTheme: string }) => (

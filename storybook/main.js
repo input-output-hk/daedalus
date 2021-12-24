@@ -1,12 +1,11 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
+const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
-  alias: {
-    Renderer: path.resolve(__dirname, 'source/renderer'),
-  },
-  stories: ['./stories/**/*.stories.@(js|mdx|ts)'],
+  stories: ['../source/**/*.stories.js', './stories/index.js'],
   addons: [
+    '@storybook/addon-essentials',
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-links',
@@ -14,6 +13,10 @@ module.exports = {
     '@storybook/manager-webpack5',
     './addons/DaedalusMenu/register',
   ],
+  previewHead: (head) => `
+    ${head}
+    ${isCi ? '' : '<script src="vendor.dll.js"></script>'}
+  `,
   core: {
     builder: 'webpack5',
   },

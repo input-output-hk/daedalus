@@ -109,12 +109,8 @@ const sidebarMenusHardware = observable({
 
 let emptyMenus;
 
-storiesOf('Navigation|Sidebar', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
+storiesOf('Navigation/Sidebar', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
   // ====== Stories ======
   .add('No Category', (props: { currentTheme: string }) => (

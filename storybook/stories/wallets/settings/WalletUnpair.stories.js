@@ -31,44 +31,50 @@ const messages: WalletSettingRemoveMessages = defineMessages({
   },
 });
 
-storiesOf('Wallets|Settings', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+const decorators = [(story) => <StoryDecorator>{story()}</StoryDecorator>];
 
-  // ====== Stories ======
-
-  .add('Unpair - Accepted', () => (
-    <div>
-      <WalletSettingsActionConfirmationDialog
-        walletName="My Wallet"
-        hasWalletFunds
-        countdownFn={() => 0}
-        isBackupNoticeAccepted
-        messages={messages}
-        confirmationValue="My Wallet"
-        onAcceptBackupNotice={() => {}}
-        onContinue={() => {}}
-        onCancel={() => {}}
-        isUnpair
-        onConfirmationValueChange={action('onRecoveryWordChange')}
-        isSubmitting={false}
-      />
-    </div>
-  ))
-  .add('Unpair - Accepted & submitting', () => (
-    <div>
-      <WalletSettingsActionConfirmationDialog
-        walletName="My Wallet"
-        hasWalletFunds
-        countdownFn={() => 0}
-        isBackupNoticeAccepted
-        messages={messages}
-        confirmationValue="My Wallet"
-        onAcceptBackupNotice={() => {}}
-        onContinue={() => {}}
-        onCancel={() => {}}
-        isUnpair
-        onConfirmationValueChange={action('onRecoveryWordChange')}
-        isSubmitting
-      />
-    </div>
-  ));
+storiesOf('Wallets/Settings', module)
+  .add(
+    'Unpair - Accepted',
+    () => (
+      <div>
+        <WalletSettingsActionConfirmationDialog
+          walletName="My Wallet"
+          hasWalletFunds
+          countdownFn={() => 0}
+          isBackupNoticeAccepted
+          messages={messages}
+          confirmationValue="My Wallet"
+          onAcceptBackupNotice={() => {}}
+          onContinue={() => {}}
+          onCancel={() => {}}
+          isUnpair
+          onConfirmationValueChange={action('onRecoveryWordChange')}
+          isSubmitting={false}
+        />
+      </div>
+    ),
+    { decorators }
+  )
+  .add(
+    'Unpair - Accepted & submitting',
+    () => (
+      <div>
+        <WalletSettingsActionConfirmationDialog
+          walletName="My Wallet"
+          hasWalletFunds
+          countdownFn={() => 0}
+          isBackupNoticeAccepted
+          messages={messages}
+          confirmationValue="My Wallet"
+          onAcceptBackupNotice={() => {}}
+          onContinue={() => {}}
+          onCancel={() => {}}
+          isUnpair
+          onConfirmationValueChange={action('onRecoveryWordChange')}
+          isSubmitting
+        />
+      </div>
+    ),
+    { decorators }
+  );
