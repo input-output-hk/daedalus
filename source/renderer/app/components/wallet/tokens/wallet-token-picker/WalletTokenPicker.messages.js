@@ -42,4 +42,9 @@ export const messages = defineMessages({
     defaultMessage: '!!!Add',
     description: 'Label of add button',
   },
+  clearAll: {
+    id: 'wallet.token.picker.clearAll',
+    defaultMessage: '!!!Clear selection',
+    description: 'Label of clear selection button',
+  },
 });

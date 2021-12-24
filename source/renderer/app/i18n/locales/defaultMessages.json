@@ -13163,6 +13163,20 @@
           "column": 18,
           "line": 40
         }
+      },
+      {
+        "defaultMessage": "!!!Clear selection",
+        "description": "Label of clear selection button",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.clearAll",
+        "start": {
+          "column": 12,
+          "line": 45
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.json"

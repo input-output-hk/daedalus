@@ -12,7 +12,8 @@ import type {
   BooleanMap,
   FilterAssets,
   ScrollPosition,
-  GetMaxTokensIdsMap,
+  GetToogleAllLabel,
+  GetMaxTokensIdMap,
 } from './types';
 
 const isScrollAtTop = (element: HTMLElement) => element.scrollTop === 0;
@@ -36,10 +37,10 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
   return ScrollPositionEnum.MIDDLE;
 };
 
-export const getMaxTokensIdsMap = ({
+export const getMaxTokensIdMap = ({
   assetIds,
   previousCheckedIds,
-}: GetMaxTokensIdsMap) => {
+}: GetMaxTokensIdMap) => {
   const enabledIds = xor(assetIds, previousCheckedIds);
   return enabledIds
     .slice(0, MAX_TOKENS - previousCheckedIds.length)
@@ -78,5 +79,13 @@ export const filterAssets = ({
   });
 };
 
-export const getCheckMaxLabel = (assets: Assets) =>
-  assets.length > MAX_TOKENS ? 'checkMaxFirstLabel' : 'checkAllLabel';
+export const getToogleAllLabel = ({
+  assets,
+  isMaxCount,
+}: GetToogleAllLabel) => {
+  if (isMaxCount) {
+    return 'clearAll';
+  }
+
+  return assets.length > MAX_TOKENS ? 'checkMaxFirstLabel' : 'checkAllLabel';
+};

@@ -12,7 +12,7 @@ import DialogCloseButton from '../../../widgets/DialogCloseButton';
 
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
-import { filterSelectOptions, getCheckMaxLabel } from './helpers';
+import { filterSelectOptions, getToogleAllLabel } from './helpers';
 import { useFilters, useCheckboxes, useScrollPosition } from './hooks';
 import { MAX_TOKENS, ScrollPositionEnum } from './const';
 import type { Props } from './types';
@@ -42,8 +42,9 @@ const WalletTokenPicker = ({
     checkedCount,
     checkedIds,
     disabledIdsSet,
+    isMaxCount,
+    toogleAllFn,
     toggleCheckbox,
-    checkMax,
   } = useCheckboxes({
     assets,
     previousCheckedIds,
@@ -95,10 +96,13 @@ const WalletTokenPicker = ({
               maxTokens: Math.min(MAX_TOKENS, assets.length),
             })}
           </span>
-          <button className={styles.checkMax} onClick={checkMax}>
-            {intl.formatMessage(messages[getCheckMaxLabel(assets)], {
-              maxTokens: MAX_TOKENS,
-            })}
+          <button className={styles.toogleAllButton} onClick={toogleAllFn}>
+            {intl.formatMessage(
+              messages[getToogleAllLabel({ assets, isMaxCount })],
+              {
+                maxTokens: MAX_TOKENS,
+              }
+            )}
           </button>
         </div>
         <div className={styles.list} onScroll={onScroll}>

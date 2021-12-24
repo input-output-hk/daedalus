@@ -36,7 +36,12 @@ export type UseFilters = {
   tokenFavorites: BooleanMap,
 };
 
-export type GetMaxTokensIdsMap = {
+export type GetMaxTokensIdMap = {
   assetIds: Array<string>,
   previousCheckedIds: Array<string>,
+};
+
+export type GetToogleAllLabel = {
+  assets: Assets,
+  isMaxCount: boolean,
 };

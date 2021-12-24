@@ -1153,6 +1153,7 @@
   "wallet.token.picker.checkAllLabel": "すべてを選択",
   "wallet.token.picker.checkMaxFirstLabel": "最初の{maxTokens}を選択",
   "wallet.token.picker.checkedCountLabel": "{checkedCount}/{maxTokens}トークン。",
+  "wallet.token.picker.clearAll": "!!!Clear selection",
   "wallet.token.picker.favoriteTokensLabel": "お気に入り",
   "wallet.token.picker.title": "トークンを追加する",
   "wallet.tokens.list.column.amount": "金額",

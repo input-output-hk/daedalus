@@ -12,7 +12,7 @@ import {
   getCheckedIds,
   filterAssets,
   getScrollPosition,
-  getMaxTokensIdsMap,
+  getMaxTokensIdMap,
 } from './helpers';
 import type {
   Assets,
@@ -34,14 +34,17 @@ export const useCheckboxes = ({
     previousCheckedIds,
   ]);
   const checkedCount = checkedIds.length + disabledIdsSet.size;
+  const isMaxCount = checkedCount === Math.min(MAX_TOKENS, assets.length);
+  const clearAll = useCallback(() => setCheckboxes({}), [setCheckboxes]);
   const checkMax = useCallback(() => {
     setCheckboxes(
-      getMaxTokensIdsMap({
+      getMaxTokensIdMap({
         assetIds,
         previousCheckedIds,
       })
     );
-  }, [assetIds, previousCheckedIds]);
+  }, [assetIds, setCheckboxes, previousCheckedIds]);
+  const toogleAllFn = isMaxCount ? clearAll : checkMax;
   const toggleCheckbox = useCallback(
     (assetId: string) => {
       const newValue = !checkboxes[assetId];
@@ -59,8 +62,9 @@ export const useCheckboxes = ({
     checkboxes,
     checkedCount,
     checkedIds,
+    isMaxCount,
     disabledIdsSet,
-    checkMax,
+    toogleAllFn,
     toggleCheckbox,
   };
 };
