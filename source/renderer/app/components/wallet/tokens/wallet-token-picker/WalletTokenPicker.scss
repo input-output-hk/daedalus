@@ -113,6 +113,12 @@
   .tokenHeader {
     padding-bottom: 14px;
     padding-top: 14px;
+
+    :global {
+      .WalletTokenHeader_asset {
+        margin-left: 12px;
+      }
+    }
   }
 
   .tokenFooter {
