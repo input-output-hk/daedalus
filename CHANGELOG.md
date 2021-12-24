@@ -4,6 +4,7 @@
 
 ### Chores
 
+- Migrated project to TypeScript ([PR 2794](https://github.com/input-output-hk/daedalus/pull/2794))
 - Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
 
 ## 4.6.0

@@ -21,7 +21,7 @@
     - [Spacing](#spacing)
     - [Quotes](#quotes)
     - [Props](#props)
-    - [Flow](#flow)
+    - [Typescript](#typescript)
 1. [CSS](#css)
     - [Formatting Selectors](#formatting)
     - [Properties](#properties)
@@ -1087,9 +1087,9 @@ render() {
 }
 ```
 
-## Flow
+## Typescript
 
-When creating a flow type definition, define its properties in **ABC order**.
+When creating a typescript type definition, define its properties in **ABC order**.
 
 :white_check_mark: ***Do***
 

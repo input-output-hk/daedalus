@@ -36,7 +36,6 @@ export const writeThemeUpdate = ({
   const THEME_FILE = path.join(__dirname, pathBase, `${fileName}.js`);
   const { themeOutput, themeParams } = formatConstNames(fileName);
   const FILE_CONTENT = `
-    // @flow
     import { createTheme } from '../utils/createTheme';
     import type { CreateThemeParams } from '../types';
 
