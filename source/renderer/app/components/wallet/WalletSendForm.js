@@ -211,10 +211,10 @@ export default class WalletSendForm extends Component<Props, State> {
 
   handleSubmitOnEnter = (event: KeyboardEvent): void => {
     if (event.target instanceof HTMLInputElement && event.key === 'Enter')
-      this.handleOnSubmit();
+      this.form.onSubmit(event);
   };
 
-  handleOnSubmit = () => {
+  handleOnSubmit = async () => {
     if (this.isDisabled()) {
       return;
     }
@@ -324,7 +324,8 @@ export default class WalletSendForm extends Component<Props, State> {
   isDisabled = () =>
     this.state.isCalculatingTransactionFee ||
     !this.state.isTransactionFeeCalculated ||
-    !this.form.isValid;
+    !this.form.isValid ||
+    this.form.validating;
 
   form = new ReactToolboxMobxForm(
     {
@@ -352,7 +353,11 @@ export default class WalletSendForm extends Component<Props, State> {
               const adaAmountField = form.$('adaAmount');
               const isAdaAmountValid = adaAmountField.isValid;
               if (isValid && isAdaAmountValid) {
-                this.calculateTransactionFee();
+                try {
+                  await this.calculateTransactionFee();
+                } catch (err) {
+                  return [false, this.context.intl.formatMessage(err)];
+                }
               } else {
                 this.resetTransactionFee();
               }
@@ -386,7 +391,11 @@ export default class WalletSendForm extends Component<Props, State> {
                 formattedAmountToNaturalUnits(amountValue)
               );
               if (isValid) {
-                this.calculateTransactionFee();
+                try {
+                  await this.calculateTransactionFee();
+                } catch (err) {
+                  return [false, this.context.intl.formatMessage(err)];
+                }
               } else {
                 this.resetTransactionFee();
               }
@@ -412,6 +421,11 @@ export default class WalletSendForm extends Component<Props, State> {
         validateOnBlur: false,
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+      },
+      hooks: {
+        onSuccess: () => {
+          this.handleOnSubmit();
+        },
       },
     }
   );
@@ -569,6 +583,8 @@ export default class WalletSendForm extends Component<Props, State> {
           ...nextState,
           transactionFeeError,
         });
+
+        throw localizableError;
       }
     }
   };
@@ -710,7 +726,11 @@ export default class WalletSendForm extends Component<Props, State> {
       () => {
         this.removeAssetFields(uniqueId);
         setTimeout(() => {
-          this.calculateTransactionFee(true);
+          try {
+            this.calculateTransactionFee(true);
+          } catch (err) {
+            return false;
+          }
         });
       }
     );
@@ -756,7 +776,11 @@ export default class WalletSendForm extends Component<Props, State> {
           assetValue.isLessThanOrEqualTo(asset.quantity);
         const isValid = isValidAmount && isValidRange;
         if (isValid) {
-          this.calculateTransactionFee(true);
+          try {
+            await this.calculateTransactionFee(true);
+          } catch (err) {
+            return [false, this.context.intl.formatMessage(err)];
+          }
         } else {
           this.resetTransactionFee();
         }
@@ -1140,7 +1164,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   className="primary"
                   label={intl.formatMessage(messages.sendButtonLabel)}
                   disabled={this.isDisabled()}
-                  onClick={this.handleOnSubmit}
+                  onClick={this.form.onSubmit}
                 />
               </div>
             </div>
