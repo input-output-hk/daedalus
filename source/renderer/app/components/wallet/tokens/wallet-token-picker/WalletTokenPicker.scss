@@ -5,11 +5,11 @@
     display: flex;
     padding: 20px 0;
     transition-duration: 0.2s;
-    transition-property: box-shadow border-width;
+    transition-property: box-shadow border-color;
     transition-timing-function: ease-in-out;
 
     &.scrollNotTop {
-      border-bottom-width: 0px;
+      border-bottom-color: transparent;
       box-shadow: 0 10px 10px -10px var(--theme-tokens-picker-toolbar-box-shadow);
     }
 
@@ -72,7 +72,8 @@
 
   .list {
     height: 450px;
-    overflow-y: auto;
+    margin-right: -20px;
+    overflow-y: scroll;
   }
 
   .listItem {
@@ -121,8 +122,6 @@
 }
 
 .dialog {
-  overflow: hidden;
-
   :global {
     .Dialog_contentWrapper {
       overflow-y: hidden;
