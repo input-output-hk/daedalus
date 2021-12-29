@@ -47,4 +47,9 @@ export const messages = defineMessages({
     defaultMessage: '!!!Clear selection',
     description: 'Label of clear selection button',
   },
+  noResults: {
+    id: 'wallet.token.picker.noResults',
+    defaultMessage: 'No results matching search query',
+    description: 'Text for no results',
+  },
 });

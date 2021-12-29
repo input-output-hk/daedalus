@@ -77,6 +77,14 @@
     }
   }
 
+  .noResults {
+    display: inline-block;
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 1.38;
+    margin: 30px;
+  }
+
   .list {
     height: 450px;
     margin-right: -25px;

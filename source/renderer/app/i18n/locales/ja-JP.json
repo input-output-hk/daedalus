@@ -1155,6 +1155,7 @@
   "wallet.token.picker.checkedCountLabel": "{checkedCount}/{maxTokens}トークン。",
   "wallet.token.picker.clearAll": "!!!Clear selection",
   "wallet.token.picker.favoriteTokensLabel": "お気に入り",
+  "wallet.token.picker.noResults": "No results matching search query",
   "wallet.token.picker.title": "トークンを追加する",
   "wallet.tokens.list.column.amount": "金額",
   "wallet.tokens.list.column.token": "トークン",

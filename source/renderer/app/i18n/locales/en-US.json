@@ -1155,6 +1155,7 @@
   "wallet.token.picker.checkedCountLabel": "{checkedCount} out of {maxTokens} tokens.",
   "wallet.token.picker.clearAll": "Clear selection",
   "wallet.token.picker.favoriteTokensLabel": "Favorites",
+  "wallet.token.picker.noResults": "No results matching search query",
   "wallet.token.picker.title": "Add tokens",
   "wallet.tokens.list.column.amount": "Amount",
   "wallet.tokens.list.column.token": "Token",

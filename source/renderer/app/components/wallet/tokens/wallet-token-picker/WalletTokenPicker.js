@@ -9,7 +9,6 @@ import Dialog from '../../../widgets/Dialog';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
-
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
 import { filterSelectOptions, getToogleAllLabel } from './helpers';
@@ -107,7 +106,12 @@ const WalletTokenPicker = ({
           </button>
         </div>
         <div className={styles.list} onScroll={onScroll}>
-          {currentAssets.map((asset) => (
+          {currentAssets?.length === 0 && (
+            <span className={styles.noResults}>
+              {intl.formatMessage(messages.noResults)}
+            </span>
+          )}
+          {currentAssets?.map((asset) => (
             <div key={asset.uniqueId} className={styles.listItem}>
               <Checkbox
                 className={styles.checkbox}
