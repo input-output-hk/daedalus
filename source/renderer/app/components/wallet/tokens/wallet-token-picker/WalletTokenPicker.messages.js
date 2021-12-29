@@ -19,7 +19,7 @@ export const messages = defineMessages({
   },
   checkMaxFirstLabel: {
     id: 'wallet.token.picker.checkMaxFirstLabel',
-    defaultMessage: '!!!Select first {maxTokens}',
+    defaultMessage: '!!!Select first {maxTokens} tokens',
     description: 'Label for select first max button label',
   },
   checkAllLabel: {

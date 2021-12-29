@@ -13095,7 +13095,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Select first {maxTokens}",
+        "defaultMessage": "!!!Select first {maxTokens} tokens",
         "description": "Label for select first max button label",
         "end": {
           "column": 3,
@@ -13176,6 +13176,20 @@
         "start": {
           "column": 12,
           "line": 45
+        }
+      },
+      {
+        "defaultMessage": "No results matching search query",
+        "description": "Text for no results",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
+        "id": "wallet.token.picker.noResults",
+        "start": {
+          "column": 13,
+          "line": 50
         }
       }
     ],

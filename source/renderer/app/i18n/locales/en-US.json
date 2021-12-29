@@ -1151,7 +1151,7 @@
   "wallet.token.picker.allTokensLabel": "All tokens",
   "wallet.token.picker.cancelButtonLabel": "Cancel",
   "wallet.token.picker.checkAllLabel": "Select all",
-  "wallet.token.picker.checkMaxFirstLabel": "Select first {maxTokens}",
+  "wallet.token.picker.checkMaxFirstLabel": "Select first {maxTokens} tokens",
   "wallet.token.picker.checkedCountLabel": "{checkedCount} out of {maxTokens} tokens.",
   "wallet.token.picker.clearAll": "Clear selection",
   "wallet.token.picker.favoriteTokensLabel": "Favorites",
