@@ -21,6 +21,10 @@
       :global {
         .SimpleOptions_option {
           padding: 6px 12px;
+
+          &.SimpleOptions_selectedOption:after {
+            border: none;
+          }
         }
       }
     }
