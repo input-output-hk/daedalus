@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import classNames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -25,10 +25,19 @@ type Props = {
 
 const WalletTokensSearch = (props: Props) => {
   const { searchValue, onSearch, intl } = props;
+  const [focus, setFocus] = useState(false);
   return (
     <div className={styles.component}>
-      <SVGInline svg={searchIcon} className={styles.searchIcon} />
+      <SVGInline
+        svg={searchIcon}
+        className={classNames(
+          styles.searchIcon,
+          focus && styles.focusSearchIcon
+        )}
+      />
       <Input
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
         onChange={onSearch}
         value={searchValue}
         placeholder={intl.formatMessage(messages.placeholder)}

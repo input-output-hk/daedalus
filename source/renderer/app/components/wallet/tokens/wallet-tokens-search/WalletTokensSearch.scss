@@ -13,6 +13,10 @@
     }
   }
 
+  .focusSearchIcon {
+    color: var(--rp-input-border-color-focus);
+  }
+
   input {
     border-radius: 4px;
     padding: 14px 58px 14px 45px;
