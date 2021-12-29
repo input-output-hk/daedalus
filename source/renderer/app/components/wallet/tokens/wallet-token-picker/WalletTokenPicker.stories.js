@@ -47,6 +47,15 @@ const assets = [
     recommendedDecimals: null,
     uniqueId: generateHash(),
   },
+  {
+    policyId: generateHash(),
+    assetName: '546f6b656e34',
+    assetNameASCII: 'Token4',
+    quantity: new BigNumber(30),
+    fingerprint: generateHash(),
+    recommendedDecimals: null,
+    uniqueId: generateHash(),
+  },
 ];
 
 storiesOf('Wallets|Tokens', module)

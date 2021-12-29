@@ -1,4 +1,8 @@
 .root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
   .toolbar {
     border-bottom: 1px solid
       var(--theme-tokens-picker-toolbar-border-bottom-color);
@@ -92,9 +96,21 @@
 
   .list {
     height: 450px;
-    margin-right: -25px;
+    margin-right: -17px;
     overflow-y: scroll;
-    padding-right: 5px;
+    padding-right: 12px;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-button {
+      display: inline;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: none;
+    }
   }
 
   .listItem {
@@ -150,7 +166,13 @@
 
 .dialog {
   :global {
+    .Dialog_content {
+      display: flex;
+      width: 100%;
+    }
+
     .Dialog_contentWrapper {
+      display: flex;
       overflow-y: hidden;
     }
   }
