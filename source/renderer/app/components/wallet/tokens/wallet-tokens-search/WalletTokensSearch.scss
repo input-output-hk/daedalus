@@ -1,19 +1,23 @@
 .component {
   position: relative;
+
   .searchIcon {
     left: 20px;
     position: absolute;
-    top: 17px;
+    top: 18px;
     z-index: 1;
+
     svg {
       height: 15px;
       width: 15px;
     }
   }
+
   input {
     border-radius: 4px;
     padding: 14px 58px 14px 45px;
   }
+
   .clearButton {
     border-radius: 3px;
     cursor: pointer;
@@ -23,12 +27,15 @@
     top: 11px;
     width: 28px;
     z-index: 1;
+
     &:hover {
-      opacity: 0.7;
+      opacity: 0.8;
     }
+
     svg {
       height: 10px;
       width: 10px;
+
       polygon {
         fill: var(--theme-bordered-box-text-color);
       }
