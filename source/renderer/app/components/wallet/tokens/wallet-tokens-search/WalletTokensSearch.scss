@@ -2,9 +2,10 @@
   position: relative;
 
   .searchIcon {
+    color: var(--rp-input-border-color);
     left: 20px;
     position: absolute;
-    top: 18px;
+    top: 19px;
     z-index: 1;
 
     svg {

@@ -15,12 +15,11 @@
   left: 20px;
   position: absolute;
   z-index: 1;
+  opacity: 0.3;
+  color: var(--theme-staking-stake-pools-search-icon-color);
 
   svg {
     width: 15px;
-    g > g {
-      fill: var(--theme-staking-stake-pools-search-icon-color);
-    }
   }
 }
 
