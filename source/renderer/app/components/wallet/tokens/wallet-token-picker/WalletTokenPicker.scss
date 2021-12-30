@@ -26,6 +26,35 @@
         border: none;
       }
 
+      .SimpleOptions_option {
+        padding: 6px 12px;
+      }
+
+      .SimpleInput_customValueWrapper .SimpleInput_input {
+        border: none;
+        height: auto;
+        padding: 0;
+        width: 120px;
+      }
+
+      .SimpleInput_customValueBlock {
+        height: auto;
+        padding-right: 10px;
+      }
+
+      .SelectOverrides_selectInput {
+        align-items: center;
+        display: flex;
+        position: relative;
+
+        &:after {
+          bottom: 0;
+          left: 0;
+          margin-top: 1px;
+          position: relative;
+        }
+      }
+
       .SimpleBubble_bubble {
         border: none;
         left: -12px;
@@ -39,37 +68,6 @@
     font-size: 14px;
     line-height: 1.43;
     white-space: nowrap;
-  }
-
-  :global {
-    .SimpleOptions_option {
-      padding: 6px 12px;
-    }
-
-    .SimpleInput_customValueBlock {
-      height: auto;
-      padding-right: 10px;
-    }
-
-    .SimpleInput_customValueWrapper .SimpleInput_input {
-      border: none;
-      height: auto;
-      padding: 0;
-      width: 120px;
-    }
-
-    .SelectOverrides_selectInput {
-      align-items: center;
-      display: flex;
-      position: relative;
-
-      &:after {
-        bottom: 0;
-        left: 0;
-        margin-top: 1px;
-        position: relative;
-      }
-    }
   }
 
   .count {
