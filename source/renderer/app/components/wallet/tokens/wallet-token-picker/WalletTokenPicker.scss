@@ -4,17 +4,15 @@
   width: 100%;
 
   .toolbar {
-    border-bottom: 1px solid
-      var(--theme-tokens-picker-toolbar-border-bottom-color);
+    box-shadow: 5px 11px 0px -10px var(--theme-tokens-picker-toolbar-border-bottom-color);
     display: flex;
-    padding: 20px 0;
+    padding: 20px 0 20px 15px;
     transition-duration: 0.2s;
-    transition-property: box-shadow border-color;
+    transition-property: box-shadow;
     transition-timing-function: ease-in-out;
   }
 
   .scrollNotTop {
-    border-bottom-color: transparent;
     box-shadow: 0 10px 10px -10px var(--theme-tokens-picker-toolbar-box-shadow);
   }
 
@@ -106,6 +104,7 @@
     height: 450px;
     margin-right: -17px;
     overflow-y: scroll;
+    padding-left: 15px;
     padding-right: 12px;
 
     &::-webkit-scrollbar {
@@ -169,6 +168,8 @@
 }
 
 .dialog {
+  margin-left: -15px;
+
   :global {
     .Dialog_content {
       display: flex;
@@ -178,6 +179,14 @@
     .Dialog_contentWrapper {
       display: flex;
       overflow-y: hidden;
+    }
+
+    .Dialog_actions {
+      padding-left: 15px;
+    }
+
+    .SimpleModal_modal {
+      padding-left: 15px;
     }
   }
 }
