@@ -48,9 +48,13 @@ const WalletTokenPicker = ({
     assets,
     previousCheckedIds,
   });
+  const scrollNotTop = scrollPosition !== ScrollPositionEnum.TOP;
   const toolbarStyles = classNames(
     styles.toolbar,
-    scrollPosition !== ScrollPositionEnum.TOP && styles.scrollNotTop
+    scrollNotTop && styles.scrollNotTop
+  );
+  const toolbarContainerStyles = classNames(
+    scrollNotTop && styles.toolbarContainer
   );
   const actions = [
     {
@@ -76,36 +80,41 @@ const WalletTokenPicker = ({
       closeButton={<DialogCloseButton />}
     >
       <div className={styles.root}>
-        <WalletTokensSearch
-          searchValue={searchValue}
-          onSearch={setSearchValue}
-        />
-        <div className={toolbarStyles}>
-          <Select
-            value={filterOption}
-            onChange={setFilterOption}
-            className={styles.filterSelect}
-            options={filterSelectOptions(intl)}
-            selectionRenderer={(option) => option.label}
-            optionRenderer={(option) => (
-              <span className={styles.filterOption}>{option.label}</span>
-            )}
-            optionHeight={34}
+        <div className={styles.search}>
+          <WalletTokensSearch
+            searchValue={searchValue}
+            onSearch={setSearchValue}
           />
-          <span className={styles.count}>
-            {intl.formatMessage(messages.checkedCountLabel, {
-              checkedCount,
-              maxTokens: Math.min(MAX_TOKENS, assets.length),
-            })}
-          </span>
-          <button className={styles.toogleAllButton} onClick={toogleAllFn}>
-            {intl.formatMessage(
-              messages[getToogleAllLabel({ assets, isMaxCount })],
-              {
-                maxTokens: MAX_TOKENS,
-              }
-            )}
-          </button>
+        </div>
+
+        <div className={toolbarContainerStyles}>
+          <div className={toolbarStyles}>
+            <Select
+              value={filterOption}
+              onChange={setFilterOption}
+              className={styles.filterSelect}
+              options={filterSelectOptions(intl)}
+              selectionRenderer={(option) => option.label}
+              optionRenderer={(option) => (
+                <span className={styles.filterOption}>{option.label}</span>
+              )}
+              optionHeight={33}
+            />
+            <span className={styles.count}>
+              {intl.formatMessage(messages.checkedCountLabel, {
+                checkedCount,
+                maxTokens: Math.min(MAX_TOKENS, assets.length),
+              })}
+            </span>
+            <button className={styles.toogleAllButton} onClick={toogleAllFn}>
+              {intl.formatMessage(
+                messages[getToogleAllLabel({ assets, isMaxCount })],
+                {
+                  maxTokens: MAX_TOKENS,
+                }
+              )}
+            </button>
+          </div>
         </div>
         <div className={styles.list} onScroll={onScroll}>
           {currentAssets?.length === 0 && (

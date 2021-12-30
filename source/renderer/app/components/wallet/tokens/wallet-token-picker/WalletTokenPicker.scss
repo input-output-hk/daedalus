@@ -4,15 +4,25 @@
   width: 100%;
 
   .toolbar {
-    box-shadow: 5px 11px 0px -10px var(--theme-tokens-picker-toolbar-border-bottom-color);
+    border-bottom: 1px solid
+      var(--theme-tokens-picker-toolbar-border-bottom-color);
     display: flex;
-    padding: 20px 0 20px 15px;
+    margin: 0 15px;
+    padding: 20px 0;
     transition-duration: 0.2s;
-    transition-property: box-shadow;
+    transition-property: box-shadow border-color;
     transition-timing-function: ease-in-out;
   }
 
+  .search {
+    padding: 0 15px 0px 15px;
+  }
+
   .scrollNotTop {
+    border-bottom-color: transparent;
+  }
+
+  .toolbarContainer {
     box-shadow: 0 10px 10px -10px var(--theme-tokens-picker-toolbar-box-shadow);
   }
 
@@ -60,6 +70,10 @@
         left: -12px;
         min-width: 89px;
       }
+
+      .ScrollbarsCustom-Content {
+        padding: 0 !important;
+      }
     }
   }
 
@@ -99,8 +113,8 @@
   }
 
   .list {
-    height: 450px;
-    margin-right: -17px;
+    margin-right: -2px;
+    max-height: 450px;
     overflow-y: scroll;
     padding-left: 15px;
     padding-right: 12px;
@@ -167,11 +181,16 @@
 
 .dialog {
   margin-left: -15px;
+  margin-right: -15px;
 
   :global {
     .Dialog_content {
       display: flex;
       width: 100%;
+    }
+
+    .DialogCloseButton_component {
+      right: 15px;
     }
 
     .Dialog_contentWrapper {
@@ -181,10 +200,7 @@
 
     .Dialog_actions {
       padding-left: 15px;
-    }
-
-    .SimpleModal_modal {
-      padding-left: 15px;
+      padding-right: 15px;
     }
   }
 }
