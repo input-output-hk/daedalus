@@ -11,79 +11,87 @@
     transition-duration: 0.2s;
     transition-property: box-shadow border-color;
     transition-timing-function: ease-in-out;
+  }
 
-    &.scrollNotTop {
-      border-bottom-color: transparent;
-      box-shadow: 0 10px 10px -10px var(--theme-tokens-picker-toolbar-box-shadow);
-    }
+  .scrollNotTop {
+    border-bottom-color: transparent;
+    box-shadow: 0 10px 10px -10px var(--theme-tokens-picker-toolbar-box-shadow);
+  }
 
-    .filterSelect {
-      font-family: var(--font-medium);
-      font-size: 16px;
-      line-height: 1.38;
-
-      :global {
-        .SimpleOptions_option {
-          padding: 6px 12px;
-
-          &.SimpleOptions_selectedOption:after {
-            border: none;
-          }
-        }
-      }
-    }
+  .filterSelect {
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
 
     :global {
-      .SimpleInput_customValueBlock {
-        height: auto;
-        padding-right: 10px;
+      .SimpleOptions_selectedOption:after {
+        border: none;
       }
 
       .SimpleBubble_bubble {
         border: none;
         left: -12px;
-        width: 90px;
+        min-width: 89px;
       }
+    }
+  }
 
-      .SimpleInput_customValueWrapper .SimpleInput_input {
-        border: none;
-        height: auto;
-        padding: 0;
-        width: 120px;
-      }
+  .filterOption {
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.43;
+    white-space: nowrap;
+  }
 
-      .SelectOverrides_selectInput {
-        align-items: baseline;
-        display: flex;
+  :global {
+    .SimpleOptions_option {
+      padding: 6px 12px;
+    }
+
+    .SimpleInput_customValueBlock {
+      height: auto;
+      padding-right: 10px;
+    }
+
+    .SimpleInput_customValueWrapper .SimpleInput_input {
+      border: none;
+      height: auto;
+      padding: 0;
+      width: 120px;
+    }
+
+    .SelectOverrides_selectInput {
+      align-items: center;
+      display: flex;
+      position: relative;
+
+      &:after {
+        bottom: 0;
+        left: 0;
+        margin-top: 1px;
         position: relative;
-
-        &:after {
-          bottom: 0;
-          left: 0;
-          position: relative;
-        }
       }
     }
+  }
 
-    .count {
-      font-family: var(--font-light);
-      font-size: 14px;
-      line-height: 1.43;
-      margin-left: auto;
-    }
+  .count {
+    font-family: var(--font-light);
+    font-size: 14px;
+    line-height: 1.43;
+    margin-left: auto;
+  }
 
-    .toogleAllButton {
-      background: var(--theme-widgets-asset-token-fingerprint-background-color);
-      border-radius: 3px;
-      color: var(--theme-widgets-asset-token-text-color);
-      cursor: pointer;
-      font-family: var(--font-regular);
-      font-size: 14px;
-      line-height: 1.43;
-      margin-left: 6px;
-      padding: 0 6px;
-      white-space: nowrap;
-    }
+  .toogleAllButton {
+    background: var(--theme-widgets-asset-token-fingerprint-background-color);
+    border-radius: 3px;
+    color: var(--theme-widgets-asset-token-text-color);
+    cursor: pointer;
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.43;
+    margin-left: 6px;
+    padding: 0 6px;
+    white-space: nowrap;
   }
 
   .noResults {
@@ -133,10 +141,8 @@
     margin-top: 14px;
   }
 
-  :global {
-    .SimpleCheckbox_disabled {
-      opacity: 0.3;
-    }
+  :global(.SimpleCheckbox_disabled) {
+    opacity: 0.3;
   }
 
   .token {
@@ -151,10 +157,8 @@
     padding-bottom: 14px;
     padding-top: 14px;
 
-    :global {
-      .WalletTokenHeader_asset {
-        margin-left: 12px;
-      }
+    :global(.WalletTokenHeader_asset) {
+      margin-left: 12px;
     }
   }
 

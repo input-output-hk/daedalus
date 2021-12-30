@@ -87,7 +87,9 @@ const WalletTokenPicker = ({
             className={styles.filterSelect}
             options={filterSelectOptions(intl)}
             selectionRenderer={(option) => option.label}
-            optionRenderer={(option) => option.label}
+            optionRenderer={(option) => (
+              <span className={styles.filterOption}>{option.label}</span>
+            )}
             optionHeight={34}
           />
           <span className={styles.count}>
