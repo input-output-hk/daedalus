@@ -18,7 +18,10 @@ import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
-import { bech32EncodePublicKey } from '../utils/hardwareWalletUtils';
+import {
+  bech32EncodePublicKey,
+  isReceiverAddressType,
+} from '../utils/hardwareWalletUtils';
 import {
   WalletPaperWalletOpenPdfError,
   WalletRewardsOpenCsvError,
@@ -1039,9 +1042,14 @@ export default class WalletsStore extends Store {
     }
     try {
       const response = await introspectAddressChannel.send({ input: address });
-      if (response === 'Invalid') {
+
+      if (
+        response === 'Invalid' ||
+        !isReceiverAddressType(response.introspection.address_type)
+      ) {
         return false;
       }
+
       runInAction('check if address is from the same wallet', () => {
         const walletAddresses = this.stores.addresses.all
           .slice()
