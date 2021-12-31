@@ -8,6 +8,7 @@
     "build": "gulp build",
     "build:electron": "electron-rebuild -w usb --useCache -s --debug",
     "check:all": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations",
+    "check:NixOS": "nix-build -A tests.runFlow && yarn prettier:check && yarn lint && yarn stylelint && yarn lockfile:check && yarn manage:translations",
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",

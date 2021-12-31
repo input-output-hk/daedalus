@@ -177,3 +177,5 @@ export const FALLBACK_TOKEN_METADATA_SERVER_URL =
 export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
 export const MOCK_TOKEN_METADATA_SERVER_PORT =
   process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;
+
+export const RTS_FLAGS = ['-c'];

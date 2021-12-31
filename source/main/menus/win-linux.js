@@ -8,9 +8,11 @@ import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
+import { getRtsFlags } from '../utils/getRtsFlags';
 
 const id = 'menu';
-const { isWindows, isBlankScreenFixActive } = environment;
+const { isWindows, isBlankScreenFixActive, network } = environment;
+const rtsFlags = getRtsFlags(network);
 
 export const winLinuxMenu = (
   app: App,
@@ -164,6 +166,14 @@ export const winLinuxMenu = (
         checked: isBlankScreenFixActive,
         click(item) {
           actions.toggleBlankScreenFix(item);
+        },
+      },
+      {
+        label: translation('helpSupport.usingRtsFlags'),
+        type: 'checkbox',
+        checked: rtsFlags?.length > 0,
+        click() {
+          actions.setRtsFlags(rtsFlags?.length === 0);
         },
       },
       { type: 'separator' },

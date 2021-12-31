@@ -164,7 +164,9 @@ const onAppReady = async () => {
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
   const rtsFlags = getRtsFlags(network);
-  logger.info('Setting up Cardano Node...');
+  logger.info(
+    `Setting up Cardano Node... with flags: ${JSON.stringify(rtsFlags)}`
+  );
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow, rtsFlags);
 
   buildAppMenus(mainWindow, cardanoNode, userLocale, {

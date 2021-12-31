@@ -48,6 +48,7 @@ const restartCardanoNode = async (node: CardanoNode) => {
  *
  * @param launcherConfig {LauncherConfig}
  * @param mainWindow
+ * @param rtsFlags flags used to start cardano-node
  */
 export const setupCardanoNode = (
   launcherConfig: LauncherConfig,
@@ -78,9 +79,9 @@ export const setupCardanoNode = (
     configPath,
     syncTolerance,
     cliBin,
+    rtsFlags,
     isStaging,
     metadataUrl,
-    rtsFlags,
     startupTimeout: NODE_STARTUP_TIMEOUT,
     startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
     shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,

@@ -22,6 +22,7 @@
   "menu.edit.undo": "Undo",
   "menu.helpSupport": "Help",
   "menu.helpSupport.blankScreenFix": "Blank Screen Fix",
+  "menu.helpSupport.usingRtsFlags": "Using RTS flags",
   "menu.helpSupport.blankScreenFixDialogCancel": "Cancel",
   "menu.helpSupport.blankScreenFixDialogConfirm": "Yes",
   "menu.helpSupport.blankScreenFixDialogMessage": "Turn off 'Blank screen fix'? \n \nDisabling the blank screen fix setting will improve the performance of user interface rendering by enabling graphics acceleration, however, some users may find that Daedalus runs better with this setting enabled. If you see a blank screen instead of the Daedalus user interface after disabling this setting and restarting Daedalus, please turn this setting back on. \n \nDo you want to disable this setting and restart Daedalus?",
@@ -43,5 +44,6 @@
   "menu.view.toggleDeveloperTools": "Toggle Developer Tools",
   "menu.view.toggleFullScreen": "Toggle Full Screen",
   "menu.view.toggleMaximumWindowSize": "Toggle Maximum Window Size",
-  "window.title.blankScreenFix": "['Blank screen fix' active]"
+  "window.title.blankScreenFix": "['Blank screen fix' active]",
+  "window.title.usingRtsFlags": "['Using RTS flags' active]"
 }

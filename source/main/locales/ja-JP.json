@@ -22,6 +22,7 @@
   "menu.edit.undo": "元に戻す",
   "menu.helpSupport": "ヘルプ",
   "menu.helpSupport.blankScreenFix": "ブランク画面修正",
+  "menu.helpSupport.usingRtsFlags": "RTSフラグの使用",
   "menu.helpSupport.blankScreenFixDialogCancel": "キャンセル",
   "menu.helpSupport.blankScreenFixDialogConfirm": "はい",
   "menu.helpSupport.blankScreenFixDialogMessage": "「ブランク画面修正」を無効にしますか? \n \nブランク画面修正設定を無効にすると、グラフィックアクセラレーションが有効化されてユーザーインターフェイスのレンダリングパフォーマンスが向上しますが、この設定を有効にした方がDaedalusがスムーズに作動する場合があります。この設定を無効にしてDaedalusを再起動した際にDaedalusユーザーインターフェイスの代わりにブランク画面が表示される場合は、この設定をもう一度有効にしてください。 \n \nこの設定を無効にしてDaedalusを再起動しますか。",
@@ -43,5 +44,6 @@
   "menu.view.toggleDeveloperTools": "開発者ツール切替え",
   "menu.view.toggleFullScreen": "フルスクリーン切替え",
   "menu.view.toggleMaximumWindowSize": "最大ウインドウサイズ切り切り替え",
-  "window.title.blankScreenFix": "[「ブランク画面修正」有効 ]"
+  "window.title.blankScreenFix": "[「ブランク画面修正」有効 ]",
+  "window.title.usingRtsFlags": "[「RTSフラグの使用」が有効]"
 }

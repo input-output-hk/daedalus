@@ -1,5 +1,5 @@
 // @flow
-import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
+import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
@@ -9,6 +9,8 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
+import { setRtsFlagsAndRestart } from './getRtsFlags';
+import { RTS_FLAGS } from '../config';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -99,6 +101,10 @@ export const buildAppMenus = async (
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
+    setRtsFlags: (enable: boolean): void =>
+      enable
+        ? setRtsFlagsAndRestart(environment.network, RTS_FLAGS)
+        : setRtsFlagsAndRestart(environment.network, []),
   };
 
   // Build app menus
