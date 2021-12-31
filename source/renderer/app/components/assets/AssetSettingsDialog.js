@@ -12,12 +12,12 @@ import Dialog from '../widgets/Dialog';
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
 import type { AssetToken } from '../../api/assets/types';
-import { formattedTokenWalletAmount } from '../../utils/formatters';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
   DEFAULT_DECIMAL_PRECISION,
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
+import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
 
 const messages = defineMessages({
   title: {
@@ -180,16 +180,18 @@ export default class AssetSettingsDialog extends Component<Props, State> {
           <div className={styles.label}>
             {intl.formatMessage(messages.unformattedBalanceLabel)}
           </div>
-          <p>{formattedTokenWalletAmount(asset.quantity, null, 0)}</p>
+          <p>
+            <DiscreetTokenWalletAmount amount={asset.quantity} decimals={0} />
+          </p>
           <div className={styles.label}>
             {intl.formatMessage(messages.formattedBalanceLabel)}
           </div>
           <p>
-            {formattedTokenWalletAmount(
-              asset.quantity,
-              asset.metadata,
-              decimals
-            )}
+            <DiscreetTokenWalletAmount
+              amount={asset.quantity}
+              metadata={asset.metadata}
+              decimals={decimals}
+            />
           </p>
           <Select
             options={options}

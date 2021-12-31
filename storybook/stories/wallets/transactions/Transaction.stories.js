@@ -16,6 +16,7 @@ import Transaction from '../../../../source/renderer/app/components/wallet/trans
 
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
+import StoryProvider from '../../_support/StoryProvider';
 import {
   generateHash,
   generatePolicyIdHash,
@@ -116,7 +117,9 @@ const transactionTokens = [
 storiesOf('Wallets|Transactions', module)
   .addDecorator(withKnobs)
   .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    <StoryProvider>
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    </StoryProvider>
   ))
 
   // ====== Stories ======
