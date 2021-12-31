@@ -64,6 +64,8 @@ gulp.task(
   )
 );
 
+gulp.task('clean:dist', shell.task('rimraf ./dist'));
+
 gulp.task('test:e2e:watch', gulp.series('build:watch', 'test:e2e:nodemon'));
 
 gulp.task('purge:translations', shell.task('rimraf ./translations/messages'));
