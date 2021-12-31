@@ -130,7 +130,8 @@ export default class AppStore extends Store {
   @computed get isSetupPage(): boolean {
     return (
       this.currentRoute === ROUTES.PROFILE.INITIAL_SETTINGS ||
-      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
+      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE ||
+      this.currentRoute === ROUTES.PROFILE.ANALYTICS
     );
   }
 

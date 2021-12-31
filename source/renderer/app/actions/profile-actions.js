@@ -4,6 +4,7 @@ import Action from './lib/Action';
 // ======= PROFILE ACTIONS =======
 
 export default class ProfileActions {
+  acceptAnalytics: Action<any> = new Action();
   acceptTermsOfUse: Action<any> = new Action();
   acceptDataLayerMigration: Action<any> = new Action();
   getLogs: Action<any> = new Action();

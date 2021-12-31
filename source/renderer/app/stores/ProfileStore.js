@@ -89,6 +89,12 @@ export default class ProfileStore extends Store {
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.setTermsOfUseAcceptance
   );
+  @observable getAnalyticsAcceptanceRequest: Request<string> = new Request(
+    this.api.localStorage.getAnalyticsAcceptance
+  );
+  @observable setAnalyticsAcceptanceRequest: Request<string> = new Request(
+    this.api.localStorage.setAnalyticsAcceptance
+  );
   @observable
   getDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.getDataLayerMigrationAcceptance
@@ -118,6 +124,7 @@ export default class ProfileStore extends Store {
       this._finishInitialScreenSettings
     );
     profileActions.updateUserLocalSetting.listen(this._updateUserLocalSetting);
+    profileActions.acceptAnalytics.listen(this._acceptAnalytics);
     profileActions.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     profileActions.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
@@ -132,12 +139,15 @@ export default class ProfileStore extends Store {
     this.registerReactions([
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
+      // todo check for correct order
+      this._redirectToAnalyticsScreenIfNotAccepted,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
     this._getTermsOfUseAcceptance();
+    this._getAnalyticsAcceptance();
     this._getDataLayerMigrationAcceptance();
     this._getDesktopDirectoryPath();
     this._getSystemLocale();
@@ -237,6 +247,17 @@ export default class ProfileStore extends Store {
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
+  @computed get hasLoadedAnalyticsAcceptance(): boolean {
+    return (
+      this.getAnalyticsAcceptanceRequest.wasExecuted &&
+      this.getAnalyticsAcceptanceRequest.result !== null
+    );
+  }
+
+  @computed get areAnalyticsAccepted(): boolean {
+    return this.getAnalyticsAcceptanceRequest.result === true;
+  }
+
   @computed get hasLoadedDataLayerMigrationAcceptance(): boolean {
     return (
       this.getDataLayerMigrationAcceptanceRequest.wasExecuted &&
@@ -306,6 +327,19 @@ export default class ProfileStore extends Store {
     }
   };
 
+  _acceptAnalytics = async () => {
+    await this.setAnalyticsAcceptanceRequest.execute();
+    await this.getAnalyticsAcceptanceRequest.execute();
+    await enableApplicationMenuNavigationChannel.send();
+  };
+
+  _getAnalyticsAcceptance = async () => {
+    await this.getAnalyticsAcceptanceRequest.execute();
+    if (this.getAnalyticsAcceptanceRequest.result) {
+      await enableApplicationMenuNavigationChannel.send();
+    }
+  };
+
   _acceptDataLayerMigration = async () => {
     await this.setDataLayerMigrationAcceptanceRequest.execute();
     await this.getDataLayerMigrationAcceptanceRequest.execute();
@@ -356,6 +390,21 @@ export default class ProfileStore extends Store {
   _isOnTermsOfUsePage = () =>
     this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
 
+  _redirectToAnalyticsScreenIfNotAccepted = () => {
+    const analyticsNotAccepted =
+      this.hasLoadedAnalyticsAcceptance && !this.areAnalyticsAccepted;
+    if (
+      !this.isInitialScreen &&
+      this.isCurrentLocaleSet &&
+      this.areAnalyticsAccepted &&
+      analyticsNotAccepted
+    ) {
+      this.actions.router.goToRoute.trigger({
+        route: ROUTES.PROFILE.ANALYTICS,
+      });
+    }
+  };
+
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotAccepted =
@@ -365,6 +414,7 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
+      this.areAnalyticsAccepted &&
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {

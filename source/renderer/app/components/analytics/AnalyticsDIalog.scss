@@ -1,0 +1,62 @@
+.component {
+  align-self: center;
+  color: var(--theme-main-body-messages-color);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  justify-self: center;
+  line-height: 1.38;
+}
+
+// todo is this is needed? For now just copy/paste for consistency
+.component::before,
+.component::after {
+  content: '';
+  display: block;
+  flex: 1;
+  min-height: 20px;
+}
+
+.centeredBox {
+  background-color: var(--theme-bordered-box-background-color);
+  border: var(--theme-bordered-box-border);
+  border-radius: 10px;
+  padding: 30px 30px 20px;
+  width: 620px;
+}
+
+.submitButton {
+  display: block !important;
+  margin: 0 auto;
+}
+
+// TODO consider improving react-polymorph inputs to handle `labelPlacement` property e.g. left | right
+.switch {
+  flex-direction: row-reverse;
+  margin: 0 0 30px;
+}
+
+.title,
+.dataCollectionTitle {
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+.description {
+  margin-bottom: 20px;
+}
+
+.descriptionLink {
+  color: var(--theme-staking-stake-pool-tooltip-link-color);
+}
+
+.dataCollectionList {
+  list-style: auto;
+  list-style-position: inside;
+  padding-left: 14px;
+}
+
+.hr {
+  margin: 20px 0;
+}

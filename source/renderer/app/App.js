@@ -20,6 +20,7 @@ import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
+import AnalyticsDialog from './components/analytics/AnalyticsDialog';
 
 @observer
 export default class App extends Component<{
@@ -70,6 +71,7 @@ export default class App extends Component<{
                   <Routes />
                 </Router>
                 {mobxDevTools}
+                {/* <AnalyticsDialog /> */}
                 {[
                   isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
                   isActiveDialog(DAEDALUS_DIAGNOSTICS) && (

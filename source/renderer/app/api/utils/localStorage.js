@@ -174,6 +174,12 @@ export default class LocalStorageApi {
   setTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.set(keys.TERMS_OF_USE_ACCEPTANCE, true);
 
+  getAnalyticsAcceptance = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.ANALYTICS_ACCEPTANCE, false);
+
+  setAnalyticsAcceptance = (): Promise<void> =>
+    LocalStorageApi.set(keys.ANALYTICS_ACCEPTANCE, true);
+
   unsetTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
 
