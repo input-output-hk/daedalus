@@ -105,7 +105,7 @@ export const windowOptions: WindowOptionsType = {
     nodeIntegration: isTest,
     webviewTag: false,
     enableRemoteModule: isTest,
-    preload: path.join(__dirname, './preload.js'),
+    preload: path.join(__dirname, './preload.ts'),
     additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
   },
   useContentSize: true,
@@ -136,11 +136,11 @@ export const buildLabel = getBuildLabel(
 
 // Logging config
 export const ALLOWED_LOGS = [
-  'Daedalus.json',
-  'System-info.json',
-  'Daedalus-versions.json',
-  'State-snapshot.json',
-  'Wallet-migration-report.json',
+  'Daedalus.tson',
+  'System-info.tson',
+  'Daedalus-versions.tson',
+  'State-snapshot.tson',
+  'Wallet-migration-report.tson',
   'cardano-wallet.log',
   'node.log',
 ];

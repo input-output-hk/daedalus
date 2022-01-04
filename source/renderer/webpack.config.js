@@ -31,7 +31,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
   entry: {
-    index: './source/renderer/index.js',
+    index: './source/renderer/index.ts',
   },
   output: {
     path: path.join(process.cwd(), 'dist/renderer'),
@@ -53,10 +53,13 @@ module.exports = {
       progress: true,
     },
   },
-  module: {
+  resolve: {
+		extensions: ['.tsx', '.ts', '.js', '.json'],
+	},
+	module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/main/,
         use: [
@@ -65,6 +68,11 @@ module.exports = {
             options: {
               cacheCompression: false,
               cacheDirectory: true,
+							presets: [
+								'@babel/preset-env',
+								'@babel/preset-react',
+								'@babel/preset-typescript',
+							],
               plugins: [
                 isDevelopment && require.resolve('react-refresh/babel'),
               ].filter(Boolean),

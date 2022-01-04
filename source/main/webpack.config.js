@@ -30,8 +30,8 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
   entry: {
-    index: './source/main/index.js',
-    preload: './source/main/preload.js',
+    index: './source/main/index.ts',
+    preload: './source/main/preload.ts',
   },
   output: {
     path: path.join(process.cwd(), 'dist/main'),
@@ -43,10 +43,13 @@ module.exports = {
   optimization: {
     minimize: false,
   },
-  module: {
+  resolve: {
+		extensions: ['.tsx', '.ts', '.js', '.json'],
+	},
+	module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/renderer/,
         use: [
@@ -55,6 +58,11 @@ module.exports = {
             options: {
               cacheCompression: false,
               cacheDirectory: true,
+							presets: [
+								'@babel/preset-env',
+								'@babel/preset-react',
+								'@babel/preset-typescript',
+							],
             },
           },
         ],
