@@ -183,6 +183,10 @@
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "4.0.0",
+    "@cardano-sdk/blockfrost": "^0.2.0",
+    "@cardano-sdk/core": "^0.2.0",
+    "@cardano-sdk/util-dev": "^0.2.0",
+    "@cardano-sdk/wallet": "^0.1.8",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "@ledgerhq/hw-transport-node-hid": "5.51.1",
     "aes-js": "3.1.2",

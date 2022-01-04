@@ -50,6 +50,8 @@ module.exports = {
       'node-hid': 'commonjs2 node-hid',
       'trezor-connect': 'commonjs2 trezor-connect',
       pdfkit: 'commonjs2 pdfkit',
+      '@emurgo/cardano-serialization-lib-nodejs': 'commonjs2 @emurgo/cardano-serialization-lib-nodejs',
+      '@emurgo/cardano-serialization-lib-browser': 'commonjs2 @emurgo/cardano-serialization-lib-browser',
     },
   ],
   plugins: [

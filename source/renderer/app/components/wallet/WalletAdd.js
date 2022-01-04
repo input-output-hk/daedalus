@@ -154,7 +154,7 @@ export default class WalletAdd extends Component<Props> {
               className="connectWalletButton"
               onClick={onConnect}
               icon={connectIcon}
-              label={intl.formatMessage(messages.connectLabel)}
+              label='Tomo 1'
               description={intl.formatMessage(messages.connectDescription)}
               isDisabled={
                 isMaxNumberOfWalletsReached || !isHardwareWalletSupportEnabled

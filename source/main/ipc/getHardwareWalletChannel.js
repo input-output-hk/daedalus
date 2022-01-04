@@ -59,6 +59,12 @@ import {
 import { logger } from '../utils/logging';
 import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
 
+import * as CardanoSDK__Wallet from '@cardano-sdk/wallet';
+import { SingleAddressWallet } from '@cardano-sdk/wallet';
+import { blockfrostAssetProvider, blockfrostWalletProvider } from '@cardano-sdk/blockfrost';
+import { AssetId, createStubStakePoolSearchProvider } from '@cardano-sdk/util-dev';
+import JSONBigInt from 'json-bigint';
+
 type ListenerType = {
   unsubscribe: Function,
 };
@@ -134,6 +140,7 @@ const showAddressChannel: MainIpcChannel<
 > = new MainIpcChannel(SHOW_ADDRESS_CHANNEL);
 
 let devicesMemo = {};
+let light_wallet = {}
 
 class EventObserver {
   constructor(props) {
@@ -438,18 +445,177 @@ export const handleHardwareWalletRequests = async (
       });
   });
 
+  const networkId = 0; // TODO: Remove this
+  const isTestnet = networkId === 0;
+  let projectId = 'testnetQLRvAnmAEQK3q5OESvtc6ybtTtxFPA8d'// BLOCKFROST_API_KEY;
+
+  const testSingleAddressWallet = async () => {
+    logger.info('[HW-DEBUG] PERO 2: ', {
+      test: CardanoSDK__Wallet
+    });
+    logger.info('>>> CardanoSDK__Wallet: ', CardanoSDK__Wallet);
+
+    const { KeyManagement } = CardanoSDK__Wallet;
+
+    /* try {
+      const aa = new SingleAddressWallet()
+      logger.info('>>> SingleAddressWallet: ', aa);
+    } catch (e) {
+      logger.info('>>> SingleAddressWallet - ERROR: ', e);
+      throw e;
+    } */
+
+    const walletProps = { name: 'tomo-test-wallet' }; // type SingleAddressWalletProps
+    const mnemonicWords = KeyManagement.util.generateMnemonicWords();
+    const mnemonicWords_memo = [
+      'immune',
+      'soul',
+      'bus',
+      'unfair',
+      'medal',
+      'public',
+      'bus',
+      'pupil',
+      'surprise',
+      'wish',
+      'when',
+      'thunder',
+      'fit',
+      'youth',
+      'unveil',
+      'rocket',
+      'suit',
+      'empower',
+      'heavy',
+      'night',
+      'voyage',
+      'glare',
+      'trade',
+      'pyramid'
+    ];
+    const password = 'Secret1234';
+    const keyManager = KeyManagement.createInMemoryKeyManager({
+      mnemonicWords,
+      networkId,
+      password,
+    });
+
+    let walletProvider;
+    let assetProvider;
+    let stakePoolSearchProvider;
+    try {
+      walletProvider = blockfrostWalletProvider({ isTestnet: true, projectId });
+      assetProvider = blockfrostAssetProvider({ isTestnet, projectId });
+      stakePoolSearchProvider = createStubStakePoolSearchProvider();
+      logger.info('>>>> DATA ready');
+    } catch (e) {
+      throw e
+    }
+
+    const networkInfo = await walletProvider.networkInfo();
+
+
+    logger.info('>>> START - LOG networkInfo <<<');
+    // logger.info('>>> LOG networkInfo <<<: ', { networkInfo: JSONBigInt.stringify(networkInfo) });
+    logger.info('>>> CONTINUE networkInfo <<<');
+
+    /* mainWindow.webContents.executeJavaScript(`
+      console.log(" TOMO TOMO ${JSON.stringify(walletProvider)}");
+    `) */
+    // mainWindow.webContents.executeJavaScript(`console.log(walletProvider))
+
+    /* logger.info('>>> Before Providers: ', {
+      keyManager,
+      walletProps,
+      networkId,
+      mnemonicWords,
+      password,
+      walletProvider,
+      assetProvider,
+      stakePoolSearchProvider,
+    }); */
+
+    /*
+    const walletProvider = mockWalletProvider();
+    const stakePoolSearchProvider = createStubStakePoolSearchProvider();
+    const assetProvider = mockAssetProvider();
+    const wallet = new SingleAddressWallet(walletProps, {
+      assetProvider,
+      keyManager,
+      stakePoolSearchProvider,
+      walletProvider
+    });
+    */
+
+    /* let tt;
+    try {
+      tt = new SingleAddressWallet(walletProps, {
+        assetProvider,
+        keyManager,
+        stakePoolSearchProvider,
+        walletProvider,
+      });
+      logger.info('>>> Create Light Wallet - DONE');
+    } catch (e) {
+      logger.info('>>> Create Light Wallet - ERROR: ', e);
+      throw e;
+    } */
+    const tt = new SingleAddressWallet(walletProps, {
+      assetProvider,
+      keyManager,
+      stakePoolSearchProvider,
+      walletProvider,
+    });
+
+
+    /* return {
+      tt,
+      keyManager,
+      walletProps,
+      networkId,
+      mnemonicWords,
+      password,
+      walletProvider: walletProvider(),
+      assetProvider: assetProvider(),
+      stakePoolSearchProvider: stakePoolSearchProvider(),
+    }; */
+    return tt;
+  }
+
   handleInitLedgerConnectChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] INIT LEDGER');
+    light_wallet.one = { init: true }
     observer = new EventObserver(mainWindow);
     try {
+      const fin = testSingleAddressWallet();
+
+      /* logger.info('[HW-LIGHT] Response: ', {
+        fin
+      });*/
+
+
+
       logger.info('[HW-DEBUG] OBSERVER INIT');
       TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
       ledgerStatus.Listener = TransportNodeHid.listen(observer);
       ledgerStatus.listening = true;
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
+      // return JSON.stringify(LightWalletData)
+      // return JSON.stringify({ done: true });
+      // return fin;
+      logger.info('>>>>> DONE <<<< ', { aa: 'tt', addresses: fin.addresses });
+      // return JSON.stringify(fin)
+      light_wallet.one = {
+        ...light_wallet.one,
+        done: true,
+        wallet: fin,
+      }
+      // return JSON.stringify({ fin, light_wallet });
+      return JSON.stringify({ aa: 'luka' });
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
       ledgerStatus.listening = false;
+      throw e;
     }
   });
 
@@ -575,6 +741,12 @@ export const handleHardwareWalletRequests = async (
   });
 
   getCardanoAdaAppChannel.onRequest(async (request) => {
+    logger.info('>>> UPDATE <<<')
+
+    // logger.info('>>>>> DONE 22 <<<< ', { light_wallet, mainWindow });
+    mainWindow.webContents.send('>> Final', JSON.stringify(light_wallet))
+    // return JSON.stringify(light_wallet);
+    return JSON.stringify({tomo: 'test', light_wallet});
     const { path } = request;
     try {
       if (!path || !devicesMemo[path]) {

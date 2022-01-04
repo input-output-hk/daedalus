@@ -289,7 +289,13 @@ export default class HardwareWalletsStore extends Store {
       await this._refreshHardwareWalletDevices();
 
       logger.debug('[HW-DEBUG] HWStore - INIT Ledger listeners');
-      await handleInitLedgerConnectChannel.request();
+      try {
+        const LightTest = await handleInitLedgerConnectChannel.request();
+        // console.debug('>>> LightTest: ', JSON.parse(LightTest));
+        console.debug('>>> LightTest: ', LightTest);
+      } catch (e) {
+        console.debug('>>> ERROR in Light Wallets: ', e);
+      }
       await this.getAvailableDevices({ isTrezor: false });
     }
   };
@@ -836,6 +842,13 @@ export default class HardwareWalletsStore extends Store {
       throw e;
     }
   };
+
+  _test = async () => {
+    const LW = await handleInitLedgerConnectChannel.request();
+    console.debug('>>> Res 1: ', LW);
+    const res = await getCardanoAdaAppChannel.request({ path: 'abc' });
+    console.debug('>>> RES - full: ', res);
+  }
 
   // Ledger method only
   @action getCardanoAdaApp = async (params: {
