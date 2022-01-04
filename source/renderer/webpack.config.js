@@ -53,9 +53,6 @@ module.exports = {
       progress: true,
     },
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.json'],
-  },
   module: {
     rules: [
       {
@@ -126,6 +123,7 @@ module.exports = {
     ],
   },
   resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json'],
     fallback: {
       process: require.resolve('process/browser'),
       path: require.resolve('path-browserify'),
