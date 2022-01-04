@@ -2,9 +2,14 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed receiver address validation by disallowing rewards addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
+
 ### Chores
 
 - Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
+- Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
 
 ## 4.6.0
 
