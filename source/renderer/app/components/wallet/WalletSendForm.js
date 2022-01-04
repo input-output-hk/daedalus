@@ -727,7 +727,7 @@ export default class WalletSendForm extends Component<Props, State> {
         this.removeAssetFields(uniqueId);
         setTimeout(() => {
           try {
-            this.calculateTransactionFee(true);
+            return this.calculateTransactionFee(true);
           } catch (err) {
             return false;
           }
