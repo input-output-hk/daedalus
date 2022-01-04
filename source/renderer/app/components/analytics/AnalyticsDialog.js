@@ -1,35 +1,12 @@
 // @flow
-import React, { Component, useCallback, useState } from 'react';
-import ReactModal from 'react-modal';
-import { observer } from 'mobx-react';
-import SVGInline from 'react-svg-inline';
-import classnames from 'classnames';
-import { get } from 'lodash';
-import {
-  defineMessages,
-  FormattedHTMLMessage,
-  intlShape,
-  injectIntl,
-} from 'react-intl';
+import React, { useCallback, useState } from 'react';
+import { defineMessages, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
-import ReactMarkdown from 'react-markdown';
-import styles from './AnalyticsDIalog.scss';
-import DialogCloseButton from '../widgets/DialogCloseButton';
-import ProgressBarLarge from '../widgets/ProgressBarLarge';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
-import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import type { InjectedProps } from '../../types/injectedPropsType';
-import TopBar from '../layout/TopBar';
-import About from '../static/About';
-import classNames from 'classnames';
+import styles from './AnalyticsDialog.scss';
 import NormalSwitch from '../widgets/forms/NormalSwitch';
 import { Intl } from '../../types/i18nTypes';
+import globalMessages from '../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
@@ -72,13 +49,31 @@ const messages = defineMessages({
 
 type Props = {
   intl: Intl,
+  loading: boolean,
+  onConfirm: Function,
 };
 
-const AnalyticsDialog = ({ intl }: Props) => {
-  const [open, setOpen] = useState(true);
-  const toggleOpen = useCallback(() => {
-    setOpen((prevOpen) => !prevOpen);
-  }, [setOpen]);
+const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
+  const [showDataCollectionDetails, setShowDataCollectionDetails] = useState(
+    false
+  );
+  const toggleShowDataCollectionDetails = useCallback(() => {
+    setShowDataCollectionDetails(
+      (prevAllowDataCollection) => !prevAllowDataCollection
+    );
+  }, [setShowDataCollectionDetails]);
+  const [allowDataCollection, setAllowDataCollection] = useState(true);
+  const toggleAllowDataCollection = useCallback(() => {
+    setAllowDataCollection(
+      (prevAllowDataCollection) => !prevAllowDataCollection
+    );
+  }, [setAllowDataCollection]);
+  const getShowDataCollectionDetailsToggleLabel = useCallback(
+    (isVisible: boolean) =>
+      isVisible
+        ? intl.formatMessage(globalMessages.hide)
+        : intl.formatMessage(globalMessages.view)
+  );
 
   return (
     <div className={styles.component}>
@@ -87,22 +82,33 @@ const AnalyticsDialog = ({ intl }: Props) => {
         <p className={styles.description}>
           {intl.formatMessage(messages.description)}
         </p>
-        {/* TODO create a common accordion/expandable component, based on DappTransactionRequest.js - metadata toggle */}
         <p className={styles.dataCollectionTitle}>
           {intl.formatMessage(messages.dataCollectionDetailsTitle)}
+          <button
+            className={styles.toggleButton}
+            onClick={toggleShowDataCollectionDetails}
+          >
+            {getShowDataCollectionDetailsToggleLabel(showDataCollectionDetails)}
+          </button>
         </p>
-        <ol className={styles.dataCollectionList}>
-          <li>
-            {intl.formatMessage(messages.dataCollectionDetailsUserBehaviour)}
-          </li>
-          <li>
-            {intl.formatMessage(messages.dataCollectionDetailsDeviceInfo)}
-          </li>
-        </ol>
-        <hr className={styles.hr} />
+        {showDataCollectionDetails && (
+          <>
+            <ol className={styles.dataCollectionList}>
+              <li className={styles.dataCollectionListItem}>
+                {intl.formatMessage(
+                  messages.dataCollectionDetailsUserBehaviour
+                )}
+              </li>
+              <li className={styles.dataCollectionListItem}>
+                {intl.formatMessage(messages.dataCollectionDetailsDeviceInfo)}
+              </li>
+            </ol>
+            <hr className={styles.hr} />
+          </>
+        )}
         <NormalSwitch
-          onChange={toggleOpen}
-          checked={open}
+          onChange={toggleAllowDataCollection}
+          checked={allowDataCollection}
           label={intl.formatMessage(messages.dataCollectionSwitchButton)}
           className={styles.switch}
         />
@@ -110,8 +116,8 @@ const AnalyticsDialog = ({ intl }: Props) => {
           className={styles.submitButton}
           label={intl.formatMessage(messages.confirmButton)}
           skin={ButtonSpinnerSkin}
-          loading={false}
-          onClick={() => {}}
+          loading={loading}
+          onClick={onConfirm}
         />
       </div>
     </div>

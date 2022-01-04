@@ -292,6 +292,109 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Anonymous data collection",
+        "description": "Analytics dialog title",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/analytics/AnalyticsDialog.js",
+        "id": "analytics.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!All data is anonymous and is used only for product development purposes. Read more in Terms and Conditions.",
+        "description": "Analytics data collection description",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/analytics/AnalyticsDialog.js",
+        "id": "analytics.dialog.description",
+        "start": {
+          "column": 15,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!What data do we collect?",
+        "description": "Data collection details title",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/analytics/AnalyticsDialog.js",
+        "id": "analytics.dialog.dataCollectionDetailsTitle",
+        "start": {
+          "column": 30,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!User behavior (where the user clicks)",
+        "description": "Description for the user behaviour data collection",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/analytics/AnalyticsDialog.js",
+        "id": "analytics.dialog.dataCollectionDetailsUserBehaviour",
+        "start": {
+          "column": 38,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Device info (OS, RAM, disk space, etc)",
+        "description": "Description for the device info data collection",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/analytics/AnalyticsDialog.js",
+        "id": "analytics.dialog.dataCollectionDetailsDeviceInfo",
+        "start": {
+          "column": 35,
+          "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!Allow anonymous data collection",
+        "description": "Data collection agreement switch button label",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/components/analytics/AnalyticsDialog.js",
+        "id": "analytics.dialog.dataCollectionSwitchText",
+        "start": {
+          "column": 30,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "Analytics data collection confirmation button text",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/analytics/AnalyticsDialog.js",
+        "id": "analytics.dialog.confirmButton",
+        "start": {
+          "column": 17,
+          "line": 66
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/analytics/AnalyticsDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Software update available!",
         "description": "\"title\" for the App Update Overlay",
         "end": {

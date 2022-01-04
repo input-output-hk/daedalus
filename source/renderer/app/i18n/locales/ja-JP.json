@@ -1,4 +1,11 @@
 {
+  "analytics.dialog.confirmButton": "!!!Confirm",
+  "analytics.dialog.dataCollectionDetailsDeviceInfo": "!!!Device info (OS, RAM, disk space, etc)",
+  "analytics.dialog.dataCollectionDetailsTitle": "!!!What data do we collect?",
+  "analytics.dialog.dataCollectionDetailsUserBehaviour": "!!!User behavior (where the user clicks)",
+  "analytics.dialog.dataCollectionSwitchText": "!!!Allow anonymous data collection",
+  "analytics.dialog.description": "!!!All data is anonymous and is used only for product development purposes. Read more in Terms and Conditions.",
+  "analytics.dialog.title": "!!!Anonymous data collection",
   "api.errors.ApiMethodNotYetImplementedError": "このAPIはまだ実装されていません。",
   "api.errors.CanNotCalculateTransactionFeesError": "処理中のトランザクションがあるため、手数料を計算できません。",
   "api.errors.ForbiddenMnemonicError": "ウォレットの復元フレーズが無効です。送信された復元フレーズは参照用復元フレーズ例の1つです。資金を保有しているウォレットには使用できません。",
