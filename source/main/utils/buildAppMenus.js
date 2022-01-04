@@ -9,7 +9,7 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
-import { setRtsFlagsAndRestart } from './getRtsFlags';
+import { setRtsFlagsAndRestart } from './rtsFlags';
 import { RTS_FLAGS } from '../config';
 
 export const buildAppMenus = async (

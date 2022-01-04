@@ -8,7 +8,7 @@ import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
-import { getRtsFlags } from '../utils/getRtsFlags';
+import { getRtsFlags } from '../utils/rtsFlags';
 
 const rendererErrorHandler = new RendererErrorHandler();
 const { network } = environment;

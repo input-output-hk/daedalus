@@ -8,7 +8,7 @@ import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
-import { getRtsFlags } from '../utils/getRtsFlags';
+import { getRtsFlags } from '../utils/rtsFlags';
 
 const id = 'menu';
 const { isWindows, isBlankScreenFixActive, network } = environment;

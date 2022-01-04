@@ -1,7 +1,7 @@
 // @flow
 import Store from 'electron-store';
 import { logger } from './logging';
-import { safeExitWithCode } from './safeExitWithCode';
+import { relaunch } from './safeExitWithCode';
 
 const store = new Store();
 
@@ -22,5 +22,5 @@ export const setRtsFlagsAndRestart = (
 ): void => {
   logger.info('[SET-RTS-FLAGS] setting: ', { network, flags });
   store.set(`${network}-RTS-FLAGS`, flags);
-  safeExitWithCode(0);
+  relaunch();
 };
