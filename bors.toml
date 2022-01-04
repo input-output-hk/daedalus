@@ -3,7 +3,7 @@ status = [
   "buildkite/daedalus",
 
   # Hydra: we just care about tests attribute set
-  "ci/hydra:Cardano:daedalus:tests.runFlow",
+  "ci/hydra:Cardano:daedalus:tests.runTsc",
   "ci/hydra:Cardano:daedalus:tests.runLint",
   "ci/hydra:Cardano:daedalus:tests.runShellcheck"
 ]

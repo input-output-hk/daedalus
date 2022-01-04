@@ -51,6 +51,13 @@ gulp.task(
   )
 );
 
+gulp.task(
+  'clear:cache',
+  shell.task('rimraf ./node_modules/.cache && rimraf .cache-loader')
+);
+
+gulp.task('clean:dist', shell.task('rimraf ./dist'));
+
 gulp.task('build:themes', gulp.series('clean:dist', 'prepare:themes'));
 
 gulp.task(
@@ -59,8 +66,6 @@ gulp.task(
     'nodemon --watch dist --watch tests --exec "yarn test:e2e --tags \'@e2e and @watch\'"'
   )
 );
-
-gulp.task('clean:dist', shell.task('rimraf ./dist'));
 
 gulp.task('test:e2e:watch', gulp.series('build:watch', 'test:e2e:nodemon'));
 

@@ -319,7 +319,7 @@ let
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {
-      runFlow = self.callPackage ./tests/flow.nix {};
+      runTsc = self.callPackage ./tests/tsc.nix {};
       runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };

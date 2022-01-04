@@ -554,10 +554,12 @@ migration_functions=(
 
 function tsc_check() {
     tsc --noEmit
+    pause "tsc check"
 }
 
 function destroy_migrate_ts() {
     rm ./migrate.ts
+    pause "destroyed migrate ts file"
 }
 
 function lockfile_fix() {
@@ -596,6 +598,7 @@ function update_nix_files() {
 
 function update_bors_toml() {
     sed -i "s/Flow/Tsc/g" bors.toml
+    pause "Updated bors toml"
 }
 
 cleanup_functions=(

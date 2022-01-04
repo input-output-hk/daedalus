@@ -58,7 +58,6 @@ let
     sha256 = "f8567511857ab62659505ba5158b6ad69afceb512105a3251d180fe47f44366c";
   };
   node-gyp = fetchurl {
-    url = "https://nodejs.org/download/release/v16.13.0/node-v16.13.0-headers.tar.gz";
     sha256 = "9abfc6dcd32bce3b9a978b8c23b8bb48a562c94919feba489f9bb9d4bbeeae66";
   };
   filter = name: type: let
@@ -209,12 +208,6 @@ yarn2nix.mkYarnPackage {
   #  libunistring
   #  libusb1
   #] ++ stdenv.cc.libc.buildInputs;
-  yarnPreBuild = ''
-    mkdir -p $HOME/.node-gyp/${nodejs.version}
-    echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
-    ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
-  '';
-  pkgConfig = {
     flow-bin = {
       postInstall = ''
         flow_ver=${origPackage.devDependencies."flow-bin"}

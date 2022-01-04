@@ -33,7 +33,7 @@ storiesOf('Wallets/Legacy Wallets', module)
         walletOptions,
         WALLETS_V2[1]
       );
- 			// @ts-ignore
+      // @ts-ignore
       const sourceWallet = {
         ...sourceWalletSelect,
         amount: new BigNumber(sourceWalletSelect.amount),

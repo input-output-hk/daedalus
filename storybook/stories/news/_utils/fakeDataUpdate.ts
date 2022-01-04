@@ -59,7 +59,7 @@ export const getNewsUpdateItem = (
   read?: boolean,
   // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   locale: string
-// @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
 ): News.News => {
   const date = new Date().getTime();
   return new News.News({
