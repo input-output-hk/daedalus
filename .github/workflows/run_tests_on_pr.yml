@@ -13,6 +13,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "12"
-      - run: yarn install
-      - run: yarn test:jest
+          node-version: "14"
+      - run: yarn --frozen-lock
+      - run: yarn test:jest --maxWorkers=3
