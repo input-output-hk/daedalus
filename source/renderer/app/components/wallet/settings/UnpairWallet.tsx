@@ -1,4 +1,4 @@
-// @flow
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import React from 'react';
 import { observer } from 'mobx-react';
@@ -8,13 +8,14 @@ import {
   injectIntl,
   intlShape,
 } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSettings.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSettings.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import BorderedBox from '../../widgets/BorderedBox';
 import WalletSettingsRemoveButton from './WalletSettingsRemoveButton';
 import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
 
-export const messages: { [string]: ReactIntlMessage } = defineMessages({
+export const messages: Record<string, ReactIntlMessage> = defineMessages({
   unpairWalletHeader: {
     id: 'wallet.settings.unpairWallet.header',
     defaultMessage: '!!!Unpair wallet',
@@ -32,15 +33,13 @@ export const messages: { [string]: ReactIntlMessage } = defineMessages({
     description: 'Label for the unpair button on wallet settings',
   },
 });
-
 type Props = {
-  openDialogAction: Function,
-  isDialogOpen: Function,
-  unpairWalletDialogContainer: Node,
-  onBlockForm: Function,
-  intl: intlShape.isRequired,
+  openDialogAction: (...args: Array<any>) => any;
+  isDialogOpen: (...args: Array<any>) => any;
+  unpairWalletDialogContainer: Node;
+  onBlockForm: (...args: Array<any>) => any;
+  intl: intlShape.isRequired;
 };
-
 const UnpairWallet = observer(
   ({
     openDialogAction,
@@ -50,7 +49,6 @@ const UnpairWallet = observer(
     intl,
   }: Props) => {
     const label = intl.formatMessage(messages.unpairButton);
-
     return (
       <>
         <BorderedBox className={styles.unpairWalletBox}>
@@ -65,6 +63,7 @@ const UnpairWallet = observer(
             </div>
             <WalletSettingsRemoveButton
               label={label}
+              // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
               onClick={React.useCallback(() => {
                 onBlockForm();
                 openDialogAction({
@@ -81,5 +80,4 @@ const UnpairWallet = observer(
     );
   }
 );
-
 export default injectIntl(UnpairWallet);

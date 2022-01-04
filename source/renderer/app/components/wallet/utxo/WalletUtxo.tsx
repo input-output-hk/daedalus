@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
@@ -21,6 +20,7 @@ import Tick from './WalletUtxoTick';
 import CustomTooltip from './WalletUtxoTooltip';
 import Cursor from './WalletUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletUtxo.scss' or its corr... Remove this comment to see the full error message
 import styles from './WalletUtxo.scss';
 import type { TickProps } from './WalletUtxoTick';
 import { WalletUtxoDescription } from './WalletUtxoDescription';
@@ -72,25 +72,21 @@ export const messages = defineMessages({
       'Number of pending transactions for the "Wallet Utxos" screen.',
   },
 });
-
 type Props = {
-  walletAmount: BigNumber,
-  walletUtxosAmount: number,
-  chartData: Array<any>,
-  onExternalLinkClick: Function,
-  pendingTxnsCount: number,
-  isLoadingInitialUtxoData?: boolean,
+  walletAmount: BigNumber;
+  walletUtxosAmount: number;
+  chartData: Array<any>;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  pendingTxnsCount: number;
+  isLoadingInitialUtxoData?: boolean;
 };
-
 type State = {
-  isHoveringChart: boolean,
+  isHoveringChart: boolean;
 };
-
 export default class WalletUtxo extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isHoveringChart: false,
   };
@@ -134,7 +130,6 @@ export default class WalletUtxo extends Component<Props, State> {
       styles.component,
       isEmpty ? styles.isEmpty : null,
     ]);
-
     const findOutMoreLinkUrl = intl.formatMessage(messages.findOutMoreLinkUrl);
     const findOutMoreLink = (
       <Link
@@ -144,20 +139,26 @@ export default class WalletUtxo extends Component<Props, State> {
         skin={LinkSkin}
       />
     );
-
     const emptyOrLoadingState = isLoadingInitialUtxoData ? (
       <LoadingSpinner />
     ) : (
       <p>{intl.formatMessage(messages.emptyWallet)}</p>
     );
-
     return (
       <div className={componentStyles}>
         <BorderedBox className={styles.borderedBox}>
           <div
             className={styles.container}
-            onMouseEnter={() => this.setState({ isHoveringChart: true })}
-            onMouseLeave={() => this.setState({ isHoveringChart: false })}
+            onMouseEnter={() =>
+              this.setState({
+                isHoveringChart: true,
+              })
+            }
+            onMouseLeave={() =>
+              this.setState({
+                isHoveringChart: false,
+              })
+            }
           >
             <h1>{intl.formatMessage(messages.title)}</h1>
 

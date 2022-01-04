@@ -1,4 +1,3 @@
-// @flow
 import { MANAGE_APP_UPDATE } from '../../../common/ipc/api';
 import type {
   ManageAppUpdateRendererRequest,

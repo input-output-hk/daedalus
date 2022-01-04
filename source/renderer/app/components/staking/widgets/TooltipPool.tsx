@@ -1,4 +1,3 @@
-// @flow
 import React, { createRef, Component } from 'react';
 import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
@@ -17,12 +16,18 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TooltipPool.scss' or its cor... Remove this comment to see the full error message
 import styles from './TooltipPool.scss';
 import StakePool from '../../../domains/StakePool';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCross from '../../../assets/images/close-cross.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/no-data... Remove this comment to see the full error message
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/check-w... Remove this comment to see the full error message
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import {
@@ -152,34 +157,31 @@ const messages = defineMessages({
     description: 'Data not available yet label',
   },
 });
-
 type Props = {
-  stakePool: StakePool,
-  currentTheme: string,
-  onClose: () => void,
-  onOpenExternalLink: (string) => void,
-  onSelect?: () => void,
-  showWithSelectButton?: boolean,
-  color: string,
-  containerClassName: string,
-  numberOfRankedStakePools: number,
-  isGridRewardsView?: boolean,
+  stakePool: StakePool;
+  currentTheme: string;
+  onClose: () => void;
+  onOpenExternalLink: (arg0: string) => void;
+  onSelect?: () => void;
+  showWithSelectButton?: boolean;
+  color: string;
+  containerClassName: string;
+  numberOfRankedStakePools: number;
+  isGridRewardsView?: boolean;
 };
-
 type State = {
-  componentStyle: Object,
-  idCopyFeedback: boolean,
+  componentStyle: Record<string, any>;
+  idCopyFeedback: boolean;
 };
 
 @observer
-export default class TooltipPool extends Component<Props, State> {
+class TooltipPool extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   idCopyFeedbackTimeout: TimeoutID;
-  rootRef: ElementRef<*> = createRef();
-
+  rootRef: ElementRef<any> = createRef();
   state = {
     componentStyle: {},
     idCopyFeedback: false,
@@ -188,27 +190,31 @@ export default class TooltipPool extends Component<Props, State> {
   componentDidMount() {
     window.addEventListener('keydown', this.handleInputKeyDown);
   }
+
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleInputKeyDown);
   }
+
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       this.props.onClose();
     }
   };
-
   onCopyId = () => {
     clearTimeout(this.idCopyFeedbackTimeout);
     this.setState({
       idCopyFeedback: true,
     });
     this.idCopyFeedbackTimeout = setTimeout(() => {
-      this.setState({ idCopyFeedback: false });
+      this.setState({
+        idCopyFeedback: false,
+      });
     }, STAKE_POOL_ID_COPY_FEEDBACK);
   };
-
   onIdMouseOut = () => {
-    this.setState({ idCopyFeedback: false });
+    this.setState({
+      idCopyFeedback: false,
+    });
   };
 
   get isGreyColor() {
@@ -239,7 +245,6 @@ export default class TooltipPool extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
-
     const fields = [
       {
         key: 'saturation',
@@ -249,6 +254,7 @@ export default class TooltipPool extends Component<Props, State> {
               <span className={saturationBarClassnames}>
                 <span
                   style={{
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
                     width: `${parseFloat(saturation).toFixed(2)}%`,
                   }}
                 />
@@ -294,6 +300,7 @@ export default class TooltipPool extends Component<Props, State> {
         value: (
           <div className={styles.defaultColor}>
             <span className={styles.defaultColorContent}>
+              {/* @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message */}
               {`${toFixedUserFormat(relativeStake, 2)}%`}
             </span>
           </div>
@@ -372,10 +379,9 @@ export default class TooltipPool extends Component<Props, State> {
         ),
       },
     ];
-
     return (
       <div className={styles.table}>
-        {fields.map((field: { key: string, value: any }) => {
+        {fields.map((field: { key: string; value: any }) => {
           const labelPart = (
             <div className={styles[`${field.key}Label`]}>
               <div className={styles.labelContainer}>
@@ -426,13 +432,10 @@ export default class TooltipPool extends Component<Props, State> {
       showWithSelectButton,
     } = this.props;
     const { componentStyle, idCopyFeedback } = this.state;
-
     const { id, name, description, ticker, homepage, retiring } = stakePool;
-
     const retirementFromNow = retiring
       ? moment(retiring).locale(intl.locale).fromNow(true)
       : '';
-
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
     const hoverContentClassnames = classnames([
       styles.hoverContent,
@@ -450,11 +453,11 @@ export default class TooltipPool extends Component<Props, State> {
     const stakePoolAddressHoverCopy = idCopyFeedback
       ? intl.formatMessage(messages.copiedIdTooltipLabel)
       : intl.formatMessage(messages.copyIdTooltipLabel);
-
     return (
       <div
         className={styles.component}
         style={componentStyle}
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'unknown' is not assignable to type 'LegacyRe... Remove this comment to see the full error message
         ref={this.rootRef}
       >
         <div className={colorBandClassnames} style={colorBandStyle} />
@@ -474,7 +477,9 @@ export default class TooltipPool extends Component<Props, State> {
             <div className={styles.retirement}>
               <FormattedMessage
                 {...messages.retirement}
-                values={{ retirementFromNow }}
+                values={{
+                  retirementFromNow,
+                }}
               />
             </div>
           )}
@@ -522,3 +527,5 @@ export default class TooltipPool extends Component<Props, State> {
     );
   }
 }
+
+export default TooltipPool;

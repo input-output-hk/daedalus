@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
@@ -15,40 +14,40 @@ import type { DelegationCalculateFeeResponse } from '../../../api/staking/types'
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 type Props = {
-  activeStep: number,
-  isDisabled: boolean,
-  onBack: Function,
-  onClose: Function,
-  onConfirm: Function,
-  onContinue: Function,
-  onLearnMoreClick: Function,
-  onSelectWallet: Function,
-  onSelectPool: Function,
-  isWalletAcceptable: Function,
-  maxDelegationFunds: number,
-  stepsList: Array<string>,
-  wallets: Array<Wallet>,
-  minDelegationFunds: number,
-  recentStakePools: Array<StakePool>,
-  stakePoolsList: Array<StakePool>,
-  onOpenExternalLink: Function,
-  currentTheme: string,
-  selectedWallet: ?Wallet,
-  selectedPool: ?StakePool,
-  stakePoolJoinFee: ?DelegationCalculateFeeResponse,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
-  futureEpochStartTime: string,
-  currentLocale: string,
-  getStakePoolById: Function,
-  hwDeviceStatus: HwDeviceStatus,
-  isTrezor: boolean,
-  onThumbPoolSelect: Function,
+  activeStep: number;
+  isDisabled: boolean;
+  onBack: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onConfirm: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onLearnMoreClick: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  onSelectPool: (...args: Array<any>) => any;
+  isWalletAcceptable: (...args: Array<any>) => any;
+  maxDelegationFunds: number;
+  stepsList: Array<string>;
+  wallets: Array<Wallet>;
+  minDelegationFunds: number;
+  recentStakePools: Array<StakePool>;
+  stakePoolsList: Array<StakePool>;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  currentTheme: string;
+  selectedWallet: Wallet | null | undefined;
+  selectedPool: StakePool | null | undefined;
+  stakePoolJoinFee: DelegationCalculateFeeResponse | null | undefined;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
+  futureEpochStartTime: string;
+  currentLocale: string;
+  getStakePoolById: (...args: Array<any>) => any;
+  hwDeviceStatus: HwDeviceStatus;
+  isTrezor: boolean;
+  onThumbPoolSelect: (...args: Array<any>) => any;
 };
 
 const getOversaturationPercentage = (
-  selectedWallet: ?Wallet,
-  selectedPool: ?StakePool,
+  selectedWallet: Wallet | null | undefined,
+  selectedPool: StakePool | null | undefined,
   maxDelegationFunds: number
 ): number => {
   if (
@@ -58,15 +57,15 @@ const getOversaturationPercentage = (
       selectedWallet.delegatedStakePoolId) === selectedPool.id
   )
     return 0;
-
   const percentageIncrease = Number(
+    // @ts-ignore ts-migrate(2363) FIXME: The right-hand side of an arithmetic operation mus... Remove this comment to see the full error message
     (100 / maxDelegationFunds) * selectedWallet.availableAmount
   );
   return selectedPool.saturation + percentageIncrease - 100;
 };
 
 @observer
-export default class DelegationSetupWizardDialog extends Component<Props> {
+class DelegationSetupWizardDialog extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     // On confirm delegation step, wait for API stake pool "join" endpoint response
     // and redirect to "Ta-Da" step
@@ -111,7 +110,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       maxDelegationFunds,
       onThumbPoolSelect,
     } = this.props;
-
     const selectedWalletId = get(selectedWallet, 'id', null);
     const oversaturationPercentage = getOversaturationPercentage(
       selectedWallet,
@@ -129,6 +127,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
     }
 
     let content = null;
+
     switch (activeStep) {
       case 1:
         content = (
@@ -146,6 +145,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
           />
         );
         break;
+
       case 2:
         content = (
           <DelegationStepsChooseStakePoolDialog
@@ -165,6 +165,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
           />
         );
         break;
+
       case 3:
         content = (
           <DelegationStepsConfirmationDialog
@@ -184,6 +185,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
           />
         );
         break;
+
       case 4:
         content = (
           <DelegationStepsSuccessDialog
@@ -195,9 +197,11 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
           />
         );
         break;
+
       default:
         content = (
           <DelegationStepsIntroDialog
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             onLearnMoreClick={onLearnMoreClick}
             onClose={onClose}
             onContinue={onContinue}
@@ -209,3 +213,5 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
     return content;
   }
 }
+
+export default DelegationSetupWizardDialog;

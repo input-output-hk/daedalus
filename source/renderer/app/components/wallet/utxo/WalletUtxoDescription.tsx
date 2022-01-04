@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
@@ -6,9 +5,9 @@ import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
 type Props = {
-  description: ReactIntlMessage,
-  formattedWalletAmount: string,
-  walletUtxosAmount: number,
+  description: ReactIntlMessage;
+  formattedWalletAmount: string;
+  walletUtxosAmount: number;
 };
 
 function WalletUtxoDescriptionComponent({
@@ -17,7 +16,6 @@ function WalletUtxoDescriptionComponent({
   walletUtxosAmount,
 }: Props) {
   const discreetModeFeature = useDiscreetModeFeature();
-
   return (
     <FormattedHTMLMessage
       {...description}

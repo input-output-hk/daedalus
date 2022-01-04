@@ -1,4 +1,3 @@
-// @flow
 import ExtendableError from 'es6-error';
 
 export class TlsCertificateNotValidError extends ExtendableError {

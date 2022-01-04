@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import BigNumber from 'bignumber.js';
@@ -9,10 +8,7 @@ import Asset from '../../../source/renderer/app/components/assets/Asset';
 
 storiesOf('Assets/Asset pill', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Default', () => {
     const policyId = text(
       'policyId',
@@ -20,7 +16,11 @@ storiesOf('Assets/Asset pill', module)
     );
     const assetName = text('assetName', '6861707079636f696e');
     return (
-      <div style={{ padding: '30px' }}>
+      <div
+        style={{
+          padding: '30px',
+        }}
+      >
         <Asset
           asset={{
             policyId,
@@ -34,16 +34,23 @@ storiesOf('Assets/Asset pill', module)
             decimals: 0,
             recommendedDecimals: null,
             metadata: {
+              // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
               name: text('name'),
+              // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
               ticker: text('ticker'),
+              // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
               description: text('description'),
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               unit: {
+                // @ts-ignore ts-migrate(2554) FIXME: Expected 2-4 arguments, but got 1.
                 decimals: number('unit / decimals'),
+                // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
                 name: text('unit / name'),
               },
             },
           }}
           small={boolean('small', false)}
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
           hidePopOver={boolean('hidePopOver')}
           onCopyAssetParam={action('onCopyAssetParam')}
           onClickSettings={

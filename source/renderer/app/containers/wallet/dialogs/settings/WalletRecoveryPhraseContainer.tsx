@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRecoveryPhraseStep1Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
@@ -13,7 +12,7 @@ import type { InjectedProps as Props } from '../../../../types/injectedPropsType
 
 @inject('stores', 'actions')
 @observer
-export default class WalletRecoveryPhraseContainer extends Component<Props> {
+class WalletRecoveryPhraseContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -35,7 +34,6 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
   render() {
     const { stores, actions } = this.props;
     const { active: activeWallet } = stores.wallets;
-
     if (!activeWallet) throw new Error('Active wallet required.');
     const {
       recoveryPhraseVerificationContinue,
@@ -48,13 +46,13 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
         ? recoveryPhraseVerificationCheck.trigger
         : recoveryPhraseVerificationContinue.trigger;
     const onClose = recoveryPhraseVerificationClose.trigger;
-
     const expectedWordCount = activeWallet.isRandom
       ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
       : RECOVERY_PHRASE_VERIFICATION_WORD_COUNT;
     const WalletRecoveryPhraseDialog = this.recoveryPhraseComponent;
     return (
       WalletRecoveryPhraseDialog && (
+        // @ts-ignore ts-migrate(2604) FIXME: JSX element type 'WalletRecoveryPhraseDialog' does... Remove this comment to see the full error message
         <WalletRecoveryPhraseDialog
           onContinue={onContinue}
           onClose={onClose}
@@ -66,3 +64,5 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletRecoveryPhraseContainer;

@@ -1,7 +1,4 @@
-// @flow
-
 export type StorageType = 'get' | 'set' | 'delete' | 'reset';
-
 export type StorageKey =
   | 'ALONZO-INFO-WAS-OPEN'
   | 'APP-AUTOMATIC-UPDATE-FAILED'
@@ -31,10 +28,9 @@ export type StorageKey =
   | 'WALLET-MIGRATION-STATUS'
   | 'WALLETS'
   | 'WINDOW-BOUNDS';
-
 export type StoreMessage = {
-  type: StorageType,
-  key: StorageKey,
-  data?: any,
-  id?: string,
+  type: StorageType;
+  key: StorageKey;
+  data?: any;
+  id?: string;
 };

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -7,8 +6,10 @@ import SVGInline from 'react-svg-inline';
 import FilterButton from './FilterButton';
 import FilterDialog from './FilterDialog';
 import type { FilterDialogProps } from './FilterDialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactionsHeader.scs... Remove this comment to see the full error message
 import styles from './WalletTransactionsHeader.scss';
 import TinyButton from '../../widgets/forms/TinyButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message
 import downloadIcon from '../../../assets/images/download-icon.inline.svg';
 
 export const messages = defineMessages({
@@ -23,18 +24,17 @@ export const messages = defineMessages({
     description: 'Label for the "Export CSV" button.',
   },
 });
-
 type Props = {
-  isFilterDisabled: boolean,
-  isScrolling: boolean,
-  filterDialogProps: FilterDialogProps,
-  numberOfFilterDimensionsApplied: number,
-  numberOfTransactions: number,
-  onRequestCSVFile: Function,
+  isFilterDisabled: boolean;
+  isScrolling: boolean;
+  filterDialogProps: FilterDialogProps;
+  numberOfFilterDimensionsApplied: number;
+  numberOfTransactions: number;
+  onRequestCSVFile: (...args: Array<any>) => any;
 };
 
 @observer
-export default class WalletTransactionsHeader extends Component<Props> {
+class WalletTransactionsHeader extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -50,20 +50,16 @@ export default class WalletTransactionsHeader extends Component<Props> {
       onRequestCSVFile,
     } = this.props;
     const hasAny = true;
-
     const componentClassnames = classnames([
       styles.component,
       isScrolling ? styles.isScrolling : null,
     ]);
-
     const isCsvButtonDisabled = numberOfTransactions === 0;
-
     const cvsButtonClassnames = classnames([
       styles.csvButton,
       isCsvButtonDisabled ? styles.csvButtonDisabled : null,
       'flat',
     ]);
-
     return (
       <div className={componentClassnames}>
         <div className={styles.numberOfTransactions}>
@@ -104,3 +100,5 @@ export default class WalletTransactionsHeader extends Component<Props> {
     );
   }
 }
+
+export default WalletTransactionsHeader;

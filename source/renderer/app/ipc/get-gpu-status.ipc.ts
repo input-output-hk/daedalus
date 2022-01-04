@@ -1,4 +1,3 @@
-// @flow
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 import { GET_GPU_STATUS_CHANNEL } from '../../../common/ipc/api';
 import type {

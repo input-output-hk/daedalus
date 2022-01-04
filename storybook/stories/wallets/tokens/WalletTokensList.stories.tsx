@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text } from '@storybook/addon-knobs';
@@ -7,19 +6,17 @@ import BigNumber from 'bignumber.js';
 import { withState } from '@dump247/storybook-state';
 import StoryDecorator from '../../_support/StoryDecorator';
 import StoryProvider from '../../_support/StoryProvider';
-
 import {
   generateAssetToken,
   generateWallet,
   generateHash,
 } from '../../_support/utils';
-
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
-
 // Screens
 import WalletTokensList from '../../../../source/renderer/app/components/wallet/tokens/WalletTokensList';
 
 const assets = [
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -37,12 +34,14 @@ const assets = [
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
     400
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -60,6 +59,7 @@ const assets = [
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -77,6 +77,7 @@ const assets = [
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 6.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7s97d281f9c136cd3513136945b',
     '',
@@ -90,10 +91,10 @@ const assets = [
     4
   ),
 ];
-
 const walletTokens: WalletTokens = {
   available: [
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
@@ -101,6 +102,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -108,6 +110,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -115,6 +118,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
@@ -124,6 +128,7 @@ const walletTokens: WalletTokens = {
   ],
   total: [
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
@@ -131,6 +136,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -138,6 +144,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -145,6 +152,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
@@ -153,40 +161,44 @@ const walletTokens: WalletTokens = {
     },
   ],
 };
-
 const decorators = [
   withKnobs,
   (story) => <StoryDecorator>{story()}</StoryDecorator>,
 ];
-
 storiesOf('Wallets/Tokens', module).add(
   'WalletTokensList',
-  withState({ favorites: {} }, (store) => (
-    <WalletTokensList
-      assets={boolean('Has Tokens', true) ? assets : []}
-      assetSettingsDialogWasOpened
-      currentLocale="en-US"
-      isLoadingAssets={boolean('isLoadingAssets', false)}
-      onAssetSettings={action('onAssetSettings')}
-      onCopyAssetParam={action('onCopyAssetParam')}
-      onOpenAssetSend={action('onOpenAssetSend')}
-      onViewAllButtonClick={
-        boolean('Has View All button', false)
-          ? action('onViewAllButtonClick')
-          : null
-      }
-      title={text('Title', 'Tokens')}
-      wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
-      onToggleFavorite={({ uniqueId }: { uniqueId: string }) => {
-        const { favorites } = store.state;
-        const newState = {
-          ...favorites,
-          [uniqueId]: !favorites[uniqueId],
-        };
-        store.set({ favorites: newState });
-      }}
-      tokenFavorites={store.state.favorites}
-    />
-  )),
-  { decorators }
+  withState(
+    {
+      favorites: {},
+    },
+    (store) => (
+      <WalletTokensList
+        assets={boolean('Has Tokens', true) ? assets : []}
+        assetSettingsDialogWasOpened
+        currentLocale="en-US"
+        isLoadingAssets={boolean('isLoadingAssets', false)}
+        onAssetSettings={action('onAssetSettings')}
+        onCopyAssetParam={action('onCopyAssetParam')}
+        onOpenAssetSend={action('onOpenAssetSend')}
+        onViewAllButtonClick={
+          boolean('Has View All button', false)
+            ? action('onViewAllButtonClick')
+            : null
+        }
+        title={text('Title', 'Tokens')}
+        wallet={generateWallet('Wallet name', '45119903750165', walletTokens)}
+        onToggleFavorite={({ uniqueId }: { uniqueId: string }) => {
+          const { favorites } = store.state;
+          const newState = { ...favorites, [uniqueId]: !favorites[uniqueId] };
+          store.set({
+            favorites: newState,
+          });
+        }}
+        tokenFavorites={store.state.favorites}
+      />
+    )
+  ),
+  {
+    decorators,
+  }
 );

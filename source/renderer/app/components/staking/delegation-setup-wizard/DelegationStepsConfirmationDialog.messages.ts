@@ -1,10 +1,9 @@
-// @flow
 import { defineMessages } from 'react-intl';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';
 
 export const getMessages = () => {
-  const messages: { [string]: ReactIntlMessage } = defineMessages({
+  const messages: Record<string, ReactIntlMessage> = defineMessages({
     title: {
       id: 'staking.delegationSetup.confirmation.step.dialog.title',
       defaultMessage: '!!!Confirm Delegation',
@@ -43,14 +42,12 @@ export const getMessages = () => {
         'Deposit label on the delegation setup "confirmation" step dialog.',
     },
     spendingPasswordPlaceholder: {
-      id:
-        'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
+      id: 'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
       defaultMessage: '!!!Spending password',
       description: 'Placeholder for "spending password"',
     },
     spendingPasswordLabel: {
-      id:
-        'staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel',
+      id: 'staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel',
       defaultMessage: '!!!Spending password',
       description: 'Label for "spending password"',
     },

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -8,6 +7,7 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PrintDialog.scss' or its cor... Remove this comment to see the full error message
 import styles from './PrintDialog.scss';
 import {
   PAPER_WALLET_PRINTED_WORDS_COUNT,
@@ -36,16 +36,14 @@ const messages = defineMessages({
     description: '"Paper wallet create certificate print dialog" info.',
   },
   certificatePrintedConfirmationLabel: {
-    id:
-      'paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation',
+    id: 'paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation',
     defaultMessage:
       '!!!Yes, the paper wallet certificate printed successfully.',
     description:
       '"Paper wallet create certificate print dialog" certificate printed confirmation.',
   },
   certificateReadableConfirmationLabel: {
-    id:
-      'paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation',
+    id: 'paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation',
     defaultMessage:
       '!!!Yes, first {paperWalletPrintedWordsCount} words of the paper wallet recovery phrase are readable.',
     description:
@@ -58,68 +56,60 @@ const messages = defineMessages({
       '"Paper wallet create certificate print dialog" QR scannable confirmation.',
   },
 });
-
 type State = {
-  isPrintedCorrectly: boolean,
-  isReadable: boolean,
-  isScannable: boolean,
+  isPrintedCorrectly: boolean;
+  isReadable: boolean;
+  isScannable: boolean;
 };
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
 };
 
 @observer
-export default class PrintDialog extends Component<Props, State> {
+class PrintDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isPrintedCorrectly: false,
     isReadable: false,
     isScannable: false,
   };
-
   onConfirmCorrectPrinting = () => {
     this.setState((prevState) => ({
       isPrintedCorrectly: !prevState.isPrintedCorrectly,
     }));
   };
-
   onConfirmReadable = () => {
-    this.setState((prevState) => ({ isReadable: !prevState.isReadable }));
+    this.setState((prevState) => ({
+      isReadable: !prevState.isReadable,
+    }));
   };
-
   onConfirmScannable = () => {
-    this.setState((prevState) => ({ isScannable: !prevState.isScannable }));
+    this.setState((prevState) => ({
+      isScannable: !prevState.isScannable,
+    }));
   };
 
   render() {
     const { intl } = this.context;
     const { onContinue, onClose } = this.props;
     const { isPrintedCorrectly, isReadable, isScannable } = this.state;
-
     const dialogClasses = classnames([styles.component, 'printDialog']);
-
     const certificatePrintedCheckboxClasses = classnames([
       'printedCheckbox',
       styles.checkbox,
     ]);
-
     const certificateReadableCheckboxClasses = classnames([
       'readableCheckbox',
       styles.checkbox,
     ]);
-
     const qrScannableCheckboxClasses = classnames([
       'scannableCheckbox',
       styles.checkbox,
     ]);
-
     const canSubmit = isPrintedCorrectly && isReadable && isScannable;
-
     const actions = [
       {
         className: 'continueButton',
@@ -129,7 +119,6 @@ export default class PrintDialog extends Component<Props, State> {
         onClick: onContinue,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -163,7 +152,8 @@ export default class PrintDialog extends Component<Props, State> {
               label={intl.formatMessage(
                 messages.certificateReadableConfirmationLabel,
                 {
-                  paperWalletPrintedWordsCount: PAPER_WALLET_PRINTED_WORDS_COUNT,
+                  paperWalletPrintedWordsCount:
+                    PAPER_WALLET_PRINTED_WORDS_COUNT,
                 }
               )}
               onChange={this.onConfirmReadable}
@@ -184,3 +174,5 @@ export default class PrintDialog extends Component<Props, State> {
     );
   }
 }
+
+export default PrintDialog;

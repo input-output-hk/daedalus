@@ -1,4 +1,3 @@
-// @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
@@ -9,8 +8,7 @@ import TrezorConnect, {
   TRANSPORT,
   TRANSPORT_EVENT,
   UI,
-  UI_EVENT,
-  // $FlowFixMe
+  UI_EVENT, // @ts-ignore
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
@@ -55,89 +53,73 @@ import {
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
 } from '../../common/ipc/api';
-
 import { logger } from '../utils/logging';
 import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
 
 type ListenerType = {
-  unsubscribe: Function,
+  unsubscribe: (...args: Array<any>) => any;
 };
-
 type ledgerStatusType = {
-  listening: boolean,
-  Listener: ListenerType | null,
+  listening: boolean;
+  Listener: ListenerType | null;
 };
-
 export const ledgerStatus: ledgerStatusType = {
   listening: false,
   Listener: null,
 };
-
 const getHardwareWalletTransportChannel: MainIpcChannel<
   getHardwareWalletTransportRendererRequest,
   getHardwareWalletTransportMainResponse
 > = new MainIpcChannel(GET_HARDWARE_WALLET_TRANSPORT_CHANNEL);
-
 const getExtendedPublicKeyChannel: MainIpcChannel<
   getExtendedPublicKeyRendererRequest,
   getExtendedPublicKeyMainResponse
 > = new MainIpcChannel(GET_EXTENDED_PUBLIC_KEY_CHANNEL);
-
 const getCardanoAdaAppChannel: MainIpcChannel<
   getCardanoAdaAppRendererRequest,
   getCardanoAdaAppMainResponse
 > = new MainIpcChannel(GET_CARDANO_ADA_APP_CHANNEL);
-
 const getHardwareWalletConnectionChannel: MainIpcChannel<
   getHardwareWalletConnectiontMainRequest,
   getHardwareWalletConnectiontRendererResponse
 > = new MainIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
-
 const signTransactionLedgerChannel: MainIpcChannel<
   signTransactionLedgerRendererRequest,
   signTransactionLedgerMainResponse
 > = new MainIpcChannel(SIGN_TRANSACTION_LEDGER_CHANNEL);
-
 const signTransactionTrezorChannel: MainIpcChannel<
   signTransactionTrezorRendererRequest,
   signTransactionTrezorMainResponse
 > = new MainIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);
-
 const resetTrezorActionChannel: MainIpcChannel<
   resetTrezorActionRendererRequest,
   resetTrezorActionMainResponse
 > = new MainIpcChannel(RESET_ACTION_TREZOR_CHANNEL);
-
 const handleInitTrezorConnectChannel: MainIpcChannel<
   handleInitTrezorConnectRendererRequest,
   handleInitTrezorConnectMainResponse
 > = new MainIpcChannel(GET_INIT_TREZOR_CONNECT_CHANNEL);
-
 const handleInitLedgerConnectChannel: MainIpcChannel<
   handleInitLedgerConnectRendererRequest,
   handleInitLedgerConnectMainResponse
 > = new MainIpcChannel(GET_INIT_LEDGER_CONNECT_CHANNEL);
-
 const deriveXpubChannel: MainIpcChannel<
   deriveXpubRendererRequest,
   deriveXpubMainResponse
 > = new MainIpcChannel(DERIVE_XPUB_CHANNEL);
-
 const deriveAddressChannel: MainIpcChannel<
   deriveAddressRendererRequest,
   deriveAddressMainResponse
 > = new MainIpcChannel(DERIVE_ADDRESS_CHANNEL);
-
 const showAddressChannel: MainIpcChannel<
   showAddressRendererRequest,
   showAddressMainResponse
 > = new MainIpcChannel(SHOW_ADDRESS_CHANNEL);
-
 let devicesMemo = {};
 
 class EventObserver {
   constructor(props) {
-    // $FlowFixMe
+    // @ts-ignore
     this.mainWindow = props;
   }
 
@@ -145,6 +127,7 @@ class EventObserver {
     try {
       const transportList = await TransportNodeHid.list();
       const connectionChanged = event.type === 'add' || event.type === 'remove';
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         `[HW-DEBUG] Ledger NEXT: , ${JSON.stringify({
           event,
@@ -154,15 +137,18 @@ class EventObserver {
       );
 
       if (connectionChanged) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] Ledger NEXT - connection changed');
         const device = get(event, 'device', {});
         const deviceModel = get(event, 'deviceModel', {});
 
         if (event.type === 'add') {
           if (!devicesMemo[device.path]) {
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] CONSTRUCTOR ADD');
+
             try {
-              // $FlowFixMe
+              // @ts-ignore
               const transport = await TransportNodeHid.open(device.path);
               const AdaConnection = new AppAda(transport);
               devicesMemo[device.path] = {
@@ -174,49 +160,61 @@ class EventObserver {
                 {
                   disconnected: false,
                   deviceType: 'ledger',
-                  deviceId: null, // Available only when Cardano APP opened
-                  deviceModel: deviceModel.id, // e.g. nanoS
-                  deviceName: deviceModel.productName, // e.g. Test Name
+                  deviceId: null,
+                  // Available only when Cardano APP opened
+                  deviceModel: deviceModel.id,
+                  // e.g. nanoS
+                  deviceName: deviceModel.productName,
+                  // e.g. Test Name
                   path: device.path,
-                },
-                // $FlowFixMe
+                }, // @ts-ignore
                 this.mainWindow
               );
             } catch (e) {
+              // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
               logger.info('[HW-DEBUG] CONSTRUCTOR error');
             }
           }
         } else {
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('[HW-DEBUG] CONSTRUCTOR REMOVE');
           devicesMemo = omit(devicesMemo, [device.path]);
           getHardwareWalletConnectionChannel.send(
             {
               disconnected: true,
               deviceType: 'ledger',
-              deviceId: null, // Available only when Cardano APP opened
-              deviceModel: deviceModel.id, // e.g. nanoS
-              deviceName: deviceModel.productName, // e.g. Test Name
+              deviceId: null,
+              // Available only when Cardano APP opened
+              deviceModel: deviceModel.id,
+              // e.g. nanoS
+              deviceName: deviceModel.productName,
+              // e.g. Test Name
               path: device.path,
-            },
-            // $FlowFixMe
+            }, // @ts-ignore
             this.mainWindow
           );
         }
+
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] CONSTRUCTOR Memo');
       } else {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] Ledger NEXT - connection NOT changed');
       }
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error(`[HW-DEBUG] Error on NEXT ${JSON.stringify(error)}`);
     }
   };
 
   error(e) {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] Ledger NEXT error');
     throw e;
   }
 
   complete() {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] Ledger NEXT complete');
   }
 }
@@ -237,7 +235,11 @@ export const handleHardwareWalletRequests = async (
         if (event.payload && event.payload.device) {
           TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
-            payload: { value: '', passphraseOnDevice: true },
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ value: string; passphraseOnDevice: true; }... Remove this comment to see the full error message
+            payload: {
+              value: '',
+              passphraseOnDevice: true,
+            },
           });
         }
       }
@@ -250,8 +252,7 @@ export const handleHardwareWalletRequests = async (
             error: {
               payload: event.payload,
             },
-          },
-          // $FlowFixMe
+          }, // @ts-ignore
           mainWindow
         );
       }
@@ -273,13 +274,15 @@ export const handleHardwareWalletRequests = async (
           {
             disconnected: event.type === DEVICE.DISCONNECT,
             deviceType: 'trezor',
-            deviceId: event.payload.id, // 123456ABCDEF
-            deviceModel: event.payload.features.model, // e.g. T
-            deviceName: event.payload.label, // e.g. Test Name
+            deviceId: event.payload.id,
+            // 123456ABCDEF
+            deviceModel: event.payload.features.model,
+            // e.g. T
+            deviceName: event.payload.label,
+            // e.g. Test Name
             path: event.payload.path,
             eventType: event.type,
-          },
-          // $FlowFixMe
+          }, // @ts-ignore
           mainWindow
         );
       }
@@ -289,16 +292,24 @@ export const handleHardwareWalletRequests = async (
   getHardwareWalletTransportChannel.onRequest(
     async (request: HardwareWalletTransportDeviceRequest) => {
       const { isTrezor, devicePath } = request;
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       logger.info('[HW-DEBUG] getHardwareWalletTransportChannel', devicePath);
       // Connected Trezor device info
       let deviceFeatures;
+
       if (isTrezor) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] getHardwareWalletTransportChannel::TREZOR ');
+
         try {
           deviceFeatures = await TrezorConnect.getFeatures({
-            device: { path: devicePath },
+            device: {
+              path: devicePath,
+            },
           });
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('[HW-DEBUG] Trezor connect success');
+
           if (deviceFeatures && deviceFeatures.success) {
             const {
               major_version: majorVersion,
@@ -312,56 +323,61 @@ export const handleHardwareWalletRequests = async (
             return Promise.resolve({
               deviceId,
               deviceType: 'trezor',
-              deviceModel: model, // e.g. "1" or "T"
+              deviceModel: model,
+              // e.g. "1" or "T"
               deviceName: label,
               path: devicePath,
               firmwareVersion,
             });
           }
+
           throw deviceFeatures.payload; // Error is in payload
         } catch (e) {
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('[HW-DEBUG] Trezor connect error');
           throw e;
         }
       }
 
       try {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] getHardwareWalletTransportChannel:: LEDGER');
         let transportList = await TransportNodeHid.list();
         let hw;
         let lastConnectedPath;
-
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(
           `[HW-DEBUG] getHardwareWalletTransportChannel::transportList=${JSON.stringify(
             transportList
           )}`
         );
 
-        // $FlowFixMe
+        // @ts-ignore
         if (transportList && !transportList.length) {
           // Establish connection with last device
           try {
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] INIT NEW transport');
             hw = await TransportNodeHid.create();
             transportList = await TransportNodeHid.list();
             lastConnectedPath = last(transportList);
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info(
               `[HW-DEBUG] getHardwareWalletTransportChannel::lastConnectedPath=${JSON.stringify(
                 lastConnectedPath
               )}`
             );
-
             const deviceList = getDevices();
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info(
               `[HW-DEBUG] getHardwareWalletTransportChannel::deviceList=${JSON.stringify(
                 deviceList
               )}`
             );
-
             const device = find(deviceList, ['path', lastConnectedPath]);
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] INIT NEW transport - DONE');
-
-            // $FlowFixMe
+            // @ts-ignore
             deviceConnection = new AppAda(hw);
             devicesMemo[lastConnectedPath] = {
               device,
@@ -369,14 +385,17 @@ export const handleHardwareWalletRequests = async (
               AdaConnection: deviceConnection,
             };
           } catch (e) {
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] INIT NEW transport - ERROR');
             throw e;
           }
         } else if (!devicePath || !devicesMemo[devicePath]) {
           // Use first like native usb nodeHID
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('[HW-DEBUG] USE First');
-          // $FlowFixMe
+          // @ts-ignore
           lastConnectedPath = transportList[0]; // eslint-disable-line
+
           if (devicesMemo[lastConnectedPath]) {
             hw = devicesMemo[lastConnectedPath].transport;
             deviceConnection = devicesMemo[lastConnectedPath].AdaConnection;
@@ -384,36 +403,44 @@ export const handleHardwareWalletRequests = async (
             throw new Error('Device not connected!');
           }
         } else {
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('[HW-DEBUG] USE CURRENT CONNECTION');
           hw = devicesMemo[devicePath].transport;
           deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
         }
 
-        // $FlowFixMe
+        // @ts-ignore
         const { deviceModel } = hw;
+
         if (deviceModel) {
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info(
             '[HW-DEBUG] getHardwareWalletTransportChannel:: LEDGER case RESPONSE'
           );
           const { id, productName } = deviceModel;
           return Promise.resolve({
-            deviceId: null, // @TODO - to be defined
+            deviceId: null,
+            // @TODO - to be defined
             deviceType: 'ledger',
-            deviceModel: id, // e.g. nanoS
-            deviceName: productName, // e.g. Ledger Nano S
+            deviceModel: id,
+            // e.g. nanoS
+            deviceName: productName,
+            // e.g. Ledger Nano S
             path: lastConnectedPath || devicePath,
             firmwareVersion: null,
           });
         }
+
         throw new Error('Missing device info');
       } catch (error) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] ERROR on getHardwareWalletTransportChannel');
         throw error;
       }
     }
   );
-
   handleInitTrezorConnectChannel.onRequest(async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] INIT TREZOR');
     resetTrezorListeners();
     TrezorConnect.manifest({
@@ -421,14 +448,18 @@ export const handleHardwareWalletRequests = async (
       appUrl: 'http://your.application.com',
     });
     TrezorConnect.init({
-      popup: false, // render your own UI
-      webusb: false, // webusb is not supported in electron
-      debug: true, // see what's going on inside connect
+      popup: false,
+      // render your own UI
+      webusb: false,
+      // webusb is not supported in electron
+      debug: true,
+      // see what's going on inside connect
       // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
       // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
       // this is useful when you don't know if you are dealing with Trezor user
       manifest: {
-        email: 'email@developer.com', // @TODO
+        email: 'email@developer.com',
+        // @TODO
         appUrl: 'http://your.application.com', // @TODO
       },
     })
@@ -437,25 +468,30 @@ export const handleHardwareWalletRequests = async (
         throw error;
       });
   });
-
   handleInitLedgerConnectChannel.onRequest(async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] INIT LEDGER');
     observer = new EventObserver(mainWindow);
+
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] OBSERVER INIT');
       TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
+
       ledgerStatus.Listener = TransportNodeHid.listen(observer);
       ledgerStatus.listening = true;
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
       ledgerStatus.listening = false;
     }
   });
-
   deriveXpubChannel.onRequest(async (params) => {
     const { parentXpubHex, lastIndex, derivationScheme } = params;
     const parentXpub = utils.hex_to_buf(parentXpubHex);
+
     try {
       const xpub = deriveChildXpub(parentXpub, lastIndex, derivationScheme);
       return utils.buf_to_hex(xpub);
@@ -463,7 +499,6 @@ export const handleHardwareWalletRequests = async (
       throw e;
     }
   });
-
   deriveAddressChannel.onRequest(async (params) => {
     const {
       addressType,
@@ -481,11 +516,14 @@ export const handleHardwareWalletRequests = async (
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] DERIVE ADDRESS');
+
       if (isTrezor) {
         const result = await TrezorConnect.cardanoGetAddress({
           device: {
             path: devicePath,
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             showOnTrezor: true,
           },
           addressParameters: {
@@ -496,6 +534,7 @@ export const handleHardwareWalletRequests = async (
           protocolMagic,
           networkId,
         });
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'address' does not exist on type '{ error... Remove this comment to see the full error message
         return result.payload.address;
       }
 
@@ -517,7 +556,6 @@ export const handleHardwareWalletRequests = async (
           },
         },
       });
-
       const encodedAddress = utils.bech32_encodeAddress(
         utils.hex_to_buf(addressHex)
       );
@@ -526,7 +564,6 @@ export const handleHardwareWalletRequests = async (
       throw e;
     }
   });
-
   showAddressChannel.onRequest(async (params) => {
     const {
       addressType,
@@ -544,6 +581,7 @@ export const handleHardwareWalletRequests = async (
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] SHOW ADDRESS');
 
       if (isTrezor) {
@@ -573,9 +611,9 @@ export const handleHardwareWalletRequests = async (
       throw e;
     }
   });
-
   getCardanoAdaAppChannel.onRequest(async (request) => {
     const { path } = request;
+
     try {
       if (!path || !devicesMemo[path]) {
         logger.info('[HW-DEBUG] Device not instantiated!', {
@@ -583,13 +621,19 @@ export const handleHardwareWalletRequests = async (
           devicesMemo,
         });
         // eslint-disable-next-line
-        throw { code: 'DEVICE_NOT_CONNECTED' };
+        throw {
+          code: 'DEVICE_NOT_CONNECTED',
+        };
       }
+
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(`[HW-DEBUG] GET CARDANO APP path:${path}`);
       deviceConnection = devicesMemo[path].AdaConnection;
       const { version } = await deviceConnection.getVersion();
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion');
       const { serial } = await deviceConnection.getSerial();
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         `[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial: ${serial}`
       );
@@ -618,8 +662,9 @@ export const handleHardwareWalletRequests = async (
         isDisconnectError,
         isDeviceDisconnected,
       });
+
       if (path && !isDeviceDisconnected && isDisconnectError) {
-        // $FlowFixMe
+        // @ts-ignore
         const oldPath = path;
         const deviceMemo = devicesMemo[oldPath];
         const devicePaths = await TransportNodeHid.list();
@@ -637,25 +682,24 @@ export const handleHardwareWalletRequests = async (
             }
           );
           // eslint-disable-next-line
-          throw { code: 'NO_DEVICE_PATHS', errorCode, errorName };
+          throw {
+            code: 'NO_DEVICE_PATHS',
+            errorCode,
+            errorName,
+          };
         }
 
         const { device: oldDevice } = deviceMemo;
-
-        // $FlowFixMe
+        // @ts-ignore
         const newTransport = await TransportNodeHid.open(newPath);
         const newDeviceConnection = new AppAda(newTransport);
-
         const deviceList = getDevices();
         const newDevice = find(deviceList, ['path', newPath]);
         const hasDeviceChanged = newDevice.productId !== oldDevice.productId;
-
         // TODO: remove
         deviceConnection = newDeviceConnection;
-
         // Purge old device memo
         devicesMemo = omit(devicesMemo, [oldPath]);
-
         logger.info(
           '[HW-DEBUG] ERROR in Cardano App (Re-establish Connection)',
           {
@@ -667,8 +711,8 @@ export const handleHardwareWalletRequests = async (
             newDevice: newDevice || 'NOT_FOUND',
           }
         );
-
         // Update devicesMemo
+        // @ts-ignore ts-migrate(2538) FIXME: Type 'unknown' cannot be used as an index type.
         devicesMemo[newPath] = {
           device: newDevice,
           transport: newTransport,
@@ -677,48 +721,61 @@ export const handleHardwareWalletRequests = async (
 
         if (hasPathChanged) {
           // eslint-disable-next-line
-          throw { code: 'DEVICE_PATH_CHANGED', path: newPath };
+          throw {
+            code: 'DEVICE_PATH_CHANGED',
+            path: newPath,
+          };
         }
       }
+
       throw error;
     }
   });
-
   getExtendedPublicKeyChannel.onRequest(async (params) => {
     // Params example:
     // { path: "1852'/1815'/0'", isTrezor: false, devicePath: null }
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] getExtendedPublicKeyChannel');
     const { path, isTrezor, devicePath } = params;
+
     try {
       if (isTrezor) {
         // Check if Trezor instantiated
         const deviceFeatures = await TrezorConnect.getFeatures({
-          device: { path: devicePath },
+          device: {
+            path: devicePath,
+          },
         });
+
         if (deviceFeatures.success) {
-          const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
-            {
+          const extendedPublicKeyResponse =
+            await TrezorConnect.cardanoGetPublicKey({
               path: `m/${path}`,
               showOnTrezor: true,
-            }
-          );
+            });
+
           if (!extendedPublicKeyResponse.success) {
             throw extendedPublicKeyResponse.payload;
           }
+
           const extendedPublicKey = get(
             extendedPublicKeyResponse,
             ['payload', 'node'],
             {}
           );
           return Promise.resolve({
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'public_key' does not exist on type '{} |... Remove this comment to see the full error message
             publicKeyHex: extendedPublicKey.public_key,
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'chain_code' does not exist on type '{} |... Remove this comment to see the full error message
             chainCodeHex: extendedPublicKey.chain_code,
           });
         }
+
         throw new Error('Trezor device not connected');
       }
 
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] EXPORT KEY');
 
       // Check if Ledger instantiated
@@ -739,7 +796,6 @@ export const handleHardwareWalletRequests = async (
       throw error;
     }
   });
-
   // @TODO - validityIntervalStart is not working with Cardano App 2.1.0
   signTransactionLedgerChannel.onRequest(async (params) => {
     const {
@@ -756,6 +812,7 @@ export const handleHardwareWalletRequests = async (
       signingMode,
       additionalWitnessPaths,
     } = params;
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
     deviceConnection = devicePath
       ? devicesMemo[devicePath].AdaConnection
@@ -765,6 +822,7 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Device not connected!');
       }
+
       const signedTransaction = await deviceConnection.signTransaction({
         signingMode,
         additionalWitnessPaths,
@@ -787,7 +845,7 @@ export const handleHardwareWalletRequests = async (
       throw e;
     }
   });
-
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(params: TrezorSignTransactionRe... Remove this comment to see the full error message
   signTransactionTrezorChannel.onRequest(async (params) => {
     const {
       inputs,
@@ -822,8 +880,11 @@ export const handleHardwareWalletRequests = async (
         auxiliaryData,
         signingMode,
       };
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ inputs: TrezorSignTransactionI... Remove this comment to see the full error message
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-        device: { path: devicePath },
+        device: {
+          path: devicePath,
+        },
         ...dataToSign,
       });
       return Promise.resolve(signedTransaction);
@@ -831,7 +892,6 @@ export const handleHardwareWalletRequests = async (
       throw e;
     }
   });
-
   resetTrezorActionChannel.onRequest(async () => {
     TrezorConnect.cancel('Method_Cancel');
   });

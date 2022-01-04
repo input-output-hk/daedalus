@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import InstructionsDialogContainer from './wallet-create/InstructionsDialogContainer';
@@ -17,8 +16,11 @@ const CreateWalletAbortConfirmation = () => <div>Are you sure</div>;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletCreateDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+class WalletCreateDialogContainer extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   get containers() {
     return {
@@ -43,10 +45,9 @@ export default class WalletCreateDialogContainer extends Component<Props> {
   }
 
   onContinue = () => {
-    const {
-      createWalletChangeStep,
-      createWalletClose,
-    } = this.props.actions.wallets;
+    const { createWalletChangeStep, createWalletClose } =
+      this.props.actions.wallets;
+
     if (this.currentStep !== null) {
       if (this.currentStep < CREATE_WALLET_STEPS.length - 1) {
         createWalletChangeStep.trigger();
@@ -55,27 +56,23 @@ export default class WalletCreateDialogContainer extends Component<Props> {
       }
     }
   };
-
   onBack = () => {
     this.props.actions.wallets.createWalletChangeStep.trigger(true);
   };
-
   onClose = () => {
     const { createWalletAbort, createWalletClose } = this.props.actions.wallets;
+
     if (this.shouldDisplayAbortAlert) {
       createWalletAbort.trigger();
     } else {
       createWalletClose.trigger();
     }
   };
-
   onAbort = () => this.props.actions.wallets.createWalletAbort.trigger();
 
   render() {
-    const {
-      createWalletStep,
-      createWalletShowAbortConfirmation,
-    } = this.props.stores.wallets;
+    const { createWalletStep, createWalletShowAbortConfirmation } =
+      this.props.stores.wallets;
 
     if (createWalletStep === null) {
       return null;
@@ -86,6 +83,7 @@ export default class WalletCreateDialogContainer extends Component<Props> {
     return (
       <Fragment>
         {createWalletShowAbortConfirmation && (
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ onAbort: () => any; }' is not assignable t... Remove this comment to see the full error message
           <CreateWalletAbortConfirmation onAbort={this.onAbort} />
         )}
         <CurrentContainer
@@ -97,3 +95,5 @@ export default class WalletCreateDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletCreateDialogContainer;

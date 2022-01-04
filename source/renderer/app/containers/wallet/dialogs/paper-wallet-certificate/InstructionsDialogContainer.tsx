@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import path from 'path';
 import { observer, inject } from 'mobx-react';
@@ -13,24 +12,20 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class InstructionsDialogContainer extends Component<Props> {
+class InstructionsDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   onPrint = async () => {
-    const {
-      currentDateFormat,
-      currentTimeFormatShort,
-    } = this.props.stores.profile;
+    const { currentDateFormat, currentTimeFormatShort } =
+      this.props.stores.profile;
     const date = moment();
     const formattedDate = date.format(currentDateFormat);
     const formattedTime = date.format(currentTimeFormatShort);
     const timestamp = `${formattedDate} - ${formattedTime}`;
-
     const name = generateFileNameWithTimestamp({
       prefix: 'paper-wallet-certificate',
       date,
@@ -48,18 +43,14 @@ export default class InstructionsDialogContainer extends Component<Props> {
         },
       ],
     };
-
     const { filePath } = await showSaveDialogChannel.send(params);
-
     // if cancel button is clicked or path is empty
     if (!filePath) return;
-
     this.props.actions.wallets.generateCertificate.trigger({
       filePath,
       timestamp,
     });
   };
-
   handleOpenExternalLink = (url: string) => {
     const { openExternalLink } = this.props.stores.app;
     openExternalLink(url);
@@ -82,3 +73,5 @@ export default class InstructionsDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default InstructionsDialogContainer;

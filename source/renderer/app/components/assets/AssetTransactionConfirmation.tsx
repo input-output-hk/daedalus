@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
@@ -11,7 +10,9 @@ import {
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/question-m... Remove this comment to see the full error message
 import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetTransactionConfirmation... Remove this comment to see the full error message
 import styles from './AssetTransactionConfirmation.scss';
 import type { AssetToken } from '../../api/assets/types';
 import Asset from './Asset';
@@ -30,16 +31,14 @@ const messages = defineMessages({
       '"unformattedAmountLabel" item on AssetTransactionConfirmation.',
   },
   unformattedAmountMessageForHardwareWallets: {
-    id:
-      'asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets',
+    id: 'asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets',
     defaultMessage:
       '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
     description:
       '"unformattedAmountMessageForHardwareWallets" item on AssetTransactionConfirmation.',
   },
   unformattedAmountMessageForSoftwareWallets: {
-    id:
-      'asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets',
+    id: 'asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets',
     defaultMessage:
       '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
     description:
@@ -57,15 +56,14 @@ const messages = defineMessages({
     description: '"insufficientBalance" item on AssetTransactionConfirmation.',
   },
 });
-
 type Props = {
-  asset: AssetToken,
-  assetNumber: number,
-  intl: intlShape.isRequired,
-  isHardwareWallet: boolean,
-  tokenIsMissing?: boolean,
-  insufficientBalance?: boolean,
-  amount: BigNumber,
+  asset: AssetToken;
+  assetNumber: number;
+  intl: intlShape.isRequired;
+  isHardwareWallet: boolean;
+  tokenIsMissing?: boolean;
+  insufficientBalance?: boolean;
+  amount: BigNumber;
 };
 
 const onCopyAssetParam = () => {};
@@ -88,7 +86,6 @@ const AssetTransactionConfirmation = observer((props: Props) => {
     decimals
   );
   const unformattedAmount = formattedTokenWalletAmount(amount, null, 0);
-
   const formattedBalance = formattedTokenWalletAmount(
     asset.quantity,
     metadata,
@@ -99,17 +96,17 @@ const AssetTransactionConfirmation = observer((props: Props) => {
     null,
     0
   );
-
   const componentStyles = classnames(styles.component, {
     [styles.error]: hasError,
   });
-
   const content = (
     <>
       <div className={styles.assetsContainer}>
         <h3>
           <span className={styles.assetLabel}>
-            {intl.formatMessage(messages.assetLabel, { assetNumber })}{' '}
+            {intl.formatMessage(messages.assetLabel, {
+              assetNumber,
+            })}{' '}
           </span>
           <Asset
             asset={asset}
@@ -181,5 +178,4 @@ const AssetTransactionConfirmation = observer((props: Props) => {
 
   return <div className={componentStyles}>{content}</div>;
 });
-
 export default injectIntl(AssetTransactionConfirmation);

@@ -5,7 +5,6 @@ export const SELECTED_EPOCH_OPTIONS = {
   CURRENT_EPOCH: 'currentEpoch',
   PREVIOUS_EPOCH: 'previousEpoch',
 };
-
 export const getTableHeadersForCurrentEpoch = (intl, messages) => [
   {
     name: 'pool',
@@ -16,7 +15,6 @@ export const getTableHeadersForCurrentEpoch = (intl, messages) => [
     title: intl.formatMessage(messages.tableHeaderSlotsElected),
   },
 ];
-
 export const getTableHeadersForPreviousEpoch = (intl, messages) => [
   {
     name: 'pool',
@@ -35,13 +33,10 @@ export const getTableHeadersForPreviousEpoch = (intl, messages) => [
     title: intl.formatMessage(messages.tableHeaderSharedRewards),
   },
 ];
-
 export const noDataExisting = (isLoading, data) =>
   !isLoading && ((data && !data.length) || !data);
-
 export const hasDataExisting = (isLoading, data) =>
   data && data.length > 0 && !isLoading;
-
 export const sortData = (data, order, sortBy) => {
   let realSortBy = '';
 
@@ -59,7 +54,6 @@ export const sortData = (data, order, sortBy) => {
 
   return orderBy(data, realSortBy, order);
 };
-
 export const humanizeDurationToShort = (currentLocale, dateTime) => {
   let humanizedDurationLanguage = null;
 
@@ -67,6 +61,7 @@ export const humanizeDurationToShort = (currentLocale, dateTime) => {
     case 'ja-JP':
       humanizedDurationLanguage = 'ja';
       break;
+
     default:
       humanizedDurationLanguage = 'en';
   }

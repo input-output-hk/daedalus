@@ -1,15 +1,15 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingSystemStateElement.sc... Remove this comment to see the full error message
 import styles from './StakingSystemStateElement.scss';
 
 type Props = {
-  value: string,
-  label: string,
+  value: string;
+  label: string;
 };
 
 @observer
-export default class StakingSystemState extends Component<Props> {
+class StakingSystemState extends Component<Props> {
   render() {
     const { value, label } = this.props;
     return (
@@ -19,3 +19,5 @@ export default class StakingSystemState extends Component<Props> {
     );
   }
 }
+
+export default StakingSystemState;

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -10,13 +9,16 @@ import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/
 storiesOf('Navigation/Wallets Menu', module)
   .addDecorator((story) => (
     <StoryDecorator>
-      <div style={{ width: '200px' }}>{story()}</div>
+      <div
+        style={{
+          width: '200px',
+        }}
+      >
+        {story()}
+      </div>
     </StoryDecorator>
   ))
-  .addDecorator(WalletsWrapper)
-
-  // ====== Stories ======
-
+  .addDecorator(WalletsWrapper) // ====== Stories ======
   .add('Empty', (props: { currentTheme: string }) => (
     <SidebarWalletsMenu
       wallets={[]}
@@ -28,8 +30,8 @@ storiesOf('Navigation/Wallets Menu', module)
       visible
     />
   ))
-
   .add('With Wallets', (props: { currentTheme: string }) => (
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     <SidebarWalletsMenu
       wallets={[
         {

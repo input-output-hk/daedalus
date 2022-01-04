@@ -1,4 +1,3 @@
-// @flow
 import { ipcMain } from 'electron';
 import type { BrowserWindow } from 'electron';
 

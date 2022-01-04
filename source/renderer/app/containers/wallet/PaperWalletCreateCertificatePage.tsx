@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import InstructionsDialog from '../../components/wallet/paper-wallet-certificate/InstructionsDialog';
@@ -15,23 +14,23 @@ import ConfirmationDialog from '../../components/wallet/paper-wallet-certificate
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
-
 type State = {
-  currentStep: ?number,
-  showConfirmationDialog: boolean,
+  currentStep: number | null | undefined;
+  showConfirmationDialog: boolean;
 };
 
 @inject('actions', 'stores')
 @observer
-export default class PaperWalletCreateCertificatePage extends Component<
-  Props,
-  State
-> {
-  static defaultProps = { actions: null, stores: null };
+class PaperWalletCreateCertificatePage extends Component<Props, State> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   componentDidUpdate() {
     const stepChanged =
       this.props.stores.wallets.certificateStep !== this.state.currentStep;
+
     if (this.props.stores.wallets.certificateStep && stepChanged) {
       this.onContinue(this.props.stores.wallets.certificateStep);
     }
@@ -44,7 +43,6 @@ export default class PaperWalletCreateCertificatePage extends Component<
     'verification',
     'completion',
   ];
-
   state = {
     currentStep: 0,
     showConfirmationDialog: false,
@@ -59,6 +57,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
     if (uiDialogs.isOpen(InstructionsDialog)) {
       activeDialog = (
         <InstructionsDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.onClose}
         />
@@ -68,6 +67,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
     if (uiDialogs.isOpen(PrintDialog)) {
       activeDialog = (
         <PrintDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.showConfirmationDialog}
         />
@@ -77,6 +77,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
     if (uiDialogs.isOpen(SecuringPasswordDialog)) {
       activeDialog = (
         <SecuringPasswordDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.showConfirmationDialog}
         />
@@ -86,6 +87,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
     if (uiDialogs.isOpen(VerificationDialog)) {
       activeDialog = (
         <VerificationDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.showConfirmationDialog}
         />
@@ -101,6 +103,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
         {activeDialog}
         {showConfirmationDialog && (
           <ConfirmationDialog
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             network={network}
             onCancel={this.hideConfirmationDialog}
             onConfirm={this.onClose}
@@ -113,18 +116,20 @@ export default class PaperWalletCreateCertificatePage extends Component<
   onContinue = (nextStep: number) => {
     const nextDialog = this.CREATE_CERTIFICATE_DIALOGS[nextStep];
     this.switchDialog(nextDialog);
-    this.setState({ currentStep: nextStep });
+    this.setState({
+      currentStep: nextStep,
+    });
   };
-
   onBack = () => {
     // eslint-disable-next-line react/no-access-state-in-setstate
     const prevStep = this.state.currentStep ? this.state.currentStep - 1 : 0;
     const prevDialog = this.CREATE_CERTIFICATE_DIALOGS[prevStep];
-    this.setState({ currentStep: prevStep });
+    this.setState({
+      currentStep: prevStep,
+    });
     this.switchDialog(prevDialog);
     this.props.actions.wallets.updateCertificateStep.trigger(true);
   };
-
   onClose = () => {
     this.setState({
       currentStep: 0,
@@ -132,15 +137,16 @@ export default class PaperWalletCreateCertificatePage extends Component<
     });
     this.props.actions.wallets.closeCertificateGeneration.trigger();
   };
-
   showConfirmationDialog = () => {
-    this.setState({ showConfirmationDialog: true });
+    this.setState({
+      showConfirmationDialog: true,
+    });
   };
-
   hideConfirmationDialog = () => {
-    this.setState({ showConfirmationDialog: false });
+    this.setState({
+      showConfirmationDialog: false,
+    });
   };
-
   switchDialog = (dialog: string) => {
     switch (dialog) {
       case 'instructions':
@@ -148,28 +154,35 @@ export default class PaperWalletCreateCertificatePage extends Component<
           dialog: InstructionsDialog,
         });
         break;
+
       case 'print':
         this.props.actions.dialogs.open.trigger({
           dialog: PrintDialog,
         });
         break;
+
       case 'securingPassword':
         this.props.actions.dialogs.open.trigger({
           dialog: SecuringPasswordDialog,
         });
         break;
+
       case 'verification':
         this.props.actions.dialogs.open.trigger({
           dialog: VerificationDialog,
         });
         break;
+
       case 'completion':
         this.props.actions.dialogs.open.trigger({
           dialog: CompletionDialog,
         });
         break;
+
       default:
         this.onClose();
     }
   };
 }
+
+export default PaperWalletCreateCertificatePage;

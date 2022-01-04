@@ -1,6 +1,6 @@
-// @flow
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component, createRef } from 'react';
+// @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
 import type { Element, ElementRef, Config } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
@@ -32,6 +32,7 @@ import TinyInput from '../../widgets/forms/TinyInput';
 import TinyDatePicker from '../../widgets/forms/TinyDatePicker';
 import TinyButton from '../../widgets/forms/TinyButton';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './FilterDialog.scss' or its co... Remove this comment to see the full error message
 import styles from './FilterDialog.scss';
 
 const messages = defineMessages({
@@ -101,38 +102,35 @@ const messages = defineMessages({
     description: 'Filter button label.',
   },
 });
-
-type InjectedProps = {| discreetModeFeature: DiscreetModeFeature |};
-
-export type FilterDialogProps = {|
-  locale: string,
-  dateFormat: string,
-  numberFormat: string,
-  defaultFilterOptions: TransactionFilterOptionsType,
-  populatedFilterOptions: TransactionFilterOptionsType,
-  onFilter: Function,
-  isDisabled: boolean,
-  triggerElement?: Element<*>,
-|};
-
-type Props = {|
-  ...FilterDialogProps,
-  ...InjectedProps,
-|};
+type InjectedProps = {
+  discreetModeFeature: DiscreetModeFeature;
+};
+export type FilterDialogProps = {
+  locale: string;
+  dateFormat: string;
+  numberFormat: string;
+  defaultFilterOptions: TransactionFilterOptionsType;
+  populatedFilterOptions: TransactionFilterOptionsType;
+  onFilter: (...args: Array<any>) => any;
+  isDisabled: boolean;
+  triggerElement?: Element<any>;
+};
+type Props = FilterDialogProps & InjectedProps;
 
 @observer
 class FilterDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  dateRangeOptions: Array<{ label: string, value: string }>;
+  dateRangeOptions: Array<{
+    label: string;
+    value: string;
+  }>;
   form: ReactToolboxMobxForm;
-  popoverTippyInstance: ElementRef<*> = createRef();
+  popoverTippyInstance: ElementRef<any> = createRef();
 
-  constructor(props: Props, context: Object) {
+  constructor(props: Props, context: Record<string, any>) {
     super(props);
-
     const {
       populatedFilterOptions: {
         incomingChecked,
@@ -144,9 +142,7 @@ class FilterDialog extends Component<Props> {
         toAmount,
       },
     } = props;
-
     const { intl } = context;
-
     this.dateRangeOptions = [
       {
         label: intl.formatMessage(messages.last7Days),
@@ -169,6 +165,7 @@ class FilterDialog extends Component<Props> {
         value: DateRangeTypes.CUSTOM,
       },
     ];
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 1.
     this.form = new ReactToolboxMobxForm({
       fields: {
         incomingChecked: {
@@ -211,17 +208,20 @@ class FilterDialog extends Component<Props> {
     field: 'incomingChecked' | 'outgoingChecked',
     value: boolean
   ) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select(field).set(value);
+
     if (value === false) {
       const otherFieldName =
         field === 'incomingChecked' ? 'outgoingChecked' : 'incomingChecked';
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
       const otherField = this.form.select(otherFieldName);
+
       if (otherField.value === false) {
         otherField.set(true);
       }
     }
   };
-
   fillFormFields = (
     filterOptions: TransactionFilterOptionsType,
     reset?: boolean
@@ -235,62 +235,61 @@ class FilterDialog extends Component<Props> {
       incomingChecked,
       outgoingChecked,
     } = filterOptions;
-
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('dateRange').set(dateRange);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('fromDate').set(fromDate);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('toDate').set(toDate);
     this.form
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
       .select('fromAmount')
       .set(reset ? fromAmount : this.getFromAmountValue(fromAmount));
     this.form
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
       .select('toAmount')
       .set(reset ? toAmount : this.getToAmountValue(toAmount));
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('incomingChecked').set(incomingChecked);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
-
   getFromAmountValue = (fromAmount?: string) => {
     const { discreetModeFeature } = this.props;
-
     return discreetModeFeature.isDiscreetMode
       ? MIN_DISCREET_MODE_INPUT_FIELD_VALUE.toString()
       : fromAmount;
   };
-
   getToAmountValue = (toAmount?: string) => {
     const { discreetModeFeature } = this.props;
-
     return discreetModeFeature.isDiscreetMode
       ? MAX_DISCREET_MODE_INPUT_FIELD_VALUE.toString()
       : toAmount;
   };
-
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ searchTerm: string; searchLimi... Remove this comment to see the full error message
   resetForm = () => this.fillFormFields(emptyTransactionFilterOptions, true);
-
   getDefaultFilterOptions = (): TransactionFilterOptionsType => {
     const { defaultFilterOptions } = this.props;
-
     return {
       ...defaultFilterOptions,
       fromAmount: this.getFromAmountValue(defaultFilterOptions.fromAmount),
       toAmount: this.getToAmountValue(defaultFilterOptions.toAmount),
     };
   };
-
   generateDefaultFilterOptions = () =>
     this.fillFormFields(this.getDefaultFilterOptions());
-
   isFormValuesEqualTo = (
     comparedFilterOptions: TransactionFilterOptionsType
   ) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'fields' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const formFieldNames = Object.keys(this.form.fields.toJSON());
     return isEqual(
       this.getComposedFormValues(),
       pick(comparedFilterOptions, formFieldNames)
     );
   };
-
   getComposedFormValues = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const formValues = this.form.values();
     return {
       ...formValues,
@@ -298,39 +297,42 @@ class FilterDialog extends Component<Props> {
       toAmount: formValues.toAmount.toString(),
     };
   };
-
   handleSubmit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: () => {
         const { onFilter } = this.props;
         const formValues = this.getComposedFormValues();
+
         if (validateFilterForm(formValues).isValid) {
           onFilter(formValues);
         }
       },
       onError: () => null,
     });
+
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
     if (this.popoverTippyInstance.current) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
       this.popoverTippyInstance.current.hide();
     }
   };
-
-  isValidFromDate = (date: Object) =>
+  isValidFromDate = (date: Record<string, any>) =>
     date.isSameOrBefore(moment().endOf('day'));
-
-  isValidToDate = (date: Object) => {
+  isValidToDate = (date: Record<string, any>) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const { fromDate } = this.form.values();
     return (
       date.isSameOrBefore(moment().endOf('day')) &&
       date.isSameOrAfter(moment(fromDate).startOf('day'))
     );
   };
-
   renderTypeField = () => {
     const { form } = this;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const incomingCheckboxField = form.$('incomingChecked');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const outgoingCheckboxField = form.$('outgoingChecked');
-
     return (
       <div className={styles.type}>
         <div className={styles.body}>
@@ -354,12 +356,12 @@ class FilterDialog extends Component<Props> {
       </div>
     );
   };
-
   renderDateRangeField = () => {
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const dateRangeFieldBindProps = this.form.$('dateRange').bind();
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const { fromDate, toDate } = this.form.values();
-
     return (
       <div className={styles.dateRange}>
         <TinySelect
@@ -370,7 +372,9 @@ class FilterDialog extends Component<Props> {
               fromDate,
               toDate,
             });
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
             this.form.select('fromDate').set(calculatedDateRange.fromDate);
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
             this.form.select('toDate').set(calculatedDateRange.toDate);
           }}
           placeholder={intl.formatMessage(messages.selectTimeRange)}
@@ -379,13 +383,14 @@ class FilterDialog extends Component<Props> {
       </div>
     );
   };
-
   renderDateRangeFromToField = () => {
     const { form } = this;
     const { intl } = this.context;
     const { locale, dateFormat } = this.props;
     const { invalidFields } = validateFilterForm(this.getComposedFormValues());
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const fromDateFieldBindProps = form.$('fromDate').bind();
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const toDateFieldBindProps = form.$('toDate').bind();
     const fromDateLocaleClassName =
       locale === 'ja-JP' ? styles.japaneseFromDateInput : null;
@@ -401,7 +406,6 @@ class FilterDialog extends Component<Props> {
       styles.toDateInput,
       toDateLocaleClassName,
     ]);
-
     return (
       <div className={styles.dateRangeFromTo}>
         <div className={styles.body}>
@@ -410,11 +414,13 @@ class FilterDialog extends Component<Props> {
               {...fromDateFieldBindProps}
               onChange={(...args) => {
                 fromDateFieldBindProps.onChange(...args);
+                // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
                 this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
               }}
               label={intl.formatMessage(globalMessages.rangeFrom)}
               pickerPanelPosition="left"
               closeOnSelect
+              // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
               onReset={() => form.select('fromDate').set('')}
               isValidDate={this.isValidFromDate}
               locale={locale}
@@ -426,11 +432,13 @@ class FilterDialog extends Component<Props> {
               {...toDateFieldBindProps}
               onChange={(...args) => {
                 toDateFieldBindProps.onChange(...args);
+                // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
                 this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
               }}
               label={intl.formatMessage(globalMessages.rangeTo)}
               pickerPanelPosition="right"
               closeOnSelect
+              // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
               onReset={() => form.select('toDate').set('')}
               isValidDate={this.isValidToDate}
               locale={locale}
@@ -442,13 +450,14 @@ class FilterDialog extends Component<Props> {
       </div>
     );
   };
-
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
     const { locale, numberFormat } = this.props;
     const { invalidFields } = validateFilterForm(this.getComposedFormValues());
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const fromAmountField = form.$('fromAmount');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const toAmountField = form.$('toAmount');
     const fromAmountLocaleClassName =
       locale === 'ja-JP' ? styles.japaneseFromAmountInput : null;
@@ -464,7 +473,6 @@ class FilterDialog extends Component<Props> {
       styles.toAmountInput,
       toAmountLocaleClassName,
     ]);
-
     return (
       <div className={styles.amountRange}>
         <div className={styles.header}>
@@ -498,12 +506,10 @@ class FilterDialog extends Component<Props> {
       </div>
     );
   };
-
   renderActionButton = () => {
     const { intl } = this.context;
     const { populatedFilterOptions } = this.props;
     const { isValid } = validateFilterForm(this.getComposedFormValues());
-
     return (
       <div className={styles.action}>
         <TinyButton
@@ -521,7 +527,6 @@ class FilterDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { triggerElement, isDisabled } = this.props;
-
     return (
       <PopOver
         arrow={false}
@@ -530,6 +535,7 @@ class FilterDialog extends Component<Props> {
         trigger="click"
         appendTo={document.body}
         onShow={(instance) => {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
           this.popoverTippyInstance.current = instance;
         }}
         duration={0}
@@ -575,6 +581,7 @@ class FilterDialog extends Component<Props> {
                   className={styles.titleLink}
                   onClick={this.resetForm}
                   disabled={this.isFormValuesEqualTo(
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ searchTerm: string; searchLimi... Remove this comment to see the full error message
                     emptyTransactionFilterOptions
                   )}
                 >

@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -15,15 +14,17 @@ import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RegisterToVote.scss' or its ... Remove this comment to see the full error message
 import styles from './RegisterToVote.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingInfo.scss' or its corr... Remove this comment to see the full error message
 import votingStyles from './VotingInfo.scss';
 
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  intl: Intl,
-  onRegisterToVoteClick: Function,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  intl: Intl;
+  onRegisterToVoteClick: (...args: Array<any>) => any;
 };
 
 function RegisterToVote({
@@ -44,7 +45,6 @@ function RegisterToVote({
       currentTimeFormat,
     }),
   });
-
   return (
     <div className={styles.root}>
       <span className={styles.title}>

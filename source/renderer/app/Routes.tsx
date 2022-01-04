@@ -1,8 +1,6 @@
-// @flow
 import React from 'react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { ROUTES } from './routes-config';
-
 // PAGES
 import Root from './containers/Root';
 import InitialSettingsPage from './containers/profile/InitialSettingsPage';

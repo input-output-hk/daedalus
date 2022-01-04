@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -7,6 +6,7 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseStepDial... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 
 export const messages = defineMessages({
@@ -35,29 +35,22 @@ export const messages = defineMessages({
     description: 'Label for the recoveryPhraseStep3Button on wallet settings.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  walletName: string,
+  onClose: (...args: Array<any>) => any;
+  walletName: string;
 };
-
 type State = {
-  safetyAgreement: boolean,
+  safetyAgreement: boolean;
 };
 
 @observer
-export default class WalletRecoveryPhraseStep3Dialog extends Component<
-  Props,
-  State
-> {
+class WalletRecoveryPhraseStep3Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     safetyAgreement: false,
   };
-
   onToggleSafetyAgreement = (checked: boolean) => {
     this.setState({
       safetyAgreement: checked,
@@ -68,7 +61,6 @@ export default class WalletRecoveryPhraseStep3Dialog extends Component<
     const { intl } = this.context;
     const { onClose, walletName } = this.props;
     const { safetyAgreement } = this.state;
-
     const actions = [
       {
         label: intl.formatMessage(messages.recoveryPhraseStep3Button),
@@ -77,9 +69,7 @@ export default class WalletRecoveryPhraseStep3Dialog extends Component<
         disabled: !safetyAgreement,
       },
     ];
-
     const dialogStyles = classnames([styles.dialog, 'verification-successful']);
-
     return (
       <Dialog
         className={dialogStyles}
@@ -104,3 +94,5 @@ export default class WalletRecoveryPhraseStep3Dialog extends Component<
     );
   }
 }
+
+export default WalletRecoveryPhraseStep3Dialog;

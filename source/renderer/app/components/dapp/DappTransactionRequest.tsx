@@ -1,4 +1,3 @@
-// @flow
 import React, { useState, useCallback, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
@@ -10,6 +9,7 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DappTransactionRequest.scss'... Remove this comment to see the full error message
 import styles from './DappTransactionRequest.scss';
 import Dialog from '../widgets/Dialog';
 import globalMessages from '../../i18n/global-messages';
@@ -75,30 +75,28 @@ const messages = defineMessages({
       '"Not enough ada" error in the dApp transaction request dialog',
   },
 });
-
 type Props = {
-  adaAmount: BigNumber,
-  additionalData?: string,
-  address: string,
-  assets: Array<AssetToken>,
-  assetsAmounts: Array<BigNumber>,
-  intl: intlShape.isRequired,
-  metadata?: string,
-  onAddWallet: Function,
-  onClose: Function,
-  onSelectWallet: Function,
-  onSubmit: Function,
-  selectedWallet: ?Wallet,
-  transactionFee: BigNumber,
-  triggeredFrom: string,
-  wallets: Array<Wallet>,
+  adaAmount: BigNumber;
+  additionalData?: string;
+  address: string;
+  assets: Array<AssetToken>;
+  assetsAmounts: Array<BigNumber>;
+  intl: intlShape.isRequired;
+  metadata?: string;
+  onAddWallet: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  onSubmit: (...args: Array<any>) => any;
+  selectedWallet: Wallet | null | undefined;
+  transactionFee: BigNumber;
+  triggeredFrom: string;
+  wallets: Array<Wallet>;
 };
-
 const DappTransactionRequest = observer((props: Props) => {
-  const [isAdditionalDataVisible, toggleAdditionalData] = useState<boolean>(
-    false
-  );
+  const [isAdditionalDataVisible, toggleAdditionalData] =
+    useState<boolean>(false);
   const [isMetadataVisible, toggleMetadata] = useState<boolean>(false);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const getToggleLabel = useCallback((isVisible: boolean) =>
     isVisible
       ? intl.formatMessage(globalMessages.hide)
@@ -135,12 +133,13 @@ const DappTransactionRequest = observer((props: Props) => {
     [assets, selectedWallet]
   );
   const adaBalanceRequired = adaAmount.plus(transactionFee);
-  const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
-    adaBalanceRequired
-  );
+  const walletsDropdownHasError =
+    selectedWallet?.amount.isLessThan(adaBalanceRequired);
+
   if (walletsDropdownHasError) {
     hasAmountError = true;
   }
+
   const adaAmountErrorMessage = walletsDropdownHasError ? (
     <FormattedHTMLMessage
       {...messages.insufficientBalanceErrorMessage}
@@ -156,7 +155,6 @@ const DappTransactionRequest = observer((props: Props) => {
   ]);
   const canSubmit =
     !!selectedWallet && !hasTokenError && !walletsDropdownHasError;
-
   const actions = [
     {
       label: intl.formatMessage(globalMessages.cancel),
@@ -170,12 +168,13 @@ const DappTransactionRequest = observer((props: Props) => {
     },
   ];
   const componentStyles = classnames([styles.component]);
-
   return (
     <Dialog
       className={componentStyles}
       title={intl.formatMessage(messages.title)}
-      subtitle={intl.formatMessage(messages.subtitle, { triggeredFrom })}
+      subtitle={intl.formatMessage(messages.subtitle, {
+        triggeredFrom,
+      })}
       actions={actions}
     >
       <p className={styles.label}>
@@ -186,6 +185,7 @@ const DappTransactionRequest = observer((props: Props) => {
           className={walletsDropdownStyles}
           getStakePoolById={() => {}}
           numberOfStakePools={100}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; getStakePoolById: () => vo... Remove this comment to see the full error message
           onChange={onSelectWallet}
           placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
           value={selectedWallet?.id}
@@ -255,5 +255,4 @@ const DappTransactionRequest = observer((props: Props) => {
     </Dialog>
   );
 });
-
 export default injectIntl(DappTransactionRequest);

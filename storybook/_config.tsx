@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { configure, addDecorator } from '@storybook/react';
 import StoryWrapper from './stories/_support/StoryWrapper';

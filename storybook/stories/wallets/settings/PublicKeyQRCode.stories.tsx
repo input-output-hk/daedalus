@@ -1,15 +1,11 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
-
 // Components
 import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 
 const decorators = [WalletsWrapper];
-
 storiesOf('Wallets/Settings', module).add(
   'Public Key - QR Code',
   (_, props) => (
@@ -20,5 +16,7 @@ storiesOf('Wallets/Settings', module).add(
       onClose={() => null}
     />
   ),
-  { decorators }
+  {
+    decorators,
+  }
 );

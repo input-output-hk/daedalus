@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -8,12 +7,16 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class SplashNetworkPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: {} };
+class SplashNetworkPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: {},
+  };
 
   render() {
     const { networkStatus: networkStatusActions } = this.props.actions;
     const { openExternalLink } = this.props.stores.app;
+
     if (global.isFlight) {
       return (
         <SplashNetworkFlight
@@ -22,6 +25,9 @@ export default class SplashNetworkPage extends Component<Props> {
         />
       );
     }
+
     return null;
   }
 }
+
+export default SplashNetworkPage;

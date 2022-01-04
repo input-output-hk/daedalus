@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import CenteredLayout from '../../components/layout/CenteredLayout';
@@ -9,8 +8,11 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class LoadingPage extends Component<InjectedProps> {
-  static defaultProps = { stores: null, actions: null };
+class LoadingPage extends Component<InjectedProps> {
+  static defaultProps = {
+    stores: null,
+    actions: null,
+  };
 
   get activeOverlay() {
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
@@ -23,11 +25,8 @@ export default class LoadingPage extends Component<InjectedProps> {
   }
 
   get isSystemTimeError() {
-    const {
-      isSystemTimeCorrect,
-      isNodeStopping,
-      isNodeStopped,
-    } = this.networkStatus;
+    const { isSystemTimeCorrect, isNodeStopping, isNodeStopped } =
+      this.networkStatus;
     return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
   }
 
@@ -44,3 +43,5 @@ export default class LoadingPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default LoadingPage;

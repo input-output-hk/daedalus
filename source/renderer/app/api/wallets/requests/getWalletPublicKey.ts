@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
 import type { GetWalletPublicKeyRequest } from '../types';

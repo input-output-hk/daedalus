@@ -17,10 +17,11 @@ const pageNames = {
   epochs: 'Epochs',
   info: 'Info',
 };
-
 export default (story, context) => {
   const storyWithKnobs = withKnobs(story, context);
+
   const getItemFromContext = () => context.parameters.id;
+
   let activeSidebarCategory = null;
 
   if (
@@ -40,6 +41,7 @@ export default (story, context) => {
           {context.parameters.id === 'countdown' ? (
             storyWithKnobs
           ) : (
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             <StakingWithNavigation
               isActiveNavItem={(item) => item === getItemFromContext()}
               activeItem={getItemFromContext()}

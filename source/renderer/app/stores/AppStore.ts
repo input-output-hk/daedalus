@@ -1,4 +1,3 @@
-// @flow
 import { observable, computed, action, runInAction } from 'mobx';
 import path from 'path';
 import Store from './lib/Store';
@@ -18,15 +17,21 @@ import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
 
 export default class AppStore extends Store {
-  @observable error: ?LocalizableError = null;
-  @observable isDownloadNotificationVisible = false;
-  @observable gpuStatus: ?GpuStatus = null;
-  @observable activeDialog: ApplicationDialog = null;
-  @observable newsFeedIsOpen: boolean = false;
+  @observable
+  error: LocalizableError | null | undefined = null;
+  @observable
+  isDownloadNotificationVisible = false;
+  @observable
+  gpuStatus: GpuStatus | null | undefined = null;
+  @observable
+  activeDialog: ApplicationDialog = null;
+  @observable
+  newsFeedIsOpen = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
+
     this._getGpuStatus();
 
     // About dialog actions
@@ -34,33 +39,33 @@ export default class AppStore extends Store {
       this._closeActiveDialog();
     });
     this.actions.app.openAboutDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.ABOUT);
     });
-
     // Daedalus Diagnostics dialog actions
     this.actions.app.closeDaedalusDiagnosticsDialog.listen(() => {
       this._closeActiveDialog();
     });
     this.actions.app.openDaedalusDiagnosticsDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
     });
-
     this.actions.app.downloadLogs.listen(this._downloadLogs);
     this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
-
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
-
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
   }
 
-  @computed get currentRoute(): string {
+  @computed
+  get currentRoute(): string {
     const { location } = this.stores.router;
     return location ? location.pathname : '';
   }
 
-  @computed get currentPage(): string {
+  @computed
+  get currentPage(): string {
     return this.currentRoute.split('/').pop();
   }
 
@@ -71,12 +76,12 @@ export default class AppStore extends Store {
 
   isActiveDialog = (dialog: ApplicationDialog): boolean =>
     this.activeDialog === dialog;
-
-  @action _toggleNewsFeed = () => {
+  @action
+  _toggleNewsFeed = () => {
     this.newsFeedIsOpen = !this.newsFeedIsOpen;
   };
-
-  @action _closeNewsFeed = () => {
+  @action
+  _closeNewsFeed = () => {
     this.newsFeedIsOpen = false;
   };
 
@@ -87,6 +92,7 @@ export default class AppStore extends Store {
     switch (uiPart) {
       default:
     }
+
     return Promise.resolve();
   };
 
@@ -95,38 +101,61 @@ export default class AppStore extends Store {
    */
   showUiPart = (uiPart: string) => {
     const { wallets } = this.stores;
+
     switch (uiPart) {
       case DIALOGS.ABOUT:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.ABOUT);
+
         break;
+
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
+
         break;
+
       case DIALOGS.ITN_REWARDS_REDEMPTION:
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.staking.onRedeemStart.trigger();
         break;
+
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
+
         break;
+
       case PAGES.SETTINGS:
-        this.actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.ROOT });
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.SETTINGS.ROOT,
+        });
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.dialogs.closeActiveDialog.trigger();
         break;
+
       case PAGES.WALLET_SETTINGS:
         if (wallets.active && wallets.active.id) {
           this.actions.router.goToRoute.trigger({
             route: ROUTES.WALLETS.PAGE,
-            params: { id: wallets.active.id, page: 'settings' },
+            params: {
+              id: wallets.active.id,
+              page: 'settings',
+            },
           });
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
           this.actions.dialogs.closeActiveDialog.trigger();
         }
+
         break;
+
       default:
     }
+
     return Promise.resolve();
   };
 
-  @computed get isSetupPage(): boolean {
+  @computed
+  get isSetupPage(): boolean {
     return (
       this.currentRoute === ROUTES.PROFILE.INITIAL_SETTINGS ||
       this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
@@ -134,41 +163,45 @@ export default class AppStore extends Store {
   }
 
   // ===================== PRIVATE ======================= //
-
   _getGpuStatus = async () => {
     const gpuStatus = await getGPUStatusChannel.request();
     runInAction('get gpu status', () => {
       this.gpuStatus = gpuStatus;
     });
   };
-
-  @action _updateRouteLocation = (options: {
-    route: string,
-    params?: ?Object,
+  @action
+  _updateRouteLocation = (options: {
+    route: string;
+    params?: Record<string, any> | null | undefined;
   }) => {
     const newRoutePath = buildRoute(options.route, options.params);
+
     if (this.currentRoute !== newRoutePath) {
       this.stores.router.push(newRoutePath);
     }
   };
-
-  @action _updateActiveDialog = (currentDialog: ApplicationDialog) => {
+  @action
+  _updateActiveDialog = (currentDialog: ApplicationDialog) => {
     if (this.activeDialog !== currentDialog) this.activeDialog = currentDialog;
   };
-
-  @action _closeActiveDialog = () => {
+  @action
+  _closeActiveDialog = () => {
     if (this.activeDialog !== null) this.activeDialog = null;
   };
-
-  @action _downloadLogs = async () => {
+  @action
+  _downloadLogs = async () => {
     if (this.isDownloadNotificationVisible) {
       return;
     }
+
     const fileName = generateFileNameWithTimestamp();
     const { desktopDirectoryPath } = this.stores.profile;
     const defaultPath = path.join(desktopDirectoryPath, fileName);
-    const params = { defaultPath };
+    const params = {
+      defaultPath,
+    };
     const { filePath } = await showSaveDialogChannel.send(params);
+
     if (filePath) {
       this.actions.app.setIsDownloadingLogs.trigger(true);
       this.actions.profile.downloadLogs.trigger({
@@ -180,8 +213,8 @@ export default class AppStore extends Store {
       this.actions.app.setIsDownloadingLogs.trigger(false);
     }
   };
-
-  @action _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
+  @action
+  _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };
 }

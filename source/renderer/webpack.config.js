@@ -54,9 +54,9 @@ module.exports = {
     },
   },
   resolve: {
-		extensions: ['.tsx', '.ts', '.js', '.json'],
-	},
-	module: {
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+  },
+  module: {
     rules: [
       {
         test: /\.tsx?$/,
@@ -68,11 +68,11 @@ module.exports = {
             options: {
               cacheCompression: false,
               cacheDirectory: true,
-							presets: [
-								'@babel/preset-env',
-								'@babel/preset-react',
-								'@babel/preset-typescript',
-							],
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-react',
+                '@babel/preset-typescript',
+              ],
               plugins: [
                 isDevelopment && require.resolve('react-refresh/babel'),
               ].filter(Boolean),

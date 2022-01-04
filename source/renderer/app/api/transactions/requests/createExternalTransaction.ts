@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type {
   CreateExternalTransactionResponse,
@@ -18,5 +17,7 @@ export const createExternalTransaction = (
     },
     {},
     signedTransactionBlob,
-    { isOctetStreamRequest: true }
+    {
+      isOctetStreamRequest: true,
+    }
   );

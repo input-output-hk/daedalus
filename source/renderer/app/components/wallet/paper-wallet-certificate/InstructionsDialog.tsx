@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -9,6 +8,7 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InstructionsDialog.scss' or ... Remove this comment to see the full error message
 import styles from './InstructionsDialog.scss';
 import { handleFormErrors } from '../../../utils/ReactToolboxMobxForm';
 import {
@@ -40,15 +40,13 @@ const messages = defineMessages({
       'subtitle2 for the "Paper wallet create certificate instructions dialog".',
   },
   instructionsListLabel: {
-    id:
-      'paper.wallet.create.certificate.instructions.dialog.instructionsList.label',
+    id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.label',
     defaultMessage: '!!!Instructions',
     description:
       'Instructions list label for the "Paper wallet create certificate instructions dialog".',
   },
   instructionsListDefinition1: {
-    id:
-      'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1',
+    id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1',
     defaultMessage: `!!!Your printed certificate will include your paper wallet recovery phrase
       of {paperWalletRecoveryPhraseWordCount} words. Note that your paper wallet recovery phrase is
       different to the {walletRecoveryPhraseWordCount}-word recovery phrases used to restore your
@@ -56,37 +54,32 @@ const messages = defineMessages({
     description: 'Wallet certificate create instructions dialog definition 1.',
   },
   instructionsListDefinition2: {
-    id:
-      'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2',
+    id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2',
     defaultMessage: `!!!For security reasons, the last {paperWalletWrittenWordsCount} words of your
       paper wallet recovery phrase will not be printed on the paper wallet certificate itself. You
       will need to write them on your certificate by hand in a moment.`,
     description: 'Wallet certificate create instructions dialog definition 2.',
   },
   instructionsListDefinition3: {
-    id:
-      'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3',
+    id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3',
     defaultMessage:
       '!!!Use the address on your certificate to send funds to your paper wallet.',
     description: 'Wallet certificate create instructions dialog definition 3.',
   },
   instructionsListDefinition4: {
-    id:
-      'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4',
+    id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4',
     defaultMessage: `!!!Your paper wallet will be offline so will not be held in Daedalus.
       To check the balance of the wallet, input the address on the certificate into`,
     description: 'Wallet certificate create instructions dialog definition 4.',
   },
   instructionsListDefinition5: {
-    id:
-      'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5',
+    id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5',
     defaultMessage:
       '!!!Store your certificate containing your paper wallet recovery phrase in a safe place.',
     description: 'Wallet certificate create instructions dialog definition 5.',
   },
   printingInstructions: {
-    id:
-      'paper.wallet.create.certificate.instructions.dialog.printingInstructions',
+    id: 'paper.wallet.create.certificate.instructions.dialog.printingInstructions',
     defaultMessage: `!!!When you click “Save PDF file for printing” you will be prompted
       to choose a location on your computer where the PDF file will be saved. After that
       open the saved PDF file and print it.`,
@@ -106,49 +99,41 @@ const messages = defineMessages({
       '"Wallet certificate create instructions dialog" print button label.',
   },
 });
-
 type Props = {
-  inProgress: boolean,
-  network: string,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  onPrint: Function,
-  error?: ?LocalizableError,
+  inProgress: boolean;
+  network: string;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onPrint: (...args: Array<any>) => any;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
-export default class InstructionsDialog extends Component<Props> {
+class InstructionsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     network: DEVELOPMENT,
   };
 
   componentDidUpdate(prevProps: Props) {
     if (!prevProps.error && this.props.error) {
-      handleFormErrors('.InstructionsDialog_error', { focusElement: true });
+      handleFormErrors('.InstructionsDialog_error', {
+        focusElement: true,
+      });
     }
   }
 
   render() {
     const { intl } = this.context;
-    const {
-      onClose,
-      onPrint,
-      inProgress,
-      onOpenExternalLink,
-      network,
-      error,
-    } = this.props;
+    const { onClose, onPrint, inProgress, onOpenExternalLink, network, error } =
+      this.props;
     const dialogClasses = classnames([styles.component, 'instructionsDialog']);
-
     const printButtonClasses = classnames([
       'printButton',
       inProgress ? styles.submitButtonSpinning : null,
     ]);
-
     const actions = [
       {
         className: printButtonClasses,
@@ -169,7 +154,6 @@ export default class InstructionsDialog extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     return (
       <Dialog
         className={dialogClasses}
@@ -194,13 +178,16 @@ export default class InstructionsDialog extends Component<Props> {
             <ul>
               <li>
                 {intl.formatMessage(messages.instructionsListDefinition1, {
-                  paperWalletRecoveryPhraseWordCount: PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-                  walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  paperWalletRecoveryPhraseWordCount:
+                    PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  walletRecoveryPhraseWordCount:
+                    WALLET_RECOVERY_PHRASE_WORD_COUNT,
                 })}
               </li>
               <li>
                 {intl.formatMessage(messages.instructionsListDefinition2, {
-                  paperWalletWrittenWordsCount: PAPER_WALLET_WRITTEN_WORDS_COUNT,
+                  paperWalletWrittenWordsCount:
+                    PAPER_WALLET_WRITTEN_WORDS_COUNT,
                 })}
               </li>
               <li>
@@ -209,7 +196,9 @@ export default class InstructionsDialog extends Component<Props> {
               <li>
                 <FormattedMessage
                   {...messages.instructionsListDefinition4}
-                  values={{ link: cardanoExplorerLink }}
+                  values={{
+                    link: cardanoExplorerLink,
+                  }}
                 />
               </li>
               <li>
@@ -228,3 +217,5 @@ export default class InstructionsDialog extends Component<Props> {
     );
   }
 }
+
+export default InstructionsDialog;

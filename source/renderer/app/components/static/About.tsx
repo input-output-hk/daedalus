@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -6,9 +5,13 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './About.scss' or its correspon... Remove this comment to see the full error message
 import styles from './About.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/daedalus-l... Remove this comment to see the full error message
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/cardano-lo... Remove this comment to see the full error message
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
 
 const messages = defineMessages({
@@ -55,17 +58,15 @@ const messages = defineMessages({
     description: 'About page build information',
   },
 });
-
 type Props = {
-  apiVersion: string,
-  nodeVersion: string,
-  build: string,
-  onOpenExternalLink: Function,
-  os: string,
-  version: string,
-  onClose: Function,
+  apiVersion: string;
+  nodeVersion: string;
+  build: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  os: string;
+  version: string;
+  onClose: (...args: Array<any>) => any;
 };
-
 export default class About extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -88,7 +89,6 @@ export default class About extends Component<Props> {
       messages.aboutContentCardanoHeadline
     );
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
-
     return (
       <div className={styles.container}>
         <DialogCloseButton

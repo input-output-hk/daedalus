@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -7,7 +6,9 @@ import globalMessages from '../../../i18n/global-messages';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RedemptionUnavailableDialog.... Remove this comment to see the full error message
 import styles from './RedemptionUnavailableDialog.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
@@ -24,21 +25,20 @@ const messages = defineMessages({
       'closeButtonLabel for Redeem Incentivized Testnet - redemptionUnavailable',
   },
 });
-
 type Props = {
-  onClose: Function,
-  syncPercentage: number,
+  onClose: (...args: Array<any>) => any;
+  syncPercentage: number;
 };
 
 @observer
-export default class RedemptionUnavailableDialog extends Component<Props> {
+class RedemptionUnavailableDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   render() {
     const { intl } = this.context;
     const { onClose, syncPercentage } = this.props;
-
     const closeButton = (
       <DialogCloseButton
         icon={closeCrossThin}
@@ -46,7 +46,6 @@ export default class RedemptionUnavailableDialog extends Component<Props> {
         onClose={onClose}
       />
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -78,3 +77,5 @@ export default class RedemptionUnavailableDialog extends Component<Props> {
     );
   }
 }
+
+export default RedemptionUnavailableDialog;

@@ -1,16 +1,8 @@
-// @flow
-import { Then } from 'cucumber';
-import { expect } from 'chai';
-import type { Daedalus } from '../../../types';
+import { Then } from "cucumber";
+import { expect } from "chai";
 
-declare var daedalus: Daedalus;
-
-Then(/^I should see the wallets in the following order:$/, async function(
-  table
-) {
+Then(/^I should see the wallets in the following order:$/, async function (table) {
   const expectedWallets = table.hashes();
   const wallets = await this.waitAndGetText('.SidebarWalletMenuItem_title');
-  wallets.forEach((wallet, index) =>
-    expect(wallet).to.equal(expectedWallets[index].name)
-  );
+  wallets.forEach((wallet, index) => expect(wallet).to.equal(expectedWallets[index].name));
 });

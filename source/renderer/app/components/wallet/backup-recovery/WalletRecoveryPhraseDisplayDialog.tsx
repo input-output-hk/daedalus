@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -8,6 +7,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseDisplayD... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -21,23 +21,21 @@ const messages = defineMessages({
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   buttonLabelIHaveWrittenItDown: {
-    id:
-      'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
+    id: 'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
     defaultMessage: '!!!Yes, I have written down my wallet recovery phrase.',
     description:
       'Label for button "Yes, I have written down my wallet recovery phrase." on wallet backup dialog',
   },
 });
-
 type Props = {
-  recoveryPhrase: string,
-  onStartWalletBackup: Function,
-  onCancelBackup: Function,
-  isSubmitting: boolean,
+  recoveryPhrase: string;
+  onStartWalletBackup: (...args: Array<any>) => any;
+  onCancelBackup: (...args: Array<any>) => any;
+  isSubmitting: boolean;
 };
 
 @observer
-export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
+class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -54,13 +52,11 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
       styles.component,
       'WalletRecoveryPhraseDisplayDialog',
     ]);
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabelIHaveWrittenItDown)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         label: buttonLabel,
@@ -68,7 +64,6 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
         primary: true,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -83,7 +78,8 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
             <FormattedHTMLMessage
               {...messages.backupInstructions}
               values={{
-                walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                walletRecoveryPhraseWordCount:
+                  WALLET_RECOVERY_PHRASE_WORD_COUNT,
               }}
             />
           }
@@ -93,3 +89,5 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
     );
   }
 }
+
+export default WalletRecoveryPhraseDisplayDialog;

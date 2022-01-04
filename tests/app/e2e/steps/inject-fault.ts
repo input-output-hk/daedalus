@@ -1,16 +1,10 @@
-// @flow
-import { When } from 'cucumber';
-import type { Daedalus } from '../../../types';
+import { When } from "cucumber";
 
-declare var daedalus: Daedalus;
-
-When(/^I inject fault named "([^"]*)"$/, async function(faultName) {
+When(/^I inject fault named "([^"]*)"$/, async function (faultName) {
   await this.client.executeAsync((name, done) => {
-    daedalus.api.ada
-      .setCardanoNodeFault([name, true])
-      .then(done)
-      .catch(e => {
-        throw e;
-      });
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
+    daedalus.api.ada.setCardanoNodeFault([name, true]).then(done).catch(e => {
+      throw e;
+    });
   }, faultName);
 });

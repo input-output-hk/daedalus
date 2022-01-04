@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { storiesOf } from '@storybook/react';
@@ -18,28 +17,25 @@ const asset = {
   recommendedDecimals: null,
   metadata: null,
 };
-
 storiesOf('Assets/AssetSettingsDialog', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Default', () => (
     <AssetSettingsDialog
       asset={asset}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { policyId: string; assetName: stri... Remove this comment to see the full error message
       assetAmount={new BigNumber(number('assetAmount', 500))}
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}
     />
   ))
-
   .add('With recommended decimal precision', () => (
     <AssetSettingsDialog
       asset={{
         ...asset,
         recommendedDecimals: number('recommendedDecimals', 2),
       }}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { recommendedDecimals: number; poli... Remove this comment to see the full error message
       assetAmount={new BigNumber(number('assetAmount', 500))}
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}

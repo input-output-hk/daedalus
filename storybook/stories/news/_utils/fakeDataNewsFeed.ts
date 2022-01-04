@@ -1,4 +1,3 @@
-// @flow
 import { version } from '../../../../package.json';
 import News from '../../../../source/renderer/app/domains/News';
 import { update } from './fakeDataUpdate';
@@ -9,6 +8,7 @@ export const getNewsItem = (
   type: NewsType,
   locale: string,
   read?: boolean
+// @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
 ): News.News =>
   new News.News({
     id,
@@ -20,7 +20,10 @@ export const getNewsItem = (
       type === 'software-update'
         ? update[locale].content
         : `Content - ${locale}`,
-    target: { daedalusVersion: version, platform: 'darwin' },
+    target: {
+      daedalusVersion: version,
+      platform: 'darwin',
+    },
     action: {
       label: 'Visit en-US',
       url: 'https://iohk.zendesk.com/hc/en-us/articles/',

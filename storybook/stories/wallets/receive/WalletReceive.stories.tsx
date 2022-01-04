@@ -1,13 +1,10 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { number, boolean, select } from '@storybook/addon-knobs';
-
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { generateAddress } from '../../_support/utils';
-
 // Screens
 import WalletReceiveSequential from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveSequential';
 import WalletReceiveRandom from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveRandom';
@@ -19,7 +16,6 @@ const onToggleSubMenus = {
   listen: action('onToggleSubMenus:listen'),
   remove: action('onToggleSubMenus:remove'),
 };
-
 storiesOf('Wallets/Receive', module)
   .addDecorator(WalletsWrapper)
   .add('Receive - sequential', ({ locale }: { locale: string }) => {
@@ -37,6 +33,7 @@ storiesOf('Wallets/Receive', module)
           ]}
           onShareAddress={action('onShareAddress')}
           onCopyAddress={action('onCopyAddress')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           currentLocale={locale}
           showUsed={boolean('showUsed', false)}
@@ -79,6 +76,7 @@ storiesOf('Wallets/Receive', module)
           ]}
           onShareAddress={action('onShareAddress')}
           onCopyAddress={action('onCopyAddress')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           currentLocale={locale}
           onToggleSubMenus={onToggleSubMenus}

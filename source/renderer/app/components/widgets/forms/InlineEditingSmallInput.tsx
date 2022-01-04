@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
@@ -10,47 +9,49 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InlineEditingSmallInput.scss... Remove this comment to see the full error message
 import styles from './InlineEditingSmallInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message
 import penIcon from '../../../assets/images/pen.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/arrow-r... Remove this comment to see the full error message
 import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
 
 type Props = {
-  className?: string,
-  isActive: boolean,
-  isDisabled: boolean,
-  placeholder?: string,
-  inputFieldLabel?: string,
-  inputFieldValue: string,
-  onStartEditing?: Function,
-  onStopEditing?: Function,
-  onCancelEditing?: Function,
-  onSubmit: Function,
-  isValid: Function,
-  validationErrorMessage: string,
-  successfullyUpdated: boolean,
-  inputBlocked?: boolean,
-  maxLength?: number,
+  className?: string;
+  isActive: boolean;
+  isDisabled: boolean;
+  placeholder?: string;
+  inputFieldLabel?: string;
+  inputFieldValue: string;
+  onStartEditing?: (...args: Array<any>) => any;
+  onStopEditing?: (...args: Array<any>) => any;
+  onCancelEditing?: (...args: Array<any>) => any;
+  onSubmit: (...args: Array<any>) => any;
+  isValid: (...args: Array<any>) => any;
+  validationErrorMessage: string;
+  successfullyUpdated: boolean;
+  inputBlocked?: boolean;
+  maxLength?: number;
 };
-
 type State = {
-  isActive: boolean,
+  isActive: boolean;
 };
 
 @observer
-export default class InlineEditingSmallInput extends Component<Props, State> {
+class InlineEditingSmallInput extends Component<Props, State> {
   state = {
     isActive: false,
   };
-
   static defaultProps = {
     onStartEditing: () => {},
     onStopEditing: () => {},
     onCancelEditing: () => {},
   };
-
   validator = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         inputField: {
@@ -65,64 +66,77 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();
-        this.setState({ isActive: false });
+        this.setState({
+          isActive: false,
+        });
+
         if (inputField !== this.props.inputFieldValue) {
           this.props.onStopEditing();
           this.props.onSubmit(inputField);
         } else {
           this.props.onCancelEditing();
         }
+
         this.input.blur();
       },
       onError: (form) => {
         const { inputField } = form.values();
+
         if (!inputField || !form.isValid) {
-          this.setState({ isActive: false });
+          this.setState({
+            isActive: false,
+          });
           this.props.onSubmit(inputField);
         }
       },
     });
   };
-
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.which === 13) {
       // ENTER key
       this.onBlur();
     }
+
     if (event.which === 27) {
       // ESCAPE key
       this.onCancel();
     }
   };
-
   onFocus = () => {
-    this.setState({ isActive: true });
+    this.setState({
+      isActive: true,
+    });
     if (this.props.onStartEditing) this.props.onStartEditing();
   };
-
   onBlur = () => {
     if (this.state.isActive) {
-      this.setState({ isActive: false });
+      this.setState({
+        isActive: false,
+      });
       this.submit();
     }
   };
-
   onCancel = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
     inputField.value = this.props.inputFieldValue;
-    this.setState({ isActive: false });
+    this.setState({
+      isActive: false,
+    });
     if (this.props.onCancelEditing) this.props.onCancelEditing();
     this.input.blur();
   };
@@ -157,6 +171,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     } = this.props;
     const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = validator.$('inputField');
     const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
     const componentStyles = classnames([
@@ -176,12 +191,10 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       successfullyUpdated ? 'input_animateSuccess' : null,
       isActive ? null : 'input_cursorPointer',
     ]);
-
     const leftButtonStyles = classnames([
       styles.leftButton,
       !arrowIconIsVisible ? styles.withoutRightButton : null,
     ]);
-
     return (
       <div
         className={componentStyles}
@@ -221,11 +234,14 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                   <SVGInline
                     svg={penIcon}
                     className={styles.penIcon}
-                    style={{ pointerEvents: 'none' }}
+                    // @ts-ignore ts-migrate(2322) FIXME: Type '{ svg: any; className: any; style: { pointer... Remove this comment to see the full error message
+                    style={{
+                      pointerEvents: 'none',
+                    }}
                   />
                 }
                 onMouseUp={() => this.input.focus()}
-                onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
                   event.persist();
                   event.preventDefault();
                   event.stopPropagation();
@@ -240,14 +256,17 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                     <SVGInline
                       svg={crossIcon}
                       className={styles.crossIcon}
-                      style={{ pointerEvents: 'none' }}
+                      // @ts-ignore ts-migrate(2322) FIXME: Type '{ svg: any; className: any; style: { pointer... Remove this comment to see the full error message
+                      style={{
+                        pointerEvents: 'none',
+                      }}
                     />
                   }
                   onMouseUp={() => {
                     this.onCancel();
                     this.input.blur();
                   }}
-                  onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                  onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
                     event.persist();
                     event.preventDefault();
                     event.stopPropagation();
@@ -261,11 +280,14 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
                       <SVGInline
                         svg={arrowIcon}
                         className={styles.arrowIcon}
-                        style={{ pointerEvents: 'none' }}
+                        // @ts-ignore ts-migrate(2322) FIXME: Type '{ svg: any; className: any; style: { pointer... Remove this comment to see the full error message
+                        style={{
+                          pointerEvents: 'none',
+                        }}
                       />
                     }
                     onMouseUp={() => this.input.blur()}
-                    onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                    onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
                       event.persist();
                       event.preventDefault();
                       event.stopPropagation();
@@ -281,3 +303,5 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     );
   }
 }
+
+export default InlineEditingSmallInput;

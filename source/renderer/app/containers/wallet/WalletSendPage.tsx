@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -16,20 +15,23 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSendPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+class WalletSendPage extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   calculateTransactionFee = async (params: {
-    walletId: string,
-    address: string,
-    amount: number,
-    isHardwareWallet: boolean,
-    selectedAssets?: ApiTokens,
+    walletId: string;
+    address: string;
+    amount: number;
+    isHardwareWallet: boolean;
+    selectedAssets?: ApiTokens;
   }) => {
     const { walletId, address, amount, isHardwareWallet, selectedAssets } =
       params;
     let fee;
     let minimumAda;
+
     if (isHardwareWallet) {
       const coinsSelection =
         await this.props.stores.hardwareWallets.selectCoins({
@@ -48,23 +50,29 @@ export default class WalletSendPage extends Component<Props> {
           assets: selectedAssets,
         }));
     }
-    return { fee, minimumAda };
-  };
 
+    return {
+      fee,
+      minimumAda,
+    };
+  };
   openDialog = (
-    dialog: Function,
+    dialog: (...args: Array<any>) => any,
     isHardwareWallet: boolean,
     walletId: string
   ) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
       dialog,
     });
+
     if (isHardwareWallet && !isFlight) {
-      this.props.stores.hardwareWallets.initiateTransaction({ walletId });
+      this.props.stores.hardwareWallets.initiateTransaction({
+        walletId,
+      });
     }
   };
-
   getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) =>
     allAssets.find((asset) => asset.uniqueId === uniqueId);
 
@@ -85,24 +93,19 @@ export default class WalletSendPage extends Component<Props> {
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const { all: allAssets, activeAsset, getAsset } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
-
     const selectedAsset = activeAsset
       ? this.getAssetByUniqueId(activeAsset, allAssets)
       : null;
-
     // Guard against potential null values
     const wallet = wallets.active;
     if (!wallet) throw new Error('Active wallet required for WalletSendPage.');
-
     const { isHardwareWallet } = wallet;
-
     const walletTokens = wallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
-
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
@@ -143,3 +146,5 @@ export default class WalletSendPage extends Component<Props> {
     );
   }
 }
+
+export default WalletSendPage;

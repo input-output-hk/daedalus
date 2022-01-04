@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -10,17 +9,14 @@ import {
   text,
 } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
-
 // Screens
 import Transaction from '../../../../source/renderer/app/components/wallet/transactions/Transaction';
-
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
 import StoryProvider from '../../_support/StoryProvider';
 import {
   generateHash,
-  generatePolicyIdHash,
-  // generat eAsset,
+  generatePolicyIdHash, // generat eAsset,
 } from '../../_support/utils';
 import {
   WalletTransaction,
@@ -30,7 +26,6 @@ import {
 import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 
 const date = new Date();
-
 const assetsMetadata = [
   {
     name: 'MakerDAO',
@@ -77,7 +72,6 @@ const assetsMetadata = [
     logo: '',
   },
 ];
-
 const transactionTokens = [
   {
     policyId: generatePolicyIdHash(),
@@ -112,7 +106,6 @@ const transactionTokens = [
     fingerprint: 'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
   },
 ];
-
 const decorators = [
   withKnobs,
   (story) => <StoryDecorator>{story()}</StoryDecorator>,
@@ -137,10 +130,8 @@ storiesOf('Wallets/Transactions', module).add(
       },
       ...transactionTokens.slice(1),
     ];
-
     const decimals = number('decimals', 1, {}, 'First Asset');
     const hasMetadata = boolean('hasMetadata', true, 'First Asset');
-
     const assetTokens = tokens.map((token, index) => ({
       ...token,
       uniqueId: token.policyId + token.assetName,
@@ -163,16 +154,16 @@ storiesOf('Wallets/Transactions', module).add(
             }
           : assetsMetadata[index],
     }));
-
     const amount = new BigNumber(number('amount', 10, {}, 'Transaction'));
-
     const transaction = new WalletTransaction({
       id: generateHash(),
       confirmations: number('confirmations', 10, {}, 'Transaction'),
       slotNumber: number('slotNumber', 10, {}, 'Transaction'),
       epochNumber: number('epochNumber', 10, {}, 'Transaction'),
+      // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
       type:
+        // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
         direction === 'outgoing'
           ? TransactionTypes.EXPEND
           : TransactionTypes.INCOME,
@@ -219,5 +210,7 @@ storiesOf('Wallets/Transactions', module).add(
       />
     );
   },
-  { decorators }
+  {
+    decorators,
+  }
 );

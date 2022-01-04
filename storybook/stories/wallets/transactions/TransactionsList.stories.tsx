@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -15,8 +14,7 @@ import { formattedWalletAmount } from '../../../../source/renderer/app/utils/for
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletsTransactionsWrapper from '../_utils/WalletsTransactionsWrapper';
 import {
-  DATE_ENGLISH_OPTIONS,
-  // LANGUAGE_OPTIONS,
+  DATE_ENGLISH_OPTIONS, // LANGUAGE_OPTIONS,
   NUMBER_OPTIONS,
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
@@ -28,17 +26,17 @@ import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/wa
 import Asset from '../../../../source/renderer/app/domains/Asset';
 
 type Props = {
-  defaultFilterOptions: TransactionFilterOptionsType,
-  filterOptions: TransactionFilterOptionsType,
-  locale: string,
-  onFilter: Function,
-  populatedFilterOptions: TransactionFilterOptionsType,
-  transactions: Array<WalletTransaction>,
-  totalAvailable: number,
+  defaultFilterOptions: TransactionFilterOptionsType;
+  filterOptions: TransactionFilterOptionsType;
+  locale: string;
+  onFilter: (...args: Array<any>) => any;
+  populatedFilterOptions: TransactionFilterOptionsType;
+  transactions: Array<WalletTransaction>;
+  totalAvailable: number;
 };
-
 const assetDetails = {
   '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c':
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       '',
@@ -57,6 +55,7 @@ const assetDetails = {
       }
     ),
   '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       '',
@@ -75,6 +74,7 @@ const assetDetails = {
       }
     ),
   '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       '',
@@ -93,6 +93,7 @@ const assetDetails = {
       }
     ),
   '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b':
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       '',
@@ -111,7 +112,6 @@ const assetDetails = {
       }
     ),
 };
-
 const assets = {
   available: [
     {
@@ -147,8 +147,10 @@ const assets = {
   ],
 };
 
-const getAsset = (policyId: string, assetName: string): ?Asset =>
-  assetDetails[`${policyId}${assetName}`];
+const getAsset = (
+  policyId: string,
+  assetName: string
+): Asset | null | undefined => assetDetails[`${policyId}${assetName}`];
 
 const decorators = [
   withKnobs,
@@ -165,7 +167,6 @@ const decorators = [
       },
       'groupedByDays'
     );
-
     return (
       <WalletsTransactionsWrapper
         {...props}
@@ -181,6 +182,7 @@ const decorators = [
 storiesOf('Wallets/Transactions', module)
   .add(
     'Transactions List',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, context: Props) => Ele... Remove this comment to see the full error message
     (_, context: Props) => {
       const {
         defaultFilterOptions,
@@ -191,7 +193,6 @@ storiesOf('Wallets/Transactions', module)
         transactions,
         totalAvailable,
       } = context;
-
       return (
         <>
           <WalletTransactions
@@ -207,6 +208,7 @@ storiesOf('Wallets/Transactions', module)
             defaultFilterOptions={defaultFilterOptions}
             filterOptions={filterOptions}
             deletePendingTransaction={action('deletePendingTransaction')}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             formattedWalletAmount={formattedWalletAmount}
             getUrlByType={action('getUrlByType')}
             hasMoreToLoad={false}
@@ -229,10 +231,13 @@ storiesOf('Wallets/Transactions', module)
         </>
       );
     },
-    { decorators }
+    {
+      decorators,
+    }
   )
   .add(
     'Wallet Tokens Transactions List',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, context: Props) => Ele... Remove this comment to see the full error message
     (_, context: Props) => {
       const {
         defaultFilterOptions,
@@ -254,6 +259,7 @@ storiesOf('Wallets/Transactions', module)
           defaultFilterOptions={defaultFilterOptions}
           filterOptions={filterOptions}
           deletePendingTransaction={action('deletePendingTransaction')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           formattedWalletAmount={formattedWalletAmount}
           getUrlByType={action('getUrlByType')}
           hasMoreToLoad={false}
@@ -275,5 +281,7 @@ storiesOf('Wallets/Transactions', module)
         />
       );
     },
-    { decorators }
+    {
+      decorators,
+    }
   );

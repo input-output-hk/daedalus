@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import StakePoolsSettings from '../../../components/settings/categories/StakePoolsSettings';
@@ -6,20 +5,21 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class StakePoolsSettingsPage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
-
+class StakePoolsSettingsPage extends Component<InjectedProps> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleSelectSmashServerUrl = (smashServerUrl: string) => {
-    this.props.actions.staking.selectSmashServerUrl.trigger({ smashServerUrl });
+    this.props.actions.staking.selectSmashServerUrl.trigger({
+      smashServerUrl,
+    });
   };
 
   render() {
     const { stores, actions } = this.props;
-    const {
-      smashServerUrl,
-      smashServerUrlError,
-      smashServerLoading,
-    } = stores.staking;
+    const { smashServerUrl, smashServerUrlError, smashServerLoading } =
+      stores.staking;
     const { isSynced, syncPercentage } = stores.networkStatus;
     const { openExternalLink } = stores.app;
     const { resetSmashServerError } = actions.staking;
@@ -37,3 +37,5 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default StakePoolsSettingsPage;

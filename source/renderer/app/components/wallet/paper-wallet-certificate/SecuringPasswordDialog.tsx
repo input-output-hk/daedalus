@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -7,8 +6,10 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/paper-w... Remove this comment to see the full error message
 import paperWalletImage from '../../../assets/images/paper-wallet-certificate/certificate.png';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SecuringPasswordDialog.scss'... Remove this comment to see the full error message
 import styles from './SecuringPasswordDialog.scss';
 import { PAPER_WALLET_WRITTEN_WORDS_COUNT } from '../../../config/cryptoConfig';
 
@@ -34,35 +35,30 @@ const messages = defineMessages({
     description: 'You may write the remaining words here:',
   },
   securingPasswordConfirmation: {
-    id:
-      'paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation',
+    id: 'paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation',
     defaultMessage:
       '!!!I have written the remaining {paperWalletWrittenWordsCount} words on the certificate.',
     description:
       '"Paper wallet create certificate securing password dialog" secure password confirmation.',
   },
 });
-
 type State = {
-  securePasswordConfirmed: boolean,
+  securePasswordConfirmed: boolean;
 };
-
 type Props = {
-  additionalMnemonics: string,
-  onContinue: Function,
-  onClose: Function,
+  additionalMnemonics: string;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
 };
 
 @observer
-export default class SecuringPasswordDialog extends Component<Props, State> {
+class SecuringPasswordDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     securePasswordConfirmed: false,
   };
-
   onSecurePasswordConfirmation = () => {
     this.setState((prevState) => ({
       securePasswordConfirmed: !prevState.securePasswordConfirmed,
@@ -73,12 +69,10 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { securePasswordConfirmed } = this.state;
     const { additionalMnemonics, onContinue, onClose } = this.props;
-
     const dialogClasses = classnames([
       styles.component,
       'SecuringPasswordDialog',
     ]);
-
     const actions = [
       {
         className: 'continueButton',
@@ -88,7 +82,6 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
         onClick: onContinue,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -130,3 +123,5 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
     );
   }
 }
+
+export default SecuringPasswordDialog;

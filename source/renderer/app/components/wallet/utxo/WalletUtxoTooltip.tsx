@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { get } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletUtxoTooltip.scss' or i... Remove this comment to see the full error message
 import styles from './WalletUtxoTooltip.scss';
 import { PRETTY_WALLET_AMOUNTS } from '../../../config/utxoConfig';
 
@@ -26,22 +26,20 @@ export const messages = defineMessages({
     description: 'Tooltip for the "Wallet Utxos - last bar" screen.',
   },
 });
-
 type Props = {
-  label?: string,
+  label?: string;
   payload?: Array<{
     payload: {
-      walletUtxosAmount: number,
-    },
-  }>,
+      walletUtxosAmount: number;
+    };
+  }>;
 };
 
 @observer
-export default class WalletUtxoTooltip extends Component<Props> {
+class WalletUtxoTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   getPreviousAmount = (walletAmount: string) => {
     const walletAmountIndex = PRETTY_WALLET_AMOUNTS.findIndex(
       (wa) => wa === walletAmount
@@ -53,11 +51,9 @@ export default class WalletUtxoTooltip extends Component<Props> {
     const { label: walletAmount = '', payload } = this.props;
     const { walletUtxosAmount } = get(payload, '[0].payload', {});
     const previousWalletAmount = this.getPreviousAmount(walletAmount);
-
     let message = messages.tooltip;
     if (!previousWalletAmount) message = messages.tooltipFirst;
     if (walletAmount === '10K+') message = messages.tooltipLast;
-
     return (
       <div className={styles.component}>
         <p>
@@ -74,3 +70,5 @@ export default class WalletUtxoTooltip extends Component<Props> {
     );
   }
 }
+
+export default WalletUtxoTooltip;

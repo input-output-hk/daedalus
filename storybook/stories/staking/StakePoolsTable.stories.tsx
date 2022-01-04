@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
@@ -12,11 +11,9 @@ const listTitle = {
   defaultMessage: '!!!Stake pools ({pools})',
   description: '"listTitle" for the Stake Pools page.',
 };
-
 type Props = {
-  currentTheme: string,
+  currentTheme: string;
 };
-
 export const StakePoolsTableStory = (props: Props) => (
   <React.Fragment>
     <div
@@ -35,6 +32,7 @@ export const StakePoolsTableStory = (props: Props) => (
         onListView={action('onOpenExternalLink')}
         isListView
         isGridView={false}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isClearTooltipOpeningDownward
       />
       <h2
@@ -63,6 +61,7 @@ export const StakePoolsTableStory = (props: Props) => (
       </h2>
       <StakePoolsTable
         listName="selectedIndexList"
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         stakePoolsList={STAKE_POOLS.slice(
           0,
           number('Pools', 300, {

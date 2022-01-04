@@ -1,4 +1,3 @@
-// @flow
 import {
   REQUEST_DOWNLOAD,
   RESUME_DOWNLOAD,
@@ -27,22 +26,16 @@ import type {
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
 export const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<
-  DownloadMainResponse,
-  DownloadRendererRequest
-> = new RendererIpcChannel(REQUEST_DOWNLOAD);
+RendererIpcChannel<DownloadMainResponse, DownloadRendererRequest> =
+  new RendererIpcChannel(REQUEST_DOWNLOAD);
 export const requestResumeDownloadChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<
-  ResumeDownloadMainResponse,
-  ResumeDownloadRendererRequest
-> = new RendererIpcChannel(RESUME_DOWNLOAD);
-
+RendererIpcChannel<ResumeDownloadMainResponse, ResumeDownloadRendererRequest> =
+  new RendererIpcChannel(RESUME_DOWNLOAD);
 export const deleteDownloadedFile: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   DeleteDownloadedFileMainResponse,
   DeleteDownloadedFileRendererRequest
 > = new RendererIpcChannel(DELETE_DOWNLOADED_FILE);
-
 export const getDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   DownloadLocalDataMainResponse,
@@ -58,7 +51,6 @@ RendererIpcChannel<
   ClearDownloadLocalDataMainResponse,
   ClearDownloadLocalDataRendererRequest
 > = new RendererIpcChannel(CLEAR_DOWNLOAD_LOCAL_DATA);
-
 export const checkFileExistsChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   CheckFileExistsMainResponse,

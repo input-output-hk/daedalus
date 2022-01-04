@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import StoryLayout from '../../_support/StoryLayout';
 import StoryProvider from '../../_support/StoryProvider';

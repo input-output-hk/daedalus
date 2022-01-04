@@ -1,36 +1,35 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import moment from 'moment';
-import News /* , { NewsTypes } */ from '../../domains/News';
+import News from /* , { NewsTypes } */
+'../../domains/News';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UpdateItem.scss' or its corr... Remove this comment to see the full error message
 import styles from './UpdateItem.scss';
 
 type Props = {
-  updateItem: News.News,
-  onOpenAppUpdate: Function,
-  currentDateFormat: string,
-  downloadProgress: number,
-  isUpdatePostponed: boolean,
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
+  updateItem: News.News;
+  onOpenAppUpdate: (...args: Array<any>) => any;
+  currentDateFormat: string;
+  downloadProgress: number;
+  isUpdatePostponed: boolean;
 };
 
 @observer
-export default class UpdateItem extends Component<Props> {
+class UpdateItem extends Component<Props> {
   static defaultProps = {
     onupdateItemActionClick: null,
     expandWithoutTransition: false,
   };
-
   generateTitleWithBadge = (title: string) => {
     const wordsArray = title.split(' ');
     const lastWordIndex = wordsArray.length - 1;
     const lastWord = wordsArray[lastWordIndex];
-
     // Remove last word from array
     wordsArray.splice(lastWordIndex, 1);
     // Join words without last one
     const firstSentencePart = wordsArray.join(' ');
-
     return (
       <h4 className={styles.title}>
         {firstSentencePart ? `${firstSentencePart} ` : null}
@@ -55,7 +54,6 @@ export default class UpdateItem extends Component<Props> {
       updateItem.type ? styles[updateItem.type] : null,
     ]);
     const title = this.generateTitleWithBadge(updateItem.title);
-
     return (
       <div
         className={componentClasses}
@@ -68,7 +66,11 @@ export default class UpdateItem extends Component<Props> {
         </div>
         {!isUpdatePostponed && (
           <div className={styles.downloadProgress}>
-            <span style={{ width: `${downloadProgress}%` }} />
+            <span
+              style={{
+                width: `${downloadProgress}%`,
+              }}
+            />
             <em />
           </div>
         )}
@@ -76,3 +78,5 @@ export default class UpdateItem extends Component<Props> {
     );
   }
 }
+
+export default UpdateItem;

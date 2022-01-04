@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnosticsDialog.sc... Remove this comment to see the full error message
 import styles from './DaedalusDiagnosticsDialog.scss';
 import { formattedBytesToSize } from '../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
@@ -11,17 +11,15 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class DaedalusDiagnosticsDialog extends Component<Props> {
+class DaedalusDiagnosticsDialog extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   handleForceCheckNetworkClock = () =>
     this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
-
   handleCopyStateDirectoryPath = () =>
     this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
 
@@ -58,7 +56,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       stateDirectoryPath,
       getNetworkClockRequest,
     } = networkStatus;
-
     const systemInfo = {
       platform: environment.os,
       platformVersion: environment.platformVersion,
@@ -66,7 +63,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       ram: formattedBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
     };
-
     const {
       network,
       version,
@@ -77,7 +73,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       apiVersion,
       build,
     } = environment;
-
     const coreInfo = {
       daedalusVersion: version,
       daedalusBuildNumber: build,
@@ -92,7 +87,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: network,
     };
-
     return (
       <ReactModal
         isOpen
@@ -106,6 +100,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           systemInfo={systemInfo}
           coreInfo={coreInfo}
           cardanoNodeState={cardanoNodeState}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: { platform: any; platformVersi... Remove this comment to see the full error message
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}
           isStaging={environment.isStaging}
@@ -128,7 +123,9 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }
           isForceCheckingSystemTime={getNetworkClockRequest.isExecutingWithArgs(
-            { isForceCheck: true }
+            {
+              isForceCheck: true,
+            }
           )}
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
@@ -141,3 +138,5 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     );
   }
 }
+
+export default DaedalusDiagnosticsDialog;

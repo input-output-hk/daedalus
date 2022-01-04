@@ -1,17 +1,15 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { Transaction, TransactionPaymentData } from '../types';
 import { request } from '../../utils/request';
 import { getRawWalletId } from '../../utils';
 
 export type TransactionParams = {
-  walletId: string,
+  walletId: string;
   data: {
-    payments: Array<TransactionPaymentData>,
-    passphrase: string,
-  },
+    payments: Array<TransactionPaymentData>;
+    passphrase: string;
+  };
 };
-
 export const createByronWalletTransaction = (
   config: RequestConfig,
   { walletId, data }: TransactionParams

@@ -1,9 +1,7 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-
 import StoryDecorator from '../_support/StoryDecorator';
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
@@ -15,7 +13,6 @@ const decorators = [
   withKnobs,
   (story) => <StoryDecorator>{story()}</StoryDecorator>,
 ];
-
 storiesOf('Decentralization / Countdown', module).add(
   'Countdown party',
   () => {
@@ -27,6 +24,7 @@ storiesOf('Decentralization / Countdown', module).add(
     return (
       <div>
         <TopBar
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onToggleSidebar={action('onToggleSidebar')}
           formattedWalletAmount={1.0}
           currentRoute=""
@@ -41,6 +39,7 @@ storiesOf('Decentralization / Countdown', module).add(
           <NodeSyncStatusIcon
             isSynced
             syncPercentage={100}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             isProduction
             isMainnet
             hasTadaIcon={isAlonzoActivated}
@@ -62,6 +61,7 @@ storiesOf('Decentralization / Countdown', module).add(
           onLearnMoreClick={action('onLearnMoreClick')}
           startDateTime={startDateTime}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isAnimating={boolean('isAnimating', false)}
           isAlonzoActivated={boolean('isAlonzoActivated', false)}
           stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
@@ -71,5 +71,7 @@ storiesOf('Decentralization / Countdown', module).add(
       </div>
     );
   },
-  { decorators }
+  {
+    decorators,
+  }
 );

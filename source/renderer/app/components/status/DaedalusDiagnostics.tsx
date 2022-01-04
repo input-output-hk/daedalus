@@ -1,5 +1,5 @@
-// @flow
 import React, { Component, Fragment } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -13,8 +13,11 @@ import SVGInline from 'react-svg-inline';
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/clipboard-... Remove this comment to see the full error message
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/sand-clock... Remove this comment to see the full error message
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import {
@@ -23,6 +26,7 @@ import {
   formattedSize,
 } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnostics.scss' or... Remove this comment to see the full error message
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
@@ -341,39 +345,36 @@ const messages = defineMessages({
     description: 'slot',
   },
 });
-
 type Props = {
-  systemInfo: SystemInfo,
-  coreInfo: CoreSystemInfo,
-  cardanoNodeState: ?CardanoNodeState,
-  isNodeResponding: boolean,
+  systemInfo: SystemInfo;
+  coreInfo: CoreSystemInfo;
+  cardanoNodeState: CardanoNodeState | null | undefined;
+  isNodeResponding: boolean;
   // isNodeSubscribed: boolean,
-  isNodeSyncing: boolean,
-  isNodeInSync: boolean,
-  isNodeTimeCorrect: boolean,
-  nodeConnectionError: ?LocalizableError,
-  isConnected: boolean,
-  isSynced: boolean,
-  syncPercentage: number,
-  localTimeDifference: ?number,
-  isSystemTimeCorrect: boolean,
-  isSystemTimeIgnored: boolean,
-  isCheckingSystemTime: boolean,
-  isForceCheckingSystemTime: boolean,
-  localTip: ?TipInfo,
-  networkTip: ?TipInfo,
-  onOpenStateDirectory: Function,
-  onOpenExternalLink: Function,
-  onRestartNode: Function,
-  onClose: Function,
-  onCopyStateDirectoryPath: Function,
-  onForceCheckNetworkClock: Function,
+  isNodeSyncing: boolean;
+  isNodeInSync: boolean;
+  isNodeTimeCorrect: boolean;
+  nodeConnectionError: LocalizableError | null | undefined;
+  isConnected: boolean;
+  isSynced: boolean;
+  syncPercentage: number;
+  localTimeDifference: number | null | undefined;
+  isSystemTimeCorrect: boolean;
+  isSystemTimeIgnored: boolean;
+  isCheckingSystemTime: boolean;
+  isForceCheckingSystemTime: boolean;
+  localTip: TipInfo | null | undefined;
+  networkTip: TipInfo | null | undefined;
+  onOpenStateDirectory: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onRestartNode: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onCopyStateDirectoryPath: (...args: Array<any>) => any;
+  onForceCheckNetworkClock: (...args: Array<any>) => any;
 };
-
 type State = {
-  isNodeRestarting: boolean,
+  isNodeRestarting: boolean;
 };
-
 const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.RUNNING,
   CardanoNodeStates.UPDATED,
@@ -383,7 +384,7 @@ const FINAL_CARDANO_NODE_STATES = [
 ];
 
 @observer
-export default class DaedalusDiagnostics extends Component<Props, State> {
+class DaedalusDiagnostics extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -403,7 +404,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNodeState !== prevCardanoNodeState &&
       includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
     ) {
-      this.setState({ isNodeRestarting: false }); // eslint-disable-line
+      this.setState({
+        isNodeRestarting: false,
+      }); // eslint-disable-line
     }
   }
 
@@ -416,7 +419,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       </div>
     </div>
   );
-
   getRow = (messageId: string, value: Node | boolean) => {
     const { intl } = this.context;
     const key = intl.formatMessage(messages[messageId]);
@@ -428,6 +430,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       styles.layoutHeader,
     ]);
     const classNameRow = classNames([styles.layoutRow, messageId]);
+
     if (typeof value === 'boolean') {
       content = value
         ? intl.formatMessage(messages.statusOn)
@@ -438,6 +441,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           ? classNames([className, styles.green])
           : classNames([className, styles.red]);
     }
+
     return (
       <div className={classNameRow}>
         <div className={classNameHeader}>
@@ -451,7 +455,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-
     const {
       systemInfo,
       coreInfo,
@@ -477,7 +480,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       isCheckingSystemTime,
       isForceCheckingSystemTime,
     } = this.props;
-
     const {
       platform,
       platformVersion,
@@ -485,12 +487,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
     } = systemInfo;
-
     const cpu = formattedCpuModel(cpuInOriginalFormat);
     const availableDiskSpace = formattedSize(
       availableDiskSpaceInOriginalFormat
     );
-
     const {
       daedalusVersion,
       daedalusBuildNumber,
@@ -505,20 +505,16 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetwork,
       daedalusStateDirectoryPath,
     } = coreInfo;
-
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
-
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
     );
-
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
-
     const localTimeDifferenceClasses = isCheckingSystemTime
       ? classNames([styles.layoutData, styles.localTimeDifference])
       : classNames([
@@ -530,9 +526,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
             ? styles.red
             : styles.green,
         ]);
-
     const { getSectionRow, getRow } = this;
-
     return (
       <div className={styles.component}>
         <DialogCloseButton
@@ -778,56 +772,70 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
   getLocalisationForCardanoNodeState = () => {
     const { cardanoNodeState } = this.props;
     let localisationKey;
+
     switch (cardanoNodeState) {
       case CardanoNodeStates.STARTING:
         localisationKey = messages.nodeIsStarting;
         break;
+
       case CardanoNodeStates.EXITING:
         localisationKey = messages.nodeIsExiting;
         break;
+
       case CardanoNodeStates.STOPPING:
         localisationKey = messages.nodeIsStopping;
         break;
+
       case CardanoNodeStates.STOPPED:
         localisationKey = messages.nodeHasStopped;
         break;
+
       case CardanoNodeStates.UPDATING:
         localisationKey = messages.nodeIsUpdating;
         break;
+
       case CardanoNodeStates.UPDATED:
         localisationKey = messages.nodeHasBeenUpdated;
         break;
+
       case CardanoNodeStates.CRASHED:
         localisationKey = messages.nodeHasCrashed;
         break;
+
       case CardanoNodeStates.ERRORED:
         localisationKey = messages.nodeHasErrored;
         break;
+
       case CardanoNodeStates.UNRECOVERABLE:
         localisationKey = messages.nodeIsUnrecoverable;
         break;
+
       default:
         localisationKey = messages.nodeIsRunning;
         break;
     }
+
     return localisationKey;
   };
-
   restoreDialogCloseOnEscKey = () => {
     // This method is to be used on buttons which get disabled after click
     // as without it the ReactModal is not closing if you press the ESC key
     // even after the button is later re-enabled
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'focus' does not exist on type 'Element'.
     document.getElementsByClassName('ReactModal__Content')[0].focus();
   };
-
   checkTime = () => {
     this.props.onForceCheckNetworkClock();
     this.restoreDialogCloseOnEscKey();
   };
-
   restartNode = () => {
-    this.setState({ isNodeRestarting: true });
+    this.setState({
+      isNodeRestarting: true,
+    });
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'trigger' does not exist on type '(...arg... Remove this comment to see the full error message
     this.props.onRestartNode.trigger();
     this.restoreDialogCloseOnEscKey();
   };
 }
+
+export default DaedalusDiagnostics;

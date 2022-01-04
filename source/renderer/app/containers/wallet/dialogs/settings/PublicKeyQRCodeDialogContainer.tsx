@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
@@ -13,9 +12,7 @@ import {
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { ReactIntlMessage } from '../../../../types/i18nTypes';
 
-const walletMessages: {
-  [string]: ReactIntlMessage,
-} = defineMessages({
+const walletMessages: Record<string, ReactIntlMessage> = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.walletPublicKey',
     defaultMessage: '!!!Wallet Public Key',
@@ -32,10 +29,7 @@ const walletMessages: {
     description: 'Tooltip for the derivation path',
   },
 });
-
-const icoMessages: {
-  [string]: ReactIntlMessage,
-} = defineMessages({
+const icoMessages: Record<string, ReactIntlMessage> = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.icoPublicKey',
     defaultMessage: '!!!ICO Public Key',
@@ -52,41 +46,44 @@ const icoMessages: {
     description: 'Tooltip for the derivation path',
   },
 });
-
 type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
-  handleCopyWalletPublicKey = (isICO: boolean = false) => {
+class PublicKeyQRCodeDialogContainer extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
+  handleCopyWalletPublicKey = (isICO = false) => {
     const { actions, stores } = this.props;
     const { wallets: walletsAction } = actions;
     const { wallets: walletsStore } = stores;
     const { activePublicKey, icoPublicKey } = walletsStore;
-
     if ((!activePublicKey && !isICO) || (!icoPublicKey && isICO))
       throw new Error(
         'Active wallet public key required for PublicKeyQRCodeDialogContainer.'
       );
-
     const publicKey = ellipsis(
-      // $FlowFixMe Flow cannot detect the previous condition. Hopefully this is solved using Typescript
+      // @ts-ignore Flow cannot detect the previous condition. Hopefully this is solved using Typescript
       isICO ? icoPublicKey : activePublicKey,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-
-    if (isICO) walletsAction.copyICOPublicKey.trigger({ publicKey });
-    else walletsAction.copyWalletPublicKey.trigger({ publicKey });
+    if (isICO)
+      walletsAction.copyICOPublicKey.trigger({
+        publicKey,
+      });
+    else
+      walletsAction.copyWalletPublicKey.trigger({
+        publicKey,
+      });
   };
 
   render() {
     const { actions, stores, isICO = false } = this.props;
     const { wallets } = stores;
     const { active: activeWallet, activePublicKey, icoPublicKey } = wallets;
-
     if (!activeWallet)
       throw new Error(
         'Active wallet required for PublicKeyQRCodeDialogContainer.'
@@ -112,6 +109,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
         />
       );
     }
+
     if (!isICO && !!activePublicKey) {
       return (
         <WalletPublicKeyQRCodeDialog
@@ -130,3 +128,5 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
     return null;
   }
 }
+
+export default PublicKeyQRCodeDialogContainer;

@@ -1,5 +1,3 @@
-// @flow
-
 import type { SupportRequests } from '../types/support-requests.types';
 import type { Environment } from '../types/environment.types';
 
@@ -7,7 +5,6 @@ const localesFillForm = {
   'en-US': 'English',
   'ja-JP': 'Japanese',
 };
-
 export const generateSupportRequestLink = (
   baseUrl: string,
   environmentData: Environment,
@@ -22,7 +19,6 @@ export const generateSupportRequestLink = (
     os,
     buildNumber,
   } = environmentData;
-
   const supportRequestData: SupportRequests = {
     frontendVersion: version,
     backendVersion: apiVersion,
@@ -35,7 +31,6 @@ export const generateSupportRequestLink = (
     supportLanguage: localesFillForm[locale],
     productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
-
   return `${baseUrl}?${Object.entries(supportRequestData)
     .map(
       ([key, val]: [string, any]) =>

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { set } from 'lodash';
@@ -7,6 +6,7 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import RadioSet from '../../widgets/RadioSet';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTypeDialog.scss' or it... Remove this comment to see the full error message
 import styles from './WalletTypeDialog.scss';
 import {
   WALLET_KINDS,
@@ -51,29 +51,25 @@ const messages = defineMessages({
     description: 'Label for the "labelDaedalusWalletKind" checkbox.',
   },
   labelDaedalusWalletKind12WordByron: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron',
     defaultMessage: '!!!12 words <em>(Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind12WordByron" checkbox.',
   },
   labelDaedalusWalletKind15WordShelley: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
     defaultMessage:
       '!!!15 words <em>(Incentivized Testnet Rewards wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },
   labelDaedalusWalletKind24WordShelley: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley',
     defaultMessage: '!!!24 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind24WordShelley" checkbox.',
   },
   labelDaedalusWalletKind27WordPaper: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper',
     defaultMessage: '!!!27 words - paper wallet (Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind27WordPaper" checkbox.',
   },
@@ -83,14 +79,12 @@ const messages = defineMessages({
     description: 'Label for the "labelYoroiWalletKind" checkbox.',
   },
   labelYoroiWalletKind15WordByron: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
+    id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
     defaultMessage: '!!!15 words <em>(Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind15WordByron" checkbox.',
   },
   labelYoroiWalletKind15WordShelley: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
+    id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
     defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
@@ -148,39 +142,31 @@ const messages = defineMessages({
     description: 'Label for the "hardwareWalletCheckbox2" disclaimer.',
   },
 });
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  onSetWalletKind: Function,
-  walletKind: ?WalletKind,
-  walletKindDaedalus: ?WalletDaedalusKind,
-  walletKindYoroi: ?WalletYoroiKind,
-  walletKindHardware: ?WalletHardwareKind,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onSetWalletKind: (...args: Array<any>) => any;
+  walletKind: WalletKind | null | undefined;
+  walletKindDaedalus: WalletDaedalusKind | null | undefined;
+  walletKindYoroi: WalletYoroiKind | null | undefined;
+  walletKindHardware: WalletHardwareKind | null | undefined;
 };
-
-type State = {
-  [key: HardwareWalletAcceptance]: boolean,
-};
-
+type State = Record<HardwareWalletAcceptance, boolean>;
 export default class WalletTypeDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     hardwareWalletAcceptance1: false,
     hardwareWalletAcceptance2: false,
     hardwareWalletAcceptance3: false,
   };
-
   toggleAcceptance = (param: HardwareWalletAcceptance) =>
     this.setState((currentState) => set({}, param, !currentState[param]));
-
   getWalletKind = (
-    kinds: Object,
+    kinds: Record<string, any>,
     message: string,
-    value: ?string,
+    value: string | null | undefined,
     kindParam?: string
   ) => (
     <RadioSet
@@ -189,9 +175,11 @@ export default class WalletTypeDialog extends Component<Props, State> {
         const kind: WalletKinds = kinds[key];
         const messageParam = `label${kindParam || ''}WalletKind${kind}`;
         const msg = messages[messageParam];
+
         if (!msg) {
           throw new Error(`Missing ${messageParam} message`);
         }
+
         return {
           key: kind,
           disabled: false,

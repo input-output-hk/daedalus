@@ -1,4 +1,3 @@
-// @flow
 import type { ShouldShowWalletSubMenu } from './types';
 
 export const shouldShowWalletSubMenu = ({

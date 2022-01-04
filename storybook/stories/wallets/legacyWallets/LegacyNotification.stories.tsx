@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -10,7 +9,6 @@ const decorators = [
   withKnobs,
   (story) => <StoryDecorator>{story()}</StoryDecorator>,
 ];
-
 storiesOf('Wallets/Legacy Wallets', module).add(
   'Legacy Notification',
   () => (
@@ -19,10 +17,13 @@ storiesOf('Wallets/Legacy Wallets', module).add(
         activeWalletName={text('activeWalletName', 'Josephine')}
         onLearnMore={action('onLearnMore')}
         onTransferFunds={action('onTransferFunds')}
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
         hasRewardsWallets={boolean('hasRewardsWallets')}
         onWalletAdd={action('onWalletAdd')}
       />
     </div>
   ),
-  { decorators }
+  {
+    decorators,
+  }
 );

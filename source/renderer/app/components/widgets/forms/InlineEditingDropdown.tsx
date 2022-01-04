@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -8,7 +8,9 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InlineEditingDropdown.scss' ... Remove this comment to see the full error message
 import styles from './InlineEditingDropdown.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 
 const messages = defineMessages({
@@ -19,26 +21,27 @@ const messages = defineMessages({
       'Message "Your changes have been saved" for inline editing (eg. on Wallet Settings page).',
   },
 });
-
 type Props = {
-  className?: string,
-  isActive: boolean,
-  label: string,
-  tooltip?: string | Node,
-  options: Array<{ value: number | string, label: string }>,
-  value: number | string,
-  onSubmit: Function,
-  onStartEditing: Function,
-  onStopEditing: Function,
-  successfullyUpdated: boolean,
+  className?: string;
+  isActive: boolean;
+  label: string;
+  tooltip?: string | Node;
+  options: Array<{
+    value: number | string;
+    label: string;
+  }>;
+  value: number | string;
+  onSubmit: (...args: Array<any>) => any;
+  onStartEditing: (...args: Array<any>) => any;
+  onStopEditing: (...args: Array<any>) => any;
+  successfullyUpdated: boolean;
 };
 
 @observer
-export default class InlineEditingDropdown extends Component<Props> {
+class InlineEditingDropdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   onChange = (value: number | string) => {
     this.props.onStartEditing();
     this.props.onSubmit(value);
@@ -60,7 +63,6 @@ export default class InlineEditingDropdown extends Component<Props> {
     const dropdownStyles = classnames([
       successfullyUpdated ? 'dropdown_animateSuccess' : null,
     ]);
-
     const labelText = [
       label,
       !!tooltip && (
@@ -72,7 +74,6 @@ export default class InlineEditingDropdown extends Component<Props> {
         </PopOver>
       ),
     ];
-
     return (
       <div className={componentClasses}>
         <Select
@@ -94,3 +95,5 @@ export default class InlineEditingDropdown extends Component<Props> {
     );
   }
 }
+
+export default InlineEditingDropdown;

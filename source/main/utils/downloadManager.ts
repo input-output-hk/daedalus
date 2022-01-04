@@ -1,4 +1,3 @@
-// @flow
 import { app } from 'electron';
 import fs from 'fs';
 import type { BrowserWindow } from 'electron';
@@ -29,25 +28,25 @@ import type {
 import { stateDirectoryPath } from '../config';
 
 export const downloads = {};
-
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
-
 export const getPathFromDirectoryName = (
   directoryName: AllowedDownloadDirectories
 ) => {
   const downloadsDirectory = `${stateDirectoryPath}/Downloads`;
+
   switch (directoryName) {
     case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
       return app.getPath('desktop');
+
     case ALLOWED_DOWNLOAD_DIRECTORIES.DOWLOADS:
       return app.getPath('downloads');
+
     default:
       if (!fs.existsSync(downloadsDirectory)) fs.mkdirSync(downloadsDirectory);
       return downloadsDirectory;
   }
 };
-
 export const getOriginalFilename = ({
   fileUrl,
   options,
@@ -63,7 +62,10 @@ export const getOriginalFilename = ({
 
 const getPath = (
   info: DownloadInfo
-): { temporaryPath: string, newPath: string } => {
+): {
+  temporaryPath: string;
+  newPath: string;
+} => {
   const { destinationPath, temporaryFilename, originalFilename } = info;
   const temporaryPath = `${destinationPath}/${temporaryFilename}`;
   const newPath = `${destinationPath}/${originalFilename}`;
@@ -80,13 +82,15 @@ export const getEventActions = async (
     DownloadRendererRequest,
     DownloadMainResponse
   >
-): Promise<Object> => {
+): Promise<Record<string, any>> => {
   const { downloadId } = info;
   await localStorage.setInfo(info, downloadId);
   let serverFileSize;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   let checkNoEndEvent: TimeoutID;
 
   const startEvent = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:startEvent.');
     const eventType = types.START;
     const data = DOWNLOAD_DATA_DEFAULT;
@@ -99,10 +103,12 @@ export const getEventActions = async (
       window.webContents
     );
   };
+
   const downloadEvent = async ({
     totalSize,
     downloadedSize: diskFileSize,
   }: DownloadInfoInit) => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:downloadEvent.');
     serverFileSize = totalSize;
     const rawData: DownloadDataUpdate = {
@@ -123,6 +129,7 @@ export const getEventActions = async (
       window.webContents
     );
   };
+
   const progressEvent = async ({
     total,
     downloaded: downloadSize,
@@ -148,16 +155,21 @@ export const getEventActions = async (
       },
       window.webContents
     );
+
     if (progress === 100) {
       // Checks if the file was delete while the download was in progress
       checkNoEndEvent = setTimeout(() => {
         const { temporaryPath, newPath } = getPath(info);
+
         if (!fs.existsSync(temporaryPath) || !fs.existsSync(newPath)) {
-          errorEvent({ message: 'The download file was manually deleted' });
+          errorEvent({
+            message: 'The download file was manually deleted',
+          });
         }
       }, ERROR_TIME_AFTER_NO_END_EVENT);
     }
   };
+
   const endEvent = async ({
     totalSize: downloadSize,
     onDiskSize: diskFileSize,
@@ -165,6 +177,7 @@ export const getEventActions = async (
   }: DownloadInfoEnd) => {
     clearTimeout(checkNoEndEvent);
     delete downloads[downloadId];
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:endEvent.');
     const rawData: DownloadDataUpdate = {
       ...{
@@ -188,7 +201,9 @@ export const getEventActions = async (
     const { persistLocalData } = info.options;
     if (!persistLocalData) await localStorage.unset(downloadId);
   };
+
   const pauseEvent = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:pauseEvent.');
     const newState: DownloadDataUpdate = {
       state: states.PAUSED,
@@ -203,8 +218,11 @@ export const getEventActions = async (
       window.webContents
     );
   };
+
   const errorEvent = async ({ message }: DownloadInfoError) => {
-    logger.error('DownloadManager:errorEvent', { error: message });
+    logger.error('DownloadManager:errorEvent', {
+      error: message,
+    });
     const rawData: DownloadDataUpdate = {
       ...{
         message,

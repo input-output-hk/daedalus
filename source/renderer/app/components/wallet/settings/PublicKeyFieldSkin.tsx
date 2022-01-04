@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import type { ElementRef } from 'react';
 import classnames from 'classnames';
@@ -9,18 +8,19 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { FormField } from 'react-polymorph/lib/components/FormField';
 import type { InputProps } from 'react-polymorph/lib/components/Input';
 import { pickDOMProps } from 'react-polymorph/lib/utils/props';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/copy.in... Remove this comment to see the full error message
 import copyImage from '../../../assets/images/copy.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyField.scss' or its ... Remove this comment to see the full error message
 import styles from './PublicKeyField.scss';
 
 type Props = InputProps & {
-  inputRef: ElementRef<'input'>,
-  theme: Object,
-  themeId: string,
-  tooltip: Node,
-  valueVisible: boolean,
-  onCopyValue: Function,
+  inputRef: ElementRef<'input'>;
+  theme: Record<string, any>;
+  themeId: string;
+  tooltip: Node;
+  valueVisible: boolean;
+  onCopyValue: (...args: Array<any>) => any;
 };
-
 export default (props: Props) => {
   const renderInput = () => (
     <input
@@ -38,13 +38,16 @@ export default (props: Props) => {
         if (props.onFocus) {
           props.onFocus();
         }
+
         if (props.inputRef && props.inputRef.current) {
           props.inputRef.current.select();
         }
+
         props.onCopyValue();
       }}
     />
   );
+
   const render = () =>
     props.valueVisible ? (
       <PopOver content={props.tooltip}>
@@ -56,6 +59,7 @@ export default (props: Props) => {
               if (props.inputRef && props.inputRef.current) {
                 props.inputRef.current.select();
               }
+
               props.onCopyValue();
             }}
           >

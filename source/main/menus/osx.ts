@@ -1,4 +1,3 @@
-// @flow
 import { compact } from 'lodash';
 import { shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
@@ -11,7 +10,6 @@ import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
 const { isBlankScreenFixActive } = environment;
-
 export const osxMenu = (
   app: App,
   window: BrowserWindow,
@@ -19,45 +17,59 @@ export const osxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
-  translation: Function = getTranslation(translations, id)
+  translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
     label: translation('daedalus'),
     submenu: compact([
       {
         label: translation('daedalus.about'),
+
         click() {
           actions.openAboutDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Command+T',
+
         click() {
           actions.openItnRewardsRedemptionDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.settings'),
         accelerator: 'Command+,',
+
         click() {
           actions.openSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
         accelerator: 'Command+;',
+
         click() {
           actions.openWalletSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.hideDaedalus'),
         role: 'hide',
@@ -70,10 +82,13 @@ export const osxMenu = (
         label: translation('daedalus.showAll'),
         role: 'unhide',
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.quit'),
         accelerator: 'Command+Q',
+
         click() {
           app.quit();
         },
@@ -93,7 +108,9 @@ export const osxMenu = (
         accelerator: 'Shift+Command+Z',
         role: 'redo',
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('edit.cut'),
         accelerator: 'Command+X',
@@ -132,6 +149,7 @@ export const osxMenu = (
       {
         label: translation('view.toggleDeveloperTools'),
         accelerator: 'Alt+Command+I',
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleDevTools' does not exist on type '... Remove this comment to see the full error message
         click: () => window.toggleDevTools(),
       },
     ],
@@ -141,6 +159,7 @@ export const osxMenu = (
     submenu: compact([
       {
         label: translation('helpSupport.knownIssues'),
+
         click() {
           const faqLink = translation('helpSupport.knownIssuesUrl');
           shell.openExternal(faqLink);
@@ -150,29 +169,34 @@ export const osxMenu = (
         label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
         checked: isBlankScreenFixActive,
+
         click(item) {
           actions.toggleBlankScreenFix(item);
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.safetyTips'),
+
         click() {
           const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
       /* {
-        label: translation('helpSupport.featureRequest'),
-        click() {
-          const featureRequestLinkUrl = translation(
-            'helpSupport.featureRequestUrl'
-          );
-          shell.openExternal(featureRequestLinkUrl);
-        },
-      }, */
+    label: translation('helpSupport.featureRequest'),
+    click() {
+      const featureRequestLinkUrl = translation(
+        'helpSupport.featureRequestUrl'
+      );
+      shell.openExternal(featureRequestLinkUrl);
+    },
+  }, */
       {
         label: translation('helpSupport.supportRequest'),
+
         click() {
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
@@ -187,17 +211,23 @@ export const osxMenu = (
       },
       {
         label: translation('helpSupport.downloadLogs'),
+
         click() {
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
         accelerator: 'Command+D',
+
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+
         enabled: isNavigationEnabled,
       },
     ]),

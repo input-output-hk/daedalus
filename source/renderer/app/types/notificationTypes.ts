@@ -1,4 +1,3 @@
-// @flow
 import Action from '../actions/lib/Action';
 
 export type NotificationId =
@@ -14,10 +13,9 @@ export type NotificationId =
   | 'downloadRewardsCSVSuccess'
   | 'downloadTransactionsCSVSuccess'
   | 'copyAssetParam';
-
 export type NotificationConfig = {
-  id: NotificationId,
-  duration?: number,
-  actionToListenAndOpen: Action<any>,
-  actionToListenAndClose?: Action<any>,
+  id: NotificationId;
+  duration?: number;
+  actionToListenAndOpen: Action<any>;
+  actionToListenAndClose?: Action<any>;
 };

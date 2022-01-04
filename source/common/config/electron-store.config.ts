@@ -1,18 +1,12 @@
-// @flow
 import type { StorageType, StorageKey } from '../types/electron-store.types';
 
-export const STORAGE_TYPES: {
-  [key: string]: StorageType,
-} = {
+export const STORAGE_TYPES: Record<string, StorageType> = {
   GET: 'get',
   SET: 'set',
   DELETE: 'delete',
   RESET: 'reset',
 };
-
-export const STORAGE_KEYS: {
-  [key: string]: StorageKey,
-} = {
+export const STORAGE_KEYS: Record<string, StorageKey> = {
   APP_AUTOMATIC_UPDATE_FAILED: 'APP-AUTOMATIC-UPDATE-FAILED',
   APP_UPDATE_COMPLETED: 'APP-UPDATE-COMPLETED',
   ASSET_DATA: 'ASSET-DATA',

@@ -1,13 +1,10 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { number, withKnobs } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
-
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { getUtxoChartData } from '../../../../source/renderer/app/utils/utxoUtils';
-
 // Screens
 import WalletUtxo from '../../../../source/renderer/app/components/wallet/utxo/WalletUtxo';
 
@@ -17,7 +14,6 @@ const cfg = {
   min: 0,
   max: 20,
 };
-
 const decorators = [withKnobs, WalletsWrapper];
 
 /* eslint-disable consistent-return */
@@ -64,5 +60,7 @@ storiesOf('Wallets/Transactions', module).add(
       pendingTxnsCount={0}
     />
   ),
-  { decorators }
+  {
+    decorators,
+  }
 );

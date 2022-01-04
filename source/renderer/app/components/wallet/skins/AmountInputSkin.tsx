@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AmountInputSkin.scss' or its... Remove this comment to see the full error message
 import styles from './AmountInputSkin.scss';
 
 export const messages = defineMessages({
@@ -19,15 +19,13 @@ export const messages = defineMessages({
       'Label for the "Calculating fees" message above amount input field.',
   },
 });
-
 type Props = {
-  currency: string,
-  fees: ?BigNumber,
-  total: ?BigNumber,
-  error: boolean,
-  isCalculatingFees: boolean,
+  currency: string;
+  fees: BigNumber | null | undefined;
+  total: BigNumber | null | undefined;
+  error: boolean;
+  isCalculatingFees: boolean;
 };
-
 export default class AmountInputSkin extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -36,7 +34,6 @@ export default class AmountInputSkin extends Component<Props> {
   render() {
     const { error, fees, total, currency, isCalculatingFees } = this.props;
     const { intl } = this.context;
-
     return (
       <div className={styles.root}>
         <InputSkin {...this.props} />
@@ -47,7 +44,9 @@ export default class AmountInputSkin extends Component<Props> {
         )}
         {fees && !error && !isCalculatingFees && (
           <span className={styles.fees}>
-            {intl.formatMessage(messages.feesLabel, { amount: fees })}
+            {intl.formatMessage(messages.feesLabel, {
+              amount: fees,
+            })}
           </span>
         )}
         <span className={styles.total}>

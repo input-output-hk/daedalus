@@ -1,9 +1,7 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { storiesOf } from '@storybook/react';
 import { boolean, number, select, text } from '@storybook/addon-knobs';
-
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
 import {
@@ -13,23 +11,25 @@ import {
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
-
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
 
 const allAssets = [
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234',
     100
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
     100
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -47,6 +47,7 @@ const allAssets = [
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -65,7 +66,6 @@ const allAssets = [
     }
   ),
 ];
-
 const assets = {
   available: [
     {
@@ -128,12 +128,12 @@ const assets = {
     },
   ],
 };
-
 const walletAssets = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
   let fingerprint;
+
   if (!assetData || !assetData.fingerprint) {
     fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
       0,
@@ -175,7 +175,6 @@ storiesOf('Wallets/Summary', module)
       'fetched',
       'Currency'
     );
-
     let currencyIsFetchingRate = false;
     let currencyIsActive = true;
     let currencyLastFetched = new Date();
@@ -193,13 +192,12 @@ storiesOf('Wallets/Summary', module)
       {
         id: 'uniswap-state-dollar',
         symbol: 'usd',
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type '{ "en-US"... Remove this comment to see the full error message
         name: 'unified Stable Dollar',
       },
       'Currency'
     );
-
     const [firstAsset] = walletAssets;
-
     return (
       <WalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}
@@ -218,6 +216,7 @@ storiesOf('Wallets/Summary', module)
         numberOfPendingTransactions={number(
           'Number of pending transactions',
           0,
+          // @ts-ignore ts-migrate(2559) FIXME: Type '"Header"' has no properties in common with t... Remove this comment to see the full error message
           'Header'
         )}
         isLoadingTransactions={boolean(
@@ -257,6 +256,7 @@ storiesOf('Wallets/Summary', module)
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetParam={action('onCopyAsset')}
         onAssetSettings={action('onAssetSettings')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         assetSettingsDialogWasOpened={boolean(
           'assetSettingsDialogWasOpened',

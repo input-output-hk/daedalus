@@ -1,15 +1,16 @@
-// @flow
 import chroma from 'chroma-js';
 import { isEmpty, has } from 'lodash';
 import { createBackgroundShades, createErrorShades } from './createShades';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
 export type PartialThemeParts = {
-  colors: ThemeColors,
-  fonts: ThemeFonts,
+  colors: ThemeColors;
+  fonts: ThemeFonts;
 };
-
-export const updateTheme = (existingTheme: Object, themeUpdates: Object) => {
+export const updateTheme = (
+  existingTheme: Record<string, any>,
+  themeUpdates: Record<string, any>
+) => {
   let updateEntries = [];
 
   for (const key in themeUpdates) {
@@ -19,36 +20,27 @@ export const updateTheme = (existingTheme: Object, themeUpdates: Object) => {
   }
 
   const updatedTheme = Object.entries(themeUpdates).reduce(
-    (theme: Object, newEntry: [string, Object]) => {
+    (theme: Record<string, any>, newEntry: [string, Record<string, any>]) => {
       const [keyName, newCSSVars] = newEntry;
+
       if (keyName && has(theme, keyName)) {
-        return {
-          ...theme,
-          [keyName]: {
-            ...theme[keyName],
-            ...newCSSVars,
-          },
-        };
+        return { ...theme, [keyName]: { ...theme[keyName], ...newCSSVars } };
       }
+
       if (keyName && !has(theme, keyName)) {
-        return {
-          ...theme,
-          [keyName]: {
-            ...newCSSVars,
-          },
-        };
+        return { ...theme, [keyName]: { ...newCSSVars } };
       }
+
       return theme;
     },
     { ...existingTheme }
   );
   return updatedTheme;
 };
-
 // assigns values to all react-polymorph CSS variables & returns them
 export const createReactPolymorphTheme = (
   themeParts: PartialThemeParts
-): Object => {
+): Record<string, any> => {
   const { colors, fonts } = themeParts;
   const { background, border, error, focus, text } = colors;
   return {
@@ -251,11 +243,10 @@ export const createReactPolymorphTheme = (
     },
   };
 };
-
 // assigns values to all Daedalus CSS variables & returns them
 export const createDaedalusComponentsTheme = (
   themeParts: PartialThemeParts
-): Object => {
+): Record<string, any> => {
   const { colors, fonts } = themeParts;
   const { background, border, error, focus, text } = colors;
   return {
@@ -596,7 +587,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-app-update-overlay-background-color': `${chroma(
         background.secondary.regular
       ).alpha(0.96)}`,
-
       '--theme-app-update-overlay-content-background-color':
         'rgba(0, 0, 0, 0.1)',
       '--theme-app-update-overlay-button-background-color': `${background.secondary.dark}`,
@@ -918,7 +908,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-sidebar-menu-background-color': `${background.secondary.darker}`,
       '--theme-sidebar-menu-item-background-color-hover': `${background.secondary.darkest}`,
-      '--theme-sidebar-menu-item-background-color-active': `${background.secondary.darkest}`, // rename to active wallet?
+      '--theme-sidebar-menu-item-background-color-active': `${background.secondary.darkest}`,
+      // rename to active wallet?
       '--theme-sidebar-menu-item-wallet-name-color': `${text.secondary}`,
       '--theme-sidebar-menu-item-wallet-info-color': `${text.secondary}`,
       '--theme-sidebar-menu-add-button-background-color': `${background.secondary.darkest}`,
@@ -1241,10 +1232,10 @@ export const createDaedalusComponentsTheme = (
     },
   };
 };
-
-export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
+export const createTheme = (
+  fullThemeParts: CreateThemeParams
+): Record<string, any> => {
   const { colors: themeColors, config, fonts: themeFonts } = fullThemeParts;
-
   let daedalusTheme = {};
   let colors = {};
   let fonts = themeFonts;
@@ -1278,8 +1269,16 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
   // create react-polymorph & daedalus theme, combine into a theme object
   if (colors && !isEmpty(colors) && fonts && !isEmpty(fonts)) {
     daedalusTheme = {
-      ...createReactPolymorphTheme({ colors, fonts }),
-      ...createDaedalusComponentsTheme({ colors, fonts }),
+      ...createReactPolymorphTheme({
+        // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
+        colors,
+        fonts,
+      }),
+      ...createDaedalusComponentsTheme({
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{}' is not assignable to type 'ThemeColors'.
+        colors,
+        fonts,
+      }),
     };
   }
 

@@ -1,11 +1,12 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/spinner-da... Remove this comment to see the full error message
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import { formattedNumber } from '../../utils/formatters';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RestoreNotification.scss' or... Remove this comment to see the full error message
 import styles from './RestoreNotification.scss';
 
 const messages = defineMessages({
@@ -17,13 +18,12 @@ const messages = defineMessages({
       'Status message "Wallet restore in progress" shown while wallet is being restored.',
   },
 });
-
 type Props = {
-  restoreProgress: number,
+  restoreProgress: number;
 };
 
 @observer
-export default class RestoreNotification extends Component<Props> {
+class RestoreNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -31,12 +31,10 @@ export default class RestoreNotification extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { restoreProgress } = this.props;
-
     const restoreNotificationClasses = classnames([
       styles.component,
       'ActiveRestoreNotification',
     ]);
-
     return (
       <div className={restoreNotificationClasses}>
         <span className={styles.text}>
@@ -49,3 +47,5 @@ export default class RestoreNotification extends Component<Props> {
     );
   }
 }
+
+export default RestoreNotification;

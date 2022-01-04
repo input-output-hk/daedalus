@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
@@ -10,28 +9,25 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletRestoreDialogContainer extends Component<Props> {
+class WalletRestoreDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   onSubmit = (values: {
-    recoveryPhrase: string,
-    walletName: string,
-    spendingPassword: string,
-    type?: string,
+    recoveryPhrase: string;
+    walletName: string;
+    spendingPassword: string;
+    type?: string;
   }) => {
     this.props.actions.wallets.restoreWallet.trigger(values);
   };
-
   onCancel = () => {
     this.props.onClose();
     this.resetRequests();
   };
-
   resetRequests = () => {
     // Restore request should be reset only in case restore is finished/errored
     const { wallets } = this.props.stores;
@@ -40,6 +36,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
       restoreLegacyRequest,
       getWalletRecoveryPhraseFromCertificateRequest,
     } = wallets;
+
     if (!restoreDaedalusRequest.isExecuting) {
       restoreDaedalusRequest.reset();
       restoreLegacyRequest.reset();
@@ -54,17 +51,14 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
       restoreLegacyRequest,
       getWalletRecoveryPhraseFromCertificateRequest,
     } = wallets;
-
     const error =
       restoreDaedalusRequest.error ||
       restoreLegacyRequest.error ||
       getWalletRecoveryPhraseFromCertificateRequest.error;
-
     const isExecuting =
       restoreDaedalusRequest.isExecuting ||
       restoreLegacyRequest.isExecuting ||
       getWalletRecoveryPhraseFromCertificateRequest.isExecuting;
-
     return (
       <WalletRestoreDialog
         mnemonicValidator={isValidMnemonic}
@@ -78,3 +72,5 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletRestoreDialogContainer;

@@ -1,4 +1,3 @@
-// @flow
 import StakePool from '../../../domains/StakePool';
 import type { StakePoolProps } from '../../../domains/StakePool';
 

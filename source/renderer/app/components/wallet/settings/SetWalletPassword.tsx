@@ -1,9 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/insecur... Remove this comment to see the full error message
 import insecureWalletIcon from '../../../assets/images/insecure-wallet.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SetWalletPassword.scss' or i... Remove this comment to see the full error message
 import styles from './SetWalletPassword.scss';
 import ChangeSpendingPasswordDialogContainer from '../../../containers/wallet/dialogs/settings/ChangeSpendingPasswordDialogContainer';
 
@@ -28,14 +29,13 @@ const messages = defineMessages({
       'Title for the "Set wallet password" dialog when there is not password set.',
   },
 });
-
 type Props = {
-  isSetWalletPasswordDialogOpen: boolean,
-  onSetWalletPassword: Function,
+  isSetWalletPasswordDialogOpen: boolean;
+  onSetWalletPassword: (...args: Array<any>) => any;
 };
 
 @observer
-export default class SetWalletPassword extends Component<Props> {
+class SetWalletPassword extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -43,7 +43,6 @@ export default class SetWalletPassword extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { isSetWalletPasswordDialogOpen, onSetWalletPassword } = this.props;
-
     return (
       <>
         <div className={styles.component}>
@@ -76,3 +75,5 @@ export default class SetWalletPassword extends Component<Props> {
     );
   }
 }
+
+export default SetWalletPassword;

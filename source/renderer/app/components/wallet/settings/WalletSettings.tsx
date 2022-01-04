@@ -1,4 +1,4 @@
-// @flow
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -21,6 +21,7 @@ import UnpairWallet from './UnpairWallet';
 import DeleteWallet from './DeleteWallet';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSettings.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import type { Locale } from '../../../../../common/types/locales.types';
@@ -33,7 +34,7 @@ import WalletPublicKeyDialog from './WalletPublicKeyDialog';
 import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-export const messages: { [string]: ReactIntlMessage } = defineMessages({
+export const messages: Record<string, ReactIntlMessage> = defineMessages({
   assuranceLevelLabel: {
     id: 'wallet.settings.assurance',
     defaultMessage: '!!!Transaction assurance security level',
@@ -97,59 +98,56 @@ export const messages: { [string]: ReactIntlMessage } = defineMessages({
     description: "You still don't have password set message.",
   },
 });
-
 type Props = {
-  walletId: string,
-  walletName: string,
-  isRestoring: boolean,
-  isSyncing: boolean,
-  isDelegating: boolean,
-  walletPublicKey: ?string,
-  icoPublicKey: ?string,
-  creationDate: Date,
-  spendingPasswordUpdateDate: ?Date,
-  error?: ?LocalizableError,
-  openDialogAction: Function,
-  isDialogOpen: Function,
-  onFieldValueChange: Function,
-  onStartEditing: Function,
-  onStopEditing: Function,
-  onCancel: Function,
-  onVerifyRecoveryPhrase: Function,
-  onCopyWalletPublicKey: Function,
-  onCopyICOPublicKey: Function,
-  updateDataForActiveDialogAction: Function,
-  onDelegateClick: Function,
-  nameValidator: Function,
-  isLegacy: boolean,
-  changeSpendingPasswordDialog: Node,
-  walletPublicKeyDialogContainer: Node,
-  icoPublicKeyDialogContainer: Node,
-  walletPublicKeyQRCodeDialogContainer: Node,
-  icoPublicKeyQRCodeDialogContainer: Node,
-  undelegateWalletDialogContainer: Node,
-  deleteWalletDialogContainer: Node,
-  unpairWalletDialogContainer: Node,
-  shouldDisplayRecoveryPhrase: boolean,
-  recoveryPhraseVerificationDate: ?Date,
-  recoveryPhraseVerificationStatus: string,
-  recoveryPhraseVerificationStatusType: string,
-  wordCount: number,
-  locale: Locale,
-  isSpendingPasswordSet: boolean,
-  isHardwareWallet: boolean,
+  walletId: string;
+  walletName: string;
+  isRestoring: boolean;
+  isSyncing: boolean;
+  isDelegating: boolean;
+  walletPublicKey: string | null | undefined;
+  icoPublicKey: string | null | undefined;
+  creationDate: Date;
+  spendingPasswordUpdateDate: Date | null | undefined;
+  error?: LocalizableError | null | undefined;
+  openDialogAction: (...args: Array<any>) => any;
+  isDialogOpen: (...args: Array<any>) => any;
+  onFieldValueChange: (...args: Array<any>) => any;
+  onStartEditing: (...args: Array<any>) => any;
+  onStopEditing: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
+  onVerifyRecoveryPhrase: (...args: Array<any>) => any;
+  onCopyWalletPublicKey: (...args: Array<any>) => any;
+  onCopyICOPublicKey: (...args: Array<any>) => any;
+  updateDataForActiveDialogAction: (...args: Array<any>) => any;
+  onDelegateClick: (...args: Array<any>) => any;
+  nameValidator: (...args: Array<any>) => any;
+  isLegacy: boolean;
+  changeSpendingPasswordDialog: Node;
+  walletPublicKeyDialogContainer: Node;
+  icoPublicKeyDialogContainer: Node;
+  walletPublicKeyQRCodeDialogContainer: Node;
+  icoPublicKeyQRCodeDialogContainer: Node;
+  undelegateWalletDialogContainer: Node;
+  deleteWalletDialogContainer: Node;
+  unpairWalletDialogContainer: Node;
+  shouldDisplayRecoveryPhrase: boolean;
+  recoveryPhraseVerificationDate: Date | null | undefined;
+  recoveryPhraseVerificationStatus: string;
+  recoveryPhraseVerificationStatusType: string;
+  wordCount: number;
+  locale: Locale;
+  isSpendingPasswordSet: boolean;
+  isHardwareWallet: boolean;
 };
-
 type State = {
-  isFormBlocked: boolean,
+  isFormBlocked: boolean;
 };
 
 @observer
-export default class WalletSettings extends Component<Props, State> {
+class WalletSettings extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isFormBlocked: false,
   };
@@ -157,6 +155,7 @@ export default class WalletSettings extends Component<Props, State> {
   componentDidUpdate() {
     const { isDialogOpen } = this.props;
     const { isFormBlocked } = this.state;
+
     // Set "name" input to active and "unblock form" on Dialog close
     if (
       !isDialogOpen(WalletSettingsActionConfirmationDialog) &&
@@ -173,28 +172,28 @@ export default class WalletSettings extends Component<Props, State> {
   }
 
   onBlockForm = () => {
-    this.setState({ isFormBlocked: true });
+    this.setState({
+      isFormBlocked: true,
+    });
   };
-
   unblockForm = () => {
-    this.setState({ isFormBlocked: false });
+    this.setState({
+      isFormBlocked: false,
+    });
   };
-
   onUndelegateWalletClick = async () => {
-    const {
-      walletId,
-      openDialogAction,
-      updateDataForActiveDialogAction,
-    } = this.props;
+    const { walletId, openDialogAction, updateDataForActiveDialogAction } =
+      this.props;
     this.onBlockForm();
     openDialogAction({
       dialog: UndelegateWalletConfirmationDialog,
     });
     updateDataForActiveDialogAction({
-      data: { walletId },
+      data: {
+        walletId,
+      },
     });
   };
-
   renderUndelegateWalletBox = () => {
     const { intl } = this.context;
     const {
@@ -289,12 +288,9 @@ export default class WalletSettings extends Component<Props, State> {
       deleteWalletDialogContainer,
       unpairWalletDialogContainer,
     } = this.props;
-
     const { isFormBlocked } = this.state;
-
     // Set Japanese locale to moment. Default is en-US
     moment.locale(momentLocales[locale]);
-
     const passwordMessage = isSpendingPasswordSet
       ? intl.formatMessage(messages.passwordLastUpdated, {
           lastUpdated: moment(spendingPasswordUpdateDate)
@@ -302,7 +298,6 @@ export default class WalletSettings extends Component<Props, State> {
             .fromNow(),
         })
       : intl.formatMessage(messages.passwordNotSet);
-
     return (
       <div className={styles.root}>
         <BorderedBox>
@@ -341,6 +336,7 @@ export default class WalletSettings extends Component<Props, State> {
             <WalletRecoveryPhraseVerificationWidget
               onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               recoveryPhraseVerificationStatus={
                 recoveryPhraseVerificationStatus
               }
@@ -410,3 +406,5 @@ export default class WalletSettings extends Component<Props, State> {
     );
   }
 }
+
+export default WalletSettings;

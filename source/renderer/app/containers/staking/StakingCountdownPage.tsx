@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -12,19 +11,19 @@ const messages = defineMessages({
     description: '"Learn more" link URL in the staking countdown page',
   },
 });
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakingCountdownPage extends Component<Props> {
+class StakingCountdownPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  static defaultProps = { actions: null, stores: {} };
-
-  handleLearnMoreClick = (event: SyntheticEvent<HTMLButtonElement>) => {
+  static defaultProps = {
+    actions: null,
+    stores: {},
+  };
+  handleLearnMoreClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
@@ -38,7 +37,6 @@ export default class StakingCountdownPage extends Component<Props> {
       staking: { goToStakingInfoPage },
     } = actions;
     const redirectToStakingInfo = goToStakingInfoPage.trigger;
-
     return (
       <StakingCountdown
         redirectToStakingInfo={redirectToStakingInfo}
@@ -48,3 +46,5 @@ export default class StakingCountdownPage extends Component<Props> {
     );
   }
 }
+
+export default StakingCountdownPage;

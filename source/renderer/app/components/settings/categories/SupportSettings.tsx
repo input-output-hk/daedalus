@@ -1,10 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SupportSettings.scss' or its... Remove this comment to see the full error message
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -70,16 +70,15 @@ const messages = defineMessages({
       '"download your logs here" link in the Logs section on the support settings page',
   },
 });
-
 type Props = {
-  onExternalLinkClick: Function,
-  onSupportRequestClick: Function,
-  onDownloadLogs: Function,
-  disableDownloadLogs: boolean,
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onSupportRequestClick: (...args: Array<any>) => any;
+  onDownloadLogs: (...args: Array<any>) => any;
+  disableDownloadLogs: boolean;
 };
 
 @observer
-export default class SupportSettings extends Component<Props> {
+class SupportSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -93,7 +92,6 @@ export default class SupportSettings extends Component<Props> {
     } = this.props;
     const { intl } = this.context;
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
-
     const faqLink = (
       <span className={styles.faqLink}>
         <Link
@@ -104,12 +102,10 @@ export default class SupportSettings extends Component<Props> {
         />
       </span>
     );
-
     const downloadLogsClasses = classNames([
       styles.externalLink,
       disableDownloadLogs ? styles.disabled : null,
     ]);
-
     const stepsDownloadLogsLink = (
       <Link
         className={downloadLogsClasses}
@@ -119,7 +115,6 @@ export default class SupportSettings extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     const reportProblemLink = (
       <Link
         className={styles.externalLink}
@@ -128,7 +123,6 @@ export default class SupportSettings extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     return (
       <div className={styles.component}>
         {/* Help and Support */}
@@ -136,7 +130,12 @@ export default class SupportSettings extends Component<Props> {
         <h1>{intl.formatMessage(messages.faqTitle)}</h1>
 
         <p>
-          <FormattedMessage {...messages.faqContent} values={{ faqLink }} />
+          <FormattedMessage
+            {...messages.faqContent}
+            values={{
+              faqLink,
+            }}
+          />
         </p>
 
         {/* Steps for creating a support request: */}
@@ -149,7 +148,9 @@ export default class SupportSettings extends Component<Props> {
             <p>
               <FormattedMessage
                 {...messages.stepsDownloadLogsDescription}
-                values={{ stepsDownloadLogsLink }}
+                values={{
+                  stepsDownloadLogsLink,
+                }}
               />
             </p>
           </li>
@@ -158,7 +159,9 @@ export default class SupportSettings extends Component<Props> {
             <p>
               <FormattedMessage
                 {...messages.stepsReportProblemDescription}
-                values={{ reportProblemLink }}
+                values={{
+                  reportProblemLink,
+                }}
               />
             </p>
           </li>
@@ -167,3 +170,5 @@ export default class SupportSettings extends Component<Props> {
     );
   }
 }
+
+export default SupportSettings;

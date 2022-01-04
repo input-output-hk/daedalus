@@ -1,9 +1,8 @@
-// @flow
-import Action from './lib/Action';
-
-// ======= CURRENCY ACTIONS =======
+import Action from './lib/Action'; // ======= CURRENCY ACTIONS =======
 
 export default class CurrencyActions {
-  setCurrencySelected: Action<{ code: string }> = new Action();
+  setCurrencySelected: Action<{
+    code: string;
+  }> = new Action();
   toggleCurrencyIsActive: Action<any> = new Action();
 }

@@ -1,4 +1,3 @@
-// @flow
 // TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -13,13 +12,18 @@ import SVGInline from 'react-svg-inline';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { get } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import trezorIcon from '../../assets/images/hardware-wallet/trezor.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import unknownDeviceIcon from '../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import LocalizableError from '../../i18n/LocalizableError';
 import Dialog from '../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletConnectDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletConnectDialog.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
@@ -31,7 +35,6 @@ import {
   DeviceModels,
   DeviceTypes,
 } from '../../../../common/types/hardware-wallets.types';
-
 import type { TransportDevice } from '../../../../common/types/hardware-wallets.types';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
@@ -76,18 +79,17 @@ const messages = defineMessages({
     description: 'Link to support article',
   },
 });
-
 type Props = {
-  onClose: Function,
-  isSubmitting: boolean,
-  hwDeviceStatus: HwDeviceStatus,
-  transportDevice: ?TransportDevice,
-  error: ?LocalizableError,
-  onExternalLinkClick: Function,
+  onClose: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  hwDeviceStatus: HwDeviceStatus;
+  transportDevice: TransportDevice | null | undefined;
+  error: LocalizableError | null | undefined;
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
 
 @observer
-export default class WalletConnectDialog extends Component<Props> {
+class WalletConnectDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -102,20 +104,16 @@ export default class WalletConnectDialog extends Component<Props> {
       onExternalLinkClick,
       error,
     } = this.props;
-
     const deviceType = get(transportDevice, 'deviceType');
     const deviceModel = get(transportDevice, 'deviceModel');
-
     const isLedger = deviceType === DeviceTypes.LEDGER;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
-
     const buttonLabel = !isSubmitting ? (
       this.context.intl.formatMessage(messages.cancelButton)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         disabled: isSubmitting,
@@ -127,6 +125,7 @@ export default class WalletConnectDialog extends Component<Props> {
 
     const renderUnknownDevice = () => {
       let unknownDeviceElement;
+
       if (isTrezorEnabled && !isLedgerEnabled) {
         unknownDeviceElement = (
           <div className={styles.hardwareWalletTrezor}>
@@ -149,13 +148,13 @@ export default class WalletConnectDialog extends Component<Props> {
           </div>
         );
       }
+
       return unknownDeviceElement;
     };
 
     const instructions = isLedgerEnabled
       ? messages.instructions
       : messages.instructionsTrezorOnly;
-
     const supportLink = (
       <Link
         className={styles.externalLink}
@@ -168,7 +167,6 @@ export default class WalletConnectDialog extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     return (
       <Dialog
         className={dialogClasses}
@@ -207,6 +205,7 @@ export default class WalletConnectDialog extends Component<Props> {
                 <HardwareWalletStatus
                   hwDeviceStatus={hwDeviceStatus}
                   onExternalLinkClick={onExternalLinkClick}
+                  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                   isTransactionStatus={false}
                   isTrezor={isTrezor}
                 />
@@ -215,7 +214,9 @@ export default class WalletConnectDialog extends Component<Props> {
                 <p>
                   <FormattedMessage
                     {...messages.connectingIssueSupportLabel}
-                    values={{ supportLink }}
+                    values={{
+                      supportLink,
+                    }}
                   />
                 </p>
               </div>
@@ -226,3 +227,5 @@ export default class WalletConnectDialog extends Component<Props> {
     );
   }
 }
+
+export default WalletConnectDialog;

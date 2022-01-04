@@ -1,4 +1,3 @@
-// @flow
 import React, { useState, useMemo, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
@@ -7,14 +6,19 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletToken.scss' or its cor... Remove this comment to see the full error message
 import styles from './WalletToken.scss';
 import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
 import AssetContent from '../../assets/AssetContent';
 import type { AssetToken } from '../../../api/assets/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collaps... Remove this comment to see the full error message
 import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/asset-t... Remove this comment to see the full error message
 import warningIcon from '../../../assets/images/asset-token-warning-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/star-no... Remove this comment to see the full error message
 import starNotFilledIcon from '../../../assets/images/star-not-filled.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/star-fi... Remove this comment to see the full error message
 import starFilledIcon from '../../../assets/images/star-filled.inline.svg';
 
 const messages = defineMessages({
@@ -46,24 +50,21 @@ const messages = defineMessages({
     description: 'Asset settings recommended pop over content',
   },
 });
-
 type Props = {
-  anyAssetWasHovered: boolean,
-  asset: AssetToken,
-  assetSettingsDialogWasOpened: boolean,
-  intl: intlShape.isRequired,
-  isFavorite: boolean,
-  isInsertingAsset: boolean,
-  isLoading: boolean,
-  isRemovingAsset: boolean,
-  onAssetSettings: Function,
-  onCopyAssetParam: Function,
-  onOpenAssetSend: Function,
-  onToggleFavorite: Function,
+  anyAssetWasHovered: boolean;
+  asset: AssetToken;
+  assetSettingsDialogWasOpened: boolean;
+  intl: intlShape.isRequired;
+  isFavorite: boolean;
+  isInsertingAsset: boolean;
+  isLoading: boolean;
+  isRemovingAsset: boolean;
+  onAssetSettings: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
+  onOpenAssetSend: (...args: Array<any>) => any;
+  onToggleFavorite: (...args: Array<any>) => any;
 };
-
 type IsExpanded = boolean;
-
 const WalletToken = observer((props: Props) => {
   const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
   const [arrowStyles, setArrowStyles] = useState<string | null>(null);
@@ -76,7 +77,6 @@ const WalletToken = observer((props: Props) => {
     styles.favoriteIcon,
     props.isFavorite ? styles.isFavorite : null,
   ]);
-
   const {
     anyAssetWasHovered,
     asset,
@@ -89,7 +89,6 @@ const WalletToken = observer((props: Props) => {
     onOpenAssetSend,
     onToggleFavorite,
   } = props;
-
   const assetHeaderContent = useMemo(() => {
     const { decimals, recommendedDecimals } = asset;
     const hasWarning =
@@ -100,6 +99,7 @@ const WalletToken = observer((props: Props) => {
         <Asset
           asset={asset}
           onCopyAssetParam={onCopyAssetParam}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           metadataNameChars={get('name', asset.metadata, 0)}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           anyAssetWasHovered={anyAssetWasHovered}
@@ -127,7 +127,6 @@ const WalletToken = observer((props: Props) => {
     onCopyAssetParam,
     onToggleFavorite,
   ]);
-
   useEffect(
     () =>
       setArrowStyles(
@@ -137,7 +136,6 @@ const WalletToken = observer((props: Props) => {
       ),
     [isExpanded]
   );
-
   const header = useMemo(() => {
     const { uniqueId } = asset;
     const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
@@ -148,7 +146,10 @@ const WalletToken = observer((props: Props) => {
           onClick={(event) => {
             event.persist();
             event.stopPropagation();
-            onToggleFavorite({ uniqueId, isFavorite });
+            onToggleFavorite({
+              uniqueId,
+              isFavorite,
+            });
           }}
         >
           <SVGInline className={styles.warningIcon} svg={starIcon} />
@@ -165,7 +166,6 @@ const WalletToken = observer((props: Props) => {
     isFavorite,
     favoriteIconStyles,
   ]);
-
   const buttons = useMemo(() => {
     const { recommendedDecimals, decimals } = asset;
     const hasWarning =
@@ -173,6 +173,7 @@ const WalletToken = observer((props: Props) => {
       decimals !== recommendedDecimals;
     let settingsButtonLabel = intl.formatMessage(messages.settingsButtonLabel);
     let warningPopOverMessage;
+
     if (hasWarning) {
       warningPopOverMessage =
         typeof decimals === 'number'
@@ -185,14 +186,18 @@ const WalletToken = observer((props: Props) => {
         </>
       );
     }
+
     const settingsButton = (
       <Button
         className={classNames(['flat', styles.button, styles.settingsButton])}
         label={settingsButtonLabel}
-        onClick={() => onAssetSettings({ asset })}
+        onClick={() =>
+          onAssetSettings({
+            asset,
+          })
+        }
       />
     );
-
     return (
       <div className={styles.footerButtons}>
         {hasWarning ? (
@@ -220,7 +225,6 @@ const WalletToken = observer((props: Props) => {
       </div>
     );
   }, [asset, onOpenAssetSend, onAssetSettings, intl]);
-
   const footer = useMemo(
     () => (
       <div className={styles.footer}>
@@ -242,7 +246,6 @@ const WalletToken = observer((props: Props) => {
     ),
     [asset, isLoading, intl, buttons]
   );
-
   const { isInsertingAsset, isRemovingAsset } = props;
   const componentStyles = classNames(styles.component, {
     [styles.isExpanded]: isExpanded,
@@ -263,5 +266,4 @@ const WalletToken = observer((props: Props) => {
     </div>
   );
 });
-
 export default injectIntl(WalletToken);

@@ -1,4 +1,3 @@
-// @flow
 import { GENERATE_VOTING_PDF_CHANNEL } from '../../../common/ipc/api';
 import type {
   GenerateVotingPDFMainResponse,

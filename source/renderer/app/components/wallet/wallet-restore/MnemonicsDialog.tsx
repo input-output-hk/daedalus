@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -27,8 +26,7 @@ const messages = defineMessages({
     description: 'Placeholder for the mnemonics autocomplete.',
   },
   autocompleteMultiLengthPhrase: {
-    id:
-      'wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder',
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder',
     defaultMessage: '!!!Enter your 12, 18 or 24-word recovery phrase',
     description: 'Placeholder for the multi-length mnemonics autocomplete.',
   },
@@ -44,35 +42,33 @@ const messages = defineMessages({
     description: 'Label for the mnemonics Continue button.',
   },
   invalidRecoveryPhrase: {
-    id:
-      'wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase',
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase',
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Label for invalid recovery phrase',
   },
 });
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
-  onSetWalletMnemonics: Function,
-  onValidateMnemonics: Function,
-  mnemonics: Array<string>,
-  walletKind: ?WalletKind,
-  walletKindDaedalus: ?WalletDaedalusKind,
-  walletKindYoroi: ?WalletYoroiKind,
-  walletKindHardware: ?WalletHardwareKind,
-  expectedWordCount: Array<number> | number,
-  maxWordCount: number,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onSetWalletMnemonics: (...args: Array<any>) => any;
+  onValidateMnemonics: (...args: Array<any>) => any;
+  mnemonics: Array<string>;
+  walletKind: WalletKind | null | undefined;
+  walletKindDaedalus: WalletDaedalusKind | null | undefined;
+  walletKindYoroi: WalletYoroiKind | null | undefined;
+  walletKindHardware: WalletHardwareKind | null | undefined;
+  expectedWordCount: Array<number> | number;
+  maxWordCount: number;
 };
 
 @observer
-export default class MnemonicsDialog extends Component<Props> {
+class MnemonicsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         recoveryPhrase: {
@@ -90,14 +86,16 @@ export default class MnemonicsDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: this.props.onContinue,
       onError: () => {},
@@ -114,6 +112,7 @@ export default class MnemonicsDialog extends Component<Props> {
       maxWordCount,
       expectedWordCount,
     } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     const canSubmit = recoveryPhraseField.isValid && !recoveryPhraseField.error;
     return (
@@ -173,3 +172,5 @@ export default class MnemonicsDialog extends Component<Props> {
     );
   }
 }
+
+export default MnemonicsDialog;

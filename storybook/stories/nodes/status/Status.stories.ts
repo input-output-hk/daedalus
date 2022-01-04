@@ -1,2 +1,1 @@
-// @flow
 import './Diagnostics.stories';

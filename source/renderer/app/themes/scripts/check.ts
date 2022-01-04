@@ -1,4 +1,3 @@
-// @flow
 import { checkCreateTheme } from '../utils/checkCreateTheme';
 import { CREATE_THEME_OBJ } from '../utils/constants';
 

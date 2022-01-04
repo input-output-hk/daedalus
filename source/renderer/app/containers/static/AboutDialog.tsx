@@ -1,8 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import About from '../../components/static/About';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AboutDialog.scss' or its cor... Remove this comment to see the full error message
 import styles from './AboutDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 
@@ -10,7 +10,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class AboutDialog extends Component<Props> {
+class AboutDialog extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -24,7 +24,6 @@ export default class AboutDialog extends Component<Props> {
     const { actions } = this.props;
     const { closeAboutDialog } = actions.app;
     const { apiVersion, nodeVersion, build, os, version } = environment;
-
     return (
       <ReactModal
         isOpen
@@ -47,3 +46,5 @@ export default class AboutDialog extends Component<Props> {
     );
   }
 }
+
+export default AboutDialog;

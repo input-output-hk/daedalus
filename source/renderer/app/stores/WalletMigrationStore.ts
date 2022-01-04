@@ -1,4 +1,3 @@
-// @flow
 import { action, computed, observable, runInAction } from 'mobx';
 import path from 'path';
 import { orderBy } from 'lodash';
@@ -37,13 +36,12 @@ export type WalletMigrationStatus =
   | 'completed'
   | 'skipped'
   | 'errored';
-
 export const WalletMigrationStatuses: {
-  UNSTARTED: WalletMigrationStatus,
-  RUNNING: WalletMigrationStatus,
-  COMPLETED: WalletMigrationStatus,
-  SKIPPED: WalletMigrationStatus,
-  ERRORED: WalletMigrationStatus,
+  UNSTARTED: WalletMigrationStatus;
+  RUNNING: WalletMigrationStatus;
+  COMPLETED: WalletMigrationStatus;
+  SKIPPED: WalletMigrationStatus;
+  ERRORED: WalletMigrationStatus;
 } = {
   UNSTARTED: 'unstarted',
   RUNNING: 'running',
@@ -51,35 +49,40 @@ export const WalletMigrationStatuses: {
   SKIPPED: 'skipped',
   ERRORED: 'errored',
 };
-
 export default class WalletMigrationStore extends Store {
-  @observable walletMigrationStep: ?ImportWalletStep = null;
-
-  @observable isExportRunning = false;
-  @observable exportedWallets: Array<ExportedByronWallet> = [];
-  @observable exportErrors: string = '';
-  @observable exportSourcePath: string = '';
-  @observable defaultExportSourcePath: string = global.legacyStateDir;
-  @observable isTestMigrationEnabled: boolean = false;
-
-  @observable isRestorationRunning = false;
-  @observable restoredWallets: Array<Wallet> = [];
-  @observable restorationErrors: Array<{
-    error: string,
-    wallet: ExportedWalletData,
+  @observable
+  walletMigrationStep: ImportWalletStep | null | undefined = null;
+  @observable
+  isExportRunning = false;
+  @observable
+  exportedWallets: Array<ExportedByronWallet> = [];
+  @observable
+  exportErrors = '';
+  @observable
+  exportSourcePath = '';
+  @observable
+  defaultExportSourcePath: string = global.legacyStateDir;
+  @observable
+  isTestMigrationEnabled = false;
+  @observable
+  isRestorationRunning = false;
+  @observable
+  restoredWallets: Array<Wallet> = [];
+  @observable
+  restorationErrors: Array<{
+    error: string;
+    wallet: ExportedWalletData;
   }> = [];
-
   @observable
   getWalletMigrationStatusRequest: Request<WalletMigrationStatus> = new Request(
     this.api.localStorage.getWalletMigrationStatus
   );
-
   @observable
   setWalletMigrationStatusRequest: Request<void> = new Request(
     this.api.localStorage.setWalletMigrationStatus
   );
-
-  @observable restoreExportedWalletRequest: Request<Wallet> = new Request(
+  @observable
+  restoreExportedWalletRequest: Request<Wallet> = new Request(
     this.api.ada.restoreExportedByronWallet
   );
 
@@ -98,26 +101,28 @@ export default class WalletMigrationStore extends Store {
     walletMigration.resetExportSourcePath.listen(this._resetExportSourcePath);
   }
 
-  getExportedWalletById = (id: string): ?ExportedByronWallet =>
+  getExportedWalletById = (
+    id: string
+  ): ExportedByronWallet | null | undefined =>
     this.exportedWallets.find((w) => w.id === id);
-
   getExportedWalletDuplicatesById = (
     id: string,
     index: number
   ): Array<ExportedByronWallet> =>
     this.exportedWallets.filter((w) => w.id === id && w.index !== index);
-
-  getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
+  getExportedWalletByIndex = (
+    index: number
+  ): ExportedByronWallet | null | undefined =>
     this.exportedWallets.find((w) => w.index === index);
-
-  @action _initiateMigration = () => {
+  @action
+  _initiateMigration = () => {
     this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE;
   };
-
-  @action _selectExportSourcePath = async ({
+  @action
+  _selectExportSourcePath = async ({
     importFrom,
   }: {
-    importFrom: ImportFromOption,
+    importFrom: ImportFromOption;
   }) => {
     const params =
       importFrom === ImportFromOptions.STATE_DIR
@@ -139,24 +144,27 @@ export default class WalletMigrationStore extends Store {
             ],
           };
     const { filePaths } = await showOpenDialogChannel.send(params);
+
     if (!filePaths || filePaths.length === 0) {
       return;
     }
+
     const filePath = filePaths[0];
     runInAction('update exportSourcePath', () => {
       this.exportSourcePath = filePath;
       this.exportErrors = '';
     });
   };
-
-  @action _resetExportSourcePath = () => {
+  @action
+  _resetExportSourcePath = () => {
     this.exportSourcePath = '';
     this.exportErrors = '';
   };
-
-  @action _nextStep = async () => {
+  @action
+  _nextStep = async () => {
     if (this.walletMigrationStep === IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE) {
       await this._exportWallets();
+
       if (this.exportedWalletsCount) {
         runInAction('update walletMigrationStep', () => {
           this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
@@ -166,12 +174,14 @@ export default class WalletMigrationStore extends Store {
       this._restoreWallets();
     }
   };
-
-  @action _toggleWalletImportSelection = ({ index }: { index: number }) => {
+  @action
+  _toggleWalletImportSelection = ({ index }: { index: number }) => {
     const wallet = this.getExportedWalletByIndex(index);
+
     if (wallet) {
       const { status } = wallet.import;
       const isPending = status === WalletImportStatuses.PENDING;
+
       this._updateWalletImportStatus(
         index,
         isPending
@@ -183,6 +193,7 @@ export default class WalletMigrationStore extends Store {
         wallet.id,
         index
       );
+
       if (walletDuplicates.length) {
         walletDuplicates.forEach((w) => {
           if (w.import.status === WalletImportStatuses.PENDING) {
@@ -192,46 +203,40 @@ export default class WalletMigrationStore extends Store {
       }
     }
   };
-
-  @action _updateWalletImportStatus = (
+  @action
+  _updateWalletImportStatus = (
     index: number,
     status: WalletImportStatus,
     error?: string
   ) => {
     const wallet = this.getExportedWalletByIndex(index);
+
     if (wallet) {
       wallet.import.status = status;
       if (error) wallet.import.error = error;
     }
   };
-
-  @action _updateWalletName = ({
-    index,
-    name,
-  }: {
-    index: number,
-    name: string,
-  }) => {
+  @action
+  _updateWalletName = ({ index, name }: { index: number; name: string }) => {
     const wallet = this.getExportedWalletByIndex(index);
+
     if (wallet) {
       wallet.name = name;
     }
   };
-
-  @action _exportWallets = async () => {
+  @action
+  _exportWallets = async () => {
     // Reset export data
     this._resetExportData();
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('WalletMigrationStore: Starting wallet export...');
     this.isExportRunning = true;
-
-    const {
-      wallets,
-      errors,
-    }: ExportWalletsMainResponse = await exportWalletsChannel.request({
-      exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
-      locale: this.stores.profile.currentLocale,
-    });
+    const { wallets, errors }: ExportWalletsMainResponse =
+      await exportWalletsChannel.request({
+        exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
+        locale: this.stores.profile.currentLocale,
+      });
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = orderBy(
         wallets.map((wallet) => {
@@ -244,21 +249,25 @@ export default class WalletMigrationStore extends Store {
           const status = isImported
             ? WalletImportStatuses.EXISTS
             : WalletImportStatuses.UNSTARTED;
-          return { ...wallet, hasName, import: { status, error: null } };
+          return {
+            ...wallet,
+            hasName,
+            import: {
+              status,
+              error: null,
+            },
+          };
         }),
         ['hasName', 'id', 'name', 'isEmptyPassphrase'],
         ['desc', 'asc', 'asc', 'asc']
       );
-
       // Guard against duplicated wallet ids
       this.exportedWallets.forEach((wallet, index) => {
         wallet.index = index + 1;
       });
-
       this.exportErrors =
         errors || !this.exportedWalletsCount ? 'No wallets found' : '';
     });
-
     logger.debug(
       `WalletMigrationStore: Exported ${this.exportedWalletsCount} wallets`,
       {
@@ -270,16 +279,16 @@ export default class WalletMigrationStore extends Store {
       this.isExportRunning = false;
     });
   };
-
-  @action _restoreWallets = async () => {
+  @action
+  _restoreWallets = async () => {
     // Reset restoration data
     this._resetRestorationData();
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug(
       `WalletMigrationStore: Restoring ${this.pendingImportWalletsCount} selected wallets...`
     );
     this.isRestorationRunning = true;
-
     await Promise.all(
       this.pendingImportWallets.map((wallet, index) => {
         logger.debug(
@@ -293,7 +302,7 @@ export default class WalletMigrationStore extends Store {
         return this._restoreWallet(wallet);
       })
     );
-
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug(
       `WalletMigrationStore: Restored ${this.restoredWalletsCount} of ${this.pendingImportWalletsCount} selected wallets`
     );
@@ -301,20 +310,20 @@ export default class WalletMigrationStore extends Store {
       this.isRestorationRunning = false;
     });
   };
-
-  @action _restoreWallet = async (exportedWallet: ExportedByronWallet) => {
+  @action
+  _restoreWallet = async (exportedWallet: ExportedByronWallet) => {
     // Reset restore requests to clear previous errors
     this.restoreExportedWalletRequest.reset();
-
     const { id, index } = exportedWallet;
+
     this._updateWalletImportStatus(index, WalletImportStatuses.RUNNING);
+
     try {
       const restoredWallet = await this.restoreExportedWalletRequest.execute(
         exportedWallet
       ).promise;
       if (!restoredWallet)
         throw new Error('Restored wallet was not received correctly');
-
       runInAction('update restoredWallets', () => {
         this._updateWalletImportStatus(index, WalletImportStatuses.COMPLETED);
 
@@ -322,6 +331,7 @@ export default class WalletMigrationStore extends Store {
           id,
           index
         );
+
         if (walletDuplicates.length) {
           walletDuplicates.forEach((w) => {
             if (w.import.status !== WalletImportStatuses.COMPLETED) {
@@ -337,22 +347,28 @@ export default class WalletMigrationStore extends Store {
         error.defaultMessage || error.message || error.toString();
       runInAction('update restorationErrors', () => {
         const { name, isEmptyPassphrase } = exportedWallet;
+
         this._updateWalletImportStatus(
           index,
           WalletImportStatuses.ERRORED,
           errorStr
         );
+
         this.restorationErrors.push({
           error: errorStr,
-          wallet: { id, name, hasPassword: !isEmptyPassphrase },
+          wallet: {
+            id,
+            name,
+            hasPassword: !isEmptyPassphrase,
+          },
         });
       });
     }
   };
-
-  @action _generateMigrationReport = async () => {
-    const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-      .promise;
+  @action
+  _generateMigrationReport = async () => {
+    const finalMigrationStatus =
+      await this.getWalletMigrationStatusRequest.execute().promise;
     const walletMigrationReportData: WalletMigrationReportData = {
       exportedWalletsData: this.exportedWalletsData,
       exportedWalletsCount: this.exportedWalletsCount,
@@ -368,10 +384,12 @@ export default class WalletMigrationStore extends Store {
         walletMigrationReportData,
       }
     );
+
     try {
       await generateWalletMigrationReportChannel.send(
         toJS(walletMigrationReportData)
       );
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('WalletMigrationStore: Generated wallet migration report');
     } catch (error) {
       logger.error(
@@ -382,27 +400,28 @@ export default class WalletMigrationStore extends Store {
       );
     }
   };
-
-  @action _startMigration = async () => {
+  @action
+  _startMigration = async () => {
     if (!IS_AUTOMATIC_WALLET_MIGRATION_ENABLED) return;
-
     const { isMainnet, isTestnet, isTest } = this.environment;
+
     if (isMainnet || isTestnet || (isTest && this.isTestMigrationEnabled)) {
       // Reset migration data
       this._resetMigration();
 
-      const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-        .promise;
+      const walletMigrationStatus =
+        await this.getWalletMigrationStatusRequest.execute().promise;
+
       if (walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
         // Wait for wallets to load as we need to match existing and exported wallets
         await this.stores.wallets.refreshWalletsData();
-
         // Update migration status to "RUNNING"
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug('WalletMigrationStore: Starting wallet migration...');
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.RUNNING
         );
-
         // Trigger wallet export
         await this._exportWallets();
 
@@ -412,6 +431,7 @@ export default class WalletMigrationStore extends Store {
             this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
           });
           this.actions.dialogs.open.trigger({
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'typeof WalletImportFileDialog' is not assign... Remove this comment to see the full error message
             dialog: WalletImportFileDialog,
           });
         } else {
@@ -425,61 +445,71 @@ export default class WalletMigrationStore extends Store {
       }
     } else {
       // Update migration status to "SKIPPED"
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.setWalletMigrationStatusRequest.execute(
         WalletMigrationStatuses.SKIPPED
       );
     }
   };
-
-  @action _resetExportData = () => {
+  @action
+  _resetExportData = () => {
     this.isExportRunning = false;
     this.exportedWallets = [];
     this.exportErrors = '';
   };
-
-  @action _resetRestorationData = () => {
+  @action
+  _resetRestorationData = () => {
     this.isRestorationRunning = false;
     this.restoredWallets = [];
     this.restorationErrors = [];
   };
-
-  @action _resetMigration = () => {
+  @action
+  _resetMigration = () => {
     this._resetExportData();
+
     this._resetRestorationData();
+
     this.exportSourcePath = '';
     this.walletMigrationStep = null;
   };
-
   // For E2E test purpose
-  @action _setFakedImportPath = (sourcePath: string) => {
+  @action
+  _setFakedImportPath = (sourcePath: string) => {
     if (this.environment.isTest) {
       this.exportSourcePath = sourcePath;
       this.defaultExportSourcePath = sourcePath;
     }
   };
-
   // For E2E test purpose
-  @action _enableTestWalletMigration = async () => {
+  @action
+  _enableTestWalletMigration = async () => {
     if (this.environment.isTest) {
       this.isTestMigrationEnabled = true;
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.setWalletMigrationStatusRequest.execute(
         WalletMigrationStatuses.UNSTARTED
       );
+
       this._startMigration();
     }
   };
-
-  @action _finishMigration = async () => {
+  @action
+  _finishMigration = async () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'typeof WalletImportFileDialog' i... Remove this comment to see the full error message
     if (this.stores.uiDialogs.isOpen(WalletImportFileDialog)) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.dialogs.closeActiveDialog.trigger();
     }
 
-    const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-      .promise;
+    const walletMigrationStatus =
+      await this.getWalletMigrationStatusRequest.execute().promise;
+
     if (walletMigrationStatus === WalletMigrationStatuses.RUNNING) {
       // Update migration status
       if (this.exportErrors === '' && !this.restorationErrors.length) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug('WalletMigrationStore: Wallet migration succeeded');
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.COMPLETED
         );
@@ -488,6 +518,7 @@ export default class WalletMigrationStore extends Store {
           exportErrors: this.exportErrors,
           restorationErrors: this.restorationErrors,
         });
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.ERRORED
         );
@@ -498,21 +529,25 @@ export default class WalletMigrationStore extends Store {
     }
 
     this._resetMigration();
+
     this.stores.wallets.refreshWalletsData();
   };
 
-  @computed get pendingImportWallets(): Array<ExportedByronWallet> {
+  @computed
+  get pendingImportWallets(): Array<ExportedByronWallet> {
     return this.exportedWallets.filter(
       ({ import: { status } }: ExportedByronWallet) =>
         status === WalletImportStatuses.PENDING
     );
   }
 
-  @computed get pendingImportWalletsCount(): number {
+  @computed
+  get pendingImportWalletsCount(): number {
     return this.pendingImportWallets.length;
   }
 
-  @computed get exportedWalletsData(): Array<ExportedWalletData> {
+  @computed
+  get exportedWalletsData(): Array<ExportedWalletData> {
     return this.exportedWallets.map((wallet) => ({
       id: wallet.id,
       name: wallet.name,
@@ -521,11 +556,13 @@ export default class WalletMigrationStore extends Store {
     }));
   }
 
-  @computed get exportedWalletsCount(): number {
+  @computed
+  get exportedWalletsCount(): number {
     return this.exportedWallets.length;
   }
 
-  @computed get restoredWalletsData(): Array<RestoredWalletData> {
+  @computed
+  get restoredWalletsData(): Array<RestoredWalletData> {
     return this.restoredWallets.map((wallet) => ({
       id: getRawWalletId(wallet.id),
       name: wallet.name,
@@ -533,7 +570,8 @@ export default class WalletMigrationStore extends Store {
     }));
   }
 
-  @computed get restoredWalletsCount(): number {
+  @computed
+  get restoredWalletsCount(): number {
     return this.restoredWallets.length;
   }
 }

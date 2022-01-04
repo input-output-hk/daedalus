@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -16,11 +15,15 @@ import {
 } from '../../../utils/sortComparators';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ascendi... Remove this comment to see the full error message
 import sortIcon from '../../../assets/images/ascending.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingRewards.scss' or its ... Remove this comment to see the full error message
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import ButtonLink from '../../widgets/ButtonLink';
 import { RewardAmount } from './RewardAmount';
@@ -86,7 +89,6 @@ const messages = defineMessages({
     description: 'View in explorer button label on staking rewards page.',
   },
 });
-
 const REWARD_FIELDS = {
   WALLET_NAME: 'wallet',
   IS_RESTORING: 'isRestoring',
@@ -94,35 +96,30 @@ const REWARD_FIELDS = {
   REWARD: 'reward',
   REWARDS_ADDRESS: 'rewardsAddress',
 };
-
 const REWARD_ORDERS = {
   ASCENDING: 'asc',
   DESCENDING: 'desc',
 };
-
 const IS_EXPLORER_LINK_BUTTON_ENABLED = false;
-
 type Props = {
-  rewards: Array<Reward>,
-  isLoading: boolean,
-  isExporting: boolean,
-  onExportCsv: Function,
-  onCopyAddress: Function,
-  onOpenExternalLink: Function,
+  rewards: Array<Reward>;
+  isLoading: boolean;
+  isExporting: boolean;
+  onExportCsv: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
 };
-
 type State = {
-  rewardsOrder: string,
-  rewardsSortBy: string,
-  contentScrollTop: number,
+  rewardsOrder: string;
+  rewardsSortBy: string;
+  contentScrollTop: number;
 };
 
 @observer
-export default class StakingRewards extends Component<Props, State> {
+class StakingRewards extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isLoading: false,
     isExporting: false,
@@ -163,13 +160,11 @@ export default class StakingRewards extends Component<Props, State> {
       ];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
-
     onExportCsv({
       fileContent: exportedContent,
       filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
     });
   };
-
   getSortedRewards = (): Array<Reward> => {
     const { rewards } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
@@ -189,39 +184,50 @@ export default class StakingRewards extends Component<Props, State> {
         rewardB.rewardsAddress,
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
+
       if (rewardsSortBy === REWARD_FIELDS.REWARD) {
         if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
           return walletNameCompareResult;
         }
+
         if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
           return walletAddressCompareResult;
         }
+
         return rewardCompareResult;
       }
+
       if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
         if (walletNameCompareResult === 0 && walletAddressCompareResult) {
           return rewardCompareResult;
         }
+
         if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
           return walletAddressCompareResult;
         }
+
         return walletNameCompareResult;
       }
+
       if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
         if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
           return walletNameCompareResult;
         }
+
         if (walletAddressCompareResult === 0 && walletNameCompareResult === 0) {
           return rewardCompareResult;
         }
+
         return walletAddressCompareResult;
       }
+
       return 0;
     });
   };
-
-  handleContentScroll = (evt: SyntheticEvent<HTMLElement>) => {
-    this.setState({ contentScrollTop: evt.currentTarget.scrollTop });
+  handleContentScroll = (evt: React.SyntheticEvent<HTMLElement>) => {
+    this.setState({
+      contentScrollTop: evt.currentTarget.scrollTop,
+    });
   };
 
   render() {
@@ -274,7 +280,6 @@ export default class StakingRewards extends Component<Props, State> {
       styles.headerWrapper,
       contentScrollTop > 10 ? styles.headerWrapperWithShadow : null,
     ]);
-
     return (
       <div className={styles.component}>
         <div className={headerWrapperClasses}>
@@ -316,7 +321,6 @@ export default class StakingRewards extends Component<Props, State> {
                           ? styles.ascending
                           : null,
                       ]);
-
                       return (
                         <th
                           key={tableHeader.name}
@@ -350,7 +354,6 @@ export default class StakingRewards extends Component<Props, State> {
                       reward,
                       REWARD_FIELDS.REWARDS_ADDRESS
                     );
-
                     return (
                       <tr key={key}>
                         <td className={styles.rewardWallet}>{rewardWallet}</td>
@@ -375,6 +378,7 @@ export default class StakingRewards extends Component<Props, State> {
                               </CopyToClipboard>
                               {IS_EXPLORER_LINK_BUTTON_ENABLED && (
                                 <ButtonLink
+                                  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                                   className={explorerButtonClasses}
                                   onClick={() =>
                                     onOpenExternalLink(rewardsAddress)
@@ -440,6 +444,7 @@ export default class StakingRewards extends Component<Props, State> {
   handleRewardsSort = (newSortBy: string) => {
     const { rewardsOrder, rewardsSortBy } = this.state;
     let newRewardsOrder;
+
     if (rewardsSortBy === newSortBy) {
       // on same sort change order
       newRewardsOrder = rewardsOrder === 'asc' ? 'desc' : 'asc';
@@ -454,3 +459,5 @@ export default class StakingRewards extends Component<Props, State> {
     });
   };
 }
+
+export default StakingRewards;

@@ -1,4 +1,3 @@
-// @flow
 import { compact } from 'lodash';
 import { shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
@@ -11,7 +10,6 @@ import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
 const { isWindows, isBlankScreenFixActive } = environment;
-
 export const winLinuxMenu = (
   app: App,
   window: BrowserWindow,
@@ -19,31 +17,40 @@ export const winLinuxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
-  translation: Function = getTranslation(translations, id)
+  translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
     label: translation('daedalus'),
     submenu: compact([
       {
         label: translation('daedalus.about'),
+
         click() {
           actions.openAboutDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Ctrl+T',
+
         click() {
           actions.openItnRewardsRedemptionDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
+
         click() {
           app.quit();
         },
@@ -94,6 +101,7 @@ export const winLinuxMenu = (
       {
         label: translation('view.reload'),
         accelerator: 'Ctrl+R',
+
         click() {
           window.webContents.reload();
         },
@@ -104,17 +112,21 @@ export const winLinuxMenu = (
       {
         label: translation('daedalus.settings'),
         accelerator: 'Alt+S',
+
         click() {
           actions.openSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
         accelerator: 'Alt+Ctrl+S',
+
         click() {
           actions.openWalletSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
       {
@@ -124,6 +136,7 @@ export const winLinuxMenu = (
         ? {
             label: translation('view.toggleFullScreen'),
             accelerator: 'F11',
+
             click() {
               window.setFullScreen(!window.isFullScreen());
             },
@@ -131,6 +144,7 @@ export const winLinuxMenu = (
         : {
             label: translation('view.toggleMaximumWindowSize'),
             accelerator: 'F11',
+
             click() {
               if (window.isMaximized()) {
                 window.unmaximize();
@@ -142,7 +156,9 @@ export const winLinuxMenu = (
       {
         label: translation('view.toggleDeveloperTools'),
         accelerator: 'Alt+Ctrl+I',
+
         click() {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleDevTools' does not exist on type '... Remove this comment to see the full error message
           window.toggleDevTools();
         },
       },
@@ -153,6 +169,7 @@ export const winLinuxMenu = (
     submenu: compact([
       {
         label: translation('helpSupport.knownIssues'),
+
         click() {
           const faqLink = translation('helpSupport.knownIssuesUrl');
           shell.openExternal(faqLink);
@@ -162,29 +179,34 @@ export const winLinuxMenu = (
         label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
         checked: isBlankScreenFixActive,
+
         click(item) {
           actions.toggleBlankScreenFix(item);
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.safetyTips'),
+
         click() {
           const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
       /* {
-        label: translation('helpSupport.featureRequest'),
-        click() {
-          const featureRequestLinkUrl = translation(
-            'helpSupport.featureRequestUrl'
-          );
-          shell.openExternal(featureRequestLinkUrl);
-        },
-      }, */
+    label: translation('helpSupport.featureRequest'),
+    click() {
+      const featureRequestLinkUrl = translation(
+        'helpSupport.featureRequestUrl'
+      );
+      shell.openExternal(featureRequestLinkUrl);
+    },
+  }, */
       {
         label: translation('helpSupport.supportRequest'),
+
         click() {
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
@@ -199,17 +221,23 @@ export const winLinuxMenu = (
       },
       {
         label: translation('helpSupport.downloadLogs'),
+
         click() {
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
         accelerator: 'Ctrl+D',
+
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+
         enabled: isNavigationEnabled,
       },
     ]),

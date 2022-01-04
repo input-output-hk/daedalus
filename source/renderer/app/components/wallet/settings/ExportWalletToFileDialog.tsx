@@ -1,5 +1,5 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -12,6 +12,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import Dialog from '../../widgets/Dialog';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ExportWalletToFileDialog.scs... Remove this comment to see the full error message
 import styles from './ExportWalletToFileDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
@@ -32,8 +33,7 @@ const messages = defineMessages({
     id: 'wallet.settings.exportToFile.dialog.submit.label',
     defaultMessage: '!!!Export',
     description: 'Label for export wallet to file submit button.',
-  },
-  // TODO: re-enable when we have full/readOnly exports
+  }, // TODO: re-enable when we have full/readOnly exports
   // fullTabTitle: {
   //   id: 'wallet.export.choices.tab.title.full',
   //   defaultMessage: '!!!Full',
@@ -45,33 +45,28 @@ const messages = defineMessages({
   //   description: 'Tab title "Read-only" on wallet export dialog.'
   // },
 });
-
 type ExportType = 'full' | 'readOnly';
-
 const EXPORT_TYPE = {
   FULL: 'full',
   READ_ONLY: 'readOnly',
 };
-
-export type OnSubmitParams = $Exact<{
-  exportType: ExportType,
-  password: ?string,
-}>;
-
-type Props = {
-  walletName: string,
-  isSubmitting: boolean,
-  onSubmit: (OnSubmitParams) => Promise<void>,
-  onClose: () => void,
-  error?: ?LocalizableError,
+export type OnSubmitParams = {
+  exportType: ExportType;
+  password: string | null | undefined;
 };
-
+type Props = {
+  walletName: string;
+  isSubmitting: boolean;
+  onSubmit: (arg0: OnSubmitParams) => Promise<void>;
+  onClose: () => void;
+  error?: LocalizableError | null | undefined;
+};
 type State = {
-  exportType: ExportType,
+  exportType: ExportType;
 };
 
 @observer
-export default class ExportWalletToFileDialog extends Component<Props, State> {
+class ExportWalletToFileDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -79,6 +74,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
   constructor(props: Props, children: Node) {
     super(props, children);
     this.state = {
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'ExportTyp... Remove this comment to see the full error message
       exportType: EXPORT_TYPE.FULL,
     };
   }
@@ -86,8 +82,8 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
   // onChangeExportType(exportType: ExportType) {
   //   this.setState({ exportType });
   // }
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -115,15 +111,17 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: async (form) => {
         const { spendingPassword } = form.values();
@@ -135,7 +133,6 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
       },
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
@@ -144,7 +141,6 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
     const { onClose, walletName, isSubmitting, error } = this.props;
     // const { exportType } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletExportDialog']);
-
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
@@ -153,9 +149,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
         onClick: this.submit,
       },
     ];
-
     // const spendingPasswordField = form.$('spendingPassword');
-
     return (
       <Dialog
         className={dialogClasses}
@@ -166,40 +160,40 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
         closeButton={<DialogCloseButton />}
       >
         {/* TODO: re-enable when we have full/readOnly exports
-
         <div className={styles.choices}>
-          <button
-            className={exportType === 'full' ? styles.activeButton : ''}
-            onClick={() => this.onChangeExportType('full')}
-          >
-            {intl.formatMessage(messages.fullTabTitle)}
-          </button>
-          <button
-            disabled
-            className={exportType === 'readOnly' ? styles.activeButton : ''}
-            onClick={() => this.onChangeExportType('readOnly')}
-          >
-            {intl.formatMessage(messages.readOnlyTabTitle)}
-          </button>
+         <button
+           className={exportType === 'full' ? styles.activeButton : ''}
+           onClick={() => this.onChangeExportType('full')}
+         >
+           {intl.formatMessage(messages.fullTabTitle)}
+         </button>
+         <button
+           disabled
+           className={exportType === 'readOnly' ? styles.activeButton : ''}
+           onClick={() => this.onChangeExportType('readOnly')}
+         >
+           {intl.formatMessage(messages.readOnlyTabTitle)}
+         </button>
         </div>
-
         */}
 
         <div className={styles.introduction}>
           <FormattedHTMLMessage
             {...messages.introduction}
-            values={{ walletName }}
+            values={{
+              walletName,
+            }}
           />
         </div>
 
         {/*
-          <Input
-            className={styles.spendingPassword}
-            {...spendingPasswordField.bind()}
-            error={spendingPasswordField.error}
-            skin={InputSkin}
-            onKeyPress={this.handleSubmitOnEnter}
-          />
+         <Input
+           className={styles.spendingPassword}
+           {...spendingPasswordField.bind()}
+           error={spendingPasswordField.error}
+           skin={InputSkin}
+           onKeyPress={this.handleSubmitOnEnter}
+         />
         */}
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
@@ -207,3 +201,5 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
     );
   }
 }
+
+export default ExportWalletToFileDialog;

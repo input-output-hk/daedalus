@@ -1,4 +1,3 @@
-// @flow
 import find from 'lodash/find';
 import BigNumber from 'bignumber.js';
 import { filter, escapeRegExp } from 'lodash';
@@ -26,7 +25,7 @@ export type SortDirection = 'asc' | 'desc';
 export const filterAssets = (
   assets: Array<any>,
   transactionType: TransactionType,
-  isInternalAddress: Function
+  isInternalAddress: (...args: Array<any>) => any
 ): Array<any> =>
   assets.filter(
     ({ address }) =>
@@ -35,7 +34,6 @@ export const filterAssets = (
       (transactionType === TransactionTypes.EXPEND &&
         !isInternalAddress(address))
   );
-
 export const getZeroToken = ({
   policyId,
   assetName,
@@ -56,9 +54,11 @@ export const getZeroToken = ({
  */
 export const getToken = (asset: Asset, tokens: Tokens) => {
   let token = tokens.find(({ uniqueId }) => uniqueId === asset.uniqueId);
+
   if (!token) {
     token = getZeroToken(asset);
   }
+
   return token;
 };
 
@@ -105,8 +105,7 @@ export const getAssetTokens = (
 ): Array<AssetToken> =>
   assets
     .map((asset) => getAssetToken(asset, getToken(asset, tokens)))
-    .filter((token) => !!token.uniqueId)
-    // @TOKEN TODO - Remove this filter once we can list zero tokens
+    .filter((token) => !!token.uniqueId) // @TOKEN TODO - Remove this filter once we can list zero tokens
     .filter((token) => !token.quantity.isZero());
 
 /**
@@ -118,7 +117,7 @@ export const getAssetTokens = (
  */
 export const getAssetTokenFromToken = (
   asset: Token,
-  getAsset: Function
+  getAsset: (...args: Array<any>) => any
 ): AssetToken => {
   const { policyId, assetName, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
@@ -135,10 +134,9 @@ export const getAssetTokenFromToken = (
     uniqueId,
   };
 };
-
 export const getNonZeroAssetTokens = (
   tokens: Tokens,
-  getAsset: Function
+  getAsset: (...args: Array<any>) => any
 ): Array<AssetToken> =>
   tokens
     .map((token) => getAssetTokenFromToken(token, getAsset))
@@ -150,55 +148,63 @@ export const getNonZeroAssetTokens = (
  * @param sortBy - sorting parameter
  * @param sortDirection - should it sort in ascending or descending direction
  */
-export const sortAssets = (sortBy: SortBy, sortDirection: SortDirection) => (
-  asset1: AssetToken,
-  asset2: AssetToken
-) => {
-  const {
-    quantity: unformattedQuantity1,
-    fingerprint: fingerprint1,
-    metadata: metadata1,
-    decimals: decimals1,
-  } = asset1;
-  const quantity1 = formattedTokenDecimals(unformattedQuantity1, decimals1);
-  const { name: name1 } = metadata1 || {};
-  const {
-    quantity: unformattedQuantity2,
-    fingerprint: fingerprint2,
-    metadata: metadata2,
-    decimals: decimals2,
-  } = asset2;
-  const quantity2 = formattedTokenDecimals(unformattedQuantity2, decimals2);
-  const { name: name2 } = metadata2 || {};
-  if (sortBy === 'token') {
-    if (name1 && !name2) return -1;
-    if (!name1 && name2) return 1;
-    if (name1 && name2) {
-      if (sortDirection === 'asc') {
-        return name1.localeCompare(name2);
+export const sortAssets =
+  (sortBy: SortBy, sortDirection: SortDirection) =>
+  (asset1: AssetToken, asset2: AssetToken) => {
+    const {
+      quantity: unformattedQuantity1,
+      fingerprint: fingerprint1,
+      metadata: metadata1,
+      decimals: decimals1,
+    } = asset1;
+    const quantity1 = formattedTokenDecimals(unformattedQuantity1, decimals1);
+    const { name: name1 } = metadata1 || {};
+    const {
+      quantity: unformattedQuantity2,
+      fingerprint: fingerprint2,
+      metadata: metadata2,
+      decimals: decimals2,
+    } = asset2;
+    const quantity2 = formattedTokenDecimals(unformattedQuantity2, decimals2);
+    const { name: name2 } = metadata2 || {};
+
+    if (sortBy === 'token') {
+      if (name1 && !name2) return -1;
+      if (!name1 && name2) return 1;
+
+      if (name1 && name2) {
+        if (sortDirection === 'asc') {
+          return name1.localeCompare(name2);
+        }
+
+        return name2.localeCompare(name1);
       }
-      return name2.localeCompare(name1);
+
+      if (sortDirection === 'asc') {
+        return fingerprint1.localeCompare(fingerprint2);
+      }
+
+      return fingerprint2.localeCompare(fingerprint1);
     }
 
-    if (sortDirection === 'asc') {
-      return fingerprint1.localeCompare(fingerprint2);
+    if (sortBy === 'fingerprint') {
+      if (sortDirection === 'asc') {
+        return fingerprint1.localeCompare(fingerprint2);
+      }
+
+      return fingerprint2.localeCompare(fingerprint1);
     }
-    return fingerprint2.localeCompare(fingerprint1);
-  }
-  if (sortBy === 'fingerprint') {
-    if (sortDirection === 'asc') {
-      return fingerprint1.localeCompare(fingerprint2);
+
+    if (sortBy === 'quantity') {
+      if (sortDirection === 'asc') {
+        return quantity1.isLessThan(quantity2) ? -1 : 1;
+      }
+
+      return quantity1.isLessThan(quantity2) ? 1 : -1;
     }
-    return fingerprint2.localeCompare(fingerprint1);
-  }
-  if (sortBy === 'quantity') {
-    if (sortDirection === 'asc') {
-      return quantity1.isLessThan(quantity2) ? -1 : 1;
-    }
-    return quantity1.isLessThan(quantity2) ? 1 : -1;
-  }
-  return 0;
-};
+
+    return 0;
+  };
 
 /**
  * Check if after the transactions your wallet has some assets left
@@ -228,12 +234,14 @@ export const hasTokensLeftAfterTransaction = (
     ) {
       return true;
     }
+
     return !!find(
       selectedAssets,
       (selectedAsset, index) =>
         !initialSelectedAssets[index]?.quantity?.isEqualTo(selectedAsset)
     );
   }
+
   return false;
 };
 
@@ -247,9 +255,11 @@ export const searchAssets = (
   assets: Array<AssetToken>
 ) => {
   const searchValue = rawSearchValue.trim();
+
   if (searchValue.length < 3) {
     return assets;
   }
+
   return filter(assets, (asset) => {
     const { policyId, assetName, fingerprint, metadata } = asset;
     const { name, ticker, description } = metadata || {};
@@ -263,26 +273,28 @@ export const searchAssets = (
       description,
     ];
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | AssetMetadata' is not a... Remove this comment to see the full error message
     return checkList.some((item) => regex.test(item));
   });
 };
-
-export const isTokenMissingInWallet = (wallet?: ?Wallet, token?: Token) => {
+export const isTokenMissingInWallet = (
+  wallet?: Wallet | null | undefined,
+  token?: Token
+) => {
   if (!wallet || !token || !token.uniqueId) {
     return false;
   }
+
   const { available } = wallet.assets;
   const { uniqueId } = token;
   return !available.find((walletToken) => walletToken.uniqueId === uniqueId);
 };
-
 export const tokenHasBalance = (token: Token, amount: BigNumber) =>
   token.quantity.isGreaterThanOrEqualTo(amount);
-
 export const getUniqueId = ({
   assetName,
   policyId,
 }: {
-  assetName: string,
-  policyId: string,
+  assetName: string;
+  policyId: string;
 }) => `${assetName}${policyId}`;

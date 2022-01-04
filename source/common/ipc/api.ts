@@ -1,4 +1,3 @@
-// @flow
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
@@ -70,25 +69,21 @@ import type {
  * Complex types are referenced from common/types to keep this api readable.
  * ==================================================================
  */
-
 export const GET_LOGS_CHANNEL = 'GET_LOGS_CHANNEL';
 export type GetLogsRendererRequest = void;
 export type GetLogsMainResponse = LogFiles;
-
 export const COMPRESS_LOGS_CHANNEL = 'COMPRESS_LOGS_CHANNEL';
 export type CompressLogsRendererRequest = {
-  logs: LogFiles,
-  compressedFileName: string,
+  logs: LogFiles;
+  compressedFileName: string;
 };
 export type CompressLogsMainResponse = string;
-
 export const DOWNLOAD_LOGS_CHANNEL = 'DOWNLOAD_LOGS_CHANNEL';
 export type DownloadLogsRendererRequest = {
-  compressedLogsFilePath: string,
-  destinationPath: string,
+  compressedLogsFilePath: string;
+  destinationPath: string;
 };
 export type DownloadLogsMainResponse = void;
-
 export const GET_GPU_STATUS_CHANNEL = 'GET_GPU_STATUS_CHANNEL';
 export type GetGPUStatusRendererRequest = void;
 export type GetGPUStatusMainResponse = GpuStatus;
@@ -149,7 +144,9 @@ export type SetStateSnapshotLogMainResponse = StateSnapshotLogParams;
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder
  */
 export const LOAD_ASSET_CHANNEL = 'LoadAssetChannel';
-export type LoadAssetRendererRequest = { fileName: string };
+export type LoadAssetRendererRequest = {
+  fileName: string;
+};
 export type LoadAssetMainResponse = string;
 
 /**
@@ -172,8 +169,8 @@ export type OpenLocalDirectoryMainResponse = void;
 export const SUBMIT_BUG_REPORT_REQUEST_CHANNEL =
   'SUBMIT_BUG_REPORT_REQUEST_CHANNEL';
 export type SubmitBugReportRendererRequest = {
-  httpOptions: BugReportRequestHttpOptions,
-  requestPayload?: BugReportRequestPayload,
+  httpOptions: BugReportRequestHttpOptions;
+  requestPayload?: BugReportRequestPayload;
 };
 export type SubmitBugReportRequestMainResponse = void;
 
@@ -182,7 +179,7 @@ export type SubmitBugReportRequestMainResponse = void;
  */
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 export type RebuildAppMenuRendererRequest = {
-  isNavigationEnabled: boolean,
+  isNavigationEnabled: boolean;
 };
 export type RebuildAppMenuMainResponse = void;
 
@@ -254,7 +251,7 @@ export type CardanoStateRendererResponse = CardanoNodeState;
  */
 export const CARDANO_TLS_CONFIG_CHANNEL = 'CARDANO_TLS_CONFIG_CHANNEL';
 export type CardanoTlsConfigRendererRequest = void;
-export type CardanoTlsConfigMainResponse = ?TlsConfig;
+export type CardanoTlsConfigMainResponse = TlsConfig | null | undefined;
 
 /**
  * Channel where renderer can request a cardano-node restart
@@ -277,14 +274,20 @@ export type CardanoFaultInjectionMainResponse = void;
 export const GET_CACHED_CARDANO_STATUS_CHANNEL =
   'GET_CACHED_CARDANO_STATUS_CHANNEL';
 export type GetCachedCardanoStatusRendererRequest = void;
-export type GetCachedCardanoStatusMainResponse = ?CardanoStatus;
+export type GetCachedCardanoStatusMainResponse =
+  | CardanoStatus
+  | null
+  | undefined;
 
 /**
  * Channel where renderer and main process can exchange cardano-node status info
  */
 export const SET_CACHED_CARDANO_STATUS_CHANNEL =
   'SET_CACHED_CARDANO_STATUS_CHANNEL';
-export type SetCachedCardanoStatusRendererRequest = ?CardanoStatus;
+export type SetCachedCardanoStatusRendererRequest =
+  | CardanoStatus
+  | null
+  | undefined;
 export type SetCachedCardanoStatusMainResponse = void;
 
 /**
@@ -292,12 +295,12 @@ export type SetCachedCardanoStatusMainResponse = void;
  */
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
 export type ExportWalletsRendererRequest = {
-  exportSourcePath: string,
-  locale: string,
+  exportSourcePath: string;
+  locale: string;
 };
 export type ExportWalletsMainResponse = {
-  wallets: Array<ExportedByronWallet>,
-  errors: string,
+  wallets: Array<ExportedByronWallet>;
+  errors: string;
 };
 
 /**
@@ -305,7 +308,8 @@ export type ExportWalletsMainResponse = {
  */
 export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
-export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
+export type GenerateWalletMigrationReportRendererRequest =
+  WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
@@ -362,7 +366,8 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
  */
 export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
 export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
-export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
+export type DeleteDownloadedFileMainResponse =
+  DeleteDownloadedFileResponse | void;
 
 /**
  * Channel for initiating the download manager
@@ -375,14 +380,16 @@ export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
-export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataRendererRequest =
+  DownloadsLocalDataRequest | void;
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
  * Channel for initiating the download manager
  */
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
-export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataRendererRequest =
+  ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
@@ -397,50 +404,46 @@ export type CheckFileExistsMainResponse = boolean;
  */
 export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
 export type ManageAppUpdateRendererRequest = {
-  filePath: string,
-  hash: string,
+  filePath: string;
+  hash: string;
 };
 export type ManageAppUpdateMainResponse = {
-  status: 'progress' | 'success' | 'error',
+  status: 'progress' | 'success' | 'error';
   data: {
-    message?: string,
-    progress?: number,
-    code?: number,
-    error?: Error,
-    info?: Object,
-  },
+    message?: string;
+    progress?: number;
+    code?: number;
+    error?: Error;
+    info?: Record<string, any>;
+  };
 };
-
 export type DeriveXpubRendererRequestType = {
-  parentXpubHex: string,
-  lastIndex: number,
-  derivationScheme: number,
+  parentXpubHex: string;
+  lastIndex: number;
+  derivationScheme: number;
 };
-
 export type StakingBlockchainPointer = {
-  blockIndex: number,
-  txIndex: number,
-  certificateIndex: number,
+  blockIndex: number;
+  txIndex: number;
+  certificateIndex: number;
 };
-
 export type deriveAddressRendererRequestType = {
-  devicePath: ?string,
-  addressType: number,
-  networkId: number,
-  protocolMagic: number,
-  spendingPathStr: string,
-  stakingPathStr: ?string,
-  isTrezor: boolean,
+  devicePath: string | null | undefined;
+  addressType: number;
+  networkId: number;
+  protocolMagic: number;
+  spendingPathStr: string;
+  stakingPathStr: string | null | undefined;
+  isTrezor: boolean;
 };
-
 export type showAddressRendererRequestType = {
-  devicePath: ?string,
-  addressType: number,
-  networkId: number,
-  protocolMagic: number,
-  spendingPathStr: string,
-  stakingPathStr: ?string,
-  isTrezor: boolean,
+  devicePath: string | null | undefined;
+  addressType: number;
+  networkId: number;
+  protocolMagic: number;
+  spendingPathStr: string;
+  stakingPathStr: string | null | undefined;
+  isTrezor: boolean;
 };
 
 /**
@@ -462,55 +465,51 @@ export type GetBlockReplayProgressMainResponse = number;
  */
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
-export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
-export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
-
+export type getHardwareWalletTransportRendererRequest =
+  HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse =
+  HardwareWalletTransportDeviceResponse;
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
-export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
-
+export type getExtendedPublicKeyRendererRequest =
+  HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse =
+  HardwareWalletExtendedPublicKeyResponse;
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
-export type getCardanoAdaAppRendererRequest = { path: ?string };
+export type getCardanoAdaAppRendererRequest = {
+  path: string | null | undefined;
+};
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
-
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectiontMainRequest = HardwareWalletConnectionRequest;
-export type getHardwareWalletConnectiontRendererResponse = Object;
-
+export type getHardwareWalletConnectiontMainRequest =
+  HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectiontRendererResponse = Record<string, any>;
 export const SIGN_TRANSACTION_LEDGER_CHANNEL =
   'SIGN_TRANSACTION_LEDGER_CHANNEL';
 export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
 export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
-
 export const SIGN_TRANSACTION_TREZOR_CHANNEL =
   'SIGN_TRANSACTION_TREZOR_CHANNEL';
 export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
 export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
-
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;
 export type handleInitTrezorConnectMainResponse = void;
-
 export const GET_INIT_LEDGER_CONNECT_CHANNEL =
   'GET_INIT_LEDGER_CONNECT_CHANNEL';
 export type handleInitLedgerConnectRendererRequest = void;
 export type handleInitLedgerConnectMainResponse = void;
-
 export const DERIVE_XPUB_CHANNEL = 'DERIVE_XPUB_CHANNEL';
 export type deriveXpubRendererRequest = DeriveXpubRendererRequestType;
 export type deriveXpubMainResponse = string;
-
 export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
 export type resetTrezorActionRendererRequest = void;
 export type resetTrezorActionMainResponse = void;
-
 export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
 export type deriveAddressRendererRequest = deriveAddressRendererRequestType;
 export type deriveAddressMainResponse = string;
-
 export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
 export type showAddressRendererRequest = showAddressRendererRequestType;
 export type showAddressMainResponse = void;

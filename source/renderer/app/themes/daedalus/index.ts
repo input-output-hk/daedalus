@@ -10,23 +10,25 @@ import { WHITE_THEME_OUTPUT } from './white';
 import { YELLOW_THEME_OUTPUT } from './yellow';
 
 export const EXISTING_THEME_OUTPUTS = [
-  ['cardano.js', CARDANO_THEME_OUTPUT],
-  ['dark-blue.js', DARK_BLUE_THEME_OUTPUT],
-  ['dark-cardano.js', DARK_CARDANO_THEME_OUTPUT],
-  ['flight-candidate.js', FLIGHT_CANDIDATE_THEME_OUTPUT],
-  ['incentivized-testnet.js', INCENTIVIZED_TESTNET_THEME_OUTPUT],
-  ['light-blue.js', LIGHT_BLUE_THEME_OUTPUT],
-  ['shelley-testnet.js', SHELLEY_TESTNET_THEME_OUTPUT],
-  ['white.js', WHITE_THEME_OUTPUT],
-  ['yellow.js', YELLOW_THEME_OUTPUT],
+  ['cardano.ts', CARDANO_THEME_OUTPUT],
+  ['dark-blue.ts', DARK_BLUE_THEME_OUTPUT],
+  ['dark-cardano.ts', DARK_CARDANO_THEME_OUTPUT],
+  ['flight-candidate.ts', FLIGHT_CANDIDATE_THEME_OUTPUT],
+  ['incentivized-testnet.ts', INCENTIVIZED_TESTNET_THEME_OUTPUT],
+  ['light-blue.ts', LIGHT_BLUE_THEME_OUTPUT],
+  ['shelley-testnet.ts', SHELLEY_TESTNET_THEME_OUTPUT],
+  ['white.ts', WHITE_THEME_OUTPUT],
+  ['yellow.ts', YELLOW_THEME_OUTPUT],
 ];
-
 export const EXISTING_THEME_OUTPUTS_OBJ = EXISTING_THEME_OUTPUTS.reduce(
   (outputsObj, theme) => {
     const [themeName, themeOutput] = theme;
+
     if (themeName && !isEmpty(themeOutput)) {
+      // @ts-ignore ts-migrate(2538) FIXME: Type '{ aboutWindow: { '--theme-about-window-backg... Remove this comment to see the full error message
       outputsObj[themeName] = themeOutput;
     }
+
     return outputsObj;
   },
   {}

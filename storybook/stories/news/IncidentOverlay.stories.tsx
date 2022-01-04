@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { select, withKnobs } from '@storybook/addon-knobs';
@@ -43,10 +42,7 @@ storiesOf('News/Overlays', module)
   ))
   .add('Incident - Themed', (_, props) => (
     <IncidentOverlay
-      incident={{
-        ...props,
-        color: 'theme-default',
-      }}
+      incident={{ ...props, color: 'theme-default' }}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(
@@ -58,10 +54,7 @@ storiesOf('News/Overlays', module)
   ))
   .add('Incident - Grey', (_, props) => (
     <IncidentOverlay
-      incident={{
-        ...props,
-        color: 'grey',
-      }}
+      incident={{ ...props, color: 'grey' }}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(

@@ -1,5 +1,5 @@
-// @flow
 import { BrowserWindow } from 'electron';
+
 /* eslint import/no-unresolved: "off" */
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
@@ -35,7 +35,7 @@ const getDiskCheckReport = async (
     diskTotalSpaceRaw: 0,
     isError: false,
   };
-
+  // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   return Promise.race([
     // Disk space check promise
     new Promise((resolve) => {
@@ -59,8 +59,7 @@ const getDiskCheckReport = async (
           );
           resolve({ ...initialReport, isError: true });
         });
-    }),
-    // Timeout promise
+    }), // Timeout promise
     new Promise((resolve) => {
       setTimeout(() => {
         resolve({ ...initialReport, isError: true });
@@ -72,9 +71,10 @@ const getDiskCheckReport = async (
 export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode
-): Function => {
+): ((...args: Array<any>) => any) => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
+
   let isNotEnoughDiskSpace = false; // Default check state
 
   const handleCheckDiskSpace = async (
@@ -82,10 +82,10 @@ export const handleDiskSpace = (
     forceDiskSpaceRequired?: number
   ): Promise<CheckDiskSpaceResponse> => {
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
-
     const response = await getDiskCheckReport(stateDirectoryPath);
 
     if (response.isError) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway'
       );
@@ -112,6 +112,7 @@ export const handleDiskSpace = (
           response.diskSpaceAvailableRaw >= diskSpaceRequired * 2
             ? DISK_SPACE_CHECK_LONG_INTERVAL
             : DISK_SPACE_CHECK_MEDIUM_INTERVAL;
+
         if (isNotEnoughDiskSpace) {
           // State change: transitioning from not-enough to enough disk space
           setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
@@ -126,6 +127,7 @@ export const handleDiskSpace = (
           setDiskSpaceIntervalChecking(newDiskSpaceCheckIntervalLength);
         }
       }
+
       response.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
       response.diskSpaceRequired = prettysize(diskSpaceRequired);
       response.diskSpaceMissing = prettysize(diskSpaceMissing);
@@ -137,32 +139,36 @@ export const handleDiskSpace = (
       isNotEnoughDiskSpace &&
       cardanoNode.state !== CardanoNodeStates.STOPPING &&
       cardanoNode.state !== CardanoNodeStates.STOPPED;
-
     const CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME =
       !isNotEnoughDiskSpace &&
       cardanoNode.state === CardanoNodeStates.STOPPED &&
       cardanoNode._startupTries === 0;
-
     const CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE =
       !isNotEnoughDiskSpace &&
       cardanoNode.state !== CardanoNodeStates.STOPPED &&
       cardanoNode.state !== CardanoNodeStates.STOPPING &&
       hadNotEnoughSpaceLeft;
+
     try {
       switch (true) {
         case NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED:
           try {
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
             await cardanoNode.stop();
           } catch (error) {
             logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
           }
+
           break;
+
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
           await cardanoNode.start();
           break;
+
         case CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE:
           try {
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info(
               '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
             );
@@ -175,13 +181,16 @@ export const handleDiskSpace = (
               error
             );
           }
+
           break;
+
         default:
       }
     } catch (error) {
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
       resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
+
     await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
     return response;
   };
@@ -195,7 +204,7 @@ export const handleDiskSpace = (
     }
   };
 
-  let hadNotEnoughSpaceLeft: boolean = false;
+  let hadNotEnoughSpaceLeft = false;
 
   const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
@@ -208,12 +217,10 @@ export const handleDiskSpace = (
 
   // Start default interval
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
-
   getDiskSpaceStatusChannel.onReceive(async () => {
     const diskReport = await getDiskCheckReport(stateDirectoryPath);
     await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
     return diskReport;
   });
-
   return handleCheckDiskSpace;
 };

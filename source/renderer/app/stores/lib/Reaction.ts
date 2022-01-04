@@ -1,4 +1,3 @@
-// @flow
 import { autorun } from 'mobx';
 
 export default class Reaction {

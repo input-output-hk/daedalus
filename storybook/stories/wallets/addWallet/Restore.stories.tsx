@@ -1,10 +1,8 @@
-// @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../../source/renderer/app/config/cryptoConfig';
-
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import {
@@ -13,7 +11,6 @@ import {
   WALLET_YOROI_KINDS,
   WALLET_HARDWARE_KINDS,
 } from '../../../../source/renderer/app/config/walletRestoreConfig';
-
 // Screens
 import WalletTypeDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog';
 import MnemonicsDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog';
@@ -21,15 +18,17 @@ import ConfigurationDialog from '../../../../source/renderer/app/components/wall
 import SuccessDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/SuccessDialog';
 
 type Props = {
-  locale: string,
+  locale: string;
 };
-
 storiesOf('Wallets/Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Restore - Step 1', () => {
     const walletKindSelect = select(
       'Wallet Kind',
-      { '-': null, ...WALLET_KINDS },
+      {
+        '-': null,
+        ...WALLET_KINDS,
+      },
       null
     );
     let selectItems;
@@ -48,7 +47,6 @@ storiesOf('Wallets/Add Wallet', module)
         },
         null
       );
-
     return (
       <WalletTypeDialog
         onContinue={action('onContinue')}
@@ -73,19 +71,19 @@ storiesOf('Wallets/Add Wallet', module)
     else if (walletKindSelect === WALLET_KINDS.HARDWARE)
       selectItems = WALLET_HARDWARE_KINDS;
     else selectItems = WALLET_DAEDALUS_KINDS;
-
     let walletKindSpecificSelect;
     if (walletKindSelect)
       walletKindSpecificSelect = select(
         `Wallet Kind - ${walletKindSelect || 'Daedalus'}`,
         selectItems,
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         Object.values(WALLET_DAEDALUS_KINDS)[0]
       );
-
     return (
       <MnemonicsDialog
         onContinue={action('onContinue')}
         onClose={action('onClose')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onSetWalletKind={action('onSetWalletKind')}
         onBack={action('onSetWalletKind')}
         onSetWalletMnemonics={action('onSetWalletMnemonics')}
@@ -128,12 +126,12 @@ storiesOf('Wallets/Add Wallet', module)
     else if (walletKindSelect === WALLET_KINDS.HARDWARE)
       selectItems = WALLET_HARDWARE_KINDS;
     else selectItems = WALLET_DAEDALUS_KINDS;
-
     let walletKindSpecificSelect;
     if (walletKindSelect)
       walletKindSpecificSelect = select(
         `Wallet Kind - ${walletKindSelect || 'Daedalus'}`,
         selectItems,
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         Object.values(WALLET_DAEDALUS_KINDS)[0]
       );
     return (

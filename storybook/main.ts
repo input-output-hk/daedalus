@@ -1,7 +1,9 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const path = require('path');
-const isCi = process.env.CI && process.env.CI !== '';
 
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'path'.
+const path = require('path');
+
+const isCi = process.env.CI && process.env.CI !== '';
 module.exports = {
   stories: ['../source/**/*.stories.js', './stories/index.js'],
   addons: [
@@ -25,7 +27,6 @@ module.exports = {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
     // You can change the configuration based on that.
     // 'PRODUCTION' is used when building the static version of storybook.
-
     // Make whatever fine-grained changes you need
     config.module.rules.push({
       test: /\.scss/,
@@ -53,17 +54,16 @@ module.exports = {
           options: {
             cacheCompression: false,
             cacheDirectory: true,
-							presets: [
-								'@babel/preset-env',
-								'@babel/preset-react',
-								'@babel/preset-typescript',
-							],
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript',
+            ],
             plugins: [require.resolve('react-refresh/babel')].filter(Boolean),
           },
         },
       ],
     });
-
     // Return the altered config
     return config;
   },

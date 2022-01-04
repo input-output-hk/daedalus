@@ -1,11 +1,12 @@
-// @flow
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import globalMessages from '../../../i18n/global-messages';
 import BorderedBox from '../../widgets/BorderedBox';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSummaryHeader.scss' or... Remove this comment to see the full error message
 import styles from './WalletSummaryHeader.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
@@ -24,18 +25,17 @@ const messages = defineMessages({
       '"Number of pending transactions" label on Wallet summary header page',
   },
 });
-
 type Props = {
-  wallet: Wallet,
-  numberOfRecentTransactions: number,
-  numberOfTransactions?: number,
-  numberOfPendingTransactions: number,
-  isLoadingTransactions: boolean,
-  currency?: Node,
+  wallet: Wallet;
+  numberOfRecentTransactions: number;
+  numberOfTransactions?: number;
+  numberOfPendingTransactions: number;
+  isLoadingTransactions: boolean;
+  currency?: Node;
 };
 
 @observer
-export default class WalletSummaryHeader extends Component<Props> {
+class WalletSummaryHeader extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -56,21 +56,15 @@ export default class WalletSummaryHeader extends Component<Props> {
       styles.numberOfTransactions,
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
     ]);
-
     const numberOfPendingTransactionsStyles = classnames([
       styles.numberOfPendingTransactions,
     ]);
-
     const walletNameStyles = classnames([styles.walletName]);
-
     const walletAmountStyles = classnames([styles.walletAmount]);
-
     const isRestoreActive = wallet.isRestoring;
-
     const walletAmount = isRestoreActive
       ? '-'
       : formattedWalletAmount(wallet.amount, false);
-
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -78,6 +72,7 @@ export default class WalletSummaryHeader extends Component<Props> {
             <div>
               <div className={walletNameStyles}>{wallet.name}</div>
               <div className={walletAmountStyles}>
+                {/* @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message */}
                 <DiscreetValue>{walletAmount}</DiscreetValue>
                 <span className={styles.currencyCode}>
                   {intl.formatMessage(globalMessages.adaUnit)}
@@ -111,3 +106,5 @@ export default class WalletSummaryHeader extends Component<Props> {
     );
   }
 }
+
+export default WalletSummaryHeader;

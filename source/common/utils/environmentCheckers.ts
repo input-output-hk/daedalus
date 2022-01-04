@@ -1,4 +1,3 @@
-// @flow
 import { upperFirst } from 'lodash';
 import {
   ALONZO_PURPLE,
@@ -20,18 +19,19 @@ import {
 /* ==================================================================
 =                    Static checks and generators                   =
 ================================================================== */
-
-export const evaluateNetwork = (network: ?string) => {
+export const evaluateNetwork = (network: string | null | undefined) => {
   let currentNetwork = network || DEVELOPMENT;
+
   if (network === MAINNET_FLIGHT) {
     currentNetwork = MAINNET;
   }
+
   if (network === 'alonzo-purple') {
     currentNetwork = ALONZO_PURPLE;
   }
+
   return currentNetwork;
 };
-
 export const getBuildLabel = (
   build: string,
   network: string,
@@ -45,7 +45,6 @@ export const getBuildLabel = (
     buildLabel += ` ${upperFirst(currentNodeEnv)}`;
   return buildLabel;
 };
-
 export const checkIsDev = (currentNodeEnv: string) =>
   currentNodeEnv === DEVELOPMENT;
 export const checkIsTest = (currentNodeEnv: string) => currentNodeEnv === TEST;

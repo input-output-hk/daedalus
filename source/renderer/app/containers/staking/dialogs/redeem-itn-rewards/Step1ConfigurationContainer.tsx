@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import BigNumber from 'bignumber.js';
@@ -14,7 +13,6 @@ import Wallet from '../../../../domains/Wallet';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
-
 const messages = defineMessages({
   errorMinRewardFunds: {
     id: 'staking.redeemItnRewards.step1.errorMessage',
@@ -34,9 +32,8 @@ const messages = defineMessages({
 
 @inject('stores', 'actions')
 @observer
-export default class Step1ConfigurationContainer extends Component<Props> {
+class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
-
   onWalletAcceptable = (walletAmount?: BigNumber) => {
     const minRewardsFunds = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
@@ -48,23 +45,18 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     const { actions, stores, onBack, onClose } = this.props;
     const { app, staking, wallets } = stores;
     const { allWallets } = wallets;
-    const {
-      redeemWallet,
-      isCalculatingReedemFees,
-      redeemRecoveryPhrase,
-    } = staking;
+    const { redeemWallet, isCalculatingReedemFees, redeemRecoveryPhrase } =
+      staking;
     const { openExternalLink } = app;
-    const {
-      onConfigurationContinue,
-      onCalculateRedeemWalletFees,
-    } = actions.staking;
-
+    const { onConfigurationContinue, onCalculateRedeemWalletFees } =
+      actions.staking;
     const selectedWalletId = get(redeemWallet, 'id', null);
-    const selectedWallet: ?Wallet = allWallets.find(
+    const selectedWallet: Wallet | null | undefined = allWallets.find(
       (current: Wallet) => current && current.id === selectedWalletId
     );
     const { amount, isRestoring } = selectedWallet || {};
     let errorMessage = null;
+
     if (selectedWallet && !this.onWalletAcceptable(amount)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
@@ -77,11 +69,15 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         error={errorMessage}
         isCalculatingReedemFees={isCalculatingReedemFees}
         mnemonicValidator={isValidMnemonic}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onBack={onBack}
         onClose={onClose}
         onContinue={onConfigurationContinue.trigger}
         onSelectWallet={(walletId, recoveryPhrase) =>
-          onCalculateRedeemWalletFees.trigger({ walletId, recoveryPhrase })
+          onCalculateRedeemWalletFees.trigger({
+            walletId,
+            recoveryPhrase,
+          })
         }
         suggestedMnemonics={validWords}
         wallet={redeemWallet}
@@ -92,3 +88,5 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     );
   }
 }
+
+export default Step1ConfigurationContainer;

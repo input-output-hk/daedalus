@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
@@ -13,8 +12,11 @@ type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class Root extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+class Root extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { stores, actions, children } = this.props;
@@ -42,13 +44,11 @@ export default class Root extends Component<Props> {
       isSystemTimeCorrect,
     } = networkStatus;
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
-
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
       (isStakingPage || isSettingsPage || isVotingPage) &&
       hasLoadedWallets &&
       isConnected;
-
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
     // for all the screens except of the "Network status" screen.
@@ -96,3 +96,5 @@ export default class Root extends Component<Props> {
     return children;
   }
 }
+
+export default Root;

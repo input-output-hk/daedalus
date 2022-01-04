@@ -1,4 +1,3 @@
-// @flow
 import { action, computed, observable, runInAction } from 'mobx';
 import moment from 'moment';
 import { get, includes, isEqual } from 'lodash';
@@ -40,20 +39,17 @@ import type {
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
-
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
   CONNECTING: 0,
   SYNCING: 1,
   RUNNING: 2,
 };
-
 const NODE_STOPPING_STATES = [
   CardanoNodeStates.EXITING,
   CardanoNodeStates.STOPPING,
   CardanoNodeStates.UPDATING,
 ];
-
 const NODE_STOPPED_STATES = [
   CardanoNodeStates.CRASHED,
   CardanoNodeStates.ERRORED,
@@ -62,45 +58,78 @@ const NODE_STOPPED_STATES = [
   CardanoNodeStates.UNRECOVERABLE,
 ];
 // END CONSTANTS ----------------------------
-
+// @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
 const { isFlight } = global;
-
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
-  _networkStatusPollingInterval: ?IntervalID = null;
-  _networkClockPollingInterval: ?IntervalID = null;
-  _networkParametersPollingInterval: ?IntervalID = null;
-
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  _networkStatusPollingInterval: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  _networkClockPollingInterval: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
+  _networkParametersPollingInterval: IntervalID | null | undefined = null;
   // Initialize store observables
-
   // Internal Node states
-  @observable tlsConfig: ?TlsConfig = null;
-  @observable cardanoNodeState: CardanoNodeState = 'unknown';
-  @observable cardanoNodePID: number = 0;
-  @observable cardanoWalletPID: number = 0;
-  @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
-  @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
-  @observable isNodeInSync = false; // Is 'true' if syncing & local/network blocks diff within limit
-  @observable isNodeStopping = false; // Is 'true' if node is in `NODE_STOPPING_STATES` states
-  @observable isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
-  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
-  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSplashShown = isFlight; // Visibility of splash screen
-  @observable isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
+  @observable
+  tlsConfig: TlsConfig | null | undefined = null;
+  @observable
+  cardanoNodeState: CardanoNodeState = 'unknown';
+  @observable
+  cardanoNodePID = 0;
+  @observable
+  cardanoWalletPID = 0;
+  @observable
+  isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
 
-  @observable hasBeenConnected = false;
-  @observable syncProgress = null;
-  @observable localTip: ?TipInfo = null;
-  @observable networkTip: ?TipInfo = null;
-  @observable nextEpoch: ?NextEpoch = null;
-  @observable futureEpoch: ?FutureEpoch = null;
-  @observable lastSyncProgressChangeTimestamp = 0; // milliseconds
-  @observable localTimeDifference: ?number = 0; // microseconds
-  @observable decentralizationProgress: number = 0; // percentage
-  @observable desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
+  @observable
+  isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
 
+  @observable
+  isNodeInSync = false; // Is 'true' if syncing & local/network blocks diff within limit
+
+  @observable
+  isNodeStopping = false; // Is 'true' if node is in `NODE_STOPPING_STATES` states
+
+  @observable
+  isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
+
+  @observable
+  isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+
+  @observable
+  isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
+
+  @observable
+  isSplashShown = isFlight; // Visibility of splash screen
+
+  @observable
+  isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
+
+  @observable
+  hasBeenConnected = false;
+  @observable
+  syncProgress = null;
+  @observable
+  localTip: TipInfo | null | undefined = null;
+  @observable
+  networkTip: TipInfo | null | undefined = null;
+  @observable
+  nextEpoch: NextEpoch | null | undefined = null;
+  @observable
+  futureEpoch: FutureEpoch | null | undefined = null;
+  @observable
+  lastSyncProgressChangeTimestamp = 0; // milliseconds
+
+  @observable
+  localTimeDifference: number | null | undefined = 0; // microseconds
+
+  @observable
+  decentralizationProgress = 0; // percentage
+
+  @observable
+  desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -113,32 +142,47 @@ export default class NetworkStatusStore extends Store {
   getNetworkParametersRequest: Request<GetNetworkParametersResponse> = new Request(
     this.api.ada.getNetworkParameters
   );
+  @observable
+  isNotEnoughDiskSpace = false;
+  @observable
+  diskSpaceRequired = '';
+  @observable
+  diskSpaceMissing = '';
+  @observable
+  diskSpaceRecommended = '';
+  @observable
+  diskSpaceAvailable = '';
+  @observable
+  isTlsCertInvalid = false;
+  @observable
+  stateDirectoryPath = '';
+  @observable
+  isShelleyActivated = false;
+  @observable
+  isShelleyPending = false;
+  @observable
+  isAlonzoActivated = false;
+  @observable
+  shelleyActivationTime = '';
+  @observable
+  // @ts-ignore ts-migrate(2300) FIXME: Duplicate identifier 'isAlonzoActivated'.
+  isAlonzoActivated = false;
+  @observable
+  isAlonzoPending = false;
+  @observable
+  alonzoActivationTime = '';
+  @observable
+  verificationProgress = 0;
+  @observable
+  epochLength: number | null | undefined = null; // unit: 1 slot
 
-  @observable isNotEnoughDiskSpace: boolean = false;
-  @observable diskSpaceRequired: string = '';
-  @observable diskSpaceMissing: string = '';
-  @observable diskSpaceRecommended: string = '';
-  @observable diskSpaceAvailable: string = '';
-  @observable isTlsCertInvalid: boolean = false;
-  @observable stateDirectoryPath: string = '';
-  @observable isShelleyActivated: boolean = false;
-  @observable isShelleyPending: boolean = false;
-  @observable isAlonzoActivated: boolean = false;
-  @observable shelleyActivationTime: string = '';
-  @observable isAlonzoActivated: boolean = false;
-  @observable isAlonzoPending: boolean = false;
-  @observable alonzoActivationTime: string = '';
-  @observable verificationProgress: number = 0;
-
-  @observable epochLength: ?number = null; // unit: 1 slot
-  @observable slotLength: ?number = null; // unit: 1 second
+  @observable
+  slotLength: number | null | undefined = null; // unit: 1 second
 
   // DEFINE STORE METHODS
   setup() {
     // ========== IPC CHANNELS =========== //
-
     const { networkStatus: networkStatusActions } = this.actions;
-
     networkStatusActions.restartNode.listen(this._restartNode);
     networkStatusActions.toggleSplash.listen(this._toggleSplash);
     networkStatusActions.forceCheckNetworkClock.listen(
@@ -154,10 +198,8 @@ export default class NetworkStatusStore extends Store {
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
     cardanoTlsConfigChannel.onReceive(this._updateTlsConfig);
-
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
-
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([
       this._updateNetworkStatusWhenConnected,
@@ -167,7 +209,9 @@ export default class NetworkStatusStore extends Store {
 
     // Setup polling interval
     this._setNetworkStatusPollingInterval();
+
     this._setNetworkClockPollingInterval();
+
     this._setNetworkParametersPollingInterval();
 
     // Setup disk space checks
@@ -181,7 +225,9 @@ export default class NetworkStatusStore extends Store {
 
   _restartNode = async () => {
     this._resetSystemTime();
+
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
@@ -196,32 +242,38 @@ export default class NetworkStatusStore extends Store {
 
     // Teardown polling intervals
     this._clearNetworkStatusPollingInterval();
+
     this._clearNetworkClockPollingInterval();
+
     this._clearNetworkParametersPollingInterval();
   }
 
   // ================= REACTIONS ==================
-
   _updateNetworkStatusWhenDisconnected = () => {
     if (!this.isConnected) {
       this._updateNetworkStatus();
+
       if (!this._networkClockPollingInterval) {
         this._setNetworkClockPollingInterval();
       }
     }
   };
-
   _updateNetworkStatusWhenConnected = () => {
     if (this.isConnected) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Connected');
+
       this._updateNetworkStatus();
+
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.walletMigration.startMigration.trigger();
     }
   };
-
   _updateNodeStatus = async () => {
     if (this.environment.isTest && !this.isConnected) return;
+
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
@@ -232,7 +284,6 @@ export default class NetworkStatusStore extends Store {
   };
 
   // =============== PRIVATE ===============
-
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
   }
@@ -243,11 +294,12 @@ export default class NetworkStatusStore extends Store {
 
   _getStateDirectoryPath = async () => {
     this._onReceiveStateDirectoryPath(
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
       await getStateDirectoryPathChannel.request()
     );
   };
-
   _requestCardanoState = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
     logger.info(`NetworkStatusStore: handling node state <${state}>`, {
@@ -255,10 +307,11 @@ export default class NetworkStatusStore extends Store {
     });
     await this._handleCardanoNodeStateChange(state);
   };
-
   _requestCardanoStatus = async () => {
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: requesting node status');
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
       const status = await getCachedCardanoStatusChannel.request();
       logger.info('NetworkStatusStore: received cached node status', {
         status,
@@ -271,9 +324,9 @@ export default class NetworkStatusStore extends Store {
       });
     }
   };
-
   _requestTlsConfig = async () => {
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         'NetworkStatusStore: requesting tls config from main process'
       );
@@ -285,45 +338,53 @@ export default class NetworkStatusStore extends Store {
       });
     }
   };
-
-  // $FlowFixMe
-  _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
+  // @ts-ignore
+  _updateTlsConfig = (config: TlsConfig | null | undefined): Promise<void> => {
     if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     runInAction('updating tlsConfig', () => {
       this.tlsConfig = config;
     });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
-
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
     logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
       state,
     });
     const wasConnected = this.isConnected;
+
     switch (state) {
       case CardanoNodeStates.STARTING:
         break;
+
       case CardanoNodeStates.RUNNING:
         await this._requestTlsConfig();
         await this._requestCardanoStatus();
         break;
+
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
         runInAction('updating tlsConfig', () => {
           this.tlsConfig = null;
         });
+
         this._setDisconnected(wasConnected);
+
         this.stores.app._closeActiveDialog();
+
         break;
+
       default:
         this._setDisconnected(wasConnected);
     }
+
     runInAction('setting cardanoNodeState', () => {
       this.cardanoNodeState = state;
       this.isNodeStopping = includes(NODE_STOPPING_STATES, state);
@@ -331,8 +392,9 @@ export default class NetworkStatusStore extends Store {
     });
     return Promise.resolve();
   };
-
-  _extractNodeStatus = (from: Object & CardanoStatus): CardanoStatus => {
+  _extractNodeStatus = (
+    from: Record<string, any> & CardanoStatus
+  ): CardanoStatus => {
     const {
       isNodeResponding,
       isNodeSyncing,
@@ -341,7 +403,6 @@ export default class NetworkStatusStore extends Store {
       cardanoNodePID,
       cardanoWalletPID,
     } = from;
-
     return {
       isNodeResponding,
       isNodeSyncing,
@@ -351,61 +412,62 @@ export default class NetworkStatusStore extends Store {
       cardanoWalletPID,
     };
   };
-
   // DEFINE ACTIONS
-
-  @action _setNetworkStatusPollingInterval = () => {
+  @action
+  _setNetworkStatusPollingInterval = () => {
     this._networkStatusPollingInterval = setInterval(
       this._updateNetworkStatus,
       NETWORK_STATUS_POLL_INTERVAL
     );
   };
-
-  @action _setNetworkClockPollingInterval = () => {
+  @action
+  _setNetworkClockPollingInterval = () => {
     this._networkClockPollingInterval = setInterval(
       this._updateNetworkClock,
       NETWORK_CLOCK_POLL_INTERVAL
     );
   };
-
-  @action _setNetworkParametersPollingInterval = () => {
+  @action
+  _setNetworkParametersPollingInterval = () => {
     this._networkParametersPollingInterval = setInterval(
       this._getNetworkParameters,
       DECENTRALIZATION_LEVEL_POLLING_INTERVAL
     );
   };
-
-  @action _clearNetworkStatusPollingInterval = () => {
+  @action
+  _clearNetworkStatusPollingInterval = () => {
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
       this._networkStatusPollingInterval = null;
     }
   };
-
-  @action _clearNetworkClockPollingInterval = () => {
+  @action
+  _clearNetworkClockPollingInterval = () => {
     if (this._networkClockPollingInterval) {
       clearInterval(this._networkClockPollingInterval);
       this._networkClockPollingInterval = null;
     }
   };
-
-  @action _clearNetworkParametersPollingInterval = () => {
+  @action
+  _clearNetworkParametersPollingInterval = () => {
     if (this._networkParametersPollingInterval) {
       clearInterval(this._networkParametersPollingInterval);
       this._networkParametersPollingInterval = null;
     }
   };
-
-  @action ignoreSystemTimeChecks = (flag: boolean = true) => {
+  @action
+  ignoreSystemTimeChecks = (flag = true) => {
     this.isSystemTimeIgnored = flag;
   };
-
-  @action _forceCheckNetworkClock = () => {
+  @action
+  _forceCheckNetworkClock = () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: Force checking network clock...');
+
     this._updateNetworkClock(true);
   };
-
-  @action _updateNetworkClock = async (isForceCheck: boolean = false) => {
+  @action
+  _updateNetworkClock = async (isForceCheck = false) => {
     // Skip checking network clock if we are not connected or system time is ignored
     if (!this.isNodeResponding || (this.isSystemTimeIgnored && !isForceCheck))
       return;
@@ -414,6 +476,7 @@ export default class NetworkStatusStore extends Store {
     // check in which case we need to wait for previous request to be executed
     if (this.getNetworkClockRequest.isExecuting) {
       if (isForceCheck) {
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.getNetworkClockRequest;
       } else {
         return;
@@ -423,10 +486,12 @@ export default class NetworkStatusStore extends Store {
     logger.info('NetworkStatusStore: Checking network clock...', {
       isForceCheck,
     });
+
     try {
-      const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute(
-        { isForceCheck }
-      ).promise;
+      const networkClock: GetNetworkClockResponse =
+        await this.getNetworkClockRequest.execute({
+          isForceCheck,
+        }).promise;
       // System time is correct if local time difference is below allowed threshold
       runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
         // Update localTimeDifference only in case NTP check status is not still pending
@@ -435,6 +500,7 @@ export default class NetworkStatusStore extends Store {
           this.isNodeTimeCorrect =
             this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
             Math.abs(this.localTimeDifference) <= ALLOWED_TIME_DIFFERENCE;
+
           this._clearNetworkClockPollingInterval();
         }
       });
@@ -446,21 +512,21 @@ export default class NetworkStatusStore extends Store {
       });
     } catch (error) {} // eslint-disable-line
   };
-
-  @action _updateNetworkStatus = async () => {
+  @action
+  _updateNetworkStatus = async () => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
     if (!this.tlsConfig) return;
-
     // Record connection status before running network status call
     const wasConnected = this.isConnected;
 
     try {
-      const networkStatus: GetNetworkInfoResponse = await this.getNetworkInfoRequest.execute()
-        .promise;
+      const networkStatus: GetNetworkInfoResponse =
+        await this.getNetworkInfoRequest.execute().promise;
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug(
           'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
         );
@@ -486,7 +552,6 @@ export default class NetworkStatusStore extends Store {
       runInAction('update isNodeResponding', () => {
         this.isNodeResponding = true;
       });
-
       runInAction(
         'update localTip, networkTip, nextEpoch and futureEpoch',
         () => {
@@ -500,7 +565,9 @@ export default class NetworkStatusStore extends Store {
       if (this._networkStatus === NETWORK_STATUS.CONNECTING) {
         // We are connected for the first time, move on to syncing stage
         this._networkStatus = NETWORK_STATUS.SYNCING;
+
         const connectingTimeDelta = this._getStartupTimeDelta();
+
         logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
           connectingTimeDelta,
         });
@@ -511,14 +578,13 @@ export default class NetworkStatusStore extends Store {
       runInAction('update syncProgress', () => {
         this.syncProgress = syncProgress;
       });
-
       runInAction('update isNodeInSync', () => {
         this.isNodeInSync = this.syncProgress === 100;
       });
-
       runInAction('update isSyncProgressStalling', () => {
         // Check if sync progress is stalling
         const hasSyncProgressChanged = this.syncProgress !== lastSyncProgress;
+
         if (
           this.isNodeInSync || // Update last sync progress change timestamp if node is in sync
           hasSyncProgressChanged || // Sync progress change detected
@@ -528,13 +594,13 @@ export default class NetworkStatusStore extends Store {
         ) {
           this.lastSyncProgressChangeTimestamp = Date.now(); // Record last sync progress change timestamp
         }
+
         const lastSyncProgressChangeStall = moment(Date.now()).diff(
           moment(this.lastSyncProgressChangeTimestamp)
         );
         this.isSyncProgressStalling =
           lastSyncProgressChangeStall > MAX_ALLOWED_STALL_DURATION;
       });
-
       runInAction('update isNodeSyncing', () => {
         this.isNodeSyncing = !this.isSyncProgressStalling;
       });
@@ -542,8 +608,11 @@ export default class NetworkStatusStore extends Store {
       if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
         // We are synced for the first time, move on to running stage
         this._networkStatus = NETWORK_STATUS.RUNNING;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.networkStatus.isSyncedAndReady.trigger();
+
         const syncingTimeDelta = this._getStartupTimeDelta();
+
         logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
           syncingTimeDelta,
         });
@@ -556,12 +625,16 @@ export default class NetworkStatusStore extends Store {
               this.hasBeenConnected = true;
             });
           }
+
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
           // Make sure all wallets data is fully reloaded after the connection is re-established
           this.stores.wallets.resetWalletsData();
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.debug('NetworkStatusStore: Connection Restored');
         }
+
         if (this.isTlsCertInvalid) {
           runInAction('set isTlsCertInvalid = false', () => {
             this.isTlsCertInvalid = false;
@@ -576,6 +649,7 @@ export default class NetworkStatusStore extends Store {
     } catch (error) {
       // Node is not responding, switch to disconnected state
       this._setDisconnected(wasConnected);
+
       if (error instanceof TlsCertificateNotValidError) {
         runInAction('set isTlsCertInvalid = true', () => {
           this.isTlsCertInvalid = true;
@@ -583,29 +657,33 @@ export default class NetworkStatusStore extends Store {
       }
     }
   };
-
-  @action _setDisconnected = (wasConnected: boolean) => {
+  @action
+  _setDisconnected = (wasConnected: boolean) => {
     this.isNodeResponding = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
+
     this._resetSystemTime();
+
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => {
           this.hasBeenConnected = true;
         });
       }
+
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }
   };
-
-  @action _getNetworkParameters = async () => {
+  @action
+  _getNetworkParameters = async () => {
     // Skip checking network parameters if we are not connected
     if (!this.isNodeResponding) return;
 
     try {
-      const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
-        .promise;
+      const networkParameters: GetNetworkParametersResponse =
+        await this.getNetworkParametersRequest.execute().promise;
       let {
         isShelleyActivated,
         isShelleyPending,
@@ -624,8 +702,8 @@ export default class NetworkStatusStore extends Store {
 
       if (eras) {
         const currentTimeStamp = new Date().getTime();
-
         shelleyActivationTime = get(eras, 'shelley.epoch_start_time', '');
+
         if (shelleyActivationTime !== '') {
           const shelleyActivationTimeStamp = new Date(
             shelleyActivationTime
@@ -635,6 +713,7 @@ export default class NetworkStatusStore extends Store {
         }
 
         alonzoActivationTime = get(eras, 'alonzo.epoch_start_time', '');
+
         if (alonzoActivationTime !== '') {
           const alonzoActivationTimeStamp = new Date(
             alonzoActivationTime
@@ -653,12 +732,10 @@ export default class NetworkStatusStore extends Store {
         this.isAlonzoPending = isAlonzoPending;
         this.alonzoActivationTime = alonzoActivationTime;
       });
-
       runInAction('Update Desired Pool Number', () => {
         this.desiredPoolNumber =
           desiredPoolNumber || INITIAL_DESIRED_POOLS_NUMBER;
       });
-
       runInAction('Update Epoch Config', () => {
         this.slotLength = slotLength.quantity;
         this.epochLength = epochLength.quantity;
@@ -675,7 +752,8 @@ export default class NetworkStatusStore extends Store {
     openLocalDirectoryChannel.send(path);
   }
 
-  @action _onCheckDiskSpace = ({
+  @action
+  _onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
     diskSpaceRequired,
     diskSpaceMissing,
@@ -699,24 +777,23 @@ export default class NetworkStatusStore extends Store {
 
     return Promise.resolve();
   };
-
-  @action _onCheckVerificationProgress = (
+  @action
+  _onCheckVerificationProgress = (
     verificationProgress: number
   ): Promise<void> => {
     this.verificationProgress = verificationProgress;
     return Promise.resolve();
   };
-
-  @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
+  @action
+  _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
   };
-
-  @action _toggleSplash = () => {
+  @action
+  _toggleSplash = () => {
     runInAction('Toggle splash visibility', () => {
       this.isSplashShown = !this.isSplashShown;
     });
   };
-
   _resetSystemTime = () => {
     runInAction('Reset system time', () => {
       this.getNetworkClockRequest.reset();
@@ -726,28 +803,34 @@ export default class NetworkStatusStore extends Store {
     });
   };
 
-  @computed get isConnected(): boolean {
+  @computed
+  get isConnected(): boolean {
     return this.isNodeResponding && this.isNodeSyncing;
   }
 
-  @computed get isSystemTimeCorrect(): boolean {
+  @computed
+  get isSystemTimeCorrect(): boolean {
     return this.isNodeTimeCorrect || this.isSystemTimeIgnored;
   }
 
-  @computed get isSynced(): boolean {
+  @computed
+  get isSynced(): boolean {
     return this.isConnected && this.isNodeInSync && this.isSystemTimeCorrect;
   }
 
-  @computed get syncPercentage(): number {
+  @computed
+  get syncPercentage(): number {
     return this.syncProgress || 0;
   }
 
-  @computed get absoluteSlotNumber(): number {
+  @computed
+  get absoluteSlotNumber(): number {
     const { networkTip } = this;
     return get(networkTip, 'absoluteSlotNumber', 0);
   }
 
-  @computed get isEpochsInfoAvailable(): boolean {
+  @computed
+  get isEpochsInfoAvailable(): boolean {
     const { networkTip, nextEpoch } = this;
     return (
       get(nextEpoch, 'epochNumber', null) !== null &&
@@ -757,7 +840,8 @@ export default class NetworkStatusStore extends Store {
     );
   }
 
-  @computed get isVerifyingBlockchain(): boolean {
+  @computed
+  get isVerifyingBlockchain(): boolean {
     return !this.isConnected && this.verificationProgress < 100;
   }
 }

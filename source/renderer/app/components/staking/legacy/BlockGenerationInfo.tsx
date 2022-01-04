@@ -1,10 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './BlockGenerationInfo.scss' or... Remove this comment to see the full error message
 import styles from './BlockGenerationInfo.scss';
 
 @observer
-export default class BlockGenerationInfo extends Component<any> {
+class BlockGenerationInfo extends Component<any> {
   render() {
     return (
       <div className={styles.component}>
@@ -20,3 +20,5 @@ export default class BlockGenerationInfo extends Component<any> {
     );
   }
 }
+
+export default BlockGenerationInfo;

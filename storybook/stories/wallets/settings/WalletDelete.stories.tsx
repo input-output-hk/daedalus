@@ -1,12 +1,9 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-
 // Helpers
 import { defineMessages } from 'react-intl';
 import StoryDecorator from '../../_support/StoryDecorator';
-
 import type { WalletSettingRemoveMessages } from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 // Screens
 import WalletSettingsActionConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
@@ -42,9 +39,7 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Instruction for recovery word on delete wallet dialog',
   },
 });
-
 const decorators = [(story) => <StoryDecorator>{story()}</StoryDecorator>];
-
 storiesOf('Wallets/Settings', module)
   .add(
     'Delete - Countdown',
@@ -65,7 +60,9 @@ storiesOf('Wallets/Settings', module)
         />
       </div>
     ),
-    { decorators }
+    {
+      decorators,
+    }
   )
   .add(
     'Delete - Accepted & filled incorrectly',
@@ -86,7 +83,9 @@ storiesOf('Wallets/Settings', module)
         />
       </div>
     ),
-    { decorators }
+    {
+      decorators,
+    }
   )
   .add(
     'Delete - Accepted & filled correctly',
@@ -107,7 +106,9 @@ storiesOf('Wallets/Settings', module)
         />
       </div>
     ),
-    { decorators }
+    {
+      decorators,
+    }
   )
   .add(
     'Delete - Accepted, filled correctly & submitting',
@@ -128,5 +129,7 @@ storiesOf('Wallets/Settings', module)
         />
       </div>
     ),
-    { decorators }
+    {
+      decorators,
+    }
   );

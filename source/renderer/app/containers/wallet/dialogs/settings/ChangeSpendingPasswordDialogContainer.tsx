@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ChangeSpendingPasswordDialog from '../../../../components/wallet/settings/ChangeSpendingPasswordDialog';
@@ -6,13 +5,13 @@ import type { StoresMap } from '../../../../stores/index';
 import type { ActionsMap } from '../../../../actions/index';
 
 type Props = {
-  stores: any | StoresMap,
-  actions: any | ActionsMap,
+  stores: any | StoresMap;
+  actions: any | ActionsMap;
 };
 
 @inject('actions', 'stores')
 @observer
-export default class ChangeSpendingPasswordDialogContainer extends Component<Props> {
+class ChangeSpendingPasswordDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -26,19 +25,17 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Pro
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
     const { updateSpendingPasswordRequest } = walletSettings;
-
     if (!activeWallet)
       throw new Error(
         'Active wallet required for ChangeSpendingPasswordDialogContainer.'
       );
-
     return (
       <ChangeSpendingPasswordDialog
         isSpendingPasswordSet={activeWallet.hasPassword}
         currentPasswordValue={dialogData.currentPasswordValue}
         newPasswordValue={dialogData.newPasswordValue}
         repeatedPasswordValue={dialogData.repeatedPasswordValue}
-        onSave={(values: { oldPassword: string, newPassword: string }) => {
+        onSave={(values: { oldPassword: string; newPassword: string }) => {
           const { id: walletId, isLegacy } = activeWallet;
           const { oldPassword, newPassword } = values;
           actions.walletSettings.updateSpendingPassword.trigger({
@@ -53,7 +50,9 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Pro
           updateSpendingPasswordRequest.reset();
         }}
         onDataChange={(data) => {
-          updateDataForActiveDialog.trigger({ data });
+          updateDataForActiveDialog.trigger({
+            data,
+          });
         }}
         isSubmitting={updateSpendingPasswordRequest.isExecuting}
         error={updateSpendingPasswordRequest.error}
@@ -63,3 +62,5 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Pro
     );
   }
 }
+
+export default ChangeSpendingPasswordDialogContainer;

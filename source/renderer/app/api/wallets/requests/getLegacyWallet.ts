@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { LegacyAdaWallet } from '../types';
 import { request } from '../../utils/request';
@@ -6,7 +5,11 @@ import { getRawWalletId } from '../../utils';
 
 export const getLegacyWallet = (
   config: RequestConfig,
-  { walletId }: { walletId: string }
+  {
+    walletId,
+  }: {
+    walletId: string;
+  }
 ): Promise<LegacyAdaWallet> =>
   request({
     method: 'GET',

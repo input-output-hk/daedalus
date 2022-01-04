@@ -1,31 +1,29 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DonutRing.scss' or its corre... Remove this comment to see the full error message
 import styles from './DonutRing.scss';
 
 type Props = {
-  percentage: number,
-  sqSize: number,
-  strokeWidth: number,
-  showText?: boolean,
+  percentage: number;
+  sqSize: number;
+  strokeWidth: number;
+  showText?: boolean;
 };
 
 @observer
-export default class DonutRing extends Component<Props> {
+class DonutRing extends Component<Props> {
   static defaultProps = {
     showText: false,
   };
 
   render() {
     const { percentage, sqSize, strokeWidth, showText } = this.props;
-
     const invertedPercentage = 100 - percentage;
     const radius = (sqSize - strokeWidth) / 2;
     const viewBox = `0 0 ${sqSize} ${sqSize}`;
     const dashArray = radius * Math.PI * 2;
     const dashOffset = dashArray - (dashArray * invertedPercentage) / 100;
     const rotateDeg = -((invertedPercentage / 100) * 360 + 90);
-
     return (
       <div className={styles.component}>
         <svg width={sqSize} height={sqSize} viewBox={viewBox}>
@@ -64,3 +62,5 @@ export default class DonutRing extends Component<Props> {
     );
   }
 }
+
+export default DonutRing;

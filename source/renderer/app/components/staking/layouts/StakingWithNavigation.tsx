@@ -1,30 +1,29 @@
-// @flow
 import React, { Component, createRef } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { ElementRef, Node } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import StakingNavigation from '../navigation/StakingNavigation';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingWithNavigation.scss' ... Remove this comment to see the full error message
 import styles from './StakingWithNavigation.scss';
 
 type Props = {
-  children?: Node,
-  activeItem: string,
-  showInfoTab: boolean,
-  onNavItemClick: Function,
-  isActiveNavItem: Function,
+  children?: Node;
+  activeItem: string;
+  showInfoTab: boolean;
+  onNavItemClick: (...args: Array<any>) => any;
+  isActiveNavItem: (...args: Array<any>) => any;
 };
-
 type ContextValue = {
-  scrollElementRef: ?ElementRef<*>,
+  scrollElementRef: ElementRef<any> | null | undefined;
 };
-
 export const StakingPageScrollContext = React.createContext<ContextValue>({
   scrollElementRef: null,
 });
 
 @observer
-export default class StakingWithNavigation extends Component<Props> {
-  stakingPageRef = createRef<*>();
+class StakingWithNavigation extends Component<Props> {
+  stakingPageRef = createRef<any>();
 
   render() {
     const {
@@ -35,10 +34,11 @@ export default class StakingWithNavigation extends Component<Props> {
       showInfoTab,
     } = this.props;
     const componentStyles = classnames([styles.component, styles[activeItem]]);
-
     return (
       <StakingPageScrollContext.Provider
-        value={{ scrollElementRef: this.stakingPageRef }}
+        value={{
+          scrollElementRef: this.stakingPageRef,
+        }}
       >
         <div className={componentStyles}>
           <div className={styles.navigation}>
@@ -52,6 +52,7 @@ export default class StakingWithNavigation extends Component<Props> {
           <div
             className={styles.page}
             ref={(ref) => {
+              // @ts-ignore ts-migrate(2540) FIXME: Cannot assign to 'current' because it is a read-on... Remove this comment to see the full error message
               this.stakingPageRef.current = ref;
             }}
           >
@@ -62,3 +63,5 @@ export default class StakingWithNavigation extends Component<Props> {
     );
   }
 }
+
+export default StakingWithNavigation;

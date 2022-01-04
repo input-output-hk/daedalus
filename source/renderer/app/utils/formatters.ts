@@ -1,4 +1,3 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import {
@@ -18,50 +17,55 @@ import type { AssetMetadata } from '../api/assets/types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
-  withCurrency: boolean = true,
-  long: boolean = true,
-  currency: string = 'ADA'
+  withCurrency = true,
+  long = true,
+  currency = 'ADA'
 ): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
     : shortNumber(amount);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
   const { decimalSeparator } = BigNumber.config().FORMAT;
+
   if (!long && decimalSeparator !== '.') {
     // Only BigNumber.toFormat() method is applying correct separators.
     // Since this method is not used for condensed format (long = false)
     // the correct number format has to be applied manually.
     formattedAmount = formattedAmount.split('.').join(decimalSeparator);
   }
+
   if (withCurrency) {
     formattedAmount = `${formattedAmount} ${currency}`;
   }
+
   return formattedAmount.toString();
 };
-
 export const formattedWalletCurrencyAmount = (
   amount: BigNumber,
   currencyRate: number,
-  decimalDigits?: ?number,
-  currencyCode?: ?string
+  decimalDigits?: number | null | undefined,
+  currencyCode?: string | null | undefined
 ): string =>
   `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
     currencyCode || ''
   }`;
-
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
-  metadata?: ?AssetMetadata,
-  decimals: ?number,
+  metadata?: AssetMetadata | null | undefined,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
+  decimals: number | null | undefined,
   isShort?: boolean
 ): string => {
   const { ticker } = metadata || {};
   let formattedAmount = formattedTokenDecimals(amount, decimals);
+
   if (isShort) {
     if (formattedAmount.isGreaterThanOrEqualTo(1000)) {
       /*
        * Short formatting for >= 1000
        * E.G.: 1,000,000 prints '1M'
        */
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
       formattedAmount = shortNumber(formattedAmount);
     } else if (formattedAmount.isZero()) {
       return '0';
@@ -70,26 +74,32 @@ export const formattedTokenWalletAmount = (
        * Short formatting for < 0.01
        * E.G.: 0.000009 prints '< 0.01'
        */
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
       formattedAmount = '< 0.01';
     } else {
       /*
        * Short formatting for < 1000 & > 0.01
        * E.G.: 0.999999 prints '0.99'
        */
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
       formattedAmount = toFixedWithoutRounding(formattedAmount.toFormat(), 2);
     }
   } else {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
     formattedAmount = formattedAmount.toFormat(decimals);
   }
+
   if (ticker) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
     formattedAmount += ` ${ticker}`;
   }
+
+  // @ts-ignore ts-migrate(2322) FIXME: Type 'BigNumber' is not assignable to type 'string... Remove this comment to see the full error message
   return formattedAmount;
 };
-
 export const formattedTokenDecimals = (
   amount: BigNumber,
-  decimals: ?number
+  decimals: number | null | undefined
 ): BigNumber => {
   const decimalPrecision = decimals || DEFAULT_DECIMAL_PRECISION;
   const divider = parseInt(
@@ -98,7 +108,6 @@ export const formattedTokenDecimals = (
   );
   return amount.dividedBy(divider);
 };
-
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03
 // M        Million             1.00E+06
@@ -108,6 +117,7 @@ export const formattedTokenDecimals = (
 export const shortNumber = (value: number | BigNumber): string => {
   const amount = new BigNumber(value);
   let formattedAmount = '';
+
   if (amount.isZero()) {
     formattedAmount = '0';
   } else if (amount.isLessThan(1000)) {
@@ -136,10 +146,12 @@ export const shortNumber = (value: number | BigNumber): string => {
       .dividedBy(1000000000000000)
       .decimalPlaces(1, BigNumber.ROUND_DOWN)}Q`;
   }
+
   return formattedAmount;
 };
-
-export const formattedAmountToNaturalUnits = (amount: ?string): string => {
+export const formattedAmountToNaturalUnits = (
+  amount: string | null | undefined
+): string => {
   if (!amount) {
     return '0';
   }
@@ -151,53 +163,51 @@ export const formattedAmountToNaturalUnits = (amount: ?string): string => {
     .replace(/^0+/, '');
   return cleanedAmount === '' ? '0' : cleanedAmount;
 };
-
 export const formattedAmountToBigNumber = (amount: string): BigNumber => {
   const cleanedAmount = amount.replace(/,/g, '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
-
 export const toFixedUserFormat = (number: number, digits: number): string => {
   // This is necessary, because the BigNumber version we use
   // can't receive numbers with more than 15 digits
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
   const parsedNumber = parseFloat(number).toFixed(digits);
   return new BigNumber(parsedNumber).toFormat(digits);
 };
-
 export const formattedAmountToLovelace = (amount: string): number =>
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
-
 export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
     .dividedBy(LOVELACES_PER_ADA)
     .toNumber();
-
 export const formattedBytesToSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes === 0) return 'n/a';
   const i = parseInt(
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
     Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
     10
   );
   if (i === 0) return `${bytes} ${sizes[i]})`;
   return `${formattedNumber(bytes / 1024 ** i, 1)} ${sizes[i]}`;
 };
-
 export type FormattedDownloadData = {
-  timeLeft: string,
-  downloaded: string,
-  total: string,
-  progress: number,
+  timeLeft: string;
+  downloaded: string;
+  total: string;
+  progress: number;
 };
-
 export const formattedDownloadData = (
-  downloadData?: ?DownloadData,
+  downloadData?: DownloadData | null | undefined,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   userLocale: Locale
 ): FormattedDownloadData => {
   let timeLeft = '';
   let downloaded = '';
   let total = '';
   let progress = 0;
+
   if (downloadData) {
     const {
       serverFileSize,
@@ -211,8 +221,10 @@ export const formattedDownloadData = (
     timeLeft = moment().add(secondsLeft, 'seconds').fromNow(true);
     downloaded = formattedBytesToSize(downloadSize);
     total = formattedBytesToSize(serverFileSize);
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
     progress = parseInt(rawProgress, 10);
   }
+
   return {
     timeLeft,
     downloaded,
@@ -220,7 +232,6 @@ export const formattedDownloadData = (
     progress,
   };
 };
-
 export const generateThousands = (value: number): number => {
   if (value <= 1000) {
     return Math.round(value);
@@ -228,7 +239,6 @@ export const generateThousands = (value: number): number => {
 
   return Math.round(value / 1000) * 1000;
 };
-
 export const formattedArrayBufferToHexString = (
   arrayBuffer: Uint8Array
 ): string => {
@@ -247,7 +257,6 @@ export const formattedArrayBufferToHexString = (
 
   return hexOctets.join('');
 };
-
 export const toFixedWithoutRounding = (
   num: number | string,
   fixed: number
@@ -256,10 +265,8 @@ export const toFixedWithoutRounding = (
   const results = num.toString().match(re);
   return results && results.length ? results[0].toString() : '0';
 };
-
 export const formattedNumber = (value: number | string, dp?: number): string =>
   new BigNumber(value).toFormat(dp);
-
 export const formattedCpuModel = (model: string): string => {
   const atCharPosition = model.indexOf('@');
   const speedSection = model.substring(atCharPosition);
@@ -274,47 +281,38 @@ export const formattedCpuModel = (model: string): string => {
     0,
     atCharPosition
   )}${formattedSpeedSection}`;
-
   return formattedModel;
 };
-
 export const formattedSize = (size: string): string => {
   const sizeNumbers = size.match(/[\d,.]+/g);
   const sizeNumber = sizeNumbers ? sizeNumbers[0] : '';
   const formattedSizeNumber = formattedNumber(sizeNumber);
   const formattedResult = size.replace(/[\d,.]+/, formattedSizeNumber);
-
   return formattedResult;
 };
-
 type CurrentFormats = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat?: string,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat?: string;
 };
-
 export const formattedDateTime = (
   dateTime: Date,
   { currentLocale, currentDateFormat, currentTimeFormat }: CurrentFormats
 ) => {
   moment.locale(momentLocales[currentLocale]);
-
   const dateTimeMoment = moment(dateTime);
   const dateFormatted = dateTimeMoment.format(currentDateFormat);
 
   if (currentTimeFormat) {
     const timeFormatted = dateTimeMoment.format(currentTimeFormat);
     const dateTimeSeparator = DATE_TIME_SEPARATOR_MAP[currentDateFormat];
-
     return `${dateFormatted}${dateTimeSeparator}${timeFormatted}`;
   }
 
   return dateFormatted;
 };
-
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
   '1'.padEnd(decimalPlaces + 1, '0');
-
 export const mapToLongDateTimeFormat = ({
   currentLocale,
   currentDateFormat,
@@ -324,7 +322,6 @@ export const mapToLongDateTimeFormat = ({
     currentLocale === LOCALES.english
       ? DATE_ENGLISH_LL_MAP_OPTIONS[currentDateFormat]
       : currentDateFormat;
-
   return {
     currentDateFormat: mappedDateFormat,
     currentTimeFormat: TIME_LL_MAP_OPTIONS[currentTimeFormat],

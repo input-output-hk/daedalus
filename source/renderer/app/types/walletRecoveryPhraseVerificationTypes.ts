@@ -1,5 +1,3 @@
-// @flow
-
 export type WalletRecoveryPhraseVerificationStatusesType =
   | 'ok'
   | 'okTimeUntil'
@@ -8,7 +6,6 @@ export type WalletRecoveryPhraseVerificationStatusesType =
   | 'okFewDays'
   | 'warning'
   | 'notification';
-
 export type WalletRecoveryPhraseVerificationTypesType =
   | 'neverVerified'
   | 'alreadyVerified';

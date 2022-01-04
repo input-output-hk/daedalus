@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
@@ -9,6 +8,7 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TermsOfUseForm.scss' or its ... Remove this comment to see the full error message
 import styles from './TermsOfUseForm.scss';
 
 const messages = defineMessages({
@@ -30,53 +30,43 @@ const messages = defineMessages({
     description: 'Label for the "Terms of service" form submit button.',
   },
 });
-
 type Props = {
-  localizedTermsOfUse: string,
-  onSubmit: Function,
-  isSubmitting: boolean,
-  error?: ?LocalizableError,
-  onOpenExternalLink: Function,
+  localizedTermsOfUse: string;
+  onSubmit: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error?: LocalizableError | null | undefined;
+  onOpenExternalLink: (...args: Array<any>) => any;
 };
-
 type State = {
-  areTermsOfUseAccepted: boolean,
+  areTermsOfUseAccepted: boolean;
 };
 
 @observer
-export default class TermsOfUseForm extends Component<Props, State> {
+class TermsOfUseForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     areTermsOfUseAccepted: false,
   };
-
   toggleAcceptance = () => {
     this.setState((prevState) => ({
       areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted,
     }));
   };
-
   submit = () => {
     this.props.onSubmit();
   };
 
   render() {
     const { intl } = this.context;
-    const {
-      isSubmitting,
-      error,
-      localizedTermsOfUse,
-      onOpenExternalLink,
-    } = this.props;
+    const { isSubmitting, error, localizedTermsOfUse, onOpenExternalLink } =
+      this.props;
     const { areTermsOfUseAccepted } = this.state;
     const buttonClasses = classnames([
       'primary',
       isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
     ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
@@ -108,3 +98,5 @@ export default class TermsOfUseForm extends Component<Props, State> {
     );
   }
 }
+
+export default TermsOfUseForm;

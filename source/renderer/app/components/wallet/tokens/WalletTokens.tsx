@@ -1,7 +1,7 @@
-// @flow
 import React, { useState, useCallback, useMemo } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokens.scss' or its co... Remove this comment to see the full error message
 import styles from './WalletTokens.scss';
 import Wallet from '../../../domains/Wallet';
 import WalletTokensList from './WalletTokensList';
@@ -29,31 +29,28 @@ const messages = defineMessages({
       'Syncing transactions message shown during async wallet restore in the wallet send form.',
   },
 });
-
 type Props = {
-  assets: Array<AssetToken>,
-  assetSettingsDialogWasOpened: boolean,
-  currentLocale: string,
-  intl: intlShape.isRequired,
-  isLoadingAssets: boolean,
-  onAssetSettings: Function,
-  onCopyAssetParam: Function,
-  onExternalLinkClick: Function,
-  onOpenAssetSend: Function,
-  onToggleFavorite: Function,
-  tokenFavorites: Object,
-  wallet: Wallet,
+  assets: Array<AssetToken>;
+  assetSettingsDialogWasOpened: boolean;
+  currentLocale: string;
+  intl: intlShape.isRequired;
+  isLoadingAssets: boolean;
+  onAssetSettings: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onOpenAssetSend: (...args: Array<any>) => any;
+  onToggleFavorite: (...args: Array<any>) => any;
+  tokenFavorites: Record<string, any>;
+  wallet: Wallet;
 };
-
 const WalletTokens = observer((props: Props) => {
   const [searchValue, setSearchValue] = useState<string>('');
-  const [insertingAssetUniqueId, setInsertingAssetUniqueId] = useState<?string>(
-    null
-  );
-  const [removingAssetUniqueId, setRemovingAssetUniqueId] = useState<?string>(
-    null
-  );
-
+  const [insertingAssetUniqueId, setInsertingAssetUniqueId] = useState<
+    string | null | undefined
+  >(null);
+  const [removingAssetUniqueId, setRemovingAssetUniqueId] = useState<
+    string | null | undefined
+  >(null);
   const {
     assets,
     intl,
@@ -82,25 +79,32 @@ const WalletTokens = observer((props: Props) => {
       uniqueId,
       isFavorite,
     }: {
-      uniqueId: string,
-      isFavorite: boolean,
+      uniqueId: string;
+      isFavorite: boolean;
     }) => {
       if (insertingAssetUniqueId || removingAssetUniqueId) {
         return;
       }
+
       if (isFavorite) {
         // It's removing favorite
         // We need to wait for the element to be removed, before updating the favorites list
         setRemovingAssetUniqueId(uniqueId);
         setTimeout(async () => {
-          await onToggleFavorite({ uniqueId, isFavorite });
+          await onToggleFavorite({
+            uniqueId,
+            isFavorite,
+          });
           setTimeout(() => setRemovingAssetUniqueId(null), 500);
         }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
       } else {
         // It's inserting favorite
         // We update the favorites list straight away
         setInsertingAssetUniqueId(uniqueId);
-        await onToggleFavorite({ uniqueId, isFavorite });
+        await onToggleFavorite({
+          uniqueId,
+          isFavorite,
+        });
         setTimeout(() => {
           setInsertingAssetUniqueId(null);
         }, TOGGLE_TOKEN_FAVORITE_TIMEOUT);
@@ -151,5 +155,4 @@ const WalletTokens = observer((props: Props) => {
     </div>
   );
 });
-
 export default injectIntl(WalletTokens);

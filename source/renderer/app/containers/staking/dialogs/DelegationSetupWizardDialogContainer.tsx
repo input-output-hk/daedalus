@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -37,33 +36,26 @@ const messages = defineMessages({
     description: 'Step 3 label text on delegation steps dialog.',
   },
 });
-
 type State = {
-  activeStep: number,
-  selectedWalletId: string,
-  selectedPoolId: string,
-  stakePoolJoinFee: ?DelegationCalculateFeeResponse,
+  activeStep: number;
+  selectedWalletId: string;
+  selectedPoolId: string;
+  stakePoolJoinFee: DelegationCalculateFeeResponse | null | undefined;
 };
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class DelegationSetupWizardDialogContainer extends Component<
-  Props,
-  State
-> {
+class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -79,7 +71,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   handleIsWalletAcceptable = (
     walletAmount?: BigNumber,
-    walletReward?: BigNumber = 0
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'BigNumber... Remove this comment to see the full error message
+    walletReward: BigNumber = 0
   ) =>
     walletAmount &&
     walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
@@ -107,39 +100,43 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     selectedPoolId: this.selectedPoolId,
     stakePoolJoinFee: null,
   };
-
   STEPS_LIST = [
     this.context.intl.formatMessage(messages.delegationSetupStep1Label),
     this.context.intl.formatMessage(messages.delegationSetupStep2Label),
     this.context.intl.formatMessage(messages.delegationSetupStep3Label),
   ];
-
   handleDialogClose = () => {
     const { stores, actions } = this.props;
     stores.staking.joinStakePoolRequest.reset();
     actions.dialogs.closeActiveDialog.trigger();
-    stores.hardwareWallets._resetTransaction({ cancelDeviceAction: true });
-  };
 
+    stores.hardwareWallets._resetTransaction({
+      cancelDeviceAction: true,
+    });
+  };
   handleContinue = () => {
     const { activeStep } = this.state;
-    this.setState({ activeStep: activeStep + 1 });
+    this.setState({
+      activeStep: activeStep + 1,
+    });
   };
-
   onBack = () => {
     const { activeStep } = this.state;
     this.props.stores.staking.joinStakePoolRequest.reset();
-    this.setState({ activeStep: activeStep - 1 });
+    this.setState({
+      activeStep: activeStep - 1,
+    });
   };
-
-  handleLearnMoreClick = (event: SyntheticEvent<HTMLButtonElement>) => {
+  handleLearnMoreClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
-
-  handleConfirm = (spendingPassword: ?string, isHardwareWallet: boolean) => {
+  handleConfirm = (
+    spendingPassword: string | null | undefined,
+    isHardwareWallet: boolean
+  ) => {
     const { selectedPoolId, selectedWalletId } = this.state;
     this.props.stores.staking.joinStakePoolRequest.reset();
     this.props.actions.staking.joinStakePool.trigger({
@@ -149,37 +146,29 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       isHardwareWallet,
     });
   };
-
   handleSelectWallet = (walletId: string) => {
-    this.setState({ selectedWalletId: walletId });
+    this.setState({
+      selectedWalletId: walletId,
+    });
     this.props.actions.staking.selectDelegationWallet.trigger(walletId);
     this.handleContinue();
   };
-
   handleChoosePool = (poolId: string) => {
-    this.setState({ selectedPoolId: poolId });
+    this.setState({
+      selectedPoolId: poolId,
+    });
   };
-
   handleSelectPool = (pool: StakePool) => {
     this._handleCalculateTransactionFee(pool.id);
+
     this.handleContinue();
   };
 
   render() {
-    const {
-      activeStep,
-      selectedWalletId,
-      selectedPoolId,
-      stakePoolJoinFee,
-    } = this.state;
-    const {
-      app,
-      staking,
-      wallets,
-      profile,
-      networkStatus,
-      hardwareWallets,
-    } = this.props.stores;
+    const { activeStep, selectedWalletId, selectedPoolId, stakePoolJoinFee } =
+      this.state;
+    const { app, staking, wallets, profile, networkStatus, hardwareWallets } =
+      this.props.stores;
     const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale } = profile;
     const {
@@ -198,17 +187,15 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     } = staking;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const selectedPool = find(stakePools, (pool) => pool.id === selectedPoolId);
-
     const selectedWallet = find(
       wallets.allWallets,
       (wallet) => wallet.id === selectedWalletId
     );
-
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
       this.handleIsWalletAcceptable(amount, reward)
     );
-
     let isTrezor = false;
+
     if (selectedWallet) {
       isTrezor = checkIsTrezorByWalletId(selectedWallet.id);
     }
@@ -261,13 +248,12 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const { isOpen } = uiDialogs;
     const { calculateDelegationFee } = staking;
     const { selectedWalletId } = this.state;
-
     const selectedWallet = find(
       wallets.allWallets,
       (wallet) => wallet.id === selectedWalletId
     );
-
     let stakePoolJoinFee;
+
     if (selectedWallet.isHardwareWallet) {
       // Calculate fee from coins selections
       const coinsSelection = await hardwareWallets.selectDelegationCoins({
@@ -276,9 +262,15 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         delegationAction: DELEGATION_ACTIONS.JOIN,
       });
       const { deposits, depositsReclaimed, fee } = coinsSelection;
-      stakePoolJoinFee = { deposits, depositsReclaimed, fee };
+      stakePoolJoinFee = {
+        deposits,
+        depositsReclaimed,
+        fee,
+      };
       // Initiate Transaction (Delegation)
-      hardwareWallets.initiateTransaction({ walletId: selectedWalletId });
+      hardwareWallets.initiateTransaction({
+        walletId: selectedWalletId,
+      });
     } else {
       stakePoolJoinFee = await calculateDelegationFee({
         walletId: selectedWalletId,
@@ -292,7 +284,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       isOpen(DelegationSetupWizardDialog) &&
       stakePoolJoinFee
     ) {
-      this.setState({ stakePoolJoinFee });
+      this.setState({
+        stakePoolJoinFee,
+      });
     }
   }
 }
+
+export default DelegationSetupWizardDialogContainer;

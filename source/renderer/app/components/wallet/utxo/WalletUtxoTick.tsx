@@ -1,21 +1,21 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletUtxoTick.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletUtxoTick.scss';
 
 export type TickProps = {
-  x: number,
-  y: number,
+  x: number;
+  y: number;
   payload: {
-    value: number,
-  },
-  textAnchor: 'start' | 'end',
-  vertical?: boolean,
+    value: number;
+  };
+  textAnchor: 'start' | 'end';
+  vertical?: boolean;
 };
 
 @observer
-export default class WalletUtxoTick extends Component<TickProps> {
+class WalletUtxoTick extends Component<TickProps> {
   render() {
     const {
       x,
@@ -35,3 +35,5 @@ export default class WalletUtxoTick extends Component<TickProps> {
     );
   }
 }
+
+export default WalletUtxoTick;

@@ -1,12 +1,14 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AddressActions.scss' or its ... Remove this comment to see the full error message
 import styles from './AddressActions.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/qr-code... Remove this comment to see the full error message
 import iconQR from '../../../assets/images/qr-code.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 
@@ -44,25 +46,23 @@ const messages = defineMessages({
     description: 'Label for "Copy address" link on the wallet "Receive page"',
   },
 });
-
 type Props = {
-  address: WalletAddress,
-  onShareAddress: Function,
-  onCopyAddress: Function,
-  type?: 'share' | 'copy',
+  address: WalletAddress;
+  onShareAddress: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  type?: 'share' | 'copy';
 };
 
 @observer
-export default class AddressActions extends Component<Props> {
+class AddressActions extends Component<Props> {
   static defaultProps = {
     type: 'copy',
   };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  addressElement: ?HTMLElement;
-  addressContainerElement: ?HTMLElement;
+  addressElement: HTMLElement | null | undefined;
+  addressContainerElement: HTMLElement | null | undefined;
 
   render() {
     const { intl } = this.context;
@@ -105,3 +105,5 @@ export default class AddressActions extends Component<Props> {
     );
   }
 }
+
+export default AddressActions;

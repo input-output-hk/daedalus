@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { intlShape, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -9,7 +8,9 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsConfirmationD... Remove this comment to see the full error message
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -26,38 +27,37 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import { getMessages } from './DelegationStepsConfirmationDialog.messages';
 import { OversaturationText } from './OversaturationText';
-
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+import { ReactIntlMessage } from '../../../types/i18nTypes';
 
-const messages = {
+const messages: Record<string, ReactIntlMessage> = {
   ...getMessages(),
   fieldIsRequired: globalMessages.fieldIsRequired,
 };
-
 type Props = {
-  onBack: Function,
-  onClose: Function,
-  onConfirm: Function,
-  transactionFee: ?DelegationCalculateFeeResponse,
-  selectedWallet: ?Wallet,
-  selectedPool: ?StakePool,
-  stepsList: Array<string>,
-  isSubmitting: boolean,
-  hwDeviceStatus: HwDeviceStatus,
-  error: ?LocalizableError,
-  onExternalLinkClick: Function,
-  isTrezor: boolean,
-  oversaturationPercentage: number,
+  onBack: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onConfirm: (...args: Array<any>) => any;
+  transactionFee: DelegationCalculateFeeResponse | null | undefined;
+  selectedWallet: Wallet | null | undefined;
+  selectedPool: StakePool | null | undefined;
+  stepsList: Array<string>;
+  isSubmitting: boolean;
+  hwDeviceStatus: HwDeviceStatus;
+  error: LocalizableError | null | undefined;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  isTrezor: boolean;
+  oversaturationPercentage: number;
 };
 
 @observer
-export default class DelegationStepsConfirmationDialog extends Component<Props> {
+class DelegationStepsConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -77,12 +77,14 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                 'isHardwareWallet'
               );
               if (isHardwareWallet) return [true];
+
               if (password === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -90,15 +92,17 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { selectedWallet } = this.props;
@@ -109,7 +113,6 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       onError: () => {},
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
@@ -133,14 +136,13 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const selectedPoolId = get(selectedPool, 'id');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.confirmButtonLabel)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         className: 'cancelButton',
@@ -162,13 +164,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           !transactionFee,
       },
     ];
-
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
       styles.delegationStepsConfirmationDialogWrapper,
     ]);
     const contentClassName = classNames([commonStyles.content, styles.content]);
-
     const stepsIndicatorLabel = (
       <FormattedMessage
         {...messages.stepIndicatorLabel}
@@ -178,7 +178,6 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         }}
       />
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -295,3 +294,5 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
     );
   }
 }
+
+export default DelegationStepsConfirmationDialog;

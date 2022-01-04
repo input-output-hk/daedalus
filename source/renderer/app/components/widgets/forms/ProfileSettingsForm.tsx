@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -8,6 +7,7 @@ import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinne
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ProfileSettingsForm.scss' or... Remove this comment to see the full error message
 import styles from './ProfileSettingsForm.scss';
 import {
   LANGUAGE_OPTIONS,
@@ -45,24 +45,22 @@ const messages = defineMessages({
     description: 'Label for the "Language select" form submit button.',
   },
 });
-
 export type ProfileSettingsFormProps = {
-  currentLocale: string,
-  currentNumberFormat: string,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  onChangeItem: Function,
-  onSubmit?: Function,
-  isSubmitting?: boolean,
-  error?: ?LocalizableError,
+  currentLocale: string;
+  currentNumberFormat: string;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  onChangeItem: (...args: Array<any>) => any;
+  onSubmit?: (...args: Array<any>) => any;
+  isSubmitting?: boolean;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
-export default class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
+class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   static defaultProps = {
     onChangeItem: () => {},
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -74,7 +72,10 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
       label: context.intl.formatMessage(language.label),
     }));
     const value = props.currentLocale;
-    return { value, options };
+    return {
+      value,
+      options,
+    };
   }
 
   get numberFormat() {
@@ -105,7 +106,7 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
   getSelect = (id: string) => {
     const { formatMessage } = this.context.intl;
     const { onChangeItem } = this.props;
-    const { value, options } = (this: any)[id];
+    const { value, options } = (this as any)[id];
     return (
       <Select
         label={formatMessage(messages[`${id}SelectLabel`])}
@@ -141,3 +142,5 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     );
   }
 }
+
+export default ProfileSettingsForm;

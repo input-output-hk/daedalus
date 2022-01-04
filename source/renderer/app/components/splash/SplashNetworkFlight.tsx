@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Splash from '../widgets/splash/Splash';
@@ -65,12 +64,10 @@ const messages = defineMessages({
     description: '"Learn more" link URL on the network splash screen',
   },
 });
-
 type Props = {
-  onClose: Function,
-  openExternalLink: Function,
+  onClose: (...args: Array<any>) => any;
+  openExternalLink: (...args: Array<any>) => any;
 };
-
 export default class SplashNetworkFlight extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -93,6 +90,7 @@ export default class SplashNetworkFlight extends Component<Props> {
     );
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const linkLabel = intl.formatMessage(messages.linkLabel);
+
     const onLinkClick = () =>
       openExternalLink(intl.formatMessage(messages.linkUrl));
 
