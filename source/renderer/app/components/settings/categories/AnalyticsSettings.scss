@@ -1,0 +1,65 @@
+@import '../../../themes/mixins/error-message';
+@import '../../../themes/mixins/link';
+
+.component {
+  padding-bottom: 10px;
+
+  h1 {
+    color: var(--theme-support-settings-text-color);
+    font-family: var(--font-semibold);
+    font-size: 18px;
+    line-height: 1.38;
+    margin-bottom: 11px;
+  }
+
+  h2 {
+    color: var(--theme-support-settings-text-color);
+    font-family: var(--font-semibold);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 6px;
+  }
+
+  ol {
+    color: var(--theme-support-settings-item-color);
+    font-family: var(--font-semibold);
+    list-style: decimal;
+    padding-left: 17px;
+  }
+
+  li {
+    padding-left: 6.5px;
+  }
+
+  p {
+    color: var(--theme-support-settings-text-color);
+    font-family: var(--font-regular);
+    font-size: 16px;
+  }
+
+  .faqLink {
+    align-items: center;
+    display: inline-flex;
+  }
+
+  .externalLink {
+    font-family: var(--font-regular);
+    font-size: 16px;
+    margin-right: 4px;
+    word-break: break-word;
+
+    &.disabled {
+      cursor: default;
+      opacity: 0.3;
+    }
+  }
+
+  p {
+    line-height: 1.38;
+    margin-bottom: 11px;
+
+    & + h1 {
+      margin-top: 24px;
+    }
+  }
+}

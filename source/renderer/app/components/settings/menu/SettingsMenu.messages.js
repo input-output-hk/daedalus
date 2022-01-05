@@ -22,6 +22,11 @@ export default defineMessages({
     defaultMessage: '!!!Stake Pools',
     description: 'Label for the "Support" link in the settings menu.',
   },
+  analytics: {
+    id: 'settings.menu.analytics.link.label',
+    defaultMessage: '!!!Analytics',
+    description: 'Label for the "Analytics" link in the settings menu.',
+  },
   support: {
     id: 'settings.menu.support.link.label',
     defaultMessage: '!!!Support',

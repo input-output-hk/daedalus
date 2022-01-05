@@ -54,6 +54,12 @@ const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
           className="termsOfService"
         />
         <SettingsMenuItem
+          label={intl.formatMessage(messages.analytics)}
+          onClick={() => onItemClick(ROUTES.SETTINGS.ANALYTICS)}
+          active={isActiveItem(ROUTES.SETTINGS.ANALYTICS)}
+          className="support"
+        />
+        <SettingsMenuItem
           label={intl.formatMessage(messages.support)}
           onClick={() => onItemClick(ROUTES.SETTINGS.SUPPORT)}
           active={isActiveItem(ROUTES.SETTINGS.SUPPORT)}

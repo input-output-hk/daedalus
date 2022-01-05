@@ -43,6 +43,7 @@ export const ROUTES = {
     STAKE_POOLS: '/settings/stake-pools',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
+    ANALYTICS: '/settings/analytics',
     DISPLAY: '/settings/display',
   },
 };

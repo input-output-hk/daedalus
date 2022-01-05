@@ -37,6 +37,7 @@ import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsPage from './containers/profile/AnalyticsPage';
+import AnalyticsSettingsPage from './containers/settings/categories/AnalyticsSettingsPage';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -112,6 +113,10 @@ export const Routes = withRouter(() => (
             <Route
               path={ROUTES.SETTINGS.SUPPORT}
               component={SupportSettingsPage}
+            />
+            <Route
+              path={ROUTES.SETTINGS.ANALYTICS}
+              component={AnalyticsSettingsPage}
             />
             <Route
               path={ROUTES.SETTINGS.DISPLAY}
