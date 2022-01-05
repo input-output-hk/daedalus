@@ -90,7 +90,6 @@
     "@dump247/storybook-state": "1.6.1",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.3",
     "@storybook/addon-actions": "6.4.9",
-    "@storybook/addon-essentials": "6.4.9",
     "@storybook/addon-knobs": "6.4.0",
     "@storybook/addon-links": "6.4.9",
     "@storybook/addons": "6.4.9",
