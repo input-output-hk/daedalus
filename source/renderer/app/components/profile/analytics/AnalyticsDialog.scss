@@ -1,21 +1,11 @@
 .component {
-  align-self: center;
+  align-items: center;
   color: var(--theme-main-body-messages-color);
   display: flex;
-  flex: 1;
-  flex-direction: column;
   font-family: var(--font-regular);
-  justify-self: center;
+  height: 100%;
+  justify-content: center;
   line-height: 1.38;
-}
-
-// todo is this is needed? For now just copy/paste for consistency
-.component::before,
-.component::after {
-  content: '';
-  display: block;
-  flex: 1;
-  min-height: 20px;
 }
 
 .centeredBox {
@@ -27,12 +17,12 @@
 }
 
 .submitButton {
-  display: block !important;
+  display: block;
   margin: 0 auto;
 }
 
 // TODO improve react-polymorph inputs to handle `labelPlacement` property e.g. left | right
-.switch {
+.switchButton {
   flex-direction: row-reverse;
   margin: 0 0 30px;
 
@@ -68,10 +58,10 @@
 
 .dataCollectionListItem {
   padding-left: 10px; // todo discuss with Sasha
-}
 
-.dataCollectionListItem::marker {
-  font-weight: bold;
+  &::marker {
+    font-weight: bold;
+  }
 }
 
 .hr {

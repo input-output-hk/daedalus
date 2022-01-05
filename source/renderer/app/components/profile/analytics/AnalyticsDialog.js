@@ -4,9 +4,9 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import styles from './AnalyticsDialog.scss';
-import NormalSwitch from '../widgets/forms/NormalSwitch';
-import { Intl } from '../../types/i18nTypes';
-import globalMessages from '../../i18n/global-messages';
+import NormalSwitch from '../../widgets/forms/NormalSwitch';
+import { Intl } from '../../../types/i18nTypes';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
@@ -17,7 +17,8 @@ const messages = defineMessages({
   description: {
     id: 'analytics.dialog.description',
     defaultMessage:
-      '!!!All data is anonymous and is used only for product development purposes. Read more in Terms and Conditions.',
+      // todo discuss terms and conditions link interpolation
+      '!!!All data is anonymous and is only used for product development purposes. Read more in the Terms and Conditions.',
     description: 'Analytics data collection description',
   },
   dataCollectionDetailsTitle: {
@@ -32,7 +33,7 @@ const messages = defineMessages({
   },
   dataCollectionDetailsDeviceInfo: {
     id: 'analytics.dialog.dataCollectionDetailsDeviceInfo',
-    defaultMessage: '!!!Device info (OS, RAM, disk space, etc)',
+    defaultMessage: '!!!Device information (OS, RAM, disk space, etc)',
     description: 'Description for the device info data collection',
   },
   dataCollectionSwitchButton: {
@@ -110,7 +111,7 @@ const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
           onChange={toggleAllowDataCollection}
           checked={allowDataCollection}
           label={intl.formatMessage(messages.dataCollectionSwitchButton)}
-          className={styles.switch}
+          className={styles.switchButton}
         />
         <Button
           className={styles.submitButton}

@@ -139,7 +139,6 @@ export default class ProfileStore extends Store {
     this.registerReactions([
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
-      // todo check for correct order
       this._redirectToAnalyticsScreenIfNotAccepted,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
@@ -379,6 +378,7 @@ export default class ProfileStore extends Store {
     if (
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
+      this.areAnalyticsAccepted &&
       termsOfUseNotAccepted
     ) {
       this.actions.router.goToRoute.trigger({
@@ -393,10 +393,10 @@ export default class ProfileStore extends Store {
   _redirectToAnalyticsScreenIfNotAccepted = () => {
     const analyticsNotAccepted =
       this.hasLoadedAnalyticsAcceptance && !this.areAnalyticsAccepted;
+
     if (
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
-      this.areAnalyticsAccepted &&
       analyticsNotAccepted
     ) {
       this.actions.router.goToRoute.trigger({

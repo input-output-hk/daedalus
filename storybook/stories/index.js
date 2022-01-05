@@ -49,4 +49,4 @@ import '../../source/renderer/app/features/discreet-mode/ui/DiscreetValue.story'
 
 // Analytics
 
-import '../../source/renderer/app/components/analytics/Analytics.stories';
+import '../../source/renderer/app/components/profile/analytics/Analytics.stories';
