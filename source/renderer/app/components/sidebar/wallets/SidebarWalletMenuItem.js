@@ -76,10 +76,14 @@ export default class SidebarWalletMenuItem extends Component<Props> {
     });
 
     return (
-      <button className={componentStyles} onClick={onClick}>
+      <button
+        className={componentStyles}
+        onClick={onClick}
+        data-testid="walletMenu"
+      >
         <div className={styles.meta}>
           <div className={styles.topContainer}>
-            <div className={styles.title}>
+            <div className={styles.title} data-testid={title}>
               {chunks.map(({ text, match, key }) => (
                 <span
                   key={key}
