@@ -109,7 +109,7 @@ module.exports = {
       },
       {
         test: /\.inline\.svg$/,
-        use: 'svg-inline-loader',
+        use: 'asset/source',
       },
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
