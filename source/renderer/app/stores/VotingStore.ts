@@ -25,6 +25,7 @@ import type {
   GetTransactionRequest,
   VotingMetadataType,
 } from '../api/transactions/types';
+import { EnumMap } from '../types/enumTypes';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -41,7 +42,7 @@ export type VotingDataType = {
   absoluteSlotNumber: number;
 };
 export type FundPhase = 'snapshot' | 'voting' | 'tallying' | 'results';
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
+
 export const FundPhases: EnumMap<string, FundPhase> = {
   SNAPSHOT: 'snapshot',
   VOTING: 'voting',

@@ -1,3 +1,4 @@
+import { EnumMap } from '../../renderer/app/types/enumTypes';
 import {
   MAINNET,
   TESTNET,
@@ -53,7 +54,7 @@ export type CardanoNodeState =
   | 'errored'
   | 'unknown'
   | 'unrecoverable';
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
+
 export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
   STARTING: 'starting',
   RUNNING: 'running',

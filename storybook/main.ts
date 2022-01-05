@@ -1,12 +1,11 @@
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'mini-css-extract-plugin'.
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'path'.
-const path = require('path');
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'webpack'.
 const webpack = require('webpack');
 
 const isCi = process.env.CI && process.env.CI !== '';
 module.exports = {
-  stories: ['../source/**/*.stories.tsx', '../storybook/stories/index.ts'],
+  stories: ['../storybook/stories/index.ts'],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
