@@ -17,8 +17,8 @@ const messages = defineMessages({
   description: {
     id: 'analytics.dialog.description',
     defaultMessage:
-      // todo discuss terms and conditions link interpolation
-      '!!!All data is anonymous and is only used for product development purposes. Read more in the Terms and Conditions.',
+      // TODO Terms and Conditions link
+      '!!!All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.',
     description: 'Analytics data collection description',
   },
   dataCollectionDetailsTitle: {

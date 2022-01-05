@@ -2645,7 +2645,7 @@
         }
       },
       {
-        "defaultMessage": "!!!All data is anonymous and is only used for product development purposes. Read more in the Terms and Conditions.",
+        "defaultMessage": "!!!All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.",
         "description": "Analytics data collection description",
         "end": {
           "column": 3,
@@ -17457,13 +17457,13 @@
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/containers/settings/categories/AnalyticsSettingsPage.js",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 11
+          "line": 10
         }
       }
     ],
