@@ -78,7 +78,11 @@ const WALLETS = [
 ];
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
 storiesOf('Voting/Voting Registration Wizard', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => (
+    <StoryProvider>
+      <StoryDecorator>{story()}</StoryDecorator>
+    </StoryProvider>
+  ))
   .addDecorator(withKnobs) // ====== Stories ======
   .add('Voting Registration - Step 1', () => (
     <VotingRegistrationStepsChooseWallet

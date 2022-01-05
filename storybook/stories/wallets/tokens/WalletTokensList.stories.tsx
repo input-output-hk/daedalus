@@ -163,7 +163,11 @@ const walletTokens: WalletTokens = {
 };
 const decorators = [
   withKnobs,
-  (story) => <StoryDecorator>{story()}</StoryDecorator>,
+  (story) => (
+    <StoryProvider>
+      <StoryDecorator>{story()}</StoryDecorator>
+    </StoryProvider>
+  ),
 ];
 storiesOf('Wallets/Tokens', module).add(
   'WalletTokensList',

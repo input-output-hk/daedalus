@@ -108,7 +108,11 @@ const transactionTokens = [
 ];
 const decorators = [
   withKnobs,
-  (story) => <StoryDecorator>{story()}</StoryDecorator>,
+  (story) => (
+    <StoryProvider>
+      <StoryDecorator>{story()}</StoryDecorator>
+    </StoryProvider>
+  ),
 ];
 
 /* eslint-disable consistent-return */
