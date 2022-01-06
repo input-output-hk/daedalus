@@ -96,10 +96,10 @@ module.exports = {
           { loader: 'css-loader', options: { sourceMap: true } },
         ],
       },
-
       {
         test: /\.inline\.svg$/,
-        type: 'asset/source',
+        use: 'svg-inline-loader',
+        type: 'javascript/auto',
       },
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
