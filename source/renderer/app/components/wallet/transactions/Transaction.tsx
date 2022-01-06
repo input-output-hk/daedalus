@@ -209,34 +209,34 @@ const messages = defineMessages({
   },
 });
 const stateTranslations = defineMessages({
-  [TransactionStates.OK as any]: {
+  [TransactionStates.OK]: {
     id: 'wallet.transaction.state.confirmed',
     defaultMessage: '!!!Transaction confirmed',
     description: 'Transaction state "confirmed"',
   },
-  [TransactionStates.PENDING as any]: {
+  [TransactionStates.PENDING]: {
     id: 'wallet.transaction.state.pending',
     defaultMessage: '!!!Transaction pending',
     description: 'Transaction state "pending"',
   },
-  [TransactionStates.FAILED as any]: {
+  [TransactionStates.FAILED]: {
     id: 'wallet.transaction.state.failed',
     defaultMessage: '!!!Transaction failed',
     description: 'Transaction state "failed"',
   },
 });
 const headerStateTranslations = defineMessages({
-  [TransactionStates.OK as any]: {
+  [TransactionStates.OK]: {
     id: 'wallet.transaction.state.confirmedHeading',
     defaultMessage: '!!!Confirmed',
     description: 'Transaction state "confirmed"',
   },
-  [TransactionStates.PENDING as any]: {
+  [TransactionStates.PENDING]: {
     id: 'wallet.transaction.state.pendingHeading',
     defaultMessage: '!!!Pending',
     description: 'Transaction state "pending"',
   },
-  [TransactionStates.FAILED as any]: {
+  [TransactionStates.FAILED]: {
     id: 'wallet.transaction.state.failedHeading',
     defaultMessage: '!!!Failed',
     description: 'Transaction state "failed"',
