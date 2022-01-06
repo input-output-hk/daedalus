@@ -1,4 +1,4 @@
-{ target, cardanoWalletPkgs, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null }:
+{ target, cardanoWalletPkgs, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, darwin }:
 
 let
   commonLib = import ../lib.nix {};
@@ -23,6 +23,12 @@ in runCommandCC "daedalus-cardano-bridge" {
     for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
       $STRIP $x
       patchelf --shrink-rpath $x
+    done
+  ''}
+  ${lib.optionalString (target == "aarch64-darwin") ''
+    chmod +w -R .
+    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
+      ${darwin.sigtool}/bin/codesign --force -s - $x
     done
   ''}
 ''
