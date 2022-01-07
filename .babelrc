@@ -1,10 +1,12 @@
 {
+  "comments": false,
   "presets": [
     "@babel/preset-env",
     "@babel/preset-react",
     "@babel/preset-typescript"
   ],
   "plugins": [
+    ["@babel/plugin-transform-typescript"],
     ["@babel/plugin-transform-runtime"],
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
@@ -17,16 +19,20 @@
     ],
     ["@babel/plugin-proposal-optional-chaining"],
     ["@babel/plugin-proposal-object-rest-spread", {}],
-    ["@babel/plugin-proposal-unicode-property-regex", { "useUnicodeFlag": false }],
-    ["react-intl", {
-      "messagesDir": "./translations/messages/",
-      "enforceDescriptions": false,
-      "extractSourceLocation": true
-    }]
+    [
+      "@babel/plugin-proposal-unicode-property-regex",
+      { "useUnicodeFlag": false }
+    ],
+    [
+      "react-intl",
+      {
+        "messagesDir": "./translations/messages/",
+        "enforceDescriptions": false,
+        "extractSourceLocation": true
+      }
+    ]
   ],
-  "ignore": [
-    "node_modules"
-  ],
+  "ignore": ["node_modules"],
   "env": {
     "test": {
       "plugins": ["@babel/plugin-transform-modules-commonjs"]

@@ -65,11 +65,6 @@ module.exports = {
             options: {
               cacheCompression: false,
               cacheDirectory: true,
-              presets: [
-                '@babel/preset-env',
-                '@babel/preset-react',
-                '@babel/preset-typescript',
-              ],
               plugins: [
                 isDevelopment && require.resolve('react-refresh/babel'),
               ].filter(Boolean),
