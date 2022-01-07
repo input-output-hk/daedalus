@@ -44,7 +44,7 @@
         border: none;
         height: auto;
         padding: 0;
-        width: 120px;
+        width: 110%;
       }
 
       .SimpleInput_customValueBlock {
@@ -68,11 +68,17 @@
       .SimpleBubble_bubble {
         border: none;
         left: -12px;
-        min-width: 89px;
+        min-width: initial;
       }
 
       .ScrollbarsCustom-Content {
         padding: 0 !important;
+      }
+
+      .ScrollbarsCustom,
+      .ScrollbarsCustom-Wrapper,
+      .ScrollbarsCustom-Scroller {
+        position: relative !important;
       }
     }
   }
