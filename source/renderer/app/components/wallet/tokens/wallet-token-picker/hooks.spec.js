@@ -2,6 +2,8 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { useCheckboxes } from './hooks';
 
+const generateAssets = (n) => [...Array(n).keys()].map(tokenGenerator);
+
 const setup = (useHook, args) => {
   const returnVal = {};
   function TestComponent() {
@@ -18,34 +20,34 @@ const tokenGenerator = (id) => ({
 
 describe('WalletTokenPicker hooks', () => {
   test('useCheckboxes initial state', () => {
+    const assets = generateAssets(10);
     const hook = setup(useCheckboxes, {
-      assets: [...Array(10).keys()].map(tokenGenerator),
+      assets,
+      currentAssets: assets,
       previousCheckedIds: [],
     });
 
     expect(hook.checkboxes).toMatchObject({});
-    expect(hook.checkedCount).toBe(0);
     expect(hook.checkedIds.length).toEqual(0);
+    expect(hook.totalCheckedCount).toBe(0);
     expect(hook.disabledIdsSet.size).toEqual(0);
+    expect(hook.isMaxTotalCount).toBe(false);
+    expect(hook.isToggleAllDisabled).toEqual(false);
+    expect(hook.isClearAllMode).toEqual(false);
   });
 
   const toggleCases = [
-    // testId, assets, sequence ,expected [checkedCount, checkedIds]
-    [
-      'toggle sequence [1]',
-      [...Array(10).keys()].map(tokenGenerator),
-      ['1'],
-      [{ 1: true }, ['1']],
-    ],
+    // testId, assets, sequence, expected [checkedCount, checkedIds]
+    ['toggle sequence [1]', generateAssets(10), ['1'], [{ 1: true }, ['1']]],
     [
       'toggle sequence [1, 2]',
-      [...Array(10).keys()].map(tokenGenerator),
+      generateAssets(10),
       ['1', '2'],
       [{ 1: true, 2: true }, ['1', '2']],
     ],
     [
       'toggle sequence [1, 1, 2, 3]',
-      [...Array(10).keys()].map(tokenGenerator),
+      generateAssets(10),
       ['1', '1', '2', '3'],
       [{ 1: false, 2: true, 3: true }, ['2', '3']],
     ],
@@ -56,6 +58,7 @@ describe('WalletTokenPicker hooks', () => {
     (testId, assets, sequence, expected) => {
       const hook = setup(useCheckboxes, {
         assets,
+        currentAssets: assets,
         previousCheckedIds: [],
       });
 
@@ -64,8 +67,13 @@ describe('WalletTokenPicker hooks', () => {
           hook.toggleCheckbox(sequence[i]);
         });
       }
+
       expect(hook.checkboxes).toMatchObject(expected[0]);
       expect(hook.checkedIds).toEqual(expected[1]);
+      expect(hook.totalCheckedCount).toBe(expected[1].length);
+      expect(hook.isMaxTotalCount).toBe(false);
+      expect(hook.isToggleAllDisabled).toEqual(false);
+      expect(hook.isClearAllMode).toEqual(false);
     }
   );
 
@@ -73,25 +81,25 @@ describe('WalletTokenPicker hooks', () => {
     // testId, [assets, previousCheckedIds], alreadyChecked, expected [checkedCount, checkedIds]
     [
       'less than 30 assets',
-      [[...Array(10).keys()].map(tokenGenerator), []],
+      [generateAssets(10), []],
       [],
       [10, [...Array(10).keys()].map(String)],
     ],
     [
       'more than 30 assets',
-      [[...Array(35).keys()].map(tokenGenerator), []],
+      [generateAssets(35), []],
       [],
       [30, [...Array(30).keys()].map(String)],
     ],
     [
       'more than 30 assets with some already checked',
-      [[...Array(35).keys()].map(tokenGenerator), []],
+      [generateAssets(35), []],
       ['32', '33'],
-      [30, [...Array(30).keys()].map(String)],
+      [30, [...Array(28).keys(), '32', '33'].map(String)],
     ],
     [
       'more than 30 assets with some previously checked',
-      [[...Array(35).keys()].map(tokenGenerator), ['32', '33']],
+      [generateAssets(35), ['32', '33']],
       [],
       [30, [...Array(28).keys()].map(String)],
     ],
@@ -102,6 +110,7 @@ describe('WalletTokenPicker hooks', () => {
     (testId, [assets, previousCheckedIds], alreadyChecked, expected) => {
       const hook = setup(useCheckboxes, {
         assets,
+        currentAssets: assets,
         previousCheckedIds,
       });
 
@@ -115,8 +124,11 @@ describe('WalletTokenPicker hooks', () => {
         hook.toogleAllFn();
       });
 
-      expect(hook.checkedCount).toBe(expected[0]);
+      expect(hook.totalCheckedCount).toBe(expected[0]);
       expect(hook.checkedIds).toEqual(expected[1]);
+      expect(hook.isMaxTotalCount).toBe(true);
+      expect(hook.isToggleAllDisabled).toEqual(false);
+      expect(hook.isClearAllMode).toEqual(true);
     }
   );
 });

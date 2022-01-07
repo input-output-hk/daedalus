@@ -77,6 +77,10 @@
     }
   }
 
+  .filterCounter {
+    opacity: 0.5;
+  }
+
   .filterOption {
     font-family: var(--font-regular);
     font-size: 14px;
@@ -102,6 +106,11 @@
     margin-left: 6px;
     padding: 0 6px;
     white-space: nowrap;
+
+    &:disabled {
+      cursor: initial;
+      opacity: 0.3;
+    }
   }
 
   .noResults {

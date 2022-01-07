@@ -12,9 +12,25 @@ export type Props = {
   onCancel: Function,
 };
 
+export type ItemProps = {
+  intl: Intl,
+  className: string,
+  isChecked: boolean,
+  isMaxCount: boolean,
+  isDisabled: boolean,
+  uniqueId: string,
+  toggleCheckbox: Function,
+};
+
 export type ScrollPosition = 'top' | 'middle' | 'bottom';
 
 export type FilterSelectOptions = 'all' | 'favorites';
+
+export type ToggleAllMode =
+  | 'clearAll'
+  | 'clearAllDisabled'
+  | 'selectAll'
+  | 'selectAllDisabled';
 
 export type Assets = Array<AssetToken>;
 
@@ -28,6 +44,7 @@ export type FilterAssets = {
 
 export type UseCheckboxes = {
   assets: Assets,
+  currentAssets: Assets,
   previousCheckedIds: Array<string>,
 };
 
@@ -37,11 +54,30 @@ export type UseFilters = {
 };
 
 export type GetMaxTokensIdMap = {
-  assetIds: Array<string>,
+  checkedIds: Array<string>,
+  currentAssetIds: Array<string>,
   previousCheckedIds: Array<string>,
 };
 
-export type GetToogleAllLabel = {
+export type GetTokenCounterText = {
   assets: Assets,
-  isMaxCount: boolean,
+  currentAssets: Assets,
 };
+
+export type ClearSelection = {
+  checkboxes: BooleanMap,
+  currentAssetIds: Array<string>,
+};
+
+export type GetToggleAllMode = {
+  isMaxTotalCount: boolean,
+  isMaxCurrentCount: boolean,
+  currentCheckedCount: number,
+};
+
+export type GetEnabledAssetIds = {
+  assets: Assets,
+  disabledIdsSet: Set<string>,
+};
+
+export type GetCurrentCheckedIds = ClearSelection;

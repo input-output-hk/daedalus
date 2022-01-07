@@ -3,15 +3,19 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Select } from 'react-polymorph/lib/components/Select';
 import Dialog from '../../../widgets/Dialog';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
+import WalletTokenPickerCheckbox from './WalletTokenPickerCheckbox';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
-import { filterSelectOptions, getToogleAllLabel } from './helpers';
+import {
+  filterSelectOptions,
+  getToogleAllLabel,
+  getTokenCounterText,
+} from './helpers';
 import { useFilters, useCheckboxes, useScrollPosition } from './hooks';
 import { MAX_TOKENS, ScrollPositionEnum } from './const';
 import type { Props } from './types';
@@ -38,14 +42,17 @@ const WalletTokenPicker = ({
   });
   const {
     checkboxes,
-    checkedCount,
+    totalCheckedCount,
     checkedIds,
     disabledIdsSet,
-    isMaxCount,
+    isMaxTotalCount,
+    isToggleAllDisabled,
+    isClearAllMode,
     toogleAllFn,
     toggleCheckbox,
   } = useCheckboxes({
     assets,
+    currentAssets,
     previousCheckedIds,
   });
   const scrollNotTop = scrollPosition !== ScrollPositionEnum.TOP;
@@ -94,7 +101,14 @@ const WalletTokenPicker = ({
               onChange={setFilterOption}
               className={styles.filterSelect}
               options={filterSelectOptions(intl)}
-              selectionRenderer={(option) => option.label}
+              selectionRenderer={(option) => (
+                <span>
+                  {option.label}
+                  <span className={styles.filterCounter}>
+                    {getTokenCounterText({ assets, currentAssets })}
+                  </span>
+                </span>
+              )}
               optionRenderer={(option) => (
                 <span className={styles.filterOption}>{option.label}</span>
               )}
@@ -102,17 +116,18 @@ const WalletTokenPicker = ({
             />
             <span className={styles.count}>
               {intl.formatMessage(messages.checkedCountLabel, {
-                checkedCount,
+                checkedCount: totalCheckedCount,
                 maxTokens: Math.min(MAX_TOKENS, assets.length),
               })}
             </span>
-            <button className={styles.toogleAllButton} onClick={toogleAllFn}>
-              {intl.formatMessage(
-                messages[getToogleAllLabel({ assets, isMaxCount })],
-                {
-                  maxTokens: MAX_TOKENS,
-                }
-              )}
+            <button
+              className={styles.toogleAllButton}
+              onClick={toogleAllFn}
+              disabled={isToggleAllDisabled}
+            >
+              {intl.formatMessage(messages[getToogleAllLabel(isClearAllMode)], {
+                maxTokens: MAX_TOKENS,
+              })}
             </button>
           </div>
         </div>
@@ -124,14 +139,13 @@ const WalletTokenPicker = ({
           )}
           {currentAssets?.map((asset) => (
             <div key={asset.uniqueId} className={styles.listItem}>
-              <Checkbox
+              <WalletTokenPickerCheckbox
                 className={styles.checkbox}
-                checked={
-                  checkboxes[asset.uniqueId] ||
-                  disabledIdsSet.has(asset.uniqueId)
-                }
-                onChange={() => toggleCheckbox(asset.uniqueId)}
-                disabled={disabledIdsSet.has(asset.uniqueId)}
+                isChecked={checkboxes[asset.uniqueId]}
+                isMaxCount={isMaxTotalCount}
+                isDisabled={disabledIdsSet.has(asset.uniqueId)}
+                uniqueId={asset.uniqueId}
+                toggleCheckbox={toggleCheckbox}
               />
               <WalletToken
                 asset={asset}

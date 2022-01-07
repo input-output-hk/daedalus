@@ -1,19 +1,23 @@
 // @flow
-import xor from 'lodash/xor';
 import { messages } from './WalletTokenPicker.messages';
 import {
   MAX_TOKENS,
   ScrollPositionEnum,
   FilterSelectOptionsEnum,
+  ToggleModeEnum,
 } from './const';
 import type { Intl } from '../../../../types/i18nTypes';
 import type {
   Assets,
   BooleanMap,
+  ClearSelection,
   FilterAssets,
   ScrollPosition,
-  GetToogleAllLabel,
   GetMaxTokensIdMap,
+  GetTokenCounterText,
+  GetCurrentCheckedIds,
+  GetToggleAllMode,
+  GetEnabledAssetIds,
 } from './types';
 
 const isScrollAtTop = (element: HTMLElement) => element.scrollTop === 0;
@@ -38,23 +42,49 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
 };
 
 export const getMaxTokensIdMap = ({
-  assetIds,
+  checkedIds,
+  currentAssetIds,
   previousCheckedIds,
 }: GetMaxTokensIdMap) => {
-  const enabledIds = xor(assetIds, previousCheckedIds);
-  return enabledIds
+  return [...new Set([...checkedIds, ...currentAssetIds])]
     .slice(0, MAX_TOKENS - previousCheckedIds.length)
     .reduce((acc: BooleanMap, element) => ({ ...acc, [element]: true }), {});
 };
 
-export const getAssetIds = (assets: Assets) =>
-  assets.map<string>(({ uniqueId }) => uniqueId);
+export const clearSelection = ({
+  checkboxes,
+  currentAssetIds,
+}: ClearSelection) => {
+  return {
+    ...checkboxes,
+    ...currentAssetIds.reduce(
+      (acc, assestId) => ({ ...acc, [assestId]: false }),
+      ({}: BooleanMap)
+    ),
+  };
+};
+
+export const getEnabledAssetIds = ({
+  assets,
+  disabledIdsSet,
+}: GetEnabledAssetIds) =>
+  assets.reduce(
+    (acc, { uniqueId }) =>
+      disabledIdsSet.has(uniqueId) ? acc : [...acc, uniqueId],
+    []
+  );
 
 export const getCheckedIds = (checkBoxes: BooleanMap) =>
   Object.entries(checkBoxes).reduce(
-    (acc: Array<string>, [id, checked]) => (checked ? [...acc, id] : acc),
+    (acc, [id, checked]) => (checked ? [...acc, id] : acc),
     []
   );
+
+export const getCurrentCheckedIds = ({
+  checkboxes,
+  currentAssetIds,
+}: GetCurrentCheckedIds): Array<string> =>
+  currentAssetIds.filter((assetId) => checkboxes[assetId]);
 
 export const filterSelectOptions = (intl: Intl) => [
   {
@@ -79,13 +109,46 @@ export const filterAssets = ({
   });
 };
 
-export const getToogleAllLabel = ({
+export const getToogleAllLabel = (isClearAllMode: boolean) =>
+  isClearAllMode ? 'clearAll' : 'checkAllLabel';
+
+export const getTokenCounterText = ({
   assets,
-  isMaxCount,
-}: GetToogleAllLabel) => {
-  if (isMaxCount) {
-    return 'clearAll';
+  currentAssets,
+}: GetTokenCounterText) => {
+  if (assets.length === currentAssets.length) {
+    return ` (${assets.length})`;
+  }
+  return ` (${currentAssets.length} / ${assets.length})`;
+};
+
+const isAllCurrentDisabled = ({
+  isMaxCurrentCount,
+  currentCheckedCount,
+}: GetToggleAllMode) => currentCheckedCount === 0 && isMaxCurrentCount;
+
+const isMaxedAndCurrentCleared = ({
+  isMaxTotalCount,
+  currentCheckedCount,
+}: GetToggleAllMode) => isMaxTotalCount && currentCheckedCount === 0;
+
+const isMaxedAndSomeSelected = ({
+  isMaxCurrentCount,
+  isMaxTotalCount,
+  currentCheckedCount,
+}: GetToggleAllMode) =>
+  (isMaxTotalCount || isMaxCurrentCount) && currentCheckedCount;
+
+export const getToggleAllMode = (args: GetToggleAllMode) => {
+  if (isMaxedAndSomeSelected(args)) {
+    return ToggleModeEnum.CLEAR_ALL;
+  }
+  if (isAllCurrentDisabled(args)) {
+    return ToggleModeEnum.CLEAR_ALL_DISABLED;
+  }
+  if (isMaxedAndCurrentCleared(args)) {
+    return ToggleModeEnum.SELECT_ALL_DISABLED;
   }
 
-  return assets.length > MAX_TOKENS ? 'checkMaxFirstLabel' : 'checkAllLabel';
+  return ToggleModeEnum.SELECT_ALL;
 };

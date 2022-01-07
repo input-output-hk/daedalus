@@ -6,13 +6,17 @@ import {
   MAX_TOKENS,
   ScrollPositionEnum,
   FilterSelectOptionsEnum,
+  ToggleModeEnum,
 } from './const';
 import {
-  getAssetIds,
+  getEnabledAssetIds,
   getCheckedIds,
   filterAssets,
   getScrollPosition,
   getMaxTokensIdMap,
+  getCurrentCheckedIds,
+  clearSelection,
+  getToggleAllMode,
 } from './helpers';
 import type {
   Assets,
@@ -25,30 +29,59 @@ import type {
 
 export const useCheckboxes = ({
   assets,
+  currentAssets,
   previousCheckedIds,
 }: UseCheckboxes) => {
   const [checkboxes, setCheckboxes] = useState<BooleanMap>({});
-  const assetIds = useMemo(() => getAssetIds(assets), [assets]);
   const checkedIds = useMemo(() => getCheckedIds(checkboxes), [checkboxes]);
   const disabledIdsSet = useMemo(() => new Set<string>(previousCheckedIds), [
     previousCheckedIds,
   ]);
-  const checkedCount = checkedIds.length + disabledIdsSet.size;
-  const isMaxCount = checkedCount === Math.min(MAX_TOKENS, assets.length);
-  const clearAll = useCallback(() => setCheckboxes({}), [setCheckboxes]);
+  const currentAssetIds = useMemo(
+    () => getEnabledAssetIds({ assets: currentAssets, disabledIdsSet }),
+    [currentAssets, disabledIdsSet]
+  );
+  const currentCheckedIds = useMemo(
+    () => getCurrentCheckedIds({ checkboxes, currentAssetIds }),
+    [checkboxes, currentAssetIds]
+  );
+  const currentCheckedCount = currentCheckedIds.length;
+  const totalCheckedCount = checkedIds.length + disabledIdsSet.size;
+  const isMaxTotalCount =
+    totalCheckedCount === Math.min(MAX_TOKENS, assets.length);
+  const isMaxCurrentCount =
+    currentCheckedCount === Math.min(MAX_TOKENS, currentAssetIds.length);
+  const clearAll = useCallback(
+    () => setCheckboxes(clearSelection({ checkboxes, currentAssetIds })),
+    [setCheckboxes, checkboxes, currentAssetIds]
+  );
   const checkMax = useCallback(() => {
     setCheckboxes(
       getMaxTokensIdMap({
-        assetIds,
+        checkedIds,
+        currentAssetIds,
         previousCheckedIds,
       })
     );
-  }, [assetIds, setCheckboxes, previousCheckedIds]);
-  const toogleAllFn = isMaxCount ? clearAll : checkMax;
+  }, [currentAssetIds, setCheckboxes, previousCheckedIds, checkedIds]);
+  const toggleAllMode = getToggleAllMode({
+    isMaxCurrentCount,
+    isMaxTotalCount,
+    currentCheckedCount,
+  });
+  const isClearAllMode = [
+    ToggleModeEnum.CLEAR_ALL,
+    ToggleModeEnum.CLEAR_ALL_DISABLED,
+  ].includes(toggleAllMode);
+  const isToggleAllDisabled = [
+    ToggleModeEnum.SELECT_ALL_DISABLED,
+    ToggleModeEnum.CLEAR_ALL_DISABLED,
+  ].includes(toggleAllMode);
+  const toogleAllFn = isClearAllMode ? clearAll : checkMax;
   const toggleCheckbox = useCallback(
     (assetId: string) => {
       const newValue = !checkboxes[assetId];
-      if (checkedCount < MAX_TOKENS || !newValue) {
+      if (totalCheckedCount < MAX_TOKENS || !newValue) {
         setCheckboxes({
           ...checkboxes,
           [assetId]: newValue,
@@ -60,12 +93,14 @@ export const useCheckboxes = ({
 
   return {
     checkboxes,
-    checkedCount,
+    totalCheckedCount,
     checkedIds,
-    isMaxCount,
+    isMaxTotalCount,
+    isToggleAllDisabled,
     disabledIdsSet,
     toogleAllFn,
     toggleCheckbox,
+    isClearAllMode,
   };
 };
 

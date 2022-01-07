@@ -17,11 +17,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Favorites',
     description: 'Label for favorite tokens option',
   },
-  checkMaxFirstLabel: {
-    id: 'wallet.token.picker.checkMaxFirstLabel',
-    defaultMessage: '!!!Select first {maxTokens} tokens',
-    description: 'Label for select first max button label',
-  },
   checkAllLabel: {
     id: 'wallet.token.picker.checkAllLabel',
     defaultMessage: '!!!Select all',
@@ -49,7 +44,13 @@ export const messages = defineMessages({
   },
   noResults: {
     id: 'wallet.token.picker.noResults',
-    defaultMessage: 'No results matching search query',
+    defaultMessage: '!!!Results do not match search query',
     description: 'Text for no results',
+  },
+  maxTokensWarning: {
+    id: 'wallet.token.picker.maxTokensWarning',
+    defaultMessage:
+      'You have already reached a maximum of {maxTokens} tokens for your transaction. To add another token you need to remove one from a list.',
+    description: 'Max tokens warning',
   },
 });
