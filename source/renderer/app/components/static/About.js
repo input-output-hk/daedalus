@@ -30,13 +30,13 @@ const messages = defineMessages({
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
     defaultMessage:
-      '!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Danilo Prates, Darko Mijić, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Manus McCole, Michael Bishop, Mior Sufian, Nikola Glumac, Piotr Stachyra, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov',
+      '!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Amit Sagar, Brian McKenna, Charles Hoskinson, Daniel Main, Danilo Prates, Darko Mijić, Dmitrii Gaico, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Manus McCole, Marcin Mazurek, Michael Bishop, Michael Chappell, Mior Sufian, Nikola Glumac, Piotr Stachyra, Przemysław Włodek, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Szymon Masłowski, Tatyana Valkevych, Tomas Vrana, Tomislav Horacek, Tomislav Horaček, Yakov Karavelov',
     description: 'About page daedalus team members',
   },
   aboutContentCardanoMembers: {
     id: 'static.about.content.cardano.members',
     defaultMessage:
-      "!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez",
+      '!!!Alan McNicholas, Alejandro Garcia, Alexander Diemand, Alexander Vieth, Anatoli Ivanou, Andreas Triantafyllos, Ante Kegalj, Armando Santos, Ben Ford, Charles Hoskinson, Dan Friedman, Deepak Kapiswe, Denis Shevchenko, Dorin Solomon, Duncan Coutts, Edsko de Vries, Erik de Castro Lopo, Gerard Moroney, Hiroto Shioi, Jane Wild, Jean-Christophe Mincke, Jeremy Wood, Johannes Lund, Jordan Millar, Karl Knutsson, Kristijan Šarić, Lars Brünjes, Laurie Wang, Liz Bancroft, Luke Nadur, Marc Fontaine, Marcin Szamotulski, Matt Parsons, Matthias Benkort, Michael Bishop, Michael Hueschen, Moritz Angermann, Neil Davis, Niamh Ahern, Nicholas Clarke, Nicolas Di Prima, Noel Rimbert, Patrick Kelly, Pawel Jakubas, Peter Gaži, Peter Thompson, Philipp Kant, Piotr Stachyra, Ravi Patel, Richard Wild, Rob Cohen, Rodney Lorrimar, Ryan Lemmer, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tom Flynn, Vasileios Gkoumas, Vincent Hanquez',
     description: 'About page cardano team members',
   },
   aboutCopyright: {
