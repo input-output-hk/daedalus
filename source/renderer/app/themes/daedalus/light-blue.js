@@ -358,7 +358,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-input-text-color': '#5e6066',
   },
   link: {
-    '--theme-link-main-color': 'rgb(41, 111, 208)',
+    '--theme-link-main-color': '#296fd0',
   },
   loading: {
     '--theme-loading-background-color': '#fafbfc',

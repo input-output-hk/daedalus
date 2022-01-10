@@ -47,17 +47,17 @@
 }
 
 .descriptionLink {
-  color: var(--theme-staking-stake-pool-tooltip-link-color);
+  color: var(--theme-link-main-color);
 }
 
 .dataCollectionList {
   line-height: 2; // todo discuss with Sasha
   list-style: auto outside;
-  padding-left: 30px; // todo discuss with Sasha
+  padding-left: 30px;
 }
 
 .dataCollectionListItem {
-  padding-left: 10px; // todo discuss with Sasha
+  padding-left: 12px;
 
   &::marker {
     font-weight: bold;
