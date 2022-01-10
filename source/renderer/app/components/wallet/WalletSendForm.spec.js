@@ -35,8 +35,10 @@ describe('wallet/Wallet Send Form', () => {
 
   function TestDecorator({
     calculateTransactionFee,
+    currentNumberFormat = NUMBER_OPTIONS[0].value,
   }: {
     calculateTransactionFee: Function,
+    currentNumberFormat?: string,
   }) {
     return (
       <StoryDecorator>
@@ -47,7 +49,7 @@ describe('wallet/Wallet Send Form', () => {
                 <WalletSendForm
                   currencyMaxFractionalDigits={currencyMaxFractionalDigits}
                   currencyMaxIntegerDigits={11}
-                  currentNumberFormat={NUMBER_OPTIONS[0].value}
+                  currentNumberFormat={currentNumberFormat}
                   validateAmount={jest.fn().mockResolvedValue(true)}
                   validateAssetAmount={jest.fn().mockResolvedValue(true)}
                   calculateTransactionFee={calculateTransactionFee}
@@ -126,30 +128,32 @@ describe('wallet/Wallet Send Form', () => {
     );
   }
 
+  function createTransactionFeeMock(times: number, minimumAda: number) {
+    const mock = jest.fn().mockResolvedValue({
+      fee: new BigNumber(1),
+      minimumAda: new BigNumber(1),
+    });
+
+    Array.from({ length: times }).forEach(() => {
+      // $FlowFixMe
+      mock.mockResolvedValueOnce({
+        fee: new BigNumber(1),
+        minimumAda: new BigNumber(minimumAda),
+      });
+    });
+
+    return mock;
+  }
+
   test('should update Ada input field to minimum required and restore to original value when tokens are removed', async () => {
     expect.assertions(4);
 
     const minimumAda = 2;
 
-    const calculateTransactionFeeStub = jest
-      .fn()
-      .mockResolvedValue({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(1),
-      })
-      // $FlowFixMe
-      .mockResolvedValueOnce({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(minimumAda),
-      })
-      // $FlowFixMe
-      .mockResolvedValueOnce({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(minimumAda),
-      });
+    const calculateTransactionFeeMock = createTransactionFeeMock(2, minimumAda);
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeStub} />
+      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -184,25 +188,10 @@ describe('wallet/Wallet Send Form', () => {
 
     const minimumAda = 2;
 
-    const calculateTransactionFeeStub = jest
-      .fn()
-      .mockResolvedValue({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(1),
-      })
-      // $FlowFixMe
-      .mockResolvedValueOnce({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(2),
-      })
-      // $FlowFixMe
-      .mockResolvedValueOnce({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(2),
-      });
+    const calculateTransactionFeeMock = createTransactionFeeMock(2, minimumAda);
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeStub} />
+      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -234,20 +223,10 @@ describe('wallet/Wallet Send Form', () => {
 
     const minimumAda = 2;
 
-    const calculateTransactionFeeStub = jest
-      .fn()
-      .mockResolvedValue({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(1),
-      })
-      // $FlowFixMe
-      .mockResolvedValueOnce({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(minimumAda),
-      });
+    const calculateTransactionFeeMock = createTransactionFeeMock(1, minimumAda);
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeStub} />
+      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -282,13 +261,13 @@ describe('wallet/Wallet Send Form', () => {
   test('should not display any minimum amount notice message when ada input is greater than minimum amount', async () => {
     expect.assertions(2);
 
-    const calculateTransactionFeeStub = jest.fn().mockResolvedValue({
+    const calculateTransactionFeeMock = jest.fn().mockResolvedValue({
       fee: new BigNumber(1),
       minimumAda: new BigNumber(2),
     });
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeStub} />
+      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -306,5 +285,62 @@ describe('wallet/Wallet Send Form', () => {
     await expect(
       screen.findByTestId('WalletSendForm::minimumAmountNotice::restored')
     ).rejects.toBeTruthy();
+  });
+
+  test('should apply minimum fee to ada field when user has removed the previous update', async () => {
+    expect.assertions(3);
+
+    const minimumAda = 2;
+
+    const calculateTransactionFeeMock = createTransactionFeeMock(4, minimumAda);
+
+    render(
+      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
+    );
+
+    enterReceiverAddress();
+
+    const removeToken1 = await addToken();
+
+    await waitForMinimumAdaRequiredMsg();
+
+    assertAdaInput(minimumAda);
+
+    const adaInput = await findInput('Ada');
+    fireEvent.change(adaInput, { target: { value: '' } });
+
+    await removeToken1();
+
+    expect(adaInput).toHaveValue('');
+
+    await addToken();
+
+    await waitForMinimumAdaRequiredMsg();
+
+    assertAdaInput(minimumAda);
+  });
+
+  test('should format ada input field using numeric format profile', async () => {
+    expect.assertions(1);
+
+    const minimumAda = 2;
+
+    const calculateTransactionFeeMock = createTransactionFeeMock(4, minimumAda);
+
+    render(
+      <TestDecorator
+        calculateTransactionFee={calculateTransactionFeeMock}
+        currentNumberFormat={NUMBER_OPTIONS[1].value}
+      />
+    );
+
+    enterReceiverAddress();
+
+    await addToken();
+
+    await waitForMinimumAdaRequiredMsg();
+
+    const adaInput = getInput('Ada');
+    expect(adaInput).toHaveValue(`${minimumAda},000000`);
   });
 });
