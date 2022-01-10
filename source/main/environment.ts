@@ -1,6 +1,6 @@
 import os from 'os';
 import { get, includes, uniq } from 'lodash';
-import packageJson from '../../package.json';
+import { version } from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
@@ -39,8 +39,7 @@ const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const NODE_VERSION = '1.30.1'; // TODO: pick up this value from process.env
-
+const NODE_VERSION = '1.32.1'; // TODO: pick up this value from process.env
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -52,7 +51,7 @@ const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
-const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS === 'true' || false;
+const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
@@ -90,7 +89,7 @@ export const environment: Environment = Object.assign(
     cpu,
     ram,
     installerVersion: INSTALLER_VERSION,
-    version: packageJson.version,
+    version,
     isWindows,
     isMacOS,
     isLinux,

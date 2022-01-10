@@ -538,7 +538,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
         <div className={styles.tables}>
           <div className={styles.table}>
             <div>
-              {getSectionRow('cardanoNodeStatus')}
+              {getSectionRow('systemInfo')}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
               {getRow('cpu', <PopOver content={cpu}>{cpu}</PopOver>)}
