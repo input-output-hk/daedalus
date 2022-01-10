@@ -9,6 +9,7 @@
 ### Chores
 
 - Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
+- Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))
 
 ## 4.6.0
 
