@@ -1,6 +1,5 @@
-{ lib, yarn, nodejs, git, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, libsass, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , libcap
-, ncurses
 , libgcrypt
 , libgpgerror
 , libidn2
@@ -41,24 +40,16 @@ let
     sha256 = "18085a2509447fef8896daeee96a12f48f8e60a4d5ec4cfab44d8d59b9d89a72";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
-  checksums = fetchurl {
-    url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "36252994ffddaa6ca71f664df7b90956a324cd22ce2e2dc94754ff3961e23a20";
-  };
   electron-cache = runCommand "electron-cache" {} ''
-    mkdir $out
-    # we simulate the cache that is used when calling yarn package and the cache is located $HOME/.cache/electron
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt
+    # newer style
+    mkdir -p $out/${electronPathHash}/
+    ln -sv ${windowsElectron} $out/${electronPathHash}/electron-v${windowsElectronVersion}-win32-x64.zip
     mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
     ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
     sha256 = "f8567511857ab62659505ba5158b6ad69afceb512105a3251d180fe47f44366c";
-  };
-  node-gyp = fetchurl {
-    sha256 = "9abfc6dcd32bce3b9a978b8c23b8bb48a562c94919feba489f9bb9d4bbeeae66";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -67,7 +58,6 @@ let
       baseName == "package.json" ||
       baseName == "gulpfile.js" ||
       (lib.hasPrefix "/source" sansPrefix) ||
-      (lib.hasPrefix "/flow" sansPrefix) ||
       baseName == ".babelrc" ||
       sansPrefix == "/scripts" ||
       sansPrefix == "/scripts/package.js" ||
@@ -91,10 +81,6 @@ let
     echo ______ gyp wrapper
     ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
   '';
-  hackNode16 = writeShellScriptBin "node-gyp" ''
-    echo ______ gyp wrapper
-    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
-  '';
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
@@ -106,7 +92,7 @@ yarn2nix.mkYarnPackage {
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   BUILDTYPE = "Release";
-  extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else [ ]);
+  extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);
   installPhase = let
     nukeAllRefs = ''
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
@@ -210,10 +196,17 @@ yarn2nix.mkYarnPackage {
   #  libunistring
   #  libusb1
   #] ++ stdenv.cc.libc.buildInputs;
-    flow-bin = {
+  yarnPreBuild = ''
+    mkdir -p $HOME/.node-gyp/${nodejs.version}
+    echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
+    ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
+  '';
+  pkgConfig = {
+    node-sass = {
+      buildInputs = [ python2 ];
       postInstall = ''
-        flow_ver=${origPackage.devDependencies."flow-bin"}
-        patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
+        yarn --offline run build
+        rm build/config.gypi
       '';
     };
     electron-rebuild = {
