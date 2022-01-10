@@ -276,7 +276,7 @@
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
     "tcp-port-used": "1.0.1",
-    "trezor-connect": "8.2.0-extended",
+    "trezor-connect": "8.2.4-extended",
     "unorm": "1.6.0",
     "url": "0.11.0",
     "util": "0.12.4",
