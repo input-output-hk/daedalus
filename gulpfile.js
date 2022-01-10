@@ -67,6 +67,8 @@ gulp.task(
   )
 );
 
-gulp.task('test:e2e:watch', gulp.series('build:watch', 'test:e2e:nodemon'));
+gulp.task('e2e:watch', gulp.series('clean:dist', shell.task('yarn dev')));
+
+gulp.task('test:e2e:watch', gulp.series('e2e:watch', 'test:e2e:nodemon'));
 
 gulp.task('purge:translations', shell.task('rimraf ./translations/messages'));
