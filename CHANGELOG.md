@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Updated Catalyst dates ([PR 2812](https://github.com/input-output-hk/daedalus/pull/2812))
+
 ### Fixes
 
 - Fixed receiver address validation by disallowing rewards addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
