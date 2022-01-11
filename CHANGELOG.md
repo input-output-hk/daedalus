@@ -8,10 +8,10 @@
 
 ### Chores
 
+- Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
 - Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
 - Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
 - Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))
-- Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
 
 ## 4.6.0
 
