@@ -37,6 +37,7 @@ import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
+import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 
@@ -210,11 +211,14 @@ export default class WalletSendForm extends Component<Props, State> {
   };
 
   handleSubmitOnEnter = (event: KeyboardEvent): void => {
-    if (event.target instanceof HTMLInputElement && event.key === 'Enter')
-      this.form.onSubmit(event);
+    if (event.target instanceof HTMLInputElement && event.key === 'Enter') {
+      setTimeout(() => {
+        this.handleOnSubmit();
+      }, FORM_VALIDATION_DEBOUNCE_WAIT);
+    }
   };
 
-  handleOnSubmit = async () => {
+  handleOnSubmit = () => {
     if (this.isDisabled()) {
       return;
     }
@@ -353,11 +357,7 @@ export default class WalletSendForm extends Component<Props, State> {
               const adaAmountField = form.$('adaAmount');
               const isAdaAmountValid = adaAmountField.isValid;
               if (isValid && isAdaAmountValid) {
-                try {
-                  await this.calculateTransactionFee();
-                } catch (err) {
-                  return [false, err];
-                }
+                await this.calculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -391,11 +391,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 formattedAmountToNaturalUnits(amountValue)
               );
               if (isValid) {
-                try {
-                  await this.calculateTransactionFee();
-                } catch (err) {
-                  return [false, err];
-                }
+                await this.calculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -421,11 +417,6 @@ export default class WalletSendForm extends Component<Props, State> {
         validateOnBlur: false,
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
-      },
-      hooks: {
-        onSuccess: () => {
-          this.handleOnSubmit();
-        },
       },
     }
   );
@@ -471,7 +462,6 @@ export default class WalletSendForm extends Component<Props, State> {
     this.setState((prevState) => ({
       feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
       isTransactionFeeCalculated: false,
-      transactionFee: new BigNumber(0),
       transactionFeeError: null,
       isCalculatingTransactionFee: true,
     }));
@@ -509,11 +499,7 @@ export default class WalletSendForm extends Component<Props, State> {
           );
 
           nextState.adaInputState = adaInputState;
-          this.trySetMinimumAdaAmount(
-            adaInputState,
-            adaAmountValue,
-            minimumAdaValue
-          );
+          this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
         }
         this.setState(nextState);
       }
@@ -549,11 +535,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 adaAmountValue,
                 minimumAdaValue
               );
-              this.trySetMinimumAdaAmount(
-                adaInputState,
-                adaAmountValue,
-                minimumAdaValue
-              );
+              this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
               this.setState({
                 ...nextState,
                 adaInputState,
@@ -586,8 +568,6 @@ export default class WalletSendForm extends Component<Props, State> {
           ...nextState,
           transactionFeeError,
         });
-
-        throw transactionFeeError;
       }
     }
   };
@@ -601,6 +581,7 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetUniqueIds,
       adaInputState,
     } = this.state;
+
     if (
       adaAmountInputTrack.gt(minimumAda) &&
       adaInputState === AdaInputStateType.Updated
@@ -632,7 +613,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
   trySetMinimumAdaAmount = (
     adaInputState: AdaInputState,
-    adaAmount: BigNumber,
     minimumAda: BigNumber
   ) => {
     const { formFields } = this.state;
@@ -664,7 +644,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
     this.form.$('adaAmount').onChange(formattedMinimumAda);
     this.setState({
-      adaInputState: 'none',
+      adaInputState: AdaInputStateType.None,
       adaAmountInputTrack: minimumAda,
     });
   };
@@ -675,8 +655,11 @@ export default class WalletSendForm extends Component<Props, State> {
 
     adaAmountField.onChange(value != null ? value : '');
 
+    const adaAmount = new BigNumber(value != null ? value : 0);
+
     this.setState({
-      adaAmountInputTrack: new BigNumber(value != null ? value : 0),
+      adaAmountInputTrack: adaAmount,
+      adaInputState: AdaInputStateType.None,
     });
   };
 
@@ -726,15 +709,9 @@ export default class WalletSendForm extends Component<Props, State> {
           },
         },
       },
-      () => {
+      async () => {
         this.removeAssetFields(uniqueId);
-        setTimeout(() => {
-          try {
-            return this.calculateTransactionFee(true);
-          } catch (err) {
-            return false;
-          }
-        });
+        await this.calculateTransactionFee(true);
       }
     );
   };
@@ -779,11 +756,7 @@ export default class WalletSendForm extends Component<Props, State> {
           assetValue.isLessThanOrEqualTo(asset.quantity);
         const isValid = isValidAmount && isValidRange;
         if (isValid) {
-          try {
-            await this.calculateTransactionFee(true);
-          } catch (err) {
-            return [false, err];
-          }
+          await this.calculateTransactionFee(true);
         } else {
           this.resetTransactionFee();
         }
@@ -1046,6 +1019,17 @@ export default class WalletSendForm extends Component<Props, State> {
     );
   };
 
+  renderMinimumAmountNotice = (message: ReactIntlMessage, values: {}) => {
+    return (
+      <div
+        className={styles.minimumAmountNotice}
+        data-testid={`WalletSendForm::minimumAmountNotice::${this.state.adaInputState}`}
+      >
+        <FormattedHTMLMessage {...message} values={values} />
+      </div>
+    );
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -1129,33 +1113,15 @@ export default class WalletSendForm extends Component<Props, State> {
                   </div>
                 )}
               </div>
-              {this.state.adaInputState === AdaInputStateType.Updated && (
-                <div
-                  className={styles.minimumAmountNotice}
-                  data-testid="WalletSendForm::minimumAmountNotice::updated"
-                >
-                  <FormattedHTMLMessage
-                    {...messages.minimumAmountNotice}
-                    values={{
-                      minimumAda: minimumAdaValue,
-                    }}
-                  />
-                </div>
-              )}
-              {this.state.adaInputState === AdaInputStateType.Restored && (
-                <div
-                  className={styles.minimumAmountNotice}
-                  data-testid="WalletSendForm::minimumAmountNotice::restored"
-                >
-                  <FormattedHTMLMessage
-                    {...messages.restoredAdaAmount}
-                    values={{
-                      minimumAda: minimumAdaValue,
-                      adaAmount: adaAmountField.value,
-                    }}
-                  />
-                </div>
-              )}
+              {this.state.adaInputState === AdaInputStateType.Updated &&
+                this.renderMinimumAmountNotice(messages.minimumAmountNotice, {
+                  minimumAda: minimumAdaValue,
+                })}
+              {this.state.adaInputState === AdaInputStateType.Restored &&
+                this.renderMinimumAmountNotice(messages.restoredAdaAmount, {
+                  minimumAda: minimumAdaValue,
+                  adaAmount: adaAmountField.value,
+                })}
               <div className={styles.buttonsContainer}>
                 <Button
                   className="flat"
@@ -1167,7 +1133,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   className="primary"
                   label={intl.formatMessage(messages.sendButtonLabel)}
                   disabled={this.isDisabled()}
-                  onClick={this.form.onSubmit}
+                  onClick={this.handleOnSubmit}
                 />
               </div>
             </div>

@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
-import { IntlProvider, addLocaleData } from 'react-intl';
+import { addLocaleData } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Provider as MobxProvider } from 'mobx-react';
+import faker from 'faker';
 import {
   render,
   fireEvent,
@@ -15,16 +16,13 @@ import '@testing-library/jest-dom';
 import en from 'react-intl/locale-data/en';
 
 // Assets and helpers
-import translations from '../../i18n/locales/en-US.json';
-import StoryDecorator from '../../../../../storybook/stories/_support/StoryDecorator';
-import { sendFormAssetData } from '../../../../../storybook/stories/wallets/send/WalletSend.stories';
+import { TestDecorator } from '../../../../../tests/_utils/TestDecorator';
 
 import { NUMBER_OPTIONS } from '../../config/profileConfig';
 import { DiscreetModeFeatureProvider } from '../../features/discreet-mode';
 import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 
-// Screens
 import WalletSendForm from './WalletSendForm';
 
 describe('wallet/Wallet Send Form', () => {
@@ -33,7 +31,24 @@ describe('wallet/Wallet Send Form', () => {
 
   const currencyMaxFractionalDigits = 6;
 
-  function TestDecorator({
+  function createAssets() {
+    return {
+      policyId: faker.random.uuid(),
+      assetName: faker.internet.domainWord(),
+      uniqueId: faker.random.uuid(),
+      fingerprint: faker.random.uuid(),
+      quantity: new BigNumber(faker.finance.amount()),
+      decimals: 0,
+      recommendedDecimals: null,
+      metadata: {
+        name: faker.internet.domainWord(),
+        ticker: faker.finance.currencyCode(),
+        description: '',
+      },
+    };
+  }
+
+  function SetupWallet({
     calculateTransactionFee,
     currentNumberFormat = NUMBER_OPTIONS[0].value,
   }: {
@@ -41,38 +56,36 @@ describe('wallet/Wallet Send Form', () => {
     currentNumberFormat?: string,
   }) {
     return (
-      <StoryDecorator>
-        <IntlProvider locale="en-US" messages={translations}>
-          <BrowserLocalStorageBridge>
-            <DiscreetModeFeatureProvider>
-              <MobxProvider>
-                <WalletSendForm
-                  currencyMaxFractionalDigits={currencyMaxFractionalDigits}
-                  currencyMaxIntegerDigits={11}
-                  currentNumberFormat={currentNumberFormat}
-                  validateAmount={jest.fn().mockResolvedValue(true)}
-                  validateAssetAmount={jest.fn().mockResolvedValue(true)}
-                  calculateTransactionFee={calculateTransactionFee}
-                  walletAmount={new BigNumber(123)}
-                  assets={sendFormAssetData}
-                  addressValidator={() => true}
-                  onOpenDialogAction={jest.fn()}
-                  isDialogOpen={jest.fn()}
-                  isRestoreActive={false}
-                  hwDeviceStatus={HwDeviceStatuses.READY}
-                  isHardwareWallet={false}
-                  isLoadingAssets={false}
-                  onExternalLinkClick={jest.fn()}
-                  hasAssets
-                  selectedAsset={null}
-                  onUnsetActiveAsset={() => {}}
-                  isAddressFromSameWallet={false}
-                />
-              </MobxProvider>
-            </DiscreetModeFeatureProvider>
-          </BrowserLocalStorageBridge>
-        </IntlProvider>
-      </StoryDecorator>
+      <TestDecorator>
+        <BrowserLocalStorageBridge>
+          <DiscreetModeFeatureProvider>
+            <MobxProvider>
+              <WalletSendForm
+                currencyMaxFractionalDigits={currencyMaxFractionalDigits}
+                currencyMaxIntegerDigits={11}
+                currentNumberFormat={currentNumberFormat}
+                validateAmount={jest.fn().mockResolvedValue(true)}
+                validateAssetAmount={jest.fn().mockResolvedValue(true)}
+                calculateTransactionFee={calculateTransactionFee}
+                walletAmount={new BigNumber(123)}
+                assets={[createAssets()]}
+                addressValidator={() => true}
+                onOpenDialogAction={jest.fn()}
+                isDialogOpen={jest.fn()}
+                isRestoreActive={false}
+                hwDeviceStatus={HwDeviceStatuses.READY}
+                isHardwareWallet={false}
+                isLoadingAssets={false}
+                onExternalLinkClick={jest.fn()}
+                hasAssets
+                selectedAsset={null}
+                onUnsetActiveAsset={() => {}}
+                isAddressFromSameWallet={false}
+              />
+            </MobxProvider>
+          </DiscreetModeFeatureProvider>
+        </BrowserLocalStorageBridge>
+      </TestDecorator>
     );
   }
 
@@ -114,10 +127,10 @@ describe('wallet/Wallet Send Form', () => {
     };
   }
 
-  async function waitForMinimumAdaRequiredMsg() {
+  async function waitForMinimumAdaRequiredMsg(minimumAda: number = 2) {
     const minimumAdaRequiredMsg = screen.getByTestId('minimumAdaRequiredMsg');
     await within(minimumAdaRequiredMsg).findByText(
-      `a minimum of 2 ADA required`
+      `a minimum of ${minimumAda} ADA required`
     );
   }
 
@@ -153,7 +166,7 @@ describe('wallet/Wallet Send Form', () => {
     const calculateTransactionFeeMock = createTransactionFeeMock(2, minimumAda);
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -191,7 +204,7 @@ describe('wallet/Wallet Send Form', () => {
     const calculateTransactionFeeMock = createTransactionFeeMock(2, minimumAda);
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -219,33 +232,27 @@ describe('wallet/Wallet Send Form', () => {
   });
 
   test('should favour user Ada input instead of minimum required when the value is greater than the minimum one', async () => {
-    expect.assertions(3);
+    expect.assertions(2);
 
-    const minimumAda = 2;
+    const minimumAda = 2.5;
 
-    const calculateTransactionFeeMock = createTransactionFeeMock(1, minimumAda);
+    const calculateTransactionFeeMock = createTransactionFeeMock(2, minimumAda);
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
 
-    const removeToken1 = await addToken();
-
-    await waitForMinimumAdaRequiredMsg();
-
-    assertAdaInput(minimumAda);
-
     const userAdaAmount = 1.5;
-    const adaInput = getInput('Ada');
+    const adaInput = await findInput('Ada');
     fireEvent.change(adaInput, { target: { value: userAdaAmount } });
 
-    const minimumAdaRequiredMsg = screen.getByTestId('minimumAdaRequiredMsg');
+    const removeToken1 = await addToken();
 
-    expect(minimumAdaRequiredMsg).toHaveTextContent(
-      `UPDATE to the minimum of ${minimumAda} ADA required`
-    );
+    await waitForMinimumAdaRequiredMsg(minimumAda);
+
+    assertAdaInput(minimumAda);
 
     await removeToken1();
 
@@ -258,6 +265,47 @@ describe('wallet/Wallet Send Form', () => {
     );
   });
 
+  test('should remove message when user entry is higher than minimum amount', async () => {
+    expect.assertions(3);
+
+    const minimumAda = 2.5;
+
+    const calculateTransactionFeeMock = createTransactionFeeMock(2, minimumAda);
+
+    render(
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
+    );
+
+    enterReceiverAddress();
+
+    const userAdaAmount = 1.5;
+    const adaInput = await findInput('Ada');
+    fireEvent.change(adaInput, { target: { value: userAdaAmount } });
+
+    const removeToken1 = await addToken();
+
+    await waitForMinimumAdaRequiredMsg(minimumAda);
+
+    assertAdaInput(minimumAda);
+
+    await removeToken1();
+
+    const minimumAmountNoticeTestId =
+      'WalletSendForm::minimumAmountNotice::restored';
+
+    const minimumAmountNotice = await screen.findByTestId(
+      minimumAmountNoticeTestId
+    );
+
+    expect(minimumAmountNotice).toBeInTheDocument();
+
+    fireEvent.change(adaInput, { target: { value: userAdaAmount + 1 } });
+
+    expect(
+      screen.queryByTestId(minimumAmountNoticeTestId)
+    ).not.toBeInTheDocument();
+  });
+
   test('should not display any minimum amount notice message when ada input is greater than minimum amount', async () => {
     expect.assertions(2);
 
@@ -267,7 +315,7 @@ describe('wallet/Wallet Send Form', () => {
     });
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -295,7 +343,7 @@ describe('wallet/Wallet Send Form', () => {
     const calculateTransactionFeeMock = createTransactionFeeMock(4, minimumAda);
 
     render(
-      <TestDecorator calculateTransactionFee={calculateTransactionFeeMock} />
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
     );
 
     enterReceiverAddress();
@@ -328,7 +376,7 @@ describe('wallet/Wallet Send Form', () => {
     const calculateTransactionFeeMock = createTransactionFeeMock(4, minimumAda);
 
     render(
-      <TestDecorator
+      <SetupWallet
         calculateTransactionFee={calculateTransactionFeeMock}
         currentNumberFormat={NUMBER_OPTIONS[1].value}
       />
