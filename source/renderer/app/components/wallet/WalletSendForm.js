@@ -835,7 +835,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
     const addAssetButtonClasses = classNames([
       styles.addAssetButton,
-      !this.hasAvailableAssets ? styles.disabled : null,
       'primary',
     ]);
 
