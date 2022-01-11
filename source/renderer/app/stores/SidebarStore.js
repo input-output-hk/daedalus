@@ -65,7 +65,7 @@ export default class SidebarStore extends Store {
   @action _configureCategories = () => {
     const {
       isFlight,
-      environment: { isDev, isMainnet },
+      // environment: { isDev, isMainnet },
     } = global;
 
     const {
@@ -81,7 +81,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
       [categories.STAKING.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: isMainnet || isDev,
+      [categories.VOTING.name]: true, // isMainnet || isDev,
       [categories.NETWORK_INFO.name]: isFlight,
     };
 
