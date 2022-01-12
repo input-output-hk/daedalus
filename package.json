@@ -158,7 +158,6 @@
     "minimist": "1.2.5",
     "mobx-react-devtools": "6.1.1",
     "node-forge": "0.10.0",
-    "node-sass": "6.0.1",
     "nodemon": "2.0.15",
     "npmlog": "4.1.2",
     "path-browserify": "1.0.1",
