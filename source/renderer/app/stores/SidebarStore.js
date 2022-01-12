@@ -30,12 +30,8 @@ export default class SidebarStore extends Store {
   // for equality instead of idendity (which would always invalidate)
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
   @computed.struct get wallets(): Array<SidebarWalletType> {
-    const {
-      networkStatus,
-      wallets,
-      walletSettings,
-      hardwareWallets,
-    } = this.stores;
+    const { networkStatus, wallets, walletSettings, hardwareWallets } =
+      this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
     return wallets.all.map((wallet) => {
       const isHardwareWalletDisconnected = get(
@@ -43,9 +39,8 @@ export default class SidebarStore extends Store {
         [wallet.id, 'disconnected'],
         true
       );
-      const {
-        hasNotification,
-      } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
+      const { hasNotification } =
+        walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
       return {
         id: wallet.id,
         title: wallet.name,
@@ -65,13 +60,11 @@ export default class SidebarStore extends Store {
   @action _configureCategories = () => {
     const {
       isFlight,
-      // environment: { isDev, isMainnet },
+      environment: { isDev, isMainnet },
     } = global;
 
-    const {
-      CATEGORIES_BY_NAME: categories,
-      CATEGORIES_LIST: list,
-    } = sidebarConfig;
+    const { CATEGORIES_BY_NAME: categories, CATEGORIES_LIST: list } =
+      sidebarConfig;
 
     const categoryValidation: {
       [key: string]: boolean | Function,
@@ -81,7 +74,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
       [categories.STAKING.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: true, // isMainnet || isDev,
+      [categories.VOTING.name]: isMainnet || isDev,
       [categories.NETWORK_INFO.name]: isFlight,
     };
 
