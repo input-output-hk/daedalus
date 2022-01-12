@@ -20,6 +20,7 @@ import {
   DiscreetModeFeatureProvider,
   LocalStorageFeatureProvider,
 } from './features';
+import { InactivityProvider } from './utils/hooks/inactivity';
 
 // run MobX in strict mode
 configure({
@@ -57,7 +58,9 @@ const initializeDaedalus = () => {
   render(
     <LocalStorageFeatureProvider localStorage={LocalStorageApi}>
       <DiscreetModeFeatureProvider>
-        <App stores={stores} actions={actions} history={history} />
+        <InactivityProvider>
+          <App stores={stores} actions={actions} history={history} />
+        </InactivityProvider>
       </DiscreetModeFeatureProvider>
     </LocalStorageFeatureProvider>,
     rootElement
