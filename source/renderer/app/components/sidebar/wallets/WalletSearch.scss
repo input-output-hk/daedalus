@@ -22,7 +22,7 @@ $active-color: rgba(var(--theme-sidebar-search-field-border-color), 0.5);
 
 .searchIcon {
   bottom: 6px;
-  color: $inactive-color;
+  color: rgba(var(--theme-sidebar-search-field-border-color), 0.2);
   position: absolute;
   svg {
     height: 15px;
@@ -56,11 +56,12 @@ $active-color: rgba(var(--theme-sidebar-search-field-border-color), 0.5);
   bottom: 4px;
   cursor: pointer;
   height: 28px;
+  opacity: 0.5;
   position: absolute;
   right: 0;
   width: 28px;
   &:hover {
-    opacity: 0.8;
+    opacity: 1;
   }
   svg {
     height: 8px;

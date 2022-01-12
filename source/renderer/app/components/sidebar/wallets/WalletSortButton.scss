@@ -11,9 +11,8 @@
     display: flex;
     font-size: 11px;
     height: 22px;
-    line-height: 1.45;
     opacity: 0.3;
-    padding: 3px 8px;
+    padding: 0 8px;
     width: auto;
 
     &.walletSortButtonActive,
@@ -59,7 +58,7 @@
   height: 12px;
   justify-content: center;
   position: absolute;
-  right: -6px;
+  right: -4px;
   top: -2px;
 
   width: 12px;
@@ -74,8 +73,7 @@
   width: 100%;
 
   > svg {
-    height: 10px;
-    width: 6px;
+    transform: scale(0.5);
 
     path {
       stroke: var(--theme-sidebar-menu-add-button-text-color);

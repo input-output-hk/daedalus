@@ -40,13 +40,20 @@ export function WalletSortButton({
         <Button
           className={walletSortButtonStyles}
           onClick={onClick}
-          label={label}
+          label={
+            <>
+              {isActive ? (
+                <div className={walletSortOrderArrowStyles}>
+                  <SVGInline
+                    svg={arrow}
+                    className={styles.walletSortOrderArrow}
+                  />
+                </div>
+              ) : null}
+              {label}
+            </>
+          }
         />
-        {isActive ? (
-          <div className={walletSortOrderArrowStyles}>
-            <SVGInline svg={arrow} className={styles.walletSortOrderArrow} />
-          </div>
-        ) : null}
       </div>
     </PopOver>
   );
