@@ -42,7 +42,6 @@ const WalletSearchComponent = ({
         svg={searchIcon}
         className={classNames({
           [styles.searchIcon]: true,
-          [styles.highlight]: hasValue,
         })}
       />
       <Input

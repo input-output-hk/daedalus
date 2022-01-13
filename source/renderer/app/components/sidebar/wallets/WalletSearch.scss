@@ -27,10 +27,6 @@ $active-color: rgba(var(--theme-sidebar-search-field-border-color), 0.5);
     height: 15px;
     width: 15px;
   }
-
-  &.highlight {
-    color: $active-color;
-  }
 }
 
 .input {
