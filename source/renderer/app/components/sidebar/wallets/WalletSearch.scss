@@ -10,12 +10,11 @@ $active-color: rgba(var(--theme-sidebar-search-field-border-color), 0.5);
 
   &:focus,
   &:active,
-  &:focus-within,
-  &.hasValue {
+  &:focus-within {
     border-bottom-color: $active-color;
 
     .searchIcon {
-      color: var(--theme-sidebar-menu-add-button-text-color);
+      color: $active-color;
     }
   }
 }
