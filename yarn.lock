@@ -2901,7 +2901,7 @@
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-reports/-/istanbul-reports-3.0.1.tgz#9153fe98bba2bd565a63add9436d6f0d7f8468ff"
   dependencies:
-
+    
 
 "@types/jest@*":
   version "27.0.3"
@@ -17222,7 +17222,7 @@ time-stamp@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
 
-timemachine@^0.3.2:
+timemachine@0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/timemachine/-/timemachine-0.3.2.tgz#83c594d0271c3608d5fab13636cd3b7c979ea2c5"
 
