@@ -33,26 +33,6 @@ const walletMessages: {
   },
 });
 
-const icoMessages: {
-  [string]: ReactIntlMessage,
-} = defineMessages({
-  dialogTitle: {
-    id: 'wallet.settings.icoPublicKey',
-    defaultMessage: '!!!ICO Public Key',
-    description: 'Title for the "ICO Public Key QR Code" dialog.',
-  },
-  copyPublicKeyLabel: {
-    id: 'wallet.settings.copyICOPublicKey',
-    defaultMessage: '!!!Copy ICO public key',
-    description: 'Copy ICO public key label.',
-  },
-  derivationPathTooltip: {
-    id: 'wallet.settings.dialog.derivationPathTooltip',
-    defaultMessage: '!!!Derivation path',
-    description: 'Tooltip for the derivation path',
-  },
-});
-
 type Props = InjectedProps;
 
 @inject('actions', 'stores')
@@ -107,7 +87,6 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
           onClose={() => {
             actions.dialogs.closeActiveDialog.trigger();
           }}
-          messages={icoMessages}
           derivationPath={ICO_PUBLIC_KEY_DERIVATION_PATH}
         />
       );
