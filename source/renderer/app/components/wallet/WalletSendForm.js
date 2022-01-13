@@ -439,9 +439,24 @@ export default class WalletSendForm extends Component<Props, State> {
     prevFeeCalculationRequestQue: number
   ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
 
+  validateEmptyAssets = () => {
+    return this.selectedAssets
+      .filter((_, index) => {
+        const quantity = new BigNumber(this.selectedAssetsAmounts[index]);
+        return quantity.isZero();
+      })
+      .forEach(({ uniqueId }) => {
+        this.form.$(`asset_${uniqueId}`).validate({ showErrors: true });
+      });
+  };
+
   calculateTransactionFee = async (
     shouldUpdateMinimumAdaAmount: boolean = false
   ) => {
+    if (this.validateEmptyAssets()) {
+      return;
+    }
+
     const { form } = this;
     const emptyAssetFieldValue = '0';
     const receiverField = form.$('receiver');
