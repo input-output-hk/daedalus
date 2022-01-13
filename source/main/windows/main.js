@@ -24,7 +24,8 @@ const getWindowTitle = (locale: string): string => {
   let title = buildLabel;
   if (isBlankScreenFixActive)
     title += ` ${translation('title.blankScreenFix')}`;
-  if (rtsFlags?.length > 0) title += ` ${translation('title.usingRtsFlags')}`;
+  if (!!rtsFlags && rtsFlags?.length > 0)
+    title += ` ${translation('title.usingRtsFlags')}`;
   return title;
 };
 

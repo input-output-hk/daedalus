@@ -5,7 +5,7 @@ import { relaunch } from './safeExitWithCode';
 
 const store = new Store();
 
-export const getRtsFlags = (network: string): string[] => {
+export const getRtsFlags = (network: string): string[] | null => {
   try {
     const rtsFlags = store.get(`${network}-RTS-FLAGS`);
     logger.info(`[GET-RTS-FLAGS] ${network}-RTS-FLAGS: `, rtsFlags);
@@ -13,7 +13,7 @@ export const getRtsFlags = (network: string): string[] => {
   } catch (error) {
     logger.error(`[GET-RTS-FLAGS] Error fetching ${network}-RTS-FLAGS`, error);
   }
-  return [];
+  return null;
 };
 
 export const setRtsFlagsAndRestart = (

@@ -159,7 +159,7 @@ export const osxMenu = (
       {
         label: translation('helpSupport.usingRtsFlags'),
         type: 'checkbox',
-        checked: rtsFlags?.length > 0,
+        checked: !!rtsFlags && rtsFlags?.length > 0,
         click() {
           actions.setRtsFlags(rtsFlags?.length === 0);
         },
