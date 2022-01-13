@@ -89,6 +89,14 @@
   }
 }
 
+.divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 20px;
+  opacity: 0.2;
+  background-color: var(--theme-input-placeholder-color);
+}
+
 .ticker {
   color: var(--theme-input-placeholder-color);
   font-family: var(--font-regular);

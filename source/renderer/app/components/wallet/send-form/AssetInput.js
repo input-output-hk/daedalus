@@ -169,7 +169,12 @@ export default class AssetInput extends Component<Props> {
                 <div className={styles.separator} />
               </div>
             )}
-            {ticker ? <span className={styles.ticker}>{ticker}</span> : null}
+            {ticker ? (
+              <>
+                <span className={styles.divider} />
+                <span className={styles.ticker}>{ticker}</span>
+              </>
+            ) : null}
           </div>
         </div>
         <div className={styles.removeAssetBlock}>
