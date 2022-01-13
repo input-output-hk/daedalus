@@ -44,6 +44,7 @@ $active-color: rgba(var(--theme-sidebar-search-field-border-color), 0.5);
 
     padding-bottom: 6px;
     padding-left: 25px;
+    padding-top: 5px;
 
     &::placeholder {
       color: rgba(var(--theme-sidebar-search-field-border-color), 0.3);
