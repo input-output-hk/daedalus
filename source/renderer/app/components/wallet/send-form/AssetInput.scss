@@ -90,11 +90,11 @@
 }
 
 .divider {
-  width: 1px;
+  background-color: var(--theme-input-placeholder-color);
   height: 20px;
   margin: 0 20px;
   opacity: 0.2;
-  background-color: var(--theme-input-placeholder-color);
+  width: 1px;
 }
 
 .ticker {
