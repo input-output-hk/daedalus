@@ -59,10 +59,16 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       getNetworkClockRequest,
     } = networkStatus;
 
+    const { model = '', speed = 0 } = environment.cpu?.[0] || {};
+    const cpu = {
+      model,
+      speed,
+    };
+
     const systemInfo = {
       platform: environment.os,
       platformVersion: environment.platformVersion,
-      cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
+      cpu,
       ram: formattedBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
     };

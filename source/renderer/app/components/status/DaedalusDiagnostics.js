@@ -17,17 +17,14 @@ import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
-import {
-  formattedNumber,
-  formattedCpuModel,
-  formattedSize,
-} from '../../utils/formatters';
+import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
+import formatCpuInfo from './formatCpuInfo';
 
 const messages = defineMessages({
   systemInfo: {
@@ -483,12 +480,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const {
       platform,
       platformVersion,
-      cpu: cpuInOriginalFormat,
+      cpu: cpuInfo,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
     } = systemInfo;
 
-    const cpu = formattedCpuModel(cpuInOriginalFormat);
+    const cpu = formatCpuInfo(cpuInfo);
     const availableDiskSpace = formattedSize(
       availableDiskSpaceInOriginalFormat
     );
