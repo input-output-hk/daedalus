@@ -67,5 +67,4 @@ Open a thread on #daedalus-qa on Slack, mention `@daedalusqa` and `@daedalusteam
 - [ ] All existing Daedalus Testing scenarios are still up-to-date
 
 ### After Review
-- [ ] Merge the PR
 - [ ] Update Slack QA thread by marking it with a green checkmark
