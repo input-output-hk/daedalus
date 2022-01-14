@@ -52,6 +52,8 @@
 }
 
 .estimatedFeeInput {
+  margin-bottom: 30px;
+
   input {
     background-color: var(--rp-input-bg-color-disabled) !important;
     border-color: var(--rp-input-bg-color-disabled) !important;
@@ -61,6 +63,10 @@
     &::-webkit-input-placeholder {
       font-family: var(--font-regular);
     }
+  }
+
+  &.withOffset {
+    margin-bottom: 20px;
   }
 }
 
@@ -85,9 +91,14 @@
 
 .assetInput,
 .receiverInput,
-.estimatedFeeInput,
 .depositInput {
   margin-bottom: 20px;
+}
+
+.assetInput,
+.receiverInput,
+.estimatedFeeInput,
+.depositInput {
   position: relative;
 
   :global {
@@ -208,9 +219,15 @@
   color: var(--theme-input-placeholder-color);
   font-family: var(--font-regular);
   font-size: 14px;
+  height: 20px;
   line-height: 1.36;
-  padding-bottom: 10px;
-  padding-top: 10px;
+  margin: 10px 0;
+
+  > span {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+  }
 }
 
 .addAssetButton {
@@ -220,6 +237,7 @@
   height: 20px;
   letter-spacing: 0.5px;
   line-height: 1.2;
+  margin-right: 6px;
   margin-top: 0;
   padding: 0 8px;
   text-transform: uppercase;

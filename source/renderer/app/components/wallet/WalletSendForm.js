@@ -1086,6 +1086,13 @@ export default class WalletSendForm extends Component<Props, State> {
       styles.spinning,
     ]);
 
+    const estimatedFeeInputClasses = classNames({
+      [styles.estimatedFeeInput]: true,
+      [styles.withOffset]:
+        this.state.adaInputState === AdaInputStateType.Updated ||
+        this.state.adaInputState === AdaInputStateType.Restored,
+    });
+
     const minimumAdaValue = this.getMinimumAdaValue();
 
     return (
@@ -1101,7 +1108,7 @@ export default class WalletSendForm extends Component<Props, State> {
           <BorderedBox>
             <div className={styles.walletSendForm}>
               {formFields.receiver && this.renderReceiverRow()}
-              <div className={styles.estimatedFeeInput}>
+              <div className={estimatedFeeInputClasses}>
                 <ReadOnlyInput
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
                   value={
