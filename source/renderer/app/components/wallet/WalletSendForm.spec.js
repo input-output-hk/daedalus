@@ -68,7 +68,7 @@ describe('wallet/Wallet Send Form', () => {
                 validateAssetAmount={jest.fn().mockResolvedValue(true)}
                 calculateTransactionFee={calculateTransactionFee}
                 walletAmount={new BigNumber(123)}
-                assets={[createAssets()]}
+                assets={[createAssets(), createAssets()]}
                 addressValidator={() => true}
                 onOpenDialogAction={jest.fn()}
                 isDialogOpen={jest.fn()}
@@ -109,14 +109,14 @@ describe('wallet/Wallet Send Form', () => {
     return labelNode.parentElement.querySelector('input');
   }
 
-  async function addToken() {
+  async function addToken(value: number = 1, tokenIndex: number = 1) {
     const addTokenButton = await screen.findByText('+ Add a token');
     fireEvent.click(addTokenButton);
 
-    const token = getInput('Token #1');
+    const token = getInput(`Token #${tokenIndex}`);
     fireEvent.change(token, {
       target: {
-        value: 1,
+        value,
       },
     });
 
@@ -390,5 +390,29 @@ describe('wallet/Wallet Send Form', () => {
 
     const adaInput = getInput('Ada');
     expect(adaInput).toHaveValue(`${minimumAda},000000`);
+  });
+
+  test('should calculate transaction fee even when one of the assets are empty', async () => {
+    expect.assertions(2);
+
+    const minimumAda = 2;
+
+    const calculateTransactionFeeMock = createTransactionFeeMock(4, minimumAda);
+
+    render(
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
+    );
+
+    enterReceiverAddress();
+
+    await addToken(0);
+    await waitForMinimumAdaRequiredMsg(1);
+
+    expect(getInput('Ada')).toHaveValue('');
+
+    await addToken(minimumAda, 2);
+    await waitForMinimumAdaRequiredMsg();
+
+    assertAdaInput(minimumAda);
   });
 });

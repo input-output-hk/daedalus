@@ -453,27 +453,23 @@ export default class WalletSendForm extends Component<Props, State> {
   calculateTransactionFee = async (
     shouldUpdateMinimumAdaAmount: boolean = false
   ) => {
-    if (this.validateEmptyAssets()) {
-      return;
-    }
+    this.validateEmptyAssets();
 
     const { form } = this;
-    const emptyAssetFieldValue = '0';
     const receiverField = form.$('receiver');
     const receiver = receiverField.value;
     const adaAmountField = form.$('adaAmount');
     const adaAmount = formattedAmountToLovelace(adaAmountField.value);
-    const assets: ApiTokens = filter(
-      this.selectedAssets.map(({ policyId, assetName }, index) => {
+    const assets: ApiTokens = this.selectedAssets
+      .map(({ policyId, assetName }, index) => {
         const quantity = new BigNumber(this.selectedAssetsAmounts[index]);
         return {
           policy_id: policyId,
           asset_name: assetName,
           quantity, // BigNumber or number - prevent parsing a BigNumber to Number (Integer) because of JS number length limitation
         };
-      }),
-      'quantity'
-    );
+      })
+      .filter(({ quantity }: { quantity: BigNumber }) => quantity.gt(0));
 
     const {
       selectedAssetUniqueIds,
@@ -498,8 +494,7 @@ export default class WalletSendForm extends Component<Props, State> {
         this.isLatestTransactionFeeRequest(
           this.state.feeCalculationRequestQue,
           prevFeeCalculationRequestQue
-        ) &&
-        !this.selectedAssetsAmounts.includes(emptyAssetFieldValue)
+        )
       ) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
         const adaAmountValue = new BigNumber(adaAmountField.value || 0);
