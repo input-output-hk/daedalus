@@ -11717,6 +11717,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!ICO Public Key",
+        "description": "Title for the \"ICO Public Key QR Code\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog.messages.js",
+        "id": "wallet.settings.icoPublicKey",
+        "start": {
+          "column": 15,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy ICO public key",
+        "description": "Copy ICO public key label.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog.messages.js",
+        "id": "wallet.settings.copyICOPublicKey",
+        "start": {
+          "column": 22,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Derivation path",
+        "description": "Tooltip for the derivation path",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog.messages.js",
+        "id": "wallet.settings.dialog.derivationPathTooltip",
+        "start": {
+          "column": 25,
+          "line": 18
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Set a password",
         "description": "Label for the \"Set a password\" button in the set wallet password dialog.",
         "end": {
@@ -17524,41 +17571,13 @@
         "description": "Tooltip for the derivation path",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 33
         },
         "file": "source/renderer/app/containers/wallet/dialogs/settings/PublicKeyQRCodeDialogContainer.js",
         "id": "wallet.settings.dialog.derivationPathTooltip",
         "start": {
           "column": 25,
-          "line": 49
-        }
-      },
-      {
-        "defaultMessage": "!!!ICO Public Key",
-        "description": "Title for the \"ICO Public Key QR Code\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/containers/wallet/dialogs/settings/PublicKeyQRCodeDialogContainer.js",
-        "id": "wallet.settings.icoPublicKey",
-        "start": {
-          "column": 15,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!Copy ICO public key",
-        "description": "Copy ICO public key label.",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "source/renderer/app/containers/wallet/dialogs/settings/PublicKeyQRCodeDialogContainer.js",
-        "id": "wallet.settings.copyICOPublicKey",
-        "start": {
-          "column": 22,
-          "line": 44
+          "line": 29
         }
       }
     ],
