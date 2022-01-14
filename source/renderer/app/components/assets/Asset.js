@@ -173,7 +173,7 @@ export default class Asset extends Component<Props, State> {
     const {
       asset,
       metadataNameChars,
-      small,
+      small = true,
       fullFingerprint,
       hasWarning,
       hasError,
@@ -182,9 +182,9 @@ export default class Asset extends Component<Props, State> {
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.pill,
-      small ? styles.small : null,
       hasError ? styles.error : null,
     ]);
+    const [startCharAmount, endCharAmoout] = small ? [9, 4] : [12, 12];
     let warningPopOverMessage;
     if (hasWarning) {
       warningPopOverMessage =
@@ -195,7 +195,9 @@ export default class Asset extends Component<Props, State> {
     return (
       <div className={contentStyles}>
         <div className={styles.fingerprint}>
-          {fullFingerprint ? fingerprint : ellipsis(fingerprint || '', 12, 12)}
+          {fullFingerprint
+            ? fingerprint
+            : ellipsis(fingerprint || '', startCharAmount, endCharAmoout)}
         </div>
         {name && (
           <div className={styles.metadataName}>

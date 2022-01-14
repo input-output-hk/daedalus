@@ -71,6 +71,7 @@ const WalletTokenHeader = (props: Props) => {
 
       <Asset
         asset={asset}
+        small={false}
         onCopyAssetParam={onCopyAssetParam}
         metadataNameChars={get('name', asset.metadata, 0)}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
