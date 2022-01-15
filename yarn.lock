@@ -15845,6 +15845,10 @@ seed-random@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/seed-random/-/seed-random-2.2.0.tgz#2a9b19e250a817099231a5b99a4daf80b7fbed54"
 
+seedrandom@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
@@ -17121,6 +17125,10 @@ time-stamp@^1.0.0:
 time-zone@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/time-zone/-/time-zone-1.0.0.tgz#99c5bf55958966af6d06d83bdf3800dc82faec5d"
+
+timemachine@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/timemachine/-/timemachine-0.3.2.tgz#83c594d0271c3608d5fab13636cd3b7c979ea2c5"
 
 timers-browserify@^2.0.4:
   version "2.0.12"
