@@ -1,9 +1,8 @@
-// @flow
 import { defineMessages } from 'react-intl';
-import type { ReactIntlMessage } from '../../../types/i18nTypes';
+import { ReactIntlMessage } from '../../../types/i18nTypes';
 
 export const messages: {
-  [string]: ReactIntlMessage,
+  [key: string]: ReactIntlMessage;
 } = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.icoPublicKey',

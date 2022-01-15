@@ -173,8 +173,9 @@ const onAppReady = async () => {
   enableApplicationMenuNavigationChannel.onReceive(
     () =>
       new Promise((resolve) => {
+        const locale = getLocale(network);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-        buildAppMenus(mainWindow, cardanoNode, userLocale, {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: true,
         });
         resolve();
@@ -183,12 +184,13 @@ const onAppReady = async () => {
   rebuildApplicationMenu.onReceive(
     (data) =>
       new Promise((resolve) => {
+        const locale = getLocale(network);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-        buildAppMenus(mainWindow, cardanoNode, userLocale, {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: data.isNavigationEnabled,
         });
         // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
-        mainWindow.updateTitle(userLocale);
+        mainWindow.updateTitle(locale);
         resolve();
       })
   );

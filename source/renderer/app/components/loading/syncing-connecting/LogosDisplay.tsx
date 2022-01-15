@@ -47,7 +47,7 @@ export default class LogosDisplay extends Component<Props> {
     return (
       <div className={styles.component}>
         <SVGInline svg={adaLogo} className={currencyLogoStyles} />
-        <div className={daedalusLogoStyles}>
+        <div className={daedalusLogoStyles} data-chromatic="ignore">
           <Lottie options={logoAnimationOptionsLottie} />
         </div>
         <SVGInline svg={cardanoLogo} className={apiLogoStyles} />

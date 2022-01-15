@@ -12,14 +12,13 @@ import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyQRCodeDialog.scss' ... Remove this comment to see the full error message
 import styles from './PublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
-import type { ReactIntlMessage } from '../../../types/i18nTypes';
+import { messages } from './ICOPublicKeyQRCodeDialog.messages';
 
 type Props = {
   walletName: string;
   walletPublicKey: string;
   onCopyWalletPublicKey: (...args: Array<any>) => any;
   onClose: (...args: Array<any>) => any;
-  messages: Record<string, ReactIntlMessage>;
   derivationPath: string;
   intl: intlShape.isRequired;
 };
@@ -29,7 +28,6 @@ const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
     walletPublicKey,
     onCopyWalletPublicKey,
     onClose,
-    messages,
     derivationPath,
     intl,
   } = props;
