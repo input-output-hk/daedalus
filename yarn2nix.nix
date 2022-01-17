@@ -166,7 +166,11 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
-    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs} $out/share/daedalus/node_modules/
+
+    for module in \@babel \@protobufjs regenerator-runtime node-fetch \@trezor runtypes parse-uri randombytes safe-buffer bip66 pushdata-bitcoin bitcoin-ops typeforce varuint-bitcoin create-hash blake2b nanoassert blake2b-wasm bs58check bs58 base-x create-hmac wif ms keccak semver-compare long define-properties object-keys has function-bind es-abstract has-symbols json-stable-stringify tiny-worker cashaddrjs big-integer inherits bchaddrjs cross-fetch trezor-connect js-chain-libs-node bignumber.js call-bind get-intrinsic base64-js ieee754 cbor-web util-deprecate bech32 blake-hash tiny-secp256k1 bn.js elliptic minimalistic-assert minimalistic-crypto-utils brorand hash.js hmac-drbg int64-buffer object.values bytebuffer protobufjs
+      cp -rv $node_modules/$module $out/share/daedalus/node_modules/
+    done
+    
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
