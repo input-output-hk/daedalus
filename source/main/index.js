@@ -172,7 +172,8 @@ const onAppReady = async () => {
   enableApplicationMenuNavigationChannel.onReceive(
     () =>
       new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, userLocale, {
+        const locale = getLocale(network);
+        buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: true,
         });
         resolve();
@@ -182,10 +183,11 @@ const onAppReady = async () => {
   rebuildApplicationMenu.onReceive(
     (data) =>
       new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, userLocale, {
+        const locale = getLocale(network);
+        buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: data.isNavigationEnabled,
         });
-        mainWindow.updateTitle(userLocale);
+        mainWindow.updateTitle(locale);
         resolve();
       })
   );
