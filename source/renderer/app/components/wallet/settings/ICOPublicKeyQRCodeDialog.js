@@ -11,14 +11,14 @@ import Dialog from '../../widgets/Dialog';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import styles from './PublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
-import type { ReactIntlMessage } from '../../../types/i18nTypes';
+
+import { messages } from './ICOPublicKeyQRCodeDialog.messages';
 
 type Props = {
   walletName: string,
   walletPublicKey: string,
   onCopyWalletPublicKey: Function,
   onClose: Function,
-  messages: { [string]: ReactIntlMessage },
   derivationPath: string,
   intl: intlShape.isRequired,
 };
@@ -29,7 +29,6 @@ const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
     walletPublicKey,
     onCopyWalletPublicKey,
     onClose,
-    messages,
     derivationPath,
     intl,
   } = props;
