@@ -17,4 +17,13 @@ describe('Formatters/formatCpuInfo', () => {
       })
     ).toEqual('AMD Ryzen 7 3700U with Radeon Vega Mobile Gfx @ 2.40GHz');
   });
+  it('removes all unnecessary whitespace characters', () => {
+    expect(
+      formatCpuInfo({
+        // eslint-disable-next-line no-useless-escape
+        model: ' Super Fast    NextGen\tProcessor ',
+        speed: 1000,
+      })
+    ).toEqual('Super Fast NextGen Processor @ 1.00GHz');
+  });
 });
