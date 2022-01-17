@@ -6,6 +6,7 @@ import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import { formattedBytesToSize } from '../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
+import formatCpuInfo from '../../utils/formatCpuInfo';
 
 type Props = InjectedDialogContainerProps;
 
@@ -59,16 +60,10 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       getNetworkClockRequest,
     } = networkStatus;
 
-    const { model = '', speed = 0 } = environment.cpu?.[0] || {};
-    const cpu = {
-      model,
-      speed,
-    };
-
     const systemInfo = {
       platform: environment.os,
       platformVersion: environment.platformVersion,
-      cpu,
+      cpu: formatCpuInfo(environment.cpu),
       ram: formattedBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
     };

@@ -24,7 +24,6 @@ import type { CardanoNodeState } from '../../../../common/types/cardano-node.typ
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
-import formatCpuInfo from './formatCpuInfo';
 
 const messages = defineMessages({
   systemInfo: {
@@ -480,12 +479,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const {
       platform,
       platformVersion,
-      cpu: cpuInfo,
+      cpu,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
     } = systemInfo;
 
-    const cpu = formatCpuInfo(cpuInfo);
     const availableDiskSpace = formattedSize(
       availableDiskSpaceInOriginalFormat
     );
