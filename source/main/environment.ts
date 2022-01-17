@@ -36,8 +36,12 @@ const isAlonzoPurple = checkIsAlonzoPurple(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
-const isWatchMode = process.env.IS_WATCH_MODE;
-const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
+const isWatchMode =
+  (process.env.IS_WATCH_MODE && process.env.IS_WATCH_MODE === 'true') || false;
+const keepLocalClusterRunning =
+  (process.env.KEEP_LOCAL_CLUSTER_RUNNING &&
+    process.env.KEEP_LOCAL_CLUSTER_RUNNING === 'true') ||
+  false;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const NODE_VERSION = '1.32.1'; // TODO: pick up this value from process.env
 const mainProcessID = get(process, 'ppid', '-');
@@ -51,7 +55,9 @@ const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
-const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
+const MOBX_DEV_TOOLS =
+  (process.env.MOBX_DEV_TOOLS && process.env.MOBX_DEV_TOOLS === 'true') ||
+  false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
