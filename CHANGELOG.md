@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Unify CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
+
 ### Fixes
 
 - Fixed immediate language updates of application top menu bar ([PR 2813](https://github.com/input-output-hk/daedalus/pull/2813))
