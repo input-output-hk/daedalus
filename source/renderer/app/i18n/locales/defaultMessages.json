@@ -287,8 +287,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Balance after transaction would not be enough to support tokens in wallet. A minimum of {adaToRemain} ADA must remain.",
-        "description": "\"Balance after transaction would not be enough to support tokens",
+        "defaultMessage": "!!!Insufficient funds to support tokens. A minimum of {adaToRemain} ADA must remain in the wallet after this transaction.",
+        "description": "\"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet",
         "end": {
           "column": 3,
           "line": 120
