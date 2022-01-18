@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
+
 ### Fixes
 
 - Fixed immediate language updates of application top menu bar ([PR 2813](https://github.com/input-output-hk/daedalus/pull/2813))
