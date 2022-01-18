@@ -3,8 +3,9 @@ import hash from 'hash.js';
 import faker from 'faker';
 import JSONBigInt from 'json-bigint';
 import moment from 'moment';
-import { random, get } from 'lodash';
+import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
+import seedrandom from 'seedrandom';
 import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -33,6 +34,8 @@ import type {
 } from '../../../source/renderer/app/api/assets/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
+
+const random = seedrandom('daedalus', { global: false });
 
 export const EXAMPLE_METADATA = JSONBigInt.parse(`{
       "0": {
@@ -81,19 +84,11 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
     }`);
 
 export const generateHash = () => {
-  const now = new Date().valueOf().toString();
-  return hash
-    .sha512()
-    .update(now + random(0.1, 0.9))
-    .digest('hex');
+  return hash.sha512().update(random().toString()).digest('hex');
 };
 
 export const generatePolicyIdHash = () => {
-  const now = new Date().valueOf().toString();
-  return hash
-    .sha224()
-    .update(now + random(0.1, 0.9))
-    .digest('hex');
+  return hash.sha224().update(random().toString()).digest('hex');
 };
 
 const statusProgress = (status) =>
