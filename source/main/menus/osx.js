@@ -13,6 +13,7 @@ import { getRtsFlags } from '../utils/rtsFlags';
 const id = 'menu';
 const { isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlags(network);
+const rtsFlagsEnabled = rtsFlags && rtsFlags?.length > 0;
 
 export const osxMenu = (
   app: App,
@@ -159,9 +160,10 @@ export const osxMenu = (
       {
         label: translation('helpSupport.usingRtsFlags'),
         type: 'checkbox',
-        checked: !!rtsFlags && rtsFlags?.length > 0,
-        click() {
-          actions.setRtsFlags(rtsFlags?.length === 0);
+        checked: rtsFlagsEnabled,
+        click(item) {
+          actions.setRtsFlags(!rtsFlagsEnabled);
+          item.checked = rtsFlagsEnabled;
         },
       },
       { type: 'separator' },
