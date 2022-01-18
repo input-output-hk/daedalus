@@ -6,6 +6,7 @@ import { HARDENED } from '../config/hardwareWalletsConfig';
 
 // Types
 import type { CoinSelectionAssetsType } from '../api/transactions/types';
+import type { AddressType } from '../../../common/types/address-introspection.types';
 
 export type PathRoleIdentityType =
   | 'utxo_external'
@@ -37,6 +38,21 @@ export const KEY_PREFIXES = {
 };
 
 // Helpers
+
+const receiverAddressTypes: Set<AddressType> = new Set([
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+]);
+
+export const isReceiverAddressType = (addressType: AddressType) =>
+  receiverAddressTypes.has(addressType);
 
 // [1852H, 1815H, 0H] => m/1852'/1815'/0'
 export const derivationPathToString = (derivationPath: Array<string>) => {

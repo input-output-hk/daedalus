@@ -33,11 +33,11 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "13.1.1";
+  windowsElectronVersion = "13.6.3";
   electronPath = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}";
   windowsElectron = fetchurl {
     url = "${electronPath}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "2f8932aec40882381e839eee34998f9b1d48292f425735d8dc9a45cc3d75cb41";
+    sha256 = "18085a2509447fef8896daeee96a12f48f8e60a4d5ec4cfab44d8d59b9d89a72";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
@@ -49,7 +49,7 @@ let
   '';
   electron-gyp = fetchurl {
     url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
-    sha256 = "25bfc02a19d7eac9191f4735868891e87c9352222d73a931699b47229e3380cd";
+    sha256 = "f8567511857ab62659505ba5158b6ad69afceb512105a3251d180fe47f44366c";
   };
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -123,7 +123,7 @@ yarn2nix.mkYarnPackage {
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
 
     mkdir -pv $out/resources/app/node_modules
-    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic,base64-js,ieee754,cbor-web} $out/resources/app/node_modules
+    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs} $out/resources/app/node_modules
 
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
@@ -150,10 +150,11 @@ yarn2nix.mkYarnPackage {
 
     dup keccak
     dup node-hid
-    dup secp256k1
     dup usb
     dup @ledgerhq
     dup electron-chromedriver
+    dup blake-hash
+    dup tiny-secp256k1
 
     # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
@@ -167,7 +168,7 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
-    cp -rv $node_modules/{\@babel,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,bigi,create-hash,merkle-lib,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,ecurve,wif,ms,keccak,trezor-link,semver-compare,protobufjs-old-fixed-webpack,bytebuffer-old-fixed-webpack,long,object.values,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,hd-wallet,cashaddrjs,big-integer,queue,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,int64-buffer,call-bind,get-intrinsic,base64-js,ieee754,cbor-web} $out/share/daedalus/node_modules/
+    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs} $out/share/daedalus/node_modules/
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
