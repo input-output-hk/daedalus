@@ -4,7 +4,7 @@
 
 ### Features
 
-- Unify CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
+- Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
 
 ### Fixes
 
