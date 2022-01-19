@@ -17,16 +17,17 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import {
   Container,
   Ticker,
-  Rewards,
-  NoDataDash,
-  ClockIcon,
-  NoDataDashIcon,
   Ranking,
   RankingStar,
-  SaturationBar,
+  Rewards,
+  AdaIcon,
+  NoDataDash,
+  NoDataDashIcon,
   Clock,
-  GreyColorBand,
+  ClockIcon,
   ColorBand,
+  GreyColorBand,
+  SaturationBar,
 } from './ThumbPoolContent.styles';
 
 type Props = {
@@ -72,56 +73,70 @@ class ThumbPoolContent extends Component<Props> {
     } = stakePool;
     const color = getColorFromRange(ranking, numberOfRankedStakePools);
 
+    const saturationClassnames = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(saturation)],
+    ]);
+
     return (
       <Container isSaturationDataAvailable={IS_SATURATION_DATA_AVAILABLE}>
-        <Box h="full">
-          <Ticker isSaturationDataAvailable={IS_SATURATION_DATA_AVAILABLE}>
-            {ticker}
-          </Ticker>
-          {isGridRewardsView &&
-            (IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
-              <Rewards>{this.formattedRewards(potentialRewards)}</Rewards>
-            ) : (
-              <NoDataDash />
-            ))}
-          {!isGridRewardsView &&
-            (IS_RANKING_DATA_AVAILABLE ? (
-              <Ranking color={color}>
-                {nonMyopicMemberRewards ? (
-                  ranking
-                ) : (
-                  <>
-                    {numberOfRankedStakePools + 1}
-                    <RankingStar>*</RankingStar>
-                  </>
-                )}
-              </Ranking>
-            ) : (
-              <Center flex="1 1 auto">
-                <NoDataDashIcon svg={noDataDashBigImage} />
-              </Center>
-            ))}
-          {IS_SATURATION_DATA_AVAILABLE && (
-            <SaturationBar
-              width={parseFloat(saturation).toFixed(2)}
-              color={color}
-            />
-          )}
-        </Box>
-        <Box alignSelf="flex-end" w="full">
-          {IS_RANKING_DATA_AVAILABLE ? (
-            <>
-              {retiring && (
-                <Clock>
-                  <ClockIcon svg={clockIcon} />
-                </Clock>
-              )}
-              <ColorBand color={color} />
-            </>
+        <Ticker isSaturationDataAvailable={IS_SATURATION_DATA_AVAILABLE}>
+          {ticker}
+        </Ticker>
+        {isGridRewardsView &&
+          (IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+            <Rewards>
+              {this.formattedRewards(potentialRewards)}
+              <AdaIcon svg={adaIcon} />
+            </Rewards>
           ) : (
-            <GreyColorBand />
-          )}
-        </Box>
+            <div className={styles.noDataDash}>
+              <SVGInline svg={noDataDashBigImage} />
+            </div>
+          ))}
+        {!isGridRewardsView &&
+          (IS_RANKING_DATA_AVAILABLE ? (
+            <Ranking style={{ color }}>
+              {nonMyopicMemberRewards ? (
+                ranking
+              ) : (
+                <>
+                  {numberOfRankedStakePools + 1}
+                  <RankingStar>*</RankingStar>
+                </>
+              )}
+            </Ranking>
+          ) : (
+            <NoDataDash>
+              <NoDataDashIcon svg={noDataDashBigImage} />
+            </NoDataDash>
+          ))}
+        {IS_SATURATION_DATA_AVAILABLE && (
+          <SaturationBar>
+            <span
+              style={{
+                // @ts-ignore Argument of type 'number' is not assignable to parameter of type 'string'.ts(2345)
+                width: `${parseFloat(saturation).toFixed(2)}%`,
+              }}
+            />
+          </SaturationBar>
+        )}
+        {IS_RANKING_DATA_AVAILABLE ? (
+          <>
+            {retiring && (
+              <Clock>
+                <ClockIcon svg={clockIcon} />
+              </Clock>
+            )}
+            <ColorBand
+              style={{
+                background: color,
+              }}
+            />
+          </>
+        ) : (
+          <GreyColorBand />
+        )}
       </Container>
     );
   }
