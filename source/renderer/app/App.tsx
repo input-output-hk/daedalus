@@ -6,6 +6,7 @@ import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import { themeOverrides } from './themes/overrides';
@@ -19,6 +20,29 @@ import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
+
+const theme = extendTheme({
+  fonts: {
+    body: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    heading: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    mono: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  },
+  components: {
+    Text: {
+      baseStyle: {
+        fontFamily: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+      },
+    },
+  },
+  colors: {
+    stakePoolSaturation: {
+      green: '--theme-staking-stake-pool-saturation-green-color',
+      orange: '--theme-staking-stake-pool-saturation-orange-color',
+      red: '--theme-staking-stake-pool-saturation-red-color',
+      yellow: '--theme-staking-stake-pool-saturation-yellow-color',
+    },
+  },
+});
 
 @observer
 class App extends Component<{
@@ -55,46 +79,48 @@ class App extends Component<{
     }
 
     return (
-      <Fragment>
-        {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
-        <ThemeManager variables={themeVars} />
-        <Provider stores={stores} actions={actions}>
-          <ThemeProvider
-            theme={daedalusTheme}
-            skins={SimpleSkins}
-            variables={SimpleDefaults}
-            themeOverrides={themeOverrides}
-          >
-            <IntlProvider
-              {...{
-                locale,
-                key: locale,
-                messages: translations[locale],
-              }}
+      <ChakraProvider theme={theme}>
+        <Fragment>
+          {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
+          <ThemeManager variables={themeVars} />
+          <Provider stores={stores} actions={actions}>
+            <ThemeProvider
+              theme={daedalusTheme}
+              skins={SimpleSkins}
+              variables={SimpleDefaults}
+              themeOverrides={themeOverrides}
             >
-              <Fragment>
-                <Router history={history}>
-                  <Routes />
-                </Router>
-                {mobxDevTools}
-                {[
-                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                  isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
-                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                  isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
-                    <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
-                  ),
-                  <NotificationsContainer key="notificationsContainer" />,
-                ]}
-                {canShowNews && [
-                  <NewsFeedContainer key="newsFeedList" />,
-                  <NewsOverlayContainer key="newsFeedOverlay" />,
-                ]}
-              </Fragment>
-            </IntlProvider>
-          </ThemeProvider>
-        </Provider>
-      </Fragment>
+              <IntlProvider
+                {...{
+                  locale,
+                  key: locale,
+                  messages: translations[locale],
+                }}
+              >
+                <Fragment>
+                  <Router history={history}>
+                    <Routes />
+                  </Router>
+                  {mobxDevTools}
+                  {[
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                    isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                    isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
+                      <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
+                    ),
+                    <NotificationsContainer key="notificationsContainer" />,
+                  ]}
+                  {canShowNews && [
+                    <NewsFeedContainer key="newsFeedList" />,
+                    <NewsOverlayContainer key="newsFeedOverlay" />,
+                  ]}
+                </Fragment>
+              </IntlProvider>
+            </ThemeProvider>
+          </Provider>
+        </Fragment>
+      </ChakraProvider>
     );
   }
 }
