@@ -6,9 +6,8 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './Asset.scss';
-import { ellipsis } from '../../utils/strings';
+import { ellipsis, hexToString } from '../../utils/strings';
 import AssetContent from './AssetContent';
-import { hexToString } from '../../utils/strings';
 
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
