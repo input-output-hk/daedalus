@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
 ## 4.7.0
 
 ### Features
@@ -16,7 +22,7 @@
 - Integrated Chromatic for visual regression testing ([PR 2776](https://github.com/input-output-hk/daedalus/pull/2776))
 - Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
 - Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
-- Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799), [PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+- Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))
 
 ## 4.6.0
 
