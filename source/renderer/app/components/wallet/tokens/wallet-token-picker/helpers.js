@@ -44,10 +44,10 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
 export const getMaxTokensIdMap = ({
   checkedIds,
   currentAssetIds,
-  previousCheckedIds,
+  previouslyCheckedIds,
 }: GetMaxTokensIdMap) => {
   return [...new Set([...checkedIds, ...currentAssetIds])]
-    .slice(0, MAX_TOKENS - previousCheckedIds.length)
+    .slice(0, MAX_TOKENS - previouslyCheckedIds.length)
     .reduce((acc: BooleanMap, element) => ({ ...acc, [element]: true }), {});
 };
 
@@ -66,11 +66,11 @@ export const clearSelection = ({
 
 export const getEnabledAssetIds = ({
   assets,
-  disabledIdsSet,
+  previouslyCheckedIdsSet,
 }: GetEnabledAssetIds) =>
   assets.reduce(
     (acc, { uniqueId }) =>
-      disabledIdsSet.has(uniqueId) ? acc : [...acc, uniqueId],
+      previouslyCheckedIdsSet.has(uniqueId) ? acc : [...acc, uniqueId],
     []
   );
 

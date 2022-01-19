@@ -24,7 +24,7 @@ describe('WalletTokenPicker hooks', () => {
     const hook = setup(useCheckboxes, {
       assets,
       currentAssets: assets,
-      previousCheckedIds: [],
+      previouslyCheckedIds: [],
     });
 
     expect(hook.checkboxes).toMatchObject({});
@@ -59,7 +59,7 @@ describe('WalletTokenPicker hooks', () => {
       const hook = setup(useCheckboxes, {
         assets,
         currentAssets: assets,
-        previousCheckedIds: [],
+        previouslyCheckedIds: [],
       });
 
       for (let i = 0; i < sequence.length; i++) {
@@ -78,7 +78,7 @@ describe('WalletTokenPicker hooks', () => {
   );
 
   const toogleAllFnCases = [
-    // testId, [assets, previousCheckedIds], alreadyChecked, expected [checkedCount, checkedIds]
+    // testId, [assets, previouslyCheckedIds], alreadyChecked, expected [checkedCount, checkedIds]
     [
       'less than 30 assets',
       [generateAssets(10), []],
@@ -107,11 +107,11 @@ describe('WalletTokenPicker hooks', () => {
 
   test.each(toogleAllFnCases)(
     'useCheckboxes toogle toogleAllFn for %s',
-    (testId, [assets, previousCheckedIds], alreadyChecked, expected) => {
+    (testId, [assets, previouslyCheckedIds], alreadyChecked, expected) => {
       const hook = setup(useCheckboxes, {
         assets,
         currentAssets: assets,
-        previousCheckedIds,
+        previouslyCheckedIds,
       });
 
       for (let i = 0; i < alreadyChecked.length; i++) {

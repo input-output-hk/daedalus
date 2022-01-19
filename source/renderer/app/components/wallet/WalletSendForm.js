@@ -965,7 +965,7 @@ export default class WalletSendForm extends Component<Props, State> {
         {isTokenPickerOpen && (
           <WalletTokenPicker
             assets={assets}
-            previousCheckedIds={selectedAssetUniqueIds}
+            previouslyCheckedIds={selectedAssetUniqueIds}
             tokenFavorites={tokenFavorites}
             walletName={walletName}
             onCancel={() => {

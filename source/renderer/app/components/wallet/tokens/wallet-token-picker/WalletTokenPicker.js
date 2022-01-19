@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
@@ -25,7 +25,7 @@ const WalletTokenPicker = ({
   assets,
   walletName,
   tokenFavorites,
-  previousCheckedIds = [],
+  previouslyCheckedIds = [],
   onAdd,
   onCancel,
 }: Props) => {
@@ -44,7 +44,7 @@ const WalletTokenPicker = ({
     checkboxes,
     totalCheckedCount,
     checkedIds,
-    disabledIdsSet,
+    previouslyCheckedIdsSet,
     isMaxTotalCount,
     isToggleAllDisabled,
     isClearAllMode,
@@ -53,7 +53,7 @@ const WalletTokenPicker = ({
   } = useCheckboxes({
     assets,
     currentAssets,
-    previousCheckedIds,
+    previouslyCheckedIds,
   });
   const scrollNotTop = scrollPosition !== ScrollPositionEnum.TOP;
   const toolbarStyles = classNames(
@@ -63,18 +63,21 @@ const WalletTokenPicker = ({
   const toolbarContainerStyles = classNames(
     scrollNotTop && styles.toolbarContainer
   );
-  const actions = [
-    {
-      label: intl.formatMessage(messages.cancelButtonLabel),
-      onClick: onCancel,
-    },
-    {
-      label: intl.formatMessage(messages.addButtonLabel),
-      primary: true,
-      disabled: !checkedIds.length,
-      onClick: () => onAdd(checkedIds),
-    },
-  ];
+  const actions = useMemo(
+    () => [
+      {
+        label: intl.formatMessage(messages.cancelButtonLabel),
+        onClick: onCancel,
+      },
+      {
+        label: intl.formatMessage(messages.addButtonLabel),
+        primary: true,
+        disabled: !checkedIds.length,
+        onClick: () => onAdd(checkedIds),
+      },
+    ],
+    [intl, checkedIds, onAdd]
+  );
 
   return (
     <Dialog
@@ -143,7 +146,9 @@ const WalletTokenPicker = ({
                 className={styles.checkbox}
                 isChecked={checkboxes[asset.uniqueId]}
                 isMaxCount={isMaxTotalCount}
-                isDisabled={disabledIdsSet.has(asset.uniqueId)}
+                isPreviouslyChecked={previouslyCheckedIdsSet.has(
+                  asset.uniqueId
+                )}
                 uniqueId={asset.uniqueId}
                 toggleCheckbox={toggleCheckbox}
               />

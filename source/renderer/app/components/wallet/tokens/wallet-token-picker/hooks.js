@@ -30,23 +30,25 @@ import type {
 export const useCheckboxes = ({
   assets,
   currentAssets,
-  previousCheckedIds,
+  previouslyCheckedIds,
 }: UseCheckboxes) => {
   const [checkboxes, setCheckboxes] = useState<BooleanMap>({});
   const checkedIds = useMemo(() => getCheckedIds(checkboxes), [checkboxes]);
-  const disabledIdsSet = useMemo(() => new Set<string>(previousCheckedIds), [
-    previousCheckedIds,
-  ]);
+  const previouslyCheckedIdsSet = useMemo(
+    () => new Set<string>(previouslyCheckedIds),
+    [previouslyCheckedIds]
+  );
   const currentAssetIds = useMemo(
-    () => getEnabledAssetIds({ assets: currentAssets, disabledIdsSet }),
-    [currentAssets, disabledIdsSet]
+    () =>
+      getEnabledAssetIds({ assets: currentAssets, previouslyCheckedIdsSet }),
+    [currentAssets, previouslyCheckedIdsSet]
   );
   const currentCheckedIds = useMemo(
     () => getCurrentCheckedIds({ checkboxes, currentAssetIds }),
     [checkboxes, currentAssetIds]
   );
   const currentCheckedCount = currentCheckedIds.length;
-  const totalCheckedCount = checkedIds.length + disabledIdsSet.size;
+  const totalCheckedCount = checkedIds.length + previouslyCheckedIdsSet.size;
   const isMaxTotalCount =
     totalCheckedCount === Math.min(MAX_TOKENS, assets.length);
   const isMaxCurrentCount =
@@ -60,10 +62,10 @@ export const useCheckboxes = ({
       getMaxTokensIdMap({
         checkedIds,
         currentAssetIds,
-        previousCheckedIds,
+        previouslyCheckedIds,
       })
     );
-  }, [currentAssetIds, setCheckboxes, previousCheckedIds, checkedIds]);
+  }, [currentAssetIds, setCheckboxes, previouslyCheckedIds, checkedIds]);
   const toggleAllMode = getToggleAllMode({
     isMaxCurrentCount,
     isMaxTotalCount,
@@ -97,7 +99,7 @@ export const useCheckboxes = ({
     checkedIds,
     isMaxTotalCount,
     isToggleAllDisabled,
-    disabledIdsSet,
+    previouslyCheckedIdsSet,
     toogleAllFn,
     toggleCheckbox,
     isClearAllMode,
@@ -119,7 +121,7 @@ export const useFilters = ({ assets, tokenFavorites }: UseFilters) => {
       tokenFavorites,
     });
     setCurrentAssets(filterdAssets);
-  }, [assets, searchValue, filterOption]);
+  }, [assets, searchValue, filterOption, tokenFavorites]);
 
   return {
     searchValue,

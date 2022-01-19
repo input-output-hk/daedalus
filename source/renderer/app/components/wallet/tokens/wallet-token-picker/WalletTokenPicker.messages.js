@@ -50,7 +50,7 @@ export const messages = defineMessages({
   maxTokensWarning: {
     id: 'wallet.token.picker.maxTokensWarning',
     defaultMessage:
-      'You have already reached a maximum of {maxTokens} tokens for your transaction. To add another token you need to remove one from a list.',
+      '!!!You have already reached a maximum of {maxTokens} tokens for your transaction. To add another token you need to remove one from a list.',
     description: 'Max tokens warning',
   },
 });

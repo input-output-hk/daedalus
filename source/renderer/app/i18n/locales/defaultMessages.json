@@ -13226,7 +13226,7 @@
         }
       },
       {
-        "defaultMessage": "You have already reached a maximum of {maxTokens} tokens for your transaction. To add another token you need to remove one from a list.",
+        "defaultMessage": "!!!You have already reached a maximum of {maxTokens} tokens for your transaction. To add another token you need to remove one from a list.",
         "description": "Max tokens warning",
         "end": {
           "column": 3,

@@ -7,7 +7,7 @@ export type Props = {
   assets: Array<AssetToken>,
   walletName: string,
   tokenFavorites: Object,
-  previousCheckedIds?: Array<string>,
+  previouslyCheckedIds?: Array<string>,
   onAdd: Function,
   onCancel: Function,
 };
@@ -17,7 +17,7 @@ export type ItemProps = {
   className: string,
   isChecked: boolean,
   isMaxCount: boolean,
-  isDisabled: boolean,
+  isPreviouslyChecked: boolean,
   uniqueId: string,
   toggleCheckbox: Function,
 };
@@ -45,7 +45,7 @@ export type FilterAssets = {
 export type UseCheckboxes = {
   assets: Assets,
   currentAssets: Assets,
-  previousCheckedIds: Array<string>,
+  previouslyCheckedIds: Array<string>,
 };
 
 export type UseFilters = {
@@ -56,7 +56,7 @@ export type UseFilters = {
 export type GetMaxTokensIdMap = {
   checkedIds: Array<string>,
   currentAssetIds: Array<string>,
-  previousCheckedIds: Array<string>,
+  previouslyCheckedIds: Array<string>,
 };
 
 export type GetTokenCounterText = {
@@ -77,7 +77,7 @@ export type GetToggleAllMode = {
 
 export type GetEnabledAssetIds = {
   assets: Assets,
-  disabledIdsSet: Set<string>,
+  previouslyCheckedIdsSet: Set<string>,
 };
 
 export type GetCurrentCheckedIds = ClearSelection;
