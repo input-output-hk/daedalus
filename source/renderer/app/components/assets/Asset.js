@@ -210,7 +210,7 @@ export default class Asset extends Component<Props, State> {
         {assetNameLabel && (
           <div className={styles.metadataName}>
             {metadataNameChars
-              ? ellipsis(name, metadataNameChars)
+              ? ellipsis(assetNameLabel, metadataNameChars)
               : assetNameLabel}
           </div>
         )}
