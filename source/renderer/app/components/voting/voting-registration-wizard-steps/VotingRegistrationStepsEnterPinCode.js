@@ -60,6 +60,11 @@ const messages = defineMessages({
     description:
       'Label for continue button on the voting registration "enter pin code" step.',
   },
+  resetPinCodes: {
+    id: 'voting.votingRegistration.enterPinCode.step.resetPinCodes',
+    defaultMessage: '!!!Reset',
+    description: 'Reset pin codes tooltip.',
+  },
 });
 
 type Props = {
@@ -69,10 +74,37 @@ type Props = {
   onSetPinCode: Function,
 };
 
+type State = {
+  selectedPinField: ?string,
+  pinCodesVisible: boolean,
+  sectionToFocus: ?string,
+  isTabClicked: boolean,
+  pinFieldDisabledStates: Array<boolean>,
+  repeatPinFieldDisabledStates: Array<boolean>,
+  validationChecked: boolean,
+};
+
 @observer
-export default class VotingRegistrationStepsEnterPinCode extends Component<Props> {
+export default class VotingRegistrationStepsEnterPinCode extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    selectedPinField: null,
+    pinCodesVisible: false,
+    sectionToFocus: null,
+    isTabClicked: false,
+    validationChecked: false,
+    pinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH)
+      .fill(true)
+      .map((item, index) => index !== 0),
+    repeatPinFieldDisabledStates: new Array(VOTING_REGISTRATION_PIN_CODE_LENGTH)
+      .fill(true)
+      .map((item, index) => index !== 0),
   };
 
   form = new ReactToolboxMobxForm(
@@ -107,6 +139,10 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
               const pinCode = form.$('pinCode').value
                 ? form.$('pinCode').value.join('')
                 : '';
+              const repeatPinCodeField = form.$('repeatPinCode');
+              this.setState({
+                validationChecked: repeatPinCodeField.value.join('').length === VOTING_REGISTRATION_PIN_CODE_LENGTH,
+              });
               return [
                 isValidRepeatPinCode(pinCode, value),
                 this.context.intl.formatMessage(messages.invalidRepeatPinCode),
@@ -125,6 +161,144 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     }
   );
 
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleWindowTabKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleWindowTabKeyDown);
+  }
+
+  onResetValues = (type: string, focusKey: number) => {
+    const { form } = this;
+    const pinCodeField = form.$(type);
+    pinCodeField.value = [];
+    if (type === 'pinCode') {
+      this.onUpdatePinFieldDisabledStates(focusKey || null, 0, false, true);
+    } else {
+      this.onUpdateRepeatPinFieldDisabledStates(
+        focusKey || null,
+        0,
+        false,
+        true
+      );
+    }
+  };
+
+  onShowHideValues = () => {
+    this.setState((prevState) => ({
+      pinCodesVisible: !prevState.pinCodesVisible,
+    }));
+  };
+
+  onUpdatePinFieldDisabledStates = (
+    prevFieldIndex: number | null,
+    nextFieldIndex: number | null,
+    resetOtherFields?: boolean,
+    fromReset?: boolean
+  ) => {
+    const { pinFieldDisabledStates } = this.state;
+    const disabledStates = [...pinFieldDisabledStates];
+    const fieldsLength = VOTING_REGISTRATION_PIN_CODE_LENGTH;
+    if (prevFieldIndex !== null && prevFieldIndex >= 0) {
+      disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
+    }
+    if (
+      nextFieldIndex !== null &&
+      nextFieldIndex >= 0 &&
+      nextFieldIndex < fieldsLength
+    ) {
+      disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    }
+    if (fromReset) {
+      disabledStates.fill(true, 1, disabledStates.length);
+    }
+    if (resetOtherFields) {
+      disabledStates.fill(true);
+    }
+    this.setState({
+      pinFieldDisabledStates: disabledStates,
+    });
+  };
+
+  onUpdateRepeatPinFieldDisabledStates = (
+    prevFieldIndex: number | null,
+    nextFieldIndex: number | null,
+    resetOtherFields?: boolean,
+    fromReset?: boolean
+  ) => {
+    const { repeatPinFieldDisabledStates } = this.state;
+    const disabledStates = [...repeatPinFieldDisabledStates];
+    const fieldsLength = VOTING_REGISTRATION_PIN_CODE_LENGTH;
+    if (prevFieldIndex !== null && prevFieldIndex >= 0) {
+      disabledStates[prevFieldIndex] = !disabledStates[prevFieldIndex];
+    }
+    if (
+      nextFieldIndex !== null &&
+      nextFieldIndex >= 0 &&
+      nextFieldIndex < fieldsLength
+    ) {
+      disabledStates[nextFieldIndex] = !disabledStates[nextFieldIndex];
+    }
+    if (fromReset) {
+      disabledStates.fill(true, 1, disabledStates.length);
+    }
+    if (resetOtherFields) {
+      disabledStates.fill(true);
+    }
+    this.setState({
+      repeatPinFieldDisabledStates: disabledStates,
+    });
+  };
+
+  handleTabKey = (type: string, tabClicked?: boolean) => {
+    this.setState({
+      sectionToFocus: type,
+      isTabClicked: !!tabClicked,
+    });
+  };
+
+  handleWindowTabKeyDown = (event: {
+    key: string,
+    target: { nodeName: string, name: string },
+  }) => {
+    const { key, target } = event;
+    const { nodeName, name } = target;
+    if (key === 'Tab' && nodeName === 'BUTTON') {
+      this.handleTabKey('pinCode', true);
+    } else if (
+      key === 'Tab' &&
+      nodeName === 'INPUT' &&
+      name === 'repeatPinCode'
+    ) {
+      this.handleTabKey('continueButton', true);
+    }
+  };
+
+  onChangePinCode = (values: Array<string>, isTab?: boolean) => {
+    const { form } = this;
+    const pinCodeField = form.$('pinCode');
+    const pinCodeFieldProps = pinCodeField.bind();
+
+    this.setState({
+      selectedPinField: 'pinCode',
+      isTabClicked: !!isTab,
+    });
+    pinCodeFieldProps.onChange(values);
+  };
+
+  onChangeRepeatPinCode = (values: Array<string>, isTab?: boolean) => {
+    const { form } = this;
+    const repeatPinCodeField = form.$('repeatPinCode');
+    const repeatPinCodeFieldProps = repeatPinCodeField.bind();
+
+    this.setState({
+      selectedPinField: 'repeatPinCode',
+      isTabClicked: !!isTab,
+    });
+    repeatPinCodeFieldProps.onChange(values);
+  };
+
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -138,15 +312,36 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
+    const {
+      selectedPinField,
+      pinCodesVisible,
+      sectionToFocus,
+      isTabClicked,
+      pinFieldDisabledStates,
+      repeatPinFieldDisabledStates,
+      validationChecked,
+    } = this.state;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
+    const resetPinCodesLabel = intl.formatMessage(messages.resetPinCodes);
 
     const pinCodeField = form.$('pinCode');
     const repeatPinCodeField = form.$('repeatPinCode');
     const pinCodeFieldProps = pinCodeField.bind();
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
+
+    const pinCodeFieldsLength = VOTING_REGISTRATION_PIN_CODE_LENGTH;
+
+    const emptyRepeatFieldIndex = repeatPinCodeField.value.findIndex(
+      (item) => !item
+    );
+    const hasError =
+      repeatPinCodeField.value.length === pinCodeFieldsLength &&
+      emptyRepeatFieldIndex === -1 &&
+      validationChecked &&
+      repeatPinCodeField.error;
 
     const actions = [
       {
@@ -156,6 +351,17 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
         primary: true,
       },
     ];
+
+    const isRepeatPinCodeAutoFocused =
+      pinCodeField.isValid &&
+      !repeatPinCodeField.isValid &&
+      !repeatPinCodeField.value.length;
+
+    const pinCodeActive = !!pinFieldDisabledStates.filter((item) => !item)
+      .length;
+    const repeatPinCodeActive = !!repeatPinFieldDisabledStates.filter(
+      (item) => !item
+    ).length;
 
     return (
       <VotingRegistrationDialog
@@ -178,16 +384,114 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
           <PinCode
             {...pinCodeFieldProps}
             label={enterPinCodeLabel}
+            resetLabel={resetPinCodesLabel}
             autoFocus
-            onChange={(...args) => pinCodeFieldProps.onChange(...args)}
+            onChange={(values, isTab) => this.onChangePinCode(values, isTab)}
+            onResetValues={(type: string, focusKey: number) =>
+              this.onResetValues(type, focusKey)
+            }
+            onShowHideValues={() => this.onShowHideValues()}
+            onUpdateFieldDisabledStates={(
+              prevFieldIndex: number,
+              nextFieldIndex: number,
+              resetOtherFields?: boolean,
+              updateOtherFields?: boolean
+            ) => {
+              this.onUpdatePinFieldDisabledStates(
+                prevFieldIndex,
+                nextFieldIndex
+              );
+              if (resetOtherFields) {
+                this.onUpdateRepeatPinFieldDisabledStates(
+                  null,
+                  null,
+                  resetOtherFields
+                );
+              }
+              if (updateOtherFields && !repeatPinCodeActive) {
+                this.onUpdateRepeatPinFieldDisabledStates(
+                  null,
+                  repeatPinCodeField.value.length
+                );
+              }
+            }}
+            selectedPinField={selectedPinField}
+            isResetButtonDisabled={!pinCodeField.value.length}
+            pinCodesVisible={pinCodesVisible}
+            onTabKey={() => this.handleTabKey('repeatPinCode', true)}
+            sectionToFocus={sectionToFocus}
+            isTabClicked={isTabClicked}
+            disabled={
+              (!isTabClicked && form.isValid && !pinCodeActive) ||
+              (pinCodeField.isValid &&
+                !!repeatPinCodeField.value.length &&
+                (sectionToFocus === 'repeatPinCode' ||
+                  sectionToFocus === 'continueButton'))
+            }
+            pinFieldDisabledStates={pinFieldDisabledStates}
           />
           <PinCode
             {...repeatPinCodeFieldProps}
             label={repeatPinCodeLabel}
-            onChange={(...args) => repeatPinCodeFieldProps.onChange(...args)}
-            autoFocus={pinCodeField.isValid && !repeatPinCodeField.isValid}
-            disabled={!pinCodeField.isValid}
-            error={repeatPinCodeField.error}
+            resetLabel={resetPinCodesLabel}
+            onChange={(values, isTab) =>
+              this.onChangeRepeatPinCode(values, isTab)
+            }
+            onResetValues={(type: string, focusKey: number) =>
+              this.onResetValues(type, focusKey)
+            }
+            onShowHideValues={() => this.onShowHideValues()}
+            onUpdateFieldDisabledStates={(
+              prevFieldIndex: number,
+              nextFieldIndex: number,
+              resetOtherFields?: boolean,
+              updateOtherFields?: boolean
+            ) => {
+              this.onUpdateRepeatPinFieldDisabledStates(
+                prevFieldIndex,
+                nextFieldIndex
+              );
+              if (resetOtherFields) {
+                this.onUpdatePinFieldDisabledStates(
+                  null,
+                  null,
+                  resetOtherFields
+                );
+              }
+              if (updateOtherFields && !pinCodeActive) {
+                this.onUpdatePinFieldDisabledStates(
+                  null,
+                  repeatPinCodeField.value.length
+                );
+              }
+            }}
+            autoFocus={isRepeatPinCodeAutoFocused}
+            error={hasError}
+            selectedPinField={selectedPinField}
+            isResetButtonDisabled={!repeatPinCodeField.value.length}
+            pinCodesVisible={pinCodesVisible}
+            onTabKey={() => this.handleTabKey('continueButton', true)}
+            sectionToFocus={sectionToFocus}
+            isTabClicked={isTabClicked}
+            disabled={
+              (!isTabClicked && form.isValid && !repeatPinCodeActive) ||
+              (isTabClicked &&
+                sectionToFocus === 'pinCode' &&
+                repeatPinCodeField.isValid) ||
+              (!isTabClicked &&
+                sectionToFocus === 'pinCode' &&
+                !repeatPinCodeField.isValid) ||
+              (!pinCodeField.isValid &&
+                !repeatPinCodeField.value.length &&
+                sectionToFocus !== 'repeatPinCode' &&
+                pinCodeActive) ||
+              (pinCodeField.isValid &&
+                !repeatPinCodeField.value.length &&
+                selectedPinField !== 'repeatPinCode' &&
+                !repeatPinCodeActive) ||
+              sectionToFocus === 'continueButton'
+            }
+            repeatPinFieldDisabledStates={repeatPinFieldDisabledStates}
           />
         </div>
 

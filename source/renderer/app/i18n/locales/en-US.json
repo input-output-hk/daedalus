@@ -691,6 +691,7 @@
   "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode": "PIN doesn't match",
   "voting.votingRegistration.enterPinCode.step.reminder": "<span>It is important to remember your PIN.</span> If you forget your PIN, you will not be able to use this registration for voting, and you will need to repeat the registration process.",
   "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel": "Repeat PIN",
+  "voting.votingRegistration.enterPinCode.step.resetPinCodes": "Reset",
   "voting.votingRegistration.pdf.author": "Daedalus wallet",
   "voting.votingRegistration.pdf.filename": "voting-registration",
   "voting.votingRegistration.pdf.networkLabel": "Cardano network:",

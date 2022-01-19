@@ -267,6 +267,7 @@
 
 ### Chores
 
+- Improved PIN entry component UX ([PR 2470](https://github.com/input-output-hk/daedalus/pull/2470))
 - Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
 - Increased maximum event listeners limit to avoid IPC channel stalling ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
 - Updated Catalyst voting registration text copy for Fund4 ([PR 2482](https://github.com/input-output-hk/daedalus/pull/2482))
