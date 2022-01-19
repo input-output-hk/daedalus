@@ -199,20 +199,20 @@ export default class Asset extends Component<Props, State> {
           ? messages.settingsWarningPopOverNotUsing
           : messages.settingsWarningPopOverAvailable;
     }
+    let assetNameLabel = name;
+    if (!name) {
+      assetNameLabel = hexToString(assetName);
+    }
     return (
       <div className={contentStyles}>
         <div className={styles.fingerprint}>
           {fullFingerprint ? fingerprint : ellipsis(fingerprint || '', 9, 4)}
         </div>
-        {(name || assetName) && (
+        {assetNameLabel && (
           <div className={styles.metadataName}>
-            {name
-              ? metadataNameChars
-                ? ellipsis(name, metadataNameChars)
-                : name
-              : metadataNameChars
-              ? ellipsis(hexToString(assetName), metadataNameChars)
-              : hexToString(assetName)}
+            {metadataNameChars
+              ? ellipsis(name, metadataNameChars)
+              : assetNameLabel}
           </div>
         )}
         {hasWarning && (
