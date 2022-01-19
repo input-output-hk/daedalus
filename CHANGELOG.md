@@ -1,6 +1,10 @@
 # Changelog
 
-## vNext
+## 4.7.0
+
+### Features
+
+- Updated Catalyst dates ([PR 2812](https://github.com/input-output-hk/daedalus/pull/2812))
 
 ### Features
 
