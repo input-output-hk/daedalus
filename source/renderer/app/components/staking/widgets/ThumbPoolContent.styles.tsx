@@ -1,62 +1,52 @@
-import React from 'react';
 import SVGInline from 'react-svg-inline';
-import { Box, Text, Center, Flex } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
-import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 
-export const Container = ({ children, isSaturationDataAvailable }) => (
-  <Flex
-    h="16"
-    w="20"
-    flexDirection="column"
-    pt={!isSaturationDataAvailable ? '3' : '2'}
-    pos="relative"
-  >
-    {children}
-  </Flex>
-);
+export const Container = styled.div`
+  height: 69px;
+  position: relative;
+  width: 78px;
 
-export const Ticker = ({ children, isSaturationDataAvailable }) => (
-  <Center mb={!isSaturationDataAvailable ? '1' : 'px'}>
-    <Text
-      fontWeight="semibold"
-      fontSize="sm"
-      sx={{ color: 'var(--theme-staking-stake-pool-ticker-color)' }}
-      lineHeight="none"
-    >
-      {children}
-    </Text>
-  </Center>
-);
+  padding-top: ${({ isSaturationDataAvailable }) =>
+    isSaturationDataAvailable ? '9px' : '11px'};
+`;
 
-export const Rewards = ({ children }) => (
-  <Center py="0.5" pos="relative" flex="1 1 auto">
-    <Text fontSize="sm" fontWeight="semibold">
-      {children}
-    </Text>
-    <AdaIcon svg={adaIcon} />
-  </Center>
-);
+export const Ticker = styled.div`
+  color: var(--theme-staking-stake-pool-ticker-color);
+  font-family: var(--font-semibold);
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: ${({ isSaturationDataAvailable }) =>
+    isSaturationDataAvailable ? '1px' : '5px'};
+`;
 
-export const NoDataDash = ({ children }) => (
-  <Center flex="1 1 auto">
-    <NoDataDashIcon svg={noDataDashBigImage} />
-  </Center>
-);
+export const Ranking = styled.div`
+  font-family: var(--font-bold);
+  font-size: 20px;
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+`;
 
-export const Ranking = ({ children, color }) => (
-  <Center flex="1" style={{ color }} mt="1">
-    <Text fontSize="xl" fontWeight="bold" lineHeight="none">
-      {children}
-    </Text>
-  </Center>
-);
+export const RankingStar = styled.sub`
+  font-family: Verdana;
+  font-size: 14px;
+  margin-left: -1px;
+  position: absolute;
+  top: -2px;
+`;
 
-export const RankingStar = ({ children }) => (
-  <Text display="inline-block">{children}</Text>
-);
+export const Rewards = styled.div`
+  font-family: var(--font-regular);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.57;
+  padding: 3px 0;
+  position: relative;
+  text-align: center;
+`;
 
 export const AdaIcon = styled(SVGInline)`
   svg {
@@ -72,6 +62,13 @@ export const AdaIcon = styled(SVGInline)`
   }
 `;
 
+export const NoDataDash = styled.div`
+  align-items: center;
+  display: flex;
+  height: 27px;
+  justify-content: center;
+`;
+
 export const NoDataDashIcon = styled(SVGInline)`
   svg {
     height: 3px;
@@ -84,11 +81,15 @@ export const NoDataDashIcon = styled(SVGInline)`
   }
 `;
 
-export const Clock = ({ children }) => (
-  <Box pos="absolute" right="0" top="0">
-    {children}
-  </Box>
-);
+export const Clock = styled.div`
+  background: var(--theme-staking-stake-pool-retirement-background-color);
+  border-radius: 0 2px 0 4px;
+  height: 18px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 18px;
+`;
 
 export const ClockIcon = styled(SVGInline)`
   svg {
@@ -97,38 +98,47 @@ export const ClockIcon = styled(SVGInline)`
   }
 `;
 
-export const ColorBand = ({ color }) => (
-  <Box h="1" w="full" sx={{ background: color }} flexShrink="0" />
-);
+export const ColorBand = styled.div`
+  bottom: 0;
+  display: block;
+  height: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+`;
 
-export const GreyColorBand = () => (
-  <Box
-    h="1"
-    w="full"
-    sx={{ background: 'var(--theme-staking-stake-pool-grey-color)' }}
-    flexShrink="0"
-  />
-);
+export const GreyColorBand = styled.div`
+  bottom: 0;
+  display: block;
+  height: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+`;
 
-export const SaturationBar = ({ width, color }) => (
-  <Center my="1">
-    <Flex
-      h="1"
-      w="10"
-      sx={{
-        background:
-          'var(--theme-staking-stake-pool-saturation-background-color)',
-      }}
-      borderRadius="sm"
-    >
-      <Box
-        as="span"
-        h="1"
-        sx={{
-          width: `${width}%`,
-        }}
-        bg={`stakePoolSaturation.${color}`}
-      />
-    </Flex>
-  </Center>
-);
+const colors = {
+  green: 'var(--theme-staking-stake-pool-saturation-green-color)',
+  orange: 'var(--theme-staking-stake-pool-saturation-orange-color)',
+  red: 'var(--theme-staking-stake-pool-saturation-red-color)',
+  yellow: 'var(--theme-staking-stake-pool-saturation-yellow-color)',
+};
+
+export const SaturationBar = styled.div`
+  bottom: 0;
+  display: block;
+  height: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+
+  span {
+    border-radius: 2px;
+    bottom: 0;
+    height: inherit;
+    left: 0;
+    position: absolute;
+    top: 0;
+  }
+
+  background: ${({ color }) => colors[color]};
+`;
