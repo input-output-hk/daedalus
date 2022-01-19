@@ -30,7 +30,7 @@ describe('WalletTokenPicker hooks', () => {
     expect(hook.checkboxes).toMatchObject({});
     expect(hook.checkedIds.length).toEqual(0);
     expect(hook.totalCheckedCount).toBe(0);
-    expect(hook.disabledIdsSet.size).toEqual(0);
+    expect(hook.previouslyCheckedIdsSet.size).toEqual(0);
     expect(hook.isMaxTotalCount).toBe(false);
     expect(hook.isToggleAllDisabled).toEqual(false);
     expect(hook.isClearAllMode).toEqual(false);
