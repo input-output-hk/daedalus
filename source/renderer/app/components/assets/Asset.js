@@ -8,6 +8,7 @@ import { observer } from 'mobx-react';
 import styles from './Asset.scss';
 import { ellipsis } from '../../utils/strings';
 import AssetContent from './AssetContent';
+import { hexToString } from '../../utils/strings';
 
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
@@ -178,7 +179,13 @@ export default class Asset extends Component<Props, State> {
       hasWarning,
       hasError,
     } = this.props;
-    const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
+    const {
+      fingerprint,
+      metadata,
+      decimals,
+      recommendedDecimals,
+      assetName,
+    } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.pill,
@@ -197,9 +204,15 @@ export default class Asset extends Component<Props, State> {
         <div className={styles.fingerprint}>
           {fullFingerprint ? fingerprint : ellipsis(fingerprint || '', 9, 4)}
         </div>
-        {name && (
+        {(name || assetName) && (
           <div className={styles.metadataName}>
-            {metadataNameChars ? ellipsis(name, metadataNameChars) : name}
+            {name
+              ? metadataNameChars
+                ? ellipsis(name, metadataNameChars)
+                : name
+              : metadataNameChars
+              ? ellipsis(hexToString(assetName), metadataNameChars)
+              : hexToString(assetName)}
           </div>
         )}
         {hasWarning && (
