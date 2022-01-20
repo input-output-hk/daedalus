@@ -15,7 +15,7 @@ const messages = defineMessages({
   startingDescription: {
     id: 'loading.screen.startingCardanoDescription',
     defaultMessage:
-      '!!!This process validates the integrity of local blockchain data and could take several minutes.',
+      '!!!This process validates the integrity of local blockchain data.',
     description: 'Message "Starting Cardano node" on the loading screen.',
   },
   stopping: {
