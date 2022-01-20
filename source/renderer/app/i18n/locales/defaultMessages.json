@@ -2223,11 +2223,11 @@
         }
       },
       {
-        "defaultMessage": "!!!Node is syncing. This process can take several hours.",
+        "defaultMessage": "!!!Cardano node is currently syncing. This process can take several hours.",
         "description": "Message on the loading screen informing that sync process could be very long",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.verifyingBlockchainMessage",
