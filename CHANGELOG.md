@@ -11,6 +11,10 @@
 
 - Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
 
+### Fixes
+
+- Fixed blockain verification progress text ([PR 2830](https://github.com/input-output-hk/daedalus/pull/2830))
+
 ## 4.7.0
 
 ### Features

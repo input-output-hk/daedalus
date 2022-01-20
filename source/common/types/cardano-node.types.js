@@ -174,3 +174,8 @@ export const NetworkMagics: {
   // Cardano Selfnode network magic
   [SELFNODE]: [1, null],
 };
+
+export type BlockSyncType =
+  | 'validatingChunk'
+  | 'pushingLedger'
+  | 'replayedBlock';

@@ -233,6 +233,8 @@ const onAppReady = async () => {
 
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
+  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
+
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -242,7 +244,6 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
-  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
