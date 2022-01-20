@@ -354,36 +354,22 @@ export default class ProfileStore extends Store {
   };
 
   _testAnalytics = () => {
-    const payload = new URLSearchParams({
-      v: 1,
-      cid: uuidv4(),
-      tid: 'G-DFKDKMR1FY',
-      t: 'pageview',
-      dp: '/dashboard',
-      dt: 'Daedalus dashboard',
-    }).toString();
-
-    // request(
-    //   {
-    //     method: 'POST',
-    //     path: `https://www.google-analytics.com/collect`,
-    //   },
-    //   {
-    //     v: 1,
-    //     cid: uuidv4(),
-    //     tid: 'G-DFKDKMR1FY',
-    //     t: 'pageview',
-    //     dp: '/dashboard',
-    //     dt: 'Daedalus dashboard',
-    //   }
-    // )
-    //   .then((v) => console.log('Response:', v))
-    //   .catch((e) => {
-    //     console.log('Error: ', e);
-    //   });
+    const firebase_app_id = `1:257374909033:ios:ef3fbeaee09962d87ce8f8`;
+    const api_secret = `VfhngRa1RdqBbgxcQaG44w`;
 
     axios
-      .post('https://analytics.google.com/g/collect', payload)
+      .post(
+        'https://www.google-analytics.com/mp/collect?firebase_app_id=${firebase_app_id}&api_secret=${api_secret}`',
+        JSON.stringify({
+          app_instance_id: 'app_instance_id',
+          events: [
+            {
+              name: 'tutorial_begin',
+              params: {},
+            },
+          ],
+        })
+      )
       .then((v) => console.log('Response:', v))
       .catch((e) => {
         console.log('Error:', e);
