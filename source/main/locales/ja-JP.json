@@ -25,7 +25,7 @@
   "menu.helpSupport.usingRtsFlags": "RTSフラグの使用",
   "menu.helpSupport.rtsFlagsDialogCancel": "Cancel",
   "menu.helpSupport.rtsFlagsDialogConfirm": "Yes",
-  "menu.helpSupport.enableRtsFlagsDialogMessage": "When enabled, we will do some magic to compensate for your lame low RAM",
+  "menu.helpSupport.enableRtsFlagsDialogMessage": "When enabled, the Cardano node will attempt to reduce its RAM usage",
   "menu.helpSupport.enableRtsFlagsDialogTitle": "Enable RAM management (RTSフラグの使用\")",
   "menu.helpSupport.disableRtsFlagsDialogMessage": "When disabled, we will restart cardano-node in default mode",
   "menu.helpSupport.disableRtsFlagsDialogTitle": "Disable RAM management (RTSフラグの使用\")",
