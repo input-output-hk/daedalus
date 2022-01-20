@@ -43,6 +43,11 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import type { RequestConfig } from '../api/common/types';
+import type { Transaction, TransactionParams } from '../api/transactions/types';
+import { request } from '../api/utils/request';
 
 export default class ProfileStore extends Store {
   @observable systemLocale: Locale = LOCALES.english;
@@ -346,6 +351,43 @@ export default class ProfileStore extends Store {
 
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();
+  };
+
+  _testAnalytics = () => {
+    const payload = new URLSearchParams({
+      v: 1,
+      cid: uuidv4(),
+      tid: 'G-DFKDKMR1FY',
+      t: 'pageview',
+      dp: '/dashboard',
+      dt: 'Daedalus dashboard',
+    }).toString();
+
+    // request(
+    //   {
+    //     method: 'POST',
+    //     path: `https://www.google-analytics.com/collect`,
+    //   },
+    //   {
+    //     v: 1,
+    //     cid: uuidv4(),
+    //     tid: 'G-DFKDKMR1FY',
+    //     t: 'pageview',
+    //     dp: '/dashboard',
+    //     dt: 'Daedalus dashboard',
+    //   }
+    // )
+    //   .then((v) => console.log('Response:', v))
+    //   .catch((e) => {
+    //     console.log('Error: ', e);
+    //   });
+
+    axios
+      .post('https://analytics.google.com/g/collect', payload)
+      .then((v) => console.log('Response:', v))
+      .catch((e) => {
+        console.log('Error:', e);
+      });
   };
 
   _getDesktopDirectoryPath = async () => {
