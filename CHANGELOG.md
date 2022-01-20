@@ -4,6 +4,7 @@
 
 ### Features
 
+- Updated message explaining the node syncing process on the initial screen ([PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
 - Updated message about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827))
 
 ### Chores
