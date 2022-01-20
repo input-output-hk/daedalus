@@ -1,6 +1,6 @@
 // @flow
 import { BrowserWindow } from 'electron';
-import checkDiskSpace from 'check-disk-space';
+import checkDiskSpace from '@lucasiohk/check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
 import { logger } from './logging';

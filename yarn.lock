@@ -2124,6 +2124,10 @@
   version "5.50.0"
   resolved "https://registry.npmjs.org/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
 
+"@lucasiohk/check-disk-space@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@lucasiohk/check-disk-space/-/check-disk-space-0.0.3.tgz#7db911a911c3a29f1949a04214a49dbc0a99dd78"
+
 "@malept/cross-spawn-promise@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@malept/cross-spawn-promise/-/cross-spawn-promise-1.1.1.tgz#504af200af6b98e198bce768bc1730c6936ae01d"
