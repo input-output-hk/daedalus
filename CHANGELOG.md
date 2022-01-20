@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Updated message about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827))
+
 ### Chores
 
 - Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))

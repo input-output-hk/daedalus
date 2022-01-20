@@ -2401,8 +2401,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Verifying the blockchain ({verificationProgress}% complete)",
-        "description": "Message \"Verifying the blockchain (65% complete) ...\" on the loading screen.",
+        "defaultMessage": "!!!Cardano node is currently syncing. This process can take several hours.",
+        "description": "Message on the loading screen informing that sync process could be very long",
         "end": {
           "column": 3,
           "line": 86
