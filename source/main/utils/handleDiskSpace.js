@@ -181,7 +181,8 @@ export const handleDiskSpace = (
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
       resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
-    await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
+    const diskReport = await getDiskCheckReport(stateDirectoryPath);
+    getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
     return response;
   };
 
