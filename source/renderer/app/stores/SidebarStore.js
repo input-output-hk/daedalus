@@ -1,15 +1,26 @@
 // @flow
 import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
-import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
-import type { SidebarWalletType } from '../types/sidebarTypes';
+import type {
+  SidebarWalletType,
+  WalletSortConfig,
+  WalletSortByOptions,
+} from '../types/sidebarTypes';
+import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
+import { changeWalletSorting, sortWallets } from '../utils/walletSorting';
+import Store from './lib/Store';
 
 export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
+  @observable walletSortConfig: WalletSortConfig = {
+    sortBy: WalletSortBy.Date,
+    sortOrder: WalletSortOrder.Asc,
+  };
+  @observable searchValue: string = '';
 
   setup() {
     const { sidebar: sidebarActions } = this.actions;
@@ -37,7 +48,18 @@ export default class SidebarStore extends Store {
       hardwareWallets,
     } = this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
-    return wallets.all.map((wallet) => {
+    const shelleyWallets = sortWallets({
+      wallets: wallets.all.filter((w) => !w.isLegacy),
+      sortOrder: this.walletSortConfig.sortOrder,
+      sortBy: this.walletSortConfig.sortBy,
+    });
+    const byronWallets = sortWallets({
+      wallets: wallets.all.filter((w) => w.isLegacy),
+      sortOrder: this.walletSortConfig.sortOrder,
+      sortBy: this.walletSortConfig.sortBy,
+    });
+    const sortedWallets = [...shelleyWallets, ...byronWallets];
+    return sortedWallets.map((wallet) => {
       const isHardwareWalletDisconnected = get(
         hardwareWalletsConnectionData,
         [wallet.id, 'disconnected'],
@@ -61,6 +83,18 @@ export default class SidebarStore extends Store {
       };
     });
   }
+
+  @action onChangeWalletSortType = (sortBy: WalletSortByOptions) => {
+    this.walletSortConfig = changeWalletSorting({
+      sortBy,
+      sortOrder: this.walletSortConfig.sortOrder,
+      currentSortBy: this.walletSortConfig.sortBy,
+    });
+  };
+
+  @action onSearchValueUpdated = (searchValue: string) => {
+    this.searchValue = searchValue;
+  };
 
   @action _configureCategories = () => {
     const {
