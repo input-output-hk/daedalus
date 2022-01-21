@@ -23,7 +23,7 @@ export type Environment = {
   mainProcessID: string,
   rendererProcessID: string,
   os: string,
-  cpu: string,
+  cpu: Cpu,
   ram: number,
   hasMetHardwareRequirements: boolean,
   installerVersion: string,
@@ -79,3 +79,13 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   development: 'Development',
 };
+
+export type CpuThreadData = {
+  model: string,
+  speed: number,
+  times: {
+    [string]: number,
+  },
+};
+
+export type Cpu = Array<CpuThreadData>;

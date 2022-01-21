@@ -17,11 +17,7 @@ import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
-import {
-  formattedNumber,
-  formattedCpuModel,
-  formattedSize,
-} from '../../utils/formatters';
+import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -532,14 +528,13 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const {
       platform,
       platformVersion,
-      cpu: cpuInOriginalFormat,
+      cpu,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
       hasMetHardwareRequirements,
       isRTSFlagsModeEnabled,
     } = systemInfo;
 
-    const cpu = formattedCpuModel(cpuInOriginalFormat);
     const availableDiskSpace = formattedSize(
       availableDiskSpaceInOriginalFormat
     );

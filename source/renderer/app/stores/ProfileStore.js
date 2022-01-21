@@ -42,7 +42,7 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
-import { buildSystemInfo } from '../utils/buildSystemInfo';
+import formatCpuInfo from '../utils/formatCpuInfo';
 
 export default class ProfileStore extends Store {
   @observable systemLocale: Locale = LOCALES.english;
@@ -518,7 +518,13 @@ export default class ProfileStore extends Store {
         isTestnet,
       } = this.environment;
 
-      const systemInfo = buildSystemInfo(this.environment, networkStatus);
+      const systemInfo = {
+        platform: os,
+        platformVersion,
+        cpu: formatCpuInfo(cpu),
+        ram: formattedBytesToSize(ram),
+        availableDiskSpace: diskSpaceAvailable,
+      };
 
       const coreInfo = {
         daedalusVersion: version,

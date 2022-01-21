@@ -5,7 +5,7 @@ import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
-import { buildSystemInfo } from '../../utils/buildSystemInfo';
+import formatCpuInfo from '../../utils/formatCpuInfo';
 
 type Props = InjectedDialogContainerProps;
 
@@ -58,7 +58,13 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       getNetworkClockRequest,
     } = networkStatus;
 
-    const systemInfo = buildSystemInfo(environment, networkStatus);
+    const systemInfo = {
+      platform: environment.os,
+      platformVersion: environment.platformVersion,
+      cpu: formatCpuInfo(environment.cpu),
+      ram: formattedBytesToSize(environment.ram),
+      availableDiskSpace: diskSpaceAvailable,
+    };
 
     const {
       network,
