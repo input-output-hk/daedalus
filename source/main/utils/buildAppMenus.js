@@ -9,7 +9,7 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
-import { setRtsFlagsAndRestart } from './rtsFlags';
+import { storeRtsFlagsSettings } from './rtsFlagSettings';
 import { RTS_FLAGS } from '../config';
 
 export const buildAppMenus = async (
@@ -117,12 +117,10 @@ export const buildAppMenus = async (
       mainWindow,
       rtsFlagsDialogOptions
     );
+
     if (response === 0) {
-      if (enable) {
-        setRtsFlagsAndRestart(environment.network, RTS_FLAGS);
-      } else {
-        setRtsFlagsAndRestart(environment.network, []);
-      }
+      const flagsToSet = enable ? RTS_FLAGS : [];
+      storeRtsFlagsSettings(environment.network, flagsToSet);
     }
   };
 

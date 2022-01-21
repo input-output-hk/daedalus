@@ -30,7 +30,10 @@ import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
-import { getRtsFlags, setRtsFlagsAndRestart } from './utils/rtsFlags';
+import {
+  getRtsFlagsSettings,
+  storeRtsFlagsSettings,
+} from './utils/rtsFlagSettings';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
@@ -110,6 +113,18 @@ const safeExit = async () => {
   }
 };
 
+const getCurrentRtsFlags = () => {
+  const rtsFlagsFromStorage = getRtsFlagsSettings(network);
+  if (!rtsFlagsFromStorage) {
+    if (os.totalmem() < MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS) {
+      storeRtsFlagsSettings(environment.network, RTS_FLAGS);
+      return RTS_FLAGS;
+    }
+    return [];
+  }
+  return rtsFlagsFromStorage;
+};
+
 const onAppReady = async () => {
   setupLogging();
   logUsedVersion(
@@ -166,19 +181,8 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  const getCurrentRtsFlags = () => {
-    const rtsFlagsFromStorage = getRtsFlags(network);
-    if (!rtsFlagsFromStorage) {
-      if (os.totalmem() < MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS) {
-        setRtsFlagsAndRestart(environment.network, RTS_FLAGS);
-        return RTS_FLAGS;
-      }
-      return [];
-    }
-    return rtsFlagsFromStorage;
-  };
-
   const rtsFlags = getCurrentRtsFlags();
+
   logger.info(
     `Setting up Cardano Node... with flags: ${JSON.stringify(rtsFlags)}`
   );
