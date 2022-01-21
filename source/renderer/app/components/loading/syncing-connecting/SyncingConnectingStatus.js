@@ -80,7 +80,7 @@ const messages = defineMessages({
   verifyingBlockchain: {
     id: 'loading.screen.verifyingBlockchainMessage',
     defaultMessage:
-      '!!!Cardano node is currently syncing. This process can take several hours.',
+      '!!!Cardano node is currently syncing. This process can take several hours',
     description:
       'Message on the loading screen informing that sync process could be very long',
   },
