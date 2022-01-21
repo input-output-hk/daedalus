@@ -8,9 +8,12 @@ import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
-import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
+import { getRtsFlags } from '../utils/rtsFlags';
 
 const id = 'menu';
+const { isWindows, isBlankScreenFixActive, network } = environment;
+const rtsFlags = getRtsFlags(network);
+const rtsFlagsEnabled: boolean = !!rtsFlags?.length && rtsFlags.length > 0;
 
 export const winLinuxMenu = (
   app: App,
@@ -151,7 +154,30 @@ export const winLinuxMenu = (
   {
     label: translation('helpSupport'),
     submenu: compact([
-      ...buildKnownIssueFixesSubmenu(actions, translations, translation),
+      {
+        label: translation('helpSupport.knownIssues'),
+        click() {
+          const faqLink = translation('helpSupport.knownIssuesUrl');
+          shell.openExternal(faqLink);
+        },
+      },
+      {
+        label: translation('helpSupport.blankScreenFix'),
+        type: 'checkbox',
+        checked: isBlankScreenFixActive,
+        click(item) {
+          actions.toggleBlankScreenFix(item);
+        },
+      },
+      {
+        label: translation('helpSupport.usingRtsFlags'),
+        type: 'checkbox',
+        checked: rtsFlagsEnabled,
+        click(item) {
+          actions.setRtsFlags(!rtsFlagsEnabled);
+          item.checked = rtsFlagsEnabled;
+        },
+      },
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),

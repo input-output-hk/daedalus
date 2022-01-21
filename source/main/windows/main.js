@@ -8,12 +8,12 @@ import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
-import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
+import { getRtsFlags } from '../utils/rtsFlags';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
 const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
-const rtsFlags = getRtsFlagsSettings(network);
+const rtsFlags = getRtsFlags(network);
 
 const id = 'window';
 

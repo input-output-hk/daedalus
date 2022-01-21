@@ -9,6 +9,8 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
+import { setRtsFlagsAndRestart } from './rtsFlags';
+import { RTS_FLAGS } from '../config';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -97,8 +99,36 @@ export const buildAppMenus = async (
     item.checked = isBlankScreenFixActive;
   };
 
-  const openToggleRTSFlagsModeDialog = () => {
-    if (mainWindow) showUiPartChannel.send(TOGGLE_RTS_FLAGS_MODE, mainWindow);
+  const setRtsFlags = async (enable: boolean): Promise<void> => {
+    const translation = getTranslation(translations, 'menu');
+    const rtsFlagsDialogOptions = {
+      buttons: [
+        translation('helpSupport.rtsFlagsDialogConfirm'),
+        translation('helpSupport.rtsFlagsDialogCancel'),
+      ],
+      type: 'warning',
+      title: enable
+        ? translation('helpSupport.enableRtsFlagsDialogTitle')
+        : translation('helpSupport.disableRtsFlagsDialogTitle'),
+      message: enable
+        ? translation('helpSupport.enableRtsFlagsDialogMessage')
+        : translation('helpSupport.disableRtsFlagsDialogMessage'),
+      defaultId: 1,
+      cancelId: 1,
+      noLink: true,
+    };
+
+    const { response } = await dialog.showMessageBox(
+      mainWindow,
+      rtsFlagsDialogOptions
+    );
+    if (response === 0) {
+      if (enable) {
+        setRtsFlagsAndRestart(environment.network, RTS_FLAGS);
+      } else {
+        setRtsFlagsAndRestart(environment.network, []);
+      }
+    }
   };
 
   const menuActions = {
@@ -108,7 +138,7 @@ export const buildAppMenus = async (
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
-    openToggleRTSFlagsModeDialog,
+    setRtsFlags,
   };
 
   // Build app menus

@@ -1,7 +1,7 @@
 // @flow
 export type MenuActions = {
   toggleBlankScreenFix: Function,
-  openToggleRTSFlagsModeDialog: Function,
+  setRtsFlags: Function,
   openAboutDialog: Function,
   openDaedalusDiagnosticsDialog: Function,
   openItnRewardsRedemptionDialog: Function,
