@@ -79,3 +79,5 @@ export const sidebarConfig = {
   CATEGORIES_BY_NAME,
   CATEGORIES_LIST,
 };
+
+export const FUZZY_SEARCH_THRESHOLD = 0.5;

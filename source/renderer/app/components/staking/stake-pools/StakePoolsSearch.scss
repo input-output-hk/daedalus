@@ -20,6 +20,10 @@
 
   svg {
     width: 15px;
+    opacity: 0.3;
+    g > g {
+      fill: var(--theme-staking-stake-pools-search-icon-color);
+    }
   }
 }
 
