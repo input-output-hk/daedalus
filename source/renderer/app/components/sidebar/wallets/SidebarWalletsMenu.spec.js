@@ -15,7 +15,7 @@ import {
 import type { SidebarWalletType } from '../../../types/sidebarTypes';
 import SidebarWalletsMenu from './SidebarWalletsMenu';
 
-describe('Discreet Mode feature', () => {
+describe('Sidebar Wallets Menu', () => {
   afterEach(cleanup);
 
   function TestDecorator({
