@@ -223,7 +223,7 @@
   "loading.screen.unrecoverableCardanoMessage": "Cardanoノードを起動できません。サポートリクエストを送信してください。",
   "loading.screen.updatedCardanoMessage": "Cardanoノードが更新されました",
   "loading.screen.updatingCardanoMessage": "Cardanoノードを更新しています",
-  "loading.screen.verifyingBlockchainMessage": "ブロックチェーンを検証しています（{verificationProgress}%完了）",
+  "loading.screen.verifyingBlockchainMessage": "Cardanoノードは現在同期中です。この処理には数時間かかる場合もあります。",
   "news.newsfeed.empty": "ニュースフィードは空です",
   "news.newsfeed.noFetch": "ニュースフィードを読み込んでいます...",
   "news.newsfeed.title": "ニュースフィード",
