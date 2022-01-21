@@ -92,7 +92,7 @@ export default class WalletSendPage extends Component<Props> {
     const { validateAmount, validateAssetAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { all: allAssets, activeAsset, getAsset } = assetsStore;
+    const { all: allAssets, activeAsset, getAsset, favorites } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
 
     const selectedAsset = activeAsset
@@ -103,8 +103,7 @@ export default class WalletSendPage extends Component<Props> {
     const wallet = wallets.active;
     if (!wallet) throw new Error('Active wallet required for WalletSendPage.');
 
-    const { isHardwareWallet } = wallet;
-
+    const { isHardwareWallet, name: walletName } = wallet;
     const walletTokens = wallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
@@ -148,6 +147,8 @@ export default class WalletSendPage extends Component<Props> {
         onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
         isAddressFromSameWallet={isAddressFromSameWallet}
+        tokenFavorites={favorites}
+        walletName={walletName}
       />
     );
   }
