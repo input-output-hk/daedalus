@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import BorderedBox from '../../widgets/BorderedBox';
+import BorderedBox from '../../../widgets/BorderedBox';
 import styles from './WalletNoTokens.scss';
-import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
+import { ExternalLinkButton } from '../../../widgets/ExternalLinkButton';
 
 const messages = defineMessages({
   tokensTitle: {
