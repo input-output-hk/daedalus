@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
+
 ### Chores
 
 - Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
