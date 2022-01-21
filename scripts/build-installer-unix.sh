@@ -6,7 +6,7 @@
 
 set -e
 
-CLUSTERS="$(xargs echo -n < "$(dirname "$0")"/../installer-clusters.cfg)"
+CLUSTERS="${2:-$(xargs echo -n < "$(dirname "$0")/../installer-clusters.cfg")}"
 
 usage() {
     test -z "$1" || { echo "ERROR: $*" >&2; echo >&2; }

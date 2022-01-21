@@ -12,7 +12,7 @@ upload_artifacts_public() {
   buildkite-agent artifact upload "$@" "${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
 }
 
-CLUSTERS="$(xargs echo -n < "$(dirname "$0")/../installer-clusters.cfg")"
+CLUSTERS="${2:-$(xargs echo -n < "$(dirname "$0")/../installer-clusters.cfg")}"
 
 for cluster in ${CLUSTERS}; do
   echo '~~~ Building '"${cluster}"' installer'

@@ -14,7 +14,7 @@ upload_artifacts_public() {
 
 rm -rf dist || true
 
-CLUSTERS="$(xargs echo -n < "$(dirname "$0")/../installer-clusters.cfg")"
+CLUSTERS="${2:-$(xargs echo -n < "$(dirname "$0")/../installer-clusters.cfg")}"
 
 echo '~~~ Pre-building node_modules with nix'
 nix-build default.nix -A rawapp.deps -o node_modules.root -Q
