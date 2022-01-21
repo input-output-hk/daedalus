@@ -786,6 +786,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#2d2d2d',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
+    '--theme-sidebar-sort-button-background-color': '45, 45, 45',
+    '--theme-sidebar-search-field-border-color': '45, 45, 45',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(255, 185, 35, 0.96)',

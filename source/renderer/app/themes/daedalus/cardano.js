@@ -799,6 +799,8 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#2cbb69',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
+    '--theme-sidebar-sort-button-background-color': '250, 251, 252',
+    '--theme-sidebar-search-field-border-color': '255, 255, 255',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(32, 34, 37, 0.96)',

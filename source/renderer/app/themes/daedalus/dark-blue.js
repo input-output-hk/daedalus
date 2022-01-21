@@ -802,6 +802,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#536370',
     '--theme-sidebar-category-networkInfo-text-color': '#e9f4fe',
+    '--theme-sidebar-sort-button-background-color': '250, 251, 252',
+    '--theme-sidebar-search-field-border-color': '233, 244, 254',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(38, 51, 69, 0.96)',

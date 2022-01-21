@@ -19,7 +19,7 @@ const messages = defineMessages({
 
 type Props = {
   intl: intlShape.isRequired,
-  onSearch: Function,
+  onSearch: (term: string) => string,
   searchValue: string,
 };
 
