@@ -12,7 +12,9 @@
 
 .searchIcon {
   bottom: 12.5px;
+  color: var(--theme-staking-stake-pools-search-icon-color);
   left: 20px;
+  opacity: 0.3;
   position: absolute;
   z-index: 1;
 

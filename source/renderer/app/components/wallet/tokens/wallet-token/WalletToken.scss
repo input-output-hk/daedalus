@@ -1,0 +1,47 @@
+.component {
+  overflow: hidden;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid rgba(94, 96, 102, 0.15);
+  }
+
+  &.isExpanded:not(.removing) {
+    background-color: var(--theme-tokens-list-header-expanded-background-color);
+    padding-bottom: 20px;
+
+    .content {
+      display: block;
+    }
+  }
+
+  &.inserting {
+    animation: insertAnimation 0.3s;
+  }
+
+  &.removing {
+    animation: removingAnimation 0.3s;
+    border-bottom: 0 none;
+    height: 0;
+  }
+}
+@keyframes insertAnimation {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: 36px;
+  }
+}
+@keyframes removingAnimation {
+  0% {
+    height: 36px;
+  }
+  100% {
+    height: 0;
+  }
+}
+
+.content {
+  display: none;
+  margin: 13px 12px 0;
+}
