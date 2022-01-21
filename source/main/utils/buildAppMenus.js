@@ -118,9 +118,11 @@ export const buildAppMenus = async (
       rtsFlagsDialogOptions
     );
     if (response === 0) {
-      enable
-        ? setRtsFlagsAndRestart(environment.network, RTS_FLAGS)
-        : setRtsFlagsAndRestart(environment.network, []);
+      if (enable) {
+        setRtsFlagsAndRestart(environment.network, RTS_FLAGS);
+      } else {
+        setRtsFlagsAndRestart(environment.network, []);
+      }
     }
   };
 
