@@ -2124,9 +2124,9 @@
   version "5.50.0"
   resolved "https://registry.npmjs.org/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
 
-"@lucasiohk/check-disk-space@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@lucasiohk/check-disk-space/-/check-disk-space-0.0.3.tgz#7db911a911c3a29f1949a04214a49dbc0a99dd78"
+"@lucasiohk/check-disk-space@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@lucasiohk/check-disk-space/-/check-disk-space-0.0.4.tgz#edffaf33c792c62054fa7dbd35eed200e580cf08"
 
 "@malept/cross-spawn-promise@^1.1.0":
   version "1.1.1"
@@ -2896,6 +2896,10 @@
 "@types/is-function@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/is-function/-/is-function-1.0.0.tgz#1b0b819b1636c7baf0d6785d030d12edf70c3e83"
+
+"@types/istanbul-lib-coverage@*":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.4.tgz#8467d4b3c087805d63580480890791277ce35c44"
 
 "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"
