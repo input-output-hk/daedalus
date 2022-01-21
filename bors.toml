@@ -1,11 +1,6 @@
 status = [
   # Buildkite: osx/linux installers
   "buildkite/daedalus",
-
-  # Hydra: we just care about tests attribute set
-  "ci/hydra:Cardano:daedalus:tests.runFlow",
-  "ci/hydra:Cardano:daedalus:tests.runLint",
-  "ci/hydra:Cardano:daedalus:tests.runShellcheck"
 ]
 timeout_sec = 7200
 required_approvals = 1
