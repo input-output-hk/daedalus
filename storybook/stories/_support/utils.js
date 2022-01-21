@@ -32,6 +32,7 @@ import type {
   WalletTokens,
   AssetToken,
 } from '../../../source/renderer/app/api/assets/types';
+import { hexToString } from '../../../source/renderer/app/utils/strings';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
 
@@ -161,6 +162,7 @@ export const generateAssetToken = (
 ): AssetToken => ({
   policyId,
   assetName,
+  assetNameASCII: hexToString(assetName),
   fingerprint,
   metadata,
   quantity: new BigNumber(quantity),

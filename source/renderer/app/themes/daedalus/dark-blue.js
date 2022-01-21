@@ -1023,6 +1023,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.05)',
     '--theme-tokens-list-header-expanded-background-color-hover':
       'rgba(233, 244, 254, 0.03)',
+    '--theme-tokens-picker-toolbar-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-tokens-picker-toolbar-border-bottom-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-tokens-picker-token-separator': 'rgba(94, 96, 102, 0.15)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

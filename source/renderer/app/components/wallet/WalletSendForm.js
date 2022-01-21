@@ -38,6 +38,7 @@ import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
+import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -62,6 +63,8 @@ type Props = {
   onUnsetActiveAsset: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
+  tokenFavorites: { [key: string]: boolean },
+  walletName: string,
 };
 
 type State = {
@@ -81,11 +84,11 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
-  showRemoveAssetButton: { [uniqueId: string]: boolean },
   selectedAssetUniqueIds: Array<string>,
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
   isTransactionFeeCalculated: boolean,
+  isTokenPickerOpen: boolean,
 };
 
 @observer
@@ -100,11 +103,11 @@ export default class WalletSendForm extends Component<Props, State> {
     feeCalculationRequestQue: 0,
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
-    showRemoveAssetButton: {},
     selectedAssetUniqueIds: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
+    isTokenPickerOpen: false,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -226,7 +229,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
     this.setState({
       minimumAda: new BigNumber(0),
-      showRemoveAssetButton: {},
       isResetButtonDisabled: true,
     });
   };
@@ -535,22 +537,6 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  showRemoveAssetButton = (uniqueId: string) => {
-    const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[uniqueId] = true;
-    this.setState({
-      showRemoveAssetButton,
-    });
-  };
-
-  hideRemoveAssetButton = (uniqueId: string) => {
-    const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[uniqueId] = false;
-    this.setState({
-      showRemoveAssetButton,
-    });
-  };
-
   addAssetRow = (uniqueId: string) => {
     this.addAssetFields(uniqueId);
     this.updateFormFields(false, uniqueId);
@@ -686,7 +672,6 @@ export default class WalletSendForm extends Component<Props, State> {
       adaAmount: adaAmountField,
       receiver: receiverField,
       assetFields,
-      assetsDropdown,
     } = formFields.receiver;
 
     const assetsSeparatorBasicHeight = 140;
@@ -836,22 +821,12 @@ export default class WalletSendForm extends Component<Props, State> {
                       uniqueId={uniqueId}
                       index={index}
                       getAssetByUniqueId={this.getAssetByUniqueId}
-                      availableAssets={this.availableAssets}
                       assetFields={assetFields}
-                      assetsDropdown={assetsDropdown}
                       addFocusableField={this.addFocusableField}
-                      removeAssetButtonVisible={
-                        this.state.showRemoveAssetButton
-                      }
-                      showRemoveAssetButton={this.showRemoveAssetButton}
-                      hideRemoveAssetButton={this.hideRemoveAssetButton}
                       currentNumberFormat={this.getCurrentNumberFormat()}
                       removeAssetRow={this.removeAssetRow}
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
-                      onChangeAsset={(newUniqueId) =>
-                        this.onChangeAsset(uniqueId, newUniqueId)
-                      }
                       autoFocus={this._isAutoFocusEnabled}
                     />
                   )
@@ -862,7 +837,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
                 onClick={() => {
-                  this.addAssetRow(this.availableAssets[0].uniqueId);
+                  this.setState({ isTokenPickerOpen: true });
                 }}
               />
             </div>
@@ -881,14 +856,19 @@ export default class WalletSendForm extends Component<Props, State> {
       transactionFeeError,
       isResetButtonDisabled,
       isTransactionFeeCalculated,
+      isTokenPickerOpen,
+      selectedAssetUniqueIds,
     } = this.state;
     const {
+      assets,
       currencyMaxFractionalDigits,
       hwDeviceStatus,
       isHardwareWallet,
       isDialogOpen,
       isRestoreActive,
       onExternalLinkClick,
+      tokenFavorites,
+      walletName,
     } = this.props;
 
     const receiverField = form.$('receiver');
@@ -981,6 +961,22 @@ export default class WalletSendForm extends Component<Props, State> {
             formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
+
+        {isTokenPickerOpen && (
+          <WalletTokenPicker
+            assets={assets}
+            previouslyCheckedIds={selectedAssetUniqueIds}
+            tokenFavorites={tokenFavorites}
+            walletName={walletName}
+            onCancel={() => {
+              this.setState({ isTokenPickerOpen: false });
+            }}
+            onAdd={(checked) => {
+              this.setState({ isTokenPickerOpen: false });
+              checked.forEach(this.addAssetRow);
+            }}
+          />
+        )}
       </div>
     );
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.300000012">
-        <g id="wallet_screen_list_view_small_view_expanded_inline" transform="translate(-800.000000, -657.000000)" fill="#5E6066">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="wallet_screen_list_view_small_view_expanded_inline" transform="translate(-800.000000, -657.000000)" fill="currentColor">
             <g id="content" transform="translate(720.000000, 168.000000)">
                 <g id="search" transform="translate(40.000000, 454.000000)">
                     <path d="M61.5063364,53.7137269 C64.8038988,49.0866643 64.3770757,42.6214189 60.2258669,38.4702101 C55.59892,33.8432633 48.097157,33.8432633 43.4702101,38.4702101 C38.8432633,43.097157 38.8432633,50.59892 43.4702101,55.2258669 C47.6214189,59.3770757 54.0866643,59.8038988 58.7137269,56.5063364 L67.2073905,65 L70,62.2073905 L61.5063364,53.7137269 L61.5063364,53.7137269 Z M57.4332574,52.4332574 C60.5178887,49.3486262 60.5178887,44.3474508 57.4332574,41.2628196 C54.3486262,38.1781884 49.3474508,38.1781884 46.2628196,41.2628196 C43.1781884,44.3474508 43.1781884,49.3486262 46.2628196,52.4332574 C49.3474508,55.5178887 54.3486262,55.5178887 57.4332574,52.4332574 L57.4332574,52.4332574 Z" id="search-ic"></path>
