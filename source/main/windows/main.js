@@ -11,10 +11,9 @@ import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 import { getRtsFlags } from '../utils/rtsFlags';
 
 const rendererErrorHandler = new RendererErrorHandler();
-const { network } = environment;
 
+const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlags(network);
-const { isDev, isTest, isLinux, isBlankScreenFixActive } = environment;
 
 const id = 'window';
 

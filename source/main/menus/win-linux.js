@@ -13,7 +13,7 @@ import { getRtsFlags } from '../utils/rtsFlags';
 const id = 'menu';
 const { isWindows, isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlags(network);
-const rtsFlagsEnabled = rtsFlags && rtsFlags?.length > 0;
+const rtsFlagsEnabled: boolean = !!rtsFlags && rtsFlags?.length > 0;
 
 export const winLinuxMenu = (
   app: App,
