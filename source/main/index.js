@@ -166,7 +166,7 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  const getRtsFlagsAccordingToSpecs = () => {
+  const getCurrentRtsFlags = () => {
     const rtsFlagsFromStorage = getRtsFlags(network);
     if (!rtsFlagsFromStorage) {
       if (os.totalmem() < MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS) {
@@ -178,7 +178,7 @@ const onAppReady = async () => {
     return rtsFlagsFromStorage;
   };
 
-  const rtsFlags = getRtsFlagsAccordingToSpecs();
+  const rtsFlags = getCurrentRtsFlags();
   logger.info(
     `Setting up Cardano Node... with flags: ${JSON.stringify(rtsFlags)}`
   );
