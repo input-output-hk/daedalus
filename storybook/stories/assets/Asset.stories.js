@@ -43,7 +43,7 @@ storiesOf('Assets|Asset pill', module)
               },
             },
           }}
-          small={boolean('small', false)}
+          small={boolean('small', true)}
           hidePopOver={boolean('hidePopOver')}
           onCopyAssetParam={action('onCopyAssetParam')}
           onClickSettings={

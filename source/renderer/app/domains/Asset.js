@@ -1,7 +1,8 @@
 // @flow
 import { pick } from 'lodash';
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import type { Asset as AssetProps, AssetMetadata } from '../api/assets/types';
+import { hexToString } from '../utils/strings.js';
 
 export default class Asset {
   @observable policyId: string = '';
@@ -11,6 +12,9 @@ export default class Asset {
   @observable metadata: ?AssetMetadata;
   @observable decimals: ?number;
   @observable recommendedDecimals: ?number;
+  @computed get assetNameASCII() {
+    return hexToString(this.assetName || '');
+  }
 
   constructor(props: AssetProps) {
     const { uniqueId } = props;

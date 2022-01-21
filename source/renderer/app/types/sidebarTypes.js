@@ -12,3 +12,27 @@ export type SidebarWalletType = {
   isNotResponding: boolean,
   hasNotification: boolean,
 };
+
+export type WalletSortByOptions = 'DATE' | 'BALANCE' | 'NAME' | 'NONE';
+
+export type WalletSortOrderOptions = 'asc' | 'desc';
+
+export const WalletSortBy: EnumMap<string, WalletSortByOptions> = {
+  Date: 'DATE',
+  Balance: 'BALANCE',
+  Name: 'NAME',
+  None: 'NONE',
+};
+
+export const WalletSortOrder: EnumMap<
+  string,
+  WalletSortOrderOptions
+> = Object.freeze({
+  Desc: 'desc',
+  Asc: 'asc',
+});
+
+export type WalletSortConfig = {
+  sortBy: WalletSortByOptions,
+  sortOrder: WalletSortOrderOptions,
+};

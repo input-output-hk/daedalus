@@ -784,6 +784,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#ffb923',
     '--theme-sidebar-category-networkInfo-text-color': '#121326',
+    '--theme-sidebar-sort-button-background-color': '255, 255, 255',
+    '--theme-sidebar-search-field-border-color': '255, 255, 255',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(42, 43, 60, 0.96)',
@@ -1009,6 +1011,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.05)',
     '--theme-tokens-list-header-expanded-background-color-hover':
       'rgba(255, 255, 255, 0.03)',
+    '--theme-tokens-picker-toolbar-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-tokens-picker-toolbar-border-bottom-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-tokens-picker-token-separator': 'rgba(94, 96, 102, 0.15)',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

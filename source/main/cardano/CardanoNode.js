@@ -77,6 +77,7 @@ export type CardanoNodeConfig = {
   cliBin: string, // Path to cardano-cli executable
   isStaging: boolean,
   metadataUrl?: string,
+  rtsFlags: Array<string>,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
