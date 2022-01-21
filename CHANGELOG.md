@@ -6,6 +6,8 @@
 
 - Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 - Updated message about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827))
+- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827)) ([PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
 
 ### Chores
 
