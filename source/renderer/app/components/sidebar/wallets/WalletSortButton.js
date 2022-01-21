@@ -24,15 +24,15 @@ export function WalletSortButton({
   sortOrder,
   tooltip,
 }: Props) {
-  const walletSortButtonStyles = classNames({
-    [styles.walletSortButton]: true,
-    [styles.walletSortButtonActive]: isActive,
-  });
+  const walletSortButtonStyles = classNames([
+    styles.walletSortButton,
+    isActive ? styles.walletSortButtonActive : null,
+  ]);
 
-  const walletSortOrderArrowStyles = classNames({
-    [styles.walletSortOrderArrowContainer]: true,
-    [styles.walletSortOrderArrowAsc]: sortOrder === WalletSortOrder.Asc,
-  });
+  const walletSortOrderArrowStyles = classNames([
+    styles.walletSortOrderArrowContainer,
+    sortOrder === WalletSortOrder.Asc ? styles.walletSortOrderArrowAsc : null,
+  ]);
 
   return (
     <PopOver content={tooltip}>

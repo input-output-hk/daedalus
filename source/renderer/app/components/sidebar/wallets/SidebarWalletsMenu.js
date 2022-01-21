@@ -108,6 +108,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
         wallets.map((w) => ({
           ...w,
           // fix encode issue on fuse lib related to empty space
+          // https://github.com/krisk/Fuse/issues/610
           title: w.title.replace(/\s/g, ' '),
         })),
         {
@@ -118,11 +119,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
         }
       );
 
-      const result = fuse.search(searchValue);
-
-      const filteredResult = result.map((r) => r.item);
-
-      return filteredResult;
+      return fuse.search(searchValue).map((r) => r.item);
     }
 
     return wallets;

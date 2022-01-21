@@ -38,12 +38,7 @@ const WalletSearchComponent = ({
         [styles.hasValue]: hasValue,
       })}
     >
-      <SVGInline
-        svg={searchIcon}
-        className={classNames({
-          [styles.searchIcon]: true,
-        })}
-      />
+      <SVGInline svg={searchIcon} className={styles.searchIcon} />
       <Input
         id="sideBarwalletSearch"
         className={styles.input}
