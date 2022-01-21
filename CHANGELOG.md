@@ -4,6 +4,10 @@
 
 ### Features
 
+- Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
+
+## 4.8.0-FC1
+
 - Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
 - Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827)) ([PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
 
@@ -16,10 +20,6 @@
 ### Features
 
 - Updated Catalyst dates ([PR 2812](https://github.com/input-output-hk/daedalus/pull/2812))
-
-### Features
-
-- Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
 
 ### Fixes
 
