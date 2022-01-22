@@ -15,7 +15,7 @@ const messages = defineMessages({
   startingDescription: {
     id: 'loading.screen.startingCardanoDescription',
     defaultMessage:
-      '!!!This process validates the integrity of local blockchain data and could take several minutes.',
+      '!!!This process validates the integrity of local blockchain data.',
     description: 'Message "Starting Cardano node" on the loading screen.',
   },
   stopping: {
@@ -80,9 +80,9 @@ const messages = defineMessages({
   verifyingBlockchain: {
     id: 'loading.screen.verifyingBlockchainMessage',
     defaultMessage:
-      '!!!Verifying the blockchain ({verificationProgress}% complete)',
+      '!!!Cardano node is currently syncing. This process can take several hours',
     description:
-      'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
+      'Message on the loading screen informing that sync process could be very long',
   },
 });
 

@@ -17,7 +17,7 @@ import {
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 
 // Screens
-import WalletTokensList from '../../../../source/renderer/app/components/wallet/tokens/WalletTokensList';
+import WalletTokensList from '../../../../source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList';
 
 const assets = [
   generateAssetToken(

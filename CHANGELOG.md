@@ -2,6 +2,33 @@
 
 ## vNext
 
+### Features
+
+- Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
+- Implemented wallet sorting on sidebar menu ([PR 2775](https://github.com/input-output-hk/daedalus/pull/2775))
+- Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
+
+### Chores
+
+- Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
+
+## 4.8.0-FC1
+
+### Features
+
+- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827)) ([PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+
+### Chores
+
+- Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
+## 4.7.0
+
+### Features
+
+- Updated Catalyst dates ([PR 2812](https://github.com/input-output-hk/daedalus/pull/2812))
+
 ### Fixes
 
 - Fixed receiver address validation by disallowing rewards addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))

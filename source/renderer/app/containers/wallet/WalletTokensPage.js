@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletTokens from '../../components/wallet/tokens/WalletTokens';
+import WalletTokens from '../../components/wallet/tokens/wallet-tokens/WalletTokens';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { getAssetTokens } from '../../utils/assets';
 
