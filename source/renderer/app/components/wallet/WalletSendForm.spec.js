@@ -31,22 +31,25 @@ describe('wallet/Wallet Send Form', () => {
 
   const currencyMaxFractionalDigits = 6;
 
-  function createAssets() {
+  function createAssets(index: number) {
+    const id = `${faker.random.uuid()}:${index}`;
     return {
-      policyId: faker.random.uuid(),
+      policyId: id,
       assetName: faker.internet.domainWord(),
-      uniqueId: faker.random.uuid(),
+      uniqueId: id,
       fingerprint: faker.random.uuid(),
       quantity: new BigNumber(faker.finance.amount()),
       decimals: 0,
       recommendedDecimals: null,
       metadata: {
-        name: faker.internet.domainWord(),
+        name: id,
         ticker: faker.finance.currencyCode(),
         description: '',
       },
     };
   }
+
+  const assets = [createAssets(0), createAssets(1)];
 
   function SetupWallet({
     calculateTransactionFee,
@@ -68,7 +71,7 @@ describe('wallet/Wallet Send Form', () => {
                 validateAssetAmount={jest.fn().mockResolvedValue(true)}
                 calculateTransactionFee={calculateTransactionFee}
                 walletAmount={new BigNumber(123)}
-                assets={[createAssets(), createAssets()]}
+                assets={assets}
                 addressValidator={() => true}
                 onOpenDialogAction={jest.fn()}
                 isDialogOpen={jest.fn()}
@@ -81,6 +84,8 @@ describe('wallet/Wallet Send Form', () => {
                 selectedAsset={null}
                 onUnsetActiveAsset={() => {}}
                 isAddressFromSameWallet={false}
+                tokenFavorites={{}}
+                walletName={faker.name.firstName()}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>
@@ -101,19 +106,32 @@ describe('wallet/Wallet Send Form', () => {
   }
 
   function getInput(label: string) {
-    return screen.getByText(label).parentElement.querySelector('input');
+    return screen
+      .getByText(label)
+      .closest('label')
+      .parentElement.querySelector('input');
   }
 
   async function findInput(label: string) {
-    const labelNode = await screen.findByText(label);
-    return labelNode.parentElement.querySelector('input');
+    await screen.findByText(label);
+    return getInput(label);
   }
 
-  async function addToken(value: number = 1, tokenIndex: number = 1) {
+  async function addToken(value: number = 1, tokenIndex: number = 0) {
     const addTokenButton = await screen.findByText('+ Add a token');
     fireEvent.click(addTokenButton);
 
-    const token = getInput(`Token #${tokenIndex}`);
+    const tokenPicker = await screen.findByTestId('WalletTokenPicker');
+
+    const tokenCheckbox = tokenPicker.querySelectorAll(
+      'input[type="checkbox"]'
+    )[tokenIndex];
+    fireEvent.click(tokenCheckbox);
+
+    const addTokenPickerButton = await screen.findByText('Add');
+    fireEvent.click(addTokenPickerButton);
+
+    const token = await findInput(assets[tokenIndex].metadata.name);
     fireEvent.change(token, {
       target: {
         value,
@@ -122,7 +140,9 @@ describe('wallet/Wallet Send Form', () => {
 
     return async () => {
       fireEvent.mouseEnter(token);
-      const removeTokenButton = await screen.findByText('Remove');
+      const removeTokenButton = await screen.findByTestId(
+        `remove-asset-${assets[tokenIndex].uniqueId}`
+      );
       fireEvent.click(removeTokenButton);
     };
   }
@@ -410,7 +430,7 @@ describe('wallet/Wallet Send Form', () => {
 
     expect(getInput('Ada')).toHaveValue('');
 
-    await addToken(minimumAda, 2);
+    await addToken(minimumAda, 1);
     await waitForMinimumAdaRequiredMsg();
 
     assertAdaInput(minimumAda);
