@@ -142,7 +142,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         } = this.props;
         const { passphrase } = form.values();
         const hasAssetsRemainingAfterTransaction =
-          this.props.allAvailableTokens.length - selectedAssets.length > 0;
+          this.props.allAvailableTokens?.length > 0;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
