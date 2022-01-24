@@ -5,11 +5,14 @@ import { logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 
-export const safeExit = async (cardanoNode: ?CardanoNode): Promise<void> => {
+export const safeExit = async (
+  cardanoNode: ?CardanoNode,
+  relaunch: boolean = false
+): Promise<void> => {
   pauseActiveDownloads();
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
-    safeExitWithCode(0);
+    safeExitWithCode(0, relaunch);
     return;
   }
 
@@ -25,11 +28,11 @@ export const safeExit = async (cardanoNode: ?CardanoNode): Promise<void> => {
     });
     await cardanoNode.stop();
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
-    safeExitWithCode(0);
+    safeExitWithCode(0, relaunch);
   } catch (error) {
     logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
       error,
     });
-    safeExitWithCode(0);
+    safeExitWithCode(0, relaunch);
   }
 };
