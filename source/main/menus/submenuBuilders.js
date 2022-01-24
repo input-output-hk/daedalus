@@ -35,10 +35,8 @@ export const buildKnownIssueFixesSubmenu = (
       label: translate('helpSupport.usingRtsFlags'),
       type: 'checkbox',
       checked: rtsFlagsEnabled,
-      click(item) {
-        const newValue = !rtsFlagsEnabled;
-        actions.setRtsFlags(newValue);
-        item.checked = newValue;
+      click() {
+        actions.setRtsFlags(!rtsFlagsEnabled);
       },
     },
   ];
