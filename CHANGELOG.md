@@ -4,6 +4,7 @@
 
 ### Features
 
+- Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
 - Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
 - Implemented wallet sorting on sidebar menu ([PR 2775](https://github.com/input-output-hk/daedalus/pull/2775))
 - Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
