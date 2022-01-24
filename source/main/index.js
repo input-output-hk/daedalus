@@ -45,12 +45,12 @@ import type {
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
-import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
+import { WalletSettingsStateEnum } from '../common/ipc/api';
 
 /* eslint-disable consistent-return */
 
@@ -186,25 +186,16 @@ const onAppReady = async () => {
 
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
+    walletSettingsState: WalletSettingsStateEnum.hidden,
   });
 
-  enableApplicationMenuNavigationChannel.onReceive(
-    () =>
-      new Promise((resolve) => {
-        const locale = getLocale(network);
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: true,
-        });
-        resolve();
-      })
-  );
-
   rebuildApplicationMenu.onReceive(
-    (data) =>
+    ({ walletSettingsState, isNavigationEnabled }) =>
       new Promise((resolve) => {
         const locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: data.isNavigationEnabled,
+          isNavigationEnabled,
+          walletSettingsState,
         });
         mainWindow.updateTitle(locale);
         resolve();

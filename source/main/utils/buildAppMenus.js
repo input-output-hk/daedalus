@@ -1,5 +1,6 @@
 // @flow
 import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
+import type { WalletSettingsStateValue } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
@@ -12,17 +13,19 @@ import { getTranslation } from './getTranslation';
 import { setRtsFlagsAndRestart } from './rtsFlags';
 import { RTS_FLAGS } from '../config';
 
+type Data = {
+  isNavigationEnabled: boolean,
+  walletSettingsState: WalletSettingsStateValue,
+};
+
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
   locale: string,
-  data: {
-    isNavigationEnabled: boolean,
-  }
+  { isNavigationEnabled, walletSettingsState }: Data
 ) => {
   const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
-  const { isNavigationEnabled } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
@@ -146,7 +149,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isNavigationEnabled
+        isNavigationEnabled,
+        walletSettingsState
       )
     );
     Menu.setApplicationMenu(menu);
@@ -158,7 +162,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isNavigationEnabled
+        isNavigationEnabled,
+        walletSettingsState
       )
     );
     mainWindow.setMenu(menu);

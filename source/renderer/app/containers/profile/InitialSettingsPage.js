@@ -19,16 +19,9 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
   };
 
   handleSelectItem = async (param: string, value: string) => {
-    const { actions, stores } = this.props;
+    const { actions } = this.props;
     const { updateUserLocalSetting } = actions.profile;
     updateUserLocalSetting.trigger({ param, value });
-    const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
-
-    if (param === 'locale') {
-      await rebuildApplicationMenu.send({
-        isNavigationEnabled,
-      });
-    }
   };
 
   render() {

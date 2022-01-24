@@ -8,6 +8,8 @@ import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
+import { WalletSettingsStateEnum } from '../../common/ipc/api';
+import type { WalletSettingsStateValue } from '../../common/ipc/api';
 import { getRtsFlags } from '../utils/rtsFlags';
 
 const id = 'menu';
@@ -22,6 +24,7 @@ export const osxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
+  walletSettingsState: WalletSettingsStateValue,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -58,7 +61,10 @@ export const osxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: isNavigationEnabled,
+        enabled:
+          isNavigationEnabled &&
+          walletSettingsState === WalletSettingsStateEnum.enabled,
+        visible: walletSettingsState !== WalletSettingsStateEnum.hidden,
       },
       { type: 'separator' },
       {

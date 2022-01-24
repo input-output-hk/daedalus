@@ -15,7 +15,6 @@ import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
-import { enableApplicationMenuNavigationChannel } from '../ipc/enableApplicationMenuNavigationChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -296,14 +295,10 @@ export default class ProfileStore extends Store {
   _acceptTermsOfUse = async () => {
     await this.setTermsOfUseAcceptanceRequest.execute();
     await this.getTermsOfUseAcceptanceRequest.execute();
-    await enableApplicationMenuNavigationChannel.send();
   };
 
   _getTermsOfUseAcceptance = async () => {
     await this.getTermsOfUseAcceptanceRequest.execute();
-    if (this.getTermsOfUseAcceptanceRequest.result) {
-      await enableApplicationMenuNavigationChannel.send();
-    }
   };
 
   _acceptDataLayerMigration = async () => {
