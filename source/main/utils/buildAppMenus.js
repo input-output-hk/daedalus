@@ -119,12 +119,14 @@ export const buildAppMenus = async (
       rtsFlagsDialogOptions
     );
 
-    if (response === 0) {
-      const flagsToSet = enable ? RTS_FLAGS : [];
-      storeRtsFlagsSettings(environment.network, flagsToSet);
+    if (response !== 0) {
+      return;
     }
 
-    await safeExit(cardanoNode);
+    const flagsToSet = enable ? RTS_FLAGS : [];
+    storeRtsFlagsSettings(environment.network, flagsToSet);
+
+    await safeExit(cardanoNode, true);
   };
 
   const menuActions = {
