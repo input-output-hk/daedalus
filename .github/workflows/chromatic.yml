@@ -1,5 +1,10 @@
 name: 'Chromatic'
-on: push
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
 jobs:
   chromatic-deployment:
     runs-on: ubuntu-latest
