@@ -22,8 +22,10 @@ export const getRtsFlagsSettings = (network: string): string[] | null => {
 
 export const storeRtsFlagsSettings = (
   network: string,
-  flags: Array<string>
+  flags: string[]
 ): void => {
-  logger.info(`[RTS-FLAGS] Persisted ${network} flags: ${flags} in config`);
+  logger.info(
+    `[RTS-FLAGS] Persisted ${network} flags: [${flags.toString()}] in config`
+  );
   store.set(getStoreKey(network), flags);
 };

@@ -120,7 +120,7 @@ export const winLinuxMenu = (
       {
         type: 'separator',
       },
-      isWindows
+      environment.isWindows
         ? {
             label: translation('view.toggleFullScreen'),
             accelerator: 'F11',
@@ -151,7 +151,7 @@ export const winLinuxMenu = (
   {
     label: translation('helpSupport'),
     submenu: compact([
-      ...buildKnownIssueFixesSubmenu(actions, translation),
+      ...buildKnownIssueFixesSubmenu(actions, translations, translation),
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),

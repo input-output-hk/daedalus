@@ -11,6 +11,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
 import { storeRtsFlagsSettings } from './rtsFlagSettings';
 import { RTS_FLAGS } from '../config';
+import { safeExit } from './safeExit';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -122,6 +123,8 @@ export const buildAppMenus = async (
       const flagsToSet = enable ? RTS_FLAGS : [];
       storeRtsFlagsSettings(environment.network, flagsToSet);
     }
+
+    await safeExit(cardanoNode);
   };
 
   const menuActions = {

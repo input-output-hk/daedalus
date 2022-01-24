@@ -1,13 +1,16 @@
+// @flow
+import { shell } from 'electron';
+import type { MenuItem } from 'electron';
 import { getRtsFlagsSettings } from '../utils/rtsFlagSettings';
 import { environment } from '../environment';
-import { MenuActions } from './MenuActions.types';
-import { shell } from 'electron';
-import { safeExitWithCode } from '../utils/safeExitWithCode';
+import type { MenuActions } from './MenuActions.types';
+import { getTranslation } from '../utils/getTranslation';
 
 export const buildKnownIssueFixesSubmenu = (
   actions: MenuActions,
-  translate: Function
-) => {
+  translations: {},
+  translate: Function = getTranslation(translations, 'menu')
+): MenuItem[] => {
   const { isBlankScreenFixActive, network } = environment;
   const rtsFlags = getRtsFlagsSettings(network);
   const rtsFlagsEnabled = !!rtsFlags?.length && rtsFlags.length > 0;
@@ -36,7 +39,6 @@ export const buildKnownIssueFixesSubmenu = (
         const newValue = !rtsFlagsEnabled;
         actions.setRtsFlags(newValue);
         item.checked = newValue;
-        safeExit();
       },
     },
   ];

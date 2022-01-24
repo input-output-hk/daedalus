@@ -139,7 +139,7 @@ export const osxMenu = (
   {
     label: translation('helpSupport'),
     submenu: compact([
-      ...buildKnownIssueFixesSubmenu(actions, translation),
+      ...buildKnownIssueFixesSubmenu(actions, translations, translation),
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),

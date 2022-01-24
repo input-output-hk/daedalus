@@ -231,7 +231,7 @@ const onAppReady = async () => {
       'mainWindow received <close> event. Safe exiting Daedalus now.'
     );
     event.preventDefault();
-    await safeExit();
+    await safeExit(cardanoNode);
   });
 
   // Security feature: Prevent creation of new browser windows
@@ -284,7 +284,7 @@ const onAppReady = async () => {
       logger.info('ipcMain: Exiting local cluster together with Daedalus');
     }
 
-    await safeExit();
+    await safeExit(cardanoNode);
   });
 };
 
