@@ -838,7 +838,9 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::createTransaction error', { error });
-      const adaToProceedRegex = /I need approximately([\s\d\.,]+)ada to proceed/;
+      const adaToProceedRegex = new RegExp(
+        /I need approximately([\s\d.,]+)ada to proceed/
+      );
       if (
         error.code === 'cannot_cover_fee' &&
         hasAssetsRemainingAfterTransaction &&
