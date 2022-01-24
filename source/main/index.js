@@ -40,7 +40,6 @@ import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
-import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type {
   GenerateWalletMigrationReportRendererRequest,
   SetStateSnapshotLogMainResponse,
@@ -49,11 +48,11 @@ import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
-import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
+import { safeExit } from './utils/safeExit';
 
 /* eslint-disable consistent-return */
 
@@ -86,32 +85,6 @@ if (isBlankScreenFixActive) {
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 app.allowRendererProcessReuse = true;
-const safeExit = async () => {
-  pauseActiveDownloads();
-  if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
-    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
-    return safeExitWithCode(0);
-  }
-  if (cardanoNode.state === CardanoNodeStates.STOPPING) {
-    logger.info('Daedalus:safeExit: waiting for cardano-node to stop...');
-    cardanoNode.exitOnStop();
-    return;
-  }
-  try {
-    const pid = cardanoNode.pid || 'null';
-    logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
-      pid,
-    });
-    await cardanoNode.stop();
-    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
-    safeExitWithCode(0);
-  } catch (error) {
-    logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
-      error,
-    });
-    safeExitWithCode(0);
-  }
-};
 
 const getCurrentRtsFlags = () => {
   const rtsFlagsFromStorage = getRtsFlagsSettings(network);

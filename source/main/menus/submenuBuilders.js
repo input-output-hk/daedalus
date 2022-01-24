@@ -2,6 +2,7 @@ import { getRtsFlagsSettings } from '../utils/rtsFlagSettings';
 import { environment } from '../environment';
 import { MenuActions } from './MenuActions.types';
 import { shell } from 'electron';
+import { safeExitWithCode } from '../utils/safeExitWithCode';
 
 export const buildKnownIssueFixesSubmenu = (
   actions: MenuActions,
@@ -35,6 +36,7 @@ export const buildKnownIssueFixesSubmenu = (
         const newValue = !rtsFlagsEnabled;
         actions.setRtsFlags(newValue);
         item.checked = newValue;
+        safeExit();
       },
     },
   ];
