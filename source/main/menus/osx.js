@@ -8,9 +8,12 @@ import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
+import { getRtsFlags } from '../utils/rtsFlags';
 
 const id = 'menu';
-const { isBlankScreenFixActive } = environment;
+const { isBlankScreenFixActive, network } = environment;
+const rtsFlags = getRtsFlags(network);
+const rtsFlagsEnabled: boolean = !!rtsFlags?.length && rtsFlags.length > 0;
 
 export const osxMenu = (
   app: App,
@@ -154,6 +157,15 @@ export const osxMenu = (
           actions.toggleBlankScreenFix(item);
         },
       },
+      {
+        label: translation('helpSupport.usingRtsFlags'),
+        type: 'checkbox',
+        checked: rtsFlagsEnabled,
+        click(item) {
+          actions.setRtsFlags(!rtsFlagsEnabled);
+          item.checked = rtsFlagsEnabled;
+        },
+      },
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),
@@ -162,15 +174,6 @@ export const osxMenu = (
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
-      /* {
-        label: translation('helpSupport.featureRequest'),
-        click() {
-          const featureRequestLinkUrl = translation(
-            'helpSupport.featureRequestUrl'
-          );
-          shell.openExternal(featureRequestLinkUrl);
-        },
-      }, */
       {
         label: translation('helpSupport.supportRequest'),
         click() {

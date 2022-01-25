@@ -795,6 +795,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#fafbfc',
     '--theme-sidebar-category-networkInfo-text-color': '#5e6066',
+    '--theme-sidebar-sort-button-background-color': '250, 251, 252',
+    '--theme-sidebar-search-field-border-color': '250, 251, 252',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(36, 62, 98, 0.96)',
@@ -1017,6 +1019,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(68, 91, 124, 0.05)',
     '--theme-tokens-list-header-expanded-background-color-hover':
       'rgba(68, 91, 124, 0.03)',
+    '--theme-tokens-picker-toolbar-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-tokens-picker-toolbar-border-bottom-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-tokens-picker-token-separator': 'rgba(94, 96, 102, 0.15)',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

@@ -95,6 +95,7 @@ import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { getLegacyWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
+import { hexToString } from '../utils/strings';
 import {
   unscrambleMnemonics,
   scrambleMnemonics,
@@ -2756,6 +2757,7 @@ const _createWalletFromServerData = action(
           uniqueId,
           policyId,
           assetName,
+          assetNameASCII: hexToString(assetName),
           quantity: new BigNumber(quantity.toString()),
         };
       }),
@@ -2766,6 +2768,7 @@ const _createWalletFromServerData = action(
           uniqueId,
           policyId,
           assetName,
+          assetNameASCII: hexToString(assetName),
           quantity: new BigNumber(quantity.toString()),
         };
       }),
