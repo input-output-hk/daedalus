@@ -9,6 +9,10 @@
 - Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
 - Improved wallet send form ([PR 2791](https://github.com/input-output-hk/daedalus/pull/2791))
 
+### Fixes
+
+ - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
+
 ### Chores
 
 - Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
