@@ -8,6 +8,7 @@
 - Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
 - Implemented wallet sorting on sidebar menu ([PR 2775](https://github.com/input-output-hk/daedalus/pull/2775))
 - Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
+- Improved wallet send form ([PR 2791](https://github.com/input-output-hk/daedalus/pull/2791))
 
 ### Chores
 
