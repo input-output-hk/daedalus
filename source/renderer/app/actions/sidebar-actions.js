@@ -1,4 +1,5 @@
 // @flow
+
 import Action from './lib/Action';
 
 // ======= SIDEBAR ACTIONS =======

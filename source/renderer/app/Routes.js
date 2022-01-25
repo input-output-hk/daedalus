@@ -12,6 +12,7 @@ import WalletsSettingsPage from './containers/settings/categories/WalletsSetting
 import StakePoolsSettingsPage from './containers/settings/categories/StakePoolsSettingsPage';
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
+import SecuritySettingsPage from './containers/settings/categories/SecuritySettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
@@ -113,6 +114,10 @@ export const Routes = withRouter(() => (
             <Route
               path={ROUTES.SETTINGS.DISPLAY}
               component={DisplaySettingsPage}
+            />
+            <Route
+              path={ROUTES.SETTINGS.SECURITY}
+              component={SecuritySettingsPage}
             />
           </Settings>
         </Route>

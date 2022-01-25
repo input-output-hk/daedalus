@@ -6,6 +6,11 @@ import {
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
 import { DEFAULT_DECIMAL_PRECISION } from '../config/assetsConfig';
+import {
+  DATE_ENGLISH_LL_MAP_OPTIONS,
+  TIME_LL_MAP_OPTIONS,
+  DATE_TIME_SEPARATOR_MAP,
+} from '../config/profileConfig';
 import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
@@ -14,7 +19,8 @@ import type { AssetMetadata } from '../api/assets/types';
 export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency: boolean = true,
-  long: boolean = true
+  long: boolean = true,
+  currency: string = 'ADA'
 ): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
@@ -27,7 +33,7 @@ export const formattedWalletAmount = (
     formattedAmount = formattedAmount.split('.').join(decimalSeparator);
   }
   if (withCurrency) {
-    formattedAmount = `${formattedAmount} ADA`;
+    formattedAmount = `${formattedAmount} ${currency}`;
   }
   return formattedAmount.toString();
 };
@@ -254,24 +260,6 @@ export const toFixedWithoutRounding = (
 export const formattedNumber = (value: number | string, dp?: number): string =>
   new BigNumber(value).toFormat(dp);
 
-export const formattedCpuModel = (model: string): string => {
-  const atCharPosition = model.indexOf('@');
-  const speedSection = model.substring(atCharPosition);
-  const speedNumbers = speedSection.match(/[\d,.]+/g);
-  const speedNumber = speedNumbers ? speedNumbers[0] : '';
-  const formattedSpeedNumber = formattedNumber(speedNumber, 2);
-  const formattedSpeedSection = speedSection.replace(
-    /[\d,.]+/,
-    formattedSpeedNumber
-  );
-  const formattedModel = `${model.substring(
-    0,
-    atCharPosition
-  )}${formattedSpeedSection}`;
-
-  return formattedModel;
-};
-
 export const formattedSize = (size: string): string => {
   const sizeNumbers = size.match(/[\d,.]+/g);
   const sizeNumber = sizeNumbers ? sizeNumbers[0] : '';
@@ -281,30 +269,46 @@ export const formattedSize = (size: string): string => {
   return formattedResult;
 };
 
+type CurrentFormats = {
+  currentLocale: Locale,
+  currentDateFormat: string,
+  currentTimeFormat?: string,
+};
+
 export const formattedDateTime = (
   dateTime: Date,
-  {
-    currentLocale,
-    currentDateFormat,
-    currentTimeFormat,
-  }: {
-    currentLocale: Locale,
-    currentDateFormat: string,
-    currentTimeFormat: string,
-  }
+  { currentLocale, currentDateFormat, currentTimeFormat }: CurrentFormats
 ) => {
   moment.locale(momentLocales[currentLocale]);
 
   const dateTimeMoment = moment(dateTime);
   const dateFormatted = dateTimeMoment.format(currentDateFormat);
-  const timeFormatted = dateTimeMoment.format(currentTimeFormat);
 
-  if (currentLocale === LOCALES.english) {
-    return `${dateFormatted}, ${timeFormatted}`;
+  if (currentTimeFormat) {
+    const timeFormatted = dateTimeMoment.format(currentTimeFormat);
+    const dateTimeSeparator = DATE_TIME_SEPARATOR_MAP[currentDateFormat];
+
+    return `${dateFormatted}${dateTimeSeparator}${timeFormatted}`;
   }
 
-  return `${dateFormatted}${timeFormatted}`;
+  return dateFormatted;
 };
 
 export const getMultiplierFromDecimalPlaces = (decimalPlaces: number) =>
   '1'.padEnd(decimalPlaces + 1, '0');
+
+export const mapToLongDateTimeFormat = ({
+  currentLocale,
+  currentDateFormat,
+  currentTimeFormat,
+}: CurrentFormats) => {
+  const mappedDateFormat =
+    currentLocale === LOCALES.english
+      ? DATE_ENGLISH_LL_MAP_OPTIONS[currentDateFormat]
+      : currentDateFormat;
+
+  return {
+    currentDateFormat: mappedDateFormat,
+    currentTimeFormat: TIME_LL_MAP_OPTIONS[currentTimeFormat],
+  };
+};

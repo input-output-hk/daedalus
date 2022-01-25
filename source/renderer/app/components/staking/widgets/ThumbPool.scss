@@ -3,6 +3,7 @@
 
   .content {
     border-radius: 4px;
+    overflow: hidden;
 
     &.disabled {
       opacity: 0.3;

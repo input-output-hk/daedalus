@@ -51,6 +51,7 @@ export type NodeConfig = {
     topologyFile: string,
   },
   signingKey?: string,
+  rtsOpts?: Array<string>,
 };
 
 /**
@@ -153,16 +154,18 @@ export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
 // CardanoNode config
 export const NODE_STARTUP_TIMEOUT = 5000;
 export const NODE_STARTUP_MAX_RETRIES = 5;
-export const NODE_SHUTDOWN_TIMEOUT = isTest ? 5000 : 10000;
-export const NODE_KILL_TIMEOUT = isTest ? 5000 : 10000;
-export const NODE_UPDATE_TIMEOUT = isTest ? 10000 : 60000;
+export const NODE_SHUTDOWN_TIMEOUT = isTest ? 5000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
+export const NODE_KILL_TIMEOUT = isTest ? 5000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
+export const NODE_UPDATE_TIMEOUT = isTest ? 10000 : 5 * 60 * 1000; // 5 minutes | unit: milliseconds
 
 export const DISK_SPACE_REQUIRED = 2 * 1073741274; // 2 GB | unit: bytes
 export const DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE = 10; // 10% of the available disk space
+export const DISK_SPACE_CHECK_DONT_BOTHER_ME_INTERVAL = Number.MAX_SAFE_INTEGER; // Maximum interval
 export const DISK_SPACE_CHECK_LONG_INTERVAL = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
 export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
 export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
+export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks pace
 
 export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
 
@@ -170,7 +173,11 @@ export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | uni
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =
   'https://metadata.cardano-testnet.iohkdev.io';
 
+export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
+
 // Used by mock-token-metadata-server
 export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
 export const MOCK_TOKEN_METADATA_SERVER_PORT =
   process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;
+
+export const RTS_FLAGS = ['-c'];

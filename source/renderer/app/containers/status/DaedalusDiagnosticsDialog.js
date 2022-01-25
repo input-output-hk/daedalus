@@ -6,6 +6,7 @@ import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import { formattedBytesToSize } from '../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
+import formatCpuInfo from '../../utils/formatCpuInfo';
 
 type Props = InjectedDialogContainerProps;
 
@@ -62,7 +63,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     const systemInfo = {
       platform: environment.os,
       platformVersion: environment.platformVersion,
-      cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
+      cpu: formatCpuInfo(environment.cpu),
       ram: formattedBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
     };

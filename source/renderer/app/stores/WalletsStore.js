@@ -18,7 +18,10 @@ import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
-import { bech32EncodePublicKey } from '../utils/hardwareWalletUtils';
+import {
+  bech32EncodePublicKey,
+  isReceiverAddressType,
+} from '../utils/hardwareWalletUtils';
 import {
   WalletPaperWalletOpenPdfError,
   WalletRewardsOpenCsvError,
@@ -172,6 +175,8 @@ export default class WalletsStore extends Store {
 
   /* ----------  Delete Wallet  ---------- */
   @observable isDeleting: boolean = false;
+  /* ----------  Restore Wallet  ---------- */
+  @observable isRestoring: boolean = false;
 
   /* ----------  Paper Wallet  ---------- */
   @observable createPaperWalletCertificateStep = 0;
@@ -426,6 +431,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWalletClose = () => {
+    this._resumePolling();
     const { mnemonics, walletName, spendingPassword } = this;
     const shouldDisplayAbortAlert =
       (mnemonics.length || walletName.length || spendingPassword.length) &&
@@ -666,11 +672,12 @@ export default class WalletsStore extends Store {
     return unscrambledRecoveryPhrase;
   };
 
-  _restore = async () => {
+  @action _restore = async () => {
+    this.isRestoring = true;
+
     // Pause polling in order to avoid fetching data for wallet we are about to restore
     // so that we remain on the "Add wallet" screen until user closes the TADA screen
     await this._pausePolling();
-
     // Reset restore requests to clear previous errors
     this._restoreWalletResetRequests();
 
@@ -700,8 +707,10 @@ export default class WalletsStore extends Store {
         this.restoredWallet = restoredWallet;
         this.restoreWalletStep = 3;
       });
-    } catch (error) {
-      this._resumePolling();
+    } finally {
+      runInAction('end wallet restore', () => {
+        this.isRestoring = false;
+      });
     }
   };
 
@@ -1033,9 +1042,14 @@ export default class WalletsStore extends Store {
     }
     try {
       const response = await introspectAddressChannel.send({ input: address });
-      if (response === 'Invalid') {
+
+      if (
+        response === 'Invalid' ||
+        !isReceiverAddressType(response.introspection.address_type)
+      ) {
         return false;
       }
+
       runInAction('check if address is from the same wallet', () => {
         const walletAddresses = this.stores.addresses.all
           .slice()

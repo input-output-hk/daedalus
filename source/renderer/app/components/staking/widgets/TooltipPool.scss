@@ -14,6 +14,9 @@ $tooltip-width: 280px;
   z-index: 1000;
 
   :global {
+    span.SimpleLink_root {
+      font-size: var(--rp-button-font-size);
+    }
     button.SimpleButton_root {
       background-color: var(
         --theme-staking-stake-pool-tooltip-delegate-button-background-color

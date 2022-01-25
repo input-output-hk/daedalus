@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import styles from './SyncingConnectingStatus.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
@@ -12,9 +12,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Starting Cardano node',
     description: 'Message "Starting Cardano node" on the loading screen.',
   },
+  startingDescription: {
+    id: 'loading.screen.startingCardanoDescription',
+    defaultMessage:
+      '!!!This process validates the integrity of local blockchain data.',
+    description: 'Message "Starting Cardano node" on the loading screen.',
+  },
   stopping: {
     id: 'loading.screen.stoppingCardanoMessage',
     defaultMessage: '!!!Stopping Cardano node',
+    description: 'Message "Stopping Cardano node" on the loading screen.',
+  },
+  stoppingDescription: {
+    id: 'loading.screen.stoppingCardanoDescription',
+    defaultMessage:
+      '!!!This process updates the databases and could take several minutes.<br />To preserve data integrity, please wait until this process is complete.',
     description: 'Message "Stopping Cardano node" on the loading screen.',
   },
   stopped: {
@@ -68,9 +80,9 @@ const messages = defineMessages({
   verifyingBlockchain: {
     id: 'loading.screen.verifyingBlockchainMessage',
     defaultMessage:
-      '!!!Verifying the blockchain ({verificationProgress}% complete)',
+      '!!!Cardano node is currently syncing. This process can take several hours',
     description:
-      'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
+      'Message on the loading screen informing that sync process could be very long',
   },
 });
 
@@ -91,7 +103,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  _getConnectingMessage = () => {
+  _getConnectingMessage = (): {
+    connectingMessage: string,
+    connectingDescription?: string,
+  } => {
     const {
       cardanoNodeState,
       hasBeenConnected,
@@ -99,16 +114,22 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isTlsCertInvalid,
       isConnected,
     } = this.props;
-    if (isConnected) return messages.loadingWalletData;
     let connectingMessage;
+    if (isConnected) {
+      connectingMessage = messages.loadingWalletData;
+      return { connectingMessage };
+    }
+    let connectingDescription;
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:
         connectingMessage = messages.starting;
+        connectingDescription = messages.startingDescription;
         break;
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
         connectingMessage = messages.stopping;
+        connectingDescription = messages.stoppingDescription;
         break;
       case CardanoNodeStates.STOPPED:
         connectingMessage = messages.stopped;
@@ -136,12 +157,12 @@ export default class SyncingConnectingStatus extends Component<Props> {
       connectingMessage === messages.connecting ||
       connectingMessage === messages.reconnecting;
     if (isTlsCertInvalid && isConnectingMessage) {
-      return messages.tlsCertificateNotValidError;
+      connectingMessage = messages.tlsCertificateNotValidError;
+    } else if (isVerifyingBlockchain && isConnectingMessage) {
+      connectingMessage = messages.verifyingBlockchain;
+      connectingDescription = messages.startingDescription;
     }
-    if (isVerifyingBlockchain && isConnectingMessage) {
-      return messages.verifyingBlockchain;
-    }
-    return connectingMessage;
+    return { connectingMessage, connectingDescription };
   };
 
   render() {
@@ -170,13 +191,23 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
+    const {
+      connectingMessage,
+      connectingDescription,
+    } = this._getConnectingMessage();
+
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {intl.formatMessage(this._getConnectingMessage(), {
+          {intl.formatMessage(connectingMessage, {
             verificationProgress,
           })}
         </h1>
+        <div className={styles.description}>
+          {connectingDescription && (
+            <FormattedHTMLMessage {...connectingDescription} />
+          )}
+        </div>
       </div>
     );
   }

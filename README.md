@@ -26,14 +26,36 @@ Daedalus - Cryptocurrency Wallet
    ```
    and then add the following lines:
    ```
+   build-users-group = nixbld
+
+   max-jobs = auto
+   cores = 0
+   sandbox = false
+
+   require-sigs = true
+   trusted-users = root
+   allowed-users = *
+
    substituters = https://hydra.iohk.io https://cache.nixos.org/
    trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-   max-jobs = 2  # run at most two builds at once
-   cores = 0     # the builder will use all available CPU cores
-   extra-sandbox-paths = /System/Library/Frameworks
+   extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
+
+   # If you are running on a Mac with M1 chip please uncomment 'system' setting to enforce running on Rosetta2
+   # system = x86_64-darwin
    ```
+
 3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
+
+**Notes:**
+
+If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remote key was not OK) try the next steps:
+1. Reinstall nix
+   ```bash
+   $ nix-env -e *
+   $ curl -L https://nixos.org/nix/install | sh
+   ```
+2. Download certificate from https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/ and import to your keychain.
 
 ## Development
 

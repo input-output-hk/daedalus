@@ -1,6 +1,6 @@
 // @flow
-import { Given, When, Then } from '@cucumber/cucumber';
-import type { Daedalus } from '../../../types';
+import {Given, Then, When} from 'cucumber';
+import type {Daedalus} from '../../../types';
 
 declare var daedalus: Daedalus;
 let diskSpaceRequired;
@@ -19,8 +19,8 @@ Given(/^I set the required space to 1 KB$/, () => {
 });
 
 When(/^I check the disk space$/, function() {
-  this.client.execute(diskSpace => {
-    daedalus.stores.networkStatus._checkDiskSpace(diskSpace);
+  this.client.execute(() => {
+    daedalus.stores.networkStatus._checkDiskSpace();
   }, diskSpaceRequired);
 });
 
