@@ -245,6 +245,7 @@ import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
+import { throwErrorIfNotEnoughAdaToSupportTokens } from './utils/apiHelpers';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -838,23 +839,10 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::createTransaction error', { error });
-      const adaToProceedRegex = new RegExp(
-        /I need approximately([\s\d.,]+)ada to proceed/
+      throwErrorIfNotEnoughAdaToSupportTokens(
+        error,
+        hasAssetsRemainingAfterTransaction
       );
-      if (
-        error.code === 'cannot_cover_fee' &&
-        hasAssetsRemainingAfterTransaction &&
-        adaToProceedRegex.test(error.message)
-      ) {
-        const adaToRemain = Math.ceil(
-          Number(error.message.replace(adaToProceedRegex, '$1'))
-        );
-        throw new ApiError()
-          .set('cannotLeaveWalletEmpty', true, {
-            adaToRemain,
-          })
-          .result();
-      }
 
       throw new ApiError(error)
         .set('wrongEncryptionPassphrase')

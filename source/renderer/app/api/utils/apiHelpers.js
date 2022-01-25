@@ -1,5 +1,6 @@
 // @flow
 import { ApiMethodNotYetImplementedError } from '../common/errors';
+import ApiError from '../../domains/ApiError';
 
 export const notYetImplemented = async () =>
   new Promise((resolve, reject) => {
@@ -25,3 +26,26 @@ export const testSync = (apiMethod: Function) => {
 // helper code for deferring API call execution
 export const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const throwErrorIfNotEnoughAdaToSupportTokens = (
+  error: any,
+  hasAssetsRemainingAfterTransaction: boolean
+) => {
+  const adaToProceedRegex = new RegExp(
+    /.*I need approximately([\s\d.,]+)ada to proceed.*/
+  );
+  if (
+    error.code === 'cannot_cover_fee' &&
+    hasAssetsRemainingAfterTransaction &&
+    adaToProceedRegex.test(error.message)
+  ) {
+    const adaToRemain = Math.ceil(
+      Number(error.message.replace(adaToProceedRegex, '$1'))
+    );
+    throw new ApiError()
+      .set('cannotLeaveWalletEmpty', true, {
+        adaToRemain,
+      })
+      .result();
+  }
+};
