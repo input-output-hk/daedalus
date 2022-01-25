@@ -11,20 +11,21 @@ import { ROUTES } from '../../routes-config';
 const makeProfile = ({
   currentLocaleCallback = () => {},
   areTermsOfUseAccepted = false,
-} = {}) =>
+} = {}): ProfileStore =>
   ({
     get currentLocale() {
       currentLocaleCallback();
       return 'en';
     },
     areTermsOfUseAccepted,
-  }: ProfileStore);
-const makeRouter = ({ pathname = ROUTES.WALLETS.ROOT } = {}) =>
-  ({ location: { pathname } }: RouterStore);
-const makeUiDialogs = ({ activeDialog = false } = {}) =>
-  ({ activeDialog }: UiDialogsStore);
-const makeRebuildApplicationMenu = ({ send = () => {} } = {}) =>
-  ({ send }: RebuildApplicationMenu);
+  }: any);
+const makeRouter = ({ pathname = ROUTES.WALLETS.ROOT } = {}): RouterStore =>
+  ({ location: { pathname } }: any);
+const makeUiDialogs = ({ activeDialog = false } = {}): UiDialogsStore =>
+  ({ activeDialog }: any);
+const makeRebuildApplicationMenu = ({
+  send = () => {},
+} = {}): RebuildApplicationMenu => ({ send }: any);
 
 const defaultArgs = {
   stores: {

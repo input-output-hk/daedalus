@@ -2,7 +2,7 @@
 import { matchPath } from 'react-router-dom';
 import { WalletSettingsStateEnum } from '../../../../common/ipc/api';
 import { ROUTES } from '../../routes-config';
-import { MakeReactionCallbackArgs } from './types';
+import type { MakeReactionCallbackArgs } from './types';
 
 const walletRoutesExceptSettings = Object.values(ROUTES.WALLETS).filter(
   (route) => route !== ROUTES.WALLETS.SETTINGS
