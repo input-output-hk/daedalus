@@ -7,7 +7,11 @@ import type {
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
-export const rebuildApplicationMenu: RendererIpcChannel<
+export type RebuildApplicationMenu = RendererIpcChannel<
   RebuildAppMenuMainResponse,
   RebuildAppMenuRendererRequest
-> = new RendererIpcChannel(REBUILD_APP_MENU_CHANNEL);
+>;
+
+export const rebuildApplicationMenu: RebuildApplicationMenu = new RendererIpcChannel(
+  REBUILD_APP_MENU_CHANNEL
+);

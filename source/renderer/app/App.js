@@ -20,6 +20,7 @@ import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
+import { MenuUpdater } from './features';
 
 @observer
 export default class App extends Component<{
@@ -56,34 +57,36 @@ export default class App extends Component<{
       <Fragment>
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
-          <ThemeProvider
-            theme={daedalusTheme}
-            skins={SimpleSkins}
-            variables={SimpleDefaults}
-            themeOverrides={themeOverrides}
-          >
-            <IntlProvider
-              {...{ locale, key: locale, messages: translations[locale] }}
+          <MenuUpdater>
+            <ThemeProvider
+              theme={daedalusTheme}
+              skins={SimpleSkins}
+              variables={SimpleDefaults}
+              themeOverrides={themeOverrides}
             >
-              <Fragment>
-                <Router history={history}>
-                  <Routes />
-                </Router>
-                {mobxDevTools}
-                {[
-                  isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
-                  isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
-                    <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
-                  ),
-                  <NotificationsContainer key="notificationsContainer" />,
-                ]}
-                {canShowNews && [
-                  <NewsFeedContainer key="newsFeedList" />,
-                  <NewsOverlayContainer key="newsFeedOverlay" />,
-                ]}
-              </Fragment>
-            </IntlProvider>
-          </ThemeProvider>
+              <IntlProvider
+                {...{ locale, key: locale, messages: translations[locale] }}
+              >
+                <Fragment>
+                  <Router history={history}>
+                    <Routes />
+                  </Router>
+                  {mobxDevTools}
+                  {[
+                    isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
+                    isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
+                      <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
+                    ),
+                    <NotificationsContainer key="notificationsContainer" />,
+                  ]}
+                  {canShowNews && [
+                    <NewsFeedContainer key="newsFeedList" />,
+                    <NewsOverlayContainer key="newsFeedOverlay" />,
+                  ]}
+                </Fragment>
+              </IntlProvider>
+            </ThemeProvider>
+          </MenuUpdater>
         </Provider>
       </Fragment>
     );

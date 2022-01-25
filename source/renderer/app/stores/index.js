@@ -1,10 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
 import { RouterStore } from 'mobx-react-router';
-import { matchPath } from 'react-router-dom';
-import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
-import { WalletSettingsStateEnum } from '../../../common/ipc/api';
-import { ROUTES } from '../routes-config';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
@@ -27,7 +23,6 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
-import Reaction from './lib/Reaction';
 
 export const storeClasses = {
   addresses: AddressesStore,
@@ -88,38 +83,6 @@ function executeOnEveryStore(fn: (store: Store) => void) {
   });
 }
 
-const globalReactions = new Set<Reaction>();
-const initializeGlobalReactions = ({
-  profile,
-  router,
-  uiDialogs,
-}: StoresMap) => {
-  globalReactions.add(
-    new Reaction(() => {
-      let walletSettingsState = WalletSettingsStateEnum.hidden;
-      const itIsOneOfWalletPages = Object.values(ROUTES.WALLETS).some((path) =>
-        matchPath(router.location?.pathname, { path })
-      );
-
-      if (itIsOneOfWalletPages) {
-        walletSettingsState = uiDialogs.activeDialog
-          ? WalletSettingsStateEnum.disabled
-          : WalletSettingsStateEnum.enabled;
-      }
-
-      if (profile.currentLocale) {
-        // profile.currentLocale used to make the Reaction watch its changes
-      }
-
-      rebuildApplicationMenu.send({
-        isNavigationEnabled: profile.areTermsOfUseAccepted,
-        walletSettingsState,
-      });
-    })
-  );
-  globalReactions.forEach((reaction) => reaction.start());
-};
-
 // Set up and return the stores for this app -> also used to reset all stores to defaults
 export default action((api, actions, router): StoresMap => {
   function createStoreInstanceOf<T: Store>(StoreSubClass: Class<T>): T {
@@ -127,10 +90,7 @@ export default action((api, actions, router): StoresMap => {
   }
 
   // Teardown existing stores
-  if (stores) {
-    executeOnEveryStore((store) => store.teardown());
-    globalReactions.forEach((reaction) => reaction.stop());
-  }
+  if (stores) executeOnEveryStore((store) => store.teardown());
 
   // Create fresh instances of all stores
   stores = observable({
@@ -162,6 +122,5 @@ export default action((api, actions, router): StoresMap => {
     if (stores) store.configure(stores);
   });
   executeOnEveryStore((store) => store.initialize());
-  initializeGlobalReactions(stores);
   return stores;
 });
