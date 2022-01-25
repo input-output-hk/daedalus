@@ -1,9 +1,6 @@
-name: Run Tests for Pull Requests
+name: Run Linter for Pull Requests
 on:
-  pull_request:
-    branches:
-      - develop
-      - master
+  push:
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -14,5 +11,5 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - run: yarn --frozen-lockfile
-      - run: yarn test:jest --maxWorkers=3
+      - run: yarn install --frozen-lockfile
+      - run: yarn prettier:check && yarn lint && yarn stylelint
