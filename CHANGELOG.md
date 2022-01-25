@@ -11,6 +11,10 @@
 
 - Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
 
+### Fixes
+
+- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2816](https://github.com/input-output-hk/daedalus/pull/2816/files))
+
 ## 4.7.0
 
 ### Features

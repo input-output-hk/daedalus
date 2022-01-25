@@ -2893,6 +2893,10 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/is-function/-/is-function-1.0.0.tgz#1b0b819b1636c7baf0d6785d030d12edf70c3e83"
 
+"@types/istanbul-lib-coverage@*":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.4.tgz#8467d4b3c087805d63580480890791277ce35c44"
+
 "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
@@ -14768,9 +14772,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.1.tgz#94e664e173b3b4a32c13953291e92fa34a05c8a7"
+react-polymorph@1.0.1-next.4:
+  version "1.0.1-next.4"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.1-next.4.tgz#947b8d7fdcfe453237d54ea2d8597fcf1116dd79"
   dependencies:
     "@tippyjs/react" "4.2.1"
     create-react-context "0.2.2"

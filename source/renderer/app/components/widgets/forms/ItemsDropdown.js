@@ -30,6 +30,7 @@ import globalMessages from '../../../i18n/global-messages';
  */
 export type ItemDropdownProps = {
   options: Array<ItemDropdown>,
+  disabled?: boolean,
   className?: string,
 };
 

@@ -19,9 +19,9 @@
     .AutocompleteOverrides_autocompleteContent,
     .SimpleInput_customValueBlock,
     .SimpleInput_customValueWrapper,
-    .SimpleInput_input,
-    .SimpleInput_input:focus,
-    .SimpleInput_input:hover,
+    .SimpleInput_input:not(.SimpleInput_disabled),
+    .SimpleInput_input:focus:not(.SimpleInput_disabled),
+    .SimpleInput_input:hover:not(.SimpleInput_disabled),
     .SimpleLink_root {
       background-color: transparent !important;
     }
@@ -108,9 +108,10 @@
 
     // Border Color
     .AutocompleteOverrides_autocompleteContent:not(.SimpleAutocomplete_errored),
-    .SelectOverrides_selectInput input,
+    .SelectOverrides_selectInput input:not(.SimpleInput_disabled),
     .SimpleInput_customValueBlock,
-    .SimpleInput_customValueWrapper .SimpleInput_input,
+    .SimpleInput_customValueWrapper
+      .SimpleInput_input:not(.SimpleInput_disabled),
     .SimpleInput_input:focus:not(.SimpleInput_errored),
     .SimpleInput_input:hover:not(.SimpleInput_errored),
     .SimpleLink_root,

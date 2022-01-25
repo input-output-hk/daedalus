@@ -18,6 +18,7 @@ import ItemsDropdown from './ItemsDropdown';
  *
  */
 type Props = {
+  disabled?: boolean,
   className?: string,
   getStakePoolById: Function,
   numberOfStakePools: number,
@@ -42,6 +43,7 @@ function WalletsDropdown({
   numberOfStakePools,
   onSearch = onSearchWalletsDropdown,
   wallets = [],
+  disabled,
   ...props
 }: Props) {
   const discreetModeFeature = useDiscreetModeFeature();
@@ -79,6 +81,7 @@ function WalletsDropdown({
   });
   return (
     <ItemsDropdown
+      disabled={disabled}
       className={className}
       options={formattedOptions}
       {...itemsDropdownProps}
