@@ -92,6 +92,7 @@
 
 ### Chores
 
+- Added tests for currency display settings and stake-pool settings screens ([PR 2622](https://github.com/input-output-hk/daedalus/pull/2622))
 - Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
 - Improved the Daedalus startup by avoiding unnecessary Cardano Node restarts ([PR 2716](https://github.com/input-output-hk/daedalus/pull/2716))
 - Updated README with solution steps for the nix SSL issue ([PR 2727](https://github.com/input-output-hk/daedalus/pull/2727))
@@ -134,6 +135,7 @@
 
 ### Chores
 
+- Added tests for currency display settings and stake-pool settings screens ([PR 2622](https://github.com/input-output-hk/daedalus/pull/2622))
 - Updated `cardano-wallet` to version `2021-09-29` which includes `cardano-node` 1.30.1
 - Updated `trezor-connect` dependency to version `8.2.0` ([PR 2675](https://github.com/input-output-hk/daedalus/pull/2675))
 

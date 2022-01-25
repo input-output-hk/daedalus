@@ -1,5 +1,5 @@
 // @flow
-import { Given, Then, When } from 'cucumber';
+import { Given, Then, When } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { find } from 'lodash';
 import { getVisibleElementsCountForSelector } from '../../../common/e2e/steps/helpers';

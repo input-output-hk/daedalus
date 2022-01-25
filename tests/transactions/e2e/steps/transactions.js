@@ -1,5 +1,5 @@
 // @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';

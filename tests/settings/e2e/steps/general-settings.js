@@ -1,5 +1,5 @@
 // @flow
-import { When, Then } from 'cucumber';
+import { When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { camelCase } from 'lodash';
 

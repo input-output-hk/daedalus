@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { get } from 'lodash';
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import moment from 'moment';
 
 import newsDummyJson from '../documents/dummy-news.json';

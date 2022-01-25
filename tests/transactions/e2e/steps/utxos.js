@@ -1,5 +1,5 @@
 // @flow
-import { Then } from 'cucumber';
+import { Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
 import { getWalletUtxosTotalAmount } from '../../../../source/renderer/app/utils/utxoUtils';

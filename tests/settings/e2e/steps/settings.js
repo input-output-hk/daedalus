@@ -1,5 +1,5 @@
 // @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { navigateTo } from '../../../navigation/e2e/steps/helpers';
 import { waitUntilWaletNamesEqual } from '../../../wallets/e2e/steps/helpers';

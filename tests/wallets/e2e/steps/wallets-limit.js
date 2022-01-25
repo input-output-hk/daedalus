@@ -1,5 +1,5 @@
 // @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import { createWallets, getWalletByName } from './helpers';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../source/renderer/app/config/numbersConfig';

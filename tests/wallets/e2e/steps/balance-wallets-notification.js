@@ -1,5 +1,5 @@
 // @flow
-import { Then } from 'cucumber';
+import { Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
 import type { Daedalus } from '../../../types';
 
